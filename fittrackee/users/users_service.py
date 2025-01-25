@@ -1,5 +1,5 @@
 import secrets
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, Tuple
 
 from sqlalchemy import func
@@ -129,7 +129,7 @@ class UserManagerService:
             self._update_user_email(user, new_email, with_confirmation)
             user_updated = True
 
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         if suspended is True:
             if user.suspended_at:
                 raise UserAlreadySuspendedException()

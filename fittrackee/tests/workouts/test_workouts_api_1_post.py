@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from typing import Any, Dict, Optional
 from unittest.mock import Mock, patch
@@ -3848,8 +3848,8 @@ class TestPostAndGetWorkoutUsingTimezones(WorkoutApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        workout_cycling_user_1.workout_date = datetime.strptime(
-            '31/01/2018 21:59:59', '%d/%m/%Y %H:%M:%S'
+        workout_cycling_user_1.workout_date = datetime(
+            2018, 1, 31, 21, 59, 59, tzinfo=timezone.utc
         )
         workout_cycling_user_1.title = 'Test'
 
@@ -3979,7 +3979,7 @@ class TestPostWorkoutSuspensionAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -4006,7 +4006,7 @@ class TestPostWorkoutSuspensionAppeal(
         workout_cycling_user_1: Workout,
         input_data: Dict,
     ) -> None:
-        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
         self.create_report_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
@@ -4032,7 +4032,7 @@ class TestPostWorkoutSuspensionAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
         action = self.create_report_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )
@@ -4041,7 +4041,7 @@ class TestPostWorkoutSuspensionAppeal(
             app, user_1.email
         )
         text = self.random_string()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             response = client.post(
@@ -4070,7 +4070,7 @@ class TestPostWorkoutSuspensionAppeal(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
         action = self.create_report_workout_action(
             user_2_admin, user_1, workout_cycling_user_1
         )

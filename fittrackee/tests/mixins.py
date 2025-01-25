@@ -1,6 +1,6 @@
 import json
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple, Union
 from unittest.mock import Mock
 from urllib.parse import parse_qs
@@ -446,7 +446,9 @@ class ReportMixin(RandomMixin):
             admin, user, action_type=action_type, report_id=report_id
         )
         user.suspended_at = (
-            datetime.utcnow() if action_type == "user_suspension" else None
+            datetime.now(timezone.utc)
+            if action_type == "user_suspension"
+            else None
         )
         db.session.commit()
         return report_action
@@ -488,7 +490,9 @@ class ReportMixin(RandomMixin):
         )
         db.session.add(report_action)
         comment.suspended_at = (
-            datetime.utcnow() if action_type == "comment_suspension" else None
+            datetime.now(timezone.utc)
+            if action_type == "comment_suspension"
+            else None
         )
         return report_action
 

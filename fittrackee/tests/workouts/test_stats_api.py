@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import List
 
 import pytest
@@ -17,13 +17,13 @@ from ..utils import OAUTH_SCOPES
 class TestGetStatsByTime(ApiTestCaseMixin):
     @staticmethod
     def create_workouts(
-        user: User, sport: Sport, workout_dates: List[str]
+        user: User, sport: Sport, workout_dates: List[datetime]
     ) -> None:
         for workout_date in workout_dates:
             workout = Workout(
                 user_id=user.id,
                 sport_id=sport.id,
-                workout_date=datetime.strptime(workout_date, '%d/%m/%Y %H:%M'),
+                workout_date=workout_date,
                 distance=5,
                 duration=timedelta(seconds=1024),
             )
@@ -234,7 +234,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             [
                 # workout_date: '31 Dec 2024 23:00:00 GMT'
                 # '1 Dec 2025 00:00:00' in 'Europe/Paris' timezone
-                '31/12/2024 23:00'
+                datetime(2024, 12, 31, 23, tzinfo=timezone.utc)
             ],
         )
         client, auth_token = self.get_test_client_and_auth_token(
@@ -273,10 +273,10 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             [
                 # workout_date: '01 Jan 2025 04:00:00 GMT'
                 # '31 Dec 2024 23:00:00' in 'America/New_York' timezone
-                '01/01/2025 04:00',
+                datetime(2025, 1, 1, 4, tzinfo=timezone.utc),
                 # workout_date: '01 Jan 2025 05:00:00 GMT'
                 # '01 Jan 2025 00:00:00' in 'America/New_York' timezone
-                '01/01/2025 05:00',
+                datetime(2025, 1, 1, 5, tzinfo=timezone.utc),
             ],
         )
         client, auth_token = self.get_test_client_and_auth_token(

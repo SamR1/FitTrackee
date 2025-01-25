@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 from flask import Flask
@@ -109,7 +109,7 @@ class TestConfigModel:
     def test_it_returns_custom_privacy_policy(self, app: Flask) -> None:
         app_config = AppConfig.query.first()
         privacy_policy = random_string()
-        privacy_policy_date = datetime.utcnow()
+        privacy_policy_date = datetime.now(timezone.utc)
         app_config.privacy_policy = privacy_policy
         app_config.privacy_policy_date = privacy_policy_date
 

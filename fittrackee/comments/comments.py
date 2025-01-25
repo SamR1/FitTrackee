@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Optional, Tuple, Union
 
 from flask import Blueprint, request
@@ -440,7 +440,7 @@ def update_workout_comment(
 
     try:
         comment.text = clean_input(comment_data['text'])
-        comment.modification_date = datetime.utcnow()
+        comment.modification_date = datetime.now(timezone.utc)
         comment.update_mentions()
         db.session.commit()
         return {

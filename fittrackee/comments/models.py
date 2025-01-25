@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
 from uuid import uuid4
 
@@ -11,6 +11,8 @@ from sqlalchemy.sql import select, text
 from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, db
+from fittrackee.database import TZDateTime
+from fittrackee.dates import aware_utc_now
 from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import VisibilityLevel, can_view
 
@@ -91,15 +93,15 @@ class Comment(BaseModel):
         index=True,
         nullable=True,
     )
-    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    modification_date = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(TZDateTime, default=aware_utc_now)
+    modification_date = db.Column(TZDateTime, nullable=True)
     text = db.Column(db.String(), nullable=False)
     text_visibility = db.Column(
         Enum(VisibilityLevel, name='visibility_levels'),
         server_default='PRIVATE',
         nullable=False,
     )
-    suspended_at = db.Column(db.DateTime, nullable=True)
+    suspended_at = db.Column(TZDateTime, nullable=True)
 
     mentions = db.relationship(
         "Mention",
@@ -133,14 +135,14 @@ class Comment(BaseModel):
         workout_id: int,
         text: str,
         text_visibility: VisibilityLevel,
-        created_at: Optional[datetime.datetime] = None,
+        created_at: Optional[datetime] = None,
     ) -> None:
         self.user_id = user_id
         self.workout_id = workout_id
         self.text = text
         self.text_visibility = text_visibility
         self.created_at = (
-            datetime.datetime.utcnow() if created_at is None else created_at
+            datetime.now(timezone.utc) if created_at is None else created_at
         )
 
     @property
@@ -294,20 +296,18 @@ class Mention(BaseModel):
         db.ForeignKey('users.id', ondelete="CASCADE"),
         primary_key=True,
     )
-    created_at = db.Column(
-        db.DateTime, nullable=False, default=datetime.datetime.utcnow
-    )
+    created_at = db.Column(TZDateTime, nullable=False, default=aware_utc_now)
 
     def __init__(
         self,
         comment_id: int,
         user_id: int,
-        created_at: Optional[datetime.datetime] = None,
+        created_at: Optional[datetime] = None,
     ):
         self.comment_id = comment_id
         self.user_id = user_id
         self.created_at = (
-            datetime.datetime.utcnow() if created_at is None else created_at
+            datetime.now(timezone.utc) if created_at is None else created_at
         )
 
 
@@ -457,7 +457,7 @@ class CommentLike(BaseModel):
         ),
     )
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    created_at = db.Column(db.DateTime, nullable=False)
+    created_at = db.Column(TZDateTime, nullable=False)
     user_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='CASCADE'),
@@ -477,12 +477,12 @@ class CommentLike(BaseModel):
         self,
         user_id: int,
         comment_id: int,
-        created_at: Optional[datetime.datetime] = None,
+        created_at: Optional[datetime] = None,
     ) -> None:
         self.user_id = user_id
         self.comment_id = comment_id
         self.created_at = (
-            datetime.datetime.utcnow() if created_at is None else created_at
+            datetime.now(timezone.utc) if created_at is None else created_at
         )
 
 

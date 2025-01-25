@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 from unittest.mock import patch
 
@@ -20,7 +20,7 @@ class FollowersAsUserTestCase(ApiTestCaseMixin):
     ) -> None:
         for follows_request in follows_requests:
             follows_request.is_approved = True
-            follows_request.updated_at = datetime.utcnow()
+            follows_request.updated_at = datetime.now(timezone.utc)
 
 
 class TestFollowersAsUnauthenticatedUser(ApiTestCaseMixin):
@@ -44,7 +44,7 @@ class TestFollowersAsSuspendedUser(ApiTestCaseMixin):
         user_1: User,
         user_2: User,
     ) -> None:
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -137,7 +137,7 @@ class TestFollowersAsUser(FollowersAsUserTestCase):
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         self.approves_follow_requests([follow_request_from_user_2_to_user_1])
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
 
         client, auth_token = self.get_test_client_and_auth_token(
@@ -266,7 +266,7 @@ class TestFollowersAsAdmin(FollowersAsUserTestCase):
                 follow_request_from_user_3_to_user_2,
             ]
         )
-        user_3.suspended_at = datetime.utcnow()
+        user_3.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -401,7 +401,7 @@ class TestFollowingAsSuspendedUser(ApiTestCaseMixin):
         user_1: User,
         user_2: User,
     ) -> None:
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -501,7 +501,7 @@ class TestFollowingAsUser(FollowersAsUserTestCase):
                 follow_request_from_user_3_to_user_1,
             ]
         )
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -630,7 +630,7 @@ class TestFollowingAsAdmin(FollowersAsUserTestCase):
                 follow_request_from_user_3_to_user_1,
             ]
         )
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email

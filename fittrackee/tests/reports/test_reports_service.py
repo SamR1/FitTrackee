@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict
 
 import pytest
@@ -115,7 +115,7 @@ class TestReportServiceCreateForComment(CommentMixin):
             text_visibility=VisibilityLevel.PUBLIC,
         )
         note = self.random_string()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         report_service = ReportService()
         # report from another user
         report_service.create_report(
@@ -199,7 +199,7 @@ class TestReportServiceCreateForComment(CommentMixin):
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         report_service = ReportService()
 
         with pytest.raises(
@@ -275,7 +275,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         note = self.random_string()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         report_service = ReportService()
         # report from another user
         report_service.create_report(
@@ -351,7 +351,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         report_service = ReportService()
 
         with pytest.raises(
@@ -409,7 +409,7 @@ class TestReportServiceCreateForUser(RandomMixin):
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
         note = self.random_string()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         report_service = ReportService()
         # report from another user
         report_service.create_report(
@@ -482,7 +482,7 @@ class TestReportServiceCreateForUser(RandomMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         report_service = ReportService()
 
         with pytest.raises(
@@ -521,7 +521,7 @@ class TestReportServiceUpdate(CommentMixin):
             object_type="user",
         )
         created_at = report.created_at
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             updated_report = report_service.update_report(
@@ -553,7 +553,7 @@ class TestReportServiceUpdate(CommentMixin):
             object_type="user",
         )
         comment = self.random_string()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.update_report(
@@ -600,7 +600,7 @@ class TestReportServiceUpdate(CommentMixin):
             object_type="user",
         )
         created_at = report.created_at
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             updated_report = report_service.update_report(
@@ -632,7 +632,7 @@ class TestReportServiceUpdate(CommentMixin):
             object_id=user_3.username,
             object_type="user",
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.update_report(
@@ -663,9 +663,9 @@ class TestReportServiceUpdate(CommentMixin):
         )
         created_at = report.created_at
         report.resolved = True
-        report.resolved_at = datetime.utcnow()
+        report.resolved_at = datetime.now(timezone.utc)
         report.resolved_by = user_1_admin.id
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             updated_report = report_service.update_report(
@@ -698,9 +698,9 @@ class TestReportServiceUpdate(CommentMixin):
             object_type="user",
         )
         report.resolved = True
-        report.resolved_at = datetime.utcnow()
+        report.resolved_at = datetime.now(timezone.utc)
         report.resolved_by = user_1_admin.id
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.update_report(
@@ -729,7 +729,7 @@ class TestReportServiceUpdate(CommentMixin):
             object_type="user",
         )
 
-        with travel(datetime.utcnow(), tick=False):
+        with travel(datetime.now(timezone.utc), tick=False):
             report_service.update_report(
                 report_id=report.id,
                 moderator=user_1_admin,
@@ -751,7 +751,7 @@ class TestReportServiceUpdate(CommentMixin):
             object_type="user",
         )
         created_at = report.created_at
-        resolved_time = datetime.utcnow()
+        resolved_time = datetime.now(timezone.utc)
 
         # resolved by user_1_admin
         with travel(resolved_time, tick=False):
@@ -872,7 +872,7 @@ class TestReportServiceCreateReportActionForUser(
         report = self.create_report_for_user(
             report_service, reporter=user_2, reported_user=user_3
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.create_report_action(
@@ -895,7 +895,7 @@ class TestReportServiceCreateReportActionForUser(
         report = self.create_report_for_user(
             report_service, reporter=user_2, reported_user=user_3
         )
-        user_3.suspended_at = datetime.utcnow()
+        user_3.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
 
         with pytest.raises(
@@ -917,7 +917,7 @@ class TestReportServiceCreateReportActionForUser(
         report = self.create_report_for_user(
             report_service, reporter=user_2, reported_user=user_3
         )
-        user_3.suspended_at = datetime.utcnow()
+        user_3.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
 
         report_service.create_report_action(
@@ -973,7 +973,7 @@ class TestReportServiceCreateReportActionForUser(
         )
         db.session.add(another_user_suspension)
         db.session.flush()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.create_report_action(
@@ -1002,7 +1002,7 @@ class TestReportServiceCreateReportActionForUser(
         report = self.create_report_for_user(
             report_service, reporter=user_2, reported_user=user_3
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.create_report_action(
@@ -1032,7 +1032,7 @@ class TestReportServiceCreateReportActionForUser(
         report = self.create_report_for_user(
             report_service, reporter=user_2, reported_user=user_3
         )
-        user_3.suspended_at = datetime.utcnow()
+        user_3.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
 
         report_service.create_report_action(
@@ -1286,7 +1286,7 @@ class TestReportServiceCreateReportActionForComment(
             commenter=user_3,
             workout=workout_cycling_user_2,
         )
-        report.reported_comment.suspended_at = datetime.utcnow()
+        report.reported_comment.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
 
         with pytest.raises(
@@ -1316,7 +1316,7 @@ class TestReportServiceCreateReportActionForComment(
             commenter=user_3,
             workout=workout_cycling_user_2,
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.create_report_action(
@@ -1351,7 +1351,7 @@ class TestReportServiceCreateReportActionForComment(
             commenter=user_3,
             workout=workout_cycling_user_2,
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.create_report_action(
@@ -1389,9 +1389,9 @@ class TestReportServiceCreateReportActionForComment(
             commenter=user_3,
             workout=workout_cycling_user_2,
         )
-        report.reported_comment.suspended_at = datetime.utcnow()
+        report.reported_comment.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.create_report_action(
@@ -1453,9 +1453,9 @@ class TestReportServiceCreateReportActionForComment(
             commenter=user_3,
             workout=workout_cycling_user_2,
         )
-        report.reported_comment.suspended_at = datetime.utcnow()
+        report.reported_comment.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.create_report_action(
@@ -1500,10 +1500,10 @@ class TestReportServiceCreateReportActionForComment(
             comment_id=report.reported_comment_id,
         )
         db.session.add(comment_suspension)
-        report.reported_comment.suspended_at = datetime.utcnow()
+        report.reported_comment.suspended_at = datetime.now(timezone.utc)
         appeal = self.create_action_appeal(comment_suspension.id, user_3)
         db.session.flush()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.create_report_action(
@@ -1588,7 +1588,7 @@ class TestReportServiceCreateReportActionForWorkout(
             reporter=user_3,
             workout=workout_cycling_user_2,
         )
-        report.reported_workout.suspended_at = datetime.utcnow()
+        report.reported_workout.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
 
         with pytest.raises(
@@ -1617,7 +1617,7 @@ class TestReportServiceCreateReportActionForWorkout(
             reporter=user_3,
             workout=workout_cycling_user_2,
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.create_report_action(
@@ -1651,7 +1651,7 @@ class TestReportServiceCreateReportActionForWorkout(
             reporter=user_3,
             workout=workout_cycling_user_2,
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.create_report_action(
@@ -1688,9 +1688,9 @@ class TestReportServiceCreateReportActionForWorkout(
             reporter=user_3,
             workout=workout_cycling_user_2,
         )
-        report.reported_workout.suspended_at = datetime.utcnow()
+        report.reported_workout.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.create_report_action(
@@ -1751,9 +1751,9 @@ class TestReportServiceCreateReportActionForWorkout(
             reporter=user_3,
             workout=workout_cycling_user_2,
         )
-        report.reported_workout.suspended_at = datetime.utcnow()
+        report.reported_workout.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.create_report_action(
@@ -1797,10 +1797,10 @@ class TestReportServiceCreateReportActionForWorkout(
             workout_id=report.reported_workout_id,
         )
         db.session.add(workout_suspension)
-        report.reported_workout.suspended_at = datetime.utcnow()
+        report.reported_workout.suspended_at = datetime.now(timezone.utc)
         appeal = self.create_action_appeal(workout_suspension.id, user_2)
         db.session.flush()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.create_report_action(
@@ -1832,7 +1832,7 @@ class TestReportServiceProcessAppeal(
         )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         report_service = ReportService()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.process_appeal(
@@ -1860,7 +1860,7 @@ class TestReportServiceProcessAppeal(
         )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         report_service = ReportService()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.process_appeal(
@@ -1882,7 +1882,7 @@ class TestReportServiceProcessAppeal(
         )
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         report_service = ReportService()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.process_appeal(
@@ -1958,7 +1958,7 @@ class TestReportServiceProcessAppeal(
         )
         appeal = self.create_action_appeal(warning_action.id, user_2)
         report_service = ReportService()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.process_appeal(
@@ -1986,7 +1986,7 @@ class TestReportServiceProcessAppeal(
         )
         appeal = self.create_action_appeal(warning_action.id, user_2)
         report_service = ReportService()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.process_appeal(
@@ -2038,7 +2038,7 @@ class TestReportServiceProcessAppeal(
         appeal = self.create_action_appeal(suspension_action.id, user_3)
         db.session.commit()
         report_service = ReportService()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.process_appeal(
@@ -2190,13 +2190,13 @@ class TestReportServiceProcessAppeal(
         suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         workout_suspended_at = workout_cycling_user_2.suspended_at
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         db.session.commit()
         report_service = ReportService()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_service.process_appeal(
@@ -2228,7 +2228,7 @@ class TestReportServiceProcessAppeal(
         suspension_action = self.create_report_workout_action(
             user_1_admin, user_2, workout_cycling_user_2
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         db.session.commit()

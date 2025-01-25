@@ -1,7 +1,7 @@
-import datetime
 import os
 import re
 import secrets
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Tuple, Union
 
 import jwt
@@ -18,6 +18,7 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
+from fittrackee.dates import get_datetime_in_utc, get_readable_duration
 from fittrackee.emails.tasks import (
     account_confirmation_email,
     email_updated_to_current_address,
@@ -32,6 +33,7 @@ from fittrackee.equipments.exceptions import (
 from fittrackee.equipments.utils import handle_equipments
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
+from fittrackee.reports.models import ReportAction, ReportActionAppeal
 from fittrackee.responses import (
     DataNotFoundErrorResponse,
     EquipmentInvalidPayloadErrorResponse,
@@ -45,14 +47,15 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.users_service import UserManagerService
-from fittrackee.utils import decode_short_id, get_readable_duration
+from fittrackee.utils import (
+    decode_short_id,
+)
 from fittrackee.visibility_levels import (
     VisibilityLevel,
     get_calculated_visibility,
 )
 from fittrackee.workouts.models import Sport
 
-from ..reports.models import ReportAction, ReportActionAppeal
 from .exceptions import UserControlsException, UserCreationException
 from .models import (
     BlacklistedToken,
@@ -188,7 +191,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         # activate his account
         if new_user:
             new_user.language = language
-            new_user.accepted_policy_date = datetime.datetime.utcnow()
+            new_user.accepted_policy_date = datetime.now(timezone.utc)
             for admin in User.query.filter(
                 User.role == UserRole.ADMIN.value,
                 User.is_active == True,  # noqa
@@ -601,9 +604,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.bio = bio
         auth_user.location = location
         auth_user.birth_date = (
-            datetime.datetime.strptime(birth_date, '%Y-%m-%d')
-            if birth_date
-            else None
+            get_datetime_in_utc(birth_date) if birth_date else None
         )
         db.session.commit()
 
@@ -2091,7 +2092,7 @@ def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
 
     try:
         if post_data.get('accepted_policy') is True:
-            auth_user.accepted_policy_date = datetime.datetime.utcnow()
+            auth_user.accepted_policy_date = datetime.now(timezone.utc)
             db.session.commit()
             return {"status": "success"}
         else:
@@ -2153,8 +2154,7 @@ def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 
         export_expiration = current_app.config["DATA_EXPORT_EXPIRATION"]
         if existing_export_request.created_at > (
-            datetime.datetime.utcnow()
-            - datetime.timedelta(hours=export_expiration)
+            datetime.now(timezone.utc) - timedelta(hours=export_expiration)
         ):
             return InvalidPayloadErrorResponse(
                 "completed request already exists"

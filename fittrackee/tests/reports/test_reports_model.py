@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 from flask import Flask
@@ -40,7 +40,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         user_2: User,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        report_created_at = datetime.utcnow()
+        report_created_at = datetime.now(timezone.utc)
         report_note = self.random_string()
         comment = self.create_comment(
             user_2,
@@ -77,7 +77,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         user_2: User,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        report_created_at = datetime.utcnow()
+        report_created_at = datetime.now(timezone.utc)
         report_note = self.random_string()
         comment = self.create_comment(
             user_2,
@@ -116,7 +116,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         user_1: User,
         user_2: User,
     ) -> None:
-        report_created_at = datetime.utcnow()
+        report_created_at = datetime.now(timezone.utc)
         report_note = self.random_string()
 
         report = Report(
@@ -145,7 +145,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         user_1: User,
         user_2: User,
     ) -> None:
-        report_created_at = datetime.utcnow()
+        report_created_at = datetime.now(timezone.utc)
         report_note = self.random_string()
         report = Report(
             created_at=report_created_at,
@@ -179,7 +179,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         user_1: User,
         user_2: User,
     ) -> None:
-        report_created_at = datetime.utcnow()
+        report_created_at = datetime.now(timezone.utc)
         report_note = self.random_string()
         report = Report(
             created_at=report_created_at,
@@ -216,7 +216,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        report_created_at = datetime.utcnow()
+        report_created_at = datetime.now(timezone.utc)
         report_note = self.random_string()
 
         report = Report(
@@ -248,7 +248,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        report_created_at = datetime.utcnow()
+        report_created_at = datetime.now(timezone.utc)
         report_note = self.random_string()
         report = Report(
             created_at=report_created_at,
@@ -279,7 +279,7 @@ class TestReportModel(CommentMixin, RandomMixin):
     def test_it_creates_report_without_date(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         report_note = self.random_string()
 
         with travel(now, tick=False):
@@ -1141,7 +1141,7 @@ class TestReportCommentModel(ReportCommentTestCase):
         self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
         comment = self.random_string()
 
         report_comment = ReportComment(
@@ -1163,7 +1163,7 @@ class TestReportCommentModel(ReportCommentTestCase):
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
         comment = self.random_string()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_comment = ReportComment(

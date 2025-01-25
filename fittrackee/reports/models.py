@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Optional, Union
 from uuid import uuid4
 
@@ -10,6 +10,8 @@ from sqlalchemy.orm import Mapper, Session
 from fittrackee import BaseModel, db
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Comment
+from fittrackee.database import TZDateTime
+from fittrackee.dates import aware_utc_now
 from fittrackee.users.models import Notification, User
 from fittrackee.users.roles import UserRole
 from fittrackee.utils import encode_uuid
@@ -62,9 +64,9 @@ ALL_ACTION_TYPES = REPORT_ACTION_TYPES + OBJECTS_ACTION_TYPES
 class Report(BaseModel):
     __tablename__ = 'reports'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, nullable=True)
-    resolved_at = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(TZDateTime, default=aware_utc_now)
+    updated_at = db.Column(TZDateTime, nullable=True)
+    resolved_at = db.Column(TZDateTime, nullable=True)
     reported_by = db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='SET NULL'),
@@ -183,7 +185,9 @@ class Report(BaseModel):
         if user_id == reported_by:
             raise InvalidReporterException()
 
-        self.created_at = created_at if created_at else datetime.utcnow()
+        self.created_at = (
+            created_at if created_at else datetime.now(timezone.utc)
+        )
         self.note = note
         self.object_type = object_type
         self.reported_by = reported_by
@@ -289,7 +293,7 @@ def on_report_insert(
 class ReportComment(BaseModel):
     __tablename__ = 'report_comments'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(TZDateTime, default=aware_utc_now)
     report_id = db.Column(
         db.Integer,
         db.ForeignKey('reports.id', ondelete='CASCADE'),
@@ -316,7 +320,9 @@ class ReportComment(BaseModel):
         comment: str,
         created_at: Optional[datetime] = None,
     ):
-        self.created_at = created_at if created_at else datetime.utcnow()
+        self.created_at = (
+            created_at if created_at else datetime.now(timezone.utc)
+        )
         self.comment = comment
         self.report_id = report_id
         self.user_id = user_id
@@ -342,7 +348,7 @@ class ReportAction(BaseModel):
         unique=True,
         nullable=False,
     )
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    created_at = db.Column(TZDateTime, default=aware_utc_now, index=True)
     moderator_id = db.Column(
         db.Integer,
         db.ForeignKey("users.id", ondelete="SET NULL"),
@@ -427,7 +433,9 @@ class ReportAction(BaseModel):
 
         self.action_type = action_type
         self.moderator_id = moderator_id
-        self.created_at = created_at if created_at else datetime.utcnow()
+        self.created_at = (
+            created_at if created_at else datetime.now(timezone.utc)
+        )
         self.comment_id = (
             comment_id if action_type in COMMENT_ACTION_TYPES else None
         )
@@ -535,10 +543,8 @@ class ReportActionAppeal(BaseModel):
         index=True,
         nullable=True,
     )
-    created_at = db.Column(
-        db.DateTime, default=datetime.utcnow, nullable=False
-    )
-    updated_at = db.Column(db.DateTime)
+    created_at = db.Column(TZDateTime, default=aware_utc_now, nullable=False)
+    updated_at = db.Column(TZDateTime)
     approved = db.Column(db.Boolean, nullable=True)
     text = db.Column(db.String(), nullable=False)
     reason = db.Column(db.String(), nullable=True)
@@ -574,7 +580,9 @@ class ReportActionAppeal(BaseModel):
         if action.user_id != user_id:
             raise InvalidReportActionAppealUserException()
         self.action_id = action_id
-        self.created_at = created_at if created_at else datetime.utcnow()
+        self.created_at = (
+            created_at if created_at else datetime.now(timezone.utc)
+        )
         self.text = text
         self.user_id = user_id
 

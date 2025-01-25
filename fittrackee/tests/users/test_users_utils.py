@@ -1,6 +1,6 @@
 import time
 from calendar import timegm
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Optional
 from unittest.mock import patch
 
@@ -214,7 +214,7 @@ class TestGetUserToken:
         self, app: Flask, input_password_reset: bool
     ) -> None:
         user_id = 1
-        iat = datetime.utcnow()
+        iat = datetime.now(timezone.utc)
         with travel(iat, tick=False):
             token = get_user_token(
                 user_id=user_id, password_reset=input_password_reset
@@ -227,7 +227,7 @@ class TestGetUserToken:
         self, app: Flask
     ) -> None:
         user_id = 1
-        iat = datetime.utcnow()
+        iat = datetime.now(timezone.utc)
         expiration = timedelta(
             days=app.config['TOKEN_EXPIRATION_DAYS'],
             seconds=app.config['TOKEN_EXPIRATION_SECONDS'],
@@ -244,7 +244,7 @@ class TestGetUserToken:
         self, app: Flask
     ) -> None:
         user_id = 1
-        iat = datetime.utcnow()
+        iat = datetime.now(timezone.utc)
         expiration = timedelta(
             days=0.0,
             seconds=app.config['PASSWORD_TOKEN_EXPIRATION_SECONDS'],
@@ -284,7 +284,7 @@ class TestDecodeUserToken:
     def test_it_raises_error_when_secret_key_is_invalid(
         self, app: Flask
     ) -> None:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         token = jwt.encode(
             {
                 'exp': now + timedelta(minutes=1),
@@ -309,7 +309,7 @@ class TestDecodeUserToken:
             serialization.PrivateFormat.PKCS8,
             serialization.NoEncryption(),
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         token = jwt.encode(
             {
                 'exp': now + timedelta(minutes=1),
@@ -323,7 +323,7 @@ class TestDecodeUserToken:
             decode_user_token(token)
 
     def test_it_raises_error_when_token_is_expired(self, app: Flask) -> None:
-        now = datetime.utcnow() - timedelta(minutes=10)
+        now = datetime.now(timezone.utc) - timedelta(minutes=10)
         token = self.generate_token(user_id=1, now=now)
         with pytest.raises(
             jwt.exceptions.ExpiredSignatureError, match='Signature has expired'
@@ -333,7 +333,7 @@ class TestDecodeUserToken:
     def test_it_returns_user_id(self, app: Flask) -> None:
         expected_user_id = 1
         token = self.generate_token(
-            user_id=expected_user_id, now=datetime.utcnow()
+            user_id=expected_user_id, now=datetime.now(timezone.utc)
         )
 
         user_id = decode_user_token(token)

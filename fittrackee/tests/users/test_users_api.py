@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from typing import List, Tuple
 from unittest.mock import MagicMock, patch
@@ -9,6 +9,7 @@ from flask import Flask
 from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
+from fittrackee.dates import get_readable_duration
 from fittrackee.equipments.models import Equipment
 from fittrackee.reports.models import Report, ReportAction
 from fittrackee.tests.comments.mixins import CommentMixin
@@ -21,7 +22,6 @@ from fittrackee.users.models import (
     UserSportPreferenceEquipment,
 )
 from fittrackee.users.roles import UserRole
-from fittrackee.utils import get_readable_duration
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
@@ -444,7 +444,7 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
         user_4: User,
     ) -> None:
         user_2.hide_profile_in_users_directory = True
-        user_4.suspended_at = datetime.utcnow()
+        user_4.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -543,7 +543,7 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
     def test_it_gets_users_list_regardless_suspended_status(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -615,7 +615,7 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
         user_3: User,
     ) -> None:
         user_2.hide_profile_in_users_directory = True
-        user_3.suspended_at = datetime.utcnow()
+        user_3.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -878,9 +878,9 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
     def test_it_gets_users_list_ordered_by_creation_date(
         self, app: Flask, user_2: User, user_3: User, user_1_admin: User
     ) -> None:
-        user_2.created_at = datetime.utcnow() - timedelta(days=1)
-        user_3.created_at = datetime.utcnow() - timedelta(hours=1)
-        user_1_admin.created_at = datetime.utcnow()
+        user_2.created_at = datetime.now(timezone.utc) - timedelta(days=1)
+        user_3.created_at = datetime.now(timezone.utc) - timedelta(hours=1)
+        user_1_admin.created_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -908,9 +908,9 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
     def test_it_gets_users_list_ordered_by_creation_date_ascending(
         self, app: Flask, user_2: User, user_3: User, user_1_admin: User
     ) -> None:
-        user_2.created_at = datetime.utcnow() - timedelta(days=1)
-        user_3.created_at = datetime.utcnow() - timedelta(hours=1)
-        user_1_admin.created_at = datetime.utcnow()
+        user_2.created_at = datetime.now(timezone.utc) - timedelta(days=1)
+        user_3.created_at = datetime.now(timezone.utc) - timedelta(hours=1)
+        user_1_admin.created_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -938,9 +938,9 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
     def test_it_gets_users_list_ordered_by_creation_date_descending(
         self, app: Flask, user_2: User, user_3: User, user_1_admin: User
     ) -> None:
-        user_2.created_at = datetime.utcnow() - timedelta(days=1)
-        user_3.created_at = datetime.utcnow() - timedelta(hours=1)
-        user_1_admin.created_at = datetime.utcnow()
+        user_2.created_at = datetime.now(timezone.utc) - timedelta(days=1)
+        user_3.created_at = datetime.now(timezone.utc) - timedelta(hours=1)
+        user_1_admin.created_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -1222,8 +1222,8 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         user_3: User,
     ) -> None:
         # default order is ascending
-        user_2.suspended_at = datetime.utcnow() - timedelta(days=2)
-        user_3.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc) - timedelta(days=2)
+        user_3.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -1258,8 +1258,8 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        user_2.suspended_at = datetime.utcnow() - timedelta(days=2)
-        user_3.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc) - timedelta(days=2)
+        user_3.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -1294,8 +1294,8 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         user_2: User,
         user_3: User,
     ) -> None:
-        user_2.suspended_at = datetime.utcnow() - timedelta(days=2)
-        user_3.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc) - timedelta(days=2)
+        user_3.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
@@ -1587,7 +1587,7 @@ class TestGetUsersAsModerator(ApiTestCaseMixin):
         input_params: str,
     ) -> None:
         user_2.hide_profile_in_users_directory = True
-        user_4.suspended_at = datetime.utcnow()
+        user_4.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
@@ -1674,7 +1674,7 @@ class TestGetUsersAsUser(ApiTestCaseMixin):
         input_params: str,
     ) -> None:
         user_2.hide_profile_in_users_directory = True
-        user_4.suspended_at = datetime.utcnow()
+        user_4.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -3526,7 +3526,7 @@ class TestGetUserLatestWorkouts(ApiTestCaseMixin, ReportMixin, CommentMixin):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -3662,7 +3662,7 @@ class TestGetUserLatestWorkouts(ApiTestCaseMixin, ReportMixin, CommentMixin):
         workout_cycling_user_1: Workout,
         workout_cycling_user_2: Workout,
     ) -> None:
-        workout_cycling_user_1.suspended_at = datetime.utcnow()
+        workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
