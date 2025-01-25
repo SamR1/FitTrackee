@@ -7,9 +7,9 @@ import pytz
 import requests
 from gpxpy.gpx import GPXTrackPoint
 
+from fittrackee.dates import get_datetime_in_utc
 from fittrackee.tests.mixins import BaseTestMixin
 from fittrackee.tests.utils import random_string
-from fittrackee.utils import get_datetime_in_utc
 from fittrackee.workouts.utils.weather.visual_crossing import VisualCrossing
 from fittrackee.workouts.utils.weather.weather_service import WeatherService
 

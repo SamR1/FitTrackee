@@ -11,7 +11,9 @@ from sqlalchemy.sql import select, text
 from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, db
-from fittrackee.utils import TZDateTime, aware_utc_now, encode_uuid
+from fittrackee.database import TZDateTime
+from fittrackee.dates import aware_utc_now
+from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import VisibilityLevel, can_view
 
 from .exceptions import CommentForbiddenException

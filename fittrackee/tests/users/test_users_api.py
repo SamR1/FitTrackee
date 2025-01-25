@@ -9,6 +9,7 @@ from flask import Flask
 from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
+from fittrackee.dates import get_readable_duration
 from fittrackee.equipments.models import Equipment
 from fittrackee.reports.models import Report, ReportAction
 from fittrackee.tests.comments.mixins import CommentMixin
@@ -21,7 +22,6 @@ from fittrackee.users.models import (
     UserSportPreferenceEquipment,
 )
 from fittrackee.users.roles import UserRole
-from fittrackee.utils import get_readable_duration
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 

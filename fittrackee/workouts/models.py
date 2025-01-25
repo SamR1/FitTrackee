@@ -15,9 +15,11 @@ from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, appLog, db
 from fittrackee.comments.models import Comment
+from fittrackee.database import TZDateTime
+from fittrackee.dates import aware_utc_now
 from fittrackee.equipments.models import WorkoutEquipment
 from fittrackee.files import get_absolute_file_path
-from fittrackee.utils import TZDateTime, aware_utc_now, encode_uuid
+from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import (
     VisibilityLevel,
     can_view,
@@ -31,9 +33,8 @@ if TYPE_CHECKING:
     from sqlalchemy.orm.attributes import AttributeEvent
 
     from fittrackee.equipments.models import Equipment
+    from fittrackee.reports.models import ReportAction
     from fittrackee.users.models import User
-
-    from ..reports.models import ReportAction
 
 
 EMPTY_MINIMAL_WORKOUT_VALUES: Dict = {

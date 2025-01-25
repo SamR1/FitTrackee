@@ -7,7 +7,9 @@ from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.sql.expression import text
 
 from fittrackee import db
-from fittrackee.utils import TZDateTime, aware_utc_now, encode_uuid
+from fittrackee.database import TZDateTime
+from fittrackee.dates import aware_utc_now
+from fittrackee.utils import encode_uuid
 
 BaseModel: DeclarativeMeta = db.Model
 

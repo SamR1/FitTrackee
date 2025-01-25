@@ -5,6 +5,7 @@ from flask import Blueprint, current_app, request
 from sqlalchemy import func
 
 from fittrackee import db
+from fittrackee.dates import get_datetime_in_utc
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     ForbiddenErrorResponse,
@@ -17,7 +18,6 @@ from fittrackee.responses import (
 from fittrackee.users.models import User
 from fittrackee.users.roles import UserRole
 
-from ..utils import get_datetime_in_utc
 from .models import Sport, Workout
 from .utils.uploads import get_upload_dir_size
 from .utils.workouts import get_average_speed, get_datetime_from_request_args

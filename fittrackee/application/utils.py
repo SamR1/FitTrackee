@@ -4,7 +4,7 @@ from flask import Flask
 
 from fittrackee import db
 
-from ..utils import get_datetime_in_utc
+from ..dates import get_datetime_in_utc
 from .models import AppConfig
 
 MAX_FILE_SIZE = 1 * 1024 * 1024  # 1MB

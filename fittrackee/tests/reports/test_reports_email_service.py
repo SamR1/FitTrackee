@@ -6,10 +6,10 @@ import pytest
 from flask import Flask
 
 from fittrackee import db
+from fittrackee.dates import get_date_string_for_user
 from fittrackee.reports.reports_email_service import ReportEmailService
 from fittrackee.reports.reports_service import ReportService
 from fittrackee.users.models import User
-from fittrackee.utils import get_date_string_for_user
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ReportMixin

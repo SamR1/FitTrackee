@@ -20,8 +20,10 @@ from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, appLog, bcrypt, db
 from fittrackee.comments.models import Comment
+from fittrackee.database import TZDateTime
+from fittrackee.dates import aware_utc_now
 from fittrackee.files import get_absolute_file_path
-from fittrackee.utils import TZDateTime, aware_utc_now, encode_uuid
+from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Workout
 

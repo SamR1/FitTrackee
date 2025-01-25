@@ -4,14 +4,11 @@ from typing import Union
 import pytest
 from flask import Flask
 
+from fittrackee.dates import get_date_string_for_user, get_readable_duration
 from fittrackee.files import display_readable_file_size
 from fittrackee.request import UserAgent
 from fittrackee.users.models import User
-from fittrackee.utils import (
-    clean_input,
-    get_date_string_for_user,
-    get_readable_duration,
-)
+from fittrackee.utils import clean_input
 
 
 class TestDisplayReadableFileSize:

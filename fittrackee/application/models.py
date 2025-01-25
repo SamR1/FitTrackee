@@ -9,8 +9,8 @@ from sqlalchemy.orm.session import Session
 from sqlalchemy.sql import text
 
 from fittrackee import BaseModel, db
+from fittrackee.database import TZDateTime
 from fittrackee.users.models import User
-from fittrackee.utils import TZDateTime
 
 
 class AppConfig(BaseModel):

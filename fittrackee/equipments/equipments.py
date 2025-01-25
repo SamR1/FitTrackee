@@ -20,10 +20,10 @@ from fittrackee.users.models import (
     UserSportPreferenceEquipment,
 )
 from fittrackee.utils import decode_short_id
-from fittrackee.workouts.models import Sport, Workout, WorkoutEquipment
+from fittrackee.workouts.models import Sport, Workout
 
 from .exceptions import InvalidEquipmentsException
-from .models import Equipment, EquipmentType
+from .models import Equipment, EquipmentType, WorkoutEquipment
 from .utils import SPORT_EQUIPMENT_TYPES
 
 equipments_blueprint = Blueprint('equipments', __name__)

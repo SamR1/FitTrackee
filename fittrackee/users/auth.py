@@ -18,6 +18,7 @@ from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
+from fittrackee.dates import get_datetime_in_utc, get_readable_duration
 from fittrackee.emails.tasks import (
     account_confirmation_email,
     email_updated_to_current_address,
@@ -32,6 +33,7 @@ from fittrackee.equipments.exceptions import (
 from fittrackee.equipments.utils import handle_equipments
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
+from fittrackee.reports.models import ReportAction, ReportActionAppeal
 from fittrackee.responses import (
     DataNotFoundErrorResponse,
     EquipmentInvalidPayloadErrorResponse,
@@ -47,8 +49,6 @@ from fittrackee.responses import (
 from fittrackee.users.users_service import UserManagerService
 from fittrackee.utils import (
     decode_short_id,
-    get_datetime_in_utc,
-    get_readable_duration,
 )
 from fittrackee.visibility_levels import (
     VisibilityLevel,
@@ -56,7 +56,6 @@ from fittrackee.visibility_levels import (
 )
 from fittrackee.workouts.models import Sport
 
-from ..reports.models import ReportAction, ReportActionAppeal
 from .exceptions import UserControlsException, UserCreationException
 from .models import (
     BlacklistedToken,

@@ -10,9 +10,11 @@ from sqlalchemy.orm import Mapper, Session
 from fittrackee import BaseModel, db
 from fittrackee.comments.exceptions import CommentForbiddenException
 from fittrackee.comments.models import Comment
+from fittrackee.database import TZDateTime
+from fittrackee.dates import aware_utc_now
 from fittrackee.users.models import Notification, User
 from fittrackee.users.roles import UserRole
-from fittrackee.utils import TZDateTime, aware_utc_now, encode_uuid
+from fittrackee.utils import encode_uuid
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Workout
 
