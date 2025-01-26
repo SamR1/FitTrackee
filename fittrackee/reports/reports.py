@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Tuple, Union
 
 from flask import Blueprint, current_app, request
 from sqlalchemy import asc, desc, exc, nullslast
@@ -40,6 +40,9 @@ from .reports_email_service import (
     ReportEmailService,
 )
 from .reports_service import ReportService
+
+if TYPE_CHECKING:
+    from sqlalchemy.sql.expression import UnaryExpression
 
 reports_blueprint = Blueprint('reports', __name__)
 
@@ -274,7 +277,7 @@ def get_reports(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         return InvalidPayloadErrorResponse("invalid 'order_by'")
     report_column = getattr(Report, column)
     order = params.get("order", "desc")
-    order_clauses = [
+    order_clauses: List["UnaryExpression"] = [
         asc(report_column) if order == "asc" else desc(report_column)
     ]
     if column == "updated_at":
@@ -288,28 +291,19 @@ def get_reports(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         else None
     )
 
+    filters = []
+    if object_type:
+        filters.append(Report.object_type == object_type)
+    if resolved == "true":
+        filters.append(Report.resolved == True)  # noqa
+    elif resolved == "false":
+        filters.append(Report.resolved == False)  # noqa
+    if auth_user.role < UserRole.MODERATOR.value:
+        filters.append(Report.reported_by == auth_user.id)
+    elif reporter and reporter_username:
+        filters.append(Report.reported_by == reporter.id)
     reports_pagination = (
-        Report.query.filter(
-            Report.object_type == object_type if object_type else True,
-            (
-                Report.resolved == True  # noqa
-                if resolved == "true"
-                else (
-                    Report.resolved == False  # noqa
-                    if resolved == "false"
-                    else True
-                )
-            ),
-            (
-                Report.reported_by == auth_user.id
-                if auth_user.role < UserRole.MODERATOR.value
-                else (
-                    Report.reported_by == reporter.id
-                    if reporter and reporter_username
-                    else True
-                )
-            ),
-        )
+        Report.query.filter(*filters)
         .order_by(*order_clauses)
         .paginate(page=page, per_page=REPORTS_PER_PAGE, error_out=False)
     )

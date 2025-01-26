@@ -13,6 +13,7 @@ from fittrackee.users.models import (
     UserSportPreference,
     UserSportPreferenceEquipment,
 )
+from fittrackee.users.roles import UserRole
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.models import Sport, Workout
 
@@ -319,7 +320,7 @@ class TestGetEquipment(ApiTestCaseMixin):
 
 class TestPostEquipment(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
-        self, app: Flask, equipment_bike_user_1: EquipmentType
+        self, app: Flask, equipment_bike_user_1: Equipment
     ) -> None:
         client = app.test_client()
 
@@ -637,7 +638,7 @@ class TestPostEquipment(ApiTestCaseMixin):
         ]
         sport_3_cycling_transport_pref = UserSportPreference.query.filter_by(
             user_id=user_1.id, sport_id=sport_3_cycling_transport.id
-        ).first()
+        ).one()
         assert sport_3_cycling_transport_pref.default_equipments.all() == [
             equipment
         ]
@@ -784,7 +785,7 @@ class TestPostEquipment(ApiTestCaseMixin):
 
 class TestPatchEquipment(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
-        self, app: Flask, equipment_bike_user_1: EquipmentType
+        self, app: Flask, equipment_bike_user_1: Equipment
     ) -> None:
         client = app.test_client()
 
@@ -858,7 +859,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         assert equipment["description"] == new_description
         updated_equipment = Equipment.query.filter_by(
             id=equipment_bike_user_1.id
-        ).first()
+        ).one()
         assert updated_equipment.label == label
         assert updated_equipment.description == new_description
 
@@ -1209,7 +1210,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         assert workout_running_user_1.equipments == [equipment_shoes_user_1]
 
     def test_it_returns_400_when_all_payload_is_missing(
-        self, app: Flask, user_1: User, equipment_shoes_user_1: EquipmentType
+        self, app: Flask, user_1: User, equipment_shoes_user_1: Equipment
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1224,7 +1225,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         self.assert_400(response, 'no request data was supplied')
 
     def test_it_returns_400_when_payload_is_invalid(
-        self, app: Flask, user_1: User, equipment_shoes_user_1: EquipmentType
+        self, app: Flask, user_1: User, equipment_shoes_user_1: Equipment
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1283,7 +1284,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         user_2: User,
-        equipment_shoes_user_1: EquipmentType,
+        equipment_shoes_user_1: Equipment,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
@@ -1348,7 +1349,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         ]
         sport_3_cycling_transport_pref = UserSportPreference.query.filter_by(
             user_id=user_1.id, sport_id=sport_3_cycling_transport.id
-        ).first()
+        ).one()
         assert sport_3_cycling_transport_pref.default_equipments.all() == [
             equipment_bike_user_1
         ]
@@ -1399,7 +1400,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         assert user_1_sport_1_preference.default_equipments.all() == []
         sport_3_cycling_transport_pref = UserSportPreference.query.filter_by(
             user_id=user_1.id, sport_id=sport_3_cycling_transport.id
-        ).first()
+        ).one()
         assert sport_3_cycling_transport_pref.default_equipments.all() == [
             equipment_bike_user_1
         ]
@@ -1618,7 +1619,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
 
 class TestRefreshEquipment(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
-        self, app: Flask, equipment_bike_user_1: EquipmentType
+        self, app: Flask, equipment_bike_user_1: Equipment
     ) -> None:
         client = app.test_client()
 
@@ -1755,16 +1756,16 @@ class TestRefreshEquipment(ApiTestCaseMixin):
 
         assert response.status_code == 200
         assert equipment_bike_user_1.total_distance == (
-            workout_cycling_user_1.distance
-            + another_workout_cycling_user_1.distance
+            workout_cycling_user_1.distance  # type: ignore
+            + another_workout_cycling_user_1.distance  # type: ignore
         )
         assert equipment_bike_user_1.total_duration == (
             workout_cycling_user_1.duration
             + another_workout_cycling_user_1.duration
         )
         assert equipment_bike_user_1.total_moving == (
-            workout_cycling_user_1.moving
-            + another_workout_cycling_user_1.moving
+            workout_cycling_user_1.moving  # type: ignore
+            + another_workout_cycling_user_1.moving  # type: ignore
         )
         assert equipment_bike_user_1.total_workouts == 2
         data = json.loads(response.data.decode())
@@ -1789,7 +1790,7 @@ class TestRefreshEquipment(ApiTestCaseMixin):
 
 class TestDeleteEquipment(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
-        self, app: Flask, equipment_bike_user_1: EquipmentType
+        self, app: Flask, equipment_bike_user_1: Equipment
     ) -> None:
         client = app.test_client()
 
@@ -1844,7 +1845,8 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         user_2: User,
         input_admin: bool,
     ) -> None:
-        user_1.admin = input_admin
+        if input_admin:
+            user_1.role = UserRole.ADMIN.value
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
@@ -1910,7 +1912,7 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         w = (
             db.session.query(Workout)
             .filter(Workout.id == workout_w_shoes_equipment.id)
-            .first()
+            .one()
         )
         assert w.equipments == []
 
@@ -1958,7 +1960,7 @@ class TestDeleteEquipment(ApiTestCaseMixin):
                 == user_1_sport_1_preference.user_id,
                 UserSportPreference.sport_id == 1,
             )
-            .first()
+            .one()
         )
         assert up.default_equipments.all() == []
 

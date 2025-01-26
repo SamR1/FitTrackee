@@ -15,37 +15,33 @@ class TestConfigModel:
         self, app: Flask, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         monkeypatch.setenv('WEATHER_API_PROVIDER', 'visualcrossing')
-        app_config = AppConfig.query.first()
-        app_config.admin_contact = 'admin@example.com'
+        config = AppConfig.query.one()
+        config.admin_contact = 'admin@example.com'
 
-        assert app_config.is_registration_enabled is True
+        assert config.is_registration_enabled is True
         assert (
-            app_config.map_attribution
-            == app.config['TILE_SERVER']['ATTRIBUTION']
+            config.map_attribution == app.config['TILE_SERVER']['ATTRIBUTION']
         )
 
-        serialized_app_config = app_config.serialize()
-        assert (
-            serialized_app_config['admin_contact'] == app_config.admin_contact
-        )
+        serialized_app_config = config.serialize()
+        assert serialized_app_config['admin_contact'] == config.admin_contact
         assert (
             serialized_app_config['gpx_limit_import']
-            == app_config.gpx_limit_import
+            == config.gpx_limit_import
         )
         assert serialized_app_config['is_email_sending_enabled'] is True
         assert serialized_app_config['is_registration_enabled'] is True
         assert (
             serialized_app_config['max_single_file_size']
-            == app_config.max_single_file_size
+            == config.max_single_file_size
         )
         assert (
             serialized_app_config['max_zip_file_size']
-            == app_config.max_zip_file_size
+            == config.max_zip_file_size
         )
-        assert serialized_app_config['max_users'] == app_config.max_users
+        assert serialized_app_config['max_users'] == config.max_users
         assert (
-            serialized_app_config['map_attribution']
-            == app_config.map_attribution
+            serialized_app_config['map_attribution'] == config.map_attribution
         )
         assert serialized_app_config['version'] == VERSION
         assert serialized_app_config['weather_provider'] == 'visualcrossing'
@@ -53,18 +49,18 @@ class TestConfigModel:
     def test_it_returns_registration_disabled_when_users_count_exceeds_limit(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        app_config = AppConfig.query.first()
-        app_config.max_users = 2
-        serialized_app_config = app_config.serialize()
+        config = AppConfig.query.one()
+        config.max_users = 2
+        serialized_app_config = config.serialize()
 
-        assert app_config.is_registration_enabled is False
+        assert config.is_registration_enabled is False
         assert serialized_app_config['is_registration_enabled'] is False
 
     def test_it_returns_email_sending_disabled_when_no_email_url_provided(
         self, app_wo_email_activation: Flask, user_1: User, user_2: User
     ) -> None:
-        app_config = AppConfig.query.first()
-        serialized_app_config = app_config.serialize()
+        config = AppConfig.query.one()
+        serialized_app_config = config.serialize()
 
         assert serialized_app_config['is_email_sending_enabled'] is False
 
@@ -85,8 +81,8 @@ class TestConfigModel:
         monkeypatch: pytest.MonkeyPatch,
     ) -> None:
         monkeypatch.setenv('WEATHER_API_PROVIDER', input_weather_api_provider)
-        app_config = AppConfig.query.first()
-        serialized_app_config = app_config.serialize()
+        config = AppConfig.query.one()
+        serialized_app_config = config.serialize()
 
         assert (
             serialized_app_config['weather_provider']
@@ -96,9 +92,9 @@ class TestConfigModel:
     def test_it_returns_only_privacy_policy_date_when_no_custom_privacy(
         self, app: Flask
     ) -> None:
-        app_config = AppConfig.query.first()
+        config = AppConfig.query.one()
 
-        serialized_app_config = app_config.serialize()
+        serialized_app_config = config.serialize()
 
         assert serialized_app_config["privacy_policy"] is None
         assert (
@@ -107,13 +103,13 @@ class TestConfigModel:
         )
 
     def test_it_returns_custom_privacy_policy(self, app: Flask) -> None:
-        app_config = AppConfig.query.first()
+        config = AppConfig.query.one()
         privacy_policy = random_string()
         privacy_policy_date = datetime.now(timezone.utc)
-        app_config.privacy_policy = privacy_policy
-        app_config.privacy_policy_date = privacy_policy_date
+        config.privacy_policy = privacy_policy
+        config.privacy_policy_date = privacy_policy_date
 
-        serialized_app_config = app_config.serialize()
+        serialized_app_config = config.serialize()
 
         assert serialized_app_config["privacy_policy"] == privacy_policy
         assert (
@@ -121,20 +117,20 @@ class TestConfigModel:
         )
 
     def test_it_returns_about(self, app: Flask) -> None:
-        app_config = AppConfig.query.first()
+        config = AppConfig.query.one()
         about = random_string()
-        app_config.about = about
+        config.about = about
 
-        serialized_app_config = app_config.serialize()
+        serialized_app_config = config.serialize()
 
         assert serialized_app_config["about"] == about
 
     def test_it_returns_stats_workouts_limit(self, app: Flask) -> None:
-        app_config = AppConfig.query.first()
+        config = AppConfig.query.one()
         stats_workouts_limit = random_int()
-        app_config.stats_workouts_limit = stats_workouts_limit
+        config.stats_workouts_limit = stats_workouts_limit
 
-        serialized_app_config = app_config.serialize()
+        serialized_app_config = config.serialize()
 
         assert (
             serialized_app_config["stats_workouts_limit"]

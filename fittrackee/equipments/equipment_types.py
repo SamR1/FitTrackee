@@ -144,14 +144,11 @@ def get_equipment_types(auth_user: User) -> Dict:
     :statuscode 403: ``you do not have permissions``
 
     """
+    filters = []
+    if not auth_user.has_admin_rights:
+        filters.append(EquipmentType.is_active == True)  # noqa
     equipment_types = (
-        EquipmentType.query.filter(
-            EquipmentType.is_active == True  # noqa
-            if not auth_user.has_admin_rights
-            else True
-        )
-        .order_by(EquipmentType.id)
-        .all()
+        EquipmentType.query.filter(*filters).order_by(EquipmentType.id).all()
     )
     equipment_types_data = []
     for equipment_type in equipment_types:

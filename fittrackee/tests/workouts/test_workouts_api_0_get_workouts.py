@@ -659,7 +659,7 @@ class TestGetWorkoutsWithOrderBy(WorkoutApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        seven_workouts_user_1[6].duration = seven_workouts_user_1[
+        seven_workouts_user_1[6].duration = seven_workouts_user_1[  # type: ignore  # noqa
             6
         ].moving + timedelta(seconds=1000)
         db.session.commit()

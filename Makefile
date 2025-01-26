@@ -268,9 +268,10 @@ test-client:
 test-client-watch:
 	cd fittrackee_client && $(NPM) test:unit watch
 
+MYPY_ARGS=fittrackee
 type-check:
 	echo 'Running mypy...'
-	$(MYPY) fittrackee
+	$(MYPY) $(MYPY_ARGS)
 
 type-check-all: type-check-client type-check
 

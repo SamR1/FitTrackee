@@ -22,7 +22,7 @@ class TestRecordModel:
             user_id=workout_cycling_user_1.user_id,
             sport_id=workout_cycling_user_1.sport_id,
             record_type=record_type,
-        ).first()
+        ).one()
 
         assert record_ld.user.username == user_1.username
         assert record_ld.sport_id == sport_1_cycling.id
@@ -58,10 +58,8 @@ class TestRecordModel:
             user_id=workout_cycling_user_1.user_id,
             sport_id=workout_cycling_user_1.sport_id,
             record_type='LD',
-        ).first()
+        ).one()
         record_ld.value = None
-
-        assert record_ld.value is None
 
         record_serialize = record_ld.serialize()
         assert record_serialize['value'] is None
@@ -77,7 +75,7 @@ class TestRecordModel:
             user_id=workout_cycling_user_1.user_id,
             sport_id=workout_cycling_user_1.sport_id,
             record_type='AS',
-        ).first()
+        ).one()
 
         assert isinstance(record_as.value, float)
         assert record_as.value == 10.0
@@ -98,7 +96,7 @@ class TestRecordModel:
             user_id=workout_cycling_user_1.user_id,
             sport_id=workout_cycling_user_1.sport_id,
             record_type='FD',
-        ).first()
+        ).one()
 
         assert isinstance(record_fd.value, float)
         assert record_fd.value == 10.0
@@ -119,7 +117,7 @@ class TestRecordModel:
             user_id=workout_cycling_user_1.user_id,
             sport_id=workout_cycling_user_1.sport_id,
             record_type='LD',
-        ).first()
+        ).one()
 
         assert isinstance(record_ld.value, datetime.timedelta)
         assert str(record_ld.value) == '1:00:00'
@@ -140,10 +138,9 @@ class TestRecordModel:
             user_id=workout_cycling_user_1.user_id,
             sport_id=workout_cycling_user_1.sport_id,
             record_type='LD',
-        ).first()
+        ).one()
         record_ld.value = datetime.timedelta(seconds=0)
 
-        assert isinstance(record_ld.value, datetime.timedelta)
         assert str(record_ld.value) == '0:00:00'
         assert record_ld._value == 0
 
@@ -162,7 +159,7 @@ class TestRecordModel:
             user_id=workout_cycling_user_1.user_id,
             sport_id=workout_cycling_user_1.sport_id,
             record_type='MS',
-        ).first()
+        ).one()
 
         assert isinstance(record_ms.value, float)
         assert record_ms.value == 10.0

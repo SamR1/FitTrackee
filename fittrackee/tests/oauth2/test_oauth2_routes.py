@@ -396,7 +396,7 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
 
         code = OAuth2AuthorizationCode.query.filter_by(
             client_id=oauth_client.client_id
-        ).first()
+        ).one()
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
@@ -493,7 +493,7 @@ class TestOAuthClientAuthorizationWithCodeChallenge(ApiTestCaseMixin):
 
         code = OAuth2AuthorizationCode.query.filter_by(
             client_id=oauth_client.client_id
-        ).first()
+        ).one()
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data['redirect_url'] == (
@@ -843,7 +843,7 @@ class TestOAuthIssueRefreshToken(OAuthIssueTokenTestCase):
 
         revoked_token = OAuth2Token.query.filter_by(
             access_token=token['access_token']
-        ).first()
+        ).one()
         assert revoked_token.is_revoked()
 
 
@@ -871,7 +871,7 @@ class TestOAuthTokenRevocation(ApiTestCaseMixin):
         assert response.status_code == 200
         token = OAuth2Token.query.filter_by(
             client_id=oauth_client.client_id
-        ).first()
+        ).one()
         assert token.access_token_revoked_at is not None
 
     def test_it_revokes_user_token_when_user_is_suspended(
@@ -898,7 +898,7 @@ class TestOAuthTokenRevocation(ApiTestCaseMixin):
         assert response.status_code == 200
         token = OAuth2Token.query.filter_by(
             client_id=oauth_client.client_id
-        ).first()
+        ).one()
         assert token.access_token_revoked_at is not None
 
 
@@ -1424,8 +1424,7 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
         )
 
         self.assert_404_with_message(response, 'OAuth2 client not found')
-        client = OAuth2Client.query.filter_by(id=client_id).first()
-        assert client is not None
+        assert OAuth2Client.query.filter_by(id=client_id).first() is not None
 
 
 class TestOAuthRevokeClientToken(ApiTestCaseMixin):

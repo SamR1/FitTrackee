@@ -318,7 +318,7 @@ class TestUserRegistration(ApiTestCaseMixin):
             content_type='application/json',
         )
 
-        new_user = User.query.filter_by(username=username).first()
+        new_user = User.query.filter_by(username=username).one()
         assert new_user.role == UserRole.USER.value
 
     def test_it_creates_user_with_default_date_format(
@@ -340,7 +340,7 @@ class TestUserRegistration(ApiTestCaseMixin):
             content_type='application/json',
         )
 
-        new_user = User.query.filter_by(username=username).first()
+        new_user = User.query.filter_by(username=username).one()
         assert new_user.date_format == 'MM/dd/yyyy'
 
     @pytest.mark.parametrize(
@@ -373,7 +373,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                 content_type='application/json',
             )
 
-        new_user = User.query.filter_by(username=username).first()
+        new_user = User.query.filter_by(username=username).one()
         assert new_user.email == email
         assert new_user.password is not None
         assert new_user.is_active is False
@@ -530,12 +530,12 @@ class TestUserRegistration(ApiTestCaseMixin):
             content_type='application/json',
         )
 
-        new_user = User.query.filter_by(email=email).first()
-        notification = Notification.query.filter_by(
+        new_user = User.query.filter_by(email=email).one()
+        notifications = Notification.query.filter_by(
             event_type='account_creation', event_object_id=new_user.id
         ).all()
-        assert len(notification) == 2
-        for notification in notification:
+        assert len(notifications) == 2
+        for notification in notifications:
             assert notification.created_at == new_user.created_at
             assert notification.from_user_id == new_user.id
             assert notification.event_object_id == new_user.id
@@ -568,7 +568,7 @@ class TestUserRegistration(ApiTestCaseMixin):
             content_type='application/json',
         )
 
-        new_user = User.query.filter_by(email=email).first()
+        new_user = User.query.filter_by(email=email).one()
         notifications = Notification.query.filter_by(
             event_type='account_creation', event_object_id=new_user.id
         ).all()
@@ -2512,6 +2512,7 @@ class TestUserPicture(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert data['message'] == 'user picture updated'
         assert response.status_code == 200
+        assert user_1.picture is not None
         assert 'avatar.png' in user_1.picture
 
         response = client.post(
@@ -2527,6 +2528,7 @@ class TestUserPicture(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert data['message'] == 'user picture updated'
         assert response.status_code == 200
+        assert user_1.picture is not None
         assert 'avatar.png' not in user_1.picture
         assert 'avatar2.png' in user_1.picture
 
@@ -2550,6 +2552,7 @@ class TestUserPicture(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert data['message'] == 'user picture updated'
         assert response.status_code == 200
+        assert suspended_user.picture is not None
         assert 'avatar.png' in suspended_user.picture
 
         response = client.post(
@@ -2565,6 +2568,7 @@ class TestUserPicture(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert data['message'] == 'user picture updated'
         assert response.status_code == 200
+        assert suspended_user.picture is not None
         assert 'avatar.png' not in suspended_user.picture
         assert 'avatar2.png' in suspended_user.picture
 
@@ -2616,6 +2620,7 @@ class TestUserDeletePicture(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert data['message'] == 'user picture updated'
         assert response.status_code == 200
+        assert user_1.picture is not None
         assert 'avatar.png' in user_1.picture
 
         response = client.delete(
@@ -2646,6 +2651,7 @@ class TestUserDeletePicture(ApiTestCaseMixin):
         assert data['status'] == 'success'
         assert data['message'] == 'user picture updated'
         assert response.status_code == 200
+        assert suspended_user.picture is not None
         assert 'avatar.png' in suspended_user.picture
 
         response = client.delete(
@@ -3439,7 +3445,7 @@ class TestUserLogout(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        token = BlacklistedToken.query.filter_by(token=auth_token).first()
+        token = BlacklistedToken.query.filter_by(token=auth_token).one()
         assert token.blacklisted_on is not None
 
     def test_it_returns_error_if_token_is_already_blacklisted(
@@ -3577,7 +3583,7 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         data_export_request = UserDataExport.query.filter_by(
             user_id=user_1.id
-        ).first()
+        ).one()
         assert data["status"] == "success"
         assert data["request"] == jsonify_dict(data_export_request.serialize())
 
@@ -3652,7 +3658,7 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         data_export_request = UserDataExport.query.filter_by(
             user_id=user_1.id
-        ).first()
+        ).one()
         assert data_export_request.id != completed_export_request.id
         assert data["status"] == "success"
         assert data["request"] == jsonify_dict(data_export_request.serialize())
@@ -3675,7 +3681,7 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
 
         data_export_request = UserDataExport.query.filter_by(
             user_id=user_1.id
-        ).first()
+        ).one()
         export_data_mock.send.assert_called_once_with(
             export_request_id=data_export_request.id
         )
@@ -3733,7 +3739,7 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
 
         data_export_request = UserDataExport.query.filter_by(
             user_id=user_1.id
-        ).first()
+        ).one()
         export_data_mock.send.assert_called_once_with(
             export_request_id=data_export_request.id
         )
@@ -3758,7 +3764,7 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         data_export_request = UserDataExport.query.filter_by(
             user_id=suspended_user.id
-        ).first()
+        ).one()
         assert data["status"] == "success"
         assert data["request"] == jsonify_dict(data_export_request.serialize())
 
@@ -4338,9 +4344,7 @@ class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
 
         assert response.status_code == 201
         assert response.json == {"status": "success"}
-        appeal = ReportActionAppeal.query.filter_by(
-            action_id=action.id
-        ).first()
+        appeal = ReportActionAppeal.query.filter_by(action_id=action.id).one()
         assert appeal.moderator_id is None
         assert appeal.approved is None
         assert appeal.created_at == now
@@ -4681,9 +4685,7 @@ class TestPostUserSanctionAppeal(CommentMixin, UserSuspensionTestCase):
 
         assert response.status_code == 201
         assert response.json == {"status": "success"}
-        appeal = ReportActionAppeal.query.filter_by(
-            action_id=action.id
-        ).first()
+        appeal = ReportActionAppeal.query.filter_by(action_id=action.id).one()
         assert appeal.moderator_id is None
         assert appeal.approved is None
         assert appeal.created_at == now

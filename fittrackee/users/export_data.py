@@ -146,6 +146,10 @@ def export_user_data(export_request_id: int) -> None:
         return
 
     user = User.query.filter_by(id=export_request.user_id).first()
+    if not user:
+        appLog.error(f"User (id: {export_request.user_id}) not found")
+        return
+
     exporter = UserDataExporter(user)
     archive_file_path, archive_file_name = exporter.generate_archive()
 

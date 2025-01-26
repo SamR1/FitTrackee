@@ -18,7 +18,7 @@ class TestGetConfig(ApiTestCaseMixin):
     def test_it_gets_application_config_for_unauthenticated_user(
         self, app: Flask
     ) -> None:
-        app_config = AppConfig.query.first()
+        config = AppConfig.query.one()
         client = app.test_client()
 
         response = client.get('/api/config')
@@ -26,12 +26,12 @@ class TestGetConfig(ApiTestCaseMixin):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
-        assert data['data'] == jsonify_dict(app_config.serialize())
+        assert data['data'] == jsonify_dict(config.serialize())
 
     def test_it_gets_application_config(
         self, app: Flask, user_1: User
     ) -> None:
-        app_config = AppConfig.query.first()
+        config = AppConfig.query.one()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -44,12 +44,12 @@ class TestGetConfig(ApiTestCaseMixin):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
-        assert data['data'] == jsonify_dict(app_config.serialize())
+        assert data['data'] == jsonify_dict(config.serialize())
 
     def test_it_gets_application_config_when_user_is_suspended(
         self, app: Flask, suspended_user: User
     ) -> None:
-        app_config = AppConfig.query.first()
+        config = AppConfig.query.one()
         client, auth_token = self.get_test_client_and_auth_token(
             app, suspended_user.email
         )
@@ -62,7 +62,7 @@ class TestGetConfig(ApiTestCaseMixin):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert 'success' in data['status']
-        assert data['data'] == jsonify_dict(app_config.serialize())
+        assert data['data'] == jsonify_dict(config.serialize())
 
     def test_it_returns_error_if_application_has_no_config(
         self, app_no_config: Flask, user_1_admin: User
@@ -361,7 +361,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
     @pytest.mark.parametrize(
         'input_description,input_email', [('input string', ''), ('None', None)]
     )
-    def test_it_empties_administator_contact(
+    def test_it_empties_administrator_contact(
         self,
         app: Flask,
         user_1_admin: User,
@@ -371,8 +371,8 @@ class TestUpdateConfig(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
-        app_config = AppConfig.query.first()
-        app_config.admin_contact = self.random_email()
+        config = AppConfig.query.one()
+        config.admin_contact = self.random_email()
 
         response = client.patch(
             '/api/config',
@@ -415,8 +415,8 @@ class TestUpdateConfig(ApiTestCaseMixin):
     def test_it_empties_about_text_when_text_is_an_empty_string(
         self, app: Flask, user_1_admin: User
     ) -> None:
-        app_config = AppConfig.query.first()
-        app_config.about = self.random_string()
+        config = AppConfig.query.one()
+        config.about = self.random_string()
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -468,9 +468,9 @@ class TestUpdateConfig(ApiTestCaseMixin):
         user_1_admin: User,
         input_privacy_policy: Optional[str],
     ) -> None:
-        app_config = AppConfig.query.first()
-        app_config.privacy_policy = self.random_string()
-        app_config.privacy_policy_date = datetime.now(timezone.utc)
+        config = AppConfig.query.one()
+        config.privacy_policy = self.random_string()
+        config.privacy_policy_date = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email

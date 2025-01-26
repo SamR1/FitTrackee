@@ -130,12 +130,12 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         assert serialized_workout == {
             'analysis_visibility': workout.analysis_visibility.value,
             'ascent': None,
-            'ave_speed': float(workout.ave_speed),
+            'ave_speed': workout.ave_speed,  # type: ignore  # noqa
             'bounds': [],
             'creation_date': workout.creation_date,
             'descent': None,
             'description': None,
-            'distance': float(workout.distance),
+            'distance': workout.distance,  # type: ignore  # noqa
             'duration': str(workout.duration),
             'id': workout.short_id,
             'equipments': [],
@@ -144,7 +144,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'map': None,
             'map_visibility': workout.map_visibility.value,
             'max_alt': None,
-            'max_speed': float(workout.max_speed),
+            'max_speed': workout.max_speed,  # type: ignore  # noqa
             'min_alt': None,
             'modification_date': None,
             'moving': str(workout.moving),
@@ -182,13 +182,13 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
 
         assert serialized_workout == {
             'analysis_visibility': workout.analysis_visibility.value,
-            'ascent': float(workout.ascent),
-            'ave_speed': float(workout.ave_speed),
+            'ascent': workout.ascent,
+            'ave_speed': workout.ave_speed,
             'bounds': [],
             'creation_date': workout.creation_date,
-            'descent': float(workout.descent),
+            'descent': workout.descent,
             'description': None,
-            'distance': float(workout.distance),
+            'distance': workout.distance,
             'duration': str(workout.duration),
             'id': workout.short_id,
             'equipments': [],
@@ -197,7 +197,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'map': None,
             'map_visibility': workout.map_visibility.value,
             'max_alt': None,
-            'max_speed': float(workout.max_speed),
+            'max_speed': workout.max_speed,
             'min_alt': None,
             'modification_date': workout.modification_date,
             'moving': str(workout.moving),
@@ -234,13 +234,13 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
 
         assert serialized_workout == {
             'analysis_visibility': workout.analysis_visibility.value,
-            'ascent': float(workout.ascent),
-            'ave_speed': float(workout.ave_speed),
+            'ascent': workout.ascent,
+            'ave_speed': workout.ave_speed,
             'bounds': workout.bounds,
             'creation_date': workout.creation_date,
-            'descent': float(workout.descent),
+            'descent': workout.descent,
             'description': None,
-            'distance': float(workout.distance),
+            'distance': workout.distance,
             'duration': str(workout.duration),
             'id': workout.short_id,
             'equipments': [],
@@ -248,9 +248,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'likes_count': 0,
             'map': None,
             'map_visibility': workout.map_visibility.value,
-            'max_alt': float(workout.max_alt),
-            'max_speed': float(workout.max_speed),
-            'min_alt': float(workout.min_alt),
+            'max_alt': workout.max_alt,
+            'max_speed': workout.max_speed,
+            'min_alt': workout.min_alt,
             'modification_date': workout.modification_date,
             'moving': str(workout.moving),
             'next_workout': None,
@@ -382,12 +382,12 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 workout_cycling_user_1.analysis_visibility.value
             ),
             'ascent': None,
-            'ave_speed': float(workout_cycling_user_1.ave_speed),
+            'ave_speed': workout_cycling_user_1.ave_speed,
             'bounds': [],
             'creation_date': workout_cycling_user_1.creation_date,
             'descent': None,
             'description': None,
-            'distance': float(workout_cycling_user_1.distance),
+            'distance': workout_cycling_user_1.distance,
             'duration': str(workout_cycling_user_1.duration),
             'id': workout_cycling_user_1.short_id,
             'equipments': [],
@@ -396,7 +396,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'map': None,
             'map_visibility': workout_cycling_user_1.map_visibility.value,
             'max_alt': None,
-            'max_speed': float(workout_cycling_user_1.max_speed),
+            'max_speed': workout_cycling_user_1.max_speed,
             'min_alt': None,
             'modification_date': workout_cycling_user_1.modification_date,
             'moving': str(workout_cycling_user_1.moving),
@@ -440,11 +440,11 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 workout_cycling_user_1.analysis_visibility.value
             ),
             'ascent': None,
-            'ave_speed': float(workout_cycling_user_1.ave_speed),
+            'ave_speed': workout_cycling_user_1.ave_speed,
             'bounds': [],
             'creation_date': None,
             'descent': None,
-            'distance': float(workout_cycling_user_1.distance),
+            'distance': workout_cycling_user_1.distance,
             'duration': str(workout_cycling_user_1.duration),
             'id': workout_cycling_user_1.short_id,
             'equipments': [],
@@ -453,7 +453,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'map': None,
             'map_visibility': workout_cycling_user_1.map_visibility.value,
             'max_alt': None,
-            'max_speed': float(workout_cycling_user_1.max_speed),
+            'max_speed': workout_cycling_user_1.max_speed,
             'min_alt': None,
             'modification_date': workout_cycling_user_1.modification_date,
             'moving': str(workout_cycling_user_1.moving),
@@ -497,12 +497,12 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'analysis_visibility': (
                 workout_cycling_user_1.analysis_visibility.value
             ),
-            'ascent': float(workout_cycling_user_1.ascent),
-            'ave_speed': float(workout_cycling_user_1.ave_speed),
+            'ascent': workout_cycling_user_1.ascent,
+            'ave_speed': workout_cycling_user_1.ave_speed,
             'bounds': [],
             'creation_date': None,
-            'descent': float(workout_cycling_user_1.descent),
-            'distance': float(workout_cycling_user_1.distance),
+            'descent': workout_cycling_user_1.descent,
+            'distance': workout_cycling_user_1.distance,
             'duration': str(workout_cycling_user_1.duration),
             'id': workout_cycling_user_1.short_id,
             'equipments': [],
@@ -510,9 +510,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'likes_count': 0,
             'map': None,
             'map_visibility': workout_cycling_user_1.map_visibility.value,
-            'max_alt': float(workout_cycling_user_1.max_alt),
-            'max_speed': float(workout_cycling_user_1.max_speed),
-            'min_alt': float(workout_cycling_user_1.min_alt),
+            'max_alt': workout_cycling_user_1.max_alt,
+            'max_speed': workout_cycling_user_1.max_speed,
+            'min_alt': workout_cycling_user_1.min_alt,
             'modification_date': None,
             'moving': str(workout_cycling_user_1.moving),
             'next_workout': None,
@@ -558,11 +558,11 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 workout_cycling_user_1.analysis_visibility.value
             ),
             'ascent': None,
-            'ave_speed': float(workout_cycling_user_1.ave_speed),
+            'ave_speed': workout_cycling_user_1.ave_speed,
             'bounds': [],
             'creation_date': None,
             'descent': None,
-            'distance': float(workout_cycling_user_1.distance),
+            'distance': workout_cycling_user_1.distance,
             'duration': str(workout_cycling_user_1.duration),
             'id': workout_cycling_user_1.short_id,
             'equipments': [],
@@ -571,7 +571,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'map': None,
             'map_visibility': workout_cycling_user_1.map_visibility.value,
             'max_alt': None,
-            'max_speed': float(workout_cycling_user_1.max_speed),
+            'max_speed': workout_cycling_user_1.max_speed,
             'min_alt': None,
             'modification_date': None,
             'moving': str(workout_cycling_user_1.moving),
@@ -928,13 +928,13 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             serialized_workout['analysis_visibility']
             == input_analysis_visibility
         )
-        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['ascent'] == workout.ascent
         assert serialized_workout['bounds'] == []
-        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['descent'] == workout.descent
         assert serialized_workout['map'] is None
         assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
-        assert serialized_workout['max_alt'] == float(workout.max_alt)
-        assert serialized_workout['min_alt'] == float(workout.min_alt)
+        assert serialized_workout['max_alt'] == workout.max_alt
+        assert serialized_workout['min_alt'] == workout.min_alt
         assert serialized_workout['segments'] == [
             workout_cycling_user_1_segment.serialize()
         ]
@@ -980,9 +980,9 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             serialized_workout['analysis_visibility']
             == input_analysis_visibility
         )
-        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['ascent'] == workout.ascent
         assert serialized_workout['bounds'] == []
-        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['descent'] == workout.descent
         assert serialized_workout['map'] is None
         assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
         assert serialized_workout['max_alt'] is None
@@ -1037,13 +1037,13 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             serialized_workout['analysis_visibility']
             == input_analysis_visibility
         )
-        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['ascent'] == workout.ascent
         assert serialized_workout['bounds'] == workout.bounds
-        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['descent'] == workout.descent
         assert serialized_workout['map'] == workout.map
         assert serialized_workout['map_visibility'] == input_map_visibility
-        assert serialized_workout['max_alt'] == float(workout.max_alt)
-        assert serialized_workout['min_alt'] == float(workout.min_alt)
+        assert serialized_workout['max_alt'] == workout.max_alt
+        assert serialized_workout['min_alt'] == workout.min_alt
         assert serialized_workout['segments'] == [
             workout_cycling_user_1_segment.serialize()
         ]
@@ -1089,13 +1089,13 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             serialized_workout['analysis_visibility']
             == input_analysis_visibility
         )
-        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['ascent'] == workout.ascent
         assert serialized_workout['bounds'] == []
-        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['descent'] == workout.descent
         assert serialized_workout['map'] is None
         assert serialized_workout['map_visibility'] == input_map_visibility
-        assert serialized_workout['max_alt'] == float(workout.max_alt)
-        assert serialized_workout['min_alt'] == float(workout.min_alt)
+        assert serialized_workout['max_alt'] == workout.max_alt
+        assert serialized_workout['min_alt'] == workout.min_alt
         assert serialized_workout['segments'] == [
             workout_cycling_user_1_segment.serialize()
         ]
@@ -1297,11 +1297,11 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
                 workout_cycling_user_1.analysis_visibility.value
             ),
             'ascent': None,
-            'ave_speed': float(workout_cycling_user_1.ave_speed),
+            'ave_speed': workout_cycling_user_1.ave_speed,
             'bounds': [],
             'creation_date': None,
             'descent': None,
-            'distance': float(workout_cycling_user_1.distance),
+            'distance': workout_cycling_user_1.distance,
             'duration': str(workout_cycling_user_1.duration),
             'id': workout_cycling_user_1.short_id,
             'equipments': [],
@@ -1310,7 +1310,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             'map': None,
             'map_visibility': workout_cycling_user_1.map_visibility.value,
             'max_alt': None,
-            'max_speed': float(workout_cycling_user_1.max_speed),
+            'max_speed': workout_cycling_user_1.max_speed,
             'min_alt': None,
             'modification_date': None,
             'moving': str(workout_cycling_user_1.moving),
@@ -1396,13 +1396,13 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         assert (
             serialized_workout['analysis_visibility'] == VisibilityLevel.PUBLIC
         )
-        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['ascent'] == workout.ascent
         assert serialized_workout['bounds'] == []
-        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['descent'] == workout.descent
         assert serialized_workout['map'] is None
         assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
-        assert serialized_workout['max_alt'] == float(workout.max_alt)
-        assert serialized_workout['min_alt'] == float(workout.min_alt)
+        assert serialized_workout['max_alt'] == workout.max_alt
+        assert serialized_workout['min_alt'] == workout.min_alt
         assert serialized_workout['segments'] == [
             workout_cycling_user_1_segment.serialize()
         ]
@@ -1449,9 +1449,9 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             serialized_workout['analysis_visibility']
             == VisibilityLevel.PRIVATE
         )
-        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['ascent'] == workout.ascent
         assert serialized_workout['bounds'] == []
-        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['descent'] == workout.descent
         assert serialized_workout['map'] is None
         assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
         assert serialized_workout['max_alt'] is None
@@ -1481,13 +1481,13 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
 
         serialized_workout = workout.serialize(user=user_2, light=False)
 
-        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['ascent'] == workout.ascent
         assert serialized_workout['bounds'] == workout.bounds
-        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['descent'] == workout.descent
         assert serialized_workout['map'] == workout.map
         assert serialized_workout['map_visibility'] == VisibilityLevel.PUBLIC
-        assert serialized_workout['max_alt'] == float(workout.max_alt)
-        assert serialized_workout['min_alt'] == float(workout.min_alt)
+        assert serialized_workout['max_alt'] == workout.max_alt
+        assert serialized_workout['min_alt'] == workout.min_alt
         assert serialized_workout['segments'] == []
         assert serialized_workout['with_analysis'] is True
         assert serialized_workout['with_gpx'] is True
@@ -1529,13 +1529,13 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             serialized_workout['analysis_visibility']
             == input_analysis_visibility
         )
-        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['ascent'] == workout.ascent
         assert serialized_workout['bounds'] == []
-        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['descent'] == workout.descent
         assert serialized_workout['map'] is None
         assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
-        assert serialized_workout['max_alt'] == float(workout.max_alt)
-        assert serialized_workout['min_alt'] == float(workout.min_alt)
+        assert serialized_workout['max_alt'] == workout.max_alt
+        assert serialized_workout['min_alt'] == workout.min_alt
         assert serialized_workout['segments'] == []
         assert serialized_workout['with_analysis'] is True
         assert serialized_workout['with_gpx'] is False
@@ -1721,11 +1721,11 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
                 workout_cycling_user_1.analysis_visibility.value
             ),
             'ascent': None,
-            'ave_speed': float(workout_cycling_user_1.ave_speed),
+            'ave_speed': workout_cycling_user_1.ave_speed,
             'bounds': [],
             'creation_date': None,
             'descent': None,
-            'distance': float(workout_cycling_user_1.distance),
+            'distance': workout_cycling_user_1.distance,
             'duration': str(workout_cycling_user_1.duration),
             'id': workout_cycling_user_1.short_id,
             'equipments': [],
@@ -1734,7 +1734,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             'map': None,
             'map_visibility': workout_cycling_user_1.map_visibility.value,
             'max_alt': None,
-            'max_speed': float(workout_cycling_user_1.max_speed),
+            'max_speed': workout_cycling_user_1.max_speed,
             'min_alt': None,
             'modification_date': None,
             'moving': str(workout_cycling_user_1.moving),
@@ -1813,13 +1813,13 @@ class TestWorkoutModelAsUnauthenticatedUser(
 
         serialized_workout = workout.serialize(light=False)
 
-        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['ascent'] == workout.ascent
         assert serialized_workout['bounds'] == []
-        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['descent'] == workout.descent
         assert serialized_workout['map'] is None
         assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
-        assert serialized_workout['max_alt'] == float(workout.max_alt)
-        assert serialized_workout['min_alt'] == float(workout.min_alt)
+        assert serialized_workout['max_alt'] == workout.max_alt
+        assert serialized_workout['min_alt'] == workout.min_alt
         assert serialized_workout['segments'] == [
             workout_cycling_user_1_segment.serialize()
         ]
@@ -1861,9 +1861,9 @@ class TestWorkoutModelAsUnauthenticatedUser(
 
         serialized_workout = workout.serialize(light=False)
 
-        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['ascent'] == workout.ascent
         assert serialized_workout['bounds'] == []
-        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['descent'] == workout.descent
         assert serialized_workout['map'] is None
         assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
         assert serialized_workout['max_alt'] is None
@@ -1897,11 +1897,11 @@ class TestWorkoutModelAsUnauthenticatedUser(
 
         serialized_workout = workout.serialize(light=False)
 
-        assert serialized_workout['ascent'] == float(workout.ascent)
-        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['ascent'] == workout.ascent
+        assert serialized_workout['descent'] == workout.descent
         assert serialized_workout['map'] == workout.map
-        assert serialized_workout['max_alt'] == float(workout.max_alt)
-        assert serialized_workout['min_alt'] == float(workout.min_alt)
+        assert serialized_workout['max_alt'] == workout.max_alt
+        assert serialized_workout['min_alt'] == workout.min_alt
         assert serialized_workout['bounds'] == workout.bounds
         assert serialized_workout['with_analysis'] is True
         assert serialized_workout['with_gpx'] is True
@@ -1946,13 +1946,13 @@ class TestWorkoutModelAsUnauthenticatedUser(
 
         serialized_workout = workout.serialize(light=False)
 
-        assert serialized_workout['ascent'] == float(workout.ascent)
+        assert serialized_workout['ascent'] == workout.ascent
         assert serialized_workout['bounds'] == []
-        assert serialized_workout['descent'] == float(workout.descent)
+        assert serialized_workout['descent'] == workout.descent
         assert serialized_workout['map'] is None
         assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
-        assert serialized_workout['max_alt'] == float(workout.max_alt)
-        assert serialized_workout['min_alt'] == float(workout.min_alt)
+        assert serialized_workout['max_alt'] == workout.max_alt
+        assert serialized_workout['min_alt'] == workout.min_alt
         assert serialized_workout['segments'] == [
             workout_cycling_user_1_segment.serialize()
         ]
@@ -2090,11 +2090,11 @@ class TestWorkoutModelAsUnauthenticatedUser(
                 workout_cycling_user_1.analysis_visibility.value
             ),
             'ascent': None,
-            'ave_speed': float(workout_cycling_user_1.ave_speed),
+            'ave_speed': workout_cycling_user_1.ave_speed,
             'bounds': [],
             'creation_date': None,
             'descent': None,
-            'distance': float(workout_cycling_user_1.distance),
+            'distance': workout_cycling_user_1.distance,
             'duration': str(workout_cycling_user_1.duration),
             'id': workout_cycling_user_1.short_id,
             'equipments': [],
@@ -2103,7 +2103,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
             'map': None,
             'map_visibility': workout_cycling_user_1.map_visibility.value,
             'max_alt': None,
-            'max_speed': float(workout_cycling_user_1.max_speed),
+            'max_speed': workout_cycling_user_1.max_speed,
             'min_alt': None,
             'modification_date': None,
             'moving': str(workout_cycling_user_1.moving),
@@ -2181,12 +2181,12 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
                 workout_cycling_user_2.analysis_visibility.value
             ),
             'ascent': None,
-            'ave_speed': float(workout_cycling_user_2.ave_speed),
+            'ave_speed': workout_cycling_user_2.ave_speed,
             'bounds': [],
             'creation_date': workout_cycling_user_2.creation_date,
             'descent': None,
             'description': None,
-            'distance': float(workout_cycling_user_2.distance),
+            'distance': workout_cycling_user_2.distance,
             'duration': str(workout_cycling_user_2.duration),
             'id': workout_cycling_user_2.short_id,
             'equipments': [],
@@ -2195,7 +2195,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             'map': None,
             'map_visibility': workout_cycling_user_2.map_visibility.value,
             'max_alt': None,
-            'max_speed': float(workout_cycling_user_2.max_speed),
+            'max_speed': workout_cycling_user_2.max_speed,
             'min_alt': None,
             'modification_date': workout_cycling_user_2.modification_date,
             'moving': str(workout_cycling_user_2.moving),
@@ -2253,13 +2253,13 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             'analysis_visibility': (
                 workout_cycling_user_2.analysis_visibility.value
             ),
-            'ascent': float(workout_cycling_user_2.ascent),
-            'ave_speed': float(workout_cycling_user_2.ave_speed),
+            'ascent': workout_cycling_user_2.ascent,
+            'ave_speed': workout_cycling_user_2.ave_speed,
             'bounds': workout_cycling_user_2.bounds,
             'creation_date': workout_cycling_user_2.creation_date,
-            'descent': float(workout_cycling_user_2.descent),
+            'descent': workout_cycling_user_2.descent,
             'description': None,
-            'distance': float(workout_cycling_user_2.distance),
+            'distance': workout_cycling_user_2.distance,
             'duration': str(workout_cycling_user_2.duration),
             'id': workout_cycling_user_2.short_id,
             'equipments': [],
@@ -2267,9 +2267,9 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             'likes_count': 0,
             'map': map_id,
             'map_visibility': workout_cycling_user_2.map_visibility.value,
-            'max_alt': float(workout_cycling_user_2.max_alt),
-            'max_speed': float(workout_cycling_user_2.max_speed),
-            'min_alt': float(workout_cycling_user_2.min_alt),
+            'max_alt': workout_cycling_user_2.max_alt,
+            'max_speed': workout_cycling_user_2.max_speed,
+            'min_alt': workout_cycling_user_2.min_alt,
             'modification_date': workout_cycling_user_2.modification_date,
             'moving': str(workout_cycling_user_2.moving),
             'next_workout': None,
@@ -2373,11 +2373,11 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
                 workout_cycling_user_2.analysis_visibility.value
             ),
             'ascent': None,
-            'ave_speed': float(workout_cycling_user_2.ave_speed),
+            'ave_speed': workout_cycling_user_2.ave_speed,
             'bounds': [],
             'creation_date': None,
             'descent': None,
-            'distance': float(workout_cycling_user_2.distance),
+            'distance': workout_cycling_user_2.distance,
             'duration': str(workout_cycling_user_2.duration),
             'id': workout_cycling_user_2.short_id,
             'equipments': [],
@@ -2386,7 +2386,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             'map': None,
             'map_visibility': workout_cycling_user_2.map_visibility.value,
             'max_alt': None,
-            'max_speed': float(workout_cycling_user_2.max_speed),
+            'max_speed': workout_cycling_user_2.max_speed,
             'min_alt': None,
             'modification_date': None,
             'moving': str(workout_cycling_user_2.moving),
@@ -2445,12 +2445,12 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
                 workout_cycling_user_2.analysis_visibility.value
             ),
             'ascent': None,
-            'ave_speed': float(workout_cycling_user_2.ave_speed),
+            'ave_speed': workout_cycling_user_2.ave_speed,
             'bounds': [],
             'creation_date': workout_cycling_user_2.creation_date,
             'descent': None,
             'description': None,
-            'distance': float(workout_cycling_user_2.distance),
+            'distance': workout_cycling_user_2.distance,
             'duration': str(workout_cycling_user_2.duration),
             'id': workout_cycling_user_2.short_id,
             'equipments': [],
@@ -2459,7 +2459,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             'map': None,
             'map_visibility': workout_cycling_user_2.map_visibility.value,
             'max_alt': None,
-            'max_speed': float(workout_cycling_user_2.max_speed),
+            'max_speed': workout_cycling_user_2.max_speed,
             'min_alt': None,
             'modification_date': workout_cycling_user_2.modification_date,
             'moving': str(workout_cycling_user_2.moving),
@@ -2508,13 +2508,13 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             'analysis_visibility': (
                 workout_cycling_user_2.analysis_visibility.value
             ),
-            'ascent': float(workout_cycling_user_2.ascent),
-            'ave_speed': float(workout_cycling_user_2.ave_speed),
+            'ascent': workout_cycling_user_2.ascent,
+            'ave_speed': workout_cycling_user_2.ave_speed,
             'bounds': workout_cycling_user_2.bounds,
             'creation_date': workout_cycling_user_2.creation_date,
-            'descent': float(workout_cycling_user_2.descent),
+            'descent': workout_cycling_user_2.descent,
             'description': None,
-            'distance': float(workout_cycling_user_2.distance),
+            'distance': workout_cycling_user_2.distance,
             'duration': str(workout_cycling_user_2.duration),
             'id': workout_cycling_user_2.short_id,
             'equipments': [],
@@ -2522,9 +2522,9 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             'likes_count': 0,
             'map': map_id,
             'map_visibility': workout_cycling_user_2.map_visibility.value,
-            'max_alt': float(workout_cycling_user_2.max_alt),
-            'max_speed': float(workout_cycling_user_2.max_speed),
-            'min_alt': float(workout_cycling_user_2.min_alt),
+            'max_alt': workout_cycling_user_2.max_alt,
+            'max_speed': workout_cycling_user_2.max_speed,
+            'min_alt': workout_cycling_user_2.min_alt,
             'modification_date': workout_cycling_user_2.modification_date,
             'moving': str(workout_cycling_user_2.moving),
             'next_workout': None,

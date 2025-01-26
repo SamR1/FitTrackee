@@ -564,7 +564,7 @@ class TestReportServiceUpdate(CommentMixin):
 
         report_comment = ReportComment.query.filter_by(
             report_id=report.id
-        ).first()
+        ).one()
         assert report_comment.comment == comment
         assert report_comment.created_at == now
         assert report_comment.user_id == user_1_admin.id
@@ -642,9 +642,7 @@ class TestReportServiceUpdate(CommentMixin):
                 resolved=True,
             )
 
-        report_action = ReportAction.query.filter_by(
-            report_id=report.id
-        ).first()
+        report_action = ReportAction.query.filter_by(report_id=report.id).one()
         assert report_action.action_type == "report_resolution"
         assert report_action.moderator_id == user_1_admin.id
         assert report_action.created_at == now
@@ -710,9 +708,7 @@ class TestReportServiceUpdate(CommentMixin):
                 resolved=False,
             )
 
-        report_action = ReportAction.query.filter_by(
-            report_id=report.id
-        ).first()
+        report_action = ReportAction.query.filter_by(report_id=report.id).one()
         assert report_action.action_type == "report_reopening"
         assert report_action.moderator_id == user_1_admin.id
         assert report_action.created_at == now
@@ -884,7 +880,7 @@ class TestReportServiceCreateReportActionForUser(
             )
 
         assert (
-            User.query.filter_by(username=user_3.username).first().suspended_at
+            User.query.filter_by(username=user_3.username).one().suspended_at
             == now
         )
 
@@ -929,7 +925,7 @@ class TestReportServiceCreateReportActionForUser(
         )
 
         assert (
-            User.query.filter_by(username=user_3.username).first().suspended_at
+            User.query.filter_by(username=user_3.username).one().suspended_at
             is None
         )
 
@@ -1013,9 +1009,7 @@ class TestReportServiceCreateReportActionForUser(
                 data={"username": user_3.username},
             )
 
-        report_action = ReportAction.query.filter_by(
-            report_id=report.id
-        ).first()
+        report_action = ReportAction.query.filter_by(report_id=report.id).one()
         assert report_action.action_type == "user_suspension"
         assert report_action.moderator_id == user_1_admin.id
         assert report_action.created_at == now
@@ -1042,9 +1036,7 @@ class TestReportServiceCreateReportActionForUser(
             data={"username": user_3.username},
         )
 
-        report_action = ReportAction.query.filter_by(
-            report_id=report.id
-        ).first()
+        report_action = ReportAction.query.filter_by(report_id=report.id).one()
         assert report_action.action_type == "user_unsuspension"
         assert report_action.moderator_id == user_1_admin.id
         assert report_action.comment_id is None
@@ -1068,9 +1060,7 @@ class TestReportServiceCreateReportActionForUser(
             data={"username": user_3.username},
         )
 
-        report_action = ReportAction.query.filter_by(
-            report_id=report.id
-        ).first()
+        report_action = ReportAction.query.filter_by(report_id=report.id).one()
         assert report_action.action_type == "user_warning"
         assert report_action.moderator_id == user_1_admin.id
         assert report_action.comment_id is None
@@ -1103,9 +1093,7 @@ class TestReportServiceCreateReportActionForUser(
             data={"username": user_3.username},
         )
 
-        report_action = ReportAction.query.filter_by(
-            report_id=report.id
-        ).first()
+        report_action = ReportAction.query.filter_by(report_id=report.id).one()
         assert report_action.action_type == "user_warning"
         assert report_action.moderator_id == user_1_admin.id
         assert report_action.comment_id == report.reported_comment_id
@@ -1137,9 +1125,7 @@ class TestReportServiceCreateReportActionForUser(
             data={"username": user_2.username},
         )
 
-        report_action = ReportAction.query.filter_by(
-            report_id=report.id
-        ).first()
+        report_action = ReportAction.query.filter_by(report_id=report.id).one()
         assert report_action.action_type == "user_warning"
         assert report_action.moderator_id == user_1_admin.id
         assert report_action.comment_id is None
@@ -1202,9 +1188,7 @@ class TestReportServiceCreateReportActionForUser(
             data={"username": user_3.username},
         )
 
-        report_action = ReportAction.query.filter_by(
-            report_id=report.id
-        ).first()
+        report_action = ReportAction.query.filter_by(report_id=report.id).one()
         assert report_action.action_type == "user_warning"
         assert report_action.moderator_id == user_1_admin.id
         assert report_action.report_id == report.id
@@ -1291,7 +1275,7 @@ class TestReportServiceCreateReportActionForComment(
 
         with pytest.raises(
             InvalidReportActionException,
-            match=("comment already suspended"),
+            match="comment already suspended",
         ):
             report_service.create_report_action(
                 report=report,
@@ -1328,7 +1312,7 @@ class TestReportServiceCreateReportActionForComment(
 
         assert (
             Comment.query.filter_by(id=report.reported_comment_id)
-            .first()
+            .one()
             .suspended_at
             == now
         )
@@ -1362,9 +1346,7 @@ class TestReportServiceCreateReportActionForComment(
                 data={"comment_id": report.reported_comment.short_id},
             )
 
-        report_action = ReportAction.query.filter_by(
-            report_id=report.id
-        ).first()
+        report_action = ReportAction.query.filter_by(report_id=report.id).one()
         assert report_action.action_type == "comment_suspension"
         assert report_action.moderator_id == user_1_admin.id
         assert report_action.created_at == now
@@ -1403,7 +1385,7 @@ class TestReportServiceCreateReportActionForComment(
 
         assert (
             Comment.query.filter_by(id=report.reported_comment_id)
-            .first()
+            .one()
             .suspended_at
             is None
         )
@@ -1428,7 +1410,7 @@ class TestReportServiceCreateReportActionForComment(
 
         with pytest.raises(
             InvalidReportActionException,
-            match=("comment already reactivated"),
+            match="comment already reactivated",
         ):
             report_service.create_report_action(
                 report=report,
@@ -1465,9 +1447,7 @@ class TestReportServiceCreateReportActionForComment(
                 data={"comment_id": report.reported_comment.short_id},
             )
 
-        report_action = ReportAction.query.filter_by(
-            report_id=report.id
-        ).first()
+        report_action = ReportAction.query.filter_by(report_id=report.id).one()
         assert report_action.action_type == "comment_unsuspension"
         assert report_action.moderator_id == user_1_admin.id
         assert report_action.created_at == now
@@ -1593,7 +1573,7 @@ class TestReportServiceCreateReportActionForWorkout(
 
         with pytest.raises(
             InvalidReportActionException,
-            match=("workout already suspended"),
+            match="workout already suspended",
         ):
             report_service.create_report_action(
                 report=report,
@@ -1629,7 +1609,7 @@ class TestReportServiceCreateReportActionForWorkout(
 
         assert (
             Workout.query.filter_by(id=report.reported_workout_id)
-            .first()
+            .one()
             .suspended_at
             == now
         )
@@ -1662,9 +1642,7 @@ class TestReportServiceCreateReportActionForWorkout(
                 data={"workout_id": report.reported_workout.short_id},
             )
 
-        report_action = ReportAction.query.filter_by(
-            report_id=report.id
-        ).first()
+        report_action = ReportAction.query.filter_by(report_id=report.id).one()
         assert report_action.action_type == "workout_suspension"
         assert report_action.moderator_id == user_1_admin.id
         assert report_action.created_at == now
@@ -1702,7 +1680,7 @@ class TestReportServiceCreateReportActionForWorkout(
 
         assert (
             Workout.query.filter_by(id=report.reported_workout_id)
-            .first()
+            .one()
             .suspended_at
             is None
         )
@@ -1726,7 +1704,7 @@ class TestReportServiceCreateReportActionForWorkout(
 
         with pytest.raises(
             InvalidReportActionException,
-            match=("workout already reactivated"),
+            match="workout already reactivated",
         ):
             report_service.create_report_action(
                 report=report,
@@ -1763,9 +1741,7 @@ class TestReportServiceCreateReportActionForWorkout(
                 data={"workout_id": report.reported_workout.short_id},
             )
 
-        report_action = ReportAction.query.filter_by(
-            report_id=report.id
-        ).first()
+        report_action = ReportAction.query.filter_by(report_id=report.id).one()
         assert report_action.action_type == "workout_unsuspension"
         assert report_action.moderator_id == user_1_admin.id
         assert report_action.created_at == now
@@ -1841,9 +1817,7 @@ class TestReportServiceProcessAppeal(
                 data=input_data,
             )
 
-        updated_appeal = ReportActionAppeal.query.filter_by(
-            id=appeal.id
-        ).first()
+        updated_appeal = ReportActionAppeal.query.filter_by(id=appeal.id).one()
         assert updated_appeal.moderator_id == user_1_admin.id
         assert updated_appeal.approved is input_data["approved"]
         assert updated_appeal.reason == input_data["reason"]
@@ -1967,9 +1941,7 @@ class TestReportServiceProcessAppeal(
                 data=input_data,
             )
 
-        updated_appeal = ReportActionAppeal.query.filter_by(
-            id=appeal.id
-        ).first()
+        updated_appeal = ReportActionAppeal.query.filter_by(id=appeal.id).one()
         assert updated_appeal.moderator_id == user_1_admin.id
         assert updated_appeal.approved is input_data["approved"]
         assert updated_appeal.reason == input_data["reason"]
@@ -2047,9 +2019,7 @@ class TestReportServiceProcessAppeal(
                 data=input_data,
             )
 
-        updated_appeal = ReportActionAppeal.query.filter_by(
-            id=appeal.id
-        ).first()
+        updated_appeal = ReportActionAppeal.query.filter_by(id=appeal.id).one()
         assert updated_appeal.moderator_id == user_1_admin.id
         assert updated_appeal.approved is input_data["approved"]
         assert updated_appeal.reason == input_data["reason"]
@@ -2205,9 +2175,7 @@ class TestReportServiceProcessAppeal(
                 data=input_data,
             )
 
-        updated_appeal = ReportActionAppeal.query.filter_by(
-            id=appeal.id
-        ).first()
+        updated_appeal = ReportActionAppeal.query.filter_by(id=appeal.id).one()
         assert updated_appeal.moderator_id == user_1_admin.id
         assert updated_appeal.approved is input_data["approved"]
         assert updated_appeal.reason == input_data["reason"]

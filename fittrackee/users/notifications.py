@@ -132,6 +132,44 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
     blocked_by_users = auth_user.get_blocked_by_user_ids()
     following_ids = auth_user.get_following_user_ids()
 
+    filters = [
+        Notification.to_user_id == auth_user.id,
+        Notification.from_user_id.not_in(blocked_users),
+        or_(
+            (
+                and_(
+                    (
+                        or_(
+                            Notification.event_type != "workout_comment",
+                            and_(
+                                Notification.event_type == "workout_comment",
+                                Notification.from_user_id.not_in(
+                                    blocked_by_users
+                                ),
+                                or_(
+                                    Comment.text_visibility
+                                    == VisibilityLevel.PUBLIC,
+                                    and_(
+                                        Comment.text_visibility
+                                        == VisibilityLevel.FOLLOWERS,
+                                        Notification.from_user_id.in_(
+                                            following_ids
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        )
+                    ),
+                    User.suspended_at == None,  # noqa
+                )
+            ),
+            (Notification.event_type.in_(['report', 'suspension_appeal'])),
+        ),
+    ]
+    if marked_as_read is not None:
+        filters.append(Notification.marked_as_read == marked_as_read)
+    if event_type:
+        filters.append(Notification.event_type == event_type)
     notifications_pagination = (
         Notification.query.join(
             User,
@@ -141,54 +179,7 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
             Comment,
             Notification.event_object_id == Comment.id,
         )
-        .filter(
-            Notification.to_user_id == auth_user.id,
-            Notification.from_user_id.not_in(blocked_users),
-            (
-                Notification.marked_as_read == marked_as_read
-                if marked_as_read is not None
-                else True
-            ),
-            (
-                or_(
-                    (
-                        and_(
-                            (
-                                or_(
-                                    Notification.event_type
-                                    != "workout_comment",
-                                    and_(
-                                        Notification.event_type
-                                        == "workout_comment",
-                                        Notification.from_user_id.not_in(
-                                            blocked_by_users
-                                        ),
-                                        or_(
-                                            Comment.text_visibility
-                                            == VisibilityLevel.PUBLIC,
-                                            and_(
-                                                Comment.text_visibility
-                                                == VisibilityLevel.FOLLOWERS,
-                                                Notification.from_user_id.in_(
-                                                    following_ids
-                                                ),
-                                            ),
-                                        ),
-                                    ),
-                                )
-                            ),
-                            User.suspended_at == None,  # noqa
-                        )
-                    ),
-                    (
-                        Notification.event_type.in_(
-                            ['report', 'suspension_appeal']
-                        )
-                    ),
-                )
-            ),
-            Notification.event_type == event_type if event_type else True,
-        )
+        .filter(*filters)
         .order_by(
             asc(Notification.created_at)
             if order == 'asc'
@@ -442,15 +433,13 @@ def mark_all_as_read(auth_user: User) -> Union[Dict, HttpResponse]:
     params = request.get_json(silent=True)
     event_type = params.get('type') if params else None
     try:
-        Notification.query.filter(
+        filters = [
             Notification.to_user_id == auth_user.id,
             Notification.marked_as_read == False,  # noqa
-            (
-                (Notification.event_type == event_type)
-                if event_type is not None
-                else True
-            ),
-        ).update(
+        ]
+        if event_type is not None:
+            filters.append(Notification.event_type == event_type)
+        Notification.query.filter(*filters).update(
             {Notification.marked_as_read: True}, synchronize_session=False
         )
         db.session.commit()
@@ -513,15 +502,11 @@ def get_notification_types(auth_user: User) -> Dict:
         marked_as_read = True
     if status == 'unread':
         marked_as_read = False
+    filters = [Notification.to_user_id == auth_user.id]
+    if marked_as_read is not None:
+        filters.append(Notification.marked_as_read == marked_as_read)
     notification_types = (
-        db.session.query(Notification.event_type)
-        .filter(
-            Notification.to_user_id == auth_user.id,
-            True
-            if marked_as_read is None
-            else Notification.marked_as_read == marked_as_read,
-        )
-        .distinct()
+        db.session.query(Notification.event_type).filter(*filters).distinct()
     )
     return {
         "notification_types": [

@@ -15,34 +15,35 @@ class TestGetOrInitAppConfig:
     ) -> None:
         get_or_init_config()
 
-        app_config = AppConfig.query.first()
-        assert app_config.max_users == 0
+        config = AppConfig.query.one()
+        assert config.max_users == 0
 
     def test_it_inits_max_single_file_size_with_default_value(
         self, app_no_config: Flask
     ) -> None:
         get_or_init_config()
 
-        app_config = AppConfig.query.first()
-        assert app_config.max_single_file_size == 1048576  # 1MB
+        config = AppConfig.query.one()
+        assert config.max_single_file_size == 1048576  # 1MB
 
     def test_it_inits_max_zip_file_size_with_default_value(
         self, app_no_config: Flask
     ) -> None:
         get_or_init_config()
 
-        app_config = AppConfig.query.first()
-        assert app_config.max_zip_file_size == 10485760  # 10MB
+        config = AppConfig.query.one()
+        assert config.max_zip_file_size == 10485760  # 10MB
 
     def test_it_inits_gpx_limit_import_with_default_value(
         self, app_no_config: Flask
     ) -> None:
         get_or_init_config()
 
-        app_config = AppConfig.query.first()
-        assert app_config.gpx_limit_import == 10
+        config = AppConfig.query.one()
+        assert config.gpx_limit_import == 10
 
     def test_it_returns_existing_config(self, app: Flask) -> None:
-        app_config = get_or_init_config()
+        config = get_or_init_config()
 
-        assert app_config.max_users == 100
+        assert config is not None
+        assert config.max_users == 100

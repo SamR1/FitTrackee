@@ -1,13 +1,14 @@
 import os
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 from uuid import UUID, uuid4
 
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.sql.expression import nulls_last
@@ -33,7 +34,7 @@ if TYPE_CHECKING:
     from sqlalchemy.orm.attributes import AttributeEvent
 
     from fittrackee.equipments.models import Equipment
-    from fittrackee.reports.models import ReportAction
+    from fittrackee.reports.models import Report, ReportAction
     from fittrackee.users.models import User
 
 
@@ -77,7 +78,7 @@ TITLE_MAX_CHARACTERS = 255
 def update_records(
     user_id: int, sport_id: int, connection: Connection, session: Session
 ) -> None:
-    record_table = Record.__table__
+    record_table = Record.__table__  # type: ignore
     new_records = Workout.get_user_workout_records(user_id, sport_id)
     for record_type, record_data in new_records.items():
         if record_data['record_value']:
@@ -135,7 +136,7 @@ def update_equipments(workout: 'Workout', connection: Connection) -> None:
     if not workout_values:
         return
 
-    equipment_table = Equipment.__table__
+    equipment_table = Equipment.__table__  # type: ignore
     for equipment in workout.equipments:
         equipment_values = {}
         for attribute, value in workout_values.items():
@@ -155,19 +156,20 @@ def update_equipments(workout: 'Workout', connection: Connection) -> None:
 
 class Sport(BaseModel):
     __tablename__ = 'sports'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    label = db.Column(db.String(50), unique=True, nullable=False)
-    is_active = db.Column(db.Boolean, default=True, nullable=False)
-    stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
-    workouts = db.relationship(
-        'Workout',
-        lazy=True,
-        backref=db.backref('sport', lazy='joined', single_parent=True),
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    label: Mapped[str] = mapped_column(
+        db.String(50), unique=True, nullable=False
     )
-    records = db.relationship(
-        'Record',
-        lazy=True,
-        backref=db.backref('sport', lazy='joined', single_parent=True),
+    is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
+    stopped_speed_threshold: Mapped[float] = mapped_column(
+        default=1.0, nullable=False
+    )
+
+    workouts: Mapped[List["Workout"]] = relationship(
+        'Workout', lazy=True, back_populates='sport'
+    )
+    records: Mapped[List["Record"]] = relationship(
+        'Record', lazy=True, back_populates='sport'
     )
 
     def __repr__(self) -> str:
@@ -226,82 +228,118 @@ class Sport(BaseModel):
 
 class Workout(BaseModel):
     __tablename__ = 'workouts'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    uuid = db.Column(
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    uuid: Mapped[UUID] = mapped_column(
         postgresql.UUID(as_uuid=True),
         default=uuid4,
         unique=True,
         nullable=False,
     )
-    user_id = db.Column(
-        db.Integer, db.ForeignKey('users.id'), index=True, nullable=False
+    user_id: Mapped[int] = mapped_column(
+        db.ForeignKey('users.id'), index=True, nullable=False
     )
-    sport_id = db.Column(
-        db.Integer, db.ForeignKey('sports.id'), index=True, nullable=False
+    sport_id: Mapped[int] = mapped_column(
+        db.ForeignKey('sports.id'), index=True, nullable=False
     )
-    title = db.Column(db.String(TITLE_MAX_CHARACTERS), nullable=True)
-    gpx = db.Column(db.String(255), nullable=True)
-    creation_date = db.Column(TZDateTime, default=aware_utc_now)
-    modification_date = db.Column(TZDateTime, onupdate=aware_utc_now)
-    workout_date = db.Column(TZDateTime, index=True, nullable=False)
-    duration = db.Column(db.Interval, nullable=False)
-    pauses = db.Column(db.Interval, nullable=True)
-    moving = db.Column(db.Interval, nullable=True)
-    distance = db.Column(db.Numeric(6, 3), nullable=True)  # kilometers
-    min_alt = db.Column(db.Numeric(6, 2), nullable=True)  # meters
-    max_alt = db.Column(db.Numeric(6, 2), nullable=True)  # meters
-    descent = db.Column(db.Numeric(8, 3), nullable=True)  # meters
-    ascent = db.Column(db.Numeric(8, 3), nullable=True)  # meters
-    max_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
-    ave_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
-    bounds = db.Column(postgresql.ARRAY(db.Float), nullable=True)
-    map = db.Column(db.String(255), nullable=True)
-    map_id = db.Column(db.String(50), index=True, nullable=True)
-    weather_start = db.Column(JSON, nullable=True)
-    weather_end = db.Column(JSON, nullable=True)
-    notes = db.Column(db.String(NOTES_MAX_CHARACTERS), nullable=True)
-    description = db.Column(
+    title: Mapped[Optional[str]] = mapped_column(
+        db.String(TITLE_MAX_CHARACTERS), nullable=True
+    )
+    gpx: Mapped[Optional[str]] = mapped_column(db.String(255), nullable=True)
+    creation_date: Mapped[datetime] = mapped_column(
+        TZDateTime, default=aware_utc_now
+    )
+    modification_date: Mapped[Optional[datetime]] = mapped_column(
+        TZDateTime, onupdate=aware_utc_now, nullable=True
+    )
+    workout_date: Mapped[datetime] = mapped_column(
+        TZDateTime, index=True, nullable=False
+    )
+    duration: Mapped[timedelta] = mapped_column(nullable=False)
+    pauses: Mapped[Optional[timedelta]] = mapped_column(nullable=True)
+    moving: Mapped[Optional[timedelta]] = mapped_column(nullable=True)
+    distance: Mapped[Optional[float]] = mapped_column(
+        db.Numeric(6, 3), nullable=True
+    )  # kilometers
+    min_alt: Mapped[Optional[float]] = mapped_column(
+        db.Numeric(6, 2), nullable=True
+    )  # meters
+    max_alt: Mapped[Optional[float]] = mapped_column(
+        db.Numeric(6, 2), nullable=True
+    )  # meters
+    descent: Mapped[Optional[float]] = mapped_column(
+        db.Numeric(8, 3), nullable=True
+    )  # meters
+    ascent: Mapped[Optional[float]] = mapped_column(
+        db.Numeric(8, 3), nullable=True
+    )  # meters
+    max_speed: Mapped[Optional[float]] = mapped_column(
+        db.Numeric(6, 2), nullable=True
+    )  # km/h
+    ave_speed: Mapped[Optional[float]] = mapped_column(
+        db.Numeric(6, 2), nullable=True
+    )  # km/h
+    bounds: Mapped[Optional[List[float]]] = mapped_column(
+        postgresql.ARRAY(db.Float), nullable=True
+    )
+    map: Mapped[Optional[str]] = mapped_column(db.String(255), nullable=True)
+    map_id: Mapped[Optional[str]] = mapped_column(
+        db.String(50), index=True, nullable=True
+    )
+    weather_start: Mapped[Optional[Dict]] = mapped_column(JSON, nullable=True)
+    weather_end: Mapped[Optional[Dict]] = mapped_column(JSON, nullable=True)
+    notes: Mapped[Optional[str]] = mapped_column(
+        db.String(NOTES_MAX_CHARACTERS), nullable=True
+    )
+    description: Mapped[Optional[str]] = mapped_column(
         db.String(DESCRIPTION_MAX_CHARACTERS), nullable=True
     )
-    workout_visibility = db.Column(
+    workout_visibility: Mapped[VisibilityLevel] = mapped_column(
         Enum(VisibilityLevel, name='visibility_levels'),
         server_default='PRIVATE',
         nullable=False,
     )
-    map_visibility = db.Column(
+    map_visibility: Mapped[VisibilityLevel] = mapped_column(
         Enum(VisibilityLevel, name='visibility_levels'),
         server_default='PRIVATE',
         nullable=False,
     )
-    suspended_at = db.Column(TZDateTime, nullable=True)
-    analysis_visibility = db.Column(
+    suspended_at: Mapped[Optional[datetime]] = mapped_column(
+        TZDateTime, nullable=True
+    )
+    analysis_visibility: Mapped[VisibilityLevel] = mapped_column(
         Enum(VisibilityLevel, name='visibility_levels'),
         server_default='PRIVATE',
         nullable=False,
     )
 
-    segments = db.relationship(
+    user: Mapped["User"] = relationship(
+        'User', lazy='select', single_parent=True
+    )
+    sport: Mapped["Sport"] = relationship(
+        'Sport', lazy='joined', single_parent=True
+    )
+    segments: Mapped[List["WorkoutSegment"]] = relationship(
         'WorkoutSegment',
         lazy=True,
         cascade='all, delete',
-        backref=db.backref('workout', lazy='joined', single_parent=True),
+        back_populates='workout',
     )
-    records = db.relationship(
+    records: Mapped[List["Record"]] = relationship(
         'Record',
         lazy=True,
         cascade='all, delete',
-        backref=db.backref('workout', lazy='joined', single_parent=True),
+        back_populates='workout',
         order_by='Record.record_type.asc()',
     )
-    equipments = db.relationship(
+    equipments: Mapped[List["Equipment"]] = relationship(
         'Equipment', secondary=WorkoutEquipment, back_populates='workouts'
     )
-    comments = db.relationship(
-        Comment,
+    comments: Mapped[List["Comment"]] = relationship(
+        "Comment",
         lazy=True,
-        backref=db.backref('workout', lazy='select', single_parent=True),
+        back_populates='workout',
     )
-    likes = db.relationship(
+    likes = relationship(
         "User",
         secondary="workout_likes",
         primaryjoin="Workout.id == WorkoutLike.workout_id",
@@ -363,6 +401,12 @@ class Workout(BaseModel):
             .order_by(ReportAction.created_at.desc())
             .first()
         )
+
+    @property
+    def reports(self) -> List["Report"]:
+        from fittrackee.reports.models import Report
+
+        return Report.query.filter_by(reported_workout_id=self.id).all()
 
     def get_workout_data(
         self,
@@ -590,96 +634,48 @@ class Workout(BaseModel):
             max_speed_from = params.get('max_speed_from') if params else None
             max_speed_to = params.get('max_speed_to') if params else None
             sport_id = params.get('sport_id') if params else None
+
+            filters = [
+                Workout.id != self.id,
+                Workout.user_id == self.user_id,
+            ]
+            if sport_id:
+                filters.append(Workout.sport_id == sport_id)
+            if date_from:
+                filters.append(Workout.workout_date >= date_from)
+            if date_to:
+                filters.append(Workout.workout_date <= date_to)
+            if distance_from:
+                filters.append(Workout.distance >= float(distance_from))
+            if distance_to:
+                filters.append(Workout.distance <= float(distance_to))
+            if duration_from:
+                filters.append(
+                    Workout.duration >= convert_in_duration(duration_from)
+                )
+            if duration_to:
+                filters.append(
+                    Workout.duration <= convert_in_duration(duration_to)
+                )
+            if ave_speed_from:
+                filters.append(Workout.ave_speed >= float(ave_speed_from))
+            if ave_speed_to:
+                filters.append(Workout.ave_speed <= float(ave_speed_to))
+            if max_speed_from:
+                filters.append(Workout.max_speed >= float(max_speed_from))
+            if max_speed_to:
+                filters.append(Workout.max_speed <= float(max_speed_to))
+
             previous_workout = (
                 Workout.query.filter(
-                    Workout.id != self.id,
-                    Workout.user_id == self.user_id,
-                    Workout.sport_id == sport_id if sport_id else True,
-                    Workout.workout_date <= self.workout_date,
-                    Workout.workout_date >= date_from if date_from else True,
-                    Workout.workout_date <= date_to if date_to else True,
-                    (
-                        Workout.distance >= float(distance_from)
-                        if distance_from
-                        else True
-                    ),
-                    (
-                        Workout.distance <= float(distance_to)
-                        if distance_to
-                        else True
-                    ),
-                    (
-                        Workout.duration >= convert_in_duration(duration_from)
-                        if duration_from
-                        else True
-                    ),
-                    (
-                        Workout.duration <= convert_in_duration(duration_to)
-                        if duration_to
-                        else True
-                    ),
-                    (
-                        Workout.ave_speed >= float(ave_speed_from)
-                        if ave_speed_from
-                        else True
-                    ),
-                    (
-                        Workout.ave_speed <= float(ave_speed_to)
-                        if ave_speed_to
-                        else True
-                    ),
-                    (
-                        Workout.max_speed >= float(max_speed_from)
-                        if max_speed_from
-                        else True
-                    ),
-                    (
-                        Workout.max_speed <= float(max_speed_to)
-                        if max_speed_to
-                        else True
-                    ),
+                    Workout.workout_date <= self.workout_date, *filters
                 )
                 .order_by(Workout.workout_date.desc())
                 .first()
             )
             next_workout = (
                 Workout.query.filter(
-                    Workout.id != self.id,
-                    Workout.user_id == self.user_id,
-                    Workout.sport_id == sport_id if sport_id else True,
-                    Workout.workout_date >= self.workout_date,
-                    Workout.workout_date >= date_from if date_from else True,
-                    Workout.workout_date <= date_to if date_to else True,
-                    (
-                        Workout.distance >= float(distance_from)
-                        if distance_from
-                        else True
-                    ),
-                    (
-                        Workout.distance <= float(distance_to)
-                        if distance_to
-                        else True
-                    ),
-                    (
-                        Workout.duration >= convert_in_duration(duration_from)
-                        if duration_from
-                        else True
-                    ),
-                    (
-                        Workout.duration <= convert_in_duration(duration_to)
-                        if duration_to
-                        else True
-                    ),
-                    (
-                        Workout.ave_speed >= float(ave_speed_from)
-                        if ave_speed_from
-                        else True
-                    ),
-                    (
-                        Workout.ave_speed <= float(ave_speed_to)
-                        if ave_speed_to
-                        else True
-                    ),
+                    Workout.workout_date >= self.workout_date, *filters
                 )
                 .order_by(Workout.workout_date.asc())
                 .first()
@@ -747,7 +743,10 @@ def on_workout_insert(
 def on_workout_update(
     mapper: Mapper, connection: Connection, workout: Workout
 ) -> None:
-    if object_session(workout).is_modified(workout, include_collections=True):
+    workout_object = object_session(workout)
+    if workout_object and workout_object.is_modified(
+        workout, include_collections=True
+    ):
 
         @listens_for(db.Session, 'after_flush', once=True)
         def receive_after_flush(session: Session, context: Any) -> None:
@@ -802,7 +801,9 @@ def on_workout_delete(
 def on_workout_equipments_append(
     target: Workout, value: 'Equipment', initiator: 'AttributeEvent'
 ) -> None:
-    value.total_distance = float(value.total_distance) + float(target.distance)
+    value.total_distance = float(value.total_distance) + (
+        0.0 if target.distance is None else float(target.distance)
+    )
     value.total_duration += target.duration
     if target.moving:
         value.total_moving += target.moving
@@ -813,7 +814,9 @@ def on_workout_equipments_append(
 def on_workout_equipments_remove(
     target: Workout, value: 'Equipment', initiator: 'AttributeEvent'
 ) -> None:
-    value.total_distance = float(value.total_distance) - float(target.distance)
+    value.total_distance = float(value.total_distance) - (
+        0.0 if target.distance is None else float(target.distance)
+    )
     value.total_duration -= target.duration
     if target.moving:
         value.total_moving -= target.moving
@@ -822,21 +825,41 @@ def on_workout_equipments_remove(
 
 class WorkoutSegment(BaseModel):
     __tablename__ = 'workout_segments'
-    workout_id = db.Column(
-        db.Integer, db.ForeignKey('workouts.id'), primary_key=True
+    workout_id: Mapped[int] = mapped_column(
+        db.ForeignKey('workouts.id'), primary_key=True
     )
-    workout_uuid = db.Column(postgresql.UUID(as_uuid=True), nullable=False)
-    segment_id = db.Column(db.Integer, primary_key=True)
-    duration = db.Column(db.Interval, nullable=False)
-    pauses = db.Column(db.Interval, nullable=True)
-    moving = db.Column(db.Interval, nullable=True)
-    distance = db.Column(db.Numeric(6, 3), nullable=True)  # kilometers
-    min_alt = db.Column(db.Numeric(6, 2), nullable=True)  # meters
-    max_alt = db.Column(db.Numeric(6, 2), nullable=True)  # meters
-    descent = db.Column(db.Numeric(8, 3), nullable=True)  # meters
-    ascent = db.Column(db.Numeric(8, 3), nullable=True)  # meters
-    max_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
-    ave_speed = db.Column(db.Numeric(6, 2), nullable=True)  # km/h
+    workout_uuid: Mapped[UUID] = mapped_column(
+        postgresql.UUID(as_uuid=True), nullable=False
+    )
+    segment_id: Mapped[int] = mapped_column(primary_key=True)
+    duration: Mapped[timedelta] = mapped_column(nullable=False)
+    pauses: Mapped[Optional[timedelta]] = mapped_column(nullable=True)
+    moving: Mapped[Optional[timedelta]] = mapped_column(nullable=True)
+    distance: Mapped[Optional[float]] = mapped_column(
+        db.Numeric(6, 3), nullable=True
+    )  # kilometers
+    min_alt: Mapped[Optional[float]] = mapped_column(
+        db.Numeric(6, 2), nullable=True
+    )  # meters
+    max_alt: Mapped[Optional[float]] = mapped_column(
+        db.Numeric(6, 2), nullable=True
+    )  # meters
+    descent: Mapped[Optional[float]] = mapped_column(
+        db.Numeric(8, 3), nullable=True
+    )  # meters
+    ascent: Mapped[Optional[float]] = mapped_column(
+        db.Numeric(8, 3), nullable=True
+    )  # meters
+    max_speed: Mapped[Optional[float]] = mapped_column(
+        db.Numeric(6, 2), nullable=True
+    )  # km/h
+    ave_speed: Mapped[Optional[float]] = mapped_column(
+        db.Numeric(6, 2), nullable=True
+    )  # km/h
+
+    workout: Mapped["Workout"] = relationship(
+        'Workout', lazy='joined', single_parent=True
+    )
 
     def __str__(self) -> str:
         return (
@@ -876,18 +899,34 @@ class Record(BaseModel):
         ),
         db.Index('workout_records', 'workout_id', 'record_type'),
     )
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    sport_id = db.Column(
-        db.Integer, db.ForeignKey('sports.id'), nullable=False
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(
+        db.ForeignKey('users.id'), nullable=False
     )
-    workout_id = db.Column(
-        db.Integer, db.ForeignKey('workouts.id'), nullable=False
+    sport_id: Mapped[int] = mapped_column(
+        db.ForeignKey('sports.id'), nullable=False
     )
-    workout_uuid = db.Column(postgresql.UUID(as_uuid=True), nullable=False)
-    record_type = db.Column(Enum(*record_types, name="record_types"))
-    workout_date = db.Column(TZDateTime, nullable=False)
-    _value = db.Column("value", db.Integer, nullable=True)
+    workout_id: Mapped[int] = mapped_column(
+        db.ForeignKey('workouts.id'), nullable=False
+    )
+    workout_uuid: Mapped[UUID] = mapped_column(
+        postgresql.UUID(as_uuid=True), nullable=False
+    )
+    record_type: Mapped[str] = mapped_column(
+        Enum(*record_types, name="record_types")
+    )
+    workout_date: Mapped[datetime] = mapped_column(TZDateTime, nullable=False)
+    _value: Mapped[Optional[int]] = mapped_column("value", nullable=True)
+
+    user: Mapped["User"] = relationship(
+        'User', lazy='joined', single_parent=True
+    )
+    sport: Mapped["Sport"] = relationship(
+        'Sport', lazy='joined', single_parent=True
+    )
+    workout: Mapped["Workout"] = relationship(
+        'Workout', lazy='joined', single_parent=True
+    )
 
     def __str__(self) -> str:
         return (
@@ -967,22 +1006,20 @@ class WorkoutLike(BaseModel):
             'user_id', 'workout_id', name='user_id_workout_id_unique'
         ),
     )
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    created_at = db.Column(TZDateTime, nullable=False)
-    user_id = db.Column(
-        db.Integer,
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    created_at: Mapped[datetime] = mapped_column(TZDateTime, nullable=False)
+    user_id: Mapped[int] = mapped_column(
         db.ForeignKey('users.id', ondelete='CASCADE'),
         nullable=False,
     )
-    workout_id = db.Column(
-        db.Integer,
+    workout_id: Mapped[int] = mapped_column(
         db.ForeignKey('workouts.id', ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
 
-    user = db.relationship("User", lazy=True)
-    workout = db.relationship("Workout", lazy=True)
+    user: Mapped["User"] = relationship("User", lazy=True)
+    workout: Mapped["Workout"] = relationship("Workout", lazy=True)
 
     def __init__(
         self,
@@ -1008,9 +1045,13 @@ def on_workout_like_insert(
         workout = Workout.query.filter_by(
             id=new_workout_like.workout_id
         ).first()
+        if not workout:
+            return
         if new_workout_like.user_id != workout.user_id:
             to_user = User.query.filter_by(id=workout.user_id).first()
-            if not to_user.is_notification_enabled('workout_like'):
+            if not to_user or not to_user.is_notification_enabled(
+                'workout_like'
+            ):
                 return
 
             notification = Notification(
@@ -1034,6 +1075,8 @@ def on_workout_like_delete(
         workout = Workout.query.filter_by(
             id=old_workout_like.workout_id
         ).first()
+        if not workout:
+            return
         Notification.query.filter_by(
             from_user_id=old_workout_like.user_id,
             to_user_id=workout.user_id,

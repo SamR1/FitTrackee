@@ -49,7 +49,7 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
 
     def authenticate_user(
         self, authorization_code: OAuth2AuthorizationCode
-    ) -> User:
+    ) -> Optional[User]:
         return User.query.get(authorization_code.user_id)
 
 
@@ -65,7 +65,7 @@ class RefreshTokenGrant(grants.RefreshTokenGrant):
             return token
         return None
 
-    def authenticate_user(self, credential: OAuth2Token) -> User:
+    def authenticate_user(self, credential: OAuth2Token) -> Optional[User]:
         return User.query.get(credential.user_id)
 
     def revoke_old_credential(self, credential: OAuth2Token) -> None:

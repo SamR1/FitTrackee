@@ -679,7 +679,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
             moderator_id=user_1_admin.id,
             action_type=expected_action_action,
             user_id=user_2.id,
-        ).first()
+        ).one()
         assert report_action.created_at == now
         assert report_action.reason == reason
         assert report_action.report_id == report.id

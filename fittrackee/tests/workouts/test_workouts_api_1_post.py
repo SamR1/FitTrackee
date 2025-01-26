@@ -451,9 +451,8 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
                 ),
             )
 
-        workout = Workout.query.first()
         assert (
-            workout.gpx
+            Workout.query.one().gpx
             == f"workouts/1/2018-03-13_12-44-45_1_{expected_suffix}.gpx"
         )
 
@@ -478,9 +477,8 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
                 ),
             )
 
-        workout = Workout.query.first()
         assert (
-            workout.map
+            Workout.query.one().map
             == f"workouts/1/2018-03-13_12-44-45_1_{expected_suffix}.png"
         )
 
@@ -986,7 +984,7 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
         assert data['data']['workouts'][0]['equipments'] == [
             jsonify_dict(equipment_bike_user_1.serialize())
         ]
-        workout = Workout.query.first()
+        workout = Workout.query.one()
         assert equipment_bike_user_1.total_workouts == 1
         assert equipment_bike_user_1.total_distance == workout.distance
         assert equipment_bike_user_1.total_duration == workout.duration
@@ -1037,7 +1035,7 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
         assert data['data']['workouts'][0]['equipments'] == [
             jsonify_dict(equipment_bike_user_1.serialize())
         ]
-        workout = Workout.query.first()
+        workout = Workout.query.one()
         assert equipment_bike_user_1.total_workouts == 1
         assert equipment_bike_user_1.total_distance == workout.distance
         assert equipment_bike_user_1.total_duration == workout.duration
@@ -1827,7 +1825,7 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
 
         assert_files_are_deleted(app, user_1, expected_count=2)
         upload_directory = os.path.join(app.config["UPLOAD_FOLDER"])
-        workout = Workout.query.first()
+        workout = Workout.query.one()
         os.path.exists(os.path.join(upload_directory, workout.gpx))
         os.path.exists(os.path.join(upload_directory, workout.map))
 
@@ -4053,9 +4051,7 @@ class TestPostWorkoutSuspensionAppeal(
 
         assert response.status_code == 201
         assert response.json == {"status": "success"}
-        appeal = ReportActionAppeal.query.filter_by(
-            action_id=action.id
-        ).first()
+        appeal = ReportActionAppeal.query.filter_by(action_id=action.id).one()
         assert appeal.moderator_id is None
         assert appeal.approved is None
         assert appeal.created_at == now

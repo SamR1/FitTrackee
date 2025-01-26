@@ -240,12 +240,21 @@ def get_workouts_by_time(
             + delta,
             time_format,
         )
+        filters = [Workout.user_id == user.id]
+        if date_from:
+            filters.append(Workout.workout_date >= date_from)
+        if date_to:
+            filters.append(
+                Workout.workout_date < date_to + timedelta(seconds=1)
+            )
         results = (
             db.session.query(
                 Workout.sport_id,
-                func.avg(Workout.ave_speed)
-                if stats_type == "average"
-                else True,
+                (
+                    func.avg(Workout.ave_speed)  # type: ignore
+                    if stats_type == "average"
+                    else True
+                ),
                 func.count(Workout.id),
                 calculation_method(Workout.distance),
                 calculation_method(Workout.moving),
@@ -253,15 +262,7 @@ def get_workouts_by_time(
                 calculation_method(Workout.descent),
                 stats_key,
             )
-            .filter(
-                Workout.user_id == user.id,
-                Workout.workout_date >= date_from if date_from else True,
-                (
-                    Workout.workout_date < date_to + timedelta(seconds=1)
-                    if date_to
-                    else True
-                ),
-            )
+            .filter(*filters)
             .group_by(stats_key, Workout.sport_id)
             .all()
         )
@@ -276,11 +277,11 @@ def get_workouts_by_time(
             sport_key = row[0]
             if date_key not in statistics:
                 statistics[date_key] = {
-                    sport_key: get_stats_from_row(row, stats_type)
+                    sport_key: get_stats_from_row(list(row), stats_type)
                 }
             elif sport_key not in statistics[date_key]:
                 statistics[date_key][sport_key] = get_stats_from_row(
-                    row, stats_type
+                    list(row), stats_type
                 )
             else:
                 statistics[date_key][sport_key]['total_workouts'] += row[2]
@@ -469,20 +470,18 @@ def get_workouts_by_sport(
             if not sport:
                 return NotFoundErrorResponse('sport does not exist')
 
-        workouts_query = Workout.query.filter(
-            Workout.user_id == user.id,
-            Workout.sport_id == sport_id if sport_id else True,
-        )
+        filters = [Workout.user_id == user.id]
+        if sport_id:
+            filters.append(Workout.sport_id == sport_id)
+        workouts_query = Workout.query.filter(*filters)
         total_workouts = workouts_query.count()
 
-        workouts_subquery = workouts_query.order_by(
-            Workout.workout_date.desc()
-        )
+        workouts_query = workouts_query.order_by(Workout.workout_date.desc())
         if current_app.config['stats_workouts_limit']:
-            workouts_subquery = workouts_subquery.limit(
+            workouts_query = workouts_query.limit(
                 current_app.config['stats_workouts_limit']
             )
-        workouts_subquery = workouts_subquery.subquery()
+        workouts_subquery = workouts_query.subquery()
         results = (
             db.session.query(
                 workouts_subquery.c.sport_id,
