@@ -2631,6 +2631,21 @@ class TestUserDeletePicture(ApiTestCaseMixin):
         assert response.status_code == 204
         assert user_1.picture is None
 
+    def test_it_does_not_return_error_when_user_has_no_picture(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.delete(
+            '/api/auth/picture',
+            headers=dict(Authorization=f'Bearer {auth_token}'),
+        )
+
+        assert response.status_code == 204
+        assert user_1.picture is None
+
     def test_suspended_user_can_delete_picture(
         self, app: Flask, suspended_user: User
     ) -> None:

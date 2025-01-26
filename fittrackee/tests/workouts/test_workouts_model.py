@@ -130,12 +130,12 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         assert serialized_workout == {
             'analysis_visibility': workout.analysis_visibility.value,
             'ascent': None,
-            'ave_speed': workout.ave_speed,  # type: ignore  # noqa
+            'ave_speed': workout.ave_speed,
             'bounds': [],
             'creation_date': workout.creation_date,
             'descent': None,
             'description': None,
-            'distance': workout.distance,  # type: ignore  # noqa
+            'distance': workout.distance,
             'duration': str(workout.duration),
             'id': workout.short_id,
             'equipments': [],
@@ -144,7 +144,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             'map': None,
             'map_visibility': workout.map_visibility.value,
             'max_alt': None,
-            'max_speed': workout.max_speed,  # type: ignore  # noqa
+            'max_speed': workout.max_speed,
             'min_alt': None,
             'modification_date': None,
             'moving': str(workout.moving),

@@ -42,7 +42,7 @@ appLog = logging.getLogger('fittrackee')
 
 
 class Base(DeclarativeBase):
-    __allow_unmapped__ = True
+    pass
 
 
 db = SQLAlchemy(
@@ -51,7 +51,7 @@ db = SQLAlchemy(
     session_options={"future": True},
 )
 
-# workaround with
+# workaround with mypy
 # see https://github.com/pallets-eco/flask-sqlalchemy/issues/1327
 if TYPE_CHECKING:
     from flask_sqlalchemy.model import Model

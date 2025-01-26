@@ -1079,10 +1079,12 @@ class Notification(BaseModel):
     from_user_id: Mapped[int] = mapped_column(
         db.ForeignKey('users.id', ondelete='CASCADE'),
         index=True,
+        nullable=False,
     )
     to_user_id: Mapped[int] = mapped_column(
         db.ForeignKey('users.id', ondelete='CASCADE'),
         index=True,
+        nullable=False,
     )
     created_at: Mapped[datetime] = mapped_column(TZDateTime, nullable=False)
     marked_as_read: Mapped[bool] = mapped_column(
