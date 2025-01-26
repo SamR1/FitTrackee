@@ -9,6 +9,7 @@ from sqlalchemy.orm.session import Session
 from sqlalchemy.types import Enum
 
 from fittrackee import VERSION, BaseModel, db
+from fittrackee.database import TZDateTime
 
 from .constants import AP_CTX
 from .enums import ActorType
@@ -27,7 +28,7 @@ class Domain(BaseModel):
     __tablename__ = 'domains'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(1000), unique=True, nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False)
+    created_at = db.Column(TZDateTime, nullable=False)
     is_allowed = db.Column(db.Boolean, default=True, nullable=False)
     software_name = db.Column(db.String(255), nullable=True)
     software_version = db.Column(db.String(255), nullable=True)
@@ -97,8 +98,8 @@ class Actor(BaseModel):
     followers_url = db.Column(db.String(255), nullable=False)
     following_url = db.Column(db.String(255), nullable=False)
     shared_inbox_url = db.Column(db.String(255), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False)
-    last_fetch_date = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(TZDateTime, nullable=False)
+    last_fetch_date = db.Column(TZDateTime, nullable=True)
 
     domain = db.relationship('Domain', back_populates='actors')
     user = db.relationship('User', uselist=False, back_populates='actor')
