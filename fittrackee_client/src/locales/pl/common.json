@@ -6,20 +6,28 @@
   "CONTACT": "kontakt",
   "DAY": "dzień | dni",
   "DESCRIPTION": "Opis",
+  "DISABLED": "wyłączone",
   "DISPLAYED": "Wyświetlony",
   "DOCUMENTATION": "dokumentacja",
+  "EDITED": "edytowane",
+  "ENABLED": "włączone",
   "HERE": "tutaj",
   "HIDDEN": "Ukryty",
+  "HIDE": "Ukryj",
   "HOME": "Dom",
   "HOURS": "godzina|godzin",
   "INACTIVE": "nieaktywny",
   "LABEL": "etykieta",
+  "LAST_UPDATED_ON": "Ostatnia zmiana",
   "MINUTES": "minuta|minuty",
   "NEXT": "następna",
   "NO_DESCRIPTION": "Brak opisu",
   "NO_NOTES": "Brak notatek",
   "PREVIOUS": "poprzednia",
+  "REPORT_PLACEHOLDER": "podaj powód zgłoszenia",
+  "REPORT_SUBMITTED": "Zgłoszenie wysłane.",
   "SECONDS": "sekunda|sekund",
+  "SEE_REPORT": "Zobacz zgłoszenie {0}.",
   "SELECTS": {
     "ORDER": {
       "ASC": "rosnąco",
@@ -34,5 +42,6 @@
     }
   },
   "TOTAL": "Łącznie",
-  "TOTAL_DURATION_WITH_PAUSES": "całkowity czas trwania z przerwami"
+  "TOTAL_DURATION_WITH_PAUSES": "całkowity czas trwania z przerwami",
+  "TYPE": "typ"
 }
