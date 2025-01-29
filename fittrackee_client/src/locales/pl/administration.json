@@ -3,7 +3,7 @@
     "DESCRIPTION": "Ewentualne dodatkowe informacje, które mogą być użyteczne użytkownikom. Można używać składni Markdown.",
     "TEXT": "Szczegółowe informacje o instancji"
   },
-  "ACTION": "Akcja",
+  "ACTION": "Akcja | Akcje",
   "ACTIVATE_USER_ACCOUNT": "Aktywuj konto",
   "ACTIVE": "Aktywne",
   "ADMIN": "Administrator",
@@ -22,10 +22,81 @@
     "TITLE": "Konfiguracja aplikacji",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Maks. wielkość archiwum zip (w Mb)"
   },
+  "APP_MODERATION": {
+    "ACTIONS": {
+      "ADD_COMMENT": "Dodaj komentarz",
+      "MARK_AS_RESOLVED": "Oznacz jako rozwiązane",
+      "MARK_AS_UNRESOLVED": "Oznacz jako nierozwiązane",
+      "SEND_WARNING_EMAIL": "Wyślij ostrzeżenie",
+      "SUSPEND_ACCOUNT": "Zawieś użytkownika",
+      "SUSPEND_CONTENT": "Zawieś treść",
+      "UNSUSPEND_ACCOUNT": "Reaktywuj użytkownika",
+      "UNSUSPEND_CONTENT": "Reaktywuj treść"
+    },
+    "APPEAL": {
+      "APPROVED": "To odwołanie zostało zaakceptowane {0}.",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "To odwołanie zostało zaakceptowane przez zdjęcie zawieszenia.",
+      "HIDE": "Ukryj odwołanie",
+      "REASON_IS": "Powód:",
+      "REJECTED": "To odwołanie zostało odrzucone {0}.",
+      "SEE": "Zobacz odwołanie"
+    },
+    "DESCRIPTION": "Zarządzanie raportami.",
+    "NOTES_AND_ACTIONS": "Notatki i akcje",
+    "NO_REPORTS_FOUND": "Brak raportów",
+    "ORDER_BY": {
+      "CREATED_AT": "data utworzenia",
+      "UPDATED_AT": "data aktualizacji"
+    },
+    "REASON": "Powód",
+    "REPORT": "raport | raporty",
+    "REPORTED_BY": "Zgłoszone przez",
+    "REPORTED_CONTENT": "Zgłoszona treść",
+    "REPORTED_USER": "Zgłoszony użytkownik",
+    "REPORTER": "zgłaszający",
+    "REPORT_ACTIONS": {
+      "comment_suspension": "Komentarz został ukryty przez {1} {2}.",
+      "comment_unsuspension": "Ukrycie komentarza zostało zdjęte przez {1} {2}.",
+      "report_reopening": "Raport został przywrócony przez {1} {2}.",
+      "report_resolution": "Raport został oznaczony jako rozwiązany przez {1} {2}.",
+      "user_suspension": "{0} został zawieszony przez {1} {2}.",
+      "user_unsuspension": "zawieszenie {0} zostało zdjęte przez {1} {2}.",
+      "user_warning": "Ostrzeżenie dla {0} zostało wysłane przez {1} {2}.",
+      "user_warning_lifting": "Ostrzeżenie dla {0} zostało zdjęte przez {1} {2}.",
+      "workout_suspension": "Trening został zawieszony przez {1} {2}.",
+      "workout_unsuspension": "Zawieszenie treningu zdjęte przez {1} {2}."
+    },
+    "REPORT_NOTE": "Notatka od",
+    "RESOLVED": {
+      "FALSE": "Nierozwiązane",
+      "TRUE": "Rozwiązane"
+    },
+    "RESOLVED_AT": "Rozwiązane",
+    "RESOLVED_BY": "Rozwiązane przez",
+    "STATUS": "status",
+    "TEXTAREA_PLACEHOLDER": {
+      "ADD_COMMENT": "Dodaj komentarz, opis sytuacji lub inne przydatne informacje.",
+      "INFORMATION_VISIBLE_TO_USER": "Ta informacja będzie widoczna dla użytkownika.",
+      "MARK_AS_RESOLVED": "Powód rozwiązania sprawy.",
+      "MARK_AS_UNRESOLVED": "Powód nie rozwiązania sprawy.",
+      "SEND_WARNING_EMAIL": "Podaj powód ostrzeżenia (nie obowiązkowe).",
+      "SUSPEND": "Podaj powód zawieszenia (nie obowiązkowe).",
+      "UNSUSPEND": "Dodaj komentarz (nie obowiązkowe).",
+      "UPDATE_APPEAL": "Powód odwołania."
+    },
+    "TITLE": "Moderacja",
+    "UNRESOLVED_REPORTS_EXIST": "Nadal są nierozwiązane raporty.",
+    "VIEW_REPORT": "Zobacz raport"
+  },
   "BACK_TO_ADMIN": "Wróć do administratora",
+  "CONFIRM_SUSPEND_ACCOUNT": "Czy na pewno zawiesić konto {0}?",
+  "CONFIRM_SUSPEND_CONTENT": "Czy na pewno zawiesić zgłoszoną treść?",
   "CONFIRM_USER_ACCOUNT_DELETION": "Czy na pewno usunąć konto {0}? Wszystkie dane zostaną skasowane, tego nie da się cofnąć.",
   "CONFIRM_USER_PASSWORD_RESET": "Czy na pewno chcesz zresetować {0} hasło?",
   "CURRENT_EMAIL": "Aktualny e-mail",
+  "DELETED_COMMENT": "Usunięty komentarz",
+  "DELETED_USER": "Usunięty użytkownik",
+  "DELETED_WORKOUT": "Usunięty trening",
   "DELETE_USER": "Usuń użytkownika",
   "EMAIL_SENDING_DISABLED": "Wysyłanie e-maili jest wyłączone.",
   "ENABLE_DISABLE_EQUIPMENT_TYPES": "Włącz/wyłącz typy sprzętu.",
@@ -63,9 +134,16 @@
       "ORDER_BY": {
         "CREATED_AT": "data rejestracji",
         "IS_ACTIVE": "status konta",
+        "ROLE": "role",
         "USERNAME": "nazwa użytkownika",
         "WORKOUTS_COUNT": "liczba treningów"
       }
+    },
+    "TABLE": {
+      "CHANGE_ROLE": "Zmień rolę",
+      "CHANGE_TO_ADMIN": "Zmień na rolę administrator",
+      "CHANGE_TO_MODERATOR": "Zmień na rolę moderator",
+      "CHANGE_TO_USER": "Zmień na rolę użytkownik"
     },
     "TITLE": "Administracja - Użytkownicy"
   },

@@ -9,6 +9,7 @@
   },
   "STATISTICS_ON_ALL_WORKOUTS": "Statystyki dotyczące wszystkich treningów:",
   "STATISTICS_ON_LAST_WORKOUTS": "Statystyki z ostatnich {count} treningów:",
+  "STATISTICS_TYPE": "Rodzaj statystyk",
   "STATISTICS_TYPES": {
     "by_sport": "wg sportu",
     "by_time": "wg przedziału czasu"
