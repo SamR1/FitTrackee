@@ -301,7 +301,14 @@
                     :value="level"
                     :key="level"
                   >
-                    {{ $t(`visibility_levels.LEVELS.${level}`) }}
+                    {{
+                      $t(
+                        `visibility_levels.LEVELS.${getVisibilityLevelForLabel(
+                          level,
+                          appConfig.federation_enabled
+                        )}`
+                      )
+                    }}
                   </option>
                 </select>
               </div>
@@ -320,7 +327,14 @@
                     :value="level"
                     :key="level"
                   >
-                    {{ $t(`visibility_levels.LEVELS.${level}`) }}
+                    {{
+                      $t(
+                        `visibility_levels.LEVELS.${getVisibilityLevelForLabel(
+                          level,
+                          appConfig.federation_enabled
+                        )}`
+                      )
+                    }}
                   </option>
                 </select>
               </div>
@@ -338,7 +352,14 @@
                     :value="level"
                     :key="level"
                   >
-                    {{ $t(`visibility_levels.LEVELS.${level}`) }}
+                    {{
+                      $t(
+                        `visibility_levels.LEVELS.${getVisibilityLevelForLabel(
+                          level,
+                          appConfig.federation_enabled
+                        )}`
+                      )
+                    }}
                   </option>
                 </select>
               </div>
@@ -422,6 +443,7 @@
   import {
     getAllVisibilityLevels,
     getVisibilityLevels,
+    getVisibilityLevelForLabel,
     getUpdatedVisibility,
   } from '@/utils/visibility_levels'
 
@@ -513,7 +535,7 @@
       : []
   )
   const visibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
-    getAllVisibilityLevels()
+    getAllVisibilityLevels(appConfig.value.federation_enabled)
   )
   const analysisVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(
     () => getVisibilityLevels(workoutForm.workoutVisibility)

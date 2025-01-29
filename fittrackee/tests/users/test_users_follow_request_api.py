@@ -12,7 +12,7 @@ from ..mixins import ApiTestCaseMixin
 from ..utils import OAUTH_SCOPES, random_string
 
 
-class TestGetFollowRequest(ApiTestCaseMixin):
+class TestGetFollowRequestWithoutFederation(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask
     ) -> None:
@@ -343,7 +343,7 @@ class FollowRequestTestCase(ApiTestCaseMixin):
         )
 
 
-class TestAcceptFollowRequest(FollowRequestTestCase):
+class TestAcceptFollowRequestWithoutFederation(FollowRequestTestCase):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, user_1: User
     ) -> None:
@@ -465,7 +465,7 @@ class TestAcceptFollowRequest(FollowRequestTestCase):
         self.assert_response_scope(response, can_access)
 
 
-class TestRejectFollowRequest(FollowRequestTestCase):
+class TestRejectFollowRequestWithoutFederation(FollowRequestTestCase):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, user_1: User
     ) -> None:

@@ -7,6 +7,7 @@ from flask import current_app
 from sqlalchemy.pool import NullPool
 
 from fittrackee import DEFAULT_PRIVACY_POLICY_DATA, VERSION
+from fittrackee.federation.utils import remove_url_scheme
 from fittrackee.languages import SUPPORTED_LANGUAGES
 
 broker: Union[Type['RedisBroker'], Type['StubBroker']] = (
@@ -69,6 +70,11 @@ class BaseConfig:
     DATA_EXPORT_EXPIRATION = 24  # hours
     VERSION = VERSION
     DEFAULT_PRIVACY_POLICY_DATA = DEFAULT_PRIVACY_POLICY_DATA
+    # ActivityPub
+    FEDERATION_ENABLED = (
+        os.environ.get('FEDERATION_ENABLED', 'false').lower() == 'true'
+    )
+    AP_DOMAIN = remove_url_scheme(UI_URL)
 
 
 class DevelopmentConfig(BaseConfig):
@@ -100,11 +106,13 @@ class TestingConfig(BaseConfig):
         'authorization_code': 60,
         'refresh_token': 60,
     }
+    AP_DOMAIN = 'example.com'
 
 
 class End2EndTestingConfig(TestingConfig):
     DRAMATIQ_BROKER_URL = os.getenv('REDIS_URL', 'redis://')
     UI_URL = 'http://0.0.0.0:5000'
+    AP_DOMAIN = '0.0.0.0:5000'
 
 
 class ProductionConfig(BaseConfig):

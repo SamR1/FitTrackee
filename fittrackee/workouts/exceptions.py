@@ -5,6 +5,10 @@ class InvalidGPXException(GenericException):
     pass
 
 
+class SportNotFoundException(Exception):
+    pass
+
+
 class WorkoutException(GenericException):
     pass
 
