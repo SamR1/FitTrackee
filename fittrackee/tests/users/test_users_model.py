@@ -680,7 +680,7 @@ class TestUserWorkouts(UserModelAssertMixin):
             sport_2_running.id,
         ]
         assert serialized_user['total_distance'] == (
-            workout_cycling_user_1.distance + workout_running_user_1.distance
+            workout_cycling_user_1.distance + workout_running_user_1.distance  # type: ignore  # noqa
         )
         assert serialized_user['total_duration'] == str(
             workout_cycling_user_1.duration + workout_running_user_1.duration
@@ -1314,7 +1314,7 @@ class TestBlocksUser:
         blocked_user = BlockedUser.query.filter_by(
             user_id=user_2.id,
             by_user_id=user_1.id,
-        ).first()
+        ).one()
         assert blocked_user.created_at == now
 
     def test_it_does_not_raises_error_when_user_is_already_blocked(

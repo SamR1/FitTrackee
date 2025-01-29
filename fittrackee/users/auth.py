@@ -1646,6 +1646,9 @@ def del_picture(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     :statuscode 500: ``error during picture deletion``
 
     """
+    if not auth_user.picture:
+        return {'status': 'no content'}, 204
+
     try:
         picture_path = get_absolute_file_path(auth_user.picture)
         if os.path.isfile(picture_path):

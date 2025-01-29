@@ -1,9 +1,11 @@
 import os
-from typing import Dict
+from datetime import datetime
+from typing import Dict, Optional
 
 from flask import current_app
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
 from sqlalchemy.sql import text
@@ -15,25 +17,35 @@ from fittrackee.users.models import User
 
 class AppConfig(BaseModel):
     __tablename__ = 'app_config'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    max_users = db.Column(db.Integer, default=0, nullable=False)
-    gpx_limit_import = db.Column(db.Integer, default=10, nullable=False)
-    max_single_file_size = db.Column(
-        db.Integer, default=1048576, nullable=False
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    max_users: Mapped[int] = mapped_column(default=0, nullable=False)
+    gpx_limit_import: Mapped[int] = mapped_column(default=10, nullable=False)
+    max_single_file_size: Mapped[int] = mapped_column(
+        default=1048576, nullable=False
     )
-    max_zip_file_size = db.Column(db.Integer, default=10485760, nullable=False)
-    admin_contact = db.Column(db.String(255), nullable=True)
-    privacy_policy_date = db.Column(TZDateTime, nullable=True)
-    privacy_policy = db.Column(db.Text, nullable=True)
-    about = db.Column(db.Text, nullable=True)
-    stats_workouts_limit = db.Column(db.Integer, default=10000, nullable=False)
+    max_zip_file_size: Mapped[int] = mapped_column(
+        default=10485760, nullable=False
+    )
+    admin_contact: Mapped[Optional[str]] = mapped_column(
+        db.String(255), nullable=True
+    )
+    privacy_policy_date: Mapped[Optional[datetime]] = mapped_column(
+        TZDateTime, nullable=True
+    )
+    privacy_policy: Mapped[Optional[str]] = mapped_column(
+        db.Text, nullable=True
+    )
+    about: Mapped[Optional[str]] = mapped_column(db.Text, nullable=True)
+    stats_workouts_limit: Mapped[int] = mapped_column(
+        default=10000, nullable=False
+    )
 
     @property
     def is_registration_enabled(self) -> bool:
         result = db.session.execute(
             text("SELECT COUNT(*) FROM users WHERE users.is_remote IS FALSE;")
         )
-        nb_users = result.fetchone()[0]
+        nb_users = result.one()[0]
         return self.max_users == 0 or nb_users < self.max_users
 
     @property

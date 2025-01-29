@@ -28,7 +28,7 @@ class TestReportModel(CommentMixin, RandomMixin):
             Report(
                 note=self.random_string(),
                 reported_by=user_1.id,
-                reported_object=sport_1_cycling,
+                reported_object=sport_1_cycling,  # type: ignore
             )
 
     def test_it_creates_report_for_a_comment(
@@ -96,7 +96,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         db.session.delete(comment)
         db.session.commit()
 
-        updated_report = Report.query.first()
+        updated_report = Report.query.one()
         assert updated_report.created_at == report_created_at
         assert updated_report.is_reported_user_warned is False
         assert updated_report.note == report_note
@@ -159,7 +159,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         db.session.delete(user_2)
         db.session.commit()
 
-        updated_report = Report.query.first()
+        updated_report = Report.query.one()
         assert updated_report.created_at == report_created_at
         assert updated_report.is_reported_user_warned is False
         assert updated_report.note == report_note
@@ -193,7 +193,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         db.session.delete(user_1)
         db.session.commit()
 
-        updated_report = Report.query.first()
+        updated_report = Report.query.one()
         assert updated_report.created_at == report_created_at
         assert updated_report.is_reported_user_warned is False
         assert updated_report.note == report_note
@@ -262,7 +262,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         db.session.delete(workout_cycling_user_2)
         db.session.commit()
 
-        updated_report = Report.query.first()
+        updated_report = Report.query.one()
         assert updated_report.created_at == report_created_at
         assert updated_report.is_reported_user_warned is False
         assert updated_report.note == report_note
@@ -431,7 +431,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "note": report.note,
             "object_type": "comment",
             "reported_by": user_1.serialize(current_user=user_1),
-            "reported_comment": "_COMMENT_UNAVAILABLE_",
+            "reported_comment": {"id": "_COMMENT_UNAVAILABLE_"},
             "reported_user": user_2.serialize(current_user=user_1),
             "reported_workout": None,
             "resolved": False,
@@ -605,7 +605,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "reported_by": user_1.serialize(current_user=user_1),
             "reported_comment": None,
             "reported_user": user_2.serialize(current_user=user_1),
-            "reported_workout": '_WORKOUT_UNAVAILABLE_',
+            "reported_workout": {"id": "_WORKOUT_UNAVAILABLE_"},
             "resolved": False,
             "resolved_at": None,
         }

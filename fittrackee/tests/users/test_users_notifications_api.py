@@ -82,7 +82,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_3.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         follow_request_from_user_3_notification.marked_as_read = True
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -101,7 +101,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         assert data["status"] == "success"
         assert data["notifications"] == [
             jsonify_dict(follow_request_from_user_3_notification.serialize()),
@@ -129,7 +129,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_3.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         follow_request_from_user_3_notification.marked_as_read = True
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -148,7 +148,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         assert data["status"] == "success"
         assert data["notifications"] == [
             jsonify_dict(follow_request_from_user_2_notification.serialize()),
@@ -175,7 +175,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_3.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         follow_request_from_user_3_notification.marked_as_read = True
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -237,7 +237,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         assert data["notifications"] == [
             jsonify_dict(follow_request_from_user_2_notification.serialize()),
         ]
@@ -284,12 +284,12 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         follow_request_from_user_3_notification = Notification.query.filter_by(
             from_user_id=user_3.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         assert data["notifications"] == [
             jsonify_dict(follow_request_from_user_2_notification.serialize()),
             jsonify_dict(follow_request_from_user_3_notification.serialize()),
@@ -336,7 +336,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         assert data["notifications"] == [
             jsonify_dict(follow_request_from_user_2_notification.serialize()),
         ]
@@ -576,7 +576,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="workout_like",
-        ).first()
+        ).one()
         assert data["notifications"] == [
             jsonify_dict(like_from_user_2_notification.serialize()),
         ]
@@ -623,7 +623,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="comment_like",
-        ).first()
+        ).one()
         assert data["notifications"] == [
             jsonify_dict(like_from_user_2_notification.serialize()),
         ]
@@ -1128,7 +1128,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1_admin.id,
             event_type="report",
-        ).first()
+        ).one()
         assert data["notifications"] == [
             jsonify_dict(report_notification.serialize())
         ]
@@ -1167,7 +1167,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1_admin.id,
             event_type="report",
-        ).first()
+        ).one()
         assert data["notifications"] == [
             jsonify_dict(report_notification.serialize())
         ]
@@ -1205,7 +1205,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_3.id,
             to_user_id=user_1_admin.id,
             event_type="suspension_appeal",
-        ).first()
+        ).one()
         assert (
             jsonify_dict(appeal_notification.serialize())
             in data["notifications"]
@@ -1305,7 +1305,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
         user_2: User,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        notification = Notification.query.first()
+        notification = Notification.query.one()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1334,7 +1334,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
             from_user_id=user_3.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         if not input_read_status:
             notification.marked_as_read = True
         db.session.commit()
@@ -1368,7 +1368,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
             from_user_id=user_3.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1534,7 +1534,7 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         user_2: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        notification = Notification.query.first()
+        notification = Notification.query.one()
         notification.marked_as_read = True
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1758,7 +1758,7 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
             from_user_id=follow_request.follower_user_id,
             to_user_id=follow_request.followed_user_id,
             event_type="follow_request",
-        ).first()
+        ).one()
         assert follow_request_notification.marked_as_read is status
 
     @staticmethod
@@ -1769,7 +1769,7 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
             from_user_id=like.user_id,
             to_user_id=like.workout.user_id,
             event_type="workout_like",
-        ).first()
+        ).one()
         assert like_notification.marked_as_read is status
 
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -1828,7 +1828,7 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
             from_user_id=user_3.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         follow_request_from_user_3_notification.marked_as_read = True
         like = WorkoutLike(
             user_id=user_2.id, workout_id=workout_cycling_user_1.id
@@ -2035,7 +2035,7 @@ class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="workout_like",
-        ).first()
+        ).one()
         like_notification.marked_as_read = True
         db.session.commit()
 
@@ -2084,7 +2084,7 @@ class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="workout_like",
-        ).first()
+        ).one()
         like_notification.marked_as_read = True
         db.session.commit()
 
@@ -2131,7 +2131,7 @@ class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="workout_like",
-        ).first()
+        ).one()
         like_notification.marked_as_read = True
         db.session.commit()
 

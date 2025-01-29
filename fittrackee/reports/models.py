@@ -1,11 +1,11 @@
 from datetime import datetime, timezone
-from typing import Dict, Optional, Union
-from uuid import uuid4
+from typing import Any, Dict, List, Optional, Union
+from uuid import UUID, uuid4
 
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
-from sqlalchemy.orm import Mapper, Session
+from sqlalchemy.orm import Mapped, Mapper, Session, mapped_column, relationship
 
 from fittrackee import BaseModel, db
 from fittrackee.comments.exceptions import CommentForbiddenException
@@ -63,85 +63,65 @@ ALL_ACTION_TYPES = REPORT_ACTION_TYPES + OBJECTS_ACTION_TYPES
 
 class Report(BaseModel):
     __tablename__ = 'reports'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    created_at = db.Column(TZDateTime, default=aware_utc_now)
-    updated_at = db.Column(TZDateTime, nullable=True)
-    resolved_at = db.Column(TZDateTime, nullable=True)
-    reported_by = db.Column(
-        db.Integer,
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    created_at: Mapped[datetime] = mapped_column(
+        TZDateTime, default=aware_utc_now
+    )
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        TZDateTime, nullable=True
+    )
+    resolved_at: Mapped[Optional[datetime]] = mapped_column(
+        TZDateTime, nullable=True
+    )
+    reported_by: Mapped[Optional[int]] = mapped_column(
         db.ForeignKey('users.id', ondelete='SET NULL'),
         index=True,
         nullable=True,
     )
-    reported_comment_id = db.Column(
-        db.Integer,
+    reported_comment_id: Mapped[Optional[int]] = mapped_column(
         db.ForeignKey('comments.id', ondelete='SET NULL'),
         index=True,
         nullable=True,
     )
-    reported_user_id = db.Column(
-        db.Integer,
+    reported_user_id: Mapped[Optional[int]] = mapped_column(
         db.ForeignKey('users.id', ondelete='SET NULL'),
         index=True,
         nullable=True,
     )
-    reported_workout_id = db.Column(
-        db.Integer,
+    reported_workout_id: Mapped[Optional[int]] = mapped_column(
         db.ForeignKey('workouts.id', ondelete='SET NULL'),
         index=True,
         nullable=True,
     )
-    resolved_by = db.Column(
-        db.Integer,
+    resolved_by: Mapped[Optional[int]] = mapped_column(
         db.ForeignKey('users.id', ondelete='SET NULL'),
         index=True,
         nullable=True,
     )
-    resolved = db.Column(db.Boolean, default=False, nullable=False)
-    object_type = db.Column(db.String(50), nullable=False, index=True)
-    note = db.Column(db.String(), nullable=False)
+    resolved: Mapped[bool] = mapped_column(default=False, nullable=False)
+    object_type: Mapped[str] = mapped_column(
+        db.String(50), nullable=False, index=True
+    )
+    note: Mapped[str] = mapped_column(db.String(), nullable=False)
 
-    reported_comment = db.relationship(
-        'Comment',
-        lazy=True,
-        backref=db.backref('comment_reports', lazy='select'),
+    reported_comment: Mapped['Comment'] = relationship('Comment', lazy=True)
+    reported_user: Mapped['User'] = relationship(
+        'User', primaryjoin=reported_user_id == User.id
     )
-    reported_user = db.relationship(
-        'User',
-        primaryjoin=reported_user_id == User.id,
-        backref=db.backref('user_reports', lazy='select'),
+    reported_workout: Mapped['Workout'] = relationship('Workout', lazy=True)
+    reporter: Mapped['User'] = relationship(
+        'User', primaryjoin=reported_by == User.id
     )
-    reported_workout = db.relationship(
-        'Workout',
-        lazy=True,
-        backref=db.backref('workouts_reports', lazy='select'),
+    resolver: Mapped['User'] = relationship(
+        'User', primaryjoin=resolved_by == User.id
     )
-    reporter = db.relationship(
-        'User',
-        primaryjoin=reported_by == User.id,
-        backref=db.backref(
-            'user_own_reports',
-            lazy='select',
-            single_parent=True,
-        ),
+    comments: Mapped[List['ReportComment']] = relationship(
+        'ReportComment', back_populates='report'
     )
-    resolver = db.relationship(
-        'User',
-        primaryjoin=resolved_by == User.id,
-        backref=db.backref(
-            'user_resolved_reports',
-            lazy='select',
-            single_parent=True,
-        ),
-    )
-    comments = db.relationship(
-        'ReportComment',
-        backref=db.backref('report', lazy='select'),
-    )
-    report_actions = db.relationship(
+    report_actions: Mapped[List['ReportAction']] = relationship(
         'ReportAction',
         lazy=True,
-        backref=db.backref('report', lazy='select', single_parent=True),
+        back_populates='report',
         order_by='ReportAction.created_at.asc()',
     )
 
@@ -179,7 +159,7 @@ class Report(BaseModel):
             raise InvalidReportException()
         user_id = (
             reported_object.id
-            if object_type == "user"
+            if isinstance(reported_object, User)
             else reported_object.user_id
         )
         if user_id == reported_by:
@@ -192,11 +172,15 @@ class Report(BaseModel):
         self.object_type = object_type
         self.reported_by = reported_by
         self.reported_comment_id = (
-            reported_object.id if object_type == "comment" else None
+            reported_object.id
+            if isinstance(reported_object, Comment)
+            else None
         )
         self.reported_user_id = user_id
         self.reported_workout_id = (
-            reported_object.id if object_type == "workout" else None
+            reported_object.id
+            if isinstance(reported_object, Workout)
+            else None
         )
         self.resolved = False
 
@@ -214,7 +198,7 @@ class Report(BaseModel):
                 else None
             )
         except CommentForbiddenException:
-            reported_comment = '_COMMENT_UNAVAILABLE_'
+            reported_comment = {"id": "_COMMENT_UNAVAILABLE_"}
 
         try:
             reported_workout = (
@@ -225,7 +209,7 @@ class Report(BaseModel):
                 else None
             )
         except WorkoutForbiddenException:
-            reported_workout = '_WORKOUT_UNAVAILABLE_'
+            reported_workout = {"id": "_WORKOUT_UNAVAILABLE_"}
 
         report = {
             "created_at": self.created_at,
@@ -273,6 +257,9 @@ def on_report_insert(
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
+        if not new_report.reported_by:
+            return
+
         from fittrackee.users.models import Notification, User
 
         for admin in User.query.filter(
@@ -292,25 +279,27 @@ def on_report_insert(
 
 class ReportComment(BaseModel):
     __tablename__ = 'report_comments'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    created_at = db.Column(TZDateTime, default=aware_utc_now)
-    report_id = db.Column(
-        db.Integer,
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    created_at: Mapped[datetime] = mapped_column(
+        TZDateTime, default=aware_utc_now
+    )
+    report_id: Mapped[Optional[int]] = mapped_column(
         db.ForeignKey('reports.id', ondelete='CASCADE'),
         index=True,
         nullable=True,
     )
-    user_id = db.Column(
-        db.Integer,
+    user_id: Mapped[Optional[int]] = mapped_column(
         db.ForeignKey('users.id', ondelete='CASCADE'),
         index=True,
         nullable=True,
     )
-    comment = db.Column(db.String(), nullable=False)
+    comment: Mapped[str] = mapped_column(db.String(), nullable=False)
 
-    user = db.relationship(
-        'User',
-        backref=db.backref('user_report_comments', lazy='select'),
+    user: Mapped["User"] = relationship('User')
+    report: Mapped["Report"] = relationship(
+        'Report',
+        lazy='select',
+        single_parent=True,
     )
 
     def __init__(
@@ -341,73 +330,65 @@ class ReportComment(BaseModel):
 
 class ReportAction(BaseModel):
     __tablename__ = "report_actions"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    uuid = db.Column(
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    uuid: Mapped[UUID] = mapped_column(
         postgresql.UUID(as_uuid=True),
         default=uuid4,
         unique=True,
         nullable=False,
     )
-    created_at = db.Column(TZDateTime, default=aware_utc_now, index=True)
-    moderator_id = db.Column(
-        db.Integer,
+    created_at: Mapped[datetime] = mapped_column(
+        TZDateTime, default=aware_utc_now, index=True
+    )
+    moderator_id: Mapped[Optional[int]] = mapped_column(
         db.ForeignKey("users.id", ondelete="SET NULL"),
         index=True,
         nullable=True,  # to keep log if an moderator is deleted
     )
-    report_id = db.Column(
-        db.Integer,
+    report_id: Mapped[int] = mapped_column(
         db.ForeignKey("reports.id", ondelete="CASCADE"),
         index=True,
         nullable=False,
     )
-    user_id = db.Column(
-        db.Integer,
+    user_id: Mapped[Optional[int]] = mapped_column(
         db.ForeignKey("users.id", ondelete="CASCADE"),
         index=True,
         nullable=True,
     )
-    workout_id = db.Column(
-        db.Integer,
+    workout_id: Mapped[Optional[int]] = mapped_column(
         db.ForeignKey('workouts.id', ondelete='SET NULL'),
         index=True,
         nullable=True,
     )
-    comment_id = db.Column(
-        db.Integer,
+    comment_id: Mapped[Optional[int]] = mapped_column(
         db.ForeignKey('comments.id', ondelete='SET NULL'),
         index=True,
         nullable=True,
     )
-    action_type = db.Column(db.String(50), nullable=False)
-    reason = db.Column(db.String(), nullable=True)
+    action_type: Mapped[str] = mapped_column(db.String(50), nullable=False)
+    reason: Mapped[Optional[str]] = mapped_column(db.String(), nullable=True)
 
-    moderator = db.relationship(
+    moderator: Mapped["User"] = relationship(
         "User",
         primaryjoin=moderator_id == User.id,
         lazy="joined",
         single_parent=True,
     )
-    user = db.relationship(
+    user: Mapped["User"] = relationship(
         "User",
         primaryjoin=user_id == User.id,
         lazy="joined",
         single_parent=True,
     )
-    appeal = db.relationship(
+    appeal: Mapped["ReportActionAppeal"] = relationship(
         "ReportActionAppeal",
         uselist=False,
-        backref=db.backref("action", lazy='joined', single_parent=True),
+        back_populates="action",
     )
-    comment = db.relationship(
-        'Comment',
-        lazy=True,
-        backref=db.backref('comment_report_action', lazy='select'),
-    )
-    workout = db.relationship(
-        'Workout',
-        lazy=True,
-        backref=db.backref('workout_report_action', lazy='select'),
+    comment: Mapped["Comment"] = relationship('Comment', lazy=True)
+    workout: Mapped["Workout"] = relationship('Workout', lazy=True)
+    report: Mapped["Report"] = relationship(
+        'Report', lazy='select', single_parent=True
     )
 
     def __init__(
@@ -456,7 +437,7 @@ class ReportAction(BaseModel):
             and current_user.id != self.user_id
         ):
             raise ReportActionForbiddenException()
-        action = {
+        action: Dict[str, Any] = {
             "action_type": self.action_type,
             "appeal": (
                 self.appeal.serialize(current_user) if self.appeal else None
@@ -518,48 +499,52 @@ class ReportActionAppeal(BaseModel):
         ),
     )
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    uuid = db.Column(
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    uuid: Mapped[UUID] = mapped_column(
         postgresql.UUID(as_uuid=True),
         default=uuid4,
         unique=True,
         nullable=False,
     )
-    action_id = db.Column(
-        db.Integer,
+    action_id: Mapped[int] = mapped_column(
         db.ForeignKey("report_actions.id", ondelete="CASCADE"),
         index=True,
         nullable=False,
     )
-    user_id = db.Column(
-        db.Integer,
+    user_id: Mapped[int] = mapped_column(
         db.ForeignKey("users.id", ondelete="CASCADE"),
         index=True,
         nullable=False,
     )
-    moderator_id = db.Column(
-        db.Integer,
+    moderator_id: Mapped[Optional[int]] = mapped_column(
         db.ForeignKey("users.id", ondelete="SET NULL"),
         index=True,
         nullable=True,
     )
-    created_at = db.Column(TZDateTime, default=aware_utc_now, nullable=False)
-    updated_at = db.Column(TZDateTime)
-    approved = db.Column(db.Boolean, nullable=True)
-    text = db.Column(db.String(), nullable=False)
-    reason = db.Column(db.String(), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        TZDateTime, default=aware_utc_now, nullable=False
+    )
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        TZDateTime, nullable=True
+    )
+    approved: Mapped[Optional[bool]] = mapped_column(nullable=True)
+    text: Mapped[str] = mapped_column(db.String(), nullable=False)
+    reason: Mapped[Optional[str]] = mapped_column(db.String(), nullable=True)
 
-    moderator = db.relationship(
+    moderator: Mapped["User"] = relationship(
         "User",
         primaryjoin=moderator_id == User.id,
         lazy="joined",
         single_parent=True,
     )
-    user = db.relationship(
+    user: Mapped["User"] = relationship(
         "User",
         primaryjoin=user_id == User.id,
         lazy="joined",
         single_parent=True,
+    )
+    action: Mapped["ReportAction"] = relationship(
+        "ReportAction", lazy='joined', single_parent=True
     )
 
     def __init__(
@@ -569,7 +554,7 @@ class ReportActionAppeal(BaseModel):
         text: str,
         created_at: Optional[datetime] = None,
     ):
-        action = ReportAction.query.filter_by(id=action_id).first()
+        action = ReportAction.query.filter_by(id=action_id).one()
         if action.action_type not in [
             "comment_suspension",
             "user_suspension",
@@ -596,7 +581,7 @@ class ReportActionAppeal(BaseModel):
             and current_user.id != self.user_id
         ):
             raise ReportActionAppealForbiddenException()
-        appeal = {
+        appeal: Dict[str, Any] = {
             "approved": self.approved,
             "created_at": self.created_at,
             "id": self.short_id,
@@ -620,6 +605,9 @@ def on_report_action_insert(
 ) -> None:
     @listens_for(db.Session, 'after_flush', once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
+        if not new_action.moderator_id or not new_action.user_id:
+            return
+
         if (
             new_action.action_type
             in COMMENT_ACTION_TYPES

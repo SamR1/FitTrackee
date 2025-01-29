@@ -82,9 +82,8 @@ def sport_3_cycling_transport() -> Sport:
 
 
 def update_workout(workout: Workout) -> None:
-    workout.ave_speed = float(workout.distance) / (
-        workout.duration.seconds / 3600
-    )
+    distance = workout.distance if workout.distance else 0
+    workout.ave_speed = float(distance) / (workout.duration.seconds / 3600)
     workout.max_speed = workout.ave_speed
     workout.moving = workout.duration
 
@@ -253,19 +252,18 @@ def seven_workouts_user_1() -> List[Workout]:
     db.session.flush()
     workouts.append(workout_6)
 
+    distance = 10
     workout_7 = Workout(
         user_id=1,
         sport_id=1,
         # workout_date: 'Wed, 09 May 2018 00:00:00 GMT'
         workout_date=datetime(2018, 5, 9, tzinfo=timezone.utc),
-        distance=10,
+        distance=distance,
         duration=timedelta(seconds=3600),
     )
     workout_7.title = "Workout 7 of 7"
     workout_7.moving = timedelta(seconds=3000)
-    workout_7.ave_speed = float(workout_7.distance) / (
-        workout_7.moving.seconds / 3600
-    )
+    workout_7.ave_speed = float(distance) / (workout_7.moving.seconds / 3600)
     workout_7.max_speed = workout_7.ave_speed + 5
     db.session.add(workout_7)
     db.session.commit()

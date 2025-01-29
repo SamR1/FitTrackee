@@ -592,7 +592,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         assert data['data']['workouts'][0]['equipments'] == [
             jsonify_dict(equipment_bike_user_1.serialize())
         ]
-        workout = Workout.query.first()
+        workout = Workout.query.one()
         assert equipment_bike_user_1.total_workouts == 1
         assert equipment_bike_user_1.total_distance == workout.distance
         assert equipment_bike_user_1.total_duration == workout.duration
@@ -640,7 +640,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         token, workout_short_id = post_a_workout(app, gpx_file)
         workout = Workout.query.filter_by(
             uuid=decode_short_id(workout_short_id)
-        ).first()
+        ).one()
         workout.equipments = [equipment_bike_user_1_inactive]
         db.session.commit()
         client = app.test_client()
@@ -706,7 +706,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         token, workout_short_id = post_a_workout(app, gpx_file)
         workout = Workout.query.filter_by(
             uuid=decode_short_id(workout_short_id)
-        ).first()
+        ).one()
         workout.equipments = [equipment_bike_user_1]
         db.session.commit()
         client = app.test_client()
@@ -739,7 +739,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         token, workout_short_id = post_a_workout(app, gpx_file)
         workout = Workout.query.filter_by(
             uuid=decode_short_id(workout_short_id)
-        ).first()
+        ).one()
         workout.equipments = [equipment_bike_user_1]
         db.session.commit()
         client = app.test_client()
@@ -798,7 +798,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         token, workout_short_id = post_a_workout(app, gpx_file)
         workout = Workout.query.filter_by(
             uuid=decode_short_id(workout_short_id)
-        ).first()
+        ).one()
         workout.equipments = [equipment_bike_user_1]
         db.session.commit()
         client = app.test_client()

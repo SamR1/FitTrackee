@@ -296,7 +296,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         data = json.loads(response.data.decode())
         new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
-        ).first()
+        ).one()
         assert data['comment'] == jsonify_dict(new_comment.serialize(user_1))
 
     def test_it_creates_comment_with_wider_visibility_than_workout(
@@ -333,7 +333,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         data = json.loads(response.data.decode())
         new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
-        ).first()
+        ).one()
         assert data['comment'] == jsonify_dict(new_comment.serialize(user_1))
 
     def test_it_returns_403_when_when_user_is_suspended(
@@ -398,7 +398,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         assert response.status_code == 201
         new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_1.id
-        ).first()
+        ).one()
         assert new_comment.text == " Hello"
 
     def test_it_creates_mention(
@@ -429,7 +429,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
-        ).first()
+        ).one()
         assert (
             Mention.query.filter_by(
                 comment_id=new_comment.id, user_id=user_3.id
@@ -2969,7 +2969,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
         new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
-        ).first()
+        ).one()
         assert Mention.query.filter_by(comment_id=new_comment.id).all() == []
 
     def test_it_updates_mentions_to_add_mention(
@@ -3001,7 +3001,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
         new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
-        ).first()
+        ).one()
         assert (
             Mention.query.filter_by(
                 comment_id=new_comment.id, user_id=user_3.id
@@ -3247,9 +3247,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
 
         assert response.status_code == 201
         assert response.json == {"status": "success"}
-        appeal = ReportActionAppeal.query.filter_by(
-            action_id=action.id
-        ).first()
+        appeal = ReportActionAppeal.query.filter_by(action_id=action.id).one()
         assert appeal.moderator_id is None
         assert appeal.approved is None
         assert appeal.created_at == now

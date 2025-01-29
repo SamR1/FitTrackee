@@ -1625,24 +1625,24 @@ class TestGetStatsBySport(ApiTestCaseMixin):
             '1': {
                 'average_ascent': seven_workouts_user_1[6].ascent,
                 'average_descent': seven_workouts_user_1[6].descent,
-                'average_distance': float(seven_workouts_user_1[6].distance),
+                'average_distance': float(seven_workouts_user_1[6].distance),  # type: ignore  # noqa
                 'average_duration': str(seven_workouts_user_1[6].moving),
-                'average_speed': float(seven_workouts_user_1[6].ave_speed),
+                'average_speed': float(seven_workouts_user_1[6].ave_speed),  # type: ignore  # noqa
                 'total_ascent': seven_workouts_user_1[6].ascent,
                 'total_descent': seven_workouts_user_1[6].descent,
-                'total_distance': float(seven_workouts_user_1[6].distance),
+                'total_distance': float(seven_workouts_user_1[6].distance),  # type: ignore  # noqa
                 'total_duration': str(seven_workouts_user_1[6].moving),
                 'total_workouts': 1,
             },
             '2': {
                 'average_ascent': workout_running_user_1.ascent,
                 'average_descent': workout_running_user_1.descent,
-                'average_distance': float(workout_running_user_1.distance),
+                'average_distance': float(workout_running_user_1.distance),  # type: ignore  # noqa
                 'average_duration': str(workout_running_user_1.moving),
-                'average_speed': float(workout_running_user_1.ave_speed),
+                'average_speed': float(workout_running_user_1.ave_speed),  # type: ignore  # noqa
                 'total_ascent': workout_running_user_1.ascent,
                 'total_descent': workout_running_user_1.descent,
-                'total_distance': float(workout_running_user_1.distance),
+                'total_distance': float(workout_running_user_1.distance),  # type: ignore  # noqa
                 'total_duration': str(workout_running_user_1.moving),
                 'total_workouts': 1,
             },

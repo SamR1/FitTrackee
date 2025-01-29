@@ -208,6 +208,8 @@ def create_workout(
         new_workout.title = title[:TITLE_MAX_CHARACTERS]
     else:
         sport = Sport.query.filter_by(id=new_workout.sport_id).first()
+        if not sport:
+            raise WorkoutException('error', 'sport not found')
         fmt = "%Y-%m-%d %H:%M:%S"
         workout_datetime = (
             workout_date_tz.strftime(fmt)
@@ -225,13 +227,13 @@ def create_workout(
         new_workout.ave_speed = (
             None
             if duration.seconds == 0
-            else float(new_workout.distance) / (duration.seconds / 3600)
+            else float(distance) / (duration.seconds / 3600)
         )
         new_workout.max_speed = new_workout.ave_speed
         new_workout.ascent = workout_data.get('ascent')
         new_workout.descent = workout_data.get('descent')
     if workout_data.get('equipments_list') is not None:
-        new_workout.equipments = workout_data.get('equipments_list')
+        new_workout.equipments = workout_data['equipments_list']
     return new_workout
 
 
@@ -256,10 +258,15 @@ def update_workout(workout: Workout) -> Workout:
     """
     Update workout data from gpx file
     """
+    if not workout.gpx:
+        raise WorkoutException("error", "Invalid gpx file path")
     gpx_data, _, _ = get_gpx_info(
         get_absolute_file_path(workout.gpx), False, False
     )
     updated_workout = update_workout_data(workout, gpx_data)
+    if not isinstance(updated_workout, Workout):
+        raise WorkoutException("error", "Invalid workout")
+
     updated_workout.duration = gpx_data['duration']
     updated_workout.distance = gpx_data['distance']
     db.session.flush()
@@ -285,7 +292,7 @@ def edit_workout(
     (case of a modified gpx file, see issue #7)
     """
     if workout_data.get('sport_id'):
-        workout.sport_id = workout_data.get('sport_id')
+        workout.sport_id = workout_data['sport_id']
     if workout_data.get('title'):
         workout.title = workout_data['title'][:TITLE_MAX_CHARACTERS]
     if workout_data.get('notes') is not None:
@@ -295,7 +302,7 @@ def edit_workout(
             :DESCRIPTION_MAX_CHARACTERS
         ]
     if workout_data.get('equipments_list') is not None:
-        workout.equipments = workout_data.get('equipments_list')
+        workout.equipments = workout_data['equipments_list']
     if workout_data.get('workout_visibility') is not None:
         workout.workout_visibility = VisibilityLevel(
             workout_data.get('workout_visibility')
@@ -315,12 +322,14 @@ def edit_workout(
         if workout_data.get('distance'):
             workout.distance = workout_data['distance']
 
-        workout.ave_speed = (
-            None
-            if workout.duration.seconds == 0
-            else float(workout.distance) / (workout.duration.seconds / 3600)
-        )
-        workout.max_speed = workout.ave_speed
+        if workout.distance is not None:
+            workout.ave_speed = (
+                None
+                if workout.duration.seconds == 0
+                else float(workout.distance)
+                / (workout.duration.seconds / 3600)
+            )
+            workout.max_speed = workout.ave_speed
 
         if 'ascent' in workout_data:
             workout.ascent = workout_data.get('ascent')

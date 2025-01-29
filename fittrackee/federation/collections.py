@@ -1,12 +1,13 @@
-from typing import Dict
-
-from flask_sqlalchemy import BaseQuery, Pagination
+from typing import TYPE_CHECKING, Dict
 
 from fittrackee.federation.constants import CONTEXT
 
+if TYPE_CHECKING:
+    from flask_sqlalchemy import Pagination, Query
+
 
 class OrderedCollection:
-    def __init__(self, url: str, base_query: BaseQuery) -> None:
+    def __init__(self, url: str, base_query: 'Query') -> None:
         self._url = url
         self._base_query = base_query
         self._type = 'OrderedCollection'
@@ -22,7 +23,7 @@ class OrderedCollection:
 
 
 class OrderedCollectionPage:
-    def __init__(self, url: str, pagination: Pagination) -> None:
+    def __init__(self, url: str, pagination: 'Pagination') -> None:
         self._url = url
         self._pagination = pagination
         self._type = 'OrderedCollectionPage'

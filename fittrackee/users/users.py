@@ -1,7 +1,7 @@
 import os
 import re
 import shutil
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
 from flask import Blueprint, current_app, request, send_file
 from sqlalchemy import and_, asc, desc, exc, func, nullslast, or_
@@ -48,6 +48,13 @@ from .models import FollowRequest, User, UserDataExport, UserSportPreference
 from .roles import UserRole
 from .users_service import UserManagerService
 from .utils.language import get_language
+
+if TYPE_CHECKING:
+    from sqlalchemy.sql.expression import (
+        BinaryExpression,
+        ColumnElement,
+        UnaryExpression,
+    )
 
 users_blueprint = Blueprint('users', __name__)
 
@@ -108,7 +115,9 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
     column = params.get('order_by', 'username')
     user_column = getattr(User, column)
     order = params.get('order', 'asc')
-    order_clauses = [asc(user_column) if order == 'asc' else desc(user_column)]
+    order_clauses: List["UnaryExpression"] = [
+        asc(user_column) if order == 'asc' else desc(user_column)
+    ]
     if column != 'username':
         order_clauses.append(User.username.asc())
     if column == "suspended_at":
@@ -128,29 +137,31 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
         if with_following == 'true'
         else ([], [])
     )
-    users_pagination = (
-        User.query.filter(
-            User.username.ilike('%' + query + '%') if query else True,
-            User.is_remote == remote,
+
+    filters: List[Union["ColumnElement", "BinaryExpression"]] = [
+        User.is_remote == remote,
+    ]
+    if query:
+        filters.append(User.username.ilike('%' + query + '%'))
+    if with_inactive != 'true':
+        filters.append(User.is_active == True)  # noqa
+    if with_hidden_users != 'true' and not remote:
+        filters.append(
             (
-                True if with_inactive == 'true' else User.is_active == True  # noqa
-            ),
-            or_(
-                True
-                if with_hidden_users == 'true' or remote
-                else User.hide_profile_in_users_directory == False,  # noqa
-                # TODO: handle remote users?
-                and_(
-                    User.id.in_(following_user_ids[0]),
-                    User.hide_profile_in_users_directory == True,  # noqa
-                ),
-            ),
-            (
-                True
-                if with_suspended_users == 'true'
-                else User.suspended_at == None  # noqa
+                or_(
+                    User.hide_profile_in_users_directory == False,  # noqa
+                    # TODO: handle remote users?
+                    and_(
+                        User.id.in_(following_user_ids[0]),
+                        User.hide_profile_in_users_directory == True,  # noqa
+                    ),
+                )
             ),
         )
+    if with_suspended_users != 'true':
+        filters.append(User.suspended_at == None)  # noqa
+    users_pagination = (
+        User.query.filter(*filters)
         .order_by(*order_clauses)
         .paginate(page=page, per_page=per_page, error_out=False)
     )

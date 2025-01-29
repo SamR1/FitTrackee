@@ -159,14 +159,11 @@ def get_equipments(auth_user: User) -> Dict:
     params = request.args.copy()
     type_id = params.get('equipment_type_id', None)
 
-    equipments = (
-        Equipment.query.filter(
-            Equipment.user_id == auth_user.id,
-            Equipment.equipment_type_id == type_id if type_id else True,
-        )
-        .order_by(Equipment.id)
-        .all()
-    )
+    filters = [Equipment.user_id == auth_user.id]
+    if type_id:
+        filters.append(Equipment.equipment_type_id == type_id)
+
+    equipments = Equipment.query.filter(*filters).order_by(Equipment.id).all()
 
     return {
         'status': 'success',
@@ -800,7 +797,7 @@ def refresh_equipment(
         return DataNotFoundErrorResponse('equipments')
 
     try:
-        totals = dict(
+        totals = (
             db.session.query(
                 func.sum(Workout.distance).label('total_distance'),
                 func.sum(Workout.duration).label('total_duration'),
@@ -809,7 +806,8 @@ def refresh_equipment(
             )
             .join(WorkoutEquipment)
             .filter(WorkoutEquipment.c.equipment_id == equipment.id)
-            .first()
+            .one()
+            ._asdict()
         )
         equipment.total_distance = (
             0.0

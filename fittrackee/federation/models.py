@@ -1,9 +1,10 @@
 from datetime import datetime, timezone
-from typing import Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from flask import current_app
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
 from sqlalchemy.types import Enum
@@ -14,6 +15,9 @@ from fittrackee.database import TZDateTime
 from .constants import AP_CTX
 from .enums import ActorType
 from .utils import generate_keys, get_ap_url
+
+if TYPE_CHECKING:
+    from fittrackee.users.models import User
 
 MEDIA_TYPES = {
     'gif': 'image/gif',
@@ -26,12 +30,18 @@ class Domain(BaseModel):
     """ActivityPub Domain"""
 
     __tablename__ = 'domains'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(1000), unique=True, nullable=False)
-    created_at = db.Column(TZDateTime, nullable=False)
-    is_allowed = db.Column(db.Boolean, default=True, nullable=False)
-    software_name = db.Column(db.String(255), nullable=True)
-    software_version = db.Column(db.String(255), nullable=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    name: Mapped[str] = mapped_column(
+        db.String(1000), unique=True, nullable=False
+    )
+    created_at: Mapped[datetime] = mapped_column(TZDateTime, nullable=False)
+    is_allowed: Mapped[bool] = mapped_column(default=True, nullable=False)
+    software_name: Mapped[datetime] = mapped_column(
+        db.String(255), nullable=True
+    )
+    software_version: Mapped[datetime] = mapped_column(
+        db.String(255), nullable=True
+    )
 
     actors = db.relationship('Actor', back_populates='domain')
 
@@ -81,29 +91,39 @@ class Actor(BaseModel):
             'domain_id', 'preferred_username', name='domain_username_unique'
         ),
     )
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    activitypub_id = db.Column(db.String(255), unique=True, nullable=False)
-    domain_id = db.Column(
-        db.Integer, db.ForeignKey('domains.id'), nullable=False
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    activitypub_id: Mapped[str] = mapped_column(
+        db.String(255), unique=True, nullable=False
     )
-    type = db.Column(
+    domain_id: Mapped[int] = mapped_column(
+        db.ForeignKey('domains.id'), nullable=False
+    )
+    type: Mapped[ActorType] = mapped_column(
         Enum(ActorType, name='actor_types'), server_default='PERSON'
     )
-    preferred_username = db.Column(db.String(255), nullable=False)
-    public_key = db.Column(db.String(5000), nullable=True)
-    private_key = db.Column(db.String(5000), nullable=True)
-    profile_url = db.Column(db.String(255), nullable=False)
-    inbox_url = db.Column(db.String(255), nullable=False)
-    outbox_url = db.Column(db.String(255), nullable=False)
-    followers_url = db.Column(db.String(255), nullable=False)
-    following_url = db.Column(db.String(255), nullable=False)
-    shared_inbox_url = db.Column(db.String(255), nullable=False)
-    created_at = db.Column(TZDateTime, nullable=False)
-    last_fetch_date = db.Column(TZDateTime, nullable=True)
+    preferred_username: Mapped[str] = mapped_column(
+        db.String(255), nullable=False
+    )
+    public_key: Mapped[str] = mapped_column(db.String(5000), nullable=True)
+    private_key: Mapped[str] = mapped_column(db.String(5000), nullable=True)
+    profile_url: Mapped[str] = mapped_column(db.String(255), nullable=False)
+    inbox_url: Mapped[str] = mapped_column(db.String(255), nullable=False)
+    outbox_url: Mapped[str] = mapped_column(db.String(255), nullable=False)
+    followers_url: Mapped[str] = mapped_column(db.String(255), nullable=False)
+    following_url: Mapped[str] = mapped_column(db.String(255), nullable=False)
+    shared_inbox_url: Mapped[str] = mapped_column(
+        db.String(255), nullable=False
+    )
+    created_at: Mapped[datetime] = mapped_column(TZDateTime, nullable=False)
+    last_fetch_date: Mapped[datetime] = mapped_column(
+        TZDateTime, nullable=True
+    )
 
-    domain = db.relationship('Domain', back_populates='actors')
-    user = db.relationship('User', uselist=False, back_populates='actor')
-    stats = db.relationship(
+    domain: Mapped["Domain"] = relationship('Domain', back_populates='actors')
+    user: Mapped["User"] = relationship(
+        'User', uselist=False, back_populates='actor'
+    )
+    stats: Mapped["RemoteActorStats"] = relationship(
         'RemoteActorStats', cascade='all, delete', uselist=False
     )
 
@@ -233,17 +253,16 @@ class RemoteActorStats(BaseModel):
 
     __tablename__ = 'remote_actors_stats'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    actor_id = db.Column(
-        db.Integer,
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    actor_id: Mapped[int] = mapped_column(
         db.ForeignKey('actors.id'),
         nullable=False,
         index=True,
         unique=True,
     )
-    items = db.Column(db.Integer, default=0, nullable=False)
-    followers = db.Column(db.Integer, default=0, nullable=False)
-    following = db.Column(db.Integer, default=0, nullable=False)
+    items: Mapped[int] = mapped_column(default=0, nullable=False)
+    followers: Mapped[int] = mapped_column(default=0, nullable=False)
+    following: Mapped[int] = mapped_column(default=0, nullable=False)
 
     def __init__(self, actor_id: int) -> None:
         self.actor_id = actor_id

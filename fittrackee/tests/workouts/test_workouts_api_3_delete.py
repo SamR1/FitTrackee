@@ -17,7 +17,7 @@ from .utils import post_a_workout
 
 
 def get_gpx_filepath(workout_id: int) -> str:
-    workout = Workout.query.filter_by(id=workout_id).first()
+    workout = Workout.query.filter_by(id=workout_id).one()
     return workout.gpx
 
 
@@ -47,7 +47,7 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         token, workout_short_id = post_a_workout(app, gpx_file)
         workout = Workout.query.filter_by(
             uuid=decode_short_id(workout_short_id)
-        ).first()
+        ).one()
         workout.equipments = [equipment_bike_user_1]
         db.session.commit()
         client = app.test_client()
@@ -77,7 +77,7 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         token, workout_short_id = post_a_workout(app, gpx_file)
         workout = Workout.query.filter_by(
             uuid=decode_short_id(workout_short_id)
-        ).first()
+        ).one()
         workout.equipments = [equipment_bike_user_1, equipment_shoes_user_1]
         db.session.commit()
         client = app.test_client()
@@ -277,7 +277,7 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         token, workout_short_id = post_a_workout(app, gpx_file)
         workout = Workout.query.filter_by(
             uuid=decode_short_id(workout_short_id)
-        ).first()
+        ).one()
         workout.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2, workout, text_visibility=VisibilityLevel.PUBLIC

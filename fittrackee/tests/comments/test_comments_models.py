@@ -1438,7 +1438,7 @@ class TestWorkoutCommentModelWithMentions(CommentMixin):
 
         comment.create_mentions()
 
-        mention = Mention.query.first()
+        mention = Mention.query.one()
         assert mention.comment_id == comment.id
         assert mention.user_id == user_3.id
 

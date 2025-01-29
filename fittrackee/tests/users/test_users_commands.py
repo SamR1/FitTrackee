@@ -85,7 +85,7 @@ class TestCliUserCreate:
 
         assert result.exit_code == 0
         assert f"User '{username}' created.\n" in result.output
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=username).one()
         assert user.is_active is True
         assert user.email == email
         assert bcrypt.check_password_hash(user.password, password)
@@ -108,7 +108,7 @@ class TestCliUserCreate:
 
         assert result.exit_code == 0
         assert f"The user password is: {password}\n" in result.output
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=username).one()
         assert user.is_active is True
         assert user.email == email
         assert bcrypt.check_password_hash(user.password, password)
@@ -124,7 +124,7 @@ class TestCliUserCreate:
             ["users", "create", username, "--email", random_email()],
         )
 
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=username).one()
         assert user.language == "en"
         assert (
             'The user preference for interface language is: en'
@@ -151,7 +151,7 @@ class TestCliUserCreate:
             ],
         )
 
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=username).one()
         assert user.language == language
         assert (
             f'The user preference for interface language is: {language}'
@@ -177,7 +177,7 @@ class TestCliUserCreate:
             ],
         )
 
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=username).one()
         assert user.language == "en"
         assert (
             'The user preference for interface language is: en'
@@ -203,7 +203,7 @@ class TestCliUserCreate:
             ],
         )
 
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=username).one()
         assert user.role == UserRole.OWNER.value
 
     def test_it_displays_error_when_role_is_invalid(
