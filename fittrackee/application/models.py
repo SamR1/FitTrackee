@@ -36,8 +36,8 @@ class AppConfig(BaseModel):
         db.Text, nullable=True
     )
     about: Mapped[Optional[str]] = mapped_column(db.Text, nullable=True)
-    stats_workouts_limit: Mapped[int] = db.Column(
-        db.Integer, default=10000, nullable=False
+    stats_workouts_limit: Mapped[int] = mapped_column(
+        default=10000, nullable=False
     )
 
     @property
