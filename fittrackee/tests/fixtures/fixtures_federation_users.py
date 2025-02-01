@@ -14,7 +14,7 @@ from ..utils import (
 def generate_remote_user(
     remote_domain: Domain, without_profile_page: bool = False
 ) -> User:
-    domain = f'https://{remote_domain.name}'
+    domain = f"https://{remote_domain.name}"
     user_name = random_string()[0:30]
     if without_profile_page:
         remote_user_object = get_remote_user_object(
@@ -27,7 +27,7 @@ def generate_remote_user(
             username=user_name.capitalize(),
             preferred_username=user_name,
             domain=domain,
-            profile_url=f'{domain}/{user_name}',
+            profile_url=f"{domain}/{user_name}",
         )
     actor = Actor(
         preferred_username=user_name,

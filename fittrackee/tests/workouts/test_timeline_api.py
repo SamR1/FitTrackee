@@ -20,8 +20,8 @@ class GetUserTimelineTestCase(WorkoutApiTestCaseMixin):
     def assert_no_workout_returned(response: TestResponse) -> None:
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 0
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 0
 
     @staticmethod
     def assert_workout_returned(
@@ -29,16 +29,16 @@ class GetUserTimelineTestCase(WorkoutApiTestCaseMixin):
     ) -> None:
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0]['id'] == workout.short_id
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["id"] == workout.short_id
 
 
 class TestGetUserTimeline(GetUserTimelineTestCase):
     def test_it_returns_401_if_no_authentication(self, app: Flask) -> None:
         client = app.test_client()
 
-        response = client.get('/api/timeline')
+        response = client.get("/api/timeline")
 
         assert response.status_code == 401
 
@@ -50,8 +50,8 @@ class TestGetUserTimeline(GetUserTimelineTestCase):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -64,8 +64,8 @@ class TestGetUserTimeline(GetUserTimelineTestCase):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_no_workout_returned(response)
@@ -82,21 +82,21 @@ class TestGetUserTimeline(GetUserTimelineTestCase):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0] == jsonify_dict(
             workout_cycling_user_1.serialize(user=user_1)
         )
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self, app: Flask, user_1: User, client_scope: str, can_access: bool
@@ -111,9 +111,9 @@ class TestGetUserTimeline(GetUserTimelineTestCase):
         )
 
         response = client.get(
-            '/api/timeline',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            "/api/timeline",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -121,14 +121,14 @@ class TestGetUserTimeline(GetUserTimelineTestCase):
 
 class TestGetUserTimelineForAuthUserWorkouts(GetUserTimelineTestCase):
     @pytest.mark.parametrize(
-        'input_desc,input_workout_visibility',
+        "input_desc,input_workout_visibility",
         [
-            ('workout visibility: private', VisibilityLevel.PRIVATE),
+            ("workout visibility: private", VisibilityLevel.PRIVATE),
             (
-                'workout visibility: followers_only',
+                "workout visibility: followers_only",
                 VisibilityLevel.FOLLOWERS,
             ),
-            ('workout visibility: public', VisibilityLevel.PUBLIC),
+            ("workout visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_authenticated_user_workout(
@@ -146,8 +146,8 @@ class TestGetUserTimelineForAuthUserWorkouts(GetUserTimelineTestCase):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_workout_returned(response, workout_cycling_user_1)
@@ -166,8 +166,8 @@ class TestGetUserTimelineForAuthUserWorkouts(GetUserTimelineTestCase):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_workout_returned(response, workout_cycling_user_1)
@@ -190,20 +190,20 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_no_workout_returned(response)
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_visibility',
+        "input_desc,input_workout_visibility",
         [
             (
-                'workout visibility: followers_only',
+                "workout visibility: followers_only",
                 VisibilityLevel.FOLLOWERS,
             ),
-            ('workout visibility: public', VisibilityLevel.PUBLIC),
+            ("workout visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_followed_user_workout_when_visibility_allows_it(
@@ -224,20 +224,20 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_workout_returned(response, workout_cycling_user_2)
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_visibility',
+        "input_desc,input_workout_visibility",
         [
             (
-                'workout visibility: followers_only',
+                "workout visibility: followers_only",
                 VisibilityLevel.FOLLOWERS,
             ),
-            ('workout visibility: public', VisibilityLevel.PUBLIC),
+            ("workout visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_does_not_return_workout_from_blocked_user(
@@ -259,8 +259,8 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_no_workout_returned(response)
@@ -282,20 +282,20 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_no_workout_returned(response)
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_visibility',
+        "input_desc,input_workout_visibility",
         [
             (
-                'workout visibility: followers_only',
+                "workout visibility: followers_only",
                 VisibilityLevel.FOLLOWERS,
             ),
-            ('workout visibility: public', VisibilityLevel.PUBLIC),
+            ("workout visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_does_not_return_followed_user_suspended_workouts(
@@ -320,20 +320,20 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_workout_returned(response, workout_cycling_user_1)
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_visibility',
+        "input_desc,input_workout_visibility",
         [
             (
-                'workout visibility: followers_only',
+                "workout visibility: followers_only",
                 VisibilityLevel.FOLLOWERS,
             ),
-            ('workout visibility: public', VisibilityLevel.PUBLIC),
+            ("workout visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_does_not_return_followed_user_workout_map_when_private(
@@ -357,21 +357,21 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
-        assert data['data']['workouts'][0]['map'] is None
+        assert data["data"]["workouts"][0]["map"] is None
 
     @pytest.mark.parametrize(
-        'input_desc,input_visibility',
+        "input_desc,input_visibility",
         [
             (
-                'workout and map visibility: followers_only',
+                "workout and map visibility: followers_only",
                 VisibilityLevel.FOLLOWERS,
             ),
-            ('workout and map visibility: public', VisibilityLevel.PUBLIC),
+            ("workout and map visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_followed_user_workout_map_when_visibility_allows_it(
@@ -397,27 +397,27 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
-        assert data['data']['workouts'][0]['map'] == map_id
+        assert data["data"]["workouts"][0]["map"] == map_id
 
 
 class TestGetUserTimelineForNotFollowedUserWorkouts(GetUserTimelineTestCase):
     @pytest.mark.parametrize(
-        'input_desc,input_workout_visibility',
+        "input_desc,input_workout_visibility",
         [
             (
-                'workout visibility: private',
+                "workout visibility: private",
                 VisibilityLevel.PRIVATE,
             ),
             (
-                'workout visibility: followers_only',
+                "workout visibility: followers_only",
                 VisibilityLevel.FOLLOWERS,
             ),
-            ('workout visibility: public', VisibilityLevel.PUBLIC),
+            ("workout visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_does_not_return_workout(
@@ -436,8 +436,8 @@ class TestGetUserTimelineForNotFollowedUserWorkouts(GetUserTimelineTestCase):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_no_workout_returned(response)
@@ -454,17 +454,17 @@ class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': False,
-            'page': 1,
-            'pages': 0,
-            'total': 0,
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 0,
+            "total": 0,
         }
 
     def test_it_returns_pagination_when_one_workout_returned(
@@ -479,17 +479,17 @@ class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': False,
-            'page': 1,
-            'pages': 1,
-            'total': 1,
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
         }
 
     def test_it_gets_first_page(
@@ -504,18 +504,18 @@ class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
-        assert len(data['data']['workouts']) == 5
-        assert data['pagination'] == {
-            'has_next': True,
-            'has_prev': False,
-            'page': 1,
-            'pages': 2,
-            'total': 7,
+        assert len(data["data"]["workouts"]) == 5
+        assert data["pagination"] == {
+            "has_next": True,
+            "has_prev": False,
+            "page": 1,
+            "pages": 2,
+            "total": 7,
         }
 
     def test_it_gets_second_page(
@@ -530,18 +530,18 @@ class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/timeline?page=2',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline?page=2",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
-        assert len(data['data']['workouts']) == 2
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': True,
-            'page': 2,
-            'pages': 2,
-            'total': 7,
+        assert len(data["data"]["workouts"]) == 2
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": True,
+            "page": 2,
+            "pages": 2,
+            "total": 7,
         }
 
     def test_it_gets_empty_third_page(
@@ -556,18 +556,18 @@ class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/timeline?page=3',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline?page=3",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
-        assert len(data['data']['workouts']) == 0
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': True,
-            'page': 3,
-            'pages': 2,
-            'total': 7,
+        assert len(data["data"]["workouts"]) == 0
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": True,
+            "page": 3,
+            "pages": 2,
+            "total": 7,
         }
 
     def test_it_returns_workouts_ordered_by_workout_date_descending(
@@ -582,17 +582,17 @@ class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
+        assert "success" in data["status"]
         assert (
-            'Wed, 09 May 2018 00:00:00 GMT'
-            == data['data']['workouts'][0]['workout_date']
+            "Wed, 09 May 2018 00:00:00 GMT"
+            == data["data"]["workouts"][0]["workout_date"]
         )
         assert (
-            'Mon, 01 Jan 2018 00:00:00 GMT'
-            == data['data']['workouts'][4]['workout_date']
+            "Mon, 01 Jan 2018 00:00:00 GMT"
+            == data["data"]["workouts"][4]["workout_date"]
         )

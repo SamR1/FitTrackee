@@ -5,7 +5,7 @@ from fittrackee.federation.tasks.remote_server import update_remote_server
 
 from ...utils import random_string
 
-MODULE = 'fittrackee.federation.tasks.remote_server'
+MODULE = "fittrackee.federation.tasks.remote_server"
 
 
 class TestUpdateRemoteServer:
@@ -13,20 +13,20 @@ class TestUpdateRemoteServer:
         expected_software_name = random_string()
         expected_software_version = random_string()
         node_info_data = {
-            'version': '2.0',
-            'software': {
-                'name': expected_software_name,
-                'version': expected_software_version,
+            "version": "2.0",
+            "software": {
+                "name": expected_software_name,
+                "version": expected_software_version,
             },
         }
         with (
             patch(
-                'fittrackee.federation.tasks.remote_server.'
-                'get_remote_server_node_info_url'
+                "fittrackee.federation.tasks.remote_server."
+                "get_remote_server_node_info_url"
             ),
             patch(
-                'fittrackee.federation.tasks.remote_server.'
-                'get_remote_server_node_info_data',
+                "fittrackee.federation.tasks.remote_server."
+                "get_remote_server_node_info_data",
                 return_value=node_info_data,
             ),
         ):

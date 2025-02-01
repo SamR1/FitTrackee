@@ -17,7 +17,7 @@ from ...comments.mixins import CommentMixin
 
 class TestWorkoutCommentCreateObject(CommentMixin):
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_raises_error_when_visibility_is_invalid(
@@ -41,7 +41,7 @@ class TestWorkoutCommentCreateObject(CommentMixin):
             InvalidVisibilityException,
             match=f"object visibility is: '{input_visibility.value}'",
         ):
-            CommentObject(comment, 'Create')
+            CommentObject(comment, "Create")
 
     def test_it_raises_error_when_comment_has_no_ap_id(
         self,
@@ -62,7 +62,7 @@ class TestWorkoutCommentCreateObject(CommentMixin):
             InvalidObjectException,
             match="Invalid comment, missing 'ap_id' or 'remote_url'",
         ):
-            CommentObject(comment, 'Create')
+            CommentObject(comment, "Create")
 
     def test_it_raises_error_when_comment_has_no_remote_url(
         self,
@@ -83,7 +83,7 @@ class TestWorkoutCommentCreateObject(CommentMixin):
             InvalidObjectException,
             match="Invalid comment, missing 'ap_id' or 'remote_url'",
         ):
-            CommentObject(comment, 'Create')
+            CommentObject(comment, "Create")
 
     def test_it_raises_error_when_activity_type_is_invalid(
         self,
@@ -124,7 +124,7 @@ class TestWorkoutCommentCreateObject(CommentMixin):
             with_federation=True,
         )
         published = comment.created_at.strftime(DATE_FORMAT)
-        comment_object = CommentObject(comment, 'Create')
+        comment_object = CommentObject(comment, "Create")
 
         serialized_comment = comment_object.get_activity()
 
@@ -166,7 +166,7 @@ class TestWorkoutCommentCreateObject(CommentMixin):
             with_federation=True,
         )
         published = comment.created_at.strftime(DATE_FORMAT)
-        comment_object = CommentObject(comment, 'Create')
+        comment_object = CommentObject(comment, "Create")
 
         serialized_comment = comment_object.get_activity()
 
@@ -216,7 +216,7 @@ class TestWorkoutCommentCreateObject(CommentMixin):
             with_federation=True,
         )
         published = comment.created_at.strftime(DATE_FORMAT)
-        comment_object = CommentObject(comment, 'Create')
+        comment_object = CommentObject(comment, "Create")
 
         serialized_comment = comment_object.get_activity()
 
@@ -242,7 +242,7 @@ class TestWorkoutCommentCreateObject(CommentMixin):
         }
 
 
-@patch('fittrackee.federation.utils.user.update_remote_user')
+@patch("fittrackee.federation.utils.user.update_remote_user")
 class TestWorkoutCommentWithMentionsCreateObject(CommentMixin):
     def test_it_generates_activity_for_public_comment(
         self,
@@ -264,23 +264,23 @@ class TestWorkoutCommentWithMentionsCreateObject(CommentMixin):
             text_visibility=VisibilityLevel.PUBLIC,
             with_federation=True,
         )
-        comment_object = CommentObject(comment, 'Create')
+        comment_object = CommentObject(comment, "Create")
 
         serialized_comment = comment_object.get_activity()
 
         text_with_mentions, _ = comment.handle_mentions()
-        assert serialized_comment['to'] == [
+        assert serialized_comment["to"] == [
             "https://www.w3.org/ns/activitystreams#Public"
         ]
-        assert set(serialized_comment['cc']) == {
+        assert set(serialized_comment["cc"]) == {
             user_2.actor.followers_url,
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
-        assert serialized_comment['object']['to'] == [
+        assert serialized_comment["object"]["to"] == [
             "https://www.w3.org/ns/activitystreams#Public"
         ]
-        assert set(serialized_comment['object']['cc']) == {
+        assert set(serialized_comment["object"]["cc"]) == {
             user_2.actor.followers_url,
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
@@ -306,26 +306,26 @@ class TestWorkoutCommentWithMentionsCreateObject(CommentMixin):
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
             with_federation=True,
         )
-        comment_object = CommentObject(comment, 'Create')
+        comment_object = CommentObject(comment, "Create")
 
         serialized_comment = comment_object.get_activity()
 
         text_with_mentions, _ = comment.handle_mentions()
-        assert serialized_comment['to'] == [user_2.actor.followers_url]
-        assert set(serialized_comment['cc']) == {
+        assert serialized_comment["to"] == [user_2.actor.followers_url]
+        assert set(serialized_comment["cc"]) == {
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
-        assert serialized_comment['object']['to'] == [
+        assert serialized_comment["object"]["to"] == [
             user_2.actor.followers_url
         ]
-        assert set(serialized_comment['object']['cc']) == {
+        assert set(serialized_comment["object"]["cc"]) == {
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_generates_activity_with_mentioned_users(
@@ -349,21 +349,21 @@ class TestWorkoutCommentWithMentionsCreateObject(CommentMixin):
             text_visibility=input_visibility,
             with_federation=True,
         )
-        comment_object = CommentObject(comment, 'Create')
+        comment_object = CommentObject(comment, "Create")
 
         serialized_comment = comment_object.get_activity()
 
         text_with_mentions, _ = comment.handle_mentions()
-        assert set(serialized_comment['to']) == {
+        assert set(serialized_comment["to"]) == {
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
-        assert serialized_comment['cc'] == []
-        assert set(serialized_comment['object']['to']) == {
+        assert serialized_comment["cc"] == []
+        assert set(serialized_comment["object"]["to"]) == {
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
-        assert serialized_comment['object']['cc'] == []
+        assert serialized_comment["object"]["cc"] == []
 
 
 class TestWorkoutCommentUpdateObject(CommentMixin):
@@ -390,7 +390,7 @@ class TestWorkoutCommentUpdateObject(CommentMixin):
             CommentObject(comment, invalid_activity_type)
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_generates_activity_when_visibility_is_private_or_for_local_followers(  # noqa
@@ -413,7 +413,7 @@ class TestWorkoutCommentUpdateObject(CommentMixin):
         )
         comment.modification_date = datetime.now(timezone.utc)
         published = comment.created_at.strftime(DATE_FORMAT)
-        comment_object = CommentObject(comment, 'Update')
+        comment_object = CommentObject(comment, "Update")
 
         serialized_comment = comment_object.get_activity()
 
@@ -457,7 +457,7 @@ class TestWorkoutCommentUpdateObject(CommentMixin):
         )
         comment.modification_date = datetime.now(timezone.utc)
         published = comment.created_at.strftime(DATE_FORMAT)
-        comment_object = CommentObject(comment, 'Update')
+        comment_object = CommentObject(comment, "Update")
 
         serialized_comment = comment_object.get_activity()
 
@@ -501,7 +501,7 @@ class TestWorkoutCommentUpdateObject(CommentMixin):
         )
         comment.modification_date = datetime.now(timezone.utc)
         published = comment.created_at.strftime(DATE_FORMAT)
-        comment_object = CommentObject(comment, 'Update')
+        comment_object = CommentObject(comment, "Update")
 
         serialized_comment = comment_object.get_activity()
 
@@ -528,7 +528,7 @@ class TestWorkoutCommentUpdateObject(CommentMixin):
         }
 
 
-@patch('fittrackee.federation.utils.user.update_remote_user')
+@patch("fittrackee.federation.utils.user.update_remote_user")
 class TestWorkoutCommentWithMentionsUpdateObject(CommentMixin):
     def test_it_generates_activity_for_public_comment(
         self,
@@ -551,23 +551,23 @@ class TestWorkoutCommentWithMentionsUpdateObject(CommentMixin):
             with_federation=True,
         )
         comment.modification_date = datetime.now(timezone.utc)
-        comment_object = CommentObject(comment, 'Update')
+        comment_object = CommentObject(comment, "Update")
 
         serialized_comment = comment_object.get_activity()
 
         text_with_mentions, _ = comment.handle_mentions()
-        assert serialized_comment['to'] == [
+        assert serialized_comment["to"] == [
             "https://www.w3.org/ns/activitystreams#Public"
         ]
-        assert set(serialized_comment['cc']) == {
+        assert set(serialized_comment["cc"]) == {
             user_2.actor.followers_url,
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
-        assert serialized_comment['object']['to'] == [
+        assert serialized_comment["object"]["to"] == [
             "https://www.w3.org/ns/activitystreams#Public"
         ]
-        assert set(serialized_comment['object']['cc']) == {
+        assert set(serialized_comment["object"]["cc"]) == {
             user_2.actor.followers_url,
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
@@ -594,26 +594,26 @@ class TestWorkoutCommentWithMentionsUpdateObject(CommentMixin):
             with_federation=True,
         )
         comment.modification_date = datetime.now(timezone.utc)
-        comment_object = CommentObject(comment, 'Update')
+        comment_object = CommentObject(comment, "Update")
 
         serialized_comment = comment_object.get_activity()
 
         text_with_mentions, _ = comment.handle_mentions()
-        assert serialized_comment['to'] == [user_2.actor.followers_url]
-        assert set(serialized_comment['cc']) == {
+        assert serialized_comment["to"] == [user_2.actor.followers_url]
+        assert set(serialized_comment["cc"]) == {
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
-        assert serialized_comment['object']['to'] == [
+        assert serialized_comment["object"]["to"] == [
             user_2.actor.followers_url
         ]
-        assert set(serialized_comment['object']['cc']) == {
+        assert set(serialized_comment["object"]["cc"]) == {
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_generates_activity_for_private_comment_with_mentioned_users(
@@ -638,18 +638,18 @@ class TestWorkoutCommentWithMentionsUpdateObject(CommentMixin):
             with_federation=True,
         )
         comment.modification_date = datetime.now(timezone.utc)
-        comment_object = CommentObject(comment, 'Update')
+        comment_object = CommentObject(comment, "Update")
 
         serialized_comment = comment_object.get_activity()
 
         text_with_mentions, _ = comment.handle_mentions()
-        assert set(serialized_comment['to']) == {
+        assert set(serialized_comment["to"]) == {
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
-        assert serialized_comment['cc'] == []
-        assert set(serialized_comment['object']['to']) == {
+        assert serialized_comment["cc"] == []
+        assert set(serialized_comment["object"]["to"]) == {
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
         }
-        assert serialized_comment['object']['cc'] == []
+        assert serialized_comment["object"]["cc"] == []

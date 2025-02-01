@@ -9,13 +9,13 @@ if TYPE_CHECKING:
 
 
 class FollowRequestObject(BaseObject):
-    from_actor: 'Actor'
-    to_actor: 'Actor'
+    from_actor: "Actor"
+    to_actor: "Actor"
 
     def __init__(
         self,
-        from_actor: 'Actor',
-        to_actor: 'Actor',
+        from_actor: "Actor",
+        to_actor: "Actor",
         activity_type: ActivityType,
     ):
         self.from_actor = from_actor
@@ -23,31 +23,31 @@ class FollowRequestObject(BaseObject):
         self.type = activity_type
         self.actor, self.id = self._get_actor_and_id()
 
-    def _get_actor_and_id(self) -> Tuple['Actor', str]:
+    def _get_actor_and_id(self) -> Tuple["Actor", str]:
         if self.type in [ActivityType.FOLLOW, ActivityType.UNDO]:
             return (
                 self.from_actor,
                 (
-                    f'{self.from_actor.activitypub_id}#'
-                    f'{"follow" if self.type == ActivityType.FOLLOW else "undoe"}s/'  # noqa
-                    f'{self.to_actor.fullname}'
+                    f"{self.from_actor.activitypub_id}#"
+                    f"{'follow' if self.type == ActivityType.FOLLOW else 'undoe'}s/"  # noqa
+                    f"{self.to_actor.fullname}"
                 ),
             )
         return self.to_actor, (
-            f'{self.to_actor.activitypub_id}#'
-            f'{"accept" if self.type == ActivityType.ACCEPT else "reject"}s/'
-            f'follow/{self.from_actor.fullname}'
+            f"{self.to_actor.activitypub_id}#"
+            f"{'accept' if self.type == ActivityType.ACCEPT else 'reject'}s/"
+            f"follow/{self.from_actor.fullname}"
         )
 
     def _get_follow_activity(self) -> Dict:
         return {
-            'id': (
-                f'{self.from_actor.activitypub_id}#follows/'
-                f'{self.to_actor.fullname}'
+            "id": (
+                f"{self.from_actor.activitypub_id}#follows/"
+                f"{self.to_actor.fullname}"
             ),
-            'type': ActivityType.FOLLOW.value,
-            'actor': self.from_actor.activitypub_id,
-            'object': self.to_actor.activitypub_id,
+            "type": ActivityType.FOLLOW.value,
+            "actor": self.from_actor.activitypub_id,
+            "object": self.to_actor.activitypub_id,
         }
 
     def get_activity(self) -> Dict:
@@ -55,10 +55,10 @@ class FollowRequestObject(BaseObject):
             activity = self._get_follow_activity()
         else:
             activity = {
-                'id': self.id,
-                'type': self.type.value,
-                'actor': self.actor.activitypub_id,
-                'object': self._get_follow_activity(),
+                "id": self.id,
+                "type": self.type.value,
+                "actor": self.actor.activitypub_id,
+                "object": self._get_follow_activity(),
             }
-        activity['@context'] = AP_CTX
+        activity["@context"] = AP_CTX
         return activity

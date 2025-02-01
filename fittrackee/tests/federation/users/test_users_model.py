@@ -13,19 +13,19 @@ class TestUserModel:
         self, app_with_federation: Flask, user_1: User
     ) -> None:
         assert user_1.is_remote is False
-        assert user_1.serialize()['is_remote'] is False
-        assert 'fullname' not in user_1.serialize()
+        assert user_1.serialize()["is_remote"] is False
+        assert "fullname" not in user_1.serialize()
 
     def test_user_is_remote_when_actor_is_remote(
         self, app_with_federation: Flask, remote_user: User
     ) -> None:
         assert remote_user.is_remote is True
-        assert remote_user.serialize()['is_remote'] is True
+        assert remote_user.serialize()["is_remote"] is True
         assert (
-            remote_user.serialize()['fullname'] == f'@{remote_user.fullname}'
+            remote_user.serialize()["fullname"] == f"@{remote_user.fullname}"
         )
         assert (
-            remote_user.serialize()['profile_link']
+            remote_user.serialize()["profile_link"]
             == remote_user.actor.profile_url
         )
 
@@ -38,8 +38,8 @@ class TestUserModel:
         remote_user.actor.stats.following = expected_following
 
         serialized_user = remote_user.serialize()
-        assert serialized_user['followers'] == expected_followers
-        assert serialized_user['following'] == expected_following
+        assert serialized_user["followers"] == expected_followers
+        assert serialized_user["following"] == expected_following
 
 
 class TestFollowRequestModelWithFederation:
@@ -50,15 +50,15 @@ class TestFollowRequestModelWithFederation:
         user_2: User,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        assert '<FollowRequest from user \'1\' to user \'2\'>' == str(
+        assert "<FollowRequest from user '1' to user '2'>" == str(
             follow_request_from_user_1_to_user_2
         )
 
         serialized_follow_request = (
             follow_request_from_user_1_to_user_2.serialize()
         )
-        assert serialized_follow_request['from_user'] == user_1.serialize()
-        assert serialized_follow_request['to_user'] == user_2.serialize()
+        assert serialized_follow_request["from_user"] == user_1.serialize()
+        assert serialized_follow_request["to_user"] == user_2.serialize()
 
     def test_it_returns_follow_activity_object(
         self,
@@ -72,11 +72,11 @@ class TestFollowRequestModelWithFederation:
         activity_object = follow_request_from_user_1_to_user_2.get_activity()
 
         assert activity_object == {
-            '@context': AP_CTX,
-            'id': f'{actor_1.activitypub_id}#follows/{actor_2.fullname}',
-            'type': 'Follow',
-            'actor': actor_1.activitypub_id,
-            'object': actor_2.activitypub_id,
+            "@context": AP_CTX,
+            "id": f"{actor_1.activitypub_id}#follows/{actor_2.fullname}",
+            "type": "Follow",
+            "actor": actor_1.activitypub_id,
+            "object": actor_2.activitypub_id,
         }
 
     def test_it_returns_accept_activity_object_when_follow_request_is_accepted(
@@ -95,17 +95,17 @@ class TestFollowRequestModelWithFederation:
         activity_object = follow_request_from_user_1_to_user_2.get_activity()
 
         assert activity_object == {
-            '@context': AP_CTX,
-            'id': (
-                f'{actor_2.activitypub_id}#accepts/follow/{actor_1.fullname}'
+            "@context": AP_CTX,
+            "id": (
+                f"{actor_2.activitypub_id}#accepts/follow/{actor_1.fullname}"
             ),
-            'type': 'Accept',
-            'actor': actor_2.activitypub_id,
-            'object': {
-                'id': f'{actor_1.activitypub_id}#follows/{actor_2.fullname}',
-                'type': 'Follow',
-                'actor': actor_1.activitypub_id,
-                'object': actor_2.activitypub_id,
+            "type": "Accept",
+            "actor": actor_2.activitypub_id,
+            "object": {
+                "id": f"{actor_1.activitypub_id}#follows/{actor_2.fullname}",
+                "type": "Follow",
+                "actor": actor_1.activitypub_id,
+                "object": actor_2.activitypub_id,
             },
         }
 
@@ -125,23 +125,23 @@ class TestFollowRequestModelWithFederation:
         activity_object = follow_request_from_user_1_to_user_2.get_activity()
 
         assert activity_object == {
-            '@context': AP_CTX,
-            'id': (
-                f'{actor_2.activitypub_id}#rejects/follow/{actor_1.fullname}'
+            "@context": AP_CTX,
+            "id": (
+                f"{actor_2.activitypub_id}#rejects/follow/{actor_1.fullname}"
             ),
-            'type': 'Reject',
-            'actor': actor_2.activitypub_id,
-            'object': {
-                'id': f'{actor_1.activitypub_id}#follows/{actor_2.fullname}',
-                'type': 'Follow',
-                'actor': actor_1.activitypub_id,
-                'object': actor_2.activitypub_id,
+            "type": "Reject",
+            "actor": actor_2.activitypub_id,
+            "object": {
+                "id": f"{actor_1.activitypub_id}#follows/{actor_2.fullname}",
+                "type": "Follow",
+                "actor": actor_1.activitypub_id,
+                "object": actor_2.activitypub_id,
             },
         }
 
 
 class TestUserFollowingModelWithFederation:
-    @patch('fittrackee.users.models.send_to_remote_inbox')
+    @patch("fittrackee.users.models.send_to_remote_inbox")
     def test_local_actor_sends_follow_requests_to_remote_actor(
         self,
         send_to_remote_inbox_mock: Mock,
@@ -162,7 +162,7 @@ class TestUserFollowingModelWithFederation:
             recipients=[remote_actor.inbox_url],
         )
 
-    @patch('fittrackee.users.models.send_to_remote_inbox')
+    @patch("fittrackee.users.models.send_to_remote_inbox")
     def test_follow_request_is_automatically_accepted_if_manually_approved_if_false(  # noqa
         self,
         send_to_remote_inbox_mock: Mock,
@@ -186,7 +186,7 @@ class TestUserFollowingModelWithFederation:
 
 
 class TestUserUnfollowModelWithFederation:
-    @patch('fittrackee.users.models.send_to_remote_inbox')
+    @patch("fittrackee.users.models.send_to_remote_inbox")
     def test_local_actor_sends_undo_activity_to_remote_actor(
         self,
         send_to_remote_inbox_mock: Mock,
@@ -219,8 +219,8 @@ class TestUserGetRecipientsSharedInbox:
         inboxes = user_1.get_followers_shared_inboxes()
 
         assert inboxes == {
-            'fittrackee': [],
-            'others': [],
+            "fittrackee": [],
+            "others": [],
         }
 
     def test_it_returns_empty_set_if_only_local_followers(
@@ -235,8 +235,8 @@ class TestUserGetRecipientsSharedInbox:
         inboxes = user_1.get_followers_shared_inboxes()
 
         assert inboxes == {
-            'fittrackee': [],
-            'others': [],
+            "fittrackee": [],
+            "others": [],
         }
 
     def test_it_returns_shared_inbox_when_remote_followers_from_fittrackee_instance(  # noqa
@@ -251,8 +251,8 @@ class TestUserGetRecipientsSharedInbox:
         inboxes = user_1.get_followers_shared_inboxes()
 
         assert inboxes == {
-            'fittrackee': [remote_user.actor.shared_inbox_url],
-            'others': [],
+            "fittrackee": [remote_user.actor.shared_inbox_url],
+            "others": [],
         }
 
     def test_it_returns_shared_inbox_when_remote_followers_from_not_fittrackee_instance(  # noqa
@@ -267,8 +267,8 @@ class TestUserGetRecipientsSharedInbox:
         inboxes = user_1.get_followers_shared_inboxes()
 
         assert inboxes == {
-            'fittrackee': [],
-            'others': [remote_user_2.actor.shared_inbox_url],
+            "fittrackee": [],
+            "others": [remote_user_2.actor.shared_inbox_url],
         }
 
     def test_it_returns_shared_inbox_from_several_remote_users(
@@ -286,8 +286,8 @@ class TestUserGetRecipientsSharedInbox:
         inboxes = user_1.get_followers_shared_inboxes()
 
         assert inboxes == {
-            'fittrackee': [remote_user.actor.shared_inbox_url],
-            'others': [remote_user_2.actor.shared_inbox_url],
+            "fittrackee": [remote_user.actor.shared_inbox_url],
+            "others": [remote_user_2.actor.shared_inbox_url],
         }
 
 

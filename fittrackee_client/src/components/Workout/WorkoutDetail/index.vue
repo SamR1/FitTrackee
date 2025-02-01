@@ -279,7 +279,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   .workout-detail {
     display: flex;
     ::v-deep(.card) {

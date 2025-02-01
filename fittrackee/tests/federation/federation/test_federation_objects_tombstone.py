@@ -15,7 +15,7 @@ from ...comments.mixins import CommentMixin
 
 class TestTombstoneObjectForWorkout:
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_raises_error_when_visibility_is_private(
@@ -49,7 +49,7 @@ class TestTombstoneObjectForWorkout:
 
         assert delete_activity == {
             "@context": AP_CTX,
-            "id": f'{workout_cycling_user_1.ap_id}/delete',
+            "id": f"{workout_cycling_user_1.ap_id}/delete",
             "type": "Delete",
             "actor": user_1.actor.activitypub_id,
             "object": {
@@ -77,7 +77,7 @@ class TestTombstoneObjectForWorkout:
 
         assert delete_activity == {
             "@context": AP_CTX,
-            "id": f'{workout_cycling_user_1.ap_id}/delete',
+            "id": f"{workout_cycling_user_1.ap_id}/delete",
             "type": "Delete",
             "actor": user_1.actor.activitypub_id,
             "object": {
@@ -91,7 +91,7 @@ class TestTombstoneObjectForWorkout:
 
 class TestTombstoneObjectForWorkoutComment(CommentMixin):
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_raises_error_when_comment_has_no_mention(
@@ -136,18 +136,18 @@ class TestTombstoneObjectForWorkoutComment(CommentMixin):
         assert delete_activity == {
             "@context": AP_CTX,
             "id": (
-                f'{user_1.actor.activitypub_id}/workouts/'
-                f'{workout_cycling_user_1.short_id}/comments/'
-                f'{comment.short_id}/delete'
+                f"{user_1.actor.activitypub_id}/workouts/"
+                f"{workout_cycling_user_1.short_id}/comments/"
+                f"{comment.short_id}/delete"
             ),
             "type": "Delete",
             "actor": user_1.actor.activitypub_id,
             "object": {
                 "type": "Tombstone",
                 "id": (
-                    f'{user_1.actor.activitypub_id}/workouts/'
-                    f'{workout_cycling_user_1.short_id}/comments/'
-                    f'{comment.short_id}'
+                    f"{user_1.actor.activitypub_id}/workouts/"
+                    f"{workout_cycling_user_1.short_id}/comments/"
+                    f"{comment.short_id}"
                 ),
             },
             "to": [PUBLIC_STREAM],
@@ -175,18 +175,18 @@ class TestTombstoneObjectForWorkoutComment(CommentMixin):
         assert delete_activity == {
             "@context": AP_CTX,
             "id": (
-                f'{user_1.actor.activitypub_id}/workouts/'
-                f'{workout_cycling_user_1.short_id}/comments/'
-                f'{comment.short_id}/delete'
+                f"{user_1.actor.activitypub_id}/workouts/"
+                f"{workout_cycling_user_1.short_id}/comments/"
+                f"{comment.short_id}/delete"
             ),
             "type": "Delete",
             "actor": user_1.actor.activitypub_id,
             "object": {
                 "type": "Tombstone",
                 "id": (
-                    f'{user_1.actor.activitypub_id}/workouts/'
-                    f'{workout_cycling_user_1.short_id}/comments/'
-                    f'{comment.short_id}'
+                    f"{user_1.actor.activitypub_id}/workouts/"
+                    f"{workout_cycling_user_1.short_id}/comments/"
+                    f"{comment.short_id}"
                 ),
             },
             "to": [user_1.actor.followers_url],
@@ -194,10 +194,10 @@ class TestTombstoneObjectForWorkoutComment(CommentMixin):
         }
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
-    @patch('fittrackee.federation.utils.user.update_remote_user')
+    @patch("fittrackee.federation.utils.user.update_remote_user")
     def test_it_generates_delete_activity_for_comment_with_private_or_local_followers_visibility_and_mention(  # noqa
         self,
         update_mock: Mock,
@@ -223,18 +223,18 @@ class TestTombstoneObjectForWorkoutComment(CommentMixin):
         assert delete_activity == {
             "@context": AP_CTX,
             "id": (
-                f'{user_1.actor.activitypub_id}/workouts/'
-                f'{workout_cycling_user_1.short_id}/comments/'
-                f'{comment.short_id}/delete'
+                f"{user_1.actor.activitypub_id}/workouts/"
+                f"{workout_cycling_user_1.short_id}/comments/"
+                f"{comment.short_id}/delete"
             ),
             "type": "Delete",
             "actor": user_1.actor.activitypub_id,
             "object": {
                 "type": "Tombstone",
                 "id": (
-                    f'{user_1.actor.activitypub_id}/workouts/'
-                    f'{workout_cycling_user_1.short_id}/comments/'
-                    f'{comment.short_id}'
+                    f"{user_1.actor.activitypub_id}/workouts/"
+                    f"{workout_cycling_user_1.short_id}/comments/"
+                    f"{comment.short_id}"
                 ),
             },
             "to": [remote_user.actor.activitypub_id],

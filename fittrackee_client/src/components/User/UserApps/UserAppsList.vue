@@ -97,7 +97,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
 
   #oauth2-apps-list {
     padding: 0 0 $default-padding;

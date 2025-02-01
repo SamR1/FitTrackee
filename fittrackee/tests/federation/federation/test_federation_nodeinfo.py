@@ -15,13 +15,13 @@ class TestWellKnowNodeInfo(ApiTestCaseMixin):
     ) -> None:
         client = app.test_client()
         response = client.get(
-            '/.well-known/nodeinfo',
-            content_type='application/json',
+            "/.well-known/nodeinfo",
+            content_type="application/json",
         )
 
         self.assert_403(
             response,
-            'error, federation is disabled for this instance',
+            "error, federation is disabled for this instance",
         )
 
     def test_it_returns_instance_nodeinfo_url_if_federation_is_enabled(
@@ -29,20 +29,20 @@ class TestWellKnowNodeInfo(ApiTestCaseMixin):
     ) -> None:
         client = app_with_federation.test_client()
         response = client.get(
-            '/.well-known/nodeinfo',
-            content_type='application/json',
+            "/.well-known/nodeinfo",
+            content_type="application/json",
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         nodeinfo_url = (
-            f'https://{app_with_federation.config["AP_DOMAIN"]}/nodeinfo/2.0'
+            f"https://{app_with_federation.config['AP_DOMAIN']}/nodeinfo/2.0"
         )
         assert data == {
-            'links': [
+            "links": [
                 {
-                    'rel': 'http://nodeinfo.diaspora.software/ns/schema/2.0',
-                    'href': nodeinfo_url,
+                    "rel": "http://nodeinfo.diaspora.software/ns/schema/2.0",
+                    "href": nodeinfo_url,
                 }
             ]
         }
@@ -53,8 +53,8 @@ class TestWellKnowNodeInfo(ApiTestCaseMixin):
         client = app_wo_domain.test_client()
 
         response = client.get(
-            '/.well-known/nodeinfo',
-            content_type='application/json',
+            "/.well-known/nodeinfo",
+            content_type="application/json",
         )
 
         self.assert_500(response)
@@ -66,13 +66,13 @@ class TestNodeInfo(ApiTestCaseMixin):
     ) -> None:
         client = app.test_client()
         response = client.get(
-            '/nodeinfo/2.0',
-            content_type='application/json',
+            "/nodeinfo/2.0",
+            content_type="application/json",
         )
 
         self.assert_403(
             response,
-            'error, federation is disabled for this instance',
+            "error, federation is disabled for this instance",
         )
 
     def test_it_returns_instance_nodeinfo_if_federation_is_enabled(
@@ -82,18 +82,18 @@ class TestNodeInfo(ApiTestCaseMixin):
     ) -> None:
         client = app_with_federation.test_client()
         response = client.get(
-            '/nodeinfo/2.0',
-            content_type='application/json',
+            "/nodeinfo/2.0",
+            content_type="application/json",
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data == {
-            'version': '2.0',
-            'software': {'name': 'fittrackee', 'version': VERSION},
-            'protocols': ['activitypub'],
-            'usage': {'users': {'total': 1}, 'localWorkouts': 0},
-            'openRegistrations': True,
+            "version": "2.0",
+            "software": {"name": "fittrackee", "version": VERSION},
+            "protocols": ["activitypub"],
+            "usage": {"users": {"total": 1}, "localWorkouts": 0},
+            "openRegistrations": True,
         }
 
     def test_it_displays_workouts_count(
@@ -105,13 +105,13 @@ class TestNodeInfo(ApiTestCaseMixin):
     ) -> None:
         client = app_with_federation.test_client()
         response = client.get(
-            '/nodeinfo/2.0',
-            content_type='application/json',
+            "/nodeinfo/2.0",
+            content_type="application/json",
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['usage']['localWorkouts'] == 1
+        assert data["usage"]["localWorkouts"] == 1
 
     def test_only_local_active_actors_are_counted(
         self,
@@ -123,14 +123,14 @@ class TestNodeInfo(ApiTestCaseMixin):
     ) -> None:
         client = app_with_federation.test_client()
         response = client.get(
-            '/nodeinfo/2.0',
-            content_type='application/json',
+            "/nodeinfo/2.0",
+            content_type="application/json",
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
 
-        assert data['usage']['users']['total'] == 2
+        assert data["usage"]["users"]["total"] == 2
 
     def test_it_displays_if_registration_is_disabled(
         self,
@@ -139,13 +139,13 @@ class TestNodeInfo(ApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        app_with_federation.config['is_registration_enabled'] = False
+        app_with_federation.config["is_registration_enabled"] = False
         client = app_with_federation.test_client()
         response = client.get(
-            '/nodeinfo/2.0',
-            content_type='application/json',
+            "/nodeinfo/2.0",
+            content_type="application/json",
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['openRegistrations'] is False
+        assert data["openRegistrations"] is False

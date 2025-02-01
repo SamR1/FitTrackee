@@ -20,15 +20,15 @@ class TestGetFollowRequestWithFederation(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/follow-requests',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/follow-requests",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['data']['follow_requests'] == []
+        assert data["status"] == "success"
+        assert data["data"]["follow_requests"] == []
 
     def test_it_returns_current_user_follow_requests(
         self,
@@ -48,17 +48,17 @@ class TestGetFollowRequestWithFederation(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/follow-requests',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/follow-requests",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert len(data['data']['follow_requests']) == 1
-        assert data['data']['follow_requests'][0]['username'] == 'toto'
-        assert data['data']['follow_requests'][0]['nb_workouts'] == 0
+        assert data["status"] == "success"
+        assert len(data["data"]["follow_requests"]) == 1
+        assert data["data"]["follow_requests"][0]["username"] == "toto"
+        assert data["data"]["follow_requests"][0]["nb_workouts"] == 0
 
 
 class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
@@ -72,7 +72,7 @@ class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
         )
 
         self.assert_return_user_not_found(
-            f'/api/follow-requests/{random_string()}/accept',
+            f"/api/follow-requests/{random_string()}/accept",
             client,
             auth_token,
         )
@@ -85,7 +85,7 @@ class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
         )
 
         self.assert_it_returns_follow_request_not_found(
-            client, auth_token, user_2.username, 'accept'
+            client, auth_token, user_2.username, "accept"
         )
 
     def test_it_raises_error_if_follow_request_already_accepted(
@@ -104,7 +104,7 @@ class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
         )
 
         self.assert_it_returns_follow_request_already_processed(
-            client, auth_token, user_2.username, 'accept'
+            client, auth_token, user_2.username, "accept"
         )
 
     def test_it_accepts_follow_request(
@@ -119,10 +119,10 @@ class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
         )
 
         self.assert_it_returns_follow_request_processed(
-            client, auth_token, user_2.username, 'accept'
+            client, auth_token, user_2.username, "accept"
         )
 
-    @patch('fittrackee.users.models.send_to_remote_inbox')
+    @patch("fittrackee.users.models.send_to_remote_inbox")
     def test_it_does_not_call_send_to_user_inbox(
         self,
         send_to_remote_inbox_mock: Mock,
@@ -136,9 +136,9 @@ class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
         )
 
         client.post(
-            f'/api/follow-requests/{user_2.username}/accept',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/follow-requests/{user_2.username}/accept",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         send_to_remote_inbox_mock.send.assert_not_called()
@@ -147,7 +147,7 @@ class TestAcceptLocalFollowRequestWithFederation(FollowRequestTestCase):
 class TestAcceptRemoteFollowRequestWithFederation(
     FollowRequestTestCase, UserInboxTestMixin
 ):
-    @patch('fittrackee.users.models.send_to_remote_inbox')
+    @patch("fittrackee.users.models.send_to_remote_inbox")
     def test_it_accepts_follow_request(
         self,
         send_to_remote_inbox_mock: Mock,
@@ -164,10 +164,10 @@ class TestAcceptRemoteFollowRequestWithFederation(
             client,
             auth_token,
             remote_user.fullname,  # type: ignore
-            'accept',
+            "accept",
         )
 
-    @patch('fittrackee.users.models.send_to_remote_inbox')
+    @patch("fittrackee.users.models.send_to_remote_inbox")
     def test_it_calls_send_to_user_inbox(
         self,
         send_to_remote_inbox_mock: Mock,
@@ -182,9 +182,9 @@ class TestAcceptRemoteFollowRequestWithFederation(
         )
 
         client.post(
-            f'/api/follow-requests/{remote_actor.fullname}/accept',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/follow-requests/{remote_actor.fullname}/accept",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         follow_request = FollowRequest.query.filter_by(
@@ -210,7 +210,7 @@ class TestRejectLocalFollowRequestWithFederation(FollowRequestTestCase):
         )
 
         self.assert_return_user_not_found(
-            f'/api/follow-requests/{random_string()}/reject',
+            f"/api/follow-requests/{random_string()}/reject",
             client,
             auth_token,
         )
@@ -223,7 +223,7 @@ class TestRejectLocalFollowRequestWithFederation(FollowRequestTestCase):
         )
 
         self.assert_it_returns_follow_request_not_found(
-            client, auth_token, user_2.username, 'reject'
+            client, auth_token, user_2.username, "reject"
         )
 
     def test_it_raises_error_if_follow_request_already_accepted(
@@ -241,7 +241,7 @@ class TestRejectLocalFollowRequestWithFederation(FollowRequestTestCase):
         )
 
         self.assert_it_returns_follow_request_already_processed(
-            client, auth_token, user_2.username, 'reject'
+            client, auth_token, user_2.username, "reject"
         )
 
     def test_it_rejects_follow_request(
@@ -256,10 +256,10 @@ class TestRejectLocalFollowRequestWithFederation(FollowRequestTestCase):
         )
 
         self.assert_it_returns_follow_request_processed(
-            client, auth_token, user_2.username, 'reject'
+            client, auth_token, user_2.username, "reject"
         )
 
-    @patch('fittrackee.users.models.send_to_remote_inbox')
+    @patch("fittrackee.users.models.send_to_remote_inbox")
     def test_it_does_not_call_send_to_user_inbox(
         self,
         send_to_remote_inbox_mock: Mock,
@@ -273,9 +273,9 @@ class TestRejectLocalFollowRequestWithFederation(FollowRequestTestCase):
         )
 
         client.post(
-            f'/api/follow-requests/{user_2.username}/reject',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/follow-requests/{user_2.username}/reject",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         send_to_remote_inbox_mock.send.assert_not_called()
@@ -284,7 +284,7 @@ class TestRejectLocalFollowRequestWithFederation(FollowRequestTestCase):
 class TestRejectRemoteFollowRequestWithFederation(
     FollowRequestTestCase, UserInboxTestMixin
 ):
-    @patch('fittrackee.users.models.send_to_remote_inbox')
+    @patch("fittrackee.users.models.send_to_remote_inbox")
     def test_it_accepts_follow_request(
         self,
         send_to_remote_inbox_mock: Mock,
@@ -301,10 +301,10 @@ class TestRejectRemoteFollowRequestWithFederation(
             client,
             auth_token,
             remote_user.fullname,  # type: ignore
-            'reject',
+            "reject",
         )
 
-    @patch('fittrackee.users.models.send_to_remote_inbox')
+    @patch("fittrackee.users.models.send_to_remote_inbox")
     def test_it_calls_send_to_user_inbox(
         self,
         send_to_remote_inbox_mock: Mock,
@@ -319,9 +319,9 @@ class TestRejectRemoteFollowRequestWithFederation(
         )
 
         client.post(
-            f'/api/follow-requests/{remote_actor.fullname}/reject',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/follow-requests/{remote_actor.fullname}/reject",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         follow_request = FollowRequest.query.filter_by(

@@ -295,7 +295,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   .workouts-list {
     display: flex;
     flex-direction: column;

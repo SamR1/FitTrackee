@@ -24,7 +24,7 @@ class TestSendToUsersInbox:
                 recipients=[remote_user.actor.inbox_url],
             )
 
-    @patch('fittrackee.federation.tasks.inbox.send_to_inbox')
+    @patch("fittrackee.federation.tasks.inbox.send_to_inbox")
     def test_it_calls_send_to_inbox(
         self,
         send_to_inbox_mock: Mock,
@@ -32,7 +32,7 @@ class TestSendToUsersInbox:
         user_1: User,
         remote_user: User,
     ) -> None:
-        activity = {'foo': 'bar'}
+        activity = {"foo": "bar"}
         send_to_remote_inbox(
             sender_id=user_1.actor.id,
             activity=activity,
@@ -45,7 +45,7 @@ class TestSendToUsersInbox:
             inbox_url=remote_user.actor.inbox_url,
         )
 
-    @patch('fittrackee.federation.tasks.inbox.send_to_inbox')
+    @patch("fittrackee.federation.tasks.inbox.send_to_inbox")
     def test_it_calls_send_to_inbox_for_each_recipient(
         self,
         send_to_inbox_mock: Mock,
@@ -54,7 +54,7 @@ class TestSendToUsersInbox:
     ) -> None:
         nb_recipients = 3
         recipients = [
-            f'{random_domain_with_scheme}/{random_string()}/inbox'
+            f"{random_domain_with_scheme}/{random_string()}/inbox"
             for _ in range(nb_recipients)
         ]
 

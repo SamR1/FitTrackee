@@ -11,10 +11,10 @@ from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 from ...mixins import ApiTestCaseMixin, BaseTestMixin
 
 
-@patch('fittrackee.federation.utils.user.update_remote_user')
-@patch('fittrackee.workouts.workouts.send_to_remote_inbox')
+@patch("fittrackee.federation.utils.user.update_remote_user")
+@patch("fittrackee.workouts.workouts.send_to_remote_inbox")
 class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
-    route = '/api/workouts/{workout_uuid}/like'
+    route = "/api/workouts/{workout_uuid}/like"
 
     def test_it_creates_workout_like(
         self,
@@ -37,15 +37,15 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=remote_cycling_workout.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
         assert (
-            data['data']['workouts'][0]['id']
+            data["data"]["workouts"][0]["id"]
             == remote_cycling_workout.short_id
         )
         assert (
@@ -73,7 +73,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         send_to_remote_inbox_mock.send.assert_not_called()
@@ -95,7 +95,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         client.post(
             self.route.format(workout_uuid=remote_cycling_workout.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         like_activity = WorkoutLike.query.one().get_activity()
@@ -106,10 +106,10 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
         )
 
 
-@patch('fittrackee.federation.utils.user.update_remote_user')
-@patch('fittrackee.workouts.workouts.send_to_remote_inbox')
+@patch("fittrackee.federation.utils.user.update_remote_user")
+@patch("fittrackee.workouts.workouts.send_to_remote_inbox")
 class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
-    route = '/api/workouts/{workout_uuid}/like/undo'
+    route = "/api/workouts/{workout_uuid}/like/undo"
 
     def test_it_removes_workout_like(
         self,
@@ -137,15 +137,15 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=remote_cycling_workout.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
         assert (
-            data['data']['workouts'][0]['id']
+            data["data"]["workouts"][0]["id"]
             == remote_cycling_workout.short_id
         )
         assert (
@@ -178,7 +178,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         client.post(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         send_to_remote_inbox_mock.send.assert_not_called()
@@ -206,7 +206,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         client.post(
             self.route.format(workout_uuid=remote_cycling_workout.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         send_to_remote_inbox_mock.send.assert_called_once_with(

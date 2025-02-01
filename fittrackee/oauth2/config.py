@@ -22,7 +22,7 @@ def config_oauth(app: Flask) -> None:
 
     # support revocation
     revocation_cls = create_revocation_endpoint(db.session, OAuth2Token)
-    revocation_cls.CLIENT_AUTH_METHODS = ['client_secret_post']
+    revocation_cls.CLIENT_AUTH_METHODS = ["client_secret_post"]
     authorization_server.register_endpoint(revocation_cls)
 
     # protect resource

@@ -18,10 +18,10 @@ from fittrackee.users.utils.controls import is_valid_email
 from .models import AppConfig
 from .utils import update_app_config_from_database, verify_app_config
 
-config_blueprint = Blueprint('config', __name__)
+config_blueprint = Blueprint("config", __name__)
 
 
-@config_blueprint.route('/config', methods=['GET'])
+@config_blueprint.route("/config", methods=["GET"])
 def get_application_config() -> Union[Dict, HttpResponse]:
     """
     Get Application configuration.
@@ -67,15 +67,15 @@ def get_application_config() -> Union[Dict, HttpResponse]:
 
     try:
         config = AppConfig.query.one()
-        return {'status': 'success', 'data': config.serialize()}
+        return {"status": "success", "data": config.serialize()}
     except (MultipleResultsFound, NoResultFound) as e:
         return handle_error_and_return_response(
-            e, message='error on getting configuration'
+            e, message="error on getting configuration"
         )
 
 
-@config_blueprint.route('/config', methods=['PATCH'])
-@require_auth(scopes=['application:write'], role=UserRole.ADMIN)
+@config_blueprint.route("/config", methods=["PATCH"])
+@require_auth(scopes=["application:write"], role=UserRole.ADMIN)
 def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Update Application configuration.
@@ -157,9 +157,9 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         return InvalidPayloadErrorResponse()
 
     ret = verify_app_config(config_data)
-    admin_contact = config_data.get('admin_contact')
+    admin_contact = config_data.get("admin_contact")
     if admin_contact and not is_valid_email(admin_contact):
-        ret.append('valid email must be provided for admin contact')
+        ret.append("valid email must be provided for admin contact")
     if ret:
         return InvalidPayloadErrorResponse(message=ret)
 
@@ -167,22 +167,22 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         config = AppConfig.query.one()
 
         for param in [
-            'gpx_limit_import',
-            'max_single_file_size',
-            'max_zip_file_size',
-            'max_users',
-            'stats_workouts_limit',
+            "gpx_limit_import",
+            "max_single_file_size",
+            "max_zip_file_size",
+            "max_users",
+            "stats_workouts_limit",
         ]:
             if param in config_data:
                 setattr(config, param, config_data[param])
-        if 'admin_contact' in config_data:
+        if "admin_contact" in config_data:
             config.admin_contact = admin_contact if admin_contact else None
-        if 'about' in config_data:
+        if "about" in config_data:
             config.about = (
-                config_data.get('about') if config_data.get('about') else None
+                config_data.get("about") if config_data.get("about") else None
             )
-        if 'privacy_policy' in config_data:
-            privacy_policy = config_data.get('privacy_policy')
+        if "privacy_policy" in config_data:
+            privacy_policy = config_data.get("privacy_policy")
             config.privacy_policy = privacy_policy if privacy_policy else None
             config.privacy_policy_date = (
                 datetime.now(timezone.utc) if privacy_policy else None
@@ -190,20 +190,20 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
 
         if config.max_zip_file_size < config.max_single_file_size:
             return InvalidPayloadErrorResponse(
-                'max size of zip archive must be equal or greater than '
-                'max size of uploaded files'
+                "max size of zip archive must be equal or greater than "
+                "max size of uploaded files"
             )
         db.session.commit()
         update_app_config_from_database(current_app, config)
-        return {'status': 'success', 'data': config.serialize()}
+        return {"status": "success", "data": config.serialize()}
 
     except Exception as e:
         return handle_error_and_return_response(
-            e, message='error when updating configuration'
+            e, message="error when updating configuration"
         )
 
 
-@config_blueprint.route('/ping', methods=['GET'])
+@config_blueprint.route("/ping", methods=["GET"])
 def health_check() -> Union[Dict, HttpResponse]:
     """health check endpoint
 
@@ -228,4 +228,4 @@ def health_check() -> Union[Dict, HttpResponse]:
 
     :statuscode 200: ``success``
     """
-    return {'status': 'success', 'message': 'pong!'}
+    return {"status": "success", "message": "pong!"}

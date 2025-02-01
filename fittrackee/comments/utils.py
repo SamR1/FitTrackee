@@ -15,24 +15,24 @@ if TYPE_CHECKING:
     from fittrackee.users.models import User
 
 MENTION_REGEX = (
-    r'(@(<span\s*.*>)?([\w_\-\.]+))(@([\w_\-\.]+\.[a-z]{2,}))?(<\/span>)?'
+    r"(@(<span\s*.*>)?([\w_\-\.]+))(@([\w_\-\.]+\.[a-z]{2,}))?(<\/span>)?"
 )
 LINK_TEMPLATE = (
     '<a href="{url}" target="_blank" rel="noopener noreferrer">'
-    '@<span>{username}</span></a>'
+    "@<span>{username}</span></a>"
 )
 
 
-def handle_mentions(text: str) -> Tuple[str, Dict[str, Set['User']]]:
-    mentioned_users: Dict[str, Set['User']] = {"local": set(), "remote": set()}
+def handle_mentions(text: str) -> Tuple[str, Dict[str, Set["User"]]]:
+    mentioned_users: Dict[str, Set["User"]] = {"local": set(), "remote": set()}
     for _, _, username, _, domain, _ in re.findall(
         re.compile(MENTION_REGEX), text
     ):
         mention = f"{username}{f'@{domain}' if domain else ''}"
         remote_domain = (
             f"@{domain}"
-            if domain and domain != current_app.config['AP_DOMAIN']
-            else ''
+            if domain and domain != current_app.config["AP_DOMAIN"]
+            else ""
         )
         try:
             user = get_user_from_username(
@@ -40,7 +40,7 @@ def handle_mentions(text: str) -> Tuple[str, Dict[str, Set['User']]]:
                 with_action="creation",
             )
         except Exception as e:
-            appLog.error(f"Error when getting mentioned user: {str(e)}")
+            appLog.error(f"Error when getting mentioned user: {e!s}")
             user = None
         if user:
             if user.is_remote:
@@ -56,7 +56,7 @@ def handle_mentions(text: str) -> Tuple[str, Dict[str, Set['User']]]:
     return text, mentioned_users
 
 
-def get_comment(comment_short_id: str, auth_user: Optional['User']) -> Comment:
+def get_comment(comment_short_id: str, auth_user: Optional["User"]) -> Comment:
     workout_comment_uuid = decode_short_id(comment_short_id)
     filters = [Comment.uuid == workout_comment_uuid]
     if auth_user:

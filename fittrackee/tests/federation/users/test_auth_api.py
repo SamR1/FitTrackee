@@ -10,20 +10,20 @@ from fittrackee.visibility_levels import VisibilityLevel
 
 def assert_actor_is_created(app: Flask) -> None:
     client = app.test_client()
-    username = 'justatest'
+    username = "justatest"
 
     client.post(
-        '/api/auth/register',
+        "/api/auth/register",
         data=json.dumps(
             dict(
                 username=username,
-                email='test@test.com',
-                password='12345678',
-                password_conf='12345678',
+                email="test@test.com",
+                password="12345678",
+                password_conf="12345678",
                 accepted_policy=True,
             )
         ),
-        content_type='application/json',
+        content_type="application/json",
     )
 
     user = User.query.filter_by(username=username).one()
@@ -44,17 +44,17 @@ class TestUserRegistration:
         client = app_with_federation.test_client()
 
         response = client.post(
-            '/api/auth/register',
+            "/api/auth/register",
             data=json.dumps(
                 dict(
                     username=remote_user.username,
-                    email='test@test.com',
-                    password='12345678',
-                    password_conf='12345678',
+                    email="test@test.com",
+                    password="12345678",
+                    password_conf="12345678",
                     accepted_policy=True,
                 )
             ),
-            content_type='application/json',
+            content_type="application/json",
         )
 
         assert response.status_code == 200
@@ -67,9 +67,9 @@ class TestUserRegistration:
 
 class TestUserPreferencesUpdate(ApiTestCaseMixin):
     @pytest.mark.parametrize(
-        'input_map_visibility,input_analysis_visibility,'
-        'input_workout_visibility,expected_map_visibility,'
-        'expected_analysis_visibility',
+        "input_map_visibility,input_analysis_visibility,"
+        "input_workout_visibility,expected_map_visibility,"
+        "expected_analysis_visibility",
         [
             (
                 VisibilityLevel.FOLLOWERS_AND_REMOTE,
@@ -102,16 +102,16 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         )
 
         response = client.post(
-            '/api/auth/profile/edit/preferences',
-            content_type='application/json',
+            "/api/auth/profile/edit/preferences",
+            content_type="application/json",
             data=json.dumps(
                 dict(
-                    timezone='America/New_York',
+                    timezone="America/New_York",
                     weekm=True,
-                    language='fr',
+                    language="fr",
                     imperial_units=True,
                     display_ascent=True,
-                    date_format='MM/dd/yyyy',
+                    date_format="MM/dd/yyyy",
                     start_elevation_at_zero=False,
                     use_raw_gpx_speed=True,
                     manually_approves_followers=False,
@@ -122,17 +122,17 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     workouts_visibility=input_workout_visibility.value,
                 )
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['data']['map_visibility'] == expected_map_visibility.value
+        assert data["data"]["map_visibility"] == expected_map_visibility.value
         assert (
-            data['data']['analysis_visibility']
+            data["data"]["analysis_visibility"]
             == expected_analysis_visibility.value
         )
         assert (
-            data['data']['workouts_visibility']
+            data["data"]["workouts_visibility"]
             == input_workout_visibility.value
         )

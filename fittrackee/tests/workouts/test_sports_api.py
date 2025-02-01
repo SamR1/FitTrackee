@@ -26,21 +26,21 @@ class TestGetSports(ApiTestCaseMixin):
     ) -> None:
         client = app.test_client()
 
-        response = client.get('/api/sports')
+        response = client.get("/api/sports")
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['sports']) == 2
-        assert data['data']['sports'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["sports"]) == 2
+        assert data["data"]["sports"][0] == jsonify_dict(
             sport_1_cycling.serialize()
         )
-        assert data['data']['sports'][1] == jsonify_dict(
+        assert data["data"]["sports"][1] == jsonify_dict(
             sport_2_running.serialize()
         )
 
     @pytest.mark.parametrize(
-        'input_check_workouts',
+        "input_check_workouts",
         ["", "?check_workouts=false", "?check_workouts=true"],
     )
     def test_it_gets_all_sports(
@@ -56,18 +56,18 @@ class TestGetSports(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/sports{input_check_workouts}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/sports{input_check_workouts}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['sports']) == 2
-        assert data['data']['sports'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["sports"]) == 2
+        assert data["data"]["sports"][0] == jsonify_dict(
             sport_1_cycling.serialize()
         )
-        assert data['data']['sports'][1] == jsonify_dict(
+        assert data["data"]["sports"][1] == jsonify_dict(
             sport_2_running.serialize()
         )
 
@@ -83,18 +83,18 @@ class TestGetSports(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/sports',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/sports",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['sports']) == 2
-        assert data['data']['sports'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["sports"]) == 2
+        assert data["data"]["sports"][0] == jsonify_dict(
             sport_1_cycling.serialize()
         )
-        assert data['data']['sports'][1] == jsonify_dict(
+        assert data["data"]["sports"][1] == jsonify_dict(
             sport_2_running.serialize()
         )
 
@@ -110,23 +110,23 @@ class TestGetSports(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/sports',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/sports",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['sports']) == 2
-        assert data['data']['sports'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["sports"]) == 2
+        assert data["data"]["sports"][0] == jsonify_dict(
             sport_1_cycling_inactive.serialize()
         )
-        assert data['data']['sports'][1] == jsonify_dict(
+        assert data["data"]["sports"][1] == jsonify_dict(
             sport_2_running.serialize()
         )
 
     @pytest.mark.parametrize(
-        'input_check_workouts',
+        "input_check_workouts",
         ["", "?check_workouts=false", "?check_workouts=true"],
     )
     def test_it_gets_all_sports_with_admin_rights(
@@ -142,19 +142,19 @@ class TestGetSports(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/sports{input_check_workouts}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/sports{input_check_workouts}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         check_workouts = input_check_workouts == "?check_workouts=true"
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['sports']) == 2
-        assert data['data']['sports'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["sports"]) == 2
+        assert data["data"]["sports"][0] == jsonify_dict(
             sport_1_cycling_inactive.serialize(check_workouts=check_workouts)
         )
-        assert data['data']['sports'][1] == jsonify_dict(
+        assert data["data"]["sports"][1] == jsonify_dict(
             sport_2_running.serialize(check_workouts=check_workouts)
         )
 
@@ -184,15 +184,15 @@ class TestGetSports(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/sports',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/sports",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['sports']) == 1
-        assert data['data']['sports'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["sports"]) == 1
+        assert data["data"]["sports"][0] == jsonify_dict(
             sport_1_cycling.serialize(
                 sport_preferences=user_1_sport_1_preference.serialize(),
             )
@@ -208,10 +208,10 @@ class TestGetSports(ApiTestCaseMixin):
         user_1_sport_1_preference: UserSportPreference,
         user_2_sport_2_preference: UserSportPreference,
     ) -> None:
-        user_1_sport_1_preference.color = '#000000'
+        user_1_sport_1_preference.color = "#000000"
         user_1_sport_1_preference.stopped_speed_threshold = 0.5
         user_1_sport_1_preference.is_active = False
-        user_2_sport_2_preference.color = '##0b5394'
+        user_2_sport_2_preference.color = "##0b5394"
         user_2_sport_2_preference.stopped_speed_threshold = 1.5
         user_2_sport_2_preference.is_active = True
         db.session.commit()
@@ -221,26 +221,26 @@ class TestGetSports(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/sports',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/sports",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['sports']) == 2
-        assert data['data']['sports'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["sports"]) == 2
+        assert data["data"]["sports"][0] == jsonify_dict(
             sport_1_cycling.serialize(
                 sport_preferences=user_1_sport_1_preference.serialize(),
             )
         )
-        assert data['data']['sports'][1] == jsonify_dict(
+        assert data["data"]["sports"][1] == jsonify_dict(
             sport_2_running.serialize()
         )
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -260,9 +260,9 @@ class TestGetSports(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/sports',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            "/api/sports",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -277,15 +277,15 @@ class TestGetSport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/sports/1',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/sports/1",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['sports']) == 1
-        assert data['data']['sports'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["sports"]) == 1
+        assert data["data"]["sports"][0] == jsonify_dict(
             sport_1_cycling.serialize()
         )
 
@@ -297,8 +297,8 @@ class TestGetSport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/sports/{sport_1_cycling.id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/sports/{sport_1_cycling.id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -317,15 +317,15 @@ class TestGetSport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/sports/1',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/sports/1",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['sports']) == 1
-        assert data['data']['sports'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["sports"]) == 1
+        assert data["data"]["sports"][0] == jsonify_dict(
             sport_2_running.serialize(
                 sport_preferences=user_1_sport_2_preference.serialize()
             )
@@ -339,12 +339,12 @@ class TestGetSport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/sports/1',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/sports/1",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['sports']) == 0
+        assert len(data["data"]["sports"]) == 0
 
     def test_it_gets_a_inactive_sport(
         self, app: Flask, user_1: User, sport_1_cycling_inactive: Sport
@@ -354,15 +354,15 @@ class TestGetSport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/sports/1',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/sports/1",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['sports']) == 1
-        assert data['data']['sports'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["sports"]) == 1
+        assert data["data"]["sports"][0] == jsonify_dict(
             sport_1_cycling_inactive.serialize()
         )
 
@@ -374,21 +374,21 @@ class TestGetSport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/sports/1',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/sports/1",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['sports']) == 1
-        assert data['data']['sports'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["sports"]) == 1
+        assert data["data"]["sports"][0] == jsonify_dict(
             sport_1_cycling_inactive.serialize()
         )
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -408,9 +408,9 @@ class TestGetSport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/sports/{sport_1_cycling.id}',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            f"/api/sports/{sport_1_cycling.id}",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -425,18 +425,18 @@ class TestUpdateSport(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            '/api/sports/1',
-            content_type='application/json',
+            "/api/sports/1",
+            content_type="application/json",
             data=json.dumps(dict(is_active=False)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['sports']) == 1
-        assert data['data']['sports'][0]['is_active'] is False
-        assert data['data']['sports'][0]['is_active_for_user'] is False
+        assert "success" in data["status"]
+        assert len(data["data"]["sports"]) == 1
+        assert data["data"]["sports"][0]["is_active"] is False
+        assert data["data"]["sports"][0]["is_active_for_user"] is False
 
     def test_it_enables_a_sport(
         self, app: Flask, user_1_admin: User, sport_1_cycling: Sport
@@ -447,18 +447,18 @@ class TestUpdateSport(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            '/api/sports/1',
-            content_type='application/json',
+            "/api/sports/1",
+            content_type="application/json",
             data=json.dumps(dict(is_active=True)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['sports']) == 1
-        assert data['data']['sports'][0]['is_active'] is True
-        assert data['data']['sports'][0]['is_active_for_user'] is True
+        assert "success" in data["status"]
+        assert len(data["data"]["sports"]) == 1
+        assert data["data"]["sports"][0]["is_active"] is True
+        assert data["data"]["sports"][0]["is_active_for_user"] is True
 
     def test_it_disables_a_sport_with_workouts(
         self,
@@ -472,18 +472,18 @@ class TestUpdateSport(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            '/api/sports/1',
-            content_type='application/json',
+            "/api/sports/1",
+            content_type="application/json",
             data=json.dumps(dict(is_active=False)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['sports']) == 1
-        assert data['data']['sports'][0]['is_active'] is False
-        assert data['data']['sports'][0]['is_active_for_user'] is False
+        assert "success" in data["status"]
+        assert len(data["data"]["sports"]) == 1
+        assert data["data"]["sports"][0]["is_active"] is False
+        assert data["data"]["sports"][0]["is_active_for_user"] is False
 
     def test_it_enables_a_sport_with_workouts(
         self,
@@ -498,18 +498,18 @@ class TestUpdateSport(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            '/api/sports/1',
-            content_type='application/json',
+            "/api/sports/1",
+            content_type="application/json",
             data=json.dumps(dict(is_active=True)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['sports']) == 1
-        assert data['data']['sports'][0]['is_active'] is True
-        assert data['data']['sports'][0]['is_active_for_user'] is True
+        assert "success" in data["status"]
+        assert len(data["data"]["sports"]) == 1
+        assert data["data"]["sports"][0]["is_active"] is True
+        assert data["data"]["sports"][0]["is_active_for_user"] is True
 
     def test_it_disables_a_sport_with_preferences(
         self,
@@ -523,18 +523,18 @@ class TestUpdateSport(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            '/api/sports/1',
-            content_type='application/json',
+            "/api/sports/1",
+            content_type="application/json",
             data=json.dumps(dict(is_active=False)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['sports']) == 1
-        assert data['data']['sports'][0]['is_active'] is False
-        assert data['data']['sports'][0]['is_active_for_user'] is False
+        assert "success" in data["status"]
+        assert len(data["data"]["sports"]) == 1
+        assert data["data"]["sports"][0]["is_active"] is False
+        assert data["data"]["sports"][0]["is_active_for_user"] is False
 
     def test_it_enables_a_sport_with_preferences(
         self,
@@ -549,18 +549,18 @@ class TestUpdateSport(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            '/api/sports/1',
-            content_type='application/json',
+            "/api/sports/1",
+            content_type="application/json",
             data=json.dumps(dict(is_active=True)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['sports']) == 1
-        assert data['data']['sports'][0]['is_active'] is True
-        assert data['data']['sports'][0]['is_active_for_user'] is True
+        assert "success" in data["status"]
+        assert len(data["data"]["sports"]) == 1
+        assert data["data"]["sports"][0]["is_active"] is True
+        assert data["data"]["sports"][0]["is_active_for_user"] is True
 
     def test_returns_error_if_user_has_no_admin_rights(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
@@ -570,10 +570,10 @@ class TestUpdateSport(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            '/api/sports/1',
-            content_type='application/json',
+            "/api/sports/1",
+            content_type="application/json",
             data=json.dumps(dict(is_active=False)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -586,10 +586,10 @@ class TestUpdateSport(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            '/api/sports/1',
-            content_type='application/json',
+            "/api/sports/1",
+            content_type="application/json",
             data=json.dumps(dict()),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(response)
@@ -602,18 +602,18 @@ class TestUpdateSport(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            '/api/sports/1',
-            content_type='application/json',
+            "/api/sports/1",
+            content_type="application/json",
             data=json.dumps(dict(is_active=False)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['sports']) == 0
+        assert len(data["data"]["sports"]) == 0
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -634,9 +634,9 @@ class TestUpdateSport(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/sports/{sport_1_cycling.id}',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            f"/api/sports/{sport_1_cycling.id}",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)

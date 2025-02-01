@@ -22,7 +22,7 @@ from ...utils import generate_response
 
 
 class TestSharedInbox(ApiTestCaseMixin, RandomMixin):
-    route = '/federation/inbox'
+    route = "/federation/inbox"
 
     def post_to_shared_inbox(
         self, app_with_federation: Flask, actor: Actor
@@ -31,18 +31,18 @@ class TestSharedInbox(ApiTestCaseMixin, RandomMixin):
         date_str = self.get_date_string(date_format=VALID_SIG_DATE_FORMAT)
         client = app_with_federation.test_client()
         note_activity: Dict = {
-            '@context': AP_CTX,
-            'id': self.random_string(),
-            'type': ActivityType.CREATE.value,
-            'actor': actor.activitypub_id,
-            'object': {
-                'type': 'Note',
-                'content': self.random_string(),
+            "@context": AP_CTX,
+            "id": self.random_string(),
+            "type": ActivityType.CREATE.value,
+            "actor": actor.activitypub_id,
+            "object": {
+                "type": "Note",
+                "content": self.random_string(),
             },
         }
         digest = generate_digest(note_activity)
 
-        with patch.object(requests, 'get') as requests_mock:
+        with patch.object(requests, "get") as requests_mock:
             requests_mock.return_value = generate_response(
                 status_code=200,
                 content=actor.serialize(),
@@ -50,19 +50,19 @@ class TestSharedInbox(ApiTestCaseMixin, RandomMixin):
             requests_mock.path = self.route
             response = client.post(
                 self.route,
-                content_type='application/json',
+                content_type="application/json",
                 headers={
-                    'Host': actor.domain.name,
-                    'Date': date_str,
-                    'Digest': digest,
-                    'Signature': generate_signature_header(
+                    "Host": actor.domain.name,
+                    "Date": date_str,
+                    "Digest": digest,
+                    "Signature": generate_signature_header(
                         host=actor.domain.name,
                         path=self.route,
                         date_str=date_str,
                         actor=actor,
                         digest=digest,
                     ),
-                    'Content-Type': 'application/ld+json',
+                    "Content-Type": "application/ld+json",
                 },
                 data=json.dumps(note_activity),
             )
@@ -76,12 +76,12 @@ class TestSharedInbox(ApiTestCaseMixin, RandomMixin):
 
         response = client.post(
             self.route,
-            content_type='application/json',
+            content_type="application/json",
             data=json.dumps({}),
         )
 
         self.assert_403(
-            response, 'error, federation is disabled for this instance'
+            response, "error, federation is disabled for this instance"
         )
 
     def test_it_returns_401_if_headers_are_missing(
@@ -89,26 +89,26 @@ class TestSharedInbox(ApiTestCaseMixin, RandomMixin):
     ) -> None:
         client = app_with_federation.test_client()
         note_activity = {
-            '@context': AP_CTX,
-            'id': self.random_string(),
-            'type': ActivityType.CREATE.value,
-            'actor': self.random_string(),
-            'object': {
-                'type': 'Note',
-                'content': self.random_string(),
+            "@context": AP_CTX,
+            "id": self.random_string(),
+            "type": ActivityType.CREATE.value,
+            "actor": self.random_string(),
+            "object": {
+                "type": "Note",
+                "content": self.random_string(),
             },
         }
 
         response = client.post(
             self.route,
-            content_type='application/json',
+            content_type="application/json",
             data=json.dumps(note_activity),
         )
 
         assert response.status_code == 401
         data = json.loads(response.data.decode())
-        assert 'error' in data['status']
-        assert 'Invalid signature.' in data['message']
+        assert "error" in data["status"]
+        assert "Invalid signature." in data["message"]
 
     @pytest.mark.disable_autouse_generate_keys
     def test_it_returns_401_if_signature_is_invalid(
@@ -116,34 +116,34 @@ class TestSharedInbox(ApiTestCaseMixin, RandomMixin):
     ) -> None:
         client = app_with_federation.test_client()
         note_activity = {
-            '@context': AP_CTX,
-            'id': self.random_string(),
-            'type': ActivityType.CREATE.value,
-            'actor': self.random_string(),
-            'object': {
-                'type': 'Note',
-                'content': self.random_string(),
+            "@context": AP_CTX,
+            "id": self.random_string(),
+            "type": ActivityType.CREATE.value,
+            "actor": self.random_string(),
+            "object": {
+                "type": "Note",
+                "content": self.random_string(),
             },
         }
 
         response = client.post(
             self.route,
-            content_type='application/json',
+            content_type="application/json",
             headers={
-                'Host': self.random_string(),
-                'Date': self.random_string(),
-                'Signature': self.random_string(),
+                "Host": self.random_string(),
+                "Date": self.random_string(),
+                "Signature": self.random_string(),
             },
             data=json.dumps(note_activity),
         )
 
         assert response.status_code == 401
         data = json.loads(response.data.decode())
-        assert 'error' in data['status']
-        assert 'Invalid signature.' in data['message']
+        assert "error" in data["status"]
+        assert "Invalid signature." in data["message"]
 
     @pytest.mark.disable_autouse_generate_keys
-    @patch('fittrackee.federation.inbox.handle_activity')
+    @patch("fittrackee.federation.inbox.handle_activity")
     def test_it_returns_200_if_activity_and_signature_are_valid(
         self,
         handle_activity: Mock,
@@ -156,10 +156,10 @@ class TestSharedInbox(ApiTestCaseMixin, RandomMixin):
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
+        assert "success" in data["status"]
 
     @pytest.mark.disable_autouse_generate_keys
-    @patch('fittrackee.federation.inbox.handle_activity')
+    @patch("fittrackee.federation.inbox.handle_activity")
     def test_it_calls_handle_activity_task(
         self,
         handle_activity: Mock,

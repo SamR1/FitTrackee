@@ -13,10 +13,10 @@ from ...comments.mixins import CommentMixin
 from ...mixins import ApiTestCaseMixin, BaseTestMixin
 
 
-@patch('fittrackee.federation.utils.user.update_remote_user')
-@patch('fittrackee.comments.comments.send_to_remote_inbox')
+@patch("fittrackee.federation.utils.user.update_remote_user")
+@patch("fittrackee.comments.comments.send_to_remote_inbox")
 class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
-    route = '/api/comments/{comment_uuid}/like'
+    route = "/api/comments/{comment_uuid}/like"
 
     def test_it_creates_workout_like(
         self,
@@ -44,13 +44,13 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['comment']['id'] == comment.short_id
+        assert "success" in data["status"]
+        assert data["comment"]["id"] == comment.short_id
         assert (
             CommentLike.query.filter_by(
                 user_id=user_1.id, comment_id=comment.id
@@ -82,7 +82,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         send_to_remote_inbox_mock.send.assert_not_called()
@@ -110,7 +110,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         like_activity = CommentLike.query.one().get_activity()
@@ -121,10 +121,10 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
 
-@patch('fittrackee.federation.utils.user.update_remote_user')
-@patch('fittrackee.comments.comments.send_to_remote_inbox')
+@patch("fittrackee.federation.utils.user.update_remote_user")
+@patch("fittrackee.comments.comments.send_to_remote_inbox")
 class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
-    route = '/api/comments/{comment_uuid}/like/undo'
+    route = "/api/comments/{comment_uuid}/like/undo"
 
     def test_it_removes_comment_like(
         self,
@@ -155,13 +155,13 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['comment']['id'] == comment.short_id
+        assert "success" in data["status"]
+        assert data["comment"]["id"] == comment.short_id
         assert (
             CommentLike.query.filter_by(
                 user_id=user_1.id, comment_id=comment.id
@@ -196,7 +196,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         send_to_remote_inbox_mock.send.assert_not_called()
@@ -228,7 +228,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         send_to_remote_inbox_mock.send.assert_called_once_with(

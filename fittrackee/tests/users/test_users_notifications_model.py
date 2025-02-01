@@ -95,7 +95,7 @@ class TestNotificationForFollowRequest:
         ).one()
         assert notification.created_at == follow_request.created_at
         assert notification.marked_as_read is False
-        assert notification.event_type == 'follow_request'
+        assert notification.event_type == "follow_request"
         assert notification.event_object_id is None
 
     def test_it_does_not_create_notification_when_disabled_in_preferences(
@@ -126,7 +126,7 @@ class TestNotificationForFollowRequest:
         ).one()
         assert notification.created_at == follow_request.created_at
         assert notification.marked_as_read is False
-        assert notification.event_type == 'follow'
+        assert notification.event_type == "follow"
         assert notification.event_object_id is None
 
     def test_it_does_not_create_notification_on_follow_when_user_automatically_approves_request_and_disabled_in_preferennces(  # noqa
@@ -141,7 +141,7 @@ class TestNotificationForFollowRequest:
             Notification.query.filter_by(
                 from_user_id=user_1.id,
                 to_user_id=user_2.id,
-                event_type='follow',
+                event_type="follow",
             ).first()
             is None
         )
@@ -172,7 +172,7 @@ class TestNotificationForFollowRequest:
         ).one()
         assert notification.created_at == follow_request.created_at
         assert notification.marked_as_read is False
-        assert notification.event_type == 'follow'
+        assert notification.event_type == "follow"
         assert notification.event_object_id is None
 
     def test_it_does_not_update_follow_request_notification_when_disabled_in_preferences(  # noqa
@@ -216,7 +216,7 @@ class TestNotificationForFollowRequest:
         ).one()
         assert notification.created_at == now
         assert notification.marked_as_read is False
-        assert notification.event_type == 'follow'
+        assert notification.event_type == "follow"
         assert notification.event_object_id is None
 
     def test_it_creates_notification_for_follower_when_user_approves_follow_request(  # noqa
@@ -234,7 +234,7 @@ class TestNotificationForFollowRequest:
         ).one()
         assert notification.created_at == now
         assert notification.marked_as_read is False
-        assert notification.event_type == 'follow_request_approved'
+        assert notification.event_type == "follow_request_approved"
         assert notification.event_object_id is None
 
     def test_it_does_not_create_notification_for_follower_when_disabled_in_preferences(  # noqa
@@ -326,7 +326,7 @@ class TestNotificationForFollowRequest:
 
         assert notification.created_at == follow_request.created_at
         assert notification.marked_as_read is False
-        assert notification.event_type == 'follow'
+        assert notification.event_type == "follow"
         assert notification.event_object_id is None
 
     def test_it_does_not_updates_notification_when_user_approves_follow_request_and_disabled_in_preferences(  # noqa
@@ -348,7 +348,7 @@ class TestNotificationForFollowRequest:
         assert notification.event_type == "follow_request"
         assert notification.event_object_id is None
 
-    @pytest.mark.parametrize('manually_approves_followers', [True, False])
+    @pytest.mark.parametrize("manually_approves_followers", [True, False])
     def test_it_deletes_notification_on_follow_request_delete(
         self,
         app: Flask,
@@ -441,8 +441,8 @@ class TestNotificationForFollowRequest:
         assert serialized_notification["from"] == {
             **user_2.serialize(),
             "blocked": False,
-            "follows": 'false',
-            "is_followed_by": 'true',
+            "follows": "false",
+            "is_followed_by": "true",
         }
         assert serialized_notification["id"] == notification.short_id
         assert serialized_notification["marked_as_read"] is False
@@ -472,7 +472,7 @@ class TestNotificationForWorkoutLike(NotificationTestCase):
         ).one()
         assert notification.created_at == like.created_at
         assert notification.marked_as_read is False
-        assert notification.event_type == 'workout_like'
+        assert notification.event_type == "workout_like"
 
     def test_it_does_not_create_notification_on_workout_like_when_disabled_in_preferences(  # noqa
         self,
@@ -514,7 +514,7 @@ class TestNotificationForWorkoutLike(NotificationTestCase):
                 from_user_id=user_2.id,
                 to_user_id=workout_cycling_user_1.user_id,
                 event_object_id=workout_cycling_user_1.id,
-                event_type='workout_like',
+                event_type="workout_like",
             ).first()
             is None
         )
@@ -564,7 +564,7 @@ class TestNotificationForWorkoutLike(NotificationTestCase):
         self.like_workout(user_2, workout_cycling_user_1)
         notification = Notification.query.filter_by(
             event_object_id=workout_cycling_user_1.id,
-            event_type='workout_like',
+            event_type="workout_like",
         ).one()
 
         serialized_notification = notification.serialize()
@@ -607,7 +607,7 @@ class TestNotificationForWorkoutComment(ReportMixin, NotificationTestCase):
         ).one()
         assert notification.created_at == comment.created_at
         assert notification.marked_as_read is False
-        assert notification.event_type == 'workout_comment'
+        assert notification.event_type == "workout_comment"
 
     def test_it_does_not_create_notification_on_workout_comment_when_disabled_in_preferences(  # noqa
         self,
@@ -658,7 +658,7 @@ class TestNotificationForWorkoutComment(ReportMixin, NotificationTestCase):
                 from_user_id=user_2.id,
                 to_user_id=workout_cycling_user_1.user_id,
                 event_object_id=comment_id,
-                event_type='workout_comment',
+                event_type="workout_comment",
             ).first()
             is None
         )
@@ -682,7 +682,7 @@ class TestNotificationForWorkoutComment(ReportMixin, NotificationTestCase):
         )
 
     @pytest.mark.parametrize(
-        'workout_visibility, text_visibility',
+        "workout_visibility, text_visibility",
         [
             (VisibilityLevel.FOLLOWERS, VisibilityLevel.FOLLOWERS),
             (VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE),  # no mention
@@ -738,7 +738,7 @@ class TestNotificationForWorkoutComment(ReportMixin, NotificationTestCase):
         comment = self.comment_workout(user_2, workout_cycling_user_1)
         notification = Notification.query.filter_by(
             event_object_id=comment.id,
-            event_type='workout_comment',
+            event_type="workout_comment",
         ).one()
 
         serialized_notification = notification.serialize()
@@ -879,7 +879,7 @@ class TestNotificationForWorkoutReportAction(
 
 
 class TestMultipleNotificationsForWorkout(NotificationTestCase, ReportMixin):
-    def test_it_deletes_workout_notifications_on_workout_deletion(  # noqa
+    def test_it_deletes_workout_notifications_on_workout_deletion(
         self,
         app: Flask,
         sport_1_cycling: Sport,
@@ -912,15 +912,15 @@ class TestMultipleNotificationsForWorkout(NotificationTestCase, ReportMixin):
         assert Workout.query.first() is None
         assert WorkoutLike.query.first() is None
         assert (
-            Notification.query.filter_by(event_type='workout_like').first()
+            Notification.query.filter_by(event_type="workout_like").first()
             is None
         )
         assert (
-            Notification.query.filter_by(event_type='workout_comment').first()
+            Notification.query.filter_by(event_type="workout_comment").first()
             is None
         )
         assert (
-            Notification.query.filter_by(event_type='report').first()
+            Notification.query.filter_by(event_type="report").first()
             is not None
         )
         for action_type in action_types:
@@ -956,7 +956,7 @@ class TestNotificationForCommentReply(NotificationTestCase):
         ).one()
         assert notification.created_at == reply.created_at
         assert notification.marked_as_read is False
-        assert notification.event_type == 'comment_reply'
+        assert notification.event_type == "comment_reply"
 
     def test_it_deletes_notification_on_comment_reply_delete(
         self,
@@ -979,7 +979,7 @@ class TestNotificationForCommentReply(NotificationTestCase):
             from_user_id=user_3.id,
             to_user_id=workout_cycling_user_1.user_id,
             event_object_id=reply_id,
-            event_type='comment_reply',
+            event_type="comment_reply",
         ).first()
         assert notification is None
 
@@ -1063,7 +1063,7 @@ class TestNotificationForCommentReply(NotificationTestCase):
         )
         notification = Notification.query.filter_by(
             event_object_id=reply.id,
-            event_type='comment_reply',
+            event_type="comment_reply",
         ).one()
 
         serialized_notification = notification.serialize()
@@ -1101,7 +1101,7 @@ class TestNotificationForCommentLike(NotificationTestCase):
         ).one()
         assert notification.created_at == like.created_at
         assert notification.marked_as_read is False
-        assert notification.event_type == 'comment_like'
+        assert notification.event_type == "comment_like"
 
     def test_it_does_not_create_notification_on_comment_like_when_disabled_in_preferences(  # noqa
         self,
@@ -1146,7 +1146,7 @@ class TestNotificationForCommentLike(NotificationTestCase):
                 from_user_id=user_3.id,
                 to_user_id=comment.user_id,
                 event_object_id=like_id,
-                event_type='comment_like',
+                event_type="comment_like",
             ).first()
             is None
         )
@@ -1194,7 +1194,7 @@ class TestNotificationForCommentLike(NotificationTestCase):
         like = self.like_comment(user_2, comment)
         notification = Notification.query.filter_by(
             event_object_id=like.id,
-            event_type='comment_like',
+            event_type="comment_like",
         ).one()
 
         serialized_notification = notification.serialize()
@@ -1351,7 +1351,7 @@ class TestNotificationForMention(NotificationTestCase):
         ).one()
         assert notification.created_at == mention.created_at
         assert notification.marked_as_read is False
-        assert notification.event_type == 'mention'
+        assert notification.event_type == "mention"
 
     def test_it_does_not_create_notification_on_mention_when_disabled_in_preferences(  # noqa
         self,
@@ -1402,13 +1402,13 @@ class TestNotificationForMention(NotificationTestCase):
         assert len(notifications) == 1
         assert notifications[0].created_at == comment.created_at
         assert notifications[0].marked_as_read is False
-        assert notifications[0].event_type == 'workout_comment'
+        assert notifications[0].event_type == "workout_comment"
 
     @pytest.mark.parametrize(
-        'input_visibility_level',
+        "input_visibility_level",
         [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
-    def test_it_creates_notification_when_mentioned_user_is_workout_owner(  # noqa
+    def test_it_creates_notification_when_mentioned_user_is_workout_owner(
         self,
         app: Flask,
         user_1: User,
@@ -1434,7 +1434,7 @@ class TestNotificationForMention(NotificationTestCase):
         assert len(notifications) == 1
         assert notifications[0].created_at == mention.created_at
         assert notifications[0].marked_as_read is False
-        assert notifications[0].event_type == 'mention'
+        assert notifications[0].event_type == "mention"
 
     def test_it_does_not_create_notification_when_mentioned_user_is_workout_owner_and_disabled_in_preferences(  # noqa
         self,
@@ -1486,7 +1486,7 @@ class TestNotificationForMention(NotificationTestCase):
         assert len(notifications) == 1
         assert notifications[0].created_at == comment.created_at
         assert notifications[0].marked_as_read is False
-        assert notifications[0].event_type == 'workout_comment'
+        assert notifications[0].event_type == "workout_comment"
 
     def test_it_does_not_create_notification_when_mentioned_user_is_parent_comment_owner(  # noqa
         self,
@@ -1519,7 +1519,7 @@ class TestNotificationForMention(NotificationTestCase):
         assert len(notifications) == 1
         assert notifications[0].created_at == comment.created_at
         assert notifications[0].marked_as_read is False
-        assert notifications[0].event_type == 'comment_reply'
+        assert notifications[0].event_type == "comment_reply"
 
     def test_it_deletes_notification_on_mention_delete(
         self,
@@ -1543,7 +1543,7 @@ class TestNotificationForMention(NotificationTestCase):
                 from_user_id=comment.user_id,
                 to_user_id=user_3.id,
                 event_object_id=comment_id,
-                event_type='mention',
+                event_type="mention",
             ).first()
             is None
         )
@@ -1566,7 +1566,7 @@ class TestNotificationForMention(NotificationTestCase):
                 from_user_id=comment.user_id,
                 to_user_id=user_2.id,
                 event_object_id=comment.id,
-                event_type='mention',
+                event_type="mention",
             ).first()
             is None
         )
@@ -1588,7 +1588,7 @@ class TestNotificationForMention(NotificationTestCase):
             from_user_id=comment.user_id,
             to_user_id=user_2.id,
             event_object_id=comment.id,
-            event_type='mention',
+            event_type="mention",
         ).one()
 
         serialized_notification = notification.serialize()
@@ -1643,18 +1643,18 @@ class TestMultipleNotificationsForComment(ReportMixin, NotificationTestCase):
         db.session.delete(comment)
 
         assert (
-            Notification.query.filter_by(event_type='workout_comment').first()
+            Notification.query.filter_by(event_type="workout_comment").first()
             is None
         )
         assert (
-            Notification.query.filter_by(event_type='comment_like').first()
+            Notification.query.filter_by(event_type="comment_like").first()
             is None
         )
         assert (
-            Notification.query.filter_by(event_type='mention').first() is None
+            Notification.query.filter_by(event_type="mention").first() is None
         )
         assert (
-            Notification.query.filter_by(event_type='report').first()
+            Notification.query.filter_by(event_type="report").first()
             is not None
         )
         for action_type in action_types:
@@ -1743,7 +1743,7 @@ class TestNotificationForReport(NotificationTestCase):
 
         assert (
             Notification.query.filter_by(
-                event_type='report', event_object_id=report.id
+                event_type="report", event_object_id=report.id
             ).first()
             is None
         )
@@ -1761,7 +1761,7 @@ class TestNotificationForReport(NotificationTestCase):
 
         assert (
             Notification.query.filter_by(
-                event_type='report', event_object_id=report.id
+                event_type="report", event_object_id=report.id
             ).first()
             is None
         )
@@ -1780,7 +1780,7 @@ class TestNotificationForReport(NotificationTestCase):
 
         assert (
             Notification.query.filter_by(
-                event_type='report', event_object_id=report.id
+                event_type="report", event_object_id=report.id
             ).first()
             is None
         )
@@ -1802,7 +1802,7 @@ class TestNotificationForReport(NotificationTestCase):
         ).one()
         assert notification.created_at == report.created_at
         assert notification.marked_as_read is False
-        assert notification.event_type == 'report'
+        assert notification.event_type == "report"
         assert notification.event_object_id == report.id
 
     def test_it_creates_notifications_for_all_admins_and_moderators(
@@ -1924,7 +1924,7 @@ class TestNotificationForSuspensionAppeal(CommentMixin, ReportMixin):
         db.session.commit()
 
         notifications = Notification.query.filter_by(
-            event_type='suspension_appeal'
+            event_type="suspension_appeal"
         ).all()
         assert len(notifications) == 1
         assert notifications[0].from_user_id == user_2.id
@@ -1956,7 +1956,7 @@ class TestNotificationForSuspensionAppeal(CommentMixin, ReportMixin):
         db.session.commit()
 
         notifications = Notification.query.filter_by(
-            event_type='suspension_appeal'
+            event_type="suspension_appeal"
         ).all()
         assert len(notifications) == 1
         assert notifications[0].from_user_id == user_2.id
@@ -1992,7 +1992,7 @@ class TestNotificationForSuspensionAppeal(CommentMixin, ReportMixin):
 
 class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
     @pytest.mark.parametrize(
-        'input_action_type', ['user_warning', 'user_warning_lifting']
+        "input_action_type", ["user_warning", "user_warning_lifting"]
     )
     def test_it_creates_notification_on_user_action_on_user_report(
         self,
@@ -2022,7 +2022,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         assert notification.event_type == input_action_type
 
     @pytest.mark.parametrize(
-        'input_action_type', ['user_warning', 'user_warning_lifting']
+        "input_action_type", ["user_warning", "user_warning_lifting"]
     )
     def test_it_serializes_user_action_notification_on_user_report(
         self,
@@ -2061,7 +2061,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         assert "workout" not in serialized_notification
 
     @pytest.mark.parametrize(
-        'input_action_type', ['user_warning', 'user_warning_lifting']
+        "input_action_type", ["user_warning", "user_warning_lifting"]
     )
     def test_it_creates_notification_on_user_action_on_workout_report(
         self,
@@ -2094,7 +2094,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         assert notification.event_type == input_action_type
 
     @pytest.mark.parametrize(
-        'input_action_type', ['user_warning', 'user_warning_lifting']
+        "input_action_type", ["user_warning", "user_warning_lifting"]
     )
     def test_it_serializes_user_action_notification_on_workout_report(
         self,
@@ -2137,7 +2137,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         assert "report" not in serialized_notification
 
     @pytest.mark.parametrize(
-        'input_action_type', ['user_warning', 'user_warning_lifting']
+        "input_action_type", ["user_warning", "user_warning_lifting"]
     )
     def test_it_creates_notification_on_user_action_on_comment_report(
         self,
@@ -2169,7 +2169,7 @@ class TestNotificationForUserWarning(NotificationTestCase, ReportMixin):
         assert notification.event_type == input_action_type
 
     @pytest.mark.parametrize(
-        'input_action_type', ['user_warning', 'user_warning_lifting']
+        "input_action_type", ["user_warning", "user_warning_lifting"]
     )
     def test_it_serializes_user_action_notification_on_comment_report(
         self,
@@ -2228,7 +2228,7 @@ class TestNotificationForUserWarningAppeal(NotificationTestCase, ReportMixin):
             Notification.query.filter_by(
                 from_user_id=user_2.id,
                 to_user_id=user_1_moderator.id,
-                event_type='user_warning_appeal',
+                event_type="user_warning_appeal",
             ).first()
             is None
         )
@@ -2248,7 +2248,7 @@ class TestNotificationForUserWarningAppeal(NotificationTestCase, ReportMixin):
         notification = Notification.query.filter_by(
             from_user_id=user_2.id,
             to_user_id=user_1_moderator.id,
-            event_type='user_warning_appeal',
+            event_type="user_warning_appeal",
         ).one()
         assert notification.created_at == appeal.created_at
         assert notification.marked_as_read is False
@@ -2268,7 +2268,7 @@ class TestNotificationForUserWarningAppeal(NotificationTestCase, ReportMixin):
         notification = Notification.query.filter_by(
             from_user_id=user_2.id,
             to_user_id=user_1_moderator.id,
-            event_type='user_warning_appeal',
+            event_type="user_warning_appeal",
         ).one()
 
         serialized_notification = notification.serialize()

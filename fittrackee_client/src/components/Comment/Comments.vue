@@ -177,7 +177,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
 
   .workout-comments {
     padding-bottom: $default-padding * 2;

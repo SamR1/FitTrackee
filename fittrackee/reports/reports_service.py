@@ -50,8 +50,8 @@ class ReportService:
                 user = User.query.filter(
                     func.lower(User.username) == func.lower(object_id),
                 ).one()
-            except NoResultFound:
-                raise UserNotFoundException()
+            except NoResultFound as e:
+                raise UserNotFoundException() from e
             if not user.is_active:
                 raise UserNotFoundException()
             target_object = user
@@ -274,7 +274,7 @@ class ReportService:
 
         action = appeal.action
         content = None
-        content_type = ''
+        content_type = ""
         if action.action_type.startswith("comment_"):
             content = Comment.query.filter_by(id=action.comment_id).first()
             content_type = "comment"

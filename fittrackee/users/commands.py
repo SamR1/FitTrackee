@@ -15,39 +15,39 @@ from fittrackee.users.export_data import (
 from fittrackee.users.roles import UserRole
 from fittrackee.users.users_service import UserManagerService
 from fittrackee.users.utils.language import get_language
-from fittrackee.users.utils.token import clean_blacklisted_tokens
+from fittrackee.users.utils.tokens import clean_blacklisted_tokens
 
 handler = logging.StreamHandler()
-logger = logging.getLogger('fittrackee_users_cli')
+logger = logging.getLogger("fittrackee_users_cli")
 logger.setLevel(logging.INFO)
 logger.addHandler(handler)
 
 
-@click.group(name='users')
+@click.group(name="users")
 def users_cli() -> None:
     """Manage users."""
     pass
 
 
-@users_cli.command('create')
-@click.argument('username')
-@click.option('--email', type=str, required=True, help='User email.')
+@users_cli.command("create")
+@click.argument("username")
+@click.option("--email", type=str, required=True, help="User email.")
 @click.option(
-    '--password',
+    "--password",
     type=str,
-    help='User password. If not provided, a random password is generated.',
+    help="User password. If not provided, a random password is generated.",
 )
 @click.option(
-    '--lang',
+    "--lang",
     type=str,
     help=(
-        'User preference for interface language (two-letter code, ISO 639-1).'
-        ' If not provided or not supported, it falls back to English (\'en\').'
-        f' Supported languages: {", ".join(SUPPORTED_LANGUAGES)}.'
+        "User preference for interface language (two-letter code, ISO 639-1)."
+        " If not provided or not supported, it falls back to English ('en')."
+        f" Supported languages: {', '.join(SUPPORTED_LANGUAGES)}."
     ),
 )
 @click.option(
-    '--role', type=click.Choice(UserRole.db_choices()), help='Set user role.'
+    "--role", type=click.Choice(UserRole.db_choices()), help="Set user role."
 )
 def create_user(
     username: str,
@@ -78,30 +78,30 @@ def create_user(
                 if not password:
                     click.echo(f"The user password is: {user_password}")
         except Exception as e:
-            click.echo(f'Error(s) occurred:\n{e}', err=True)
+            click.echo(f"Error(s) occurred:\n{e}", err=True)
 
 
-@users_cli.command('update')
-@click.argument('username')
+@users_cli.command("update")
+@click.argument("username")
 @click.option(
-    '--set-admin',
+    "--set-admin",
     type=bool,
-    help='[DEPRECATED] Add/remove admin rights (when adding admin rights, '
-    'it also activates user account if not active).',
+    help="[DEPRECATED] Add/remove admin rights (when adding admin rights, "
+    "it also activates user account if not active).",
 )
 @click.option(
-    '--set-role',
+    "--set-role",
     type=click.Choice(UserRole.db_choices()),
-    help='Set user role (when setting \'moderator\', \'admin\' and \'owner\' '
-    'role, it also activates user account if not active).',
+    help="Set user role (when setting 'moderator', 'admin' and 'owner' "
+    "role, it also activates user account if not active).",
 )
-@click.option('--activate', is_flag=True, help='Activate user account.')
+@click.option("--activate", is_flag=True, help="Activate user account.")
 @click.option(
-    '--reset-password',
+    "--reset-password",
     is_flag=True,
-    help='Reset user password (a new password will be displayed).',
+    help="Reset user password (a new password will be displayed).",
 )
-@click.option('--update-email', type=str, help='Update user email.')
+@click.option("--update-email", type=str, help="Update user email.")
 def manage_user(
     username: str,
     set_admin: Optional[bool],
@@ -118,7 +118,7 @@ def manage_user(
                 "WARNING: --set-admin is deprecated. "
                 "Please use --set-role option instead."
             )
-            role = 'admin' if set_admin else 'user'
+            role = "admin" if set_admin else "user"
         if set_admin is not None and set_role is not None:
             raise click.ClickException(
                 "--set-admin and --set-role can not be used together.",
@@ -149,11 +149,11 @@ def manage_user(
                 err=True,
             )
         except Exception as e:
-            click.echo(f'An error occurred: {e}', err=True)
+            click.echo(f"An error occurred: {e}", err=True)
 
 
-@users_cli.command('clean_tokens')
-@click.option('--days', type=int, required=True, help='Number of days.')
+@users_cli.command("clean_tokens")
+@click.option("--days", type=int, required=True, help="Number of days.")
 def clean(
     days: int,
 ) -> None:
@@ -162,11 +162,11 @@ def clean(
     """
     with app.app_context():
         deleted_rows = clean_blacklisted_tokens(days)
-        logger.info(f'Blacklisted tokens deleted: {deleted_rows}.')
+        logger.info(f"Blacklisted tokens deleted: {deleted_rows}.")
 
 
-@users_cli.command('clean_archives')
-@click.option('--days', type=int, required=True, help='Number of days.')
+@users_cli.command("clean_archives")
+@click.option("--days", type=int, required=True, help="Number of days.")
 def clean_export_archives(
     days: int,
 ) -> None:
@@ -176,28 +176,29 @@ def clean_export_archives(
     with app.app_context():
         counts = clean_user_data_export(days)
         logger.info(
-            f'Deleted data export requests: {counts["deleted_requests"]}.'
+            f"Deleted data export requests: {counts['deleted_requests']}."
         )
         logger.info(
-            f'Deleted data export archives: {counts["deleted_archives"]}.'
+            f"Deleted data export archives: {counts['deleted_archives']}."
         )
-        logger.info(f'Freed space: {naturalsize(counts["freed_space"])}.')
+        logger.info(f"Freed space: {naturalsize(counts['freed_space'])}.")
 
 
-@users_cli.command('export_archives')
+@users_cli.command("export_archives")
 @click.option(
-    '--max',
+    "--max",
+    "max_reports",
     type=int,
     required=True,
-    help='Maximum number of export requests to process.',
+    help="Maximum number of export requests to process.",
 )
 def export_archives(
-    max: int,
+    max_reports: int,
 ) -> None:
     """
     Export user data in zip archive if incomplete requests exist.
     To use in case redis is not set.
     """
     with app.app_context():
-        count = generate_user_data_archives(max)
-        logger.info(f'Generated data export archives: {count}.')
+        count = generate_user_data_archives(max_reports)
+        logger.info(f"Generated data export archives: {count}.")

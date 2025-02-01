@@ -8,9 +8,9 @@ from flask import Flask
 
 from fittrackee import create_app
 
-HOST = os.getenv('HOST', '127.0.0.1')
-PORT = os.getenv('PORT', '5000')
-WORKERS = os.getenv('APP_WORKERS', 1)
+HOST = os.getenv("HOST", "127.0.0.1")
+PORT = os.getenv("PORT", "5000")
+WORKERS = os.getenv("APP_WORKERS", 1)
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 app = create_app()
 
@@ -37,9 +37,9 @@ class StandaloneApplication(gunicorn.app.base.BaseApplication):
 
 
 def main() -> None:
-    options = {'bind': f'{HOST}:{PORT}', 'workers': WORKERS}
+    options = {"bind": f"{HOST}:{PORT}", "workers": WORKERS}
     StandaloneApplication(app, options).run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run()

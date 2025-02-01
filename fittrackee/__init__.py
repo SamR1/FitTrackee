@@ -23,22 +23,22 @@ from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from fittrackee.emails.email import EmailService
+from fittrackee.emails.emails import EmailService
 from fittrackee.request import CustomRequest
 
-VERSION = __version__ = '0.9.0'
-DEFAULT_PRIVACY_POLICY_DATA = '2024-12-23 19:00:00'
-REDIS_URL = os.getenv('REDIS_URL', 'redis://')
-API_RATE_LIMITS = os.environ.get('API_RATE_LIMITS', '300 per 5 minutes').split(
-    ','
+VERSION = __version__ = "0.9.0"
+DEFAULT_PRIVACY_POLICY_DATA = "2024-12-23 19:00:00"
+REDIS_URL = os.getenv("REDIS_URL", "redis://")
+API_RATE_LIMITS = os.environ.get("API_RATE_LIMITS", "300 per 5 minutes").split(
+    ","
 )
-log_file = os.getenv('APP_LOG')
+log_file = os.getenv("APP_LOG")
 logging.basicConfig(
     filename=log_file,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    datefmt='%Y/%m/%d %H:%M:%S',
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    datefmt="%Y/%m/%d %H:%M:%S",
 )
-appLog = logging.getLogger('fittrackee')
+appLog = logging.getLogger("fittrackee")
 
 
 class Base(DeclarativeBase):
@@ -70,7 +70,7 @@ limiter = Limiter(
     default_limits_per_method=True,
     headers_enabled=True,
     storage_uri=REDIS_URL,
-    strategy='fixed-window',
+    strategy="fixed-window",
 )
 # if redis is not available, disable the rate limiter
 r = redis.from_url(REDIS_URL)
@@ -78,7 +78,7 @@ try:
     r.ping()
 except redis.exceptions.ConnectionError:
     limiter.enabled = False
-    appLog.warning('Redis not available, API rate limits are disabled.')
+    appLog.warning("Redis not available, API rate limits are disabled.")
 
 
 class CustomFlask(Flask):
@@ -90,17 +90,17 @@ class CustomFlask(Flask):
 def create_app(init_email: bool = True) -> Flask:
     # instantiate the app
     app = CustomFlask(
-        __name__, static_folder='dist/static', template_folder='dist'
+        __name__, static_folder="dist/static", template_folder="dist"
     )
 
     # set config
     with app.app_context():
         app_settings = os.getenv(
-            'APP_SETTINGS', 'fittrackee.config.ProductionConfig'
+            "APP_SETTINGS", "fittrackee.config.ProductionConfig"
         )
-        if app_settings == 'fittrackee.config.TestingConfig':
+        if app_settings == "fittrackee.config.TestingConfig":
             # reload config on tests
-            config = import_module('fittrackee.config')
+            config = import_module("fittrackee.config")
             reload(config)
         app.config.from_object(app_settings)
 
@@ -118,12 +118,12 @@ def create_app(init_email: bool = True) -> Flask:
 
     # set up email if 'EMAIL_URL' is initialized
     if init_email:
-        if app.config['EMAIL_URL']:
+        if app.config["EMAIL_URL"]:
             email_service.init_email(app)
-            app.config['CAN_SEND_EMAILS'] = True
+            app.config["CAN_SEND_EMAILS"] = True
         else:
             appLog.warning(
-                'EMAIL_URL is not provided, email sending is deactivated.'
+                "EMAIL_URL is not provided, email sending is deactivated."
             )
 
     # get configuration from database
@@ -136,108 +136,108 @@ def create_app(init_email: bool = True) -> Flask:
         # Note: check if "app_config" table exist to avoid errors when
         # dropping tables on dev environments
         try:
-            if db.engine.dialect.has_table(db.engine.connect(), 'app_config'):
+            if db.engine.dialect.has_table(db.engine.connect(), "app_config"):
                 db_app_config = get_or_init_config()
                 update_app_config_from_database(app, db_app_config)
         except ProgrammingError as e:
             # avoid error on AppConfig migration
             if re.match(
-                r'psycopg2.errors.UndefinedColumn(.*)app_config.', str(e)
+                r"psycopg2.errors.UndefinedColumn(.*)app_config.", str(e)
             ):
                 pass
 
-    from .application.app_config import config_blueprint  # noqa
-    from .comments.comments import comments_blueprint  # noqa
+    from .application.app_config import config_blueprint
+    from .comments.comments import comments_blueprint
     from .equipments.equipment_types import equipment_types_blueprint
     from .equipments.equipments import equipments_blueprint
-    from .oauth2.routes import oauth2_blueprint  # noqa
-    from .reports.reports import reports_blueprint  # noqa
-    from .users.auth import auth_blueprint  # noqa
-    from .users.follow_requests import follow_requests_blueprint  # noqa
-    from .users.notifications import notifications_blueprint  # noqa
-    from .users.users import users_blueprint  # noqa
-    from .workouts.records import records_blueprint  # noqa
-    from .workouts.sports import sports_blueprint  # noqa
-    from .workouts.stats import stats_blueprint  # noqa
-    from .workouts.timeline import timeline_blueprint  # noqa
-    from .workouts.workouts import workouts_blueprint  # noqa
+    from .oauth2.routes import oauth2_blueprint
+    from .reports.reports import reports_blueprint
+    from .users.auth import auth_blueprint
+    from .users.follow_requests import follow_requests_blueprint
+    from .users.notifications import notifications_blueprint
+    from .users.users import users_blueprint
+    from .workouts.records import records_blueprint
+    from .workouts.sports import sports_blueprint
+    from .workouts.stats import stats_blueprint
+    from .workouts.timeline import timeline_blueprint
+    from .workouts.workouts import workouts_blueprint
 
-    app.register_blueprint(auth_blueprint, url_prefix='/api')
-    app.register_blueprint(equipment_types_blueprint, url_prefix='/api')
-    app.register_blueprint(equipments_blueprint, url_prefix='/api')
-    app.register_blueprint(oauth2_blueprint, url_prefix='/api')
-    app.register_blueprint(comments_blueprint, url_prefix='/api')
-    app.register_blueprint(config_blueprint, url_prefix='/api')
-    app.register_blueprint(records_blueprint, url_prefix='/api')
-    app.register_blueprint(sports_blueprint, url_prefix='/api')
-    app.register_blueprint(stats_blueprint, url_prefix='/api')
-    app.register_blueprint(users_blueprint, url_prefix='/api')
-    app.register_blueprint(workouts_blueprint, url_prefix='/api')
-    app.register_blueprint(follow_requests_blueprint, url_prefix='/api')
-    app.register_blueprint(timeline_blueprint, url_prefix='/api')
-    app.register_blueprint(notifications_blueprint, url_prefix='/api')
-    app.register_blueprint(reports_blueprint, url_prefix='/api')
+    app.register_blueprint(auth_blueprint, url_prefix="/api")
+    app.register_blueprint(equipment_types_blueprint, url_prefix="/api")
+    app.register_blueprint(equipments_blueprint, url_prefix="/api")
+    app.register_blueprint(oauth2_blueprint, url_prefix="/api")
+    app.register_blueprint(comments_blueprint, url_prefix="/api")
+    app.register_blueprint(config_blueprint, url_prefix="/api")
+    app.register_blueprint(records_blueprint, url_prefix="/api")
+    app.register_blueprint(sports_blueprint, url_prefix="/api")
+    app.register_blueprint(stats_blueprint, url_prefix="/api")
+    app.register_blueprint(users_blueprint, url_prefix="/api")
+    app.register_blueprint(workouts_blueprint, url_prefix="/api")
+    app.register_blueprint(follow_requests_blueprint, url_prefix="/api")
+    app.register_blueprint(timeline_blueprint, url_prefix="/api")
+    app.register_blueprint(notifications_blueprint, url_prefix="/api")
+    app.register_blueprint(reports_blueprint, url_prefix="/api")
 
     # ActivityPub federation
-    from .federation.federation import ap_federation_blueprint  # noqa
-    from .federation.nodeinfo import ap_nodeinfo_blueprint  # noqa
-    from .federation.webfinger import ap_webfinger_blueprint  # noqa
+    from .federation.federation import ap_federation_blueprint
+    from .federation.nodeinfo import ap_nodeinfo_blueprint
+    from .federation.webfinger import ap_webfinger_blueprint
 
-    app.register_blueprint(ap_federation_blueprint, url_prefix='/federation')
+    app.register_blueprint(ap_federation_blueprint, url_prefix="/federation")
     app.register_blueprint(ap_nodeinfo_blueprint)
-    app.register_blueprint(ap_webfinger_blueprint, url_prefix='/.well-known')
+    app.register_blueprint(ap_webfinger_blueprint, url_prefix="/.well-known")
 
     if app.debug:
-        logging.getLogger('sqlalchemy').setLevel(logging.WARNING)
-        logging.getLogger('sqlalchemy').handlers = logging.getLogger(
-            'werkzeug'
+        logging.getLogger("sqlalchemy").setLevel(logging.WARNING)
+        logging.getLogger("sqlalchemy").handlers = logging.getLogger(
+            "werkzeug"
         ).handlers
-        logging.getLogger('sqlalchemy.orm').setLevel(logging.WARNING)
-        logging.getLogger('flake8').propagate = False
+        logging.getLogger("sqlalchemy.orm").setLevel(logging.WARNING)
+        logging.getLogger("flake8").propagate = False
         appLog.setLevel(logging.DEBUG)
 
         # Enable CORS
         @app.after_request  # type: ignore
         def after_request(response: Response) -> Response:
-            response.headers.add('Access-Control-Allow-Origin', '*')
+            response.headers.add("Access-Control-Allow-Origin", "*")
             response.headers.add(
-                'Access-Control-Allow-Headers', 'Content-Type,Authorization'
+                "Access-Control-Allow-Headers", "Content-Type,Authorization"
             )
             response.headers.add(
-                'Access-Control-Allow-Methods',
-                'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+                "Access-Control-Allow-Methods",
+                "GET,PUT,POST,DELETE,PATCH,OPTIONS",
             )
             return response
 
     @app.errorhandler(429)
     def rate_limit_handler(error: RateLimitExceeded) -> Tuple[Dict, int]:
         return {
-            'status': 'error',
-            'message': f'rate limit exceeded ({error.description})',
+            "status": "error",
+            "message": f"rate limit exceeded ({error.description})",
         }, 429
 
-    @app.route('/favicon.ico')
+    @app.route("/favicon.ico")
     @limiter.exempt
     def favicon() -> Any:
         return send_file(
-            os.path.join(app.root_path, 'dist/favicon.ico')  # type: ignore
+            os.path.join(app.root_path, "dist/favicon.ico")  # type: ignore
         )
 
-    @app.route('/', defaults={'path': ''})
-    @app.route('/<path:path>')
+    @app.route("/", defaults={"path": ""})
+    @app.route("/<path:path>")
     @limiter.exempt
     def catch_all(path: str) -> Any:
         # workaround to serve images (not in static directory)
-        if path.startswith('img/'):
+        if path.startswith("img/"):
             return send_from_directory(
                 directory=os.path.join(
                     app.root_path,  # type: ignore
-                    'dist',
+                    "dist",
                 ),
                 path=path,
             )
         else:
-            return render_template('index.html')
+            return render_template("index.html")
 
     # to get headers, especially 'X-Forwarded-Proto' for scheme needed by
     # Authlib, when the application is running behind a proxy server

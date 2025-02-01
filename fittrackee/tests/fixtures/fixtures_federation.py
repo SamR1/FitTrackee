@@ -9,8 +9,8 @@ from ..utils import RandomActor, random_domain
 
 @pytest.fixture()
 def app_actor(app: Flask) -> Actor:
-    domain = Domain.query.filter_by(name=app.config['AP_DOMAIN']).one()
-    actor = Actor(preferred_username='test', domain_id=domain.id)
+    domain = Domain.query.filter_by(name=app.config["AP_DOMAIN"]).one()
+    actor = Actor(preferred_username="test", domain_id=domain.id)
     db.session.add(actor)
     db.session.commit()
     return actor
@@ -18,7 +18,7 @@ def app_actor(app: Flask) -> Actor:
 
 @pytest.fixture()
 def remote_domain(app_with_federation: Flask) -> Domain:
-    remote_domain = Domain(name=random_domain(), software_name='fittrackee')
+    remote_domain = Domain(name=random_domain(), software_name="fittrackee")
     db.session.add(remote_domain)
     db.session.commit()
     return remote_domain
@@ -26,7 +26,7 @@ def remote_domain(app_with_federation: Flask) -> Domain:
 
 @pytest.fixture()
 def another_remote_domain(app_with_federation: Flask) -> Domain:
-    remote_domain = Domain(name=random_domain(), software_name='mastodon')
+    remote_domain = Domain(name=random_domain(), software_name="mastodon")
     db.session.add(remote_domain)
     db.session.commit()
     return remote_domain

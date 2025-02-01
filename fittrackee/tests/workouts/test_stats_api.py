@@ -38,7 +38,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         client = app.test_client()
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time',
+            f"/api/stats/{user_1.username}/by_time",
         )
 
         self.assert_401(response)
@@ -51,8 +51,8 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_2.username}/by_time',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_2.username}/by_time",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -65,8 +65,8 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{suspended_user.username}/by_time',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{suspended_user.username}/by_time",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -79,14 +79,14 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1.username}/by_time",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {}
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {}
 
     def test_it_returns_error_when_user_does_not_exist(
         self, app: Flask, user_1: User
@@ -96,11 +96,11 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/stats/1000/by_time',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/stats/1000/by_time",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_entity(response, 'user')
+        self.assert_404_with_entity(response, "user")
 
     def test_it_returns_error_if_date_format_is_invalid(
         self,
@@ -117,10 +117,10 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             (
-                f'/api/stats/{user_1.username}/by_time'
+                f"/api/stats/{user_1.username}/by_time"
                 f'?from="2018-04-01&to=2018-04-30'
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_500(response)
@@ -140,13 +140,13 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             (
-                f'/api/stats/{user_1.username}/by_time'
-                f'?from=2018-04-01&to=2018-04-30&time=day'
+                f"/api/stats/{user_1.username}/by_time"
+                f"?from=2018-04-01&to=2018-04-30&time=day"
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_400(response, 'invalid time period', 'fail')
+        self.assert_400(response, "invalid time period", "fail")
 
     def test_it_returns_error_if_stats_type_is_invalid(
         self,
@@ -163,15 +163,15 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             (
-                f'/api/stats/{user_1.username}/by_time?from=2018-04-01'
-                f'&to=2018-04-30&type={self.random_string()}'
+                f"/api/stats/{user_1.username}/by_time?from=2018-04-01"
+                f"&to=2018-04-30&type={self.random_string()}"
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_400(response, 'invalid stats type', 'fail')
+        self.assert_400(response, "invalid stats type", "fail")
 
-    @pytest.mark.parametrize('input_type', ['', '?type=total'])
+    @pytest.mark.parametrize("input_type", ["", "?type=total"])
     def test_it_gets_stats_by_time_all_workouts(
         self,
         app: Flask,
@@ -187,37 +187,37 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time{input_type}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1.username}/by_time{input_type}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2017': {
-                '1': {
-                    'total_ascent': 220.0,
-                    'total_descent': 280.0,
-                    'total_distance': 15.0,
-                    'total_duration': 4480,
-                    'total_workouts': 2,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2017": {
+                "1": {
+                    "total_ascent": 220.0,
+                    "total_descent": 280.0,
+                    "total_distance": 15.0,
+                    "total_duration": 4480,
+                    "total_workouts": 2,
                 }
             },
-            '2018': {
-                '1': {
-                    'total_ascent': 340.0,
-                    'total_descent': 500.0,
-                    'total_distance': 39.0,
-                    'total_duration': 11624,
-                    'total_workouts': 5,
+            "2018": {
+                "1": {
+                    "total_ascent": 340.0,
+                    "total_descent": 500.0,
+                    "total_distance": 39.0,
+                    "total_duration": 11624,
+                    "total_workouts": 5,
                 },
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             },
         }
@@ -242,21 +242,21 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1_paris.username}/by_time',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1_paris.username}/by_time",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2025': {
-                '1': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 5.0,
-                    'total_duration': 1024,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2025": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 5.0,
+                    "total_duration": 1024,
+                    "total_workouts": 1,
                 }
             },
         }
@@ -284,30 +284,30 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1_full.username}/by_time',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1_full.username}/by_time",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2024': {
-                '1': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 5.0,
-                    'total_duration': 1024,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2024": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 5.0,
+                    "total_duration": 1024,
+                    "total_workouts": 1,
                 }
             },
-            '2025': {
-                '1': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 5.0,
-                    'total_duration': 1024,
-                    'total_workouts': 1,
+            "2025": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 5.0,
+                    "total_duration": 1024,
+                    "total_workouts": 1,
                 }
             },
         }
@@ -327,30 +327,30 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             (
-                f'/api/stats/{user_1.username}/by_time'
-                f'?from=2018-04-01&to=2018-04-30'
+                f"/api/stats/{user_1.username}/by_time"
+                f"?from=2018-04-01&to=2018-04-30"
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2018': {
-                '1': {
-                    'total_ascent': 40.0,
-                    'total_descent': 20.0,
-                    'total_distance': 8.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2018": {
+                "1": {
+                    "total_ascent": 40.0,
+                    "total_descent": 20.0,
+                    "total_distance": 8.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             }
         }
@@ -369,29 +369,29 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1_paris.username}/by_time?'
-            f'from=2018-04-01&to=2018-04-30',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1_paris.username}/by_time?"
+            f"from=2018-04-01&to=2018-04-30",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2018': {
-                '1': {
-                    'total_ascent': 40.0,
-                    'total_descent': 20.0,
-                    'total_distance': 8.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2018": {
+                "1": {
+                    "total_ascent": 40.0,
+                    "total_descent": 20.0,
+                    "total_distance": 8.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             }
         }
@@ -410,22 +410,22 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1_full.username}/by_time?'
-            f'from=2018-04-01&to=2018-04-30',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1_full.username}/by_time?"
+            f"from=2018-04-01&to=2018-04-30",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2018': {
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2018": {
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             }
         }
@@ -444,37 +444,37 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time?time=year',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1.username}/by_time?time=year",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2017': {
-                '1': {
-                    'total_ascent': 220.0,
-                    'total_descent': 280.0,
-                    'total_distance': 15.0,
-                    'total_duration': 4480,
-                    'total_workouts': 2,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2017": {
+                "1": {
+                    "total_ascent": 220.0,
+                    "total_descent": 280.0,
+                    "total_distance": 15.0,
+                    "total_duration": 4480,
+                    "total_workouts": 2,
                 }
             },
-            '2018': {
-                '1': {
-                    'total_ascent': 340.0,
-                    'total_descent': 500.0,
-                    'total_distance': 39.0,
-                    'total_duration': 11624,
-                    'total_workouts': 5,
+            "2018": {
+                "1": {
+                    "total_ascent": 340.0,
+                    "total_descent": 500.0,
+                    "total_distance": 39.0,
+                    "total_duration": 11624,
+                    "total_workouts": 5,
                 },
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             },
         }
@@ -494,30 +494,30 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             (
-                f'/api/stats/{user_1.username}/by_time'
-                f'?from=2018-04-01&to=2018-04-30&time=year'
+                f"/api/stats/{user_1.username}/by_time"
+                f"?from=2018-04-01&to=2018-04-30&time=year"
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2018': {
-                '1': {
-                    'total_ascent': 40.0,
-                    'total_descent': 20.0,
-                    'total_distance': 8.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2018": {
+                "1": {
+                    "total_ascent": 40.0,
+                    "total_descent": 20.0,
+                    "total_distance": 8.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             }
         }
@@ -537,30 +537,30 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             (
-                f'/api/stats/{user_1_paris.username}/by_time'
-                f'?from=2018-04-01&to=2018-04-30&time=year'
+                f"/api/stats/{user_1_paris.username}/by_time"
+                f"?from=2018-04-01&to=2018-04-30&time=year"
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2018': {
-                '1': {
-                    'total_ascent': 40.0,
-                    'total_descent': 20.0,
-                    'total_distance': 8.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2018": {
+                "1": {
+                    "total_ascent": 40.0,
+                    "total_descent": 20.0,
+                    "total_distance": 8.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             }
         }
@@ -580,23 +580,23 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             (
-                f'/api/stats/{user_1_full.username}/by_time'
-                f'?from=2018-04-01&to=2018-04-30&time=year'
+                f"/api/stats/{user_1_full.username}/by_time"
+                f"?from=2018-04-01&to=2018-04-30&time=year"
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2018': {
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2018": {
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             }
         }
@@ -615,73 +615,73 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time?time=month',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1.username}/by_time?time=month",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2017-04': {
-                '1': {
-                    'total_ascent': 120.0,
-                    'total_descent': 200.0,
-                    'total_distance': 5.0,
-                    'total_duration': 1024,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2017-04": {
+                "1": {
+                    "total_ascent": 120.0,
+                    "total_descent": 200.0,
+                    "total_distance": 5.0,
+                    "total_duration": 1024,
+                    "total_workouts": 1,
                 }
             },
-            '2017-12': {
-                '1': {
-                    'total_ascent': 100.0,
-                    'total_descent': 80.0,
-                    'total_distance': 10.0,
-                    'total_duration': 3456,
-                    'total_workouts': 1,
+            "2017-12": {
+                "1": {
+                    "total_ascent": 100.0,
+                    "total_descent": 80.0,
+                    "total_distance": 10.0,
+                    "total_duration": 3456,
+                    "total_workouts": 1,
                 }
             },
-            '2018-01': {
-                '1': {
-                    'total_ascent': 80.0,
-                    'total_descent': 100.0,
-                    'total_distance': 10.0,
-                    'total_duration': 1024,
-                    'total_workouts': 1,
+            "2018-01": {
+                "1": {
+                    "total_ascent": 80.0,
+                    "total_descent": 100.0,
+                    "total_distance": 10.0,
+                    "total_duration": 1024,
+                    "total_workouts": 1,
                 }
             },
-            '2018-02': {
-                '1': {
-                    'total_ascent': 220.0,
-                    'total_descent': 380.0,
-                    'total_distance': 11.0,
-                    'total_duration': 1600,
-                    'total_workouts': 2,
+            "2018-02": {
+                "1": {
+                    "total_ascent": 220.0,
+                    "total_descent": 380.0,
+                    "total_distance": 11.0,
+                    "total_duration": 1600,
+                    "total_workouts": 2,
                 }
             },
-            '2018-04': {
-                '1': {
-                    'total_ascent': 40.0,
-                    'total_descent': 20.0,
-                    'total_distance': 8.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+            "2018-04": {
+                "1": {
+                    "total_ascent": 40.0,
+                    "total_descent": 20.0,
+                    "total_distance": 8.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             },
-            '2018-05': {
-                '1': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 10.0,
-                    'total_duration': 3000,
-                    'total_workouts': 1,
+            "2018-05": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 10.0,
+                    "total_duration": 3000,
+                    "total_workouts": 1,
                 }
             },
         }
@@ -700,64 +700,64 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1_paris.username}/by_time?time=month',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1_paris.username}/by_time?time=month",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2017-04': {
-                '1': {
-                    'total_ascent': 120.0,
-                    'total_descent': 200.0,
-                    'total_distance': 5.0,
-                    'total_duration': 1024,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2017-04": {
+                "1": {
+                    "total_ascent": 120.0,
+                    "total_descent": 200.0,
+                    "total_distance": 5.0,
+                    "total_duration": 1024,
+                    "total_workouts": 1,
                 }
             },
-            '2018-01': {
-                '1': {
-                    'total_ascent': 180.0,
-                    'total_descent': 180.0,
-                    'total_distance': 20.0,
-                    'total_duration': 4480,
-                    'total_workouts': 2,
+            "2018-01": {
+                "1": {
+                    "total_ascent": 180.0,
+                    "total_descent": 180.0,
+                    "total_distance": 20.0,
+                    "total_duration": 4480,
+                    "total_workouts": 2,
                 }
             },
-            '2018-02': {
-                '1': {
-                    'total_ascent': 220.0,
-                    'total_descent': 380.0,
-                    'total_distance': 11.0,
-                    'total_duration': 1600,
-                    'total_workouts': 2,
+            "2018-02": {
+                "1": {
+                    "total_ascent": 220.0,
+                    "total_descent": 380.0,
+                    "total_distance": 11.0,
+                    "total_duration": 1600,
+                    "total_workouts": 2,
                 }
             },
-            '2018-04': {
-                '1': {
-                    'total_ascent': 40.0,
-                    'total_descent': 20.0,
-                    'total_distance': 8.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+            "2018-04": {
+                "1": {
+                    "total_ascent": 40.0,
+                    "total_descent": 20.0,
+                    "total_distance": 8.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             },
-            '2018-05': {
-                '1': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 10.0,
-                    'total_duration': 3000,
-                    'total_workouts': 1,
+            "2018-05": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 10.0,
+                    "total_duration": 3000,
+                    "total_workouts": 1,
                 }
             },
         }
@@ -776,66 +776,66 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1_full.username}/by_time?time=month',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1_full.username}/by_time?time=month",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2017-04': {
-                '1': {
-                    'total_ascent': 120.0,
-                    'total_descent': 200.0,
-                    'total_distance': 5.0,
-                    'total_duration': 1024,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2017-04": {
+                "1": {
+                    "total_ascent": 120.0,
+                    "total_descent": 200.0,
+                    "total_distance": 5.0,
+                    "total_duration": 1024,
+                    "total_workouts": 1,
                 }
             },
-            '2017-12': {
-                '1': {
-                    'total_ascent': 180.0,
-                    'total_descent': 180.0,
-                    'total_distance': 20.0,
-                    'total_duration': 4480,
-                    'total_workouts': 2,
+            "2017-12": {
+                "1": {
+                    "total_ascent": 180.0,
+                    "total_descent": 180.0,
+                    "total_distance": 20.0,
+                    "total_duration": 4480,
+                    "total_workouts": 2,
                 }
             },
-            '2018-02': {
-                '1': {
-                    'total_ascent': 220.0,
-                    'total_descent': 380.0,
-                    'total_distance': 11.0,
-                    'total_duration': 1600,
-                    'total_workouts': 2,
+            "2018-02": {
+                "1": {
+                    "total_ascent": 220.0,
+                    "total_descent": 380.0,
+                    "total_distance": 11.0,
+                    "total_duration": 1600,
+                    "total_workouts": 2,
                 }
             },
-            '2018-03': {
-                '1': {
-                    'total_ascent': 40.0,
-                    'total_descent': 20.0,
-                    'total_distance': 8.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+            "2018-03": {
+                "1": {
+                    "total_ascent": 40.0,
+                    "total_descent": 20.0,
+                    "total_distance": 8.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             },
-            '2018-04': {
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+            "2018-04": {
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             },
-            '2018-05': {
-                '1': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 10.0,
-                    'total_duration': 3000,
-                    'total_workouts': 1,
+            "2018-05": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 10.0,
+                    "total_duration": 3000,
+                    "total_workouts": 1,
                 }
             },
         }
@@ -855,30 +855,30 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             (
-                f'/api/stats/{user_1.username}/by_time'
-                f'?from=2018-04-01&to=2018-04-30&time=month'
+                f"/api/stats/{user_1.username}/by_time"
+                f"?from=2018-04-01&to=2018-04-30&time=month"
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2018-04': {
-                '1': {
-                    'total_ascent': 40.0,
-                    'total_descent': 20.0,
-                    'total_distance': 8.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2018-04": {
+                "1": {
+                    "total_ascent": 40.0,
+                    "total_descent": 20.0,
+                    "total_distance": 8.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             }
         }
@@ -898,30 +898,30 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             (
-                f'/api/stats/{user_1_paris.username}/by_time'
-                f'?from=2018-04-01&to=2018-04-30&time=month'
+                f"/api/stats/{user_1_paris.username}/by_time"
+                f"?from=2018-04-01&to=2018-04-30&time=month"
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2018-04': {
-                '1': {
-                    'total_ascent': 40.0,
-                    'total_descent': 20.0,
-                    'total_distance': 8.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2018-04": {
+                "1": {
+                    "total_ascent": 40.0,
+                    "total_descent": 20.0,
+                    "total_distance": 8.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             }
         }
@@ -941,23 +941,23 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             (
-                f'/api/stats/{user_1_full.username}/by_time'
-                f'?from=2018-04-01&to=2018-04-30&time=month'
+                f"/api/stats/{user_1_full.username}/by_time"
+                f"?from=2018-04-01&to=2018-04-30&time=month"
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2018-04': {
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2018-04": {
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             }
         }
@@ -977,82 +977,82 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time?time=week',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1.username}/by_time?time=week",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2017-04-02': {
-                '1': {
-                    'total_ascent': 120.0,
-                    'total_descent': 200.0,
-                    'total_distance': 5.0,
-                    'total_duration': 1024,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2017-04-02": {
+                "1": {
+                    "total_ascent": 120.0,
+                    "total_descent": 200.0,
+                    "total_distance": 5.0,
+                    "total_duration": 1024,
+                    "total_workouts": 1,
                 }
             },
-            '2017-12-31': {
-                '1': {
-                    'total_ascent': 180.0,
-                    'total_descent': 180.0,
-                    'total_distance': 20.0,
-                    'total_duration': 4480,
-                    'total_workouts': 2,
+            "2017-12-31": {
+                "1": {
+                    "total_ascent": 180.0,
+                    "total_descent": 180.0,
+                    "total_distance": 20.0,
+                    "total_duration": 4480,
+                    "total_workouts": 2,
                 }
             },
-            '2018-02-18': {
-                '1': {
-                    'total_ascent': 220.0,
-                    'total_descent': 380.0,
-                    'total_distance': 11.0,
-                    'total_duration': 1600,
-                    'total_workouts': 2,
+            "2018-02-18": {
+                "1": {
+                    "total_ascent": 220.0,
+                    "total_descent": 380.0,
+                    "total_distance": 11.0,
+                    "total_duration": 1600,
+                    "total_workouts": 2,
                 }
             },
-            '2018-04-01': {
-                '1': {
-                    'total_ascent': 40.0,
-                    'total_descent': 20.0,
-                    'total_distance': 8.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+            "2018-04-01": {
+                "1": {
+                    "total_ascent": 40.0,
+                    "total_descent": 20.0,
+                    "total_distance": 8.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             },
-            '2018-05-06': {
-                '1': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 10.0,
-                    'total_duration': 3000,
-                    'total_workouts': 1,
+            "2018-05-06": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 10.0,
+                    "total_duration": 3000,
+                    "total_workouts": 1,
                 }
             },
-            '2024-12-29': {
-                '1': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 20.0,
-                    'total_duration': 3600,
-                    'total_workouts': 1,
+            "2024-12-29": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 20.0,
+                    "total_duration": 3600,
+                    "total_workouts": 1,
                 }
             },
-            '2025-01-05': {
-                '1': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 40.0,
-                    'total_duration': 7200,
-                    'total_workouts': 2,
+            "2025-01-05": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 40.0,
+                    "total_duration": 7200,
+                    "total_workouts": 2,
                 }
             },
         }
@@ -1072,30 +1072,30 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             (
-                f'/api/stats/{user_1.username}/by_time'
-                f'?from=2018-04-01&to=2018-04-30&time=week'
+                f"/api/stats/{user_1.username}/by_time"
+                f"?from=2018-04-01&to=2018-04-30&time=week"
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2018-04-01': {
-                '1': {
-                    'total_ascent': 40.0,
-                    'total_descent': 20.0,
-                    'total_distance': 8.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2018-04-01": {
+                "1": {
+                    "total_ascent": 40.0,
+                    "total_descent": 20.0,
+                    "total_distance": 8.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             }
         }
@@ -1114,29 +1114,29 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1_paris.username}/by_time'
-            f'?from=2018-04-01&to=2018-04-30&time=week',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1_paris.username}/by_time"
+            f"?from=2018-04-01&to=2018-04-30&time=week",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2018-04-01': {
-                '1': {
-                    'total_ascent': 40.0,
-                    'total_descent': 20.0,
-                    'total_distance': 8.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2018-04-01": {
+                "1": {
+                    "total_ascent": 40.0,
+                    "total_descent": 20.0,
+                    "total_distance": 8.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             }
         }
@@ -1155,22 +1155,22 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1_full.username}/by_time'
-            f'?from=2018-04-01&to=2018-04-30&time=week',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1_full.username}/by_time"
+            f"?from=2018-04-01&to=2018-04-30&time=week",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2018-04-01': {
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2018-04-01": {
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             }
         }
@@ -1190,93 +1190,93 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time?time=weekm',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1.username}/by_time?time=weekm",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2017-03-27': {
-                '1': {
-                    'total_ascent': 120.0,
-                    'total_descent': 200.0,
-                    'total_distance': 5.0,
-                    'total_duration': 1024,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2017-03-27": {
+                "1": {
+                    "total_ascent": 120.0,
+                    "total_descent": 200.0,
+                    "total_distance": 5.0,
+                    "total_duration": 1024,
+                    "total_workouts": 1,
                 }
             },
-            '2017-12-25': {
-                '1': {
-                    'total_ascent': 100.0,
-                    'total_descent': 80.0,
-                    'total_distance': 10.0,
-                    'total_duration': 3456,
-                    'total_workouts': 1,
+            "2017-12-25": {
+                "1": {
+                    "total_ascent": 100.0,
+                    "total_descent": 80.0,
+                    "total_distance": 10.0,
+                    "total_duration": 3456,
+                    "total_workouts": 1,
                 }
             },
-            '2018-01-01': {
-                '1': {
-                    'total_ascent': 80.0,
-                    'total_descent': 100.0,
-                    'total_distance': 10.0,
-                    'total_duration': 1024,
-                    'total_workouts': 1,
+            "2018-01-01": {
+                "1": {
+                    "total_ascent": 80.0,
+                    "total_descent": 100.0,
+                    "total_distance": 10.0,
+                    "total_duration": 1024,
+                    "total_workouts": 1,
                 }
             },
-            '2018-02-19': {
-                '1': {
-                    'total_ascent': 220.0,
-                    'total_descent': 380.0,
-                    'total_distance': 11.0,
-                    'total_duration': 1600,
-                    'total_workouts': 2,
+            "2018-02-19": {
+                "1": {
+                    "total_ascent": 220.0,
+                    "total_descent": 380.0,
+                    "total_distance": 11.0,
+                    "total_duration": 1600,
+                    "total_workouts": 2,
                 }
             },
-            '2018-03-26': {
-                '1': {
-                    'total_ascent': 40.0,
-                    'total_descent': 20.0,
-                    'total_distance': 8.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+            "2018-03-26": {
+                "1": {
+                    "total_ascent": 40.0,
+                    "total_descent": 20.0,
+                    "total_distance": 8.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             },
-            '2018-04-02': {
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+            "2018-04-02": {
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             },
-            '2018-05-07': {
-                '1': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 10.0,
-                    'total_duration': 3000,
-                    'total_workouts': 1,
+            "2018-05-07": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 10.0,
+                    "total_duration": 3000,
+                    "total_workouts": 1,
                 }
             },
-            '2024-12-30': {
-                '1': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 40.0,
-                    'total_duration': 7200,
-                    'total_workouts': 2,
+            "2024-12-30": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 40.0,
+                    "total_duration": 7200,
+                    "total_workouts": 2,
                 }
             },
-            '2025-01-06': {
-                '1': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 20.0,
-                    'total_duration': 3600,
-                    'total_workouts': 1,
+            "2025-01-06": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 20.0,
+                    "total_duration": 3600,
+                    "total_workouts": 1,
                 }
             },
         }
@@ -1296,32 +1296,32 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             (
-                f'/api/stats/{user_1.username}/by_time'
-                f'?from=2018-04-01&to=2018-04-30&time=weekm'
+                f"/api/stats/{user_1.username}/by_time"
+                f"?from=2018-04-01&to=2018-04-30&time=weekm"
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2018-03-26': {
-                '1': {
-                    'total_ascent': 40.0,
-                    'total_descent': 20.0,
-                    'total_distance': 8.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2018-03-26": {
+                "1": {
+                    "total_ascent": 40.0,
+                    "total_descent": 20.0,
+                    "total_distance": 8.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             },
-            '2018-04-02': {
-                '2': {
-                    'total_ascent': None,
-                    'total_descent': None,
-                    'total_distance': 12.0,
-                    'total_duration': 6000,
-                    'total_workouts': 1,
+            "2018-04-02": {
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
                 },
             },
         }
@@ -1344,33 +1344,33 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             (
-                f'/api/stats/{user_1_paris.username}/by_time'
-                f'?from=2017-03-27&to=2017-04-02&time=weekm'
+                f"/api/stats/{user_1_paris.username}/by_time"
+                f"?from=2017-03-27&to=2017-04-02&time=weekm"
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['data']['statistics'] == {}
+        assert data["data"]["statistics"] == {}
 
         response = client.get(
             (
-                f'/api/stats/{user_1_paris.username}/by_time'
-                f'?from=2017-04-03&to=2017-04-09&time=weekm'
+                f"/api/stats/{user_1_paris.username}/by_time"
+                f"?from=2017-04-03&to=2017-04-09&time=weekm"
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
-        assert data['data']['statistics'] == {
-            '2017-04-03': {
-                '1': {
-                    'total_ascent': 120.0,
-                    'total_descent': 200.0,
-                    'total_distance': 5.0,
-                    'total_duration': 1024,
-                    'total_workouts': 1,
+        assert data["data"]["statistics"] == {
+            "2017-04-03": {
+                "1": {
+                    "total_ascent": 120.0,
+                    "total_descent": 200.0,
+                    "total_distance": 5.0,
+                    "total_duration": 1024,
+                    "total_workouts": 1,
                 }
             },
         }
@@ -1389,40 +1389,40 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time?type=average',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1.username}/by_time?type=average",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2017': {
-                '1': {
-                    'average_ascent': 110.0,
-                    'average_descent': 140.0,
-                    'average_distance': 7.5,
-                    'average_duration': 2240,
-                    'average_speed': 14.0,
-                    'total_workouts': 2,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2017": {
+                "1": {
+                    "average_ascent": 110.0,
+                    "average_descent": 140.0,
+                    "average_distance": 7.5,
+                    "average_duration": 2240,
+                    "average_speed": 14.0,
+                    "total_workouts": 2,
                 }
             },
-            '2018': {
-                '1': {
-                    'average_ascent': 85.0,
-                    'average_descent': 125.0,
-                    'average_distance': 7.8,
-                    'average_duration': 2324,
-                    'average_speed': 18.79,
-                    'total_workouts': 5,
+            "2018": {
+                "1": {
+                    "average_ascent": 85.0,
+                    "average_descent": 125.0,
+                    "average_distance": 7.8,
+                    "average_duration": 2324,
+                    "average_speed": 18.79,
+                    "total_workouts": 5,
                 },
-                '2': {
-                    'average_ascent': None,
-                    'average_descent': None,
-                    'average_distance': 12.0,
-                    'average_duration': 6000,
-                    'average_speed': 7.2,
-                    'total_workouts': 1,
+                "2": {
+                    "average_ascent": None,
+                    "average_descent": None,
+                    "average_distance": 12.0,
+                    "average_duration": 6000,
+                    "average_speed": 7.2,
+                    "total_workouts": 1,
                 },
             },
         }
@@ -1441,47 +1441,47 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time?time=year&type=average',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1.username}/by_time?time=year&type=average",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '2017': {
-                '1': {
-                    'average_ascent': 110.0,
-                    'average_descent': 140.0,
-                    'average_distance': 7.5,
-                    'average_duration': 2240,
-                    'average_speed': 14.0,
-                    'total_workouts': 2,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2017": {
+                "1": {
+                    "average_ascent": 110.0,
+                    "average_descent": 140.0,
+                    "average_distance": 7.5,
+                    "average_duration": 2240,
+                    "average_speed": 14.0,
+                    "total_workouts": 2,
                 }
             },
-            '2018': {
-                '1': {
-                    'average_ascent': 85.0,
-                    'average_descent': 125.0,
-                    'average_distance': 7.8,
-                    'average_duration': 2324,
-                    'average_speed': 18.79,
-                    'total_workouts': 5,
+            "2018": {
+                "1": {
+                    "average_ascent": 85.0,
+                    "average_descent": 125.0,
+                    "average_distance": 7.8,
+                    "average_duration": 2324,
+                    "average_speed": 18.79,
+                    "total_workouts": 5,
                 },
-                '2': {
-                    'average_ascent': None,
-                    'average_descent': None,
-                    'average_distance': 12.0,
-                    'average_duration': 6000,
-                    'average_speed': 7.2,
-                    'total_workouts': 1,
+                "2": {
+                    "average_ascent": None,
+                    "average_descent": None,
+                    "average_distance": 12.0,
+                    "average_duration": 6000,
+                    "average_speed": 7.2,
+                    "total_workouts": 1,
                 },
             },
         }
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1500,9 +1500,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_time',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            f"/api/stats/{user_1.username}/by_time",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -1515,7 +1515,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         client = app.test_client()
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_sport',
+            f"/api/stats/{user_1.username}/by_sport",
         )
 
         self.assert_401(response)
@@ -1528,8 +1528,8 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_2.username}/by_sport',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_2.username}/by_sport",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -1542,8 +1542,8 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{suspended_user.username}/by_sport',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{suspended_user.username}/by_sport",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -1564,40 +1564,40 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_sport',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1.username}/by_sport",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '1': {
-                'average_ascent': 93.33,
-                'average_descent': 130.0,
-                'average_distance': 7.71,
-                'average_duration': '0:38:20',
-                'average_speed': 17.42,
-                'total_ascent': 560.0,
-                'total_descent': 780.0,
-                'total_distance': 54.0,
-                'total_duration': '4:28:24',
-                'total_workouts': 7,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "1": {
+                "average_ascent": 93.33,
+                "average_descent": 130.0,
+                "average_distance": 7.71,
+                "average_duration": "0:38:20",
+                "average_speed": 17.42,
+                "total_ascent": 560.0,
+                "total_descent": 780.0,
+                "total_distance": 54.0,
+                "total_duration": "4:28:24",
+                "total_workouts": 7,
             },
-            '2': {
-                'average_ascent': None,
-                'average_descent': None,
-                'average_distance': 12.0,
-                'average_duration': '1:40:00',
-                'average_speed': 7.2,
-                'total_ascent': None,
-                'total_descent': None,
-                'total_distance': 12.0,
-                'total_duration': '1:40:00',
-                'total_workouts': 1,
+            "2": {
+                "average_ascent": None,
+                "average_descent": None,
+                "average_distance": 12.0,
+                "average_duration": "1:40:00",
+                "average_speed": 7.2,
+                "total_ascent": None,
+                "total_descent": None,
+                "total_distance": 12.0,
+                "total_duration": "1:40:00",
+                "total_workouts": 1,
             },
         }
-        assert data['data']['total_workouts'] == 8
+        assert data["data"]["total_workouts"] == 8
 
     def test_it_gets_stats_by_sport_when_total_workouts_exceed_limit(
         self,
@@ -1614,40 +1614,40 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_sport',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1.username}/by_sport",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '1': {
-                'average_ascent': seven_workouts_user_1[6].ascent,
-                'average_descent': seven_workouts_user_1[6].descent,
-                'average_distance': float(seven_workouts_user_1[6].distance),  # type: ignore  # noqa
-                'average_duration': str(seven_workouts_user_1[6].moving),
-                'average_speed': float(seven_workouts_user_1[6].ave_speed),  # type: ignore  # noqa
-                'total_ascent': seven_workouts_user_1[6].ascent,
-                'total_descent': seven_workouts_user_1[6].descent,
-                'total_distance': float(seven_workouts_user_1[6].distance),  # type: ignore  # noqa
-                'total_duration': str(seven_workouts_user_1[6].moving),
-                'total_workouts': 1,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "1": {
+                "average_ascent": seven_workouts_user_1[6].ascent,
+                "average_descent": seven_workouts_user_1[6].descent,
+                "average_distance": float(seven_workouts_user_1[6].distance),  # type: ignore
+                "average_duration": str(seven_workouts_user_1[6].moving),
+                "average_speed": float(seven_workouts_user_1[6].ave_speed),  # type: ignore
+                "total_ascent": seven_workouts_user_1[6].ascent,
+                "total_descent": seven_workouts_user_1[6].descent,
+                "total_distance": float(seven_workouts_user_1[6].distance),  # type: ignore
+                "total_duration": str(seven_workouts_user_1[6].moving),
+                "total_workouts": 1,
             },
-            '2': {
-                'average_ascent': workout_running_user_1.ascent,
-                'average_descent': workout_running_user_1.descent,
-                'average_distance': float(workout_running_user_1.distance),  # type: ignore  # noqa
-                'average_duration': str(workout_running_user_1.moving),
-                'average_speed': float(workout_running_user_1.ave_speed),  # type: ignore  # noqa
-                'total_ascent': workout_running_user_1.ascent,
-                'total_descent': workout_running_user_1.descent,
-                'total_distance': float(workout_running_user_1.distance),  # type: ignore  # noqa
-                'total_duration': str(workout_running_user_1.moving),
-                'total_workouts': 1,
+            "2": {
+                "average_ascent": workout_running_user_1.ascent,
+                "average_descent": workout_running_user_1.descent,
+                "average_distance": float(workout_running_user_1.distance),  # type: ignore
+                "average_duration": str(workout_running_user_1.moving),
+                "average_speed": float(workout_running_user_1.ave_speed),  # type: ignore
+                "total_ascent": workout_running_user_1.ascent,
+                "total_descent": workout_running_user_1.descent,
+                "total_distance": float(workout_running_user_1.distance),  # type: ignore
+                "total_duration": str(workout_running_user_1.moving),
+                "total_workouts": 1,
             },
         }
-        assert data['data']['total_workouts'] == 8
+        assert data["data"]["total_workouts"] == 8
 
     def test_it_gets_stats_by_sport_when_total_workouts_is_zero(
         self,
@@ -1666,40 +1666,40 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_sport',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1.username}/by_sport",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '1': {
-                'average_ascent': 93.33,
-                'average_descent': 130.0,
-                'average_distance': 7.71,
-                'average_duration': '0:38:20',
-                'average_speed': 17.42,
-                'total_ascent': 560.0,
-                'total_descent': 780.0,
-                'total_distance': 54.0,
-                'total_duration': '4:28:24',
-                'total_workouts': 7,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "1": {
+                "average_ascent": 93.33,
+                "average_descent": 130.0,
+                "average_distance": 7.71,
+                "average_duration": "0:38:20",
+                "average_speed": 17.42,
+                "total_ascent": 560.0,
+                "total_descent": 780.0,
+                "total_distance": 54.0,
+                "total_duration": "4:28:24",
+                "total_workouts": 7,
             },
-            '2': {
-                'average_ascent': None,
-                'average_descent': None,
-                'average_distance': 12.0,
-                'average_duration': '1:40:00',
-                'average_speed': 7.2,
-                'total_ascent': None,
-                'total_descent': None,
-                'total_distance': 12.0,
-                'total_duration': '1:40:00',
-                'total_workouts': 1,
+            "2": {
+                "average_ascent": None,
+                "average_descent": None,
+                "average_distance": 12.0,
+                "average_duration": "1:40:00",
+                "average_speed": 7.2,
+                "total_ascent": None,
+                "total_descent": None,
+                "total_distance": 12.0,
+                "total_duration": "1:40:00",
+                "total_workouts": 1,
             },
         }
-        assert data['data']['total_workouts'] == 8
+        assert data["data"]["total_workouts"] == 8
 
     def test_it_gets_stats_by_sport_when_no_workouts(
         self,
@@ -1712,15 +1712,15 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_sport',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1.username}/by_sport",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {}
-        assert data['data']['total_workouts'] == 0
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {}
+        assert data["data"]["total_workouts"] == 0
 
     def test_it_get_stats_for_sport_1(
         self,
@@ -1736,28 +1736,28 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_sport?sport_id=1',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1.username}/by_sport?sport_id=1",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '1': {
-                'average_ascent': 93.33,
-                'average_descent': 130.0,
-                'average_distance': 7.71,
-                'average_duration': '0:38:20',
-                'average_speed': 17.42,
-                'total_ascent': 560.0,
-                'total_descent': 780.0,
-                'total_distance': 54.0,
-                'total_duration': '4:28:24',
-                'total_workouts': 7,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "1": {
+                "average_ascent": 93.33,
+                "average_descent": 130.0,
+                "average_distance": 7.71,
+                "average_duration": "0:38:20",
+                "average_speed": 17.42,
+                "total_ascent": 560.0,
+                "total_descent": 780.0,
+                "total_distance": 54.0,
+                "total_duration": "4:28:24",
+                "total_workouts": 7,
             }
         }
-        assert data['data']['total_workouts'] == 7
+        assert data["data"]["total_workouts"] == 7
 
     def test_it_get_stats_for_sport_1_when_total_workouts_exceed_limit(
         self,
@@ -1774,28 +1774,28 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_sport?sport_id=1',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1.username}/by_sport?sport_id=1",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {
-            '1': {
-                'average_ascent': 40.0,
-                'average_descent': 20.0,
-                'average_distance': 9.0,
-                'average_duration': '1:15:00',
-                'average_speed': 8.4,
-                'total_ascent': 40.0,
-                'total_descent': 20.0,
-                'total_distance': 18,
-                'total_duration': '2:30:00',
-                'total_workouts': 2,
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "1": {
+                "average_ascent": 40.0,
+                "average_descent": 20.0,
+                "average_distance": 9.0,
+                "average_duration": "1:15:00",
+                "average_speed": 8.4,
+                "total_ascent": 40.0,
+                "total_descent": 20.0,
+                "total_distance": 18,
+                "total_duration": "2:30:00",
+                "total_workouts": 2,
             }
         }
-        assert data['data']['total_workouts'] == 7
+        assert data["data"]["total_workouts"] == 7
 
     def test_it_get_stats_for_sport_1_when_no_workouts(
         self,
@@ -1808,15 +1808,15 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_sport?sport_id=1',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1.username}/by_sport?sport_id=1",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['statistics'] == {}
-        assert data['data']['total_workouts'] == 0
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {}
+        assert data["data"]["total_workouts"] == 0
 
     def test_it_returns_error_if_sport_does_not_exist(
         self,
@@ -1832,11 +1832,11 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_sport?sport_id=999',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/stats/{user_1.username}/by_sport?sport_id=999",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_entity(response, 'sport')
+        self.assert_404_with_entity(response, "sport")
 
     def test_it_returns_error_if_sport_id_is_invalid(
         self,
@@ -1853,14 +1853,14 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_sport?sport_id="999',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_500(response)
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1879,9 +1879,9 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/stats/{user_1.username}/by_sport',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            f"/api/stats/{user_1.username}/by_sport",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -1893,7 +1893,7 @@ class TestGetAllStats(ApiTestCaseMixin):
     ) -> None:
         client = app.test_client()
 
-        response = client.get('/api/stats/all')
+        response = client.get("/api/stats/all")
 
         self.assert_401(response)
 
@@ -1905,8 +1905,8 @@ class TestGetAllStats(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/stats/all',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/stats/all",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -1919,17 +1919,17 @@ class TestGetAllStats(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/stats/all',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/stats/all",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['workouts'] == 0
-        assert data['data']['sports'] == 0
-        assert data['data']['users'] == 2
-        assert 'uploads_dir_size' in data['data']
+        assert "success" in data["status"]
+        assert data["data"]["workouts"] == 0
+        assert data["data"]["sports"] == 0
+        assert data["data"]["users"] == 2
+        assert "uploads_dir_size" in data["data"]
 
     def test_it_does_not_count_inactive_user(
         self, app: Flask, user_1_moderator: User, inactive_user: User
@@ -1939,17 +1939,17 @@ class TestGetAllStats(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/stats/all',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/stats/all",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['workouts'] == 0
-        assert data['data']['sports'] == 0
-        assert data['data']['users'] == 1
-        assert 'uploads_dir_size' in data['data']
+        assert "success" in data["status"]
+        assert data["data"]["workouts"] == 0
+        assert data["data"]["sports"] == 0
+        assert data["data"]["users"] == 1
+        assert "uploads_dir_size" in data["data"]
 
     def test_it_gets_app_all_stats_with_workouts(
         self,
@@ -1968,17 +1968,17 @@ class TestGetAllStats(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/stats/all',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/stats/all",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['workouts'] == 3
-        assert data['data']['sports'] == 2
-        assert data['data']['users'] == 3
-        assert 'uploads_dir_size' in data['data']
+        assert "success" in data["status"]
+        assert data["data"]["workouts"] == 3
+        assert data["data"]["sports"] == 2
+        assert data["data"]["users"] == 3
+        assert "uploads_dir_size" in data["data"]
 
     def test_it_returns_stats_if_user_has_admin_rights(
         self,
@@ -1992,17 +1992,17 @@ class TestGetAllStats(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/stats/all',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/stats/all",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['workouts'] == 1
-        assert data['data']['sports'] == 1
-        assert data['data']['users'] == 1
-        assert 'uploads_dir_size' in data['data']
+        assert "success" in data["status"]
+        assert data["data"]["workouts"] == 1
+        assert data["data"]["sports"] == 1
+        assert data["data"]["users"] == 1
+        assert "uploads_dir_size" in data["data"]
 
     def test_it_returns_error_if_user_has_no_moderator_rights(
         self,
@@ -2021,15 +2021,15 @@ class TestGetAllStats(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/stats/all',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/stats/all",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -2048,9 +2048,9 @@ class TestGetAllStats(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/stats/all',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            "/api/stats/all",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)

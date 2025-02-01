@@ -36,7 +36,7 @@ class CommentMixin(RandomMixin):
         db.session.add(comment)
         db.session.flush()
         if with_mentions:
-            with patch('fittrackee.federation.utils.user.update_remote_user'):
+            with patch("fittrackee.federation.utils.user.update_remote_user"):
                 comment.create_mentions()
         if with_federation:
             comment.ap_id = comment.get_ap_id()

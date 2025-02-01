@@ -7,35 +7,35 @@ from fittrackee.workouts.utils.maps import get_static_map_tile_server_url
 
 class TestGetStaticMapTileServerUrl:
     @pytest.mark.parametrize(
-        'input_tile_server_url,'
-        'input_tile_server_subdomains,'
-        'expected_tile_server_url',
+        "input_tile_server_url,"
+        "input_tile_server_subdomains,"
+        "expected_tile_server_url",
         [
             # tile server without subdomain
             (
-                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                '',
-                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                "",
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
             ),
             (
-                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                'a',
-                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                "a",
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
             ),
             # tile server with subdomain
             (
-                'https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/'
-                '{z}/{x}/{y}.png',
-                'a',
-                'https://a.tile-cyclosm.openstreetmap.fr/cyclosm/'
-                '{z}/{x}/{y}.png',
+                "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/"
+                "{z}/{x}/{y}.png",
+                "a",
+                "https://a.tile-cyclosm.openstreetmap.fr/cyclosm/"
+                "{z}/{x}/{y}.png",
             ),
             (
-                'https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/'
-                '{z}/{x}/{y}.png',
-                '',
-                'https://tile-cyclosm.openstreetmap.fr/cyclosm/'
-                '{z}/{x}/{y}.png',
+                "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/"
+                "{z}/{x}/{y}.png",
+                "",
+                "https://tile-cyclosm.openstreetmap.fr/cyclosm/"
+                "{z}/{x}/{y}.png",
             ),
         ],
     )
@@ -46,8 +46,8 @@ class TestGetStaticMapTileServerUrl:
         expected_tile_server_url: str,
     ) -> None:
         tile_config = {
-            'URL': input_tile_server_url,
-            'STATICMAP_SUBDOMAINS': input_tile_server_subdomains,
+            "URL": input_tile_server_url,
+            "STATICMAP_SUBDOMAINS": input_tile_server_subdomains,
         }
 
         assert (
@@ -58,15 +58,15 @@ class TestGetStaticMapTileServerUrl:
     def test_it_returns_tile_server_url_with_random_subdomain(self) -> None:
         """in case multiple subdomains are provided"""
         tile_config = {
-            'URL': (
-                'https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/'
-                '{z}/{x}/{y}.png'
+            "URL": (
+                "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/"
+                "{z}/{x}/{y}.png"
             ),
-            'STATICMAP_SUBDOMAINS': 'a,b,c',
+            "STATICMAP_SUBDOMAINS": "a,b,c",
         }
 
-        with patch('random.choice', return_value='b'):
+        with patch("random.choice", return_value="b"):
             assert get_static_map_tile_server_url(tile_config) == (
-                'https://b.tile-cyclosm.openstreetmap.fr/cyclosm/'
-                '{z}/{x}/{y}.png'
+                "https://b.tile-cyclosm.openstreetmap.fr/cyclosm/"
+                "{z}/{x}/{y}.png"
             )

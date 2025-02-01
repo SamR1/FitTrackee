@@ -17,17 +17,17 @@ class TestSportModel:
     @staticmethod
     def assert_sport_model(sport: Sport, check_workouts: bool = False) -> Dict:
         assert 1 == sport.id
-        assert 'Cycling (Sport)' == sport.label
-        assert f'<Sport \'{sport.label}\'>' == str(sport)
+        assert "Cycling (Sport)" == sport.label
+        assert f"<Sport '{sport.label}'>" == str(sport)
 
         serialized_sport = sport.serialize(check_workouts=check_workouts)
-        assert serialized_sport['default_equipments'] == []
-        assert serialized_sport['label'] == sport.label
-        assert serialized_sport['id'] == sport.id
-        assert serialized_sport['is_active'] is True
-        assert serialized_sport['is_active_for_user'] is True
-        assert serialized_sport['color'] is None
-        assert serialized_sport['stopped_speed_threshold'] == 1
+        assert serialized_sport["default_equipments"] == []
+        assert serialized_sport["label"] == sport.label
+        assert serialized_sport["id"] == sport.id
+        assert serialized_sport["is_active"] is True
+        assert serialized_sport["is_active_for_user"] is True
+        assert serialized_sport["color"] is None
+        assert serialized_sport["stopped_speed_threshold"] == 1
         return serialized_sport
 
     def test_sport_model_without_workout(
@@ -36,7 +36,7 @@ class TestSportModel:
         assert sport_1_cycling.has_workouts is False
 
         serialized_sport = self.assert_sport_model(sport_1_cycling)
-        assert 'has_workouts' not in serialized_sport
+        assert "has_workouts" not in serialized_sport
 
     def test_sport_model_with_workouts_and_check_workouts_as_false(
         self,
@@ -48,7 +48,7 @@ class TestSportModel:
         assert sport_1_cycling.has_workouts is True
 
         serialized_sport = self.assert_sport_model(sport_1_cycling)
-        assert 'has_workouts' not in serialized_sport
+        assert "has_workouts" not in serialized_sport
 
     def test_sport_model_with_workouts_and_check_workouts_as_true(
         self,
@@ -60,7 +60,7 @@ class TestSportModel:
         assert sport_1_cycling.has_workouts is True
 
         serialized_sport = self.assert_sport_model(sport_1_cycling, True)
-        assert serialized_sport['has_workouts'] is True
+        assert serialized_sport["has_workouts"] is True
 
 
 class TestSportModelWithPreferences:
@@ -71,20 +71,20 @@ class TestSportModelWithPreferences:
         sport_1_cycling: Sport,
         user_1_sport_1_preference: UserSportPreference,
     ) -> None:
-        user_1_sport_1_preference.color = '#00000'
+        user_1_sport_1_preference.color = "#00000"
 
         serialized_sport = sport_1_cycling.serialize(
             sport_preferences=user_1_sport_1_preference.serialize()
         )
 
-        assert serialized_sport['default_equipments'] == []
-        assert serialized_sport['id'] == 1
-        assert serialized_sport['label'] == sport_1_cycling.label
-        assert serialized_sport['is_active'] is True
-        assert serialized_sport['is_active_for_user'] is True
-        assert serialized_sport['color'] == '#00000'
-        assert serialized_sport['stopped_speed_threshold'] == 1
-        assert 'has_workouts' not in serialized_sport
+        assert serialized_sport["default_equipments"] == []
+        assert serialized_sport["id"] == 1
+        assert serialized_sport["label"] == sport_1_cycling.label
+        assert serialized_sport["is_active"] is True
+        assert serialized_sport["is_active_for_user"] is True
+        assert serialized_sport["color"] == "#00000"
+        assert serialized_sport["stopped_speed_threshold"] == 1
+        assert "has_workouts" not in serialized_sport
 
     def test_sport_model_with_is_active_preference(
         self,
@@ -99,14 +99,14 @@ class TestSportModelWithPreferences:
             sport_preferences=user_1_sport_1_preference.serialize()
         )
 
-        assert serialized_sport['default_equipments'] == []
-        assert serialized_sport['id'] == 1
-        assert serialized_sport['label'] == sport_1_cycling.label
-        assert serialized_sport['is_active'] is True
-        assert serialized_sport['is_active_for_user'] is False
-        assert serialized_sport['color'] is None
-        assert serialized_sport['stopped_speed_threshold'] == 1
-        assert 'has_workouts' not in serialized_sport
+        assert serialized_sport["default_equipments"] == []
+        assert serialized_sport["id"] == 1
+        assert serialized_sport["label"] == sport_1_cycling.label
+        assert serialized_sport["is_active"] is True
+        assert serialized_sport["is_active_for_user"] is False
+        assert serialized_sport["color"] is None
+        assert serialized_sport["stopped_speed_threshold"] == 1
+        assert "has_workouts" not in serialized_sport
 
     def test_inactive_sport_model_with_is_active_preference(
         self,
@@ -122,14 +122,14 @@ class TestSportModelWithPreferences:
             sport_preferences=user_1_sport_1_preference.serialize()
         )
 
-        assert serialized_sport['default_equipments'] == []
-        assert serialized_sport['id'] == 1
-        assert serialized_sport['label'] == sport_1_cycling.label
-        assert serialized_sport['is_active'] is False
-        assert serialized_sport['is_active_for_user'] is False
-        assert serialized_sport['color'] is None
-        assert serialized_sport['stopped_speed_threshold'] == 1
-        assert 'has_workouts' not in serialized_sport
+        assert serialized_sport["default_equipments"] == []
+        assert serialized_sport["id"] == 1
+        assert serialized_sport["label"] == sport_1_cycling.label
+        assert serialized_sport["is_active"] is False
+        assert serialized_sport["is_active_for_user"] is False
+        assert serialized_sport["color"] is None
+        assert serialized_sport["stopped_speed_threshold"] == 1
+        assert "has_workouts" not in serialized_sport
 
     def test_sport_model_with_threshold_preference(
         self,
@@ -145,14 +145,14 @@ class TestSportModelWithPreferences:
             sport_preferences=user_1_sport_1_preference.serialize()
         )
 
-        assert serialized_sport['default_equipments'] == []
-        assert serialized_sport['id'] == 1
-        assert serialized_sport['label'] == sport_1_cycling.label
-        assert serialized_sport['is_active'] is True
-        assert serialized_sport['is_active_for_user'] is True
-        assert serialized_sport['color'] is None
-        assert serialized_sport['stopped_speed_threshold'] == 0.5
-        assert 'has_workouts' not in serialized_sport
+        assert serialized_sport["default_equipments"] == []
+        assert serialized_sport["id"] == 1
+        assert serialized_sport["label"] == sport_1_cycling.label
+        assert serialized_sport["is_active"] is True
+        assert serialized_sport["is_active_for_user"] is True
+        assert serialized_sport["color"] is None
+        assert serialized_sport["stopped_speed_threshold"] == 0.5
+        assert "has_workouts" not in serialized_sport
 
     def test_sport_model_with_default_equipments(
         self,
@@ -184,12 +184,12 @@ class TestSportModelWithPreferences:
             sport_preferences=user_1_sport_1_preference.serialize()
         )
 
-        assert len(serialized_sport['default_equipments']) == 2
+        assert len(serialized_sport["default_equipments"]) == 2
         assert (
             equipment_bike_user_1.serialize()
-            in serialized_sport['default_equipments']
+            in serialized_sport["default_equipments"]
         )
         assert (
             equipment_shoes_user_1.serialize()
-            in serialized_sport['default_equipments']
+            in serialized_sport["default_equipments"]
         )

@@ -10,7 +10,7 @@ from fittrackee.workouts.models import Sport, Workout
 
 @pytest.fixture()
 def equipment_type_1_shoe() -> EquipmentType:
-    equip_type = EquipmentType(label='Shoes', is_active=True)
+    equip_type = EquipmentType(label="Shoes", is_active=True)
     db.session.add(equip_type)
     db.session.commit()
     return equip_type
@@ -18,7 +18,7 @@ def equipment_type_1_shoe() -> EquipmentType:
 
 @pytest.fixture()
 def equipment_type_1_shoe_inactive() -> EquipmentType:
-    equip_type = EquipmentType(label='Shoes', is_active=False)
+    equip_type = EquipmentType(label="Shoes", is_active=False)
     db.session.add(equip_type)
     db.session.commit()
     return equip_type
@@ -26,7 +26,7 @@ def equipment_type_1_shoe_inactive() -> EquipmentType:
 
 @pytest.fixture()
 def equipment_type_2_bike() -> EquipmentType:
-    equip_type = EquipmentType(label='Bike', is_active=True)
+    equip_type = EquipmentType(label="Bike", is_active=True)
     db.session.add(equip_type)
     db.session.commit()
     return equip_type
@@ -37,9 +37,9 @@ def equipment_bike_user_1(
     equipment_type_2_bike: EquipmentType, user_1: User
 ) -> Equipment:
     equip = Equipment(
-        label='Test bike equipment',
+        label="Test bike equipment",
         equipment_type_id=equipment_type_2_bike.id,
-        description='A bike for testing purposes',
+        description="A bike for testing purposes",
         user_id=user_1.id,
         is_active=True,
     )
@@ -53,9 +53,9 @@ def equipment_bike_user_1_inactive(
     equipment_type_2_bike: EquipmentType, user_1: User
 ) -> Equipment:
     equip = Equipment(
-        label='Test inactive bike equipment',
+        label="Test inactive bike equipment",
         equipment_type_id=equipment_type_2_bike.id,
-        description='An inactive bike for testing purposes',
+        description="An inactive bike for testing purposes",
         user_id=user_1.id,
         is_active=False,
     )
@@ -69,9 +69,9 @@ def equipment_shoes_user_1(
     equipment_type_1_shoe: EquipmentType, user_1: User
 ) -> Equipment:
     equip = Equipment(
-        label='Test shoe equipment',
+        label="Test shoe equipment",
         equipment_type_id=equipment_type_1_shoe.id,
-        description='An shoe equipment for testing purposes',
+        description="An shoe equipment for testing purposes",
         user_id=user_1.id,
         is_active=True,
     )
@@ -85,9 +85,9 @@ def equipment_shoes_user_1_inactive(
     equipment_type_1_shoe: EquipmentType, user_1: User
 ) -> Equipment:
     equip = Equipment(
-        label='Inactive shoe equipment',
+        label="Inactive shoe equipment",
         equipment_type_id=equipment_type_1_shoe.id,
-        description='An shoe equipment for testing purposes',
+        description="An shoe equipment for testing purposes",
         user_id=user_1.id,
         is_active=False,
     )
@@ -101,9 +101,9 @@ def equipment_another_shoes_user_1(
     equipment_type_1_shoe: EquipmentType, user_1: User
 ) -> Equipment:
     equip = Equipment(
-        label='Another shoe equipment',
+        label="Another shoe equipment",
         equipment_type_id=equipment_type_1_shoe.id,
-        description='An shoe equipment for testing purposes',
+        description="An shoe equipment for testing purposes",
         user_id=user_1.id,
         is_active=True,
     )
@@ -117,9 +117,9 @@ def equipment_shoes_user_2(
     equipment_type_1_shoe: EquipmentType, user_2: User
 ) -> Equipment:
     equip = Equipment(
-        label='My shoes',
+        label="My shoes",
         equipment_type_id=equipment_type_1_shoe.id,
-        description='New shoes',
+        description="New shoes",
         user_id=user_2.id,
         is_active=True,
     )

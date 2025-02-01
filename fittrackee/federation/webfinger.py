@@ -9,10 +9,10 @@ from fittrackee.responses import (
 from .decorators import federation_required_for_route
 from .models import Actor, Domain
 
-ap_webfinger_blueprint = Blueprint('ap_webfinger', __name__)
+ap_webfinger_blueprint = Blueprint("ap_webfinger", __name__)
 
 
-@ap_webfinger_blueprint.route('/webfinger', methods=['GET'])
+@ap_webfinger_blueprint.route("/webfinger", methods=["GET"])
 @federation_required_for_route
 def webfinger(app_domain: Domain) -> HttpResponse:
     """
@@ -59,16 +59,16 @@ def webfinger(app_domain: Domain) -> HttpResponse:
     :statuscode 404: user does not exist
 
     """
-    resource = request.args.get('resource')
-    if not resource or not resource.startswith('acct:'):
-        return InvalidPayloadErrorResponse('Missing resource in request args.')
+    resource = request.args.get("resource")
+    if not resource or not resource.startswith("acct:"):
+        return InvalidPayloadErrorResponse("Missing resource in request args.")
 
     try:
-        preferred_username, domain = resource.replace('acct:', '').split('@')
+        preferred_username, domain = resource.replace("acct:", "").split("@")
     except ValueError:
-        return InvalidPayloadErrorResponse('Invalid resource.')
+        return InvalidPayloadErrorResponse("Invalid resource.")
 
-    if domain != current_app.config['AP_DOMAIN']:
+    if domain != current_app.config["AP_DOMAIN"]:
         return UserNotFoundErrorResponse()
 
     actor = Actor.query.filter_by(
@@ -78,20 +78,20 @@ def webfinger(app_domain: Domain) -> HttpResponse:
         return UserNotFoundErrorResponse()
 
     response = {
-        'subject': f'acct:{actor.fullname}',
-        'links': [
+        "subject": f"acct:{actor.fullname}",
+        "links": [
             {
-                'href': f'{actor.profile_url}',
-                'rel': 'http://webfinger.net/rel/profile-page',
-                'type': 'text/html',
+                "href": f"{actor.profile_url}",
+                "rel": "http://webfinger.net/rel/profile-page",
+                "type": "text/html",
             },
             {
-                'href': actor.activitypub_id,
-                'rel': 'self',
-                'type': 'application/activity+json',
+                "href": actor.activitypub_id,
+                "rel": "self",
+                "type": "application/activity+json",
             },
         ],
     }
     return HttpResponse(
-        response=response, content_type='application/jrd+json; charset=utf-8'
+        response=response, content_type="application/jrd+json; charset=utf-8"
     )

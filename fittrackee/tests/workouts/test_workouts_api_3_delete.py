@@ -29,8 +29,8 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         client = app.test_client()
 
         response = client.delete(
-            f'/api/workouts/{workout_short_id}',
-            headers=dict(Authorization=f'Bearer {token}'),
+            f"/api/workouts/{workout_short_id}",
+            headers=dict(Authorization=f"Bearer {token}"),
         )
 
         assert response.status_code == 204
@@ -53,8 +53,8 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         client = app.test_client()
 
         response = client.delete(
-            f'/api/workouts/{workout_short_id}',
-            headers=dict(Authorization=f'Bearer {token}'),
+            f"/api/workouts/{workout_short_id}",
+            headers=dict(Authorization=f"Bearer {token}"),
         )
 
         assert response.status_code == 204
@@ -83,8 +83,8 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         client = app.test_client()
 
         response = client.delete(
-            f'/api/workouts/{workout_short_id}',
-            headers=dict(Authorization=f'Bearer {token}'),
+            f"/api/workouts/{workout_short_id}",
+            headers=dict(Authorization=f"Bearer {token}"),
         )
 
         assert response.status_code == 204
@@ -105,15 +105,15 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         assert equipment_shoes_user_1.total_moving == timedelta()
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_visibility,expected_status_code',
+        "input_desc,input_workout_visibility,expected_status_code",
         [
-            ('workout visibility: private', VisibilityLevel.PRIVATE, 404),
+            ("workout visibility: private", VisibilityLevel.PRIVATE, 404),
             (
-                'workout visibility: followers_only',
+                "workout visibility: followers_only",
                 VisibilityLevel.FOLLOWERS,
                 403,
             ),
-            ('workout visibility: public', VisibilityLevel.PUBLIC, 403),
+            ("workout visibility: public", VisibilityLevel.PUBLIC, 403),
         ],
     )
     def test_it_returns_error_when_deleting_workout_from_followed_user_user(
@@ -137,22 +137,22 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/workouts/{workout_short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/workouts/{workout_short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == expected_status_code
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_visibility,expected_status_code',
+        "input_desc,input_workout_visibility,expected_status_code",
         [
-            ('workout visibility: private', VisibilityLevel.PRIVATE, 404),
+            ("workout visibility: private", VisibilityLevel.PRIVATE, 404),
             (
-                'workout visibility: followers_only',
+                "workout visibility: followers_only",
                 VisibilityLevel.FOLLOWERS,
                 404,
             ),
-            ('workout visibility: public', VisibilityLevel.PUBLIC, 403),
+            ("workout visibility: public", VisibilityLevel.PUBLIC, 403),
         ],
     )
     def test_it_returns_error_when_deleting_workout_from_different_user(
@@ -174,21 +174,21 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/workouts/{workout_short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/workouts/{workout_short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == expected_status_code
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_visibility',
+        "input_desc,input_workout_visibility",
         [
-            ('workout visibility: private', VisibilityLevel.PRIVATE),
+            ("workout visibility: private", VisibilityLevel.PRIVATE),
             (
-                'workout visibility: followers_only',
+                "workout visibility: followers_only",
                 VisibilityLevel.FOLLOWERS,
             ),
-            ('workout visibility: public', VisibilityLevel.PUBLIC),
+            ("workout visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_401_when_no_authenticated(
@@ -206,7 +206,7 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         client = app.test_client()
 
         response = client.delete(
-            f'/api/workouts/{workout_short_id}',
+            f"/api/workouts/{workout_short_id}",
         )
 
         assert response.status_code == 401
@@ -226,8 +226,8 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         client = app.test_client()
 
         response = client.delete(
-            f'/api/workouts/{workout_short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/workouts/{workout_short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -240,12 +240,12 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/workouts/{self.random_short_id()}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/workouts/{self.random_short_id()}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = self.assert_404(response)
-        assert 'not found' in data['status']
+        assert "not found" in data["status"]
 
     def test_a_workout_with_gpx_can_be_deleted_if_gpx_file_is_invalid(
         self,
@@ -260,8 +260,8 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 204
@@ -285,8 +285,8 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         client = app.test_client()
 
         response = client.delete(
-            f'/api/workouts/{workout_short_id}',
-            headers=dict(Authorization=f'Bearer {token}'),
+            f"/api/workouts/{workout_short_id}",
+            headers=dict(Authorization=f"Bearer {token}"),
         )
         assert response.status_code == 204
         assert Workout.query.first() is None
@@ -307,15 +307,15 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 204
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -336,10 +336,10 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
             data=dict(),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -357,8 +357,8 @@ class TestDeleteWorkoutWithoutGpx(CommentMixin, WorkoutApiTestCaseMixin):
             app, user_1.email
         )
         response = client.delete(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
         assert response.status_code == 204
         assert Workout.query.first() is None
@@ -378,8 +378,8 @@ class TestDeleteWorkoutWithoutGpx(CommentMixin, WorkoutApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 204
@@ -402,12 +402,12 @@ class TestDeleteWorkoutWithoutGpx(CommentMixin, WorkoutApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = self.assert_404(response)
-        assert 'not found' in data['status']
+        assert "not found" in data["status"]
 
     def test_it_deletes_a_workout_with_comment(
         self,
@@ -427,23 +427,23 @@ class TestDeleteWorkoutWithoutGpx(CommentMixin, WorkoutApiTestCaseMixin):
             app, user_1.email
         )
         response = client.delete(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
         assert response.status_code == 204
         assert Workout.query.first() is None
         assert comment.workout_id is None
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_visibility,expected_status_code',
+        "input_desc,input_workout_visibility,expected_status_code",
         [
-            ('workout visibility: private', VisibilityLevel.PRIVATE, 404),
+            ("workout visibility: private", VisibilityLevel.PRIVATE, 404),
             (
-                'workout visibility: followers_only',
+                "workout visibility: followers_only",
                 VisibilityLevel.FOLLOWERS,
                 403,
             ),
-            ('workout visibility: public', VisibilityLevel.PUBLIC, 403),
+            ("workout visibility: public", VisibilityLevel.PUBLIC, 403),
         ],
     )
     def test_it_returns_error_when_deleting_workout_from_followed_user_user(
@@ -465,22 +465,22 @@ class TestDeleteWorkoutWithoutGpx(CommentMixin, WorkoutApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == expected_status_code
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_visibility,expected_status_code',
+        "input_desc,input_workout_visibility,expected_status_code",
         [
-            ('workout visibility: private', VisibilityLevel.PRIVATE, 404),
+            ("workout visibility: private", VisibilityLevel.PRIVATE, 404),
             (
-                'workout visibility: followers_only',
+                "workout visibility: followers_only",
                 VisibilityLevel.FOLLOWERS,
                 404,
             ),
-            ('workout visibility: public', VisibilityLevel.PUBLIC, 403),
+            ("workout visibility: public", VisibilityLevel.PUBLIC, 403),
         ],
     )
     def test_it_returns_error_when_deleting_workout_from_different_user(
@@ -500,21 +500,21 @@ class TestDeleteWorkoutWithoutGpx(CommentMixin, WorkoutApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == expected_status_code
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_visibility',
+        "input_desc,input_workout_visibility",
         [
-            ('workout visibility: private', VisibilityLevel.PRIVATE),
+            ("workout visibility: private", VisibilityLevel.PRIVATE),
             (
-                'workout visibility: followers_only',
+                "workout visibility: followers_only",
                 VisibilityLevel.FOLLOWERS,
             ),
-            ('workout visibility: public', VisibilityLevel.PUBLIC),
+            ("workout visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_401_when_no_authenticated(
@@ -529,7 +529,7 @@ class TestDeleteWorkoutWithoutGpx(CommentMixin, WorkoutApiTestCaseMixin):
         client = app.test_client()
 
         response = client.delete(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
         )
 
         assert response.status_code == 401
@@ -548,8 +548,8 @@ class TestDeleteWorkoutWithoutGpx(CommentMixin, WorkoutApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)

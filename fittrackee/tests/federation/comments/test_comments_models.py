@@ -37,20 +37,20 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
         serialized_comment = comment.serialize(user_1)
 
         assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': workout_cycling_user_1.short_id,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'modification_date': comment.modification_date,
-            'reply_to': comment.reply_to,
-            'replies': [],
-            'liked': False,
-            'likes_count': 0,
-            'mentions': [],
-            'suspended_at': None,
+            "id": comment.short_id,
+            "user": user_1.serialize(),
+            "workout_id": workout_cycling_user_1.short_id,
+            "text": comment.text,
+            "text_html": comment.text,  # no mention
+            "text_visibility": comment.text_visibility,
+            "created_at": comment.created_at,
+            "modification_date": comment.modification_date,
+            "reply_to": comment.reply_to,
+            "replies": [],
+            "liked": False,
+            "likes_count": 0,
+            "mentions": [],
+            "suspended_at": None,
         }
 
 
@@ -100,7 +100,7 @@ class TestWorkoutCommentModelSerializeForRemoteFollower(CommentMixin):
             comment.serialize(user_1)
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_serializes_comment_for_follower_when_privacy_allows_it(
@@ -125,19 +125,19 @@ class TestWorkoutCommentModelSerializeForRemoteFollower(CommentMixin):
         serialized_comment = comment.serialize(user_1)
 
         assert serialized_comment == {
-            'id': comment.short_id,
-            'user': remote_user.serialize(),
-            'workout_id': remote_cycling_workout.short_id,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'modification_date': comment.modification_date,
-            'reply_to': comment.reply_to,
-            'replies': [],
-            'liked': False,
-            'likes_count': 0,
-            'mentions': [],
+            "id": comment.short_id,
+            "user": remote_user.serialize(),
+            "workout_id": remote_cycling_workout.short_id,
+            "text": comment.text,
+            "text_html": comment.text,  # no mention
+            "text_visibility": comment.text_visibility,
+            "created_at": comment.created_at,
+            "modification_date": comment.modification_date,
+            "reply_to": comment.reply_to,
+            "replies": [],
+            "liked": False,
+            "likes_count": 0,
+            "mentions": [],
         }
 
 
@@ -184,11 +184,11 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
 
 
 class TestWorkoutCommentModelGetCreateActivity(CommentMixin):
-    activity_type = 'Create'
-    expected_object_type = 'Note'
+    activity_type = "Create"
+    expected_object_type = "Note"
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_raises_error_if_visibility_is_invalid(
@@ -211,7 +211,7 @@ class TestWorkoutCommentModelGetCreateActivity(CommentMixin):
             comment.get_activity(activity_type=self.activity_type)
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_returns_activities_when_visibility_is_valid(
@@ -233,19 +233,19 @@ class TestWorkoutCommentModelGetCreateActivity(CommentMixin):
 
         note_activity = comment.get_activity(activity_type=self.activity_type)
 
-        assert note_activity['type'] == self.activity_type
-        assert note_activity['object']['type'] == self.expected_object_type
-        assert note_activity['object']['id'] == comment.ap_id
+        assert note_activity["type"] == self.activity_type
+        assert note_activity["object"]["type"] == self.expected_object_type
+        assert note_activity["object"]["id"] == comment.ap_id
 
 
 class TestWorkoutCommentModelGetDeleteActivity(
     TestWorkoutCommentModelGetCreateActivity
 ):
-    activity_type = 'Delete'
-    expected_object_type = 'Tombstone'
+    activity_type = "Delete"
+    expected_object_type = "Tombstone"
 
 
-@patch('fittrackee.federation.utils.user.update_remote_user')
+@patch("fittrackee.federation.utils.user.update_remote_user")
 class TestWorkoutCommentModelWithMentions(CommentMixin):
     def test_it_creates_mentions_when_mentioned_user_exists(
         self,
@@ -295,11 +295,11 @@ class TestWorkoutCommentModelWithMentions(CommentMixin):
 
         with (
             patch(
-                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                "fittrackee.federation.utils.user.fetch_account_from_webfinger",
                 return_value=random_actor.get_webfinger(),
             ),
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=random_actor.get_remote_user_object(),
             ),
         ):
@@ -336,7 +336,7 @@ class TestWorkoutCommentModelWithMentions(CommentMixin):
         assert mentioned_users == {"local": set(), "remote": {remote_user}}
 
 
-@patch('fittrackee.federation.utils.user.update_remote_user')
+@patch("fittrackee.federation.utils.user.update_remote_user")
 class TestWorkoutCommentModelSerializeForMentions(CommentMixin):
     def test_it_serializes_comment_with_mentions_as_link(
         self,

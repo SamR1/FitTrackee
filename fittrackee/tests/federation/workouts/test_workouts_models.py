@@ -18,7 +18,7 @@ from fittrackee.workouts.models import (
 
 from ...utils import random_string
 
-DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
+DATE_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 
 class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
@@ -51,7 +51,7 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
             workout_cycling_user_1.serialize(user=remote_user)
 
     @pytest.mark.parametrize(
-        'input_analysis_visibility,input_workout_visibility',
+        "input_analysis_visibility,input_workout_visibility",
         [
             (
                 VisibilityLevel.FOLLOWERS_AND_REMOTE,
@@ -87,24 +87,24 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
 
         serialized_workout = workout.serialize(user=remote_user, light=False)
 
-        assert serialized_workout['map'] is None
-        assert serialized_workout['bounds'] == []
-        assert serialized_workout['with_gpx'] is False
-        assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
+        assert serialized_workout["map"] is None
+        assert serialized_workout["bounds"] == []
+        assert serialized_workout["with_gpx"] is False
+        assert serialized_workout["map_visibility"] == VisibilityLevel.PRIVATE
         assert (
-            serialized_workout['analysis_visibility']
+            serialized_workout["analysis_visibility"]
             == input_analysis_visibility
         )
         assert (
-            serialized_workout['workout_visibility']
+            serialized_workout["workout_visibility"]
             == input_workout_visibility
         )
-        assert serialized_workout['segments'] == [
+        assert serialized_workout["segments"] == [
             workout_cycling_user_1_segment.serialize()
         ]
 
     @pytest.mark.parametrize(
-        'input_analysis_visibility,input_workout_visibility',
+        "input_analysis_visibility,input_workout_visibility",
         [
             (
                 VisibilityLevel.FOLLOWERS,
@@ -134,26 +134,26 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
 
         serialized_workout = workout.serialize(user=remote_user)
 
-        assert serialized_workout['map'] is None
-        assert serialized_workout['bounds'] == []
-        assert serialized_workout['with_gpx'] is False
-        assert serialized_workout['map_visibility'] == VisibilityLevel.PRIVATE
+        assert serialized_workout["map"] is None
+        assert serialized_workout["bounds"] == []
+        assert serialized_workout["with_gpx"] is False
+        assert serialized_workout["map_visibility"] == VisibilityLevel.PRIVATE
         assert (
-            serialized_workout['analysis_visibility']
+            serialized_workout["analysis_visibility"]
             == VisibilityLevel.PRIVATE
         )
         assert (
-            serialized_workout['workout_visibility']
+            serialized_workout["workout_visibility"]
             == input_workout_visibility
         )
-        assert serialized_workout['segments'] == []
+        assert serialized_workout["segments"] == []
 
 
 class TestWorkoutModelGetWorkoutCreateActivity:
-    activity_type = 'Create'
+    activity_type = "Create"
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_raises_error_if_visibility_is_invalid(
@@ -171,7 +171,7 @@ class TestWorkoutModelGetWorkoutCreateActivity:
             )
 
     @pytest.mark.parametrize(
-        'workout_visibility',
+        "workout_visibility",
         [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_returns_activities_when_visibility_is_valid(
@@ -192,21 +192,21 @@ class TestWorkoutModelGetWorkoutCreateActivity:
             activity_type=self.activity_type
         )
 
-        assert create_workout['type'] == self.activity_type
-        assert create_workout['object']['type'] == 'Workout'
-        assert create_note['type'] == self.activity_type
-        assert create_note['object']['type'] == 'Note'
+        assert create_workout["type"] == self.activity_type
+        assert create_workout["object"]["type"] == "Workout"
+        assert create_note["type"] == self.activity_type
+        assert create_note["object"]["type"] == "Note"
 
 
 class TestWorkoutModelGetWorkoutUpdateActivity(
     TestWorkoutModelGetWorkoutCreateActivity
 ):
-    activity_type = 'Update'
+    activity_type = "Update"
 
 
 class TestWorkoutModelGetWorkoutDeleteActivity:
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_raises_error_if_visibility_is_invalid(
@@ -219,10 +219,10 @@ class TestWorkoutModelGetWorkoutDeleteActivity:
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_visibility
         with pytest.raises(InvalidVisibilityException):
-            workout_cycling_user_1.get_activities(activity_type='Delete')
+            workout_cycling_user_1.get_activities(activity_type="Delete")
 
     @pytest.mark.parametrize(
-        'workout_visibility',
+        "workout_visibility",
         [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_returns_activities_when_visibility_is_valid(
@@ -237,12 +237,12 @@ class TestWorkoutModelGetWorkoutDeleteActivity:
         workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
 
         delete_workout, _ = workout_cycling_user_1.get_activities(
-            activity_type='Delete'
+            activity_type="Delete"
         )
 
-        assert delete_workout['type'] == 'Delete'
-        assert delete_workout['object']['type'] == 'Tombstone'
-        assert delete_workout['object']['id'] == workout_cycling_user_1.ap_id
+        assert delete_workout["type"] == "Delete"
+        assert delete_workout["object"]["type"] == "Tombstone"
+        assert delete_workout["object"]["id"] == workout_cycling_user_1.ap_id
 
 
 class TestWorkoutLikeActivities:

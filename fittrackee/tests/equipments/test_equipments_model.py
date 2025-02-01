@@ -18,19 +18,19 @@ class TestEquipmentModel:
     @staticmethod
     def assert_equipment_model(equip: Equipment) -> Dict:
         assert 1 == equip.id
-        assert 'Test bike equipment' == equip.label
-        assert '<Equipment 1 \'Test bike equipment\'>' == str(equip)
+        assert "Test bike equipment" == equip.label
+        assert "<Equipment 1 'Test bike equipment'>" == str(equip)
 
         serialized_equip = equip.serialize()
-        assert serialized_equip['id'] == equip.short_id
-        assert serialized_equip['user_id'] == 1
-        assert serialized_equip['label'] == equip.label
+        assert serialized_equip["id"] == equip.short_id
+        assert serialized_equip["user_id"] == 1
+        assert serialized_equip["label"] == equip.label
         assert (
-            serialized_equip['equipment_type']
+            serialized_equip["equipment_type"]
             == equip.equipment_type.serialize()
         )
-        assert serialized_equip['description'] == 'A bike for testing purposes'
-        assert serialized_equip['is_active'] is True
+        assert serialized_equip["description"] == "A bike for testing purposes"
+        assert serialized_equip["is_active"] is True
         return serialized_equip
 
     def test_equipment_model_without_workout(
@@ -46,10 +46,10 @@ class TestEquipmentModel:
         equipment_bike_user_1.total_moving = timedelta()
         equipment_bike_user_1.total_workouts = 0
         serialized_equip = self.assert_equipment_model(equipment_bike_user_1)
-        assert serialized_equip['workouts_count'] == 0
-        assert serialized_equip['total_distance'] == 0
-        assert serialized_equip['total_duration'] == '0:00:00'
-        assert serialized_equip['total_moving'] == '0:00:00'
+        assert serialized_equip["workouts_count"] == 0
+        assert serialized_equip["total_distance"] == 0
+        assert serialized_equip["total_duration"] == "0:00:00"
+        assert serialized_equip["total_moving"] == "0:00:00"
 
     def test_equipment_model_with_workouts(
         self,
@@ -83,17 +83,17 @@ class TestEquipmentModel:
         equipment_bike_user_1.total_workouts = 2
         serialized_equip = self.assert_equipment_model(equipment_bike_user_1)
         assert (
-            serialized_equip['total_distance']
+            serialized_equip["total_distance"]
             == equipment_bike_user_1.total_distance
         )
-        assert serialized_equip['total_duration'] == str(
+        assert serialized_equip["total_duration"] == str(
             equipment_bike_user_1.total_duration
         )
-        assert serialized_equip['total_moving'] == str(
+        assert serialized_equip["total_moving"] == str(
             equipment_bike_user_1.total_moving
         )
         assert (
-            serialized_equip['workouts_count']
+            serialized_equip["workouts_count"]
             == equipment_bike_user_1.total_workouts
         )
 
@@ -101,23 +101,23 @@ class TestEquipmentModel:
         equipment_bike_user_1.workouts = [workout_cycling_user_1]
         db.session.commit()
 
-        equipment_bike_user_1.total_distance = workout_cycling_user_1.distance  # type: ignore  # noqa
-        equipment_bike_user_1.total_duration = workout_cycling_user_1.moving  # type: ignore  # noqa
-        equipment_bike_user_1.total_moving = workout_cycling_user_1.moving  # type: ignore  # noqa
+        equipment_bike_user_1.total_distance = workout_cycling_user_1.distance  # type: ignore
+        equipment_bike_user_1.total_duration = workout_cycling_user_1.moving  # type: ignore
+        equipment_bike_user_1.total_moving = workout_cycling_user_1.moving  # type: ignore
         equipment_bike_user_1.total_workouts = 1
         serialized_equip = self.assert_equipment_model(equipment_bike_user_1)
         assert (
-            serialized_equip['total_distance']
+            serialized_equip["total_distance"]
             == equipment_bike_user_1.total_distance
         )
-        assert serialized_equip['total_duration'] == str(
+        assert serialized_equip["total_duration"] == str(
             equipment_bike_user_1.total_duration
         )
-        assert serialized_equip['total_moving'] == str(
+        assert serialized_equip["total_moving"] == str(
             equipment_bike_user_1.total_moving
         )
         assert (
-            serialized_equip['workouts_count']
+            serialized_equip["workouts_count"]
             == equipment_bike_user_1.total_workouts
         )
 
@@ -130,17 +130,17 @@ class TestEquipmentModel:
         equipment_bike_user_1.total_workouts = 0
         serialized_equip = self.assert_equipment_model(equipment_bike_user_1)
         assert (
-            serialized_equip['total_distance']
+            serialized_equip["total_distance"]
             == equipment_bike_user_1.total_distance
         )
-        assert serialized_equip['total_duration'] == str(
+        assert serialized_equip["total_duration"] == str(
             equipment_bike_user_1.total_duration
         )
-        assert serialized_equip['total_moving'] == str(
+        assert serialized_equip["total_moving"] == str(
             equipment_bike_user_1.total_moving
         )
         assert (
-            serialized_equip['workouts_count']
+            serialized_equip["workouts_count"]
             == equipment_bike_user_1.total_workouts
         )
 
@@ -168,7 +168,7 @@ class TestEquipmentModel:
 
         serialized_equip = self.assert_equipment_model(equipment_bike_user_1)
 
-        assert serialized_equip['default_for_sport_ids'] == [
+        assert serialized_equip["default_for_sport_ids"] == [
             sport_1_cycling.id
         ]
 
@@ -179,13 +179,13 @@ class TestEquipmentTypeModel:
         equip_type: EquipmentType, is_admin: bool = False
     ) -> Dict:
         assert 1 == equip_type.id
-        assert 'Shoes' == equip_type.label
-        assert '<EquipmentType \'Shoes\'>' == str(equip_type)
+        assert "Shoes" == equip_type.label
+        assert "<EquipmentType 'Shoes'>" == str(equip_type)
 
         serialized_equip = equip_type.serialize(is_admin=is_admin)
-        assert serialized_equip['id'] == equip_type.id
-        assert serialized_equip['label'] == equip_type.label
-        assert serialized_equip['is_active'] is True
+        assert serialized_equip["id"] == equip_type.id
+        assert serialized_equip["label"] == equip_type.label
+        assert serialized_equip["is_active"] is True
         return serialized_equip
 
     def test_equipment_type_model(
@@ -199,7 +199,7 @@ class TestEquipmentTypeModel:
         serialized_equip_type = self.assert_equipment_type_model(
             equipment_type_1_shoe
         )
-        assert 'has_workouts' not in serialized_equip_type
+        assert "has_workouts" not in serialized_equip_type
 
     def test_equipment_type_model_as_admin(
         self,
@@ -212,4 +212,4 @@ class TestEquipmentTypeModel:
         serialized_equip_type = self.assert_equipment_type_model(
             equipment_type_1_shoe, is_admin=True
         )
-        assert serialized_equip_type['has_equipments'] is False
+        assert serialized_equip_type["has_equipments"] is False

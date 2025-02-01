@@ -176,7 +176,7 @@ class TestReportServiceCreateForComment(CommentMixin):
         )
 
         with pytest.raises(
-            InvalidReportException, match='a report already exists'
+            InvalidReportException, match="a report already exists"
         ):
             report_service.create_report(
                 reporter=user_2,
@@ -203,7 +203,7 @@ class TestReportServiceCreateForComment(CommentMixin):
         report_service = ReportService()
 
         with pytest.raises(
-            SuspendedObjectException, match='comment already suspended'
+            SuspendedObjectException, match="comment already suspended"
         ):
             report_service.create_report(
                 reporter=user_2,
@@ -333,7 +333,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         )
 
         with pytest.raises(
-            InvalidReportException, match='a report already exists'
+            InvalidReportException, match="a report already exists"
         ):
             report_service.create_report(
                 reporter=user_1,
@@ -355,7 +355,7 @@ class TestReportServiceCreateForWorkout(RandomMixin):
         report_service = ReportService()
 
         with pytest.raises(
-            SuspendedObjectException, match='workout already suspended'
+            SuspendedObjectException, match="workout already suspended"
         ):
             report_service.create_report(
                 reporter=user_2,
@@ -465,7 +465,7 @@ class TestReportServiceCreateForUser(RandomMixin):
         )
 
         with pytest.raises(
-            InvalidReportException, match='a report already exists'
+            InvalidReportException, match="a report already exists"
         ):
             report_service.create_report(
                 reporter=user_1,
@@ -486,7 +486,7 @@ class TestReportServiceCreateForUser(RandomMixin):
         report_service = ReportService()
 
         with pytest.raises(
-            SuspendedObjectException, match='user already suspended'
+            SuspendedObjectException, match="user already suspended"
         ):
             report_service.create_report(
                 reporter=user_2,
@@ -985,7 +985,7 @@ class TestReportServiceCreateReportActionForUser(
         assert another_user_appeal.updated_at is None
         assert another_user_appeal.approved is None
 
-    @pytest.mark.parametrize('input_reason', [{}, {"reason": "some reason"}])
+    @pytest.mark.parametrize("input_reason", [{}, {"reason": "some reason"}])
     def test_it_creates_report_action_for_user_suspension(
         self,
         app: Flask,
@@ -1317,7 +1317,7 @@ class TestReportServiceCreateReportActionForComment(
             == now
         )
 
-    @pytest.mark.parametrize('input_reason', [{}, {"reason": "some reason"}])
+    @pytest.mark.parametrize("input_reason", [{}, {"reason": "some reason"}])
     def test_it_creates_report_action_for_comment_suspension(
         self,
         app: Flask,
@@ -1614,7 +1614,7 @@ class TestReportServiceCreateReportActionForWorkout(
             == now
         )
 
-    @pytest.mark.parametrize('input_reason', [{}, {"reason": "some reason"}])
+    @pytest.mark.parametrize("input_reason", [{}, {"reason": "some reason"}])
     def test_it_creates_report_action_for_workout_suspension(
         self,
         app: Flask,

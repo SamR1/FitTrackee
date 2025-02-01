@@ -15,7 +15,7 @@ from ...utils import generate_response, random_domain
 class TestGetNodeInfoUrl:
     def test_it_raises_exception_when_requests_returns_error(self) -> None:
         domain_name = random_domain()
-        with patch.object(requests, 'get') as requests_mock:
+        with patch.object(requests, "get") as requests_mock:
             requests_mock.return_value = generate_response(status_code=400)
 
             with pytest.raises(
@@ -29,7 +29,7 @@ class TestGetNodeInfoUrl:
 
     def test_it_raises_exception_when_node_info_url_is_invalid(self) -> None:
         domain_name = random_domain()
-        with patch.object(requests, 'get') as requests_mock:
+        with patch.object(requests, "get") as requests_mock:
             requests_mock.return_value = generate_response(
                 status_code=200, content={}
             )
@@ -42,16 +42,16 @@ class TestGetNodeInfoUrl:
 
     def test_it_returns_node_info_url(self) -> None:
         domain_name = random_domain()
-        expected_node_info_url = f'https://{domain_name}/nodeinfo/2.0'
+        expected_node_info_url = f"https://{domain_name}/nodeinfo/2.0"
         node_infos_links = {
-            'links': [
+            "links": [
                 {
-                    'rel': 'http://nodeinfo.diaspora.software/ns/schema/2.0',
-                    'href': expected_node_info_url,
+                    "rel": "http://nodeinfo.diaspora.software/ns/schema/2.0",
+                    "href": expected_node_info_url,
                 }
             ]
         }
-        with patch.object(requests, 'get') as requests_mock:
+        with patch.object(requests, "get") as requests_mock:
             requests_mock.return_value = generate_response(
                 status_code=200, content=node_infos_links
             )
@@ -62,10 +62,10 @@ class TestGetNodeInfoUrl:
 
 
 class TestGetNodeInfoData:
-    node_info_url = f'https://{random_domain()}/nodeinfo/2.0'
+    node_info_url = f"https://{random_domain()}/nodeinfo/2.0"
 
     def test_it_raises_exception_when_requests_returns_error(self) -> None:
-        with patch.object(requests, 'get') as requests_mock:
+        with patch.object(requests, "get") as requests_mock:
             requests_mock.return_value = generate_response(status_code=400)
 
             with pytest.raises(
@@ -79,9 +79,9 @@ class TestGetNodeInfoData:
 
     def test_it_returns_node_info_data(self) -> None:
         expected_node_info_data = {
-            'protocols': ['activitypub'],
+            "protocols": ["activitypub"],
         }
-        with patch.object(requests, 'get') as requests_mock:
+        with patch.object(requests, "get") as requests_mock:
             requests_mock.return_value = generate_response(
                 status_code=200, content=expected_node_info_data
             )

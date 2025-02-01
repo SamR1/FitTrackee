@@ -10,13 +10,13 @@ from fittrackee.visibility_levels import VisibilityLevel
 
 from .models import Workout
 
-timeline_blueprint = Blueprint('timeline', __name__)
+timeline_blueprint = Blueprint("timeline", __name__)
 
 DEFAULT_WORKOUTS_PER_PAGE = 5
 
 
-@timeline_blueprint.route('/timeline', methods=['GET'])
-@require_auth(scopes=['workouts:read'])
+@timeline_blueprint.route("/timeline", methods=["GET"])
+@require_auth(scopes=["workouts:read"])
 def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Get workouts visible to authenticated user.
@@ -162,7 +162,7 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     try:
         params = request.args.copy()
-        page = int(params.get('page', 1))
+        page = int(params.get("page", 1))
         (
             local_following_ids,
             remote_following_ids,
@@ -225,18 +225,18 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
         )
         workouts = workouts_pagination.items
         return {
-            'status': 'success',
-            'data': {
-                'workouts': [
+            "status": "success",
+            "data": {
+                "workouts": [
                     workout.serialize(user=auth_user) for workout in workouts
                 ]
             },
-            'pagination': {
-                'has_next': workouts_pagination.has_next,
-                'has_prev': workouts_pagination.has_prev,
-                'page': workouts_pagination.page,
-                'pages': workouts_pagination.pages,
-                'total': workouts_pagination.total,
+            "pagination": {
+                "has_next": workouts_pagination.has_next,
+                "has_prev": workouts_pagination.has_prev,
+                "page": workouts_pagination.page,
+                "pages": workouts_pagination.pages,
+                "total": workouts_pagination.total,
             },
         }
     except Exception as e:

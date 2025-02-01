@@ -13,10 +13,10 @@ if TYPE_CHECKING:
 
 
 class CommentObject(BaseObject):
-    workout: 'Workout'
-    comment: 'Comment'
+    workout: "Workout"
+    comment: "Comment"
 
-    def __init__(self, comment: 'Comment', activity_type: str) -> None:
+    def __init__(self, comment: "Comment", activity_type: str) -> None:
         """
         Note: No visibility check on instantiation if activity is not a
         creation.
@@ -40,9 +40,9 @@ class CommentObject(BaseObject):
         self.activity_dict = self._init_activity_dict()
 
     @staticmethod
-    def _check_visibility(comment: 'Comment', activity_type: str) -> None:
+    def _check_visibility(comment: "Comment", activity_type: str) -> None:
         if (
-            activity_type == 'Create'
+            activity_type == "Create"
             and comment.text_visibility
             in [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS]
             and not comment.mentioned_users.all()
@@ -56,17 +56,17 @@ class CommentObject(BaseObject):
             text_with_mention,
             mentioned_users,
         ) = self.comment.handle_mentions()
-        self.activity_dict['object']['type'] = 'Note'
-        self.activity_dict['object']['content'] = text_with_mention
-        self.activity_dict['object']['inReplyTo'] = (
+        self.activity_dict["object"]["type"] = "Note"
+        self.activity_dict["object"]["content"] = text_with_mention
+        self.activity_dict["object"]["inReplyTo"] = (
             self.comment.parent_comment.ap_id
             if self.comment.reply_to
             else self.workout.ap_id
         )
         if self.type == ActivityType.UPDATE:
-            self.activity_dict['object'] = {
-                **self.activity_dict['object'],
-                'updated': self._get_modification_date(self.comment),
+            self.activity_dict["object"] = {
+                **self.activity_dict["object"],
+                "updated": self._get_modification_date(self.comment),
             }
         # existing mentions (local and remote)
         mentions = [
@@ -79,11 +79,11 @@ class CommentObject(BaseObject):
             VisibilityLevel.PRIVATE,
             VisibilityLevel.FOLLOWERS,
         ]:
-            self.activity_dict['to'] = mentions
-            self.activity_dict['cc'] = []
-            self.activity_dict['object']['to'] = mentions
-            self.activity_dict['object']['cc'] = []
+            self.activity_dict["to"] = mentions
+            self.activity_dict["cc"] = []
+            self.activity_dict["object"]["to"] = mentions
+            self.activity_dict["object"]["cc"] = []
         else:
-            self.activity_dict['cc'].extend(mentions)
-            self.activity_dict['object']['cc'].extend(mentions)
+            self.activity_dict["cc"].extend(mentions)
+            self.activity_dict["object"]["cc"].extend(mentions)
         return self.activity_dict

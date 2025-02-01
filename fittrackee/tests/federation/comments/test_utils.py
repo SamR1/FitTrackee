@@ -9,7 +9,7 @@ from fittrackee.tests.utils import RandomActor, random_string
 from fittrackee.users.models import User
 
 
-@patch('fittrackee.federation.utils.user.update_remote_user')
+@patch("fittrackee.federation.utils.user.update_remote_user")
 class TestGetMentionedUsers:
     def test_it_does_not_raise_exception_when_fetching_actor_raises_exception(
         self,
@@ -56,11 +56,11 @@ class TestGetMentionedUsers:
 
         with (
             patch(
-                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                "fittrackee.federation.utils.user.fetch_account_from_webfinger",
                 return_value=random_actor.get_webfinger(),
             ),
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=random_actor.get_remote_user_object(),
             ),
         ):
@@ -80,7 +80,7 @@ class TestGetMentionedUsers:
             f"@{remote_user.fullname}",
             f'<a href="{remote_user.actor.profile_url}" target="_blank" '
             f'rel="noopener noreferrer">@<span>{remote_user.fullname}</span>'
-            f'</a>',
+            f"</a>",
         )
 
     def test_it_returns_text_when_multiple_users(
@@ -104,5 +104,5 @@ class TestGetMentionedUsers:
             remote_mention,
             f'<a href="{remote_user.actor.profile_url}" target="_blank" '
             f'rel="noopener noreferrer">@<span>{remote_user.fullname}</span>'
-            f'</a>',
+            f"</a>",
         )

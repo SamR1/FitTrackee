@@ -22,28 +22,28 @@ from .models import Sport, Workout
 from .utils.uploads import get_upload_dir_size
 from .utils.workouts import get_average_speed, get_datetime_from_request_args
 
-stats_blueprint = Blueprint('stats', __name__)
+stats_blueprint = Blueprint("stats", __name__)
 
 
 def get_stats_from_row(row: List, stats_type: str) -> Dict:
     row_stats = {
-        'total_workouts': row[2],
-        f'{stats_type}_distance': round(float(row[3]), 2),
-        f'{stats_type}_duration': int(row[4].total_seconds()),
-        f'{stats_type}_ascent': (
+        "total_workouts": row[2],
+        f"{stats_type}_distance": round(float(row[3]), 2),
+        f"{stats_type}_duration": int(row[4].total_seconds()),
+        f"{stats_type}_ascent": (
             None if row[5] is None else round(float(row[5]), 2)
         ),
-        f'{stats_type}_descent': (
+        f"{stats_type}_descent": (
             None if row[6] is None else round(float(row[6]), 2)
         ),
     }
     if stats_type == "average":
-        row_stats['average_speed'] = round(float(row[1]), 2)
+        row_stats["average_speed"] = round(float(row[1]), 2)
     return row_stats
 
 
-@stats_blueprint.route('/stats/<user_name>/by_time', methods=['GET'])
-@require_auth(scopes=['workouts:read'])
+@stats_blueprint.route("/stats/<user_name>/by_time", methods=["GET"])
+@require_auth(scopes=["workouts:read"])
 def get_workouts_by_time(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -207,23 +207,23 @@ def get_workouts_by_time(
 
         params = request.args.copy()
         date_from, date_to = get_datetime_from_request_args(params, user)
-        time = params.get('time')
-        stats_type = params.get('type', 'total')
-        if stats_type not in ['total', 'average']:
-            return InvalidPayloadErrorResponse('invalid stats type', 'fail')
+        time = params.get("time")
+        stats_type = params.get("type", "total")
+        if stats_type not in ["total", "average"]:
+            return InvalidPayloadErrorResponse("invalid stats type", "fail")
 
-        if not time or time == 'year':
-            time_format = 'yyyy'
-        elif time == 'month':
-            time_format = 'yyyy-mm'
-        elif time.startswith('week'):
+        if not time or time == "year":
+            time_format = "yyyy"
+        elif time == "month":
+            time_format = "yyyy-mm"
+        elif time.startswith("week"):
             # 'week' => week starts on Sunday
             # 'weekm' => week starts on Monday
             #
             # Note: on PostgreSQL, week starts on Monday
-            time_format = 'IYYY-IW'
+            time_format = "IYYY-IW"
         else:
-            return InvalidPayloadErrorResponse('invalid time period', 'fail')
+            return InvalidPayloadErrorResponse("invalid time period", "fail")
 
         # On PostgreSQL, week starts on Monday
         # For 'week' timeframe, the workaround is to add 1 day
@@ -233,9 +233,9 @@ def get_workouts_by_time(
         stats_key = func.to_char(
             func.timezone(
                 # user has always timezone set
-                auth_user.timezone if auth_user.timezone else 'UTC',
+                auth_user.timezone if auth_user.timezone else "UTC",
                 # workout date is stored without timezone in database
-                func.timezone('Z', Workout.workout_date),
+                func.timezone("Z", Workout.workout_date),
             )
             + delta,
             time_format,
@@ -272,8 +272,8 @@ def get_workouts_by_time(
             date_key = row[7]
             if time and time.startswith("week"):
                 date_key = (
-                    get_datetime_in_utc(date_key + '-1', "%G-%V-%u") - delta
-                ).strftime('%Y-%m-%d')
+                    get_datetime_in_utc(date_key + "-1", "%G-%V-%u") - delta
+                ).strftime("%Y-%m-%d")
             sport_key = row[0]
             if date_key not in statistics:
                 statistics[date_key] = {
@@ -284,40 +284,40 @@ def get_workouts_by_time(
                     list(row), stats_type
                 )
             else:
-                statistics[date_key][sport_key]['total_workouts'] += row[2]
+                statistics[date_key][sport_key]["total_workouts"] += row[2]
                 if stats_type == "average":
-                    statistics[date_key][sport_key]['average_speed'] = (
+                    statistics[date_key][sport_key]["average_speed"] = (
                         get_average_speed(
-                            statistics[date_key][sport_key]['total_workouts'],
-                            statistics[date_key][sport_key]['average_speed'],
+                            statistics[date_key][sport_key]["total_workouts"],
+                            statistics[date_key][sport_key]["average_speed"],
                             row[1],
                         )
                     )
-                statistics[date_key][sport_key][f'{stats_type}_distance'] += (
+                statistics[date_key][sport_key][f"{stats_type}_distance"] += (
                     round(float(row[3]), 2)
                 )
-                statistics[date_key][sport_key][f'{stats_type}_duration'] += (
+                statistics[date_key][sport_key][f"{stats_type}_duration"] += (
                     int(row[4].total_seconds())
                 )
                 if row[5]:
                     statistics[date_key][sport_key][
-                        f'{stats_type}_ascent'
+                        f"{stats_type}_ascent"
                     ] += round(float(row[5]), 2)
                 if row[6]:
                     statistics[date_key][sport_key][
-                        f'{stats_type}_ascent'
+                        f"{stats_type}_ascent"
                     ] += round(float(row[6]), 2)
 
         return {
-            'status': 'success',
-            'data': {'statistics': statistics},
+            "status": "success",
+            "data": {"statistics": statistics},
         }
     except Exception as e:
         return handle_error_and_return_response(e)
 
 
-@stats_blueprint.route('/stats/<user_name>/by_sport', methods=['GET'])
-@require_auth(scopes=['workouts:read'])
+@stats_blueprint.route("/stats/<user_name>/by_sport", methods=["GET"])
+@require_auth(scopes=["workouts:read"])
 def get_workouts_by_sport(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -464,11 +464,11 @@ def get_workouts_by_sport(
             return ForbiddenErrorResponse()
 
         params = request.args.copy()
-        sport_id = params.get('sport_id')
+        sport_id = params.get("sport_id")
         if sport_id:
             sport = Sport.query.filter_by(id=sport_id).first()
             if not sport:
-                return NotFoundErrorResponse('sport does not exist')
+                return NotFoundErrorResponse("sport does not exist")
 
         filters = [Workout.user_id == user.id]
         if sport_id:
@@ -477,9 +477,9 @@ def get_workouts_by_sport(
         total_workouts = workouts_query.count()
 
         workouts_query = workouts_query.order_by(Workout.workout_date.desc())
-        if current_app.config['stats_workouts_limit']:
+        if current_app.config["stats_workouts_limit"]:
             workouts_query = workouts_query.limit(
-                current_app.config['stats_workouts_limit']
+                current_app.config["stats_workouts_limit"]
             )
         workouts_subquery = workouts_query.subquery()
         results = (
@@ -503,39 +503,39 @@ def get_workouts_by_sport(
         statistics = {}
         for row in results:
             statistics[row[0]] = {
-                'average_speed': round(float(row[1]), 2),
-                'average_ascent': (
+                "average_speed": round(float(row[1]), 2),
+                "average_ascent": (
                     None if row[2] is None else round(float(row[2]), 2)
                 ),
-                'average_descent': (
+                "average_descent": (
                     None if row[3] is None else round(float(row[3]), 2)
                 ),
-                'average_distance': round(float(row[4]), 2),
-                'average_duration': str(row[5]).split('.')[0],
-                'total_ascent': (
+                "average_distance": round(float(row[4]), 2),
+                "average_duration": str(row[5]).split(".")[0],
+                "total_ascent": (
                     None if row[6] is None else round(float(row[6]), 2)
                 ),
-                'total_descent': (
+                "total_descent": (
                     None if row[7] is None else round(float(row[7]), 2)
                 ),
-                'total_distance': round(float(row[8]), 2),
-                'total_duration': str(row[9]).split('.')[0],
-                'total_workouts': row[10],
+                "total_distance": round(float(row[8]), 2),
+                "total_duration": str(row[9]).split(".")[0],
+                "total_workouts": row[10],
             }
 
         return {
-            'status': 'success',
-            'data': {
-                'statistics': statistics,
-                'total_workouts': total_workouts,
+            "status": "success",
+            "data": {
+                "statistics": statistics,
+                "total_workouts": total_workouts,
             },
         }
     except Exception as e:
         return handle_error_and_return_response(e)
 
 
-@stats_blueprint.route('/stats/all', methods=['GET'])
-@require_auth(scopes=['workouts:read'], role=UserRole.MODERATOR)
+@stats_blueprint.route("/stats/all", methods=["GET"])
+@require_auth(scopes=["workouts:read"], role=UserRole.MODERATOR)
 def get_application_stats(auth_user: User) -> Dict:
     """
     Get all application statistics.
@@ -592,11 +592,11 @@ def get_application_stats(auth_user: User) -> Dict:
         .count()
     )
     return {
-        'status': 'success',
-        'data': {
-            'workouts': total_workouts,
-            'sports': nb_sports,
-            'users': nb_users,
-            'uploads_dir_size': get_upload_dir_size(),
+        "status": "success",
+        "data": {
+            "workouts": total_workouts,
+            "sports": nb_sports,
+            "users": nb_users,
+            "uploads_dir_size": get_upload_dir_size(),
         },
     }

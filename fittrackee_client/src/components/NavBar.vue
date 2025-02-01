@@ -242,9 +242,9 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/fonts.scss';
-  @import '~@/scss/colors.scss';
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/fonts.scss' as *;
+  @use '~@/scss/colors.scss' as *;
+  @use '~@/scss/vars.scss' as *;
 
   #nav {
     background: var(--nav-bar-background-color);

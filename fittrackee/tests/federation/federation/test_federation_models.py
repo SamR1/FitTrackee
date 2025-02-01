@@ -19,12 +19,12 @@ from ...utils import random_actor_url
 class TestGetApUrl:
     def test_it_raises_error_if_url_type_is_invalid(self, app: Flask) -> None:
         with pytest.raises(Exception, match="Invalid 'url_type'."):
-            get_ap_url(username=uuid4().hex, url_type='url')
+            get_ap_url(username=uuid4().hex, url_type="url")
 
     def test_it_returns_user_url(self, app: Flask) -> None:
         username = uuid4().hex
 
-        user_url = get_ap_url(username=username, url_type='user_url')
+        user_url = get_ap_url(username=username, url_type="user_url")
 
         assert (
             user_url
@@ -32,7 +32,7 @@ class TestGetApUrl:
         )
 
     @pytest.mark.parametrize(
-        'input_url_type', ['inbox', 'outbox', 'following', 'followers']
+        "input_url_type", ["inbox", "outbox", "following", "followers"]
     )
     def test_it_returns_expected_url(
         self, app: Flask, input_url_type: str
@@ -49,13 +49,13 @@ class TestGetApUrl:
     def test_it_returns_user_profile_url(self, app: Flask) -> None:
         username = uuid4().hex
 
-        user_url = get_ap_url(username=username, url_type='profile_url')
+        user_url = get_ap_url(username=username, url_type="profile_url")
 
         assert user_url == f"{app.config['UI_URL']}/users/{username}"
 
     def test_it_returns_shared_inbox(self, app: Flask) -> None:
         shared_inbox = get_ap_url(
-            username=uuid4().hex, url_type='shared_inbox'
+            username=uuid4().hex, url_type="shared_inbox"
         )
 
         assert shared_inbox == (
@@ -68,7 +68,7 @@ class TestActivityPubDomainModel:
         self, app_with_federation: Flask
     ) -> None:
         local_domain = Domain.query.filter_by(
-            name=app_with_federation.config['AP_DOMAIN']
+            name=app_with_federation.config["AP_DOMAIN"]
         ).one()
 
         assert f"<Domain '{app_with_federation.config['AP_DOMAIN']}'>" == str(
@@ -77,7 +77,7 @@ class TestActivityPubDomainModel:
 
     def test_app_domain_is_local(self, app_with_federation: Flask) -> None:
         local_domain = Domain.query.filter_by(
-            name=app_with_federation.config['AP_DOMAIN']
+            name=app_with_federation.config["AP_DOMAIN"]
         ).one()
 
         assert not local_domain.is_remote
@@ -91,14 +91,14 @@ class TestActivityPubDomainModel:
         self, app_with_federation: Flask
     ) -> None:
         local_domain = Domain.query.filter_by(
-            name=app_with_federation.config['AP_DOMAIN']
+            name=app_with_federation.config["AP_DOMAIN"]
         ).one()
 
         assert local_domain.software_version is None
         assert local_domain.software_current_version == VERSION
 
     @pytest.mark.parametrize(
-        'input_software_version,',
+        "input_software_version,",
         [
             (None,),
             (uuid4().hex,),
@@ -118,22 +118,22 @@ class TestActivityPubDomainModel:
         self, app_with_federation: Flask
     ) -> None:
         local_domain = Domain.query.filter_by(
-            name=app_with_federation.config['AP_DOMAIN']
+            name=app_with_federation.config["AP_DOMAIN"]
         ).one()
 
         serialized_domain = local_domain.serialize()
 
-        assert serialized_domain['id']
-        assert 'created_at' in serialized_domain
+        assert serialized_domain["id"]
+        assert "created_at" in serialized_domain
         assert (
-            serialized_domain['name']
-            == app_with_federation.config['AP_DOMAIN']
+            serialized_domain["name"]
+            == app_with_federation.config["AP_DOMAIN"]
         )
-        assert serialized_domain['is_allowed']
-        assert not serialized_domain['is_remote']
-        assert serialized_domain['software_name'] == local_domain.software_name
+        assert serialized_domain["is_allowed"]
+        assert not serialized_domain["is_remote"]
+        assert serialized_domain["software_name"] == local_domain.software_name
         assert (
-            serialized_domain['software_version']
+            serialized_domain["software_version"]
             == local_domain.software_current_version
         )
 
@@ -142,7 +142,7 @@ class TestActivityPubLocalPersonActorModel:
     def test_it_returns_string_representation(
         self, app_with_federation: Flask, user_1: User
     ) -> None:
-        assert '<Actor \'test\'>' == str(user_1.actor)
+        assert "<Actor 'test'>" == str(user_1.actor)
 
     def test_actor_is_local(
         self, app_with_federation: Flask, user_1: User
@@ -155,7 +155,7 @@ class TestActivityPubLocalPersonActorModel:
         actor_1 = user_1.actor
         assert (
             actor_1.fullname
-            == f'{actor_1.preferred_username}@{actor_1.domain.name}'
+            == f"{actor_1.preferred_username}@{actor_1.domain.name}"
         )
 
     def test_it_returns_serialized_object(
@@ -163,56 +163,56 @@ class TestActivityPubLocalPersonActorModel:
     ) -> None:
         actor_1 = user_1.actor
         serialized_actor = actor_1.serialize()
-        ap_url = app_with_federation.config['AP_DOMAIN']
-        assert serialized_actor['@context'] == AP_CTX
-        assert serialized_actor['id'] == actor_1.activitypub_id
-        assert serialized_actor['type'] == 'Person'
+        ap_url = app_with_federation.config["AP_DOMAIN"]
+        assert serialized_actor["@context"] == AP_CTX
+        assert serialized_actor["id"] == actor_1.activitypub_id
+        assert serialized_actor["type"] == "Person"
         assert (
-            serialized_actor['preferredUsername'] == actor_1.preferred_username
+            serialized_actor["preferredUsername"] == actor_1.preferred_username
         )
-        assert serialized_actor['name'] == actor_1.user.username
-        assert serialized_actor['url'] == actor_1.profile_url
-        assert serialized_actor['inbox'] == (
-            f'https://{ap_url}/federation/user/'
-            f'{actor_1.preferred_username}/inbox'
+        assert serialized_actor["name"] == actor_1.user.username
+        assert serialized_actor["url"] == actor_1.profile_url
+        assert serialized_actor["inbox"] == (
+            f"https://{ap_url}/federation/user/"
+            f"{actor_1.preferred_username}/inbox"
         )
-        assert serialized_actor['outbox'] == (
-            f'https://{ap_url}/federation/user/'
-            f'{actor_1.preferred_username}/outbox'
+        assert serialized_actor["outbox"] == (
+            f"https://{ap_url}/federation/user/"
+            f"{actor_1.preferred_username}/outbox"
         )
-        assert serialized_actor['followers'] == (
-            f'https://{ap_url}/federation/user/'
-            f'{actor_1.preferred_username}/followers'
+        assert serialized_actor["followers"] == (
+            f"https://{ap_url}/federation/user/"
+            f"{actor_1.preferred_username}/followers"
         )
-        assert serialized_actor['following'] == (
-            f'https://{ap_url}/federation/user/'
-            f'{actor_1.preferred_username}/following'
+        assert serialized_actor["following"] == (
+            f"https://{ap_url}/federation/user/"
+            f"{actor_1.preferred_username}/following"
         )
-        assert serialized_actor['manuallyApprovesFollowers'] is True
+        assert serialized_actor["manuallyApprovesFollowers"] is True
         assert (
-            serialized_actor['publicKey']['id']
-            == f'{actor_1.activitypub_id}#main-key'
+            serialized_actor["publicKey"]["id"]
+            == f"{actor_1.activitypub_id}#main-key"
         )
-        assert serialized_actor['publicKey']['owner'] == actor_1.activitypub_id
-        assert 'publicKeyPem' in serialized_actor['publicKey']
+        assert serialized_actor["publicKey"]["owner"] == actor_1.activitypub_id
+        assert "publicKeyPem" in serialized_actor["publicKey"]
         assert (
-            serialized_actor['endpoints']['sharedInbox']
-            == f'https://{ap_url}/federation/inbox'
+            serialized_actor["endpoints"]["sharedInbox"]
+            == f"https://{ap_url}/federation/inbox"
         )
-        assert 'icon' not in serialized_actor
+        assert "icon" not in serialized_actor
 
     def test_it_returns_icon_if_user_has_picture(
         self, app_with_federation: Flask, user_1: User
     ) -> None:
-        user_1.picture = 'path/image.jpg'
+        user_1.picture = "path/image.jpg"
         actor_1 = user_1.actor
         serialized_actor = actor_1.serialize()
-        ap_url = app_with_federation.config['AP_DOMAIN']
+        ap_url = app_with_federation.config["AP_DOMAIN"]
 
-        assert serialized_actor['icon'] == {
-            'type': 'Image',
-            'mediaType': 'image/jpeg',
-            'url': f'https://{ap_url}/api/users/{user_1.username}/picture',
+        assert serialized_actor["icon"] == {
+            "type": "Image",
+            "mediaType": "image/jpeg",
+            "url": f"https://{ap_url}/api/users/{user_1.username}/picture",
         }
 
     @pytest.mark.disable_autouse_generate_keys
@@ -227,7 +227,7 @@ class TestActivityPubLocalPersonActorModel:
                 actor_1.private_key  # type: ignore
             )
         )
-        hashed_message = SHA256.new('test message'.encode())
+        hashed_message = SHA256.new("test message".encode())
         # it raises ValueError if signature is invalid
         signer.verify(hashed_message, signer.sign(hashed_message))
 
@@ -252,7 +252,7 @@ class TestActivityPubRemotePersonActorModel:
         remote_actor = remote_user.actor
         assert (
             remote_actor.fullname
-            == f'{remote_actor.preferred_username}@{remote_actor.domain.name}'
+            == f"{remote_actor.preferred_username}@{remote_actor.domain.name}"
         )
 
     def test_it_returns_ap_id_if_no_profile_url_provided(
@@ -271,36 +271,36 @@ class TestActivityPubRemotePersonActorModel:
     ) -> None:
         remote_actor = remote_user.actor
         serialized_actor = remote_actor.serialize()
-        remote_domain_url = f'https://{remote_domain.name}'
+        remote_domain_url = f"https://{remote_domain.name}"
         user_url = random_actor_url(
             remote_actor.preferred_username, remote_domain_url
         )
-        assert serialized_actor['@context'] == AP_CTX
-        assert serialized_actor['id'] == remote_actor.activitypub_id
-        assert serialized_actor['type'] == 'Person'
+        assert serialized_actor["@context"] == AP_CTX
+        assert serialized_actor["id"] == remote_actor.activitypub_id
+        assert serialized_actor["type"] == "Person"
         assert (
-            serialized_actor['preferredUsername']
+            serialized_actor["preferredUsername"]
             == remote_actor.preferred_username
         )
-        assert serialized_actor['name'] == remote_actor.user.username
-        assert serialized_actor['url'] == remote_actor.profile_url
-        assert serialized_actor['inbox'] == f'{user_url}/inbox'
-        assert serialized_actor['outbox'] == f'{user_url}/outbox'
-        assert serialized_actor['followers'] == f'{user_url}/followers'
-        assert serialized_actor['following'] == f'{user_url}/following'
-        assert serialized_actor['manuallyApprovesFollowers'] is True
+        assert serialized_actor["name"] == remote_actor.user.username
+        assert serialized_actor["url"] == remote_actor.profile_url
+        assert serialized_actor["inbox"] == f"{user_url}/inbox"
+        assert serialized_actor["outbox"] == f"{user_url}/outbox"
+        assert serialized_actor["followers"] == f"{user_url}/followers"
+        assert serialized_actor["following"] == f"{user_url}/following"
+        assert serialized_actor["manuallyApprovesFollowers"] is True
         assert (
-            serialized_actor['publicKey']['id']
-            == f'{remote_actor.activitypub_id}#main-key'
+            serialized_actor["publicKey"]["id"]
+            == f"{remote_actor.activitypub_id}#main-key"
         )
         assert (
-            serialized_actor['publicKey']['owner']
+            serialized_actor["publicKey"]["owner"]
             == remote_actor.activitypub_id
         )
-        assert 'publicKeyPem' in serialized_actor['publicKey']
+        assert "publicKeyPem" in serialized_actor["publicKey"]
         assert (
-            serialized_actor['endpoints']['sharedInbox']
-            == f'{remote_domain_url}/inbox'
+            serialized_actor["endpoints"]["sharedInbox"]
+            == f"{remote_domain_url}/inbox"
         )
 
     def test_it_creates_remote_actor_stats(
@@ -320,7 +320,7 @@ class TestActivityPubActorModel:
         self, app_with_federation: Flask
     ) -> None:
         domain = Domain.query.filter_by(
-            name=app_with_federation.config['AP_DOMAIN']
+            name=app_with_federation.config["AP_DOMAIN"]
         ).one()
         actor = Actor(preferred_username=uuid4().hex, domain_id=domain.id)
         assert actor.name is None

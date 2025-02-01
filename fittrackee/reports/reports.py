@@ -44,7 +44,7 @@ from .reports_service import ReportService
 if TYPE_CHECKING:
     from sqlalchemy.sql.expression import UnaryExpression
 
-reports_blueprint = Blueprint('reports', __name__)
+reports_blueprint = Blueprint("reports", __name__)
 
 REPORTS_PER_PAGE = 10
 report_service = ReportService()
@@ -312,11 +312,11 @@ def get_reports(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         "status": "success",
         "reports": [report.serialize(auth_user) for report in reports],
         "pagination": {
-            'has_next': reports_pagination.has_next,
-            'has_prev': reports_pagination.has_prev,
-            'page': reports_pagination.page,
-            'pages': reports_pagination.pages,
-            'total': reports_pagination.total,
+            "has_next": reports_pagination.has_next,
+            "has_prev": reports_pagination.has_prev,
+            "page": reports_pagination.page,
+            "pages": reports_pagination.pages,
+            "total": reports_pagination.total,
         },
     }, 200
 
@@ -727,7 +727,7 @@ def create_action(
         )
         db.session.flush()
 
-        if current_app.config['CAN_SEND_EMAILS']:
+        if current_app.config["CAN_SEND_EMAILS"]:
             report_action_email_service = ReportEmailService()
             report_action_email_service.send_report_action_email(
                 report, action_type, reason, action
@@ -755,8 +755,8 @@ def create_action(
         )
 
 
-@reports_blueprint.route('/appeals/<string:appeal_id>', methods=["PATCH"])
-@require_auth(scopes=['users:write'], role=UserRole.MODERATOR)
+@reports_blueprint.route("/appeals/<string:appeal_id>", methods=["PATCH"])
+@require_auth(scopes=["users:write"], role=UserRole.MODERATOR)
 def process_appeal(
     auth_user: User, appeal_id: str
 ) -> Union[Dict, HttpResponse]:
@@ -864,7 +864,7 @@ def process_appeal(
         )
         db.session.flush()
 
-        if current_app.config['CAN_SEND_EMAILS']:
+        if current_app.config["CAN_SEND_EMAILS"]:
             if new_report_action:
                 report_action_email_service = ReportEmailService()
                 report_action_email_service.send_report_action_email(

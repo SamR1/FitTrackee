@@ -44,7 +44,8 @@ USER_ACTION_TYPES = [
     "user_unsuspension",
     "user_warning",
 ]
-ALL_USER_ACTION_TYPES = USER_ACTION_TYPES + [
+ALL_USER_ACTION_TYPES = [
+    *USER_ACTION_TYPES,
     "user_warning_lifting",
 ]
 COMMENT_ACTION_TYPES = [
@@ -62,7 +63,7 @@ ALL_ACTION_TYPES = REPORT_ACTION_TYPES + OBJECTS_ACTION_TYPES
 
 
 class Report(BaseModel):
-    __tablename__ = 'reports'
+    __tablename__ = "reports"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     created_at: Mapped[datetime] = mapped_column(
         TZDateTime, default=aware_utc_now
@@ -74,27 +75,27 @@ class Report(BaseModel):
         TZDateTime, nullable=True
     )
     reported_by: Mapped[Optional[int]] = mapped_column(
-        db.ForeignKey('users.id', ondelete='SET NULL'),
+        db.ForeignKey("users.id", ondelete="SET NULL"),
         index=True,
         nullable=True,
     )
     reported_comment_id: Mapped[Optional[int]] = mapped_column(
-        db.ForeignKey('comments.id', ondelete='SET NULL'),
+        db.ForeignKey("comments.id", ondelete="SET NULL"),
         index=True,
         nullable=True,
     )
     reported_user_id: Mapped[Optional[int]] = mapped_column(
-        db.ForeignKey('users.id', ondelete='SET NULL'),
+        db.ForeignKey("users.id", ondelete="SET NULL"),
         index=True,
         nullable=True,
     )
     reported_workout_id: Mapped[Optional[int]] = mapped_column(
-        db.ForeignKey('workouts.id', ondelete='SET NULL'),
+        db.ForeignKey("workouts.id", ondelete="SET NULL"),
         index=True,
         nullable=True,
     )
     resolved_by: Mapped[Optional[int]] = mapped_column(
-        db.ForeignKey('users.id', ondelete='SET NULL'),
+        db.ForeignKey("users.id", ondelete="SET NULL"),
         index=True,
         nullable=True,
     )
@@ -104,25 +105,25 @@ class Report(BaseModel):
     )
     note: Mapped[str] = mapped_column(db.String(), nullable=False)
 
-    reported_comment: Mapped['Comment'] = relationship('Comment', lazy=True)
-    reported_user: Mapped['User'] = relationship(
-        'User', primaryjoin=reported_user_id == User.id
+    reported_comment: Mapped["Comment"] = relationship("Comment", lazy=True)
+    reported_user: Mapped["User"] = relationship(
+        "User", primaryjoin=reported_user_id == User.id
     )
-    reported_workout: Mapped['Workout'] = relationship('Workout', lazy=True)
-    reporter: Mapped['User'] = relationship(
-        'User', primaryjoin=reported_by == User.id
+    reported_workout: Mapped["Workout"] = relationship("Workout", lazy=True)
+    reporter: Mapped["User"] = relationship(
+        "User", primaryjoin=reported_by == User.id
     )
-    resolver: Mapped['User'] = relationship(
-        'User', primaryjoin=resolved_by == User.id
+    resolver: Mapped["User"] = relationship(
+        "User", primaryjoin=resolved_by == User.id
     )
-    comments: Mapped[List['ReportComment']] = relationship(
-        'ReportComment', back_populates='report'
+    comments: Mapped[List["ReportComment"]] = relationship(
+        "ReportComment", back_populates="report"
     )
-    report_actions: Mapped[List['ReportAction']] = relationship(
-        'ReportAction',
+    report_actions: Mapped[List["ReportAction"]] = relationship(
+        "ReportAction",
         lazy=True,
-        back_populates='report',
-        order_by='ReportAction.created_at.asc()',
+        back_populates="report",
+        order_by="ReportAction.created_at.asc()",
     )
 
     @property
@@ -251,11 +252,11 @@ class Report(BaseModel):
         return report
 
 
-@listens_for(Report, 'after_insert')
+@listens_for(Report, "after_insert")
 def on_report_insert(
     mapper: Mapper, connection: Connection, new_report: Report
 ) -> None:
-    @listens_for(db.Session, 'after_flush', once=True)
+    @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
         if not new_report.reported_by:
             return
@@ -271,34 +272,34 @@ def on_report_insert(
                 from_user_id=new_report.reported_by,
                 to_user_id=admin.id,
                 created_at=new_report.created_at,
-                event_type='report',
+                event_type="report",
                 event_object_id=new_report.id,
             )
             session.add(notification)
 
 
 class ReportComment(BaseModel):
-    __tablename__ = 'report_comments'
+    __tablename__ = "report_comments"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     created_at: Mapped[datetime] = mapped_column(
         TZDateTime, default=aware_utc_now
     )
     report_id: Mapped[Optional[int]] = mapped_column(
-        db.ForeignKey('reports.id', ondelete='CASCADE'),
+        db.ForeignKey("reports.id", ondelete="CASCADE"),
         index=True,
         nullable=True,
     )
     user_id: Mapped[Optional[int]] = mapped_column(
-        db.ForeignKey('users.id', ondelete='CASCADE'),
+        db.ForeignKey("users.id", ondelete="CASCADE"),
         index=True,
         nullable=True,
     )
     comment: Mapped[str] = mapped_column(db.String(), nullable=False)
 
-    user: Mapped["User"] = relationship('User')
+    user: Mapped["User"] = relationship("User")
     report: Mapped["Report"] = relationship(
-        'Report',
-        lazy='select',
+        "Report",
+        lazy="select",
         single_parent=True,
     )
 
@@ -356,12 +357,12 @@ class ReportAction(BaseModel):
         nullable=True,
     )
     workout_id: Mapped[Optional[int]] = mapped_column(
-        db.ForeignKey('workouts.id', ondelete='SET NULL'),
+        db.ForeignKey("workouts.id", ondelete="SET NULL"),
         index=True,
         nullable=True,
     )
     comment_id: Mapped[Optional[int]] = mapped_column(
-        db.ForeignKey('comments.id', ondelete='SET NULL'),
+        db.ForeignKey("comments.id", ondelete="SET NULL"),
         index=True,
         nullable=True,
     )
@@ -385,10 +386,10 @@ class ReportAction(BaseModel):
         uselist=False,
         back_populates="action",
     )
-    comment: Mapped["Comment"] = relationship('Comment', lazy=True)
-    workout: Mapped["Workout"] = relationship('Workout', lazy=True)
+    comment: Mapped["Comment"] = relationship("Comment", lazy=True)
+    workout: Mapped["Workout"] = relationship("Workout", lazy=True)
     report: Mapped["Report"] = relationship(
-        'Report', lazy='select', single_parent=True
+        "Report", lazy="select", single_parent=True
     )
 
     def __init__(
@@ -475,13 +476,13 @@ class ReportAction(BaseModel):
                 ),
             }
         else:
-            if self.report.object_type == 'comment':
+            if self.report.object_type == "comment":
                 action["comment"] = (
                     self.comment.serialize(user=current_user)
                     if self.comment_id
                     else None
                 )
-            if self.report.object_type == 'workout':
+            if self.report.object_type == "workout":
                 action["workout"] = (
                     self.workout.serialize(user=current_user)
                     if self.workout_id
@@ -495,7 +496,7 @@ class ReportActionAppeal(BaseModel):
     __tablename__ = "report_action_appeals"
     __table_args__ = (
         db.UniqueConstraint(
-            'action_id', 'user_id', name='action_id_user_id_unique'
+            "action_id", "user_id", name="action_id_user_id_unique"
         ),
     )
 
@@ -544,7 +545,7 @@ class ReportActionAppeal(BaseModel):
         single_parent=True,
     )
     action: Mapped["ReportAction"] = relationship(
-        "ReportAction", lazy='joined', single_parent=True
+        "ReportAction", lazy="joined", single_parent=True
     )
 
     def __init__(
@@ -599,11 +600,11 @@ class ReportActionAppeal(BaseModel):
         return appeal
 
 
-@listens_for(ReportAction, 'after_insert')
+@listens_for(ReportAction, "after_insert")
 def on_report_action_insert(
     mapper: Mapper, connection: Connection, new_action: ReportAction
 ) -> None:
-    @listens_for(db.Session, 'after_flush', once=True)
+    @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
         if not new_action.moderator_id or not new_action.user_id:
             return
@@ -624,11 +625,11 @@ def on_report_action_insert(
             session.add(notification)
 
 
-@listens_for(ReportActionAppeal, 'after_insert')
+@listens_for(ReportActionAppeal, "after_insert")
 def on_report_action_appeal_insert(
     mapper: Mapper, connection: Connection, new_appeal: ReportActionAppeal
 ) -> None:
-    @listens_for(db.Session, 'after_flush', once=True)
+    @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
         from fittrackee.users.models import Notification, User
 
@@ -646,9 +647,9 @@ def on_report_action_appeal_insert(
                     to_user_id=admin.id,
                     created_at=new_appeal.created_at,
                     event_type=(
-                        'user_warning_appeal'
-                        if report_action.action_type == 'user_warning'
-                        else 'suspension_appeal'
+                        "user_warning_appeal"
+                        if report_action.action_type == "user_warning"
+                        else "suspension_appeal"
                     ),
                     event_object_id=new_appeal.id,
                 )

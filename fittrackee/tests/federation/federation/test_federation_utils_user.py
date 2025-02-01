@@ -29,12 +29,12 @@ from ...utils import RandomActor, generate_response, random_string
 
 class TestGetUsernameAndDomain:
     @pytest.mark.parametrize(
-        'input_user_account, expected_username_and_domain',
+        "input_user_account, expected_username_and_domain",
         [
-            ('@sam@example.com', ('sam', 'example.com')),
+            ("@sam@example.com", ("sam", "example.com")),
             (
-                '@john.doe@test.example.social',
-                ('john.doe', 'test.example.social'),
+                "@john.doe@test.example.social",
+                ("john.doe", "test.example.social"),
             ),
         ],
     )
@@ -49,13 +49,13 @@ class TestGetUsernameAndDomain:
         )
 
     @pytest.mark.parametrize(
-        'input_description, input_user_account',
+        "input_description, input_user_account",
         [
-            ('sam', 'sam'),
-            ('@sam', '@sam'),
-            ('sam@', 'sam@'),
-            ('example.com', 'example.com'),
-            ('@example.com', '@example.com'),
+            ("sam", "sam"),
+            ("@sam", "@sam"),
+            ("sam@", "sam@"),
+            ("example.com", "example.com"),
+            ("@example.com", "@example.com"),
         ],
     )
     def test_it_returns_none_if_it_does_not_match(
@@ -68,16 +68,16 @@ class TestGetUsernameAndDomain:
 
 class TestGetOrCreateDomainFromActorUrl:
     @pytest.mark.parametrize(
-        'input_desc,input_url',
+        "input_desc,input_url",
         [
-            ('empty string', ''),
-            ('random string', 'invalid_url'),
+            ("empty string", ""),
+            ("random string", "invalid_url"),
         ],
     )
     def test_it_raises_exception_when_url_is_invalid(
         self, input_desc: str, input_url: str
     ) -> None:
-        with pytest.raises(RemoteActorException, match='invalid actor url'):
+        with pytest.raises(RemoteActorException, match="invalid actor url"):
             get_or_create_remote_domain_from_url(input_url)
 
     def test_it_raises_an_error_if_domain_is_local(
@@ -85,7 +85,7 @@ class TestGetOrCreateDomainFromActorUrl:
     ) -> None:
         with pytest.raises(
             RemoteActorException,
-            match='the provided account is not a remote account',
+            match="the provided account is not a remote account",
         ):
             get_or_create_remote_domain_from_url(user_1.actor.activitypub_id)
 
@@ -103,7 +103,7 @@ class TestGetOrCreateDomainFromActorUrl:
         self, app_with_federation: Flask, random_actor: RandomActor
     ) -> None:
         with patch(
-            'fittrackee.federation.utils.user.update_remote_server'
+            "fittrackee.federation.utils.user.update_remote_server"
         ) as update_remote_server_mock:
             domain = get_or_create_remote_domain_from_url(
                 random_actor.activitypub_id
@@ -117,7 +117,7 @@ class TestGetOrCreateDomainFromActorUrl:
         self, app_with_federation: Flask, remote_domain: Domain
     ) -> None:
         domain = get_or_create_remote_domain_from_url(
-            f'https://{remote_domain.name}/users/random'
+            f"https://{remote_domain.name}/users/random"
         )
 
         assert domain == remote_domain
@@ -126,10 +126,10 @@ class TestGetOrCreateDomainFromActorUrl:
         self, app_with_federation: Flask, remote_domain: Domain
     ) -> None:
         with patch(
-            'fittrackee.federation.utils.user.update_remote_server'
+            "fittrackee.federation.utils.user.update_remote_server"
         ) as update_remote_server_mock:
             get_or_create_remote_domain_from_url(
-                f'https://{remote_domain.name}/users/random'
+                f"https://{remote_domain.name}/users/random"
             )
 
         update_remote_server_mock.send.assert_called_with(
@@ -144,12 +144,12 @@ class TestCreateRemoteUser:
         with pytest.raises(
             RemoteActorException,
             match=(
-                'Invalid remote actor: '
-                'the provided account is not a remote account.'
+                "Invalid remote actor: "
+                "the provided account is not a remote account."
             ),
         ):
             create_remote_user_from_username(
-                random_string(), app_with_federation.config['AP_DOMAIN']
+                random_string(), app_with_federation.config["AP_DOMAIN"]
             )
 
     def test_it_returns_error_if_remote_webfinger_returns_error(
@@ -160,12 +160,12 @@ class TestCreateRemoteUser:
     ) -> None:
         with (
             patch(
-                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                "fittrackee.federation.utils.user.fetch_account_from_webfinger",
                 side_effect=ActorNotFoundException(),
             ),
             pytest.raises(
                 RemoteActorException,
-                match='Invalid remote actor: can not fetch remote actor.',
+                match="Invalid remote actor: can not fetch remote actor.",
             ),
         ):
             create_remote_user_from_username(
@@ -173,32 +173,32 @@ class TestCreateRemoteUser:
             )
 
     @pytest.mark.parametrize(
-        'input_description, input_webfinger',
+        "input_description, input_webfinger",
         [
-            ('empty dict', {}),
+            ("empty dict", {}),
             (
-                'missing links',
+                "missing links",
                 {
-                    'subject': f'acct:{random_string()}',
+                    "subject": f"acct:{random_string()}",
                 },
             ),
             (
-                'empty links',
+                "empty links",
                 {
-                    'subject': f'acct:{random_string()}',
-                    'links': [],
+                    "subject": f"acct:{random_string()}",
+                    "links": [],
                 },
             ),
             (
                 'missing "self" link',
                 {
-                    'subject': f'acct:{random_string()}',
-                    'links': [
+                    "subject": f"acct:{random_string()}",
+                    "links": [
                         {
-                            'rel': 'http://ostatus.org/schema/1.0/subscribe',
-                            'template': (
-                                'https://example.com/'
-                                'authorize_interaction?uri={uri}'
+                            "rel": "http://ostatus.org/schema/1.0/subscribe",
+                            "template": (
+                                "https://example.com/"
+                                "authorize_interaction?uri={uri}"
                             ),
                         }
                     ],
@@ -216,14 +216,14 @@ class TestCreateRemoteUser:
     ) -> None:
         with (
             patch(
-                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                "fittrackee.federation.utils.user.fetch_account_from_webfinger",
                 return_value={},
             ),
             pytest.raises(
                 RemoteActorException,
                 match=(
-                    'Invalid remote actor: invalid data fetched '
-                    'from webfinger endpoint.'
+                    "Invalid remote actor: invalid data fetched "
+                    "from webfinger endpoint."
                 ),
             ),
         ):
@@ -239,16 +239,16 @@ class TestCreateRemoteUser:
     ) -> None:
         with (
             patch(
-                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                "fittrackee.federation.utils.user.fetch_account_from_webfinger",
                 return_value=random_actor.get_webfinger(),
             ),
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 side_effect=ActorNotFoundException(),
             ),
             pytest.raises(
                 RemoteActorException,
-                match='Invalid remote actor: can not fetch remote actor.',
+                match="Invalid remote actor: can not fetch remote actor.",
             ),
         ):
             create_remote_user_from_username(
@@ -262,19 +262,19 @@ class TestCreateRemoteUser:
         random_actor: RandomActor,
     ) -> None:
         remote_user_object = random_actor.get_remote_user_object()
-        del remote_user_object['preferredUsername']
+        del remote_user_object["preferredUsername"]
         with (
             patch(
-                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                "fittrackee.federation.utils.user.fetch_account_from_webfinger",
                 return_value=random_actor.get_webfinger(),
             ),
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=remote_user_object,
             ),
             pytest.raises(
                 RemoteActorException,
-                match='Invalid remote actor: invalid remote actor object.',
+                match="Invalid remote actor: invalid remote actor object.",
             ),
         ):
             create_remote_user_from_username(
@@ -289,18 +289,18 @@ class TestCreateRemoteUser:
     ) -> None:
         with (
             patch(
-                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                "fittrackee.federation.utils.user.fetch_account_from_webfinger",
                 return_value=random_actor.get_webfinger(),
             ),
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value={
-                    'preferredUsername': random_actor.preferred_username,
+                    "preferredUsername": random_actor.preferred_username,
                 },
             ),
             pytest.raises(
                 RemoteActorException,
-                match='Invalid remote actor: invalid remote actor object.',
+                match="Invalid remote actor: invalid remote actor object.",
             ),
         ):
             create_remote_user_from_username(
@@ -313,15 +313,15 @@ class TestCreateRemoteUser:
         remote_domain: Domain,
         random_actor: RandomActor,
     ) -> None:
-        random_actor.domain = f'https://{remote_domain.name}'
+        random_actor.domain = f"https://{remote_domain.name}"
         random_actor.manually_approves_followers = False
         with (
             patch(
-                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                "fittrackee.federation.utils.user.fetch_account_from_webfinger",
                 return_value=random_actor.get_webfinger(),
             ),
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=random_actor.get_remote_user_object(),
             ),
         ):
@@ -342,11 +342,11 @@ class TestCreateRemoteUser:
     ) -> None:
         with (
             patch(
-                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                "fittrackee.federation.utils.user.fetch_account_from_webfinger",
                 return_value=random_actor.get_webfinger(),
             ),
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=random_actor.get_remote_user_object(),
             ),
         ):
@@ -362,14 +362,14 @@ class TestCreateRemoteUser:
         random_actor: RandomActor,
     ) -> None:
         remote_user_object = random_actor.get_remote_user_object()
-        remote_user_object['name'] = ""
+        remote_user_object["name"] = ""
         with (
             patch(
-                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                "fittrackee.federation.utils.user.fetch_account_from_webfinger",
                 return_value=random_actor.get_webfinger(),
             ),
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=remote_user_object,
             ),
         ):
@@ -387,15 +387,15 @@ class TestCreateRemoteUser:
         remote_actor_object = random_actor.get_remote_user_object()
         with (
             patch(
-                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                "fittrackee.federation.utils.user.fetch_account_from_webfinger",
                 return_value=random_actor.get_webfinger(),
             ),
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=remote_actor_object,
             ),
             patch(
-                'fittrackee.federation.utils.user.store_or_delete_user_picture'
+                "fittrackee.federation.utils.user.store_or_delete_user_picture"
             ) as store_or_delete_mock,
         ):
             user = create_remote_user_from_username(
@@ -412,18 +412,18 @@ class TestCreateRemoteUser:
         remote_actor_object = random_actor.get_remote_user_object()
         with (
             patch(
-                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                "fittrackee.federation.utils.user.fetch_account_from_webfinger",
                 return_value=random_actor.get_webfinger(),
             ),
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=remote_actor_object,
             ),
             patch(
-                'fittrackee.federation.utils.user.store_or_delete_user_picture'
+                "fittrackee.federation.utils.user.store_or_delete_user_picture"
             ),
             patch(
-                'fittrackee.federation.utils.user.update_remote_actor_stats'
+                "fittrackee.federation.utils.user.update_remote_actor_stats"
             ) as update_remote_actor_stats_mock,
         ):
             user = create_remote_user_from_username(
@@ -437,29 +437,29 @@ class TestCreateRemoteUser:
     ) -> None:
         remote_user_object = remote_user.actor.serialize()
         updated_name = random_string()
-        remote_user_object['name'] = updated_name
-        remote_user_object['manuallyApprovesFollowers'] = False
+        remote_user_object["name"] = updated_name
+        remote_user_object["manuallyApprovesFollowers"] = False
         with (
             patch(
-                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                "fittrackee.federation.utils.user.fetch_account_from_webfinger",
                 return_value={
-                    'subject': f'acct:{remote_user.fullname}',
-                    'links': [
+                    "subject": f"acct:{remote_user.fullname}",
+                    "links": [
                         {
-                            'rel': 'self',
-                            'type': 'application/activity+json',
-                            'href': remote_user.actor.activitypub_id,
+                            "rel": "self",
+                            "type": "application/activity+json",
+                            "href": remote_user.actor.activitypub_id,
                         }
                     ],
                 },
             ),
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=remote_user_object,
             ),
             pytest.raises(
                 RemoteActorException,
-                match='Invalid remote actor: actor already exists.',
+                match="Invalid remote actor: actor already exists.",
             ),
         ):
             create_remote_user_from_username(
@@ -478,11 +478,11 @@ class TestCreateRemoteUser:
         """
         with (
             patch(
-                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                "fittrackee.federation.utils.user.fetch_account_from_webfinger",
                 return_value=random_actor.get_webfinger(),
             ),
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=random_actor.get_remote_user_object(),
             ),
         ):
@@ -497,7 +497,7 @@ class TestUpdateRemoteUser:
     def test_it_does_not_update_user_if_local(
         self, app_with_federation: Flask, user_1: User
     ) -> None:
-        with patch('requests.get') as get_mock:
+        with patch("requests.get") as get_mock:
             update_remote_user(user_1.actor)
 
         get_mock.assert_not_called()
@@ -509,12 +509,12 @@ class TestUpdateRemoteUser:
     ) -> None:
         with (
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 side_effect=ActorNotFoundException(),
             ),
             pytest.raises(
                 RemoteActorException,
-                match='Invalid remote actor: can not fetch remote actor.',
+                match="Invalid remote actor: can not fetch remote actor.",
             ),
         ):
             update_remote_user(remote_user.actor)
@@ -526,10 +526,10 @@ class TestUpdateRemoteUser:
     ) -> None:
         expected_name = random_string()[0:30]
         with patch(
-            'fittrackee.federation.utils.user.get_remote_actor_url',
+            "fittrackee.federation.utils.user.get_remote_actor_url",
             return_value={
-                'name': expected_name,
-                'manuallyApprovesFollowers': True,
+                "name": expected_name,
+                "manuallyApprovesFollowers": True,
             },
         ):
             update_remote_user(remote_user.actor)
@@ -542,10 +542,10 @@ class TestUpdateRemoteUser:
         remote_user: User,
     ) -> None:
         with patch(
-            'fittrackee.federation.utils.user.get_remote_actor_url',
+            "fittrackee.federation.utils.user.get_remote_actor_url",
             return_value={
-                'name': random_string()[0:30],
-                'manuallyApprovesFollowers': False,
+                "name": random_string()[0:30],
+                "manuallyApprovesFollowers": False,
             },
         ):
             update_remote_user(remote_user.actor)
@@ -558,19 +558,19 @@ class TestUpdateRemoteUser:
         remote_user: User,
     ) -> None:
         remote_actor_object = {
-            'name': random_string()[0:30],
-            'manuallyApprovesFollowers': False,
+            "name": random_string()[0:30],
+            "manuallyApprovesFollowers": False,
         }
         with (
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=remote_actor_object,
             ),
             patch(
-                'fittrackee.federation.utils.user.update_remote_actor_stats'
+                "fittrackee.federation.utils.user.update_remote_actor_stats"
             ),
             patch(
-                'fittrackee.federation.utils.user.store_or_delete_user_picture'
+                "fittrackee.federation.utils.user.store_or_delete_user_picture"
             ) as store_or_delete_user_picture_mock,
         ):
             update_remote_user(remote_user.actor)
@@ -586,17 +586,17 @@ class TestUpdateRemoteUser:
     ) -> None:
         with (
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value={
-                    'name': random_string()[0:30],
-                    'manuallyApprovesFollowers': False,
+                    "name": random_string()[0:30],
+                    "manuallyApprovesFollowers": False,
                 },
             ),
             patch(
-                'fittrackee.federation.utils.user.store_or_delete_user_picture'
+                "fittrackee.federation.utils.user.store_or_delete_user_picture"
             ),
             patch(
-                'fittrackee.federation.utils.user.update_remote_actor_stats'
+                "fittrackee.federation.utils.user.update_remote_actor_stats"
             ) as update_remote_actor_stats_mock,
         ):
             update_remote_user(remote_user.actor)
@@ -621,7 +621,7 @@ class TestGetUserFromUsernameWithoutUpdate:
         self, app_with_federation: Flask, remote_domain: Domain
     ) -> None:
         with pytest.raises(UserNotFoundException):
-            get_user_from_username(f'{random_string()}@{remote_domain.name}')
+            get_user_from_username(f"{random_string()}@{remote_domain.name}")
 
     def test_it_raises_exception_if_only_remote_user_exists_when_username_provided(  # noqa
         self, app_with_federation: Flask, user_1: User, remote_user: User
@@ -646,7 +646,7 @@ class TestGetUserFromUsernameWithAction:
     ) -> None:
         """only remote user can be created"""
         with pytest.raises(UserNotFoundException):
-            get_user_from_username(random_string(), with_action='creation')
+            get_user_from_username(random_string(), with_action="creation")
 
     def test_it_raises_exception_if_no_remote_user_and_with_refresh(
         self, app_with_federation: Flask, random_actor: RandomActor
@@ -654,7 +654,7 @@ class TestGetUserFromUsernameWithAction:
         """only remote user can be created"""
         with pytest.raises(UserNotFoundException):
             get_user_from_username(
-                f'@{random_actor.fullname}', with_action='refresh'
+                f"@{random_actor.fullname}", with_action="refresh"
             )
 
     def test_it_creates_and_returns_remote_user_if_not_existing_and_with_creation(  # noqa
@@ -662,39 +662,39 @@ class TestGetUserFromUsernameWithAction:
     ) -> None:
         with (
             patch(
-                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                "fittrackee.federation.utils.user.fetch_account_from_webfinger",
                 return_value=random_actor.get_webfinger(),
             ),
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=random_actor.get_remote_user_object(),
             ),
         ):
             user = get_user_from_username(
-                random_actor.fullname, with_action='creation'
+                random_actor.fullname, with_action="creation"
             )
 
         assert user.username == random_actor.name
 
-    def test_it_creates_remote_user_when_regsitreation_is_disabled(  # noqa
+    def test_it_creates_remote_user_when_regsitreation_is_disabled(
         self,
         app_with_federation: Flask,
         user_1: User,
         random_actor: RandomActor,
     ) -> None:
-        app_with_federation.config['is_registration_enabled'] = False
+        app_with_federation.config["is_registration_enabled"] = False
         with (
             patch(
-                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                "fittrackee.federation.utils.user.fetch_account_from_webfinger",
                 return_value=random_actor.get_webfinger(),
             ),
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=random_actor.get_remote_user_object(),
             ),
         ):
             user = get_user_from_username(
-                random_actor.fullname, with_action='creation'
+                random_actor.fullname, with_action="creation"
             )
 
         assert user.username == random_actor.name
@@ -703,9 +703,9 @@ class TestGetUserFromUsernameWithAction:
         self, app_with_federation: Flask, remote_user: User
     ) -> None:
         with patch(
-            'fittrackee.federation.utils.user.update_remote_user'
+            "fittrackee.federation.utils.user.update_remote_user"
         ) as update_remote_user_mock:
-            get_user_from_username(remote_user.fullname, with_action='refresh')
+            get_user_from_username(remote_user.fullname, with_action="refresh")
 
         update_remote_user_mock.assert_called_with(remote_user.actor)
 
@@ -713,11 +713,11 @@ class TestGetUserFromUsernameWithAction:
         self, app_with_federation: Flask, remote_user: User
     ) -> None:
         with patch(
-            'fittrackee.federation.utils.user.update_remote_user',
+            "fittrackee.federation.utils.user.update_remote_user",
             side_effect=RemoteActorException(),
         ):
             user = get_user_from_username(
-                remote_user.fullname, with_action='refresh'
+                remote_user.fullname, with_action="refresh"
             )
 
         assert user == remote_user
@@ -725,22 +725,22 @@ class TestGetUserFromUsernameWithAction:
 
 class TestStoreOrDeleteUserPicture:
     @pytest.mark.parametrize(
-        'input_description, input_icon',
+        "input_description, input_icon",
         [
             (
-                'type is not an image',
+                "type is not an image",
                 {
-                    'type': random_string(),
-                    'mediaType': 'image/jpeg',
-                    'url': 'https://example/file.jpg',
+                    "type": random_string(),
+                    "mediaType": "image/jpeg",
+                    "url": "https://example/file.jpg",
                 },
             ),
             (
-                'mediatype is not supported',
+                "mediatype is not supported",
                 {
-                    'type': 'Image',
-                    'mediaType': random_string(),
-                    'url': f'https://example/file.{random_string()}',
+                    "type": "Image",
+                    "mediaType": random_string(),
+                    "url": f"https://example/file.{random_string()}",
                 },
             ),
         ],
@@ -752,10 +752,10 @@ class TestStoreOrDeleteUserPicture:
         input_description: str,
         input_icon: Dict,
     ) -> None:
-        with patch('builtins.open') as open_mock:
+        with patch("builtins.open") as open_mock:
             store_or_delete_user_picture(
                 remote_actor_object={
-                    'icon': input_icon,
+                    "icon": input_icon,
                 },
                 user=remote_user,
             )
@@ -770,16 +770,16 @@ class TestStoreOrDeleteUserPicture:
     ) -> None:
         with (
             patch(
-                'requests.get', return_value=generate_response(status_code=404)
+                "requests.get", return_value=generate_response(status_code=404)
             ),
-            patch('builtins.open') as open_mock,
+            patch("builtins.open") as open_mock,
         ):
             store_or_delete_user_picture(
                 remote_actor_object={
-                    'icon': {
-                        'type': 'Image',
-                        'mediaType': 'image/jpeg',
-                        'url': 'https://example.com/916cac70b7c694a4.jpg',
+                    "icon": {
+                        "type": "Image",
+                        "mediaType": "image/jpeg",
+                        "url": "https://example.com/916cac70b7c694a4.jpg",
                     },
                 },
                 user=remote_user,
@@ -794,31 +794,31 @@ class TestStoreOrDeleteUserPicture:
         remote_user: User,
     ) -> None:
         expected_relative_picture_path = os.path.join(
-            'pictures', str(remote_user.id), f'{remote_user.username}.jpg'
+            "pictures", str(remote_user.id), f"{remote_user.username}.jpg"
         )
         expected_absolute_picture_path = os.path.join(
-            app_with_federation.config['UPLOAD_FOLDER'],
+            app_with_federation.config["UPLOAD_FOLDER"],
             expected_relative_picture_path,
         )
         with (
             patch(
-                'requests.get', return_value=generate_response(status_code=200)
+                "requests.get", return_value=generate_response(status_code=200)
             ),
-            patch('builtins.open') as open_mock,
+            patch("builtins.open") as open_mock,
         ):
             store_or_delete_user_picture(
                 remote_actor_object={
-                    'icon': {
-                        'type': 'Image',
-                        'mediaType': 'image/jpeg',
-                        'url': f'https://example.com/{random_string()}.jpg',
+                    "icon": {
+                        "type": "Image",
+                        "mediaType": "image/jpeg",
+                        "url": f"https://example.com/{random_string()}.jpg",
                     },
                 },
                 user=remote_user,
             )
 
         assert remote_user.picture == expected_relative_picture_path
-        open_mock.assert_called_once_with(expected_absolute_picture_path, 'wb')
+        open_mock.assert_called_once_with(expected_absolute_picture_path, "wb")
 
     def test_it_updates_user_picture(
         self,
@@ -827,31 +827,31 @@ class TestStoreOrDeleteUserPicture:
     ) -> None:
         remote_user.picture = random_string()
         expected_relative_picture_path = os.path.join(
-            'pictures', str(remote_user.id), f'{remote_user.username}.jpg'
+            "pictures", str(remote_user.id), f"{remote_user.username}.jpg"
         )
         expected_absolute_picture_path = os.path.join(
-            app_with_federation.config['UPLOAD_FOLDER'],
+            app_with_federation.config["UPLOAD_FOLDER"],
             expected_relative_picture_path,
         )
         with (
             patch(
-                'requests.get', return_value=generate_response(status_code=200)
+                "requests.get", return_value=generate_response(status_code=200)
             ),
-            patch('builtins.open') as open_mock,
+            patch("builtins.open") as open_mock,
         ):
             store_or_delete_user_picture(
                 remote_actor_object={
-                    'icon': {
-                        'type': 'Image',
-                        'mediaType': 'image/jpeg',
-                        'url': f'https://example.com/{random_string()}.jpg',
+                    "icon": {
+                        "type": "Image",
+                        "mediaType": "image/jpeg",
+                        "url": f"https://example.com/{random_string()}.jpg",
                     },
                 },
                 user=remote_user,
             )
 
         assert remote_user.picture == expected_relative_picture_path
-        open_mock.assert_called_once_with(expected_absolute_picture_path, 'wb')
+        open_mock.assert_called_once_with(expected_absolute_picture_path, "wb")
 
     def test_it_deletes_user_image_if_no_image_in_remote_actor_object(
         self, app_with_federation: Flask, remote_user: User
@@ -859,8 +859,8 @@ class TestStoreOrDeleteUserPicture:
         user_picture_path = random_string()
         remote_user.picture = user_picture_path
         with (
-            patch('os.path.isfile', return_value=True),
-            patch('os.remove') as os_remove_mock,
+            patch("os.path.isfile", return_value=True),
+            patch("os.remove") as os_remove_mock,
         ):
             store_or_delete_user_picture(
                 remote_actor_object={}, user=remote_user
@@ -877,7 +877,7 @@ class TestUpdateRemoteActorStats:
         self, app_with_federation: Flask, remote_user: User
     ) -> None:
         with patch(
-            'requests.get', return_value=generate_response(status_code=400)
+            "requests.get", return_value=generate_response(status_code=400)
         ):
             update_remote_actor_stats(remote_user.actor)
 
@@ -886,7 +886,7 @@ class TestUpdateRemoteActorStats:
     def test_it_does_not_fetch_actor_urls_if_user_is_local(
         self, app_with_federation: Flask, user_1: User
     ) -> None:
-        with patch('requests.get') as get_mock:
+        with patch("requests.get") as get_mock:
             update_remote_actor_stats(user_1.actor)
 
         get_mock.assert_not_called()
@@ -896,14 +896,14 @@ class TestUpdateRemoteActorStats:
     ) -> None:
         expected_followers_count = 10
         response_content = {
-            '@context': 'https://www.w3.org/ns/activitystreams',
-            'id': remote_user.actor.followers_url,
-            'type': 'OrderedCollection',
-            'totalItems': expected_followers_count,
-            'first': f'{remote_user.actor.followers_url}?page=1',
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": remote_user.actor.followers_url,
+            "type": "OrderedCollection",
+            "totalItems": expected_followers_count,
+            "first": f"{remote_user.actor.followers_url}?page=1",
         }
         with patch(
-            'requests.get',
+            "requests.get",
             return_value=generate_response(content=response_content),
         ):
             update_remote_actor_stats(remote_user.actor)
@@ -915,14 +915,14 @@ class TestUpdateRemoteActorStats:
     ) -> None:
         expected_following_count = 33
         response_content = {
-            '@context': 'https://www.w3.org/ns/activitystreams',
-            'id': remote_user.actor.following_url,
-            'type': 'OrderedCollection',
-            'totalItems': expected_following_count,
-            'first': f'{remote_user.actor.following_url}?page=1',
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": remote_user.actor.following_url,
+            "type": "OrderedCollection",
+            "totalItems": expected_following_count,
+            "first": f"{remote_user.actor.following_url}?page=1",
         }
         with patch(
-            'requests.get',
+            "requests.get",
             return_value=generate_response(content=response_content),
         ):
             update_remote_actor_stats(remote_user.actor)

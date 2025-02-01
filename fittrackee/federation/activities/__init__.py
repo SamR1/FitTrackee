@@ -10,12 +10,12 @@ from .activities import (
 )
 
 __all__ = [
-    'AcceptActivity',
-    'CreateActivity',
-    'DeleteActivity',
-    'FollowActivity',
-    'LikeActivity',
-    'RejectActivity',
-    'UndoActivity',
-    'UpdateActivity',
+    "AcceptActivity",
+    "CreateActivity",
+    "DeleteActivity",
+    "FollowActivity",
+    "LikeActivity",
+    "RejectActivity",
+    "UndoActivity",
+    "UpdateActivity",
 ]

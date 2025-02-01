@@ -24,12 +24,12 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         )
 
         response = client.post(
-            f'/api/users/{random_string()}/follow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{random_string()}/follow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_entity(response, 'user')
+        self.assert_404_with_entity(response, "user")
 
     def test_it_raises_error_if_username_matches_only_a_remote_user(
         self,
@@ -42,12 +42,12 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         )
 
         response = client.post(
-            f'/api/users/{remote_user.username}/follow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{remote_user.username}/follow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_entity(response, 'user')
+        self.assert_404_with_entity(response, "user")
 
     def test_it_raises_error_if_target_user_has_already_rejected_request(
         self,
@@ -65,9 +65,9 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         )
 
         response = client.post(
-            f'/api/users/{user_2.actor.preferred_username}/follow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_2.actor.preferred_username}/follow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -80,16 +80,16 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         )
 
         response = client.post(
-            f'/api/users/{user_2.actor.preferred_username}/follow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_2.actor.preferred_username}/follow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
+        assert data["status"] == "success"
         assert (
-            data['message']
+            data["message"]
             == f"Follow request to user '{user_2.actor.preferred_username}' "
             f"is sent."
         )
@@ -107,16 +107,16 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         )
 
         response = client.post(
-            f'/api/users/{user_2.actor.preferred_username}/follow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_2.actor.preferred_username}/follow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
+        assert data["status"] == "success"
         assert (
-            data['message']
+            data["message"]
             == f"Follow request to user '{user_2.actor.preferred_username}' "
             f"is sent."
         )
@@ -133,21 +133,21 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         )
 
         response = client.post(
-            f'/api/users/{user_2.actor.preferred_username}/follow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_2.actor.preferred_username}/follow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
+        assert data["status"] == "success"
         assert (
-            data['message']
+            data["message"]
             == f"Follow request to user '{user_2.actor.preferred_username}' "
             f"is sent."
         )
 
-    @patch('fittrackee.users.models.send_to_remote_inbox')
+    @patch("fittrackee.users.models.send_to_remote_inbox")
     def test_it_does_not_call_send_to_user_inbox(
         self,
         send_to_remote_inbox_mock: Mock,
@@ -160,9 +160,9 @@ class TestFollowWithFederation(ApiTestCaseMixin):
         )
 
         client.post(
-            f'/api/users/{user_2.actor.preferred_username}/follow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_2.actor.preferred_username}/follow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         send_to_remote_inbox_mock.send.assert_not_called()
@@ -182,12 +182,12 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
         )
 
         response = client.post(
-            f'/api/users/{random_actor.fullname}/follow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{random_actor.fullname}/follow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_entity(response, 'user')
+        self.assert_404_with_entity(response, "user")
 
     def test_it_raise_error_if_remote_actor_does_not_exist_for_existing_remote_domain(  # noqa
         self,
@@ -201,14 +201,14 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
         )
 
         response = client.post(
-            f'/api/users/{random_actor.fullname}/follow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{random_actor.fullname}/follow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_entity(response, 'user')
+        self.assert_404_with_entity(response, "user")
 
-    @patch('fittrackee.users.models.send_to_remote_inbox')
+    @patch("fittrackee.users.models.send_to_remote_inbox")
     def test_it_creates_follow_request(
         self,
         send_to_remote_inbox_mock: Mock,
@@ -222,16 +222,16 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
         )
 
         response = client.post(
-            f'/api/users/{remote_actor.fullname}/follow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{remote_actor.fullname}/follow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
+        assert data["status"] == "success"
         assert (
-            data['message']
+            data["message"]
             == f"Follow request to user '{remote_actor.fullname}' is sent."
         )
 
@@ -248,20 +248,20 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
         )
 
         response = client.post(
-            f'/api/users/{remote_actor.fullname}/follow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{remote_actor.fullname}/follow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
+        assert data["status"] == "success"
         assert (
-            data['message']
+            data["message"]
             == f"Follow request to user '{remote_actor.fullname}' is sent."
         )
 
-    @patch('fittrackee.users.models.send_to_remote_inbox')
+    @patch("fittrackee.users.models.send_to_remote_inbox")
     def test_it_calls_send_to_user_inbox(
         self,
         send_to_remote_inbox_mock: Mock,
@@ -275,9 +275,9 @@ class TestRemoteFollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
         )
 
         client.post(
-            f'/api/users/{remote_actor.fullname}/follow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{remote_actor.fullname}/follow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         follow_request = FollowRequest.query.filter_by(
@@ -305,12 +305,12 @@ class TestUnfollowWithFederation(ApiTestCaseMixin):
         )
 
         response = client.post(
-            f'/api/users/{random_string()}/unfollow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{random_string()}/unfollow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_entity(response, 'user')
+        self.assert_404_with_entity(response, "user")
 
     def test_it_raises_error_if_follow_request_does_not_exist(
         self, app_with_federation: Flask, user_1: User, user_2: User
@@ -320,12 +320,12 @@ class TestUnfollowWithFederation(ApiTestCaseMixin):
         )
 
         response = client.post(
-            f'/api/users/{user_2.username}/unfollow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_2.username}/unfollow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_message(response, 'relationship does not exist')
+        self.assert_404_with_message(response, "relationship does not exist")
 
     def test_it_removes_follow_request(
         self,
@@ -339,20 +339,20 @@ class TestUnfollowWithFederation(ApiTestCaseMixin):
         )
 
         response = client.post(
-            f'/api/users/{user_2.username}/unfollow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_2.username}/unfollow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['message'] == (
+        assert data["status"] == "success"
+        assert data["message"] == (
             f"Undo for a follow request to user '{user_2.username}' is sent."
         )
         assert user_1.following.count() == 0
 
-    @patch('fittrackee.users.models.send_to_remote_inbox')
+    @patch("fittrackee.users.models.send_to_remote_inbox")
     def test_it_does_not_call_send_to_user_inbox(
         self,
         send_to_remote_inbox_mock: Mock,
@@ -366,9 +366,9 @@ class TestUnfollowWithFederation(ApiTestCaseMixin):
         )
 
         client.post(
-            f'/api/users/{user_2.username}/unfollow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_2.username}/unfollow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         send_to_remote_inbox_mock.send.assert_not_called()
@@ -388,12 +388,12 @@ class TestRemoteUnfollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
         )
 
         response = client.post(
-            f'/api/users/{random_actor.fullname}/unfollow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{random_actor.fullname}/unfollow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_entity(response, 'user')
+        self.assert_404_with_entity(response, "user")
 
     def test_it_raise_error_if_remote_actor_does_not_exist_for_existing_remote_domain(  # noqa
         self,
@@ -407,14 +407,14 @@ class TestRemoteUnfollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
         )
 
         response = client.post(
-            f'/api/users/{random_actor.fullname}/unfollow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{random_actor.fullname}/unfollow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_entity(response, 'user')
+        self.assert_404_with_entity(response, "user")
 
-    @patch('fittrackee.users.models.send_to_remote_inbox')
+    @patch("fittrackee.users.models.send_to_remote_inbox")
     def test_it_removes_follow_request(
         self,
         send_to_remote_inbox_mock: Mock,
@@ -429,21 +429,21 @@ class TestRemoteUnfollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
         )
 
         response = client.post(
-            f'/api/users/{remote_actor.fullname}/unfollow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{remote_actor.fullname}/unfollow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['message'] == (
+        assert data["status"] == "success"
+        assert data["message"] == (
             "Undo for a follow request to user "
             f"'{remote_actor.fullname}' is sent."
         )
         assert user_1.following.count() == 0
 
-    @patch('fittrackee.users.models.send_to_remote_inbox')
+    @patch("fittrackee.users.models.send_to_remote_inbox")
     def test_it_calls_send_to_user_inbox(
         self,
         send_to_remote_inbox_mock: Mock,
@@ -462,9 +462,9 @@ class TestRemoteUnfollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
         ).first()
 
         client.post(
-            f'/api/users/{remote_actor.fullname}/unfollow',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{remote_actor.fullname}/unfollow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_send_to_remote_inbox_called_once(
@@ -472,5 +472,5 @@ class TestRemoteUnfollowWithFederation(ApiTestCaseMixin, UserInboxTestMixin):
             local_actor=user_1.actor,
             remote_actor=remote_actor,
             base_object=follow_request,
-            activity_args={'undo': True},
+            activity_args={"undo": True},
         )

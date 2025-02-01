@@ -35,7 +35,7 @@ class TestCliUserCreate:
         assert result.exit_code == 0
         assert (
             result.output
-            == 'Error(s) occurred:\nsorry, that username is already taken\n'
+            == "Error(s) occurred:\nsorry, that username is already taken\n"
         )
 
     def test_it_displays_error_when_user_exists_with_same_email(
@@ -58,7 +58,7 @@ class TestCliUserCreate:
 
         assert result.exit_code == 0
         assert result.output == (
-            'Error(s) occurred:\nThis user already exists. No action done.\n'
+            "Error(s) occurred:\nThis user already exists. No action done.\n"
         )
 
     def test_it_creates_user(
@@ -100,7 +100,7 @@ class TestCliUserCreate:
         password = random_string()
         runner = CliRunner()
 
-        with patch.object(secrets, 'token_urlsafe', return_value=password):
+        with patch.object(secrets, "token_urlsafe", return_value=password):
             result = runner.invoke(
                 cli,
                 ["users", "create", username, "--email", email],
@@ -127,7 +127,7 @@ class TestCliUserCreate:
         user = User.query.filter_by(username=username).one()
         assert user.language == "en"
         assert (
-            'The user preference for interface language is: en'
+            "The user preference for interface language is: en"
             in result.output
         )
 
@@ -154,7 +154,7 @@ class TestCliUserCreate:
         user = User.query.filter_by(username=username).one()
         assert user.language == language
         assert (
-            f'The user preference for interface language is: {language}'
+            f"The user preference for interface language is: {language}"
             not in result.output
         )
 
@@ -180,7 +180,7 @@ class TestCliUserCreate:
         user = User.query.filter_by(username=username).one()
         assert user.language == "en"
         assert (
-            'The user preference for interface language is: en'
+            "The user preference for interface language is: en"
             in result.output
         )
 
@@ -220,7 +220,7 @@ class TestCliUserCreate:
                 "--email",
                 user_1.email,  # type: ignore
                 "--role",
-                'invalid',
+                "invalid",
             ],
         )
 
@@ -235,7 +235,7 @@ class TestCliUserUpdate:
     def test_it_returns_error_when_missing_user_name(self, app: Flask) -> None:
         runner = CliRunner()
 
-        result = runner.invoke(cli, ['users', 'update'])
+        result = runner.invoke(cli, ["users", "update"])
 
         assert result.exit_code == 2
         assert "Error: Missing argument 'USERNAME'." in result.output
@@ -244,7 +244,7 @@ class TestCliUserUpdate:
         username = random_string()
         runner = CliRunner()
 
-        result = runner.invoke(cli, ['users', 'update', username])
+        result = runner.invoke(cli, ["users", "update", username])
 
         assert result.exit_code == 0
         assert f"User '{username}' not found." in result.output
@@ -256,7 +256,7 @@ class TestCliUserUpdate:
         previous_email = user_1.email
         previous_password = user_1.password
 
-        result = runner.invoke(cli, ['users', 'update', user_1.username])
+        result = runner.invoke(cli, ["users", "update", user_1.username])
 
         assert result.exit_code == 0
         assert "No updates." in result.output
@@ -274,7 +274,7 @@ class TestCliUserUpdate:
         with app.app_context():
             result = runner.invoke(
                 cli,
-                ['users', 'update', user_1.username, '--set-admin', 'true'],
+                ["users", "update", user_1.username, "--set-admin", "true"],
             )
 
         assert result.exit_code == 0
@@ -294,7 +294,7 @@ class TestCliUserUpdate:
         with app.app_context():
             result = runner.invoke(
                 cli,
-                ['users', 'update', user_1.username, '--set-admin', 'true'],
+                ["users", "update", user_1.username, "--set-admin", "true"],
             )
 
         assert result.exit_code == 0
@@ -314,11 +314,11 @@ class TestCliUserUpdate:
             result = runner.invoke(
                 cli,
                 [
-                    'users',
-                    'update',
+                    "users",
+                    "update",
                     user_1_admin.username,
-                    '--set-admin',
-                    'false',
+                    "--set-admin",
+                    "false",
                 ],
             )
 
@@ -342,11 +342,11 @@ class TestCliUserUpdate:
             result = runner.invoke(
                 cli,
                 [
-                    'users',
-                    'update',
+                    "users",
+                    "update",
                     inactive_user.username,
-                    '--set-admin',
-                    'true',
+                    "--set-admin",
+                    "true",
                 ],
             )
 
@@ -367,7 +367,7 @@ class TestCliUserUpdate:
         with app.app_context():
             result = runner.invoke(
                 cli,
-                ['users', 'update', user_1.username, '--set-role', 'admin'],
+                ["users", "update", user_1.username, "--set-role", "admin"],
             )
 
         assert result.exit_code == 0
@@ -380,12 +380,12 @@ class TestCliUserUpdate:
         assert user_1.password == previous_password
 
     @pytest.mark.parametrize(
-        'input_role,input_active',
+        "input_role,input_active",
         [
-            ('user', False),
-            ('moderator', True),
-            ('admin', True),
-            ('owner', True),
+            ("user", False),
+            ("moderator", True),
+            ("admin", True),
+            ("owner", True),
         ],
     )
     def test_it_activates_user_only_when_role_is_not_user(
@@ -401,10 +401,10 @@ class TestCliUserUpdate:
             runner.invoke(
                 cli,
                 [
-                    'users',
-                    'update',
+                    "users",
+                    "update",
                     inactive_user.username,
-                    '--set-role',
+                    "--set-role",
                     input_role,
                 ],
             )
@@ -424,13 +424,13 @@ class TestCliUserUpdate:
             result = runner.invoke(
                 cli,
                 [
-                    'users',
-                    'update',
+                    "users",
+                    "update",
                     user_1.username,
-                    '--set-role',
-                    'admin',
-                    '--set-admin',
-                    'true',
+                    "--set-role",
+                    "admin",
+                    "--set-admin",
+                    "true",
                 ],
             )
 
@@ -449,10 +449,10 @@ class TestCliUserUpdate:
             result = runner.invoke(
                 cli,
                 [
-                    'users',
-                    'update',
+                    "users",
+                    "update",
                     inactive_user.username,
-                    '--activate',
+                    "--activate",
                 ],
             )
 
@@ -472,15 +472,15 @@ class TestCliUserUpdate:
 
         with (
             app.app_context(),
-            patch.object(secrets, 'token_urlsafe', return_value=new_password),
+            patch.object(secrets, "token_urlsafe", return_value=new_password),
         ):
             result = runner.invoke(
                 cli,
                 [
-                    'users',
-                    'update',
+                    "users",
+                    "update",
                     user_1.username,
-                    '--reset-password',
+                    "--reset-password",
                 ],
             )
 
@@ -503,10 +503,10 @@ class TestCliUserUpdate:
             result = runner.invoke(
                 cli,
                 [
-                    'users',
-                    'update',
+                    "users",
+                    "update",
                     user_1.username,
-                    '--update-email',
+                    "--update-email",
                     new_email,
                 ],
             )
@@ -529,10 +529,10 @@ class TestCliUserUpdate:
             result = runner.invoke(
                 cli,
                 [
-                    'users',
-                    'update',
+                    "users",
+                    "update",
                     user_1.username,
-                    '--update-email',
+                    "--update-email",
                     random_string(),
                 ],
             )
@@ -552,13 +552,13 @@ class TestCliUserUpdate:
             result = runner.invoke(
                 cli,
                 [
-                    'users',
-                    'update',
+                    "users",
+                    "update",
                     inactive_user.username,
-                    '--update-email',
+                    "--update-email",
                     new_email,
-                    '--set-role',
-                    'admin',
+                    "--set-role",
+                    "admin",
                 ],
             )
 

@@ -34,8 +34,8 @@ if TYPE_CHECKING:
 
 
 def get_comments(
-    workout_id: int, user: Optional['User'], reply_to: Optional[int] = None
-) -> List['Comment']:
+    workout_id: int, user: Optional["User"], reply_to: Optional[int] = None
+) -> List["Comment"]:
     if user:
         params = {"workout_id": workout_id, "user_id": user.id}
         sql = """
@@ -113,7 +113,7 @@ def get_comments(
 
 
 class Comment(BaseModel):
-    __tablename__ = 'comments'
+    __tablename__ = "comments"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     uuid: Mapped[UUID] = mapped_column(
         postgresql.UUID(as_uuid=True),
@@ -122,17 +122,17 @@ class Comment(BaseModel):
         nullable=False,
     )
     user_id: Mapped[int] = mapped_column(
-        db.ForeignKey('users.id', ondelete='CASCADE'),
+        db.ForeignKey("users.id", ondelete="CASCADE"),
         index=True,
         nullable=False,
     )
     workout_id: Mapped[Optional[int]] = mapped_column(
-        db.ForeignKey('workouts.id', ondelete="SET NULL"),
+        db.ForeignKey("workouts.id", ondelete="SET NULL"),
         index=True,
         nullable=True,
     )
     reply_to: Mapped[Optional[int]] = mapped_column(
-        db.ForeignKey('comments.id', ondelete="SET NULL"),
+        db.ForeignKey("comments.id", ondelete="SET NULL"),
         index=True,
         nullable=True,
     )
@@ -144,8 +144,8 @@ class Comment(BaseModel):
     )
     text: Mapped[str] = mapped_column(db.String(), nullable=False)
     text_visibility: Mapped[VisibilityLevel] = mapped_column(
-        Enum(VisibilityLevel, name='visibility_levels'),
-        server_default='PRIVATE',
+        Enum(VisibilityLevel, name="visibility_levels"),
+        server_default="PRIVATE",
         nullable=False,
     )
     suspended_at: Mapped[Optional[datetime]] = mapped_column(
@@ -155,13 +155,13 @@ class Comment(BaseModel):
     remote_url: Mapped[Optional[str]] = mapped_column(db.Text(), nullable=True)
 
     user: Mapped["User"] = relationship(
-        'User', lazy='select', single_parent=True
+        "User", lazy="select", single_parent=True
     )
     workout: Mapped["Workout"] = relationship(
-        'Workout', lazy='select', single_parent=True
+        "Workout", lazy="select", single_parent=True
     )
     parent_comment = db.relationship(
-        'Comment', remote_side=[id], lazy='joined'
+        "Comment", remote_side=[id], lazy="joined"
     )
     mentions: Mapped[List["Mention"]] = relationship(
         "Mention",
@@ -187,7 +187,7 @@ class Comment(BaseModel):
     )
 
     def __repr__(self) -> str:
-        return f'<Comment {self.id}>'
+        return f"<Comment {self.id}>"
 
     def __init__(
         self,
@@ -200,7 +200,7 @@ class Comment(BaseModel):
     ) -> None:
         if (
             text_visibility == VisibilityLevel.FOLLOWERS_AND_REMOTE
-            and not current_app.config['FEDERATION_ENABLED']
+            and not current_app.config["FEDERATION_ENABLED"]
         ):
             raise InvalidVisibilityException(
                 "invalid visibility: followers_and_remote_only, "
@@ -221,20 +221,20 @@ class Comment(BaseModel):
 
     def get_ap_id(self) -> str:
         return (
-            f'{self.user.actor.activitypub_id}/'
-            f'workouts/{self.workout.short_id}/'
-            f'comments/{self.short_id}'
+            f"{self.user.actor.activitypub_id}/"
+            f"workouts/{self.workout.short_id}/"
+            f"comments/{self.short_id}"
         )
 
     def get_remote_url(self) -> str:
         return (
-            f'https://{self.user.actor.domain.name}/'
-            f'workouts/{self.workout.short_id}/'
-            f'comments/{self.short_id}'
+            f"https://{self.user.actor.domain.name}/"
+            f"workouts/{self.workout.short_id}/"
+            f"comments/{self.short_id}"
         )
 
     @property
-    def suspension_action(self) -> Optional['ReportAction']:
+    def suspension_action(self) -> Optional["ReportAction"]:
         if self.suspended_at is None:
             return None
 
@@ -264,12 +264,12 @@ class Comment(BaseModel):
     def has_remote_mentions(self) -> bool:
         return self.remote_mentions.count() > 0
 
-    def handle_mentions(self) -> Tuple[str, Dict[str, Set['User']]]:
+    def handle_mentions(self) -> Tuple[str, Dict[str, Set["User"]]]:
         from .utils import handle_mentions
 
         return handle_mentions(self.text)
 
-    def create_mentions(self) -> Tuple[str, Dict[str, Set['User']]]:
+    def create_mentions(self) -> Tuple[str, Dict[str, Set["User"]]]:
         linkified_text, mentioned_users = self.handle_mentions()
         for user in mentioned_users["local"].union(mentioned_users["remote"]):
             mention = Mention(comment_id=self.id, user_id=user.id)
@@ -277,7 +277,7 @@ class Comment(BaseModel):
             db.session.flush()
         return linkified_text, mentioned_users
 
-    def update_mentions(self) -> Set['User']:
+    def update_mentions(self) -> Set["User"]:
         from fittrackee.users.models import Notification, User
 
         existing_mentioned_users = set(
@@ -302,7 +302,7 @@ class Comment(BaseModel):
         ).delete()
         Notification.query.filter(
             Notification.to_user_id.in_(mentions_to_delete),
-            Notification.event_type == 'mention',
+            Notification.event_type == "mention",
             Notification.event_object_id == self.id,
         ).delete()
         db.session.flush()
@@ -316,7 +316,7 @@ class Comment(BaseModel):
         # return users associated to deleted mention to send delete
         return deleted_mentioned_users
 
-    def liked_by(self, user: 'User') -> bool:
+    def liked_by(self, user: "User") -> bool:
         return user in self.likes.all()
 
     @property
@@ -327,12 +327,12 @@ class Comment(BaseModel):
 
     def serialize(
         self,
-        user: Optional['User'] = None,
+        user: Optional["User"] = None,
         with_replies: bool = True,
         get_parent_comment: bool = False,
         for_report: bool = False,
     ) -> Dict:
-        if not can_view(self, 'text_visibility', user, for_report):
+        if not can_view(self, "text_visibility", user, for_report):
             raise CommentForbiddenException
 
         try:
@@ -380,22 +380,22 @@ class Comment(BaseModel):
         )
 
         return {
-            'id': self.short_id,
-            'user': self.user.serialize(),
-            'workout_id': (
+            "id": self.short_id,
+            "user": self.user.serialize(),
+            "workout_id": (
                 self.workout.short_id
                 if self.workout
-                and can_view(self.workout, 'workout_visibility', user)
+                and can_view(self.workout, "workout_visibility", user)
                 else None
             ),
-            'text': self.text if display_content else None,
-            'text_html': (
+            "text": self.text if display_content else None,
+            "text_html": (
                 self.handle_mentions()[0] if display_content else None
             ),
-            'text_visibility': self.text_visibility,
-            'created_at': self.created_at,
-            'modification_date': self.modification_date,
-            'mentions': (
+            "text_visibility": self.text_visibility,
+            "created_at": self.created_at,
+            "modification_date": self.modification_date,
+            "mentions": (
                 [
                     mentioned_user.serialize()
                     for mentioned_user in self.mentioned_users
@@ -403,8 +403,8 @@ class Comment(BaseModel):
                 if display_content
                 else []
             ),
-            'reply_to': reply_to,
-            'replies': (
+            "reply_to": reply_to,
+            "replies": (
                 [
                     reply.serialize(user)
                     for reply in get_comments(
@@ -416,17 +416,17 @@ class Comment(BaseModel):
                 if with_replies and self.workout_id and not for_report
                 else []
             ),
-            'likes_count': self.likes.count() if display_content else 0,
-            'liked': self.liked_by(user) if user else False,
+            "likes_count": self.likes.count() if display_content else 0,
+            "liked": self.liked_by(user) if user else False,
             **suspension,
         }
 
     def get_activity(self, activity_type: str) -> Dict:
-        if activity_type in ['Create', 'Update']:
+        if activity_type in ["Create", "Update"]:
             return CommentObject(
                 self, activity_type=activity_type
             ).get_activity()
-        if activity_type == 'Delete':
+        if activity_type == "Delete":
             tombstone_object = TombstoneObject(self)
             delete_activity = tombstone_object.get_activity()
             return delete_activity
@@ -434,14 +434,14 @@ class Comment(BaseModel):
 
 
 class Mention(BaseModel):
-    __tablename__ = 'mentions'
+    __tablename__ = "mentions"
 
     comment_id: Mapped[int] = mapped_column(
-        db.ForeignKey('comments.id', ondelete="CASCADE"),
+        db.ForeignKey("comments.id", ondelete="CASCADE"),
         primary_key=True,
     )
     user_id: Mapped[int] = mapped_column(
-        db.ForeignKey('users.id', ondelete="CASCADE"),
+        db.ForeignKey("users.id", ondelete="CASCADE"),
         primary_key=True,
     )
     created_at: Mapped[datetime] = mapped_column(
@@ -465,11 +465,11 @@ class Mention(BaseModel):
         )
 
 
-@listens_for(Comment, 'after_insert')
+@listens_for(Comment, "after_insert")
 def on_comment_insert(
     mapper: Mapper, connection: Connection, new_comment: Comment
 ) -> None:
-    @listens_for(db.Session, 'after_flush', once=True)
+    @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
         from fittrackee.users.models import FollowRequest, Notification, User
         from fittrackee.workouts.models import Workout
@@ -500,7 +500,7 @@ def on_comment_insert(
 
         to_user = User.query.filter_by(id=to_user_id).first()
         if not to_user or not to_user.is_notification_enabled(
-            'workout_comment'
+            "workout_comment"
         ):
             return
 
@@ -525,20 +525,20 @@ def on_comment_insert(
             to_user_id=to_user_id,
             created_at=new_comment.created_at,
             event_type=(
-                'workout_comment'
+                "workout_comment"
                 if new_comment.reply_to is None
-                else 'comment_reply'
+                else "comment_reply"
             ),
             event_object_id=new_comment.id,
         )
         session.add(notification)
 
 
-@listens_for(Comment, 'after_delete')
+@listens_for(Comment, "after_delete")
 def on_comment_delete(
     mapper: Mapper, connection: Connection, old_comment: Comment
 ) -> None:
-    @listens_for(db.Session, 'after_flush', once=True)
+    @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
         from fittrackee.users.models import Notification
 
@@ -547,19 +547,19 @@ def on_comment_delete(
             Notification.event_object_id == old_comment.id,
             Notification.event_type.in_(
                 [
-                    'comment_like',
-                    'mention',
-                    'workout_comment',
+                    "comment_like",
+                    "mention",
+                    "workout_comment",
                 ]
             ),
         ).delete()
 
 
-@listens_for(Mention, 'after_insert')
+@listens_for(Mention, "after_insert")
 def on_mention_insert(
     mapper: Mapper, connection: Connection, new_mention: Mention
 ) -> None:
-    @listens_for(db.Session, 'after_flush', once=True)
+    @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
         from fittrackee.users.models import Notification, User
 
@@ -586,7 +586,7 @@ def on_mention_insert(
                 )
                 .filter(
                     Comment.id == comment.id,
-                    Notification.event_type == 'workout_comment',
+                    Notification.event_type == "workout_comment",
                     Notification.to_user_id == new_mention.user_id,
                 )
                 .first()
@@ -604,7 +604,7 @@ def on_mention_insert(
                 )
                 .filter(
                     Notification.to_user_id == new_mention.user_id,
-                    Notification.event_type == 'comment_reply',
+                    Notification.event_type == "comment_reply",
                 )
                 .first()
             )
@@ -615,42 +615,42 @@ def on_mention_insert(
             from_user_id=comment.user_id,
             to_user_id=new_mention.user_id,
             created_at=new_mention.created_at,
-            event_type='mention',
+            event_type="mention",
             event_object_id=comment.id,
         )
         session.add(notification)
 
 
-@listens_for(Mention, 'after_delete')
+@listens_for(Mention, "after_delete")
 def on_mention_delete(
     mapper: Mapper, connection: Connection, old_mention: Mention
 ) -> None:
-    @listens_for(db.Session, 'after_flush', once=True)
+    @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
         from fittrackee.users.models import Notification
 
         Notification.query.filter_by(
             to_user_id=old_mention.user_id,
-            event_type='mention',
+            event_type="mention",
             event_object_id=old_mention.comment_id,
         ).delete()
 
 
 class CommentLike(BaseModel):
-    __tablename__ = 'comment_likes'
+    __tablename__ = "comment_likes"
     __table_args__ = (
         db.UniqueConstraint(
-            'user_id', 'comment_id', name='user_id_comment_id_unique'
+            "user_id", "comment_id", name="user_id_comment_id_unique"
         ),
     )
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     created_at: Mapped[datetime] = mapped_column(TZDateTime, nullable=False)
     user_id: Mapped[int] = mapped_column(
-        db.ForeignKey('users.id', ondelete='CASCADE'),
+        db.ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
     )
     comment_id: Mapped[int] = mapped_column(
-        db.ForeignKey('comments.id', ondelete="CASCADE"),
+        db.ForeignKey("comments.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
@@ -679,11 +679,11 @@ class CommentLike(BaseModel):
         ).get_activity()
 
 
-@listens_for(CommentLike, 'after_insert')
+@listens_for(CommentLike, "after_insert")
 def on_comment_like_insert(
     mapper: Mapper, connection: Connection, new_comment_like: CommentLike
 ) -> None:
-    @listens_for(db.Session, 'after_flush', once=True)
+    @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
         from fittrackee.users.models import Notification, User
 
@@ -704,17 +704,17 @@ def on_comment_like_insert(
                 from_user_id=new_comment_like.user_id,
                 to_user_id=comment.user_id,
                 created_at=new_comment_like.created_at,
-                event_type='comment_like',
+                event_type="comment_like",
                 event_object_id=comment.id,
             )
             session.add(notification)
 
 
-@listens_for(CommentLike, 'after_delete')
+@listens_for(CommentLike, "after_delete")
 def on_comment_like_delete(
     mapper: Mapper, connection: Connection, old_comment_like: CommentLike
 ) -> None:
-    @listens_for(db.Session, 'after_flush', once=True)
+    @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
         from fittrackee.users.models import Notification
 
@@ -726,6 +726,6 @@ def on_comment_like_delete(
         Notification.query.filter_by(
             from_user_id=old_comment_like.user_id,
             to_user_id=comment.user_id,
-            event_type='comment_like',
+            event_type="comment_like",
             event_object_id=comment.id,
         ).delete()

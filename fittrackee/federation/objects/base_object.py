@@ -16,37 +16,37 @@ if TYPE_CHECKING:
 
 class BaseObject(ABC):
     id: str
-    type: 'ActivityType'
-    actor: 'Actor'
-    visibility: 'VisibilityLevel'
+    type: "ActivityType"
+    actor: "Actor"
+    visibility: "VisibilityLevel"
     activity_id: str
     object_url: str
     published: str
 
     def _init_activity_dict(self) -> Dict:
         activity: Dict = {
-            '@context': AP_CTX,
-            'type': self.type.value,
-            'id': f"{self.activity_id}/{self.type.value.lower()}",
-            'actor': self.actor.activitypub_id,
-            'published': self.published,
-            'object': {
-                'id': self.activity_id,
-                'published': self.published,
-                'url': self.object_url,
-                'attributedTo': self.actor.activitypub_id,
+            "@context": AP_CTX,
+            "type": self.type.value,
+            "id": f"{self.activity_id}/{self.type.value.lower()}",
+            "actor": self.actor.activitypub_id,
+            "published": self.published,
+            "object": {
+                "id": self.activity_id,
+                "published": self.published,
+                "url": self.object_url,
+                "attributedTo": self.actor.activitypub_id,
             },
         }
         if self.visibility == VisibilityLevel.PUBLIC:
-            activity['to'] = [PUBLIC_STREAM]
-            activity['cc'] = [self.actor.followers_url]
-            activity['object']['to'] = [PUBLIC_STREAM]
-            activity['object']['cc'] = [self.actor.followers_url]
+            activity["to"] = [PUBLIC_STREAM]
+            activity["cc"] = [self.actor.followers_url]
+            activity["object"]["to"] = [PUBLIC_STREAM]
+            activity["object"]["cc"] = [self.actor.followers_url]
         else:  # for followers
-            activity['to'] = [self.actor.followers_url]
-            activity['cc'] = []
-            activity['object']['to'] = [self.actor.followers_url]
-            activity['object']['cc'] = []
+            activity["to"] = [self.actor.followers_url]
+            activity["cc"] = []
+            activity["object"]["to"] = [self.actor.followers_url]
+            activity["object"]["cc"] = []
         return activity
 
     @staticmethod
@@ -55,7 +55,7 @@ class BaseObject(ABC):
 
     @staticmethod
     def _get_modification_date(
-        activity_object: Union['Workout', 'Comment'],
+        activity_object: Union["Workout", "Comment"],
     ) -> Optional[str]:
         return (
             activity_object.modification_date.strftime(DATE_FORMAT)

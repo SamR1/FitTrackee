@@ -285,7 +285,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   #admin-users {
     .top-button {
       display: none;

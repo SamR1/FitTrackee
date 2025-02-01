@@ -16,11 +16,11 @@ class TestGetAllStats(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/stats/all',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/stats/all",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['users'] == 1
+        assert "success" in data["status"]
+        assert data["data"]["users"] == 1

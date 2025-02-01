@@ -8,10 +8,10 @@ from fittrackee.workouts.models import Workout
 from .decorators import federation_required_for_route
 from .models import Domain
 
-ap_nodeinfo_blueprint = Blueprint('ap_nodeinfo', __name__)
+ap_nodeinfo_blueprint = Blueprint("ap_nodeinfo", __name__)
 
 
-@ap_nodeinfo_blueprint.route('/.well-known/nodeinfo', methods=['GET'])
+@ap_nodeinfo_blueprint.route("/.well-known/nodeinfo", methods=["GET"])
 @federation_required_for_route
 def get_nodeinfo_url(app_domain: Domain) -> HttpResponse:
     """
@@ -44,21 +44,21 @@ def get_nodeinfo_url(app_domain: Domain) -> HttpResponse:
     :statuscode 403: error, federation is disabled for this instance
 
     """
-    nodeinfo_url = f'https://{app_domain.name}/nodeinfo/2.0'
+    nodeinfo_url = f"https://{app_domain.name}/nodeinfo/2.0"
     response = {
-        'links': [
+        "links": [
             {
-                'rel': 'http://nodeinfo.diaspora.software/ns/schema/2.0',
-                'href': nodeinfo_url,
+                "rel": "http://nodeinfo.diaspora.software/ns/schema/2.0",
+                "href": nodeinfo_url,
             }
         ]
     }
     return HttpResponse(
-        response=response, content_type='application/json; charset=utf-8'
+        response=response, content_type="application/json; charset=utf-8"
     )
 
 
-@ap_nodeinfo_blueprint.route('/nodeinfo/2.0', methods=['GET'])
+@ap_nodeinfo_blueprint.route("/nodeinfo/2.0", methods=["GET"])
 @federation_required_for_route
 def get_nodeinfo(app_domain: Domain) -> HttpResponse:
     """
@@ -111,18 +111,18 @@ def get_nodeinfo(app_domain: Domain) -> HttpResponse:
         .count()
     )
     response = {
-        'version': '2.0',
-        'software': {
-            'name': 'fittrackee',
-            'version': current_app.config['VERSION'],
+        "version": "2.0",
+        "software": {
+            "name": "fittrackee",
+            "version": current_app.config["VERSION"],
         },
-        'protocols': ['activitypub'],
-        'usage': {
-            'users': {'total': actor_count},
-            'localWorkouts': workouts_count,
+        "protocols": ["activitypub"],
+        "usage": {
+            "users": {"total": actor_count},
+            "localWorkouts": workouts_count,
         },
-        'openRegistrations': current_app.config['is_registration_enabled'],
+        "openRegistrations": current_app.config["is_registration_enabled"],
     }
     return HttpResponse(
-        response=response, content_type='application/json; charset=utf-8'
+        response=response, content_type="application/json; charset=utf-8"
     )

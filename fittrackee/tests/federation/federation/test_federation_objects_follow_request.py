@@ -22,11 +22,11 @@ class TestFollowRequestObject:
         serialized_follow_request = follow_request.get_activity()
 
         assert serialized_follow_request == {
-            '@context': AP_CTX,
-            'id': f'{user_1.actor.activitypub_id}#follows/{user_2.fullname}',
-            'type': 'Follow',
-            'actor': user_1.actor.activitypub_id,
-            'object': user_2.actor.activitypub_id,
+            "@context": AP_CTX,
+            "id": f"{user_1.actor.activitypub_id}#follows/{user_2.fullname}",
+            "type": "Follow",
+            "actor": user_1.actor.activitypub_id,
+            "object": user_2.actor.activitypub_id,
         }
 
     def test_it_generates_accept_activity(
@@ -44,20 +44,20 @@ class TestFollowRequestObject:
         serialized_follow_request = follow_request.get_activity()
 
         assert serialized_follow_request == {
-            '@context': AP_CTX,
-            'id': (
-                f'{user_2.actor.activitypub_id}#accepts/'
-                f'follow/{user_1.fullname}'
+            "@context": AP_CTX,
+            "id": (
+                f"{user_2.actor.activitypub_id}#accepts/"
+                f"follow/{user_1.fullname}"
             ),
-            'type': 'Accept',
-            'actor': user_2.actor.activitypub_id,
-            'object': {
-                'id': (
-                    f'{user_1.actor.activitypub_id}#follows/{user_2.fullname}'
+            "type": "Accept",
+            "actor": user_2.actor.activitypub_id,
+            "object": {
+                "id": (
+                    f"{user_1.actor.activitypub_id}#follows/{user_2.fullname}"
                 ),
-                'type': 'Follow',
-                'actor': user_1.actor.activitypub_id,
-                'object': user_2.actor.activitypub_id,
+                "type": "Follow",
+                "actor": user_1.actor.activitypub_id,
+                "object": user_2.actor.activitypub_id,
             },
         }
 
@@ -76,20 +76,20 @@ class TestFollowRequestObject:
         serialized_follow_request = follow_request.get_activity()
 
         assert serialized_follow_request == {
-            '@context': AP_CTX,
-            'id': (
-                f'{user_2.actor.activitypub_id}#rejects/'
-                f'follow/{user_1.fullname}'
+            "@context": AP_CTX,
+            "id": (
+                f"{user_2.actor.activitypub_id}#rejects/"
+                f"follow/{user_1.fullname}"
             ),
-            'type': 'Reject',
-            'actor': user_2.actor.activitypub_id,
-            'object': {
-                'id': (
-                    f'{user_1.actor.activitypub_id}#follows/{user_2.fullname}'
+            "type": "Reject",
+            "actor": user_2.actor.activitypub_id,
+            "object": {
+                "id": (
+                    f"{user_1.actor.activitypub_id}#follows/{user_2.fullname}"
                 ),
-                'type': 'Follow',
-                'actor': user_1.actor.activitypub_id,
-                'object': user_2.actor.activitypub_id,
+                "type": "Follow",
+                "actor": user_1.actor.activitypub_id,
+                "object": user_2.actor.activitypub_id,
             },
         }
 
@@ -108,16 +108,16 @@ class TestFollowRequestObject:
         serialized_follow_request = follow_request.get_activity()
 
         assert serialized_follow_request == {
-            '@context': AP_CTX,
-            'id': f'{user_1.actor.activitypub_id}#undoes/{user_2.fullname}',
-            'type': 'Undo',
-            'actor': user_1.actor.activitypub_id,
-            'object': {
-                'id': (
-                    f'{user_1.actor.activitypub_id}#follows/{user_2.fullname}'
+            "@context": AP_CTX,
+            "id": f"{user_1.actor.activitypub_id}#undoes/{user_2.fullname}",
+            "type": "Undo",
+            "actor": user_1.actor.activitypub_id,
+            "object": {
+                "id": (
+                    f"{user_1.actor.activitypub_id}#follows/{user_2.fullname}"
                 ),
-                'type': 'Follow',
-                'actor': user_1.actor.activitypub_id,
-                'object': user_2.actor.activitypub_id,
+                "type": "Follow",
+                "actor": user_1.actor.activitypub_id,
+                "object": user_2.actor.activitypub_id,
             },
         }

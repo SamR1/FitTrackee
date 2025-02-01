@@ -24,15 +24,15 @@ class WorkoutObjectTestCase(RandomMixin):
     @staticmethod
     def get_updated(workout: Workout, activity_type: str) -> Dict:
         return (
-            {'updated': workout.modification_date.strftime(DATE_FORMAT)}
-            if activity_type == 'Update' and workout.modification_date
+            {"updated": workout.modification_date.strftime(DATE_FORMAT)}
+            if activity_type == "Update" and workout.modification_date
             else {}
         )
 
 
 class TestWorkoutObject(WorkoutObjectTestCase):
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_raises_error_when_visibility_is_invalid(
@@ -48,7 +48,7 @@ class TestWorkoutObject(WorkoutObjectTestCase):
             InvalidVisibilityException,
             match=f"object visibility is: '{input_visibility.value}'",
         ):
-            WorkoutObject(workout_cycling_user_1, 'Create')
+            WorkoutObject(workout_cycling_user_1, "Create")
 
     def test_it_raises_error_when_activity_type_is_invalid(
         self,
@@ -84,7 +84,7 @@ class TestWorkoutObject(WorkoutObjectTestCase):
             InvalidObjectException,
             match="Invalid workout, missing 'ap_id' or 'remote_url'",
         ):
-            WorkoutObject(workout_cycling_user_1, 'Create')
+            WorkoutObject(workout_cycling_user_1, "Create")
 
     def test_it_raises_error_when_workout_has_no_remote_url(
         self,
@@ -99,10 +99,10 @@ class TestWorkoutObject(WorkoutObjectTestCase):
             InvalidObjectException,
             match="Invalid workout, missing 'ap_id' or 'remote_url'",
         ):
-            WorkoutObject(workout_cycling_user_1, 'Create')
+            WorkoutObject(workout_cycling_user_1, "Create")
 
-    @pytest.mark.parametrize('input_activity_type', ['Create', 'Update'])
-    def test_it_generates_activity_when_visibility_is_followers_and_remote_only(  # noqa
+    @pytest.mark.parametrize("input_activity_type", ["Create", "Update"])
+    def test_it_generates_activity_when_visibility_is_followers_and_remote_only(
         self,
         app_with_federation: Flask,
         user_1: User,
@@ -130,38 +130,38 @@ class TestWorkoutObject(WorkoutObjectTestCase):
         serialized_workout = workout.get_activity()
 
         assert serialized_workout == {
-            '@context': AP_CTX,
-            'id': (
-                f'{workout_cycling_user_1.ap_id}/{input_activity_type.lower()}'
+            "@context": AP_CTX,
+            "id": (
+                f"{workout_cycling_user_1.ap_id}/{input_activity_type.lower()}"
             ),
-            'type': input_activity_type,
-            'actor': user_1.actor.activitypub_id,
-            'published': published,
-            'to': [user_1.actor.followers_url],
-            'cc': [],
-            'object': {
-                'id': workout_cycling_user_1.ap_id,
-                'type': 'Workout',
-                'published': published,
-                'url': workout_cycling_user_1.remote_url,
-                'attributedTo': user_1.actor.activitypub_id,
-                'to': [user_1.actor.followers_url],
-                'cc': [],
-                'ave_speed': workout_cycling_user_1.ave_speed,
-                'distance': workout_cycling_user_1.distance,
-                'duration': str(workout_cycling_user_1.duration),
-                'max_speed': workout_cycling_user_1.max_speed,
-                'moving': str(workout_cycling_user_1.moving),
-                'sport_id': workout_cycling_user_1.sport_id,
-                'title': workout_cycling_user_1.title,
-                'workout_date': workout_cycling_user_1.workout_date.strftime(
+            "type": input_activity_type,
+            "actor": user_1.actor.activitypub_id,
+            "published": published,
+            "to": [user_1.actor.followers_url],
+            "cc": [],
+            "object": {
+                "id": workout_cycling_user_1.ap_id,
+                "type": "Workout",
+                "published": published,
+                "url": workout_cycling_user_1.remote_url,
+                "attributedTo": user_1.actor.activitypub_id,
+                "to": [user_1.actor.followers_url],
+                "cc": [],
+                "ave_speed": workout_cycling_user_1.ave_speed,
+                "distance": workout_cycling_user_1.distance,
+                "duration": str(workout_cycling_user_1.duration),
+                "max_speed": workout_cycling_user_1.max_speed,
+                "moving": str(workout_cycling_user_1.moving),
+                "sport_id": workout_cycling_user_1.sport_id,
+                "title": workout_cycling_user_1.title,
+                "workout_date": workout_cycling_user_1.workout_date.strftime(
                     WORKOUT_DATE_FORMAT
                 ),
                 **updated,
             },
         }
 
-    @pytest.mark.parametrize('input_activity_type', ['Create', 'Update'])
+    @pytest.mark.parametrize("input_activity_type", ["Create", "Update"])
     def test_it_generates_create_activity_when_visibility_is_public(
         self,
         app_with_federation: Flask,
@@ -192,31 +192,31 @@ class TestWorkoutObject(WorkoutObjectTestCase):
         serialized_workout = workout.get_activity()
 
         assert serialized_workout == {
-            '@context': AP_CTX,
-            'id': (
-                f'{workout_cycling_user_1.ap_id}/{input_activity_type.lower()}'
+            "@context": AP_CTX,
+            "id": (
+                f"{workout_cycling_user_1.ap_id}/{input_activity_type.lower()}"
             ),
-            'type': input_activity_type,
-            'actor': user_1.actor.activitypub_id,
-            'published': published,
-            'to': ['https://www.w3.org/ns/activitystreams#Public'],
-            'cc': [user_1.actor.followers_url],
-            'object': {
-                'id': workout_cycling_user_1.ap_id,
-                'type': 'Workout',
-                'published': published,
-                'url': workout_cycling_user_1.remote_url,
-                'attributedTo': user_1.actor.activitypub_id,
-                'to': ['https://www.w3.org/ns/activitystreams#Public'],
-                'cc': [user_1.actor.followers_url],
-                'ave_speed': workout_cycling_user_1.ave_speed,
-                'distance': workout_cycling_user_1.distance,
-                'duration': str(workout_cycling_user_1.duration),
-                'max_speed': workout_cycling_user_1.max_speed,
-                'moving': str(workout_cycling_user_1.moving),
-                'sport_id': workout_cycling_user_1.sport_id,
-                'title': workout_cycling_user_1.title,
-                'workout_date': workout_cycling_user_1.workout_date.strftime(
+            "type": input_activity_type,
+            "actor": user_1.actor.activitypub_id,
+            "published": published,
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "cc": [user_1.actor.followers_url],
+            "object": {
+                "id": workout_cycling_user_1.ap_id,
+                "type": "Workout",
+                "published": published,
+                "url": workout_cycling_user_1.remote_url,
+                "attributedTo": user_1.actor.activitypub_id,
+                "to": ["https://www.w3.org/ns/activitystreams#Public"],
+                "cc": [user_1.actor.followers_url],
+                "ave_speed": workout_cycling_user_1.ave_speed,
+                "distance": workout_cycling_user_1.distance,
+                "duration": str(workout_cycling_user_1.duration),
+                "max_speed": workout_cycling_user_1.max_speed,
+                "moving": str(workout_cycling_user_1.moving),
+                "sport_id": workout_cycling_user_1.sport_id,
+                "title": workout_cycling_user_1.title,
+                "workout_date": workout_cycling_user_1.workout_date.strftime(
                     WORKOUT_DATE_FORMAT
                 ),
                 **updated,
@@ -233,7 +233,7 @@ Distance: {workout.distance:.2f}km
 Duration: {workout.duration}</p>
 """
 
-    @pytest.mark.parametrize('input_activity_type', ['Create', 'Update'])
+    @pytest.mark.parametrize("input_activity_type", ["Create", "Update"])
     def test_it_returns_note_activity_when_visibility_is_followers_only(
         self,
         app_with_federation: Flask,
@@ -262,33 +262,33 @@ Duration: {workout.duration}</p>
         serialized_workout_note = workout.get_activity(is_note=True)
 
         assert serialized_workout_note == {
-            '@context': AP_CTX,
-            'id': (
-                f'{workout_cycling_user_1.ap_id}/'
-                f'note/{input_activity_type.lower()}'
+            "@context": AP_CTX,
+            "id": (
+                f"{workout_cycling_user_1.ap_id}/"
+                f"note/{input_activity_type.lower()}"
             ),
-            'type': input_activity_type,
-            'actor': user_1.actor.activitypub_id,
-            'published': published,
-            'to': [user_1.actor.followers_url],
-            'cc': [],
-            'object': {
-                'id': workout_cycling_user_1.ap_id,
-                'type': 'Note',
-                'published': published,
-                'url': workout_cycling_user_1.remote_url,
-                'attributedTo': user_1.actor.activitypub_id,
-                'content': self.expected_workout_note(
+            "type": input_activity_type,
+            "actor": user_1.actor.activitypub_id,
+            "published": published,
+            "to": [user_1.actor.followers_url],
+            "cc": [],
+            "object": {
+                "id": workout_cycling_user_1.ap_id,
+                "type": "Note",
+                "published": published,
+                "url": workout_cycling_user_1.remote_url,
+                "attributedTo": user_1.actor.activitypub_id,
+                "content": self.expected_workout_note(
                     workout_cycling_user_1,
                     workout_cycling_user_1.remote_url,  # type: ignore
                 ),
-                'to': [user_1.actor.followers_url],
-                'cc': [],
+                "to": [user_1.actor.followers_url],
+                "cc": [],
                 **updated,
             },
         }
 
-    @pytest.mark.parametrize('input_activity_type', ['Create', 'Update'])
+    @pytest.mark.parametrize("input_activity_type", ["Create", "Update"])
     def test_it_returns_note_activity_when_visibility_is_public(
         self,
         app_with_federation: Flask,
@@ -315,28 +315,28 @@ Duration: {workout.duration}</p>
         serialized_workout_note = workout.get_activity(is_note=True)
 
         assert serialized_workout_note == {
-            '@context': AP_CTX,
-            'id': (
-                f'{workout_cycling_user_1.ap_id}/'
-                f'note/{input_activity_type.lower()}'
+            "@context": AP_CTX,
+            "id": (
+                f"{workout_cycling_user_1.ap_id}/"
+                f"note/{input_activity_type.lower()}"
             ),
-            'type': input_activity_type,
-            'actor': user_1.actor.activitypub_id,
-            'published': published,
-            'to': ['https://www.w3.org/ns/activitystreams#Public'],
-            'cc': [user_1.actor.followers_url],
-            'object': {
-                'id': workout_cycling_user_1.ap_id,
-                'type': 'Note',
-                'published': published,
-                'url': workout_cycling_user_1.remote_url,
-                'attributedTo': user_1.actor.activitypub_id,
-                'content': self.expected_workout_note(
+            "type": input_activity_type,
+            "actor": user_1.actor.activitypub_id,
+            "published": published,
+            "to": ["https://www.w3.org/ns/activitystreams#Public"],
+            "cc": [user_1.actor.followers_url],
+            "object": {
+                "id": workout_cycling_user_1.ap_id,
+                "type": "Note",
+                "published": published,
+                "url": workout_cycling_user_1.remote_url,
+                "attributedTo": user_1.actor.activitypub_id,
+                "content": self.expected_workout_note(
                     workout_cycling_user_1,
                     workout_cycling_user_1.remote_url,  # type: ignore
                 ),
-                'to': ['https://www.w3.org/ns/activitystreams#Public'],
-                'cc': [user_1.actor.followers_url],
+                "to": ["https://www.w3.org/ns/activitystreams#Public"],
+                "cc": [user_1.actor.followers_url],
                 **updated,
             },
         }
@@ -344,14 +344,14 @@ Duration: {workout.duration}</p>
 
 class TestWorkoutConvertDurationStringToSeconds:
     @pytest.mark.parametrize(
-        'input_duration,expected_seconds',
+        "input_duration,expected_seconds",
         [
-            ('0:00:00', 0),
-            ('1:00:00', 3600),
-            ('01:00:00', 3600),
-            ('00:30:00', 1800),
-            ('00:00:10', 10),
-            ('01:20:30', 4830),
+            ("0:00:00", 0),
+            ("1:00:00", 3600),
+            ("01:00:00", 3600),
+            ("00:30:00", 1800),
+            ("00:00:10", 10),
+            ("01:20:30", 4830),
         ],
     )
     def test_it_converts_duration_string_into_seconds(
@@ -363,15 +363,15 @@ class TestWorkoutConvertDurationStringToSeconds:
         )
 
     @pytest.mark.parametrize(
-        'input_duration',
-        ['', '1:00', 3600, None],
+        "input_duration",
+        ["", "1:00", 3600, None],
     )
     def test_it_raises_exception_if_duration_is_invalid(
         self, input_duration: Any
     ) -> None:
         with pytest.raises(
             InvalidWorkoutException,
-            match='Invalid workout data: duration or moving format is invalid',
+            match="Invalid workout data: duration or moving format is invalid",
         ):
             convert_duration_string_to_seconds(duration_str=input_duration)
 
@@ -385,30 +385,30 @@ class TestWorkoutConvertWorkoutActivity(RandomMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_activity_object = {
-            'id': self.random_string(),
-            'type': 'Workout',
-            'published': workout_cycling_user_1.creation_date.strftime(
+            "id": self.random_string(),
+            "type": "Workout",
+            "published": workout_cycling_user_1.creation_date.strftime(
                 DATE_FORMAT
             ),
-            'url': self.random_string(),
-            'attributedTo': user_1.actor.activitypub_id,
-            'to': [user_1.actor.followers_url],
-            'cc': [],
-            'ave_speed': workout_cycling_user_1.ave_speed,
-            'distance': workout_cycling_user_1.distance,
-            'duration': str(workout_cycling_user_1.duration),
-            'max_speed': workout_cycling_user_1.max_speed,
-            'moving': str(workout_cycling_user_1.moving),
-            'sport_id': workout_cycling_user_1.sport_id,
-            'title': workout_cycling_user_1.title,
-            'workout_date': workout_cycling_user_1.workout_date.strftime(
+            "url": self.random_string(),
+            "attributedTo": user_1.actor.activitypub_id,
+            "to": [user_1.actor.followers_url],
+            "cc": [],
+            "ave_speed": workout_cycling_user_1.ave_speed,
+            "distance": workout_cycling_user_1.distance,
+            "duration": str(workout_cycling_user_1.duration),
+            "max_speed": workout_cycling_user_1.max_speed,
+            "moving": str(workout_cycling_user_1.moving),
+            "sport_id": workout_cycling_user_1.sport_id,
+            "title": workout_cycling_user_1.title,
+            "workout_date": workout_cycling_user_1.workout_date.strftime(
                 WORKOUT_DATE_FORMAT
             ),
-            'workout_visibility': workout_cycling_user_1.workout_visibility,
+            "workout_visibility": workout_cycling_user_1.workout_visibility,
         }
 
         assert convert_workout_activity(workout_activity_object) == {
             **workout_activity_object,
-            'duration': workout_cycling_user_1.duration.seconds,
-            'moving': workout_cycling_user_1.moving.seconds,  # type: ignore
+            "duration": workout_cycling_user_1.duration.seconds,
+            "moving": workout_cycling_user_1.moving.seconds,  # type: ignore
         }

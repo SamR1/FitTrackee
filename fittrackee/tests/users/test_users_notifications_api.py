@@ -115,7 +115,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             "total": 2,
         }
 
-    def test_it_returns_only_unread_notifications(  # noqa
+    def test_it_returns_only_unread_notifications(
         self,
         app: Flask,
         user_1: User,
@@ -161,7 +161,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             "total": 1,
         }
 
-    def test_it_returns_only_read_notifications(  # noqa
+    def test_it_returns_only_read_notifications(
         self,
         app: Flask,
         user_1: User,
@@ -754,7 +754,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             "total": 0,
         }
 
-    def test_it_does_not_return_follow_request_from_suspended_user(  # noqa
+    def test_it_does_not_return_follow_request_from_suspended_user(
         self,
         app: Flask,
         user_1: User,
@@ -785,7 +785,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             "total": 0,
         }
 
-    def test_it_does_not_return_accepted_follow_from_suspended_user(  # noqa
+    def test_it_does_not_return_accepted_follow_from_suspended_user(
         self,
         app: Flask,
         user_1: User,
@@ -1219,8 +1219,8 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         }
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'notifications:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "notifications:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1321,7 +1321,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
             response, f"notification not found (id: {notification.short_id})"
         )
 
-    @pytest.mark.parametrize('input_read_status', [True, False])
+    @pytest.mark.parametrize("input_read_status", [True, False])
     def test_it_updates_notification_status(
         self,
         app: Flask,
@@ -1383,8 +1383,8 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
         self.assert_500(response)
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'notifications:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "notifications:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1404,8 +1404,8 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
 
         response = client.patch(
             self.route.format(notification_id=self.random_short_id()),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -1719,8 +1719,8 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         assert data["unread"] is False
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'notifications:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "notifications:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1740,8 +1740,8 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
 
         response = client.get(
             self.route,
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -1893,7 +1893,7 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
         )
         self.assert_workout_like_notification_status(like, status=True)
 
-    @pytest.mark.parametrize('input_type', ['invalid_type', ''])
+    @pytest.mark.parametrize("input_type", ["invalid_type", ""])
     def test_it_does_not_mark_as_read_when_provided_type_is_invalid(
         self,
         app: Flask,
@@ -1930,8 +1930,8 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
         self.assert_workout_like_notification_status(like, status=False)
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'notifications:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "notifications:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1951,8 +1951,8 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
 
         response = client.post(
             self.route,
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -2003,7 +2003,7 @@ class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):
         assert data["status"] == "success"
         assert data["notification_types"] == []
 
-    @pytest.mark.parametrize('input_params', ['', '?status=all'])
+    @pytest.mark.parametrize("input_params", ["", "?status=all"])
     def test_it_returns_all_user_notifications_types(
         self,
         app: Flask,

@@ -10,7 +10,7 @@ weather_service = WeatherService()
 
 
 def open_gpx_file(gpx_file: str) -> Optional[gpxpy.gpx.GPX]:
-    gpx_file = open(gpx_file, 'r')  # type: ignore
+    gpx_file = open(gpx_file, "r")  # type: ignore
     gpx = gpxpy.parse(gpx_file)
     if len(gpx.tracks) == 0:
         return None
@@ -28,47 +28,47 @@ def get_gpx_data(
     Returns data from parsed gpx file
     """
     gpx_data: Dict[str, Any] = {
-        'max_speed': (max_speed / 1000) * 3600,
-        'start': start,
+        "max_speed": (max_speed / 1000) * 3600,
+        "start": start,
     }
 
     duration = parsed_gpx.get_duration()
-    gpx_data['duration'] = (
+    gpx_data["duration"] = (
         timedelta(seconds=duration if duration else 0)
         + stopped_time_between_seg
     )
 
     ele = parsed_gpx.get_elevation_extremes()
-    gpx_data['elevation_max'] = ele.maximum
-    gpx_data['elevation_min'] = ele.minimum
+    gpx_data["elevation_max"] = ele.maximum
+    gpx_data["elevation_min"] = ele.minimum
 
     # gpx file contains elevation data (<ele> element)
     if ele.maximum is not None:
         hill = parsed_gpx.get_uphill_downhill()
-        gpx_data['uphill'] = hill.uphill
-        gpx_data['downhill'] = hill.downhill
+        gpx_data["uphill"] = hill.uphill
+        gpx_data["downhill"] = hill.downhill
     else:
-        gpx_data['uphill'] = None
-        gpx_data['downhill'] = None
+        gpx_data["uphill"] = None
+        gpx_data["downhill"] = None
 
     moving_data = parsed_gpx.get_moving_data(
         stopped_speed_threshold=stopped_speed_threshold
     )
     if moving_data:
-        gpx_data['moving_time'] = timedelta(seconds=moving_data.moving_time)
-        gpx_data['stop_time'] = (
+        gpx_data["moving_time"] = timedelta(seconds=moving_data.moving_time)
+        gpx_data["stop_time"] = (
             timedelta(seconds=moving_data.stopped_time)
             + stopped_time_between_seg
         )
         distance = moving_data.moving_distance + moving_data.stopped_distance
-        gpx_data['distance'] = distance / 1000
+        gpx_data["distance"] = distance / 1000
 
         average_speed = (
             distance / moving_data.moving_time
             if moving_data.moving_time > 0
             else 0
         )
-        gpx_data['average_speed'] = (average_speed / 1000) * 3600
+        gpx_data["average_speed"] = (average_speed / 1000) * 3600
 
     return gpx_data
 
@@ -85,15 +85,15 @@ def get_gpx_info(
     """
     try:
         gpx = open_gpx_file(gpx_file)
-    except Exception:
-        raise InvalidGPXException('error', 'gpx file is invalid')
+    except Exception as e:
+        raise InvalidGPXException("error", "gpx file is invalid") from e
     if gpx is None:
-        raise InvalidGPXException('error', 'no tracks in gpx file')
+        raise InvalidGPXException("error", "no tracks in gpx file")
 
     gpx_data: Dict = {
-        'name': gpx.tracks[0].name,
-        'description': gpx.tracks[0].description,
-        'segments': [],
+        "name": gpx.tracks[0].name,
+        "description": gpx.tracks[0].description,
+        "segments": [],
     }
     max_speed = 0.0
     start: Optional[datetime] = None
@@ -110,7 +110,7 @@ def get_gpx_info(
         for point_idx, point in enumerate(segment.points):
             if point.time is None:
                 raise InvalidGPXException(
-                    'error', '<time> is missing in gpx file'
+                    "error", "<time> is missing in gpx file"
                 )
             if point_idx == 0:
                 segment_start = point.time
@@ -159,8 +159,8 @@ def get_gpx_info(
             no_stopped_time,
             stopped_speed_threshold,
         )
-        segment_data['idx'] = segment_idx
-        gpx_data['segments'].append(segment_data)
+        segment_data["idx"] = segment_idx
+        gpx_data["segments"].append(segment_data)
 
     full_gpx_data = get_gpx_data(
         gpx,
@@ -173,7 +173,7 @@ def get_gpx_info(
 
     if update_map_data:
         bounds = gpx.get_bounds()
-        gpx_data['bounds'] = (
+        gpx_data["bounds"] = (
             [
                 bounds.min_latitude,
                 bounds.min_longitude,
@@ -197,10 +197,10 @@ def get_gpx_segments(
         segment_index = segment_id - 1
         if segment_index > (len(track_segments) - 1):
             raise WorkoutGPXException(
-                'not found', f'No segment with id \'{segment_id}\'', None
+                "not found", f"No segment with id '{segment_id}'", None
             )
         if segment_index < 0:
-            raise WorkoutGPXException('error', 'Incorrect segment id', None)
+            raise WorkoutGPXException("error", "Incorrect segment id", None)
         segments = [track_segments[segment_index]]
     else:
         segments = track_segments
@@ -247,21 +247,21 @@ def get_chart_data(
                 else 0
             )
             data = {
-                'distance': (
+                "distance": (
                     round(distance / 1000, 2) if distance is not None else 0
                 ),
-                'duration': point.time_difference(first_point),
-                'latitude': point.latitude,
-                'longitude': point.longitude,
-                'speed': speed,
+                "duration": point.time_difference(first_point),
+                "latitude": point.latitude,
+                "longitude": point.longitude,
+                "speed": speed,
                 # workaround
                 # https://github.com/tkrajina/gpxpy/issues/209
-                'time': point.time.replace(
+                "time": point.time.replace(
                     tzinfo=timezone(point.time.utcoffset())
                 ),
             }
             if point.elevation:
-                data['elevation'] = round(point.elevation, 1)
+                data["elevation"] = round(point.elevation, 1)
             chart_data.append(data)
             previous_point = point
             previous_distance = distance
@@ -289,7 +289,7 @@ def extract_segment_from_gpx_file(
     gpx_segment = gpxpy.gpx.GPXTrackSegment()
     gpx_track.segments.append(gpx_segment)
 
-    for point_idx, point in enumerate(track_segment[0].points):
+    for point in track_segment[0].points:
         gpx_segment.points.append(
             gpxpy.gpx.GPXTrackPoint(
                 point.latitude, point.longitude, elevation=point.elevation

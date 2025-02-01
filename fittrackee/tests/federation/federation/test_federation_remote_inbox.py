@@ -16,9 +16,9 @@ from ...utils import generate_response
 
 
 class TestSendToRemoteInbox(BaseTestMixin, RandomMixin):
-    @patch('fittrackee.federation.inbox.generate_digest')
-    @patch('fittrackee.federation.inbox.generate_signature_header')
-    @patch('fittrackee.federation.inbox.requests')
+    @patch("fittrackee.federation.inbox.generate_digest")
+    @patch("fittrackee.federation.inbox.generate_signature_header")
+    @patch("fittrackee.federation.inbox.requests")
     def test_it_calls_generate_signature_header(
         self,
         requests_mock: Mock,
@@ -39,7 +39,7 @@ class TestSendToRemoteInbox(BaseTestMixin, RandomMixin):
         with travel(now, tick=False):
             send_to_inbox(
                 sender=actor_1,
-                activity={'foo': 'bar'},
+                activity={"foo": "bar"},
                 inbox_url=remote_actor.inbox_url,
             )
 
@@ -53,9 +53,9 @@ class TestSendToRemoteInbox(BaseTestMixin, RandomMixin):
             digest=digest,
         )
 
-    @patch('fittrackee.federation.inbox.generate_digest')
-    @patch('fittrackee.federation.inbox.generate_signature_header')
-    @patch('fittrackee.federation.inbox.requests')
+    @patch("fittrackee.federation.inbox.generate_digest")
+    @patch("fittrackee.federation.inbox.generate_signature_header")
+    @patch("fittrackee.federation.inbox.requests")
     def test_it_calls_requests_post(
         self,
         requests_mock: Mock,
@@ -67,7 +67,7 @@ class TestSendToRemoteInbox(BaseTestMixin, RandomMixin):
     ) -> None:
         actor_1 = user_1.actor
         remote_actor = remote_user.actor
-        activity = {'foo': 'bar'}
+        activity = {"foo": "bar"}
         now = datetime.now(timezone.utc)
         parsed_inbox_url = urlparse(remote_actor.inbox_url)
         requests_mock.post.return_value = generate_response(status_code=200)
@@ -87,19 +87,19 @@ class TestSendToRemoteInbox(BaseTestMixin, RandomMixin):
             remote_actor.inbox_url,
             data=dumps(activity),
             headers={
-                'Host': parsed_inbox_url.netloc,
-                'Date': self.get_date_string(
+                "Host": parsed_inbox_url.netloc,
+                "Date": self.get_date_string(
                     date_format=VALID_SIG_DATE_FORMAT, date=now
                 ),
-                'Digest': digest,
-                'Signature': signed_header,
-                'Content-Type': 'application/ld+json',
+                "Digest": digest,
+                "Signature": signed_header,
+                "Content-Type": "application/ld+json",
             },
             timeout=30,
         )
 
-    @patch('fittrackee.federation.inbox.generate_signature_header')
-    @patch('fittrackee.federation.inbox.requests')
+    @patch("fittrackee.federation.inbox.generate_signature_header")
+    @patch("fittrackee.federation.inbox.requests")
     def test_it_logs_error_if_remote_inbox_returns_error(
         self,
         requests_mock: Mock,
@@ -112,19 +112,19 @@ class TestSendToRemoteInbox(BaseTestMixin, RandomMixin):
         actor_1 = user_1.actor
         remote_actor = remote_user.actor
         status_code = 404
-        content = 'error'
+        content = "error"
         requests_mock.post.return_value = generate_response(
             status_code=status_code, content=content
         )
 
         send_to_inbox(
             sender=actor_1,
-            activity={'foo': 'bar'},
+            activity={"foo": "bar"},
             inbox_url=remote_actor.inbox_url,
         )
 
         assert len(caplog.records) == 1
-        assert caplog.records[0].levelname == 'ERROR'
+        assert caplog.records[0].levelname == "ERROR"
         assert caplog.records[0].message == (
             f"Error when send to inbox '{remote_actor.inbox_url}', "
             f"status code: {status_code}, "

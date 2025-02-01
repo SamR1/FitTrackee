@@ -27,11 +27,11 @@ class UserDataExporter:
     def __init__(self, user: User) -> None:
         self.user = user
         self.export_directory = get_absolute_file_path(
-            os.path.join('exports', str(self.user.id))
+            os.path.join("exports", str(self.user.id))
         )
         os.makedirs(self.export_directory, exist_ok=True)
         self.workouts_directory = get_absolute_file_path(
-            os.path.join('workouts', str(self.user.id))
+            os.path.join("workouts", str(self.user.id))
         )
 
     def get_user_info(self) -> Dict:
@@ -45,7 +45,7 @@ class UserDataExporter:
             )
             workout_data["sport_label"] = workout.sport.label
             workout_data["gpx"] = (
-                workout.gpx.split('/')[-1] if workout.gpx else None
+                workout.gpx.split("/")[-1] if workout.gpx else None
             )
             workouts_data.append(workout_data)
         return workouts_data
@@ -55,17 +55,17 @@ class UserDataExporter:
         for comment in self.user.comments:
             comments_data.append(
                 {
-                    'created_at': comment.created_at,
-                    'id': comment.short_id,
-                    'modification_date': comment.modification_date,
-                    'reply_to': (
+                    "created_at": comment.created_at,
+                    "id": comment.short_id,
+                    "modification_date": comment.modification_date,
+                    "reply_to": (
                         comment.parent_comment.short_id
                         if comment.reply_to
                         else None
                     ),
-                    'text': comment.text,
-                    'text_visibility': comment.text_visibility.value,
-                    'workout_id': (
+                    "text": comment.text,
+                    "text_visibility": comment.text_visibility.value,
+                    "workout_id": (
                         comment.workout.short_id
                         if comment.workout_id
                         else None
@@ -101,7 +101,7 @@ class UserDataExporter:
             )
             zip_file = f"archive_{secrets.token_urlsafe(15)}.zip"
             zip_path = os.path.join(self.export_directory, zip_file)
-            with ZipFile(zip_path, 'w') as zip_object:
+            with ZipFile(zip_path, "w") as zip_object:
                 zip_object.write(user_data_file_name, "user_data.json")
                 zip_object.write(
                     workout_data_file_name, "user_workouts_data.json"
@@ -116,13 +116,13 @@ class UserDataExporter:
                     picture_path = get_absolute_file_path(self.user.picture)
                     if os.path.isfile(picture_path):
                         zip_object.write(
-                            picture_path, self.user.picture.split('/')[-1]
+                            picture_path, self.user.picture.split("/")[-1]
                         )
                 if os.path.exists(self.workouts_directory):
                     for file in os.listdir(self.workouts_directory):
                         if os.path.isfile(
                             os.path.join(self.workouts_directory, file)
-                        ) and file.endswith('.gpx'):
+                        ) and file.endswith(".gpx"):
                             zip_object.write(
                                 os.path.join(self.workouts_directory, file),
                                 f"gpx/{file}",
@@ -133,7 +133,7 @@ class UserDataExporter:
             os.remove(workout_data_file_name)
             return (zip_path, zip_file) if file_exists else (None, None)
         except Exception as e:
-            appLog.error(f'Error when generating user data archive: {str(e)}')
+            appLog.error(f"Error when generating user data archive: {e!s}")
             return None, None
 
 
@@ -161,22 +161,22 @@ def export_user_data(export_request_id: int) -> None:
             export_request.file_size = os.path.getsize(archive_file_path)
             db.session.commit()
 
-            if current_app.config['CAN_SEND_EMAILS']:
-                fittrackee_url = current_app.config['UI_URL']
+            if current_app.config["CAN_SEND_EMAILS"]:
+                fittrackee_url = current_app.config["UI_URL"]
                 email_data = {
-                    'username': user.username,
-                    'fittrackee_url': fittrackee_url,
-                    'account_url': f'{fittrackee_url}/profile/edit/account',
+                    "username": user.username,
+                    "fittrackee_url": fittrackee_url,
+                    "account_url": f"{fittrackee_url}/profile/edit/account",
                 }
                 user_data = {
-                    'language': get_language(user.language),
-                    'email': user.email,
+                    "language": get_language(user.language),
+                    "email": user.email,
                 }
                 data_export_email.send(user_data, email_data)
         else:
             db.session.commit()
     except Exception as e:
-        appLog.error(f'Error when exporting user data: {str(e)}')
+        appLog.error(f"Error when exporting user data: {e!s}")
 
 
 def clean_user_data_export(days: int) -> Dict:

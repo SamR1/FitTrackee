@@ -11,10 +11,10 @@ from fittrackee.workouts.models import Sport, Workout
 from ...mixins import ApiTestCaseMixin
 
 
-@patch('fittrackee.workouts.workouts.send_to_remote_inbox')
+@patch("fittrackee.workouts.workouts.send_to_remote_inbox")
 class TestFederationDeleteWorkout(ApiTestCaseMixin):
     @pytest.mark.parametrize(
-        'workout_visibility',
+        "workout_visibility",
         [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_does_not_call_sent_to_inbox(
@@ -35,14 +35,14 @@ class TestFederationDeleteWorkout(ApiTestCaseMixin):
         )
 
         client.delete(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         send_to_remote_inbox_mock.send.assert_not_called()
 
     @pytest.mark.parametrize(
-        'workout_visibility',
+        "workout_visibility",
         [
             VisibilityLevel.FOLLOWERS_AND_REMOTE,
             VisibilityLevel.PUBLIC,
@@ -66,12 +66,12 @@ class TestFederationDeleteWorkout(ApiTestCaseMixin):
         )
 
         client.delete(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         delete_workout_activity, _ = workout_cycling_user_1.get_activities(
-            activity_type='Delete'
+            activity_type="Delete"
         )
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
@@ -80,7 +80,7 @@ class TestFederationDeleteWorkout(ApiTestCaseMixin):
         )
 
     @pytest.mark.parametrize(
-        'workout_visibility',
+        "workout_visibility",
         [
             VisibilityLevel.FOLLOWERS_AND_REMOTE,
             VisibilityLevel.PUBLIC,
@@ -105,12 +105,12 @@ class TestFederationDeleteWorkout(ApiTestCaseMixin):
         )
 
         client.delete(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         _, delete_note_activity = workout_cycling_user_1.get_activities(
-            activity_type='Delete'
+            activity_type="Delete"
         )
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,

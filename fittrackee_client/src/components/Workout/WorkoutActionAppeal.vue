@@ -68,7 +68,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars';
+  @use '~@/scss/vars.scss' as *;
 
   .appeal-action {
     .appeal-button {

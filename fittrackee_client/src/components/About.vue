@@ -89,7 +89,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base.scss';
+  @use '~@/scss/vars.scss' as *;
 
   .about-text {
     margin-top: 200px;

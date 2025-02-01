@@ -34,11 +34,11 @@ def inbox(request: Request) -> Union[Dict, HttpResponse]:
         signature_verification = SignatureVerification.get_signature(request)
         signature_verification.verify()
     except InvalidSignatureException:
-        return UnauthorizedErrorResponse(message='Invalid signature.')
+        return UnauthorizedErrorResponse(message="Invalid signature.")
 
     handle_activity.send(activity=activity_data)
 
-    return {'status': 'success'}
+    return {"status": "success"}
 
 
 def send_to_inbox(sender: Actor, activity: Dict, inbox_url: str) -> None:
@@ -56,11 +56,11 @@ def send_to_inbox(sender: Actor, activity: Dict, inbox_url: str) -> None:
         inbox_url,
         data=dumps(activity),
         headers={
-            'Host': parsed_inbox_url.netloc,
-            'Date': now_str,
-            'Signature': signed_header,
-            'Digest': digest,
-            'Content-Type': 'application/ld+json',
+            "Host": parsed_inbox_url.netloc,
+            "Date": now_str,
+            "Signature": signed_header,
+            "Digest": digest,
+            "Content-Type": "application/ld+json",
         },
         timeout=30,
     )

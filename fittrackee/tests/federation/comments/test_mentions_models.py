@@ -38,10 +38,10 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
         comment.serialize()  # unauthenticated user
 
     @pytest.mark.parametrize(
-        'text_visibility',
+        "text_visibility",
         [VisibilityLevel.FOLLOWERS, VisibilityLevel.FOLLOWERS_AND_REMOTE],
     )
-    @patch('fittrackee.federation.utils.user.update_remote_user')
+    @patch("fittrackee.federation.utils.user.update_remote_user")
     def test_comment_for_followers_is_visible_to_followers_and_mentioned_users(
         self,
         update_mock: Mock,
@@ -109,7 +109,7 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
             assert comment.serialize(user_4)  # user
             assert comment.serialize()  # unauthenticated user
 
-    @patch('fittrackee.federation.utils.user.update_remote_user')
+    @patch("fittrackee.federation.utils.user.update_remote_user")
     def test_private_comment_with_remote_mention_is_only_visible_to_author(
         self,
         update_mock: Mock,

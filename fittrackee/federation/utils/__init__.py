@@ -18,8 +18,8 @@ def generate_keys() -> Tuple[str, str]:
     Generate a new RSA key pair and return public and private keys as string
     """
     key_pair = RSA.generate(2048)
-    private_key = key_pair.exportKey('PEM').decode('utf-8')
-    public_key = key_pair.publickey().exportKey('PEM').decode('utf-8')
+    private_key = key_pair.exportKey("PEM").decode("utf-8")
+    public_key = key_pair.publickey().exportKey("PEM").decode("utf-8")
     return public_key, private_key
 
 
@@ -37,32 +37,32 @@ def get_ap_url(username: str, url_type: str) -> str:
     - 'profile_url'
     """
     ap_url = f"https://{current_app.config['AP_DOMAIN']}/federation/"
-    ap_url_user = f'{ap_url}user/{username}'
-    if url_type == 'user_url':
+    ap_url_user = f"{ap_url}user/{username}"
+    if url_type == "user_url":
         return ap_url_user
-    if url_type in ['inbox', 'outbox', 'following', 'followers']:
-        return f'{ap_url_user}/{url_type}'
-    if url_type == 'shared_inbox':
-        return f'{ap_url}inbox'
-    if url_type == 'profile_url':
+    if url_type in ["inbox", "outbox", "following", "followers"]:
+        return f"{ap_url_user}/{url_type}"
+    if url_type == "shared_inbox":
+        return f"{ap_url}inbox"
+    if url_type == "profile_url":
         return f"{current_app.config['UI_URL']}/users/{username}"
-    raise Exception('Invalid \'url_type\'.')
+    raise Exception("Invalid 'url_type'.")
 
 
 def remove_url_scheme(url: str) -> str:
-    return re.sub(r'https?://', '', url)
+    return re.sub(r"https?://", "", url)
 
 
 def is_invalid_activity_data(activity_data: Dict) -> bool:
     return (
-        'type' not in activity_data
-        or 'object' not in activity_data
-        or activity_data['type'] not in [a.value for a in ActivityType]
+        "type" not in activity_data
+        or "object" not in activity_data
+        or activity_data["type"] not in [a.value for a in ActivityType]
     )
 
 
 def sending_activities_allowed(visibility: VisibilityLevel) -> bool:
-    return current_app.config['FEDERATION_ENABLED'] and visibility in (
+    return current_app.config["FEDERATION_ENABLED"] and visibility in (
         VisibilityLevel.PUBLIC,
         VisibilityLevel.FOLLOWERS_AND_REMOTE,
     )

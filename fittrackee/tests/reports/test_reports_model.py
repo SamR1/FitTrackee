@@ -58,7 +58,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.created_at == report_created_at
         assert report.is_reported_user_warned is False
         assert report.note == report_note
-        assert report.object_type == 'comment'
+        assert report.object_type == "comment"
         assert report.reported_by == user_1.id
         assert report.reported_comment_id == comment.id
         assert report.reported_user_id == user_2.id
@@ -100,7 +100,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert updated_report.created_at == report_created_at
         assert updated_report.is_reported_user_warned is False
         assert updated_report.note == report_note
-        assert updated_report.object_type == 'comment'
+        assert updated_report.object_type == "comment"
         assert updated_report.reported_by == user_1.id
         assert updated_report.reported_comment_id is None
         assert updated_report.reported_user_id == user_2.id
@@ -129,7 +129,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.created_at == report_created_at
         assert report.is_reported_user_warned is False
         assert report.note == report_note
-        assert report.object_type == 'user'
+        assert report.object_type == "user"
         assert report.reported_by == user_1.id
         assert report.reported_comment_id is None
         assert report.reported_user_id == user_2.id
@@ -163,7 +163,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert updated_report.created_at == report_created_at
         assert updated_report.is_reported_user_warned is False
         assert updated_report.note == report_note
-        assert updated_report.object_type == 'user'
+        assert updated_report.object_type == "user"
         assert updated_report.reported_by == user_1.id
         assert updated_report.reported_comment_id is None
         assert updated_report.reported_user_id is None
@@ -197,7 +197,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert updated_report.created_at == report_created_at
         assert updated_report.is_reported_user_warned is False
         assert updated_report.note == report_note
-        assert updated_report.object_type == 'user'
+        assert updated_report.object_type == "user"
         assert updated_report.reported_by is None
         assert updated_report.reported_comment_id is None
         assert updated_report.reported_user_id == user_2.id
@@ -229,7 +229,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.created_at == report_created_at
         assert report.is_reported_user_warned is False
         assert report.note == report_note
-        assert report.object_type == 'workout'
+        assert report.object_type == "workout"
         assert report.reported_by == user_1.id
         assert report.reported_comment_id is None
         assert report.reported_user_id == user_2.id
@@ -266,7 +266,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert updated_report.created_at == report_created_at
         assert updated_report.is_reported_user_warned is False
         assert updated_report.note == report_note
-        assert updated_report.object_type == 'workout'
+        assert updated_report.object_type == "workout"
         assert updated_report.reported_by == user_1.id
         assert updated_report.reported_comment_id is None
         assert updated_report.reported_user_id == user_2.id
@@ -292,7 +292,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.created_at == now
         assert report.is_reported_user_warned is False
         assert report.note == report_note
-        assert report.object_type == 'user'
+        assert report.object_type == "user"
         assert report.reported_by == user_1.id
         assert report.reported_comment_id is None
         assert report.reported_user_id == user_2.id
@@ -1209,10 +1209,10 @@ class TestReportCommentSerializer(ReportCommentTestCase):
 
         serialized_comment = report_comment.serialize(user_1_moderator)
 
-        assert serialized_comment['created_at'] == report_comment.created_at
-        assert serialized_comment['comment'] == report_comment.comment
-        assert serialized_comment['id'] == report_comment.id
-        assert serialized_comment['report_id'] == report.id
-        assert serialized_comment['user'] == user_1_moderator.serialize(
+        assert serialized_comment["created_at"] == report_comment.created_at
+        assert serialized_comment["comment"] == report_comment.comment
+        assert serialized_comment["id"] == report_comment.id
+        assert serialized_comment["report_id"] == report.id
+        assert serialized_comment["user"] == user_1_moderator.serialize(
             current_user=user_1_moderator
         )

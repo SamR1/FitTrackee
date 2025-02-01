@@ -11,10 +11,10 @@ from fittrackee.workouts.models import Sport, Workout
 from ...mixins import ApiTestCaseMixin
 
 
-@patch('fittrackee.workouts.workouts.send_to_remote_inbox')
+@patch("fittrackee.workouts.workouts.send_to_remote_inbox")
 class TestFederationUpdateWorkout(ApiTestCaseMixin):
     @pytest.mark.parametrize(
-        'workout_visibility',
+        "workout_visibility",
         [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_does_not_call_sent_to_inbox_when_visibility_does_not_change_for_local_workouts(  # noqa
@@ -36,17 +36,17 @@ class TestFederationUpdateWorkout(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
-            content_type='application/json',
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            content_type="application/json",
             data=json.dumps(dict(sport_id=2, title=self.random_string())),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         send_to_remote_inbox_mock.send.assert_not_called()
 
     @pytest.mark.parametrize(
-        'workout_visibility',
+        "workout_visibility",
         [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_fittrackee_instance(  # noqa
@@ -72,8 +72,8 @@ class TestFederationUpdateWorkout(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
-            content_type='application/json',
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            content_type="application/json",
             data=json.dumps(
                 dict(
                     sport_id=2,
@@ -81,12 +81,12 @@ class TestFederationUpdateWorkout(ApiTestCaseMixin):
                     workout_visibility=workout_visibility.value,
                 )
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         update_workout_activity, _ = workout_cycling_user_1.get_activities(
-            activity_type='Update'
+            activity_type="Update"
         )
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
@@ -95,11 +95,11 @@ class TestFederationUpdateWorkout(ApiTestCaseMixin):
         )
 
     @pytest.mark.parametrize(
-        'old_workout_visibility',
+        "old_workout_visibility",
         [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     @pytest.mark.parametrize(
-        'new_workout_visibility',
+        "new_workout_visibility",
         [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_calls_sent_to_inbox_with_delete_activity_when_workout_is_not_visible_anymore_on_remote(  # noqa
@@ -121,12 +121,12 @@ class TestFederationUpdateWorkout(ApiTestCaseMixin):
             app_with_federation, user_1.email
         )
         delete_workout_activity, _ = workout_cycling_user_1.get_activities(
-            activity_type='Delete'
+            activity_type="Delete"
         )
 
         response = client.patch(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
-            content_type='application/json',
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            content_type="application/json",
             data=json.dumps(
                 dict(
                     sport_id=2,
@@ -134,7 +134,7 @@ class TestFederationUpdateWorkout(ApiTestCaseMixin):
                     workout_visibility=new_workout_visibility.value,
                 )
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
@@ -145,11 +145,11 @@ class TestFederationUpdateWorkout(ApiTestCaseMixin):
         )
 
     @pytest.mark.parametrize(
-        'old_workout_visibility',
+        "old_workout_visibility",
         [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     @pytest.mark.parametrize(
-        'new_workout_visibility',
+        "new_workout_visibility",
         [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_calls_sent_to_inbox_with_create_activity_when_workout_is_now_visible_on_remote(  # noqa
@@ -172,8 +172,8 @@ class TestFederationUpdateWorkout(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/workouts/{workout_cycling_user_1.short_id}',
-            content_type='application/json',
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            content_type="application/json",
             data=json.dumps(
                 dict(
                     sport_id=2,
@@ -181,12 +181,12 @@ class TestFederationUpdateWorkout(ApiTestCaseMixin):
                     workout_visibility=new_workout_visibility.value,
                 )
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         create_workout_activity, _ = workout_cycling_user_1.get_activities(
-            activity_type='Create'
+            activity_type="Create"
         )
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,

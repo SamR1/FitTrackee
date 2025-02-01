@@ -9,7 +9,7 @@ from fittrackee.files import display_readable_file_size
 
 
 def get_empty_data_for_datatype(data_type: str) -> Union[str, List]:
-    return '' if data_type in ['gpx', 'chart_data'] else []
+    return "" if data_type in ["gpx", "chart_data"] else []
 
 
 class HttpResponse(Response):
@@ -22,7 +22,7 @@ class HttpResponse(Response):
         if isinstance(response, dict):
             response = dumps(response)
             content_type = (
-                'application/json' if content_type is None else content_type
+                "application/json" if content_type is None else content_type
             )
         super().__init__(
             response=response,
@@ -39,8 +39,8 @@ class GenericErrorResponse(HttpResponse):
         status: Optional[str] = None,
     ) -> None:
         response = {
-            'status': 'error' if status is None else status,
-            'message': message,
+            "status": "error" if status is None else status,
+            "message": message,
         }
         super().__init__(
             response=response,
@@ -54,15 +54,15 @@ class InvalidPayloadErrorResponse(GenericErrorResponse):
         message: Optional[Union[str, List]] = None,
         status: Optional[str] = None,
     ) -> None:
-        message = 'invalid payload' if message is None else message
+        message = "invalid payload" if message is None else message
         super().__init__(status_code=400, message=message, status=status)
 
 
 class DataInvalidPayloadErrorResponse(HttpResponse):
     def __init__(self, data_type: str, status: Optional[str] = None) -> None:
         response = {
-            'status': 'error' if status is None else status,
-            'data': {data_type: get_empty_data_for_datatype(data_type)},
+            "status": "error" if status is None else status,
+            "data": {data_type: get_empty_data_for_datatype(data_type)},
         }
         super().__init__(response=response, status_code=400)
 
@@ -75,9 +75,9 @@ class EquipmentInvalidPayloadErrorResponse(HttpResponse):
         status: Optional[str] = None,
     ) -> None:
         response = {
-            'status': 'error' if status is None else status,
-            'equipment_id': equipment_id,
-            'message': message,
+            "status": "error" if status is None else status,
+            "equipment_id": equipment_id,
+            "message": message,
         }
         super().__init__(response=response, status_code=400)
 
@@ -85,7 +85,7 @@ class EquipmentInvalidPayloadErrorResponse(HttpResponse):
 class UnauthorizedErrorResponse(GenericErrorResponse):
     def __init__(self, message: Optional[str] = None) -> None:
         message = (
-            'invalid token, please request a new token'
+            "invalid token, please request a new token"
             if message is None
             else message
         )
@@ -94,28 +94,28 @@ class UnauthorizedErrorResponse(GenericErrorResponse):
 
 class ForbiddenErrorResponse(GenericErrorResponse):
     def __init__(self, message: Optional[str] = None) -> None:
-        message = 'you do not have permissions' if message is None else message
+        message = "you do not have permissions" if message is None else message
         super().__init__(status_code=403, message=message)
 
 
 class NotFoundErrorResponse(GenericErrorResponse):
     def __init__(self, message: str) -> None:
-        super().__init__(status_code=404, message=message, status='not found')
+        super().__init__(status_code=404, message=message, status="not found")
 
 
 class UserNotFoundErrorResponse(NotFoundErrorResponse):
     def __init__(self) -> None:
-        super().__init__(message='user does not exist')
+        super().__init__(message="user does not exist")
 
 
 class DataNotFoundErrorResponse(HttpResponse):
     def __init__(self, data_type: str, message: Optional[str] = None) -> None:
         response = {
-            'status': 'not found',
-            'data': {data_type: get_empty_data_for_datatype(data_type)},
+            "status": "not found",
+            "data": {data_type: get_empty_data_for_datatype(data_type)},
         }
         if message:
-            response['message'] = message
+            response["message"] = message
         super().__init__(response=response, status_code=404)
 
 
@@ -124,16 +124,16 @@ class PayloadTooLargeErrorResponse(GenericErrorResponse):
         self, file_type: str, file_size: Optional[int], max_size: Optional[int]
     ) -> None:
         readable_file_size = (
-            f'({display_readable_file_size(file_size)}) ' if file_size else ''
+            f"({display_readable_file_size(file_size)}) " if file_size else ""
         )
         readable_max_size = (
-            display_readable_file_size(max_size) if max_size else 'limit'
+            display_readable_file_size(max_size) if max_size else "limit"
         )
         message = (
-            f'Error during {file_type} upload, file size {readable_file_size}'
-            f'exceeds {readable_max_size}.'
+            f"Error during {file_type} upload, file size {readable_file_size}"
+            f"exceeds {readable_max_size}."
         )
-        super().__init__(status_code=413, message=message, status='fail')
+        super().__init__(status_code=413, message=message, status="fail")
 
 
 class InternalServerErrorResponse(GenericErrorResponse):
@@ -141,7 +141,7 @@ class InternalServerErrorResponse(GenericErrorResponse):
         self, message: Optional[str] = None, status: Optional[str] = None
     ) -> None:
         message = (
-            'error, please try again or contact the administrator'
+            "error, please try again or contact the administrator"
             if message is None
             else message
         )
@@ -150,7 +150,7 @@ class InternalServerErrorResponse(GenericErrorResponse):
 
 class DisabledFederationErrorResponse(ForbiddenErrorResponse):
     def __init__(self) -> None:
-        message = 'error, federation is disabled for this instance'
+        message = "error, federation is disabled for this instance"
         super().__init__(message=message)
 
 
@@ -169,36 +169,36 @@ def handle_error_and_return_response(
 def get_error_response_if_file_is_invalid(
     file_type: str, req: Request
 ) -> Optional[HttpResponse]:
-    if 'file' not in req.files:
-        return InvalidPayloadErrorResponse('no file part', 'fail')
+    if "file" not in req.files:
+        return InvalidPayloadErrorResponse("no file part", "fail")
 
-    file = req.files['file']
-    if not file.filename or file.filename == '':
-        return InvalidPayloadErrorResponse('no selected file', 'fail')
+    file = req.files["file"]
+    if not file.filename or file.filename == "":
+        return InvalidPayloadErrorResponse("no selected file", "fail")
 
     allowed_extensions = (
-        'WORKOUT_ALLOWED_EXTENSIONS'
-        if file_type == 'workout'
-        else 'PICTURE_ALLOWED_EXTENSIONS'
+        "WORKOUT_ALLOWED_EXTENSIONS"
+        if file_type == "workout"
+        else "PICTURE_ALLOWED_EXTENSIONS"
     )
 
     file_extension = (
-        file.filename.rsplit('.', 1)[1].lower()
-        if '.' in file.filename
+        file.filename.rsplit(".", 1)[1].lower()
+        if "." in file.filename
         else None
     )
-    max_file_size = current_app.config['max_single_file_size']
+    max_file_size = current_app.config["max_single_file_size"]
 
     if not (
         file_extension
         and file_extension in current_app.config[allowed_extensions]
     ):
         return InvalidPayloadErrorResponse(
-            'file extension not allowed', 'fail'
+            "file extension not allowed", "fail"
         )
 
     if (
-        file_extension != 'zip'
+        file_extension != "zip"
         and req.content_length is not None
         and req.content_length > max_file_size
     ):

@@ -271,7 +271,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
 
   .add-comment {
     margin: $default-margin * 2 0;

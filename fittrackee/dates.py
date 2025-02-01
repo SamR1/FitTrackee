@@ -40,14 +40,14 @@ def get_readable_duration(duration: int, locale: Optional[str] = None) -> str:
     Return readable and localized duration from duration in seconds
     """
     if locale is None:
-        locale = 'en'
-    if locale != 'en':
+        locale = "en"
+    if locale != "en":
         try:
-            _t = humanize.i18n.activate(locale)  # noqa
+            _t = humanize.i18n.activate(locale)
         except FileNotFoundError:
-            locale = 'en'
+            locale = "en"
     readable_duration = humanize.naturaldelta(timedelta(seconds=duration))
-    if locale != 'en':
+    if locale != "en":
         humanize.i18n.deactivate()
     return readable_duration
 
@@ -57,7 +57,7 @@ def aware_utc_now() -> datetime:
 
 
 def get_datetime_in_utc(
-    date_string: str, date_format: str = '%Y-%m-%d'
+    date_string: str, date_format: str = "%Y-%m-%d"
 ) -> datetime:
     return datetime.strptime(date_string, date_format).replace(
         tzinfo=timezone.utc

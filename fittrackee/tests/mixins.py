@@ -75,7 +75,7 @@ class RandomMixin:
 
     @staticmethod
     def random_domain() -> str:
-        return random_string(prefix='https://', suffix='com')
+        return random_string(prefix="https://", suffix="com")
 
     @staticmethod
     def random_email() -> str:
@@ -96,7 +96,7 @@ class RandomMixin:
         date: Optional[datetime] = None,
     ) -> str:
         return get_date_string(
-            date_format if date_format else '%a, %d %b %Y %H:%M:%S GMT', date
+            date_format if date_format else "%a, %d %b %Y %H:%M:%S GMT", date
         )
 
 
@@ -111,7 +111,7 @@ class OAuth2Mixin(RandomMixin):
             TEST_OAUTH_CLIENT_METADATA if metadata is None else metadata
         )
         if scope is not None:
-            client_metadata['scope'] = scope
+            client_metadata["scope"] = scope
         oauth_client = create_oauth2_client(client_metadata, user)
         db.session.add(oauth_client)
         db.session.commit()
@@ -144,19 +144,19 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         app: Flask, user_email: Optional[str]
     ) -> Tuple[FlaskClient, str]:
         if not user_email:
-            raise Exception('Invalid user email')
+            raise Exception("Invalid user email")
         client = app.test_client()
         resp_login = client.post(
-            '/api/auth/login',
+            "/api/auth/login",
             data=json.dumps(
                 dict(
                     email=user_email,
-                    password='12345678',
+                    password="12345678",
                 )
             ),
-            content_type='application/json',
+            content_type="application/json",
         )
-        auth_token = json.loads(resp_login.data.decode())['auth_token']
+        auth_token = json.loads(resp_login.data.decode())["auth_token"]
         return client, auth_token
 
     @staticmethod
@@ -170,22 +170,22 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         if code_challenge is None:
             code_challenge = {}
         response = client.post(
-            '/api/oauth/authorize',
+            "/api/oauth/authorize",
             data={
-                'client_id': oauth_client.client_id,
-                'confirm': True,
-                'response_type': 'code',
-                'scope': 'read' if not scope else scope,
+                "client_id": oauth_client.client_id,
+                "confirm": True,
+                "response_type": "code",
+                "scope": "read" if not scope else scope,
                 **code_challenge,
             },
             headers=dict(
-                Authorization=f'Bearer {auth_token}',
-                content_type='multipart/form-data',
+                Authorization=f"Bearer {auth_token}",
+                content_type="multipart/form-data",
             ),
         )
         data = json.loads(response.data.decode())
-        parsed_url = parse_url(data['redirect_url'])
-        code = parse_qs(parsed_url.query).get('code', '')
+        parsed_url = parse_url(data["redirect_url"])
+        code = parse_qs(parsed_url.query).get("code", "")
         return code
 
     def create_oauth2_client_and_issue_token(
@@ -199,23 +199,23 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
             client, oauth_client, auth_token, scope=scope
         )
         response = client.post(
-            '/api/oauth/token',
+            "/api/oauth/token",
             data={
-                'client_id': oauth_client.client_id,
-                'client_secret': oauth_client.client_secret,
-                'grant_type': 'authorization_code',
-                'code': code,
+                "client_id": oauth_client.client_id,
+                "client_secret": oauth_client.client_secret,
+                "grant_type": "authorization_code",
+                "code": code,
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
         data = json.loads(response.data.decode())
-        return client, oauth_client, data.get('access_token'), auth_token
+        return client, oauth_client, data.get("access_token"), auth_token
 
     @staticmethod
     def assert_400(
         response: TestResponse,
-        error_message: Optional[str] = 'invalid payload',
-        status: Optional[str] = 'error',
+        error_message: Optional[str] = "invalid payload",
+        status: Optional[str] = "error",
     ) -> Dict:
         return assert_errored_response(
             response, 400, error_message=error_message, status=status
@@ -224,7 +224,7 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
     @staticmethod
     def assert_401(
         response: TestResponse,
-        error_message: Optional[str] = 'provide a valid auth token',
+        error_message: Optional[str] = "provide a valid auth token",
     ) -> Dict:
         return assert_errored_response(
             response, 401, error_message=error_message
@@ -233,19 +233,19 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
     @staticmethod
     def assert_403(
         response: TestResponse,
-        error_message: Optional[str] = 'you do not have permissions',
+        error_message: Optional[str] = "you do not have permissions",
     ) -> Dict:
         return assert_errored_response(response, 403, error_message)
 
     @staticmethod
     def assert_404(response: TestResponse) -> Dict:
-        return assert_errored_response(response, 404, status='not found')
+        return assert_errored_response(response, 404, status="not found")
 
     @staticmethod
     def assert_404_with_entity(response: TestResponse, entity: str) -> Dict:
-        error_message = f'{entity} does not exist'
+        error_message = f"{entity} does not exist"
         return assert_errored_response(
-            response, 404, error_message=error_message, status='not found'
+            response, 404, error_message=error_message, status="not found"
         )
 
     @staticmethod
@@ -253,7 +253,7 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         response: TestResponse, error_message: str
     ) -> Dict:
         return assert_errored_response(
-            response, 404, error_message=error_message, status='not found'
+            response, 404, error_message=error_message, status="not found"
         )
 
     @staticmethod
@@ -266,7 +266,7 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
             response,
             413,
             error_message=error_message,
-            status='fail',
+            status="fail",
             match=match,
         )
 
@@ -274,9 +274,9 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
     def assert_500(
         response: TestResponse,
         error_message: Optional[str] = (
-            'error, please try again or contact the administrator'
+            "error, please try again or contact the administrator"
         ),
-        status: Optional[str] = 'error',
+        status: Optional[str] = "error",
     ) -> Dict:
         return assert_errored_response(
             response, 500, error_message=error_message, status=status
@@ -285,7 +285,7 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
     @staticmethod
     def assert_unsupported_grant_type(response: TestResponse) -> Dict:
         return assert_oauth_errored_response(
-            response, 400, error='unsupported_grant_type'
+            response, 400, error="unsupported_grant_type"
         )
 
     @staticmethod
@@ -293,7 +293,7 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         return assert_oauth_errored_response(
             response,
             400,
-            error='invalid_client',
+            error="invalid_client",
         )
 
     @staticmethod
@@ -303,7 +303,7 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         return assert_oauth_errored_response(
             response,
             400,
-            error='invalid_grant',
+            error="invalid_grant",
             error_description=error_description,
         )
 
@@ -314,7 +314,7 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         return assert_oauth_errored_response(
             response,
             400,
-            error='invalid_request',
+            error="invalid_request",
             error_description=error_description,
         )
 
@@ -323,10 +323,10 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         return assert_oauth_errored_response(
             response,
             401,
-            error='invalid_token',
+            error="invalid_token",
             error_description=(
-                'The access token provided is expired, revoked, malformed, '
-                'or invalid for other reasons.'
+                "The access token provided is expired, revoked, malformed, "
+                "or invalid for other reasons."
             ),
         )
 
@@ -335,10 +335,10 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         return assert_oauth_errored_response(
             response,
             403,
-            error='insufficient_scope',
+            error="insufficient_scope",
             error_description=(
-                'The request requires higher privileges than provided by '
-                'the access token.'
+                "The request requires higher privileges than provided by "
+                "the access token."
             ),
         )
 
@@ -360,20 +360,20 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
     ) -> None:
         response = client.post(
             url,
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 404
         data = json.loads(response.data.decode())
-        assert data['status'] == 'not found'
-        assert data['message'] == message
+        assert data["status"] == "not found"
+        assert data["message"] == message
 
     def assert_return_user_not_found(
         self, url: str, client: FlaskClient, auth_token: str
     ) -> None:
         self.assert_return_not_found(
-            url, client, auth_token, 'user does not exist'
+            url, client, auth_token, "user does not exist"
         )
 
 
@@ -542,13 +542,13 @@ class UserInboxTestMixin(BaseTestMixin):
         send_to_remote_inbox_mock.send.assert_called_once()
         self.assert_call_args_keys_equal(
             send_to_remote_inbox_mock.send,
-            ['sender_id', 'activity', 'recipients'],
+            ["sender_id", "activity", "recipients"],
         )
         call_args = self.get_kwargs(send_to_remote_inbox_mock.send.call_args)
-        assert call_args['sender_id'] == local_actor.id
-        assert call_args['recipients'] == [remote_actor.inbox_url]
+        assert call_args["sender_id"] == local_actor.id
+        assert call_args["recipients"] == [remote_actor.inbox_url]
         activity = base_object.get_activity(
             {} if activity_args is None else activity_args
         )
-        del activity['id']
-        self.assert_dict_contains_subset(call_args['activity'], activity)
+        del activity["id"]
+        self.assert_dict_contains_subset(call_args["activity"], activity)

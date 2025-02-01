@@ -71,7 +71,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/vars';
+  @use '~@/scss/vars.scss' as *;
   .report-notification {
     display: flex;
     justify-content: space-between;

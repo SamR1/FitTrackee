@@ -60,7 +60,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         assert user == user_1
 
     @pytest.mark.parametrize(
-        'input_role', ['user', 'moderator', 'admin', 'owner']
+        "input_role", ["user", "moderator", "admin", "owner"]
     )
     def test_it_sets_role_for_a_given_user(
         self, app: Flask, user_1: User, input_role: str
@@ -91,7 +91,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         report_notification = Notification.query.filter_by(
             from_user_id=user_1_admin.id,
             to_user_id=user_2_admin.id,
-            event_type='report',
+            event_type="report",
             event_object_id=report.id,
         ).first()
         # follow request
@@ -99,7 +99,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         follow_request_notification = Notification(
             from_user_id=user_1_admin.id,
             to_user_id=user_2_admin.id,
-            event_type='follow_request',
+            event_type="follow_request",
             created_at=follow_request.created_at,
         )
         db.session.add(follow_request_notification)
@@ -132,7 +132,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         follow_request_notification = Notification(
             from_user_id=user_1_admin.id,
             to_user_id=user_2_moderator.id,
-            event_type='follow_request',
+            event_type="follow_request",
             created_at=follow_request.created_at,
         )
         db.session.add(follow_request_notification)
@@ -159,7 +159,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         user_creation_notification = Notification(
             from_user_id=user_3.id,
             to_user_id=user_2_admin.id,
-            event_type='account_creation',
+            event_type="account_creation",
             created_at=user_3.created_at,
         )
         db.session.add(user_creation_notification)
@@ -168,7 +168,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         report_notification = Notification.query.filter_by(
             from_user_id=user_1_admin.id,
             to_user_id=user_2_admin.id,
-            event_type='report',
+            event_type="report",
             event_object_id=report.id,
         ).first()
         # follow request
@@ -176,7 +176,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         follow_request_notification = Notification(
             from_user_id=user_1_admin.id,
             to_user_id=user_2_admin.id,
-            event_type='follow_request',
+            event_type="follow_request",
             created_at=follow_request.created_at,
         )
         db.session.add(follow_request_notification)
@@ -205,7 +205,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         user_creation_notification = Notification(
             from_user_id=user_3.id,
             to_user_id=user_2_admin.id,
-            event_type='account_creation',
+            event_type="account_creation",
             created_at=user_3.created_at,
         )
         db.session.add(user_creation_notification)
@@ -216,7 +216,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         follow_request_notification = Notification(
             from_user_id=user_1_admin.id,
             to_user_id=user_2_admin.id,
-            event_type='follow_request',
+            event_type="follow_request",
             created_at=follow_request.created_at,
         )
         db.session.add(follow_request_notification)
@@ -242,7 +242,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         user_creation_notification = Notification(
             from_user_id=user_3.id,
             to_user_id=user_2_owner.id,
-            event_type='account_creation',
+            event_type="account_creation",
             created_at=user_3.created_at,
         )
         db.session.add(user_creation_notification)
@@ -251,7 +251,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         report_notification = Notification.query.filter_by(
             from_user_id=user_1_admin.id,
             to_user_id=user_2_owner.id,
-            event_type='report',
+            event_type="report",
             event_object_id=report.id,
         ).first()
         # follow request
@@ -259,7 +259,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         follow_request_notification = Notification(
             from_user_id=user_1_admin.id,
             to_user_id=user_2_owner.id,
-            event_type='follow_request',
+            event_type="follow_request",
             created_at=follow_request.created_at,
         )
         db.session.add(follow_request_notification)
@@ -288,7 +288,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         user_creation_notification = Notification(
             from_user_id=user_3.id,
             to_user_id=user_2_owner.id,
-            event_type='account_creation',
+            event_type="account_creation",
             created_at=user_3.created_at,
         )
         db.session.add(user_creation_notification)
@@ -299,7 +299,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         follow_request_notification = Notification(
             from_user_id=user_1_admin.id,
             to_user_id=user_2_owner.id,
-            event_type='follow_request',
+            event_type="follow_request",
             created_at=follow_request.created_at,
         )
         db.session.add(follow_request_notification)
@@ -325,7 +325,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         user_creation_notification = Notification(
             from_user_id=user_3.id,
             to_user_id=user_2_owner.id,
-            event_type='account_creation',
+            event_type="account_creation",
             created_at=user_3.created_at,
         )
         db.session.add(user_creation_notification)
@@ -334,7 +334,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         report_notification = Notification.query.filter_by(
             from_user_id=user_1_admin.id,
             to_user_id=user_2_owner.id,
-            event_type='report',
+            event_type="report",
             event_object_id=report.id,
         ).first()
         # follow request
@@ -342,7 +342,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         follow_request_notification = Notification(
             from_user_id=user_1_admin.id,
             to_user_id=user_2_owner.id,
-            event_type='follow_request',
+            event_type="follow_request",
             created_at=follow_request.created_at,
         )
         db.session.add(follow_request_notification)
@@ -366,7 +366,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
     ) -> None:
         user_manager_service = UserManagerService(username=user_1.username)
 
-        _, user_updated, _, _ = user_manager_service.update(role='admin')
+        _, user_updated, _, _ = user_manager_service.update(role="admin")
 
         assert user_updated is True
 
@@ -377,12 +377,12 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
             username=user_1_admin.username
         )
 
-        _, user_updated, _, _ = user_manager_service.update(role='admin')
+        _, user_updated, _, _ = user_manager_service.update(role="admin")
 
         assert user_1_admin.role == UserRole.ADMIN.value
         assert user_updated is True
 
-    @pytest.mark.parametrize('input_activate', [True, False])
+    @pytest.mark.parametrize("input_activate", [True, False])
     def test_it_activates_admin_account_if_user_is_inactive_regardless_activate_value(  # noqa
         self, app: Flask, inactive_user: User, input_activate: bool
     ) -> None:
@@ -391,7 +391,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         )
 
         _, user_updated, _, _ = user_manager_service.update(
-            role='admin', activate=input_activate
+            role="admin", activate=input_activate
         )
 
         assert inactive_user.role == UserRole.ADMIN.value
@@ -470,7 +470,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
     ) -> None:
         user_manager_service = UserManagerService(username=user_1.username)
         with pytest.raises(
-            InvalidEmailException, match='valid email must be provided'
+            InvalidEmailException, match="valid email must be provided"
         ):
             user_manager_service.update(new_email=random_string())
 
@@ -480,7 +480,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         user_manager_service = UserManagerService(username=user_1.username)
         with pytest.raises(
             InvalidEmailException,
-            match='new email must be different than current email',
+            match="new email must be different than current email",
         ):
             user_manager_service.update(new_email=user_1.email)
 
@@ -514,7 +514,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         assert user_updated is True
 
     @pytest.mark.parametrize(
-        'input_suspended', ["user_suspension", "user_unsuspension"]
+        "input_suspended", ["user_suspension", "user_unsuspension"]
     )
     def test_it_raises_error_when_report_id_not_provided_on_suspension_status_update(  # noqa
         self,
@@ -534,7 +534,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
             user_manager_service.update(suspended=input_suspended)
 
     @pytest.mark.parametrize(
-        'input_suspended', ["user_suspension", "user_unsuspension"]
+        "input_suspended", ["user_suspension", "user_unsuspension"]
     )
     def test_it_raises_error_when_admin_id_not_provided_on_suspension_status_update(  # noqa
         self,
@@ -647,7 +647,7 @@ class TestUserManagerServiceUserUpdate(ReportMixin):
         assert user_updated is False
 
     @pytest.mark.parametrize(
-        'input_suspended, expected_action_action',
+        "input_suspended, expected_action_action",
         [(True, "user_suspension"), (False, "user_unsuspension")],
     )
     def test_it_creates_report_action_when_updated_suspended_status(
@@ -689,11 +689,11 @@ class TestUserManagerServiceUserCreation:
     def test_it_raises_exception_if_provided_username_is_invalid(
         self, app: Flask
     ) -> None:
-        user_manager_service = UserManagerService(username='.admin')
+        user_manager_service = UserManagerService(username=".admin")
         with pytest.raises(
             UserCreationException,
             match=(
-                'username: only alphanumeric characters and '
+                "username: only alphanumeric characters and "
                 'the underscore character "_" allowed\n'
             ),
         ):
@@ -705,7 +705,7 @@ class TestUserManagerServiceUserCreation:
         user_manager_service = UserManagerService(username=user_1.username)
         with pytest.raises(
             UserCreationException,
-            match='sorry, that username is already taken',
+            match="sorry, that username is already taken",
         ):
             user_manager_service.create(email=random_email())
 
@@ -714,7 +714,7 @@ class TestUserManagerServiceUserCreation:
     ) -> None:
         user_manager_service = UserManagerService(username=random_string())
         with pytest.raises(
-            UserCreationException, match='valid email must be provided'
+            UserCreationException, match="valid email must be provided"
         ):
             user_manager_service.create(email=random_string())
 
@@ -724,7 +724,7 @@ class TestUserManagerServiceUserCreation:
         user_manager_service = UserManagerService(username=random_string())
         with pytest.raises(
             UserCreationException,
-            match='This user already exists. No action done.',
+            match="This user already exists. No action done.",
         ):
             user_manager_service.create(email=user_1.email)  # type: ignore
 
@@ -784,7 +784,7 @@ class TestUserManagerServiceUserCreation:
         assert new_user.is_active is False
         assert new_user.confirmation_token is not None
 
-    @pytest.mark.parametrize('input_role', [{}, {"role": "user"}])
+    @pytest.mark.parametrize("input_role", [{}, {"role": "user"}])
     def test_created_user_has_user_role_when_role_not_provided(
         self, app: Flask, input_role: dict
     ) -> None:
@@ -800,7 +800,7 @@ class TestUserManagerServiceUserCreation:
         assert new_user.is_active is False
         assert new_user.confirmation_token is not None
 
-    @pytest.mark.parametrize('input_role', ['moderator', 'admin', 'owner'])
+    @pytest.mark.parametrize("input_role", ["moderator", "admin", "owner"])
     def test_it_creates_user_with_given_role(
         self, app: Flask, input_role: str
     ) -> None:
@@ -821,7 +821,7 @@ class TestUserManagerServiceUserCreation:
         user_manager_service = UserManagerService(username=username)
 
         with pytest.raises(InvalidUserRole):
-            user_manager_service.create(email=random_email(), role='invalid')
+            user_manager_service.create(email=random_email(), role="invalid")
 
     def test_created_user_does_not_accept_privacy_policy(
         self, app: Flask
@@ -841,18 +841,16 @@ class TestUserManagerServiceUserCreation:
         new_user, _ = user_manager_service.create(email=random_email())
 
         assert new_user
-        assert new_user.timezone == 'Europe/Paris'
+        assert new_user.timezone == "Europe/Paris"
 
-    def test_created_user_date_format_is_MM_dd_yyyy(  # noqa
-        self, app: Flask
-    ) -> None:
+    def test_created_user_date_format_is_MM_dd_yyyy(self, app: Flask) -> None:
         username = random_string()
         user_manager_service = UserManagerService(username=username)
 
         new_user, _ = user_manager_service.create(email=random_email())
 
         assert new_user
-        assert new_user.date_format == 'MM/dd/yyyy'
+        assert new_user.date_format == "MM/dd/yyyy"
 
     def test_created_user_language_is_en(self, app: Flask) -> None:
         username = random_string()
@@ -861,4 +859,4 @@ class TestUserManagerServiceUserCreation:
         new_user, _ = user_manager_service.create(email=random_email())
 
         assert new_user
-        assert new_user.language == 'en'
+        assert new_user.language == "en"

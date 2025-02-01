@@ -36,23 +36,23 @@ from ...comments.mixins import CommentMixin
 from ...mixins import RandomMixin
 from ...utils import RandomActor, random_int, random_string
 
-SUPPORTED_ACTIVITIES = [(f'{a.value} activity', a.value) for a in ActivityType]
+SUPPORTED_ACTIVITIES = [(f"{a.value} activity", a.value) for a in ActivityType]
 
 
 class TestActivityInstantiation(RandomMixin):
     @pytest.mark.parametrize(
-        'input_description,input_type', SUPPORTED_ACTIVITIES
+        "input_description,input_type", SUPPORTED_ACTIVITIES
     )
     def test_it_instantiates_activity_from_activity_dict(
         self, input_description: str, input_type: str
     ) -> None:
-        activity = get_activity_instance({'type': input_type})
+        activity = get_activity_instance({"type": input_type})
         activity_instance = activity(activity_dict={})
-        assert activity_instance.__class__.__name__ == f'{input_type}Activity'
+        assert activity_instance.__class__.__name__ == f"{input_type}Activity"
 
     def test_it_raises_exception_if_activity_type_is_invalid(self) -> None:
         with pytest.raises(UnsupportedActivityException):
-            get_activity_instance({'type': self.random_string()})
+            get_activity_instance({"type": self.random_string()})
 
 
 class FollowRequestActivitiesTestCase:
@@ -66,11 +66,11 @@ class FollowRequestActivitiesTestCase:
         if followed_actor is None:
             followed_actor = RandomActor()
         return {
-            '@context': AP_CTX,
-            'id': f'{follower_actor_id}#follows/{followed_actor.fullname}',
-            'type': ActivityType.FOLLOW.value,
-            'actor': follower_actor_id,
-            'object': followed_actor.activitypub_id,
+            "@context": AP_CTX,
+            "id": f"{follower_actor_id}#follows/{followed_actor.fullname}",
+            "type": ActivityType.FOLLOW.value,
+            "actor": follower_actor_id,
+            "object": followed_actor.activitypub_id,
         }
 
     @staticmethod
@@ -84,31 +84,31 @@ class FollowRequestActivitiesTestCase:
         if followed_actor is None:
             followed_actor = RandomActor()
         activity_action = (
-            f'{activity_type.value.lower()}e'
+            f"{activity_type.value.lower()}e"
             if activity_type == ActivityType.UNDO
             else activity_type.value.lower()
         )
         return {
-            '@context': AP_CTX,
-            'id': (
-                f'{followed_actor.activitypub_id}#'
-                f'{activity_action}s/follow/'
-                f'{follower_actor.fullname}'
+            "@context": AP_CTX,
+            "id": (
+                f"{followed_actor.activitypub_id}#"
+                f"{activity_action}s/follow/"
+                f"{follower_actor.fullname}"
             ),
-            'type': activity_type.value,
-            'actor': (
+            "type": activity_type.value,
+            "actor": (
                 follower_actor.activitypub_id
                 if activity_type == ActivityType.UNDO
                 else followed_actor.activitypub_id
             ),
-            'object': {
-                'id': (
-                    f'{follower_actor.activitypub_id}#follows/'
-                    f'{followed_actor.fullname}'
+            "object": {
+                "id": (
+                    f"{follower_actor.activitypub_id}#follows/"
+                    f"{followed_actor.fullname}"
                 ),
-                'type': ActivityType.FOLLOW.value,
-                'actor': follower_actor.activitypub_id,
-                'object': followed_actor.activitypub_id,
+                "type": ActivityType.FOLLOW.value,
+                "actor": follower_actor.activitypub_id,
+                "object": followed_actor.activitypub_id,
             },
         }
 
@@ -147,13 +147,13 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
         follow_activity = self.generate_follow_activity(
             follower_actor_id=user_1.actor.activitypub_id
         )
-        activity = get_activity_instance({'type': follow_activity['type']})(
+        activity = get_activity_instance({"type": follow_activity["type"]})(
             activity_dict=follow_activity
         )
 
         with pytest.raises(
             ActorNotFoundException,
-            match='object actor not found for FollowActivity',
+            match="object actor not found for FollowActivity",
         ):
             activity.process_activity()
 
@@ -169,7 +169,7 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
             follower_actor_id=remote_user.actor.activitypub_id,
             followed_actor=user_1.actor,
         )
-        activity = get_activity_instance({'type': follow_activity['type']})(
+        activity = get_activity_instance({"type": follow_activity["type"]})(
             activity_dict=follow_activity
         )
 
@@ -186,7 +186,7 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
             follower_actor_id=remote_user.actor.activitypub_id,
             followed_actor=user_1.actor,
         )
-        activity = get_activity_instance({'type': follow_activity['type']})(
+        activity = get_activity_instance({"type": follow_activity["type"]})(
             activity_dict=follow_activity
         )
 
@@ -208,19 +208,19 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
             follower_actor_id=random_actor.activitypub_id,
             followed_actor=user_1.actor,
         )
-        activity = get_activity_instance({'type': follow_activity['type']})(
+        activity = get_activity_instance({"type": follow_activity["type"]})(
             activity_dict=follow_activity
         )
         with (
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=random_actor.get_remote_user_object(),
             ),
             patch(
-                'fittrackee.federation.utils.user.store_or_delete_user_picture'
+                "fittrackee.federation.utils.user.store_or_delete_user_picture"
             ),
             patch(
-                'fittrackee.federation.utils.user.update_remote_actor_stats'
+                "fittrackee.federation.utils.user.update_remote_actor_stats"
             ),
         ):
             activity.process_activity()
@@ -241,7 +241,7 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
             follower_actor_id=remote_user.actor.activitypub_id,
             followed_actor=remote_user.actor,
         )
-        activity = get_activity_instance({'type': follow_activity['type']})(
+        activity = get_activity_instance({"type": follow_activity["type"]})(
             activity_dict=follow_activity
         )
 
@@ -261,13 +261,13 @@ class TestAcceptActivity(FollowRequestActivitiesTestCase):
         accept_activity = self.generate_accept_activity(
             followed_actor=remote_user.actor
         )
-        activity = get_activity_instance({'type': accept_activity['type']})(
+        activity = get_activity_instance({"type": accept_activity["type"]})(
             activity_dict=accept_activity
         )
 
         with pytest.raises(
             ActorNotFoundException,
-            match='object actor not found for AcceptActivity',
+            match="object actor not found for AcceptActivity",
         ):
             activity.process_activity()
 
@@ -277,13 +277,13 @@ class TestAcceptActivity(FollowRequestActivitiesTestCase):
         accept_activity = self.generate_accept_activity(
             follower_actor=user_1.actor
         )
-        activity = get_activity_instance({'type': accept_activity['type']})(
+        activity = get_activity_instance({"type": accept_activity["type"]})(
             activity_dict=accept_activity
         )
 
         with pytest.raises(
             ActorNotFoundException,
-            match='actor not found for AcceptActivity',
+            match="actor not found for AcceptActivity",
         ):
             activity.process_activity()
 
@@ -296,7 +296,7 @@ class TestAcceptActivity(FollowRequestActivitiesTestCase):
         accept_activity = self.generate_accept_activity(
             follower_actor=user_1.actor, followed_actor=remote_user.actor
         )
-        activity = get_activity_instance({'type': accept_activity['type']})(
+        activity = get_activity_instance({"type": accept_activity["type"]})(
             activity_dict=accept_activity
         )
 
@@ -314,7 +314,7 @@ class TestAcceptActivity(FollowRequestActivitiesTestCase):
         accept_activity = self.generate_accept_activity(
             followed_actor=remote_user.actor, follower_actor=user_1.actor
         )
-        activity = get_activity_instance({'type': accept_activity['type']})(
+        activity = get_activity_instance({"type": accept_activity["type"]})(
             activity_dict=accept_activity
         )
 
@@ -331,7 +331,7 @@ class TestAcceptActivity(FollowRequestActivitiesTestCase):
         accept_activity = self.generate_accept_activity(
             follower_actor=user_1.actor, followed_actor=remote_user.actor
         )
-        activity = get_activity_instance({'type': accept_activity['type']})(
+        activity = get_activity_instance({"type": accept_activity["type"]})(
             activity_dict=accept_activity
         )
 
@@ -353,13 +353,13 @@ class TestRejectActivity(FollowRequestActivitiesTestCase):
         accept_activity = self.generate_reject_activity(
             followed_actor=remote_user.actor
         )
-        activity = get_activity_instance({'type': accept_activity['type']})(
+        activity = get_activity_instance({"type": accept_activity["type"]})(
             activity_dict=accept_activity
         )
 
         with pytest.raises(
             ActorNotFoundException,
-            match='object actor not found for RejectActivity',
+            match="object actor not found for RejectActivity",
         ):
             activity.process_activity()
 
@@ -369,13 +369,13 @@ class TestRejectActivity(FollowRequestActivitiesTestCase):
         accept_activity = self.generate_reject_activity(
             follower_actor=user_1.actor
         )
-        activity = get_activity_instance({'type': accept_activity['type']})(
+        activity = get_activity_instance({"type": accept_activity["type"]})(
             activity_dict=accept_activity
         )
 
         with pytest.raises(
             ActorNotFoundException,
-            match='actor not found for RejectActivity',
+            match="actor not found for RejectActivity",
         ):
             activity.process_activity()
 
@@ -388,7 +388,7 @@ class TestRejectActivity(FollowRequestActivitiesTestCase):
         accept_activity = self.generate_reject_activity(
             follower_actor=user_1.actor, followed_actor=remote_user.actor
         )
-        activity = get_activity_instance({'type': accept_activity['type']})(
+        activity = get_activity_instance({"type": accept_activity["type"]})(
             activity_dict=accept_activity
         )
 
@@ -406,7 +406,7 @@ class TestRejectActivity(FollowRequestActivitiesTestCase):
         accept_activity = self.generate_accept_activity(
             followed_actor=remote_user.actor, follower_actor=user_1.actor
         )
-        activity = get_activity_instance({'type': accept_activity['type']})(
+        activity = get_activity_instance({"type": accept_activity["type"]})(
             activity_dict=accept_activity
         )
 
@@ -423,7 +423,7 @@ class TestRejectActivity(FollowRequestActivitiesTestCase):
         accept_activity = self.generate_reject_activity(
             follower_actor=user_1.actor, followed_actor=remote_user.actor
         )
-        activity = get_activity_instance({'type': accept_activity['type']})(
+        activity = get_activity_instance({"type": accept_activity["type"]})(
             activity_dict=accept_activity
         )
 
@@ -445,13 +445,13 @@ class TestUndoActivityForFollowRequest(FollowRequestActivitiesTestCase):
         undo_activity = self.generate_undo_activity(
             followed_actor=remote_user.actor
         )
-        activity = get_activity_instance({'type': undo_activity['type']})(
+        activity = get_activity_instance({"type": undo_activity["type"]})(
             activity_dict=undo_activity
         )
 
         with pytest.raises(
             ActorNotFoundException,
-            match='actor not found for UndoActivity',
+            match="actor not found for UndoActivity",
         ):
             activity.process_activity()
 
@@ -461,13 +461,13 @@ class TestUndoActivityForFollowRequest(FollowRequestActivitiesTestCase):
         undo_activity = self.generate_undo_activity(
             follower_actor=user_1.actor
         )
-        activity = get_activity_instance({'type': undo_activity['type']})(
+        activity = get_activity_instance({"type": undo_activity["type"]})(
             activity_dict=undo_activity
         )
 
         with pytest.raises(
             ActorNotFoundException,
-            match='actor not found for UndoActivity',
+            match="actor not found for UndoActivity",
         ):
             activity.process_activity()
 
@@ -481,7 +481,7 @@ class TestUndoActivityForFollowRequest(FollowRequestActivitiesTestCase):
             follower_actor=user_1.actor,
             followed_actor=remote_user.actor,
         )
-        activity = get_activity_instance({'type': undo_activity['type']})(
+        activity = get_activity_instance({"type": undo_activity["type"]})(
             activity_dict=undo_activity
         )
 
@@ -498,7 +498,7 @@ class TestUndoActivityForFollowRequest(FollowRequestActivitiesTestCase):
         undo_activity = self.generate_undo_activity(
             follower_actor=user_1.actor, followed_actor=remote_user.actor
         )
-        activity = get_activity_instance({'type': undo_activity['type']})(
+        activity = get_activity_instance({"type": undo_activity["type"]})(
             activity_dict=undo_activity
         )
 
@@ -523,12 +523,12 @@ class WorkoutActivitiesTestCase(RandomMixin):
         remote_domain = (
             remote_actor.domain
             if isinstance(remote_actor, RandomActor)
-            else f'https://{remote_actor.domain.name}'
+            else f"https://{remote_actor.domain.name}"
         )
         workout_date = datetime.now(timezone.utc).strftime(WORKOUT_DATE_FORMAT)
         workout_distance = self.random_int(max_value=999)
         workout_short_id = self.random_short_id()
-        workout_url = f'{remote_domain}/workouts/{workout_short_id}'
+        workout_url = f"{remote_domain}/workouts/{workout_short_id}"
         published = datetime.now(timezone.utc).strftime(DATE_FORMAT)
         activity: Dict = {
             "@context": AP_CTX,
@@ -563,15 +563,15 @@ class WorkoutActivitiesTestCase(RandomMixin):
             },
         }
         if visibility == VisibilityLevel.PUBLIC:
-            activity['to'] = [PUBLIC_STREAM]
-            activity['cc'] = [remote_actor.followers_url]
-            activity['object']['to'] = [PUBLIC_STREAM]
-            activity['object']['cc'] = [remote_actor.followers_url]
+            activity["to"] = [PUBLIC_STREAM]
+            activity["cc"] = [remote_actor.followers_url]
+            activity["object"]["to"] = [PUBLIC_STREAM]
+            activity["object"]["cc"] = [remote_actor.followers_url]
         else:
-            activity['to'] = [remote_actor.followers_url]
-            activity['cc'] = []
-            activity['object']['to'] = [remote_actor.followers_url]
-            activity['object']['cc'] = []
+            activity["to"] = [remote_actor.followers_url]
+            activity["cc"] = []
+            activity["object"]["to"] = [remote_actor.followers_url]
+            activity["object"]["cc"] = []
         return activity
 
     def generate_workout_create_activity(
@@ -581,7 +581,7 @@ class WorkoutActivitiesTestCase(RandomMixin):
         visibility: VisibilityLevel = VisibilityLevel.PUBLIC,
     ) -> Dict:
         return self.generate_random_object(
-            remote_actor, sport_id, 'Create', visibility
+            remote_actor, sport_id, "Create", visibility
         )
 
     def generate_workout_update_activity(
@@ -596,7 +596,7 @@ class WorkoutActivitiesTestCase(RandomMixin):
             updates = {}
         if workout:
             actor: Actor = workout.user.actor
-            remote_domain = f'https://{workout.user.actor.domain.name}'
+            remote_domain = f"https://{workout.user.actor.domain.name}"
             published = datetime.now(timezone.utc).strftime(DATE_FORMAT)
             activity = {
                 "@context": AP_CTX,
@@ -635,18 +635,18 @@ class WorkoutActivitiesTestCase(RandomMixin):
             else:
                 workout_visibility = workout.workout_visibility
             if workout_visibility == VisibilityLevel.PUBLIC:
-                activity['to'] = [PUBLIC_STREAM]
-                activity['cc'] = [actor.followers_url]
-                activity['object']['to'] = [PUBLIC_STREAM]
-                activity['object']['cc'] = [actor.followers_url]
+                activity["to"] = [PUBLIC_STREAM]
+                activity["cc"] = [actor.followers_url]
+                activity["object"]["to"] = [PUBLIC_STREAM]
+                activity["object"]["cc"] = [actor.followers_url]
             else:
-                activity['to'] = [actor.followers_url]
-                activity['cc'] = []
-                activity['object']['to'] = [actor.followers_url]
-                activity['object']['cc'] = []
+                activity["to"] = [actor.followers_url]
+                activity["cc"] = []
+                activity["object"]["to"] = [actor.followers_url]
+                activity["object"]["cc"] = []
         elif remote_actor and remote_actor and sport_id:
             activity = self.generate_random_object(
-                remote_actor, sport_id, 'Update', VisibilityLevel.PUBLIC
+                remote_actor, sport_id, "Update", VisibilityLevel.PUBLIC
             )
         activity["object"] = {**activity["object"], **updates}
         return activity
@@ -659,23 +659,23 @@ class WorkoutActivitiesTestCase(RandomMixin):
         remote_domain = (
             remote_actor.domain
             if isinstance(remote_actor, RandomActor)
-            else f'https://{remote_actor.domain.name}'
+            else f"https://{remote_actor.domain.name}"
         )
         workout_short_id = (
             remote_workout.ap_id
             if remote_workout
-            else f'{remote_domain}/workouts/{self.random_short_id()}'
+            else f"{remote_domain}/workouts/{self.random_short_id()}"
         )
         return {
-            '@context': AP_CTX,
-            'id': f'{workout_short_id}/delete',
-            'type': 'Delete',
-            'actor': remote_actor.activitypub_id,
-            'to': [PUBLIC_STREAM],
-            'cc': [],
-            'object': {
-                'id': workout_short_id,
-                'type': 'Tombstone',
+            "@context": AP_CTX,
+            "id": f"{workout_short_id}/delete",
+            "type": "Delete",
+            "actor": remote_actor.activitypub_id,
+            "to": [PUBLIC_STREAM],
+            "cc": [],
+            "object": {
+                "id": workout_short_id,
+                "type": "Tombstone",
             },
         }
 
@@ -690,13 +690,13 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
         workout_activity = self.generate_workout_create_activity(
             remote_actor=random_actor, sport_id=sport_1_cycling.id
         )
-        activity = get_activity_instance({'type': workout_activity['type']})(
+        activity = get_activity_instance({"type": workout_activity["type"]})(
             activity_dict=workout_activity
         )
 
         with pytest.raises(
             ActorNotFoundException,
-            match='actor not found for CreateActivity',
+            match="actor not found for CreateActivity",
         ):
             activity.process_activity()
 
@@ -708,7 +708,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
         workout_activity = self.generate_workout_create_activity(
             remote_actor=remote_user.actor, sport_id=self.random_int()
         )
-        activity = get_activity_instance({'type': workout_activity['type']})(
+        activity = get_activity_instance({"type": workout_activity["type"]})(
             activity_dict=workout_activity
         )
 
@@ -726,7 +726,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
             sport_id=sport_1_cycling.id,
             visibility=VisibilityLevel.PUBLIC,
         )
-        activity = get_activity_instance({'type': workout_activity['type']})(
+        activity = get_activity_instance({"type": workout_activity["type"]})(
             activity_dict=workout_activity
         )
 
@@ -735,10 +735,10 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
         remote_workout = Workout.query.filter_by(
             user_id=remote_user.id, sport_id=sport_1_cycling.id
         ).one()
-        assert remote_workout.ap_id == workout_activity['object']['id']
-        assert remote_workout.remote_url == workout_activity['object']['url']
+        assert remote_workout.ap_id == workout_activity["object"]["id"]
+        assert remote_workout.remote_url == workout_activity["object"]["url"]
         assert (
-            remote_workout.distance == workout_activity['object']['distance']
+            remote_workout.distance == workout_activity["object"]["distance"]
         )
         assert remote_workout.workout_visibility == VisibilityLevel.PUBLIC
 
@@ -753,7 +753,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
             sport_id=sport_1_cycling.id,
             visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
         )
-        activity = get_activity_instance({'type': workout_activity['type']})(
+        activity = get_activity_instance({"type": workout_activity["type"]})(
             activity_dict=workout_activity
         )
 
@@ -779,7 +779,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
             sport_id=sport_1_cycling.id,
             visibility=VisibilityLevel.PUBLIC,
         )
-        activity = get_activity_instance({'type': workout_activity['type']})(
+        activity = get_activity_instance({"type": workout_activity["type"]})(
             activity_dict=workout_activity
         )
         activity.process_activity()
@@ -789,7 +789,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
         ).one()
         assert (
             remote_workout.serialize(user=remote_user, light=False)[
-                'remote_url'
+                "remote_url"
             ]
             == remote_workout.remote_url
         )
@@ -804,7 +804,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
         workout_activity = self.generate_workout_create_activity(
             remote_actor=remote_user.actor, sport_id=sport_1_cycling.id
         )
-        activity = get_activity_instance({'type': workout_activity['type']})(
+        activity = get_activity_instance({"type": workout_activity["type"]})(
             activity_dict=workout_activity
         )
         activity.process_activity()
@@ -824,13 +824,13 @@ class TestDeleteActivityForWorkout(WorkoutActivitiesTestCase):
         delete_activity = self.generate_workout_delete_activity(
             remote_actor=remote_user.actor
         )
-        activity = get_activity_instance({'type': delete_activity['type']})(
+        activity = get_activity_instance({"type": delete_activity["type"]})(
             activity_dict=delete_activity
         )
 
         with pytest.raises(
             ObjectNotFoundException,
-            match='object not found for DeleteActivity',
+            match="object not found for DeleteActivity",
         ):
             activity.process_activity()
 
@@ -842,13 +842,13 @@ class TestDeleteActivityForWorkout(WorkoutActivitiesTestCase):
         delete_activity = self.generate_workout_delete_activity(
             remote_actor=random_actor
         )
-        activity = get_activity_instance({'type': delete_activity['type']})(
+        activity = get_activity_instance({"type": delete_activity["type"]})(
             activity_dict=delete_activity
         )
 
         with pytest.raises(
             ActorNotFoundException,
-            match='actor not found for DeleteActivity',
+            match="actor not found for DeleteActivity",
         ):
             activity.process_activity()
 
@@ -864,14 +864,14 @@ class TestDeleteActivityForWorkout(WorkoutActivitiesTestCase):
             remote_actor=remote_user_2.actor,
             remote_workout=remote_cycling_workout,
         )
-        activity = get_activity_instance({'type': delete_activity['type']})(
+        activity = get_activity_instance({"type": delete_activity["type"]})(
             activity_dict=delete_activity
         )
 
         with pytest.raises(
             ActivityException,
             match=(
-                'DeleteActivity: activity actor does not match workout actor.'
+                "DeleteActivity: activity actor does not match workout actor."
             ),
         ):
             activity.process_activity()
@@ -891,7 +891,7 @@ class TestDeleteActivityForWorkout(WorkoutActivitiesTestCase):
             remote_actor=remote_user.actor,
             remote_workout=remote_cycling_workout,
         )
-        activity = get_activity_instance({'type': delete_activity['type']})(
+        activity = get_activity_instance({"type": delete_activity["type"]})(
             activity_dict=delete_activity
         )
         workout_id = remote_cycling_workout.id
@@ -948,13 +948,13 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
     ) -> None:
         update_activity = self.generate_workout_update_activity(
             workout=remote_cycling_workout,
-            updates={'title': self.random_string()},
+            updates={"title": self.random_string()},
         )
         update_activity = {
             **update_activity,
-            'actor': remote_user_2.actor.activitypub_id,
+            "actor": remote_user_2.actor.activitypub_id,
         }
-        activity = get_activity_instance({'type': update_activity['type']})(
+        activity = get_activity_instance({"type": update_activity["type"]})(
             activity_dict=update_activity
         )
         serialize_workout = remote_cycling_workout.serialize(user=remote_user)
@@ -1120,16 +1120,16 @@ class CommentActivitiesTestCase(RandomMixin):
         remote_domain = (
             remote_actor.domain
             if isinstance(remote_actor, RandomActor)
-            else f'https://{remote_actor.domain.name}'
+            else f"https://{remote_actor.domain.name}"
         )
         workout_short_id = (
             workout.short_id if workout else self.random_short_id()
         )
         if not workout:
             workout_api_id = (
-                f'{remote_domain}/federation/users/'
-                f'{remote_actor.name}/'
-                f'workouts/{workout_short_id}'
+                f"{remote_domain}/federation/users/"
+                f"{remote_actor.name}/"
+                f"workouts/{workout_short_id}"
             )
         else:
             workout_api_id = workout.ap_id  # type: ignore
@@ -1140,8 +1140,8 @@ class CommentActivitiesTestCase(RandomMixin):
             f"/comments/{comment_short_id}"
         )
         comment_url = (
-            f'{remote_domain}/workouts/{workout_short_id}'
-            f'/comment/{comment_short_id}'
+            f"{remote_domain}/workouts/{workout_short_id}"
+            f"/comment/{comment_short_id}"
         )
         published = datetime.now(timezone.utc).strftime(DATE_FORMAT)
         activity: Dict = {
@@ -1165,20 +1165,20 @@ class CommentActivitiesTestCase(RandomMixin):
             },
         }
         if visibility == VisibilityLevel.PUBLIC:
-            activity['to'] = [PUBLIC_STREAM]
-            activity['cc'] = [remote_actor.followers_url]
-            activity['object']['to'] = [PUBLIC_STREAM]
-            activity['object']['cc'] = [remote_actor.followers_url]
+            activity["to"] = [PUBLIC_STREAM]
+            activity["cc"] = [remote_actor.followers_url]
+            activity["object"]["to"] = [PUBLIC_STREAM]
+            activity["object"]["cc"] = [remote_actor.followers_url]
         elif visibility == VisibilityLevel.FOLLOWERS_AND_REMOTE:
-            activity['to'] = [remote_actor.followers_url]
-            activity['cc'] = []
-            activity['object']['to'] = [remote_actor.followers_url]
-            activity['object']['cc'] = []
+            activity["to"] = [remote_actor.followers_url]
+            activity["cc"] = []
+            activity["object"]["to"] = [remote_actor.followers_url]
+            activity["object"]["cc"] = []
         elif workout:
-            activity['to'] = [workout.user.actor.followers_url]
-            activity['cc'] = []
-            activity['object']['to'] = [workout.user.actor.followers_url]
-            activity['object']['cc'] = []
+            activity["to"] = [workout.user.actor.followers_url]
+            activity["cc"] = []
+            activity["object"]["to"] = [workout.user.actor.followers_url]
+            activity["object"]["cc"] = []
         return activity
 
     def generate_workout_comment_create_activity(
@@ -1211,26 +1211,26 @@ class CommentActivitiesTestCase(RandomMixin):
         remote_domain = (
             remote_actor.domain
             if isinstance(remote_actor, RandomActor)
-            else f'https://{remote_actor.domain.name}'
+            else f"https://{remote_actor.domain.name}"
         )
         comment_ap_id = (
             remote_comment.ap_id
             if remote_comment
             else (
-                f'{remote_domain}/workouts/{self.random_short_id()}'
-                f'/comments/{self.random_short_id()}/'
+                f"{remote_domain}/workouts/{self.random_short_id()}"
+                f"/comments/{self.random_short_id()}/"
             )
         )
         return {
-            '@context': AP_CTX,
-            'id': f'{comment_ap_id}/delete',
-            'type': 'Delete',
-            'actor': remote_actor.activitypub_id,
-            'to': [PUBLIC_STREAM],
-            'cc': [],
-            'object': {
-                'id': comment_ap_id,
-                'type': 'Tombstone',
+            "@context": AP_CTX,
+            "id": f"{comment_ap_id}/delete",
+            "type": "Delete",
+            "actor": remote_actor.activitypub_id,
+            "to": [PUBLIC_STREAM],
+            "cc": [],
+            "object": {
+                "id": comment_ap_id,
+                "type": "Tombstone",
             },
         }
 
@@ -1245,14 +1245,14 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
         comment_activity = self.generate_workout_comment_create_activity(
             remote_actor=remote_user.actor
         )
-        activity = get_activity_instance({'type': comment_activity['type']})(
+        activity = get_activity_instance({"type": comment_activity["type"]})(
             activity_dict=comment_activity
         )
 
         activity.process_activity()
 
         remote_comment = Comment.query.filter_by().one()
-        assert remote_comment.ap_id == comment_activity['object']['id']
+        assert remote_comment.ap_id == comment_activity["object"]["id"]
 
     def test_it_creates_remote_workout_comment_when_remote_user_does_not_exist(
         self,
@@ -1269,26 +1269,26 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
             workout=workout_cycling_user_1,
             visibility=VisibilityLevel.PUBLIC,
         )
-        activity = get_activity_instance({'type': comment_activity['type']})(
+        activity = get_activity_instance({"type": comment_activity["type"]})(
             activity_dict=comment_activity
         )
 
         with (
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=random_actor.get_remote_user_object(),
             ),
             patch(
-                'fittrackee.federation.utils.user.store_or_delete_user_picture'
+                "fittrackee.federation.utils.user.store_or_delete_user_picture"
             ),
             patch(
-                'fittrackee.federation.utils.user.update_remote_actor_stats'
+                "fittrackee.federation.utils.user.update_remote_actor_stats"
             ),
         ):
             activity.process_activity()
 
         remote_comment = Comment.query.filter_by().one()
-        assert remote_comment.ap_id == comment_activity['object']['id']
+        assert remote_comment.ap_id == comment_activity["object"]["id"]
         assert (
             User.query.filter_by(username=random_actor.name).first()
             is not None
@@ -1311,30 +1311,30 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
             text=(
                 f'<a href="{self.random_string()}" target="_blank" '
                 f'rel="noopener noreferrer">@<span>{random_actor.fullname}'
-                f'</span></a>'
+                f"</span></a>"
             ),
             visibility=VisibilityLevel.PUBLIC,
         )
-        activity = get_activity_instance({'type': comment_activity['type']})(
+        activity = get_activity_instance({"type": comment_activity["type"]})(
             activity_dict=comment_activity
         )
 
         with (
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=random_actor.get_remote_user_object(),
             ),
             patch(
-                'fittrackee.federation.utils.user.store_or_delete_user_picture'
+                "fittrackee.federation.utils.user.store_or_delete_user_picture"
             ),
             patch(
-                'fittrackee.federation.utils.user.update_remote_actor_stats'
+                "fittrackee.federation.utils.user.update_remote_actor_stats"
             ),
         ):
             activity.process_activity()
 
         remote_comment = Comment.query.filter_by().one()
-        assert remote_comment.ap_id == comment_activity['object']['id']
+        assert remote_comment.ap_id == comment_activity["object"]["id"]
         new_user = User.query.filter_by(username=random_actor.name).one()
         assert new_user is not None
         assert (
@@ -1345,7 +1345,7 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
         )
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [
             VisibilityLevel.PUBLIC,
             VisibilityLevel.FOLLOWERS_AND_REMOTE,
@@ -1368,16 +1368,16 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
             workout=workout_cycling_user_1,
             visibility=input_visibility,
         )
-        activity = get_activity_instance({'type': comment_activity['type']})(
+        activity = get_activity_instance({"type": comment_activity["type"]})(
             activity_dict=comment_activity
         )
 
         activity.process_activity()
 
         remote_comment = Comment.query.filter_by(user_id=remote_user.id).one()
-        assert remote_comment.ap_id == comment_activity['object']['id']
-        assert remote_comment.remote_url == comment_activity['object']['url']
-        assert remote_comment.text == comment_activity['object']['content']
+        assert remote_comment.ap_id == comment_activity["object"]["id"]
+        assert remote_comment.remote_url == comment_activity["object"]["url"]
+        assert remote_comment.text == comment_activity["object"]["content"]
         assert remote_comment.text_visibility == input_visibility
         assert remote_comment.reply_to is None
 
@@ -1404,21 +1404,21 @@ class TestCreateActivityForCommentReply(
             comment_activity["object"]["inReplyTo"]
             + f"/comments/{self.random_short_id()}"
         )
-        activity = get_activity_instance({'type': comment_activity['type']})(
+        activity = get_activity_instance({"type": comment_activity["type"]})(
             activity_dict=comment_activity
         )
 
         activity.process_activity()
 
         remote_comment = Comment.query.filter_by(user_id=remote_user.id).one()
-        assert remote_comment.ap_id == comment_activity['object']['id']
-        assert remote_comment.remote_url == comment_activity['object']['url']
-        assert remote_comment.text == comment_activity['object']['content']
+        assert remote_comment.ap_id == comment_activity["object"]["id"]
+        assert remote_comment.remote_url == comment_activity["object"]["url"]
+        assert remote_comment.text == comment_activity["object"]["content"]
         assert remote_comment.text_visibility == VisibilityLevel.PUBLIC
         assert remote_comment.reply_to is None
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [
             VisibilityLevel.PUBLIC,
             VisibilityLevel.FOLLOWERS_AND_REMOTE,
@@ -1449,16 +1449,16 @@ class TestCreateActivityForCommentReply(
             visibility=input_visibility,
         )
         comment_activity["object"]["inReplyTo"] = parent_comment.ap_id
-        activity = get_activity_instance({'type': comment_activity['type']})(
+        activity = get_activity_instance({"type": comment_activity["type"]})(
             activity_dict=comment_activity
         )
 
         activity.process_activity()
 
         remote_comment = Comment.query.filter_by(user_id=remote_user.id).one()
-        assert remote_comment.ap_id == comment_activity['object']['id']
-        assert remote_comment.remote_url == comment_activity['object']['url']
-        assert remote_comment.text == comment_activity['object']['content']
+        assert remote_comment.ap_id == comment_activity["object"]["id"]
+        assert remote_comment.remote_url == comment_activity["object"]["url"]
+        assert remote_comment.text == comment_activity["object"]["content"]
         assert remote_comment.text_visibility == input_visibility
         assert remote_comment.reply_to == parent_comment.id
 
@@ -1476,26 +1476,26 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         comment_activity = self.generate_workout_comment_update_activity(
             random_actor
         )
-        activity = get_activity_instance({'type': comment_activity['type']})(
+        activity = get_activity_instance({"type": comment_activity["type"]})(
             activity_dict=comment_activity
         )
 
         with (
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=random_actor.get_remote_user_object(),
             ),
             patch(
-                'fittrackee.federation.utils.user.store_or_delete_user_picture'
+                "fittrackee.federation.utils.user.store_or_delete_user_picture"
             ),
             patch(
-                'fittrackee.federation.utils.user.update_remote_actor_stats'
+                "fittrackee.federation.utils.user.update_remote_actor_stats"
             ),
         ):
             activity.process_activity()
 
         remote_comment = Comment.query.filter_by().one()
-        assert remote_comment.ap_id == comment_activity['object']['id']
+        assert remote_comment.ap_id == comment_activity["object"]["id"]
         new_user = User.query.filter_by(username=random_actor.name).one()
         assert new_user is not None
 
@@ -1512,26 +1512,26 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         comment_activity = self.generate_workout_comment_update_activity(
             random_actor, text=f"@{user_1.username}"
         )
-        activity = get_activity_instance({'type': comment_activity['type']})(
+        activity = get_activity_instance({"type": comment_activity["type"]})(
             activity_dict=comment_activity
         )
 
         with (
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=random_actor.get_remote_user_object(),
             ),
             patch(
-                'fittrackee.federation.utils.user.store_or_delete_user_picture'
+                "fittrackee.federation.utils.user.store_or_delete_user_picture"
             ),
             patch(
-                'fittrackee.federation.utils.user.update_remote_actor_stats'
+                "fittrackee.federation.utils.user.update_remote_actor_stats"
             ),
         ):
             activity.process_activity()
 
         remote_comment = Comment.query.filter_by().one()
-        assert remote_comment.ap_id == comment_activity['object']['id']
+        assert remote_comment.ap_id == comment_activity["object"]["id"]
         assert (
             User.query.filter_by(username=random_actor.name).first()
             is not None
@@ -1562,9 +1562,9 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         remote_comment.modification_date = datetime.now(timezone.utc)
         comment_activity = {
             **remote_comment.get_activity("Update"),
-            'actor': remote_user_2.actor.activitypub_id,
+            "actor": remote_user_2.actor.activitypub_id,
         }
-        activity = get_activity_instance({'type': comment_activity['type']})(
+        activity = get_activity_instance({"type": comment_activity["type"]})(
             activity_dict=comment_activity
         )
 
@@ -1596,7 +1596,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         remote_comment.modification_date = datetime.now(timezone.utc)
         comment_activity = remote_comment.get_activity("Update")
         comment_activity["object"]["content"] = self.random_string()
-        activity = get_activity_instance({'type': comment_activity['type']})(
+        activity = get_activity_instance({"type": comment_activity["type"]})(
             activity_dict=comment_activity
         )
 
@@ -1615,7 +1615,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
 
-        with patch('fittrackee.federation.utils.user.update_remote_user'):
+        with patch("fittrackee.federation.utils.user.update_remote_user"):
             remote_comment = self.create_comment(
                 remote_user,
                 workout_cycling_user_1,
@@ -1627,23 +1627,23 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
             comment_activity = remote_comment.get_activity("Update")
             comment_activity["object"]["content"] = f"@{random_actor.fullname}"
             activity = get_activity_instance(
-                {'type': comment_activity['type']}
+                {"type": comment_activity["type"]}
             )(activity_dict=comment_activity)
 
         with (
             patch(
-                'fittrackee.federation.utils.user.fetch_account_from_webfinger',
+                "fittrackee.federation.utils.user.fetch_account_from_webfinger",
                 return_value=random_actor.get_webfinger(),
             ),
             patch(
-                'fittrackee.federation.utils.user.get_remote_actor_url',
+                "fittrackee.federation.utils.user.get_remote_actor_url",
                 return_value=random_actor.get_remote_user_object(),
             ),
             patch(
-                'fittrackee.federation.utils.user.store_or_delete_user_picture'
+                "fittrackee.federation.utils.user.store_or_delete_user_picture"
             ),
             patch(
-                'fittrackee.federation.utils.user.update_remote_actor_stats'
+                "fittrackee.federation.utils.user.update_remote_actor_stats"
             ),
         ):
             activity.process_activity()
@@ -1676,7 +1676,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         )
         remote_comment.modification_date = datetime.now(timezone.utc)
         comment_activity = remote_comment.get_activity("Update")
-        activity = get_activity_instance({'type': comment_activity['type']})(
+        activity = get_activity_instance({"type": comment_activity["type"]})(
             activity_dict=comment_activity
         )
 
@@ -1705,7 +1705,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         comment_activity["cc"] = [remote_user.actor.activitypub_id]
         comment_activity["object"]["to"] = [remote_user.actor.followers_url]
         comment_activity["object"]["cc"] = [remote_user.actor.activitypub_id]
-        activity = get_activity_instance({'type': comment_activity['type']})(
+        activity = get_activity_instance({"type": comment_activity["type"]})(
             activity_dict=comment_activity
         )
 
@@ -1734,7 +1734,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         remote_comment.modification_date = datetime.now(timezone.utc)
         comment_activity = remote_comment.get_activity("Update")
         del comment_activity["object"]["content"]
-        activity = get_activity_instance({'type': comment_activity['type']})(
+        activity = get_activity_instance({"type": comment_activity["type"]})(
             activity_dict=comment_activity
         )
         with pytest.raises(
@@ -1760,7 +1760,7 @@ class TestDeleteActivityForComment(CommentMixin, CommentActivitiesTestCase):
         comment_activity = self.generate_workout_comment_delete_activity(
             remote_actor=remote_user.actor
         )
-        activity = get_activity_instance({'type': comment_activity['type']})(
+        activity = get_activity_instance({"type": comment_activity["type"]})(
             activity_dict=comment_activity
         )
         with pytest.raises(
@@ -1777,13 +1777,13 @@ class TestDeleteActivityForComment(CommentMixin, CommentActivitiesTestCase):
         delete_activity = self.generate_workout_comment_delete_activity(
             remote_actor=random_actor
         )
-        activity = get_activity_instance({'type': delete_activity['type']})(
+        activity = get_activity_instance({"type": delete_activity["type"]})(
             activity_dict=delete_activity
         )
 
         with pytest.raises(
             ActorNotFoundException,
-            match='actor not found for DeleteActivity',
+            match="actor not found for DeleteActivity",
         ):
             activity.process_activity()
 
@@ -1806,14 +1806,14 @@ class TestDeleteActivityForComment(CommentMixin, CommentActivitiesTestCase):
             remote_actor=remote_user_2.actor,
             remote_comment=remote_comment,
         )
-        activity = get_activity_instance({'type': delete_activity['type']})(
+        activity = get_activity_instance({"type": delete_activity["type"]})(
             activity_dict=delete_activity
         )
 
         with pytest.raises(
             ActivityException,
             match=(
-                'DeleteActivity: activity actor does not match workout actor.'
+                "DeleteActivity: activity actor does not match workout actor."
             ),
         ):
             activity.process_activity()
@@ -1841,7 +1841,7 @@ class TestDeleteActivityForComment(CommentMixin, CommentActivitiesTestCase):
             remote_actor=remote_user.actor,
             remote_comment=remote_comment,
         )
-        activity = get_activity_instance({'type': delete_activity['type']})(
+        activity = get_activity_instance({"type": delete_activity["type"]})(
             activity_dict=delete_activity
         )
         comment_id = remote_comment.id
@@ -1877,7 +1877,7 @@ class TestDeleteActivityForComment(CommentMixin, CommentActivitiesTestCase):
             remote_actor=remote_user.actor,
             remote_comment=remote_comment,
         )
-        activity = get_activity_instance({'type': delete_activity['type']})(
+        activity = get_activity_instance({"type": delete_activity["type"]})(
             activity_dict=delete_activity
         )
         comment_id = remote_comment.id
@@ -1899,7 +1899,7 @@ class TestLikeActivityForWorkout:
             actor_ap_id=remote_user.actor.activitypub_id,
             like_id=random_int(),
         ).get_activity()
-        activity = get_activity_instance({'type': like_activity['type']})(
+        activity = get_activity_instance({"type": like_activity["type"]})(
             activity_dict=like_activity
         )
         with pytest.raises(
@@ -1922,7 +1922,7 @@ class TestLikeActivityForWorkout:
             actor_ap_id=remote_user.actor.activitypub_id,
             like_id=random_int(),
         ).get_activity()
-        activity = get_activity_instance({'type': like_activity['type']})(
+        activity = get_activity_instance({"type": like_activity["type"]})(
             activity_dict=like_activity
         )
 
@@ -1949,12 +1949,12 @@ class TestLikeActivityForWorkout:
             actor_ap_id=random_actor.activitypub_id,
             like_id=random_int(),
         ).get_activity()
-        activity = get_activity_instance({'type': like_activity['type']})(
+        activity = get_activity_instance({"type": like_activity["type"]})(
             activity_dict=like_activity
         )
 
         with patch(
-            'fittrackee.federation.utils.user.get_remote_actor_url',
+            "fittrackee.federation.utils.user.get_remote_actor_url",
             return_value=random_actor.get_remote_user_object(),
         ):
             activity.process_activity()
@@ -1988,7 +1988,7 @@ class TestLikeActivityForComment(CommentMixin):
             actor_ap_id=remote_user.actor.activitypub_id,
             like_id=random_int(),
         ).get_activity()
-        activity = get_activity_instance({'type': like_activity['type']})(
+        activity = get_activity_instance({"type": like_activity["type"]})(
             activity_dict=like_activity
         )
 
@@ -2020,12 +2020,12 @@ class TestLikeActivityForComment(CommentMixin):
             actor_ap_id=random_actor.activitypub_id,
             like_id=random_int(),
         ).get_activity()
-        activity = get_activity_instance({'type': like_activity['type']})(
+        activity = get_activity_instance({"type": like_activity["type"]})(
             activity_dict=like_activity
         )
 
         with patch(
-            'fittrackee.federation.utils.user.get_remote_actor_url',
+            "fittrackee.federation.utils.user.get_remote_actor_url",
             return_value=random_actor.get_remote_user_object(),
         ):
             activity.process_activity()
@@ -2051,7 +2051,7 @@ class TestUndoLikeActivityForWorkout:
             like_id=random_int(),
             is_undo=True,
         ).get_activity()
-        activity = get_activity_instance({'type': like_activity['type']})(
+        activity = get_activity_instance({"type": like_activity["type"]})(
             activity_dict=like_activity
         )
         with pytest.raises(
@@ -2080,7 +2080,7 @@ class TestUndoLikeActivityForWorkout:
             like_id=like.id,
             is_undo=True,
         ).get_activity()
-        activity = get_activity_instance({'type': like_activity['type']})(
+        activity = get_activity_instance({"type": like_activity["type"]})(
             activity_dict=like_activity
         )
 
@@ -2107,7 +2107,7 @@ class TestUndoLikeActivityForWorkout:
             actor_ap_id=remote_user.actor.activitypub_id,
             like_id=random_int(),
         ).get_activity()
-        activity = get_activity_instance({'type': like_activity['type']})(
+        activity = get_activity_instance({"type": like_activity["type"]})(
             activity_dict=like_activity
         )
 
@@ -2127,12 +2127,12 @@ class TestUndoLikeActivityForWorkout:
             actor_ap_id=random_actor.activitypub_id,
             like_id=random_int(),
         ).get_activity()
-        activity = get_activity_instance({'type': like_activity['type']})(
+        activity = get_activity_instance({"type": like_activity["type"]})(
             activity_dict=like_activity
         )
 
         with patch(
-            'fittrackee.federation.utils.user.get_remote_actor_url',
+            "fittrackee.federation.utils.user.get_remote_actor_url",
             return_value=random_actor.get_remote_user_object(),
         ):
             activity.process_activity()
@@ -2162,7 +2162,7 @@ class TestUndoLikeActivityForComment(CommentMixin):
             like_id=like.id,
             is_undo=True,
         ).get_activity()
-        activity = get_activity_instance({'type': like_activity['type']})(
+        activity = get_activity_instance({"type": like_activity["type"]})(
             activity_dict=like_activity
         )
 
@@ -2194,7 +2194,7 @@ class TestUndoLikeActivityForComment(CommentMixin):
             actor_ap_id=remote_user.actor.activitypub_id,
             like_id=random_int(),
         ).get_activity()
-        activity = get_activity_instance({'type': like_activity['type']})(
+        activity = get_activity_instance({"type": like_activity["type"]})(
             activity_dict=like_activity
         )
 
@@ -2219,12 +2219,12 @@ class TestUndoLikeActivityForComment(CommentMixin):
             actor_ap_id=random_actor.activitypub_id,
             like_id=random_int(),
         ).get_activity()
-        activity = get_activity_instance({'type': like_activity['type']})(
+        activity = get_activity_instance({"type": like_activity["type"]})(
             activity_dict=like_activity
         )
 
         with patch(
-            'fittrackee.federation.utils.user.get_remote_actor_url',
+            "fittrackee.federation.utils.user.get_remote_actor_url",
             return_value=random_actor.get_remote_user_object(),
         ):
             activity.process_activity()

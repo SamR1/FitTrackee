@@ -21,13 +21,13 @@ from .exceptions import InvalidSignatureException
 from .models import Actor
 
 VALID_DATE_DELTA = 30  # in seconds
-VALID_SIG_DATE_FORMAT = '%a, %d %b %Y %H:%M:%S GMT'
-VALID_SIG_KEYS = ['keyId', 'headers', 'signature']
+VALID_SIG_DATE_FORMAT = "%a, %d %b %Y %H:%M:%S GMT"
+VALID_SIG_KEYS = ["keyId", "headers", "signature"]
 SUPPORTED_ALGORITHMS = {
-    'rsa-sha256': {'algorithm': 'SHA-256', 'hash_function': hashlib.sha256},
-    'rsa-sha512': {'algorithm': 'SHA-512', 'hash_function': hashlib.sha512},
+    "rsa-sha256": {"algorithm": "SHA-256", "hash_function": hashlib.sha256},
+    "rsa-sha512": {"algorithm": "SHA-512", "hash_function": hashlib.sha512},
 }
-DEFAULT_ALGORITHM = 'rsa-sha256'
+DEFAULT_ALGORITHM = "rsa-sha256"
 
 
 def generate_digest(activity: Dict, algorithm: Optional[str] = None) -> str:
@@ -35,7 +35,7 @@ def generate_digest(activity: Dict, algorithm: Optional[str] = None) -> str:
         DEFAULT_ALGORITHM if algorithm is None else algorithm
     ]
     digest = base64.b64encode(
-        algorithm_dict['hash_function'](  # type: ignore
+        algorithm_dict["hash_function"](  # type: ignore
             json.dumps(activity).encode()
         ).digest()
     ).decode()
@@ -45,7 +45,7 @@ def generate_digest(activity: Dict, algorithm: Optional[str] = None) -> str:
 def generate_signature(private_key: str, signed_string: str) -> bytes:
     key = RSA.import_key(private_key)
     key_signer = pkcs1_15.new(key)
-    encoded_string = signed_string.encode('utf-8')
+    encoded_string = signed_string.encode("utf-8")
     h = SHA256.new(encoded_string)
     return base64.b64encode(key_signer.sign(h))
 
@@ -54,15 +54,15 @@ def generate_signature_header(
     host: str, path: str, date_str: str, actor: Actor, digest: str
 ) -> str:
     if actor.private_key is None:
-        raise InvalidSignatureException('Invalid private key for actor')
+        raise InvalidSignatureException("Invalid private key for actor")
     signed_string = (
-        f'(request-target): post {path}\nhost: {host}\ndate: {date_str}\n'
-        f'digest: {digest}'
+        f"(request-target): post {path}\nhost: {host}\ndate: {date_str}\n"
+        f"digest: {digest}"
     )
     signature = generate_signature(actor.private_key, signed_string)
     return (
         f'keyId="{actor.activitypub_id}#main-key",'
-        f'algorithm={DEFAULT_ALGORITHM},'
+        f"algorithm={DEFAULT_ALGORITHM},"
         'headers="(request-target) host date digest",'
         f'signature="' + signature.decode() + '"'
     )
@@ -71,33 +71,33 @@ def generate_signature_header(
 class SignatureVerification:
     def __init__(self, request: Request, signature_dict: Dict):
         self.request = request
-        self.host = request.headers.get('Host', 'undefined')
-        self.date_str = request.headers.get('Date')
-        self.key_id = signature_dict['keyId']
-        self.headers = signature_dict['headers']
-        self.signature = base64.b64decode(signature_dict['signature'])
-        self.algorithm = signature_dict.get('algorithm', DEFAULT_ALGORITHM)
-        self.digest = request.headers.get('Digest')
+        self.host = request.headers.get("Host", "undefined")
+        self.date_str = request.headers.get("Date")
+        self.key_id = signature_dict["keyId"]
+        self.headers = signature_dict["headers"]
+        self.signature = base64.b64decode(signature_dict["signature"])
+        self.algorithm = signature_dict.get("algorithm", DEFAULT_ALGORITHM)
+        self.digest = request.headers.get("Digest")
 
     @classmethod
-    def get_signature(cls, request: Request) -> 'SignatureVerification':
+    def get_signature(cls, request: Request) -> "SignatureVerification":
         signature_dict = {}
-        host = request.headers.get('Host', 'undefined')
+        host = request.headers.get("Host", "undefined")
         try:
-            header_signature = request.headers['Signature'].split(',')
+            header_signature = request.headers["Signature"].split(",")
             for part in header_signature:
-                key, value = part.split('=', 1)
+                key, value = part.split("=", 1)
                 signature_dict[key] = value.strip('"')
         except Exception as e:
-            appLog.error(f'Invalid signature headers: {e} (host: {host}).')
-            raise InvalidSignatureException()
+            appLog.error(f"Invalid signature headers: {e} (host: {host}).")
+            raise InvalidSignatureException() from e
 
         keys_list = list(signature_dict.keys())
         if not all(key in keys_list for key in VALID_SIG_KEYS):
             appLog.error(
-                'Invalid signature headers: missing keys, expected: '
-                f'{VALID_SIG_KEYS}, got: {keys_list} '
-                f'(host: {host}).'
+                "Invalid signature headers: missing keys, expected: "
+                f"{VALID_SIG_KEYS}, got: {keys_list} "
+                f"(host: {host})."
             )
             raise InvalidSignatureException()
 
@@ -106,13 +106,13 @@ class SignatureVerification:
     def get_actor_public_key(self) -> Optional[str]:
         response = requests.get(
             self.key_id,
-            headers={'Accept': 'application/activity+json'},
+            headers={"Accept": "application/activity+json"},
             timeout=30,
         )
         if response.status_code >= 400:
             return None
         try:
-            public_key = response.json()['publicKey']['publicKeyPem']
+            public_key = response.json()["publicKey"]["publicKeyPem"]
         except Exception:
             return None
         return public_key
@@ -130,52 +130,52 @@ class SignatureVerification:
         return delta.total_seconds() > VALID_DATE_DELTA
 
     def log_and_raise_error(self, error: str) -> None:
-        appLog.error(f'Invalid signature: {error} (host: {self.host}).')
+        appLog.error(f"Invalid signature: {error} (host: {self.host}).")
         raise InvalidSignatureException(error)
 
     def verify_digest(self) -> None:
         if self.algorithm not in SUPPORTED_ALGORITHMS.keys():
-            self.log_and_raise_error('unsupported algorithm')
-        expected_algorithm = SUPPORTED_ALGORITHMS[self.algorithm]['algorithm']
-        hash_function = SUPPORTED_ALGORITHMS[self.algorithm]['hash_function']
+            self.log_and_raise_error("unsupported algorithm")
+        expected_algorithm = SUPPORTED_ALGORITHMS[self.algorithm]["algorithm"]
+        hash_function = SUPPORTED_ALGORITHMS[self.algorithm]["hash_function"]
 
         try:
             if not self.digest:
-                raise Exception('No digest')
-            algorithm, digest = self.digest.split('=', 1)
+                raise Exception("No digest")
+            algorithm, digest = self.digest.split("=", 1)
             if algorithm != expected_algorithm:
-                raise Exception('Algorithm mismatch')
+                raise Exception("Algorithm mismatch")
             expected = hash_function(  # type: ignore
                 self.request.data
             ).digest()
             if base64.b64decode(digest) != expected:
                 raise Exception()
         except Exception:
-            self.log_and_raise_error('invalid HTTP digest')
+            self.log_and_raise_error("invalid HTTP digest")
 
     def header_actor_is_payload_actor(self) -> bool:
         activity = json.loads(self.request.data.decode())
-        return self.key_id.replace('#main-key', '') == activity.get('actor')
+        return self.key_id.replace("#main-key", "") == activity.get("actor")
 
     def verify(self) -> None:
         if not self.header_actor_is_payload_actor():
-            self.log_and_raise_error('invalid actor')
+            self.log_and_raise_error("invalid actor")
 
         public_key = self.get_actor_public_key()
         if not public_key:
-            self.log_and_raise_error('invalid public key')
+            self.log_and_raise_error("invalid public key")
 
         if self.is_date_invalid():
-            self.log_and_raise_error('invalid date header')
+            self.log_and_raise_error("invalid date header")
 
         comparison = []
-        for headers_part in self.headers.split(' '):
-            if headers_part == '(request-target)':
+        for headers_part in self.headers.split(" "):
+            if headers_part == "(request-target)":
                 comparison.append(
-                    '(request-target): post %s' % self.request.path
+                    "(request-target): post %s" % self.request.path
                 )
             else:
-                if headers_part == 'digest':
+                if headers_part == "digest":
                     self.verify_digest()
                 comparison.append(
                     "%s: %s"
@@ -184,7 +184,7 @@ class SignatureVerification:
                         self.request.headers[headers_part.capitalize()],
                     )
                 )
-        comparison_string: str = '\n'.join(comparison)
+        comparison_string: str = "\n".join(comparison)
 
         signer = pkcs1_15.new(RSA.import_key(public_key))  # type: ignore
         digest = SHA256.new()
@@ -192,4 +192,4 @@ class SignatureVerification:
         try:
             signer.verify(digest, self.signature)
         except ValueError:
-            self.log_and_raise_error('verification failed')
+            self.log_and_raise_error("verification failed")

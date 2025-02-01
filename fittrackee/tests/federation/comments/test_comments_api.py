@@ -15,11 +15,11 @@ from ...mixins import ApiTestCaseMixin, BaseTestMixin
 from ...utils import jsonify_dict
 
 
-@patch('fittrackee.federation.utils.user.update_remote_user')
-@patch('fittrackee.comments.comments.send_to_remote_inbox')
+@patch("fittrackee.federation.utils.user.update_remote_user")
+@patch("fittrackee.comments.comments.send_to_remote_inbox")
 class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     @pytest.mark.parametrize(
-        'input_workout_visibility',
+        "input_workout_visibility",
         [
             VisibilityLevel.FOLLOWERS_AND_REMOTE,
             VisibilityLevel.FOLLOWERS,
@@ -138,16 +138,16 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=remote_cycling_workout.id
         ).one()
-        assert data['comment'] == jsonify_dict(new_comment.serialize(user_1))
+        assert data["comment"] == jsonify_dict(new_comment.serialize(user_1))
         assert new_comment.ap_id == (
-            f'{user_1.actor.activitypub_id}/'
-            f'workouts/{remote_cycling_workout.short_id}/'
-            f'comments/{new_comment.short_id}'
+            f"{user_1.actor.activitypub_id}/"
+            f"workouts/{remote_cycling_workout.short_id}/"
+            f"comments/{new_comment.short_id}"
         )
         assert new_comment.remote_url == (
-            f'https://{user_1.actor.domain.name}/'
-            f'workouts/{remote_cycling_workout.short_id}/'
-            f'comments/{new_comment.short_id}'
+            f"https://{user_1.actor.domain.name}/"
+            f"workouts/{remote_cycling_workout.short_id}/"
+            f"comments/{new_comment.short_id}"
         )
         assert new_comment.reply_to is None
 
@@ -189,10 +189,10 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         assert response.status_code == 201
         data = json.loads(response.data.decode())
-        assert data['comment']['reply_to'] == comment.short_id
+        assert data["comment"]["reply_to"] == comment.short_id
 
     @pytest.mark.parametrize(
-        'input_workout_visibility',
+        "input_workout_visibility",
         [
             VisibilityLevel.FOLLOWERS,
             VisibilityLevel.PRIVATE,
@@ -268,10 +268,10 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         send_to_remote_inbox_mock.send.assert_not_called()
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
-    def test_it_calls_sent_to_inbox_if_comment_has_mention(  # noqa
+    def test_it_calls_sent_to_inbox_if_comment_has_mention(
         self,
         send_to_remote_inbox_mock: Mock,
         update_mock: Mock,
@@ -304,7 +304,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         note_activity = Comment.query.one().get_activity(
-            activity_type='Create'
+            activity_type="Create"
         )
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
@@ -313,7 +313,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_fittrackee_instance(  # noqa
@@ -350,7 +350,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         note_activity = Comment.query.one().get_activity(
-            activity_type='Create'
+            activity_type="Create"
         )
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
@@ -359,7 +359,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_other_instance(  # noqa
@@ -396,7 +396,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         note_activity = Comment.query.one().get_activity(
-            activity_type='Create'
+            activity_type="Create"
         )
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
@@ -517,8 +517,8 @@ class TestGetWorkoutCommentAsFollower(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['comment'] == jsonify_dict(comment.serialize(user_1))
+        assert data["status"] == "success"
+        assert data["comment"] == jsonify_dict(comment.serialize(user_1))
 
 
 class TestGetWorkoutCommentAsRemoteFollower(
@@ -556,8 +556,8 @@ class TestGetWorkoutCommentAsRemoteFollower(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['comment'] == jsonify_dict(comment.serialize(user_1))
+        assert data["status"] == "success"
+        assert data["comment"] == jsonify_dict(comment.serialize(user_1))
 
 
 class TestGetWorkoutCommentAsOwner(
@@ -592,8 +592,8 @@ class TestGetWorkoutCommentAsOwner(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['comment'] == jsonify_dict(comment.serialize(user_1))
+        assert data["status"] == "success"
+        assert data["comment"] == jsonify_dict(comment.serialize(user_1))
 
 
 class TestGetWorkoutCommentAsUnauthenticatedUser(
@@ -665,8 +665,8 @@ class TestGetWorkoutCommentWithReplies(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['comment']['replies'] == [
+        assert data["status"] == "success"
+        assert data["comment"]["replies"] == [
             jsonify_dict(reply.serialize(user_1))
         ]
 
@@ -739,7 +739,7 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
         self.assert_comments_response(response, expected_comments=[])
 
     @pytest.mark.parametrize(
-        'input_text_visibility',
+        "input_text_visibility",
         [
             VisibilityLevel.FOLLOWERS_AND_REMOTE,
             VisibilityLevel.FOLLOWERS,
@@ -983,11 +983,11 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
 
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
-        assert data['data']['comments'] == [
+        assert data["data"]["comments"] == [
             jsonify_dict(comment.serialize(user_1))
             for comment in visible_comments
         ]
@@ -997,7 +997,7 @@ class TestGetWorkoutCommentWithMention(
     CommentMixin, ApiTestCaseMixin, BaseTestMixin
 ):
     @pytest.mark.parametrize(
-        'input_workout_visibility',
+        "input_workout_visibility",
         [
             VisibilityLevel.FOLLOWERS_AND_REMOTE,
             VisibilityLevel.FOLLOWERS,
@@ -1036,8 +1036,8 @@ class TestGetWorkoutCommentWithMention(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['comment'] == jsonify_dict(comment.serialize(user_1))
+        assert data["status"] == "success"
+        assert data["comment"] == jsonify_dict(comment.serialize(user_1))
 
 
 class TestGetWorkoutsCommentsWithReplies(
@@ -1076,16 +1076,16 @@ class TestGetWorkoutsCommentsWithReplies(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert len(data['data']['comments']) == 1
-        assert data['data']['comments'][0]['id'] == comment.short_id
-        assert data['data']['comments'][0]['replies'] == [
+        assert data["status"] == "success"
+        assert len(data["data"]["comments"]) == 1
+        assert data["data"]["comments"][0]["id"] == comment.short_id
+        assert data["data"]["comments"][0]["replies"] == [
             jsonify_dict(reply.serialize(user_1))
         ]
 
 
-@patch('fittrackee.federation.utils.user.update_remote_user')
-@patch('fittrackee.comments.comments.send_to_remote_inbox')
+@patch("fittrackee.federation.utils.user.update_remote_user")
+@patch("fittrackee.comments.comments.send_to_remote_inbox")
 class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     def test_it_returns_404_if_comment_is_not_visible_to_user(
         self,
@@ -1110,7 +1110,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
@@ -1146,7 +1146,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         send_to_remote_inbox_mock.send.assert_not_called()
@@ -1177,16 +1177,16 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         send_to_remote_inbox_mock.send.assert_not_called()
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
-    def test_it_calls_sent_to_inbox_if_comment_has_mention(  # noqa
+    def test_it_calls_sent_to_inbox_if_comment_has_mention(
         self,
         send_to_remote_inbox_mock: Mock,
         update_mock: Mock,
@@ -1209,11 +1209,11 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )
-        note_activity = comment.get_activity(activity_type='Delete')
+        note_activity = comment.get_activity(activity_type="Delete")
 
         client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         send_to_remote_inbox_mock.send.assert_called_once_with(
@@ -1223,7 +1223,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_fittrackee_instance(  # noqa
@@ -1253,10 +1253,10 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        note_activity = comment.get_activity(activity_type='Delete')
+        note_activity = comment.get_activity(activity_type="Delete")
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
             activity=note_activity,
@@ -1264,7 +1264,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_other_instance(  # noqa
@@ -1294,10 +1294,10 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        note_activity = comment.get_activity(activity_type='Delete')
+        note_activity = comment.get_activity(activity_type="Delete")
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
             activity=note_activity,
@@ -1332,14 +1332,14 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert Mention.query.filter_by(comment_id=comment_id).all() == []
 
 
-@patch('fittrackee.federation.utils.user.update_remote_user')
-@patch('fittrackee.comments.comments.send_to_remote_inbox')
+@patch("fittrackee.federation.utils.user.update_remote_user")
+@patch("fittrackee.comments.comments.send_to_remote_inbox")
 class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
     def test_it_does_not_call_sent_to_inbox_when_comment_is_local_with_no_mentions(  # noqa
         self,
@@ -1376,7 +1376,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         send_to_remote_inbox_mock.send.assert_not_called()
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [
             VisibilityLevel.FOLLOWERS_AND_REMOTE,
             VisibilityLevel.FOLLOWERS,
@@ -1415,7 +1415,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         assert response.status_code == 200
-        update_comment_activity = comment.get_activity(activity_type='Update')
+        update_comment_activity = comment.get_activity(activity_type="Update")
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
             activity=update_comment_activity,
@@ -1423,7 +1423,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [
             VisibilityLevel.FOLLOWERS_AND_REMOTE,
             VisibilityLevel.FOLLOWERS,
@@ -1462,7 +1462,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         assert response.status_code == 200
-        update_comment_activity = comment.get_activity(activity_type='Update')
+        update_comment_activity = comment.get_activity(activity_type="Update")
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
             activity=update_comment_activity,
@@ -1470,7 +1470,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
     @pytest.mark.parametrize(
-        'text_visibility',
+        "text_visibility",
         [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC],
     )
     def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_instance(
@@ -1506,7 +1506,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
         assert response.status_code == 200
-        update_comment_activity = comment.get_activity(activity_type='Update')
+        update_comment_activity = comment.get_activity(activity_type="Update")
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
             activity=update_comment_activity,

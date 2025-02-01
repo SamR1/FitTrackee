@@ -70,36 +70,36 @@ from .roles import UserRole
 from .tasks import export_data
 from .utils.controls import check_password, is_valid_email
 from .utils.language import get_language
-from .utils.token import decode_user_token
+from .utils.tokens import decode_user_token
 
-auth_blueprint = Blueprint('auth', __name__)
+auth_blueprint = Blueprint("auth", __name__)
 
 HEX_COLOR_REGEX = regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
-NOT_FOUND_MESSAGE = 'the requested URL was not found on the server'
+NOT_FOUND_MESSAGE = "the requested URL was not found on the server"
 BLOCKED_USERS_PER_PAGE = 5
 
 
 def send_account_confirmation_email(user: User) -> None:
-    if current_app.config['CAN_SEND_EMAILS']:
-        fittrackee_url = current_app.config['UI_URL']
+    if current_app.config["CAN_SEND_EMAILS"]:
+        fittrackee_url = current_app.config["UI_URL"]
         email_data = {
-            'username': user.username,
-            'fittrackee_url': fittrackee_url,
-            'operating_system': request.user_agent.platform,  # type: ignore  # noqa
-            'browser_name': request.user_agent.browser,  # type: ignore
-            'account_confirmation_url': (
-                f'{fittrackee_url}/account-confirmation'
-                f'?token={user.confirmation_token}'
+            "username": user.username,
+            "fittrackee_url": fittrackee_url,
+            "operating_system": request.user_agent.platform,  # type: ignore
+            "browser_name": request.user_agent.browser,  # type: ignore
+            "account_confirmation_url": (
+                f"{fittrackee_url}/account-confirmation"
+                f"?token={user.confirmation_token}"
             ),
         }
         user_data = {
-            'language': get_language(user.language),
-            'email': user.email,
+            "language": get_language(user.language),
+            "email": user.email,
         }
         account_confirmation_email.send(user_data, email_data)
 
 
-@auth_blueprint.route('/auth/register', methods=['POST'])
+@auth_blueprint.route("/auth/register", methods=["POST"])
 def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Register a user and send confirmation email.
@@ -159,29 +159,29 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     :statuscode 403: ``error, registration is disabled``
     :statuscode 500: ``error, please try again or contact the administrator``
     """
-    if not current_app.config.get('is_registration_enabled'):
-        return ForbiddenErrorResponse('error, registration is disabled')
+    if not current_app.config.get("is_registration_enabled"):
+        return ForbiddenErrorResponse("error, registration is disabled")
 
     post_data = request.get_json()
     if (
         not post_data
-        or post_data.get('username') is None
-        or post_data.get('email') is None
-        or post_data.get('password') is None
-        or post_data.get('accepted_policy') is None
+        or post_data.get("username") is None
+        or post_data.get("email") is None
+        or post_data.get("password") is None
+        or post_data.get("accepted_policy") is None
     ):
         return InvalidPayloadErrorResponse()
 
-    accepted_policy = post_data.get('accepted_policy') is True
+    accepted_policy = post_data.get("accepted_policy") is True
     if not accepted_policy:
         return InvalidPayloadErrorResponse(
-            'sorry, you must agree privacy policy to register'
+            "sorry, you must agree privacy policy to register"
         )
 
-    username = post_data.get('username')
-    email = post_data.get('email')
-    password = post_data.get('password')
-    language = get_language(post_data.get('language'))
+    username = post_data.get("username")
+    email = post_data.get("email")
+    password = post_data.get("password")
+    language = get_language(post_data.get("language"))
 
     try:
         user_manager_service = UserManagerService(username=username)
@@ -202,7 +202,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
                     from_user_id=new_user.id,
                     to_user_id=admin.id,
                     created_at=new_user.created_at,
-                    event_type='account_creation',
+                    event_type="account_creation",
                     event_object_id=new_user.id,
                 )
                 db.session.add(notification)
@@ -212,7 +212,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
 
             send_account_confirmation_email(new_user)
 
-        return {'status': 'success'}, 200
+        return {"status": "success"}, 200
     # handler errors
     except (UserControlsException, UserCreationException) as e:
         return InvalidPayloadErrorResponse(str(e))
@@ -225,7 +225,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route('/auth/login', methods=['POST'])
+@auth_blueprint.route("/auth/login", methods=["POST"])
 def login_user() -> Union[Dict, HttpResponse]:
     """
     User login.
@@ -279,8 +279,8 @@ def login_user() -> Union[Dict, HttpResponse]:
     post_data = request.get_json()
     if not post_data:
         return InvalidPayloadErrorResponse()
-    email = post_data.get('email', '')
-    password = post_data.get('password')
+    email = post_data.get("email", "")
+    password = post_data.get("password")
     try:
         user = User.query.filter(
             func.lower(User.email) == func.lower(email),
@@ -290,18 +290,18 @@ def login_user() -> Union[Dict, HttpResponse]:
             # generate auth token
             auth_token = user.encode_auth_token(user.id)
             return {
-                'status': 'success',
-                'message': 'successfully logged in',
-                'auth_token': auth_token,
+                "status": "success",
+                "message": "successfully logged in",
+                "auth_token": auth_token,
             }
-        return UnauthorizedErrorResponse('invalid credentials')
+        return UnauthorizedErrorResponse("invalid credentials")
     # handler errors
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route('/auth/profile', methods=['GET'])
-@require_auth(scopes=['profile:read'], allow_suspended_user=True)
+@auth_blueprint.route("/auth/profile", methods=["GET"])
+@require_auth(scopes=["profile:read"], allow_suspended_user=True)
 def get_authenticated_user_profile(
     auth_user: User,
 ) -> Union[Dict, HttpResponse]:
@@ -437,13 +437,13 @@ def get_authenticated_user_profile(
         - ``invalid token, please log in again``
     """
     return {
-        'status': 'success',
-        'data': auth_user.serialize(current_user=auth_user, light=False),
+        "status": "success",
+        "data": auth_user.serialize(current_user=auth_user, light=False),
     }
 
 
-@auth_blueprint.route('/auth/profile/edit', methods=['POST'])
-@require_auth(scopes=['profile:write'], allow_suspended_user=True)
+@auth_blueprint.route("/auth/profile/edit", methods=["POST"])
+@require_auth(scopes=["profile:write"], allow_suspended_user=True)
 def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Edit authenticated user profile.
@@ -588,20 +588,20 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     # get post data
     post_data = request.get_json()
     user_mandatory_data = {
-        'first_name',
-        'last_name',
-        'bio',
-        'birth_date',
-        'location',
+        "first_name",
+        "last_name",
+        "bio",
+        "birth_date",
+        "location",
     }
     if not post_data or not post_data.keys() >= user_mandatory_data:
         return InvalidPayloadErrorResponse()
 
-    first_name = post_data.get('first_name')
-    last_name = post_data.get('last_name')
-    bio = post_data.get('bio')
-    birth_date = post_data.get('birth_date')
-    location = post_data.get('location')
+    first_name = post_data.get("first_name")
+    last_name = post_data.get("last_name")
+    bio = post_data.get("bio")
+    birth_date = post_data.get("birth_date")
+    location = post_data.get("location")
 
     try:
         auth_user.first_name = first_name
@@ -614,9 +614,9 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
         db.session.commit()
 
         return {
-            'status': 'success',
-            'message': 'user profile updated',
-            'data': auth_user.serialize(current_user=auth_user, light=False),
+            "status": "success",
+            "message": "user profile updated",
+            "data": auth_user.serialize(current_user=auth_user, light=False),
         }
 
     # handler errors
@@ -624,8 +624,8 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route('/auth/profile/edit/account', methods=['PATCH'])
-@require_auth(scopes=['profile:write'], allow_suspended_user=True)
+@auth_blueprint.route("/auth/profile/edit/account", methods=["PATCH"])
+@require_auth(scopes=["profile:write"], allow_suspended_user=True)
 def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Update authenticated user email and password.
@@ -779,53 +779,53 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
     data = request.get_json()
     if not data:
         return InvalidPayloadErrorResponse()
-    email_to_confirm = data.get('email')
+    email_to_confirm = data.get("email")
     if not email_to_confirm:
-        return InvalidPayloadErrorResponse('email is missing')
-    current_password = data.get('password')
+        return InvalidPayloadErrorResponse("email is missing")
+    current_password = data.get("password")
     if not current_password:
-        return InvalidPayloadErrorResponse('current password is missing')
+        return InvalidPayloadErrorResponse("current password is missing")
     if not auth_user.check_password(current_password):
-        return UnauthorizedErrorResponse('invalid credentials')
+        return UnauthorizedErrorResponse("invalid credentials")
 
-    new_password = data.get('new_password')
-    error_messages = ''
+    new_password = data.get("new_password")
+    error_messages = ""
     try:
         if email_to_confirm != auth_user.email:
             if is_valid_email(email_to_confirm):
-                if current_app.config['CAN_SEND_EMAILS']:
+                if current_app.config["CAN_SEND_EMAILS"]:
                     auth_user.email_to_confirm = email_to_confirm
                     auth_user.confirmation_token = secrets.token_urlsafe(30)
                 else:
                     auth_user.email = email_to_confirm
                     auth_user.confirmation_token = None
             else:
-                error_messages = 'email: valid email must be provided\n'
+                error_messages = "email: valid email must be provided\n"
 
         if new_password is not None:
             error_messages += check_password(new_password)
-            if error_messages == '':
+            if error_messages == "":
                 hashed_password = auth_user.generate_password_hash(
                     new_password
                 )
                 auth_user.password = hashed_password
 
-        if error_messages != '':
+        if error_messages != "":
             return InvalidPayloadErrorResponse(error_messages)
 
         db.session.commit()
 
-        if current_app.config['CAN_SEND_EMAILS']:
-            fittrackee_url = current_app.config['UI_URL']
+        if current_app.config["CAN_SEND_EMAILS"]:
+            fittrackee_url = current_app.config["UI_URL"]
             user_data = {
-                'language': get_language(auth_user.language),
-                'email': auth_user.email,
+                "language": get_language(auth_user.language),
+                "email": auth_user.email,
             }
             data = {
-                'username': auth_user.username,
-                'fittrackee_url': fittrackee_url,
-                'operating_system': request.user_agent.platform,
-                'browser_name': request.user_agent.browser,
+                "username": auth_user.username,
+                "fittrackee_url": fittrackee_url,
+                "operating_system": request.user_agent.platform,
+                "browser_name": request.user_agent.browser,
             }
 
             if new_password is not None:
@@ -837,37 +837,37 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
             ):
                 email_data = {
                     **data,
-                    **{'new_email_address': email_to_confirm},
+                    **{"new_email_address": email_to_confirm},
                 }
                 email_updated_to_current_address.send(user_data, email_data)
 
                 email_data = {
                     **data,
                     **{
-                        'email_confirmation_url': (
-                            f'{fittrackee_url}/email-update'
-                            f'?token={auth_user.confirmation_token}'
+                        "email_confirmation_url": (
+                            f"{fittrackee_url}/email-update"
+                            f"?token={auth_user.confirmation_token}"
                         )
                     },
                 }
                 user_data = {
                     **user_data,
-                    **{'email': auth_user.email_to_confirm},
+                    **{"email": auth_user.email_to_confirm},
                 }
                 email_updated_to_new_address.send(user_data, email_data)
 
         return {
-            'status': 'success',
-            'message': 'user account updated',
-            'data': auth_user.serialize(current_user=auth_user, light=False),
+            "status": "success",
+            "message": "user account updated",
+            "data": auth_user.serialize(current_user=auth_user, light=False),
         }
 
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route('/auth/profile/edit/preferences', methods=['POST'])
-@require_auth(scopes=['profile:write'], allow_suspended_user=True)
+@auth_blueprint.route("/auth/profile/edit/preferences", methods=["POST"])
+@require_auth(scopes=["profile:write"], allow_suspended_user=True)
 def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Edit authenticated user preferences.
@@ -1040,42 +1040,42 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     # get post data
     post_data = request.get_json()
     user_mandatory_data = {
-        'analysis_visibility',
-        'date_format',
-        'display_ascent',
-        'hide_profile_in_users_directory',
-        'imperial_units',
-        'language',
-        'manually_approves_followers',
-        'map_visibility',
-        'start_elevation_at_zero',
-        'timezone',
-        'use_dark_mode',
-        'use_raw_gpx_speed',
-        'weekm',
-        'workouts_visibility',
+        "analysis_visibility",
+        "date_format",
+        "display_ascent",
+        "hide_profile_in_users_directory",
+        "imperial_units",
+        "language",
+        "manually_approves_followers",
+        "map_visibility",
+        "start_elevation_at_zero",
+        "timezone",
+        "use_dark_mode",
+        "use_raw_gpx_speed",
+        "weekm",
+        "workouts_visibility",
     }
     if not post_data or not post_data.keys() >= user_mandatory_data:
         return InvalidPayloadErrorResponse()
 
-    date_format = post_data.get('date_format')
-    display_ascent = post_data.get('display_ascent')
-    imperial_units = post_data.get('imperial_units')
-    language = get_language(post_data.get('language'))
-    start_elevation_at_zero = post_data.get('start_elevation_at_zero')
-    use_raw_gpx_speed = post_data.get('use_raw_gpx_speed')
-    use_dark_mode = post_data.get('use_dark_mode')
-    timezone = post_data.get('timezone')
-    weekm = post_data.get('weekm')
-    map_visibility = post_data.get('map_visibility')
-    analysis_visibility = post_data.get('analysis_visibility')
-    workouts_visibility = post_data.get('workouts_visibility')
-    manually_approves_followers = post_data.get('manually_approves_followers')
+    date_format = post_data.get("date_format")
+    display_ascent = post_data.get("display_ascent")
+    imperial_units = post_data.get("imperial_units")
+    language = get_language(post_data.get("language"))
+    start_elevation_at_zero = post_data.get("start_elevation_at_zero")
+    use_raw_gpx_speed = post_data.get("use_raw_gpx_speed")
+    use_dark_mode = post_data.get("use_dark_mode")
+    timezone = post_data.get("timezone")
+    weekm = post_data.get("weekm")
+    map_visibility = post_data.get("map_visibility")
+    analysis_visibility = post_data.get("analysis_visibility")
+    workouts_visibility = post_data.get("workouts_visibility")
+    manually_approves_followers = post_data.get("manually_approves_followers")
     hide_profile_in_users_directory = post_data.get(
-        'hide_profile_in_users_directory'
+        "hide_profile_in_users_directory"
     )
 
-    if not current_app.config['FEDERATION_ENABLED'] and (
+    if not current_app.config["FEDERATION_ENABLED"] and (
         map_visibility == VisibilityLevel.FOLLOWERS_AND_REMOTE.value
         or workouts_visibility == VisibilityLevel.FOLLOWERS_AND_REMOTE.value
     ):
@@ -1107,9 +1107,9 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         db.session.commit()
 
         return {
-            'status': 'success',
-            'message': 'user preferences updated',
-            'data': auth_user.serialize(current_user=auth_user, light=False),
+            "status": "success",
+            "message": "user preferences updated",
+            "data": auth_user.serialize(current_user=auth_user, light=False),
         }
 
     # handler errors
@@ -1117,8 +1117,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route('/auth/profile/edit/sports', methods=['POST'])
-@require_auth(scopes=['profile:write'])
+@auth_blueprint.route("/auth/profile/edit/sports", methods=["POST"])
+@require_auth(scopes=["profile:write"])
 def edit_user_sport_preferences(
     auth_user: User,
 ) -> Union[Dict, HttpResponse]:
@@ -1186,20 +1186,20 @@ def edit_user_sport_preferences(
     post_data = request.get_json()
     if (
         not post_data
-        or 'sport_id' not in post_data
+        or "sport_id" not in post_data
         or len(post_data.keys()) == 1
     ):
         return InvalidPayloadErrorResponse()
 
-    sport_id = post_data.get('sport_id')
+    sport_id = post_data.get("sport_id")
     sport = Sport.query.filter_by(id=sport_id).first()
     if not sport:
-        return NotFoundErrorResponse('sport does not exist')
+        return NotFoundErrorResponse("sport does not exist")
 
-    color = post_data.get('color')
-    is_active = post_data.get('is_active')
-    stopped_speed_threshold = post_data.get('stopped_speed_threshold')
-    default_equipment_ids = post_data.get('default_equipment_ids')
+    color = post_data.get("color")
+    is_active = post_data.get("is_active")
+    stopped_speed_threshold = post_data.get("stopped_speed_threshold")
+    default_equipment_ids = post_data.get("default_equipment_ids")
 
     try:
         user_sport = UserSportPreference.query.filter_by(
@@ -1216,7 +1216,7 @@ def edit_user_sport_preferences(
             db.session.flush()
         if color:
             if re.match(HEX_COLOR_REGEX, color) is None:
-                return InvalidPayloadErrorResponse('invalid hexadecimal color')
+                return InvalidPayloadErrorResponse("invalid hexadecimal color")
             user_sport.color = color
         if is_active is not None:
             user_sport.is_active = is_active
@@ -1270,9 +1270,9 @@ def edit_user_sport_preferences(
         db.session.commit()
 
         return {
-            'status': 'success',
-            'message': 'user sport preferences updated',
-            'data': user_sport.serialize(),
+            "status": "success",
+            "message": "user sport preferences updated",
+            "data": user_sport.serialize(),
         }
 
     # handler errors
@@ -1286,8 +1286,8 @@ def edit_user_sport_preferences(
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route('/auth/profile/edit/notifications', methods=['POST'])
-@require_auth(scopes=['profile:write'])
+@auth_blueprint.route("/auth/profile/edit/notifications", methods=["POST"])
+@require_auth(scopes=["profile:write"])
 def edit_user_notifications_preferences(
     auth_user: User,
 ) -> Union[Dict, HttpResponse]:
@@ -1463,9 +1463,9 @@ def edit_user_notifications_preferences(
 
 
 @auth_blueprint.route(
-    '/auth/profile/reset/sports/<sport_id>', methods=['DELETE']
+    "/auth/profile/reset/sports/<sport_id>", methods=["DELETE"]
 )
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=["profile:write"])
 def reset_user_sport_preferences(
     auth_user: User, sport_id: int
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -1504,7 +1504,7 @@ def reset_user_sport_preferences(
     """
     sport = Sport.query.filter_by(id=sport_id).first()
     if not sport:
-        return NotFoundErrorResponse('sport does not exist')
+        return NotFoundErrorResponse("sport does not exist")
 
     try:
         user_sport = UserSportPreference.query.filter_by(
@@ -1514,15 +1514,15 @@ def reset_user_sport_preferences(
         if user_sport:
             db.session.delete(user_sport)
             db.session.commit()
-        return {'status': 'no content'}, 204
+        return {"status": "no content"}, 204
 
     # handler errors
     except (exc.IntegrityError, exc.OperationalError) as e:
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route('/auth/picture', methods=['POST'])
-@require_auth(scopes=['profile:write'], allow_suspended_user=True)
+@auth_blueprint.route("/auth/picture", methods=["POST"])
+@require_auth(scopes=["profile:write"], allow_suspended_user=True)
 def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Update authenticated user picture.
@@ -1569,28 +1569,28 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     try:
         response_object = get_error_response_if_file_is_invalid(
-            'picture', request
+            "picture", request
         )
     except RequestEntityTooLarge as e:
         appLog.error(e)
         return PayloadTooLargeErrorResponse(
-            file_type='picture',
+            file_type="picture",
             file_size=request.content_length,
-            max_size=current_app.config['MAX_CONTENT_LENGTH'],
+            max_size=current_app.config["MAX_CONTENT_LENGTH"],
         )
     if response_object:
         return response_object
 
-    file = request.files['file']
+    file = request.files["file"]
     filename = secure_filename(file.filename)  # type: ignore
     dirpath = os.path.join(
-        current_app.config['UPLOAD_FOLDER'], 'pictures', str(auth_user.id)
+        current_app.config["UPLOAD_FOLDER"], "pictures", str(auth_user.id)
     )
     if not os.path.exists(dirpath):
         os.makedirs(dirpath)
     absolute_picture_path = os.path.join(dirpath, filename)
     relative_picture_path = os.path.join(
-        'pictures', str(auth_user.id), filename
+        "pictures", str(auth_user.id), filename
     )
 
     try:
@@ -1602,18 +1602,18 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.picture = relative_picture_path
         db.session.commit()
         return {
-            'status': 'success',
-            'message': 'user picture updated',
+            "status": "success",
+            "message": "user picture updated",
         }
 
     except (exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(
-            e, message='error during picture update', status='fail', db=db
+            e, message="error during picture update", status="fail", db=db
         )
 
 
-@auth_blueprint.route('/auth/picture', methods=['DELETE'])
-@require_auth(scopes=['profile:write'], allow_suspended_user=True)
+@auth_blueprint.route("/auth/picture", methods=["DELETE"])
+@require_auth(scopes=["profile:write"], allow_suspended_user=True)
 def del_picture(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Delete authenticated user picture.
@@ -1647,7 +1647,7 @@ def del_picture(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     """
     if not auth_user.picture:
-        return {'status': 'no content'}, 204
+        return {"status": "no content"}, 204
 
     try:
         picture_path = get_absolute_file_path(auth_user.picture)
@@ -1655,14 +1655,14 @@ def del_picture(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             os.remove(picture_path)
         auth_user.picture = None
         db.session.commit()
-        return {'status': 'no content'}, 204
+        return {"status": "no content"}, 204
     except (exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(
-            e, message='error during picture deletion', status='fail', db=db
+            e, message="error during picture deletion", status="fail", db=db
         )
 
 
-@auth_blueprint.route('/auth/password/reset-request', methods=['POST'])
+@auth_blueprint.route("/auth/password/reset-request", methods=["POST"])
 def request_password_reset() -> Union[Dict, HttpResponse]:
     """
     Handle password reset request.
@@ -1695,44 +1695,44 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
     :statuscode 404: ``the requested URL was not found on the server``
 
     """
-    if not current_app.config['CAN_SEND_EMAILS']:
+    if not current_app.config["CAN_SEND_EMAILS"]:
         return NotFoundErrorResponse(NOT_FOUND_MESSAGE)
 
     post_data = request.get_json()
-    if not post_data or post_data.get('email') is None:
+    if not post_data or post_data.get("email") is None:
         return InvalidPayloadErrorResponse()
-    email = post_data.get('email')
+    email = post_data.get("email")
 
     user = User.query.filter(User.email == email).first()
     if user:
         password_reset_token = user.encode_password_reset_token(user.id)
-        fittrackee_url = current_app.config['UI_URL']
+        fittrackee_url = current_app.config["UI_URL"]
         user_language = get_language(user.language)
         email_data = {
-            'expiration_delay': get_readable_duration(
-                current_app.config['PASSWORD_TOKEN_EXPIRATION_SECONDS'],
+            "expiration_delay": get_readable_duration(
+                current_app.config["PASSWORD_TOKEN_EXPIRATION_SECONDS"],
                 user_language,
             ),
-            'username': user.username,
-            'password_reset_url': (
-                f'{fittrackee_url}/password-reset?token={password_reset_token}'  # noqa
+            "username": user.username,
+            "password_reset_url": (
+                f"{fittrackee_url}/password-reset?token={password_reset_token}"
             ),
-            'fittrackee_url': fittrackee_url,
-            'operating_system': request.user_agent.platform,  # type: ignore
-            'browser_name': request.user_agent.browser,  # type: ignore
+            "fittrackee_url": fittrackee_url,
+            "operating_system": request.user_agent.platform,  # type: ignore
+            "browser_name": request.user_agent.browser,  # type: ignore
         }
         user_data = {
-            'language': user_language,
-            'email': user.email,
+            "language": user_language,
+            "email": user.email,
         }
         reset_password_email.send(user_data, email_data)
     return {
-        'status': 'success',
-        'message': 'password reset request processed',
+        "status": "success",
+        "message": "password reset request processed",
     }
 
 
-@auth_blueprint.route('/auth/password/update', methods=['POST'])
+@auth_blueprint.route("/auth/password/update", methods=["POST"])
 def update_password() -> Union[Dict, HttpResponse]:
     """
     Update user password after password reset request.
@@ -1770,12 +1770,12 @@ def update_password() -> Union[Dict, HttpResponse]:
     post_data = request.get_json()
     if (
         not post_data
-        or post_data.get('password') is None
-        or post_data.get('token') is None
+        or post_data.get("password") is None
+        or post_data.get("token") is None
     ):
         return InvalidPayloadErrorResponse()
-    password = post_data.get('password')
-    token = post_data.get('token')
+    password = post_data.get("password")
+    token = post_data.get("token")
 
     try:
         user_id = decode_user_token(token)
@@ -1783,7 +1783,7 @@ def update_password() -> Union[Dict, HttpResponse]:
         return UnauthorizedErrorResponse()
 
     message = check_password(password)
-    if message != '':
+    if message != "":
         return InvalidPayloadErrorResponse(message)
 
     user = User.query.filter(User.id == user_id).first()
@@ -1793,29 +1793,29 @@ def update_password() -> Union[Dict, HttpResponse]:
         user.password = user.generate_password_hash(password)
         db.session.commit()
 
-        if current_app.config['CAN_SEND_EMAILS']:
+        if current_app.config["CAN_SEND_EMAILS"]:
             password_change_email.send(
                 {
-                    'language': get_language(user.language),
-                    'email': user.email,
+                    "language": get_language(user.language),
+                    "email": user.email,
                 },
                 {
-                    'username': user.username,
-                    'fittrackee_url': current_app.config['UI_URL'],
-                    'operating_system': request.user_agent.platform,
-                    'browser_name': request.user_agent.browser,
+                    "username": user.username,
+                    "fittrackee_url": current_app.config["UI_URL"],
+                    "operating_system": request.user_agent.platform,
+                    "browser_name": request.user_agent.browser,
                 },
             )
 
         return {
-            'status': 'success',
-            'message': 'password updated',
+            "status": "success",
+            "message": "password updated",
         }
     except (exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route('/auth/email/update', methods=['POST'])
+@auth_blueprint.route("/auth/email/update", methods=["POST"])
 def update_email() -> Union[Dict, HttpResponse]:
     """
     Update user email after confirmation.
@@ -1847,9 +1847,9 @@ def update_email() -> Union[Dict, HttpResponse]:
 
     """
     post_data = request.get_json()
-    if not post_data or post_data.get('token') is None:
+    if not post_data or post_data.get("token") is None:
         return InvalidPayloadErrorResponse()
-    token = post_data.get('token')
+    token = post_data.get("token")
 
     try:
         user = User.query.filter_by(confirmation_token=token).first()
@@ -1864,8 +1864,8 @@ def update_email() -> Union[Dict, HttpResponse]:
         db.session.commit()
 
         response = {
-            'status': 'success',
-            'message': 'email updated',
+            "status": "success",
+            "message": "email updated",
         }
 
         return response
@@ -1874,7 +1874,7 @@ def update_email() -> Union[Dict, HttpResponse]:
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route('/auth/account/confirm', methods=['POST'])
+@auth_blueprint.route("/auth/account/confirm", methods=["POST"])
 def confirm_account() -> Union[Dict, HttpResponse]:
     """
     Activate user account after registration.
@@ -1907,9 +1907,9 @@ def confirm_account() -> Union[Dict, HttpResponse]:
 
     """
     post_data = request.get_json()
-    if not post_data or post_data.get('token') is None:
+    if not post_data or post_data.get("token") is None:
         return InvalidPayloadErrorResponse()
-    token = post_data.get('token')
+    token = post_data.get("token")
 
     try:
         user = User.query.filter_by(confirmation_token=token).first()
@@ -1926,9 +1926,9 @@ def confirm_account() -> Union[Dict, HttpResponse]:
         auth_token = user.encode_auth_token(user.id)
 
         response = {
-            'status': 'success',
-            'message': 'account confirmation successful',
-            'auth_token': auth_token,
+            "status": "success",
+            "message": "account confirmation successful",
+            "auth_token": auth_token,
         }
         return response
 
@@ -1936,7 +1936,7 @@ def confirm_account() -> Union[Dict, HttpResponse]:
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route('/auth/account/resend-confirmation', methods=['POST'])
+@auth_blueprint.route("/auth/account/resend-confirmation", methods=["POST"])
 def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
     """
     Resend email with instructions to confirm account.
@@ -1970,13 +1970,13 @@ def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """
-    if not current_app.config['CAN_SEND_EMAILS']:
+    if not current_app.config["CAN_SEND_EMAILS"]:
         return NotFoundErrorResponse(NOT_FOUND_MESSAGE)
 
     post_data = request.get_json()
-    if not post_data or post_data.get('email') is None:
+    if not post_data or post_data.get("email") is None:
         return InvalidPayloadErrorResponse()
-    email = post_data.get('email')
+    email = post_data.get("email")
 
     try:
         user = User.query.filter_by(email=email, is_active=False).first()
@@ -1987,15 +1987,15 @@ def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
             send_account_confirmation_email(user)
 
         response = {
-            'status': 'success',
-            'message': 'confirmation email resent',
+            "status": "success",
+            "message": "confirmation email resent",
         }
         return response
     except (exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route('/auth/logout', methods=['POST'])
+@auth_blueprint.route("/auth/logout", methods=["POST"])
 @require_auth(allow_suspended_user=True)
 def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
@@ -2047,23 +2047,23 @@ def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     :statuscode 500: ``error on token blacklist``
 
     """
-    auth_token = request.headers.get('Authorization', '').split(' ')[1]
+    auth_token = request.headers.get("Authorization", "").split(" ")[1]
     try:
         db.session.add(BlacklistedToken(token=auth_token))
         db.session.commit()
     except Exception:
         return {
-            'status': 'error',
-            'message': 'error on token blacklist',
+            "status": "error",
+            "message": "error on token blacklist",
         }, 500
 
     return {
-        'status': 'success',
-        'message': 'successfully logged out',
+        "status": "success",
+        "message": "successfully logged out",
     }, 200
 
 
-@auth_blueprint.route('/auth/account/privacy-policy', methods=['POST'])
+@auth_blueprint.route("/auth/account/privacy-policy", methods=["POST"])
 @require_auth(allow_suspended_user=True)
 def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
     """
@@ -2102,11 +2102,11 @@ def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
     :statuscode 500: ``error, please try again or contact the administrator``
     """
     post_data = request.get_json()
-    if not post_data or not post_data.get('accepted_policy'):
+    if not post_data or not post_data.get("accepted_policy"):
         return InvalidPayloadErrorResponse()
 
     try:
-        if post_data.get('accepted_policy') is True:
+        if post_data.get("accepted_policy") is True:
             auth_user.accepted_policy_date = datetime.now(timezone.utc)
             db.session.commit()
             return {"status": "success"}
@@ -2116,7 +2116,7 @@ def accept_privacy_policy(auth_user: User) -> Union[Dict, HttpResponse]:
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route('/auth/account/export/request', methods=['POST'])
+@auth_blueprint.route("/auth/account/export/request", methods=["POST"])
 @require_auth(allow_suspended_user=True)
 def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     """
@@ -2190,7 +2190,7 @@ def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route('/auth/account/export', methods=['GET'])
+@auth_blueprint.route("/auth/account/export", methods=["GET"])
 @require_auth(allow_suspended_user=True)
 def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     """
@@ -2260,7 +2260,7 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route(
-    '/auth/account/export/<string:file_name>', methods=['GET']
+    "/auth/account/export/<string:file_name>", methods=["GET"]
 )
 @require_auth(allow_suspended_user=True)
 def download_data_export(
@@ -2311,13 +2311,13 @@ def download_data_export(
     return send_from_directory(
         f"{current_app.config['UPLOAD_FOLDER']}/exports/{auth_user.id}",
         export_request.file_name,
-        mimetype='application/zip',
+        mimetype="application/zip",
         as_attachment=True,
     )
 
 
-@auth_blueprint.route('/auth/blocked-users', methods=['GET'])
-@require_auth(scopes=['profile:read'])
+@auth_blueprint.route("/auth/blocked-users", methods=["GET"])
+@require_auth(scopes=["profile:read"])
 def get_blocked_users(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Get blocked users by authenticated user
@@ -2407,7 +2407,7 @@ def get_blocked_users(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     params = request.args.copy()
     try:
-        page = int(params.get('page', 1))
+        page = int(params.get("page", 1))
     except ValueError:
         page = 1
 
@@ -2434,7 +2434,7 @@ def get_blocked_users(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route("/auth/account/suspension", methods=["GET"])
-@require_auth(scopes=['profile:read'], allow_suspended_user=True)
+@require_auth(scopes=["profile:read"], allow_suspended_user=True)
 def get_user_suspension(
     auth_user: User,
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -2507,7 +2507,7 @@ def get_user_suspension(
     "/auth/account/suspension/appeal",
     methods=["POST"],
 )
-@require_auth(scopes=['profile:write'], allow_suspended_user=True)
+@require_auth(scopes=["profile:write"], allow_suspended_user=True)
 def appeal_user_suspension(
     auth_user: User,
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -2576,7 +2576,7 @@ def appeal_user_suspension(
 @auth_blueprint.route(
     "/auth/account/sanctions/<string:action_short_id>", methods=["GET"]
 )
-@require_auth(scopes=['profile:read'], allow_suspended_user=True)
+@require_auth(scopes=["profile:read"], allow_suspended_user=True)
 def get_user_sanction(
     auth_user: User, action_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -2648,7 +2648,7 @@ def get_user_sanction(
     "/auth/account/sanctions/<string:action_short_id>/appeal",
     methods=["POST"],
 )
-@require_auth(scopes=['profile:write'])
+@require_auth(scopes=["profile:write"])
 def appeal_user_sanction(
     auth_user: User, action_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:

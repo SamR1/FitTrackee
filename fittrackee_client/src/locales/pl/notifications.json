@@ -1,1 +1,27 @@
-{}
+{
+  "ACCEPTED_FOLLOW_REQUEST": "zaakceptowano wniosek o śledzenie",
+  "ALL": "Wszystko",
+  "APPEALED_SUSPENSION": "sprzeciwiono się zawieszeniu",
+  "APPEALED_USER_WARNING": "sprzeciwiono się ostrzeżeniu",
+  "COMMENTED_YOUR_WORKOUT": "nowy komentarz twojego treningu",
+  "LIKED_YOUR_COMMENT": "polubiono twój komentarz",
+  "LIKED_YOUR_WORKOUT": "polubiono twój trening",
+  "MARK_ALL_AS_READ": "Oznacz wszystkie jako przeczytane",
+  "MARK_AS_READ": "Oznacz jako przeczytane",
+  "MARK_AS_UNREAD": "Oznacz jako nieprzeczytane",
+  "MENTIONED_YOU": "wspomniano o tobie",
+  "NOTIFICATIONS": "powiadomienie | powiadomienia",
+  "NO_NOTIFICATIONS": "Brak powiadomień.",
+  "REPLIED_YOUR_COMMENT": "przesyła odpowiedź na twój komentarz",
+  "REPORTED_USER_COMMENT": "zgłoszono komentarz:",
+  "REPORTED_USER_USER": "zgłoszono konto:",
+  "REPORTED_USER_WORKOUT": "zgłoszono trening:",
+  "SEND_FOLLOW_REQUEST_TO_YOU": "chce cię śledzić",
+  "SIGN_UP": "ukończono rejestrację",
+  "STATUS": "Status",
+  "TYPES": {
+    "ALL": "wszystko",
+    "LABEL": "Typ",
+    "comment_like": "polubień komentarzy"
+  }
+}

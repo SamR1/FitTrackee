@@ -1,6 +1,6 @@
 import random
 import string
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from json import dumps, loads
 from typing import Dict, Optional, Union
@@ -21,23 +21,23 @@ def random_string(
 ) -> str:
     if length is None:
         length = 10
-    random_str = ''.join(
+    random_str = "".join(
         random.choice(string.ascii_letters + string.digits)
         for _ in range(length)
     )
     return (
-        f'{"" if prefix is None else prefix}'
-        f'{random_str}'
-        f'{"" if suffix is None else suffix}'
+        f"{'' if prefix is None else prefix}"
+        f"{random_str}"
+        f"{'' if suffix is None else suffix}"
     )
 
 
 def random_domain_with_scheme() -> str:
-    return random_string(prefix='https://', suffix='.social')
+    return random_string(prefix="https://", suffix=".social")
 
 
 def random_domain() -> str:
-    return random_string(suffix='.social')
+    return random_string(suffix=".social")
 
 
 def get_date_string(
@@ -49,7 +49,7 @@ def get_date_string(
 
 
 def random_email() -> str:
-    return random_string(suffix='@example.com')
+    return random_string(suffix="@example.com")
 
 
 def random_int(min_value: int = 0, max_value: int = 999999) -> int:
@@ -68,63 +68,63 @@ def get_remote_user_object(
     manually_approves_followers: bool = True,
     with_icon: bool = False,
 ) -> Dict:
-    user_url = f'{domain}/users/{preferred_username}'
+    user_url = f"{domain}/users/{preferred_username}"
     user_object = {
-        '@context': [
-            'https://www.w3.org/ns/activitystreams',
-            'https://w3id.org/security/v1',
+        "@context": [
+            "https://www.w3.org/ns/activitystreams",
+            "https://w3id.org/security/v1",
         ],
-        'id': user_url,
-        'type': 'Person',
-        'following': f'{user_url}/following',
-        'followers': f'{user_url}/followers',
-        'inbox': f'{user_url}/inbox',
-        'outbox': f'{user_url}/outbox',
-        'name': username,
-        'preferredUsername': preferred_username,
-        'manuallyApprovesFollowers': manually_approves_followers,
-        'publicKey': {
-            'id': f'{user_url}#main-key',
-            'owner': user_url,
-            'publicKeyPem': random_string(),
+        "id": user_url,
+        "type": "Person",
+        "following": f"{user_url}/following",
+        "followers": f"{user_url}/followers",
+        "inbox": f"{user_url}/inbox",
+        "outbox": f"{user_url}/outbox",
+        "name": username,
+        "preferredUsername": preferred_username,
+        "manuallyApprovesFollowers": manually_approves_followers,
+        "publicKey": {
+            "id": f"{user_url}#main-key",
+            "owner": user_url,
+            "publicKeyPem": random_string(),
         },
-        'endpoints': {'sharedInbox': f'{domain}/inbox'},
+        "endpoints": {"sharedInbox": f"{domain}/inbox"},
     }
     if profile_url:
-        user_object['url'] = profile_url
+        user_object["url"] = profile_url
     if with_icon:
-        user_object['icon'] = {
-            'type': 'Image',
-            'mediaType': 'image/jpeg',
-            'url': 'https://exemple.com/916cac70b7c694a4.jpg',
+        user_object["icon"] = {
+            "type": "Image",
+            "mediaType": "image/jpeg",
+            "url": "https://exemple.com/916cac70b7c694a4.jpg",
         }
     return user_object
 
 
 @dataclass
 class RandomActor:
-    name: str = random_string()
-    preferred_username: str = random_string()
-    domain: str = random_domain_with_scheme()
+    name: str = field(default_factory=random_string)
+    preferred_username: str = field(default_factory=random_string)
+    domain: str = field(default_factory=random_domain_with_scheme)
     manually_approves_followers: bool = True
 
     @property
     def fullname(self) -> str:
         return (
-            f'{self.preferred_username}@{self.domain.replace("https://", "")}'
+            f"{self.preferred_username}@{self.domain.replace('https://', '')}"
         )
 
     @property
     def activitypub_id(self) -> str:
-        return f'{self.domain}/users/{self.preferred_username}'
+        return f"{self.domain}/users/{self.preferred_username}"
 
     @property
     def profile_url(self) -> str:
-        return f'{self.domain}/{self.preferred_username}'
+        return f"{self.domain}/{self.preferred_username}"
 
     @property
     def followers_url(self) -> str:
-        return f'{self.domain}/users/{self.preferred_username}/followers'
+        return f"{self.domain}/users/{self.preferred_username}/followers"
 
     def get_remote_user_object(self, with_icon: bool = False) -> Dict:
         return get_remote_user_object(
@@ -138,12 +138,12 @@ class RandomActor:
 
     def get_webfinger(self) -> Dict:
         return {
-            'subject': f'acct:{self.fullname}',
-            'links': [
+            "subject": f"acct:{self.fullname}",
+            "links": [
                 {
-                    'rel': 'self',
-                    'type': 'application/activity+json',
-                    'href': self.activitypub_id,
+                    "rel": "self",
+                    "type": "application/activity+json",
+                    "href": self.activitypub_id,
                 }
             ],
         }
@@ -173,7 +173,7 @@ def random_actor_url(
         if domain_with_scheme
         else random_domain_with_scheme()
     )
-    return f'{remote_domain}/users/{username}'
+    return f"{remote_domain}/users/{username}"
 
 
 def generate_follow_request(follower: User, followed: User) -> FollowRequest:
@@ -190,10 +190,10 @@ def jsonify_dict(data: Dict) -> Dict:
 
 
 TEST_OAUTH_CLIENT_METADATA = {
-    'client_name': random_string(),
-    'client_uri': random_domain(),
-    'redirect_uris': [random_domain()],
-    'scope': 'profile:read workouts:read',
+    "client_name": random_string(),
+    "client_uri": random_domain(),
+    "redirect_uris": [random_domain()],
+    "scope": "profile:read workouts:read",
 }
 
 OAUTH_SCOPES = {

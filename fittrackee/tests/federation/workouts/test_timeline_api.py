@@ -16,8 +16,8 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
     def assert_no_workout_returned(response: TestResponse) -> None:
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 0
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 0
 
     @staticmethod
     def assert_workout_returned(
@@ -25,23 +25,23 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
     ) -> None:
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0]['id'] == workout.short_id
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["id"] == workout.short_id
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_visibility',
+        "input_desc,input_workout_visibility",
         [
-            ('workout visibility: private', VisibilityLevel.PRIVATE),
+            ("workout visibility: private", VisibilityLevel.PRIVATE),
             (
-                'workout visibility: followers_only',
+                "workout visibility: followers_only",
                 VisibilityLevel.FOLLOWERS,
             ),
             (
-                'workout visibility: followers_and_remote_only',
+                "workout visibility: followers_and_remote_only",
                 VisibilityLevel.FOLLOWERS_AND_REMOTE,
             ),
-            ('workout visibility: public', VisibilityLevel.PUBLIC),
+            ("workout visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_authenticated_user_workout(
@@ -59,20 +59,20 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_workout_returned(response, workout_cycling_user_1)
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_visibility',
+        "input_desc,input_workout_visibility",
         [
             (
-                'workout visibility: followers_and_remote_only',
+                "workout visibility: followers_and_remote_only",
                 VisibilityLevel.FOLLOWERS_AND_REMOTE,
             ),
-            ('workout visibility: public', VisibilityLevel.PUBLIC),
+            ("workout visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_followed_user_workout_when_visibility_allows_it(
@@ -93,20 +93,20 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_workout_returned(response, workout_cycling_user_2)
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_visibility',
+        "input_desc,input_workout_visibility",
         [
             (
-                'workout visibility: followers_only',
+                "workout visibility: followers_only",
                 VisibilityLevel.FOLLOWERS,
             ),
-            ('workout visibility: private', VisibilityLevel.PRIVATE),
+            ("workout visibility: private", VisibilityLevel.PRIVATE),
         ],
     )
     def test_it_does_return_workout_if_visibility_does_not_allow_it(
@@ -127,20 +127,20 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_no_workout_returned(response)
 
     @pytest.mark.parametrize(
-        'input_desc,input_map_visibility',
+        "input_desc,input_map_visibility",
         [
             (
-                'map visibility: followers_only',
+                "map visibility: followers_only",
                 VisibilityLevel.FOLLOWERS,
             ),
-            ('map visibility: private', VisibilityLevel.PRIVATE),
+            ("map visibility: private", VisibilityLevel.PRIVATE),
         ],
     )
     def test_it_does_not_return_followed_user_workout_map_when_privacy_does_not_allow_it(  # noqa
@@ -164,23 +164,23 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
-        assert data['data']['workouts'][0]['map'] is None
+        assert data["data"]["workouts"][0]["map"] is None
 
     @pytest.mark.parametrize(
-        'input_desc,input_visibility',
+        "input_desc,input_visibility",
         [
             (
-                'workout, analysis and map visibility: '
-                'followers_and_remote_only',
+                "workout, analysis and map visibility: "
+                "followers_and_remote_only",
                 VisibilityLevel.FOLLOWERS_AND_REMOTE,
             ),
             (
-                'workout, analysis and map visibility: public',
+                "workout, analysis and map visibility: public",
                 VisibilityLevel.PUBLIC,
             ),
         ],
@@ -208,9 +208,9 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/timeline',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
-        assert data['data']['workouts'][0]['map'] == map_id
+        assert data["data"]["workouts"][0]["map"] == map_id

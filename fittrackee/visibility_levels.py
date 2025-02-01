@@ -8,10 +8,10 @@ if TYPE_CHECKING:
 
 
 class VisibilityLevel(str, Enum):  # to make enum serializable
-    PUBLIC = 'public'
-    FOLLOWERS_AND_REMOTE = 'followers_and_remote_only'
-    FOLLOWERS = 'followers_only'  # only local followers in federated instances
-    PRIVATE = 'private'  # in case of comments, for mentioned users only
+    PUBLIC = "public"
+    FOLLOWERS_AND_REMOTE = "followers_and_remote_only"
+    FOLLOWERS = "followers_only"  # only local followers in federated instances
+    PRIVATE = "private"  # in case of comments, for mentioned users only
 
 
 def get_calculated_visibility(
@@ -36,9 +36,9 @@ def get_calculated_visibility(
 
 
 def can_view(
-    target_object: Union['Workout', 'Comment'],
+    target_object: Union["Workout", "Comment"],
     visibility: str,
-    user: Optional['User'] = None,
+    user: Optional["User"] = None,
     for_report: bool = False,
 ) -> bool:
     from fittrackee.comments.models import Comment

@@ -19,14 +19,14 @@ class WeatherService:
 
     @staticmethod
     def _get_weather_api() -> Union[VisualCrossing, None]:
-        weather_api_key: str = os.getenv('WEATHER_API_KEY', '')
+        weather_api_key: str = os.getenv("WEATHER_API_KEY", "")
         weather_api_provider: str = os.getenv(
-            'WEATHER_API_PROVIDER', ''
+            "WEATHER_API_PROVIDER", ""
         ).lower()
 
         if not weather_api_key:
             return None
-        if weather_api_provider == 'visualcrossing':
+        if weather_api_provider == "visualcrossing":
             return VisualCrossing(weather_api_key)
         return None
 
@@ -36,5 +36,5 @@ class WeatherService:
         try:
             return self.weather_api.get_weather(point)
         except Exception as e:
-            appLog.error(f'error when getting weather data: {e}')
+            appLog.error(f"error when getting weather data: {e}")
             return None

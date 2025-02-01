@@ -48,20 +48,20 @@ class AbstractActivity(ABC):
         return actor from activity
         """
         actor = Actor.query.filter_by(
-            activitypub_id=self.activity['actor']
+            activitypub_id=self.activity["actor"]
         ).first()
         if not actor:
             if create_remote_actor:
                 remote_domain = get_or_create_remote_domain_from_url(
-                    self.activity['actor']
+                    self.activity["actor"]
                 )
                 user = create_remote_user(
-                    remote_domain, self.activity['actor']
+                    remote_domain, self.activity["actor"]
                 )
                 actor = user.actor
             else:
                 raise ActorNotFoundException(
-                    f'actor not found for {self.activity_name()}'
+                    f"actor not found for {self.activity_name()}"
                 )
         return actor
 
@@ -73,20 +73,20 @@ class AbstractActivity(ABC):
         """
         actor = self.get_actor(create_remote_actor)
 
-        if isinstance(self.activity['object'], str):
-            object_actor_activitypub_id = self.activity['object']
+        if isinstance(self.activity["object"], str):
+            object_actor_activitypub_id = self.activity["object"]
         else:
             object_actor_activitypub_id = (
-                self.activity['object']['object']
-                if self.activity['type'] == 'Undo'
-                else self.activity['object']['actor']
+                self.activity["object"]["object"]
+                if self.activity["type"] == "Undo"
+                else self.activity["object"]["actor"]
             )
         object_actor = Actor.query.filter_by(
             activitypub_id=object_actor_activitypub_id
         ).first()
         if not object_actor:
             raise ActorNotFoundException(
-                message=f'object actor not found for {self.activity_name()}'
+                message=f"object actor not found for {self.activity_name()}"
             )
         return actor, object_actor
 
@@ -120,7 +120,7 @@ class FollowActivity(FollowBaseActivity):
         try:
             follower_actor.user.send_follow_request_to(followed_actor.user)
         except FollowRequestAlreadyRejectedError as e:
-            appLog.error('Follow activity: follow request already rejected.')
+            appLog.error("Follow activity: follow request already rejected.")
             raise e
 
 
@@ -133,12 +133,12 @@ class AcceptActivity(FollowBaseActivity):
             )
         except NotExistingFollowRequestError as e:
             appLog.error(
-                f'{self.activity_name()}: follow request does not exist.'
+                f"{self.activity_name()}: follow request does not exist."
             )
             raise e
         except FollowRequestAlreadyProcessedError as e:
             appLog.error(
-                f'{self.activity_name()}: follow request already processed.'
+                f"{self.activity_name()}: follow request already processed."
             )
             raise e
 
@@ -152,21 +152,21 @@ class RejectActivity(FollowBaseActivity):
             )
         except NotExistingFollowRequestError as e:
             appLog.error(
-                f'{self.activity_name()}: follow request does not exist.'
+                f"{self.activity_name()}: follow request does not exist."
             )
             raise e
         except FollowRequestAlreadyProcessedError as e:
             appLog.error(
-                f'{self.activity_name()}: follow request already processed.'
+                f"{self.activity_name()}: follow request already processed."
             )
             raise e
 
 
 class UndoActivity(AbstractActivity):
     def process_activity(self) -> None:
-        if self.activity['object']['type'] == 'Follow':
+        if self.activity["object"]["type"] == "Follow":
             self.undoes_follow()
-        if self.activity['object']['type'] == 'Like':
+        if self.activity["object"]["type"] == "Like":
             self.undoes_like()
 
     def undoes_follow(self) -> None:
@@ -175,7 +175,7 @@ class UndoActivity(AbstractActivity):
             followed_actor.user.undoes_follow(follower_actor.user)
         except NotExistingFollowRequestError as e:
             appLog.error(
-                f'{self.activity_name()}: follow request does not exist.'
+                f"{self.activity_name()}: follow request does not exist."
             )
             raise e
 
@@ -196,7 +196,7 @@ class UndoActivity(AbstractActivity):
         if not target_object:
             target_object = Comment.query.filter_by(ap_id=object_ap_id).first()
             if not target_object:
-                raise ObjectNotFoundException('object', self.activity_name())
+                raise ObjectNotFoundException("object", self.activity_name())
 
             like = CommentLike.query.filter_by(
                 user_id=actor.user.id,
@@ -242,14 +242,14 @@ def create_comment(
 
 class CreateActivity(AbstractActivity):
     def create_remote_workout(self, actor: Actor) -> None:
-        workout_data = self.activity['object']
-        sport_id = workout_data['sport_id']
+        workout_data = self.activity["object"]
+        sport_id = workout_data["sport_id"]
         if not sport_id:
             raise SportNotFoundException()
         sport = Sport.query.filter_by(id=sport_id).first()
         if not sport:
             raise SportNotFoundException()
-        workout_data['workout_visibility'] = self._get_visibility(
+        workout_data["workout_visibility"] = self._get_visibility(
             workout_data, actor
         )
         new_workout = create_workout(
@@ -267,18 +267,18 @@ class CreateActivity(AbstractActivity):
         db.session.commit()
 
     def process_activity(self) -> None:
-        object_type = self.activity['object']['type']
+        object_type = self.activity["object"]["type"]
         actor = self.get_actor(create_remote_actor=object_type == "Note")
-        if object_type == 'Workout':
+        if object_type == "Workout":
             self.create_remote_workout(actor=actor)
-        if object_type == 'Note':
+        if object_type == "Note":
             self.create_remote_note(actor=actor)
 
 
 class DeleteActivity(AbstractActivity):
     def process_activity(self) -> None:
         actor = self.get_actor()
-        object_ap_id = self.activity['object']['id']
+        object_ap_id = self.activity["object"]["id"]
 
         # check if related object is a comment
         object_to_delete = Comment.query.filter_by(ap_id=object_ap_id).first()
@@ -290,12 +290,12 @@ class DeleteActivity(AbstractActivity):
             ).first()
 
         if not object_to_delete:
-            raise ObjectNotFoundException('object', self.activity_name())
+            raise ObjectNotFoundException("object", self.activity_name())
 
         if object_to_delete.user.actor.id != actor.id:
             raise ActivityException(
-                f'{self.activity_name()}: activity actor does not '
-                f'match workout actor.'
+                f"{self.activity_name()}: activity actor does not "
+                f"match workout actor."
             )
 
         db.session.delete(object_to_delete)
@@ -312,38 +312,38 @@ class UpdateActivity(AbstractActivity):
         )
 
     def update_remote_workout(self, actor: Actor) -> None:
-        workout_data = self.activity['object']
+        workout_data = self.activity["object"]
         workout_to_update = Workout.query.filter_by(
-            ap_id=workout_data['id']
+            ap_id=workout_data["id"]
         ).first()
         if not workout_to_update:
-            raise ObjectNotFoundException('workout', self.activity_name())
+            raise ObjectNotFoundException("workout", self.activity_name())
 
         if workout_to_update.user.actor.id != actor.id:
             raise ActivityException(
-                f'{self.activity_name()}: activity actor does not '
-                f'match workout actor.'
+                f"{self.activity_name()}: activity actor does not "
+                f"match workout actor."
             )
 
         try:
-            workout_to_update.ave_speed = workout_data['ave_speed']
-            workout_to_update.distance = workout_data['distance']
+            workout_to_update.ave_speed = workout_data["ave_speed"]
+            workout_to_update.distance = workout_data["distance"]
             workout_to_update.duration = (
                 self.convert_duration_string_to_timedelta(
-                    workout_data['duration']
+                    workout_data["duration"]
                 )
             )
-            workout_to_update.max_speed = workout_data['max_speed']
+            workout_to_update.max_speed = workout_data["max_speed"]
             workout_to_update.moving = (
                 self.convert_duration_string_to_timedelta(
-                    workout_data['moving']
+                    workout_data["moving"]
                 )
             )
-            workout_to_update.sport_id = workout_data['sport_id']
-            workout_to_update.title = workout_data['title']
+            workout_to_update.sport_id = workout_data["sport_id"]
+            workout_to_update.title = workout_data["title"]
             # workout date must be in GMT+00:00
             workout_to_update.workout_date = datetime.strptime(
-                workout_data['workout_date'], WORKOUT_DATE_FORMAT
+                workout_data["workout_date"], WORKOUT_DATE_FORMAT
             ).replace(tzinfo=timezone.utc)
             workout_to_update.workout_visibility = self._get_visibility(
                 workout_data, actor
@@ -351,14 +351,14 @@ class UpdateActivity(AbstractActivity):
             db.session.commit()
         except Exception as e:
             raise ActivityException(
-                f'{self.activity_name()}: invalid Workout activity '
-                f'({e.__class__.__name__}: {e}).'
-            )
+                f"{self.activity_name()}: invalid Workout activity "
+                f"({e.__class__.__name__}: {e})."
+            ) from e
 
     def update_remote_workout_comment(self, actor: Actor) -> None:
-        note_data = self.activity['object']
+        note_data = self.activity["object"]
         comment_to_update = Comment.query.filter_by(
-            ap_id=note_data['id']
+            ap_id=note_data["id"]
         ).first()
         if not comment_to_update:
             comment_to_update = create_comment(
@@ -367,12 +367,12 @@ class UpdateActivity(AbstractActivity):
 
         if comment_to_update.user.actor.id != actor.id:
             raise ActivityException(
-                f'{self.activity_name()}: activity actor does not '
-                f'match Note actor.'
+                f"{self.activity_name()}: activity actor does not "
+                f"match Note actor."
             )
 
         try:
-            comment_to_update.text = note_data['content']
+            comment_to_update.text = note_data["content"]
             comment_to_update.text_visibility = self._get_visibility(
                 note_data, actor
             )
@@ -381,12 +381,12 @@ class UpdateActivity(AbstractActivity):
             db.session.commit()
         except Exception as e:
             raise ActivityException(
-                f'{self.activity_name()}: invalid Note activity '
-                f'({e.__class__.__name__}: {e}).'
-            )
+                f"{self.activity_name()}: invalid Note activity "
+                f"({e.__class__.__name__}: {e})."
+            ) from e
 
     def process_activity(self) -> None:
-        object_type = self.activity['object']['type']
+        object_type = self.activity["object"]["type"]
         actor = self.get_actor(create_remote_actor=object_type == "Note")
         if object_type == "Workout":
             self.update_remote_workout(actor)
@@ -411,7 +411,7 @@ class LikeActivity(AbstractActivity):
         else:
             target_object = Comment.query.filter_by(ap_id=object_ap_id).first()
             if not target_object:
-                raise ObjectNotFoundException('object', self.activity_name())
+                raise ObjectNotFoundException("object", self.activity_name())
 
             like = CommentLike(
                 user_id=actor.user.id, comment_id=target_object.id

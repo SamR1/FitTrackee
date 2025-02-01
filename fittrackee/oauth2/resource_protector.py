@@ -30,16 +30,16 @@ class CustomResourceProtector(ResourceProtector):
             @wraps(f)
             def decorated(*args: Any, **kwargs: Any) -> Callable:
                 auth_user = None
-                auth_header = request.headers.get('Authorization')
+                auth_header = request.headers.get("Authorization")
                 if not optional_auth_user and not auth_header:
                     return UnauthorizedErrorResponse(
-                        'provide a valid auth token'
+                        "provide a valid auth token"
                     )
 
                 if auth_header:
                     # First-party application (Fittrackee front-end)
                     # in this case, scopes will be ignored
-                    auth_token = auth_header.split(' ')[1]
+                    auth_token = auth_header.split(" ")[1]
                     resp = User.decode_auth_token(auth_token)
                     if isinstance(resp, int):
                         auth_user = User.query.filter_by(id=resp).first()
@@ -55,21 +55,21 @@ class CustomResourceProtector(ResourceProtector):
                         ) as error:
                             self.raise_error_response(error)
                         except RequestEntityTooLarge:
-                            file_type = ''
+                            file_type = ""
                             if request.endpoint in [
-                                'auth.edit_picture',
-                                'workouts.post_workout',
+                                "auth.edit_picture",
+                                "workouts.post_workout",
                             ]:
                                 file_type = (
-                                    'picture'
-                                    if request.endpoint == 'auth.edit_picture'
-                                    else 'workout'
+                                    "picture"
+                                    if request.endpoint == "auth.edit_picture"
+                                    else "workout"
                                 )
                             return PayloadTooLargeErrorResponse(
                                 file_type=file_type,
                                 file_size=request.content_length,
                                 max_size=current_app.config[
-                                    'MAX_CONTENT_LENGTH'
+                                    "MAX_CONTENT_LENGTH"
                                 ],
                             )
                         auth_user = (
@@ -78,13 +78,11 @@ class CustomResourceProtector(ResourceProtector):
                             else current_token.user
                         )
 
-                if (
-                    not optional_auth_user
-                    and not auth_user
-                    or (auth_user and not auth_user.is_active)
+                if (not optional_auth_user and not auth_user) or (
+                    auth_user and not auth_user.is_active
                 ):
                     return UnauthorizedErrorResponse(
-                        'provide a valid auth token'
+                        "provide a valid auth token"
                     )
 
                 if auth_user and (
@@ -95,11 +93,11 @@ class CustomResourceProtector(ResourceProtector):
                     or (role and auth_user.role < role.value)
                 ):
                     return ForbiddenErrorResponse(
-                        'you do not have permissions'
+                        "you do not have permissions"
                         + (
-                            ', your account is suspended'
+                            ", your account is suspended"
                             if auth_user and auth_user.suspended_at
-                            else ''
+                            else ""
                         )
                     )
                 return f(auth_user, *args, **kwargs)

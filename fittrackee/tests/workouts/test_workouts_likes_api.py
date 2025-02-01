@@ -15,7 +15,7 @@ from ..utils import OAUTH_SCOPES, jsonify_dict
 
 
 class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
-    route = '/api/workouts/{workout_uuid}/like'
+    route = "/api/workouts/{workout_uuid}/like"
 
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
@@ -52,7 +52,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -74,7 +74,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -90,7 +90,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=self.random_short_id()),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -112,7 +112,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -132,16 +132,16 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_level',
+        "input_desc,input_workout_level",
         [
-            ('workout visibility: follower', VisibilityLevel.FOLLOWERS),
-            ('workout visibility: public', VisibilityLevel.PUBLIC),
+            ("workout visibility: follower", VisibilityLevel.FOLLOWERS),
+            ("workout visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_creates_workout_like(
@@ -163,13 +163,13 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['workouts'] == [
+        assert "success" in data["status"]
+        assert data["data"]["workouts"] == [
             jsonify_dict(
                 workout_cycling_user_2.serialize(user=user_1, light=False)
             )
@@ -202,15 +202,15 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
         assert (
-            data['data']['workouts'][0]['id']
+            data["data"]["workouts"][0]["id"]
             == workout_cycling_user_2.short_id
         )
         assert (
@@ -222,8 +222,8 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
         assert workout_cycling_user_2.likes.all() == [user_1]
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -245,14 +245,14 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
 
 
 class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
-    route = '/api/workouts/{workout_uuid}/like/undo'
+    route = "/api/workouts/{workout_uuid}/like/undo"
 
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
@@ -294,7 +294,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -310,7 +310,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=self.random_short_id()),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -332,7 +332,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -352,7 +352,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -374,16 +374,16 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_level',
+        "input_desc,input_workout_level",
         [
-            ('workout visibility: follower', VisibilityLevel.FOLLOWERS),
-            ('workout visibility: public', VisibilityLevel.PUBLIC),
+            ("workout visibility: follower", VisibilityLevel.FOLLOWERS),
+            ("workout visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_removes_workout_like(
@@ -410,13 +410,13 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['workouts'] == [
+        assert "success" in data["status"]
+        assert data["data"]["workouts"] == [
             jsonify_dict(
                 workout_cycling_user_2.serialize(user=user_1, light=False)
             )
@@ -444,15 +444,15 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
         assert (
-            data['data']['workouts'][0]['id']
+            data["data"]["workouts"][0]["id"]
             == workout_cycling_user_2.short_id
         )
         assert (
@@ -464,8 +464,8 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
         assert workout_cycling_user_2.likes.all() == []
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -487,14 +487,14 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
 
 
 class TestWorkoutLikesGet(ApiTestCaseMixin, BaseTestMixin):
-    route = '/api/workouts/{workout_uuid}/likes'
+    route = "/api/workouts/{workout_uuid}/likes"
 
     def test_it_return_error_when_user_is_suspended(
         self,
@@ -515,7 +515,7 @@ class TestWorkoutLikesGet(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -531,7 +531,7 @@ class TestWorkoutLikesGet(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.get(
             self.route.format(workout_uuid=self.random_short_id()),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -553,7 +553,7 @@ class TestWorkoutLikesGet(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -573,7 +573,7 @@ class TestWorkoutLikesGet(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -594,7 +594,7 @@ class TestWorkoutLikesGet(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -621,22 +621,22 @@ class TestWorkoutLikesGet(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['likes'] == []
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': False,
-            'page': 1,
-            'pages': 0,
-            'total': 0,
+        assert "success" in data["status"]
+        assert data["data"]["likes"] == []
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 0,
+            "total": 0,
         }
 
-    @patch('fittrackee.workouts.workouts.DEFAULT_WORKOUT_LIKES_PER_PAGE', 2)
+    @patch("fittrackee.workouts.workouts.DEFAULT_WORKOUT_LIKES_PER_PAGE", 2)
     def test_it_returns_users_who_like_workout(
         self,
         app: Flask,
@@ -661,25 +661,25 @@ class TestWorkoutLikesGet(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['likes'] == [
+        assert "success" in data["status"]
+        assert data["data"]["likes"] == [
             jsonify_dict(user_4.serialize(current_user=user_1)),
             jsonify_dict(user_3.serialize(current_user=user_1)),
         ]
-        assert data['pagination'] == {
-            'has_next': True,
-            'has_prev': False,
-            'page': 1,
-            'pages': 2,
-            'total': 3,
+        assert data["pagination"] == {
+            "has_next": True,
+            "has_prev": False,
+            "page": 1,
+            "pages": 2,
+            "total": 3,
         }
 
-    @patch('fittrackee.workouts.workouts.DEFAULT_WORKOUT_LIKES_PER_PAGE', 2)
+    @patch("fittrackee.workouts.workouts.DEFAULT_WORKOUT_LIKES_PER_PAGE", 2)
     def test_it_returns_page_2(
         self,
         app: Flask,
@@ -705,21 +705,21 @@ class TestWorkoutLikesGet(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.get(
             f"{self.route.format(workout_uuid=workout_uuid)}?page=2",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['likes'] == [
+        assert "success" in data["status"]
+        assert data["data"]["likes"] == [
             jsonify_dict(user_2.serialize(current_user=user_1))
         ]
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': True,
-            'page': 2,
-            'pages': 2,
-            'total': 3,
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": True,
+            "page": 2,
+            "pages": 2,
+            "total": 3,
         }
 
     def test_it_returns_like_when_user_is_not_authenticated(
@@ -745,19 +745,19 @@ class TestWorkoutLikesGet(ApiTestCaseMixin, BaseTestMixin):
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['likes'] == [jsonify_dict(user_2.serialize())]
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': False,
-            'page': 1,
-            'pages': 1,
-            'total': 1,
+        assert "success" in data["status"]
+        assert data["data"]["likes"] == [jsonify_dict(user_2.serialize())]
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
         }
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -779,7 +779,7 @@ class TestWorkoutLikesGet(ApiTestCaseMixin, BaseTestMixin):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)

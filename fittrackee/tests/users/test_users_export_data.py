@@ -57,43 +57,43 @@ class TestUserDataExporterGetUserWorkoutsData:
 
         assert workouts_data == [
             {
-                'id': workout_cycling_user_1.short_id,
-                'sport_id': sport_1_cycling.id,
-                'sport_label': sport_1_cycling.label,
-                'title': workout_cycling_user_1.title,
-                'creation_date': workout_cycling_user_1.creation_date,
-                'modification_date': workout_cycling_user_1.modification_date,
-                'workout_date': workout_cycling_user_1.workout_date,
-                'duration': str(workout_cycling_user_1.duration),
-                'pauses': None,
-                'moving': str(workout_cycling_user_1.moving),
-                'distance': workout_cycling_user_1.distance,
-                'min_alt': None,
-                'max_alt': None,
-                'descent': None,
-                'ascent': None,
-                'max_speed': workout_cycling_user_1.max_speed,
-                'ave_speed': workout_cycling_user_1.ave_speed,
-                'gpx': None,
-                'records': [
+                "id": workout_cycling_user_1.short_id,
+                "sport_id": sport_1_cycling.id,
+                "sport_label": sport_1_cycling.label,
+                "title": workout_cycling_user_1.title,
+                "creation_date": workout_cycling_user_1.creation_date,
+                "modification_date": workout_cycling_user_1.modification_date,
+                "workout_date": workout_cycling_user_1.workout_date,
+                "duration": str(workout_cycling_user_1.duration),
+                "pauses": None,
+                "moving": str(workout_cycling_user_1.moving),
+                "distance": workout_cycling_user_1.distance,
+                "min_alt": None,
+                "max_alt": None,
+                "descent": None,
+                "ascent": None,
+                "max_speed": workout_cycling_user_1.max_speed,
+                "ave_speed": workout_cycling_user_1.ave_speed,
+                "gpx": None,
+                "records": [
                     record.serialize()
                     for record in workout_cycling_user_1.records
                 ],
-                'segments': [],
-                'weather_start': None,
-                'weather_end': None,
-                'notes': workout_cycling_user_1.notes,
-                'equipments': [],
-                'description': None,
-                'liked': workout_cycling_user_1.liked_by(user_1),
-                'likes_count': workout_cycling_user_1.likes.count(),
-                'analysis_visibility': (
+                "segments": [],
+                "weather_start": None,
+                "weather_end": None,
+                "notes": workout_cycling_user_1.notes,
+                "equipments": [],
+                "description": None,
+                "liked": workout_cycling_user_1.liked_by(user_1),
+                "likes_count": workout_cycling_user_1.likes.count(),
+                "analysis_visibility": (
                     workout_cycling_user_1.calculated_analysis_visibility.value
                 ),
-                'map_visibility': (
+                "map_visibility": (
                     workout_cycling_user_1.calculated_map_visibility.value
                 ),
-                'workout_visibility': (
+                "workout_visibility": (
                     workout_cycling_user_1.workout_visibility.value
                 ),
             }
@@ -114,40 +114,40 @@ class TestUserDataExporterGetUserWorkoutsData:
 
         assert workouts_data == [
             {
-                'id': workout.short_id,
-                'sport_id': sport_1_cycling.id,
-                'sport_label': sport_1_cycling.label,
-                'title': workout.title,
-                'creation_date': workout.creation_date,
-                'modification_date': workout.modification_date,
-                'workout_date': workout.workout_date,
-                'duration': str(workout.duration),
-                'pauses': None,
-                'moving': str(workout.moving),
-                'distance': float(workout.distance),
-                'min_alt': float(workout.min_alt),
-                'max_alt': float(workout.max_alt),
-                'descent': float(workout.descent),
-                'ascent': float(workout.ascent),
-                'max_speed': float(workout.max_speed),
-                'ave_speed': float(workout.ave_speed),
-                'gpx': workout.gpx.split('/')[-1],
-                'records': [record.serialize() for record in workout.records],
-                'segments': [
+                "id": workout.short_id,
+                "sport_id": sport_1_cycling.id,
+                "sport_label": sport_1_cycling.label,
+                "title": workout.title,
+                "creation_date": workout.creation_date,
+                "modification_date": workout.modification_date,
+                "workout_date": workout.workout_date,
+                "duration": str(workout.duration),
+                "pauses": None,
+                "moving": str(workout.moving),
+                "distance": float(workout.distance),
+                "min_alt": float(workout.min_alt),
+                "max_alt": float(workout.max_alt),
+                "descent": float(workout.descent),
+                "ascent": float(workout.ascent),
+                "max_speed": float(workout.max_speed),
+                "ave_speed": float(workout.ave_speed),
+                "gpx": workout.gpx.split("/")[-1],
+                "records": [record.serialize() for record in workout.records],
+                "segments": [
                     segment.serialize() for segment in workout.segments
                 ],
-                'weather_start': None,
-                'weather_end': None,
-                'notes': workout.notes,
-                'equipments': [],
-                'description': None,
-                'liked': workout.liked_by(user_1),
-                'likes_count': workout.likes.count(),
-                'analysis_visibility': (
+                "weather_start": None,
+                "weather_end": None,
+                "notes": workout.notes,
+                "equipments": [],
+                "description": None,
+                "liked": workout.liked_by(user_1),
+                "likes_count": workout.likes.count(),
+                "analysis_visibility": (
                     workout.calculated_analysis_visibility.value
                 ),
-                'map_visibility': workout.calculated_map_visibility.value,
-                'workout_visibility': workout.workout_visibility.value,
+                "map_visibility": workout.calculated_map_visibility.value,
+                "workout_visibility": workout.workout_visibility.value,
             }
         ]
 
@@ -229,13 +229,13 @@ class TestUserDataExporterGetUserCommentsData(CommentMixin):
 
         assert comments_data == [
             {
-                'created_at': comment.created_at,
-                'id': comment.short_id,
-                'modification_date': comment.modification_date,
-                'reply_to': None,
-                'text': comment.text,
-                'text_visibility': comment.text_visibility.value,
-                'workout_id': workout_cycling_user_1.short_id,
+                "created_at": comment.created_at,
+                "id": comment.short_id,
+                "modification_date": comment.modification_date,
+                "reply_to": None,
+                "text": comment.text,
+                "text_visibility": comment.text_visibility.value,
+                "workout_id": workout_cycling_user_1.short_id,
             },
         ]
 
@@ -265,13 +265,13 @@ class TestUserDataExporterGetUserCommentsData(CommentMixin):
 
         assert comments_data == [
             {
-                'created_at': comment.created_at,
-                'id': comment.short_id,
-                'modification_date': comment.modification_date,
-                'reply_to': parent_comment.short_id,
-                'text': comment.text,
-                'text_visibility': comment.text_visibility.value,
-                'workout_id': workout_cycling_user_1.short_id,
+                "created_at": comment.created_at,
+                "id": comment.short_id,
+                "modification_date": comment.modification_date,
+                "reply_to": parent_comment.short_id,
+                "text": comment.text,
+                "text_visibility": comment.text_visibility.value,
+                "workout_id": workout_cycling_user_1.short_id,
             },
         ]
 
@@ -291,13 +291,13 @@ class TestUserDataExporterGetUserCommentsData(CommentMixin):
 
         assert comments_data == [
             {
-                'created_at': comment.created_at,
-                'id': comment.short_id,
-                'modification_date': comment.modification_date,
-                'reply_to': None,
-                'text': comment.text,
-                'text_visibility': comment.text_visibility.value,
-                'workout_id': None,
+                "created_at": comment.created_at,
+                "id": comment.short_id,
+                "modification_date": comment.modification_date,
+                "reply_to": None,
+                "text": comment.text,
+                "text_visibility": comment.text_visibility.value,
+                "workout_id": None,
             },
         ]
 
@@ -311,7 +311,7 @@ class TestUserDataExporterExportData:
         data = {"foo": "bar"}
         export = UserDataExporter(user_1)
         user_directory = os.path.join(
-            app.config['UPLOAD_FOLDER'], 'exports', str(user_1.id)
+            app.config["UPLOAD_FOLDER"], "exports", str(user_1.id)
         )
         os.makedirs(user_directory, exist_ok=True)
         file_name = random_string()
@@ -331,7 +331,7 @@ class TestUserDataExporterExportData:
         data = {"foo": "bar"}
         exporter = UserDataExporter(user_1)
         user_directory = os.path.join(
-            app.config['UPLOAD_FOLDER'], 'exports', str(user_1.id)
+            app.config["UPLOAD_FOLDER"], "exports", str(user_1.id)
         )
         file_name = random_string()
 
@@ -341,9 +341,9 @@ class TestUserDataExporterExportData:
 
 
 class TestUserDataExporterGenerateArchive:
-    @patch.object(secrets, 'token_urlsafe')
-    @patch.object(UserDataExporter, 'export_data')
-    @patch('fittrackee.users.export_data.ZipFile')
+    @patch.object(secrets, "token_urlsafe")
+    @patch.object(UserDataExporter, "export_data")
+    @patch("fittrackee.users.export_data.ZipFile")
     def test_it_gets_data_for_each_type(
         self,
         zipfile_mock: Mock,
@@ -359,16 +359,16 @@ class TestUserDataExporterGenerateArchive:
 
         export_data.assert_has_calls(
             [
-                call(exporter.get_user_info(), 'user_data'),
-                call(exporter.get_user_workouts_data(), 'workouts_data'),
-                call(exporter.get_user_equipments_data(), 'equipments_data'),
-                call(exporter.get_user_comments_data(), 'comments_data'),
+                call(exporter.get_user_info(), "user_data"),
+                call(exporter.get_user_workouts_data(), "workouts_data"),
+                call(exporter.get_user_equipments_data(), "equipments_data"),
+                call(exporter.get_user_comments_data(), "comments_data"),
             ]
         )
 
-    @patch.object(secrets, 'token_urlsafe')
-    @patch.object(UserDataExporter, 'export_data')
-    @patch('fittrackee.users.export_data.ZipFile')
+    @patch.object(secrets, "token_urlsafe")
+    @patch.object(UserDataExporter, "export_data")
+    @patch("fittrackee.users.export_data.ZipFile")
     def test_it_calls_zipfile_with_expected_patch(
         self,
         zipfile_mock: Mock,
@@ -382,19 +382,19 @@ class TestUserDataExporterGenerateArchive:
         token_urlsafe = random_string()
         secrets_mock.return_value = token_urlsafe
         expected_path = os.path.join(
-            app.config['UPLOAD_FOLDER'],
-            'exports',
+            app.config["UPLOAD_FOLDER"],
+            "exports",
             str(user_1.id),
             f"archive_{token_urlsafe}.zip",
         )
 
         exporter.generate_archive()
 
-        zipfile_mock.assert_called_once_with(expected_path, 'w')
+        zipfile_mock.assert_called_once_with(expected_path, "w")
 
-    @patch.object(secrets, 'token_urlsafe')
-    @patch.object(UserDataExporter, 'export_data')
-    @patch('fittrackee.users.export_data.ZipFile')
+    @patch.object(secrets, "token_urlsafe")
+    @patch.object(UserDataExporter, "export_data")
+    @patch("fittrackee.users.export_data.ZipFile")
     def test_it_calls_zipfile_for_each_json_file(
         self,
         zipfile_mock: Mock,
@@ -408,10 +408,10 @@ class TestUserDataExporterGenerateArchive:
         token_urlsafe = random_string()
         secrets_mock.return_value = token_urlsafe
         export_data.side_effect = [
-            call('user_info'),
-            call('workouts_data'),
-            call('equipments_data'),
-            call('comments_data'),
+            call("user_info"),
+            call("workouts_data"),
+            call("equipments_data"),
+            call("comments_data"),
         ]
 
         exporter.generate_archive()
@@ -428,9 +428,9 @@ class TestUserDataExporterGenerateArchive:
             )
         # fmt: on
 
-    @patch.object(secrets, 'token_urlsafe')
-    @patch.object(UserDataExporter, 'export_data')
-    @patch('fittrackee.users.export_data.ZipFile')
+    @patch.object(secrets, "token_urlsafe")
+    @patch.object(UserDataExporter, "export_data")
+    @patch("fittrackee.users.export_data.ZipFile")
     def test_it_calls_zipfile_for_gpx_file(
         self,
         zipfile_mock: Mock,
@@ -445,7 +445,7 @@ class TestUserDataExporterGenerateArchive:
         _, workout_short_id = post_a_workout(app, gpx_file)
         workout = Workout.query.one()
         expected_path = os.path.join(
-            app.config['UPLOAD_FOLDER'],
+            app.config["UPLOAD_FOLDER"],
             workout.gpx,
         )
         exporter = UserDataExporter(user_1)
@@ -461,9 +461,9 @@ class TestUserDataExporterGenerateArchive:
             )
         # fmt: on
 
-    @patch.object(secrets, 'token_urlsafe')
-    @patch.object(UserDataExporter, 'export_data')
-    @patch('fittrackee.users.export_data.ZipFile')
+    @patch.object(secrets, "token_urlsafe")
+    @patch.object(UserDataExporter, "export_data")
+    @patch("fittrackee.users.export_data.ZipFile")
     def test_it_does_not_call_zipfile_for_another_user_gpx_file(
         self,
         zipfile_mock: Mock,
@@ -478,7 +478,7 @@ class TestUserDataExporterGenerateArchive:
         _, workout_short_id = post_a_workout(app, gpx_file)
         workout = Workout.query.one()
         expected_path = os.path.join(
-            app.config['UPLOAD_FOLDER'],
+            app.config["UPLOAD_FOLDER"],
             workout.gpx,
         )
         exporter = UserDataExporter(user_2)
@@ -493,9 +493,9 @@ class TestUserDataExporterGenerateArchive:
         )
         # fmt: on
 
-    @patch.object(secrets, 'token_urlsafe')
-    @patch.object(UserDataExporter, 'export_data')
-    @patch('fittrackee.users.export_data.ZipFile')
+    @patch.object(secrets, "token_urlsafe")
+    @patch.object(UserDataExporter, "export_data")
+    @patch("fittrackee.users.export_data.ZipFile")
     def test_it_calls_zipfile_for_profile_image_when_exists(
         self,
         zipfile_mock: Mock,
@@ -509,13 +509,13 @@ class TestUserDataExporterGenerateArchive:
     ) -> None:
         user_1.picture = random_string()
         expected_path = os.path.join(
-            app.config['UPLOAD_FOLDER'],
+            app.config["UPLOAD_FOLDER"],
             user_1.picture,
         )
         exporter = UserDataExporter(user_1)
 
         with patch(
-            'fittrackee.users.export_data.os.path.isfile', return_value=True
+            "fittrackee.users.export_data.os.path.isfile", return_value=True
         ):
             exporter.generate_archive()
 
@@ -528,9 +528,9 @@ class TestUserDataExporterGenerateArchive:
             )
         # fmt: on
 
-    @patch.object(secrets, 'token_urlsafe')
-    @patch.object(UserDataExporter, 'export_data')
-    @patch('fittrackee.users.export_data.ZipFile')
+    @patch.object(secrets, "token_urlsafe")
+    @patch.object(UserDataExporter, "export_data")
+    @patch("fittrackee.users.export_data.ZipFile")
     def test_it_does_not_call_zipfile_for_another_user_profile_image(
         self,
         zipfile_mock: Mock,
@@ -544,13 +544,13 @@ class TestUserDataExporterGenerateArchive:
     ) -> None:
         user_1.picture = random_string()
         expected_path = os.path.join(
-            app.config['UPLOAD_FOLDER'],
+            app.config["UPLOAD_FOLDER"],
             user_1.picture,
         )
         exporter = UserDataExporter(user_2)
 
         with patch(
-            'fittrackee.users.export_data.os.path.isfile', return_value=True
+            "fittrackee.users.export_data.os.path.isfile", return_value=True
         ):
             exporter.generate_archive()
 
@@ -562,7 +562,7 @@ class TestUserDataExporterGenerateArchive:
         )
         # fmt: on
 
-    @patch.object(secrets, 'token_urlsafe')
+    @patch.object(secrets, "token_urlsafe")
     def test_it_test_it_generates_a_zip_archive(
         self,
         secrets_mock: Mock,
@@ -572,8 +572,8 @@ class TestUserDataExporterGenerateArchive:
         token_urlsafe = random_string()
         secrets_mock.return_value = token_urlsafe
         expected_path = os.path.join(
-            app.config['UPLOAD_FOLDER'],
-            'exports',
+            app.config["UPLOAD_FOLDER"],
+            "exports",
             str(user_1.id),
             f"archive_{token_urlsafe}.zip",
         )
@@ -584,8 +584,8 @@ class TestUserDataExporterGenerateArchive:
         assert os.path.isfile(expected_path)
 
 
-@patch('fittrackee.users.export_data.appLog')
-@patch.object(UserDataExporter, 'generate_archive')
+@patch("fittrackee.users.export_data.appLog")
+@patch.object(UserDataExporter, "generate_archive")
 class TestExportUserData:
     def test_it_logs_error_if_not_request_for_given_id(
         self,
@@ -635,7 +635,7 @@ class TestExportUserData:
         archive_size = random_int()
 
         with patch(
-            'fittrackee.users.export_data.os.path.getsize',
+            "fittrackee.users.export_data.os.path.getsize",
             return_value=archive_size,
         ):
             export_user_data(export_request_id=export_request.id)
@@ -697,20 +697,20 @@ class TestExportUserData:
         archive_size = random_int()
 
         with patch(
-            'fittrackee.users.export_data.os.path.getsize',
+            "fittrackee.users.export_data.os.path.getsize",
             return_value=archive_size,
         ):
             export_user_data(export_request_id=export_request.id)
 
         data_export_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_1.email,
+                "language": "en",
+                "email": user_1.email,
             },
             {
-                'username': user_1.username,
-                'account_url': 'https://example.com/profile/edit/account',
-                'fittrackee_url': 'https://example.com',
+                "username": user_1.username,
+                "account_url": "https://example.com/profile/edit/account",
+                "fittrackee_url": "https://example.com",
             },
         )
 
@@ -841,15 +841,15 @@ class TestGenerateUsersArchives(UserDataExportTestCase):
 
         assert count == 1
 
-    @patch.object(secrets, 'token_urlsafe')
+    @patch.object(secrets, "token_urlsafe")
     def test_it_generates_user_archive(
         self, secrets_mock: Mock, app: Flask, user_1: User
     ) -> None:
         token_urlsafe = random_string()
         secrets_mock.return_value = token_urlsafe
         archive_path = os.path.join(
-            app.config['UPLOAD_FOLDER'],
-            'exports',
+            app.config["UPLOAD_FOLDER"],
+            "exports",
             str(user_1.id),
             f"archive_{token_urlsafe}.zip",
         )

@@ -15,7 +15,7 @@ from fittrackee.workouts.models import Sport, Workout
 from ...mixins import ApiTestCaseMixin
 
 
-@patch('fittrackee.workouts.workouts.send_to_remote_inbox')
+@patch("fittrackee.workouts.workouts.send_to_remote_inbox")
 class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
     def test_it_does_not_call_sent_to_inbox_if_user_has_no_remote_followers(
         self,
@@ -32,18 +32,18 @@ class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
         )
 
         client.post(
-            '/api/workouts/no_gpx',
-            content_type='application/json',
+            "/api/workouts/no_gpx",
+            content_type="application/json",
             data=json.dumps(
                 dict(
                     sport_id=1,
                     duration=3600,
-                    workout_date='2018-05-15 14:05',
+                    workout_date="2018-05-15 14:05",
                     distance=10,
                     workout_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE.value,
                 )
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         send_to_remote_inbox_mock.send.assert_not_called()
@@ -63,18 +63,18 @@ class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
         )
 
         client.post(
-            '/api/workouts/no_gpx',
-            content_type='application/json',
+            "/api/workouts/no_gpx",
+            content_type="application/json",
             data=json.dumps(
                 dict(
                     sport_id=1,
                     duration=3600,
-                    workout_date='2018-05-15 14:05',
+                    workout_date="2018-05-15 14:05",
                     distance=10,
                     workout_visibility=VisibilityLevel.FOLLOWERS.value,
                 )
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         send_to_remote_inbox_mock.send.assert_not_called()
@@ -94,8 +94,8 @@ class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
         )
 
         client.post(
-            '/api/workouts/no_gpx',
-            content_type='application/json',
+            "/api/workouts/no_gpx",
+            content_type="application/json",
             data=json.dumps(
                 dict(
                     sport_id=1,
@@ -107,13 +107,13 @@ class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
                     workout_visibility=VisibilityLevel.PRIVATE.value,
                 )
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         send_to_remote_inbox_mock.send.assert_not_called()
 
     @pytest.mark.parametrize(
-        'workout_visibility',
+        "workout_visibility",
         [
             VisibilityLevel.FOLLOWERS_AND_REMOTE,
             VisibilityLevel.PUBLIC,
@@ -135,8 +135,8 @@ class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
         )
 
         client.post(
-            '/api/workouts/no_gpx',
-            content_type='application/json',
+            "/api/workouts/no_gpx",
+            content_type="application/json",
             data=json.dumps(
                 dict(
                     sport_id=1,
@@ -148,11 +148,11 @@ class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
                     workout_visibility=workout_visibility.value,
                 )
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         workout_activity, _ = user_1.workouts[0].get_activities(
-            activity_type='Create'
+            activity_type="Create"
         )
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
@@ -161,7 +161,7 @@ class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
         )
 
     @pytest.mark.parametrize(
-        'workout_visibility',
+        "workout_visibility",
         [
             VisibilityLevel.FOLLOWERS_AND_REMOTE,
             VisibilityLevel.PUBLIC,
@@ -183,22 +183,22 @@ class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
         )
 
         client.post(
-            '/api/workouts/no_gpx',
-            content_type='application/json',
+            "/api/workouts/no_gpx",
+            content_type="application/json",
             data=json.dumps(
                 dict(
                     sport_id=1,
                     duration=3600,
-                    workout_date='2018-05-15 14:05',
+                    workout_date="2018-05-15 14:05",
                     distance=10,
                     workout_visibility=workout_visibility.value,
                 )
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         _, note_activity = user_1.workouts[0].get_activities(
-            activity_type='Create'
+            activity_type="Create"
         )
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
@@ -218,30 +218,30 @@ class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
         )
 
         client.post(
-            '/api/workouts/no_gpx',
-            content_type='application/json',
+            "/api/workouts/no_gpx",
+            content_type="application/json",
             data=json.dumps(
                 dict(
                     sport_id=1,
                     duration=3600,
-                    workout_date='2018-05-15 14:05',
+                    workout_date="2018-05-15 14:05",
                     distance=10,
                     workout_visibility=VisibilityLevel.PUBLIC,
                 )
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         workout = Workout.query.one()
         assert workout.ap_id == (
-            f'{user_1.actor.activitypub_id}/workouts/{workout.short_id}'
+            f"{user_1.actor.activitypub_id}/workouts/{workout.short_id}"
         )
         assert workout.remote_url == (
-            f'https://{user_1.actor.domain.name}/workouts/{workout.short_id}'
+            f"https://{user_1.actor.domain.name}/workouts/{workout.short_id}"
         )
 
 
-@patch('fittrackee.workouts.workouts.send_to_remote_inbox')
+@patch("fittrackee.workouts.workouts.send_to_remote_inbox")
 class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
     def test_it_does_not_call_sent_to_inbox_if_user_has_no_remote_followers(
         self,
@@ -259,9 +259,9 @@ class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
         )
 
         client.post(
-            '/api/workouts',
+            "/api/workouts",
             data=dict(
-                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data=(
                     f'{{"sport_id": 1, "map_visibility": '
                     f'"{VisibilityLevel.FOLLOWERS.value}", '
@@ -270,8 +270,8 @@ class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
                 ),
             ),
             headers=dict(
-                content_type='multipart/form-data',
-                Authorization=f'Bearer {auth_token}',
+                content_type="multipart/form-data",
+                Authorization=f"Bearer {auth_token}",
             ),
         )
 
@@ -293,9 +293,9 @@ class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
         )
 
         client.post(
-            '/api/workouts',
+            "/api/workouts",
             data=dict(
-                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data=(
                     f'{{"sport_id": 1, "map_visibility": '
                     f'"{VisibilityLevel.FOLLOWERS.value}", '
@@ -304,8 +304,8 @@ class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
                 ),
             ),
             headers=dict(
-                content_type='multipart/form-data',
-                Authorization=f'Bearer {auth_token}',
+                content_type="multipart/form-data",
+                Authorization=f"Bearer {auth_token}",
             ),
         )
 
@@ -327,9 +327,9 @@ class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
         )
 
         client.post(
-            '/api/workouts',
+            "/api/workouts",
             data=dict(
-                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data=(
                     f'{{"sport_id": 1, "map_visibility": '
                     f'"{VisibilityLevel.PRIVATE.value}", '
@@ -338,8 +338,8 @@ class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
                 ),
             ),
             headers=dict(
-                content_type='multipart/form-data',
-                Authorization=f'Bearer {auth_token}',
+                content_type="multipart/form-data",
+                Authorization=f"Bearer {auth_token}",
             ),
         )
 
@@ -361,9 +361,9 @@ class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
         )
 
         client.post(
-            '/api/workouts',
+            "/api/workouts",
             data=dict(
-                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data=(
                     f'{{"sport_id": 1, "map_visibility": '
                     f'"{VisibilityLevel.PRIVATE.value}", '
@@ -372,13 +372,13 @@ class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
                 ),
             ),
             headers=dict(
-                content_type='multipart/form-data',
-                Authorization=f'Bearer {auth_token}',
+                content_type="multipart/form-data",
+                Authorization=f"Bearer {auth_token}",
             ),
         )
 
         workout_activity, _ = user_1.workouts[0].get_activities(
-            activity_type='Create'
+            activity_type="Create"
         )
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
@@ -402,9 +402,9 @@ class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
         )
 
         client.post(
-            '/api/workouts',
+            "/api/workouts",
             data=dict(
-                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data=(
                     f'{{"sport_id": 1, "map_visibility": '
                     f'"{VisibilityLevel.PRIVATE.value}", '
@@ -413,13 +413,13 @@ class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
                 ),
             ),
             headers=dict(
-                content_type='multipart/form-data',
-                Authorization=f'Bearer {auth_token}',
+                content_type="multipart/form-data",
+                Authorization=f"Bearer {auth_token}",
             ),
         )
 
         _, note_activity = user_1.workouts[0].get_activities(
-            activity_type='Create'
+            activity_type="Create"
         )
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
@@ -440,9 +440,9 @@ class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
         )
 
         client.post(
-            '/api/workouts',
+            "/api/workouts",
             data=dict(
-                file=(BytesIO(str.encode(gpx_file)), 'example.gpx'),
+                file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data=(
                     f'{{"sport_id": 1, "map_visibility": '
                     f'"{VisibilityLevel.PRIVATE.value}", '
@@ -451,21 +451,21 @@ class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
                 ),
             ),
             headers=dict(
-                content_type='multipart/form-data',
-                Authorization=f'Bearer {auth_token}',
+                content_type="multipart/form-data",
+                Authorization=f"Bearer {auth_token}",
             ),
         )
 
         workout = Workout.query.one()
         assert workout.ap_id == (
-            f'{user_1.actor.activitypub_id}/workouts/{workout.short_id}'
+            f"{user_1.actor.activitypub_id}/workouts/{workout.short_id}"
         )
         assert workout.remote_url == (
-            f'https://{user_1.actor.domain.name}/workouts/{workout.short_id}'
+            f"https://{user_1.actor.domain.name}/workouts/{workout.short_id}"
         )
 
 
-@patch('fittrackee.workouts.workouts.send_to_remote_inbox')
+@patch("fittrackee.workouts.workouts.send_to_remote_inbox")
 class TestFederationPostWorkoutWithZipArchive(ApiTestCaseMixin):
     def test_it_calls_sent_to_inbox_if_user_has_follower_from_remote_fittrackee_instance(  # noqa
         self,
@@ -479,17 +479,17 @@ class TestFederationPostWorkoutWithZipArchive(ApiTestCaseMixin):
         user_1.approves_follow_request_from(remote_user)
         # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
         file_path = os.path.join(
-            app_with_federation.root_path, 'tests/files/gpx_test.zip'
+            app_with_federation.root_path, "tests/files/gpx_test.zip"
         )
-        with open(file_path, 'rb') as zip_file:
+        with open(file_path, "rb") as zip_file:
             client, auth_token = self.get_test_client_and_auth_token(
                 app_with_federation, user_1.email
             )
 
             client.post(
-                '/api/workouts',
+                "/api/workouts",
                 data=dict(
-                    file=(zip_file, 'gpx_test.zip'),
+                    file=(zip_file, "gpx_test.zip"),
                     data=(
                         f'{{"sport_id": 1, "map_visibility": '
                         f'"{VisibilityLevel.PRIVATE.value}", '
@@ -498,8 +498,8 @@ class TestFederationPostWorkoutWithZipArchive(ApiTestCaseMixin):
                     ),
                 ),
                 headers=dict(
-                    content_type='multipart/form-data',
-                    Authorization=f'Bearer {auth_token}',
+                    content_type="multipart/form-data",
+                    Authorization=f"Bearer {auth_token}",
                 ),
             )
 
@@ -507,7 +507,7 @@ class TestFederationPostWorkoutWithZipArchive(ApiTestCaseMixin):
             calls = []
             for workout in user_1.workouts:
                 workout_activity, _ = workout.get_activities(
-                    activity_type='Create'
+                    activity_type="Create"
                 )
                 calls.append(
                     call(
@@ -533,17 +533,17 @@ class TestFederationPostWorkoutWithZipArchive(ApiTestCaseMixin):
         user_1.approves_follow_request_from(remote_user_2)
         # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
         file_path = os.path.join(
-            app_with_federation.root_path, 'tests/files/gpx_test.zip'
+            app_with_federation.root_path, "tests/files/gpx_test.zip"
         )
-        with open(file_path, 'rb') as zip_file:
+        with open(file_path, "rb") as zip_file:
             client, auth_token = self.get_test_client_and_auth_token(
                 app_with_federation, user_1.email
             )
 
             client.post(
-                '/api/workouts',
+                "/api/workouts",
                 data=dict(
-                    file=(zip_file, 'gpx_test.zip'),
+                    file=(zip_file, "gpx_test.zip"),
                     data=(
                         f'{{"sport_id": 1, "map_visibility": '
                         f'"{VisibilityLevel.PRIVATE.value}", '
@@ -552,8 +552,8 @@ class TestFederationPostWorkoutWithZipArchive(ApiTestCaseMixin):
                     ),
                 ),
                 headers=dict(
-                    content_type='multipart/form-data',
-                    Authorization=f'Bearer {auth_token}',
+                    content_type="multipart/form-data",
+                    Authorization=f"Bearer {auth_token}",
                 ),
             )
 
@@ -561,7 +561,7 @@ class TestFederationPostWorkoutWithZipArchive(ApiTestCaseMixin):
             calls = []
             for workout in user_1.workouts:
                 _, note_activity = workout.get_activities(
-                    activity_type='Create'
+                    activity_type="Create"
                 )
                 calls.append(
                     call(
@@ -587,23 +587,23 @@ class TestFederationPostWorkoutWithZipArchive(ApiTestCaseMixin):
         user_1.approves_follow_request_from(remote_user_2)
         # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
         file_path = os.path.join(
-            app_with_federation.root_path, 'tests/files/gpx_test.zip'
+            app_with_federation.root_path, "tests/files/gpx_test.zip"
         )
         max_workouts_to_send = 2
 
-        with open(file_path, 'rb') as zip_file:
+        with open(file_path, "rb") as zip_file:
             client, auth_token = self.get_test_client_and_auth_token(
                 app_with_federation, user_1.email
             )
 
             with patch(
-                'fittrackee.workouts.workouts.MAX_WORKOUTS_TO_SEND',
+                "fittrackee.workouts.workouts.MAX_WORKOUTS_TO_SEND",
                 max_workouts_to_send,
             ):
                 client.post(
-                    '/api/workouts',
+                    "/api/workouts",
                     data=dict(
-                        file=(zip_file, 'gpx_test.zip'),
+                        file=(zip_file, "gpx_test.zip"),
                         data=(
                             f'{{"sport_id": 1, "map_visibility": '
                             f'"{VisibilityLevel.PRIVATE.value}", '
@@ -612,8 +612,8 @@ class TestFederationPostWorkoutWithZipArchive(ApiTestCaseMixin):
                         ),
                     ),
                     headers=dict(
-                        content_type='multipart/form-data',
-                        Authorization=f'Bearer {auth_token}',
+                        content_type="multipart/form-data",
+                        Authorization=f"Bearer {auth_token}",
                     ),
                 )
 
@@ -631,23 +631,23 @@ class TestFederationPostWorkoutWithZipArchive(ApiTestCaseMixin):
     ) -> None:
         # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
         file_path = os.path.join(
-            app_with_federation.root_path, 'tests/files/gpx_test.zip'
+            app_with_federation.root_path, "tests/files/gpx_test.zip"
         )
         max_workouts_to_send = 2
 
-        with open(file_path, 'rb') as zip_file:
+        with open(file_path, "rb") as zip_file:
             client, auth_token = self.get_test_client_and_auth_token(
                 app_with_federation, user_1.email
             )
 
             with patch(
-                'fittrackee.workouts.workouts.MAX_WORKOUTS_TO_SEND',
+                "fittrackee.workouts.workouts.MAX_WORKOUTS_TO_SEND",
                 max_workouts_to_send,
             ):
                 client.post(
-                    '/api/workouts',
+                    "/api/workouts",
                     data=dict(
-                        file=(zip_file, 'gpx_test.zip'),
+                        file=(zip_file, "gpx_test.zip"),
                         data=(
                             f'{{"sport_id": 1, "map_visibility": '
                             f'"{VisibilityLevel.PRIVATE.value}", '
@@ -656,19 +656,19 @@ class TestFederationPostWorkoutWithZipArchive(ApiTestCaseMixin):
                         ),
                     ),
                     headers=dict(
-                        content_type='multipart/form-data',
-                        Authorization=f'Bearer {auth_token}',
+                        content_type="multipart/form-data",
+                        Authorization=f"Bearer {auth_token}",
                     ),
                 )
 
         workouts = Workout.query.order_by(Workout.workout_date.desc()).all()
         for workout in workouts[:max_workouts_to_send]:
             assert workout.ap_id == (
-                f'{user_1.actor.activitypub_id}/workouts/{workout.short_id}'
+                f"{user_1.actor.activitypub_id}/workouts/{workout.short_id}"
             )
             assert workout.remote_url == (
-                f'https://{user_1.actor.domain.name}/'
-                f'workouts/{workout.short_id}'
+                f"https://{user_1.actor.domain.name}/"
+                f"workouts/{workout.short_id}"
             )
         for workout in workouts[max_workouts_to_send:]:
             assert workout.ap_id is None

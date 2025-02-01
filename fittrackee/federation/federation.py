@@ -5,22 +5,22 @@ from flask import Blueprint, request
 from fittrackee.responses import HttpResponse, handle_error_and_return_response
 from fittrackee.users.models import FollowRequest
 
-from .collections import OrderedCollection, OrderedCollectionPage
 from .decorators import (
     federation_required_for_route,
     get_local_actor_from_username,
 )
 from .inbox import inbox
 from .models import Actor, Domain
+from .ordered_collections import OrderedCollection, OrderedCollectionPage
 
-ap_federation_blueprint = Blueprint('ap_federation', __name__)
+ap_federation_blueprint = Blueprint("ap_federation", __name__)
 
 
 USERS_PER_PAGE = 10
 
 
 @ap_federation_blueprint.route(
-    '/user/<string:preferred_username>', methods=['GET']
+    "/user/<string:preferred_username>", methods=["GET"]
 )
 @federation_required_for_route
 @get_local_actor_from_username
@@ -78,12 +78,12 @@ def get_actor(
     """
     return HttpResponse(
         response=local_actor.serialize(),
-        content_type='application/jrd+json; charset=utf-8',
+        content_type="application/jrd+json; charset=utf-8",
     )
 
 
 @ap_federation_blueprint.route(
-    '/user/<string:preferred_username>/inbox', methods=['POST']
+    "/user/<string:preferred_username>/inbox", methods=["POST"]
 )
 @federation_required_for_route
 @get_local_actor_from_username
@@ -124,7 +124,7 @@ def user_inbox(
     return inbox(request)
 
 
-@ap_federation_blueprint.route('/inbox', methods=['GET', 'POST'])
+@ap_federation_blueprint.route("/inbox", methods=["GET", "POST"])
 @federation_required_for_route
 def shared_inbox(app_domain: Domain) -> Union[Dict, HttpResponse]:
     """
@@ -161,9 +161,9 @@ def get_relationships(
     local_actor: Actor, relation: str
 ) -> Union[Dict, HttpResponse]:
     params = request.args.copy()
-    page = params.get('page')
+    page = params.get("page")
 
-    if relation == 'followers':
+    if relation == "followers":
         relations_object = local_actor.user.followers
         url = local_actor.followers_url
     else:
@@ -185,7 +185,7 @@ def get_relationships(
 
 
 @ap_federation_blueprint.route(
-    '/user/<string:preferred_username>/followers', methods=['GET']
+    "/user/<string:preferred_username>/followers", methods=["GET"]
 )
 @federation_required_for_route
 @get_local_actor_from_username
@@ -256,11 +256,11 @@ def user_followers(
     :statuscode 500: error, please try again or contact the administrator
 
     """
-    return get_relationships(local_actor, relation='followers')
+    return get_relationships(local_actor, relation="followers")
 
 
 @ap_federation_blueprint.route(
-    '/user/<string:preferred_username>/following', methods=['GET']
+    "/user/<string:preferred_username>/following", methods=["GET"]
 )
 @federation_required_for_route
 @get_local_actor_from_username
@@ -331,4 +331,4 @@ def user_following(
     :statuscode 500: error, please try again or contact the administrator
 
     """
-    return get_relationships(local_actor, relation='following')
+    return get_relationships(local_actor, relation="following")

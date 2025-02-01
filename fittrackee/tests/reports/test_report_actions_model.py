@@ -599,17 +599,17 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         serialized_action = report_action.serialize(user_1_admin, full=False)
 
         assert serialized_action == {
-            'moderator': user_1_admin.serialize(current_user=user_1_admin),
-            'appeal': None,
-            'action_type': report_action.action_type,
-            'created_at': report_action.created_at,
-            'id': report_action.short_id,
-            'reason': None,
-            'report_id': report_action.id,
-            'user': user_2.serialize(current_user=user_1_admin),
+            "moderator": user_1_admin.serialize(current_user=user_1_admin),
+            "appeal": None,
+            "action_type": report_action.action_type,
+            "created_at": report_action.created_at,
+            "id": report_action.short_id,
+            "reason": None,
+            "report_id": report_action.id,
+            "user": user_2.serialize(current_user=user_1_admin),
         }
 
-    @pytest.mark.parametrize('input_full_argument', [{}, {"full": True}])
+    @pytest.mark.parametrize("input_full_argument", [{}, {"full": True}])
     def test_it_returns_full_serialized_user_report_action(
         self,
         app: Flask,
@@ -633,19 +633,19 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
             user_1_admin, **input_full_argument
         )
 
-        assert serialized_action['action_type'] == report_action.action_type
-        assert serialized_action['moderator'] == user_1_admin.serialize(
+        assert serialized_action["action_type"] == report_action.action_type
+        assert serialized_action["moderator"] == user_1_admin.serialize(
             current_user=user_1_admin
         )
-        assert serialized_action['comment'] is None
-        assert serialized_action['created_at'] == report_action.created_at
-        assert serialized_action['id'] == report_action.short_id
-        assert serialized_action['reason'] is None
-        assert serialized_action['report_id'] == report_id
-        assert serialized_action['user'] == user_2.serialize(
+        assert serialized_action["comment"] is None
+        assert serialized_action["created_at"] == report_action.created_at
+        assert serialized_action["id"] == report_action.short_id
+        assert serialized_action["reason"] is None
+        assert serialized_action["report_id"] == report_id
+        assert serialized_action["user"] == user_2.serialize(
             current_user=user_1_admin
         )
-        assert serialized_action['workout'] is None
+        assert serialized_action["workout"] is None
 
     def test_it_returns_serialized_report_action_with_appeal_for_admin(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -671,20 +671,20 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
 
         serialized_action = report_action.serialize(user_1_admin)
 
-        assert serialized_action['action_type'] == report_action.action_type
-        assert serialized_action['moderator'] == user_1_admin.serialize(
+        assert serialized_action["action_type"] == report_action.action_type
+        assert serialized_action["moderator"] == user_1_admin.serialize(
             current_user=user_1_admin
         )
-        assert serialized_action['appeal'] == appeal.serialize(user_1_admin)
-        assert serialized_action['created_at'] == report_action.created_at
-        assert serialized_action['comment'] is None
-        assert serialized_action['id'] == report_action.short_id
-        assert serialized_action['reason'] is None
-        assert serialized_action['report_id'] == report_id
-        assert serialized_action['user'] == user_2.serialize(
+        assert serialized_action["appeal"] == appeal.serialize(user_1_admin)
+        assert serialized_action["created_at"] == report_action.created_at
+        assert serialized_action["comment"] is None
+        assert serialized_action["id"] == report_action.short_id
+        assert serialized_action["reason"] is None
+        assert serialized_action["report_id"] == report_id
+        assert serialized_action["user"] == user_2.serialize(
             current_user=user_1_admin
         )
-        assert serialized_action['workout'] is None
+        assert serialized_action["workout"] is None
 
     def test_it_serialized_user_action_for_user(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -756,7 +756,7 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
         with pytest.raises(ReportActionForbiddenException):
             report_action.serialize(user_3)
 
-    @pytest.mark.parametrize('input_action_type', REPORT_ACTION_TYPES)
+    @pytest.mark.parametrize("input_action_type", REPORT_ACTION_TYPES)
     def test_it_raises_error_when_user_has_no_admin_rights_and_action_is_report_related(  # noqa
         self,
         app: Flask,
@@ -862,20 +862,20 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
 
         serialized_action = report_action.serialize(user_1_admin)
 
-        assert serialized_action['action_type'] == report_action.action_type
-        assert serialized_action['moderator'] == user_1_admin.serialize(
+        assert serialized_action["action_type"] == report_action.action_type
+        assert serialized_action["moderator"] == user_1_admin.serialize(
             current_user=user_1_admin
         )
-        assert serialized_action['comment'] is None
-        assert serialized_action['created_at'] == report_action.created_at
-        assert serialized_action['id'] == report_action.short_id
-        assert serialized_action['reason'] is None
-        assert serialized_action['report_id'] == report_id
-        assert serialized_action['user'] == user_2.serialize(
+        assert serialized_action["comment"] is None
+        assert serialized_action["created_at"] == report_action.created_at
+        assert serialized_action["id"] == report_action.short_id
+        assert serialized_action["reason"] is None
+        assert serialized_action["report_id"] == report_id
+        assert serialized_action["user"] == user_2.serialize(
             current_user=user_1_admin
         )
         assert serialized_action[
-            'workout'
+            "workout"
         ] == workout_cycling_user_2.serialize(
             user=user_1_admin, for_report=True
         )
@@ -988,21 +988,21 @@ class TestReportActionSerializer(CommentMixin, ReportActionTestCase):
 
         serialized_action = report_action.serialize(user_1_admin)
 
-        assert serialized_action['action_type'] == report_action.action_type
-        assert serialized_action['moderator'] == user_1_admin.serialize(
+        assert serialized_action["action_type"] == report_action.action_type
+        assert serialized_action["moderator"] == user_1_admin.serialize(
             current_user=user_1_admin
         )
-        assert serialized_action['comment'] == comment.serialize(
+        assert serialized_action["comment"] == comment.serialize(
             user_1_admin, for_report=True
         )
-        assert serialized_action['created_at'] == report_action.created_at
-        assert serialized_action['id'] == report_action.short_id
-        assert serialized_action['reason'] is None
-        assert serialized_action['report_id'] == report_id
-        assert serialized_action['user'] == user_3.serialize(
+        assert serialized_action["created_at"] == report_action.created_at
+        assert serialized_action["id"] == report_action.short_id
+        assert serialized_action["reason"] is None
+        assert serialized_action["report_id"] == report_id
+        assert serialized_action["user"] == user_3.serialize(
             current_user=user_1_admin
         )
-        assert serialized_action['workout'] is None
+        assert serialized_action["workout"] is None
 
 
 class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
@@ -1023,7 +1023,7 @@ class TestReportActionAppealModel(CommentMixin, ReportActionTestCase):
             )
 
     @pytest.mark.parametrize(
-        'input_action_type', ['user_unsuspension', 'user_warning_lifting']
+        "input_action_type", ["user_unsuspension", "user_warning_lifting"]
     )
     def test_it_raises_error_when_user_action_is_invalid(
         self,

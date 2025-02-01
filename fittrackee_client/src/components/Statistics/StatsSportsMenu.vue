@@ -54,7 +54,7 @@
 </script>
 
 <style lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   .sports-menu {
     display: flex;
     flex-wrap: wrap;

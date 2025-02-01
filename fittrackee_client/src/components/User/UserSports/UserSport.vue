@@ -153,7 +153,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
 
   #user-sport {
     .sport-img {
