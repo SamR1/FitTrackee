@@ -261,6 +261,26 @@ describe('formatDate', () => {
     },
     {
       description:
+        'format date for "Europe/Paris" timezone and "dd/MM/yyyy" format (w/o time)',
+      inputParams: {
+        timezone: 'Europe/Paris',
+        dateFormat: 'dd/MM/yyyy',
+        withTime: false,
+      },
+      expectedDate: '01/11/2022',
+    },
+    {
+      description:
+        'format date for "America/New_York" timezone and "MM/dd/yyyy" format (with time)',
+      inputParams: {
+        timezone: 'America/New_York',
+        dateFormat: 'MM/dd/yyyy',
+        withTime: true,
+      },
+      expectedDate: '10/31/2022 20:00',
+    },
+    {
+      description:
         'format date for "America/New_York" timezone and "MM/dd/yyyy" format (w/o time)',
       inputParams: {
         timezone: 'America/New_York',
