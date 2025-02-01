@@ -77,7 +77,7 @@ class TestWorkoutCommentModel(ReportMixin, CommentMixin):
             workout_cycling_user_1,
         )
 
-        assert str(comment) == f'<Comment {comment.id}>'
+        assert str(comment) == f"<Comment {comment.id}>"
 
     def test_it_deletes_comment_on_user_delete(
         self,
@@ -165,9 +165,9 @@ class TestWorkoutCommentModel(ReportMixin, CommentMixin):
 class TestWorkoutCommentModelSerializeForCommentOwner(
     ReportMixin, CommentMixin
 ):
-    @pytest.mark.parametrize('suspended', [True, False])
+    @pytest.mark.parametrize("suspended", [True, False])
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [
             VisibilityLevel.PRIVATE,
             VisibilityLevel.FOLLOWERS,
@@ -201,17 +201,17 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
         serialized_comment = comment.serialize(user_1)
 
         assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': workout_cycling_user_1.short_id,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [],
-            'modification_date': comment.modification_date,
-            'likes_count': 0,
-            'liked': False,
+            "id": comment.short_id,
+            "user": user_1.serialize(),
+            "workout_id": workout_cycling_user_1.short_id,
+            "text": comment.text,
+            "text_html": comment.text,  # no mention
+            "text_visibility": comment.text_visibility,
+            "created_at": comment.created_at,
+            "mentions": [],
+            "modification_date": comment.modification_date,
+            "likes_count": 0,
+            "liked": False,
             **suspended_at,
         }
 
@@ -230,18 +230,18 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
         serialized_comment = comment.serialize(user_1)
 
         assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': None,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [],
-            'suspended_at': comment.suspended_at,
-            'modification_date': comment.modification_date,
-            'likes_count': 0,
-            'liked': False,
+            "id": comment.short_id,
+            "user": user_1.serialize(),
+            "workout_id": None,
+            "text": comment.text,
+            "text_html": comment.text,  # no mention
+            "text_visibility": comment.text_visibility,
+            "created_at": comment.created_at,
+            "mentions": [],
+            "suspended_at": comment.suspended_at,
+            "modification_date": comment.modification_date,
+            "likes_count": 0,
+            "liked": False,
         }
 
     def test_it_serializes_owner_comment_when_workout_is_not_visible(
@@ -258,18 +258,18 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
         serialized_comment = comment.serialize(user_1)
 
         assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': None,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [],
-            'suspended_at': comment.suspended_at,
-            'modification_date': comment.modification_date,
-            'likes_count': 0,
-            'liked': False,
+            "id": comment.short_id,
+            "user": user_1.serialize(),
+            "workout_id": None,
+            "text": comment.text,
+            "text_html": comment.text,  # no mention
+            "text_visibility": comment.text_visibility,
+            "created_at": comment.created_at,
+            "mentions": [],
+            "suspended_at": comment.suspended_at,
+            "modification_date": comment.modification_date,
+            "likes_count": 0,
+            "liked": False,
         }
 
     def test_it_serializes_owner_comment_when_comment_is_suspended(
@@ -290,20 +290,20 @@ class TestWorkoutCommentModelSerializeForCommentOwner(
         serialized_comment = comment.serialize(user_1)
 
         assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': None,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [],
-            'suspended': True,
-            'suspended_at': comment.suspended_at,
-            'suspension': expected_report_action.serialize(user_1, full=False),
-            'modification_date': comment.modification_date,
-            'likes_count': 0,
-            'liked': False,
+            "id": comment.short_id,
+            "user": user_1.serialize(),
+            "workout_id": None,
+            "text": comment.text,
+            "text_html": comment.text,  # no mention
+            "text_visibility": comment.text_visibility,
+            "created_at": comment.created_at,
+            "mentions": [],
+            "suspended": True,
+            "suspended_at": comment.suspended_at,
+            "suspension": expected_report_action.serialize(user_1, full=False),
+            "modification_date": comment.modification_date,
+            "likes_count": 0,
+            "liked": False,
         }
 
 
@@ -348,7 +348,7 @@ class TestWorkoutCommentModelSerializeForFollower(CommentMixin):
             comment.serialize(user_2)
 
     @pytest.mark.parametrize(
-        'input_visibility', [VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC]
+        "input_visibility", [VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC]
     )
     def test_it_serializes_comment_for_follower_when_privacy_allows_it(
         self,
@@ -371,17 +371,17 @@ class TestWorkoutCommentModelSerializeForFollower(CommentMixin):
         serialized_comment = comment.serialize(user_2)
 
         assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': workout_cycling_user_1.short_id,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [],
-            'modification_date': comment.modification_date,
-            'likes_count': 0,
-            'liked': False,
+            "id": comment.short_id,
+            "user": user_1.serialize(),
+            "workout_id": workout_cycling_user_1.short_id,
+            "text": comment.text,
+            "text_html": comment.text,  # no mention
+            "text_visibility": comment.text_visibility,
+            "created_at": comment.created_at,
+            "mentions": [],
+            "modification_date": comment.modification_date,
+            "likes_count": 0,
+            "liked": False,
         }
 
     def test_it_serializes_comment_when_workout_is_not_visible(
@@ -405,23 +405,23 @@ class TestWorkoutCommentModelSerializeForFollower(CommentMixin):
         serialized_comment = comment.serialize(user_2)
 
         assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': None,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [],
-            'modification_date': comment.modification_date,
-            'likes_count': 0,
-            'liked': False,
+            "id": comment.short_id,
+            "user": user_1.serialize(),
+            "workout_id": None,
+            "text": comment.text,
+            "text_html": comment.text,  # no mention
+            "text_visibility": comment.text_visibility,
+            "created_at": comment.created_at,
+            "mentions": [],
+            "modification_date": comment.modification_date,
+            "likes_count": 0,
+            "liked": False,
         }
 
 
 class TestWorkoutCommentModelSerializeForUser(CommentMixin):
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_raises_error_when_comment_is_not_public(
@@ -462,17 +462,17 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
         serialized_comment = comment.serialize(user_2)
 
         assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': workout_cycling_user_1.short_id,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [],
-            'modification_date': comment.modification_date,
-            'likes_count': 0,
-            'liked': False,
+            "id": comment.short_id,
+            "user": user_1.serialize(),
+            "workout_id": workout_cycling_user_1.short_id,
+            "text": comment.text,
+            "text_html": comment.text,  # no mention
+            "text_visibility": comment.text_visibility,
+            "created_at": comment.created_at,
+            "mentions": [],
+            "modification_date": comment.modification_date,
+            "likes_count": 0,
+            "liked": False,
         }
 
     def test_it_serializes_comment_when_workout_is_deleted(
@@ -495,17 +495,17 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
         serialized_comment = comment.serialize(user_2)
 
         assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': None,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [],
-            'modification_date': comment.modification_date,
-            'likes_count': 0,
-            'liked': False,
+            "id": comment.short_id,
+            "user": user_1.serialize(),
+            "workout_id": None,
+            "text": comment.text,
+            "text_html": comment.text,  # no mention
+            "text_visibility": comment.text_visibility,
+            "created_at": comment.created_at,
+            "mentions": [],
+            "modification_date": comment.modification_date,
+            "likes_count": 0,
+            "liked": False,
         }
 
     def test_it_serializes_comment_when_workout_is_not_visible(
@@ -526,23 +526,23 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
         serialized_comment = comment.serialize(user_2)
 
         assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': None,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [],
-            'modification_date': comment.modification_date,
-            'likes_count': 0,
-            'liked': False,
+            "id": comment.short_id,
+            "user": user_1.serialize(),
+            "workout_id": None,
+            "text": comment.text,
+            "text_html": comment.text,  # no mention
+            "text_visibility": comment.text_visibility,
+            "created_at": comment.created_at,
+            "mentions": [],
+            "modification_date": comment.modification_date,
+            "likes_count": 0,
+            "liked": False,
         }
 
 
 class TestWorkoutCommentModelSerializeForModerator(CommentMixin):
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_raises_error_when_comment_is_visible(
@@ -565,9 +565,9 @@ class TestWorkoutCommentModelSerializeForModerator(CommentMixin):
         with pytest.raises(CommentForbiddenException):
             comment.serialize(user_1_moderator)
 
-    @pytest.mark.parametrize('suspended', [True, False])
+    @pytest.mark.parametrize("suspended", [True, False])
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_serializes_comment_when_report_flag_is_true(
@@ -603,17 +603,17 @@ class TestWorkoutCommentModelSerializeForModerator(CommentMixin):
         )
 
         assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_3.serialize(),
-            'workout_id': workout_cycling_user_2.short_id,
-            'text': comment.text,
-            'text_html': comment.handle_mentions()[0],
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [user_2.serialize()],
-            'modification_date': comment.modification_date,
-            'likes_count': 0,
-            'liked': False,
+            "id": comment.short_id,
+            "user": user_3.serialize(),
+            "workout_id": workout_cycling_user_2.short_id,
+            "text": comment.text,
+            "text_html": comment.handle_mentions()[0],
+            "text_visibility": comment.text_visibility,
+            "created_at": comment.created_at,
+            "mentions": [user_2.serialize()],
+            "modification_date": comment.modification_date,
+            "likes_count": 0,
+            "liked": False,
             **suspended_at,
         }
 
@@ -639,18 +639,18 @@ class TestWorkoutCommentModelSerializeForModerator(CommentMixin):
         serialized_comment = comment.serialize(user_1_moderator)
 
         assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_3.serialize(),
-            'workout_id': workout_cycling_user_2.short_id,
-            'text': None,
-            'text_html': None,
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [],
-            'suspended': True,
-            'modification_date': comment.modification_date,
-            'likes_count': 0,
-            'liked': False,
+            "id": comment.short_id,
+            "user": user_3.serialize(),
+            "workout_id": workout_cycling_user_2.short_id,
+            "text": None,
+            "text_html": None,
+            "text_visibility": comment.text_visibility,
+            "created_at": comment.created_at,
+            "mentions": [],
+            "suspended": True,
+            "modification_date": comment.modification_date,
+            "likes_count": 0,
+            "liked": False,
         }
 
 
@@ -696,25 +696,25 @@ class TestWorkoutCommentModelSerializeForAdmin(CommentMixin):
         serialized_comment = comment.serialize(user_1_admin, for_report=True)
 
         assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_3.serialize(),
-            'workout_id': workout_cycling_user_2.short_id,
-            'text': comment.text,
-            'text_html': comment.handle_mentions()[0],
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [user_2.serialize()],
-            'modification_date': comment.modification_date,
-            'likes_count': 0,
-            'liked': False,
-            'suspended': True,
-            'suspended_at': comment.suspended_at,
+            "id": comment.short_id,
+            "user": user_3.serialize(),
+            "workout_id": workout_cycling_user_2.short_id,
+            "text": comment.text,
+            "text_html": comment.handle_mentions()[0],
+            "text_visibility": comment.text_visibility,
+            "created_at": comment.created_at,
+            "mentions": [user_2.serialize()],
+            "modification_date": comment.modification_date,
+            "likes_count": 0,
+            "liked": False,
+            "suspended": True,
+            "suspended_at": comment.suspended_at,
         }
 
 
 class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_raises_error_when_comment_is_not_public(
@@ -753,17 +753,17 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
         serialized_comment = comment.serialize()
 
         assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': workout_cycling_user_1.short_id,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [],
-            'modification_date': comment.modification_date,
-            'likes_count': 0,
-            'liked': False,
+            "id": comment.short_id,
+            "user": user_1.serialize(),
+            "workout_id": workout_cycling_user_1.short_id,
+            "text": comment.text,
+            "text_html": comment.text,  # no mention
+            "text_visibility": comment.text_visibility,
+            "created_at": comment.created_at,
+            "mentions": [],
+            "modification_date": comment.modification_date,
+            "likes_count": 0,
+            "liked": False,
         }
 
     def test_it_serializes_comment_when_workout_is_not_visible(
@@ -783,17 +783,17 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
         serialized_comment = comment.serialize()
 
         assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': None,
-            'text': comment.text,
-            'text_html': comment.text,  # no mention
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [],
-            'modification_date': comment.modification_date,
-            'likes_count': 0,
-            'liked': False,
+            "id": comment.short_id,
+            "user": user_1.serialize(),
+            "workout_id": None,
+            "text": comment.text,
+            "text_html": comment.text,  # no mention
+            "text_visibility": comment.text_visibility,
+            "created_at": comment.created_at,
+            "mentions": [],
+            "modification_date": comment.modification_date,
+            "likes_count": 0,
+            "liked": False,
         }
 
 
@@ -960,7 +960,7 @@ class TestWorkoutCommentModelSerializeForMentions(CommentMixin):
 
 class TestWorkoutCommentModelSerializeForMentionedUser(CommentMixin):
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [
             VisibilityLevel.PUBLIC,
             VisibilityLevel.FOLLOWERS,
@@ -988,17 +988,17 @@ class TestWorkoutCommentModelSerializeForMentionedUser(CommentMixin):
         serialized_comment = comment.serialize(user_2)
 
         assert serialized_comment == {
-            'id': comment.short_id,
-            'user': user_1.serialize(),
-            'workout_id': workout_cycling_user_1.short_id,
-            'text': comment.text,
-            'text_html': comment.handle_mentions()[0],
-            'text_visibility': comment.text_visibility,
-            'created_at': comment.created_at,
-            'mentions': [user_2.serialize()],
-            'modification_date': comment.modification_date,
-            'likes_count': 0,
-            'liked': False,
+            "id": comment.short_id,
+            "user": user_1.serialize(),
+            "workout_id": workout_cycling_user_1.short_id,
+            "text": comment.text,
+            "text_html": comment.handle_mentions()[0],
+            "text_visibility": comment.text_visibility,
+            "created_at": comment.created_at,
+            "mentions": [user_2.serialize()],
+            "modification_date": comment.modification_date,
+            "likes_count": 0,
+            "liked": False,
         }
 
 

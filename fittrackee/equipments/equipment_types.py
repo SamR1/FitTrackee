@@ -16,11 +16,11 @@ from fittrackee.users.roles import UserRole
 
 from ..equipments.models import EquipmentType
 
-equipment_types_blueprint = Blueprint('equipment_types', __name__)
+equipment_types_blueprint = Blueprint("equipment_types", __name__)
 
 
-@equipment_types_blueprint.route('/equipment-types', methods=['GET'])
-@require_auth(scopes=['equipments:read'], allow_suspended_user=True)
+@equipment_types_blueprint.route("/equipment-types", methods=["GET"])
+@require_auth(scopes=["equipments:read"], allow_suspended_user=True)
 def get_equipment_types(auth_user: User) -> Dict:
     """
     Get all types of equipment.
@@ -158,15 +158,15 @@ def get_equipment_types(auth_user: User) -> Dict:
             )
         )
     return {
-        'status': 'success',
-        'data': {'equipment_types': equipment_types_data},
+        "status": "success",
+        "data": {"equipment_types": equipment_types_data},
     }
 
 
 @equipment_types_blueprint.route(
-    '/equipment-types/<int:equipment_type_id>', methods=['GET']
+    "/equipment-types/<int:equipment_type_id>", methods=["GET"]
 )
-@require_auth(scopes=['equipments:read'])
+@require_auth(scopes=["equipments:read"])
 def get_equipment_type(
     auth_user: User, equipment_type_id: int
 ) -> Union[Dict, HttpResponse]:
@@ -262,24 +262,24 @@ def get_equipment_type(
             equipment_type.is_active is False
             and not auth_user.has_admin_rights
         ):
-            return DataNotFoundErrorResponse('equipment_types')
+            return DataNotFoundErrorResponse("equipment_types")
         return {
-            'status': 'success',
-            'data': {
-                'equipment_types': [
+            "status": "success",
+            "data": {
+                "equipment_types": [
                     equipment_type.serialize(
                         is_admin=auth_user.has_admin_rights,
                     )
                 ]
             },
         }
-    return DataNotFoundErrorResponse('equipment_types')
+    return DataNotFoundErrorResponse("equipment_types")
 
 
 @equipment_types_blueprint.route(
-    '/equipment-types/<int:equipment_type_id>', methods=['PATCH']
+    "/equipment-types/<int:equipment_type_id>", methods=["PATCH"]
 )
-@require_auth(scopes=['equipments:write'], role=UserRole.ADMIN)
+@require_auth(scopes=["equipments:write"], role=UserRole.ADMIN)
 def update_equipment_type(
     auth_user: User, equipment_type_id: int
 ) -> Union[Dict, HttpResponse]:
@@ -340,7 +340,7 @@ def update_equipment_type(
 
     """
     data = request.get_json()
-    if not data or data.get('is_active') is None:
+    if not data or data.get("is_active") is None:
         return InvalidPayloadErrorResponse()
 
     try:
@@ -348,13 +348,13 @@ def update_equipment_type(
             id=equipment_type_id
         ).first()
         if not equipment_type:
-            return DataNotFoundErrorResponse('equipment_types')
-        equipment_type.is_active = data.get('is_active')
+            return DataNotFoundErrorResponse("equipment_types")
+        equipment_type.is_active = data.get("is_active")
         db.session.commit()
         return {
-            'status': 'success',
-            'data': {
-                'equipment_types': [
+            "status": "success",
+            "data": {
+                "equipment_types": [
                     equipment_type.serialize(
                         is_admin=auth_user.has_admin_rights,
                     )

@@ -1924,7 +1924,7 @@ class TestPatchReport(ReportTestCase):
         response = client.patch(
             self.route.format(report_id=report.id),
             content_type="application/json",
-            data='{}',
+            data="{}",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -2362,7 +2362,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
             is None
         )
 
-    @pytest.mark.parametrize('input_action_type', USER_ACTION_TYPES)
+    @pytest.mark.parametrize("input_action_type", USER_ACTION_TYPES)
     def test_it_creates_report_action(
         self,
         app: Flask,
@@ -2459,7 +2459,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         )
 
         response = client.post(
-            '/api/auth/register',
+            "/api/auth/register",
             data=json.dumps(
                 dict(
                     username=self.random_string(),
@@ -2469,10 +2469,10 @@ class TestPostReportActionForUserAction(ReportTestCase):
                     accepted_policy=True,
                 )
             ),
-            content_type='application/json',
+            content_type="application/json",
         )
 
-        self.assert_403(response, 'error, registration is disabled')
+        self.assert_403(response, "error, registration is disabled")
 
     def test_it_sends_an_email_on_user_suspension(
         self,
@@ -3323,7 +3323,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
 class TestProcessReportActionAppeal(
     CommentMixin, ReportMixin, ApiTestCaseMixin
 ):
-    route = '/api/appeals/{appeal_id}'
+    route = "/api/appeals/{appeal_id}"
 
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, user_1: User
@@ -3350,7 +3350,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal_id),
             data=json.dumps(dict(approved=False)),
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -3367,7 +3367,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal_id),
             data=json.dumps(dict(approved=False)),
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
@@ -3397,7 +3397,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             data=json.dumps(input_data),
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(response)
@@ -3419,7 +3419,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(response, "user account has already been reactivated")
@@ -3450,7 +3450,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             data=json.dumps(input_data),
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
@@ -3484,7 +3484,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         user_unsuspension_email_mock.send.assert_called_once()
@@ -3511,7 +3511,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": False, "reason": "not ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         appeal_rejected_email_mock.send.assert_called_once()
@@ -3545,7 +3545,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             data=json.dumps(input_data),
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
@@ -3579,7 +3579,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         user_warning_lifting_email_mock.send.assert_called_once()
@@ -3606,7 +3606,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": False, "reason": "not ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         appeal_rejected_email_mock.send.assert_called_once()
@@ -3648,7 +3648,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             data=json.dumps(input_data),
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
@@ -3690,7 +3690,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         comment_unsuspension_email_mock.send.assert_called_once()
@@ -3725,7 +3725,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": False, "reason": "not ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         appeal_rejected_email_mock.send.assert_called_once()
@@ -3761,7 +3761,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(response, "comment already reactivated")
@@ -3799,7 +3799,7 @@ class TestProcessReportActionAppeal(
                 self.route.format(appeal_id=appeal.short_id),
                 data=json.dumps(input_data),
                 content_type="application/json",
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         assert response.status_code == 200
@@ -3835,7 +3835,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         workout_unsuspension_email_mock.send.assert_called_once()
@@ -3864,7 +3864,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": False, "reason": "not ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         appeal_rejected_email_mock.send.assert_called_once()
@@ -3894,7 +3894,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(response, "workout already reactivated")
@@ -3925,7 +3925,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal_id),
             data=json.dumps(dict(approved=False, reason="OK")),
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -4056,7 +4056,7 @@ class TestGetReportsUnresolved(ReportTestCase):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)

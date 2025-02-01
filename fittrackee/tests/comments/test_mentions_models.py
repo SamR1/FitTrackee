@@ -101,7 +101,7 @@ class TestMentionModel(CommentMixin):
 
 
 class TestCommentWithMentionSerializeVisibility(CommentMixin):
-    @pytest.mark.parametrize('workout_visibility', ALL_VISIBILITIES)
+    @pytest.mark.parametrize("workout_visibility", ALL_VISIBILITIES)
     def test_public_comment_is_visible_to_all_users(
         self,
         app: Flask,
@@ -125,7 +125,7 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
         comment.serialize(user_3)  # user
         comment.serialize()  # unauthenticated user
 
-    @pytest.mark.parametrize('workout_visibility', ALL_VISIBILITIES)
+    @pytest.mark.parametrize("workout_visibility", ALL_VISIBILITIES)
     def test_comment_for_followers_is_visible_to_followers_and_mentioned_users(
         self,
         app: Flask,
@@ -154,7 +154,7 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
             assert comment.serialize(user_4)  # user
             assert comment.serialize()  # unauthenticated user
 
-    @pytest.mark.parametrize('workout_visibility', ALL_VISIBILITIES)
+    @pytest.mark.parametrize("workout_visibility", ALL_VISIBILITIES)
     def test_private_comment_is_only_visible_to_author_and_mentioned_user(
         self,
         app: Flask,

@@ -16,7 +16,7 @@ def check_workout_comment(only_owner: bool = True) -> Callable:
         def wrapper_check_workout_comment(
             *args: Any, **kwargs: Any
         ) -> Callable:
-            auth_user: Optional['User'] = args[0]
+            auth_user: Optional["User"] = args[0]
             comment_short_id: str = kwargs["comment_short_id"]
 
             try:

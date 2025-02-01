@@ -16,24 +16,24 @@ def get_user_token(
     reset)
     """
     expiration_days: float = (
-        0.0 if password_reset else current_app.config['TOKEN_EXPIRATION_DAYS']
+        0.0 if password_reset else current_app.config["TOKEN_EXPIRATION_DAYS"]
     )
     expiration_seconds: float = (
-        current_app.config['PASSWORD_TOKEN_EXPIRATION_SECONDS']
+        current_app.config["PASSWORD_TOKEN_EXPIRATION_SECONDS"]
         if password_reset
-        else current_app.config['TOKEN_EXPIRATION_SECONDS']
+        else current_app.config["TOKEN_EXPIRATION_SECONDS"]
     )
     now = datetime.now(timezone.utc)
     payload = {
-        'exp': now
+        "exp": now
         + timedelta(days=expiration_days, seconds=expiration_seconds),
-        'iat': now,
-        'sub': str(user_id),
+        "iat": now,
+        "sub": str(user_id),
     }
     return jwt.encode(
         payload,
-        current_app.config['SECRET_KEY'],
-        algorithm='HS256',
+        current_app.config["SECRET_KEY"],
+        algorithm="HS256",
     )
 
 
@@ -43,10 +43,10 @@ def decode_user_token(auth_token: str) -> int:
     """
     payload = jwt.decode(
         auth_token,
-        current_app.config['SECRET_KEY'],
-        algorithms=['HS256'],
+        current_app.config["SECRET_KEY"],
+        algorithms=["HS256"],
     )
-    return int(payload['sub'])
+    return int(payload["sub"])
 
 
 def clean_blacklisted_tokens(days: int) -> int:

@@ -22,7 +22,7 @@ notifications_blueprint = Blueprint("notifications", __name__)
 DEFAULT_NOTIFICATION_PER_PAGE = 5
 
 
-@notifications_blueprint.route('/notifications', methods=['GET'])
+@notifications_blueprint.route("/notifications", methods=["GET"])
 @require_auth(scopes=["notifications:read"])
 def get_auth_user_notifications(auth_user: User) -> Dict:
     """
@@ -118,15 +118,15 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
         - ``you do not have permissions, your account is suspended``
     """
     params = request.args.copy()
-    page = int(params.get('page', 1))
-    order = params.get('order', 'desc')
-    status = params.get('status')
+    page = int(params.get("page", 1))
+    order = params.get("order", "desc")
+    status = params.get("status")
     marked_as_read = None
-    if status == 'read':
+    if status == "read":
         marked_as_read = True
-    if status == 'unread':
+    if status == "unread":
         marked_as_read = False
-    event_type = params.get('type')
+    event_type = params.get("type")
 
     blocked_users = auth_user.get_blocked_user_ids()
     blocked_by_users = auth_user.get_blocked_by_user_ids()
@@ -163,7 +163,7 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
                     User.suspended_at == None,  # noqa
                 )
             ),
-            (Notification.event_type.in_(['report', 'suspension_appeal'])),
+            (Notification.event_type.in_(["report", "suspension_appeal"])),
         ),
     ]
     if marked_as_read is not None:
@@ -182,7 +182,7 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
         .filter(*filters)
         .order_by(
             asc(Notification.created_at)
-            if order == 'asc'
+            if order == "asc"
             else desc(Notification.created_at)
         )
         .paginate(
@@ -280,7 +280,7 @@ def update_user_notifications(
         )
 
     params = request.get_json()
-    read_status = params.get('read_status')
+    read_status = params.get("read_status")
 
     try:
         if read_status is not None:
@@ -374,7 +374,7 @@ def get_status(auth_user: User) -> Dict:
                     ),
                     (
                         Notification.event_type.in_(
-                            ['report', 'suspension_appeal']
+                            ["report", "suspension_appeal"]
                         )
                     ),
                 )
@@ -431,7 +431,7 @@ def mark_all_as_read(auth_user: User) -> Union[Dict, HttpResponse]:
         - ``error, please try again or contact the administrator``
     """
     params = request.get_json(silent=True)
-    event_type = params.get('type') if params else None
+    event_type = params.get("type") if params else None
     try:
         filters = [
             Notification.to_user_id == auth_user.id,
@@ -496,11 +496,11 @@ def get_notification_types(auth_user: User) -> Dict:
     :statuscode 403:
         - ``you do not have permissions, your account is suspended``
     """
-    status = request.args.copy().get('status')
+    status = request.args.copy().get("status")
     marked_as_read = None
-    if status == 'read':
+    if status == "read":
         marked_as_read = True
-    if status == 'unread':
+    if status == "unread":
         marked_as_read = False
     filters = [Notification.to_user_id == auth_user.id]
     if marked_as_read is not None:

@@ -15,11 +15,11 @@ class UserRole(Enum):
 
     @classmethod
     def db_values(cls) -> List[str]:
-        return [str(e.value) for e in cls if e.name != 'AUTH_USER']
+        return [str(e.value) for e in cls if e.name != "AUTH_USER"]
 
     @classmethod
     def db_choices(cls) -> List[str]:
-        return [e.name.lower() for e in cls if e.name != 'AUTH_USER']
+        return [e.name.lower() for e in cls if e.name != "AUTH_USER"]
 
 
 def has_role_rights(role: Optional[UserRole], expected_role: UserRole) -> bool:

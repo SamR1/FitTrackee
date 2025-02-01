@@ -14,37 +14,37 @@ class TestConfigModel:
     def test_application_config(
         self, app: Flask, monkeypatch: pytest.MonkeyPatch
     ) -> None:
-        monkeypatch.setenv('WEATHER_API_PROVIDER', 'visualcrossing')
+        monkeypatch.setenv("WEATHER_API_PROVIDER", "visualcrossing")
         config = AppConfig.query.one()
-        config.admin_contact = 'admin@example.com'
+        config.admin_contact = "admin@example.com"
 
         assert config.is_registration_enabled is True
         assert (
-            config.map_attribution == app.config['TILE_SERVER']['ATTRIBUTION']
+            config.map_attribution == app.config["TILE_SERVER"]["ATTRIBUTION"]
         )
 
         serialized_app_config = config.serialize()
-        assert serialized_app_config['admin_contact'] == config.admin_contact
+        assert serialized_app_config["admin_contact"] == config.admin_contact
         assert (
-            serialized_app_config['gpx_limit_import']
+            serialized_app_config["gpx_limit_import"]
             == config.gpx_limit_import
         )
-        assert serialized_app_config['is_email_sending_enabled'] is True
-        assert serialized_app_config['is_registration_enabled'] is True
+        assert serialized_app_config["is_email_sending_enabled"] is True
+        assert serialized_app_config["is_registration_enabled"] is True
         assert (
-            serialized_app_config['max_single_file_size']
+            serialized_app_config["max_single_file_size"]
             == config.max_single_file_size
         )
         assert (
-            serialized_app_config['max_zip_file_size']
+            serialized_app_config["max_zip_file_size"]
             == config.max_zip_file_size
         )
-        assert serialized_app_config['max_users'] == config.max_users
+        assert serialized_app_config["max_users"] == config.max_users
         assert (
-            serialized_app_config['map_attribution'] == config.map_attribution
+            serialized_app_config["map_attribution"] == config.map_attribution
         )
-        assert serialized_app_config['version'] == VERSION
-        assert serialized_app_config['weather_provider'] == 'visualcrossing'
+        assert serialized_app_config["version"] == VERSION
+        assert serialized_app_config["weather_provider"] == "visualcrossing"
 
     def test_it_returns_registration_disabled_when_users_count_exceeds_limit(
         self, app: Flask, user_1: User, user_2: User
@@ -54,7 +54,7 @@ class TestConfigModel:
         serialized_app_config = config.serialize()
 
         assert config.is_registration_enabled is False
-        assert serialized_app_config['is_registration_enabled'] is False
+        assert serialized_app_config["is_registration_enabled"] is False
 
     def test_it_returns_email_sending_disabled_when_no_email_url_provided(
         self, app_wo_email_activation: Flask, user_1: User, user_2: User
@@ -62,15 +62,15 @@ class TestConfigModel:
         config = AppConfig.query.one()
         serialized_app_config = config.serialize()
 
-        assert serialized_app_config['is_email_sending_enabled'] is False
+        assert serialized_app_config["is_email_sending_enabled"] is False
 
     @pytest.mark.parametrize(
-        'input_weather_api_provider, expected_weather_provider',
+        "input_weather_api_provider, expected_weather_provider",
         [
-            ('darksky', None),  # removed provider
-            ('Visualcrossing', 'visualcrossing'),
-            ('invalid_provider', None),
-            ('', None),
+            ("darksky", None),  # removed provider
+            ("Visualcrossing", "visualcrossing"),
+            ("invalid_provider", None),
+            ("", None),
         ],
     )
     def test_it_returns_weather_provider(
@@ -80,12 +80,12 @@ class TestConfigModel:
         expected_weather_provider: str,
         monkeypatch: pytest.MonkeyPatch,
     ) -> None:
-        monkeypatch.setenv('WEATHER_API_PROVIDER', input_weather_api_provider)
+        monkeypatch.setenv("WEATHER_API_PROVIDER", input_weather_api_provider)
         config = AppConfig.query.one()
         serialized_app_config = config.serialize()
 
         assert (
-            serialized_app_config['weather_provider']
+            serialized_app_config["weather_provider"]
             == expected_weather_provider
         )
 

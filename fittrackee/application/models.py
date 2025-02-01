@@ -16,7 +16,7 @@ from fittrackee.users.models import User
 
 
 class AppConfig(BaseModel):
-    __tablename__ = 'app_config'
+    __tablename__ = "app_config"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     max_users: Mapped[int] = mapped_column(default=0, nullable=False)
     gpx_limit_import: Mapped[int] = mapped_column(default=10, nullable=False)
@@ -48,31 +48,31 @@ class AppConfig(BaseModel):
 
     @property
     def map_attribution(self) -> str:
-        return current_app.config['TILE_SERVER']['ATTRIBUTION']
+        return current_app.config["TILE_SERVER"]["ATTRIBUTION"]
 
     def serialize(self) -> Dict:
-        weather_provider = os.getenv('WEATHER_API_PROVIDER', '').lower()
+        weather_provider = os.getenv("WEATHER_API_PROVIDER", "").lower()
         return {
-            'about': self.about,
-            'admin_contact': self.admin_contact,
-            'gpx_limit_import': self.gpx_limit_import,
-            'is_email_sending_enabled': current_app.config['CAN_SEND_EMAILS'],
-            'is_registration_enabled': self.is_registration_enabled,
-            'max_single_file_size': self.max_single_file_size,
-            'max_zip_file_size': self.max_zip_file_size,
-            'max_users': self.max_users,
-            'map_attribution': self.map_attribution,
-            'privacy_policy': self.privacy_policy,
-            'privacy_policy_date': (
+            "about": self.about,
+            "admin_contact": self.admin_contact,
+            "gpx_limit_import": self.gpx_limit_import,
+            "is_email_sending_enabled": current_app.config["CAN_SEND_EMAILS"],
+            "is_registration_enabled": self.is_registration_enabled,
+            "max_single_file_size": self.max_single_file_size,
+            "max_zip_file_size": self.max_zip_file_size,
+            "max_users": self.max_users,
+            "map_attribution": self.map_attribution,
+            "privacy_policy": self.privacy_policy,
+            "privacy_policy_date": (
                 self.privacy_policy_date
                 if self.privacy_policy
-                else current_app.config['DEFAULT_PRIVACY_POLICY_DATA']
+                else current_app.config["DEFAULT_PRIVACY_POLICY_DATA"]
             ),
-            'stats_workouts_limit': self.stats_workouts_limit,
-            'version': current_app.config['VERSION'],
-            'weather_provider': (
+            "stats_workouts_limit": self.stats_workouts_limit,
+            "version": current_app.config["VERSION"],
+            "weather_provider": (
                 weather_provider
-                if weather_provider in ['visualcrossing']
+                if weather_provider in ["visualcrossing"]
                 else None
             ),
         }
@@ -81,22 +81,22 @@ class AppConfig(BaseModel):
 def update_app_config() -> None:
     config = AppConfig.query.first()
     if config:
-        current_app.config['is_registration_enabled'] = (
+        current_app.config["is_registration_enabled"] = (
             config.is_registration_enabled
         )
 
 
-@listens_for(User, 'after_insert')
+@listens_for(User, "after_insert")
 def on_user_insert(mapper: Mapper, connection: Connection, user: User) -> None:
-    @listens_for(db.Session, 'after_flush', once=True)
+    @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
         update_app_config()
 
 
-@listens_for(User, 'after_delete')
+@listens_for(User, "after_delete")
 def on_user_delete(
     mapper: Mapper, connection: Connection, old_user: User
 ) -> None:
-    @listens_for(db.Session, 'after_flush', once=True)
+    @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
         update_app_config()

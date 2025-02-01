@@ -60,10 +60,10 @@ class UserManagerService:
         user: User, new_email: str, with_confirmation: bool
     ) -> None:
         if not is_valid_email(new_email):
-            raise InvalidEmailException('valid email must be provided')
+            raise InvalidEmailException("valid email must be provided")
         if user.email == new_email:
             raise InvalidEmailException(
-                'new email must be different than current email'
+                "new email must be different than current email"
             )
         if with_confirmation:
             user.email_to_confirm = new_email
@@ -169,7 +169,7 @@ class UserManagerService:
 
         ret = register_controls(self.username, email, password)
 
-        if ret != '':
+        if ret != "":
             raise UserControlsException(ret)
 
         user = User.query.filter(
@@ -177,7 +177,7 @@ class UserManagerService:
         ).first()
         if user:
             raise UserCreationException(
-                'sorry, that username is already taken'
+                "sorry, that username is already taken"
             )
 
         # if a user exists with same email address, no error is returned
@@ -188,7 +188,7 @@ class UserManagerService:
         if user:
             if check_email:
                 raise UserCreationException(
-                    'This user already exists. No action done.'
+                    "This user already exists. No action done."
                 )
             return None, None
 
@@ -218,8 +218,8 @@ class UserManagerService:
                 email, password, check_email=True, role=role
             )
             if new_user:
-                new_user.language = 'en'
+                new_user.language = "en"
                 db.session.commit()
         except UserControlsException as e:
-            raise UserCreationException(str(e))
+            raise UserCreationException(str(e)) from e
         return new_user, password

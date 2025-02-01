@@ -15,8 +15,8 @@ class UserAgent(IUserAgent):
         user_agent: str,
     ) -> Tuple[Optional[str], Optional[str]]:
         parsed_string = user_agent_parser.Parse(user_agent)
-        platform = parsed_string.get('os', {}).get('family')
-        browser = parsed_string.get('user_agent', {}).get('family')
+        platform = parsed_string.get("os", {}).get("family")
+        browser = parsed_string.get("user_agent", {}).get("family")
         return platform, browser
 
 

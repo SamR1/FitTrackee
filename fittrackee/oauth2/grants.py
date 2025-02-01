@@ -11,13 +11,13 @@ from .models import OAuth2AuthorizationCode, OAuth2Client, OAuth2Token
 
 
 class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
-    TOKEN_ENDPOINT_AUTH_METHODS = ['client_secret_post']
+    TOKEN_ENDPOINT_AUTH_METHODS = ["client_secret_post"]
 
     def save_authorization_code(
         self, code: str, request: OAuth2Request
     ) -> OAuth2AuthorizationCode:
-        code_challenge = request.data.get('code_challenge')
-        code_challenge_method = request.data.get('code_challenge_method')
+        code_challenge = request.data.get("code_challenge")
+        code_challenge_method = request.data.get("code_challenge_method")
         auth_code = OAuth2AuthorizationCode(
             code=code,
             client_id=request.client.client_id,
@@ -54,7 +54,7 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
 
 
 class RefreshTokenGrant(grants.RefreshTokenGrant):
-    TOKEN_ENDPOINT_AUTH_METHODS = ['client_secret_post']
+    TOKEN_ENDPOINT_AUTH_METHODS = ["client_secret_post"]
     INCLUDE_NEW_REFRESH_TOKEN = True
 
     def authenticate_refresh_token(self, refresh_token: str) -> Optional[str]:

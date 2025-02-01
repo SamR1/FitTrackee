@@ -93,10 +93,23 @@ select = [
     "F",
     # isort
     "I",
+    # flake8-builtins
+    "A",
+    # flake8-type-checking
+    "TC",
+    # flake8-datetimez
+    "DTZ",
+    # flake8-print
+    "T20",
+    # flake8-bugbear
+    "B",
+    # Ruff-specific rules
+    "RUF",
 ]
+ignore = ["RUF012"]
 
 [tool.ruff.format]
-quote-style = "preserve"
+quote-style = "double"
 
 [tool.ruff.lint.per-file-ignores]
 "fittrackee/activities/stats.py" = ["E501"]

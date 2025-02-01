@@ -19,7 +19,7 @@ from .mixins import ReportServiceCreateReportActionMixin
 class TestReportEmailServiceForUserSuspension(
     ReportServiceCreateReportActionMixin
 ):
-    @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
+    @pytest.mark.parametrize("input_reason", [{}, {"reason": "foo"}])
     def test_it_sends_an_email_on_user_suspension(
         self,
         app: Flask,
@@ -41,14 +41,14 @@ class TestReportEmailServiceForUserSuspension(
 
         user_suspension_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_3.email,
+                "language": "en",
+                "email": user_3.email,
             },
             {
-                'username': user_3.username,
-                'fittrackee_url': app.config['UI_URL'],
-                'appeal_url': f'{app.config["UI_URL"]}/profile/suspension',
-                'reason': input_reason.get('reason'),
+                "username": user_3.username,
+                "fittrackee_url": app.config["UI_URL"],
+                "appeal_url": f"{app.config['UI_URL']}/profile/suspension",
+                "reason": input_reason.get("reason"),
             },
         )
 
@@ -56,7 +56,7 @@ class TestReportEmailServiceForUserSuspension(
 class TestReportEmailServiceForUserReactivation(
     ReportServiceCreateReportActionMixin
 ):
-    @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
+    @pytest.mark.parametrize("input_reason", [{}, {"reason": "foo"}])
     def test_it_sends_an_email_on_user_reactivation(
         self,
         app: Flask,
@@ -80,14 +80,14 @@ class TestReportEmailServiceForUserReactivation(
 
         user_unsuspension_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_3.email,
+                "language": "en",
+                "email": user_3.email,
             },
             {
-                'username': user_3.username,
-                'fittrackee_url': app.config['UI_URL'],
-                'reason': input_reason.get('reason'),
-                'without_user_action': True,
+                "username": user_3.username,
+                "fittrackee_url": app.config["UI_URL"],
+                "reason": input_reason.get("reason"),
+                "without_user_action": True,
             },
         )
 
@@ -95,7 +95,7 @@ class TestReportEmailServiceForUserReactivation(
 class TestReportEmailServiceForUserWarning(
     ReportServiceCreateReportActionMixin
 ):
-    @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
+    @pytest.mark.parametrize("input_reason", [{}, {"reason": "foo"}])
     def test_it_sends_an_email_on_user_warning_for_user_report(
         self,
         app: Flask,
@@ -127,18 +127,18 @@ class TestReportEmailServiceForUserWarning(
 
         user_warning_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_3.email,
+                "language": "en",
+                "email": user_3.email,
             },
             {
-                'username': user_3.username,
-                'fittrackee_url': app.config['UI_URL'],
-                'appeal_url': (
-                    f'{app.config["UI_URL"]}/profile/moderation/sanctions'
-                    f'/{user_warning.short_id}'  # type:ignore
+                "username": user_3.username,
+                "fittrackee_url": app.config["UI_URL"],
+                "appeal_url": (
+                    f"{app.config['UI_URL']}/profile/moderation/sanctions"
+                    f"/{user_warning.short_id}"  # type:ignore
                 ),
-                'reason': input_reason.get('reason'),
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
+                "reason": input_reason.get("reason"),
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
             },
         )
 
@@ -175,27 +175,27 @@ class TestReportEmailServiceForUserWarning(
 
         user_warning_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_3.email,
+                "language": "en",
+                "email": user_3.email,
             },
             {
-                'appeal_url': (
-                    f'{app.config["UI_URL"]}/profile/moderation/sanctions'
-                    f'/{user_warning.short_id}'  # type:ignore
+                "appeal_url": (
+                    f"{app.config['UI_URL']}/profile/moderation/sanctions"
+                    f"/{user_warning.short_id}"  # type:ignore
                 ),
-                'comment_url': (
-                    f'{app.config["UI_URL"]}/workouts'
-                    f'/{workout_cycling_user_2.short_id}'
-                    f'/comments/{report.reported_comment.short_id}'
+                "comment_url": (
+                    f"{app.config['UI_URL']}/workouts"
+                    f"/{workout_cycling_user_2.short_id}"
+                    f"/comments/{report.reported_comment.short_id}"
                 ),
-                'created_at': get_date_string_for_user(
+                "created_at": get_date_string_for_user(
                     report.reported_comment.created_at, user_3
                 ),
-                'fittrackee_url': app.config['UI_URL'],
-                'reason': None,
-                'text': report.reported_comment.handle_mentions()[0],
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'username': user_3.username,
+                "fittrackee_url": app.config["UI_URL"],
+                "reason": None,
+                "text": report.reported_comment.handle_mentions()[0],
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "username": user_3.username,
             },
         )
 
@@ -233,26 +233,26 @@ class TestReportEmailServiceForUserWarning(
 
         user_warning_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_3.email,
+                "language": "en",
+                "email": user_3.email,
             },
             {
-                'appeal_url': (
-                    f'{app.config["UI_URL"]}/profile/moderation/sanctions'
-                    f'/{user_warning.short_id}'  # type:ignore
+                "appeal_url": (
+                    f"{app.config['UI_URL']}/profile/moderation/sanctions"
+                    f"/{user_warning.short_id}"  # type:ignore
                 ),
-                'comment_url': (
-                    f'{app.config["UI_URL"]}/comments'
-                    f'/{report.reported_comment.short_id}'
+                "comment_url": (
+                    f"{app.config['UI_URL']}/comments"
+                    f"/{report.reported_comment.short_id}"
                 ),
-                'created_at': get_date_string_for_user(
+                "created_at": get_date_string_for_user(
                     report.reported_comment.created_at, user_3
                 ),
-                'fittrackee_url': app.config['UI_URL'],
-                'reason': None,
-                'text': report.reported_comment.handle_mentions()[0],
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'username': user_3.username,
+                "fittrackee_url": app.config["UI_URL"],
+                "reason": None,
+                "text": report.reported_comment.handle_mentions()[0],
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "username": user_3.username,
             },
         )
 
@@ -288,26 +288,26 @@ class TestReportEmailServiceForUserWarning(
 
         user_warning_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_2.email,
+                "language": "en",
+                "email": user_2.email,
             },
             {
-                'appeal_url': (
-                    f'{app.config["UI_URL"]}/profile/moderation/sanctions'
-                    f'/{user_warning.short_id}'  # type:ignore
+                "appeal_url": (
+                    f"{app.config['UI_URL']}/profile/moderation/sanctions"
+                    f"/{user_warning.short_id}"  # type:ignore
                 ),
-                'fittrackee_url': app.config['UI_URL'],
-                'map': None,
-                'reason': None,
-                'title': workout_cycling_user_2.title,
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'username': user_2.username,
-                'workout_date': get_date_string_for_user(
+                "fittrackee_url": app.config["UI_URL"],
+                "map": None,
+                "reason": None,
+                "title": workout_cycling_user_2.title,
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "username": user_2.username,
+                "workout_date": get_date_string_for_user(
                     workout_cycling_user_2.workout_date, user_2
                 ),
-                'workout_url': (
-                    f'{app.config["UI_URL"]}/workouts/'
-                    f'{workout_cycling_user_2.short_id}'
+                "workout_url": (
+                    f"{app.config['UI_URL']}/workouts/"
+                    f"{workout_cycling_user_2.short_id}"
                 ),
             },
         )
@@ -345,29 +345,29 @@ class TestReportEmailServiceForUserWarning(
 
         user_warning_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_2.email,
+                "language": "en",
+                "email": user_2.email,
             },
             {
-                'appeal_url': (
-                    f'{app.config["UI_URL"]}/profile/moderation/sanctions'
-                    f'/{user_warning.short_id}'  # type:ignore
+                "appeal_url": (
+                    f"{app.config['UI_URL']}/profile/moderation/sanctions"
+                    f"/{user_warning.short_id}"  # type:ignore
                 ),
-                'fittrackee_url': app.config['UI_URL'],
-                'map': (
-                    f'{app.config["UI_URL"]}/api/workouts/map'
-                    f'/{workout_cycling_user_2.map_id}'
+                "fittrackee_url": app.config["UI_URL"],
+                "map": (
+                    f"{app.config['UI_URL']}/api/workouts/map"
+                    f"/{workout_cycling_user_2.map_id}"
                 ),
-                'reason': None,
-                'title': workout_cycling_user_2.title,
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'username': user_2.username,
-                'workout_date': get_date_string_for_user(
+                "reason": None,
+                "title": workout_cycling_user_2.title,
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "username": user_2.username,
+                "workout_date": get_date_string_for_user(
                     workout_cycling_user_2.workout_date, user_2
                 ),
-                'workout_url': (
-                    f'{app.config["UI_URL"]}/workouts/'
-                    f'{workout_cycling_user_2.short_id}'
+                "workout_url": (
+                    f"{app.config['UI_URL']}/workouts/"
+                    f"{workout_cycling_user_2.short_id}"
                 ),
             },
         )
@@ -406,15 +406,15 @@ class TestReportEmailServiceForUserWarningLifting(
 
         user_warning_lifting_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_3.email,
+                "language": "en",
+                "email": user_3.email,
             },
             {
-                'username': user_3.username,
-                'fittrackee_url': app.config['UI_URL'],
-                'reason': None,
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'without_user_action': True,
+                "username": user_3.username,
+                "fittrackee_url": app.config["UI_URL"],
+                "reason": None,
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "without_user_action": True,
             },
         )
 
@@ -451,24 +451,24 @@ class TestReportEmailServiceForUserWarningLifting(
 
         user_warning_lifting_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_3.email,
+                "language": "en",
+                "email": user_3.email,
             },
             {
-                'comment_url': (
-                    f'{app.config["UI_URL"]}/workouts'
-                    f'/{workout_cycling_user_2.short_id}'
-                    f'/comments/{report.reported_comment.short_id}'
+                "comment_url": (
+                    f"{app.config['UI_URL']}/workouts"
+                    f"/{workout_cycling_user_2.short_id}"
+                    f"/comments/{report.reported_comment.short_id}"
                 ),
-                'created_at': get_date_string_for_user(
+                "created_at": get_date_string_for_user(
                     report.reported_comment.created_at, user_3
                 ),
-                'fittrackee_url': app.config['UI_URL'],
-                'reason': None,
-                'text': report.reported_comment.handle_mentions()[0],
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'username': user_3.username,
-                'without_user_action': True,
+                "fittrackee_url": app.config["UI_URL"],
+                "reason": None,
+                "text": report.reported_comment.handle_mentions()[0],
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "username": user_3.username,
+                "without_user_action": True,
             },
         )
 
@@ -504,24 +504,24 @@ class TestReportEmailServiceForUserWarningLifting(
 
         user_warning_lifting_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_2.email,
+                "language": "en",
+                "email": user_2.email,
             },
             {
-                'fittrackee_url': app.config['UI_URL'],
-                'map': None,
-                'reason': None,
-                'title': workout_cycling_user_2.title,
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'username': user_2.username,
-                'workout_date': get_date_string_for_user(
+                "fittrackee_url": app.config["UI_URL"],
+                "map": None,
+                "reason": None,
+                "title": workout_cycling_user_2.title,
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "username": user_2.username,
+                "workout_date": get_date_string_for_user(
                     workout_cycling_user_2.workout_date, user_2
                 ),
-                'workout_url': (
-                    f'{app.config["UI_URL"]}/workouts/'
-                    f'{workout_cycling_user_2.short_id}'
+                "workout_url": (
+                    f"{app.config['UI_URL']}/workouts/"
+                    f"{workout_cycling_user_2.short_id}"
                 ),
-                'without_user_action': True,
+                "without_user_action": True,
             },
         )
 
@@ -558,33 +558,33 @@ class TestReportEmailServiceForUserWarningLifting(
 
         user_warning_lifting_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_2.email,
+                "language": "en",
+                "email": user_2.email,
             },
             {
-                'fittrackee_url': app.config['UI_URL'],
-                'map': (
-                    f'{app.config["UI_URL"]}/api/workouts/map'
-                    f'/{workout_cycling_user_2.map_id}'
+                "fittrackee_url": app.config["UI_URL"],
+                "map": (
+                    f"{app.config['UI_URL']}/api/workouts/map"
+                    f"/{workout_cycling_user_2.map_id}"
                 ),
-                'reason': None,
-                'title': workout_cycling_user_2.title,
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'username': user_2.username,
-                'workout_date': get_date_string_for_user(
+                "reason": None,
+                "title": workout_cycling_user_2.title,
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "username": user_2.username,
+                "workout_date": get_date_string_for_user(
                     workout_cycling_user_2.workout_date, user_2
                 ),
-                'workout_url': (
-                    f'{app.config["UI_URL"]}/workouts/'
-                    f'{workout_cycling_user_2.short_id}'
+                "workout_url": (
+                    f"{app.config['UI_URL']}/workouts/"
+                    f"{workout_cycling_user_2.short_id}"
                 ),
-                'without_user_action': True,
+                "without_user_action": True,
             },
         )
 
 
 class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
-    @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
+    @pytest.mark.parametrize("input_reason", [{}, {"reason": "foo"}])
     def test_it_sends_an_email_on_comment_suspension(
         self,
         app: Flask,
@@ -611,23 +611,23 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
 
         comment_suspension_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_3.email,
+                "language": "en",
+                "email": user_3.email,
             },
             {
-                'comment_url': (
-                    f'{app.config["UI_URL"]}/workouts'
-                    f'/{workout_cycling_user_2.short_id}'
-                    f'/comments/{report.reported_comment.short_id}'
+                "comment_url": (
+                    f"{app.config['UI_URL']}/workouts"
+                    f"/{workout_cycling_user_2.short_id}"
+                    f"/comments/{report.reported_comment.short_id}"
                 ),
-                'created_at': get_date_string_for_user(
+                "created_at": get_date_string_for_user(
                     report.reported_comment.created_at, user_3
                 ),
-                'fittrackee_url': app.config['UI_URL'],
-                'reason': input_reason.get('reason'),
-                'text': report.reported_comment.handle_mentions()[0],
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'username': user_3.username,
+                "fittrackee_url": app.config["UI_URL"],
+                "reason": input_reason.get("reason"),
+                "text": report.reported_comment.handle_mentions()[0],
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "username": user_3.username,
             },
         )
 
@@ -658,26 +658,26 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
 
         comment_suspension_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_3.email,
+                "language": "en",
+                "email": user_3.email,
             },
             {
-                'comment_url': (
-                    f'{app.config["UI_URL"]}/comments'
-                    f'/{report.reported_comment.short_id}'
+                "comment_url": (
+                    f"{app.config['UI_URL']}/comments"
+                    f"/{report.reported_comment.short_id}"
                 ),
-                'created_at': get_date_string_for_user(
+                "created_at": get_date_string_for_user(
                     report.reported_comment.created_at, user_3
                 ),
-                'fittrackee_url': app.config['UI_URL'],
-                'reason': None,
-                'text': report.reported_comment.handle_mentions()[0],
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'username': user_3.username,
+                "fittrackee_url": app.config["UI_URL"],
+                "reason": None,
+                "text": report.reported_comment.handle_mentions()[0],
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "username": user_3.username,
             },
         )
 
-    @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
+    @pytest.mark.parametrize("input_reason", [{}, {"reason": "foo"}])
     def test_it_sends_an_email_on_comment_reactivation(
         self,
         app: Flask,
@@ -706,24 +706,24 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
 
         comment_unsuspension_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_3.email,
+                "language": "en",
+                "email": user_3.email,
             },
             {
-                'comment_url': (
-                    f'{app.config["UI_URL"]}/workouts'
-                    f'/{workout_cycling_user_2.short_id}'
-                    f'/comments/{report.reported_comment.short_id}'
+                "comment_url": (
+                    f"{app.config['UI_URL']}/workouts"
+                    f"/{workout_cycling_user_2.short_id}"
+                    f"/comments/{report.reported_comment.short_id}"
                 ),
-                'created_at': get_date_string_for_user(
+                "created_at": get_date_string_for_user(
                     report.reported_comment.created_at, user_3
                 ),
-                'fittrackee_url': app.config['UI_URL'],
-                'reason': input_reason.get('reason'),
-                'text': report.reported_comment.handle_mentions()[0],
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'username': user_3.username,
-                'without_user_action': True,
+                "fittrackee_url": app.config["UI_URL"],
+                "reason": input_reason.get("reason"),
+                "text": report.reported_comment.handle_mentions()[0],
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "username": user_3.username,
+                "without_user_action": True,
             },
         )
 
@@ -755,29 +755,29 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
 
         comment_unsuspension_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_3.email,
+                "language": "en",
+                "email": user_3.email,
             },
             {
-                'comment_url': (
-                    f'{app.config["UI_URL"]}/comments'
-                    f'/{report.reported_comment.short_id}'
+                "comment_url": (
+                    f"{app.config['UI_URL']}/comments"
+                    f"/{report.reported_comment.short_id}"
                 ),
-                'created_at': get_date_string_for_user(
+                "created_at": get_date_string_for_user(
                     report.reported_comment.created_at, user_3
                 ),
-                'fittrackee_url': app.config['UI_URL'],
-                'reason': None,
-                'text': report.reported_comment.handle_mentions()[0],
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'username': user_3.username,
-                'without_user_action': True,
+                "fittrackee_url": app.config["UI_URL"],
+                "reason": None,
+                "text": report.reported_comment.handle_mentions()[0],
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "username": user_3.username,
+                "without_user_action": True,
             },
         )
 
 
 class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
-    @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
+    @pytest.mark.parametrize("input_reason", [{}, {"reason": "foo"}])
     def test_it_sends_an_email_on_workout_suspension(
         self,
         app: Flask,
@@ -803,22 +803,22 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
 
         workout_suspension_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_2.email,
+                "language": "en",
+                "email": user_2.email,
             },
             {
-                'fittrackee_url': app.config['UI_URL'],
-                'map': None,
-                'reason': input_reason.get('reason'),
-                'title': workout_cycling_user_2.title,
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'username': user_2.username,
-                'workout_date': get_date_string_for_user(
+                "fittrackee_url": app.config["UI_URL"],
+                "map": None,
+                "reason": input_reason.get("reason"),
+                "title": workout_cycling_user_2.title,
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "username": user_2.username,
+                "workout_date": get_date_string_for_user(
                     workout_cycling_user_2.workout_date, user_2
                 ),
-                'workout_url': (
-                    f'{app.config["UI_URL"]}/workouts/'
-                    f'{workout_cycling_user_2.short_id}'
+                "workout_url": (
+                    f"{app.config['UI_URL']}/workouts/"
+                    f"{workout_cycling_user_2.short_id}"
                 ),
             },
         )
@@ -849,30 +849,30 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
 
         workout_suspension_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_2.email,
+                "language": "en",
+                "email": user_2.email,
             },
             {
-                'fittrackee_url': app.config['UI_URL'],
-                'map': (
-                    f'{app.config["UI_URL"]}/api/workouts/map'
-                    f'/{workout_cycling_user_2.map_id}'
+                "fittrackee_url": app.config["UI_URL"],
+                "map": (
+                    f"{app.config['UI_URL']}/api/workouts/map"
+                    f"/{workout_cycling_user_2.map_id}"
                 ),
-                'reason': None,
-                'title': workout_cycling_user_2.title,
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'username': user_2.username,
-                'workout_date': get_date_string_for_user(
+                "reason": None,
+                "title": workout_cycling_user_2.title,
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "username": user_2.username,
+                "workout_date": get_date_string_for_user(
                     workout_cycling_user_2.workout_date, user_2
                 ),
-                'workout_url': (
-                    f'{app.config["UI_URL"]}/workouts/'
-                    f'{workout_cycling_user_2.short_id}'
+                "workout_url": (
+                    f"{app.config['UI_URL']}/workouts/"
+                    f"{workout_cycling_user_2.short_id}"
                 ),
             },
         )
 
-    @pytest.mark.parametrize('input_reason', [{}, {"reason": "foo"}])
+    @pytest.mark.parametrize("input_reason", [{}, {"reason": "foo"}])
     def test_it_sends_an_email_on_workout_reactivation(
         self,
         app: Flask,
@@ -900,23 +900,23 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
 
         workout_unsuspension_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_2.email,
+                "language": "en",
+                "email": user_2.email,
             },
             {
-                'fittrackee_url': app.config['UI_URL'],
-                'map': None,
-                'reason': input_reason.get('reason'),
-                'title': workout_cycling_user_2.title,
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'username': user_2.username,
-                'without_user_action': True,
-                'workout_date': get_date_string_for_user(
+                "fittrackee_url": app.config["UI_URL"],
+                "map": None,
+                "reason": input_reason.get("reason"),
+                "title": workout_cycling_user_2.title,
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "username": user_2.username,
+                "without_user_action": True,
+                "workout_date": get_date_string_for_user(
                     workout_cycling_user_2.workout_date, user_2
                 ),
-                'workout_url': (
-                    f'{app.config["UI_URL"]}/workouts/'
-                    f'{workout_cycling_user_2.short_id}'
+                "workout_url": (
+                    f"{app.config['UI_URL']}/workouts/"
+                    f"{workout_cycling_user_2.short_id}"
                 ),
             },
         )
@@ -948,26 +948,26 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
 
         workout_unsuspension_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_2.email,
+                "language": "en",
+                "email": user_2.email,
             },
             {
-                'fittrackee_url': app.config['UI_URL'],
-                'map': (
-                    f'{app.config["UI_URL"]}/api/workouts/map'
-                    f'/{workout_cycling_user_2.map_id}'
+                "fittrackee_url": app.config["UI_URL"],
+                "map": (
+                    f"{app.config['UI_URL']}/api/workouts/map"
+                    f"/{workout_cycling_user_2.map_id}"
                 ),
-                'reason': None,
-                'title': workout_cycling_user_2.title,
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'username': user_2.username,
-                'without_user_action': True,
-                'workout_date': get_date_string_for_user(
+                "reason": None,
+                "title": workout_cycling_user_2.title,
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "username": user_2.username,
+                "without_user_action": True,
+                "workout_date": get_date_string_for_user(
                     workout_cycling_user_2.workout_date, user_2
                 ),
-                'workout_url': (
-                    f'{app.config["UI_URL"]}/workouts/'
-                    f'{workout_cycling_user_2.short_id}'
+                "workout_url": (
+                    f"{app.config['UI_URL']}/workouts/"
+                    f"{workout_cycling_user_2.short_id}"
                 ),
             },
         )
@@ -977,7 +977,7 @@ class TestReportEmailServiceForAppealRejected(
     ReportServiceCreateReportActionMixin, ReportMixin
 ):
     @pytest.mark.parametrize(
-        'input_action_type', ["user_suspension", "user_warning"]
+        "input_action_type", ["user_suspension", "user_warning"]
     )
     def test_it_sends_an_email_for_user_action(
         self,
@@ -1004,16 +1004,16 @@ class TestReportEmailServiceForAppealRejected(
 
         appeal_rejected_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_3.email,
+                "language": "en",
+                "email": user_3.email,
             },
             {
-                'username': user_3.username,
-                'fittrackee_url': app.config['UI_URL'],
-                'reason': None,
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'without_user_action': True,
-                'action_type': input_action_type,
+                "username": user_3.username,
+                "fittrackee_url": app.config["UI_URL"],
+                "reason": None,
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "without_user_action": True,
+                "action_type": input_action_type,
             },
         )
 
@@ -1048,27 +1048,27 @@ class TestReportEmailServiceForAppealRejected(
 
         appeal_rejected_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_2.email,
+                "language": "en",
+                "email": user_2.email,
             },
             {
-                'username': user_2.username,
-                'fittrackee_url': app.config['UI_URL'],
-                'reason': None,
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'without_user_action': True,
-                'action_type': report_action.action_type,
-                'map': (
-                    f'{app.config["UI_URL"]}/api/workouts/map'
-                    f'/{workout_cycling_user_2.map_id}'
+                "username": user_2.username,
+                "fittrackee_url": app.config["UI_URL"],
+                "reason": None,
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "without_user_action": True,
+                "action_type": report_action.action_type,
+                "map": (
+                    f"{app.config['UI_URL']}/api/workouts/map"
+                    f"/{workout_cycling_user_2.map_id}"
                 ),
-                'title': workout_cycling_user_2.title,
-                'workout_date': get_date_string_for_user(
+                "title": workout_cycling_user_2.title,
+                "workout_date": get_date_string_for_user(
                     workout_cycling_user_2.workout_date, user_2
                 ),
-                'workout_url': (
-                    f'{app.config["UI_URL"]}/workouts/'
-                    f'{workout_cycling_user_2.short_id}'
+                "workout_url": (
+                    f"{app.config['UI_URL']}/workouts/"
+                    f"{workout_cycling_user_2.short_id}"
                 ),
             },
         )
@@ -1102,24 +1102,24 @@ class TestReportEmailServiceForAppealRejected(
 
         appeal_rejected_email_mock.send.assert_called_once_with(
             {
-                'language': 'en',
-                'email': user_3.email,
+                "language": "en",
+                "email": user_3.email,
             },
             {
-                'username': user_3.username,
-                'fittrackee_url': app.config['UI_URL'],
-                'reason': None,
-                'user_image_url': f'{app.config["UI_URL"]}/img/user.png',
-                'without_user_action': True,
-                'action_type': report_action.action_type,
-                'comment_url': (
-                    f'{app.config["UI_URL"]}/workouts'
-                    f'/{workout_cycling_user_2.short_id}'
-                    f'/comments/{report.reported_comment.short_id}'
+                "username": user_3.username,
+                "fittrackee_url": app.config["UI_URL"],
+                "reason": None,
+                "user_image_url": f"{app.config['UI_URL']}/img/user.png",
+                "without_user_action": True,
+                "action_type": report_action.action_type,
+                "comment_url": (
+                    f"{app.config['UI_URL']}/workouts"
+                    f"/{workout_cycling_user_2.short_id}"
+                    f"/comments/{report.reported_comment.short_id}"
                 ),
-                'created_at': get_date_string_for_user(
+                "created_at": get_date_string_for_user(
                     report.reported_comment.created_at, user_3
                 ),
-                'text': report.reported_comment.handle_mentions()[0],
+                "text": report.reported_comment.handle_mentions()[0],
             },
         )

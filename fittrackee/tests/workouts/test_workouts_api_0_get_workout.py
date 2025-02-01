@@ -26,7 +26,7 @@ class GetWorkoutGpxAsFollowerMixin:
         follower: User,
         followed: User,
     ) -> None:
-        workout.gpx = 'file.gpx'
+        workout.gpx = "file.gpx"
         workout.workout_visibility = analysis_visibility
         workout.analysis_visibility = analysis_visibility
         workout.map_visibility = map_visibility
@@ -41,14 +41,14 @@ class GetWorkoutGpxPublicVisibilityMixin:
         analysis_visibility: VisibilityLevel = VisibilityLevel.PUBLIC,
         map_visibility: VisibilityLevel,
     ) -> None:
-        workout.gpx = 'file.gpx'
+        workout.gpx = "file.gpx"
         workout.workout_visibility = analysis_visibility
         workout.analysis_visibility = VisibilityLevel.PUBLIC
         workout.map_visibility = map_visibility
 
 
 class GetWorkoutTestCase(WorkoutApiTestCaseMixin):
-    route = '/api/workouts/{workout_uuid}'
+    route = "/api/workouts/{workout_uuid}"
 
 
 class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
@@ -67,7 +67,7 @@ class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -85,14 +85,14 @@ class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0] == jsonify_dict(
             workout_cycling_user_1.serialize(user=user_1, light=False)
         )
 
@@ -111,14 +111,14 @@ class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0] == jsonify_dict(
             workout_cycling_user_1.serialize(user=user_1, light=False)
         )
 
@@ -140,11 +140,11 @@ class TestGetWorkoutAsFollower(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['workouts']) == 0
+        assert len(data["data"]["workouts"]) == 0
 
     def test_it_returns_404_when_workout_is_suspended_and_no_user_comments(
         self,
@@ -173,11 +173,11 @@ class TestGetWorkoutAsFollower(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['workouts']) == 0
+        assert len(data["data"]["workouts"]) == 0
 
     def test_it_returns_404_when_workout_is_suspended_and_auth_user_commented_workout(  # noqa
         self,
@@ -203,22 +203,22 @@ class TestGetWorkoutAsFollower(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0] == jsonify_dict(
             workout_cycling_user_2.serialize(user=user_1)
         )
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_level',
+        "input_desc,input_workout_level",
         [
-            ('workout visibility: follower', VisibilityLevel.FOLLOWERS),
-            ('workout visibility: public', VisibilityLevel.PUBLIC),
+            ("workout visibility: follower", VisibilityLevel.FOLLOWERS),
+            ("workout visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_followed_user_workout(
@@ -240,22 +240,22 @@ class TestGetWorkoutAsFollower(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0]['user'] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["user"] == jsonify_dict(
             user_2.serialize()
         )
         assert (
-            data['data']['workouts'][0]['map_visibility']
+            data["data"]["workouts"][0]["map_visibility"]
             == VisibilityLevel.PRIVATE.value
         )
         assert (
-            data['data']['workouts'][0]['workout_visibility']
+            data["data"]["workouts"][0]["workout_visibility"]
             == input_workout_level
         )
 
@@ -278,7 +278,7 @@ class TestGetWorkoutAsFollower(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -295,11 +295,11 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['workouts']) == 0
+        assert len(data["data"]["workouts"]) == 0
 
     def test_it_returns_404_when_workout_is_suspended_and_no_user_comments(
         self,
@@ -324,11 +324,11 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['workouts']) == 0
+        assert len(data["data"]["workouts"]) == 0
 
     def test_it_returns_404_when_workout_is_suspended_and_auth_user_commented_workout(  # noqa
         self,
@@ -352,22 +352,22 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0] == jsonify_dict(
             workout_cycling_user_2.serialize(user=user_1)
         )
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_level',
+        "input_desc,input_workout_level",
         [
-            ('workout visibility: private', VisibilityLevel.PRIVATE),
-            ('workout visibility: follower', VisibilityLevel.FOLLOWERS),
+            ("workout visibility: private", VisibilityLevel.PRIVATE),
+            ("workout visibility: follower", VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_it_returns_404_when_workout_visibility_is_not_public(
@@ -387,11 +387,11 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['workouts']) == 0
+        assert len(data["data"]["workouts"]) == 0
 
     def test_it_returns_404_when_user_is_blocked_workout_owner(
         self,
@@ -409,11 +409,11 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['workouts']) == 0
+        assert len(data["data"]["workouts"]) == 0
 
     def test_it_returns_another_user_workout_when_visibility_is_public(
         self,
@@ -430,26 +430,26 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0]['user'] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["user"] == jsonify_dict(
             user_2.serialize()
         )
         assert (
-            data['data']['workouts'][0]['map_visibility']
+            data["data"]["workouts"][0]["map_visibility"]
             == VisibilityLevel.PRIVATE.value
         )
         assert (
-            data['data']['workouts'][0]['analysis_visibility']
+            data["data"]["workouts"][0]["analysis_visibility"]
             == VisibilityLevel.PRIVATE.value
         )
         assert (
-            data['data']['workouts'][0]['workout_visibility']
+            data["data"]["workouts"][0]["workout_visibility"]
             == VisibilityLevel.PUBLIC.value
         )
 
@@ -470,7 +470,7 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -488,7 +488,7 @@ class TestGetWorkoutAsUnauthenticatedUser(GetWorkoutTestCase):
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['workouts']) == 0
+        assert len(data["data"]["workouts"]) == 0
 
     def test_it_returns_404_when_workout_is_suspended(
         self,
@@ -508,13 +508,13 @@ class TestGetWorkoutAsUnauthenticatedUser(GetWorkoutTestCase):
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['workouts']) == 0
+        assert len(data["data"]["workouts"]) == 0
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_level',
+        "input_desc,input_workout_level",
         [
-            ('workout visibility: private', VisibilityLevel.PRIVATE),
-            ('workout visibility: follower', VisibilityLevel.FOLLOWERS),
+            ("workout visibility: private", VisibilityLevel.PRIVATE),
+            ("workout visibility: follower", VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_it_returns_404_when_workout_visibility_is_not_public(
@@ -534,7 +534,7 @@ class TestGetWorkoutAsUnauthenticatedUser(GetWorkoutTestCase):
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['workouts']) == 0
+        assert len(data["data"]["workouts"]) == 0
 
     def test_it_returns_a_user_workout_when_visibility_is_public(
         self,
@@ -552,27 +552,27 @@ class TestGetWorkoutAsUnauthenticatedUser(GetWorkoutTestCase):
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert len(data['data']['workouts']) == 1
-        assert data['data']['workouts'][0]['user'] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["user"] == jsonify_dict(
             user_1.serialize()
         )
         assert (
-            data['data']['workouts'][0]['map_visibility']
+            data["data"]["workouts"][0]["map_visibility"]
             == VisibilityLevel.PRIVATE.value
         )
         assert (
-            data['data']['workouts'][0]['analysis_visibility']
+            data["data"]["workouts"][0]["analysis_visibility"]
             == VisibilityLevel.PRIVATE.value
         )
         assert (
-            data['data']['workouts'][0]['workout_visibility']
+            data["data"]["workouts"][0]["workout_visibility"]
             == VisibilityLevel.PUBLIC.value
         )
 
 
 class GetWorkoutGpxTestCase(WorkoutApiTestCaseMixin):
-    route = '/api/workouts/{workout_uuid}/gpx'
+    route = "/api/workouts/{workout_uuid}/gpx"
 
 
 class TestGetWorkoutGpxAsWorkoutOwner(GetWorkoutGpxTestCase):
@@ -589,16 +589,16 @@ class TestGetWorkoutGpxAsWorkoutOwner(GetWorkoutGpxTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 404
         data = json.loads(response.data.decode())
-        assert 'not found' in data['status']
+        assert "not found" in data["status"]
         assert (
-            'no gpx file for this workout (id: '
-            f'{workout_cycling_user_1.short_id})'
-        ) in data['message']
+            "no gpx file for this workout (id: "
+            f"{workout_cycling_user_1.short_id})"
+        ) in data["message"]
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -608,20 +608,20 @@ class TestGetWorkoutGpxAsWorkoutOwner(GetWorkoutGpxTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         gpx_content = self.random_string()
-        workout_cycling_user_1.gpx = 'file.gpx'
+        workout_cycling_user_1.gpx = "file.gpx"
         user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
         with patch(
-            'builtins.open', new_callable=mock_open, read_data=gpx_content
+            "builtins.open", new_callable=mock_open, read_data=gpx_content
         ):
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         self.assert_403(response)
@@ -634,24 +634,24 @@ class TestGetWorkoutGpxAsWorkoutOwner(GetWorkoutGpxTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         gpx_content = self.random_string()
-        workout_cycling_user_1.gpx = 'file.gpx'
+        workout_cycling_user_1.gpx = "file.gpx"
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
         with patch(
-            'builtins.open', new_callable=mock_open, read_data=gpx_content
+            "builtins.open", new_callable=mock_open, read_data=gpx_content
         ):
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['gpx'] == gpx_content
+        assert "success" in data["status"]
+        assert data["data"]["gpx"] == gpx_content
 
 
 class TestGetWorkoutGpxAsFollower(
@@ -676,7 +676,7 @@ class TestGetWorkoutGpxAsFollower(
             app, user_1.email
         )
         with patch(
-            'builtins.open',
+            "builtins.open",
             new_callable=mock_open,
             read_data=self.random_string(),
         ):
@@ -684,19 +684,19 @@ class TestGetWorkoutGpxAsFollower(
                 self.route.format(
                     workout_uuid=workout_cycling_user_2.short_id
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         self.assert_404_with_message(
             response,
-            f'workout not found (id: {workout_cycling_user_2.short_id})',
+            f"workout not found (id: {workout_cycling_user_2.short_id})",
         )
 
     @pytest.mark.parametrize(
-        'input_desc,input_map_visibility',
+        "input_desc,input_map_visibility",
         [
-            ('map visibility: followers_only', VisibilityLevel.FOLLOWERS),
-            ('map visibility: public', VisibilityLevel.PUBLIC),
+            ("map visibility: followers_only", VisibilityLevel.FOLLOWERS),
+            ("map visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_followed_user_workout_gpx(
@@ -721,19 +721,19 @@ class TestGetWorkoutGpxAsFollower(
             app, user_1.email
         )
         with patch(
-            'builtins.open', new_callable=mock_open, read_data=gpx_content
+            "builtins.open", new_callable=mock_open, read_data=gpx_content
         ):
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_2.short_id
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['gpx'] == gpx_content
+        assert "success" in data["status"]
+        assert data["data"]["gpx"] == gpx_content
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -757,13 +757,13 @@ class TestGetWorkoutGpxAsFollower(
             app, user_1.email
         )
         with patch(
-            'builtins.open', new_callable=mock_open, read_data=gpx_content
+            "builtins.open", new_callable=mock_open, read_data=gpx_content
         ):
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_2.short_id
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         self.assert_403(response)
@@ -782,20 +782,20 @@ class TestGetWorkoutGpxAsUser(
 
         response = client.get(
             self.route.format(workout_uuid=random_short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 404
         data = json.loads(response.data.decode())
-        assert 'not found' in data['status']
-        assert f'workout not found (id: {random_short_id})' in data['message']
-        assert data['data']['gpx'] == ''
+        assert "not found" in data["status"]
+        assert f"workout not found (id: {random_short_id})" in data["message"]
+        assert data["data"]["gpx"] == ""
 
     @pytest.mark.parametrize(
-        'input_desc,input_map_visibility',
+        "input_desc,input_map_visibility",
         [
-            ('map visibility: private', VisibilityLevel.PRIVATE),
-            ('map visibility: followers_only', VisibilityLevel.FOLLOWERS),
+            ("map visibility: private", VisibilityLevel.PRIVATE),
+            ("map visibility: followers_only", VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_it_returns_404_when_map_visibility_is_not_public(
@@ -815,7 +815,7 @@ class TestGetWorkoutGpxAsUser(
             app, user_1.email
         )
         with patch(
-            'builtins.open',
+            "builtins.open",
             new_callable=mock_open,
             read_data=self.random_string(),
         ):
@@ -823,12 +823,12 @@ class TestGetWorkoutGpxAsUser(
                 self.route.format(
                     workout_uuid=workout_cycling_user_2.short_id
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         self.assert_404_with_message(
             response,
-            f'workout not found (id: {workout_cycling_user_2.short_id})',
+            f"workout not found (id: {workout_cycling_user_2.short_id})",
         )
 
     def test_it_returns_gpx_when_map_visibility_is_public(
@@ -847,19 +847,19 @@ class TestGetWorkoutGpxAsUser(
             app, user_1.email
         )
         with patch(
-            'builtins.open', new_callable=mock_open, read_data=gpx_content
+            "builtins.open", new_callable=mock_open, read_data=gpx_content
         ):
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_2.short_id
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['gpx'] == gpx_content
+        assert "success" in data["status"]
+        assert data["data"]["gpx"] == gpx_content
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -879,13 +879,13 @@ class TestGetWorkoutGpxAsUser(
             app, user_1.email
         )
         with patch(
-            'builtins.open', new_callable=mock_open, read_data=gpx_content
+            "builtins.open", new_callable=mock_open, read_data=gpx_content
         ):
             response = client.get(
                 self.route.format(
                     workout_uuid=workout_cycling_user_2.short_id
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         self.assert_403(response)
@@ -905,15 +905,15 @@ class TestGetWorkoutGpxAsUnauthenticatedUser(
         )
 
         data = self.assert_404_with_message(
-            response, f'workout not found (id: {random_short_id})'
+            response, f"workout not found (id: {random_short_id})"
         )
-        assert data['data']['gpx'] == ''
+        assert data["data"]["gpx"] == ""
 
     @pytest.mark.parametrize(
-        'input_desc,input_map_visibility',
+        "input_desc,input_map_visibility",
         [
-            ('map visibility: private', VisibilityLevel.PRIVATE),
-            ('map visibility: followers_only', VisibilityLevel.FOLLOWERS),
+            ("map visibility: private", VisibilityLevel.PRIVATE),
+            ("map visibility: followers_only", VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_it_returns_404_when_map_visibility_is_not_public(
@@ -930,7 +930,7 @@ class TestGetWorkoutGpxAsUnauthenticatedUser(
         )
         client = app.test_client()
         with patch(
-            'builtins.open',
+            "builtins.open",
             new_callable=mock_open,
             read_data=self.random_string(),
         ):
@@ -942,7 +942,7 @@ class TestGetWorkoutGpxAsUnauthenticatedUser(
 
         self.assert_404_with_message(
             response,
-            f'workout not found (id: {workout_cycling_user_1.short_id})',
+            f"workout not found (id: {workout_cycling_user_1.short_id})",
         )
 
     def test_it_returns_gpx_when_map_visibility_is_public(
@@ -958,7 +958,7 @@ class TestGetWorkoutGpxAsUnauthenticatedUser(
         )
         client = app.test_client()
         with patch(
-            'builtins.open', new_callable=mock_open, read_data=gpx_content
+            "builtins.open", new_callable=mock_open, read_data=gpx_content
         ):
             response = client.get(
                 self.route.format(
@@ -968,12 +968,12 @@ class TestGetWorkoutGpxAsUnauthenticatedUser(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['gpx'] == gpx_content
+        assert "success" in data["status"]
+        assert data["data"]["gpx"] == gpx_content
 
 
 class GetWorkoutChartDataTestCase(WorkoutApiTestCaseMixin):
-    route = '/api/workouts/{workout_uuid}/chart_data'
+    route = "/api/workouts/{workout_uuid}/chart_data"
 
 
 class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
@@ -991,15 +991,15 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 404
-        assert 'not found' in data['status']
+        assert "not found" in data["status"]
         assert (
-            f'no gpx file for this workout (id: {workout_short_id})'
-            in data['message']
+            f"no gpx file for this workout (id: {workout_short_id})"
+            in data["message"]
         )
 
     def test_it_returns_500_if_a_workout_has_invalid_gpx_pathname(
@@ -1009,14 +1009,14 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.gpx = 'some path'
+        workout_cycling_user_1.gpx = "some path"
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_500(response)
@@ -1032,11 +1032,11 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
             app, user_1.email
         )
         chart_data: List = []
-        workout_cycling_user_1.gpx = 'file.gpx'
+        workout_cycling_user_1.gpx = "file.gpx"
         with (
-            patch('builtins.open', new_callable=mock_open),
+            patch("builtins.open", new_callable=mock_open),
             patch(
-                'fittrackee.workouts.workouts.get_chart_data',
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -1044,13 +1044,13 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['chart_data'] == chart_data
+        assert "success" in data["status"]
+        assert data["data"]["chart_data"] == chart_data
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -1059,7 +1059,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.gpx = 'file.gpx'
+        workout_cycling_user_1.gpx = "file.gpx"
         user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1067,7 +1067,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         )
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -1098,19 +1098,19 @@ class TestGetWorkoutChartDataAsFollower(
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
             response,
-            f'workout not found (id: {workout_cycling_user_2.short_id})',
+            f"workout not found (id: {workout_cycling_user_2.short_id})",
         )
 
     @pytest.mark.parametrize(
-        'input_desc,input_analysis_visibility',
+        "input_desc,input_analysis_visibility",
         [
-            ('analysis visibility: followers_only', VisibilityLevel.FOLLOWERS),
-            ('analysis visibility: public', VisibilityLevel.PUBLIC),
+            ("analysis visibility: followers_only", VisibilityLevel.FOLLOWERS),
+            ("analysis visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_chart_data_when_visibile_to_follower(
@@ -1135,11 +1135,11 @@ class TestGetWorkoutChartDataAsFollower(
             app, user_1.email
         )
         chart_data: List = []
-        workout_cycling_user_2.gpx = 'file.gpx'
+        workout_cycling_user_2.gpx = "file.gpx"
         with (
-            patch('builtins.open', new_callable=mock_open),
+            patch("builtins.open", new_callable=mock_open),
             patch(
-                'fittrackee.workouts.workouts.get_chart_data',
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -1147,13 +1147,13 @@ class TestGetWorkoutChartDataAsFollower(
                 self.route.format(
                     workout_uuid=workout_cycling_user_2.short_id
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['chart_data'] == chart_data
+        assert "success" in data["status"]
+        assert data["data"]["chart_data"] == chart_data
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -1164,7 +1164,7 @@ class TestGetWorkoutChartDataAsFollower(
         workout_cycling_user_2: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        workout_cycling_user_2.gpx = 'file.gpx'
+        workout_cycling_user_2.gpx = "file.gpx"
         self.init_test_data_for_follower(
             workout_cycling_user_2,
             analysis_visibility=VisibilityLevel.FOLLOWERS,
@@ -1179,7 +1179,7 @@ class TestGetWorkoutChartDataAsFollower(
         )
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -1198,19 +1198,19 @@ class TestGetWorkoutChartDataAsUser(
 
         response = client.get(
             self.route.format(workout_uuid=random_short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = self.assert_404_with_message(
-            response, f'workout not found (id: {random_short_id})'
+            response, f"workout not found (id: {random_short_id})"
         )
-        assert data['data']['chart_data'] == ''
+        assert data["data"]["chart_data"] == ""
 
     @pytest.mark.parametrize(
-        'input_desc,input_analysis_visibility',
+        "input_desc,input_analysis_visibility",
         [
-            ('analysis visibility: private', VisibilityLevel.PRIVATE),
-            ('analysis visibility: followers_only', VisibilityLevel.FOLLOWERS),
+            ("analysis visibility: private", VisibilityLevel.PRIVATE),
+            ("analysis visibility: followers_only", VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_it_returns_404_when_analysis_visibility_is_not_public(
@@ -1234,12 +1234,12 @@ class TestGetWorkoutChartDataAsUser(
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
             response,
-            f'workout not found (id: {workout_cycling_user_2.short_id})',
+            f"workout not found (id: {workout_cycling_user_2.short_id})",
         )
 
     def test_it_returns_chart_data_when_analysis_visibility_is_public(
@@ -1259,11 +1259,11 @@ class TestGetWorkoutChartDataAsUser(
             app, user_1.email
         )
         chart_data: List = []
-        workout_cycling_user_2.gpx = 'file.gpx'
+        workout_cycling_user_2.gpx = "file.gpx"
         with (
-            patch('builtins.open', new_callable=mock_open),
+            patch("builtins.open", new_callable=mock_open),
             patch(
-                'fittrackee.workouts.workouts.get_chart_data',
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -1271,13 +1271,13 @@ class TestGetWorkoutChartDataAsUser(
                 self.route.format(
                     workout_uuid=workout_cycling_user_2.short_id
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['chart_data'] == chart_data
+        assert "success" in data["status"]
+        assert data["data"]["chart_data"] == chart_data
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -1295,13 +1295,13 @@ class TestGetWorkoutChartDataAsUser(
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        workout_cycling_user_2.gpx = 'file.gpx'
+        workout_cycling_user_2.gpx = "file.gpx"
         user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -1321,15 +1321,15 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         )
 
         data = self.assert_404_with_message(
-            response, f'workout not found (id: {random_short_id})'
+            response, f"workout not found (id: {random_short_id})"
         )
-        assert data['data']['chart_data'] == ''
+        assert data["data"]["chart_data"] == ""
 
     @pytest.mark.parametrize(
-        'input_desc,input_analysis_visibility',
+        "input_desc,input_analysis_visibility",
         [
-            ('analysis visibility: private', VisibilityLevel.PRIVATE),
-            ('analysis visibility: followers_only', VisibilityLevel.FOLLOWERS),
+            ("analysis visibility: private", VisibilityLevel.PRIVATE),
+            ("analysis visibility: followers_only", VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_it_returns_404_when_map_visibility_is_not_public(
@@ -1354,7 +1354,7 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
 
         self.assert_404_with_message(
             response,
-            f'workout not found (id: {workout_cycling_user_1.short_id})',
+            f"workout not found (id: {workout_cycling_user_1.short_id})",
         )
 
     def test_it_returns_chart_data_when_map_visibility_is_public(
@@ -1372,9 +1372,9 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         )
         client = app.test_client()
         with (
-            patch('builtins.open', new_callable=mock_open),
+            patch("builtins.open", new_callable=mock_open),
             patch(
-                'fittrackee.workouts.workouts.get_chart_data',
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -1386,12 +1386,12 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['chart_data'] == chart_data
+        assert "success" in data["status"]
+        assert data["data"]["chart_data"] == chart_data
 
 
 class GetWorkoutSegmentGpxTestCase(WorkoutApiTestCaseMixin):
-    route = '/api/workouts/{workout_uuid}/gpx/segment/{segment_id}'
+    route = "/api/workouts/{workout_uuid}/gpx/segment/{segment_id}"
 
 
 class TestGetWorkoutSegmentGpxAsWorkoutOwner(GetWorkoutSegmentGpxTestCase):
@@ -1411,11 +1411,11 @@ class TestGetWorkoutSegmentGpxAsWorkoutOwner(GetWorkoutSegmentGpxTestCase):
             self.route.format(
                 workout_uuid=workout_cycling_user_1.short_id, segment_id=1
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
-            response, f'no gpx file for this workout (id: {workout_short_id})'
+            response, f"no gpx file for this workout (id: {workout_short_id})"
         )
 
     def test_it_returns_404_if_segment_does_not_exist(
@@ -1427,12 +1427,12 @@ class TestGetWorkoutSegmentGpxAsWorkoutOwner(GetWorkoutSegmentGpxTestCase):
         workout_cycling_user_1_segment: WorkoutSegment,
         gpx_file_with_segments: str,
     ) -> None:
-        workout_cycling_user_1.gpx = 'file.gpx'
+        workout_cycling_user_1.gpx = "file.gpx"
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
         with patch(
-            'builtins.open',
+            "builtins.open",
             new_callable=mock_open,
             read_data=gpx_file_with_segments,
         ):
@@ -1441,7 +1441,7 @@ class TestGetWorkoutSegmentGpxAsWorkoutOwner(GetWorkoutSegmentGpxTestCase):
                     workout_uuid=workout_cycling_user_1.short_id,
                     segment_id=100,
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         self.assert_404_with_message(response, "No segment with id '100'")
@@ -1455,12 +1455,12 @@ class TestGetWorkoutSegmentGpxAsWorkoutOwner(GetWorkoutSegmentGpxTestCase):
         workout_cycling_user_1_segment: WorkoutSegment,
         gpx_file_with_segments: str,
     ) -> None:
-        workout_cycling_user_1.gpx = 'file.gpx'
+        workout_cycling_user_1.gpx = "file.gpx"
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
         with patch(
-            'builtins.open',
+            "builtins.open",
             new_callable=mock_open,
             read_data=gpx_file_with_segments,
         ):
@@ -1468,13 +1468,13 @@ class TestGetWorkoutSegmentGpxAsWorkoutOwner(GetWorkoutSegmentGpxTestCase):
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert '<trkpt lat="44.68095" lon="6.07367">' in data['data']['gpx']
+        assert "success" in data["status"]
+        assert '<trkpt lat="44.68095" lon="6.07367">' in data["data"]["gpx"]
 
     def test_it_returns_403_when_user_is_suspended(
         self,
@@ -1485,7 +1485,7 @@ class TestGetWorkoutSegmentGpxAsWorkoutOwner(GetWorkoutSegmentGpxTestCase):
         workout_cycling_user_1_segment: WorkoutSegment,
         gpx_file_with_segments: str,
     ) -> None:
-        workout_cycling_user_1.gpx = 'file.gpx'
+        workout_cycling_user_1.gpx = "file.gpx"
         user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1496,7 +1496,7 @@ class TestGetWorkoutSegmentGpxAsWorkoutOwner(GetWorkoutSegmentGpxTestCase):
             self.route.format(
                 workout_uuid=workout_cycling_user_1.short_id, segment_id=1
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -1526,7 +1526,7 @@ class TestGetWorkoutSegmentGpxAsFollower(
             app, user_2.email
         )
         with patch(
-            'builtins.open',
+            "builtins.open",
             new_callable=mock_open,
             read_data=gpx_file_with_segments,
         ):
@@ -1534,20 +1534,20 @@ class TestGetWorkoutSegmentGpxAsFollower(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         data = self.assert_404_with_message(
             response,
-            f'workout not found (id: {workout_cycling_user_1.short_id})',
+            f"workout not found (id: {workout_cycling_user_1.short_id})",
         )
-        assert data['data']['gpx'] == ''
+        assert data["data"]["gpx"] == ""
 
     @pytest.mark.parametrize(
-        'input_desc,input_map_visibility',
+        "input_desc,input_map_visibility",
         [
-            ('map visibility: followers_only', VisibilityLevel.FOLLOWERS),
-            ('map visibility: public', VisibilityLevel.PUBLIC),
+            ("map visibility: followers_only", VisibilityLevel.FOLLOWERS),
+            ("map visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_segment_gpx_for_followed_user_workout(
@@ -1573,7 +1573,7 @@ class TestGetWorkoutSegmentGpxAsFollower(
             app, user_2.email
         )
         with patch(
-            'builtins.open',
+            "builtins.open",
             new_callable=mock_open,
             read_data=gpx_file_with_segments,
         ):
@@ -1581,13 +1581,13 @@ class TestGetWorkoutSegmentGpxAsFollower(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert '<trkpt lat="44.68095" lon="6.07367">' in data['data']['gpx']
+        assert "success" in data["status"]
+        assert '<trkpt lat="44.68095" lon="6.07367">' in data["data"]["gpx"]
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -1613,7 +1613,7 @@ class TestGetWorkoutSegmentGpxAsFollower(
         )
 
         with patch(
-            'builtins.open',
+            "builtins.open",
             new_callable=mock_open,
             read_data=gpx_file_with_segments,
         ):
@@ -1621,7 +1621,7 @@ class TestGetWorkoutSegmentGpxAsFollower(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         self.assert_403(response)
@@ -1640,19 +1640,19 @@ class TestGetWorkoutSegmentGpxAsUser(
 
         response = client.get(
             self.route.format(workout_uuid=random_short_id, segment_id=1),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = self.assert_404_with_message(
-            response, f'workout not found (id: {random_short_id})'
+            response, f"workout not found (id: {random_short_id})"
         )
-        assert data['data']['gpx'] == ''
+        assert data["data"]["gpx"] == ""
 
     @pytest.mark.parametrize(
-        'input_desc,input_map_visibility',
+        "input_desc,input_map_visibility",
         [
-            ('map visibility: private', VisibilityLevel.PRIVATE),
-            ('map visibility: followers_only', VisibilityLevel.FOLLOWERS),
+            ("map visibility: private", VisibilityLevel.PRIVATE),
+            ("map visibility: followers_only", VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_it_returns_404_when_map_visibility_is_not_public(
@@ -1674,7 +1674,7 @@ class TestGetWorkoutSegmentGpxAsUser(
             app, user_2.email
         )
         with patch(
-            'builtins.open',
+            "builtins.open",
             new_callable=mock_open,
             read_data=gpx_file_with_segments,
         ):
@@ -1682,12 +1682,12 @@ class TestGetWorkoutSegmentGpxAsUser(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         self.assert_404_with_message(
             response,
-            f'workout not found (id: {workout_cycling_user_1.short_id})',
+            f"workout not found (id: {workout_cycling_user_1.short_id})",
         )
 
     def test_it_returns_segment_gpx_when_map_visibility_is_public(
@@ -1707,7 +1707,7 @@ class TestGetWorkoutSegmentGpxAsUser(
             app, user_2.email
         )
         with patch(
-            'builtins.open',
+            "builtins.open",
             new_callable=mock_open,
             read_data=gpx_file_with_segments,
         ):
@@ -1715,13 +1715,13 @@ class TestGetWorkoutSegmentGpxAsUser(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert '<trkpt lat="44.68095" lon="6.07367">' in data['data']['gpx']
+        assert "success" in data["status"]
+        assert '<trkpt lat="44.68095" lon="6.07367">' in data["data"]["gpx"]
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -1746,7 +1746,7 @@ class TestGetWorkoutSegmentGpxAsUser(
             self.route.format(
                 workout_uuid=workout_cycling_user_1.short_id, segment_id=1
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -1766,15 +1766,15 @@ class TestGetWorkoutSegmentGpxAsUnauthenticatedUser(
         )
 
         data = self.assert_404_with_message(
-            response, f'workout not found (id: {random_short_id})'
+            response, f"workout not found (id: {random_short_id})"
         )
-        assert data['data']['gpx'] == ''
+        assert data["data"]["gpx"] == ""
 
     @pytest.mark.parametrize(
-        'input_desc,input_map_visibility',
+        "input_desc,input_map_visibility",
         [
-            ('map visibility: private', VisibilityLevel.PRIVATE),
-            ('map visibility: followers_only', VisibilityLevel.FOLLOWERS),
+            ("map visibility: private", VisibilityLevel.PRIVATE),
+            ("map visibility: followers_only", VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_it_returns_404_when_map_visibility_is_not_public(
@@ -1793,7 +1793,7 @@ class TestGetWorkoutSegmentGpxAsUnauthenticatedUser(
         )
         client = app.test_client()
         with patch(
-            'builtins.open',
+            "builtins.open",
             new_callable=mock_open,
             read_data=gpx_file_with_segments,
         ):
@@ -1805,9 +1805,9 @@ class TestGetWorkoutSegmentGpxAsUnauthenticatedUser(
 
         data = self.assert_404_with_message(
             response,
-            f'workout not found (id: {workout_cycling_user_1.short_id})',
+            f"workout not found (id: {workout_cycling_user_1.short_id})",
         )
-        assert data['data']['gpx'] == ''
+        assert data["data"]["gpx"] == ""
 
     def test_it_returns_segment_gpx_when_map_visibility_is_public(
         self,
@@ -1823,7 +1823,7 @@ class TestGetWorkoutSegmentGpxAsUnauthenticatedUser(
         )
         client = app.test_client()
         with patch(
-            'builtins.open',
+            "builtins.open",
             new_callable=mock_open,
             read_data=gpx_file_with_segments,
         ):
@@ -1835,12 +1835,12 @@ class TestGetWorkoutSegmentGpxAsUnauthenticatedUser(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert '<trkpt lat="44.68095" lon="6.07367">' in data['data']['gpx']
+        assert "success" in data["status"]
+        assert '<trkpt lat="44.68095" lon="6.07367">' in data["data"]["gpx"]
 
 
 class GetWorkoutSegmentChartDataTestCase(WorkoutApiTestCaseMixin):
-    route = '/api/workouts/{workout_uuid}/chart_data/segment/{segment_id}'
+    route = "/api/workouts/{workout_uuid}/chart_data/segment/{segment_id}"
 
 
 class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
@@ -1860,11 +1860,11 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
 
         response = client.get(
             self.route.format(workout_uuid=workout_short_id, segment_id=1),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
-            response, f'no gpx file for this workout (id: {workout_short_id})'
+            response, f"no gpx file for this workout (id: {workout_short_id})"
         )
 
     def test_it_returns_500_if_workout_has_invalid_gpx_pathname(
@@ -1874,7 +1874,7 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.gpx = 'some path'
+        workout_cycling_user_1.gpx = "some path"
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1883,7 +1883,7 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
             self.route.format(
                 workout_uuid=workout_cycling_user_1.short_id, segment_id=1
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_500(response)
@@ -1900,11 +1900,11 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
             app, user_1.email
         )
         chart_data: List = []
-        workout_cycling_user_1.gpx = 'file.gpx'
+        workout_cycling_user_1.gpx = "file.gpx"
         with (
-            patch('builtins.open', new_callable=mock_open),
+            patch("builtins.open", new_callable=mock_open),
             patch(
-                'fittrackee.workouts.workouts.get_chart_data',
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -1912,13 +1912,13 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['chart_data'] == chart_data
+        assert "success" in data["status"]
+        assert data["data"]["chart_data"] == chart_data
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -1938,7 +1938,7 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
             self.route.format(
                 workout_uuid=workout_cycling_user_1.short_id, segment_id=1
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -1972,19 +1972,19 @@ class TestGetWorkoutSegmentChartDataAsFollower(
             self.route.format(
                 workout_uuid=workout_cycling_user_1.short_id, segment_id=1
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
             response,
-            f'workout not found (id: {workout_cycling_user_1.short_id})',
+            f"workout not found (id: {workout_cycling_user_1.short_id})",
         )
 
     @pytest.mark.parametrize(
-        'input_desc,input_analysis_visibility',
+        "input_desc,input_analysis_visibility",
         [
-            ('analysis visibility: followers_only', VisibilityLevel.FOLLOWERS),
-            ('analysis visibility: public', VisibilityLevel.PUBLIC),
+            ("analysis visibility: followers_only", VisibilityLevel.FOLLOWERS),
+            ("analysis visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_returns_chart_data_for_follower_user_workout(
@@ -2010,11 +2010,11 @@ class TestGetWorkoutSegmentChartDataAsFollower(
             app, user_2.email
         )
         chart_data: List = []
-        workout_cycling_user_1.gpx = 'file.gpx'
+        workout_cycling_user_1.gpx = "file.gpx"
         with (
-            patch('builtins.open', new_callable=mock_open),
+            patch("builtins.open", new_callable=mock_open),
             patch(
-                'fittrackee.workouts.workouts.get_chart_data',
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -2022,13 +2022,13 @@ class TestGetWorkoutSegmentChartDataAsFollower(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['chart_data'] == chart_data
+        assert "success" in data["status"]
+        assert data["data"]["chart_data"] == chart_data
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -2040,7 +2040,7 @@ class TestGetWorkoutSegmentChartDataAsFollower(
         workout_cycling_user_1_segment: WorkoutSegment,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        workout_cycling_user_1.gpx = 'file.gpx'
+        workout_cycling_user_1.gpx = "file.gpx"
         self.init_test_data_for_follower(
             workout_cycling_user_1,
             analysis_visibility=VisibilityLevel.FOLLOWERS,
@@ -2056,9 +2056,9 @@ class TestGetWorkoutSegmentChartDataAsFollower(
         chart_data: List = []
 
         with (
-            patch('builtins.open', new_callable=mock_open),
+            patch("builtins.open", new_callable=mock_open),
             patch(
-                'fittrackee.workouts.workouts.get_chart_data',
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -2066,7 +2066,7 @@ class TestGetWorkoutSegmentChartDataAsFollower(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         self.assert_403(response)
@@ -2085,19 +2085,19 @@ class TestGetWorkoutSegmentChartDataAsUser(
 
         response = client.get(
             self.route.format(workout_uuid=random_short_id, segment_id=1),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = self.assert_404_with_message(
-            response, f'workout not found (id: {random_short_id})'
+            response, f"workout not found (id: {random_short_id})"
         )
-        assert data['data']['chart_data'] == ''
+        assert data["data"]["chart_data"] == ""
 
     @pytest.mark.parametrize(
-        'input_desc,input_analysis_visibility',
+        "input_desc,input_analysis_visibility",
         [
-            ('analysis visibility: private', VisibilityLevel.PRIVATE),
-            ('analysis visibility: followers_only', VisibilityLevel.FOLLOWERS),
+            ("analysis visibility: private", VisibilityLevel.PRIVATE),
+            ("analysis visibility: followers_only", VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_it_returns_404_when_analysis_visibility_is_not_public(
@@ -2124,12 +2124,12 @@ class TestGetWorkoutSegmentChartDataAsUser(
             self.route.format(
                 workout_uuid=workout_cycling_user_1.short_id, segment_id=1
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
             response,
-            f'workout not found (id: {workout_cycling_user_1.short_id})',
+            f"workout not found (id: {workout_cycling_user_1.short_id})",
         )
 
     def test_it_returns_chart_data_when_analysis_visibility_is_public(
@@ -2150,11 +2150,11 @@ class TestGetWorkoutSegmentChartDataAsUser(
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
-        workout_cycling_user_1.gpx = 'file.gpx'
+        workout_cycling_user_1.gpx = "file.gpx"
         with (
-            patch('builtins.open', new_callable=mock_open),
+            patch("builtins.open", new_callable=mock_open),
             patch(
-                'fittrackee.workouts.workouts.get_chart_data',
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -2162,13 +2162,13 @@ class TestGetWorkoutSegmentChartDataAsUser(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['chart_data'] == chart_data
+        assert "success" in data["status"]
+        assert data["data"]["chart_data"] == chart_data
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -2185,16 +2185,16 @@ class TestGetWorkoutSegmentChartDataAsUser(
             analysis_visibility=VisibilityLevel.PUBLIC,
             map_visibility=VisibilityLevel.PRIVATE,
         )
-        workout_cycling_user_1.gpx = 'file.gpx'
+        workout_cycling_user_1.gpx = "file.gpx"
         user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
         with (
-            patch('builtins.open', new_callable=mock_open),
+            patch("builtins.open", new_callable=mock_open),
             patch(
-                'fittrackee.workouts.workouts.get_chart_data',
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -2202,7 +2202,7 @@ class TestGetWorkoutSegmentChartDataAsUser(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         self.assert_403(response)
@@ -2222,15 +2222,15 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
         )
 
         data = self.assert_404_with_message(
-            response, f'workout not found (id: {random_short_id})'
+            response, f"workout not found (id: {random_short_id})"
         )
-        assert data['data']['chart_data'] == ''
+        assert data["data"]["chart_data"] == ""
 
     @pytest.mark.parametrize(
-        'input_desc,input_analysis_visibility',
+        "input_desc,input_analysis_visibility",
         [
-            ('analysis visibility: private', VisibilityLevel.PRIVATE),
-            ('analysis visibility: followers_only', VisibilityLevel.FOLLOWERS),
+            ("analysis visibility: private", VisibilityLevel.PRIVATE),
+            ("analysis visibility: followers_only", VisibilityLevel.FOLLOWERS),
         ],
     )
     def test_it_returns_404_when_map_visibility_is_not_public(
@@ -2258,7 +2258,7 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
 
         self.assert_404_with_message(
             response,
-            f'workout not found (id: {workout_cycling_user_1.short_id})',
+            f"workout not found (id: {workout_cycling_user_1.short_id})",
         )
 
     def test_it_returns_chart_data_when_analysis_visibility_is_public(
@@ -2277,9 +2277,9 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
         )
         client = app.test_client()
         with (
-            patch('builtins.open', new_callable=mock_open),
+            patch("builtins.open", new_callable=mock_open),
             patch(
-                'fittrackee.workouts.workouts.get_chart_data',
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -2291,18 +2291,18 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['chart_data'] == chart_data
+        assert "success" in data["status"]
+        assert data["data"]["chart_data"] == chart_data
 
 
 class TestGetWorkoutMap(WorkoutApiTestCaseMixin):
     def test_it_returns_404_if_workout_has_no_map(self, app: Flask) -> None:
         client = app.test_client()
         response = client.get(
-            f'/api/workouts/map/{self.random_string()}',
+            f"/api/workouts/map/{self.random_string()}",
         )
 
-        self.assert_404_with_message(response, 'Map does not exist')
+        self.assert_404_with_message(response, "Map does not exist")
 
     def test_it_calls_send_from_directory_if_workout_has_map(
         self,
@@ -2317,16 +2317,16 @@ class TestGetWorkoutMap(WorkoutApiTestCaseMixin):
         workout_cycling_user_1.map = map_file_path
         client = app.test_client()
         with patch(
-            'fittrackee.workouts.workouts.send_from_directory',
-            return_value='file',
+            "fittrackee.workouts.workouts.send_from_directory",
+            return_value="file",
         ) as mock:
             response = client.get(
-                f'/api/workouts/map/{map_id}',
+                f"/api/workouts/map/{map_id}",
             )
 
         assert response.status_code == 200
         mock.assert_called_once_with(
-            app.config['UPLOAD_FOLDER'], map_file_path
+            app.config["UPLOAD_FOLDER"], map_file_path
         )
 
     def test_it_returns_404_if_map_file_not_found(
@@ -2344,26 +2344,26 @@ class TestGetWorkoutMap(WorkoutApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/workouts/map/{map_ip}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/workouts/map/{map_ip}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_message(response, 'Map file does not exist')
+        self.assert_404_with_message(response, "Map file does not exist")
 
 
 class TestWorkoutScope(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:read": True}.items(),
     )
     @pytest.mark.parametrize(
-        'endpoint',
+        "endpoint",
         [
-            '/api/workouts/{workout_short_id}',
-            '/api/workouts/{workout_short_id}/gpx',
-            '/api/workouts/{workout_short_id}/chart_data',
-            '/api/workouts/{workout_short_id}/gpx/segment/1',
-            '/api/workouts/{workout_short_id}/chart_data/segment/1',
+            "/api/workouts/{workout_short_id}",
+            "/api/workouts/{workout_short_id}/gpx",
+            "/api/workouts/{workout_short_id}/chart_data",
+            "/api/workouts/{workout_short_id}/gpx/segment/1",
+            "/api/workouts/{workout_short_id}/chart_data/segment/1",
         ],
     )
     def test_expected_scopes_are_defined(
@@ -2387,15 +2387,15 @@ class TestWorkoutScope(WorkoutApiTestCaseMixin):
 
         response = client.get(
             endpoint.format(workout_short_id=workout_cycling_user_1.short_id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
 
 
 class DownloadWorkoutGpxTestCase(WorkoutApiTestCaseMixin):
-    route = '/api/workouts/{workout_uuid}/gpx/download'
+    route = "/api/workouts/{workout_uuid}/gpx/download"
 
 
 class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
@@ -2412,10 +2412,10 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_message(response, 'no gpx file for workout')
+        self.assert_404_with_message(response, "no gpx file for workout")
 
     def test_it_calls_send_from_directory_if_workout_has_gpx(
         self,
@@ -2424,11 +2424,11 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        gpx_file_path = 'file.gpx'
-        workout_cycling_user_1.gpx = 'file.gpx'
+        gpx_file_path = "file.gpx"
+        workout_cycling_user_1.gpx = "file.gpx"
         with patch(
-            'fittrackee.workouts.workouts.send_from_directory',
-            return_value='file',
+            "fittrackee.workouts.workouts.send_from_directory",
+            return_value="file",
         ) as mock:
             client, auth_token = self.get_test_client_and_auth_token(
                 app, user_1.email
@@ -2438,13 +2438,13 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id
                 ),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         mock.assert_called_once_with(
-            app.config['UPLOAD_FOLDER'],
+            app.config["UPLOAD_FOLDER"],
             gpx_file_path,
-            mimetype='application/gpx+xml',
+            mimetype="application/gpx+xml",
             as_attachment=True,
         )
 
@@ -2455,7 +2455,7 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.gpx = 'file.gpx'
+        workout_cycling_user_1.gpx = "file.gpx"
         user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2464,14 +2464,14 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -2493,8 +2493,8 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -2511,7 +2511,7 @@ class TestDownloadWorkoutGpxAsFollower(DownloadWorkoutGpxTestCase):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.gpx = 'file.gpx'
+        workout_cycling_user_2.gpx = "file.gpx"
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_2.analysis_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_2.map_visibility = VisibilityLevel.PUBLIC
@@ -2521,12 +2521,12 @@ class TestDownloadWorkoutGpxAsFollower(DownloadWorkoutGpxTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
             response,
-            f'workout not found (id: {workout_cycling_user_2.short_id})',
+            f"workout not found (id: {workout_cycling_user_2.short_id})",
         )
 
 
@@ -2545,11 +2545,11 @@ class TestDownloadWorkoutGpxAsUser(
 
         response = client.get(
             self.route.format(workout_uuid=random_short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
-            response, f'workout not found (id: {random_short_id})'
+            response, f"workout not found (id: {random_short_id})"
         )
 
     def test_it_returns_404_for_another_user_workout(
@@ -2569,12 +2569,12 @@ class TestDownloadWorkoutGpxAsUser(
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
             response,
-            f'workout not found (id: {workout_cycling_user_2.short_id})',
+            f"workout not found (id: {workout_cycling_user_2.short_id})",
         )
 
 

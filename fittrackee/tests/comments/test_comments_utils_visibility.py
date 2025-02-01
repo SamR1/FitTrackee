@@ -10,18 +10,18 @@ from .mixins import CommentMixin
 
 class TestCanViewComment(CommentMixin):
     @pytest.mark.parametrize(
-        'input_description,input_text_visibility',
+        "input_description,input_text_visibility",
         [
             (
-                f'comment visibility: {VisibilityLevel.PRIVATE.value}',
+                f"comment visibility: {VisibilityLevel.PRIVATE.value}",
                 VisibilityLevel.PRIVATE,
             ),
             (
-                f'comment visibility: {VisibilityLevel.FOLLOWERS.value}',
+                f"comment visibility: {VisibilityLevel.FOLLOWERS.value}",
                 VisibilityLevel.FOLLOWERS,
             ),
             (
-                f'comment visibility: {VisibilityLevel.PUBLIC.value}',
+                f"comment visibility: {VisibilityLevel.PUBLIC.value}",
                 VisibilityLevel.PUBLIC,
             ),
         ],
@@ -42,7 +42,7 @@ class TestCanViewComment(CommentMixin):
             text_visibility=input_text_visibility,
         )
 
-        assert can_view(comment, 'text_visibility', user_1) is True
+        assert can_view(comment, "text_visibility", user_1) is True
 
     def test_follower_can_not_view_comment_when_private(
         self,
@@ -61,17 +61,17 @@ class TestCanViewComment(CommentMixin):
             text_visibility=VisibilityLevel.PRIVATE,
         )
 
-        assert can_view(comment, 'text_visibility', user_1) is False
+        assert can_view(comment, "text_visibility", user_1) is False
 
     @pytest.mark.parametrize(
-        'input_description,input_text_visibility',
+        "input_description,input_text_visibility",
         [
             (
-                f'comment visibility: {VisibilityLevel.FOLLOWERS.value}',
+                f"comment visibility: {VisibilityLevel.FOLLOWERS.value}",
                 VisibilityLevel.FOLLOWERS,
             ),
             (
-                f'comment visibility: {VisibilityLevel.PUBLIC.value}',
+                f"comment visibility: {VisibilityLevel.PUBLIC.value}",
                 VisibilityLevel.PUBLIC,
             ),
         ],
@@ -95,17 +95,17 @@ class TestCanViewComment(CommentMixin):
             text_visibility=input_text_visibility,
         )
 
-        assert can_view(comment, 'text_visibility', user_1) is True
+        assert can_view(comment, "text_visibility", user_1) is True
 
     @pytest.mark.parametrize(
-        'input_description,input_text_visibility',
+        "input_description,input_text_visibility",
         [
             (
-                f'comment visibility: {VisibilityLevel.PRIVATE.value}',
+                f"comment visibility: {VisibilityLevel.PRIVATE.value}",
                 VisibilityLevel.PRIVATE,
             ),
             (
-                f'comment visibility: {VisibilityLevel.FOLLOWERS.value}',
+                f"comment visibility: {VisibilityLevel.FOLLOWERS.value}",
                 VisibilityLevel.FOLLOWERS,
             ),
         ],
@@ -127,7 +127,7 @@ class TestCanViewComment(CommentMixin):
             text_visibility=input_text_visibility,
         )
 
-        assert can_view(comment, 'text_visibility', user_1) is False
+        assert can_view(comment, "text_visibility", user_1) is False
 
     def test_another_user_can_view_comment_when_private_and_user_mentioned(
         self,
@@ -145,7 +145,7 @@ class TestCanViewComment(CommentMixin):
             text_visibility=VisibilityLevel.PRIVATE,
         )
 
-        assert can_view(comment, 'text_visibility', user_1) is True
+        assert can_view(comment, "text_visibility", user_1) is True
 
     def test_another_user_can_view_comment_when_public(
         self,
@@ -162,7 +162,7 @@ class TestCanViewComment(CommentMixin):
             text_visibility=VisibilityLevel.PUBLIC,
         )
 
-        assert can_view(comment, 'text_visibility', user_1) is True
+        assert can_view(comment, "text_visibility", user_1) is True
 
     def test_another_user_can_not_view_comment_when_public_and_user_blocked(
         self,
@@ -180,17 +180,17 @@ class TestCanViewComment(CommentMixin):
         )
         user_2.blocks_user(user_1)
 
-        assert can_view(comment, 'text_visibility', user_1) is False
+        assert can_view(comment, "text_visibility", user_1) is False
 
     @pytest.mark.parametrize(
-        'input_description,input_text_visibility',
+        "input_description,input_text_visibility",
         [
             (
-                f'comment visibility: {VisibilityLevel.PRIVATE.value}',
+                f"comment visibility: {VisibilityLevel.PRIVATE.value}",
                 VisibilityLevel.PRIVATE,
             ),
             (
-                f'comment visibility: {VisibilityLevel.FOLLOWERS.value}',
+                f"comment visibility: {VisibilityLevel.FOLLOWERS.value}",
                 VisibilityLevel.FOLLOWERS,
             ),
         ],
@@ -212,7 +212,7 @@ class TestCanViewComment(CommentMixin):
             text_visibility=input_text_visibility,
         )
 
-        assert can_view(comment, 'text_visibility') is False
+        assert can_view(comment, "text_visibility") is False
 
     def test_comment_can_be_viewed_when_public_and_no_user_provided(
         self,
@@ -229,4 +229,4 @@ class TestCanViewComment(CommentMixin):
             text_visibility=VisibilityLevel.PUBLIC,
         )
 
-        assert can_view(comment, 'text_visibility') is True
+        assert can_view(comment, "text_visibility") is True

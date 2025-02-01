@@ -9,21 +9,21 @@ from .exceptions import InvalidOAuth2Scopes
 from .models import OAuth2Client
 
 VALID_SCOPES = [
-    'application:write',
-    'equipments:read',
-    'equipments:write',
-    'follow:read',
-    'follow:write',
-    'notifications:read',
-    'notifications:write',
-    'profile:read',
-    'profile:write',
-    'reports:read',
-    'reports:write',
-    'users:read',
-    'users:write',
-    'workouts:read',
-    'workouts:write',
+    "application:write",
+    "equipments:read",
+    "equipments:write",
+    "follow:read",
+    "follow:write",
+    "notifications:read",
+    "notifications:write",
+    "profile:read",
+    "profile:write",
+    "reports:read",
+    "reports:write",
+    "users:read",
+    "users:write",
+    "workouts:read",
+    "workouts:write",
 ]
 
 
@@ -43,7 +43,7 @@ def check_scope(scope: str) -> str:
     if not valid_scopes:
         raise InvalidOAuth2Scopes()
 
-    return ' '.join(valid_scopes)
+    return " ".join(valid_scopes)
 
 
 def create_oauth2_client(metadata: Dict, user: User) -> OAuth2Client:
@@ -55,14 +55,14 @@ def create_oauth2_client(metadata: Dict, user: User) -> OAuth2Client:
     Code challenge can be used if provided on authorization.
     """
     client_metadata = {
-        'client_name': metadata['client_name'],
-        'client_description': metadata.get('client_description'),
-        'client_uri': metadata['client_uri'],
-        'redirect_uris': metadata['redirect_uris'],
-        'scope': check_scope(metadata['scope']),
-        'grant_types': ['authorization_code', 'refresh_token'],
-        'response_types': ['code'],
-        'token_endpoint_auth_method': 'client_secret_post',
+        "client_name": metadata["client_name"],
+        "client_description": metadata.get("client_description"),
+        "client_uri": metadata["client_uri"],
+        "redirect_uris": metadata["redirect_uris"],
+        "scope": check_scope(metadata["scope"]),
+        "grant_types": ["authorization_code", "refresh_token"],
+        "response_types": ["code"],
+        "token_endpoint_auth_method": "client_secret_post",
     }
     client_id = gen_salt(24)
     client_id_issued_at = int(time())

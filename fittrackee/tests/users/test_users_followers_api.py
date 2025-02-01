@@ -30,8 +30,8 @@ class TestFollowersAsUnauthenticatedUser(ApiTestCaseMixin):
         client = app.test_client()
 
         response = client.get(
-            f'/api/users/{user_1.username}/followers',
-            content_type='application/json',
+            f"/api/users/{user_1.username}/followers",
+            content_type="application/json",
         )
 
         self.assert_401(response)
@@ -50,9 +50,9 @@ class TestFollowersAsSuspendedUser(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/users/{user_2.username}/followers',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_2.username}/followers",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -67,15 +67,15 @@ class TestFollowersAsUser(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{random_string()}/followers',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{random_string()}/followers",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 404
         data = json.loads(response.data.decode())
-        assert data['status'] == 'not found'
-        assert data['message'] == 'user does not exist'
+        assert data["status"] == "not found"
+        assert data["message"] == "user does not exist"
 
     def test_it_returns_empty_list_if_no_followers(
         self, app: Flask, user_1: User
@@ -85,15 +85,15 @@ class TestFollowersAsUser(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_1.username}/followers',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_1.username}/followers",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['data']['followers'] == []
+        assert data["status"] == "success"
+        assert data["data"]["followers"] == []
 
     def test_it_returns_followers(
         self,
@@ -115,19 +115,19 @@ class TestFollowersAsUser(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_1.username}/followers',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_1.username}/followers",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert len(data['data']['followers']) == 2
-        assert data['data']['followers'][0]['username'] == user_3.username
-        assert data['data']['followers'][1]['username'] == user_2.username
-        assert 'email' not in data['data']['followers'][0]
-        assert 'email' not in data['data']['followers'][1]
+        assert data["status"] == "success"
+        assert len(data["data"]["followers"]) == 2
+        assert data["data"]["followers"][0]["username"] == user_3.username
+        assert data["data"]["followers"][1]["username"] == user_2.username
+        assert "email" not in data["data"]["followers"][0]
+        assert "email" not in data["data"]["followers"][1]
 
     def test_it_does_not_return_suspended_followers(
         self,
@@ -145,19 +145,19 @@ class TestFollowersAsUser(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_1.username}/followers',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_1.username}/followers",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert len(data['data']['followers']) == 0
+        assert data["status"] == "success"
+        assert len(data["data"]["followers"]) == 0
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'follow:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "follow:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self, app: Flask, user_1: User, client_scope: str, can_access: bool
@@ -172,9 +172,9 @@ class TestFollowersAsUser(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_1.username}/followers',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            f"/api/users/{user_1.username}/followers",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -189,15 +189,15 @@ class TestFollowersAsAdmin(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{random_string()}/followers',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{random_string()}/followers",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 404
         data = json.loads(response.data.decode())
-        assert data['status'] == 'not found'
-        assert data['message'] == 'user does not exist'
+        assert data["status"] == "not found"
+        assert data["message"] == "user does not exist"
 
     def test_it_returns_empty_list_if_no_followers(
         self, app: Flask, user_1_admin: User
@@ -207,15 +207,15 @@ class TestFollowersAsAdmin(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_1_admin.username}/followers',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_1_admin.username}/followers",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['data']['followers'] == []
+        assert data["status"] == "success"
+        assert data["data"]["followers"] == []
 
     def test_it_returns_followers(
         self,
@@ -238,17 +238,17 @@ class TestFollowersAsAdmin(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_2.username}/followers',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_2.username}/followers",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert len(data['data']['followers']) == 2
-        assert data['data']['followers'][0]['email'] == user_3.email
-        assert data['data']['followers'][1]['email'] == user_1.email
+        assert data["status"] == "success"
+        assert len(data["data"]["followers"]) == 2
+        assert data["data"]["followers"][0]["email"] == user_3.email
+        assert data["data"]["followers"][1]["email"] == user_1.email
 
     def test_it_does_not_return_suspended_followers(
         self,
@@ -273,16 +273,16 @@ class TestFollowersAsAdmin(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_2.username}/followers',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_2.username}/followers",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert len(data['data']['followers']) == 1
-        assert data['data']['followers'][0]['email'] == user_1.email
+        assert data["status"] == "success"
+        assert len(data["data"]["followers"]) == 1
+        assert data["data"]["followers"][0]["email"] == user_1.email
 
 
 class TestFollowersPagination(FollowersAsUserTestCase):
@@ -294,22 +294,22 @@ class TestFollowersPagination(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_2.username}/followers',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_2.username}/followers",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': False,
-            'page': 1,
-            'pages': 0,
-            'total': 0,
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 0,
+            "total": 0,
         }
 
-    @patch('fittrackee.users.users.USERS_PER_PAGE', 1)
+    @patch("fittrackee.users.users.USERS_PER_PAGE", 1)
     def test_it_returns_first_page_on_followers_list(
         self,
         app: Flask,
@@ -329,22 +329,22 @@ class TestFollowersPagination(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_2.username}/followers',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_2.username}/followers",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['pagination'] == {
-            'has_next': True,
-            'has_prev': False,
-            'page': 1,
-            'pages': 2,
-            'total': 2,
+        assert data["pagination"] == {
+            "has_next": True,
+            "has_prev": False,
+            "page": 1,
+            "pages": 2,
+            "total": 2,
         }
 
-    @patch('fittrackee.users.users.USERS_PER_PAGE', 1)
+    @patch("fittrackee.users.users.USERS_PER_PAGE", 1)
     def test_it_returns_page_2_on_followers_list(
         self,
         app: Flask,
@@ -364,19 +364,19 @@ class TestFollowersPagination(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_2.username}/followers?page=2',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_2.username}/followers?page=2",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': True,
-            'page': 2,
-            'pages': 2,
-            'total': 2,
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": True,
+            "page": 2,
+            "pages": 2,
+            "total": 2,
         }
 
 
@@ -387,8 +387,8 @@ class TestFollowingAsUnauthenticatedUser(ApiTestCaseMixin):
         client = app.test_client()
 
         response = client.get(
-            f'/api/users/{user_1.username}/following',
-            content_type='application/json',
+            f"/api/users/{user_1.username}/following",
+            content_type="application/json",
         )
 
         self.assert_401(response)
@@ -407,9 +407,9 @@ class TestFollowingAsSuspendedUser(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/users/{user_2.username}/following',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_2.username}/following",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -424,15 +424,15 @@ class TestFollowingAsUser(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{random_string()}/following',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{random_string()}/following",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 404
         data = json.loads(response.data.decode())
-        assert data['status'] == 'not found'
-        assert data['message'] == 'user does not exist'
+        assert data["status"] == "not found"
+        assert data["message"] == "user does not exist"
 
     def test_it_returns_empty_list_if_no_following_users(
         self, app: Flask, user_1: User
@@ -442,15 +442,15 @@ class TestFollowingAsUser(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_1.username}/following',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_1.username}/following",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['data']['following'] == []
+        assert data["status"] == "success"
+        assert data["data"]["following"] == []
 
     def test_it_returns_following_users(
         self,
@@ -472,19 +472,19 @@ class TestFollowingAsUser(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_3.username}/following',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_3.username}/following",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert len(data['data']['following']) == 2
-        assert data['data']['following'][0]['username'] == user_1.username
-        assert data['data']['following'][1]['username'] == user_2.username
-        assert 'email' in data['data']['following'][0]
-        assert 'email' not in data['data']['following'][1]
+        assert data["status"] == "success"
+        assert len(data["data"]["following"]) == 2
+        assert data["data"]["following"][0]["username"] == user_1.username
+        assert data["data"]["following"][1]["username"] == user_2.username
+        assert "email" in data["data"]["following"][0]
+        assert "email" not in data["data"]["following"][1]
 
     def test_it_does_not_return_suspended_following(
         self,
@@ -508,20 +508,20 @@ class TestFollowingAsUser(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_3.username}/following',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_3.username}/following",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert len(data['data']['following']) == 1
-        assert data['data']['following'][0]['username'] == user_1.username
+        assert data["status"] == "success"
+        assert len(data["data"]["following"]) == 1
+        assert data["data"]["following"][0]["username"] == user_1.username
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'follow:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "follow:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self, app: Flask, user_1: User, client_scope: str, can_access: bool
@@ -536,9 +536,9 @@ class TestFollowingAsUser(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_1.username}/following',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            f"/api/users/{user_1.username}/following",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -553,15 +553,15 @@ class TestFollowingAsAdmin(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{random_string()}/following',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{random_string()}/following",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 404
         data = json.loads(response.data.decode())
-        assert data['status'] == 'not found'
-        assert data['message'] == 'user does not exist'
+        assert data["status"] == "not found"
+        assert data["message"] == "user does not exist"
 
     def test_it_returns_empty_list_if_no_following_users(
         self, app: Flask, user_1_admin: User
@@ -571,15 +571,15 @@ class TestFollowingAsAdmin(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_1_admin.username}/following',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_1_admin.username}/following",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['data']['following'] == []
+        assert data["status"] == "success"
+        assert data["data"]["following"] == []
 
     def test_it_returns_following_users(
         self,
@@ -602,17 +602,17 @@ class TestFollowingAsAdmin(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_3.username}/following',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_3.username}/following",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert len(data['data']['following']) == 2
-        assert data['data']['following'][0]['email'] == user_1.email
-        assert data['data']['following'][1]['email'] == user_2.email
+        assert data["status"] == "success"
+        assert len(data["data"]["following"]) == 2
+        assert data["data"]["following"][0]["email"] == user_1.email
+        assert data["data"]["following"][1]["email"] == user_2.email
 
     def test_it_does_not_return_suspended_following(
         self,
@@ -637,16 +637,16 @@ class TestFollowingAsAdmin(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_3.username}/following',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_3.username}/following",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert len(data['data']['following']) == 1
-        assert data['data']['following'][0]['email'] == user_1.email
+        assert data["status"] == "success"
+        assert len(data["data"]["following"]) == 1
+        assert data["data"]["following"][0]["email"] == user_1.email
 
 
 class TestFollowingPagination(FollowersAsUserTestCase):
@@ -658,22 +658,22 @@ class TestFollowingPagination(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_2.username}/following',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_2.username}/following",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': False,
-            'page': 1,
-            'pages': 0,
-            'total': 0,
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 0,
+            "total": 0,
         }
 
-    @patch('fittrackee.users.users.USERS_PER_PAGE', 1)
+    @patch("fittrackee.users.users.USERS_PER_PAGE", 1)
     def test_it_returns_first_page_on_following_list(
         self,
         app: Flask,
@@ -693,22 +693,22 @@ class TestFollowingPagination(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_3.username}/following',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_3.username}/following",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['pagination'] == {
-            'has_next': True,
-            'has_prev': False,
-            'page': 1,
-            'pages': 2,
-            'total': 2,
+        assert data["pagination"] == {
+            "has_next": True,
+            "has_prev": False,
+            "page": 1,
+            "pages": 2,
+            "total": 2,
         }
 
-    @patch('fittrackee.users.users.USERS_PER_PAGE', 1)
+    @patch("fittrackee.users.users.USERS_PER_PAGE", 1)
     def test_it_returns_page_2_on_followers_list(
         self,
         app: Flask,
@@ -728,17 +728,17 @@ class TestFollowingPagination(FollowersAsUserTestCase):
         )
 
         response = client.get(
-            f'/api/users/{user_3.username}/following?page=2',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/users/{user_3.username}/following?page=2",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': True,
-            'page': 2,
-            'pages': 2,
-            'total': 2,
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": True,
+            "page": 2,
+            "pages": 2,
+            "total": 2,
         }
