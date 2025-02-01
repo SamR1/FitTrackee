@@ -160,7 +160,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   .dropdown-wrapper {
     .dropdown-selector {
       margin: 0;

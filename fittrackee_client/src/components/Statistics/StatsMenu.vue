@@ -109,7 +109,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars';
+  @use '~@/scss/vars.scss' as *;
 
   .chart-menu {
     display: flex;

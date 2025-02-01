@@ -53,7 +53,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   h1 {
     font-size: 1.05em;
     font-weight: bold;

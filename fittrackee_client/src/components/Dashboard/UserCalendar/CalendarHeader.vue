@@ -38,7 +38,7 @@
 </script>
 
 <style lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   .calendar-header {
     display: flex;
     flex-direction: row;

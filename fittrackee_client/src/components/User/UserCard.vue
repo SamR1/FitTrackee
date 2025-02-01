@@ -114,7 +114,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
 
   .box {
     padding: $default-padding $default-padding * 1.2;

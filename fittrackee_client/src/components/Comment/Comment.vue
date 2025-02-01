@@ -346,7 +346,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   .workout-comment {
     display: flex;
     background-color: var(--comment-background);

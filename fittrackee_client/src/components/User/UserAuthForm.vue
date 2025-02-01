@@ -302,8 +302,8 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/colors.scss';
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/colors.scss' as *;
+  @use '~@/scss/vars.scss' as *;
 
   #user-auth-form {
     display: flex;

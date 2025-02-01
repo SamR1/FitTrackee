@@ -134,7 +134,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
 
   .relationships {
     min-height: 40px;

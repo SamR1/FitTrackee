@@ -200,7 +200,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   #user-equipments-list {
     padding: 0 0 $default-padding;
     h1 {

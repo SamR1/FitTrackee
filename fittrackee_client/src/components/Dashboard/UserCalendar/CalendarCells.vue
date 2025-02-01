@@ -96,7 +96,7 @@
 </script>
 
 <style lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   .calendar-cells {
     display: flex;
     flex-direction: column;

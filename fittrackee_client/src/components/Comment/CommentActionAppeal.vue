@@ -56,7 +56,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/vars';
+  @use '~@/scss/vars.scss' as *;
 
   .notification-object {
     font-weight: bold;

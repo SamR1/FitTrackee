@@ -145,7 +145,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/vars';
+  @use '~@/scss/vars.scss' as *;
   .description-list {
     margin-bottom: $default-margin;
     dl {

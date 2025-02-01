@@ -43,7 +43,7 @@
 </script>
 
 <style lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
 
   .calendar-workout {
     display: flex;

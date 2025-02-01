@@ -64,7 +64,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   ::v-deep(.multiselect__input) {
     background-color: var(--input-bg-color);
   }

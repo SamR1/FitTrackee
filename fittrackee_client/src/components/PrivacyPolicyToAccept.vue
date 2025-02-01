@@ -24,7 +24,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
 
   .policy-message {
     background: var(--alert-background-color);

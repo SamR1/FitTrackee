@@ -188,7 +188,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
 
   .mountains {
     padding-right: $default-padding * 0.5;

@@ -151,7 +151,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
 
   #new-oauth2-app {
     #new-oauth2-title {

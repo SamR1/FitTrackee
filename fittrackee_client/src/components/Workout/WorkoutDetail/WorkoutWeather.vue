@@ -133,7 +133,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   #workout-weather {
     padding-top: $default-padding;
     .weather-img {

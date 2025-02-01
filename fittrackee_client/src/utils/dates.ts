@@ -9,7 +9,7 @@ import {
   startOfWeek,
   startOfYear,
 } from 'date-fns'
-import { utcToZonedTime } from 'date-fns-tz'
+import { toZonedTime } from 'date-fns-tz'
 
 import createI18n from '@/i18n'
 import type { TLanguage } from '@/types/locales'
@@ -52,7 +52,7 @@ export const incrementDate = (duration: string, day: Date): Date => {
 }
 
 export const getDateWithTZ = (dateInUTC: string, tz: string): Date => {
-  return utcToZonedTime(new Date(dateInUTC), tz)
+  return toZonedTime(new Date(dateInUTC), tz)
 }
 
 export const getCalendarStartAndEnd = (

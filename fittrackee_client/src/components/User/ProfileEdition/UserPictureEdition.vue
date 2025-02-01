@@ -81,7 +81,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
 
   #user-picture-edition {
     padding: $default-padding 0;

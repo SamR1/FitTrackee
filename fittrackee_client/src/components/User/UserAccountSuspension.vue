@@ -67,7 +67,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
 
   .no-suspension {
     margin: $default-padding 0;

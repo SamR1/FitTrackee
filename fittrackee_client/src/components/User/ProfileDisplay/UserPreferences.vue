@@ -133,7 +133,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   #user-preferences {
     padding: $default-padding * 0.5 0 $default-padding;
     .preferences-section {

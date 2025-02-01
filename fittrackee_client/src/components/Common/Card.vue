@@ -10,7 +10,7 @@
 </template>
 
 <style lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
 
   .card {
     border: solid 1px var(--card-border-color);
