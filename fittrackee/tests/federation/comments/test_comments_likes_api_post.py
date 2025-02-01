@@ -36,6 +36,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             remote_user,
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -73,6 +74,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             user_2,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -100,6 +102,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             remote_user,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -110,7 +113,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        like_activity = CommentLike.query.first().get_activity()
+        like_activity = CommentLike.query.one().get_activity()
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
             activity=like_activity,
@@ -144,6 +147,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             remote_user,
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
         like = CommentLike(user_id=user_1.id, comment_id=comment.id)
         db.session.add(like)
@@ -181,6 +185,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             user_2,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         like = CommentLike(user_id=user_1.id, comment_id=comment.id)
         db.session.add(like)
@@ -211,6 +216,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             remote_user,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         like = CommentLike(user_id=user_1.id, comment_id=comment.id)
         db.session.add(like)
@@ -218,7 +224,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )
-        undo_activity = CommentLike.query.first().get_activity(is_undo=True)
+        undo_activity = CommentLike.query.one().get_activity(is_undo=True)
 
         client.post(
             self.route.format(comment_uuid=comment.short_id),

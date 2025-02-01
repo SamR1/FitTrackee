@@ -726,7 +726,7 @@ class TestUserManagerServiceUserCreation:
             UserCreationException,
             match='This user already exists. No action done.',
         ):
-            user_manager_service.create(email=user_1.email)
+            user_manager_service.create(email=user_1.email)  # type: ignore
 
     def test_it_creates_user_with_provided_password(self, app: Flask) -> None:
         username = random_string()

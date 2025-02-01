@@ -141,8 +141,10 @@ class OAuth2Mixin(RandomMixin):
 class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
     @staticmethod
     def get_test_client_and_auth_token(
-        app: Flask, user_email: str
+        app: Flask, user_email: Optional[str]
     ) -> Tuple[FlaskClient, str]:
+        if not user_email:
+            raise Exception('Invalid user email')
         client = app.test_client()
         resp_login = client.post(
             '/api/auth/login',

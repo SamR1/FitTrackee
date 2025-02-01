@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import datetime, timedelta, timezone
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Union
 
 from fittrackee import appLog, db
 from fittrackee.comments.models import Comment, CommentLike
@@ -396,7 +396,7 @@ class UpdateActivity(AbstractActivity):
 
 class LikeActivity(AbstractActivity):
     def process_activity(self) -> None:
-        like = None
+        like: Union[None, WorkoutLike, CommentLike] = None
         actor = self.get_actor(create_remote_actor=True)
         object_ap_id = self.activity["object"]
 

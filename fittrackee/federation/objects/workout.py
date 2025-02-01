@@ -7,6 +7,7 @@ from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 from ..enums import ActivityType
 from ..exceptions import InvalidWorkoutException
 from .base_object import BaseObject
+from .exceptions import InvalidObjectException
 from .templates.workout_note import WORKOUT_NOTE
 
 if TYPE_CHECKING:
@@ -19,6 +20,10 @@ class WorkoutObject(BaseObject):
     def __init__(self, workout: 'Workout', activity_type: str) -> None:
         self._check_visibility(workout.workout_visibility)
         self.workout = workout
+        if not self.workout.ap_id or not self.workout.remote_url:
+            raise InvalidObjectException(
+                "Invalid workout, missing 'ap_id' or 'remote_url'"
+            )
         self.visibility = workout.workout_visibility
         self.type = ActivityType(activity_type)
         self.actor = self.workout.user.actor
@@ -63,10 +68,10 @@ class WorkoutObject(BaseObject):
                 **activity['object'],
                 **{
                     'type': 'Workout',
-                    'ave_speed': float(self.workout.ave_speed),
-                    'distance': float(self.workout.distance),
+                    'ave_speed': self.workout.ave_speed,
+                    'distance': self.workout.distance,
                     'duration': str(self.workout.duration),
-                    'max_speed': float(self.workout.max_speed),
+                    'max_speed': self.workout.max_speed,
                     'moving': str(self.workout.moving),
                     'sport_id': self.workout.sport_id,
                     'title': self.workout.title,

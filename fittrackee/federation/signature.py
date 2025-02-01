@@ -53,6 +53,8 @@ def generate_signature(private_key: str, signed_string: str) -> bytes:
 def generate_signature_header(
     host: str, path: str, date_str: str, actor: Actor, digest: str
 ) -> str:
+    if actor.private_key is None:
+        raise InvalidSignatureException('Invalid private key for actor')
     signed_string = (
         f'(request-target): post {path}\nhost: {host}\ndate: {date_str}\n'
         f'digest: {digest}'

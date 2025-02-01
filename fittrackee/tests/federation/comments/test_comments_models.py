@@ -31,6 +31,7 @@ class TestWorkoutCommentModelSerializeForCommentOwner(CommentMixin):
             user_1,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
 
         serialized_comment = comment.serialize(user_1)
@@ -69,6 +70,7 @@ class TestWorkoutCommentModelSerializeForRemoteFollower(CommentMixin):
             remote_user,
             remote_cycling_workout,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
 
         with pytest.raises(CommentForbiddenException):
@@ -91,6 +93,7 @@ class TestWorkoutCommentModelSerializeForRemoteFollower(CommentMixin):
             remote_user,
             remote_cycling_workout,
             text_visibility=VisibilityLevel.FOLLOWERS,
+            with_federation=True,
         )
 
         with pytest.raises(CommentForbiddenException):
@@ -116,6 +119,7 @@ class TestWorkoutCommentModelSerializeForRemoteFollower(CommentMixin):
             remote_user,
             remote_cycling_workout,
             text_visibility=input_visibility,
+            with_federation=True,
         )
 
         serialized_comment = comment.serialize(user_1)
@@ -151,6 +155,7 @@ class TestWorkoutCommentModelSerializeForUser(CommentMixin):
             remote_user,
             remote_cycling_workout,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
 
         with pytest.raises(CommentForbiddenException):
@@ -171,6 +176,7 @@ class TestWorkoutCommentModelSerializeForUnauthenticatedUser(CommentMixin):
             user_1,
             remote_cycling_workout,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
 
         with pytest.raises(CommentForbiddenException):
@@ -199,6 +205,7 @@ class TestWorkoutCommentModelGetCreateActivity(CommentMixin):
             user_1,
             remote_cycling_workout,
             text_visibility=input_visibility,
+            with_federation=True,
         )
         with pytest.raises(InvalidVisibilityException):
             comment.get_activity(activity_type=self.activity_type)
@@ -221,6 +228,7 @@ class TestWorkoutCommentModelGetCreateActivity(CommentMixin):
             user_1,
             remote_cycling_workout,
             text_visibility=input_visibility,
+            with_federation=True,
         )
 
         note_activity = comment.get_activity(activity_type=self.activity_type)
@@ -256,11 +264,12 @@ class TestWorkoutCommentModelWithMentions(CommentMixin):
             text=f"@{remote_user.fullname} {self.random_string()}",
             text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=False,
+            with_federation=True,
         )
 
         comment.create_mentions()
 
-        mention = Mention.query.first()
+        mention = Mention.query.one()
         assert mention.comment_id == comment.id
         assert mention.user_id == remote_user.id
 
@@ -281,6 +290,7 @@ class TestWorkoutCommentModelWithMentions(CommentMixin):
             text=f"@{random_actor.fullname} {self.random_string()}",
             text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=False,
+            with_federation=True,
         )
 
         with (
@@ -295,8 +305,8 @@ class TestWorkoutCommentModelWithMentions(CommentMixin):
         ):
             comment.create_mentions()
 
-        remote_user = User.query.filter_by(username=random_actor.name).first()
-        mention = Mention.query.first()
+        remote_user = User.query.filter_by(username=random_actor.name).one()
+        mention = Mention.query.one()
         assert mention.comment_id == comment.id
         assert mention.user_id == remote_user.id
 
@@ -318,6 +328,7 @@ class TestWorkoutCommentModelWithMentions(CommentMixin):
             text=f"{mention} {self.random_string()}",
             text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=False,
+            with_federation=True,
         )
 
         _, mentioned_users = comment.create_mentions()
@@ -343,6 +354,7 @@ class TestWorkoutCommentModelSerializeForMentions(CommentMixin):
             workout_cycling_user_1,
             text=f"@{remote_user.fullname} {self.random_string()}",
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
 
         serialized_comment = comment.serialize(user_1)
@@ -365,6 +377,7 @@ class TestWorkoutCommentLikeActivities(CommentMixin):
             remote_user,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         like = CommentLike(user_id=user_1.id, comment_id=comment.id)
         db.session.add(like)
@@ -394,6 +407,7 @@ class TestWorkoutCommentLikeActivities(CommentMixin):
             remote_user,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         like = CommentLike(user_id=user_1.id, comment_id=comment.id)
         db.session.add(like)

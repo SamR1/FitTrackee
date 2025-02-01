@@ -855,6 +855,30 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
 
         assert serialized_workout['liked'] is True
 
+    def test_it_gets_workout_ap_id(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        assert workout_cycling_user_1.get_ap_id() == (
+            f'{user_1.actor.activitypub_id}/'
+            f'workouts/{workout_cycling_user_1.short_id}'
+        )
+
+    def test_it_gets_workout_remote_url(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        assert workout_cycling_user_1.get_remote_url() == (
+            f'https://{user_1.actor.domain.name}/'
+            f'workouts/{workout_cycling_user_1.short_id}'
+        )
+
 
 class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
     def test_it_raises_exception_when_workout_visibility_is_private(

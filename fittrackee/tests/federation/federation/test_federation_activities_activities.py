@@ -195,7 +195,7 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
         follow_request = FollowRequest.query.filter_by(
             follower_user_id=remote_user.id,
             followed_user_id=user_1.id,
-        ).first()
+        ).one()
         assert follow_request is not None
 
     def test_it_creates_remote_user_and_follow_request(
@@ -227,7 +227,7 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
 
         follow_request = FollowRequest.query.filter_by(
             followed_user_id=user_1.id,
-        ).first()
+        ).one()
         assert follow_request.from_user.fullname == random_actor.fullname
 
     def test_it_does_not_raise_error_if_pending_follow_request_already_exist(
@@ -250,7 +250,7 @@ class TestFollowActivity(FollowRequestActivitiesTestCase):
         follow_request = FollowRequest.query.filter_by(
             follower_user_id=remote_user.id,
             followed_user_id=user_1.id,
-        ).first()
+        ).one()
         assert follow_request.updated_at is None
 
 
@@ -340,7 +340,7 @@ class TestAcceptActivity(FollowRequestActivitiesTestCase):
         follow_request = FollowRequest.query.filter_by(
             follower_user_id=user_1.id,
             followed_user_id=remote_user.id,
-        ).first()
+        ).one()
 
         assert follow_request.is_approved
         assert follow_request.updated_at is not None
@@ -432,7 +432,7 @@ class TestRejectActivity(FollowRequestActivitiesTestCase):
         follow_request = FollowRequest.query.filter_by(
             follower_user_id=user_1.id,
             followed_user_id=remote_user.id,
-        ).first()
+        ).one()
 
         assert follow_request.is_approved is False
         assert follow_request.updated_at is not None
@@ -591,7 +591,7 @@ class WorkoutActivitiesTestCase(RandomMixin):
         workout: Optional[Workout] = None,
         updates: Optional[Dict] = None,
     ) -> Dict:
-        activity = {}
+        activity: Dict = {}
         if not updates:
             updates = {}
         if workout:
@@ -734,7 +734,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
 
         remote_workout = Workout.query.filter_by(
             user_id=remote_user.id, sport_id=sport_1_cycling.id
-        ).first()
+        ).one()
         assert remote_workout.ap_id == workout_activity['object']['id']
         assert remote_workout.remote_url == workout_activity['object']['url']
         assert (
@@ -761,7 +761,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
 
         remote_workout = Workout.query.filter_by(
             user_id=remote_user.id, sport_id=sport_1_cycling.id
-        ).first()
+        ).one()
         assert (
             remote_workout.workout_visibility
             == VisibilityLevel.FOLLOWERS_AND_REMOTE
@@ -786,7 +786,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
 
         remote_workout = Workout.query.filter_by(
             user_id=remote_user.id, sport_id=sport_1_cycling.id
-        ).first()
+        ).one()
         assert (
             remote_workout.serialize(user=remote_user, light=False)[
                 'remote_url'
@@ -811,7 +811,7 @@ class TestCreateActivityForWorkout(WorkoutActivitiesTestCase):
 
         remote_workout = Workout.query.filter_by(
             user_id=remote_user.id, sport_id=sport_1_cycling.id
-        ).first()
+        ).one()
         assert remote_workout.records == []
 
 
@@ -837,7 +837,7 @@ class TestDeleteActivityForWorkout(WorkoutActivitiesTestCase):
     def test_it_raises_error_if_workout_actor_does_not_exist(
         self,
         app_with_federation: Flask,
-        random_actor: Actor,
+        random_actor: RandomActor,
     ) -> None:
         delete_activity = self.generate_workout_delete_activity(
             remote_actor=random_actor
@@ -923,7 +923,7 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
     def test_it_raises_error_if_workout_actor_does_not_exist(
         self,
         app_with_federation: Flask,
-        random_actor: Actor,
+        random_actor: RandomActor,
         sport_1_cycling: Sport,
     ) -> None:
         update_activity = self.generate_workout_update_activity(
@@ -966,7 +966,7 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
         ):
             activity.process_activity()
 
-        workout = Workout.query.filter_by(id=remote_cycling_workout.id).first()
+        workout = Workout.query.filter_by(id=remote_cycling_workout.id).one()
         assert workout.serialize(user=remote_user) == serialize_workout
 
     @pytest.mark.parametrize(
@@ -1003,7 +1003,7 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
 
         activity.process_activity()
 
-        workout = Workout.query.filter_by(id=remote_cycling_workout.id).first()
+        workout = Workout.query.filter_by(id=remote_cycling_workout.id).one()
         assert workout.__getattribute__(input_key) == input_new_value
 
     @pytest.mark.parametrize(
@@ -1033,7 +1033,7 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
 
         activity.process_activity()
 
-        workout = Workout.query.filter_by(id=remote_cycling_workout.id).first()
+        workout = Workout.query.filter_by(id=remote_cycling_workout.id).one()
         assert workout.__getattribute__(input_key) == timedelta(
             seconds=convert_duration_string_to_seconds(input_new_value)
         )
@@ -1057,7 +1057,7 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
 
         activity.process_activity()
 
-        workout = Workout.query.filter_by(id=remote_cycling_workout.id).first()
+        workout = Workout.query.filter_by(id=remote_cycling_workout.id).one()
         assert workout.workout_date == datetime.strptime(
             new_workout_date, WORKOUT_DATE_FORMAT
         ).replace(tzinfo=timezone.utc)
@@ -1080,7 +1080,7 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
 
         activity.process_activity()
 
-        workout = Workout.query.filter_by(id=remote_cycling_workout.id).first()
+        workout = Workout.query.filter_by(id=remote_cycling_workout.id).one()
         assert workout.modification_date is not None
 
     def test_it_raises_exception_when_activity_is_invalid(
@@ -1132,7 +1132,7 @@ class CommentActivitiesTestCase(RandomMixin):
                 f'workouts/{workout_short_id}'
             )
         else:
-            workout_api_id = workout.ap_id
+            workout_api_id = workout.ap_id  # type: ignore
 
         comment_short_id = self.random_short_id()
         comment_ap_id = (
@@ -1251,7 +1251,7 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
 
         activity.process_activity()
 
-        remote_comment = Comment.query.filter_by().first()
+        remote_comment = Comment.query.filter_by().one()
         assert remote_comment.ap_id == comment_activity['object']['id']
 
     def test_it_creates_remote_workout_comment_when_remote_user_does_not_exist(
@@ -1263,10 +1263,7 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
         random_actor: RandomActor,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_1.ap_id = (
-            f'{user_1.actor.activitypub_id}/workouts/'
-            f'{workout_cycling_user_1.short_id}'
-        )
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
         comment_activity = self.generate_workout_comment_create_activity(
             remote_actor=random_actor,
             workout=workout_cycling_user_1,
@@ -1290,7 +1287,7 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
         ):
             activity.process_activity()
 
-        remote_comment = Comment.query.filter_by().first()
+        remote_comment = Comment.query.filter_by().one()
         assert remote_comment.ap_id == comment_activity['object']['id']
         assert (
             User.query.filter_by(username=random_actor.name).first()
@@ -1307,10 +1304,7 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
         random_actor: RandomActor,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_1.ap_id = (
-            f'{user_1.actor.activitypub_id}/workouts/'
-            f'{workout_cycling_user_1.short_id}'
-        )
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
         comment_activity = self.generate_workout_comment_create_activity(
             remote_actor=random_actor,
             workout=workout_cycling_user_1,
@@ -1339,9 +1333,9 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
         ):
             activity.process_activity()
 
-        remote_comment = Comment.query.filter_by().first()
+        remote_comment = Comment.query.filter_by().one()
         assert remote_comment.ap_id == comment_activity['object']['id']
-        new_user = User.query.filter_by(username=random_actor.name).first()
+        new_user = User.query.filter_by(username=random_actor.name).one()
         assert new_user is not None
         assert (
             Mention.query.filter_by(
@@ -1368,10 +1362,7 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
         input_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_visibility
-        workout_cycling_user_1.ap_id = (
-            f'{user_1.actor.activitypub_id}/workouts/'
-            f'{workout_cycling_user_1.short_id}'
-        )
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
         comment_activity = self.generate_workout_comment_create_activity(
             remote_actor=remote_user.actor,
             workout=workout_cycling_user_1,
@@ -1383,9 +1374,7 @@ class TestCreateActivityForComment(CommentActivitiesTestCase):
 
         activity.process_activity()
 
-        remote_comment = Comment.query.filter_by(
-            user_id=remote_user.id
-        ).first()
+        remote_comment = Comment.query.filter_by(user_id=remote_user.id).one()
         assert remote_comment.ap_id == comment_activity['object']['id']
         assert remote_comment.remote_url == comment_activity['object']['url']
         assert remote_comment.text == comment_activity['object']['content']
@@ -1405,10 +1394,7 @@ class TestCreateActivityForCommentReply(
         remote_user: User,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_1.ap_id = (
-            f'{user_1.actor.activitypub_id}/workouts/'
-            f'{workout_cycling_user_1.short_id}'
-        )
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
         comment_activity = self.generate_workout_comment_create_activity(
             remote_actor=remote_user.actor,
             workout=workout_cycling_user_1,
@@ -1424,9 +1410,7 @@ class TestCreateActivityForCommentReply(
 
         activity.process_activity()
 
-        remote_comment = Comment.query.filter_by(
-            user_id=remote_user.id
-        ).first()
+        remote_comment = Comment.query.filter_by(user_id=remote_user.id).one()
         assert remote_comment.ap_id == comment_activity['object']['id']
         assert remote_comment.remote_url == comment_activity['object']['url']
         assert remote_comment.text == comment_activity['object']['content']
@@ -1451,20 +1435,14 @@ class TestCreateActivityForCommentReply(
         input_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_1.ap_id = (
-            f'{user_1.actor.activitypub_id}/workouts/'
-            f'{workout_cycling_user_1.short_id}'
-        )
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
         parent_comment = self.create_comment(
             user_1,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
-        parent_comment.ap_id = (
-            f'{user_1.actor.activitypub_id}/workouts/'
-            f'{workout_cycling_user_1.short_id}/comments/'
-            + parent_comment.short_id
-        )
+        parent_comment.ap_id = parent_comment.get_ap_id()
         comment_activity = self.generate_workout_comment_create_activity(
             remote_actor=remote_user.actor,
             workout=workout_cycling_user_1,
@@ -1477,9 +1455,7 @@ class TestCreateActivityForCommentReply(
 
         activity.process_activity()
 
-        remote_comment = Comment.query.filter_by(
-            user_id=remote_user.id
-        ).first()
+        remote_comment = Comment.query.filter_by(user_id=remote_user.id).one()
         assert remote_comment.ap_id == comment_activity['object']['id']
         assert remote_comment.remote_url == comment_activity['object']['url']
         assert remote_comment.text == comment_activity['object']['content']
@@ -1494,7 +1470,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        random_actor: Actor,
+        random_actor: RandomActor,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment_activity = self.generate_workout_comment_update_activity(
@@ -1518,9 +1494,9 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         ):
             activity.process_activity()
 
-        remote_comment = Comment.query.filter_by().first()
+        remote_comment = Comment.query.filter_by().one()
         assert remote_comment.ap_id == comment_activity['object']['id']
-        new_user = User.query.filter_by(username=random_actor.name).first()
+        new_user = User.query.filter_by(username=random_actor.name).one()
         assert new_user is not None
 
     def test_it_creates_comment_when_original_comment_does_not_exist(
@@ -1529,7 +1505,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        random_actor: Actor,
+        random_actor: RandomActor,
     ) -> None:
         # case of a comment edited to add a mention to a user (not-followers)
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
@@ -1554,7 +1530,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         ):
             activity.process_activity()
 
-        remote_comment = Comment.query.filter_by().first()
+        remote_comment = Comment.query.filter_by().one()
         assert remote_comment.ap_id == comment_activity['object']['id']
         assert (
             User.query.filter_by(username=random_actor.name).first()
@@ -1581,6 +1557,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
             remote_user,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         remote_comment.modification_date = datetime.now(timezone.utc)
         comment_activity = {
@@ -1614,6 +1591,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
             remote_user,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         remote_comment.modification_date = datetime.now(timezone.utc)
         comment_activity = remote_comment.get_activity("Update")
@@ -1643,6 +1621,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
                 workout_cycling_user_1,
                 text=f"@{remote_user.fullname}",
                 text_visibility=VisibilityLevel.PUBLIC,
+                with_federation=True,
             )
             remote_comment.modification_date = datetime.now(timezone.utc)
             comment_activity = remote_comment.get_activity("Update")
@@ -1669,7 +1648,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         ):
             activity.process_activity()
 
-        new_user = User.query.filter_by(username=random_actor.name).first()
+        new_user = User.query.filter_by(username=random_actor.name).one()
         assert new_user is not None
         mentions = Mention.query.filter_by(comment_id=remote_comment.id).all()
         assert len(mentions) == 1
@@ -1693,6 +1672,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
             remote_user,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         remote_comment.modification_date = datetime.now(timezone.utc)
         comment_activity = remote_comment.get_activity("Update")
@@ -1717,6 +1697,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
             remote_user,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         remote_comment.modification_date = datetime.now(timezone.utc)
         comment_activity = remote_comment.get_activity("Update")
@@ -1748,6 +1729,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
             remote_user,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         remote_comment.modification_date = datetime.now(timezone.utc)
         comment_activity = remote_comment.get_activity("Update")
@@ -1790,7 +1772,7 @@ class TestDeleteActivityForComment(CommentMixin, CommentActivitiesTestCase):
     def test_it_raises_error_if_workout_actor_does_not_exist(
         self,
         app_with_federation: Flask,
-        random_actor: Actor,
+        random_actor: RandomActor,
     ) -> None:
         delete_activity = self.generate_workout_comment_delete_activity(
             remote_actor=random_actor
@@ -1818,6 +1800,7 @@ class TestDeleteActivityForComment(CommentMixin, CommentActivitiesTestCase):
             remote_user,
             remote_cycling_workout,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         delete_activity = self.generate_workout_comment_delete_activity(
             remote_actor=remote_user_2.actor,
@@ -1852,6 +1835,7 @@ class TestDeleteActivityForComment(CommentMixin, CommentActivitiesTestCase):
             remote_cycling_workout,
             text=f"@{user_1.fullname}",
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         delete_activity = self.generate_workout_comment_delete_activity(
             remote_actor=remote_user.actor,
@@ -1880,12 +1864,14 @@ class TestDeleteActivityForComment(CommentMixin, CommentActivitiesTestCase):
             remote_user,
             remote_cycling_workout,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         reply = self.create_comment(
             user_1,
             remote_cycling_workout,
             text_visibility=VisibilityLevel.PUBLIC,
             parent_comment=remote_comment,
+            with_federation=True,
         )
         delete_activity = self.generate_workout_comment_delete_activity(
             remote_actor=remote_user.actor,
@@ -1930,6 +1916,7 @@ class TestLikeActivityForWorkout:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
         like_activity = LikeObject(
             target_object_ap_id=workout_cycling_user_1.ap_id,
             actor_ap_id=remote_user.actor.activitypub_id,
@@ -1956,6 +1943,7 @@ class TestLikeActivityForWorkout:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
         like_activity = LikeObject(
             target_object_ap_id=workout_cycling_user_1.ap_id,
             actor_ap_id=random_actor.activitypub_id,
@@ -1971,7 +1959,7 @@ class TestLikeActivityForWorkout:
         ):
             activity.process_activity()
 
-        remote_user = User.query.filter_by(username=random_actor.name).first()
+        remote_user = User.query.filter_by(username=random_actor.name).one()
         assert (
             WorkoutLike.query.filter_by(
                 user_id=remote_user.id, workout_id=workout_cycling_user_1.id
@@ -1993,6 +1981,7 @@ class TestLikeActivityForComment(CommentMixin):
             user_1,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         like_activity = LikeObject(
             target_object_ap_id=comment.ap_id,
@@ -2024,6 +2013,7 @@ class TestLikeActivityForComment(CommentMixin):
             user_1,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         like_activity = LikeObject(
             target_object_ap_id=comment.ap_id,
@@ -2040,7 +2030,7 @@ class TestLikeActivityForComment(CommentMixin):
         ):
             activity.process_activity()
 
-        remote_user = User.query.filter_by(username=random_actor.name).first()
+        remote_user = User.query.filter_by(username=random_actor.name).one()
         assert (
             CommentLike.query.filter_by(
                 user_id=remote_user.id, comment_id=comment.id
@@ -2078,6 +2068,7 @@ class TestUndoLikeActivityForWorkout:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
         like = WorkoutLike(
             user_id=remote_user.id, workout_id=workout_cycling_user_1.id
         )
@@ -2110,6 +2101,7 @@ class TestUndoLikeActivityForWorkout:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
         like_activity = LikeObject(
             target_object_ap_id=workout_cycling_user_1.ap_id,
             actor_ap_id=remote_user.actor.activitypub_id,
@@ -2129,6 +2121,7 @@ class TestUndoLikeActivityForWorkout:
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
         like_activity = LikeObject(
             target_object_ap_id=workout_cycling_user_1.ap_id,
             actor_ap_id=random_actor.activitypub_id,
@@ -2158,6 +2151,7 @@ class TestUndoLikeActivityForComment(CommentMixin):
             user_1,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         like = CommentLike(user_id=remote_user.id, comment_id=comment.id)
         db.session.add(like)
@@ -2193,6 +2187,7 @@ class TestUndoLikeActivityForComment(CommentMixin):
             user_1,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         like_activity = LikeObject(
             target_object_ap_id=comment.ap_id,
@@ -2217,6 +2212,7 @@ class TestUndoLikeActivityForComment(CommentMixin):
             user_1,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         like_activity = LikeObject(
             target_object_ap_id=comment.ap_id,

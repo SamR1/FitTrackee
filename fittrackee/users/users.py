@@ -94,7 +94,7 @@ def get_users_list(auth_user: User, remote: bool = False) -> Dict:
             appLog.error(f"Error when searching user '{query}': {e}")
             return EMPTY_USERS_RESPONSE
         if user:
-            if not user.is_active and not auth_user.admin:
+            if not user.is_active and not auth_user.has_admin_rights:
                 return EMPTY_USERS_RESPONSE
             return {
                 'status': 'success',
@@ -995,7 +995,7 @@ def delete_user(
         db.session.delete(user.actor)
         db.session.commit()
         if user_picture:
-            picture_path = get_absolute_file_path(user.picture)
+            picture_path = get_absolute_file_path(user_picture)
             if os.path.isfile(picture_path):
                 os.remove(picture_path)
         shutil.rmtree(

@@ -1,18 +1,21 @@
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 from ..constants import AP_CTX
 from ..enums import ActivityType
 from .base_object import BaseObject
+from .exceptions import InvalidObjectException
 
 
 class LikeObject(BaseObject):
     def __init__(
         self,
-        target_object_ap_id: str,
+        target_object_ap_id: Optional[str],
         like_id: int,
         actor_ap_id: str,
         is_undo: bool = False,
     ) -> None:
+        if not target_object_ap_id:
+            raise InvalidObjectException("Invalid object, missing 'ap_id'")
         self.is_undo = is_undo
         self.target_object_ap_id = target_object_ap_id
         self.like_id = like_id

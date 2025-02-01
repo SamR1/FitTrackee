@@ -474,9 +474,9 @@ class TestUserRegistration(ApiTestCaseMixin):
                 dict(
                     username=self.random_string(),
                     email=(
-                        user_1.email.upper()
+                        user_1.email.upper()  # type: ignore
                         if text_transformation == 'upper'
-                        else user_1.email.lower()
+                        else user_1.email.lower()  # type: ignore
                     ),
                     password=self.random_string(),
                     accepted_policy=True,
@@ -650,9 +650,9 @@ class TestUserLogin(ApiTestCaseMixin):
             data=json.dumps(
                 dict(
                     email=(
-                        user_1.email.upper()
+                        user_1.email.upper()  # type: ignore
                         if text_transformation == 'upper'
-                        else user_1.email.lower()
+                        else user_1.email.lower()  # type: ignore
                     ),
                     password='12345678',
                 )

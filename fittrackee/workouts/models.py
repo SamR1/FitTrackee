@@ -375,6 +375,14 @@ class Workout(BaseModel):
     def short_id(self) -> str:
         return encode_uuid(self.uuid)
 
+    def get_ap_id(self) -> str:
+        return f'{self.user.actor.activitypub_id}/workouts/{self.short_id}'
+
+    def get_remote_url(self) -> str:
+        return (
+            f'https://{self.user.actor.domain.name}/workouts/{self.short_id}'
+        )
+
     @property
     def calculated_analysis_visibility(self) -> VisibilityLevel:
         return get_calculated_visibility(

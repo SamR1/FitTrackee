@@ -186,6 +186,44 @@ class TestWorkoutCommentModel(ReportMixin, CommentMixin):
 
         assert comment.suspension_action is None
 
+    def test_it_gets_comment_ap_id(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        comment = self.create_comment(
+            user_2, workout_cycling_user_1, text=self.random_string()
+        )
+
+        assert comment.get_ap_id() == (
+            f'{user_2.actor.activitypub_id}/'
+            f'workouts/{workout_cycling_user_1.short_id}/'
+            f'comments/{comment.short_id}'
+        )
+
+    def test_it_gets_comment_remote_url(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        comment = self.create_comment(
+            user_2, workout_cycling_user_1, text=self.random_string()
+        )
+
+        assert comment.get_remote_url() == (
+            f'https://{user_2.actor.domain.name}/'
+            f'workouts/{workout_cycling_user_1.short_id}/'
+            f'comments/{comment.short_id}'
+        )
+
 
 class TestWorkoutCommentModelSerializeForCommentOwner(
     ReportMixin, CommentMixin

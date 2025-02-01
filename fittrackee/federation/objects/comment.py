@@ -5,6 +5,7 @@ from fittrackee.visibility_levels import VisibilityLevel
 
 from ..enums import ActivityType
 from .base_object import BaseObject
+from .exceptions import InvalidObjectException
 
 if TYPE_CHECKING:
     from fittrackee.comments.models import Comment
@@ -24,6 +25,11 @@ class CommentObject(BaseObject):
         """
         self._check_visibility(comment, activity_type)
         self.comment = comment
+        if not self.comment.ap_id or not self.comment.remote_url:
+            raise InvalidObjectException(
+                "Invalid comment, missing 'ap_id' or 'remote_url'"
+            )
+
         self.visibility = comment.text_visibility
         self.workout = comment.workout
         self.type = ActivityType(activity_type)

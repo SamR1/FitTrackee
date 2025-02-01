@@ -69,7 +69,7 @@ class TestActivityPubDomainModel:
     ) -> None:
         local_domain = Domain.query.filter_by(
             name=app_with_federation.config['AP_DOMAIN']
-        ).first()
+        ).one()
 
         assert f"<Domain '{app_with_federation.config['AP_DOMAIN']}'>" == str(
             local_domain
@@ -78,7 +78,7 @@ class TestActivityPubDomainModel:
     def test_app_domain_is_local(self, app_with_federation: Flask) -> None:
         local_domain = Domain.query.filter_by(
             name=app_with_federation.config['AP_DOMAIN']
-        ).first()
+        ).one()
 
         assert not local_domain.is_remote
 
@@ -92,7 +92,7 @@ class TestActivityPubDomainModel:
     ) -> None:
         local_domain = Domain.query.filter_by(
             name=app_with_federation.config['AP_DOMAIN']
-        ).first()
+        ).one()
 
         assert local_domain.software_version is None
         assert local_domain.software_current_version == VERSION
@@ -119,7 +119,7 @@ class TestActivityPubDomainModel:
     ) -> None:
         local_domain = Domain.query.filter_by(
             name=app_with_federation.config['AP_DOMAIN']
-        ).first()
+        ).one()
 
         serialized_domain = local_domain.serialize()
 
@@ -222,7 +222,11 @@ class TestActivityPubLocalPersonActorModel:
         actor_1 = user_1.actor
         actor_1.generate_keys()
 
-        signer = pkcs1_15.new(RSA.import_key(actor_1.private_key))
+        signer = pkcs1_15.new(
+            RSA.import_key(
+                actor_1.private_key  # type: ignore
+            )
+        )
         hashed_message = SHA256.new('test message'.encode())
         # it raises ValueError if signature is invalid
         signer.verify(hashed_message, signer.sign(hashed_message))
@@ -230,10 +234,10 @@ class TestActivityPubLocalPersonActorModel:
     def test_it_does_not_create_remote_actor_stats(
         self, app_with_federation: Flask, user_1: User
     ) -> None:
-        stats = RemoteActorStats.query.filter_by(
-            actor_id=user_1.actor_id
-        ).first()
-        assert stats is None
+        assert (
+            RemoteActorStats.query.filter_by(actor_id=user_1.actor_id).first()
+            is None
+        )
 
 
 class TestActivityPubRemotePersonActorModel:
@@ -304,7 +308,7 @@ class TestActivityPubRemotePersonActorModel:
     ) -> None:
         stats = RemoteActorStats.query.filter_by(
             actor_id=remote_user.actor_id
-        ).first()
+        ).one()
 
         assert stats.items == 0
         assert stats.followers == 0
@@ -317,6 +321,6 @@ class TestActivityPubActorModel:
     ) -> None:
         domain = Domain.query.filter_by(
             name=app_with_federation.config['AP_DOMAIN']
-        ).first()
+        ).one()
         actor = Actor(preferred_username=uuid4().hex, domain_id=domain.id)
         assert actor.name is None

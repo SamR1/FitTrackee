@@ -193,9 +193,11 @@ def update_remote_user(actor: Actor) -> None:
 
 
 def get_user_from_username(
-    user_name: str,
+    user_name: Optional[str],
     with_action: Optional[str] = None,  # create or refresh remote actor
 ) -> User:
+    if not user_name:
+        raise Exception("Invalid user name")
     name, domain_name = get_username_and_domain(user_name)
     if domain_name is None:  # local actor
         user = User.query.filter(

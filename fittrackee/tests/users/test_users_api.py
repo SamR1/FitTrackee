@@ -2261,7 +2261,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
-        new_email = 'new.' + user_2.email
+        new_email = f'new.{user_2.email}'
         user_2_email = user_2.email
         user_2_confirmation_token = user_2.confirmation_token
 
@@ -2283,7 +2283,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app_wo_email_activation, user_1_admin.email
         )
-        new_email = 'new.' + user_2.email
+        new_email = f'new.{user_2.email}'
 
         response = client.patch(
             f'/api/users/{user_2.username}',
@@ -2307,7 +2307,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
-        new_email = 'new.' + user_2.email
+        new_email = f'new.{user_2.email}'
         expected_token = self.random_string()
 
         with patch('secrets.token_urlsafe', return_value=expected_token):
@@ -2344,7 +2344,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app_wo_email_activation, user_1_admin.email
         )
-        new_email = 'new.' + user_2.email
+        new_email = f'new.{user_2.email}'
 
         response = client.patch(
             f'/api/users/{user_2.username}',

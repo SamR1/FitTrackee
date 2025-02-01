@@ -77,10 +77,8 @@ DEFAULT_WORKOUT_LIKES_PER_PAGE = 10
 def handle_workout_activities(workout: Workout, activity_type: str) -> None:
     actor = workout.user.actor
     if activity_type == 'Create':
-        workout.ap_id = f'{actor.activitypub_id}/workouts/{workout.short_id}'
-        workout.remote_url = (
-            f'https://{actor.domain.name}/workouts/{workout.short_id}'
-        )
+        workout.ap_id = workout.get_ap_id()
+        workout.remote_url = workout.get_remote_url()
         db.session.commit()
     workout_activity, note_activity = workout.get_activities(
         activity_type=activity_type

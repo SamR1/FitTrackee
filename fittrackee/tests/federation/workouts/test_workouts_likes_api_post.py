@@ -98,7 +98,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        like_activity = WorkoutLike.query.first().get_activity()
+        like_activity = WorkoutLike.query.one().get_activity()
         send_to_remote_inbox_mock.send.assert_called_once_with(
             sender_id=user_1.actor.id,
             activity=like_activity,
@@ -199,7 +199,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
         )
         db.session.add(like)
         db.session.commit()
-        undo_activity = WorkoutLike.query.first().get_activity(is_undo=True)
+        undo_activity = WorkoutLike.query.one().get_activity(is_undo=True)
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )

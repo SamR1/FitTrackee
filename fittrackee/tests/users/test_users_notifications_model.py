@@ -953,7 +953,7 @@ class TestNotificationForCommentReply(NotificationTestCase):
             from_user_id=reply.user_id,
             to_user_id=comment.user_id,
             event_object_id=reply.id,
-        ).first()
+        ).one()
         assert notification.created_at == reply.created_at
         assert notification.marked_as_read is False
         assert notification.event_type == 'comment_reply'
@@ -1064,7 +1064,7 @@ class TestNotificationForCommentReply(NotificationTestCase):
         notification = Notification.query.filter_by(
             event_object_id=reply.id,
             event_type='comment_reply',
-        ).first()
+        ).one()
 
         serialized_notification = notification.serialize()
 

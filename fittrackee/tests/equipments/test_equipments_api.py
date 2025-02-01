@@ -632,7 +632,7 @@ class TestPostEquipment(ApiTestCaseMixin):
         }
         equipment = Equipment.query.filter_by(
             uuid=decode_short_id(equipment['id'])
-        ).first()
+        ).one()
         assert user_1_sport_1_preference.default_equipments.all() == [
             equipment
         ]
@@ -703,7 +703,7 @@ class TestPostEquipment(ApiTestCaseMixin):
         assert equipment['default_for_sport_ids'] == [sport_2_running.id]
         equipment = Equipment.query.filter_by(
             uuid=decode_short_id(equipment['id'])
-        ).first()
+        ).one()
         assert user_1_sport_2_preference.default_equipments.all() == [
             equipment
         ]

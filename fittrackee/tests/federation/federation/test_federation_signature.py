@@ -42,6 +42,22 @@ class TestGenerateDigest:
         )
 
 
+class TestGenerateSignatureHeader:
+    def test_it_raises_error_when_actor_has_no_private_key(
+        self, app_with_federation: Flask, remote_user: User
+    ) -> None:
+        with pytest.raises(
+            InvalidSignatureException, match='Invalid private key for actor'
+        ):
+            generate_signature_header(
+                random_string(),
+                '/inbox',
+                'Sat, 01 Feb 2025 11:55:28 GMT',
+                remote_user.actor,
+                random_string(),
+            )
+
+
 class SignatureVerificationTestCase:
     @staticmethod
     def random_signature() -> str:
@@ -116,7 +132,10 @@ class SignatureVerificationTestCase:
         signed_string = (
             f'(request-target): post {path}\nhost: {host}\ndate: {date_str}'
         )
-        signature = generate_signature(actor.private_key, signed_string)
+        signature = generate_signature(
+            actor.private_key,  # type: ignore
+            signed_string,
+        )
         return (
             f'keyId="{actor.activitypub_id}#main-key",'
             'headers="(request-target) host date",'

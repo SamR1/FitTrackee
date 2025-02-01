@@ -27,10 +27,7 @@ class TestTombstoneObjectForWorkout:
         input_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_visibility
-        workout_cycling_user_1.ap_id = (
-            f'{user_1.actor.activitypub_id}/workouts'
-            f'/{workout_cycling_user_1.short_id}'
-        )
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
         with pytest.raises(
             InvalidVisibilityException,
             match=f"object visibility is: '{input_visibility.value}'",
@@ -45,10 +42,7 @@ class TestTombstoneObjectForWorkout:
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_1.ap_id = (
-            f'{user_1.actor.activitypub_id}/workouts'
-            f'/{workout_cycling_user_1.short_id}'
-        )
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
         tombstone = TombstoneObject(workout_cycling_user_1)
 
         delete_activity = tombstone.get_activity()
@@ -76,10 +70,7 @@ class TestTombstoneObjectForWorkout:
         workout_cycling_user_1.workout_visibility = (
             VisibilityLevel.FOLLOWERS_AND_REMOTE
         )
-        workout_cycling_user_1.ap_id = (
-            f'{user_1.actor.activitypub_id}/workouts'
-            f'/{workout_cycling_user_1.short_id}'
-        )
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
         tombstone = TombstoneObject(workout_cycling_user_1)
 
         delete_activity = tombstone.get_activity()
@@ -113,7 +104,10 @@ class TestTombstoneObjectForWorkoutComment(CommentMixin):
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
-            user_1, workout_cycling_user_1, text_visibility=input_visibility
+            user_1,
+            workout_cycling_user_1,
+            text_visibility=input_visibility,
+            with_federation=True,
         )
         with pytest.raises(
             InvalidVisibilityException,
@@ -133,6 +127,7 @@ class TestTombstoneObjectForWorkoutComment(CommentMixin):
             user_1,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         tombstone = TombstoneObject(comment)
 
@@ -171,6 +166,7 @@ class TestTombstoneObjectForWorkoutComment(CommentMixin):
             user_1,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
         tombstone = TombstoneObject(comment)
 
@@ -218,6 +214,7 @@ class TestTombstoneObjectForWorkoutComment(CommentMixin):
             workout_cycling_user_1,
             text=f"@{remote_user.fullname}",
             text_visibility=input_visibility,
+            with_federation=True,
         )
         tombstone = TombstoneObject(comment)
 

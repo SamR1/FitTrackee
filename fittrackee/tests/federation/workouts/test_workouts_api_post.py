@@ -232,7 +232,7 @@ class TestFederationPostWorkoutWithoutGpx(ApiTestCaseMixin):
             headers=dict(Authorization=f'Bearer {auth_token}'),
         )
 
-        workout = Workout.query.first()
+        workout = Workout.query.one()
         assert workout.ap_id == (
             f'{user_1.actor.activitypub_id}/workouts/{workout.short_id}'
         )
@@ -456,7 +456,7 @@ class TestFederationPostWorkoutWithGpx(ApiTestCaseMixin):
             ),
         )
 
-        workout = Workout.query.first()
+        workout = Workout.query.one()
         assert workout.ap_id == (
             f'{user_1.actor.activitypub_id}/workouts/{workout.short_id}'
         )

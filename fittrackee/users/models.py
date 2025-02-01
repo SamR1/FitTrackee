@@ -285,9 +285,7 @@ class User(BaseModel):
         db.ForeignKey('actors.id'), unique=True, nullable=True
     )
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    username: Mapped[str] = mapped_column(
-        db.String(255), nullable=False
-    )
+    username: Mapped[str] = mapped_column(db.String(255), nullable=False)
     # Note: Null values are not considered equal
     # source: https://www.postgresql.org/docs/current/indexes-unique.html
     email: Mapped[Optional[str]] = mapped_column(
@@ -453,7 +451,7 @@ class User(BaseModel):
         lazy='dynamic',
         viewonly=True,
     )
-    actor = db.relationship(Actor, back_populates='user')
+    actor: Mapped['Actor'] = relationship(Actor, back_populates='user')
 
     def __repr__(self) -> str:
         return f'<User {self.username!r}>'
@@ -732,7 +730,7 @@ class User(BaseModel):
     def create_actor(self) -> None:
         app_domain = Domain.query.filter_by(
             name=current_app.config['AP_DOMAIN']
-        ).first()
+        ).one()
         actor = Actor(
             preferred_username=self.username, domain_id=app_domain.id
         )
@@ -742,7 +740,7 @@ class User(BaseModel):
         db.session.commit()
 
     @property
-    def fullname(self) -> str:
+    def fullname(self) -> Optional[str]:
         return self.actor.fullname
 
     def linkify_mention(self, with_domain: bool) -> str:

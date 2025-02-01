@@ -63,6 +63,10 @@ class TestFederationUpdateWorkout(ApiTestCaseMixin):
     ) -> None:
         user_1.approves_follow_request_from(remote_user)
         workout_cycling_user_1.workout_visibility = workout_visibility
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
+        workout_cycling_user_1.remote_url = (
+            workout_cycling_user_1.get_remote_url()
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )

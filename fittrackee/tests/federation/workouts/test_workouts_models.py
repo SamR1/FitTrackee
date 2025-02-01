@@ -183,6 +183,10 @@ class TestWorkoutModelGetWorkoutCreateActivity:
         workout_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = workout_visibility
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
+        workout_cycling_user_1.remote_url = (
+            workout_cycling_user_1.get_remote_url()
+        )
 
         create_workout, create_note = workout_cycling_user_1.get_activities(
             activity_type=self.activity_type
@@ -230,10 +234,7 @@ class TestWorkoutModelGetWorkoutDeleteActivity:
         workout_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = workout_visibility
-        workout_cycling_user_1.ap_id = (
-            f'{user_1.actor.activitypub_id}/workouts/'
-            f'{workout_cycling_user_1.short_id}'
-        )
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
 
         delete_workout, _ = workout_cycling_user_1.get_activities(
             activity_type='Delete'
@@ -254,6 +255,10 @@ class TestWorkoutLikeActivities:
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
+        workout_cycling_user_1.remote_url = (
+            workout_cycling_user_1.get_remote_url()
+        )
         like = WorkoutLike(
             user_id=user_1.id, workout_id=workout_cycling_user_1.id
         )
@@ -280,6 +285,10 @@ class TestWorkoutLikeActivities:
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
+        workout_cycling_user_1.remote_url = (
+            workout_cycling_user_1.get_remote_url()
+        )
         like = WorkoutLike(
             user_id=user_1.id, workout_id=workout_cycling_user_1.id
         )

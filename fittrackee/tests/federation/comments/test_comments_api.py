@@ -137,7 +137,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         data = json.loads(response.data.decode())
         new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=remote_cycling_workout.id
-        ).first()
+        ).one()
         assert data['comment'] == jsonify_dict(new_comment.serialize(user_1))
         assert new_comment.ap_id == (
             f'{user_1.actor.activitypub_id}/'
@@ -166,6 +166,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             remote_user,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -302,7 +303,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             ),
         )
 
-        note_activity = Comment.query.first().get_activity(
+        note_activity = Comment.query.one().get_activity(
             activity_type='Create'
         )
         send_to_remote_inbox_mock.send.assert_called_once_with(
@@ -348,7 +349,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             ),
         )
 
-        note_activity = Comment.query.first().get_activity(
+        note_activity = Comment.query.one().get_activity(
             activity_type='Create'
         )
         send_to_remote_inbox_mock.send.assert_called_once_with(
@@ -394,7 +395,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             ),
         )
 
-        note_activity = Comment.query.first().get_activity(
+        note_activity = Comment.query.one().get_activity(
             activity_type='Create'
         )
         send_to_remote_inbox_mock.send.assert_called_once_with(
@@ -435,7 +436,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
-        ).first()
+        ).one()
         assert (
             Mention.query.filter_by(
                 comment_id=new_comment.id, user_id=remote_user.id
@@ -461,6 +462,7 @@ class TestGetWorkoutCommentAsUser(
             user_3,
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -499,6 +501,7 @@ class TestGetWorkoutCommentAsFollower(
             user_3,
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -537,6 +540,7 @@ class TestGetWorkoutCommentAsRemoteFollower(
             remote_user,
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -572,6 +576,7 @@ class TestGetWorkoutCommentAsOwner(
             user_1,
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -609,6 +614,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
             user_1,
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
         client = app_with_federation.test_client()
 
@@ -638,12 +644,14 @@ class TestGetWorkoutCommentWithReplies(
             user_1,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
         reply = self.create_comment(
             user_1,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
             parent_comment=comment,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -678,6 +686,7 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
             user_3,
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -713,6 +722,7 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
             user_3,
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PRIVATE,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -753,6 +763,7 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
             user_3,
             workout_cycling_user_2,
             text_visibility=input_text_visibility,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -788,6 +799,7 @@ class TestGetWorkoutCommentsAsOwner(GetWorkoutCommentsTestCase):
             user_1,
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -823,6 +835,7 @@ class TestGetWorkoutCommentsAsUnauthenticatedUser(GetWorkoutCommentsTestCase):
             user_1,
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
         client = app_with_federation.test_client()
 
@@ -857,6 +870,7 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
                 remote_user_2,
                 workout_cycling_user_2,
                 text_visibility=VisibilityLevel.PUBLIC,
+                with_federation=True,
             )
         ]
 
@@ -870,6 +884,7 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
                 remote_user_2,
                 workout_cycling_user_2,
                 text_visibility=privacy_levels,
+                with_federation=True,
             )
 
         for privacy_levels in [
@@ -884,6 +899,7 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
                     workout_cycling_user_2,
                     text=f"@{user_1.username}",
                     text_visibility=privacy_levels,
+                    with_federation=True,
                 )
             )
 
@@ -897,12 +913,14 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
                     remote_user,
                     workout_cycling_user_2,
                     text_visibility=privacy_levels,
+                    with_federation=True,
                 )
             )
         self.create_comment(
             remote_user,
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PRIVATE,
+            with_federation=True,
         )
         # user 3
         visible_comments.append(
@@ -910,6 +928,7 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
                 user_3,
                 workout_cycling_user_2,
                 text_visibility=VisibilityLevel.PUBLIC,
+                with_federation=True,
             )
         )
         for privacy_levels in [
@@ -921,6 +940,7 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
                 user_3,
                 workout_cycling_user_2,
                 text_visibility=privacy_levels,
+                with_federation=True,
             )
         # user 2 followed by user 1
         for privacy_levels in [
@@ -933,12 +953,14 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
                     user_2,
                     workout_cycling_user_2,
                     text_visibility=privacy_levels,
+                    with_federation=True,
                 )
             )
         self.create_comment(
             user_2,
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PRIVATE,
+            with_federation=True,
         )
         # user 1
         for privacy_levels in [
@@ -952,6 +974,7 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
                     user_1,
                     workout_cycling_user_2,
                     text_visibility=privacy_levels,
+                    with_federation=True,
                 )
             )
         client, auth_token = self.get_test_client_and_auth_token(
@@ -997,6 +1020,7 @@ class TestGetWorkoutCommentWithMention(
             workout_cycling_user_2,
             text=f"@{user_1.username} {self.random_string()}",
             text_visibility=input_workout_visibility,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1031,12 +1055,14 @@ class TestGetWorkoutsCommentsWithReplies(
             user_1,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
         reply = self.create_comment(
             user_1,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
             parent_comment=comment,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1076,6 +1102,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             user_2,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1111,6 +1138,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             user_1,
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1141,6 +1169,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             user_1,
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1175,6 +1204,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             workout_cycling_user_2,
             text=f"@{remote_user.fullname} {self.random_string()}",
             text_visibility=input_visibility,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1215,6 +1245,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             user_1,
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1255,6 +1286,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             user_1,
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1291,6 +1323,7 @@ class TestDeleteWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             workout_cycling_user_2,
             text=f"@{remote_user.fullname}",
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         comment_id = comment.id
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1326,6 +1359,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             user_1,
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.FOLLOWERS,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1367,6 +1401,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             workout_cycling_user_2,
             text=f"@{remote_user.fullname} foo",
             text_visibility=input_visibility,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1413,6 +1448,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             workout_cycling_user_2,
             text=f"@{remote_user.fullname} foo",
             text_visibility=input_visibility,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1456,6 +1492,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             user_1,
             workout_cycling_user_1,
             text_visibility=text_visibility,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1498,6 +1535,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             workout_cycling_user_2,
             text=f"@{remote_user.fullname} @{remote_user_2.fullname}",
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1512,7 +1550,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
-        ).first()
+        ).one()
         mentions = Mention.query.filter_by(comment_id=new_comment.id).all()
         assert len(mentions) == 1
         assert mentions[0] == (
@@ -1543,6 +1581,7 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             workout_cycling_user_2,
             text=f"@{remote_user.fullname}",
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
@@ -1559,6 +1598,6 @@ class TestPatchWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
-        ).first()
+        ).one()
         mentions = Mention.query.filter_by(comment_id=new_comment.id).all()
         assert len(mentions) == 2

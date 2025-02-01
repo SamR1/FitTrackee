@@ -9,7 +9,7 @@ from ..utils import RandomActor, random_domain
 
 @pytest.fixture()
 def app_actor(app: Flask) -> Actor:
-    domain = Domain.query.filter_by(name=app.config['AP_DOMAIN']).first()
+    domain = Domain.query.filter_by(name=app.config['AP_DOMAIN']).one()
     actor = Actor(preferred_username='test', domain_id=domain.id)
     db.session.add(actor)
     db.session.commit()

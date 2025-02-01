@@ -219,6 +219,20 @@ class Comment(BaseModel):
     def short_id(self) -> str:
         return encode_uuid(self.uuid)
 
+    def get_ap_id(self) -> str:
+        return (
+            f'{self.user.actor.activitypub_id}/'
+            f'workouts/{self.workout.short_id}/'
+            f'comments/{self.short_id}'
+        )
+
+    def get_remote_url(self) -> str:
+        return (
+            f'https://{self.user.actor.domain.name}/'
+            f'workouts/{self.workout.short_id}/'
+            f'comments/{self.short_id}'
+        )
+
     @property
     def suspension_action(self) -> Optional['ReportAction']:
         if self.suspended_at is None:
@@ -399,7 +413,7 @@ class Comment(BaseModel):
                         reply_to=self.id,
                     )
                 ]
-                if with_replies and not for_report
+                if with_replies and self.workout_id and not for_report
                 else []
             ),
             'likes_count': self.likes.count() if display_content else 0,
@@ -475,12 +489,10 @@ def on_comment_insert(
         if not workout:
             return
 
-        to_user_id = workout.user_id
-
         if new_comment.reply_to is None:
             to_user_id = workout.user_id
         else:
-            comment = Comment.query.filter_by(id=new_comment.reply_to).first()
+            comment = Comment.query.filter_by(id=new_comment.reply_to).one()
             to_user_id = comment.user_id
 
         if new_comment.user_id == to_user_id:

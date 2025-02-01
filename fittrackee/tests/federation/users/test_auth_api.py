@@ -26,7 +26,7 @@ def assert_actor_is_created(app: Flask) -> None:
         content_type='application/json',
     )
 
-    user = User.query.filter_by(username=username).first()
+    user = User.query.filter_by(username=username).one()
     assert user.actor.preferred_username == username
     assert user.actor.public_key is not None
     assert user.actor.private_key is not None
@@ -61,7 +61,7 @@ class TestUserRegistration:
         created_user = User.query.filter(
             User.username == remote_user.username,
             User.is_remote == False,  # noqa
-        ).first()
+        ).one()
         assert created_user.id != remote_user.id
 
 

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import TYPE_CHECKING, Dict, Union
+from typing import TYPE_CHECKING, Dict, Optional, Union
 
 from fittrackee.visibility_levels import VisibilityLevel
 
@@ -24,7 +24,7 @@ class BaseObject(ABC):
     published: str
 
     def _init_activity_dict(self) -> Dict:
-        activity = {
+        activity: Dict = {
             '@context': AP_CTX,
             'type': self.type.value,
             'id': f"{self.activity_id}/{self.type.value.lower()}",
@@ -56,8 +56,12 @@ class BaseObject(ABC):
     @staticmethod
     def _get_modification_date(
         activity_object: Union['Workout', 'Comment'],
-    ) -> str:
-        return activity_object.modification_date.strftime(DATE_FORMAT)
+    ) -> Optional[str]:
+        return (
+            activity_object.modification_date.strftime(DATE_FORMAT)
+            if activity_object.modification_date
+            else None
+        )
 
     @abstractmethod
     def get_activity(self) -> Dict:

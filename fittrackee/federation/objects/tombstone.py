@@ -29,7 +29,7 @@ class TombstoneObject(BaseObject):
             self.object_to_delete_type != 'Comment'
             or (
                 self.object_to_delete_type == 'Comment'
-                and not self.object_to_delete.has_remote_mentions
+                and not self.object_to_delete.has_remote_mentions  # type: ignore
             )
         ):
             raise InvalidVisibilityException(
@@ -38,8 +38,8 @@ class TombstoneObject(BaseObject):
 
     def _get_object_visibility(self) -> VisibilityLevel:
         if self.object_to_delete_type == 'Comment':
-            return self.object_to_delete.text_visibility
-        return self.object_to_delete.workout_visibility
+            return self.object_to_delete.text_visibility  # type: ignore
+        return self.object_to_delete.workout_visibility  # type: ignore
 
     def get_activity(self) -> Dict:
         delete_activity = {
@@ -61,14 +61,17 @@ class TombstoneObject(BaseObject):
             VisibilityLevel.FOLLOWERS,
         ]:
             # for comments w/ mentions
-            _, mentioned_users = self.object_to_delete.handle_mentions()
-            mentions = [
-                user.actor.activitypub_id
-                for user in mentioned_users["local"].union(
-                    mentioned_users["remote"]
-                )
-            ]
-            delete_activity['to'] = mentions
+            if hasattr(self.object_to_delete, "handle_mentions"):
+                _, mentioned_users = self.object_to_delete.handle_mentions()
+                mentions = [
+                    user.actor.activitypub_id
+                    for user in mentioned_users["local"].union(
+                        mentioned_users["remote"]
+                    )
+                ]
+                delete_activity['to'] = mentions
+            else:
+                delete_activity['to'] = []
             delete_activity['cc'] = []
         else:
             delete_activity['to'] = [self.actor.followers_url]

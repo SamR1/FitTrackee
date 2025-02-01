@@ -36,10 +36,10 @@ class Domain(BaseModel):
     )
     created_at: Mapped[datetime] = mapped_column(TZDateTime, nullable=False)
     is_allowed: Mapped[bool] = mapped_column(default=True, nullable=False)
-    software_name: Mapped[datetime] = mapped_column(
+    software_name: Mapped[Optional[str]] = mapped_column(
         db.String(255), nullable=True
     )
-    software_version: Mapped[datetime] = mapped_column(
+    software_version: Mapped[Optional[str]] = mapped_column(
         db.String(255), nullable=True
     )
 
@@ -104,8 +104,12 @@ class Actor(BaseModel):
     preferred_username: Mapped[str] = mapped_column(
         db.String(255), nullable=False
     )
-    public_key: Mapped[str] = mapped_column(db.String(5000), nullable=True)
-    private_key: Mapped[str] = mapped_column(db.String(5000), nullable=True)
+    public_key: Mapped[Optional[str]] = mapped_column(
+        db.String(5000), nullable=True
+    )
+    private_key: Mapped[Optional[str]] = mapped_column(
+        db.String(5000), nullable=True
+    )
     profile_url: Mapped[str] = mapped_column(db.String(255), nullable=False)
     inbox_url: Mapped[str] = mapped_column(db.String(255), nullable=False)
     outbox_url: Mapped[str] = mapped_column(db.String(255), nullable=False)
@@ -160,7 +164,7 @@ class Actor(BaseModel):
     def generate_stats_if_remote(
         cls, actor_id: int, domain_id: int, session: Session
     ) -> None:
-        domain = Domain.query.filter_by(id=domain_id).first()
+        domain = Domain.query.filter_by(id=domain_id).one()
         if domain.name != current_app.config['AP_DOMAIN']:
             stats = RemoteActorStats(actor_id=actor_id)
             session.add(stats)

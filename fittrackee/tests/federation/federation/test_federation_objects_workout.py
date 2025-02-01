@@ -7,6 +7,7 @@ from flask import Flask
 from fittrackee.exceptions import InvalidVisibilityException
 from fittrackee.federation.constants import AP_CTX, DATE_FORMAT
 from fittrackee.federation.exceptions import InvalidWorkoutException
+from fittrackee.federation.objects.exceptions import InvalidObjectException
 from fittrackee.federation.objects.workout import (
     WorkoutObject,
     convert_duration_string_to_seconds,
@@ -24,7 +25,7 @@ class WorkoutObjectTestCase(RandomMixin):
     def get_updated(workout: Workout, activity_type: str) -> Dict:
         return (
             {'updated': workout.modification_date.strftime(DATE_FORMAT)}
-            if activity_type == 'Update'
+            if activity_type == 'Update' and workout.modification_date
             else {}
         )
 
@@ -58,11 +59,47 @@ class TestWorkoutObject(WorkoutObjectTestCase):
     ) -> None:
         invalid_activity_type = self.random_string()
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
+        workout_cycling_user_1.remote_url = (
+            workout_cycling_user_1.get_remote_url()
+        )
         with pytest.raises(
             ValueError,
             match=f"'{invalid_activity_type}' is not a valid ActivityType",
         ):
             WorkoutObject(workout_cycling_user_1, invalid_activity_type)
+
+    def test_it_raises_error_when_workout_has_no_ap_id(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.remote_url = (
+            workout_cycling_user_1.get_remote_url()
+        )
+        with pytest.raises(
+            InvalidObjectException,
+            match="Invalid workout, missing 'ap_id' or 'remote_url'",
+        ):
+            WorkoutObject(workout_cycling_user_1, 'Create')
+
+    def test_it_raises_error_when_workout_has_no_remote_url(
+        self,
+        app_with_federation: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
+        with pytest.raises(
+            InvalidObjectException,
+            match="Invalid workout, missing 'ap_id' or 'remote_url'",
+        ):
+            WorkoutObject(workout_cycling_user_1, 'Create')
 
     @pytest.mark.parametrize('input_activity_type', ['Create', 'Update'])
     def test_it_generates_activity_when_visibility_is_followers_and_remote_only(  # noqa
@@ -81,6 +118,10 @@ class TestWorkoutObject(WorkoutObjectTestCase):
             datetime.now(timezone.utc)
             if input_activity_type == "Update"
             else None
+        )
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
+        workout_cycling_user_1.remote_url = (
+            workout_cycling_user_1.get_remote_url()
         )
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
         updated = self.get_updated(workout_cycling_user_1, input_activity_type)
@@ -106,10 +147,10 @@ class TestWorkoutObject(WorkoutObjectTestCase):
                 'attributedTo': user_1.actor.activitypub_id,
                 'to': [user_1.actor.followers_url],
                 'cc': [],
-                'ave_speed': float(workout_cycling_user_1.ave_speed),
-                'distance': float(workout_cycling_user_1.distance),
+                'ave_speed': workout_cycling_user_1.ave_speed,
+                'distance': workout_cycling_user_1.distance,
                 'duration': str(workout_cycling_user_1.duration),
-                'max_speed': float(workout_cycling_user_1.max_speed),
+                'max_speed': workout_cycling_user_1.max_speed,
                 'moving': str(workout_cycling_user_1.moving),
                 'sport_id': workout_cycling_user_1.sport_id,
                 'title': workout_cycling_user_1.title,
@@ -136,6 +177,14 @@ class TestWorkoutObject(WorkoutObjectTestCase):
             if input_activity_type == "Update"
             else None
         )
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
+        workout_cycling_user_1.remote_url = (
+            workout_cycling_user_1.get_remote_url()
+        )
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
+        workout_cycling_user_1.remote_url = (
+            workout_cycling_user_1.get_remote_url()
+        )
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
         updated = self.get_updated(workout_cycling_user_1, input_activity_type)
         workout = WorkoutObject(workout_cycling_user_1, input_activity_type)
@@ -160,10 +209,10 @@ class TestWorkoutObject(WorkoutObjectTestCase):
                 'attributedTo': user_1.actor.activitypub_id,
                 'to': ['https://www.w3.org/ns/activitystreams#Public'],
                 'cc': [user_1.actor.followers_url],
-                'ave_speed': float(workout_cycling_user_1.ave_speed),
-                'distance': float(workout_cycling_user_1.distance),
+                'ave_speed': workout_cycling_user_1.ave_speed,
+                'distance': workout_cycling_user_1.distance,
                 'duration': str(workout_cycling_user_1.duration),
-                'max_speed': float(workout_cycling_user_1.max_speed),
+                'max_speed': workout_cycling_user_1.max_speed,
                 'moving': str(workout_cycling_user_1.moving),
                 'sport_id': workout_cycling_user_1.sport_id,
                 'title': workout_cycling_user_1.title,
@@ -202,6 +251,10 @@ Duration: {workout.duration}</p>
             if input_activity_type == "Update"
             else None
         )
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
+        workout_cycling_user_1.remote_url = (
+            workout_cycling_user_1.get_remote_url()
+        )
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
         updated = self.get_updated(workout_cycling_user_1, input_activity_type)
         workout = WorkoutObject(workout_cycling_user_1, input_activity_type)
@@ -226,7 +279,8 @@ Duration: {workout.duration}</p>
                 'url': workout_cycling_user_1.remote_url,
                 'attributedTo': user_1.actor.activitypub_id,
                 'content': self.expected_workout_note(
-                    workout_cycling_user_1, workout_cycling_user_1.remote_url
+                    workout_cycling_user_1,
+                    workout_cycling_user_1.remote_url,  # type: ignore
                 ),
                 'to': [user_1.actor.followers_url],
                 'cc': [],
@@ -249,6 +303,10 @@ Duration: {workout.duration}</p>
             datetime.now(timezone.utc)
             if input_activity_type == "Update"
             else None
+        )
+        workout_cycling_user_1.ap_id = workout_cycling_user_1.get_ap_id()
+        workout_cycling_user_1.remote_url = (
+            workout_cycling_user_1.get_remote_url()
         )
         published = workout_cycling_user_1.creation_date.strftime(DATE_FORMAT)
         updated = self.get_updated(workout_cycling_user_1, input_activity_type)
@@ -274,7 +332,8 @@ Duration: {workout.duration}</p>
                 'url': workout_cycling_user_1.remote_url,
                 'attributedTo': user_1.actor.activitypub_id,
                 'content': self.expected_workout_note(
-                    workout_cycling_user_1, workout_cycling_user_1.remote_url
+                    workout_cycling_user_1,
+                    workout_cycling_user_1.remote_url,  # type: ignore
                 ),
                 'to': ['https://www.w3.org/ns/activitystreams#Public'],
                 'cc': [user_1.actor.followers_url],
@@ -335,10 +394,10 @@ class TestWorkoutConvertWorkoutActivity(RandomMixin):
             'attributedTo': user_1.actor.activitypub_id,
             'to': [user_1.actor.followers_url],
             'cc': [],
-            'ave_speed': float(workout_cycling_user_1.ave_speed),
-            'distance': float(workout_cycling_user_1.distance),
+            'ave_speed': workout_cycling_user_1.ave_speed,
+            'distance': workout_cycling_user_1.distance,
             'duration': str(workout_cycling_user_1.duration),
-            'max_speed': float(workout_cycling_user_1.max_speed),
+            'max_speed': workout_cycling_user_1.max_speed,
             'moving': str(workout_cycling_user_1.moving),
             'sport_id': workout_cycling_user_1.sport_id,
             'title': workout_cycling_user_1.title,
@@ -351,5 +410,5 @@ class TestWorkoutConvertWorkoutActivity(RandomMixin):
         assert convert_workout_activity(workout_activity_object) == {
             **workout_activity_object,
             'duration': workout_cycling_user_1.duration.seconds,
-            'moving': workout_cycling_user_1.moving.seconds,
+            'moving': workout_cycling_user_1.moving.seconds,  # type: ignore
         }

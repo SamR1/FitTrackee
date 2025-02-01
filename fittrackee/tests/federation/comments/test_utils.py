@@ -66,7 +66,7 @@ class TestGetMentionedUsers:
         ):
             _, mentioned_users = handle_mentions(text)
 
-        remote_user = User.query.filter_by(username=random_actor.name).first()
+        remote_user = User.query.filter_by(username=random_actor.name).one()
         assert mentioned_users == {"local": set(), "remote": {remote_user}}
 
     def test_it_returns_text_with_link_when_remote_user_found(

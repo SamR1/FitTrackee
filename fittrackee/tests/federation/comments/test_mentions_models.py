@@ -29,6 +29,7 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
             workout_cycling_user_1,
             text=f"@{user_2.username} {self.random_string()}",
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
 
         comment.serialize(user_1)  # author
@@ -67,6 +68,7 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
                 f"{self.random_string()}"
             ),
             text_visibility=text_visibility,
+            with_federation=True,
         )
 
         assert comment.serialize(user_1)  # author
@@ -97,6 +99,7 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
             workout_cycling_user_1,
             text=f"@{user_3.username} {self.random_string()}",
             text_visibility=VisibilityLevel.FOLLOWERS,
+            with_federation=True,
         )
 
         assert comment.serialize(user_1)  # author
@@ -128,6 +131,7 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
             workout_cycling_user_1,
             text=f"@{remote_user.fullname} {self.random_string()}",
             text_visibility=VisibilityLevel.PRIVATE,
+            with_federation=True,
         )
 
         assert comment.serialize(user_1)  # author
@@ -157,6 +161,7 @@ class TestWorkoutCommentRemoteMentions(CommentMixin):
                 f"@{remote_user.fullname}"
             ),
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
 
         assert comment.remote_mentions.count() == 1
@@ -176,6 +181,7 @@ class TestWorkoutCommentRemoteMentions(CommentMixin):
             workout_cycling_user_1,
             text=f"@{user_3.username} {self.random_string()}",
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
 
         assert comment.has_remote_mentions is False
@@ -195,6 +201,7 @@ class TestWorkoutCommentRemoteMentions(CommentMixin):
             workout_cycling_user_1,
             text=f"@{remote_user.fullname} {self.random_string()}",
             text_visibility=VisibilityLevel.PUBLIC,
+            with_federation=True,
         )
 
         assert comment.has_remote_mentions is True

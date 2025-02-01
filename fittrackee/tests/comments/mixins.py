@@ -22,6 +22,7 @@ class CommentMixin(RandomMixin):
         created_at: Optional[datetime] = None,
         parent_comment: Optional[Comment] = None,
         with_mentions: bool = True,
+        with_federation: bool = False,
     ) -> Comment:
         text = self.random_string() if text is None else text
         comment = Comment(
@@ -37,14 +38,8 @@ class CommentMixin(RandomMixin):
         if with_mentions:
             with patch('fittrackee.federation.utils.user.update_remote_user'):
                 comment.create_mentions()
-        actor = comment.user.actor
-        comment.ap_id = (
-            f'{actor.activitypub_id}/workouts/{workout.short_id}'
-            f'/comments/{comment.short_id}'
-        )
-        comment.remote_url = (
-            f'https://{actor.domain.name}/workouts/{workout.short_id}'
-            f'/comments/{comment.short_id}'
-        )
+        if with_federation:
+            comment.ap_id = comment.get_ap_id()
+            comment.remote_url = comment.get_remote_url()
         db.session.commit()
         return comment
