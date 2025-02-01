@@ -12,7 +12,7 @@ def clean(sql: str, days: int) -> int:
     limit = int(time.time()) - (days * 86400)
     result = db.session.execute(text(sql), {'limit': limit})
     db.session.commit()
-    return result.rowcount
+    return result.rowcount  # type: ignore
 
 
 def encode_uuid(uuid_value: UUID) -> str:

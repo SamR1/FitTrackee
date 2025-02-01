@@ -1,13 +1,15 @@
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
-from sqlalchemy.sql import select, text
+from sqlalchemy.sql import select
+from sqlalchemy.sql import text as sql_text
 from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, db
@@ -19,8 +21,9 @@ from fittrackee.visibility_levels import VisibilityLevel, can_view
 from .exceptions import CommentForbiddenException
 
 if TYPE_CHECKING:
-    from fittrackee.reports.models import ReportAction
+    from fittrackee.reports.models import Report, ReportAction
     from fittrackee.users.models import User
+    from fittrackee.workouts.models import Workout
 
 
 def get_comments(workout_id: int, user: Optional['User']) -> List['Comment']:
@@ -56,60 +59,76 @@ def get_comments(workout_id: int, user: Optional['User']) -> List['Comment']:
           )
         ORDER BY comments.created_at;"""
 
-        comments_filter = db.session.scalars(
-            select(Comment)
-            .from_statement(
-                text(sql),
+        return (
+            db.session.scalars(  # type: ignore
+                select(Comment)
+                .from_statement(
+                    sql_text(sql),
+                )
+                .params(**params)
             )
-            .params(**params)
-        ).unique()
-    else:
-        comments_filter = Comment.query.filter(
+            .unique()
+            .all()
+        )
+
+    return (
+        Comment.query.filter(
             Comment.workout_id == workout_id,
             Comment.text_visibility == VisibilityLevel.PUBLIC,
-        ).order_by(Comment.created_at.asc())
-
-    return comments_filter.all()
+        )
+        .order_by(Comment.created_at.asc())
+        .all()
+    )
 
 
 class Comment(BaseModel):
     __tablename__ = 'comments'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    uuid = db.Column(
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    uuid: Mapped[UUID] = mapped_column(
         postgresql.UUID(as_uuid=True),
         default=uuid4,
         unique=True,
         nullable=False,
     )
-    user_id = db.Column(
-        db.Integer,
+    user_id: Mapped[int] = mapped_column(
         db.ForeignKey('users.id', ondelete='CASCADE'),
         index=True,
         nullable=False,
     )
-    workout_id = db.Column(
-        db.Integer,
+    workout_id: Mapped[Optional[int]] = mapped_column(
         db.ForeignKey('workouts.id', ondelete="SET NULL"),
         index=True,
         nullable=True,
     )
-    created_at = db.Column(TZDateTime, default=aware_utc_now)
-    modification_date = db.Column(TZDateTime, nullable=True)
-    text = db.Column(db.String(), nullable=False)
-    text_visibility = db.Column(
+    created_at: Mapped[datetime] = mapped_column(
+        TZDateTime, default=aware_utc_now
+    )
+    modification_date: Mapped[Optional[datetime]] = mapped_column(
+        TZDateTime, nullable=True
+    )
+    text: Mapped[str] = mapped_column(db.String(), nullable=False)
+    text_visibility: Mapped[VisibilityLevel] = mapped_column(
         Enum(VisibilityLevel, name='visibility_levels'),
         server_default='PRIVATE',
         nullable=False,
     )
-    suspended_at = db.Column(TZDateTime, nullable=True)
+    suspended_at: Mapped[Optional[datetime]] = mapped_column(
+        TZDateTime, nullable=True
+    )
 
-    mentions = db.relationship(
+    user: Mapped["User"] = relationship(
+        'User', lazy='select', single_parent=True
+    )
+    workout: Mapped["Workout"] = relationship(
+        'Workout', lazy='select', single_parent=True
+    )
+    mentions: Mapped[List["Mention"]] = relationship(
         "Mention",
         lazy=True,
         cascade="all, delete",
-        backref=db.backref("comment", lazy="joined", single_parent=True),
+        back_populates="comment",
     )
-    mentioned_users = db.relationship(
+    mentioned_users = relationship(
         "User",
         secondary="mentions",
         primaryjoin="Comment.id == Mention.comment_id",
@@ -117,7 +136,7 @@ class Comment(BaseModel):
         lazy="dynamic",
         viewonly=True,
     )
-    likes = db.relationship(
+    likes = relationship(
         "User",
         secondary="comment_likes",
         primaryjoin="Comment.id == CommentLike.comment_id",
@@ -214,6 +233,12 @@ class Comment(BaseModel):
     def liked_by(self, user: 'User') -> bool:
         return user in self.likes.all()
 
+    @property
+    def reports(self) -> List["Report"]:
+        from fittrackee.reports.models import Report
+
+        return Report.query.filter_by(reported_comment_id=self.id).all()
+
     def serialize(
         self,
         user: Optional['User'] = None,
@@ -286,17 +311,21 @@ class Comment(BaseModel):
 class Mention(BaseModel):
     __tablename__ = 'mentions'
 
-    comment_id = db.Column(
-        db.Integer,
+    comment_id: Mapped[int] = mapped_column(
         db.ForeignKey('comments.id', ondelete="CASCADE"),
         primary_key=True,
     )
-    user_id = db.Column(
-        db.Integer,
+    user_id: Mapped[int] = mapped_column(
         db.ForeignKey('users.id', ondelete="CASCADE"),
         primary_key=True,
     )
-    created_at = db.Column(TZDateTime, nullable=False, default=aware_utc_now)
+    created_at: Mapped[datetime] = mapped_column(
+        TZDateTime, nullable=False, default=aware_utc_now
+    )
+
+    comment: Mapped["Comment"] = relationship(
+        "Comment", lazy="joined", single_parent=True
+    )
 
     def __init__(
         self,
@@ -332,13 +361,18 @@ def on_comment_insert(
             create_notification = True
 
         workout = Workout.query.filter_by(id=new_comment.workout_id).first()
+        if not workout:
+            return
+
         to_user_id = workout.user_id
 
         if new_comment.user_id == to_user_id:
             return
 
         to_user = User.query.filter_by(id=to_user_id).first()
-        if not to_user.is_notification_enabled('workout_comment'):
+        if not to_user or not to_user.is_notification_enabled(
+            'workout_comment'
+        ):
             return
 
         if (
@@ -397,6 +431,8 @@ def on_mention_insert(
         from fittrackee.users.models import Notification, User
 
         comment = Comment.query.filter_by(id=new_mention.comment_id).first()
+        if not comment:
+            return
 
         # `mention` notification is not created when:
 
@@ -405,10 +441,10 @@ def on_mention_insert(
             return
 
         to_user = User.query.filter_by(id=new_mention.user_id).first()
-        if not to_user.is_notification_enabled("mention"):
+        if not to_user or not to_user.is_notification_enabled("mention"):
             return
 
-        # - mentioned user is workout owner and `workout_comment'
+        # - mentioned user is workout owner and 'workout_comment'
         # notification does not exist
         notification = (
             Notification.query.join(
@@ -456,22 +492,20 @@ class CommentLike(BaseModel):
             'user_id', 'comment_id', name='user_id_comment_id_unique'
         ),
     )
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    created_at = db.Column(TZDateTime, nullable=False)
-    user_id = db.Column(
-        db.Integer,
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    created_at: Mapped[datetime] = mapped_column(TZDateTime, nullable=False)
+    user_id: Mapped[int] = mapped_column(
         db.ForeignKey('users.id', ondelete='CASCADE'),
         nullable=False,
     )
-    comment_id = db.Column(
-        db.Integer,
+    comment_id: Mapped[int] = mapped_column(
         db.ForeignKey('comments.id', ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
 
-    user = db.relationship("User", lazy=True)
-    comment = db.relationship("Comment", lazy=True)
+    user: Mapped["User"] = relationship("User", lazy=True)
+    comment: Mapped["Comment"] = relationship("Comment", lazy=True)
 
     def __init__(
         self,
@@ -497,9 +531,14 @@ def on_comment_like_insert(
         comment = Comment.query.filter_by(
             id=new_comment_like.comment_id
         ).first()
+        if not comment:
+            return
+
         if new_comment_like.user_id != comment.user_id:
             to_user = User.query.filter_by(id=comment.user_id).first()
-            if not to_user.is_notification_enabled("comment_like"):
+            if not to_user or not to_user.is_notification_enabled(
+                "comment_like"
+            ):
                 return
 
             notification = Notification(
@@ -523,6 +562,8 @@ def on_comment_like_delete(
         comment = Comment.query.filter_by(
             id=old_comment_like.comment_id
         ).first()
+        if not comment:
+            return
         Notification.query.filter_by(
             from_user_id=old_comment_like.user_id,
             to_user_id=comment.user_id,

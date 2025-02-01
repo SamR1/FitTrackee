@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from typing import Dict, Optional, Union
 
 from sqlalchemy import func
+from sqlalchemy.orm.exc import NoResultFound
 
 from fittrackee import db
 from fittrackee.comments.models import Comment
@@ -39,16 +40,21 @@ class ReportService:
         object_id: str,
         object_type: str,
     ) -> Report:
+        target_object: Union[Comment, User, Workout]
         if object_type == "comment":
             target_object = get_comment(object_id, reporter)
         elif object_type == "workout":
             target_object = get_workout(object_id, reporter)
         else:  # object_type == "user"
-            target_object = User.query.filter(
-                func.lower(User.username) == func.lower(object_id),
-            ).first()
-            if not target_object or not target_object.is_active:
+            try:
+                user = User.query.filter(
+                    func.lower(User.username) == func.lower(object_id),
+                ).one()
+            except NoResultFound:
                 raise UserNotFoundException()
+            if not user.is_active:
+                raise UserNotFoundException()
+            target_object = user
 
         if target_object and target_object.suspended_at:
             raise SuspendedObjectException(object_type)
@@ -150,6 +156,8 @@ class ReportService:
 
             if action_type.startswith("user_warning"):
                 user = User.query.filter_by(username=username).first()
+                if not user:
+                    raise InvalidReportActionException("invalid 'username'")
 
                 existing_report_action = ReportAction.query.filter_by(
                     action_type=action_type,

@@ -2,7 +2,7 @@ import logging
 import os
 import re
 from importlib import import_module, reload
-from typing import Any, Dict, Tuple
+from typing import TYPE_CHECKING, Any, Dict, Tuple
 
 import redis
 from flask import (
@@ -20,7 +20,7 @@ from flask_limiter.util import get_remote_address
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import ProgrammingError
-from sqlalchemy.ext.declarative import DeclarativeMeta
+from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from fittrackee.emails.email import EmailService
@@ -40,10 +40,26 @@ logging.basicConfig(
 )
 appLog = logging.getLogger('fittrackee')
 
+
+class Base(DeclarativeBase):
+    pass
+
+
 db = SQLAlchemy(
-    engine_options={"future": True}, session_options={"future": True}
+    model_class=Base,
+    engine_options={"future": True},
+    session_options={"future": True},
 )
-BaseModel: DeclarativeMeta = db.Model
+
+# workaround with mypy
+# see https://github.com/pallets-eco/flask-sqlalchemy/issues/1327
+if TYPE_CHECKING:
+    from flask_sqlalchemy.model import Model
+
+    BaseModel = Model
+else:
+    BaseModel = db.Model
+
 bcrypt = Bcrypt()
 migrate = Migrate()
 email_service = EmailService()

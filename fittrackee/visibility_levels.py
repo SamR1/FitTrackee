@@ -32,6 +32,8 @@ def can_view(
     user: Optional['User'] = None,
     for_report: bool = False,
 ) -> bool:
+    from fittrackee.comments.models import Comment
+
     owner = target_object.user
     if user and (
         user.id == owner.id or (user.has_moderator_rights and for_report)
@@ -44,9 +46,6 @@ def can_view(
     ):
         if not user:
             return False
-
-        from fittrackee.comments.models import Comment
-
         user_comments_count = Comment.query.filter_by(
             workout_id=target_object.id, user_id=user.id
         ).count()
@@ -64,7 +63,7 @@ def can_view(
         return False
 
     if (
-        target_object.__class__.__name__ == "Comment"
+        isinstance(target_object, Comment)
         and user in target_object.mentioned_users.all()
     ):
         return True

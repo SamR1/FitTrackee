@@ -67,13 +67,13 @@ class TestUserDataExporterGetUserWorkoutsData:
                 'duration': str(workout_cycling_user_1.duration),
                 'pauses': None,
                 'moving': str(workout_cycling_user_1.moving),
-                'distance': float(workout_cycling_user_1.distance),
+                'distance': workout_cycling_user_1.distance,
                 'min_alt': None,
                 'max_alt': None,
                 'descent': None,
                 'ascent': None,
-                'max_speed': float(workout_cycling_user_1.max_speed),
-                'ave_speed': float(workout_cycling_user_1.ave_speed),
+                'max_speed': workout_cycling_user_1.max_speed,
+                'ave_speed': workout_cycling_user_1.ave_speed,
                 'gpx': None,
                 'records': [
                     record.serialize()
@@ -107,7 +107,7 @@ class TestUserDataExporterGetUserWorkoutsData:
         gpx_file: str,
     ) -> None:
         _, workout_short_id = post_a_workout(app, gpx_file)
-        workout = Workout.query.first()
+        workout = Workout.query.one()
         exporter = UserDataExporter(user_1)
 
         workouts_data = exporter.get_user_workouts_data()
@@ -405,7 +405,7 @@ class TestUserDataExporterGenerateArchive:
         gpx_file: str,
     ) -> None:
         _, workout_short_id = post_a_workout(app, gpx_file)
-        workout = Workout.query.first()
+        workout = Workout.query.one()
         expected_path = os.path.join(
             app.config['UPLOAD_FOLDER'],
             workout.gpx,
@@ -438,7 +438,7 @@ class TestUserDataExporterGenerateArchive:
         gpx_file: str,
     ) -> None:
         _, workout_short_id = post_a_workout(app, gpx_file)
-        workout = Workout.query.first()
+        workout = Workout.query.one()
         expected_path = os.path.join(
             app.config['UPLOAD_FOLDER'],
             workout.gpx,
@@ -748,8 +748,14 @@ class TestCleanUserDataExport(UserDataExportTestCase):
 
         assert counts["deleted_requests"] == 3
         assert counts["deleted_archives"] == 2
+        user_1_data_export_file_size = (
+            user_1_data_export.file_size if user_1_data_export.file_size else 0
+        )
+        user_2_data_export_file_size = (
+            user_2_data_export.file_size if user_2_data_export.file_size else 0
+        )
         assert counts["freed_space"] == (
-            user_1_data_export.file_size + user_2_data_export.file_size
+            user_1_data_export_file_size + user_2_data_export_file_size
         )
 
     def test_it_deletes_archive(
@@ -826,14 +832,14 @@ class TestGenerateUsersArchives(UserDataExportTestCase):
 
         assert count == 2
         assert (
-            UserDataExport.query.filter_by(user_id=user_1.id).first().completed
+            UserDataExport.query.filter_by(user_id=user_1.id).one().completed
             is True
         )
         assert (
-            UserDataExport.query.filter_by(user_id=user_2.id).first().completed
+            UserDataExport.query.filter_by(user_id=user_2.id).one().completed
             is False
         )
         assert (
-            UserDataExport.query.filter_by(user_id=user_3.id).first().completed
+            UserDataExport.query.filter_by(user_id=user_3.id).one().completed
             is True
         )

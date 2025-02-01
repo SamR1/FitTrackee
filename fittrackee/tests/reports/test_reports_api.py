@@ -359,7 +359,7 @@ class TestPostCommentReport(ReportTestCase):
 
         assert response.status_code == 201
         assert response.json == {"status": "created"}
-        new_report = Report.query.filter_by(reported_by=user_1.id).first()
+        new_report = Report.query.filter_by(reported_by=user_1.id).one()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -408,7 +408,7 @@ class TestPostCommentReport(ReportTestCase):
         assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(
             reported_by=user_1.id, object_type="comment"
-        ).first()
+        ).one()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -459,7 +459,7 @@ class TestPostCommentReport(ReportTestCase):
         assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(
             reported_by=user_1.id, object_type="comment"
-        ).first()
+        ).one()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -624,7 +624,7 @@ class TestPostWorkoutReport(ReportTestCase):
 
         assert response.status_code == 201
         assert response.json == {"status": "created"}
-        new_report = Report.query.filter_by(reported_by=user_1.id).first()
+        new_report = Report.query.filter_by(reported_by=user_1.id).one()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -668,7 +668,7 @@ class TestPostWorkoutReport(ReportTestCase):
         assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(
             reported_by=user_1.id, object_type="workout"
-        ).first()
+        ).one()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -717,7 +717,7 @@ class TestPostWorkoutReport(ReportTestCase):
         assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(
             reported_by=user_1.id, object_type="workout"
-        ).first()
+        ).one()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -864,7 +864,7 @@ class TestPostUserReport(ReportTestCase):
 
         assert response.status_code == 201
         assert response.json == {"status": "created"}
-        new_report = Report.query.filter_by(reported_by=user_1.id).first()
+        new_report = Report.query.filter_by(reported_by=user_1.id).one()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -909,7 +909,7 @@ class TestPostUserReport(ReportTestCase):
         assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(
             reported_by=user_1.id, object_type="user"
-        ).first()
+        ).one()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -2283,7 +2283,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
 
         assert response.status_code == 200
         assert (
-            User.query.filter_by(username=user_2.username).first().suspended_at
+            User.query.filter_by(username=user_2.username).one().suspended_at
             == now
         )
 
@@ -2358,7 +2358,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
 
         assert response.status_code == 200
         assert (
-            User.query.filter_by(username=user_2.username).first().suspended_at
+            User.query.filter_by(username=user_2.username).one().suspended_at
             is None
         )
 
@@ -2428,7 +2428,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
-        updated_report = Report.query.filter_by(id=report.id).first()
+        updated_report = Report.query.filter_by(id=report.id).one()
         assert data["report"] == jsonify_dict(
             updated_report.serialize(user_1_moderator, full=True)
         )
@@ -2700,7 +2700,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         assert response.status_code == 200
         assert (
             Workout.query.filter_by(id=workout_cycling_user_2.id)
-            .first()
+            .one()
             .suspended_at
             == now
         )
@@ -2770,7 +2770,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         assert response.status_code == 200
         assert (
             Workout.query.filter_by(id=workout_cycling_user_2.id)
-            .first()
+            .one()
             .suspended_at
             is None
         )
@@ -2840,7 +2840,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
-        updated_report = Report.query.filter_by(id=report.id).first()
+        updated_report = Report.query.filter_by(id=report.id).one()
         assert data["report"] == jsonify_dict(
             updated_report.serialize(user_1_moderator, full=True)
         )
@@ -3062,9 +3062,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
             )
 
         assert response.status_code == 200
-        assert (
-            Comment.query.filter_by(id=comment.id).first().suspended_at == now
-        )
+        assert Comment.query.filter_by(id=comment.id).one().suspended_at == now
 
     def test_it_returns_400_when_when_comment_already_suspended(
         self,
@@ -3134,7 +3132,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
 
         assert response.status_code == 200
         assert (
-            Comment.query.filter_by(id=comment.id).first().suspended_at is None
+            Comment.query.filter_by(id=comment.id).one().suspended_at is None
         )
 
     def test_it_creates_report_action(
@@ -3206,7 +3204,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
-        updated_report = Report.query.filter_by(id=report.id).first()
+        updated_report = Report.query.filter_by(id=report.id).one()
         assert data["report"] == jsonify_dict(
             updated_report.serialize(user_1_moderator, full=True)
         )
@@ -3460,7 +3458,7 @@ class TestProcessReportActionAppeal(
             "status": "success",
             "appeal": jsonify_dict(appeal.serialize(user_1_moderator)),
         }
-        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
+        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).one()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
 
@@ -3555,7 +3553,7 @@ class TestProcessReportActionAppeal(
             "status": "success",
             "appeal": jsonify_dict(appeal.serialize(user_1_moderator)),
         }
-        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
+        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).one()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
 
@@ -3658,7 +3656,7 @@ class TestProcessReportActionAppeal(
             "status": "success",
             "appeal": jsonify_dict(appeal.serialize(user_1_moderator)),
         }
-        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
+        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).one()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
 
@@ -3809,7 +3807,7 @@ class TestProcessReportActionAppeal(
             "status": "success",
             "appeal": jsonify_dict(appeal.serialize(user_1_moderator)),
         }
-        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
+        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).one()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
 

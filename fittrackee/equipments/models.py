@@ -1,17 +1,20 @@
-from typing import Dict
-from uuid import uuid4
+from datetime import datetime, timedelta
+from typing import TYPE_CHECKING, Dict, List, Optional
+from uuid import UUID, uuid4
 
 from sqlalchemy.dialects import postgresql
-from sqlalchemy.ext.declarative import DeclarativeMeta
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.sql.expression import text
 
-from fittrackee import db
+from fittrackee import BaseModel, db
 from fittrackee.database import TZDateTime
 from fittrackee.dates import aware_utc_now
 from fittrackee.utils import encode_uuid
 
-BaseModel: DeclarativeMeta = db.Model
+if TYPE_CHECKING:
+    from fittrackee.users.models import User, UserSportPreference
+    from fittrackee.workouts.models import Workout
 
 
 WorkoutEquipment = db.Table(
@@ -43,40 +46,68 @@ class Equipment(BaseModel):
         ),
     )
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    uuid = db.Column(
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    uuid: Mapped[UUID] = mapped_column(
         postgresql.UUID(as_uuid=True),
         default=uuid4,
         unique=True,
         nullable=False,
     )
-    user_id = db.Column(
-        db.Integer, db.ForeignKey('users.id'), index=True, nullable=False
+    user_id: Mapped[int] = mapped_column(
+        db.ForeignKey('users.id'), index=True, nullable=False
     )
-    label = db.Column(db.String(50), unique=False, nullable=False)
-    description = db.Column(db.String(200), default=None, nullable=True)
-    equipment_type_id = db.Column(
-        db.Integer, db.ForeignKey('equipment_types.id')
+    label: Mapped[str] = mapped_column(
+        db.String(50), unique=False, nullable=False
     )
-    creation_date = db.Column(TZDateTime, default=aware_utc_now)
-    is_active = db.Column(db.Boolean, default=True, nullable=False)
-    total_distance = db.Column(
+    description: Mapped[Optional[str]] = mapped_column(
+        db.String(200), default=None, nullable=True
+    )
+    equipment_type_id: Mapped[int] = mapped_column(
+        db.ForeignKey('equipment_types.id')
+    )
+    creation_date: Mapped[datetime] = mapped_column(
+        TZDateTime, default=aware_utc_now
+    )
+    is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
+    total_distance: Mapped[float] = mapped_column(
         db.Numeric(10, 3),
-        nullable=True,
+        nullable=False,
         server_default=text('0.0'),  # kilometers
     )
-    total_duration = db.Column(
+    total_duration: Mapped[timedelta] = mapped_column(
         db.Interval, nullable=False, server_default=text("'00:00:00'")
     )
-    total_moving = db.Column(
+    total_moving: Mapped[timedelta] = mapped_column(
         db.Interval, nullable=False, server_default=text("'00:00:00'")
     )
-    total_workouts = db.Column(
-        db.Integer, nullable=False, server_default=text('0')
+    total_workouts: Mapped[int] = mapped_column(
+        nullable=False, server_default=text('0')
     )
 
-    workouts = db.relationship(
+    user: Mapped["User"] = relationship(
+        'User', lazy='select', single_parent=True
+    )
+    workouts: Mapped[List["Workout"]] = relationship(
         'Workout', secondary=WorkoutEquipment, back_populates='equipments'
+    )
+    equipment_type: Mapped["EquipmentType"] = relationship(
+        'EquipmentType', lazy='joined', single_parent=True
+    )
+    default_for_sports: Mapped[List["UserSportPreference"]] = relationship(
+        'UserSportPreference',
+        primaryjoin=(
+            "Equipment.id == "
+            "users_sports_preferences_equipments.c.equipment_id"
+        ),
+        secondaryjoin="""and_(
+            UserSportPreference.user_id == 
+            users_sports_preferences_equipments.c.user_id,
+            UserSportPreference.sport_id == 
+            users_sports_preferences_equipments.c.sport_id,
+        )""",
+        secondary='users_sports_preferences_equipments',
+        lazy='select',
+        back_populates='default_equipments',
     )
 
     def __repr__(self) -> str:
@@ -137,15 +168,14 @@ class Equipment(BaseModel):
 
 class EquipmentType(BaseModel):
     __tablename__ = 'equipment_types'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    label = db.Column(db.String(50), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean, default=True, nullable=False)
-    equipments = db.relationship(
-        'Equipment',
-        lazy='select',
-        backref=db.backref(
-            'equipment_type', lazy='joined', single_parent=True
-        ),
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    label: Mapped[str] = mapped_column(
+        db.String(50), unique=False, nullable=False
+    )
+    is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
+
+    equipments: Mapped[List["Equipment"]] = relationship(
+        'Equipment', lazy='select', back_populates='equipment_type'
     )
 
     def __repr__(self) -> str:

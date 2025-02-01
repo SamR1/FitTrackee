@@ -298,80 +298,52 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         if per_page > MAX_WORKOUTS_PER_PAGE:
             per_page = MAX_WORKOUTS_PER_PAGE
 
+        filters = [
+            Workout.user_id == auth_user.id,
+            Workout.suspended_at == None,  # noqa
+        ]
+        if sport_id:
+            filters.append(Workout.sport_id == sport_id)
+        if title:
+            filters.append(Workout.title.ilike(f"%{title}%"))
+        if notes:
+            filters.append(Workout.notes.ilike(f"%{notes}%"))
+        if description:
+            filters.append(Workout.description.ilike(f"%{description}%"))
+        if date_from:
+            filters.append(Workout.workout_date >= date_from)
+        if date_to:
+            filters.append(
+                Workout.workout_date < date_to + timedelta(seconds=1)
+            )
+        if distance_from:
+            filters.append(Workout.distance >= float(distance_from))
+        if distance_to:
+            filters.append(Workout.distance <= float(distance_to))
+        if duration_from:
+            filters.append(
+                Workout.moving >= convert_in_duration(duration_from)
+            )
+        if duration_to:
+            filters.append(Workout.moving <= convert_in_duration(duration_to))
+        if ave_speed_from:
+            filters.append(Workout.ave_speed >= float(ave_speed_from))
+        if ave_speed_to:
+            filters.append(Workout.ave_speed <= float(ave_speed_to))
+        if max_speed_from:
+            filters.append(Workout.max_speed >= float(max_speed_from))
+        if max_speed_to:
+            filters.append(Workout.max_speed <= float(max_speed_to))
+        if equipment_id == 'none':
+            filters.append(WorkoutEquipment.c.equipment_id == None)  # noqa
+        if equipment_id == 'none':
+            filters.append(WorkoutEquipment.c.equipment_id == None)  # noqa
+        elif equipment_id is not None:
+            filters.append(WorkoutEquipment.c.equipment_id == equipment_id)
+
         workouts_pagination = (
             Workout.query.outerjoin(WorkoutEquipment)
-            .filter(
-                Workout.user_id == auth_user.id,
-                Workout.sport_id == sport_id if sport_id else True,
-                Workout.title.ilike(f"%{title}%") if title else True,
-                Workout.notes.ilike(f"%{notes}%") if notes else True,
-                (
-                    Workout.description.ilike(f"%{description}%")
-                    if description
-                    else True
-                ),
-                Workout.workout_date >= date_from if date_from else True,
-                (
-                    Workout.workout_date < date_to + timedelta(seconds=1)
-                    if date_to
-                    else True
-                ),
-                (
-                    Workout.distance >= float(distance_from)
-                    if distance_from
-                    else True
-                ),
-                (
-                    Workout.distance <= float(distance_to)
-                    if distance_to
-                    else True
-                ),
-                (
-                    Workout.moving >= convert_in_duration(duration_from)
-                    if duration_from
-                    else True
-                ),
-                (
-                    Workout.moving <= convert_in_duration(duration_to)
-                    if duration_to
-                    else True
-                ),
-                (
-                    Workout.ave_speed >= float(ave_speed_from)
-                    if ave_speed_from
-                    else True
-                ),
-                (
-                    Workout.ave_speed <= float(ave_speed_to)
-                    if ave_speed_to
-                    else True
-                ),
-                (
-                    Workout.max_speed >= float(max_speed_from)
-                    if max_speed_from
-                    else True
-                ),
-                (
-                    Workout.max_speed <= float(max_speed_to)
-                    if max_speed_to
-                    else True
-                ),
-                (
-                    Workout.max_speed <= float(max_speed_to)
-                    if max_speed_to
-                    else True
-                ),
-                (
-                    WorkoutEquipment.c.equipment_id == None  # noqa
-                    if equipment_id == 'none'
-                    else (
-                        WorkoutEquipment.c.equipment_id == equipment_id
-                        if equipment_id is not None
-                        else True
-                    )
-                ),
-                Workout.suspended_at == None,  # noqa
-            )
+            .filter(*filters)
             .order_by(
                 (
                     asc(workout_column)
