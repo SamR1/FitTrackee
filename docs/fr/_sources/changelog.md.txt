@@ -6,11 +6,12 @@
 
 ### Features and enhancements
 
-* [PR#707](https://github.com/SamR1/FitTrackee/pull/707) - Display user workouts only on user profile
+* [PR#709](https://github.com/SamR1/FitTrackee/pull/709) - Display equipment in workout detail for other users depending on visibility
 
 ### Bugs Fixed
 
 * [#708](https://github.com/SamR1/FitTrackee/issues/708) - Cannot add/update equipment description 
+* [PR#707](https://github.com/SamR1/FitTrackee/pull/707) - Display user workouts only on user profile
 
 ### Translations
 
