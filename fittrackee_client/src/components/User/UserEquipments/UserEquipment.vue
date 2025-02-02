@@ -74,6 +74,10 @@
           {{ getTotalDuration(equipment.total_duration, $t) }})
         </template>
       </dd>
+      <dt>{{ capitalize($t('visibility_levels.VISIBILITY')) }}</dt>
+      <dd>
+        {{ $t(`visibility_levels.LEVELS.${equipment.visibility}`) }}
+      </dd>
       <dt>{{ capitalize($t('common.ACTIVE', 0)) }}</dt>
       <dd>
         <i

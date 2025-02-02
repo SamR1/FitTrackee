@@ -70,7 +70,10 @@ class UserDataExporter:
         return comments_data
 
     def get_user_equipments_data(self) -> List[Dict]:
-        return [equipment.serialize() for equipment in self.user.equipments]
+        return [
+            equipment.serialize(current_user=self.user)
+            for equipment in self.user.equipments
+        ]
 
     def export_data(self, data: Union[Dict, List], name: str) -> str:
         """export data in existing user upload directory"""

@@ -982,7 +982,7 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
         assert "created" in data["status"]
         assert len(data["data"]["workouts"]) == 1
         assert data["data"]["workouts"][0]["equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
         workout = Workout.query.one()
         assert equipment_bike_user_1.total_workouts == 1
@@ -1033,7 +1033,7 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
         assert "created" in data["status"]
         assert len(data["data"]["workouts"]) == 1
         assert data["data"]["workouts"][0]["equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
         workout = Workout.query.one()
         assert equipment_bike_user_1.total_workouts == 1
@@ -2452,7 +2452,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         assert "created" in data["status"]
         assert len(data["data"]["workouts"]) == 1
         assert data["data"]["workouts"][0]["equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
         assert equipment_bike_user_1.total_workouts == 1
         assert equipment_bike_user_1.total_distance == 10
@@ -2501,7 +2501,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         assert "created" in data["status"]
         assert len(data["data"]["workouts"]) == 1
         assert data["data"]["workouts"][0]["equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
         assert equipment_bike_user_1.total_workouts == 1
         assert equipment_bike_user_1.total_distance == 10
@@ -3217,13 +3217,13 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
         assert "created" in data["status"]
         assert len(data["data"]["workouts"]) == 3
         assert data["data"]["workouts"][0]["equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
         assert data["data"]["workouts"][1]["equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
         assert data["data"]["workouts"][2]["equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
         assert equipment_bike_user_1.total_workouts == 3
         assert float(equipment_bike_user_1.total_distance) == 0.96
@@ -3275,13 +3275,13 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
         assert "created" in data["status"]
         assert len(data["data"]["workouts"]) == 3
         assert data["data"]["workouts"][0]["equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
         assert data["data"]["workouts"][1]["equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
         assert data["data"]["workouts"][2]["equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
 
     @pytest.mark.parametrize(
