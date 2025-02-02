@@ -6,16 +6,19 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.schema import UniqueConstraint
 from sqlalchemy.sql.expression import text
+from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, db
 from fittrackee.database import TZDateTime
 from fittrackee.dates import aware_utc_now
 from fittrackee.utils import encode_uuid
+from fittrackee.visibility_levels import VisibilityLevel, can_view
 
 if TYPE_CHECKING:
     from fittrackee.users.models import User, UserSportPreference
     from fittrackee.workouts.models import Workout
 
+from .exceptions import EquipmentForbiddenException
 
 WorkoutEquipment = db.Table(
     "workout_equipments",
@@ -83,6 +86,11 @@ class Equipment(BaseModel):
     total_workouts: Mapped[int] = mapped_column(
         nullable=False, server_default=text("0")
     )
+    visibility: Mapped[VisibilityLevel] = mapped_column(
+        Enum(VisibilityLevel, name="visibility_levels"),
+        server_default="PRIVATE",
+        nullable=False,
+    )
 
     user: Mapped["User"] = relationship(
         "User", lazy="select", single_parent=True
@@ -131,19 +139,29 @@ class Equipment(BaseModel):
     def short_id(self) -> str:
         return encode_uuid(self.uuid)
 
-    def serialize(self) -> Dict:
+    def serialize(self, *, current_user: Optional["User"]) -> Dict:
+        if not can_view(self, "visibility", current_user):
+            raise EquipmentForbiddenException()
+
         serialized_equipment = {
+            "label": self.label,
+            "is_active": self.is_active,
+            "equipment_type": self.equipment_type.serialize(),
+        }
+
+        if not current_user or current_user.id != self.user_id:
+            return serialized_equipment
+
+        serialized_equipment = {
+            **serialized_equipment,
             "id": self.short_id,
             "user_id": self.user_id,
-            "label": self.label,
-            "equipment_type": self.equipment_type.serialize(),
             "description": self.description,
             "default_for_sport_ids": [
                 sport_preference.sport_id
                 for sport_preference in self.default_for_sports
             ],
             "creation_date": self.creation_date,
-            "is_active": self.is_active,
             "total_distance": (
                 0.0
                 if self.total_distance is None
@@ -159,6 +177,7 @@ class Equipment(BaseModel):
                 if self.total_moving is None
                 else str(self.total_moving)
             ),
+            "visibility": self.visibility,
             "workouts_count": (
                 0 if self.total_workouts is None else self.total_workouts
             ),

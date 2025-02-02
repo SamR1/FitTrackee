@@ -10,3 +10,7 @@ class InvalidEquipmentException(Exception):
 
 class InvalidEquipmentsException(Exception):
     pass
+
+
+class EquipmentForbiddenException(Exception):
+    pass

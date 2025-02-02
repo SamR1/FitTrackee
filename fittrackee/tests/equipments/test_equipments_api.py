@@ -15,6 +15,7 @@ from fittrackee.users.models import (
 )
 from fittrackee.users.roles import UserRole
 from fittrackee.utils import decode_short_id
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
@@ -71,10 +72,10 @@ class TestGetEquipments(ApiTestCaseMixin):
         assert "success" in data["status"]
         assert len(data["data"]["equipments"]) == 2
         assert data["data"]["equipments"][0] == jsonify_dict(
-            equipment_bike_user_1.serialize()
+            equipment_bike_user_1.serialize(current_user=user_1)
         )
         assert data["data"]["equipments"][1] == jsonify_dict(
-            equipment_shoes_user_1.serialize()
+            equipment_shoes_user_1.serialize(current_user=user_1)
         )
 
     def test_it_gets_all_equipments_with_inactive_one(
@@ -99,13 +100,13 @@ class TestGetEquipments(ApiTestCaseMixin):
         assert "success" in data["status"]
         assert len(data["data"]["equipments"]) == 3
         assert data["data"]["equipments"][0] == jsonify_dict(
-            equipment_bike_user_1.serialize()
+            equipment_bike_user_1.serialize(current_user=user_1)
         )
         assert data["data"]["equipments"][1] == jsonify_dict(
-            equipment_shoes_user_1.serialize()
+            equipment_shoes_user_1.serialize(current_user=user_1)
         )
         assert data["data"]["equipments"][2] == jsonify_dict(
-            equipment_bike_user_1_inactive.serialize()
+            equipment_bike_user_1_inactive.serialize(current_user=user_1)
         )
 
     def test_it_doesnt_get_other_user_equipments(
@@ -128,7 +129,7 @@ class TestGetEquipments(ApiTestCaseMixin):
         assert response.status_code == 200
         assert "success" in data["status"]
         assert data["data"]["equipments"] == [
-            jsonify_dict(equipment_shoes_user_2.serialize())
+            jsonify_dict(equipment_shoes_user_2.serialize(current_user=user_2))
         ]
 
     def test_it_gets_only_user_equipments_when_user_is_admin(
@@ -137,6 +138,28 @@ class TestGetEquipments(ApiTestCaseMixin):
         user_2_admin: User,
         equipment_shoes_user_1: Equipment,
     ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2_admin.email
+        )
+
+        response = client.get(
+            "/api/equipments",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert data["data"]["equipments"] == []
+
+    def test_it_does_not_get_equipment_even_when_visibility_is_public(
+        self,
+        app: Flask,
+        user_2_admin: User,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        equipment_shoes_user_1.visibility = VisibilityLevel.PUBLIC
+        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2_admin.email
         )
@@ -208,7 +231,7 @@ class TestGetEquipment(ApiTestCaseMixin):
         assert response.status_code == 200
         assert "success" in data["status"]
         assert data["data"]["equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
 
     def test_suspended_user_can_get_equipment(
@@ -232,7 +255,7 @@ class TestGetEquipment(ApiTestCaseMixin):
         assert response.status_code == 200
         assert "success" in data["status"]
         assert data["data"]["equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
 
     def test_it_returns_error_when_equipment_does_not_exist(
@@ -259,6 +282,8 @@ class TestGetEquipment(ApiTestCaseMixin):
         user_2: User,
         equipment_shoes_user_1: Equipment,
     ) -> None:
+        equipment_shoes_user_1.visibility = VisibilityLevel.PUBLIC
+        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
@@ -750,6 +775,56 @@ class TestPostEquipment(ApiTestCaseMixin):
             f"equipment type '{equipment_type_1_shoe.label}'",
         )
 
+    def test_it_returns_400_when_visibility_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "equipment_type_id": equipment_type_1_shoe.id,
+                "label": "Test shoes",
+                "visibility": "invalid",
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        self.assert_400(response, "invalid visibility")
+
+    def test_it_adds_an_equipment_with_given_visibility(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "equipment_type_id": equipment_type_1_shoe.id,
+                "label": "Test shoes",
+                "visibility": VisibilityLevel.PUBLIC.value,
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert "Test shoes" == equipment["label"]
+        assert equipment["visibility"] == VisibilityLevel.PUBLIC.value
+
     @pytest.mark.parametrize(
         "client_scope, can_access",
         {**OAUTH_SCOPES, "equipments:write": True}.items(),
@@ -801,6 +876,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
             ("label", "new label"),
             ("description", "new description"),
             ("is_active", False),
+            ("visibility", VisibilityLevel.FOLLOWERS.value),
         ],
     )
     def test_it_updates_equipment(
@@ -863,7 +939,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         assert updated_equipment.label == label
         assert updated_equipment.description == new_description
 
-    def test_it_raises_error_when_label_exceeds_50_characters(
+    def test_it_returns_400_when_label_exceeds_50_characters(
         self,
         app: Flask,
         user_1: User,
@@ -884,6 +960,25 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         self.assert_400(response, "label exceeds 50 characters")
+
+    def test_it_returns_400_when_visibility_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
+            json={"visibility": "invalid"},
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        self.assert_400(response, "invalid visibility")
 
     def test_it_updates_equipment_type(
         self,
@@ -1702,7 +1797,7 @@ class TestRefreshEquipment(ApiTestCaseMixin):
         assert equipment_bike_user_1.total_workouts == 0
         data = json.loads(response.data.decode())
         assert data["data"]["equipments"][0] == (
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         )
         # other equipment remains unchanged
         assert (
@@ -1770,7 +1865,7 @@ class TestRefreshEquipment(ApiTestCaseMixin):
         assert equipment_bike_user_1.total_workouts == 2
         data = json.loads(response.data.decode())
         assert data["data"]["equipments"][0] == (
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         )
         # other equipment remains unchanged
         assert (

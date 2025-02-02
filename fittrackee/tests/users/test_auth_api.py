@@ -2007,7 +2007,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         assert data["data"]["user_id"] == user_1.id
         assert data["data"]["sport_id"] == sport_2_running.id
         assert data["data"]["default_equipments"] == [
-            jsonify_dict(equipment_shoes_user_1.serialize())
+            jsonify_dict(equipment_shoes_user_1.serialize(current_user=user_1))
         ]
         assert data["data"]["is_active"] is True
         assert data["data"]["stopped_speed_threshold"] == 0.1
@@ -2062,7 +2062,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         assert data["data"]["user_id"] == user_1.id
         assert data["data"]["sport_id"] == sport_1_cycling.id
         assert data["data"]["default_equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
         assert data["data"]["is_active"] is True
         assert data["data"]["stopped_speed_threshold"] == 1
@@ -2111,7 +2111,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         assert data["data"]["user_id"] == user_1.id
         assert data["data"]["sport_id"] == sport_1_cycling.id
         assert data["data"]["default_equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
         assert data["data"]["is_active"] is True
         assert (

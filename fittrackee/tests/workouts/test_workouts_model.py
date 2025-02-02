@@ -673,7 +673,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         )
 
         assert serialized_workout["equipments"] == [
-            equipment_bike_user_1.serialize()
+            equipment_bike_user_1.serialize(current_user=user_1)
         ]
 
     @pytest.mark.parametrize("input_args,", [{}, {"light": True}])
@@ -1251,7 +1251,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             ),
         }
 
-    def test_serializer_does_not_return_equipments(
+    def test_serializer_does_not_return_equipments_when_equipment_is_private(
         self,
         app: Flask,
         sport_1_cycling: Sport,
@@ -1260,6 +1260,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
         equipment_bike_user_1: Equipment,
     ) -> None:
+        equipment_bike_user_1.visibility = VisibilityLevel.PRIVATE
         workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
         workout_cycling_user_1.equipments = [equipment_bike_user_1]
         add_follower(user_1, user_2)
@@ -1269,6 +1270,33 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         )
 
         assert serialized_workout["equipments"] == []
+
+    @pytest.mark.parametrize(
+        "input_equipment_visibility",
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC],
+    )
+    def test_serializer_returns_equipments_when_visibility_allows_it(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+        input_equipment_visibility: VisibilityLevel,
+    ) -> None:
+        equipment_bike_user_1.visibility = input_equipment_visibility
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+        add_follower(user_1, user_2)
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_2, light=False, with_equipments=True
+        )
+
+        assert serialized_workout["equipments"] == [
+            equipment_bike_user_1.serialize(current_user=user_2)
+        ]
 
     def test_it_serializes_minimal_workout(
         self,
@@ -1677,7 +1705,11 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             "workout_visibility": workout_cycling_user_1.workout_visibility,
         }
 
-    def test_serializer_does_not_return_equipments(
+    @pytest.mark.parametrize(
+        "input_equipment_visibility",
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
+    )
+    def test_serializer_does_not_return_equipments_when_visibility_does_not_allows_it(  # noqa
         self,
         app: Flask,
         sport_1_cycling: Sport,
@@ -1685,7 +1717,9 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         user_2: User,
         workout_cycling_user_1: Workout,
         equipment_bike_user_1: Equipment,
+        input_equipment_visibility: VisibilityLevel,
     ) -> None:
+        equipment_bike_user_1.visibility = input_equipment_visibility
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.equipments = [equipment_bike_user_1]
 
@@ -1694,6 +1728,27 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         )
 
         assert serialized_workout["equipments"] == []
+
+    def test_serializer_returns_equipments_when_visibility_is_public(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        equipment_bike_user_1.visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_2, light=False, with_equipments=True
+        )
+
+        assert serialized_workout["equipments"] == [
+            equipment_bike_user_1.serialize(current_user=user_2)
+        ]
 
     def test_it_serializes_minimal_workout(
         self,
@@ -2049,14 +2104,21 @@ class TestWorkoutModelAsUnauthenticatedUser(
         with pytest.raises(WorkoutForbiddenException):
             workout_cycling_user_1.serialize(for_report=input_for_report)
 
-    def test_serializer_does_not_return_equipments(
+    @pytest.mark.parametrize(
+        "input_equipment_visibility",
+        [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
+    )
+    def test_serializer_does_not_return_equipments_when_visibility_does_not_allows_it(  # noqa
         self,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
+        user_2: User,
         workout_cycling_user_1: Workout,
         equipment_bike_user_1: Equipment,
+        input_equipment_visibility: VisibilityLevel,
     ) -> None:
+        equipment_bike_user_1.visibility = input_equipment_visibility
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.equipments = [equipment_bike_user_1]
 
@@ -2065,6 +2127,26 @@ class TestWorkoutModelAsUnauthenticatedUser(
         )
 
         assert serialized_workout["equipments"] == []
+
+    def test_serializer_returns_equipments_when_visibility_is_public(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        equipment_bike_user_1.visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            light=False, with_equipments=True
+        )
+
+        assert serialized_workout["equipments"] == [
+            equipment_bike_user_1.serialize(current_user=None)
+        ]
 
     def test_it_serializes_minimal_workout(
         self,

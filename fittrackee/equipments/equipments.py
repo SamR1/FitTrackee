@@ -20,6 +20,7 @@ from fittrackee.users.models import (
     UserSportPreferenceEquipment,
 )
 from fittrackee.utils import decode_short_id
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from .exceptions import InvalidEquipmentsException
@@ -168,7 +169,10 @@ def get_equipments(auth_user: User) -> Dict:
     return {
         "status": "success",
         "data": {
-            "equipments": [equipment.serialize() for equipment in equipments]
+            "equipments": [
+                equipment.serialize(current_user=auth_user)
+                for equipment in equipments
+            ]
         },
     }
 
@@ -266,7 +270,9 @@ def get_equipment_by_id(
     if equipment:
         return {
             "status": "success",
-            "data": {"equipments": [equipment.serialize()]},
+            "data": {
+                "equipments": [equipment.serialize(current_user=auth_user)]
+            },
         }
     return DataNotFoundErrorResponse("equipments")
 
@@ -329,6 +335,8 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         active (default: ``true``)
     :<json array of integers default_for_sport_ids: the default sport ids
         to use for this equipment, not mandatory
+    :<json string visibility: visibility level (``public``, ``followers_only``,
+        ``private``), not mandatory (default value: ``private``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -391,6 +399,13 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     except InvalidEquipmentsException as e:
         return InvalidPayloadErrorResponse(str(e))
 
+    visibility = equipment_data.get("visibility")
+    if visibility is not None:
+        try:
+            VisibilityLevel(visibility)
+        except ValueError:
+            return InvalidPayloadErrorResponse("invalid visibility")
+
     try:
         new_equipment = Equipment(
             user_id=auth_user.id,
@@ -401,6 +416,10 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         )
         db.session.add(new_equipment)
         db.session.flush()
+
+        if visibility:
+            new_equipment.visibility = visibility
+
         if user_sport_preferences:
             # remove existing equipments for default sports
             # (for now only one default equipment/sport)
@@ -428,7 +447,11 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         return (
             {
                 "status": "created",
-                "data": {"equipments": [new_equipment.serialize()]},
+                "data": {
+                    "equipments": [
+                        new_equipment.serialize(current_user=auth_user)
+                    ]
+                },
             },
             201,
         )
@@ -526,6 +549,8 @@ def update_equipment(
         active (default: ``true``)
     :<json array of integers default_for_sport_ids: the default sport ids
         to use for this equipment
+    :<json string visibility: visibility level (``public``, ``followers_only``,
+        ``private``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -563,6 +588,7 @@ def update_equipment(
             "equipment_type_id",
             "is_active",
             "default_for_sport_ids",
+            "visibility",
         ]
         for e in equipment_data
     ):
@@ -605,6 +631,15 @@ def update_equipment(
             equipment.label = label
         if "description" in equipment_data:
             equipment.description = equipment_data.get("description")
+
+        if "visibility" in equipment_data:
+            visibility = equipment_data["visibility"]
+            try:
+                VisibilityLevel(visibility)
+            except ValueError:
+                return InvalidPayloadErrorResponse("invalid visibility")
+            equipment.visibility = visibility
+
         if "equipment_type_id" in equipment_data:
             equipment_type_id = equipment_data.get("equipment_type_id")
             equipment_type = EquipmentType.query.filter_by(
@@ -713,7 +748,9 @@ def update_equipment(
 
         return {
             "status": "success",
-            "data": {"equipments": [equipment.serialize()]},
+            "data": {
+                "equipments": [equipment.serialize(current_user=auth_user)]
+            },
         }
 
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
@@ -830,7 +867,9 @@ def refresh_equipment(
 
         return {
             "status": "success",
-            "data": {"equipments": [equipment.serialize()]},
+            "data": {
+                "equipments": [equipment.serialize(current_user=auth_user)]
+            },
         }
 
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:

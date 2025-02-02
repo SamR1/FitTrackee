@@ -186,10 +186,10 @@ class TestSportModelWithPreferences:
 
         assert len(serialized_sport["default_equipments"]) == 2
         assert (
-            equipment_bike_user_1.serialize()
+            equipment_bike_user_1.serialize(current_user=user_1)
             in serialized_sport["default_equipments"]
         )
         assert (
-            equipment_shoes_user_1.serialize()
+            equipment_shoes_user_1.serialize(current_user=user_1)
             in serialized_sport["default_equipments"]
         )

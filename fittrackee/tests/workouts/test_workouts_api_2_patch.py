@@ -590,7 +590,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         assert response.status_code == 200
         assert "success" in data["status"]
         assert data["data"]["workouts"][0]["equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
         workout = Workout.query.one()
         assert equipment_bike_user_1.total_workouts == 1
@@ -656,7 +656,9 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         assert response.status_code == 200
         assert "success" in data["status"]
         assert data["data"]["workouts"][0]["equipments"] == [
-            jsonify_dict(equipment_bike_user_1_inactive.serialize())
+            jsonify_dict(
+                equipment_bike_user_1_inactive.serialize(current_user=user_1)
+            )
         ]
 
         assert equipment_bike_user_1_inactive.total_workouts == 1
@@ -756,7 +758,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 1
         assert data["data"]["workouts"][0]["equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
 
     def test_it_returns_400_when_multiple_equipments_are_provided(
@@ -1564,7 +1566,7 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 1
         assert data["data"]["workouts"][0]["equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
         assert equipment_bike_user_1.total_workouts == 1
         assert (
@@ -1616,7 +1618,7 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 1
         assert (
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
             in data["data"]["workouts"][0]["equipments"]
         )
         assert equipment_bike_user_1.total_workouts == 1
@@ -1628,7 +1630,7 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
             seconds=new_duration
         )
         assert (
-            jsonify_dict(equipment_shoes_user_1.serialize())
+            jsonify_dict(equipment_shoes_user_1.serialize(current_user=user_1))
             in data["data"]["workouts"][0]["equipments"]
         )
         assert equipment_shoes_user_1.total_workouts == 1
