@@ -74,6 +74,20 @@
               @updateValue="updateDescription"
             />
           </div>
+          <div class="form-item">
+            <label for="equipment-visibility">
+              {{ capitalize($t('visibility_levels.VISIBILITY')) }}
+            </label>
+            <select id="workout_visibility" v-model="equipmentForm.visibility">
+              <option
+                v-for="level in visibilityLevels"
+                :value="level"
+                :key="level"
+              >
+                {{ $t(`visibility_levels.LEVELS.${level}`) }}
+              </option>
+            </select>
+          </div>
           <div class="form-item-checkbox" v-if="equipmentForm.id">
             <label for="equipment-active">
               {{ capitalize($t('common.ACTIVE')) }}
@@ -153,9 +167,11 @@
     ITranslatedEquipmentType,
   } from '@/types/equipments'
   import type { ITranslatedSport } from '@/types/sports'
+  import type { TVisibilityLevels } from '@/types/user.ts'
   import { useStore } from '@/use/useStore'
   import { SPORT_EQUIPMENT_TYPES } from '@/utils/equipments'
   import { translateSports } from '@/utils/sports'
+  import { getAllVisibilityLevels } from '@/utils/visibility_levels.ts'
 
   interface Props {
     translatedEquipmentTypes: ITranslatedEquipmentType[]
@@ -177,6 +193,7 @@
     description: '',
     equipmentTypeId: 0,
     isActive: true,
+    visibility: 'private' as TVisibilityLevels,
     defaultForSportIds: [] as number[],
   })
   const formErrors = ref(false)
@@ -205,6 +222,9 @@
         (et) => et.is_active || equipment.value?.equipment_type.id === et.id
       )
     )
+  const visibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
+    getAllVisibilityLevels()
+  )
 
   function setEquipmentSports(equipment: IEquipment) {
     equipmentTranslatedSports.value = translateSports(
@@ -221,6 +241,7 @@
       : ''
     equipmentForm.equipmentTypeId = equipment.equipment_type.id
     equipmentForm.isActive = equipment.is_active
+    equipmentForm.visibility = equipment.visibility
     setEquipmentSports(equipment)
   }
   function submit() {
