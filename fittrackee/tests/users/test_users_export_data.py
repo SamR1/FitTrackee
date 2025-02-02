@@ -195,7 +195,9 @@ class TestUserDataExporterGetUserEquipmentsData:
 
         equipments_data = exporter.get_user_equipments_data()
 
-        assert equipments_data == [equipment_bike_user_1.serialize()]
+        assert equipments_data == [
+            equipment_bike_user_1.serialize(current_user=user_1)
+        ]
 
 
 class TestUserDataExporterGetUserCommentsData(CommentMixin):

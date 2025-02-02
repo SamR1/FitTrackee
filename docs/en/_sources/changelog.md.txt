@@ -1,5 +1,55 @@
 # Change log
 
+## Version 0.9.1 (2025/02/02)
+
+**Note**: The minimum version for Python is now 3.9.2.
+
+### Features and enhancements
+
+* [PR#709](https://github.com/SamR1/FitTrackee/pull/709) - Display equipment in workout detail for other users depending on visibility
+
+### Bugs Fixed
+
+* [#708](https://github.com/SamR1/FitTrackee/issues/708) - Cannot add/update equipment description 
+* [PR#707](https://github.com/SamR1/FitTrackee/pull/707) - Display user workouts only on user profile
+
+### Translations
+
+* [PR#700](https://github.com/SamR1/FitTrackee/pull/700) - Translations update (Chinese (Simplified Han script))
+* [PR#702](https://github.com/SamR1/FitTrackee/pull/702) - Translations update (German, Chinese (Simplified Han script))
+* [PR#705](https://github.com/SamR1/FitTrackee/pull/705) - Translations update (Polish)
+
+Translation status:
+- Basque: 72%
+- Bulgarian: 64%
+- Chinese (Simplified): 100%
+- Czech: 47%
+- Dutch: 64%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 76%
+- Italian: 53%
+- Norwegian Bokmål: 34%
+- Polish: 88%
+- Portuguese: 63%
+- Russian: 40%
+- Spanish: 64%
+
+### Misc
+
+* [#355](https://github.com/SamR1/FitTrackee/issues/355) - Update SQLAlchemy to 2.x
+* [#685](https://github.com/SamR1/FitTrackee/issues/599) - replace deprecated datetime.utcnow()
+* [b224e17](https://github.com/SamR1/FitTrackee/commit/b224e171c750dcfc3ca9c03068f91e21dd7eb189) - tools - update ruff config
+
+Thanks to the contributors:
+- @OliverPifferi
+- Poesty Li
+- Wiktor Jędrzejczak
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
+
+
 ## Version 0.9.0 (2025/01/18)
 
 **FitTrackee** now allows you to follow other users, view their workouts according to the level of visibility and interact with them.

@@ -34,6 +34,7 @@ export const actions: ActionTree<IEquipmentTypesState, IRootState> &
         equipment_type_id: payload.equipmentTypeId,
         label: payload.label,
         default_for_sport_ids: payload.defaultForSportIds,
+        visibility: payload.visibility,
       })
       .then((res) => {
         if (res.data.status === 'created') {
@@ -161,6 +162,7 @@ export const actions: ActionTree<IEquipmentTypesState, IRootState> &
         is_active: payload.isActive,
         label: payload.label,
         default_for_sport_ids: payload.defaultForSportIds,
+        visibility: payload.visibility,
       })
       .then((res) => {
         if (res.data.status === 'success') {

@@ -38,7 +38,7 @@
   "INVALID_DISTANCE": "Dystans musi być większy niż 0",
   "INVALID_DURATION": "Czas trwania musi być większy niż 0 sekund",
   "LATEST_WORKOUTS": "Ostatnie treningi",
-  "LIKES": "pulubienia",
+  "LIKES": "polubienie | polubienia",
   "LIKE_WORKOUT": "Polub trening",
   "LOAD_MORE_WORKOUT": "Wczytaj więcej treningów",
   "MAP": "mapa",

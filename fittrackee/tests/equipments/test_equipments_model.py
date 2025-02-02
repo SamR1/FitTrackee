@@ -1,27 +1,31 @@
 from datetime import timedelta
 from typing import Dict
 
+import pytest
 from flask import Flask
 from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
+from fittrackee.equipments.exceptions import EquipmentForbiddenException
 from fittrackee.equipments.models import Equipment, EquipmentType
 from fittrackee.users.models import (
+    FollowRequest,
     User,
     UserSportPreference,
     UserSportPreferenceEquipment,
 )
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 
-class TestEquipmentModel:
+class TestEquipmentModelForOwner:
     @staticmethod
     def assert_equipment_model(equip: Equipment) -> Dict:
         assert 1 == equip.id
         assert "Test bike equipment" == equip.label
         assert "<Equipment 1 'Test bike equipment'>" == str(equip)
 
-        serialized_equip = equip.serialize()
+        serialized_equip = equip.serialize(current_user=equip.user)
         assert serialized_equip["id"] == equip.short_id
         assert serialized_equip["user_id"] == 1
         assert serialized_equip["label"] == equip.label
@@ -50,6 +54,7 @@ class TestEquipmentModel:
         assert serialized_equip["total_distance"] == 0
         assert serialized_equip["total_duration"] == "0:00:00"
         assert serialized_equip["total_moving"] == "0:00:00"
+        assert serialized_equip["visibility"] == VisibilityLevel.PRIVATE
 
     def test_equipment_model_with_workouts(
         self,
@@ -96,6 +101,7 @@ class TestEquipmentModel:
             serialized_equip["workouts_count"]
             == equipment_bike_user_1.total_workouts
         )
+        assert serialized_equip["visibility"] == VisibilityLevel.PRIVATE
 
         # remove one equipment
         equipment_bike_user_1.workouts = [workout_cycling_user_1]
@@ -171,6 +177,135 @@ class TestEquipmentModel:
         assert serialized_equip["default_for_sport_ids"] == [
             sport_1_cycling.id
         ]
+
+
+class TestEquipmentModelForFollower:
+    def test_it_raises_error_when_follower_can_not_view_equipment(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        user_1_sport_1_preference: UserSportPreference,
+        equipment_bike_user_1: Equipment,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        equipment_bike_user_1.visibility = VisibilityLevel.PRIVATE
+        user_1.approves_follow_request_from(user_2)
+
+        with pytest.raises(EquipmentForbiddenException):
+            equipment_bike_user_1.serialize(current_user=user_2)
+
+    @pytest.mark.parametrize(
+        "input_equipment_visibility",
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC],
+    )
+    def test_it_serializes_equipment(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        user_1_sport_1_preference: UserSportPreference,
+        equipment_bike_user_1: Equipment,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+        input_equipment_visibility: VisibilityLevel,
+    ) -> None:
+        equipment_bike_user_1.visibility = input_equipment_visibility
+        user_1.approves_follow_request_from(user_2)
+
+        serialized_equipment = equipment_bike_user_1.serialize(
+            current_user=user_2
+        )
+
+        assert serialized_equipment == {
+            "label": equipment_bike_user_1.label,
+            "is_active": equipment_bike_user_1.is_active,
+            "equipment_type": equipment_bike_user_1.equipment_type.serialize(),
+        }
+
+
+class TestEquipmentModelForUser:
+    @pytest.mark.parametrize(
+        "input_equipment_visibility",
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
+    )
+    def test_it_raises_error_when_user_can_not_view_equipment(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        user_1_sport_1_preference: UserSportPreference,
+        equipment_bike_user_1: Equipment,
+        input_equipment_visibility: VisibilityLevel,
+    ) -> None:
+        equipment_bike_user_1.visibility = input_equipment_visibility
+
+        with pytest.raises(EquipmentForbiddenException):
+            equipment_bike_user_1.serialize(current_user=user_2)
+
+    def test_it_serializes_equipment(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        user_1_sport_1_preference: UserSportPreference,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        equipment_bike_user_1.visibility = VisibilityLevel.PUBLIC
+
+        serialized_equipment = equipment_bike_user_1.serialize(
+            current_user=user_2
+        )
+
+        assert serialized_equipment == {
+            "label": equipment_bike_user_1.label,
+            "is_active": equipment_bike_user_1.is_active,
+            "equipment_type": equipment_bike_user_1.equipment_type.serialize(),
+        }
+
+
+class TestEquipmentModelForUnauthenticatedUser:
+    @pytest.mark.parametrize(
+        "input_equipment_visibility",
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
+    )
+    def test_it_raises_error_when_unauthenticated_user_can_not_view_equipment(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_1_sport_1_preference: UserSportPreference,
+        equipment_bike_user_1: Equipment,
+        input_equipment_visibility: VisibilityLevel,
+    ) -> None:
+        equipment_bike_user_1.visibility = input_equipment_visibility
+
+        with pytest.raises(EquipmentForbiddenException):
+            equipment_bike_user_1.serialize(current_user=None)
+
+    def test_it_serializes_equipment(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        user_1_sport_1_preference: UserSportPreference,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        equipment_bike_user_1.visibility = VisibilityLevel.PUBLIC
+
+        serialized_equipment = equipment_bike_user_1.serialize(
+            current_user=None
+        )
+
+        assert serialized_equipment == {
+            "label": equipment_bike_user_1.label,
+            "is_active": equipment_bike_user_1.is_active,
+            "equipment_type": equipment_bike_user_1.equipment_type.serialize(),
+        }
 
 
 class TestEquipmentTypeModel:

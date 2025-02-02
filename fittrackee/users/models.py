@@ -1090,6 +1090,7 @@ class UserSportPreference(BaseModel):
         viewonly=True,
         back_populates="default_for_sports",
     )
+    user: Mapped["User"] = relationship("User", lazy=True)
 
     def __init__(
         self,
@@ -1110,7 +1111,7 @@ class UserSportPreference(BaseModel):
             "is_active": self.is_active,
             "stopped_speed_threshold": self.stopped_speed_threshold,
             "default_equipments": [
-                equipment.serialize()
+                equipment.serialize(current_user=self.user)
                 for equipment in self.default_equipments.all()
             ],
         }

@@ -1449,5 +1449,5 @@ class TestGetWorkoutsWithEquipments(WorkoutApiTestCaseMixin):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["data"]["workouts"][0]["equipments"] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]

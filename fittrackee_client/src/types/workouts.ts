@@ -1,6 +1,6 @@
 import type { TPaginationPayload } from '@/types/api'
 import type { IChartDataset } from '@/types/chart'
-import type { IEquipment } from '@/types/equipments'
+import type { IEquipment, ILightEquipment } from '@/types/equipments'
 import type { TCoordinates } from '@/types/map'
 import type {
   IUserReportAction,
@@ -71,7 +71,7 @@ export interface IWorkout {
   description: string
   distance: number | null
   duration: string | null
-  equipments: IEquipment[]
+  equipments: IEquipment[] | ILightEquipment[]
   id: string
   liked: boolean
   likes_count: number
@@ -110,7 +110,7 @@ export interface IWorkoutObject {
   descent: number | null
   distance: number | null
   duration: string | null
-  equipments: IEquipment[] | null
+  equipments: IEquipment[] | ILightEquipment[] | null
   liked: boolean
   likes_count: number
   maxAlt: number | null

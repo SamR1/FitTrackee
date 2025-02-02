@@ -10,15 +10,14 @@ msgstr ""
 "POT-Creation-Date: 2024-11-01 19:45+0100\n"
 "PO-Revision-Date: 2025-01-20 20:00+0000\n"
 "Last-Translator: Oliver Pifferi <oliver@pifferi.io>\n"
-"Language-Team: German <https://hosted.weblate.org/projects/fittrackee/"
-"fittrackee-api-emails/de/>\n"
 "Language: de\n"
+"Language-Team: German <https://hosted.weblate.org/projects/fittrackee"
+"/fittrackee-api-emails/de/>\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
-"Generated-By: Babel 2.16.0\n"
+"Generated-By: Babel 2.17.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
 #: fittrackee/emails/templates/layout.txt:1
@@ -106,7 +105,7 @@ msgstr "Verwende den unteren Link, um deine E-Mail-Adresse zu bestätigen."
 #: fittrackee/emails/templates/appeal_rejected/body.html:2
 #: fittrackee/emails/templates/user_warning_lifting/body.html:2
 #: fittrackee/emails/templates/user_warning_lifting/subject.txt:1
-#, fuzzy, python-format
+#, python-format
 msgid "Warning for %(username)s lifted"
 msgstr "Warn-Level für %(username)s erhöht"
 
@@ -123,7 +122,8 @@ msgstr "Ihr Einspruch in Bezug auf die Sperrung Ihres Kontos wurde abgelehnt"
 #: fittrackee/emails/templates/appeal_rejected/body.txt:1
 msgid "Your appeal on your warning has been rejected"
 msgstr ""
-"Ihr Einspruch gegen die Warnung bezüglich Ihres Kontos wurde zurückgewiesen"
+"Ihr Einspruch gegen die Warnung bezüglich Ihres Kontos wurde "
+"zurückgewiesen"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:4
 #: fittrackee/emails/templates/appeal_rejected/body.txt:1
@@ -466,3 +466,4 @@ msgstr ""
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:1
 msgid "The suspension on your workout has been lifted, it is visible again"
 msgstr ""
+

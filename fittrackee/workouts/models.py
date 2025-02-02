@@ -524,11 +524,11 @@ class Workout(BaseModel):
         }
 
         if not light or with_equipments:
-            workout_data["equipments"] = (
-                [equipment.serialize() for equipment in self.equipments]
-                if user and user.id == self.user_id
-                else []
-            )
+            workout_data["equipments"] = [
+                equipment.serialize(current_user=user)
+                for equipment in self.equipments
+                if can_view(equipment, "visibility", user)
+            ]
 
         if light:
             return workout_data

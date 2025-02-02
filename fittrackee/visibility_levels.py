@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Optional, Union
 
 if TYPE_CHECKING:
     from fittrackee.comments.models import Comment
+    from fittrackee.equipments.models import Equipment
     from fittrackee.users.models import User
     from fittrackee.workouts.models import Workout
 
@@ -36,7 +37,7 @@ def get_calculated_visibility(
 
 
 def can_view(
-    target_object: Union["Workout", "Comment"],
+    target_object: Union["Workout", "Comment", "Equipment"],
     visibility: str,
     user: Optional["User"] = None,
     for_report: bool = False,
@@ -51,7 +52,7 @@ def can_view(
 
     if (
         target_object.__class__.__name__ == "Workout"
-        and target_object.suspended_at
+        and target_object.suspended_at  # type: ignore
     ):
         if not user:
             return False

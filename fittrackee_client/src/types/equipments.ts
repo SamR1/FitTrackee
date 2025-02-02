@@ -1,3 +1,5 @@
+import type { TVisibilityLevels } from '@/types/user.ts'
+
 export interface IEquipmentType {
   id: number
   is_active: boolean
@@ -14,18 +16,22 @@ export interface IEquipmentTypePayload {
   isActive: boolean
 }
 
-export interface IEquipment {
+export interface ILightEquipment {
+  equipment_type: IEquipmentType
+  is_active: boolean
+  label: string
+}
+
+export interface IEquipment extends ILightEquipment {
   creation_date: string
   default_for_sport_ids: number[]
   description: string | null
-  equipment_type: IEquipmentType
   id: string
-  is_active: boolean
-  label: string
   total_distance: number
   total_duration: string
   total_moving: string
   user_id: number
+  visibility: TVisibilityLevels
   workouts_count: number
 }
 
@@ -34,6 +40,7 @@ export interface IAddEquipmentPayload {
   description: string | null
   equipmentTypeId: number
   label: string
+  visibility: TVisibilityLevels
 }
 
 export interface IPatchEquipmentPayload extends IAddEquipmentPayload {
