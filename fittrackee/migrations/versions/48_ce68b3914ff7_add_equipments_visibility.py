@@ -1,4 +1,4 @@
-"""empty message
+"""add equipments visibility
 
 Revision ID: ce68b3914ff7
 Revises: 070bd31919c3
