@@ -511,7 +511,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   #user-preferences-edition {
     padding-top: $default-padding;
     .form-items {

@@ -1,7 +1,8 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Optional, Union
 
 from sqlalchemy import func
+from sqlalchemy.orm.exc import NoResultFound
 
 from fittrackee import db
 from fittrackee.comments.models import Comment
@@ -39,16 +40,21 @@ class ReportService:
         object_id: str,
         object_type: str,
     ) -> Report:
+        target_object: Union[Comment, User, Workout]
         if object_type == "comment":
             target_object = get_comment(object_id, reporter)
         elif object_type == "workout":
             target_object = get_workout(object_id, reporter)
         else:  # object_type == "user"
-            target_object = User.query.filter(
-                func.lower(User.username) == func.lower(object_id),
-            ).first()
-            if not target_object or not target_object.is_active:
+            try:
+                user = User.query.filter(
+                    func.lower(User.username) == func.lower(object_id),
+                ).one()
+            except NoResultFound as e:
+                raise UserNotFoundException() from e
+            if not user.is_active:
                 raise UserNotFoundException()
+            target_object = user
 
         if target_object and target_object.suspended_at:
             raise SuspendedObjectException(object_type)
@@ -92,7 +98,7 @@ class ReportService:
         )
         db.session.add(new_report_comment)
 
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         report.updated_at = now
         report_action = None
         if resolved is not None:
@@ -139,7 +145,7 @@ class ReportService:
         if not reported_user:
             raise InvalidReportActionException("invalid 'username'")
 
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         report_action = None
         if action_type in ALL_USER_ACTION_TYPES:
             username = data.get("username")
@@ -150,6 +156,8 @@ class ReportService:
 
             if action_type.startswith("user_warning"):
                 user = User.query.filter_by(username=username).first()
+                if not user:
+                    raise InvalidReportActionException("invalid 'username'")
 
                 existing_report_action = ReportAction.query.filter_by(
                     action_type=action_type,
@@ -193,7 +201,7 @@ class ReportService:
                     )
                     if appeal:
                         appeal.approved = None
-                        appeal.updated_at = datetime.utcnow()
+                        appeal.updated_at = datetime.now(timezone.utc)
                         db.session.flush()
 
         elif action_type in COMMENT_ACTION_TYPES + WORKOUT_ACTION_TYPES:
@@ -248,7 +256,7 @@ class ReportService:
                 )
                 if appeal:
                     appeal.approved = None
-                    appeal.updated_at = datetime.utcnow()
+                    appeal.updated_at = datetime.now(timezone.utc)
                     db.session.flush()
             db.session.flush()
         else:
@@ -262,11 +270,11 @@ class ReportService:
         appeal.moderator_id = moderator.id
         appeal.approved = data["approved"]
         appeal.reason = data["reason"]
-        appeal.updated_at = datetime.utcnow()
+        appeal.updated_at = datetime.now(timezone.utc)
 
         action = appeal.action
         content = None
-        content_type = ''
+        content_type = ""
         if action.action_type.startswith("comment_"):
             content = Comment.query.filter_by(id=action.comment_id).first()
             content_type = "comment"
@@ -293,7 +301,7 @@ class ReportService:
                 new_report_action = ReportAction(
                     moderator_id=moderator.id,
                     action_type="user_warning_lifting",
-                    created_at=datetime.utcnow(),
+                    created_at=datetime.now(timezone.utc),
                     report_id=action.report_id,
                     user_id=action.user_id,
                 )
@@ -311,7 +319,7 @@ class ReportService:
                 new_report_action = ReportAction(
                     moderator_id=moderator.id,
                     action_type=f"{content_type}_unsuspension",
-                    created_at=datetime.utcnow(),
+                    created_at=datetime.now(timezone.utc),
                     report_id=action.report_id,
                     user_id=action.user_id,
                     **content_id,

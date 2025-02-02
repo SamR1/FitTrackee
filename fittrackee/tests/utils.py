@@ -1,6 +1,6 @@
 import random
 import string
-from datetime import datetime
+from datetime import datetime, timezone
 from json import dumps, loads
 from typing import Dict, Optional, Union
 from uuid import uuid4
@@ -20,31 +20,31 @@ def random_string(
 ) -> str:
     if length is None:
         length = 10
-    random_str = ''.join(
+    random_str = "".join(
         random.choice(string.ascii_letters + string.digits)
         for _ in range(length)
     )
     return (
-        f'{"" if prefix is None else prefix}'
-        f'{random_str}'
-        f'{"" if suffix is None else suffix}'
+        f"{'' if prefix is None else prefix}"
+        f"{random_str}"
+        f"{'' if suffix is None else suffix}"
     )
 
 
 def random_domain() -> str:
-    return random_string(suffix='.social')
+    return random_string(suffix=".social")
 
 
 def get_date_string(
     date_format: str,
     date: Optional[datetime] = None,
 ) -> str:
-    date = date if date else datetime.utcnow()
+    date = date if date else datetime.now(timezone.utc)
     return date.strftime(date_format)
 
 
 def random_email() -> str:
-    return random_string(suffix='@example.com')
+    return random_string(suffix="@example.com")
 
 
 def random_int(min_value: int = 0, max_value: int = 999999) -> int:
@@ -84,10 +84,10 @@ def jsonify_dict(data: Dict) -> Dict:
 
 
 TEST_OAUTH_CLIENT_METADATA = {
-    'client_name': random_string(),
-    'client_uri': random_domain(),
-    'redirect_uris': [random_domain()],
-    'scope': 'profile:read workouts:read',
+    "client_name": random_string(),
+    "client_uri": random_domain(),
+    "redirect_uris": [random_domain()],
+    "scope": "profile:read workouts:read",
 }
 
 OAUTH_SCOPES = {

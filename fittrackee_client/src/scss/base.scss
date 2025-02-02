@@ -1,7 +1,7 @@
-@import 'colors';
-@import 'colors-dark';
-@import 'fonts';
-@import 'vars';
+@use 'colors.scss' as *;
+@use 'colors-dark.scss' as *;
+@use 'fonts.scss' as *;
+@use 'vars.scss' as *;
 
 html [data-theme='dark'] {
   color-scheme: dark;

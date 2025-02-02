@@ -11,13 +11,13 @@ from .models import OAuth2AuthorizationCode, OAuth2Client, OAuth2Token
 
 
 class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
-    TOKEN_ENDPOINT_AUTH_METHODS = ['client_secret_post']
+    TOKEN_ENDPOINT_AUTH_METHODS = ["client_secret_post"]
 
     def save_authorization_code(
         self, code: str, request: OAuth2Request
     ) -> OAuth2AuthorizationCode:
-        code_challenge = request.data.get('code_challenge')
-        code_challenge_method = request.data.get('code_challenge_method')
+        code_challenge = request.data.get("code_challenge")
+        code_challenge_method = request.data.get("code_challenge_method")
         auth_code = OAuth2AuthorizationCode(
             code=code,
             client_id=request.client.client_id,
@@ -49,12 +49,12 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
 
     def authenticate_user(
         self, authorization_code: OAuth2AuthorizationCode
-    ) -> User:
+    ) -> Optional[User]:
         return User.query.get(authorization_code.user_id)
 
 
 class RefreshTokenGrant(grants.RefreshTokenGrant):
-    TOKEN_ENDPOINT_AUTH_METHODS = ['client_secret_post']
+    TOKEN_ENDPOINT_AUTH_METHODS = ["client_secret_post"]
     INCLUDE_NEW_REFRESH_TOKEN = True
 
     def authenticate_refresh_token(self, refresh_token: str) -> Optional[str]:
@@ -65,7 +65,7 @@ class RefreshTokenGrant(grants.RefreshTokenGrant):
             return token
         return None
 
-    def authenticate_user(self, credential: OAuth2Token) -> User:
+    def authenticate_user(self, credential: OAuth2Token) -> Optional[User]:
         return User.query.get(credential.user_id)
 
     def revoke_old_credential(self, credential: OAuth2Token) -> None:

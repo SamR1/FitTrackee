@@ -1,1 +1,23 @@
-{}
+{
+  "AVERAGE": "平均",
+  "DATES": "日期",
+  "STATISTICS": "统计",
+  "STATISTICS_CHARTS": {
+    "month": "每月统计",
+    "week": "每周统计",
+    "year": "年度统计"
+  },
+  "STATISTICS_ON_ALL_WORKOUTS": "所有锻炼的统计：",
+  "STATISTICS_ON_LAST_WORKOUTS": "最近 {count} 次锻炼的统计：",
+  "STATISTICS_TYPE": "统计类型",
+  "STATISTICS_TYPES": {
+    "by_sport": "按运动",
+    "by_time": "按时间段"
+  },
+  "TIME_FRAMES": {
+    "month": "月",
+    "week": "周",
+    "year": "年"
+  },
+  "WORKOUTS_AVERAGE": "平均锻炼次数"
+}

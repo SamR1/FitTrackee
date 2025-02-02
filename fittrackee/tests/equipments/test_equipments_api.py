@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Tuple
 
 import pytest
@@ -13,7 +13,9 @@ from fittrackee.users.models import (
     UserSportPreference,
     UserSportPreferenceEquipment,
 )
+from fittrackee.users.roles import UserRole
 from fittrackee.utils import decode_short_id
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
@@ -27,27 +29,27 @@ class TestGetEquipments(ApiTestCaseMixin):
     ) -> None:
         client = app.test_client()
 
-        response = client.get('/api/equipments')
+        response = client.get("/api/equipments")
 
         self.assert_401(response)
 
     def test_it_does_not_return_error_if_user_suspended(
         self, app: Flask, user_1: User
     ) -> None:
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
 
         response = client.get(
-            '/api/equipments',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/equipments",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['equipments'] == []
+        assert "success" in data["status"]
+        assert data["data"]["equipments"] == []
 
     def test_it_gets_all_user_equipments(
         self,
@@ -61,19 +63,19 @@ class TestGetEquipments(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/equipments',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/equipments",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['equipments']) == 2
-        assert data['data']['equipments'][0] == jsonify_dict(
-            equipment_bike_user_1.serialize()
+        assert "success" in data["status"]
+        assert len(data["data"]["equipments"]) == 2
+        assert data["data"]["equipments"][0] == jsonify_dict(
+            equipment_bike_user_1.serialize(current_user=user_1)
         )
-        assert data['data']['equipments'][1] == jsonify_dict(
-            equipment_shoes_user_1.serialize()
+        assert data["data"]["equipments"][1] == jsonify_dict(
+            equipment_shoes_user_1.serialize(current_user=user_1)
         )
 
     def test_it_gets_all_equipments_with_inactive_one(
@@ -89,22 +91,22 @@ class TestGetEquipments(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/equipments',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/equipments",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['equipments']) == 3
-        assert data['data']['equipments'][0] == jsonify_dict(
-            equipment_bike_user_1.serialize()
+        assert "success" in data["status"]
+        assert len(data["data"]["equipments"]) == 3
+        assert data["data"]["equipments"][0] == jsonify_dict(
+            equipment_bike_user_1.serialize(current_user=user_1)
         )
-        assert data['data']['equipments'][1] == jsonify_dict(
-            equipment_shoes_user_1.serialize()
+        assert data["data"]["equipments"][1] == jsonify_dict(
+            equipment_shoes_user_1.serialize(current_user=user_1)
         )
-        assert data['data']['equipments'][2] == jsonify_dict(
-            equipment_bike_user_1_inactive.serialize()
+        assert data["data"]["equipments"][2] == jsonify_dict(
+            equipment_bike_user_1_inactive.serialize(current_user=user_1)
         )
 
     def test_it_doesnt_get_other_user_equipments(
@@ -119,15 +121,15 @@ class TestGetEquipments(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/equipments',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/equipments",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['equipments'] == [
-            jsonify_dict(equipment_shoes_user_2.serialize())
+        assert "success" in data["status"]
+        assert data["data"]["equipments"] == [
+            jsonify_dict(equipment_shoes_user_2.serialize(current_user=user_2))
         ]
 
     def test_it_gets_only_user_equipments_when_user_is_admin(
@@ -141,18 +143,40 @@ class TestGetEquipments(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/equipments',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/equipments",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['equipments'] == []
+        assert "success" in data["status"]
+        assert data["data"]["equipments"] == []
+
+    def test_it_does_not_get_equipment_even_when_visibility_is_public(
+        self,
+        app: Flask,
+        user_2_admin: User,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        equipment_shoes_user_1.visibility = VisibilityLevel.PUBLIC
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2_admin.email
+        )
+
+        response = client.get(
+            "/api/equipments",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert data["data"]["equipments"] == []
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'equipments:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "equipments:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self, app: Flask, user_1: User, client_scope: str, can_access: bool
@@ -167,9 +191,9 @@ class TestGetEquipments(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/equipments',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            "/api/equipments",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -182,7 +206,7 @@ class TestGetEquipment(ApiTestCaseMixin):
         client = app.test_client()
 
         response = client.get(
-            f'/api/equipments/{equipment_shoes_user_1.short_id}'
+            f"/api/equipments/{equipment_shoes_user_1.short_id}"
         )
 
         self.assert_401(response)
@@ -199,15 +223,15 @@ class TestGetEquipment(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['equipments'] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+        assert "success" in data["status"]
+        assert data["data"]["equipments"] == [
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
 
     def test_suspended_user_can_get_equipment(
@@ -217,21 +241,21 @@ class TestGetEquipment(ApiTestCaseMixin):
         equipment_bike_user_1: Equipment,
         equipment_shoes_user_1: Equipment,
     ) -> None:
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
 
         response = client.get(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['equipments'] == [
-            jsonify_dict(equipment_bike_user_1.serialize())
+        assert "success" in data["status"]
+        assert data["data"]["equipments"] == [
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
 
     def test_it_returns_error_when_equipment_does_not_exist(
@@ -245,12 +269,12 @@ class TestGetEquipment(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/equipments/{self.random_short_id()}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/equipments/{self.random_short_id()}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['equipments']) == 0
+        assert len(data["data"]["equipments"]) == 0
 
     def test_it_does_not_return_other_user_equipment(
         self,
@@ -258,17 +282,19 @@ class TestGetEquipment(ApiTestCaseMixin):
         user_2: User,
         equipment_shoes_user_1: Equipment,
     ) -> None:
+        equipment_shoes_user_1.visibility = VisibilityLevel.PUBLIC
+        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
 
         response = client.get(
-            f'/api/equipments/{equipment_shoes_user_1.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['equipments']) == 0
+        assert len(data["data"]["equipments"]) == 0
 
     def test_it_does_not_get_other_user_equipment_as_admin(
         self,
@@ -281,15 +307,15 @@ class TestGetEquipment(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/equipments/{equipment_shoes_user_1.short_id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'equipments:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "equipments:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -309,9 +335,9 @@ class TestGetEquipment(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/equipments/{equipment_shoes_user_1.short_id}',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -319,13 +345,13 @@ class TestGetEquipment(ApiTestCaseMixin):
 
 class TestPostEquipment(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
-        self, app: Flask, equipment_bike_user_1: EquipmentType
+        self, app: Flask, equipment_bike_user_1: Equipment
     ) -> None:
         client = app.test_client()
 
         response = client.post(
-            '/api/equipments',
-            content_type='application/json',
+            "/api/equipments",
+            content_type="application/json",
             json={
                 "equipment_type_id": equipment_bike_user_1.id,
                 "label": self.random_short_id(),
@@ -345,23 +371,23 @@ class TestPostEquipment(ApiTestCaseMixin):
         )
 
         response = client.post(
-            '/api/equipments',
+            "/api/equipments",
             json={
                 "equipment_type_id": equipment_type_1_shoe.id,
                 "label": "Test shoes",
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 201
-        assert 'created' in data['status']
-        assert len(data['data']['equipments']) == 1
-        equipment = data['data']['equipments'][0]
-        assert 'Test shoes' == equipment['label']
-        assert equipment['description'] is None
-        assert equipment['is_active'] is True
-        assert equipment_type_1_shoe.serialize() == equipment['equipment_type']
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert "Test shoes" == equipment["label"]
+        assert equipment["description"] is None
+        assert equipment["is_active"] is True
+        assert equipment_type_1_shoe.serialize() == equipment["equipment_type"]
 
     def test_it_returns_error_when_equipment_type_does_not_exist(
         self,
@@ -417,22 +443,22 @@ class TestPostEquipment(ApiTestCaseMixin):
         )
 
         response = client.post(
-            '/api/equipments',
+            "/api/equipments",
             json={
                 "description": description,
                 "equipment_type_id": equipment_type_1_shoe.id,
                 "label": "Test shoes",
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 201
-        assert 'created' in data['status']
-        assert len(data['data']['equipments']) == 1
-        equipment = data['data']['equipments'][0]
-        assert 'Test shoes' == equipment['label']
-        assert equipment['description'] == description
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert "Test shoes" == equipment["label"]
+        assert equipment["description"] == description
 
     def test_it_raises_error_when_label_exceeds_50_characters(
         self,
@@ -447,18 +473,18 @@ class TestPostEquipment(ApiTestCaseMixin):
         )
 
         response = client.post(
-            '/api/equipments',
+            "/api/equipments",
             json={
                 "description": description,
                 "equipment_type_id": equipment_type_1_shoe.id,
                 "label": label,
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         self.assert_400(response, "label exceeds 50 characters")
 
-    @pytest.mark.parametrize('missing_arg', ["label", "equipment_type_id"])
+    @pytest.mark.parametrize("missing_arg", ["label", "equipment_type_id"])
     def test_it_returns_400_when_payload_is_invalid(
         self,
         app: Flask,
@@ -478,9 +504,9 @@ class TestPostEquipment(ApiTestCaseMixin):
         )
 
         response = client.post(
-            '/api/equipments',
+            "/api/equipments",
             json=data,
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         self.assert_400(
@@ -502,12 +528,12 @@ class TestPostEquipment(ApiTestCaseMixin):
         )
 
         response = client.post(
-            '/api/equipments',
+            "/api/equipments",
             json={
                 "equipment_type_id": self.random_int(),
                 "label": self.random_short_id(),
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         self.assert_400(response, "invalid equipment type")
@@ -523,13 +549,13 @@ class TestPostEquipment(ApiTestCaseMixin):
         )
 
         response = client.post(
-            '/api/equipments',
+            "/api/equipments",
             json={
                 "description": self.random_short_id(),
                 "equipment_type_id": equipment_shoes_user_1.equipment_type_id,
                 "label": equipment_shoes_user_1.label,
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         self.assert_400(
@@ -550,21 +576,21 @@ class TestPostEquipment(ApiTestCaseMixin):
         )
 
         response = client.post(
-            '/api/equipments',
+            "/api/equipments",
             json={
                 "equipment_type_id": equipment_shoes_user_1.equipment_type_id,
                 "label": equipment_shoes_user_1.label,
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 201
-        assert 'created' in data['status']
-        assert len(data['data']['equipments']) == 1
-        equipment = data['data']['equipments'][0]
-        assert equipment['label'] == equipment_shoes_user_1.label
-        assert equipment['equipment_type'] == equipment_type_1_shoe.serialize()
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert equipment["label"] == equipment_shoes_user_1.label
+        assert equipment["equipment_type"] == equipment_type_1_shoe.serialize()
 
     def test_it_returns_error_when_sport_not_found(
         self,
@@ -579,7 +605,7 @@ class TestPostEquipment(ApiTestCaseMixin):
         )
 
         response = client.post(
-            '/api/equipments',
+            "/api/equipments",
             json={
                 "equipment_type_id": equipment_type_2_bike.id,
                 "label": "My Bike",
@@ -588,10 +614,10 @@ class TestPostEquipment(ApiTestCaseMixin):
                     sport_3_cycling_transport.id,
                 ],
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
-        self.assert_400(response, f'sport (id {sport_id}) does not exist')
+        self.assert_400(response, f"sport (id {sport_id}) does not exist")
 
     def test_it_adds_an_equipment_with_default_sports(
         self,
@@ -607,7 +633,7 @@ class TestPostEquipment(ApiTestCaseMixin):
         )
 
         response = client.post(
-            '/api/equipments',
+            "/api/equipments",
             json={
                 "equipment_type_id": equipment_type_2_bike.id,
                 "label": "My Bike",
@@ -616,28 +642,28 @@ class TestPostEquipment(ApiTestCaseMixin):
                     sport_3_cycling_transport.id,
                 ],
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 201
-        assert 'created' in data['status']
-        assert len(data['data']['equipments']) == 1
-        equipment = data['data']['equipments'][0]
-        assert 'My Bike' == equipment['label']
-        assert set(equipment['default_for_sport_ids']) == {
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert "My Bike" == equipment["label"]
+        assert set(equipment["default_for_sport_ids"]) == {
             sport_1_cycling.id,
             sport_3_cycling_transport.id,
         }
         equipment = Equipment.query.filter_by(
-            uuid=decode_short_id(equipment['id'])
+            uuid=decode_short_id(equipment["id"])
         ).first()
         assert user_1_sport_1_preference.default_equipments.all() == [
             equipment
         ]
         sport_3_cycling_transport_pref = UserSportPreference.query.filter_by(
             user_id=user_1.id, sport_id=sport_3_cycling_transport.id
-        ).first()
+        ).one()
         assert sport_3_cycling_transport_pref.default_equipments.all() == [
             equipment
         ]
@@ -684,24 +710,24 @@ class TestPostEquipment(ApiTestCaseMixin):
         )
 
         response = client.post(
-            '/api/equipments',
+            "/api/equipments",
             json={
                 "equipment_type_id": equipment_type_1_shoe.id,
                 "label": "Another shoes",
                 "default_for_sport_ids": [sport_2_running.id],
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 201
-        assert 'created' in data['status']
-        assert len(data['data']['equipments']) == 1
-        equipment = data['data']['equipments'][0]
-        assert 'Another shoes' == equipment['label']
-        assert equipment['default_for_sport_ids'] == [sport_2_running.id]
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert "Another shoes" == equipment["label"]
+        assert equipment["default_for_sport_ids"] == [sport_2_running.id]
         equipment = Equipment.query.filter_by(
-            uuid=decode_short_id(equipment['id'])
+            uuid=decode_short_id(equipment["id"])
         ).first()
         assert user_1_sport_2_preference.default_equipments.all() == [
             equipment
@@ -730,7 +756,7 @@ class TestPostEquipment(ApiTestCaseMixin):
         )
 
         response = client.post(
-            '/api/equipments',
+            "/api/equipments",
             json={
                 "description": self.random_short_id(),
                 "equipment_type_id": equipment_type_1_shoe.id,
@@ -740,7 +766,7 @@ class TestPostEquipment(ApiTestCaseMixin):
                     sport_2_running.id,
                 ],
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         self.assert_400(
@@ -749,9 +775,59 @@ class TestPostEquipment(ApiTestCaseMixin):
             f"equipment type '{equipment_type_1_shoe.label}'",
         )
 
+    def test_it_returns_400_when_visibility_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "equipment_type_id": equipment_type_1_shoe.id,
+                "label": "Test shoes",
+                "visibility": "invalid",
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        self.assert_400(response, "invalid visibility")
+
+    def test_it_adds_an_equipment_with_given_visibility(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "equipment_type_id": equipment_type_1_shoe.id,
+                "label": "Test shoes",
+                "visibility": VisibilityLevel.PUBLIC.value,
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert "Test shoes" == equipment["label"]
+        assert equipment["visibility"] == VisibilityLevel.PUBLIC.value
+
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'equipments:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "equipments:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -771,12 +847,12 @@ class TestPostEquipment(ApiTestCaseMixin):
         )
 
         response = client.post(
-            '/api/equipments',
+            "/api/equipments",
             json={
                 "label": "Test shoes",
                 "equipment_type_id": equipment_type_1_shoe.id,
             },
-            headers={"Authorization": f'Bearer {access_token}'},
+            headers={"Authorization": f"Bearer {access_token}"},
         )
 
         self.assert_response_scope(response, can_access)
@@ -784,22 +860,23 @@ class TestPostEquipment(ApiTestCaseMixin):
 
 class TestPatchEquipment(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
-        self, app: Flask, equipment_bike_user_1: EquipmentType
+        self, app: Flask, equipment_bike_user_1: Equipment
     ) -> None:
         client = app.test_client()
 
         response = client.get(
-            f'/api/equipments/{equipment_bike_user_1.short_id}'
+            f"/api/equipments/{equipment_bike_user_1.short_id}"
         )
 
         self.assert_401(response)
 
     @pytest.mark.parametrize(
-        'input_values',
+        "input_values",
         [
-            ('label', 'new label'),
-            ('description', 'new description'),
-            ('is_active', False),
+            ("label", "new label"),
+            ("description", "new description"),
+            ("is_active", False),
+            ("visibility", VisibilityLevel.FOLLOWERS.value),
         ],
     )
     def test_it_updates_equipment(
@@ -815,20 +892,20 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={input_values[0]: input_values[1]},
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
-        equipment = response.json['data']['equipments'][0]  # type: ignore
+        equipment = response.json["data"]["equipments"][0]  # type: ignore
         assert equipment[input_values[0]] == input_values[1]
 
         response = client.get(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
-            headers={"Authorization": f'Bearer {auth_token}'},
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
-        equipment = response.json['data']['equipments'][0]  # type: ignore
+        equipment = response.json["data"]["equipments"][0]  # type: ignore
         assert equipment[input_values[0]] == input_values[1]
 
     def test_it_updates_equipment_with_same_label(
@@ -845,24 +922,24 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={
                 "label": label,
                 "description": new_description,
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
-        equipment = response.json['data']['equipments'][0]  # type: ignore
+        equipment = response.json["data"]["equipments"][0]  # type: ignore
         assert equipment["label"] == label
         assert equipment["description"] == new_description
         updated_equipment = Equipment.query.filter_by(
             id=equipment_bike_user_1.id
-        ).first()
+        ).one()
         assert updated_equipment.label == label
         assert updated_equipment.description == new_description
 
-    def test_it_raises_error_when_label_exceeds_50_characters(
+    def test_it_returns_400_when_label_exceeds_50_characters(
         self,
         app: Flask,
         user_1: User,
@@ -875,14 +952,33 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_shoes_user_1.short_id}',
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
             json={
                 "label": label,
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         self.assert_400(response, "label exceeds 50 characters")
+
+    def test_it_returns_400_when_visibility_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
+            json={"visibility": "invalid"},
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        self.assert_400(response, "invalid visibility")
 
     def test_it_updates_equipment_type(
         self,
@@ -897,20 +993,20 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
-            json={'equipment_type_id': equipment_type_1_shoe.id},
-            headers={"Authorization": f'Bearer {auth_token}'},
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
+            json={"equipment_type_id": equipment_type_1_shoe.id},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
-        equipment = response.json['data']['equipments'][0]  # type: ignore
+        equipment = response.json["data"]["equipments"][0]  # type: ignore
         assert equipment["equipment_type"] == equipment_type_1_shoe.serialize()
 
         response = client.get(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
-            headers={"Authorization": f'Bearer {auth_token}'},
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
-        equipment = response.json['data']['equipments'][0]  # type: ignore
+        equipment = response.json["data"]["equipments"][0]  # type: ignore
         assert equipment["equipment_type"] == equipment_type_1_shoe.serialize()
 
     def test_it_returns_error_when_equipment_type_does_not_exist(
@@ -924,9 +1020,9 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
-            json={'equipment_type_id': self.random_int()},
-            headers={"Authorization": f'Bearer {auth_token}'},
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
+            json={"equipment_type_id": self.random_int()},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         self.assert_400(response, "invalid equipment type id")
@@ -944,9 +1040,9 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
-            json={'equipment_type_id': equipment_type_1_shoe_inactive.id},
-            headers={"Authorization": f'Bearer {auth_token}'},
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
+            json={"equipment_type_id": equipment_type_1_shoe_inactive.id},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         self.assert_400(response, "equipment type is inactive")
@@ -966,15 +1062,15 @@ class TestPatchEquipment(ApiTestCaseMixin):
         new_label = self.random_string()
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={
-                'equipment_type_id': equipment_type_2_bike.id,
-                'label': new_label,
+                "equipment_type_id": equipment_type_2_bike.id,
+                "label": new_label,
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
-        equipment = response.json['data']['equipments'][0]  # type: ignore
+        equipment = response.json["data"]["equipments"][0]  # type: ignore
         assert equipment["equipment_type"] == equipment_type_2_bike.serialize()
         assert equipment["label"] == new_label
         assert equipment_bike_user_1.label == new_label
@@ -1014,18 +1110,18 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={"equipment_type_id": equipment_type_1_shoe.id},
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['equipments']) == 1
-        equipment = data['data']['equipments'][0]
-        assert equipment['equipment_type'] == equipment_type_1_shoe.serialize()
-        assert equipment['default_for_sport_ids'] == []
+        assert "success" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert equipment["equipment_type"] == equipment_type_1_shoe.serialize()
+        assert equipment["default_for_sport_ids"] == []
         assert equipment_bike_user_1.total_distance == 0.0
         assert equipment_bike_user_1.total_duration == timedelta()
         assert equipment_bike_user_1.total_moving == timedelta()
@@ -1082,21 +1178,21 @@ class TestPatchEquipment(ApiTestCaseMixin):
         new_label = self.random_string()
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={
                 "equipment_type_id": equipment_type_2_bike.id,
                 "new_label": new_label,
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['equipments']) == 1
-        equipment = data['data']['equipments'][0]
-        assert equipment['equipment_type'] == equipment_type_2_bike.serialize()
-        assert equipment['default_for_sport_ids'] == [sport_1_cycling.id]
+        assert "success" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert equipment["equipment_type"] == equipment_type_2_bike.serialize()
+        assert equipment["default_for_sport_ids"] == [sport_1_cycling.id]
         assert (
             equipment_bike_user_1.total_distance
             == workout_cycling_user_1.distance
@@ -1168,21 +1264,21 @@ class TestPatchEquipment(ApiTestCaseMixin):
         # - shoes equipment type
         # - and 'Running' as default sport
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={
                 "equipment_type_id": equipment_type_1_shoe.id,
                 "default_for_sport_ids": [sport_2_running.id],
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['equipments']) == 1
-        equipment = data['data']['equipments'][0]
-        assert equipment['equipment_type'] == equipment_type_1_shoe.serialize()
-        assert equipment['default_for_sport_ids'] == [sport_2_running.id]
+        assert "success" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert equipment["equipment_type"] == equipment_type_1_shoe.serialize()
+        assert equipment["default_for_sport_ids"] == [sport_2_running.id]
         assert equipment_bike_user_1.total_distance == 0.0
         assert equipment_bike_user_1.total_duration == timedelta()
         assert equipment_bike_user_1.total_moving == timedelta()
@@ -1209,34 +1305,34 @@ class TestPatchEquipment(ApiTestCaseMixin):
         assert workout_running_user_1.equipments == [equipment_shoes_user_1]
 
     def test_it_returns_400_when_all_payload_is_missing(
-        self, app: Flask, user_1: User, equipment_shoes_user_1: EquipmentType
+        self, app: Flask, user_1: User, equipment_shoes_user_1: Equipment
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_shoes_user_1.short_id}',
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
             json={},
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
-        self.assert_400(response, 'no request data was supplied')
+        self.assert_400(response, "no request data was supplied")
 
     def test_it_returns_400_when_payload_is_invalid(
-        self, app: Flask, user_1: User, equipment_shoes_user_1: EquipmentType
+        self, app: Flask, user_1: User, equipment_shoes_user_1: Equipment
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_shoes_user_1.short_id}',
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
             json={self.random_short_id(): self.random_short_id()},
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
-        self.assert_400(response, 'no valid parameters supplied')
+        self.assert_400(response, "no valid parameters supplied")
 
     def test_it_returns_404_when_equipment_does_not_exist(
         self,
@@ -1248,13 +1344,13 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{self.random_short_id()}',
-            json={'is_active': False},
-            headers={"Authorization": f'Bearer {auth_token}'},
+            f"/api/equipments/{self.random_short_id()}",
+            json={"is_active": False},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['equipments']) == 0
+        assert len(data["data"]["equipments"]) == 0
 
     def test_it_returns_400_on_editing_label_when_same_equipment_exists(
         self,
@@ -1268,9 +1364,9 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_shoes_user_1.short_id}',
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
             json={"label": equipment_bike_user_1_inactive.label},
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         self.assert_400(
@@ -1283,20 +1379,20 @@ class TestPatchEquipment(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
         user_2: User,
-        equipment_shoes_user_1: EquipmentType,
+        equipment_shoes_user_1: Equipment,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_shoes_user_1.short_id}',
-            json={'label': 'new label'},
-            headers={"Authorization": f'Bearer {auth_token}'},
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
+            json={"label": "new label"},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['equipments']) == 0
+        assert len(data["data"]["equipments"]) == 0
 
     def test_it_updates_default_sports(
         self,
@@ -1324,22 +1420,22 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={
                 "default_for_sport_ids": [
                     sport_1_cycling.id,
                     sport_3_cycling_transport.id,
                 ],
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['equipments']) == 1
-        equipment = data['data']['equipments'][0]
-        assert set(equipment['default_for_sport_ids']) == {
+        assert "success" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert set(equipment["default_for_sport_ids"]) == {
             sport_1_cycling.id,
             sport_3_cycling_transport.id,
         }
@@ -1348,7 +1444,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
         ]
         sport_3_cycling_transport_pref = UserSportPreference.query.filter_by(
             user_id=user_1.id, sport_id=sport_3_cycling_transport.id
-        ).first()
+        ).one()
         assert sport_3_cycling_transport_pref.default_equipments.all() == [
             equipment_bike_user_1
         ]
@@ -1379,27 +1475,27 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={
                 "default_for_sport_ids": [
                     sport_3_cycling_transport.id,
                 ],
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['equipments']) == 1
-        equipment = data['data']['equipments'][0]
-        assert equipment['default_for_sport_ids'] == [
+        assert "success" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert equipment["default_for_sport_ids"] == [
             sport_3_cycling_transport.id,
         ]
         assert user_1_sport_1_preference.default_equipments.all() == []
         sport_3_cycling_transport_pref = UserSportPreference.query.filter_by(
             user_id=user_1.id, sport_id=sport_3_cycling_transport.id
-        ).first()
+        ).one()
         assert sport_3_cycling_transport_pref.default_equipments.all() == [
             equipment_bike_user_1
         ]
@@ -1430,17 +1526,17 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={"default_for_sport_ids": []},
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['equipments']) == 1
-        equipment = data['data']['equipments'][0]
-        assert equipment['default_for_sport_ids'] == []
+        assert "success" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert equipment["default_for_sport_ids"] == []
         assert user_1_sport_1_preference.default_equipments.all() == []
 
     def test_it_replaces_existing_default_equipment(
@@ -1485,17 +1581,17 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_another_shoes_user_1.short_id}',
+            f"/api/equipments/{equipment_another_shoes_user_1.short_id}",
             json={"default_for_sport_ids": [sport_2_running.id]},
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['equipments']) == 1
-        equipment = data['data']['equipments'][0]
-        assert equipment['default_for_sport_ids'] == [sport_2_running.id]
+        assert "success" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert equipment["default_for_sport_ids"] == [sport_2_running.id]
         assert user_1_sport_2_preference.default_equipments.all() == [
             equipment_another_shoes_user_1
         ]
@@ -1537,18 +1633,18 @@ class TestPatchEquipment(ApiTestCaseMixin):
         new_label = self.random_short_id()
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={"label": new_label},
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['equipments']) == 1
-        equipment = data['data']['equipments'][0]
-        assert equipment['label'] == new_label
-        assert equipment['default_for_sport_ids'] == [sport_1_cycling.id]
+        assert "success" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert equipment["label"] == new_label
+        assert equipment["default_for_sport_ids"] == [sport_1_cycling.id]
         assert user_1_sport_1_preference.default_equipments.all() == [
             equipment_bike_user_1
         ]
@@ -1568,14 +1664,14 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={
                 "default_for_sport_ids": [
                     sport_1_cycling.id,
                     sport_2_running.id,
                 ]
             },
-            headers={"Authorization": f'Bearer {auth_token}'},
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         self.assert_400(
@@ -1585,8 +1681,8 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'equipments:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "equipments:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1606,11 +1702,11 @@ class TestPatchEquipment(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipments/{equipment_shoes_user_1.short_id}',
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
             json={
                 "label": "new label",
             },
-            headers={"Authorization": f'Bearer {access_token}'},
+            headers={"Authorization": f"Bearer {access_token}"},
         )
 
         self.assert_response_scope(response, can_access)
@@ -1618,12 +1714,12 @@ class TestPatchEquipment(ApiTestCaseMixin):
 
 class TestRefreshEquipment(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
-        self, app: Flask, equipment_bike_user_1: EquipmentType
+        self, app: Flask, equipment_bike_user_1: Equipment
     ) -> None:
         client = app.test_client()
 
         response = client.post(
-            f'/api/equipments/{equipment_bike_user_1.short_id}/refresh',
+            f"/api/equipments/{equipment_bike_user_1.short_id}/refresh",
         )
 
         self.assert_401(response)
@@ -1638,12 +1734,12 @@ class TestRefreshEquipment(ApiTestCaseMixin):
         )
 
         response = client.post(
-            f'/api/equipments/{self.random_short_id()}/refresh',
-            headers={"Authorization": f'Bearer {auth_token}'},
+            f"/api/equipments/{self.random_short_id()}/refresh",
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['equipments']) == 0
+        assert len(data["data"]["equipments"]) == 0
 
     def test_it_returns_404_when_equipment_belongs_to_another_user(
         self,
@@ -1657,12 +1753,12 @@ class TestRefreshEquipment(ApiTestCaseMixin):
         )
 
         response = client.post(
-            f'/api/equipments/{equipment_shoes_user_2.short_id}/refresh',
-            headers={"Authorization": f'Bearer {auth_token}'},
+            f"/api/equipments/{equipment_shoes_user_2.short_id}/refresh",
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['equipments']) == 0
+        assert len(data["data"]["equipments"]) == 0
 
     def test_it_returns_null_total_when_no_associated_workouts(
         self,
@@ -1690,8 +1786,8 @@ class TestRefreshEquipment(ApiTestCaseMixin):
         )
 
         response = client.post(
-            f'/api/equipments/{equipment_bike_user_1.short_id}/refresh',
-            headers={"Authorization": f'Bearer {auth_token}'},
+            f"/api/equipments/{equipment_bike_user_1.short_id}/refresh",
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         assert response.status_code == 200
@@ -1700,8 +1796,8 @@ class TestRefreshEquipment(ApiTestCaseMixin):
         assert equipment_bike_user_1.total_moving == timedelta()
         assert equipment_bike_user_1.total_workouts == 0
         data = json.loads(response.data.decode())
-        assert data['data']['equipments'][0] == (
-            jsonify_dict(equipment_bike_user_1.serialize())
+        assert data["data"]["equipments"][0] == (
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         )
         # other equipment remains unchanged
         assert (
@@ -1749,27 +1845,27 @@ class TestRefreshEquipment(ApiTestCaseMixin):
         )
 
         response = client.post(
-            f'/api/equipments/{equipment_bike_user_1.short_id}/refresh',
-            headers={"Authorization": f'Bearer {auth_token}'},
+            f"/api/equipments/{equipment_bike_user_1.short_id}/refresh",
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         assert response.status_code == 200
         assert equipment_bike_user_1.total_distance == (
-            workout_cycling_user_1.distance
-            + another_workout_cycling_user_1.distance
+            workout_cycling_user_1.distance  # type: ignore
+            + another_workout_cycling_user_1.distance  # type: ignore
         )
         assert equipment_bike_user_1.total_duration == (
             workout_cycling_user_1.duration
             + another_workout_cycling_user_1.duration
         )
         assert equipment_bike_user_1.total_moving == (
-            workout_cycling_user_1.moving
-            + another_workout_cycling_user_1.moving
+            workout_cycling_user_1.moving  # type: ignore
+            + another_workout_cycling_user_1.moving  # type: ignore
         )
         assert equipment_bike_user_1.total_workouts == 2
         data = json.loads(response.data.decode())
-        assert data['data']['equipments'][0] == (
-            jsonify_dict(equipment_bike_user_1.serialize())
+        assert data["data"]["equipments"][0] == (
+            jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         )
         # other equipment remains unchanged
         assert (
@@ -1789,12 +1885,12 @@ class TestRefreshEquipment(ApiTestCaseMixin):
 
 class TestDeleteEquipment(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
-        self, app: Flask, equipment_bike_user_1: EquipmentType
+        self, app: Flask, equipment_bike_user_1: Equipment
     ) -> None:
         client = app.test_client()
 
         response = client.delete(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
         )
 
         self.assert_401(response)
@@ -1811,8 +1907,8 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/equipments/{equipment_shoes_user_1.short_id}',
-            headers={"Authorization": f'Bearer {auth_token}'},
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         assert response.status_code == 204
@@ -1828,14 +1924,14 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/equipments/{self.random_short_id()}',
-            headers={"Authorization": f'Bearer {auth_token}'},
+            f"/api/equipments/{self.random_short_id()}",
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['equipments']) == 0
+        assert len(data["data"]["equipments"]) == 0
 
-    @pytest.mark.parametrize('input_admin', [True, False])
+    @pytest.mark.parametrize("input_admin", [True, False])
     def test_it_returns_404_when_user_tries_to_delete_equipment_for_other_user(
         self,
         app: Flask,
@@ -1844,15 +1940,16 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         user_2: User,
         input_admin: bool,
     ) -> None:
-        user_1.admin = input_admin
+        if input_admin:
+            user_1.role = UserRole.ADMIN.value
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
 
         response = client.delete(
-            f'/api/equipments/{equipment_shoes_user_1.short_id}',
-            headers={"Authorization": f'Bearer {auth_token}'},
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         self.assert_404(response)
@@ -1869,19 +1966,19 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/equipments/{equipment_shoes_user_1.short_id}',
-            headers={"Authorization": f'Bearer {auth_token}'},
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         data = response.json
         assert response.status_code == 403
-        assert 'error' in data['status']  # type: ignore
+        assert "error" in data["status"]  # type: ignore
         assert (
             "Cannot delete equipment that has associated workouts. "
             f"Equipment id {equipment_shoes_user_1.short_id} has 1 "
             "associated workout. (Provide "
             "argument 'force' as a query parameter to override "
-            "this check)" in data['message']  # type: ignore
+            "this check)" in data["message"]  # type: ignore
         )
         assert len(db.session.query(Equipment).all()) == 1
 
@@ -1899,9 +1996,9 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         # the workout should have no equipment
 
         response = client.delete(
-            f'/api/equipments/{equipment_shoes_user_1.short_id}',
-            query_string='force',
-            headers={"Authorization": f'Bearer {auth_token}'},
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
+            query_string="force",
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         assert response.status_code == 204
@@ -1910,7 +2007,7 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         w = (
             db.session.query(Workout)
             .filter(Workout.id == workout_w_shoes_equipment.id)
-            .first()
+            .one()
         )
         assert w.equipments == []
 
@@ -1943,9 +2040,9 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         # the workout should have no equipment
 
         response = client.delete(
-            f'/api/equipments/{equipment_bike_user_1.short_id}',
-            query_string='force',
-            headers={"Authorization": f'Bearer {auth_token}'},
+            f"/api/equipments/{equipment_bike_user_1.short_id}",
+            query_string="force",
+            headers={"Authorization": f"Bearer {auth_token}"},
         )
 
         assert response.status_code == 204
@@ -1958,13 +2055,13 @@ class TestDeleteEquipment(ApiTestCaseMixin):
                 == user_1_sport_1_preference.user_id,
                 UserSportPreference.sport_id == 1,
             )
-            .first()
+            .one()
         )
         assert up.default_equipments.all() == []
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'equipments:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "equipments:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1984,8 +2081,8 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         )
 
         response = client.delete(
-            f'/api/equipments/{equipment_shoes_user_1.short_id}',
-            headers={"Authorization": f'Bearer {access_token}'},
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
+            headers={"Authorization": f"Bearer {access_token}"},
         )
 
         self.assert_response_scope(response, can_access)

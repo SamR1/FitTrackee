@@ -13,10 +13,10 @@ from fittrackee.users.models import User
 from ..utils import random_domain, random_string
 
 TEST_METADATA = {
-    'client_name': random_string(),
-    'client_uri': random_string(),
-    'redirect_uris': [random_domain()],
-    'scope': 'profile:read',
+    "client_name": random_string(),
+    "client_uri": random_string(),
+    "redirect_uris": [random_domain()],
+    "scope": "profile:read",
 }
 
 
@@ -31,7 +31,7 @@ class TestCreateOAuth2Client:
     ) -> None:
         client_id = random_string()
         with patch(
-            'fittrackee.oauth2.client.gen_salt', return_value=client_id
+            "fittrackee.oauth2.client.gen_salt", return_value=client_id
         ):
             oauth_client = create_oauth2_client(TEST_METADATA, user_1)
 
@@ -42,7 +42,7 @@ class TestCreateOAuth2Client:
     ) -> None:
         client_id_issued_at = int(time())
         with patch(
-            'fittrackee.oauth2.client.time', return_value=client_id_issued_at
+            "fittrackee.oauth2.client.time", return_value=client_id_issued_at
         ):
             oauth_client = create_oauth2_client(TEST_METADATA, user_1)
 
@@ -52,7 +52,7 @@ class TestCreateOAuth2Client:
         self, app: Flask, user_1: User
     ) -> None:
         client_name = random_string()
-        client_metadata: Dict = {**TEST_METADATA, 'client_name': client_name}
+        client_metadata: Dict = {**TEST_METADATA, "client_name": client_name}
 
         oauth_client = create_oauth2_client(client_metadata, user_1)
 
@@ -71,7 +71,7 @@ class TestCreateOAuth2Client:
         client_description = random_string()
         client_metadata: Dict = {
             **TEST_METADATA,
-            'client_description': client_description,
+            "client_description": client_description,
         }
 
         oauth_client = create_oauth2_client(client_metadata, user_1)
@@ -82,7 +82,7 @@ class TestCreateOAuth2Client:
         self, app: Flask, user_1: User
     ) -> None:
         client_uri = random_domain()
-        client_metadata: Dict = {**TEST_METADATA, 'client_uri': client_uri}
+        client_metadata: Dict = {**TEST_METADATA, "client_uri": client_uri}
 
         oauth_client = create_oauth2_client(client_metadata, user_1)
 
@@ -94,8 +94,8 @@ class TestCreateOAuth2Client:
         oauth_client = create_oauth2_client(TEST_METADATA, user_1)
 
         assert oauth_client.grant_types == [
-            'authorization_code',
-            'refresh_token',
+            "authorization_code",
+            "refresh_token",
         ]
 
     def test_oauth_client_has_expected_redirect_uris(
@@ -104,7 +104,7 @@ class TestCreateOAuth2Client:
         redirect_uris = [random_domain()]
         client_metadata: Dict = {
             **TEST_METADATA,
-            'redirect_uris': redirect_uris,
+            "redirect_uris": redirect_uris,
         }
 
         oauth_client = create_oauth2_client(client_metadata, user_1)
@@ -114,21 +114,21 @@ class TestCreateOAuth2Client:
     def test_oauth_client_has_expected_response_types(
         self, app: Flask, user_1: User
     ) -> None:
-        response_types = ['code']
+        response_types = ["code"]
         client_metadata: Dict = {
             **TEST_METADATA,
-            'response_types': response_types,
+            "response_types": response_types,
         }
 
         oauth_client = create_oauth2_client(client_metadata, user_1)
 
-        assert oauth_client.response_types == ['code']
+        assert oauth_client.response_types == ["code"]
 
     def test_oauth_client_has_expected_scope(
         self, app: Flask, user_1: User
     ) -> None:
-        scope = 'workouts:write'
-        client_metadata: Dict = {**TEST_METADATA, 'scope': scope}
+        scope = "workouts:write"
+        client_metadata: Dict = {**TEST_METADATA, "scope": scope}
 
         oauth_client = create_oauth2_client(client_metadata, user_1)
 
@@ -137,7 +137,7 @@ class TestCreateOAuth2Client:
     def test_it_raises_error_when_scope_is_invalid(
         self, app: Flask, user_1: User
     ) -> None:
-        client_metadata: Dict = {**TEST_METADATA, 'scope': random_string()}
+        client_metadata: Dict = {**TEST_METADATA, "scope": random_string()}
 
         with pytest.raises(InvalidOAuth2Scopes):
             create_oauth2_client(client_metadata, user_1)
@@ -147,14 +147,14 @@ class TestCreateOAuth2Client:
     ) -> None:
         oauth_client = create_oauth2_client(TEST_METADATA, user_1)
 
-        assert oauth_client.token_endpoint_auth_method == 'client_secret_post'
+        assert oauth_client.token_endpoint_auth_method == "client_secret_post"
 
     def test_when_auth_method_is_not_none_oauth_client_secret_is_generated(
         self, app: Flask, user_1: User
     ) -> None:
         client_secret = random_string()
         with patch(
-            'fittrackee.oauth2.client.gen_salt', return_value=client_secret
+            "fittrackee.oauth2.client.gen_salt", return_value=client_secret
         ):
             oauth_client = create_oauth2_client(TEST_METADATA, user_1)
 
@@ -170,7 +170,7 @@ class TestCreateOAuth2Client:
 
 class TestOAuthCheckScopes:
     @pytest.mark.parametrize(
-        'input_scope', ['', 1, 'invalid_scope', ['invalid_scope', 'readwrite']]
+        "input_scope", ["", 1, "invalid_scope", ["invalid_scope", "readwrite"]]
     )
     def test_it_raises_error_when_scope_is_invalid(
         self, input_scope: Any
@@ -179,15 +179,15 @@ class TestOAuthCheckScopes:
             check_scope(input_scope)
 
     @pytest.mark.parametrize(
-        'input_scope,expected_scope',
+        "input_scope,expected_scope",
         [
-            ('profile:read', 'profile:read'),
-            ('profile:read invalid_scope:read', 'profile:read'),
-            ('profile:write', 'profile:write'),
-            ('profile:read profile:write', 'profile:read profile:write'),
+            ("profile:read", "profile:read"),
+            ("profile:read invalid_scope:read", "profile:read"),
+            ("profile:write", "profile:write"),
+            ("profile:read profile:write", "profile:read profile:write"),
             (
-                'profile:write invalid_scope:read profile:read',
-                'profile:write profile:read',
+                "profile:write invalid_scope:read profile:read",
+                "profile:write profile:read",
             ),
         ],
     )

@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import patch
 
 import pytest
@@ -17,7 +17,7 @@ from .mixins import CommentMixin
 
 
 class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
-    route = '/api/comments/{comment_uuid}/like'
+    route = "/api/comments/{comment_uuid}/like"
 
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
@@ -52,7 +52,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(comment_uuid=self.random_short_id()),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -71,7 +71,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(comment_uuid=self.random_short_id()),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -98,7 +98,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -124,7 +124,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -147,7 +147,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -155,7 +155,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -175,7 +175,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -183,16 +183,16 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_level',
+        "input_desc,input_workout_level",
         [
-            ('workout visibility: follower', VisibilityLevel.FOLLOWERS),
-            ('workout visibility: public', VisibilityLevel.PUBLIC),
+            ("workout visibility: follower", VisibilityLevel.FOLLOWERS),
+            ("workout visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_creates_workout_like(
@@ -221,13 +221,13 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['comment']['id'] == comment.short_id
+        assert "success" in data["status"]
+        assert data["comment"]["id"] == comment.short_id
         assert (
             CommentLike.query.filter_by(
                 user_id=user_1.id, comment_id=comment.id
@@ -262,13 +262,13 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['comment']['id'] == comment.short_id
+        assert "success" in data["status"]
+        assert data["comment"]["id"] == comment.short_id
         assert (
             CommentLike.query.filter_by(
                 user_id=user_1.id, comment_id=comment.id
@@ -278,8 +278,8 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         assert comment.likes.all() == [user_1]
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -306,14 +306,14 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
 
 
 class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
-    route = '/api/comments/{comment_uuid}/like/undo'
+    route = "/api/comments/{comment_uuid}/like/undo"
 
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
@@ -350,7 +350,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
                 workout_uuid=self.random_short_id(),
                 comment_uuid=self.random_short_id(),
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -369,7 +369,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(comment_uuid=self.random_short_id()),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -396,7 +396,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -422,7 +422,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -450,21 +450,21 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
         like = CommentLike(user_id=user_1.id, comment_id=comment.id)
         db.session.add(like)
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
 
     @pytest.mark.parametrize(
-        'input_desc,input_workout_level',
+        "input_desc,input_workout_level",
         [
-            ('workout visibility: follower', VisibilityLevel.FOLLOWERS),
-            ('workout visibility: public', VisibilityLevel.PUBLIC),
+            ("workout visibility: follower", VisibilityLevel.FOLLOWERS),
+            ("workout visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
     def test_it_removes_comment_like(
@@ -496,13 +496,13 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['comment']['id'] == comment.short_id
+        assert "success" in data["status"]
+        assert data["comment"]["id"] == comment.short_id
         assert (
             CommentLike.query.filter_by(
                 user_id=user_1.id, comment_id=comment.id
@@ -535,13 +535,13 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['comment']['id'] == comment.short_id
+        assert "success" in data["status"]
+        assert data["comment"]["id"] == comment.short_id
         assert (
             CommentLike.query.filter_by(
                 user_id=user_1.id, comment_id=comment.id
@@ -551,8 +551,8 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         assert comment.likes.all() == []
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -579,14 +579,14 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
 
 
 class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
-    route = '/api/comments/{comment_uuid}/likes'
+    route = "/api/comments/{comment_uuid}/likes"
 
     def test_it_returns_404_when_workout_does_not_exist(
         self,
@@ -599,7 +599,7 @@ class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.get(
             self.route.format(comment_uuid=self.random_short_id()),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -618,7 +618,7 @@ class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.get(
             self.route.format(comment_uuid=self.random_short_id()),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -645,7 +645,7 @@ class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.get(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -671,7 +671,7 @@ class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.get(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
@@ -697,22 +697,22 @@ class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.get(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['likes'] == []
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': False,
-            'page': 1,
-            'pages': 0,
-            'total': 0,
+        assert "success" in data["status"]
+        assert data["data"]["likes"] == []
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 0,
+            "total": 0,
         }
 
-    @patch('fittrackee.comments.comments.DEFAULT_COMMENT_LIKES_PER_PAGE', 2)
+    @patch("fittrackee.comments.comments.DEFAULT_COMMENT_LIKES_PER_PAGE", 2)
     def test_it_returns_users_who_like_comment(
         self,
         app: Flask,
@@ -742,25 +742,25 @@ class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.get(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['likes'] == [
+        assert "success" in data["status"]
+        assert data["data"]["likes"] == [
             jsonify_dict(user_4.serialize(current_user=user_1)),
             jsonify_dict(user_1.serialize(current_user=user_1)),
         ]
-        assert data['pagination'] == {
-            'has_next': True,
-            'has_prev': False,
-            'page': 1,
-            'pages': 2,
-            'total': 3,
+        assert data["pagination"] == {
+            "has_next": True,
+            "has_prev": False,
+            "page": 1,
+            "pages": 2,
+            "total": 3,
         }
 
-    @patch('fittrackee.comments.comments.DEFAULT_COMMENT_LIKES_PER_PAGE', 2)
+    @patch("fittrackee.comments.comments.DEFAULT_COMMENT_LIKES_PER_PAGE", 2)
     def test_it_returns_page_2(
         self,
         app: Flask,
@@ -790,21 +790,21 @@ class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.get(
             f"{self.route.format(comment_uuid=comment.short_id)}?page=2",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['likes'] == [
+        assert "success" in data["status"]
+        assert data["data"]["likes"] == [
             jsonify_dict(user_2.serialize(current_user=user_1))
         ]
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': True,
-            'page': 2,
-            'pages': 2,
-            'total': 3,
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": True,
+            "page": 2,
+            "pages": 2,
+            "total": 3,
         }
 
     def test_it_returns_like_when_user_is_not_authenticated(
@@ -832,19 +832,19 @@ class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert 'success' in data['status']
-        assert data['data']['likes'] == [jsonify_dict(user_1.serialize())]
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': False,
-            'page': 1,
-            'pages': 1,
-            'total': 1,
+        assert "success" in data["status"]
+        assert data["data"]["likes"] == [jsonify_dict(user_1.serialize())]
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
         }
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -866,7 +866,7 @@ class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         response = client.get(
             self.route.format(comment_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)

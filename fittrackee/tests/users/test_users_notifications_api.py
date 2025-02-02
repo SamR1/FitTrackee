@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest.mock import patch
 
 import pytest
@@ -82,7 +82,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_3.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         follow_request_from_user_3_notification.marked_as_read = True
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -101,7 +101,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         assert data["status"] == "success"
         assert data["notifications"] == [
             jsonify_dict(follow_request_from_user_3_notification.serialize()),
@@ -115,7 +115,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             "total": 2,
         }
 
-    def test_it_returns_only_unread_notifications(  # noqa
+    def test_it_returns_only_unread_notifications(
         self,
         app: Flask,
         user_1: User,
@@ -129,7 +129,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_3.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         follow_request_from_user_3_notification.marked_as_read = True
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -148,7 +148,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         assert data["status"] == "success"
         assert data["notifications"] == [
             jsonify_dict(follow_request_from_user_2_notification.serialize()),
@@ -161,7 +161,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             "total": 1,
         }
 
-    def test_it_returns_only_read_notifications(  # noqa
+    def test_it_returns_only_read_notifications(
         self,
         app: Flask,
         user_1: User,
@@ -175,7 +175,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_3.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         follow_request_from_user_3_notification.marked_as_read = True
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -237,7 +237,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         assert data["notifications"] == [
             jsonify_dict(follow_request_from_user_2_notification.serialize()),
         ]
@@ -284,12 +284,12 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         follow_request_from_user_3_notification = Notification.query.filter_by(
             from_user_id=user_3.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         assert data["notifications"] == [
             jsonify_dict(follow_request_from_user_2_notification.serialize()),
             jsonify_dict(follow_request_from_user_3_notification.serialize()),
@@ -336,7 +336,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         assert data["notifications"] == [
             jsonify_dict(follow_request_from_user_2_notification.serialize()),
         ]
@@ -533,7 +533,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="workout_like",
-        ).first()
+        ).one()
         assert data["notifications"] == [
             jsonify_dict(like_from_user_2_notification.serialize()),
         ]
@@ -580,7 +580,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="comment_like",
-        ).first()
+        ).one()
         assert data["notifications"] == [
             jsonify_dict(like_from_user_2_notification.serialize()),
         ]
@@ -668,14 +668,14 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             "total": 0,
         }
 
-    def test_it_does_not_return_follow_request_from_suspended_user(  # noqa
+    def test_it_does_not_return_follow_request_from_suspended_user(
         self,
         app: Flask,
         user_1: User,
         user_2: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -699,7 +699,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             "total": 0,
         }
 
-    def test_it_does_not_return_accepted_follow_from_suspended_user(  # noqa
+    def test_it_does_not_return_accepted_follow_from_suspended_user(
         self,
         app: Flask,
         user_1: User,
@@ -707,7 +707,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -744,7 +744,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             user_id=user_2.id, workout_id=workout_cycling_user_1.id
         )
         db.session.add(like)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -784,7 +784,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         )
         like = CommentLike(user_id=user_2.id, comment_id=comment.id)
         db.session.add(like)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -822,7 +822,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -862,7 +862,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             text_visibility=VisibilityLevel.PUBLIC,
             with_mentions=True,
         )
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -951,7 +951,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1_admin.id,
             event_type="report",
-        ).first()
+        ).one()
         assert data["notifications"] == [
             jsonify_dict(report_notification.serialize())
         ]
@@ -971,7 +971,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         user_3: User,
     ) -> None:
         self.create_user_report(user_2, user_3)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -990,7 +990,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1_admin.id,
             event_type="report",
-        ).first()
+        ).one()
         assert data["notifications"] == [
             jsonify_dict(report_notification.serialize())
         ]
@@ -1028,7 +1028,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_3.id,
             to_user_id=user_1_admin.id,
             event_type="suspension_appeal",
-        ).first()
+        ).one()
         assert (
             jsonify_dict(appeal_notification.serialize())
             in data["notifications"]
@@ -1042,8 +1042,8 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         }
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'notifications:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "notifications:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1128,7 +1128,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
         user_2: User,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        notification = Notification.query.first()
+        notification = Notification.query.one()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1144,7 +1144,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
             response, f"notification not found (id: {notification.short_id})"
         )
 
-    @pytest.mark.parametrize('input_read_status', [True, False])
+    @pytest.mark.parametrize("input_read_status", [True, False])
     def test_it_updates_notification_status(
         self,
         app: Flask,
@@ -1157,7 +1157,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
             from_user_id=user_3.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         if not input_read_status:
             notification.marked_as_read = True
         db.session.commit()
@@ -1191,7 +1191,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
             from_user_id=user_3.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1206,8 +1206,8 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
         self.assert_500(response)
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'notifications:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "notifications:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1227,8 +1227,8 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
 
         response = client.patch(
             self.route.format(notification_id=self.random_short_id()),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -1357,7 +1357,7 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         user_2: User,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        notification = Notification.query.first()
+        notification = Notification.query.one()
         notification.marked_as_read = True
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1419,7 +1419,7 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         )
         db.session.add(like)
         db.session.flush()
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
 
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1502,8 +1502,8 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         assert data["unread"] is False
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'notifications:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "notifications:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1523,8 +1523,8 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
 
         response = client.get(
             self.route,
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -1541,7 +1541,7 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
             from_user_id=follow_request.follower_user_id,
             to_user_id=follow_request.followed_user_id,
             event_type="follow_request",
-        ).first()
+        ).one()
         assert follow_request_notification.marked_as_read is status
 
     @staticmethod
@@ -1552,7 +1552,7 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
             from_user_id=like.user_id,
             to_user_id=like.workout.user_id,
             event_type="workout_like",
-        ).first()
+        ).one()
         assert like_notification.marked_as_read is status
 
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -1611,7 +1611,7 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
             from_user_id=user_3.id,
             to_user_id=user_1.id,
             event_type="follow_request",
-        ).first()
+        ).one()
         follow_request_from_user_3_notification.marked_as_read = True
         like = WorkoutLike(
             user_id=user_2.id, workout_id=workout_cycling_user_1.id
@@ -1676,7 +1676,7 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
         )
         self.assert_workout_like_notification_status(like, status=True)
 
-    @pytest.mark.parametrize('input_type', ['invalid_type', ''])
+    @pytest.mark.parametrize("input_type", ["invalid_type", ""])
     def test_it_does_not_mark_as_read_when_provided_type_is_invalid(
         self,
         app: Flask,
@@ -1713,8 +1713,8 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
         self.assert_workout_like_notification_status(like, status=False)
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'notifications:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "notifications:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1734,8 +1734,8 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
 
         response = client.post(
             self.route,
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -1786,7 +1786,7 @@ class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):
         assert data["status"] == "success"
         assert data["notification_types"] == []
 
-    @pytest.mark.parametrize('input_params', ['', '?status=all'])
+    @pytest.mark.parametrize("input_params", ["", "?status=all"])
     def test_it_returns_all_user_notifications_types(
         self,
         app: Flask,
@@ -1818,7 +1818,7 @@ class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="workout_like",
-        ).first()
+        ).one()
         like_notification.marked_as_read = True
         db.session.commit()
 
@@ -1867,7 +1867,7 @@ class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="workout_like",
-        ).first()
+        ).one()
         like_notification.marked_as_read = True
         db.session.commit()
 
@@ -1914,7 +1914,7 @@ class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):
             from_user_id=user_2.id,
             to_user_id=user_1.id,
             event_type="workout_like",
-        ).first()
+        ).one()
         like_notification.marked_as_read = True
         db.session.commit()
 

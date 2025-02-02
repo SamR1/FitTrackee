@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple, Union
 from unittest.mock import patch
 
@@ -21,7 +21,7 @@ from ..utils import TEST_OAUTH_CLIENT_METADATA
 
 
 class TestOAuthClientCreation(ApiTestCaseMixin):
-    route = '/api/oauth/apps'
+    route = "/api/oauth/apps"
 
     def test_it_returns_error_when_no_user_authenticated(
         self, app: Flask, user_1: User
@@ -33,7 +33,7 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
         response = client.post(
             self.route,
             data=json.dumps(TEST_OAUTH_CLIENT_METADATA),
-            content_type='application/json',
+            content_type="application/json",
         )
 
         self.assert_401(response)
@@ -48,21 +48,21 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
         response = client.post(
             self.route,
             data=json.dumps(dict()),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(
-            response, error_message='OAuth2 client metadata missing'
+            response, error_message="OAuth2 client metadata missing"
         )
 
     @pytest.mark.parametrize(
-        'missing_key',
+        "missing_key",
         [
-            'client_name',
-            'client_uri',
-            'redirect_uris',
-            'scope',
+            "client_name",
+            "client_uri",
+            "redirect_uris",
+            "scope",
         ],
     )
     def test_it_returns_error_when_metadata_key_is_missing(
@@ -77,14 +77,14 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
         response = client.post(
             self.route,
             data=json.dumps(metadata),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(
             response,
             error_message=(
-                f'OAuth2 client metadata missing keys: {missing_key}'
+                f"OAuth2 client metadata missing keys: {missing_key}"
             ),
         )
 
@@ -94,7 +94,7 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
         invalid_scope = self.random_string()
         metadata: Dict = {
             **TEST_OAUTH_CLIENT_METADATA,
-            'scope': invalid_scope,
+            "scope": invalid_scope,
         }
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -103,13 +103,13 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
         response = client.post(
             self.route,
             data=json.dumps(metadata),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(
             response,
-            error_message='OAuth2 client invalid scopes',
+            error_message="OAuth2 client invalid scopes",
         )
 
     def test_it_creates_oauth_client(self, app: Flask, user_1: User) -> None:
@@ -120,8 +120,8 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
         response = client.post(
             self.route,
             data=json.dumps(TEST_OAUTH_CLIENT_METADATA),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 201
@@ -138,8 +138,8 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
         response = client.post(
             self.route,
             data=json.dumps(TEST_OAUTH_CLIENT_METADATA),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -153,39 +153,39 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
         client_id = self.random_string()
         client_secret = self.random_string()
         with patch(
-            'fittrackee.oauth2.client.gen_salt',
+            "fittrackee.oauth2.client.gen_salt",
             side_effect=[client_id, client_secret],
         ):
             response = client.post(
                 self.route,
                 data=json.dumps(TEST_OAUTH_CLIENT_METADATA),
-                content_type='application/json',
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                content_type="application/json",
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         data = json.loads(response.data.decode())
-        assert data['data']['client']['client_id'] == client_id
-        assert data['data']['client']['client_secret'] == client_secret
-        assert data['data']['client']['id'] is not None
+        assert data["data"]["client"]["client_id"] == client_id
+        assert data["data"]["client"]["client_secret"] == client_secret
+        assert data["data"]["client"]["id"] is not None
         assert (
-            data['data']['client']['name']
-            == TEST_OAUTH_CLIENT_METADATA['client_name']
+            data["data"]["client"]["name"]
+            == TEST_OAUTH_CLIENT_METADATA["client_name"]
         )
         assert (
-            data['data']['client']['redirect_uris']
-            == TEST_OAUTH_CLIENT_METADATA['redirect_uris']
+            data["data"]["client"]["redirect_uris"]
+            == TEST_OAUTH_CLIENT_METADATA["redirect_uris"]
         )
         assert (
-            data['data']['client']['website']
-            == TEST_OAUTH_CLIENT_METADATA['client_uri']
+            data["data"]["client"]["website"]
+            == TEST_OAUTH_CLIENT_METADATA["client_uri"]
         )
 
     @pytest.mark.parametrize(
-        'input_key,expected_value',
+        "input_key,expected_value",
         [
-            ('grant_types', ['authorization_code', 'refresh_token']),
-            ('response_types', ['code']),
-            ('token_endpoint_auth_method', 'client_secret_post'),
+            ("grant_types", ["authorization_code", "refresh_token"]),
+            ("response_types", ["code"]),
+            ("token_endpoint_auth_method", "client_secret_post"),
         ],
     )
     def test_it_always_creates_oauth_client_with_authorization_grant(
@@ -204,8 +204,8 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
             data=json.dumps(
                 {**TEST_OAUTH_CLIENT_METADATA, input_key: self.random_string()}
             ),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         oauth_client = OAuth2Client.query.first()
@@ -213,7 +213,7 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
 
 
 class TestOAuthClientAuthorization(ApiTestCaseMixin):
-    route = '/api/oauth/authorize'
+    route = "/api/oauth/authorize"
 
     def test_it_returns_error_not_authenticated(
         self, app: Flask, user_1: User
@@ -224,11 +224,11 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'response_type': 'code',
-                'confirm': True,
+                "client_id": oauth_client.client_id,
+                "response_type": "code",
+                "confirm": True,
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
 
         self.assert_401(response)
@@ -240,18 +240,18 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
 
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'response_type': 'code',
-                'confirm': True,
+                "client_id": oauth_client.client_id,
+                "response_type": "code",
+                "confirm": True,
             },
             headers=dict(
-                Authorization=f'Bearer {auth_token}',
-                content_type='multipart/form-data',
+                Authorization=f"Bearer {auth_token}",
+                content_type="multipart/form-data",
             ),
         )
 
@@ -266,14 +266,14 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
 
         response = client.post(
             self.route,
-            data={'response_type': 'code'},
+            data={"response_type": "code"},
             headers=dict(
-                Authorization=f'Bearer {auth_token}',
-                content_type='multipart/form-data',
+                Authorization=f"Bearer {auth_token}",
+                content_type="multipart/form-data",
             ),
         )
 
-        self.assert_400(response, error_message='invalid payload')
+        self.assert_400(response, error_message="invalid payload")
 
     def test_it_returns_error_when_response_type_is_missing(
         self, app: Flask, user_1: User
@@ -285,14 +285,14 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
 
         response = client.post(
             self.route,
-            data={'client_id': oauth_client.client_id},
+            data={"client_id": oauth_client.client_id},
             headers=dict(
-                Authorization=f'Bearer {auth_token}',
-                content_type='multipart/form-data',
+                Authorization=f"Bearer {auth_token}",
+                content_type="multipart/form-data",
             ),
         )
 
-        self.assert_400(response, error_message='invalid payload')
+        self.assert_400(response, error_message="invalid payload")
 
     def test_it_returns_error_when_response_type_is_not_code(
         self, app: Flask, user_1: User
@@ -305,20 +305,20 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'response_type': self.random_string(),
-                'confirm': True,
+                "client_id": oauth_client.client_id,
+                "response_type": self.random_string(),
+                "confirm": True,
             },
             headers=dict(
-                Authorization=f'Bearer {auth_token}',
-                content_type='multipart/form-data',
+                Authorization=f"Bearer {auth_token}",
+                content_type="multipart/form-data",
             ),
         )
 
-        self.assert_400(response, error_message='invalid payload')
+        self.assert_400(response, error_message="invalid payload")
 
     @pytest.mark.parametrize(
-        'input_confirmation', [{'confirm': True}, {'confirm': 'true'}]
+        "input_confirmation", [{"confirm": True}, {"confirm": "true"}]
     )
     def test_it_creates_authorization_code(
         self, app: Flask, user_1: User, input_confirmation: Dict
@@ -331,13 +331,13 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'response_type': 'code',
+                "client_id": oauth_client.client_id,
+                "response_type": "code",
                 **input_confirmation,
             },
             headers=dict(
-                Authorization=f'Bearer {auth_token}',
-                content_type='multipart/form-data',
+                Authorization=f"Bearer {auth_token}",
+                content_type="multipart/form-data",
             ),
         )
 
@@ -346,7 +346,7 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         ).first()
         assert code is not None
 
-    @pytest.mark.parametrize('input_confirmation', [{}, {'confirm': False}])
+    @pytest.mark.parametrize("input_confirmation", [{}, {"confirm": False}])
     def test_it_does_not_create_authorization_code_when_no_confirmation(
         self, app: Flask, user_1: User, input_confirmation: Dict
     ) -> None:
@@ -358,13 +358,13 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'response_type': 'code',
+                "client_id": oauth_client.client_id,
+                "response_type": "code",
                 **input_confirmation,
             },
             headers=dict(
-                Authorization=f'Bearer {auth_token}',
-                content_type='multipart/form-data',
+                Authorization=f"Bearer {auth_token}",
+                content_type="multipart/form-data",
             ),
         )
 
@@ -384,28 +384,28 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'response_type': 'code',
-                'confirm': True,
+                "client_id": oauth_client.client_id,
+                "response_type": "code",
+                "confirm": True,
             },
             headers=dict(
-                Authorization=f'Bearer {auth_token}',
-                content_type='multipart/form-data',
+                Authorization=f"Bearer {auth_token}",
+                content_type="multipart/form-data",
             ),
         )
 
         code = OAuth2AuthorizationCode.query.filter_by(
             client_id=oauth_client.client_id
-        ).first()
+        ).one()
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['redirect_url'] == (
-            f'{oauth_client.get_default_redirect_uri()}?code={code.code}'
+        assert data["redirect_url"] == (
+            f"{oauth_client.get_default_redirect_uri()}?code={code.code}"
         )
 
     @pytest.mark.parametrize(
-        'input_confirmation', [{}, {'confirm': False}, {'confirm': 'false'}]
+        "input_confirmation", [{}, {"confirm": False}, {"confirm": "false"}]
     )
     def test_it_returns_error_when_no_confirmation(
         self, app: Flask, user_1: User, input_confirmation: Dict
@@ -418,26 +418,26 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'response_type': 'code',
+                "client_id": oauth_client.client_id,
+                "response_type": "code",
                 **input_confirmation,
             },
             headers=dict(
-                Authorization=f'Bearer {auth_token}',
-                content_type='multipart/form-data',
+                Authorization=f"Bearer {auth_token}",
+                content_type="multipart/form-data",
             ),
         )
 
         self.assert_400(
             response,
             error_message=(
-                'The resource owner or authorization server denied the request'
+                "The resource owner or authorization server denied the request"
             ),
         )
 
 
 class TestOAuthClientAuthorizationWithCodeChallenge(ApiTestCaseMixin):
-    route = '/api/oauth/authorize'
+    route = "/api/oauth/authorize"
 
     def test_it_returns_error_when_code_challenge_method_is_invalid(
         self, app: Flask, user_1: User
@@ -452,15 +452,15 @@ class TestOAuthClientAuthorizationWithCodeChallenge(ApiTestCaseMixin):
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'response_type': 'code',
-                'confirm': 'true',
-                'code_challenge': code_challenge,
-                'code_challenge_method': self.random_string(),
+                "client_id": oauth_client.client_id,
+                "response_type": "code",
+                "confirm": "true",
+                "code_challenge": code_challenge,
+                "code_challenge_method": self.random_string(),
             },
             headers=dict(
-                Authorization=f'Bearer {auth_token}',
-                content_type='multipart/form-data',
+                Authorization=f"Bearer {auth_token}",
+                content_type="multipart/form-data",
             ),
         )
 
@@ -479,25 +479,25 @@ class TestOAuthClientAuthorizationWithCodeChallenge(ApiTestCaseMixin):
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'response_type': 'code',
-                'confirm': 'true',
-                'code_challenge': code_challenge,
-                'code_challenge_method': 'S256',
+                "client_id": oauth_client.client_id,
+                "response_type": "code",
+                "confirm": "true",
+                "code_challenge": code_challenge,
+                "code_challenge_method": "S256",
             },
             headers=dict(
-                Authorization=f'Bearer {auth_token}',
-                content_type='multipart/form-data',
+                Authorization=f"Bearer {auth_token}",
+                content_type="multipart/form-data",
             ),
         )
 
         code = OAuth2AuthorizationCode.query.filter_by(
             client_id=oauth_client.client_id
-        ).first()
+        ).one()
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['redirect_url'] == (
-            f'{oauth_client.get_default_redirect_uri()}?code={code.code}'
+        assert data["redirect_url"] == (
+            f"{oauth_client.get_default_redirect_uri()}?code={code.code}"
         )
 
 
@@ -518,23 +518,23 @@ class OAuthIssueTokenTestCase(ApiTestCaseMixin):
     def assert_token_is_returned(response: TestResponse) -> Dict:
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data.get('access_token') is not None
-        assert data.get('expires_in') == 60  # test config
-        assert data.get('refresh_token') is not None
-        assert data.get('token_type') == 'Bearer'
+        assert data.get("access_token") is not None
+        assert data.get("expires_in") == 60  # test config
+        assert data.get("refresh_token") is not None
+        assert data.get("token_type") == "Bearer"
         return data
 
 
 class TestOAuthIssueAccessToken(OAuthIssueTokenTestCase):
-    route = '/api/oauth/token'
+    route = "/api/oauth/token"
 
     def test_it_returns_error_when_form_is_empty(self, app: Flask) -> None:
         client = app.test_client()
 
         response = client.post(
             self.route,
-            data=dict(data='{}'),
-            headers=dict(content_type='multipart/form-data'),
+            data=dict(data="{}"),
+            headers=dict(content_type="multipart/form-data"),
         )
 
         self.assert_unsupported_grant_type(response)
@@ -548,12 +548,12 @@ class TestOAuthIssueAccessToken(OAuthIssueTokenTestCase):
         response = client.post(
             self.route,
             data={
-                'client_id': self.random_string(),
-                'client_secret': oauth_client.client_secret,
-                'grant_type': 'authorization_code',
-                'code': code,
+                "client_id": self.random_string(),
+                "client_secret": oauth_client.client_secret,
+                "grant_type": "authorization_code",
+                "code": code,
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
 
         self.assert_invalid_client(response)
@@ -567,12 +567,12 @@ class TestOAuthIssueAccessToken(OAuthIssueTokenTestCase):
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'client_secret': self.random_string(),
-                'grant_type': 'authorization_code',
-                'code': code,
+                "client_id": oauth_client.client_id,
+                "client_secret": self.random_string(),
+                "grant_type": "authorization_code",
+                "code": code,
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
 
         self.assert_invalid_client(response)
@@ -586,12 +586,12 @@ class TestOAuthIssueAccessToken(OAuthIssueTokenTestCase):
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'client_secret': oauth_client.client_secret,
-                'grant_type': 'authorization_code',
-                'code': self.random_string(),
+                "client_id": oauth_client.client_id,
+                "client_secret": oauth_client.client_secret,
+                "grant_type": "authorization_code",
+                "code": self.random_string(),
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
 
         self.assert_invalid_grant(response)
@@ -605,12 +605,12 @@ class TestOAuthIssueAccessToken(OAuthIssueTokenTestCase):
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'client_secret': oauth_client.client_secret,
-                'grant_type': self.random_string(),
-                'code': code,
+                "client_id": oauth_client.client_id,
+                "client_secret": oauth_client.client_secret,
+                "grant_type": self.random_string(),
+                "code": code,
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
 
         self.assert_unsupported_grant_type(response)
@@ -624,12 +624,12 @@ class TestOAuthIssueAccessToken(OAuthIssueTokenTestCase):
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'client_secret': oauth_client.client_secret,
-                'grant_type': 'authorization_code',
-                'code': self.random_string(),
+                "client_id": oauth_client.client_id,
+                "client_secret": oauth_client.client_secret,
+                "grant_type": "authorization_code",
+                "code": self.random_string(),
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
 
         self.assert_invalid_grant(response)
@@ -641,12 +641,12 @@ class TestOAuthIssueAccessToken(OAuthIssueTokenTestCase):
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'client_secret': oauth_client.client_secret,
-                'grant_type': 'authorization_code',
-                'code': code,
+                "client_id": oauth_client.client_id,
+                "client_secret": oauth_client.client_secret,
+                "grant_type": "authorization_code",
+                "code": code,
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
 
         self.assert_token_is_returned(response)
@@ -656,24 +656,24 @@ class TestOAuthIssueAccessToken(OAuthIssueTokenTestCase):
     ) -> None:
         oauth_client, code = self.create_authorized_oauth_client(app, user_1)
         client = app.test_client()
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
 
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'client_secret': oauth_client.client_secret,
-                'grant_type': 'authorization_code',
-                'code': code,
+                "client_id": oauth_client.client_id,
+                "client_secret": oauth_client.client_secret,
+                "grant_type": "authorization_code",
+                "code": code,
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
 
         self.assert_token_is_returned(response)
 
 
 class TestOAuthIssueAccessTokenWithCodeChallenge(OAuthIssueTokenTestCase):
-    route = '/api/oauth/token'
+    route = "/api/oauth/token"
 
     def test_it_returns_error_when_grant_type_is_not_authorization_code(
         self, app: Flask, user_1: User
@@ -683,8 +683,8 @@ class TestOAuthIssueAccessTokenWithCodeChallenge(OAuthIssueTokenTestCase):
             app,
             user_1,
             code_challenge={
-                'code_challenge': create_s256_code_challenge(code_verifier),
-                'code_challenge_method': 'S256',
+                "code_challenge": create_s256_code_challenge(code_verifier),
+                "code_challenge_method": "S256",
             },
         )
         client = app.test_client()
@@ -692,13 +692,13 @@ class TestOAuthIssueAccessTokenWithCodeChallenge(OAuthIssueTokenTestCase):
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'client_secret': oauth_client.client_secret,
-                'grant_type': self.random_string(),
-                'code': code,
-                'code_verifier': code_verifier,
+                "client_id": oauth_client.client_id,
+                "client_secret": oauth_client.client_secret,
+                "grant_type": self.random_string(),
+                "code": code,
+                "code_verifier": code_verifier,
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
 
         self.assert_unsupported_grant_type(response)
@@ -712,8 +712,8 @@ class TestOAuthIssueAccessTokenWithCodeChallenge(OAuthIssueTokenTestCase):
             app,
             user_1,
             {
-                'code_challenge': code_challenge,
-                'code_challenge_method': 'S256',
+                "code_challenge": code_challenge,
+                "code_challenge_method": "S256",
             },
         )
         client = app.test_client()
@@ -721,13 +721,13 @@ class TestOAuthIssueAccessTokenWithCodeChallenge(OAuthIssueTokenTestCase):
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'client_secret': oauth_client.client_secret,
-                'grant_type': 'authorization_code',
-                'code': code,
-                'code_verifier': self.random_string(),
+                "client_id": oauth_client.client_id,
+                "client_secret": oauth_client.client_secret,
+                "grant_type": "authorization_code",
+                "code": code,
+                "code_verifier": self.random_string(),
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
         self.assert_invalid_request(response, 'Invalid "code_verifier"')
 
@@ -737,8 +737,8 @@ class TestOAuthIssueAccessTokenWithCodeChallenge(OAuthIssueTokenTestCase):
             app,
             user_1,
             code_challenge={
-                'code_challenge': create_s256_code_challenge(code_verifier),
-                'code_challenge_method': 'S256',
+                "code_challenge": create_s256_code_challenge(code_verifier),
+                "code_challenge_method": "S256",
             },
         )
         client = app.test_client()
@@ -746,20 +746,20 @@ class TestOAuthIssueAccessTokenWithCodeChallenge(OAuthIssueTokenTestCase):
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'client_secret': oauth_client.client_secret,
-                'grant_type': 'authorization_code',
-                'code': code,
-                'code_verifier': code_verifier,
+                "client_id": oauth_client.client_id,
+                "client_secret": oauth_client.client_secret,
+                "grant_type": "authorization_code",
+                "code": code,
+                "code_verifier": code_verifier,
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
 
         self.assert_token_is_returned(response)
 
 
 class TestOAuthIssueRefreshToken(OAuthIssueTokenTestCase):
-    route = '/api/oauth/token'
+    route = "/api/oauth/token"
 
     def generate_token(
         self, app: Flask, user_1: User
@@ -768,12 +768,12 @@ class TestOAuthIssueRefreshToken(OAuthIssueTokenTestCase):
         response = app.test_client().post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'client_secret': oauth_client.client_secret,
-                'grant_type': 'authorization_code',
-                'code': code,
+                "client_id": oauth_client.client_id,
+                "client_secret": oauth_client.client_secret,
+                "grant_type": "authorization_code",
+                "code": code,
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
         return oauth_client, json.loads(response.data.decode())
 
@@ -786,18 +786,18 @@ class TestOAuthIssueRefreshToken(OAuthIssueTokenTestCase):
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'client_secret': oauth_client.client_secret,
-                'grant_type': 'refresh_token',
-                'refresh_token': token['refresh_token'],
+                "client_id": oauth_client.client_id,
+                "client_secret": oauth_client.client_secret,
+                "grant_type": "refresh_token",
+                "refresh_token": token["refresh_token"],
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
 
         data = self.assert_token_is_returned(response)
-        assert data['access_token'] != token['access_token']
+        assert data["access_token"] != token["access_token"]
         new_token = OAuth2Token.query.filter_by(
-            access_token=token['access_token']
+            access_token=token["access_token"]
         ).first()
         assert new_token is not None
 
@@ -806,23 +806,23 @@ class TestOAuthIssueRefreshToken(OAuthIssueTokenTestCase):
     ) -> None:
         oauth_client, token = self.generate_token(app, user_1)
         client = app.test_client()
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
 
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'client_secret': oauth_client.client_secret,
-                'grant_type': 'refresh_token',
-                'refresh_token': token['refresh_token'],
+                "client_id": oauth_client.client_id,
+                "client_secret": oauth_client.client_secret,
+                "grant_type": "refresh_token",
+                "refresh_token": token["refresh_token"],
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
 
         data = self.assert_token_is_returned(response)
-        assert data['access_token'] != token['access_token']
+        assert data["access_token"] != token["access_token"]
         new_token = OAuth2Token.query.filter_by(
-            access_token=token['access_token']
+            access_token=token["access_token"]
         ).first()
         assert new_token is not None
 
@@ -833,22 +833,22 @@ class TestOAuthIssueRefreshToken(OAuthIssueTokenTestCase):
         client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'client_secret': oauth_client.client_secret,
-                'grant_type': 'refresh_token',
-                'refresh_token': token['refresh_token'],
+                "client_id": oauth_client.client_id,
+                "client_secret": oauth_client.client_secret,
+                "grant_type": "refresh_token",
+                "refresh_token": token["refresh_token"],
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
 
         revoked_token = OAuth2Token.query.filter_by(
-            access_token=token['access_token']
-        ).first()
+            access_token=token["access_token"]
+        ).one()
         assert revoked_token.is_revoked()
 
 
 class TestOAuthTokenRevocation(ApiTestCaseMixin):
-    route = '/api/oauth/revoke'
+    route = "/api/oauth/revoke"
 
     def test_it_revokes_user_token(self, app: Flask, user_1: User) -> None:
         (
@@ -861,17 +861,17 @@ class TestOAuthTokenRevocation(ApiTestCaseMixin):
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'client_secret': oauth_client.client_secret,
-                'token': access_token,
+                "client_id": oauth_client.client_id,
+                "client_secret": oauth_client.client_secret,
+                "token": access_token,
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
 
         assert response.status_code == 200
         token = OAuth2Token.query.filter_by(
             client_id=oauth_client.client_id
-        ).first()
+        ).one()
         assert token.access_token_revoked_at is not None
 
     def test_it_revokes_user_token_when_user_is_suspended(
@@ -883,34 +883,34 @@ class TestOAuthTokenRevocation(ApiTestCaseMixin):
             access_token,
             _,
         ) = self.create_oauth2_client_and_issue_token(app, user_1)
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
 
         response = client.post(
             self.route,
             data={
-                'client_id': oauth_client.client_id,
-                'client_secret': oauth_client.client_secret,
-                'token': access_token,
+                "client_id": oauth_client.client_id,
+                "client_secret": oauth_client.client_secret,
+                "token": access_token,
             },
-            headers=dict(content_type='multipart/form-data'),
+            headers=dict(content_type="multipart/form-data"),
         )
 
         assert response.status_code == 200
         token = OAuth2Token.query.filter_by(
             client_id=oauth_client.client_id
-        ).first()
+        ).one()
         assert token.access_token_revoked_at is not None
 
 
 class TestOAuthGetClients(ApiTestCaseMixin):
-    route = '/api/oauth/apps'
+    route = "/api/oauth/apps"
 
     def test_it_returns_error_if_not_authenticated(
         self, app: Flask, user_1: User
     ) -> None:
         client = app.test_client()
 
-        response = client.get(self.route, content_type='application/json')
+        response = client.get(self.route, content_type="application/json")
 
         self.assert_401(response)
 
@@ -923,14 +923,14 @@ class TestOAuthGetClients(ApiTestCaseMixin):
 
         response = client.get(
             self.route,
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['data']['clients'] == []
+        assert data["status"] == "success"
+        assert data["data"]["clients"] == []
 
     def test_it_returns_apps_when_user_is_suspended(
         self, app: Flask, suspended_user: User
@@ -942,19 +942,19 @@ class TestOAuthGetClients(ApiTestCaseMixin):
 
         response = client.get(
             self.route,
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert len(data['data']['clients']) == 1
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': False,
-            'page': 1,
-            'pages': 1,
-            'total': 1,
+        assert data["status"] == "success"
+        assert len(data["data"]["clients"]) == 1
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
         }
 
     def test_it_returns_pagination(self, app: Flask, user_1: User) -> None:
@@ -965,19 +965,19 @@ class TestOAuthGetClients(ApiTestCaseMixin):
 
         response = client.get(
             self.route,
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert len(data['data']['clients']) == 5
-        assert data['pagination'] == {
-            'has_next': True,
-            'has_prev': False,
-            'page': 1,
-            'pages': 2,
-            'total': 7,
+        assert data["status"] == "success"
+        assert len(data["data"]["clients"]) == 5
+        assert data["pagination"] == {
+            "has_next": True,
+            "has_prev": False,
+            "page": 1,
+            "pages": 2,
+            "total": 7,
         }
 
     def test_it_returns_page_2(self, app: Flask, user_1: User) -> None:
@@ -987,20 +987,20 @@ class TestOAuthGetClients(ApiTestCaseMixin):
         [self.create_oauth2_client(user_1) for _ in range(6)]
 
         response = client.get(
-            f'{self.route}?page=2',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"{self.route}?page=2",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert len(data['data']['clients']) == 1
-        assert data['pagination'] == {
-            'has_next': False,
-            'has_prev': True,
-            'page': 2,
-            'pages': 2,
-            'total': 6,
+        assert data["status"] == "success"
+        assert len(data["data"]["clients"]) == 1
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": True,
+            "page": 2,
+            "pages": 2,
+            "total": 6,
         }
 
     def test_it_returns_clients_order_by_id_descending(
@@ -1013,14 +1013,14 @@ class TestOAuthGetClients(ApiTestCaseMixin):
 
         response = client.get(
             self.route,
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['data']['clients'][0]['client_id'] == clients[6].client_id
-        assert data['data']['clients'][4]['client_id'] == clients[2].client_id
+        assert data["status"] == "success"
+        assert data["data"]["clients"][0]["client_id"] == clients[6].client_id
+        assert data["data"]["clients"][4]["client_id"] == clients[2].client_id
 
     def test_it_does_not_returns_clients_from_another_user(
         self, app: Flask, user_1: User, user_2: User
@@ -1032,18 +1032,18 @@ class TestOAuthGetClients(ApiTestCaseMixin):
 
         response = client.get(
             self.route,
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['data']['clients'] == []
+        assert data["status"] == "success"
+        assert data["data"]["clients"] == []
 
 
 class TestOAuthGetClientById(ApiTestCaseMixin):
-    route = '/api/oauth/apps/{client_id}/by_id'
+    route = "/api/oauth/apps/{client_id}/by_id"
 
     def test_it_returns_error_when_not_authenticated(
         self, app: Flask, user_1: User
@@ -1052,7 +1052,7 @@ class TestOAuthGetClientById(ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(client_id=self.random_int()),
-            content_type='application/json',
+            content_type="application/json",
         )
 
         self.assert_401(response)
@@ -1066,11 +1066,11 @@ class TestOAuthGetClientById(ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(client_id=self.random_int()),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_message(response, 'OAuth2 client not found')
+        self.assert_404_with_message(response, "OAuth2 client not found")
 
     def test_it_returns_user_oauth_client(
         self, app: Flask, user_1: User
@@ -1083,7 +1083,7 @@ class TestOAuthGetClientById(ApiTestCaseMixin):
             user_1,
             metadata={
                 **TEST_OAUTH_CLIENT_METADATA,
-                'client_description': client_description,
+                "client_description": client_description,
             },
         )
         client_id = oauth_client.id
@@ -1091,29 +1091,29 @@ class TestOAuthGetClientById(ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(client_id=client_id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['data']['client']['client_id'] == client_client_id
-        assert 'client_secret' not in data['data']['client']
+        assert data["data"]["client"]["client_id"] == client_client_id
+        assert "client_secret" not in data["data"]["client"]
         assert (
-            data['data']['client']['client_description'] == client_description
+            data["data"]["client"]["client_description"] == client_description
         )
-        assert data['data']['client']['id'] == client_id
+        assert data["data"]["client"]["id"] == client_id
         assert (
-            data['data']['client']['name']
-            == TEST_OAUTH_CLIENT_METADATA['client_name']
-        )
-        assert (
-            data['data']['client']['redirect_uris']
-            == TEST_OAUTH_CLIENT_METADATA['redirect_uris']
+            data["data"]["client"]["name"]
+            == TEST_OAUTH_CLIENT_METADATA["client_name"]
         )
         assert (
-            data['data']['client']['website']
-            == TEST_OAUTH_CLIENT_METADATA['client_uri']
+            data["data"]["client"]["redirect_uris"]
+            == TEST_OAUTH_CLIENT_METADATA["redirect_uris"]
+        )
+        assert (
+            data["data"]["client"]["website"]
+            == TEST_OAUTH_CLIENT_METADATA["client_uri"]
         )
 
     def test_it_returns_user_oauth_client_when_user_is_suspended(
@@ -1127,7 +1127,7 @@ class TestOAuthGetClientById(ApiTestCaseMixin):
             suspended_user,
             metadata={
                 **TEST_OAUTH_CLIENT_METADATA,
-                'client_description': client_description,
+                "client_description": client_description,
             },
         )
         client_id = oauth_client.id
@@ -1135,13 +1135,13 @@ class TestOAuthGetClientById(ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(client_id=client_id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['data']['client']['client_id'] == client_client_id
+        assert data["data"]["client"]["client_id"] == client_client_id
 
     def test_it_does_not_return_oauth_client_from_another_user(
         self, app: Flask, user_1: User, user_2: User
@@ -1153,15 +1153,15 @@ class TestOAuthGetClientById(ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(client_id=oauth_client.id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_message(response, 'OAuth2 client not found')
+        self.assert_404_with_message(response, "OAuth2 client not found")
 
 
 class TestOAuthGetClientByClientId(ApiTestCaseMixin):
-    route = '/api/oauth/apps/{client_id}'
+    route = "/api/oauth/apps/{client_id}"
 
     def test_it_returns_error_when_not_authenticated(
         self, app: Flask, user_1: User
@@ -1170,7 +1170,7 @@ class TestOAuthGetClientByClientId(ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(client_id=self.random_string()),
-            content_type='application/json',
+            content_type="application/json",
         )
 
         self.assert_401(response)
@@ -1184,11 +1184,11 @@ class TestOAuthGetClientByClientId(ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(client_id=self.random_string()),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_message(response, 'OAuth2 client not found')
+        self.assert_404_with_message(response, "OAuth2 client not found")
 
     def test_it_returns_user_oauth_client(
         self, app: Flask, user_1: User
@@ -1201,7 +1201,7 @@ class TestOAuthGetClientByClientId(ApiTestCaseMixin):
             user_1,
             metadata={
                 **TEST_OAUTH_CLIENT_METADATA,
-                'client_description': client_description,
+                "client_description": client_description,
             },
         )
         client_id = oauth_client.id
@@ -1209,29 +1209,29 @@ class TestOAuthGetClientByClientId(ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(client_id=client_client_id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['data']['client']['client_id'] == client_client_id
-        assert 'client_secret' not in data['data']['client']
+        assert data["data"]["client"]["client_id"] == client_client_id
+        assert "client_secret" not in data["data"]["client"]
         assert (
-            data['data']['client']['client_description'] == client_description
+            data["data"]["client"]["client_description"] == client_description
         )
-        assert data['data']['client']['id'] == client_id
+        assert data["data"]["client"]["id"] == client_id
         assert (
-            data['data']['client']['name']
-            == TEST_OAUTH_CLIENT_METADATA['client_name']
-        )
-        assert (
-            data['data']['client']['redirect_uris']
-            == TEST_OAUTH_CLIENT_METADATA['redirect_uris']
+            data["data"]["client"]["name"]
+            == TEST_OAUTH_CLIENT_METADATA["client_name"]
         )
         assert (
-            data['data']['client']['website']
-            == TEST_OAUTH_CLIENT_METADATA['client_uri']
+            data["data"]["client"]["redirect_uris"]
+            == TEST_OAUTH_CLIENT_METADATA["redirect_uris"]
+        )
+        assert (
+            data["data"]["client"]["website"]
+            == TEST_OAUTH_CLIENT_METADATA["client_uri"]
         )
 
     def test_it_returns_user_oauth_client_when_user_is_suspended(
@@ -1245,20 +1245,20 @@ class TestOAuthGetClientByClientId(ApiTestCaseMixin):
             suspended_user,
             metadata={
                 **TEST_OAUTH_CLIENT_METADATA,
-                'client_description': client_description,
+                "client_description": client_description,
             },
         )
         client_client_id = oauth_client.client_id
 
         response = client.get(
             self.route.format(client_id=client_client_id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['data']['client']['client_id'] == client_client_id
+        assert data["data"]["client"]["client_id"] == client_client_id
 
     def test_it_does_not_return_oauth_client_from_another_user(
         self, app: Flask, user_1: User, user_2: User
@@ -1270,15 +1270,15 @@ class TestOAuthGetClientByClientId(ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(client_id=oauth_client.client_id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_message(response, 'OAuth2 client not found')
+        self.assert_404_with_message(response, "OAuth2 client not found")
 
 
 class TestOAuthDeleteClient(ApiTestCaseMixin):
-    route = '/api/oauth/apps/{client_id}'
+    route = "/api/oauth/apps/{client_id}"
 
     def test_it_returns_error_when_not_authenticated(
         self, app: Flask, user_1: User
@@ -1287,7 +1287,7 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
 
         response = client.delete(
             self.route.format(client_id=self.random_int()),
-            content_type='application/json',
+            content_type="application/json",
         )
 
         self.assert_401(response)
@@ -1301,11 +1301,11 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
 
         response = client.delete(
             self.route.format(client_id=self.random_int()),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_message(response, 'OAuth2 client not found')
+        self.assert_404_with_message(response, "OAuth2 client not found")
 
     def test_it_deletes_user_oauth_client(
         self, app: Flask, user_1: User
@@ -1318,8 +1318,8 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
 
         response = client.delete(
             self.route.format(client_id=client_id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 204
@@ -1337,8 +1337,8 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
 
         response = client.delete(
             self.route.format(client_id=client_id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 204
@@ -1357,8 +1357,8 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
 
         response = client.delete(
             self.route.format(client_id=client_id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 204
@@ -1377,8 +1377,8 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
 
         response = client.delete(
             self.route.format(client_id=client_id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 204
@@ -1400,8 +1400,8 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
 
         response = client.delete(
             self.route.format(client_id=client_id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 204
@@ -1419,17 +1419,16 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
 
         response = client.delete(
             self.route.format(client_id=client_id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_message(response, 'OAuth2 client not found')
-        client = OAuth2Client.query.filter_by(id=client_id).first()
-        assert client is not None
+        self.assert_404_with_message(response, "OAuth2 client not found")
+        assert OAuth2Client.query.filter_by(id=client_id).first() is not None
 
 
 class TestOAuthRevokeClientToken(ApiTestCaseMixin):
-    route = '/api/oauth/apps/{client_id}/revoke'
+    route = "/api/oauth/apps/{client_id}/revoke"
 
     def test_it_returns_error_when_not_authenticated(
         self, app: Flask, user_1: User
@@ -1438,7 +1437,7 @@ class TestOAuthRevokeClientToken(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(client_id=self.random_int()),
-            content_type='application/json',
+            content_type="application/json",
         )
 
         self.assert_401(response)
@@ -1452,11 +1451,11 @@ class TestOAuthRevokeClientToken(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(client_id=self.random_int()),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_message(response, 'OAuth2 client not found')
+        self.assert_404_with_message(response, "OAuth2 client not found")
 
     def test_it_revokes_all_client_tokens(
         self, app: Flask, user_1: User
@@ -1469,13 +1468,13 @@ class TestOAuthRevokeClientToken(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(client_id=oauth_client.id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
+        assert data["status"] == "success"
         for token in tokens:
             assert token.is_revoked()
 
@@ -1490,13 +1489,13 @@ class TestOAuthRevokeClientToken(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(client_id=oauth_client.id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
+        assert data["status"] == "success"
         assert token.is_revoked()
 
     def test_it_does_not_revoke_another_client_token(
@@ -1512,8 +1511,8 @@ class TestOAuthRevokeClientToken(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(client_id=client_id),
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200

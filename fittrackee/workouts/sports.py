@@ -16,12 +16,12 @@ from fittrackee.users.roles import UserRole
 
 from .models import Sport
 
-sports_blueprint = Blueprint('sports', __name__)
+sports_blueprint = Blueprint("sports", __name__)
 
 
-@sports_blueprint.route('/sports', methods=['GET'])
+@sports_blueprint.route("/sports", methods=["GET"])
 @require_auth(
-    scopes=['workouts:read'],
+    scopes=["workouts:read"],
     optional_auth_user=True,
     allow_suspended_user=True,
 )
@@ -186,7 +186,7 @@ def get_sports(auth_user: User) -> Dict:
 
     """
     params = request.args.copy()
-    check_workouts = params.get('check_workouts', 'false').lower() == 'true'
+    check_workouts = params.get("check_workouts", "false").lower() == "true"
 
     sport_preferences = (
         {
@@ -214,13 +214,13 @@ def get_sports(auth_user: User) -> Dict:
             )
         )
     return {
-        'status': 'success',
-        'data': {'sports': sports_data},
+        "status": "success",
+        "data": {"sports": sports_data},
     }
 
 
-@sports_blueprint.route('/sports/<int:sport_id>', methods=['GET'])
-@require_auth(scopes=['workouts:read'])
+@sports_blueprint.route("/sports/<int:sport_id>", methods=["GET"])
+@require_auth(scopes=["workouts:read"])
 def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
     Get a sport
@@ -293,9 +293,9 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
             user_id=auth_user.id, sport_id=sport.id
         ).first()
         return {
-            'status': 'success',
-            'data': {
-                'sports': [
+            "status": "success",
+            "data": {
+                "sports": [
                     sport.serialize(
                         sport_preferences=(
                             sport_preferences.serialize()
@@ -306,11 +306,11 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
                 ]
             },
         }
-    return DataNotFoundErrorResponse('sports')
+    return DataNotFoundErrorResponse("sports")
 
 
-@sports_blueprint.route('/sports/<int:sport_id>', methods=['PATCH'])
-@require_auth(scopes=['workouts:write'], role=UserRole.ADMIN)
+@sports_blueprint.route("/sports/<int:sport_id>", methods=["PATCH"])
+@require_auth(scopes=["workouts:write"], role=UserRole.ADMIN)
 def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
     Update a sport.
@@ -389,23 +389,23 @@ def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
 
     """
     sport_data = request.get_json()
-    if not sport_data or sport_data.get('is_active') is None:
+    if not sport_data or sport_data.get("is_active") is None:
         return InvalidPayloadErrorResponse()
 
     try:
         sport = Sport.query.filter_by(id=sport_id).first()
         if not sport:
-            return DataNotFoundErrorResponse('sports')
+            return DataNotFoundErrorResponse("sports")
 
-        sport.is_active = sport_data.get('is_active')
+        sport.is_active = sport_data.get("is_active")
         db.session.commit()
         sport_preferences = UserSportPreference.query.filter_by(
             user_id=auth_user.id, sport_id=sport.id
         ).first()
         return {
-            'status': 'success',
-            'data': {
-                'sports': [
+            "status": "success",
+            "data": {
+                "sports": [
                     sport.serialize(
                         sport_preferences=(
                             sport_preferences.serialize()

@@ -1,7 +1,7 @@
 import pytest
 from flask import Flask
 
-from fittrackee.emails.email import EmailTemplate
+from fittrackee.emails.emails import EmailTemplate
 
 from .template_results.email_update_to_current_email import (
     expected_en_html_body as expected_en_current_email_html_body,

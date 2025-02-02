@@ -8,18 +8,18 @@ from fittrackee.workouts.models import Sport, Workout
 
 class TestCanViewWorkout:
     @pytest.mark.parametrize(
-        'input_description,input_workout_visibility',
+        "input_description,input_workout_visibility",
         [
             (
-                f'workout visibility: {VisibilityLevel.PRIVATE.value}',
+                f"workout visibility: {VisibilityLevel.PRIVATE.value}",
                 VisibilityLevel.PRIVATE,
             ),
             (
-                f'workout visibility: {VisibilityLevel.FOLLOWERS.value}',
+                f"workout visibility: {VisibilityLevel.FOLLOWERS.value}",
                 VisibilityLevel.FOLLOWERS,
             ),
             (
-                f'workout visibility: {VisibilityLevel.PUBLIC.value}',
+                f"workout visibility: {VisibilityLevel.PUBLIC.value}",
                 VisibilityLevel.PUBLIC,
             ),
         ],
@@ -36,7 +36,7 @@ class TestCanViewWorkout:
         workout_cycling_user_1.workout_visibility = input_workout_visibility
 
         assert (
-            can_view(workout_cycling_user_1, 'workout_visibility', user_1)
+            can_view(workout_cycling_user_1, "workout_visibility", user_1)
             is True
         )
 
@@ -53,19 +53,19 @@ class TestCanViewWorkout:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PRIVATE
 
         assert (
-            can_view(workout_cycling_user_2, 'workout_visibility', user_1)
+            can_view(workout_cycling_user_2, "workout_visibility", user_1)
             is False
         )
 
     @pytest.mark.parametrize(
-        'input_description,input_workout_visibility',
+        "input_description,input_workout_visibility",
         [
             (
-                f'workout visibility: {VisibilityLevel.FOLLOWERS.value}',
+                f"workout visibility: {VisibilityLevel.FOLLOWERS.value}",
                 VisibilityLevel.FOLLOWERS,
             ),
             (
-                f'workout visibility: {VisibilityLevel.PUBLIC.value}',
+                f"workout visibility: {VisibilityLevel.PUBLIC.value}",
                 VisibilityLevel.PUBLIC,
             ),
         ],
@@ -85,19 +85,19 @@ class TestCanViewWorkout:
         workout_cycling_user_2.workout_visibility = input_workout_visibility
 
         assert (
-            can_view(workout_cycling_user_2, 'workout_visibility', user_1)
+            can_view(workout_cycling_user_2, "workout_visibility", user_1)
             is True
         )
 
     @pytest.mark.parametrize(
-        'input_description,input_workout_visibility',
+        "input_description,input_workout_visibility",
         [
             (
-                f'workout visibility: {VisibilityLevel.PRIVATE.value}',
+                f"workout visibility: {VisibilityLevel.PRIVATE.value}",
                 VisibilityLevel.PRIVATE,
             ),
             (
-                f'workout visibility: {VisibilityLevel.FOLLOWERS.value}',
+                f"workout visibility: {VisibilityLevel.FOLLOWERS.value}",
                 VisibilityLevel.FOLLOWERS,
             ),
         ],
@@ -115,7 +115,7 @@ class TestCanViewWorkout:
         workout_cycling_user_2.workout_visibility = input_workout_visibility
 
         assert (
-            can_view(workout_cycling_user_2, 'workout_visibility', user_1)
+            can_view(workout_cycling_user_2, "workout_visibility", user_1)
             is False
         )
 
@@ -131,7 +131,7 @@ class TestCanViewWorkout:
         user_2.blocks_user(user_1)
 
         assert (
-            can_view(workout_cycling_user_2, 'workout_visibility', user_1)
+            can_view(workout_cycling_user_2, "workout_visibility", user_1)
             is False
         )
 
@@ -146,19 +146,19 @@ class TestCanViewWorkout:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
 
         assert (
-            can_view(workout_cycling_user_2, 'workout_visibility', user_1)
+            can_view(workout_cycling_user_2, "workout_visibility", user_1)
             is True
         )
 
     @pytest.mark.parametrize(
-        'input_description,input_workout_visibility',
+        "input_description,input_workout_visibility",
         [
             (
-                f'workout visibility: {VisibilityLevel.PRIVATE.value}',
+                f"workout visibility: {VisibilityLevel.PRIVATE.value}",
                 VisibilityLevel.PRIVATE,
             ),
             (
-                f'workout visibility: {VisibilityLevel.FOLLOWERS.value}',
+                f"workout visibility: {VisibilityLevel.FOLLOWERS.value}",
                 VisibilityLevel.FOLLOWERS,
             ),
         ],
@@ -175,7 +175,7 @@ class TestCanViewWorkout:
     ) -> None:
         workout_cycling_user_2.workout_visibility = input_workout_visibility
 
-        assert can_view(workout_cycling_user_2, 'workout_visibility') is False
+        assert can_view(workout_cycling_user_2, "workout_visibility") is False
 
     def test_workout_can_be_viewed_when_public_and_no_user_provided(
         self,
@@ -187,23 +187,23 @@ class TestCanViewWorkout:
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
 
-        assert can_view(workout_cycling_user_2, 'workout_visibility') is True
+        assert can_view(workout_cycling_user_2, "workout_visibility") is True
 
 
 class TestCanViewWorkoutMap:
     @pytest.mark.parametrize(
-        'input_description,input_map_visibility',
+        "input_description,input_map_visibility",
         [
             (
-                f'map visibility: {VisibilityLevel.PRIVATE.value}',
+                f"map visibility: {VisibilityLevel.PRIVATE.value}",
                 VisibilityLevel.PRIVATE,
             ),
             (
-                f'map visibility: {VisibilityLevel.FOLLOWERS.value}',
+                f"map visibility: {VisibilityLevel.FOLLOWERS.value}",
                 VisibilityLevel.FOLLOWERS,
             ),
             (
-                f'map visibility: {VisibilityLevel.PUBLIC.value}',
+                f"map visibility: {VisibilityLevel.PUBLIC.value}",
                 VisibilityLevel.PUBLIC,
             ),
         ],
@@ -220,7 +220,7 @@ class TestCanViewWorkoutMap:
         workout_cycling_user_1.map_visibility = input_map_visibility
 
         assert (
-            can_view(workout_cycling_user_1, 'map_visibility', user_1) is True
+            can_view(workout_cycling_user_1, "map_visibility", user_1) is True
         )
 
     def test_follower_can_not_view_workout_map_when_private(
@@ -236,18 +236,18 @@ class TestCanViewWorkoutMap:
         workout_cycling_user_2.map_visibility = VisibilityLevel.PRIVATE
 
         assert (
-            can_view(workout_cycling_user_2, 'map_visibility', user_1) is False
+            can_view(workout_cycling_user_2, "map_visibility", user_1) is False
         )
 
     @pytest.mark.parametrize(
-        'input_description,input_map_visibility',
+        "input_description,input_map_visibility",
         [
             (
-                f'map visibility: {VisibilityLevel.FOLLOWERS.value}',
+                f"map visibility: {VisibilityLevel.FOLLOWERS.value}",
                 VisibilityLevel.FOLLOWERS,
             ),
             (
-                f'map visibility: {VisibilityLevel.PUBLIC.value}',
+                f"map visibility: {VisibilityLevel.PUBLIC.value}",
                 VisibilityLevel.PUBLIC,
             ),
         ],
@@ -267,18 +267,18 @@ class TestCanViewWorkoutMap:
         workout_cycling_user_2.map_visibility = input_map_visibility
 
         assert (
-            can_view(workout_cycling_user_2, 'map_visibility', user_1) is True
+            can_view(workout_cycling_user_2, "map_visibility", user_1) is True
         )
 
     @pytest.mark.parametrize(
-        'input_description,input_map_visibility',
+        "input_description,input_map_visibility",
         [
             (
-                f'map visibility: {VisibilityLevel.PRIVATE.value}',
+                f"map visibility: {VisibilityLevel.PRIVATE.value}",
                 VisibilityLevel.PRIVATE,
             ),
             (
-                f'map visibility: {VisibilityLevel.FOLLOWERS.value}',
+                f"map visibility: {VisibilityLevel.FOLLOWERS.value}",
                 VisibilityLevel.FOLLOWERS,
             ),
         ],
@@ -296,7 +296,7 @@ class TestCanViewWorkoutMap:
         workout_cycling_user_2.map_visibility = input_map_visibility
 
         assert (
-            can_view(workout_cycling_user_2, 'map_visibility', user_1) is False
+            can_view(workout_cycling_user_2, "map_visibility", user_1) is False
         )
 
     def test_another_user_can_view_workout_map_when_public(
@@ -310,18 +310,18 @@ class TestCanViewWorkoutMap:
         workout_cycling_user_2.map_visibility = VisibilityLevel.PUBLIC
 
         assert (
-            can_view(workout_cycling_user_2, 'map_visibility', user_1) is True
+            can_view(workout_cycling_user_2, "map_visibility", user_1) is True
         )
 
     @pytest.mark.parametrize(
-        'input_description,input_map_visibility',
+        "input_description,input_map_visibility",
         [
             (
-                f'map visibility: {VisibilityLevel.PRIVATE.value}',
+                f"map visibility: {VisibilityLevel.PRIVATE.value}",
                 VisibilityLevel.PRIVATE,
             ),
             (
-                f'map visibility: {VisibilityLevel.FOLLOWERS.value}',
+                f"map visibility: {VisibilityLevel.FOLLOWERS.value}",
                 VisibilityLevel.FOLLOWERS,
             ),
         ],
@@ -338,7 +338,7 @@ class TestCanViewWorkoutMap:
     ) -> None:
         workout_cycling_user_2.map_visibility = input_map_visibility
 
-        assert can_view(workout_cycling_user_2, 'map_visibility') is False
+        assert can_view(workout_cycling_user_2, "map_visibility") is False
 
     def test_workout_can_be_viewed_when_public_and_no_user_provided(
         self,
@@ -350,4 +350,4 @@ class TestCanViewWorkoutMap:
     ) -> None:
         workout_cycling_user_2.map_visibility = VisibilityLevel.PUBLIC
 
-        assert can_view(workout_cycling_user_2, 'map_visibility') is True
+        assert can_view(workout_cycling_user_2, "map_visibility") is True

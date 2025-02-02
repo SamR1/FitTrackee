@@ -1,1 +1,1 @@
-WORKOUT_DATE_FORMAT = '%Y-%m-%d %H:%M'
+WORKOUT_DATE_FORMAT = "%Y-%m-%d %H:%M"

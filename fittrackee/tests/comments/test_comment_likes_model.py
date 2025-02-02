@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from flask import Flask
 from time_machine import travel
@@ -21,7 +21,7 @@ class TestCommentLikeModel(CommentMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         comment = self.create_comment(user_1, workout_cycling_user_1)
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
 
         like = CommentLike(
             user_id=user_2.id,
@@ -42,7 +42,7 @@ class TestCommentLikeModel(CommentMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         comment = self.create_comment(user_1, workout_cycling_user_1)
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         with travel(now, tick=False):
             like = CommentLike(user_id=user_2.id, comment_id=comment.id)
 

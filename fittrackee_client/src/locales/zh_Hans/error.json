@@ -1,1 +1,13 @@
-{}
+{
+  "APP_ERROR": "应用程序似乎遇到了一些问题。<br />请稍后再试或联系管理员。",
+  "NOT_FOUND": {
+    "COMMENT": "未找到评论",
+    "PAGE": "未找到页面",
+    "REPORT": "未找到报告",
+    "SEGMENT": "未找到片段",
+    "USER": "未找到用户",
+    "WORKOUT": "未找到锻炼"
+  },
+  "SOMETHING_WRONG": "出现了一些问题",
+  "UNKNOWN": "错误。请重试或联系管理员。"
+}

@@ -27,7 +27,7 @@
 </script>
 
 <style lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   .calendar-days {
     display: flex;
     flex-direction: row;

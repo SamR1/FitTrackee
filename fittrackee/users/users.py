@@ -1,11 +1,12 @@
 import os
 import shutil
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
 from flask import Blueprint, current_app, request, send_file
 from sqlalchemy import and_, asc, desc, exc, func, nullslast, or_
 
 from fittrackee import appLog, db, limiter
+from fittrackee.dates import get_readable_duration
 from fittrackee.emails.tasks import (
     email_updated_to_new_address,
     password_change_email,
@@ -14,6 +15,7 @@ from fittrackee.emails.tasks import (
 from fittrackee.equipments.models import Equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
+from fittrackee.reports.models import ReportAction
 from fittrackee.responses import (
     ForbiddenErrorResponse,
     HttpResponse,
@@ -22,11 +24,9 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
     handle_error_and_return_response,
 )
-from fittrackee.utils import get_readable_duration
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
-from ..reports.models import ReportAction
 from .exceptions import (
     BlockUserException,
     FollowRequestAlreadyRejectedError,
@@ -41,19 +41,26 @@ from .roles import UserRole
 from .users_service import UserManagerService
 from .utils.language import get_language
 
-users_blueprint = Blueprint('users', __name__)
+if TYPE_CHECKING:
+    from sqlalchemy.sql.expression import (
+        BinaryExpression,
+        ColumnElement,
+        UnaryExpression,
+    )
+
+users_blueprint = Blueprint("users", __name__)
 
 ACTIONS_PER_PAGE = 5
 USERS_PER_PAGE = 10
 EMPTY_USERS_RESPONSE = {
-    'status': 'success',
-    'data': {'users': []},
-    'pagination': {
-        'has_next': False,
-        'has_prev': False,
-        'page': 1,
-        'pages': 0,
-        'total': 0,
+    "status": "success",
+    "data": {"users": []},
+    "pagination": {
+        "has_next": False,
+        "has_prev": False,
+        "page": 1,
+        "pages": 0,
+        "total": 0,
     },
 }
 WORKOUTS_PER_PAGE = 5
@@ -62,84 +69,86 @@ WORKOUTS_PER_PAGE = 5
 def _get_value_depending_on_user_rights(
     params: Dict, key: str, auth_user: Optional[User]
 ) -> str:
-    value = params.get(key, 'false').lower()
+    value = params.get(key, "false").lower()
     if not auth_user or not auth_user.has_admin_rights:
-        value = 'false'
+        value = "false"
     return value
 
 
 def get_users_list(auth_user: User) -> Dict:
     params = request.args.copy()
 
-    query = params.get('q')
-    page = int(params.get('page', 1))
-    per_page = int(params.get('per_page', USERS_PER_PAGE))
+    query = params.get("q")
+    page = int(params.get("page", 1))
+    per_page = int(params.get("per_page", USERS_PER_PAGE))
     if per_page > 50:
         per_page = 50
-    column = params.get('order_by', 'username')
+    column = params.get("order_by", "username")
     user_column = getattr(User, column)
-    order = params.get('order', 'asc')
-    order_clauses = [asc(user_column) if order == 'asc' else desc(user_column)]
-    if column != 'username':
+    order = params.get("order", "asc")
+    order_clauses: List["UnaryExpression"] = [
+        asc(user_column) if order == "asc" else desc(user_column)
+    ]
+    if column != "username":
         order_clauses.append(User.username.asc())
     if column == "suspended_at":
         order_clauses = [nullslast(order_clauses[0])]
     with_inactive = _get_value_depending_on_user_rights(
-        params, 'with_inactive', auth_user
+        params, "with_inactive", auth_user
     )
     with_hidden_users = _get_value_depending_on_user_rights(
-        params, 'with_hidden', auth_user
+        params, "with_hidden", auth_user
     )
     with_suspended_users = _get_value_depending_on_user_rights(
-        params, 'with_suspended', auth_user
+        params, "with_suspended", auth_user
     )
-    with_following = params.get('with_following', 'false').lower()
+    with_following = params.get("with_following", "false").lower()
     following_user_ids = (
-        auth_user.get_following_user_ids() if with_following == 'true' else []
+        auth_user.get_following_user_ids() if with_following == "true" else []
     )
 
-    users_pagination = (
-        User.query.filter(
-            User.username.ilike('%' + query + '%') if query else True,
+    filters: List[Union["ColumnElement", "BinaryExpression"]] = []
+    if query:
+        filters.append(User.username.ilike("%" + query + "%"))
+    if with_inactive != "true":
+        filters.append(User.is_active == True)  # noqa
+    if with_hidden_users != "true":
+        filters.append(
             (
-                True if with_inactive == 'true' else User.is_active == True  # noqa
-            ),
-            or_(
-                True
-                if with_hidden_users == 'true'
-                else User.hide_profile_in_users_directory == False,  # noqa
-                and_(
-                    User.id.in_(following_user_ids),
-                    User.hide_profile_in_users_directory == True,  # noqa
-                ),
-            ),
-            (
-                True
-                if with_suspended_users == 'true'
-                else User.suspended_at == None  # noqa
+                or_(
+                    User.hide_profile_in_users_directory == False,  # noqa
+                    and_(
+                        User.id.in_(following_user_ids),
+                        User.hide_profile_in_users_directory == True,  # noqa
+                    ),
+                )
             ),
         )
+    if with_suspended_users != "true":
+        filters.append(User.suspended_at == None)  # noqa
+    users_pagination = (
+        User.query.filter(*filters)
         .order_by(*order_clauses)
         .paginate(page=page, per_page=per_page, error_out=False)
     )
     users = users_pagination.items
     return {
-        'status': 'success',
-        'data': {
-            'users': [user.serialize(current_user=auth_user) for user in users]
+        "status": "success",
+        "data": {
+            "users": [user.serialize(current_user=auth_user) for user in users]
         },
-        'pagination': {
-            'has_next': users_pagination.has_next,
-            'has_prev': users_pagination.has_prev,
-            'page': users_pagination.page,
-            'pages': users_pagination.pages,
-            'total': users_pagination.total,
+        "pagination": {
+            "has_next": users_pagination.has_next,
+            "has_prev": users_pagination.has_prev,
+            "page": users_pagination.page,
+            "pages": users_pagination.pages,
+            "total": users_pagination.total,
         },
     }
 
 
-@users_blueprint.route('/users', methods=['GET'])
-@require_auth(scopes=['users:read'])
+@users_blueprint.route("/users", methods=["GET"])
+@require_auth(scopes=["users:read"])
 def get_users(auth_user: User) -> Dict:
     """
     Get all users.
@@ -311,8 +320,8 @@ def get_users(auth_user: User) -> Dict:
     return get_users_list(auth_user)
 
 
-@users_blueprint.route('/users/<user_name>', methods=['GET'])
-@require_auth(scopes=['users:read'], optional_auth_user=True)
+@users_blueprint.route("/users/<user_name>", methods=["GET"])
+@require_auth(scopes=["users:read"], optional_auth_user=True)
 def get_single_user(
     auth_user: Optional[User], user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -477,9 +486,9 @@ def get_single_user(
             ) and not user.is_active:
                 return UserNotFoundErrorResponse()
             return {
-                'status': 'success',
-                'data': {
-                    'users': [
+                "status": "success",
+                "data": {
+                    "users": [
                         user.serialize(current_user=auth_user, light=False)
                     ]
                 },
@@ -489,7 +498,7 @@ def get_single_user(
     return UserNotFoundErrorResponse()
 
 
-@users_blueprint.route('/users/<user_name>/picture', methods=['GET'])
+@users_blueprint.route("/users/<user_name>/picture", methods=["GET"])
 @limiter.exempt
 def get_picture(user_name: str) -> Any:
     """get user picture
@@ -529,11 +538,11 @@ def get_picture(user_name: str) -> Any:
         return UserNotFoundErrorResponse()
     except Exception:  # nosec
         pass
-    return NotFoundErrorResponse('No picture.')
+    return NotFoundErrorResponse("No picture.")
 
 
-@users_blueprint.route('/users/<user_name>', methods=['PATCH'])
-@require_auth(scopes=['users:write'], role=UserRole.ADMIN)
+@users_blueprint.route("/users/<user_name>", methods=["PATCH"])
+@require_auth(scopes=["users:write"], role=UserRole.ADMIN)
 def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     """
     Update user account.
@@ -674,44 +683,44 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     if not user_data:
         return InvalidPayloadErrorResponse()
 
-    activate = user_data.get('activate')
+    activate = user_data.get("activate")
     if activate is False and user_name == auth_user.username:
         return ForbiddenErrorResponse()
 
-    role = user_data.get('role')
-    if role == 'owner':
+    role = user_data.get("role")
+    if role == "owner":
         return InvalidPayloadErrorResponse(
             "'owner' can not be set via API, please user CLI instead"
         )
 
     try:
-        reset_password = user_data.get('reset_password', False)
-        new_email = user_data.get('new_email')
+        reset_password = user_data.get("reset_password", False)
+        new_email = user_data.get("new_email")
         user_manager_service = UserManagerService(
             username=user_name, moderator_id=auth_user.id
         )
         user, _, _, _ = user_manager_service.update(
             role=role,
-            activate=user_data.get('activate'),
+            activate=user_data.get("activate"),
             reset_password=reset_password,
             new_email=new_email,
-            with_confirmation=current_app.config['CAN_SEND_EMAILS'],
+            with_confirmation=current_app.config["CAN_SEND_EMAILS"],
             raise_error_on_owner=True,
         )
 
-        if current_app.config['CAN_SEND_EMAILS']:
+        if current_app.config["CAN_SEND_EMAILS"]:
             user_language = get_language(user.language)
-            fittrackee_url = current_app.config['UI_URL']
+            fittrackee_url = current_app.config["UI_URL"]
             if reset_password:
                 user_data = {
-                    'language': user_language,
-                    'email': user.email,
+                    "language": user_language,
+                    "email": user.email,
                 }
                 password_change_email.send(
                     user_data,
                     {
-                        'username': user.username,
-                        'fittrackee_url': fittrackee_url,
+                        "username": user.username,
+                        "fittrackee_url": fittrackee_url,
                     },
                 )
                 password_reset_token = user.encode_password_reset_token(
@@ -720,40 +729,40 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
                 reset_password_email.send(
                     user_data,
                     {
-                        'expiration_delay': get_readable_duration(
+                        "expiration_delay": get_readable_duration(
                             current_app.config[
-                                'PASSWORD_TOKEN_EXPIRATION_SECONDS'
+                                "PASSWORD_TOKEN_EXPIRATION_SECONDS"
                             ],
                             user_language,
                         ),
-                        'username': user.username,
-                        'password_reset_url': (
-                            f'{fittrackee_url}/password-reset?'
-                            f'token={password_reset_token}'
+                        "username": user.username,
+                        "password_reset_url": (
+                            f"{fittrackee_url}/password-reset?"
+                            f"token={password_reset_token}"
                         ),
-                        'fittrackee_url': fittrackee_url,
+                        "fittrackee_url": fittrackee_url,
                     },
                 )
 
             if new_email:
                 user_data = {
-                    'language': user_language,
-                    'email': user.email_to_confirm,
+                    "language": user_language,
+                    "email": user.email_to_confirm,
                 }
                 email_data = {
-                    'username': user.username,
-                    'fittrackee_url': fittrackee_url,
-                    'email_confirmation_url': (
-                        f'{fittrackee_url}/email-update'
-                        f'?token={user.confirmation_token}'
+                    "username": user.username,
+                    "fittrackee_url": fittrackee_url,
+                    "email_confirmation_url": (
+                        f"{fittrackee_url}/email-update"
+                        f"?token={user.confirmation_token}"
                     ),
                 }
                 email_updated_to_new_address.send(user_data, email_data)
 
         return {
-            'status': 'success',
-            'data': {
-                'users': [user.serialize(current_user=auth_user, light=False)]
+            "status": "success",
+            "data": {
+                "users": [user.serialize(current_user=auth_user, light=False)]
             },
         }
     except UserNotFoundException:
@@ -764,8 +773,8 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
         return handle_error_and_return_response(e, db=db)
 
 
-@users_blueprint.route('/users/<user_name>', methods=['DELETE'])
-@require_auth(scopes=['users:write'], allow_suspended_user=True)
+@users_blueprint.route("/users/<user_name>", methods=["DELETE"])
+@require_auth(scopes=["users:write"], allow_suspended_user=True)
 def delete_user(
     auth_user: User, user_name: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -820,7 +829,7 @@ def delete_user(
         if not user:
             return UserNotFoundErrorResponse()
         if user.id != auth_user.id and user.role == UserRole.OWNER.value:
-            return ForbiddenErrorResponse('you can not delete owner account')
+            return ForbiddenErrorResponse("you can not delete owner account")
 
         if user.id != auth_user.id and not auth_user.has_admin_rights:
             return ForbiddenErrorResponse()
@@ -830,8 +839,8 @@ def delete_user(
             == 1
         ):
             return ForbiddenErrorResponse(
-                'you can not delete your account, '
-                'no other user has admin rights'
+                "you can not delete your account, "
+                "no other user has admin rights"
             )
 
         db.session.query(UserSportPreference).filter(
@@ -858,18 +867,18 @@ def delete_user(
             if os.path.isfile(picture_path):
                 os.remove(picture_path)
         shutil.rmtree(
-            get_absolute_file_path(f'exports/{user.id}'),
+            get_absolute_file_path(f"exports/{user.id}"),
             ignore_errors=True,
         )
         shutil.rmtree(
-            get_absolute_file_path(f'workouts/{user.id}'),
+            get_absolute_file_path(f"workouts/{user.id}"),
             ignore_errors=True,
         )
         shutil.rmtree(
-            get_absolute_file_path(f'pictures/{user.id}'),
+            get_absolute_file_path(f"pictures/{user.id}"),
             ignore_errors=True,
         )
-        return {'status': 'no content'}, 204
+        return {"status": "no content"}, 204
     except (
         exc.IntegrityError,
         exc.OperationalError,
@@ -879,8 +888,8 @@ def delete_user(
         return handle_error_and_return_response(e, db=db)
 
 
-@users_blueprint.route('/users/<user_name>/follow', methods=['POST'])
-@require_auth(scopes=['follow:write'])
+@users_blueprint.route("/users/<user_name>/follow", methods=["POST"])
+@require_auth(scopes=["follow:write"])
 def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     """
     Send a follow request to a user.
@@ -924,8 +933,8 @@ def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
 
     """
     successful_response_dict = {
-        'status': 'success',
-        'message': f"Follow request to user '{user_name}' is sent.",
+        "status": "success",
+        "message": f"Follow request to user '{user_name}' is sent.",
     }
 
     target_user = User.query.filter(
@@ -933,7 +942,7 @@ def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     ).first()
     if not target_user:
         appLog.error(
-            f'Error when following a user: user {user_name} not found'
+            f"Error when following a user: user {user_name} not found"
         )
         return UserNotFoundErrorResponse()
 
@@ -947,8 +956,8 @@ def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     return successful_response_dict
 
 
-@users_blueprint.route('/users/<user_name>/unfollow', methods=['POST'])
-@require_auth(scopes=['follow:write'])
+@users_blueprint.route("/users/<user_name>/unfollow", methods=["POST"])
+@require_auth(scopes=["follow:write"])
 def unfollow_user(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -995,8 +1004,8 @@ def unfollow_user(
 
     """
     successful_response_dict = {
-        'status': 'success',
-        'message': f"Undo for a follow request to user '{user_name}' is sent.",
+        "status": "success",
+        "message": f"Undo for a follow request to user '{user_name}' is sent.",
     }
 
     target_user = User.query.filter(
@@ -1004,14 +1013,14 @@ def unfollow_user(
     ).first()
     if not target_user:
         appLog.error(
-            f'Error when following a user: user {user_name} not found'
+            f"Error when following a user: user {user_name} not found"
         )
         return UserNotFoundErrorResponse()
 
     try:
         auth_user.unfollows(target_user)
     except NotExistingFollowRequestError:
-        return NotFoundErrorResponse(message='relationship does not exist')
+        return NotFoundErrorResponse(message="relationship does not exist")
     return successful_response_dict
 
 
@@ -1020,7 +1029,7 @@ def get_user_relationships(
 ) -> Union[Dict, HttpResponse]:
     params = request.args.copy()
     try:
-        page = int(params.get('page', 1))
+        page = int(params.get("page", 1))
     except ValueError:
         page = 1
 
@@ -1031,7 +1040,7 @@ def get_user_relationships(
         return UserNotFoundErrorResponse()
 
     relations_object = (
-        user.followers if relation == 'followers' else user.following
+        user.followers if relation == "followers" else user.following
     )
 
     paginated_relations = relations_object.order_by(
@@ -1039,25 +1048,25 @@ def get_user_relationships(
     ).paginate(page=page, per_page=USERS_PER_PAGE, error_out=False)
 
     return {
-        'status': 'success',
-        'data': {
+        "status": "success",
+        "data": {
             relation: [
                 user.serialize(current_user=auth_user)
                 for user in paginated_relations.items
             ]
         },
-        'pagination': {
-            'has_next': paginated_relations.has_next,
-            'has_prev': paginated_relations.has_prev,
-            'page': paginated_relations.page,
-            'pages': paginated_relations.pages,
-            'total': paginated_relations.total,
+        "pagination": {
+            "has_next": paginated_relations.has_next,
+            "has_prev": paginated_relations.has_prev,
+            "page": paginated_relations.page,
+            "pages": paginated_relations.pages,
+            "total": paginated_relations.total,
         },
     }
 
 
-@users_blueprint.route('/users/<user_name>/followers', methods=['GET'])
-@require_auth(scopes=['follow:read'])
+@users_blueprint.route("/users/<user_name>/followers", methods=["GET"])
+@require_auth(scopes=["follow:read"])
 def get_followers(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -1147,11 +1156,11 @@ def get_followers(
         - ``user does not exist``
 
     """
-    return get_user_relationships(auth_user, user_name, 'followers')
+    return get_user_relationships(auth_user, user_name, "followers")
 
 
-@users_blueprint.route('/users/<user_name>/following', methods=['GET'])
-@require_auth(scopes=['follow:read'])
+@users_blueprint.route("/users/<user_name>/following", methods=["GET"])
+@require_auth(scopes=["follow:read"])
 def get_following(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -1241,11 +1250,11 @@ def get_following(
         - ``user does not exist``
 
     """
-    return get_user_relationships(auth_user, user_name, 'following')
+    return get_user_relationships(auth_user, user_name, "following")
 
 
-@users_blueprint.route('/users/<user_name>/block', methods=['POST'])
-@require_auth(scopes=['users:write'])
+@users_blueprint.route("/users/<user_name>/block", methods=["POST"])
+@require_auth(scopes=["users:write"])
 def block_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     """
     Block a user
@@ -1308,8 +1317,8 @@ def block_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     return {"status": "success"}
 
 
-@users_blueprint.route('/users/<user_name>/unblock', methods=['POST'])
-@require_auth(scopes=['users:write'])
+@users_blueprint.route("/users/<user_name>/unblock", methods=["POST"])
+@require_auth(scopes=["users:write"])
 def unblock_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     """
     Unblock a user
@@ -1362,8 +1371,8 @@ def unblock_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     return {"status": "success"}
 
 
-@users_blueprint.route('/users/<user_name>/sanctions', methods=['GET'])
-@require_auth(scopes=['users:read'], allow_suspended_user=True)
+@users_blueprint.route("/users/<user_name>/sanctions", methods=["GET"])
+@require_auth(scopes=["users:read"], allow_suspended_user=True)
 def get_user_sanctions(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -1562,7 +1571,7 @@ def get_user_sanctions(
         return ForbiddenErrorResponse()
 
     params = request.args.copy()
-    page = int(params.get('page', 1))
+    page = int(params.get("page", 1))
 
     paginated_sanctions = (
         ReportAction.query.filter(
@@ -1581,25 +1590,25 @@ def get_user_sanctions(
     )
 
     return {
-        'status': 'success',
-        'data': {
-            'sanctions': [
+        "status": "success",
+        "data": {
+            "sanctions": [
                 sanctions.serialize(current_user=auth_user, full=False)
                 for sanctions in paginated_sanctions.items
             ]
         },
-        'pagination': {
-            'has_next': paginated_sanctions.has_next,
-            'has_prev': paginated_sanctions.has_prev,
-            'page': paginated_sanctions.page,
-            'pages': paginated_sanctions.pages,
-            'total': paginated_sanctions.total,
+        "pagination": {
+            "has_next": paginated_sanctions.has_next,
+            "has_prev": paginated_sanctions.has_prev,
+            "page": paginated_sanctions.page,
+            "pages": paginated_sanctions.pages,
+            "total": paginated_sanctions.total,
         },
     }
 
 
-@users_blueprint.route('/users/<user_name>/workouts', methods=['GET'])
-@require_auth(scopes=['workouts:read'], optional_auth_user=True)
+@users_blueprint.route("/users/<user_name>/workouts", methods=["GET"])
+@require_auth(scopes=["workouts:read"], optional_auth_user=True)
 def get_user_latest_workouts(
     auth_user: User, user_name: str
 ) -> Union[Dict, HttpResponse]:
@@ -1741,7 +1750,7 @@ def get_user_latest_workouts(
         appLog.error(f"Error: user {user_name} not found")
         return UserNotFoundErrorResponse()
     if user.suspended_at:
-        return {'status': 'success', 'data': {'workouts': []}}
+        return {"status": "success", "data": {"workouts": []}}
 
     workouts_query = Workout.query.filter(
         Workout.suspended_at == None,  # noqa
@@ -1766,9 +1775,9 @@ def get_user_latest_workouts(
         .all()
     )
     return {
-        'status': 'success',
-        'data': {
-            'workouts': [
+        "status": "success",
+        "data": {
+            "workouts": [
                 workout.serialize(user=auth_user) for workout in workouts
             ]
         },

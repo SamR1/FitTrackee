@@ -15,7 +15,7 @@
           :from-admin="fromAdmin"
         />
       </div>
-      <UserWorkoutsList :user="user" v-if="user.nb_workouts > 0" />
+      <UserWorkoutsList :user="user" v-if="displayUserWorkouts" />
     </template>
     <div v-else>
       <NotFound target="USER" />
@@ -52,6 +52,9 @@
   const user: ComputedRef<IUserProfile> = computed(
     () => store.getters[USERS_STORE.GETTERS.USER]
   )
+  const displayUserWorkouts: ComputedRef<boolean> = computed(
+    () => route.name === 'User' && user.value.nb_workouts > 0
+  )
 
   function getUser(params: LocationQuery) {
     if (params.username && typeof params.username === 'string') {
@@ -77,7 +80,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
 
   #user {
     margin: auto;

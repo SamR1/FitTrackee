@@ -69,7 +69,7 @@
 </script>
 
 <style lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   .calendar-workouts {
     .desktop-display {
       display: flex;

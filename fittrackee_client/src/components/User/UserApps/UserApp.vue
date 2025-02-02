@@ -222,7 +222,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   #oauth2-app {
     .app-buttons {
       display: flex;

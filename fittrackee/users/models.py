@@ -1,16 +1,17 @@
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import jwt
 from flask import current_app
 from jsonschema import validate
 from sqlalchemy import and_, func
-from sqlalchemy.dialects.postgresql import JSONB, UUID, insert
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session, object_session
 from sqlalchemy.schema import CheckConstraint
@@ -20,6 +21,8 @@ from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, appLog, bcrypt, db
 from fittrackee.comments.models import Comment
+from fittrackee.database import TZDateTime
+from fittrackee.dates import aware_utc_now
 from fittrackee.files import get_absolute_file_path
 from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import VisibilityLevel
@@ -43,36 +46,51 @@ from .roles import (
     has_moderator_rights,
     is_auth_user,
 )
-from .utils.token import decode_user_token, get_user_token
+from .utils.tokens import decode_user_token, get_user_token
 
 if TYPE_CHECKING:
+    from fittrackee.equipments.models import Equipment
     from fittrackee.reports.models import ReportAction
+    from fittrackee.workouts.models import Record
 
 
 class FollowRequest(BaseModel):
     """Follow request between two users"""
 
-    __tablename__ = 'follow_requests'
-    follower_user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id'),
+    __tablename__ = "follow_requests"
+    follower_user_id: Mapped[int] = mapped_column(
+        db.ForeignKey("users.id"),
         primary_key=True,
     )
-    followed_user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id'),
+    followed_user_id: Mapped[int] = mapped_column(
+        db.ForeignKey("users.id"),
         primary_key=True,
     )
-    is_approved = db.Column(db.Boolean, default=False, nullable=False)
-    created_at = db.Column(
-        db.DateTime, nullable=False, default=datetime.utcnow
+    is_approved: Mapped[bool] = mapped_column(default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        TZDateTime, nullable=False, default=aware_utc_now
     )
-    updated_at = db.Column(db.DateTime, nullable=True)
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        TZDateTime, nullable=True
+    )
+
+    to_user: Mapped["User"] = relationship(
+        "User",
+        primaryjoin="FollowRequest.followed_user_id == User.id",
+        uselist=False,
+        back_populates="received_follow_requests",
+    )
+    from_user: Mapped["User"] = relationship(
+        "User",
+        primaryjoin="FollowRequest.follower_user_id == User.id",
+        uselist=False,
+        back_populates="sent_follow_requests",
+    )
 
     def __repr__(self) -> str:
         return (
-            f'<FollowRequest from user \'{self.follower_user_id}\' '
-            f'to user \'{self.followed_user_id}\'>'
+            f"<FollowRequest from user '{self.follower_user_id}' "
+            f"to user '{self.followed_user_id}'>"
         )
 
     def __init__(self, follower_user_id: int, followed_user_id: int):
@@ -84,22 +102,24 @@ class FollowRequest(BaseModel):
 
     def serialize(self) -> Dict:
         return {
-            'from_user': self.from_user.serialize(),
-            'to_user': self.to_user.serialize(),
+            "from_user": self.from_user.serialize(),
+            "to_user": self.to_user.serialize(),
         }
 
 
-@listens_for(FollowRequest, 'after_insert')
+@listens_for(FollowRequest, "after_insert")
 def on_follow_request_insert(
     mapper: Mapper, connection: Connection, new_follow_request: FollowRequest
 ) -> None:
-    @listens_for(db.Session, 'after_flush', once=True)
+    @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Connection) -> None:
         to_user = User.query.filter_by(
             id=new_follow_request.followed_user_id
         ).first()
+        if not to_user:
+            return
         event_type = (
-            'follow' if new_follow_request.is_approved else 'follow_request'
+            "follow" if new_follow_request.is_approved else "follow_request"
         )
 
         if not to_user.is_notification_enabled(event_type):
@@ -114,13 +134,16 @@ def on_follow_request_insert(
         session.add(notification)
 
 
-@listens_for(FollowRequest, 'after_update')
+@listens_for(FollowRequest, "after_update")
 def on_follow_request_update(
     mapper: Mapper, connection: Connection, follow_request: FollowRequest
 ) -> None:
-    if object_session(follow_request).is_modified(follow_request):
+    follow_request_object = object_session(follow_request)
+    if follow_request_object and follow_request_object.is_modified(
+        follow_request
+    ):
 
-        @listens_for(db.Session, 'after_flush', once=True)
+        @listens_for(db.Session, "after_flush", once=True)
         def receive_after_flush(session: Session, context: Connection) -> None:
             if follow_request.is_approved:
                 if follow_request.to_user.is_notification_enabled("follow"):
@@ -131,7 +154,7 @@ def on_follow_request_update(
                     ).first()
 
                     if follow_request_notification:
-                        notification_table = Notification.__table__
+                        notification_table = Notification.__table__  # type: ignore
                         connection.execute(
                             notification_table.update()
                             .where(
@@ -140,10 +163,10 @@ def on_follow_request_update(
                                 notification_table.c.to_user_id
                                 == follow_request.followed_user_id,
                                 notification_table.c.event_type
-                                == 'follow_request',
+                                == "follow_request",
                             )
                             .values(
-                                event_type='follow',
+                                event_type="follow",
                                 marked_as_read=False,
                             )
                         )
@@ -151,8 +174,8 @@ def on_follow_request_update(
                         follow_notification = Notification(
                             from_user_id=follow_request.follower_user_id,
                             to_user_id=follow_request.followed_user_id,
-                            created_at=datetime.utcnow(),
-                            event_type='follow',
+                            created_at=datetime.now(timezone.utc),
+                            event_type="follow",
                         )
                         session.add(follow_notification)
 
@@ -162,8 +185,8 @@ def on_follow_request_update(
                     notification = Notification(
                         from_user_id=follow_request.followed_user_id,
                         to_user_id=follow_request.follower_user_id,
-                        created_at=datetime.utcnow(),
-                        event_type='follow_request_approved',
+                        created_at=datetime.now(timezone.utc),
+                        event_type="follow_request_approved",
                     )
                     session.add(notification)
 
@@ -174,48 +197,46 @@ def on_follow_request_update(
                 Notification.query.filter_by(
                     from_user_id=follow_request.follower_user_id,
                     to_user_id=follow_request.followed_user_id,
-                    event_type='follow_request',
+                    event_type="follow_request",
                 ).delete()
 
 
-@listens_for(FollowRequest, 'after_delete')
+@listens_for(FollowRequest, "after_delete")
 def on_follow_request_delete(
     mapper: Mapper, connection: Connection, old_follow_request: FollowRequest
 ) -> None:
-    @listens_for(db.Session, 'after_flush', once=True)
+    @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
         Notification.query.filter(
             Notification.from_user_id == old_follow_request.follower_user_id,
             Notification.to_user_id == old_follow_request.followed_user_id,
-            Notification.event_type.in_(['follow', 'follow_request']),
+            Notification.event_type.in_(["follow", "follow_request"]),
         ).delete()
         Notification.query.filter(
             Notification.from_user_id == old_follow_request.followed_user_id,
             Notification.to_user_id == old_follow_request.follower_user_id,
-            Notification.event_type == 'follow_request_approved',
+            Notification.event_type == "follow_request_approved",
         ).delete()
 
 
 class BlockedUser(BaseModel):
-    __tablename__ = 'blocked_users'
+    __tablename__ = "blocked_users"
     __table_args__ = (
         db.UniqueConstraint(
-            'user_id', 'by_user_id', name='blocked_users_unique'
+            "user_id", "by_user_id", name="blocked_users_unique"
         ),
     )
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(
+        db.ForeignKey("users.id", ondelete="CASCADE"),
         index=True,
     )
-    by_user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
+    by_user_id: Mapped[int] = mapped_column(
+        db.ForeignKey("users.id", ondelete="CASCADE"),
         index=True,
     )
-    created_at = db.Column(db.DateTime, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(TZDateTime, nullable=False)
 
     def __init__(
         self,
@@ -226,104 +247,131 @@ class BlockedUser(BaseModel):
         self.user_id = user_id
         self.by_user_id = by_user_id
         self.created_at = (
-            datetime.utcnow() if created_at is None else created_at
+            datetime.now(timezone.utc) if created_at is None else created_at
         )
 
 
 class User(BaseModel):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String(255), unique=True, nullable=False)
-    email = db.Column(db.String(255), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False)
-    first_name = db.Column(db.String(80), nullable=True)
-    last_name = db.Column(db.String(80), nullable=True)
-    birth_date = db.Column(db.DateTime, nullable=True)
-    location = db.Column(db.String(80), nullable=True)
-    bio = db.Column(db.String(200), nullable=True)
-    picture = db.Column(db.String(255), nullable=True)
-    timezone = db.Column(db.String(50), nullable=True)
-    date_format = db.Column(db.String(50), nullable=True)
+    __tablename__ = "users"
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    username: Mapped[str] = mapped_column(
+        db.String(255), unique=True, nullable=False
+    )
+    email: Mapped[str] = mapped_column(
+        db.String(255), unique=True, nullable=False
+    )
+    password: Mapped[str] = mapped_column(db.String(255), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(TZDateTime, nullable=False)
+    first_name: Mapped[Optional[str]] = mapped_column(
+        db.String(80), nullable=True
+    )
+    last_name: Mapped[Optional[str]] = mapped_column(
+        db.String(80), nullable=True
+    )
+    birth_date: Mapped[Optional[datetime]] = mapped_column(
+        TZDateTime, nullable=True
+    )
+    location: Mapped[Optional[str]] = mapped_column(
+        db.String(80), nullable=True
+    )
+    bio: Mapped[Optional[str]] = mapped_column(db.String(200), nullable=True)
+    picture: Mapped[Optional[str]] = mapped_column(
+        db.String(255), nullable=True
+    )
+    timezone: Mapped[Optional[str]] = mapped_column(
+        db.String(50), nullable=True
+    )
+    date_format: Mapped[Optional[str]] = mapped_column(
+        db.String(50), nullable=True
+    )
     # weekm: does the week start Monday?
-    weekm = db.Column(db.Boolean, default=False, nullable=False)
-    language = db.Column(db.String(50), nullable=True)
-    imperial_units = db.Column(db.Boolean, default=False, nullable=False)
-    is_active = db.Column(db.Boolean, default=False, nullable=False)
-    email_to_confirm = db.Column(db.String(255), nullable=True)
-    confirmation_token = db.Column(db.String(255), nullable=True)
-    display_ascent = db.Column(db.Boolean, default=True, nullable=False)
-    accepted_policy_date = db.Column(db.DateTime, nullable=True)
-    start_elevation_at_zero = db.Column(
-        db.Boolean, default=True, nullable=False
+    weekm: Mapped[bool] = mapped_column(default=False, nullable=False)
+    language: Mapped[Optional[str]] = mapped_column(
+        db.String(50), nullable=True
     )
-    use_raw_gpx_speed = db.Column(db.Boolean, default=False, nullable=False)
-    use_dark_mode = db.Column(db.Boolean, default=False, nullable=True)
-    manually_approves_followers = db.Column(
-        db.Boolean, default=True, nullable=False
+    imperial_units: Mapped[bool] = mapped_column(default=False, nullable=False)
+    is_active: Mapped[bool] = mapped_column(default=False, nullable=False)
+    email_to_confirm: Mapped[Optional[str]] = mapped_column(
+        db.String(255), nullable=True
     )
-    hide_profile_in_users_directory = db.Column(
-        db.Boolean, default=True, nullable=False
+    confirmation_token: Mapped[Optional[str]] = mapped_column(
+        db.String(255), nullable=True
     )
-    workouts_visibility = db.Column(
-        Enum(VisibilityLevel, name='visibility_levels'),
-        server_default='PRIVATE',
+    display_ascent: Mapped[bool] = mapped_column(default=True, nullable=False)
+    accepted_policy_date: Mapped[Optional[datetime]] = mapped_column(
+        TZDateTime, nullable=True
+    )
+    start_elevation_at_zero: Mapped[bool] = mapped_column(
+        default=True, nullable=False
+    )
+    use_raw_gpx_speed: Mapped[bool] = mapped_column(
+        default=False, nullable=False
+    )
+    use_dark_mode: Mapped[Optional[bool]] = mapped_column(
+        default=False, nullable=True
+    )
+    manually_approves_followers: Mapped[bool] = mapped_column(
+        default=True, nullable=False
+    )
+    hide_profile_in_users_directory: Mapped[bool] = mapped_column(
+        default=True, nullable=False
+    )
+    workouts_visibility: Mapped[VisibilityLevel] = mapped_column(
+        Enum(VisibilityLevel, name="visibility_levels"),
+        server_default="PRIVATE",
         nullable=False,
     )
-    map_visibility = db.Column(
-        Enum(VisibilityLevel, name='visibility_levels'),
-        server_default='PRIVATE',
+    map_visibility: Mapped[VisibilityLevel] = mapped_column(
+        Enum(VisibilityLevel, name="visibility_levels"),
+        server_default="PRIVATE",
         nullable=False,
     )
-    suspended_at = db.Column(db.DateTime, nullable=True)
-    role = db.Column(
-        db.Integer,
+    suspended_at: Mapped[Optional[datetime]] = mapped_column(
+        TZDateTime, nullable=True
+    )
+    role: Mapped[int] = mapped_column(
         CheckConstraint(
             f"role IN ({', '.join(UserRole.db_values())})",
-            name='ck_users_role',
+            name="ck_users_role",
         ),
         nullable=False,
         default=UserRole.USER.value,
     )
-    analysis_visibility = db.Column(
-        Enum(VisibilityLevel, name='visibility_levels'),
-        server_default='PRIVATE',
+    analysis_visibility: Mapped[VisibilityLevel] = mapped_column(
+        Enum(VisibilityLevel, name="visibility_levels"),
+        server_default="PRIVATE",
         nullable=False,
     )
-    notification_preferences = db.Column(JSONB, nullable=True)
+    notification_preferences: Mapped[Optional[Dict]] = mapped_column(
+        postgresql.JSONB, nullable=True
+    )
 
-    workouts = db.relationship(
-        'Workout',
-        lazy=True,
-        backref=db.backref('user', lazy='select', single_parent=True),
+    workouts: Mapped[List["Workout"]] = relationship(
+        "Workout", lazy=True, back_populates="user"
     )
-    records = db.relationship(
-        'Record',
-        lazy=True,
-        backref=db.backref('user', lazy='joined', single_parent=True),
+    records: Mapped[List["Record"]] = relationship(
+        "Record", lazy=True, back_populates="user"
     )
-    equipments = db.relationship(
-        'Equipment',
-        lazy='select',
-        backref=db.backref('user', lazy='select', single_parent=True),
+    equipments: Mapped[List["Equipment"]] = relationship(
+        "Equipment", lazy="select", back_populates="user"
     )
-    received_follow_requests = db.relationship(
+    received_follow_requests = relationship(
         FollowRequest,
-        backref='to_user',
+        back_populates="to_user",
         primaryjoin=id == FollowRequest.followed_user_id,
-        lazy='dynamic',
-        cascade='all, delete-orphan',
+        lazy="dynamic",
+        cascade="all, delete-orphan",
     )
-    sent_follow_requests = db.relationship(
+    sent_follow_requests = relationship(
         FollowRequest,
-        backref='from_user',
+        back_populates="from_user",
         primaryjoin=id == FollowRequest.follower_user_id,
-        lazy='dynamic',
-        cascade='all, delete-orphan',
+        lazy="dynamic",
+        cascade="all, delete-orphan",
     )
-    followers = db.relationship(
-        'User',
-        secondary='follow_requests',
+    followers = relationship(
+        "User",
+        secondary="follow_requests",
         primaryjoin=and_(
             id == FollowRequest.followed_user_id,
             FollowRequest.is_approved == True,  # noqa
@@ -332,12 +380,12 @@ class User(BaseModel):
             id == FollowRequest.follower_user_id,
             suspended_at == None,  # noqa
         ),
-        lazy='dynamic',
+        lazy="dynamic",
         viewonly=True,
     )
-    following = db.relationship(
-        'User',
-        secondary='follow_requests',
+    following = relationship(
+        "User",
+        secondary="follow_requests",
         primaryjoin=and_(
             id == FollowRequest.follower_user_id,
             FollowRequest.is_approved == True,  # noqa
@@ -346,34 +394,30 @@ class User(BaseModel):
             id == FollowRequest.followed_user_id,
             suspended_at == None,  # noqa
         ),
-        lazy='dynamic',
+        lazy="dynamic",
         viewonly=True,
     )
-    comments = db.relationship(
-        'Comment',
+    comments: Mapped[List["Comment"]] = relationship(
+        "Comment",
         lazy=True,
-        backref=db.backref(
-            'user',
-            lazy='select',
-            single_parent=True,
-        ),
-        cascade='all, delete-orphan',
+        back_populates="user",
+        cascade="all, delete-orphan",
     )
-    blocked_users = db.relationship(
-        'BlockedUser',
+    blocked_users = relationship(
+        "BlockedUser",
         primaryjoin=id == BlockedUser.by_user_id,
-        lazy='dynamic',
+        lazy="dynamic",
         viewonly=True,
     )
-    blocked_by_users = db.relationship(
-        'BlockedUser',
+    blocked_by_users = relationship(
+        "BlockedUser",
         primaryjoin=id == BlockedUser.user_id,
-        lazy='dynamic',
+        lazy="dynamic",
         viewonly=True,
     )
 
     def __repr__(self) -> str:
-        return f'<User {self.username!r}>'
+        return f"<User {self.username!r}>"
 
     def __init__(
         self,
@@ -385,10 +429,10 @@ class User(BaseModel):
         self.username = username
         self.email = email
         self.password = bcrypt.generate_password_hash(
-            password, current_app.config.get('BCRYPT_LOG_ROUNDS')
+            password, current_app.config.get("BCRYPT_LOG_ROUNDS")
         ).decode()
         self.created_at = (
-            datetime.utcnow() if created_at is None else created_at
+            datetime.now(timezone.utc) if created_at is None else created_at
         )
 
     @staticmethod
@@ -420,12 +464,12 @@ class User(BaseModel):
             resp = decode_user_token(auth_token)
             is_blacklisted = BlacklistedToken.check(auth_token)
             if is_blacklisted:
-                return 'blacklisted token, please log in again'
+                return "blacklisted token, please log in again"
             return resp
         except jwt.ExpiredSignatureError:
-            return 'signature expired, please log in again'
+            return "signature expired, please log in again"
         except jwt.InvalidTokenError:
-            return 'invalid token, please log in again'
+            return "invalid token, please log in again"
 
     def check_password(self, password: str) -> bool:
         return bcrypt.check_password_hash(self.password, password)
@@ -433,7 +477,7 @@ class User(BaseModel):
     @staticmethod
     def generate_password_hash(new_password: str) -> str:
         return bcrypt.generate_password_hash(
-            new_password, current_app.config.get('BCRYPT_LOG_ROUNDS')
+            new_password, current_app.config.get("BCRYPT_LOG_ROUNDS")
         ).decode()
 
     def get_user_id(self) -> int:
@@ -454,16 +498,16 @@ class User(BaseModel):
     @workouts_count.expression  # type: ignore
     def workouts_count(self) -> int:
         return (
-            select([func.count(Workout.id)])
+            select(func.count(Workout.id))
             .where(Workout.user_id == self.id)
-            .label('workouts_count')
+            .label("workouts_count")
         )
 
     @property
-    def pending_follow_requests(self) -> FollowRequest:
+    def pending_follow_requests(self) -> List[FollowRequest]:
         return self.received_follow_requests.filter_by(updated_at=None).all()
 
-    def send_follow_request_to(self, target: 'User') -> FollowRequest:
+    def send_follow_request_to(self, target: "User") -> FollowRequest:
         existing_follow_request = FollowRequest.query.filter_by(
             follower_user_id=self.id, followed_user_id=target.id
         ).first()
@@ -478,12 +522,12 @@ class User(BaseModel):
         db.session.add(follow_request)
         if not target.manually_approves_followers:
             follow_request.is_approved = True
-            follow_request.updated_at = datetime.utcnow()
+            follow_request.updated_at = datetime.now(timezone.utc)
         db.session.commit()
 
         return follow_request
 
-    def unfollows(self, target: 'User') -> None:
+    def unfollows(self, target: "User") -> None:
         existing_follow_request = FollowRequest.query.filter_by(
             follower_user_id=self.id, followed_user_id=target.id
         ).first()
@@ -494,7 +538,7 @@ class User(BaseModel):
         db.session.commit()
         return None
 
-    def undoes_follow(self, follower: 'User') -> None:
+    def undoes_follow(self, follower: "User") -> None:
         existing_follow_request = FollowRequest.query.filter_by(
             followed_user_id=self.id, follower_user_id=follower.id
         ).first()
@@ -505,7 +549,7 @@ class User(BaseModel):
         return None
 
     def _processes_follow_request_from(
-        self, user: 'User', approved: bool
+        self, user: "User", approved: bool
     ) -> FollowRequest:
         follow_request = FollowRequest.query.filter_by(
             follower_user_id=user.id, followed_user_id=self.id
@@ -515,37 +559,37 @@ class User(BaseModel):
         if follow_request.updated_at is not None:
             raise FollowRequestAlreadyProcessedError()
         follow_request.is_approved = approved
-        follow_request.updated_at = datetime.utcnow()
+        follow_request.updated_at = datetime.now(timezone.utc)
         db.session.commit()
         return follow_request
 
-    def approves_follow_request_from(self, user: 'User') -> FollowRequest:
+    def approves_follow_request_from(self, user: "User") -> FollowRequest:
         follow_request = self._processes_follow_request_from(
             user=user, approved=True
         )
         return follow_request
 
-    def rejects_follow_request_from(self, user: 'User') -> FollowRequest:
+    def rejects_follow_request_from(self, user: "User") -> FollowRequest:
         follow_request = self._processes_follow_request_from(
             user=user, approved=False
         )
         return follow_request
 
     @staticmethod
-    def follow_request_status(follow_request: FollowRequest) -> str:
+    def follow_request_status(follow_request: Optional[FollowRequest]) -> str:
         if follow_request is None:
-            return 'false'
+            return "false"
         if follow_request.is_approved:
-            return 'true'
-        return 'pending'
+            return "true"
+        return "pending"
 
-    def is_followed_by(self, user: 'User') -> str:
+    def is_followed_by(self, user: "User") -> str:
         follow_request = FollowRequest.query.filter_by(
             follower_user_id=user.id, followed_user_id=self.id
         ).first()
         return self.follow_request_status(follow_request)
 
-    def follows(self, user: 'User') -> str:
+    def follows(self, user: "User") -> str:
         follow_request = FollowRequest.query.filter_by(
             follower_user_id=self.id, followed_user_id=user.id
         ).first()
@@ -566,16 +610,16 @@ class User(BaseModel):
             profile_url=self.get_user_url(), username=f"@{self.username}"
         )
 
-    def blocks_user(self, user: 'User') -> None:
+    def blocks_user(self, user: "User") -> None:
         if self.id == user.id:
             raise BlockUserException()
 
         db.session.execute(
-            insert(BlockedUser)
+            postgresql.insert(BlockedUser)
             .values(
                 user_id=user.id,
                 by_user_id=self.id,
-                created_at=datetime.utcnow(),
+                created_at=datetime.now(timezone.utc),
             )
             .on_conflict_do_nothing()
         )
@@ -587,13 +631,13 @@ class User(BaseModel):
             db.session.delete(follow_request)
         db.session.commit()
 
-    def unblocks_user(self, user: 'User') -> None:
+    def unblocks_user(self, user: "User") -> None:
         BlockedUser.query.filter_by(
             user_id=user.id, by_user_id=self.id
         ).delete()
         db.session.commit()
 
-    def is_blocked_by(self, user: 'User') -> bool:
+    def is_blocked_by(self, user: "User") -> bool:
         return (
             BlockedUser.query.filter_by(
                 user_id=self.id, by_user_id=user.id
@@ -613,7 +657,7 @@ class User(BaseModel):
         ]
 
     @property
-    def suspension_action(self) -> Optional['ReportAction']:
+    def suspension_action(self) -> Optional["ReportAction"]:
         if self.suspended_at is None:
             return None
 
@@ -672,7 +716,7 @@ class User(BaseModel):
                      'workout_unsuspension'
                 )
         );"""
-        result = db.session.execute(text(query), {'user_id': self.id}).first()
+        result = db.session.execute(text(query), {"user_id": self.id}).one()
         return {
             "created_reports_count": result[0],
             "reported_count": result[1],
@@ -703,7 +747,7 @@ class User(BaseModel):
     def serialize(
         self,
         *,
-        current_user: Optional['User'] = None,
+        current_user: Optional["User"] = None,
         light: bool = True,
     ) -> Dict:
         if current_user is None:
@@ -716,33 +760,33 @@ class User(BaseModel):
             )
 
         serialized_user = {
-            'created_at': self.created_at,
-            'followers': self.followers.count(),
-            'following': self.following.count(),
-            'nb_workouts': self.workouts_count,
-            'picture': self.picture is not None,
-            'role': UserRole(self.role).name.lower(),
-            'suspended_at': self.suspended_at,
-            'username': self.username,
+            "created_at": self.created_at,
+            "followers": self.followers.count(),
+            "following": self.following.count(),
+            "nb_workouts": self.workouts_count,
+            "picture": self.picture is not None,
+            "role": UserRole(self.role).name.lower(),
+            "suspended_at": self.suspended_at,
+            "username": self.username,
         }
         if is_auth_user(role) or has_moderator_rights(role):
-            serialized_user['is_active'] = self.is_active
-            serialized_user['email'] = self.email
+            serialized_user["is_active"] = self.is_active
+            serialized_user["email"] = self.email
         if (
             has_moderator_rights(role)
             and self.suspended_at
             and self.suspension_action
         ):
-            serialized_user['suspension_report_id'] = (
+            serialized_user["suspension_report_id"] = (
                 self.suspension_action.report_id
             )
 
         if current_user is not None and not is_auth_user(role):
-            serialized_user['follows'] = self.follows(current_user)
-            serialized_user['is_followed_by'] = self.is_followed_by(
+            serialized_user["follows"] = self.follows(current_user)
+            serialized_user["is_followed_by"] = self.is_followed_by(
                 current_user
             )
-            serialized_user['blocked'] = self.is_blocked_by(current_user)
+            serialized_user["blocked"] = self.is_blocked_by(current_user)
 
         if light or not role:
             return serialized_user
@@ -759,83 +803,83 @@ class User(BaseModel):
 
         serialized_user = {
             **serialized_user,
-            'bio': self.bio,
-            'birth_date': self.birth_date,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'location': self.location,
+            "bio": self.bio,
+            "birth_date": self.birth_date,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "location": self.location,
         }
 
         if role is not None:
-            total = (0, '0:00:00', 0)
+            total = (0, "0:00:00", 0)
             if self.workouts_count > 0:  # type: ignore
-                total = (
+                total = tuple(
                     db.session.query(
                         func.sum(Workout.distance),
                         func.sum(Workout.duration),
                         func.sum(Workout.ascent),
                     )
                     .filter(Workout.user_id == self.id)
-                    .first()
+                    .one()
                 )
 
-            serialized_user['nb_sports'] = len(sports)
-            serialized_user['records'] = [
+            serialized_user["nb_sports"] = len(sports)
+            serialized_user["records"] = [
                 record.serialize() for record in self.records
             ]
-            serialized_user['sports_list'] = [
+            serialized_user["sports_list"] = [
                 sport for sportslist in sports for sport in sportslist
             ]
-            serialized_user['total_ascent'] = (
+            serialized_user["total_ascent"] = (
                 float(total[2]) if total[2] else 0.0
             )
-            serialized_user['total_distance'] = float(total[0])
-            serialized_user['total_duration'] = str(total[1])
+            serialized_user["total_distance"] = float(total[0])
+            serialized_user["total_duration"] = str(total[1])
 
         if is_auth_user(role) or has_admin_rights(role):
-            serialized_user['email_to_confirm'] = self.email_to_confirm
+            serialized_user["email_to_confirm"] = self.email_to_confirm
 
         if current_user and has_moderator_rights(UserRole(current_user.role)):
             reports_count = self.all_reports_count
-            serialized_user['created_reports_count'] = reports_count[
-                'created_reports_count'
+            serialized_user["created_reports_count"] = reports_count[
+                "created_reports_count"
             ]
-            serialized_user['reported_count'] = reports_count['reported_count']
-            serialized_user['sanctions_count'] = reports_count[
-                'sanctions_count'
+            serialized_user["reported_count"] = reports_count["reported_count"]
+            serialized_user["sanctions_count"] = reports_count[
+                "sanctions_count"
             ]
 
         if is_auth_user(role):
             accepted_privacy_policy = None
             if self.accepted_policy_date:
                 accepted_privacy_policy = (
-                    current_app.config['privacy_policy_date']
+                    current_app.config["privacy_policy_date"]
                     < self.accepted_policy_date
                 )
             serialized_user = {
                 **serialized_user,
                 **{
-                    'accepted_privacy_policy': accepted_privacy_policy,
-                    'date_format': self.date_format,
-                    'display_ascent': self.display_ascent,
-                    'imperial_units': self.imperial_units,
-                    'language': self.language,
-                    'start_elevation_at_zero': self.start_elevation_at_zero,
-                    'timezone': self.timezone,
-                    'use_dark_mode': self.use_dark_mode,
-                    'use_raw_gpx_speed': self.use_raw_gpx_speed,
-                    'weekm': self.weekm,
-                    'map_visibility': self.map_visibility.value,
-                    'analysis_visibility': self.analysis_visibility.value,
-                    'workouts_visibility': self.workouts_visibility.value,
-                    'manually_approves_followers': (
+                    "accepted_privacy_policy": accepted_privacy_policy,
+                    "date_format": self.date_format,
+                    "display_ascent": self.display_ascent,
+                    "imperial_units": self.imperial_units,
+                    "language": self.language,
+                    "start_elevation_at_zero": self.start_elevation_at_zero,
+                    "timezone": self.timezone,
+                    "use_dark_mode": self.use_dark_mode,
+                    "use_raw_gpx_speed": self.use_raw_gpx_speed,
+                    "weekm": self.weekm,
+                    "map_visibility": self.map_visibility.value,
+                    "analysis_visibility": self.analysis_visibility.value,
+                    "workouts_visibility": self.workouts_visibility.value,
+                    "manually_approves_followers": (
                         self.manually_approves_followers
                     ),
-                    'hide_profile_in_users_directory': (
+                    "hide_profile_in_users_directory": (
                         self.hide_profile_in_users_directory
                     ),
-                    'sanctions_count': self.sanctions_count,
-                    'notification_preferences': (
+                    "sanctions_count": self.sanctions_count,
+                    "notification_preferences": (
                         self.notification_preferences
                         if self.notification_preferences
                         else {}
@@ -847,56 +891,57 @@ class User(BaseModel):
 
 
 UserSportPreferenceEquipment = db.Table(
-    'users_sports_preferences_equipments',
+    "users_sports_preferences_equipments",
     db.Column(
-        'user_id',
+        "user_id",
         db.Integer,
-        db.ForeignKey('users.id', ondelete="CASCADE"),
+        db.ForeignKey("users.id", ondelete="CASCADE"),
         primary_key=True,
     ),
     db.Column(
-        'sport_id',
+        "sport_id",
         db.Integer,
-        db.ForeignKey('sports.id', ondelete="CASCADE"),
+        db.ForeignKey("sports.id", ondelete="CASCADE"),
         primary_key=True,
     ),
     db.Column(
-        'equipment_id',
+        "equipment_id",
         db.Integer,
-        db.ForeignKey('equipments.id', ondelete="CASCADE"),
+        db.ForeignKey("equipments.id", ondelete="CASCADE"),
         primary_key=True,
     ),
 )
 
 
 class UserSportPreference(BaseModel):
-    __tablename__ = 'users_sports_preferences'
+    __tablename__ = "users_sports_preferences"
 
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id'),
+    user_id: Mapped[int] = mapped_column(
+        db.ForeignKey("users.id"),
         primary_key=True,
     )
-    sport_id = db.Column(
-        db.Integer,
-        db.ForeignKey('sports.id'),
+    sport_id: Mapped[int] = mapped_column(
+        db.ForeignKey("sports.id"),
         primary_key=True,
     )
-    color = db.Column(db.String(50), nullable=True)
-    is_active = db.Column(db.Boolean, default=True, nullable=False)
-    stopped_speed_threshold = db.Column(db.Float, default=1.0, nullable=False)
+    color: Mapped[Optional[str]] = mapped_column(db.String(50), nullable=True)
+    is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
+    stopped_speed_threshold: Mapped[float] = mapped_column(
+        default=1.0, nullable=False
+    )
 
-    default_equipments = db.relationship(
-        'Equipment',
+    default_equipments = relationship(
+        "Equipment",
         secondary=UserSportPreferenceEquipment,
         primaryjoin=and_(
             user_id == UserSportPreferenceEquipment.c.user_id,
             sport_id == UserSportPreferenceEquipment.c.sport_id,
         ),
-        lazy='dynamic',
+        lazy="dynamic",
         viewonly=True,
-        backref=db.backref('default_for_sports', lazy='select'),
+        back_populates="default_for_sports",
     )
+    user: Mapped["User"] = relationship("User", lazy=True)
 
     def __init__(
         self,
@@ -911,38 +956,42 @@ class UserSportPreference(BaseModel):
 
     def serialize(self) -> Dict:
         return {
-            'user_id': self.user_id,
-            'sport_id': self.sport_id,
-            'color': self.color,
-            'is_active': self.is_active,
-            'stopped_speed_threshold': self.stopped_speed_threshold,
-            'default_equipments': [
-                equipment.serialize()
+            "user_id": self.user_id,
+            "sport_id": self.sport_id,
+            "color": self.color,
+            "is_active": self.is_active,
+            "stopped_speed_threshold": self.stopped_speed_threshold,
+            "default_equipments": [
+                equipment.serialize(current_user=self.user)
                 for equipment in self.default_equipments.all()
             ],
         }
 
 
 class BlacklistedToken(BaseModel):
-    __tablename__ = 'blacklisted_tokens'
+    __tablename__ = "blacklisted_tokens"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    token = db.Column(db.String(500), unique=True, nullable=False)
-    expired_at = db.Column(db.Integer, nullable=False)
-    blacklisted_on = db.Column(db.DateTime, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    token: Mapped[str] = mapped_column(
+        db.String(500), unique=True, nullable=False
+    )
+    expired_at: Mapped[int] = mapped_column(nullable=False)
+    blacklisted_on: Mapped[datetime] = mapped_column(
+        TZDateTime, nullable=False
+    )
 
     def __init__(
         self, token: str, blacklisted_on: Optional[datetime] = None
     ) -> None:
         payload = jwt.decode(
             token,
-            current_app.config['SECRET_KEY'],
-            algorithms=['HS256'],
+            current_app.config["SECRET_KEY"],
+            algorithms=["HS256"],
         )
         self.token = token
-        self.expired_at = payload['exp']
+        self.expired_at = payload["exp"]
         self.blacklisted_on = (
-            blacklisted_on if blacklisted_on else datetime.utcnow()
+            blacklisted_on if blacklisted_on else datetime.now(timezone.utc)
         )
 
     @classmethod
@@ -951,24 +1000,25 @@ class BlacklistedToken(BaseModel):
 
 
 class UserDataExport(BaseModel):
-    __tablename__ = 'users_data_export'
+    __tablename__ = "users_data_export"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(
+        db.ForeignKey("users.id", ondelete="CASCADE"),
         index=True,
         unique=True,
     )
-    created_at = db.Column(
-        db.DateTime, nullable=False, default=datetime.utcnow
+    created_at: Mapped[datetime] = mapped_column(
+        TZDateTime, nullable=False, default=aware_utc_now
     )
-    updated_at = db.Column(
-        db.DateTime, nullable=True, onupdate=datetime.utcnow
+    updated_at: Mapped[Optional[datetime]] = mapped_column(
+        TZDateTime, nullable=True, onupdate=aware_utc_now
     )
-    completed = db.Column(db.Boolean, nullable=False, default=False)
-    file_name = db.Column(db.String(100), nullable=True)
-    file_size = db.Column(db.Integer, nullable=True)
+    completed: Mapped[bool] = mapped_column(nullable=False, default=False)
+    file_name: Mapped[Optional[str]] = mapped_column(
+        db.String(100), nullable=True
+    )
+    file_size: Mapped[Optional[int]] = mapped_column(nullable=True)
 
     def __init__(
         self,
@@ -977,7 +1027,7 @@ class UserDataExport(BaseModel):
     ):
         self.user_id = user_id
         self.created_at = (
-            datetime.utcnow() if created_at is None else created_at
+            datetime.now(timezone.utc) if created_at is None else created_at
         )
 
     def serialize(self) -> Dict:
@@ -993,11 +1043,11 @@ class UserDataExport(BaseModel):
         }
 
 
-@listens_for(UserDataExport, 'after_delete')
+@listens_for(UserDataExport, "after_delete")
 def on_users_data_export_delete(
-    mapper: Mapper, connection: Connection, old_record: 'UserDataExport'
+    mapper: Mapper, connection: Connection, old_record: "UserDataExport"
 ) -> None:
-    @listens_for(db.Session, 'after_flush', once=True)
+    @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
         if old_record.file_name:
             try:
@@ -1006,41 +1056,43 @@ def on_users_data_export_delete(
                 )
                 os.remove(get_absolute_file_path(file_path))
             except OSError:
-                appLog.error('archive found when deleting export request')
+                appLog.error("archive found when deleting export request")
 
 
 class Notification(BaseModel):
-    __tablename__ = 'notifications'
+    __tablename__ = "notifications"
     __table_args__ = (
         db.UniqueConstraint(
-            'from_user_id',
-            'to_user_id',
-            'event_type',
-            'event_object_id',
-            name='users_event_unique',
+            "from_user_id",
+            "to_user_id",
+            "event_type",
+            "event_object_id",
+            name="users_event_unique",
         ),
     )
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    uuid = db.Column(
-        UUID(as_uuid=True),
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    uuid: Mapped[UUID] = mapped_column(
+        postgresql.UUID(as_uuid=True),
         default=uuid4,
         unique=True,
         nullable=False,
     )
-    from_user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
+    from_user_id: Mapped[int] = mapped_column(
+        db.ForeignKey("users.id", ondelete="CASCADE"),
         index=True,
+        nullable=False,
     )
-    to_user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('users.id', ondelete='CASCADE'),
+    to_user_id: Mapped[int] = mapped_column(
+        db.ForeignKey("users.id", ondelete="CASCADE"),
         index=True,
+        nullable=False,
     )
-    created_at = db.Column(db.DateTime, nullable=False)
-    marked_as_read = db.Column(db.Boolean, nullable=False, default=False)
-    event_object_id = db.Column(db.Integer, nullable=True)
-    event_type = db.Column(db.String(50), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(TZDateTime, nullable=False)
+    marked_as_read: Mapped[bool] = mapped_column(
+        db.Boolean, nullable=False, default=False
+    )
+    event_object_id: Mapped[Optional[int]] = mapped_column(nullable=True)
+    event_type: Mapped[str] = mapped_column(db.String(50), nullable=False)
 
     def __init__(
         self,
@@ -1074,7 +1126,7 @@ class Notification(BaseModel):
             follow_request = FollowRequest.query.filter_by(
                 follower_user_id=self.from_user_id,
                 followed_user_id=self.to_user_id,
-            ).first()
+            ).one()
             from_user = follow_request.from_user
             to_user = follow_request.to_user
             return {
@@ -1108,7 +1160,7 @@ class Notification(BaseModel):
         }
 
         if self.event_type == "workout_like":
-            workout = Workout.query.filter_by(id=self.event_object_id).first()
+            workout = Workout.query.filter_by(id=self.event_object_id).one()
             serialized_notification["workout"] = workout.serialize(
                 user=to_user
             )
@@ -1118,7 +1170,7 @@ class Notification(BaseModel):
             "mention",
             "workout_comment",
         ]:
-            comment = Comment.query.filter_by(id=self.event_object_id).first()
+            comment = Comment.query.filter_by(id=self.event_object_id).one()
             serialized_notification["comment"] = comment.serialize(
                 user=to_user
             )
@@ -1133,14 +1185,12 @@ class Notification(BaseModel):
             if self.event_type in ["suspension_appeal", "user_warning_appeal"]:
                 appeal = ReportActionAppeal.query.filter_by(
                     id=self.event_object_id
-                ).first()
+                ).one()
                 report = Report.query.filter_by(
                     id=appeal.action.report_id
-                ).first()
+                ).one()
             else:
-                report = Report.query.filter_by(
-                    id=self.event_object_id
-                ).first()
+                report = Report.query.filter_by(id=self.event_object_id).one()
             serialized_notification["report"] = report.serialize(
                 current_user=to_user
             )
@@ -1157,11 +1207,11 @@ class Notification(BaseModel):
 
             report_action = ReportAction.query.filter_by(
                 id=self.event_object_id
-            ).first()
+            ).one()
             serialized_notification["report_action"] = report_action.serialize(
                 current_user=to_user
             )
-            report = Report.query.filter_by(id=report_action.report_id).first()
+            report = Report.query.filter_by(id=report_action.report_id).one()
             if report.object_type == "comment":
                 comment = Comment.query.filter_by(
                     id=report.reported_comment_id

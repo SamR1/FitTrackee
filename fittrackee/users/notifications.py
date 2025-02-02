@@ -22,7 +22,7 @@ notifications_blueprint = Blueprint("notifications", __name__)
 DEFAULT_NOTIFICATION_PER_PAGE = 5
 
 
-@notifications_blueprint.route('/notifications', methods=['GET'])
+@notifications_blueprint.route("/notifications", methods=["GET"])
 @require_auth(scopes=["notifications:read"])
 def get_auth_user_notifications(auth_user: User) -> Dict:
     """
@@ -118,20 +118,58 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
         - ``you do not have permissions, your account is suspended``
     """
     params = request.args.copy()
-    page = int(params.get('page', 1))
-    order = params.get('order', 'desc')
-    status = params.get('status')
+    page = int(params.get("page", 1))
+    order = params.get("order", "desc")
+    status = params.get("status")
     marked_as_read = None
-    if status == 'read':
+    if status == "read":
         marked_as_read = True
-    if status == 'unread':
+    if status == "unread":
         marked_as_read = False
-    event_type = params.get('type')
+    event_type = params.get("type")
 
     blocked_users = auth_user.get_blocked_user_ids()
     blocked_by_users = auth_user.get_blocked_by_user_ids()
     following_ids = auth_user.get_following_user_ids()
 
+    filters = [
+        Notification.to_user_id == auth_user.id,
+        Notification.from_user_id.not_in(blocked_users),
+        or_(
+            (
+                and_(
+                    (
+                        or_(
+                            Notification.event_type != "workout_comment",
+                            and_(
+                                Notification.event_type == "workout_comment",
+                                Notification.from_user_id.not_in(
+                                    blocked_by_users
+                                ),
+                                or_(
+                                    Comment.text_visibility
+                                    == VisibilityLevel.PUBLIC,
+                                    and_(
+                                        Comment.text_visibility
+                                        == VisibilityLevel.FOLLOWERS,
+                                        Notification.from_user_id.in_(
+                                            following_ids
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        )
+                    ),
+                    User.suspended_at == None,  # noqa
+                )
+            ),
+            (Notification.event_type.in_(["report", "suspension_appeal"])),
+        ),
+    ]
+    if marked_as_read is not None:
+        filters.append(Notification.marked_as_read == marked_as_read)
+    if event_type:
+        filters.append(Notification.event_type == event_type)
     notifications_pagination = (
         Notification.query.join(
             User,
@@ -141,57 +179,10 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
             Comment,
             Notification.event_object_id == Comment.id,
         )
-        .filter(
-            Notification.to_user_id == auth_user.id,
-            Notification.from_user_id.not_in(blocked_users),
-            (
-                Notification.marked_as_read == marked_as_read
-                if marked_as_read is not None
-                else True
-            ),
-            (
-                or_(
-                    (
-                        and_(
-                            (
-                                or_(
-                                    Notification.event_type
-                                    != "workout_comment",
-                                    and_(
-                                        Notification.event_type
-                                        == "workout_comment",
-                                        Notification.from_user_id.not_in(
-                                            blocked_by_users
-                                        ),
-                                        or_(
-                                            Comment.text_visibility
-                                            == VisibilityLevel.PUBLIC,
-                                            and_(
-                                                Comment.text_visibility
-                                                == VisibilityLevel.FOLLOWERS,
-                                                Notification.from_user_id.in_(
-                                                    following_ids
-                                                ),
-                                            ),
-                                        ),
-                                    ),
-                                )
-                            ),
-                            User.suspended_at == None,  # noqa
-                        )
-                    ),
-                    (
-                        Notification.event_type.in_(
-                            ['report', 'suspension_appeal']
-                        )
-                    ),
-                )
-            ),
-            Notification.event_type == event_type if event_type else True,
-        )
+        .filter(*filters)
         .order_by(
             asc(Notification.created_at)
-            if order == 'asc'
+            if order == "asc"
             else desc(Notification.created_at)
         )
         .paginate(
@@ -289,7 +280,7 @@ def update_user_notifications(
         )
 
     params = request.get_json()
-    read_status = params.get('read_status')
+    read_status = params.get("read_status")
 
     try:
         if read_status is not None:
@@ -383,7 +374,7 @@ def get_status(auth_user: User) -> Dict:
                     ),
                     (
                         Notification.event_type.in_(
-                            ['report', 'suspension_appeal']
+                            ["report", "suspension_appeal"]
                         )
                     ),
                 )
@@ -440,17 +431,15 @@ def mark_all_as_read(auth_user: User) -> Union[Dict, HttpResponse]:
         - ``error, please try again or contact the administrator``
     """
     params = request.get_json(silent=True)
-    event_type = params.get('type') if params else None
+    event_type = params.get("type") if params else None
     try:
-        Notification.query.filter(
+        filters = [
             Notification.to_user_id == auth_user.id,
             Notification.marked_as_read == False,  # noqa
-            (
-                (Notification.event_type == event_type)
-                if event_type is not None
-                else True
-            ),
-        ).update(
+        ]
+        if event_type is not None:
+            filters.append(Notification.event_type == event_type)
+        Notification.query.filter(*filters).update(
             {Notification.marked_as_read: True}, synchronize_session=False
         )
         db.session.commit()
@@ -507,21 +496,17 @@ def get_notification_types(auth_user: User) -> Dict:
     :statuscode 403:
         - ``you do not have permissions, your account is suspended``
     """
-    status = request.args.copy().get('status')
+    status = request.args.copy().get("status")
     marked_as_read = None
-    if status == 'read':
+    if status == "read":
         marked_as_read = True
-    if status == 'unread':
+    if status == "unread":
         marked_as_read = False
+    filters = [Notification.to_user_id == auth_user.id]
+    if marked_as_read is not None:
+        filters.append(Notification.marked_as_read == marked_as_read)
     notification_types = (
-        db.session.query(Notification.event_type)
-        .filter(
-            Notification.to_user_id == auth_user.id,
-            True
-            if marked_as_read is None
-            else Notification.marked_as_read == marked_as_read,
-        )
-        .distinct()
+        db.session.query(Notification.event_type).filter(*filters).distinct()
     )
     return {
         "notification_types": [

@@ -1,1 +1,27 @@
-{}
+{
+  "ACCEPTED_FOLLOW_REQUEST": "hat Deine Follower-Anfrage akzeptiert",
+  "ALL": "Alle",
+  "APPEALED_SUSPENSION": "die Sperre anfechten",
+  "APPEALED_USER_WARNING": "Einspruch gegen die Verwarnung eingelegt",
+  "MARK_ALL_AS_READ": "Alle als gelesen markieren",
+  "MARK_AS_READ": "als gelesen markieren",
+  "MARK_AS_UNREAD": "Als ungelesen markieren",
+  "MENTIONED_YOU": "hat Dich erwähnt",
+  "NOTIFICATIONS": "Benachrichtigung | Benachrichtigungen",
+  "NO_NOTIFICATIONS": "Keine Benachrichtigungen.",
+  "REPLIED_YOUR_COMMENT": "hat auf Deinen Kommentar geantwortet",
+  "REPORTED_USER_COMMENT": "hat diesen Kommentar gemeldet:",
+  "REPORTED_USER_USER": "hat das folgende Konto gemeldet:",
+  "REPORTED_USER_WORKOUT": "hat dieses Workout gemeldet:",
+  "SEND_FOLLOW_REQUEST_TO_YOU": "eine Folgeanfrage an Sie senden",
+  "SIGN_UP": "angemeldet",
+  "STATUS": "Status",
+  "TYPES": {
+    "ALL": "alle",
+    "LABEL": "Typ",
+    "comment_like": "Likes auf Kommentare",
+    "comment_suspension": "deaktivierte Kommentare",
+    "comment_unsuspension": "reaktivierte Kommentare",
+    "follow": "folgen"
+  }
+}

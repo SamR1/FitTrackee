@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Optional
 from unittest.mock import Mock, patch, sentinel
 
@@ -7,6 +7,7 @@ import pytz
 import requests
 from gpxpy.gpx import GPXTrackPoint
 
+from fittrackee.dates import get_datetime_in_utc
 from fittrackee.tests.mixins import BaseTestMixin
 from fittrackee.tests.utils import random_string
 from fittrackee.workouts.utils.weather.visual_crossing import VisualCrossing
@@ -56,7 +57,7 @@ class WeatherTestCase(BaseTestMixin):
 
 class TestVisualCrossingGetTimestamp(WeatherTestCase):
     def test_it_returns_expected_timestamp_as_integer(self) -> None:
-        time = datetime.utcnow()
+        time = datetime.now(timezone.utc)
         visual_crossing = VisualCrossing(api_key=self.api_key)
 
         timestamp = visual_crossing._get_timestamp(time)
@@ -64,27 +65,26 @@ class TestVisualCrossingGetTimestamp(WeatherTestCase):
         assert isinstance(timestamp, int)
 
     @pytest.mark.parametrize(
-        'input_datetime,expected_datetime',
+        "input_datetime,expected_datetime",
         [
-            ('2020-12-15T13:00:00', '2020-12-15T13:00:00'),
-            ('2020-12-15T13:29:59', '2020-12-15T13:00:00'),
-            ('2020-12-15T13:30:00', '2020-12-15T14:00:00'),
-            ('2020-12-15T13:59:59', '2020-12-15T14:00:00'),
+            ("2020-12-15T13:00:00", "2020-12-15T13:00:00"),
+            ("2020-12-15T13:29:59", "2020-12-15T13:00:00"),
+            ("2020-12-15T13:30:00", "2020-12-15T14:00:00"),
+            ("2020-12-15T13:59:59", "2020-12-15T14:00:00"),
         ],
     )
     def test_it_returns_rounded_time(
         self, input_datetime: str, expected_datetime: str
     ) -> None:
-        time = datetime.strptime(input_datetime, '%Y-%m-%dT%H:%M:%S')
+        date_format = "%Y-%m-%dT%H:%M:%S"
+        time = get_datetime_in_utc(input_datetime, date_format)
         visual_crossing = VisualCrossing(api_key=self.api_key)
 
         timestamp = visual_crossing._get_timestamp(time)
 
         assert (
             timestamp
-            == datetime.strptime(
-                expected_datetime, '%Y-%m-%dT%H:%M:%S'
-            ).timestamp()
+            == get_datetime_in_utc(expected_datetime, date_format).timestamp()
         )
 
 
@@ -109,32 +109,34 @@ class TestVisualCrossingGetWeather(WeatherTestCase):
         )
         point = self.get_gpx_point(time)
         visual_crossing = VisualCrossing(api_key=self.api_key)
-        with patch.object(requests, 'get') as get_mock:
+        with patch.object(requests, "get") as get_mock:
             visual_crossing.get_weather(point)
 
         args = self.get_args(get_mock.call_args)
         assert args[0] == (
-            'https://weather.visualcrossing.com/VisualCrossingWebServices/'
-            f'rest/services/timeline/{point.latitude},{point.longitude}/'
-            f'{int(point.time.timestamp())}'  # type: ignore
+            "https://weather.visualcrossing.com/VisualCrossingWebServices/"
+            f"rest/services/timeline/{point.latitude},{point.longitude}/"
+            f"{int(point.time.timestamp())}"  # type: ignore
         )
 
     def test_it_calls_api_with_expected_params(self) -> None:
         visual_crossing = VisualCrossing(api_key=self.api_key)
-        with patch.object(requests, 'get') as get_mock:
-            visual_crossing.get_weather(self.get_gpx_point(datetime.utcnow()))
+        with patch.object(requests, "get") as get_mock:
+            visual_crossing.get_weather(
+                self.get_gpx_point(datetime.now(timezone.utc))
+            )
 
         kwargs = self.get_kwargs(get_mock.call_args)
-        assert kwargs.get('params') == {
-            'key': self.api_key,
-            'iconSet': 'icons1',
-            'unitGroup': 'metric',
-            'contentType': 'json',
-            'elements': (
-                'datetime,datetimeEpoch,temp,humidity,windspeed,'
-                'winddir,conditions,description,icon'
+        assert kwargs.get("params") == {
+            "key": self.api_key,
+            "iconSet": "icons1",
+            "unitGroup": "metric",
+            "contentType": "json",
+            "elements": (
+                "datetime,datetimeEpoch,temp,humidity,windspeed,"
+                "winddir,conditions,description,icon"
             ),
-            'include': 'current',
+            "include": "current",
         }
 
     def test_it_returns_data_from_current_conditions(self) -> None:
@@ -147,32 +149,32 @@ class TestVisualCrossingGetWeather(WeatherTestCase):
                 minute=00,
                 second=00,
                 tzinfo=pytz.utc,
-            ).astimezone(pytz.timezone('Europe/Paris'))
+            ).astimezone(pytz.timezone("Europe/Paris"))
         )
         visual_crossing = VisualCrossing(api_key=self.api_key)
-        with patch.object(requests, 'get', return_value=self.get_response()):
+        with patch.object(requests, "get", return_value=self.get_response()):
             weather_data = visual_crossing.get_weather(point)
 
         current_conditions: Dict = VISUAL_CROSSING_RESPONSE[  # type: ignore
-            'currentConditions'
+            "currentConditions"
         ]
         assert weather_data == {
-            'icon': current_conditions['icon'],
-            'temperature': current_conditions['temp'],
-            'humidity': current_conditions['humidity'] / 100,
-            'wind': (current_conditions['windspeed'] * 1000) / 3600,
-            'windBearing': current_conditions['winddir'],
+            "icon": current_conditions["icon"],
+            "temperature": current_conditions["temp"],
+            "humidity": current_conditions["humidity"] / 100,
+            "wind": (current_conditions["windspeed"] * 1000) / 3600,
+            "windBearing": current_conditions["winddir"],
         }
 
 
 class TestWeatherService(WeatherTestCase):
     @pytest.mark.parametrize(
-        'input_api_key,input_provider',
+        "input_api_key,input_provider",
         [
-            ('', 'visualcrossing'),
-            ('valid_api_key', ''),
-            ('valid_api_key', 'invalid_provider'),
-            ('valid_api_key', 'darksky'),  # removed provider
+            ("", "visualcrossing"),
+            ("valid_api_key", ""),
+            ("valid_api_key", "invalid_provider"),
+            ("valid_api_key", "darksky"),  # removed provider
         ],
     )
     def test_weather_api_is_none_when_configuration_is_invalid(
@@ -181,24 +183,24 @@ class TestWeatherService(WeatherTestCase):
         input_api_key: str,
         input_provider: str,
     ) -> None:
-        monkeypatch.setenv('WEATHER_API_KEY', input_api_key)
-        monkeypatch.setenv('WEATHER_API_PROVIDER', input_provider)
+        monkeypatch.setenv("WEATHER_API_KEY", input_api_key)
+        monkeypatch.setenv("WEATHER_API_PROVIDER", input_provider)
 
         weather_service = WeatherService()
 
         assert weather_service.weather_api is None
 
     @pytest.mark.parametrize(
-        'input_provider',
-        ['visualcrossing', 'VisualCrossing'],
+        "input_provider",
+        ["visualcrossing", "VisualCrossing"],
     )
     def test_weather_api_is_visualcrossing_when_configured(
         self,
         monkeypatch: pytest.MonkeyPatch,
         input_provider: str,
     ) -> None:
-        monkeypatch.setenv('WEATHER_API_KEY', 'valid_api_key')
-        monkeypatch.setenv('WEATHER_API_PROVIDER', input_provider)
+        monkeypatch.setenv("WEATHER_API_KEY", "valid_api_key")
+        monkeypatch.setenv("WEATHER_API_PROVIDER", input_provider)
 
         weather_service = WeatherService()
 
@@ -207,7 +209,7 @@ class TestWeatherService(WeatherTestCase):
     def test_it_returns_none_when_no_weather_api(self) -> None:
         weather_service = WeatherService()
         weather_service.weather_api = None
-        point = self.get_gpx_point(datetime.utcnow())
+        point = self.get_gpx_point(datetime.now(timezone.utc))
 
         weather_data = weather_service.get_weather(point)
 
@@ -215,7 +217,7 @@ class TestWeatherService(WeatherTestCase):
 
     def test_it_returns_none_when_point_time_is_none(self) -> None:
         weather_service = WeatherService()
-        weather_service.weather_api = VisualCrossing('api_key')
+        weather_service.weather_api = VisualCrossing("api_key")
         point = self.get_gpx_point(None)
 
         weather_data = weather_service.get_weather(point)
@@ -228,7 +230,7 @@ class TestWeatherService(WeatherTestCase):
         weather_api.get_weather.side_effect = Exception()
         weather_service = WeatherService()
         weather_service.weather_api = weather_api
-        point = self.get_gpx_point(datetime.utcnow())
+        point = self.get_gpx_point(datetime.now(timezone.utc))
 
         weather_data = weather_service.get_weather(point)
 
@@ -240,7 +242,7 @@ class TestWeatherService(WeatherTestCase):
         weather_api.get_weather.return_value = sentinel
         weather_service = WeatherService()
         weather_service.weather_api = weather_api
-        point = self.get_gpx_point(datetime.utcnow())
+        point = self.get_gpx_point(datetime.now(timezone.utc))
 
         weather_data = weather_service.get_weather(point)
 

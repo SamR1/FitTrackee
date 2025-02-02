@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List
 
 import pytest
@@ -126,7 +126,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
     @pytest.mark.parametrize(
-        'input_workout_visibility',
+        "input_workout_visibility",
         [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_returns_404_when_user_can_not_access_workout(
@@ -224,7 +224,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             ),
         )
 
-        self.assert_500(response, 'Error during comment save.', 'fail')
+        self.assert_500(response, "Error during comment save.", "fail")
         assert Comment.query.all() == []
 
     def test_it_returns_201_when_comment_is_created(
@@ -261,8 +261,8 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         data = json.loads(response.data.decode())
         new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
-        ).first()
-        assert data['comment'] == jsonify_dict(new_comment.serialize(user_1))
+        ).one()
+        assert data["comment"] == jsonify_dict(new_comment.serialize(user_1))
 
     def test_it_creates_comment_with_wider_visibility_than_workout(
         self,
@@ -298,8 +298,8 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         data = json.loads(response.data.decode())
         new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
-        ).first()
-        assert data['comment'] == jsonify_dict(new_comment.serialize(user_1))
+        ).one()
+        assert data["comment"] == jsonify_dict(new_comment.serialize(user_1))
 
     def test_it_returns_403_when_when_user_is_suspended(
         self,
@@ -313,7 +313,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         user_2.approves_follow_request_from(user_1)
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment_text = self.random_string()
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -363,7 +363,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         assert response.status_code == 201
         new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_1.id
-        ).first()
+        ).one()
         assert new_comment.text == " Hello"
 
     def test_it_creates_mention(
@@ -394,7 +394,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
 
         new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
-        ).first()
+        ).one()
         assert (
             Mention.query.filter_by(
                 comment_id=new_comment.id, user_id=user_3.id
@@ -403,8 +403,8 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -477,7 +477,7 @@ class TestGetWorkoutCommentAsUser(
         )
 
     @pytest.mark.parametrize(
-        'input_text_visibility',
+        "input_text_visibility",
         [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_returns_404_when_comment_visibility_does_not_allow_access(
@@ -542,8 +542,8 @@ class TestGetWorkoutCommentAsUser(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['comment'] == jsonify_dict(comment.serialize(user_1))
+        assert data["status"] == "success"
+        assert data["comment"] == jsonify_dict(comment.serialize(user_1))
 
     def test_it_returns_404_when_comment_author_is_blocked(
         self,
@@ -642,8 +642,8 @@ class TestGetWorkoutCommentAsUser(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['comment'] == jsonify_dict(comment.serialize(user_1))
+        assert data["status"] == "success"
+        assert data["comment"] == jsonify_dict(comment.serialize(user_1))
 
     def test_it_returns_comment_when_workout_is_suspended(
         self,
@@ -660,7 +660,7 @@ class TestGetWorkoutCommentAsUser(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -676,8 +676,8 @@ class TestGetWorkoutCommentAsUser(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['comment'] == jsonify_dict(comment.serialize(user_1))
+        assert data["status"] == "success"
+        assert data["comment"] == jsonify_dict(comment.serialize(user_1))
 
     def test_it_returns_403_when_user_is_suspended(
         self,
@@ -694,7 +694,7 @@ class TestGetWorkoutCommentAsUser(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -725,7 +725,7 @@ class TestGetWorkoutCommentAsUser(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -741,8 +741,8 @@ class TestGetWorkoutCommentAsUser(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['comment'] == jsonify_dict(comment.serialize())
+        assert data["status"] == "success"
+        assert data["comment"] == jsonify_dict(comment.serialize())
 
 
 class TestGetWorkoutCommentAsFollower(
@@ -785,7 +785,7 @@ class TestGetWorkoutCommentAsFollower(
         )
 
     @pytest.mark.parametrize(
-        'input_text_visibility',
+        "input_text_visibility",
         [VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC],
     )
     def test_it_returns_comment_when_visibility_allows_access(
@@ -820,8 +820,8 @@ class TestGetWorkoutCommentAsFollower(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['comment'] == jsonify_dict(comment.serialize(user_1))
+        assert data["status"] == "success"
+        assert data["comment"] == jsonify_dict(comment.serialize(user_1))
 
     def test_it_returns_403_when_user_is_suspended(
         self,
@@ -840,7 +840,7 @@ class TestGetWorkoutCommentAsFollower(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -875,7 +875,7 @@ class TestGetWorkoutCommentAsFollower(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PRIVATE,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -899,7 +899,7 @@ class TestGetWorkoutCommentAsOwner(
     CommentMixin, ApiTestCaseMixin, BaseTestMixin
 ):
     @pytest.mark.parametrize(
-        'input_text_visibility',
+        "input_text_visibility",
         [
             VisibilityLevel.PRIVATE,
             VisibilityLevel.FOLLOWERS,
@@ -937,8 +937,8 @@ class TestGetWorkoutCommentAsOwner(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['comment'] == jsonify_dict(comment.serialize(user_1))
+        assert data["status"] == "success"
+        assert data["comment"] == jsonify_dict(comment.serialize(user_1))
 
     def test_it_returns_403_when_user_is_suspended(
         self,
@@ -956,7 +956,7 @@ class TestGetWorkoutCommentAsOwner(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PRIVATE,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -988,7 +988,7 @@ class TestGetWorkoutCommentAsOwner(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PRIVATE,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1004,15 +1004,15 @@ class TestGetWorkoutCommentAsOwner(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['comment'] == jsonify_dict(comment.serialize(user_1))
+        assert data["status"] == "success"
+        assert data["comment"] == jsonify_dict(comment.serialize(user_1))
 
 
 class TestGetWorkoutCommentAsUnauthenticatedUser(
     CommentMixin, ApiTestCaseMixin, BaseTestMixin
 ):
     @pytest.mark.parametrize(
-        'input_text_visibility',
+        "input_text_visibility",
         [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_returns_404_when_comment_visibility_does_not_allow_access(
@@ -1058,7 +1058,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client = app.test_client()
 
@@ -1069,8 +1069,8 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['comment'] == jsonify_dict(comment.serialize())
+        assert data["status"] == "success"
+        assert data["comment"] == jsonify_dict(comment.serialize())
 
     def test_it_returns_comment_when_visibility_is_public(
         self,
@@ -1095,12 +1095,12 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        assert data['status'] == 'success'
-        assert data['comment'] == jsonify_dict(comment.serialize())
+        assert data["status"] == "success"
+        assert data["comment"] == jsonify_dict(comment.serialize())
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1149,8 +1149,8 @@ class GetWorkoutCommentsTestCase(
     ) -> None:
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert data['data']['comments'] == expected_comments
+        assert "success" in data["status"]
+        assert data["data"]["comments"] == expected_comments
 
 
 class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
@@ -1211,7 +1211,7 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
         self.assert_comments_response(response, expected_comments=[])
 
     @pytest.mark.parametrize(
-        'input_text_visibility',
+        "input_text_visibility",
         [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
     )
     def test_it_does_not_return_comment_when_visibility_does_not_allow_it(
@@ -1321,7 +1321,7 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1338,8 +1338,8 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
         self.assert_403(response)
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1409,7 +1409,7 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
         self.assert_comments_response(response, expected_comments=[])
 
     @pytest.mark.parametrize(
-        'input_text_visibility',
+        "input_text_visibility",
         [VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC],
     )
     def test_it_returns_comment_when_visibility_allows_access(
@@ -1464,7 +1464,7 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.FOLLOWERS,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1483,7 +1483,7 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
 
 class TestGetWorkoutCommentsAsOwner(GetWorkoutCommentsTestCase):
     @pytest.mark.parametrize(
-        'input_text_visibility',
+        "input_text_visibility",
         [
             VisibilityLevel.PRIVATE,
             VisibilityLevel.FOLLOWERS,
@@ -1540,7 +1540,7 @@ class TestGetWorkoutCommentsAsOwner(GetWorkoutCommentsTestCase):
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PRIVATE,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1559,7 +1559,7 @@ class TestGetWorkoutCommentsAsOwner(GetWorkoutCommentsTestCase):
 
 class TestGetWorkoutCommentsAsUnauthenticatedUser(GetWorkoutCommentsTestCase):
     @pytest.mark.parametrize(
-        'input_text_visibility',
+        "input_text_visibility",
         [VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS],
     )
     def test_it_does_not_return_comment_when_visibility_does_not_allow_it(
@@ -1632,7 +1632,7 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
                 workout_cycling_user_2,
                 text_visibility=VisibilityLevel.PUBLIC,
             )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1677,7 +1677,7 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
         )
 
         data = json.loads(response.data.decode())
-        assert len(data['data']['comments']) == 7
+        assert len(data["data"]["comments"]) == 7
 
     def test_it_returns_only_comments_user_can_access(
         self,
@@ -1765,11 +1765,11 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
 
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
-        assert data['data']['comments'] == [
+        assert data["data"]["comments"] == [
             jsonify_dict(comment.serialize(user_1))
             for comment in visible_comments
         ]
@@ -1812,7 +1812,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
         response = client.delete(
             f"/api/comments/{comment_short_id}",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
@@ -1821,7 +1821,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [
             VisibilityLevel.FOLLOWERS,
             VisibilityLevel.PRIVATE,
@@ -1848,7 +1848,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
         response = client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
@@ -1876,7 +1876,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
         response = client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -1894,7 +1894,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1902,7 +1902,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
         response = client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -1926,7 +1926,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
         response = client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 204
@@ -1955,14 +1955,14 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
         client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert Mention.query.filter_by(comment_id=comment_id).all() == []
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -1989,7 +1989,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
         response = client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -2045,7 +2045,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
                     text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
@@ -2054,7 +2054,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [
             VisibilityLevel.FOLLOWERS,
             VisibilityLevel.PRIVATE,
@@ -2088,7 +2088,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
                     text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
@@ -2123,7 +2123,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
                     text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -2149,7 +2149,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps({}),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(response)
@@ -2167,7 +2167,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2177,7 +2177,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -2204,7 +2204,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(dict(text=updated_text)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
@@ -2234,7 +2234,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(dict(text=updated_text)),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert comment.text == " Hello"
@@ -2268,7 +2268,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
         new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
-        ).first()
+        ).one()
         assert Mention.query.filter_by(comment_id=new_comment.id).all() == []
 
     def test_it_updates_mentions_to_add_mention(
@@ -2300,7 +2300,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
         new_comment = Comment.query.filter_by(
             user_id=user_1.id, workout_id=workout_cycling_user_2.id
-        ).first()
+        ).one()
         assert (
             Mention.query.filter_by(
                 comment_id=new_comment.id, user_id=user_3.id
@@ -2309,8 +2309,8 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -2337,7 +2337,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
         response = client.patch(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -2382,7 +2382,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             f"/api/comments/{comment_short_id}/suspension/appeal",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
@@ -2412,7 +2412,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             f"/api/comments/{comment.short_id}/suspension/appeal",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -2439,7 +2439,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             f"/api/comments/{comment.short_id}/suspension/appeal",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(
@@ -2460,7 +2460,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2470,7 +2470,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             f"/api/comments/{comment.short_id}/suspension/appeal",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(
@@ -2478,7 +2478,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
         )
 
     @pytest.mark.parametrize(
-        'input_data', [{}, {"text": ""}, {"comment": "some text"}]
+        "input_data", [{}, {"text": ""}, {"comment": "some text"}]
     )
     def test_it_returns_400_when_appeal_text_is_missing(
         self,
@@ -2495,7 +2495,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         self.create_report_comment_action(user_2_admin, user_1, comment)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2506,10 +2506,10 @@ class TestPostWorkoutCommentSuspensionAppeal(
             f"/api/comments/{comment.short_id}/suspension/appeal",
             content_type="application/json",
             data=json.dumps(input_data),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_400(response, 'no text provided')
+        self.assert_400(response, "no text provided")
 
     def test_user_can_appeal_comment_suspension(
         self,
@@ -2525,7 +2525,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         action = self.create_report_comment_action(
             user_2_admin, user_1, comment
         )
@@ -2534,21 +2534,19 @@ class TestPostWorkoutCommentSuspensionAppeal(
             app, user_1.email
         )
         text = self.random_string()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             response = client.post(
                 f"/api/comments/{comment.short_id}/suspension/appeal",
-                content_type='application/json',
+                content_type="application/json",
                 data=json.dumps(dict(text=text)),
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         assert response.status_code == 201
         assert response.json == {"status": "success"}
-        appeal = ReportActionAppeal.query.filter_by(
-            action_id=action.id
-        ).first()
+        appeal = ReportActionAppeal.query.filter_by(action_id=action.id).one()
         assert appeal.moderator_id is None
         assert appeal.approved is None
         assert appeal.created_at == now
@@ -2569,7 +2567,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         action = self.create_report_comment_action(
             user_2_admin, user_1, comment
         )
@@ -2587,16 +2585,16 @@ class TestPostWorkoutCommentSuspensionAppeal(
 
         response = client.post(
             f"/api/comments/{comment.short_id}/suspension/appeal",
-            content_type='application/json',
+            content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_400(response, error_message='you can appeal only once')
+        self.assert_400(response, error_message="you can appeal only once")
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'workouts:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -2623,7 +2621,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
 
         response = client.post(
             f"/api/comments/{comment.short_id}/suspension/appeal",
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)

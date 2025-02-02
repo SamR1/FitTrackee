@@ -10,15 +10,14 @@ msgstr ""
 "POT-Creation-Date: 2024-11-01 19:45+0100\n"
 "PO-Revision-Date: 2025-01-17 07:00+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
-"Language-Team: Galician <https://hosted.weblate.org/projects/fittrackee/"
-"fittrackee-api-emails/gl/>\n"
 "Language: gl\n"
+"Language-Team: Galician <https://hosted.weblate.org/projects/fittrackee"
+"/fittrackee-api-emails/gl/>\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
-"Generated-By: Babel 2.16.0\n"
+"Generated-By: Babel 2.17.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
 #: fittrackee/emails/templates/layout.txt:1
@@ -403,8 +402,8 @@ msgid ""
 "You can still log in to request an export of your data or delete your "
 "account"
 msgstr ""
-"Podes seguir inciando sesión e pedir exportar os teus datos ou eliminar a "
-"conta"
+"Podes seguir inciando sesión e pedir exportar os teus datos ou eliminar a"
+" conta"
 
 #: fittrackee/emails/templates/user_unsuspension/body.html:2
 #: fittrackee/emails/templates/user_unsuspension/body.html:3
@@ -459,3 +458,4 @@ msgstr "Retirouse a suspensión da túa actividade"
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:1
 msgid "The suspension on your workout has been lifted, it is visible again"
 msgstr "Retirouse a suspensión da túa actividade, volve a ser visible"
+

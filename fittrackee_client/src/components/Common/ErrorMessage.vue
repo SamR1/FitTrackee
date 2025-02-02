@@ -33,7 +33,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   .error-message {
     background: var(--error-background-color);
     color: var(--error-color);

@@ -508,7 +508,11 @@
           t,
           isCreation.value ? 'is_active' : 'withIncludedIds',
           selectedSport.value,
-          isCreation.value ? [] : workout.value.equipments.map((e) => e.id)
+          isCreation.value
+            ? []
+            : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              workout.value.equipments.map((e) => e.id)
         )
       : []
   )
@@ -543,7 +547,9 @@
     workoutForm.description = workout.description
     workoutForm.notes = workout.notes
     workoutForm.equipment_id =
-      workout.equipments.length > 0 ? `${workout.equipments[0].id}` : ''
+      workout.equipments.length > 0 && 'id' in workout.equipments[0]
+        ? `${workout.equipments[0].id}`
+        : ''
     workoutForm.workoutVisibility = workout.workout_visibility
       ? workout.workout_visibility
       : 'private'
@@ -772,7 +778,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
 
   #workout-edition {
     ::v-deep(.card) {

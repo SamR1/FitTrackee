@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 from flask import Flask
@@ -20,7 +20,7 @@ class TestGetEquipmentTypes(ApiTestCaseMixin):
     ) -> None:
         client = app.test_client()
 
-        response = client.get('/api/equipment-types')
+        response = client.get("/api/equipment-types")
 
         self.assert_401(response)
 
@@ -37,18 +37,18 @@ class TestGetEquipmentTypes(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/equipment-types',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/equipment-types",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['equipment_types']) == 2
-        assert data['data']['equipment_types'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["equipment_types"]) == 2
+        assert data["data"]["equipment_types"][0] == jsonify_dict(
             equipment_type_1_shoe.serialize(is_admin=False)
         )
-        assert data['data']['equipment_types'][1] == jsonify_dict(
+        assert data["data"]["equipment_types"][1] == jsonify_dict(
             equipment_type_2_bike.serialize(is_admin=False)
         )
 
@@ -65,21 +65,21 @@ class TestGetEquipmentTypes(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/equipment-types',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/equipment-types",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['equipment_types']) == 3
-        assert data['data']['equipment_types'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["equipment_types"]) == 3
+        assert data["data"]["equipment_types"][0] == jsonify_dict(
             equipment_type_1_shoe.serialize(is_admin=True)
         )
-        assert data['data']['equipment_types'][1] == jsonify_dict(
+        assert data["data"]["equipment_types"][1] == jsonify_dict(
             equipment_type_1_shoe_inactive.serialize(is_admin=True)
         )
-        assert data['data']['equipment_types'][2] == jsonify_dict(
+        assert data["data"]["equipment_types"][2] == jsonify_dict(
             equipment_type_2_bike.serialize(is_admin=True)
         )
 
@@ -91,30 +91,30 @@ class TestGetEquipmentTypes(ApiTestCaseMixin):
         equipment_type_1_shoe_inactive: EquipmentType,
         equipment_type_2_bike: EquipmentType,
     ) -> None:
-        user_1.suspended_at = datetime.utcnow()
+        user_1.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
 
         response = client.get(
-            '/api/equipment-types',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            "/api/equipment-types",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['equipment_types']) == 2
-        assert data['data']['equipment_types'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["equipment_types"]) == 2
+        assert data["data"]["equipment_types"][0] == jsonify_dict(
             equipment_type_1_shoe.serialize(is_admin=False)
         )
-        assert data['data']['equipment_types'][1] == jsonify_dict(
+        assert data["data"]["equipment_types"][1] == jsonify_dict(
             equipment_type_2_bike.serialize(is_admin=False)
         )
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'equipments:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "equipments:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -134,9 +134,9 @@ class TestGetEquipmentTypes(ApiTestCaseMixin):
         )
 
         response = client.get(
-            '/api/equipment-types',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            "/api/equipment-types",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -151,7 +151,7 @@ class TestGetEquipmentType(ApiTestCaseMixin):
         client = app.test_client()
 
         response = client.get(
-            f'/api/equipment-types/{equipment_type_1_shoe.id}',
+            f"/api/equipment-types/{equipment_type_1_shoe.id}",
         )
 
         self.assert_401(response)
@@ -168,15 +168,15 @@ class TestGetEquipmentType(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/equipment-types/{equipment_type_1_shoe.id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/equipment-types/{equipment_type_1_shoe.id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['equipment_types']) == 1
-        assert data['data']['equipment_types'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["equipment_types"]) == 1
+        assert data["data"]["equipment_types"][0] == jsonify_dict(
             equipment_type_1_shoe.serialize(is_admin=False)
         )
 
@@ -192,12 +192,12 @@ class TestGetEquipmentType(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/equipment-types/{self.random_int()}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/equipment-types/{self.random_int()}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['equipment_types']) == 0
+        assert len(data["data"]["equipment_types"]) == 0
 
     def test_it_returns_404_if_equipment_type_is_inactive(
         self,
@@ -211,12 +211,12 @@ class TestGetEquipmentType(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/equipment-types/{equipment_type_1_shoe_inactive.id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/equipment-types/{equipment_type_1_shoe_inactive.id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = self.assert_404(response)
-        assert len(data['data']['equipment_types']) == 0
+        assert len(data["data"]["equipment_types"]) == 0
 
     def test_it_returns_inactive_equipment_type_when_user_is_admin(
         self,
@@ -229,21 +229,21 @@ class TestGetEquipmentType(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/equipment-types/{equipment_type_1_shoe_inactive.id}',
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            f"/api/equipment-types/{equipment_type_1_shoe_inactive.id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['equipment_types']) == 1
-        assert data['data']['equipment_types'][0] == jsonify_dict(
+        assert "success" in data["status"]
+        assert len(data["data"]["equipment_types"]) == 1
+        assert data["data"]["equipment_types"][0] == jsonify_dict(
             equipment_type_1_shoe_inactive.serialize(is_admin=True)
         )
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'equipments:read': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "equipments:read": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -264,9 +264,9 @@ class TestGetEquipmentType(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f'/api/equipment-types/{equipment_type_1_shoe.id}',
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            f"/api/equipment-types/{equipment_type_1_shoe.id}",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -281,8 +281,8 @@ class TestUpdateEquipmentTypes(ApiTestCaseMixin):
         client = app.test_client()
 
         response = client.patch(
-            f'/api/equipment-types/{equipment_type_1_shoe.id}',
-            content_type='application/json',
+            f"/api/equipment-types/{equipment_type_1_shoe.id}",
+            content_type="application/json",
             json={"is_active": False},
         )
 
@@ -299,10 +299,10 @@ class TestUpdateEquipmentTypes(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipment-types/{equipment_type_1_shoe.id}',
-            content_type='application/json',
+            f"/api/equipment-types/{equipment_type_1_shoe.id}",
+            content_type="application/json",
             json={"is_active": False},
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -318,10 +318,10 @@ class TestUpdateEquipmentTypes(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipment-types/{equipment_type_1_shoe.id}',
-            content_type='application/json',
+            f"/api/equipment-types/{equipment_type_1_shoe.id}",
+            content_type="application/json",
             json={},
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(response)
@@ -336,15 +336,15 @@ class TestUpdateEquipmentTypes(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipment-types/{self.random_int()}',
-            content_type='application/json',
+            f"/api/equipment-types/{self.random_int()}",
+            content_type="application/json",
             json={"is_active": False},
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404(response)
 
-    @pytest.mark.parametrize('expected_active_status', [True, False])
+    @pytest.mark.parametrize("expected_active_status", [True, False])
     def test_it_updates_an_equipment_type(
         self,
         app: Flask,
@@ -359,22 +359,22 @@ class TestUpdateEquipmentTypes(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipment-types/{equipment_type_1_shoe.id}',
-            content_type='application/json',
+            f"/api/equipment-types/{equipment_type_1_shoe.id}",
+            content_type="application/json",
             json={"is_active": expected_active_status},
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['equipment_types']) == 1
+        assert "success" in data["status"]
+        assert len(data["data"]["equipment_types"]) == 1
         assert (
-            data['data']['equipment_types'][0]['is_active']
+            data["data"]["equipment_types"][0]["is_active"]
             is expected_active_status
         )
 
-    @pytest.mark.parametrize('expected_active_status', [True, False])
+    @pytest.mark.parametrize("expected_active_status", [True, False])
     def test_it_does_not_raise_error_if_equipment_status_is_the_same(
         self,
         app: Flask,
@@ -389,24 +389,24 @@ class TestUpdateEquipmentTypes(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipment-types/{equipment_type_1_shoe.id}',
-            content_type='application/json',
+            f"/api/equipment-types/{equipment_type_1_shoe.id}",
+            content_type="application/json",
             json={"is_active": expected_active_status},
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         data = json.loads(response.data.decode())
         assert response.status_code == 200
-        assert 'success' in data['status']
-        assert len(data['data']['equipment_types']) == 1
+        assert "success" in data["status"]
+        assert len(data["data"]["equipment_types"]) == 1
         assert (
-            data['data']['equipment_types'][0]['is_active']
+            data["data"]["equipment_types"][0]["is_active"]
             is expected_active_status
         )
 
     @pytest.mark.parametrize(
-        'client_scope, can_access',
-        {**OAUTH_SCOPES, 'equipments:write': True}.items(),
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "equipments:write": True}.items(),
     )
     def test_expected_scopes_are_defined(
         self,
@@ -426,10 +426,10 @@ class TestUpdateEquipmentTypes(ApiTestCaseMixin):
         )
 
         response = client.patch(
-            f'/api/equipment-types/{equipment_type_1_shoe.id}',
-            content_type='application/json',
+            f"/api/equipment-types/{equipment_type_1_shoe.id}",
+            content_type="application/json",
             json={"is_active": False},
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)

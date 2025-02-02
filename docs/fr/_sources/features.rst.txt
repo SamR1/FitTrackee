@@ -88,7 +88,8 @@ Workouts
 - | If **Visual Crossing** (*new in 0.7.11*) API key is provided, weather is displayed in workout detail. Data source is displayed in **About** page.
   | Wind is displayed, with an arrow indicating the direction (a tooltip can be displayed with the direction that the wind is coming **from**) (*new in 0.5.5*).
 - | An `equipment <features.html#equipments>`__ can be associated with a workout (*new in 0.8.0*). For now, only one equipment can be associated.
-  | Equipment is only visible to workout owner.
+  | An associated equipment is displayed according to its visibility in workout detail (*new in 0.9.1*).
+  | The equipment details are only visible to its owner.
 - Segments can be displayed.
 - Records associated with the workout are displayed.
 
@@ -356,7 +357,13 @@ Equipments
   - Skis: Skiing (Alpine and Cross Country),
   - Snowshoes: Snowshoes.
 
-- Equipment is visible only to its owner.
+- A user can define equipment visibility (*changed in 0.9.1*):
+
+  - private: only owner can see the equipment in workout detail,
+  - followers only: only owner and followers can see the equipment in workout detail,
+  - public: anyone can see the equipment in workout detail even unauthenticated users.
+
+- The equipment details are only visible to its owner.
 - For now only, only one piece of equipment can be associated with a workout.
 - Following totals are displayed for each piece of equipment:
 
@@ -368,7 +375,7 @@ Equipments
   | In case of an incorrect total (although this should not happen), it is possible to recalculate totals.
 
 - It is possible to define default equipments for sports: when adding a workout, the equipment will automatically be displayed in the dropdown list depending on selected sport.
-- An equipment can be edited (label, equipment type, description, active status and default sports).
+- An equipment can be edited (label, equipment type, description, visibility, active status and default sports) (*changed in 0.9.1*).
 
 .. warning::
   | Changing equipment type will remove all existing workouts associations for that piece of equipment and default sports.

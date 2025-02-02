@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from statistics import mean
 from typing import List, Optional, Union
 
@@ -25,16 +25,16 @@ utc_datetime = datetime(
 input_workout_dates = [
     utc_datetime,
     utc_datetime.replace(tzinfo=None),
-    utc_datetime.replace(tzinfo=SimpleTZ('Z')),
-    utc_datetime.astimezone(pytz.timezone('Europe/Paris')),
-    utc_datetime.astimezone(pytz.timezone('America/Toronto')),
-    '2022-06-11 12:23:00',
+    utc_datetime.replace(tzinfo=SimpleTZ("Z")),
+    utc_datetime.astimezone(pytz.timezone("Europe/Paris")),
+    utc_datetime.astimezone(pytz.timezone("America/Toronto")),
+    "2022-06-11 12:23:00",
 ]
 
 
 class TestWorkoutAverageSpeed:
     @pytest.mark.parametrize(
-        'ave_speeds_list',
+        "ave_speeds_list",
         [
             ([0]),
             ([10]),
@@ -59,35 +59,49 @@ class TestWorkoutAverageSpeed:
 
 
 class TestWorkoutGetWorkoutDatetime:
-    @pytest.mark.parametrize('input_workout_date', input_workout_dates)
-    def test_it_returns_naive_datetime(
+    @pytest.mark.parametrize("input_workout_date", input_workout_dates)
+    def test_it_returns_datetime_in_utc(
         self, input_workout_date: Union[datetime, str]
     ) -> None:
-        naive_workout_date, _ = get_workout_datetime(
-            workout_date=input_workout_date, user_timezone='Europe/Paris'
+        workout_date, _ = get_workout_datetime(
+            workout_date=input_workout_date, user_timezone="Europe/Paris"
         )
 
-        assert naive_workout_date == datetime(
-            year=2022, month=6, day=11, hour=10, minute=23, second=00
+        assert workout_date == datetime(
+            year=2022,
+            month=6,
+            day=11,
+            hour=10,
+            minute=23,
+            second=00,
+            tzinfo=timezone.utc,
         )
 
-    def test_it_return_naive_datetime_when_no_user_timezone(self) -> None:
-        naive_workout_date, _ = get_workout_datetime(
-            workout_date='2022-06-11 12:23:00', user_timezone=None
+    def test_it_return_datetime_in_utc_when_no_user_timezone(self) -> None:
+        workout_date, _ = get_workout_datetime(
+            workout_date="2022-06-11 12:23:00", user_timezone=None
         )
 
-        assert naive_workout_date == datetime(
-            year=2022, month=6, day=11, hour=12, minute=23, second=00
+        assert workout_date == datetime(
+            year=2022,
+            month=6,
+            day=11,
+            hour=12,
+            minute=23,
+            second=00,
+            tzinfo=timezone.utc,
         )
 
-    @pytest.mark.parametrize('input_workout_date', input_workout_dates)
+    @pytest.mark.parametrize("input_workout_date", input_workout_dates)
     def test_it_returns_datetime_with_user_timezone(
         self, input_workout_date: Union[datetime, str]
     ) -> None:
-        timezone = 'Europe/Paris'
+        user_timezone = "Europe/Paris"
 
         _, workout_date_with_tz = get_workout_datetime(
-            input_workout_date, user_timezone=timezone, with_timezone=True
+            input_workout_date,
+            user_timezone=user_timezone,
+            with_user_timezone=True,
         )
 
         assert workout_date_with_tz == datetime(
@@ -98,15 +112,15 @@ class TestWorkoutGetWorkoutDatetime:
             minute=23,
             second=00,
             tzinfo=pytz.utc,
-        ).astimezone(pytz.timezone(timezone))
+        ).astimezone(pytz.timezone(user_timezone))
 
     def test_it_does_not_return_datetime_with_user_timezone_when_no_user_tz(
         self,
     ) -> None:
         _, workout_date_with_tz = get_workout_datetime(
-            workout_date='2022-06-11 12:23:00',
+            workout_date="2022-06-11 12:23:00",
             user_timezone=None,
-            with_timezone=True,
+            with_user_timezone=True,
         )
 
         assert workout_date_with_tz is None
@@ -115,9 +129,9 @@ class TestWorkoutGetWorkoutDatetime:
         self,
     ) -> None:
         _, workout_date_with_tz = get_workout_datetime(
-            workout_date='2022-06-11 12:23:00',
-            user_timezone='Europe/Paris',
-            with_timezone=False,
+            workout_date="2022-06-11 12:23:00",
+            user_timezone="Europe/Paris",
+            with_user_timezone=False,
         )
 
         assert workout_date_with_tz is None
@@ -137,17 +151,17 @@ class TestCreateSegment:
             workout_id=workout_cycling_user_1.id,
             workout_uuid=workout_cycling_user_1.uuid,
             segment_data={
-                'idx': 0,
-                'duration': duration,
-                'distance': 10,
-                'stop_time': timedelta(seconds=0),
-                'moving_time': duration,
-                'elevation_min': None,
-                'elevation_max': None,
-                'downhill': None,
-                'uphill': None,
-                'max_speed': 10,
-                'average_speed': 10,
+                "idx": 0,
+                "duration": duration,
+                "distance": 10,
+                "stop_time": timedelta(seconds=0),
+                "moving_time": duration,
+                "elevation_min": None,
+                "elevation_max": None,
+                "downhill": None,
+                "uphill": None,
+                "max_speed": 10,
+                "average_speed": 10,
             },
         )
 
@@ -226,7 +240,7 @@ class GetWorkoutTestCase:
 class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
     visibility_level = VisibilityLevel.PUBLIC
 
-    @pytest.mark.parametrize('input_allow_admin', [True, False])
+    @pytest.mark.parametrize("input_allow_admin", [True, False])
     def test_it_returns_workout_when_user_is_not_authenticated(
         self,
         app: Flask,
@@ -241,7 +255,7 @@ class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
             workout_cycling_user_1, None, input_allow_admin
         )
 
-    @pytest.mark.parametrize('input_allow_admin', [True, False])
+    @pytest.mark.parametrize("input_allow_admin", [True, False])
     def test_it_returns_workout_when_user_is_not_a_follower(
         self,
         app: Flask,
@@ -257,7 +271,7 @@ class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
             workout_cycling_user_1, user_2, input_allow_admin
         )
 
-    @pytest.mark.parametrize('input_allow_admin', [True, False])
+    @pytest.mark.parametrize("input_allow_admin", [True, False])
     def test_it_returns_workout_when_user_is_a_follower(
         self,
         app: Flask,
@@ -275,7 +289,7 @@ class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
             workout_cycling_user_1, user_2, input_allow_admin
         )
 
-    @pytest.mark.parametrize('input_allow_admin', [True, False])
+    @pytest.mark.parametrize("input_allow_admin", [True, False])
     def test_it_returns_workout_when_user_is_owner(
         self,
         app: Flask,
@@ -290,7 +304,7 @@ class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
             workout_cycling_user_1, user_1, input_allow_admin
         )
 
-    @pytest.mark.parametrize('input_allow_admin', [True, False])
+    @pytest.mark.parametrize("input_allow_admin", [True, False])
     def test_it_raises_exception_when_user_is_blocked_by_owner(
         self,
         app: Flask,
@@ -307,7 +321,7 @@ class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
             workout_cycling_user_1, user_2, input_allow_admin
         )
 
-    @pytest.mark.parametrize('input_allow_admin', [True, False])
+    @pytest.mark.parametrize("input_allow_admin", [True, False])
     def test_it_returns_workout_when_user_has_admin_right(
         self,
         app: Flask,
@@ -327,7 +341,7 @@ class TestGetWorkoutForPublicWorkout(GetWorkoutTestCase):
 class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
     visibility_level = VisibilityLevel.FOLLOWERS
 
-    @pytest.mark.parametrize('input_allow_admin', [True, False])
+    @pytest.mark.parametrize("input_allow_admin", [True, False])
     def test_it_raises_exception_when_user_is_not_authenticated(
         self,
         app: Flask,
@@ -342,7 +356,7 @@ class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
             workout_cycling_user_1, None, input_allow_admin
         )
 
-    @pytest.mark.parametrize('input_allow_admin', [True, False])
+    @pytest.mark.parametrize("input_allow_admin", [True, False])
     def test_it_raises_exception_when_user_is_not_a_follower(
         self,
         app: Flask,
@@ -358,7 +372,7 @@ class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
             workout_cycling_user_1, user_2, input_allow_admin
         )
 
-    @pytest.mark.parametrize('input_allow_admin', [True, False])
+    @pytest.mark.parametrize("input_allow_admin", [True, False])
     def test_it_returns_workout_when_user_is_a_follower(
         self,
         app: Flask,
@@ -376,7 +390,7 @@ class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
             workout_cycling_user_1, user_2, input_allow_admin
         )
 
-    @pytest.mark.parametrize('input_allow_admin', [True, False])
+    @pytest.mark.parametrize("input_allow_admin", [True, False])
     def test_it_returns_workout_when_user_is_owner(
         self,
         app: Flask,
@@ -391,7 +405,7 @@ class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
             workout_cycling_user_1, user_1, input_allow_admin
         )
 
-    @pytest.mark.parametrize('input_allow_admin', [True, False])
+    @pytest.mark.parametrize("input_allow_admin", [True, False])
     def test_it_raises_exception_when_user_is_blocked_by_owner(
         self,
         app: Flask,
@@ -440,7 +454,7 @@ class TestGetWorkoutForFollowerOnlyWorkout(GetWorkoutTestCase):
 class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
     visibility_level = VisibilityLevel.PRIVATE
 
-    @pytest.mark.parametrize('input_allow_admin', [True, False])
+    @pytest.mark.parametrize("input_allow_admin", [True, False])
     def test_it_raises_exception_when_user_is_not_authenticated(
         self,
         app: Flask,
@@ -455,7 +469,7 @@ class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
             workout_cycling_user_1, None, input_allow_admin
         )
 
-    @pytest.mark.parametrize('input_allow_admin', [True, False])
+    @pytest.mark.parametrize("input_allow_admin", [True, False])
     def test_it_raises_exception_when_user_is_not_a_follower(
         self,
         app: Flask,
@@ -471,7 +485,7 @@ class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
             workout_cycling_user_1, user_2, input_allow_admin
         )
 
-    @pytest.mark.parametrize('input_allow_admin', [True, False])
+    @pytest.mark.parametrize("input_allow_admin", [True, False])
     def test_it_raises_exception_when_user_is_a_follower(
         self,
         app: Flask,
@@ -489,7 +503,7 @@ class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
             workout_cycling_user_1, user_2, input_allow_admin
         )
 
-    @pytest.mark.parametrize('input_allow_admin', [True, False])
+    @pytest.mark.parametrize("input_allow_admin", [True, False])
     def test_it_returns_workout_when_user_is_owner(
         self,
         app: Flask,
@@ -504,7 +518,7 @@ class TestGetWorkoutForPrivateWorkout(GetWorkoutTestCase):
             workout_cycling_user_1, user_1, input_allow_admin
         )
 
-    @pytest.mark.parametrize('input_allow_admin', [True, False])
+    @pytest.mark.parametrize("input_allow_admin", [True, False])
     def test_it_raises_exception_when_user_is_blocked_by_owner(
         self,
         app: Flask,

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 from flask import Flask
@@ -28,7 +28,7 @@ class TestReportModel(CommentMixin, RandomMixin):
             Report(
                 note=self.random_string(),
                 reported_by=user_1.id,
-                reported_object=sport_1_cycling,
+                reported_object=sport_1_cycling,  # type: ignore
             )
 
     def test_it_creates_report_for_a_comment(
@@ -40,7 +40,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         user_2: User,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        report_created_at = datetime.utcnow()
+        report_created_at = datetime.now(timezone.utc)
         report_note = self.random_string()
         comment = self.create_comment(
             user_2,
@@ -58,7 +58,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.created_at == report_created_at
         assert report.is_reported_user_warned is False
         assert report.note == report_note
-        assert report.object_type == 'comment'
+        assert report.object_type == "comment"
         assert report.reported_by == user_1.id
         assert report.reported_comment_id == comment.id
         assert report.reported_user_id == user_2.id
@@ -77,7 +77,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         user_2: User,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        report_created_at = datetime.utcnow()
+        report_created_at = datetime.now(timezone.utc)
         report_note = self.random_string()
         comment = self.create_comment(
             user_2,
@@ -96,11 +96,11 @@ class TestReportModel(CommentMixin, RandomMixin):
         db.session.delete(comment)
         db.session.commit()
 
-        updated_report = Report.query.first()
+        updated_report = Report.query.one()
         assert updated_report.created_at == report_created_at
         assert updated_report.is_reported_user_warned is False
         assert updated_report.note == report_note
-        assert updated_report.object_type == 'comment'
+        assert updated_report.object_type == "comment"
         assert updated_report.reported_by == user_1.id
         assert updated_report.reported_comment_id is None
         assert updated_report.reported_user_id == user_2.id
@@ -116,7 +116,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         user_1: User,
         user_2: User,
     ) -> None:
-        report_created_at = datetime.utcnow()
+        report_created_at = datetime.now(timezone.utc)
         report_note = self.random_string()
 
         report = Report(
@@ -129,7 +129,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.created_at == report_created_at
         assert report.is_reported_user_warned is False
         assert report.note == report_note
-        assert report.object_type == 'user'
+        assert report.object_type == "user"
         assert report.reported_by == user_1.id
         assert report.reported_comment_id is None
         assert report.reported_user_id == user_2.id
@@ -145,7 +145,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         user_1: User,
         user_2: User,
     ) -> None:
-        report_created_at = datetime.utcnow()
+        report_created_at = datetime.now(timezone.utc)
         report_note = self.random_string()
         report = Report(
             created_at=report_created_at,
@@ -159,11 +159,11 @@ class TestReportModel(CommentMixin, RandomMixin):
         db.session.delete(user_2)
         db.session.commit()
 
-        updated_report = Report.query.first()
+        updated_report = Report.query.one()
         assert updated_report.created_at == report_created_at
         assert updated_report.is_reported_user_warned is False
         assert updated_report.note == report_note
-        assert updated_report.object_type == 'user'
+        assert updated_report.object_type == "user"
         assert updated_report.reported_by == user_1.id
         assert updated_report.reported_comment_id is None
         assert updated_report.reported_user_id is None
@@ -179,7 +179,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         user_1: User,
         user_2: User,
     ) -> None:
-        report_created_at = datetime.utcnow()
+        report_created_at = datetime.now(timezone.utc)
         report_note = self.random_string()
         report = Report(
             created_at=report_created_at,
@@ -193,11 +193,11 @@ class TestReportModel(CommentMixin, RandomMixin):
         db.session.delete(user_1)
         db.session.commit()
 
-        updated_report = Report.query.first()
+        updated_report = Report.query.one()
         assert updated_report.created_at == report_created_at
         assert updated_report.is_reported_user_warned is False
         assert updated_report.note == report_note
-        assert updated_report.object_type == 'user'
+        assert updated_report.object_type == "user"
         assert updated_report.reported_by is None
         assert updated_report.reported_comment_id is None
         assert updated_report.reported_user_id == user_2.id
@@ -216,7 +216,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        report_created_at = datetime.utcnow()
+        report_created_at = datetime.now(timezone.utc)
         report_note = self.random_string()
 
         report = Report(
@@ -229,7 +229,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.created_at == report_created_at
         assert report.is_reported_user_warned is False
         assert report.note == report_note
-        assert report.object_type == 'workout'
+        assert report.object_type == "workout"
         assert report.reported_by == user_1.id
         assert report.reported_comment_id is None
         assert report.reported_user_id == user_2.id
@@ -248,7 +248,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         workout_cycling_user_2: Workout,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        report_created_at = datetime.utcnow()
+        report_created_at = datetime.now(timezone.utc)
         report_note = self.random_string()
         report = Report(
             created_at=report_created_at,
@@ -262,11 +262,11 @@ class TestReportModel(CommentMixin, RandomMixin):
         db.session.delete(workout_cycling_user_2)
         db.session.commit()
 
-        updated_report = Report.query.first()
+        updated_report = Report.query.one()
         assert updated_report.created_at == report_created_at
         assert updated_report.is_reported_user_warned is False
         assert updated_report.note == report_note
-        assert updated_report.object_type == 'workout'
+        assert updated_report.object_type == "workout"
         assert updated_report.reported_by == user_1.id
         assert updated_report.reported_comment_id is None
         assert updated_report.reported_user_id == user_2.id
@@ -279,7 +279,7 @@ class TestReportModel(CommentMixin, RandomMixin):
     def test_it_creates_report_without_date(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         report_note = self.random_string()
 
         with travel(now, tick=False):
@@ -292,7 +292,7 @@ class TestReportModel(CommentMixin, RandomMixin):
         assert report.created_at == now
         assert report.is_reported_user_warned is False
         assert report.note == report_note
-        assert report.object_type == 'user'
+        assert report.object_type == "user"
         assert report.reported_by == user_1.id
         assert report.reported_comment_id is None
         assert report.reported_user_id == user_2.id
@@ -431,7 +431,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "note": report.note,
             "object_type": "comment",
             "reported_by": user_1.serialize(current_user=user_1),
-            "reported_comment": "_COMMENT_UNAVAILABLE_",
+            "reported_comment": {"id": "_COMMENT_UNAVAILABLE_"},
             "reported_user": user_2.serialize(current_user=user_1),
             "reported_workout": None,
             "resolved": False,
@@ -605,7 +605,7 @@ class TestReportSerializerAsUser(CommentMixin, RandomMixin):
             "reported_by": user_1.serialize(current_user=user_1),
             "reported_comment": None,
             "reported_user": user_2.serialize(current_user=user_1),
-            "reported_workout": '_WORKOUT_UNAVAILABLE_',
+            "reported_workout": {"id": "_WORKOUT_UNAVAILABLE_"},
             "resolved": False,
             "resolved_at": None,
         }
@@ -1141,7 +1141,7 @@ class TestReportCommentModel(ReportCommentTestCase):
         self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
         comment = self.random_string()
 
         report_comment = ReportComment(
@@ -1163,7 +1163,7 @@ class TestReportCommentModel(ReportCommentTestCase):
     ) -> None:
         report = self.create_report(reporter=user_2, reported_object=user_3)
         comment = self.random_string()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             report_comment = ReportComment(
@@ -1209,10 +1209,10 @@ class TestReportCommentSerializer(ReportCommentTestCase):
 
         serialized_comment = report_comment.serialize(user_1_moderator)
 
-        assert serialized_comment['created_at'] == report_comment.created_at
-        assert serialized_comment['comment'] == report_comment.comment
-        assert serialized_comment['id'] == report_comment.id
-        assert serialized_comment['report_id'] == report.id
-        assert serialized_comment['user'] == user_1_moderator.serialize(
+        assert serialized_comment["created_at"] == report_comment.created_at
+        assert serialized_comment["comment"] == report_comment.comment
+        assert serialized_comment["id"] == report_comment.id
+        assert serialized_comment["report_id"] == report.id
+        assert serialized_comment["user"] == user_1_moderator.serialize(
             current_user=user_1_moderator
         )

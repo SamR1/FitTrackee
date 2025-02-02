@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytest
 from flask import Flask
@@ -29,7 +29,7 @@ class TestMentionModel(CommentMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         comment = self.create_comment(user_1, workout_cycling_user_1)
-        created_at = datetime.utcnow()
+        created_at = datetime.now(timezone.utc)
 
         mention = Mention(
             comment_id=comment.id, user_id=user_1.id, created_at=created_at
@@ -47,7 +47,7 @@ class TestMentionModel(CommentMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         comment = self.create_comment(user_1, workout_cycling_user_1)
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         with travel(now, tick=False):
             mention = Mention(comment_id=comment.id, user_id=user_1.id)
 
@@ -101,7 +101,7 @@ class TestMentionModel(CommentMixin):
 
 
 class TestCommentWithMentionSerializeVisibility(CommentMixin):
-    @pytest.mark.parametrize('workout_visibility', ALL_VISIBILITIES)
+    @pytest.mark.parametrize("workout_visibility", ALL_VISIBILITIES)
     def test_public_comment_is_visible_to_all_users(
         self,
         app: Flask,
@@ -125,7 +125,7 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
         comment.serialize(user_3)  # user
         comment.serialize()  # unauthenticated user
 
-    @pytest.mark.parametrize('workout_visibility', ALL_VISIBILITIES)
+    @pytest.mark.parametrize("workout_visibility", ALL_VISIBILITIES)
     def test_comment_for_followers_is_visible_to_followers_and_mentioned_users(
         self,
         app: Flask,
@@ -154,7 +154,7 @@ class TestCommentWithMentionSerializeVisibility(CommentMixin):
             assert comment.serialize(user_4)  # user
             assert comment.serialize()  # unauthenticated user
 
-    @pytest.mark.parametrize('workout_visibility', ALL_VISIBILITIES)
+    @pytest.mark.parametrize("workout_visibility", ALL_VISIBILITIES)
     def test_private_comment_is_only_visible_to_author_and_mentioned_user(
         self,
         app: Flask,

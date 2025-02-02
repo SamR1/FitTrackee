@@ -42,7 +42,7 @@
 </script>
 
 <style lang="scss">
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   .sport-stat-card {
     flex: 0 0 33%;
     @media screen and (max-width: $small-limit) {

@@ -12,7 +12,7 @@
     "error during gpx processing": "Błąd podczas procesowania pliku gpx.",
     "error on getting configuration": "Błąd przy pobieraniu konfiguracji.",
     "error when saving workout": "Błąd przy zapisie treningu.",
-    "error when updating configuration": "Błąd przy aktualizacji konfiguracji",
+    "error when updating configuration": "Błąd przy aktualizacji konfiguracji.",
     "error, please try again or contact the administrator": "Błąd, spróbuj ponownie lub skontaktuj się z administratorem.",
     "error, registration is disabled": "Błąd, rejestracja jest wyłączona.",
     "file extension not allowed": "Niedozwolone zakończenie pliku.",
@@ -22,7 +22,7 @@
     "invalid payload": "Przekazane dane są niepoprawne.",
     "invalid token, please log in again": "Niepoprawny token, proszę się ponownie zalogować.",
     "invalid token, please request a new token": "Niepoprawny token, proszę się ponownie zalogować.",
-    "new email must be different than current email": "Nowy adres e-mail musi być inny niż aktualny",
+    "new email must be different than current email": "Nowy adres e-mail musi być inny niż aktualny.",
     "no file part": "Nie dostarczono pliku.",
     "no selected file": "Nie wybrano pliku.",
     "no tracks in gpx file": "Brak trasy (<trk>) w pliku .gpx.",
@@ -35,7 +35,7 @@
     "successfully registered": "Pomyślnie zarejestrowano.",
     "the number of files in the archive exceeds the limit": "Liczba plików w archiwum przekracza limit.",
     "user does not exist": "Użytkownik nie istnieje.",
-    "valid email must be provided for admin contact": "Poprawny adres e-mail musi być podany do kontaktu z administratorem",
+    "valid email must be provided for admin contact": "Poprawny adres e-mail musi być podany do kontaktu z administratorem.",
     "you can not delete your account, no other user has admin rights": "Nie możesz skasować swojego konta, bo żaden inny użytkownik nie ma praw administratora.",
     "you do not have permissions": "Nie masz uprawnień."
   }

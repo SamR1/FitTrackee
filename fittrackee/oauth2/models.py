@@ -8,53 +8,50 @@ from authlib.integrations.sqla_oauth2 import (
 )
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
-from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session
 from sqlalchemy.sql import text
 
-from fittrackee import db
-
-BaseModel: DeclarativeMeta = db.Model
+from fittrackee import BaseModel, db
 
 
 class OAuth2Client(BaseModel, OAuth2ClientMixin):
-    __tablename__ = 'oauth2_client'
+    __tablename__ = "oauth2_client"
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(
-        db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), index=True
+        db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), index=True
     )
-    user = db.relationship('User')
+    user = db.relationship("User")
 
     def serialize(self, with_secret: bool = False) -> Dict:
         client = {
-            'client_id': self.client_id,
-            'client_description': self.client_description,
-            'id': self.id,
-            'issued_at': time.strftime(
-                '%a, %d %B %Y %H:%M:%S GMT',
+            "client_id": self.client_id,
+            "client_description": self.client_description,
+            "id": self.id,
+            "issued_at": time.strftime(
+                "%a, %d %B %Y %H:%M:%S GMT",
                 time.gmtime(self.client_id_issued_at),
             ),
-            'name': self.client_name,
-            'redirect_uris': self.redirect_uris,
-            'scope': self.scope,
-            'website': self.client_uri,
+            "name": self.client_name,
+            "redirect_uris": self.redirect_uris,
+            "scope": self.scope,
+            "website": self.client_uri,
         }
         if with_secret:
-            client['client_secret'] = self.client_secret
+            client["client_secret"] = self.client_secret
         return client
 
     @property
     def client_description(self) -> Optional[str]:
-        return self.client_metadata.get('client_description')
+        return self.client_metadata.get("client_description")
 
 
-@listens_for(OAuth2Client, 'after_delete')
+@listens_for(OAuth2Client, "after_delete")
 def on_old_oauth2_delete(
     mapper: Mapper, connection: Connection, old_oauth2_client: OAuth2Client
 ) -> None:
-    @listens_for(db.Session, 'after_flush', once=True)
+    @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
         session.query(OAuth2AuthorizationCode).filter(
             OAuth2AuthorizationCode.client_id == old_oauth2_client.client_id
@@ -65,29 +62,29 @@ def on_old_oauth2_delete(
 
 
 class OAuth2AuthorizationCode(BaseModel, OAuth2AuthorizationCodeMixin):
-    __tablename__ = 'oauth2_code'
+    __tablename__ = "oauth2_code"
     __table_args__ = (
         db.Index(
-            'ix_oauth2_code_client_id',
-            'client_id',
+            "ix_oauth2_code_client_id",
+            "client_id",
         ),
     )
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(
-        db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), index=True
+        db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), index=True
     )
-    user = db.relationship('User')
+    user = db.relationship("User")
 
 
 class OAuth2Token(BaseModel, OAuth2TokenMixin):
-    __tablename__ = 'oauth2_token'
+    __tablename__ = "oauth2_token"
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(
-        db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), index=True
+        db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), index=True
     )
-    user = db.relationship('User')
+    user = db.relationship("User")
 
     def is_refresh_token_active(self) -> bool:
         if self.is_revoked():
@@ -103,6 +100,6 @@ class OAuth2Token(BaseModel, OAuth2TokenMixin):
             WHERE client_id = :client_id;
         """
         db.session.execute(
-            text(sql), {'client_id': client_id, 'revoked_at': int(time.time())}
+            text(sql), {"client_id": client_id, "revoked_at": int(time.time())}
         )
         db.session.commit()

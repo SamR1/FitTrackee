@@ -1,6 +1,6 @@
 import time
 from calendar import timegm
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Optional
 from unittest.mock import patch
 
@@ -19,7 +19,7 @@ from fittrackee.users.utils.controls import (
     is_valid_email,
     register_controls,
 )
-from fittrackee.users.utils.token import (
+from fittrackee.users.utils.tokens import (
     clean_blacklisted_tokens,
     decode_user_token,
     get_user_token,
@@ -30,16 +30,16 @@ from ..utils import random_int, random_string
 
 class TestIsValidEmail:
     @pytest.mark.parametrize(
-        ('input_email',),
+        ("input_email",),
         [
             (None,),
-            ('',),
-            ('foo',),
-            ('foo@',),
-            ('@foo.fr',),
-            ('foo@foo',),
-            ('.',),
-            ('./',),
+            ("",),
+            ("foo",),
+            ("foo@",),
+            ("@foo.fr",),
+            ("foo@foo",),
+            (".",),
+            ("./",),
         ],
     )
     def test_it_returns_false_if_email_is_invalid(
@@ -48,12 +48,12 @@ class TestIsValidEmail:
         assert is_valid_email(input_email) is False
 
     @pytest.mark.parametrize(
-        ('input_email',),
+        ("input_email",),
         [
-            ('admin@example.com',),
-            ('admin@test.example.com',),
-            ('admin.site@test.example.com',),
-            ('admin-site@test-example.com',),
+            ("admin@example.com",),
+            ("admin@test.example.com",),
+            ("admin.site@test.example.com",),
+            ("admin-site@test-example.com",),
         ],
     )
     def test_it_returns_true_if_email_is_valid(self, input_email: str) -> None:
@@ -62,7 +62,7 @@ class TestIsValidEmail:
 
 class TestCheckPasswords:
     @pytest.mark.parametrize(
-        ('input_password_length',),
+        ("input_password_length",),
         [
             (0,),
             (3,),
@@ -74,11 +74,11 @@ class TestCheckPasswords:
     ) -> None:
         password = random_string(input_password_length)
         assert check_password(password) == (
-            'password: 8 characters required\n'
+            "password: 8 characters required\n"
         )
 
     @pytest.mark.parametrize(
-        ('input_password_length',),
+        ("input_password_length",),
         [
             (8,),
             (10,),
@@ -88,12 +88,12 @@ class TestCheckPasswords:
         self, input_password_length: int
     ) -> None:
         password = random_string(input_password_length)
-        assert check_password(password) == ''
+        assert check_password(password) == ""
 
 
 class TestIsUsernameValid:
     @pytest.mark.parametrize(
-        ('input_username_length',),
+        ("input_username_length",),
         [
             (2,),
             (31,),
@@ -106,15 +106,15 @@ class TestIsUsernameValid:
             check_username(
                 username=random_string(31),
             )
-            == 'username: 3 to 30 characters required\n'
+            == "username: 3 to 30 characters required\n"
         )
 
     @pytest.mark.parametrize(
-        ('input_invalid_character',),
+        ("input_invalid_character",),
         [
-            ('.',),
-            ('/',),
-            ('$',),
+            (".",),
+            ("/",),
+            ("$",),
         ],
     )
     def test_it_returns_error_message_when_username_has_invalid_character(
@@ -122,33 +122,33 @@ class TestIsUsernameValid:
     ) -> None:
         username = random_string() + input_invalid_character
         assert check_username(username=username) == (
-            'username: only alphanumeric characters and the '
+            "username: only alphanumeric characters and the "
             'underscore character "_" allowed\n'
         )
 
     def test_it_returns_empty_string_when_username_is_valid(self) -> None:
-        assert check_username(username=random_string()) == ''
+        assert check_username(username=random_string()) == ""
 
     def test_it_returns_multiple_errors(self) -> None:
-        username = random_string(31) + '.'
+        username = random_string(31) + "."
         assert check_username(username=username) == (
-            'username: 3 to 30 characters required\n'
-            'username: only alphanumeric characters and the underscore '
+            "username: 3 to 30 characters required\n"
+            "username: only alphanumeric characters and the underscore "
             'character "_" allowed\n'
         )
 
 
 class TestRegisterControls:
-    module_path = 'fittrackee.users.utils.controls.'
+    module_path = "fittrackee.users.utils.controls."
     valid_username = random_string()
-    valid_email = f'{random_string()}@example.com'
+    valid_email = f"{random_string()}@example.com"
     valid_password = random_string()
 
     def test_it_calls_all_validators(self) -> None:
         with (
-            patch(self.module_path + 'check_password') as check_passwords_mock,
-            patch(self.module_path + 'check_username') as check_username_mock,
-            patch(self.module_path + 'is_valid_email') as is_valid_email_mock,
+            patch(self.module_path + "check_password") as check_passwords_mock,
+            patch(self.module_path + "check_username") as check_username_mock,
+            patch(self.module_path + "is_valid_email") as is_valid_email_mock,
         ):
             register_controls(
                 self.valid_username,
@@ -167,7 +167,7 @@ class TestRegisterControls:
                 self.valid_email,
                 self.valid_password,
             )
-            == ''
+            == ""
         )
 
     def test_it_returns_multiple_errors_when_inputs_are_invalid(self) -> None:
@@ -177,8 +177,8 @@ class TestRegisterControls:
             email=invalid_username,
             password=random_string(8),
         ) == (
-            'username: 3 to 30 characters required\n'
-            'email: valid email must be provided\n'
+            "username: 3 to 30 characters required\n"
+            "email: valid email must be provided\n"
         )
 
 
@@ -187,17 +187,17 @@ class TestGetUserToken:
     def decode_token(app: Flask, token: str) -> Dict:
         return jwt.decode(
             token,
-            app.config['SECRET_KEY'],
-            algorithms=['HS256'],
+            app.config["SECRET_KEY"],
+            algorithms=["HS256"],
         )
 
     def test_token_is_encoded_with_hs256(self, app: Flask) -> None:
         token = get_user_token(user_id=1)
 
         decoded_token = self.decode_token(app, token)
-        assert list(decoded_token.keys()) == ['exp', 'iat', 'sub']
+        assert list(decoded_token.keys()) == ["exp", "iat", "sub"]
 
-    @pytest.mark.parametrize('input_password_reset', [True, False])
+    @pytest.mark.parametrize("input_password_reset", [True, False])
     def test_token_contains_user_id(
         self, app: Flask, input_password_reset: bool
     ) -> None:
@@ -207,36 +207,36 @@ class TestGetUserToken:
         )
 
         decoded_token = self.decode_token(app, token)
-        assert decoded_token['sub'] == str(user_id)
+        assert decoded_token["sub"] == str(user_id)
 
-    @pytest.mark.parametrize('input_password_reset', [True, False])
+    @pytest.mark.parametrize("input_password_reset", [True, False])
     def test_token_contains_timestamp_of_when_it_is_issued(
         self, app: Flask, input_password_reset: bool
     ) -> None:
         user_id = 1
-        iat = datetime.utcnow()
+        iat = datetime.now(timezone.utc)
         with travel(iat, tick=False):
             token = get_user_token(
                 user_id=user_id, password_reset=input_password_reset
             )
 
             decoded_token = self.decode_token(app, token)
-            assert decoded_token['iat'] == timegm(iat.utctimetuple())
+            assert decoded_token["iat"] == timegm(iat.utctimetuple())
 
     def test_token_contains_timestamp_of_when_it_expired(
         self, app: Flask
     ) -> None:
         user_id = 1
-        iat = datetime.utcnow()
+        iat = datetime.now(timezone.utc)
         expiration = timedelta(
-            days=app.config['TOKEN_EXPIRATION_DAYS'],
-            seconds=app.config['TOKEN_EXPIRATION_SECONDS'],
+            days=app.config["TOKEN_EXPIRATION_DAYS"],
+            seconds=app.config["TOKEN_EXPIRATION_SECONDS"],
         )
         with travel(iat, tick=False):
             token = get_user_token(user_id=user_id)
 
             decoded_token = self.decode_token(app, token)
-            assert decoded_token['exp'] == timegm(
+            assert decoded_token["exp"] == timegm(
                 (iat + expiration).utctimetuple()
             )
 
@@ -244,16 +244,16 @@ class TestGetUserToken:
         self, app: Flask
     ) -> None:
         user_id = 1
-        iat = datetime.utcnow()
+        iat = datetime.now(timezone.utc)
         expiration = timedelta(
             days=0.0,
-            seconds=app.config['PASSWORD_TOKEN_EXPIRATION_SECONDS'],
+            seconds=app.config["PASSWORD_TOKEN_EXPIRATION_SECONDS"],
         )
         with travel(iat, tick=False):
             token = get_user_token(user_id=user_id, password_reset=True)
 
             decoded_token = self.decode_token(app, token)
-            assert decoded_token['exp'] == timegm(
+            assert decoded_token["exp"] == timegm(
                 (iat + expiration).utctimetuple()
             )
 
@@ -272,31 +272,31 @@ class TestDecodeUserToken:
     def test_it_raises_error_when_token_body_is_invalid(
         self, app: Flask
     ) -> None:
-        token = self.generate_token(user_id=1, now=datetime.utcnow())
-        header, body, signature = token.split('.')
-        modified_token = f'{header}.{random_string()}.{signature}'
+        token = self.generate_token(user_id=1, now=datetime.now(timezone.utc))
+        header, body, signature = token.split(".")
+        modified_token = f"{header}.{random_string()}.{signature}"
         with pytest.raises(
             jwt.exceptions.InvalidSignatureError,
-            match='Signature verification failed',
+            match="Signature verification failed",
         ):
             decode_user_token(modified_token)
 
     def test_it_raises_error_when_secret_key_is_invalid(
         self, app: Flask
     ) -> None:
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         token = jwt.encode(
             {
-                'exp': now + timedelta(minutes=1),
-                'iat': now,
-                'sub': 1,
+                "exp": now + timedelta(minutes=1),
+                "iat": now,
+                "sub": 1,
             },
             random_string(),
-            algorithm='HS256',
+            algorithm="HS256",
         )
         with pytest.raises(
             jwt.exceptions.InvalidSignatureError,
-            match='Signature verification failed',
+            match="Signature verification failed",
         ):
             decode_user_token(token)
 
@@ -309,12 +309,12 @@ class TestDecodeUserToken:
             serialization.PrivateFormat.PKCS8,
             serialization.NoEncryption(),
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         token = jwt.encode(
             {
-                'exp': now + timedelta(minutes=1),
-                'iat': now,
-                'sub': 1,
+                "exp": now + timedelta(minutes=1),
+                "iat": now,
+                "sub": 1,
             },
             private_key.decode(),
             algorithm="RS256",
@@ -323,17 +323,17 @@ class TestDecodeUserToken:
             decode_user_token(token)
 
     def test_it_raises_error_when_token_is_expired(self, app: Flask) -> None:
-        now = datetime.utcnow() - timedelta(minutes=10)
+        now = datetime.now(timezone.utc) - timedelta(minutes=10)
         token = self.generate_token(user_id=1, now=now)
         with pytest.raises(
-            jwt.exceptions.ExpiredSignatureError, match='Signature has expired'
+            jwt.exceptions.ExpiredSignatureError, match="Signature has expired"
         ):
             decode_user_token(token)
 
     def test_it_returns_user_id(self, app: Flask) -> None:
         expected_user_id = 1
         token = self.generate_token(
-            user_id=expected_user_id, now=datetime.utcnow()
+            user_id=expected_user_id, now=datetime.now(timezone.utc)
         )
 
         user_id = decode_user_token(token)
@@ -399,7 +399,7 @@ class TestBlacklistedTokensCleanup:
             self.blacklisted_token(expiration_days=30)
 
         count = clean_blacklisted_tokens(
-            days=app.config['TOKEN_EXPIRATION_DAYS']
+            days=app.config["TOKEN_EXPIRATION_DAYS"]
         )
 
         assert count == 3

@@ -61,7 +61,8 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/base.scss';
+  @use '~@/scss/vars.scss' as *;
+  @use '~@/scss/base.scss' as *;
 
   .privacy-policy-text {
     margin: 10px 50px 20px;

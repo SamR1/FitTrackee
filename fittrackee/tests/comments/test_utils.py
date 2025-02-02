@@ -16,7 +16,7 @@ class TestGetMentionedUsers:
     def test_it_returns_unchanged_text_when_no_mentions(
         self, app: Flask
     ) -> None:
-        text = ' '.join([random_string()] * 5)
+        text = " ".join([random_string()] * 5)
 
         linkified_text, _ = handle_mentions(text)
 

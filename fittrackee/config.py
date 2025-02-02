@@ -9,7 +9,7 @@ from sqlalchemy.pool import NullPool
 from fittrackee import DEFAULT_PRIVACY_POLICY_DATA, VERSION
 from fittrackee.languages import SUPPORTED_LANGUAGES
 
-broker: Union[Type['RedisBroker'], Type['StubBroker']] = (
+broker: Union[Type["RedisBroker"], Type["StubBroker"]] = (
     StubBroker
     if os.getenv("APP_SETTINGS") == "fittrackee.config.TestingConfig"
     else RedisBroker
@@ -17,8 +17,8 @@ broker: Union[Type['RedisBroker'], Type['StubBroker']] = (
 
 XDIST_WORKER = (
     f"_{os.getenv('PYTEST_XDIST_WORKER')}"
-    if os.getenv('PYTEST_XDIST_WORKER')
-    else ''
+    if os.getenv("PYTEST_XDIST_WORKER")
+    else ""
 )
 
 
@@ -31,39 +31,39 @@ class BaseConfig:
     TOKEN_EXPIRATION_SECONDS = 0
     PASSWORD_TOKEN_EXPIRATION_SECONDS = 3600
     UPLOAD_FOLDER = os.path.join(
-        os.getenv('UPLOAD_FOLDER', current_app.root_path), 'uploads'
+        os.getenv("UPLOAD_FOLDER", current_app.root_path), "uploads"
     )
-    PICTURE_ALLOWED_EXTENSIONS = {'jpg', 'png', 'gif'}
-    WORKOUT_ALLOWED_EXTENSIONS = {'gpx', 'zip'}
-    TEMPLATES_FOLDER = os.path.join(current_app.root_path, 'emails/templates')
-    UI_URL = os.environ['UI_URL']
-    EMAIL_URL = os.environ.get('EMAIL_URL')
-    SENDER_EMAIL = os.environ.get('SENDER_EMAIL')
+    PICTURE_ALLOWED_EXTENSIONS = {"jpg", "png", "gif"}
+    WORKOUT_ALLOWED_EXTENSIONS = {"gpx", "zip"}
+    TEMPLATES_FOLDER = os.path.join(current_app.root_path, "emails/templates")
+    UI_URL = os.environ["UI_URL"]
+    EMAIL_URL = os.environ.get("EMAIL_URL")
+    SENDER_EMAIL = os.environ.get("SENDER_EMAIL")
     CAN_SEND_EMAILS = False
     DRAMATIQ_BROKER = broker
     TILE_SERVER = {
-        'URL': os.environ.get(
-            'TILE_SERVER_URL',
-            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        "URL": os.environ.get(
+            "TILE_SERVER_URL",
+            "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
         ),
-        'ATTRIBUTION': os.environ.get(
-            'MAP_ATTRIBUTION',
+        "ATTRIBUTION": os.environ.get(
+            "MAP_ATTRIBUTION",
             '&copy; <a href="http://www.openstreetmap.org/copyright" '
             'target="_blank" rel="noopener noreferrer">OpenStreetMap</a>'
-            ' contributors',
+            " contributors",
         ),
-        'DEFAULT_STATICMAP': (
-            os.environ.get('DEFAULT_STATICMAP', 'false').lower() == 'true'
+        "DEFAULT_STATICMAP": (
+            os.environ.get("DEFAULT_STATICMAP", "false").lower() == "true"
         ),
-        'STATICMAP_SUBDOMAINS': os.environ.get('STATICMAP_SUBDOMAINS', ''),
+        "STATICMAP_SUBDOMAINS": os.environ.get("STATICMAP_SUBDOMAINS", ""),
     }
     TRANSLATIONS_FOLDER = os.path.join(
-        current_app.root_path, 'emails/translations'
+        current_app.root_path, "emails/translations"
     )
     LANGUAGES = SUPPORTED_LANGUAGES
     OAUTH2_TOKEN_EXPIRES_IN = {
-        'authorization_code': 864000,  # 10 days
-        'refresh_token': 864000,  # 10 days
+        "authorization_code": 864000,  # 10 days
+        "refresh_token": 864000,  # 10 days
     }
     OAUTH2_REFRESH_TOKEN_GENERATOR = True
     DATA_EXPORT_EXPIRATION = 24  # hours
@@ -73,48 +73,48 @@ class BaseConfig:
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
-    SECRET_KEY = 'development key'  # nosec
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+    SECRET_KEY = "development key"  # nosec
     BCRYPT_LOG_ROUNDS = 4
-    DRAMATIQ_BROKER_URL = os.getenv('REDIS_URL', 'redis://')
+    DRAMATIQ_BROKER_URL = os.getenv("REDIS_URL", "redis://")
 
 
 class TestingConfig(BaseConfig):
     DEBUG = True
     TESTING = True
     SQLALCHEMY_DATABASE_URI = (
-        os.environ.get('DATABASE_TEST_URL', '') + XDIST_WORKER
+        os.environ.get("DATABASE_TEST_URL", "") + XDIST_WORKER
     )
     UPLOAD_FOLDER = os.path.join(
-        os.getenv('UPLOAD_FOLDER', current_app.root_path),
-        'uploads' + XDIST_WORKER,
+        os.getenv("UPLOAD_FOLDER", current_app.root_path),
+        "uploads" + XDIST_WORKER,
     )
-    SECRET_KEY = 'test key'  # nosec
+    SECRET_KEY = "test key"  # nosec
     BCRYPT_LOG_ROUNDS = 4
     TOKEN_EXPIRATION_DAYS = 0
     TOKEN_EXPIRATION_SECONDS = 60
     PASSWORD_TOKEN_EXPIRATION_SECONDS = 60
-    UI_URL = 'https://example.com'
-    SENDER_EMAIL = 'fittrackee@example.com'
+    UI_URL = "https://example.com"
+    SENDER_EMAIL = "fittrackee@example.com"
     OAUTH2_TOKEN_EXPIRES_IN = {
-        'authorization_code': 60,
-        'refresh_token': 60,
+        "authorization_code": 60,
+        "refresh_token": 60,
     }
 
 
 class End2EndTestingConfig(TestingConfig):
-    DRAMATIQ_BROKER_URL = os.getenv('REDIS_URL', 'redis://')
-    UI_URL = 'http://0.0.0.0:5000'
+    DRAMATIQ_BROKER_URL = os.getenv("REDIS_URL", "redis://")
+    UI_URL = "http://0.0.0.0:5000"
 
 
 class ProductionConfig(BaseConfig):
     DEBUG = False
     # https://docs.sqlalchemy.org/en/13/core/pooling.html#using-connection-pools-with-multiprocessing-or-os-fork  # noqa
     SQLALCHEMY_ENGINE_OPTIONS = (
-        {'poolclass': NullPool}
-        if os.getenv('DATABASE_DISABLE_POOLING', 'False') == 'True'
+        {"poolclass": NullPool}
+        if os.getenv("DATABASE_DISABLE_POOLING", "False") == "True"
         else {}
     )
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
-    SECRET_KEY = os.getenv('APP_SECRET_KEY')
-    DRAMATIQ_BROKER_URL = os.getenv('REDIS_URL', 'redis://')
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
+    SECRET_KEY = os.getenv("APP_SECRET_KEY")
+    DRAMATIQ_BROKER_URL = os.getenv("REDIS_URL", "redis://")

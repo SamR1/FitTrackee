@@ -163,7 +163,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
 
   #user-moderation {
     padding: 0 0 $default-padding;

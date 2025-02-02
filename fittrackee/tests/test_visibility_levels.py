@@ -8,7 +8,7 @@ from fittrackee.visibility_levels import (
 
 class TestMapVisibility:
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [
             VisibilityLevel.PUBLIC,
             VisibilityLevel.FOLLOWERS,
@@ -28,7 +28,7 @@ class TestMapVisibility:
         )
 
     @pytest.mark.parametrize(
-        'input_visibility, expected_visibility',
+        "input_visibility, expected_visibility",
         [
             (VisibilityLevel.PUBLIC, VisibilityLevel.FOLLOWERS),
             (VisibilityLevel.FOLLOWERS, VisibilityLevel.FOLLOWERS),
@@ -49,7 +49,7 @@ class TestMapVisibility:
         )
 
     @pytest.mark.parametrize(
-        'input_visibility',
+        "input_visibility",
         [
             VisibilityLevel.PUBLIC,
             VisibilityLevel.FOLLOWERS,

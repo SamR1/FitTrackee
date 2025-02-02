@@ -22,12 +22,13 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
 )
-from fittrackee.equipments.models import Equipment
+from fittrackee.equipments.models import Equipment, WorkoutEquipment
 from fittrackee.equipments.utils import (
     SPORT_EQUIPMENT_TYPES,
     handle_equipments,
 )
 from fittrackee.oauth2.server import require_auth
+from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,
     DataNotFoundErrorResponse,
@@ -44,9 +45,8 @@ from fittrackee.users.models import User, UserSportPreference
 from fittrackee.utils import decode_short_id
 from fittrackee.visibility_levels import can_view
 
-from ..reports.models import ReportActionAppeal
 from .decorators import check_workout
-from .models import Sport, Workout, WorkoutEquipment, WorkoutLike
+from .models import Sport, Workout, WorkoutLike
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
     WorkoutGPXException,
@@ -62,7 +62,7 @@ from .utils.workouts import (
     process_files,
 )
 
-workouts_blueprint = Blueprint('workouts', __name__)
+workouts_blueprint = Blueprint("workouts", __name__)
 
 DEFAULT_WORKOUTS_PER_PAGE = 5
 MAX_WORKOUTS_PER_PAGE = 100
@@ -70,8 +70,8 @@ MAX_WORKOUTS_TO_SEND = 5
 DEFAULT_WORKOUT_LIKES_PER_PAGE = 10
 
 
-@workouts_blueprint.route('/workouts', methods=['GET'])
-@require_auth(scopes=['workouts:read'])
+@workouts_blueprint.route("/workouts", methods=["GET"])
+@require_auth(scopes=["workouts:read"])
 def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     Get workouts for the authenticated user.
@@ -264,118 +264,90 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     """
     try:
         params = request.args.copy()
-        page = int(params.get('page', 1))
+        page = int(params.get("page", 1))
         date_from, date_to = get_datetime_from_request_args(params, auth_user)
-        distance_from = params.get('distance_from')
-        distance_to = params.get('distance_to')
-        duration_from = params.get('duration_from')
-        duration_to = params.get('duration_to')
-        ave_speed_from = params.get('ave_speed_from')
-        ave_speed_to = params.get('ave_speed_to')
-        max_speed_from = params.get('max_speed_from')
-        max_speed_to = params.get('max_speed_to')
-        order_by = params.get('order_by', 'workout_date')
+        distance_from = params.get("distance_from")
+        distance_to = params.get("distance_to")
+        duration_from = params.get("duration_from")
+        duration_to = params.get("duration_to")
+        ave_speed_from = params.get("ave_speed_from")
+        ave_speed_to = params.get("ave_speed_to")
+        max_speed_from = params.get("max_speed_from")
+        max_speed_to = params.get("max_speed_to")
+        order_by = params.get("order_by", "workout_date")
         workout_column = getattr(
-            Workout, 'moving' if order_by == 'duration' else order_by
+            Workout, "moving" if order_by == "duration" else order_by
         )
-        order = params.get('order', 'desc')
-        sport_id = params.get('sport_id')
-        title = params.get('title')
-        notes = params.get('notes')
-        description = params.get('description')
-        if 'equipment_id' in params:
-            if params['equipment_id'] == "none":
+        order = params.get("order", "desc")
+        sport_id = params.get("sport_id")
+        title = params.get("title")
+        notes = params.get("notes")
+        description = params.get("description")
+        if "equipment_id" in params:
+            if params["equipment_id"] == "none":
                 equipment_id: Union[str, int, None] = "none"
             else:
-                equipment_uuid = decode_short_id(params['equipment_id'])
+                equipment_uuid = decode_short_id(params["equipment_id"])
                 equipment = Equipment.query.filter_by(
                     uuid=equipment_uuid
                 ).first()
                 equipment_id = equipment.id if equipment else 0
         else:
             equipment_id = None
-        per_page = int(params.get('per_page', DEFAULT_WORKOUTS_PER_PAGE))
+        per_page = int(params.get("per_page", DEFAULT_WORKOUTS_PER_PAGE))
         if per_page > MAX_WORKOUTS_PER_PAGE:
             per_page = MAX_WORKOUTS_PER_PAGE
 
+        filters = [
+            Workout.user_id == auth_user.id,
+            Workout.suspended_at == None,  # noqa
+        ]
+        if sport_id:
+            filters.append(Workout.sport_id == sport_id)
+        if title:
+            filters.append(Workout.title.ilike(f"%{title}%"))
+        if notes:
+            filters.append(Workout.notes.ilike(f"%{notes}%"))
+        if description:
+            filters.append(Workout.description.ilike(f"%{description}%"))
+        if date_from:
+            filters.append(Workout.workout_date >= date_from)
+        if date_to:
+            filters.append(
+                Workout.workout_date < date_to + timedelta(seconds=1)
+            )
+        if distance_from:
+            filters.append(Workout.distance >= float(distance_from))
+        if distance_to:
+            filters.append(Workout.distance <= float(distance_to))
+        if duration_from:
+            filters.append(
+                Workout.moving >= convert_in_duration(duration_from)
+            )
+        if duration_to:
+            filters.append(Workout.moving <= convert_in_duration(duration_to))
+        if ave_speed_from:
+            filters.append(Workout.ave_speed >= float(ave_speed_from))
+        if ave_speed_to:
+            filters.append(Workout.ave_speed <= float(ave_speed_to))
+        if max_speed_from:
+            filters.append(Workout.max_speed >= float(max_speed_from))
+        if max_speed_to:
+            filters.append(Workout.max_speed <= float(max_speed_to))
+        if equipment_id == "none":
+            filters.append(WorkoutEquipment.c.equipment_id == None)  # noqa
+        if equipment_id == "none":
+            filters.append(WorkoutEquipment.c.equipment_id == None)  # noqa
+        elif equipment_id is not None:
+            filters.append(WorkoutEquipment.c.equipment_id == equipment_id)
+
         workouts_pagination = (
             Workout.query.outerjoin(WorkoutEquipment)
-            .filter(
-                Workout.user_id == auth_user.id,
-                Workout.sport_id == sport_id if sport_id else True,
-                Workout.title.ilike(f"%{title}%") if title else True,
-                Workout.notes.ilike(f"%{notes}%") if notes else True,
-                (
-                    Workout.description.ilike(f"%{description}%")
-                    if description
-                    else True
-                ),
-                Workout.workout_date >= date_from if date_from else True,
-                (
-                    Workout.workout_date < date_to + timedelta(seconds=1)
-                    if date_to
-                    else True
-                ),
-                (
-                    Workout.distance >= float(distance_from)
-                    if distance_from
-                    else True
-                ),
-                (
-                    Workout.distance <= float(distance_to)
-                    if distance_to
-                    else True
-                ),
-                (
-                    Workout.moving >= convert_in_duration(duration_from)
-                    if duration_from
-                    else True
-                ),
-                (
-                    Workout.moving <= convert_in_duration(duration_to)
-                    if duration_to
-                    else True
-                ),
-                (
-                    Workout.ave_speed >= float(ave_speed_from)
-                    if ave_speed_from
-                    else True
-                ),
-                (
-                    Workout.ave_speed <= float(ave_speed_to)
-                    if ave_speed_to
-                    else True
-                ),
-                (
-                    Workout.max_speed >= float(max_speed_from)
-                    if max_speed_from
-                    else True
-                ),
-                (
-                    Workout.max_speed <= float(max_speed_to)
-                    if max_speed_to
-                    else True
-                ),
-                (
-                    Workout.max_speed <= float(max_speed_to)
-                    if max_speed_to
-                    else True
-                ),
-                (
-                    WorkoutEquipment.c.equipment_id == None  # noqa
-                    if equipment_id == 'none'
-                    else (
-                        WorkoutEquipment.c.equipment_id == equipment_id
-                        if equipment_id is not None
-                        else True
-                    )
-                ),
-                Workout.suspended_at == None,  # noqa
-            )
+            .filter(*filters)
             .order_by(
                 (
                     asc(workout_column)
-                    if order == 'asc'
+                    if order == "asc"
                     else desc(workout_column)
                 ),
             )
@@ -384,12 +356,12 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
 
         workouts = workouts_pagination.items
         with_equipments = (
-            params.get('return_equipments', 'false').lower() == 'true'
+            params.get("return_equipments", "false").lower() == "true"
         )
         return {
-            'status': 'success',
-            'data': {
-                'workouts': [
+            "status": "success",
+            "data": {
+                "workouts": [
                     workout.serialize(
                         user=auth_user,
                         params=params,
@@ -398,12 +370,12 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                     for workout in workouts
                 ]
             },
-            'pagination': {
-                'has_next': workouts_pagination.has_next,
-                'has_prev': workouts_pagination.has_prev,
-                'page': workouts_pagination.page,
-                'pages': workouts_pagination.pages,
-                'total': workouts_pagination.total,
+            "pagination": {
+                "has_next": workouts_pagination.has_next,
+                "has_prev": workouts_pagination.has_prev,
+                "page": workouts_pagination.page,
+                "pages": workouts_pagination.pages,
+                "total": workouts_pagination.total,
             },
         }
     except Exception as e:
@@ -411,9 +383,9 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
 
 
 @workouts_blueprint.route(
-    '/workouts/<string:workout_short_id>', methods=['GET']
+    "/workouts/<string:workout_short_id>", methods=["GET"]
 )
-@require_auth(scopes=['workouts:read'], optional_auth_user=True)
+@require_auth(scopes=["workouts:read"], optional_auth_user=True)
 @check_workout(only_owner=False)
 def get_workout(
     auth_user: Optional[User], workout: Workout, workout_short_id: str
@@ -523,8 +495,8 @@ def get_workout(
 
     """
     return {
-        'status': 'success',
-        'data': {'workouts': [workout.serialize(user=auth_user, light=False)]},
+        "status": "success",
+        "data": {"workouts": [workout.serialize(user=auth_user, light=False)]},
     }
 
 
@@ -537,7 +509,7 @@ def get_workout_data(
     """Get data from workout gpx file"""
     not_found_response = DataNotFoundErrorResponse(
         data_type=data_type,
-        message=f'workout not found (id: {workout_short_id})',
+        message=f"workout not found (id: {workout_short_id})",
     )
     workout_uuid = decode_short_id(workout_short_id)
     workout = Workout.query.filter_by(uuid=workout_uuid).first()
@@ -546,27 +518,27 @@ def get_workout_data(
 
     if not can_view(
         workout,
-        'calculated_analysis_visibility'
-        if data_type == 'chart_data'
-        else 'calculated_map_visibility',
+        "calculated_analysis_visibility"
+        if data_type == "chart_data"
+        else "calculated_map_visibility",
         auth_user,
     ):
         return not_found_response
 
-    if not workout.gpx or workout.gpx == '':
+    if not workout.gpx or workout.gpx == "":
         return NotFoundErrorResponse(
-            f'no gpx file for this workout (id: {workout_short_id})'
+            f"no gpx file for this workout (id: {workout_short_id})"
         )
 
     try:
         absolute_gpx_filepath = get_absolute_file_path(workout.gpx)
         chart_data_content: Optional[List] = []
-        if data_type == 'chart_data':
+        if data_type == "chart_data":
             chart_data_content = get_chart_data(
                 absolute_gpx_filepath, segment_id
             )
         else:  # data_type == 'gpx'
-            with open(absolute_gpx_filepath, encoding='utf-8') as f:
+            with open(absolute_gpx_filepath, encoding="utf-8") as f:
                 gpx_content = f.read()
                 if segment_id is not None:
                     gpx_segment_content = extract_segment_from_gpx_file(
@@ -574,20 +546,20 @@ def get_workout_data(
                     )
     except WorkoutGPXException as e:
         appLog.error(e.message)
-        if e.status == 'not found':
+        if e.status == "not found":
             return NotFoundErrorResponse(e.message)
         return InternalServerErrorResponse(e.message)
     except Exception as e:
         return handle_error_and_return_response(e)
 
     return {
-        'status': 'success',
-        'message': '',
-        'data': (
+        "status": "success",
+        "message": "",
+        "data": (
             {
                 data_type: (
                     chart_data_content
-                    if data_type == 'chart_data'
+                    if data_type == "chart_data"
                     else (
                         gpx_content
                         if segment_id is None
@@ -600,9 +572,9 @@ def get_workout_data(
 
 
 @workouts_blueprint.route(
-    '/workouts/<string:workout_short_id>/gpx', methods=['GET']
+    "/workouts/<string:workout_short_id>/gpx", methods=["GET"]
 )
-@require_auth(scopes=['workouts:read'], optional_auth_user=True)
+@require_auth(scopes=["workouts:read"], optional_auth_user=True)
 def get_workout_gpx(
     auth_user: Optional[User], workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
@@ -650,13 +622,13 @@ def get_workout_gpx(
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """
-    return get_workout_data(auth_user, workout_short_id, 'gpx')
+    return get_workout_data(auth_user, workout_short_id, "gpx")
 
 
 @workouts_blueprint.route(
-    '/workouts/<string:workout_short_id>/chart_data', methods=['GET']
+    "/workouts/<string:workout_short_id>/chart_data", methods=["GET"]
 )
-@require_auth(scopes=['workouts:read'], optional_auth_user=True)
+@require_auth(scopes=["workouts:read"], optional_auth_user=True)
 def get_workout_chart_data(
     auth_user: Optional[User], workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
@@ -723,14 +695,14 @@ def get_workout_chart_data(
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """
-    return get_workout_data(auth_user, workout_short_id, 'chart_data')
+    return get_workout_data(auth_user, workout_short_id, "chart_data")
 
 
 @workouts_blueprint.route(
-    '/workouts/<string:workout_short_id>/gpx/segment/<int:segment_id>',
-    methods=['GET'],
+    "/workouts/<string:workout_short_id>/gpx/segment/<int:segment_id>",
+    methods=["GET"],
 )
-@require_auth(scopes=['workouts:read'], optional_auth_user=True)
+@require_auth(scopes=["workouts:read"], optional_auth_user=True)
 def get_segment_gpx(
     auth_user: Optional[User], workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
@@ -778,14 +750,14 @@ def get_segment_gpx(
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """
-    return get_workout_data(auth_user, workout_short_id, 'gpx', segment_id)
+    return get_workout_data(auth_user, workout_short_id, "gpx", segment_id)
 
 
 @workouts_blueprint.route(
-    '/workouts/<string:workout_short_id>/chart_data/segment/<int:segment_id>',
-    methods=['GET'],
+    "/workouts/<string:workout_short_id>/chart_data/segment/<int:segment_id>",
+    methods=["GET"],
 )
-@require_auth(scopes=['workouts:read'], optional_auth_user=True)
+@require_auth(scopes=["workouts:read"], optional_auth_user=True)
 def get_segment_chart_data(
     auth_user: Optional[User], workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
@@ -853,14 +825,14 @@ def get_segment_chart_data(
 
     """
     return get_workout_data(
-        auth_user, workout_short_id, 'chart_data', segment_id
+        auth_user, workout_short_id, "chart_data", segment_id
     )
 
 
 @workouts_blueprint.route(
-    '/workouts/<string:workout_short_id>/gpx/download', methods=['GET']
+    "/workouts/<string:workout_short_id>/gpx/download", methods=["GET"]
 )
-@require_auth(scopes=['workouts:read'])
+@require_auth(scopes=["workouts:read"])
 def download_workout_gpx(
     auth_user: User, workout_short_id: str
 ) -> Union[HttpResponse, Response]:
@@ -901,25 +873,25 @@ def download_workout_gpx(
     ).first()
     if not workout:
         return DataNotFoundErrorResponse(
-            data_type='workout',
-            message=f'workout not found (id: {workout_short_id})',
+            data_type="workout",
+            message=f"workout not found (id: {workout_short_id})",
         )
 
     if workout.gpx is None:
         return DataNotFoundErrorResponse(
-            data_type='gpx',
-            message=f'no gpx file for workout (id: {workout_short_id})',
+            data_type="gpx",
+            message=f"no gpx file for workout (id: {workout_short_id})",
         )
 
     return send_from_directory(
-        current_app.config['UPLOAD_FOLDER'],
+        current_app.config["UPLOAD_FOLDER"],
         workout.gpx,
-        mimetype='application/gpx+xml',
+        mimetype="application/gpx+xml",
         as_attachment=True,
     )
 
 
-@workouts_blueprint.route('/workouts/map/<map_id>', methods=['GET'])
+@workouts_blueprint.route("/workouts/map/<map_id>", methods=["GET"])
 @limiter.exempt
 def get_map(map_id: int) -> Union[HttpResponse, Response]:
     """
@@ -955,19 +927,19 @@ def get_map(map_id: int) -> Union[HttpResponse, Response]:
     try:
         workout = Workout.query.filter_by(map_id=map_id).first()
         if not workout:
-            return NotFoundErrorResponse('Map does not exist.')
+            return NotFoundErrorResponse("Map does not exist.")
         return send_from_directory(
-            current_app.config['UPLOAD_FOLDER'],
+            current_app.config["UPLOAD_FOLDER"],
             workout.map,
         )
     except NotFound:
-        return NotFoundErrorResponse('Map file does not exist.')
+        return NotFoundErrorResponse("Map file does not exist.")
     except Exception as e:
         return handle_error_and_return_response(e)
 
 
 @workouts_blueprint.route(
-    '/workouts/map_tile/<s>/<z>/<x>/<y>.png', methods=['GET']
+    "/workouts/map_tile/<s>/<z>/<x>/<y>.png", methods=["GET"]
 )
 @limiter.exempt
 def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
@@ -995,25 +967,25 @@ def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
     Status codes are status codes returned by tile server
 
     """
-    url = current_app.config['TILE_SERVER']['URL'].format(
+    url = current_app.config["TILE_SERVER"]["URL"].format(
         s=secure_filename(s),
         z=secure_filename(z),
         x=secure_filename(x),
         y=secure_filename(y),
     )
-    headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:88.0)'}
+    headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:88.0)"}
     response = requests.get(url, headers=headers, timeout=30)
     return (
         Response(
             response.content,
-            content_type=response.headers['content-type'],
+            content_type=response.headers["content-type"],
         ),
         response.status_code,
     )
 
 
-@workouts_blueprint.route('/workouts', methods=['POST'])
-@require_auth(scopes=['workouts:write'])
+@workouts_blueprint.route("/workouts", methods=["POST"])
+@require_auth(scopes=["workouts:write"])
 def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Post a workout with a gpx file.
@@ -1205,32 +1177,32 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     try:
         error_response = get_error_response_if_file_is_invalid(
-            'workout', request
+            "workout", request
         )
     except RequestEntityTooLarge as e:
         appLog.error(e)
         return PayloadTooLargeErrorResponse(
-            file_type='workout',
+            file_type="workout",
             file_size=request.content_length,
-            max_size=current_app.config['MAX_CONTENT_LENGTH'],
+            max_size=current_app.config["MAX_CONTENT_LENGTH"],
         )
     if error_response:
         return error_response
 
     try:
-        workout_data = json.loads(request.form['data'], strict=False)
+        workout_data = json.loads(request.form["data"], strict=False)
     except json.decoder.JSONDecodeError:
         return InvalidPayloadErrorResponse()
 
-    if not workout_data or workout_data.get('sport_id') is None:
+    if not workout_data or workout_data.get("sport_id") is None:
         return InvalidPayloadErrorResponse()
 
     if "equipment_ids" in workout_data:
         try:
             equipments_list = handle_equipments(
-                workout_data['equipment_ids'],
+                workout_data["equipment_ids"],
                 auth_user,
-                workout_data['sport_id'],
+                workout_data["sport_id"],
             )
         except InvalidEquipmentsException as e:
             return InvalidPayloadErrorResponse(str(e))
@@ -1238,15 +1210,15 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             return EquipmentInvalidPayloadErrorResponse(
                 equipment_id=e.equipment_id, message=e.message, status=e.status
             )
-        workout_data['equipments_list'] = equipments_list
+        workout_data["equipments_list"] = equipments_list
 
-    workout_file = request.files['file']
+    workout_file = request.files["file"]
     upload_dir = os.path.join(
-        current_app.config['UPLOAD_FOLDER'], 'workouts', str(auth_user.id)
+        current_app.config["UPLOAD_FOLDER"], "workouts", str(auth_user.id)
     )
     folders = {
-        'extract_dir': os.path.join(upload_dir, 'extract'),
-        'tmp_dir': os.path.join(upload_dir, 'tmp'),
+        "extract_dir": os.path.join(upload_dir, "extract"),
+        "tmp_dir": os.path.join(upload_dir, "tmp"),
     }
 
     try:
@@ -1255,31 +1227,31 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         )
         if len(new_workouts) > 0:
             response_object = {
-                'status': 'created',
-                'data': {
-                    'workouts': [
+                "status": "created",
+                "data": {
+                    "workouts": [
                         new_workout.serialize(user=auth_user, light=False)
                         for new_workout in new_workouts
                     ]
                 },
             }
         else:
-            return DataInvalidPayloadErrorResponse('workouts', 'fail')
+            return DataInvalidPayloadErrorResponse("workouts", "fail")
     except WorkoutException as e:
         db.session.rollback()
         if e.e:
             appLog.error(e.e)
-        if e.status == 'error':
+        if e.status == "error":
             return InternalServerErrorResponse(e.message)
         return InvalidPayloadErrorResponse(e.message, e.status)
 
-    shutil.rmtree(folders['extract_dir'], ignore_errors=True)
-    shutil.rmtree(folders['tmp_dir'], ignore_errors=True)
+    shutil.rmtree(folders["extract_dir"], ignore_errors=True)
+    shutil.rmtree(folders["tmp_dir"], ignore_errors=True)
     return response_object, 201
 
 
-@workouts_blueprint.route('/workouts/no_gpx', methods=['POST'])
-@require_auth(scopes=['workouts:write'])
+@workouts_blueprint.route("/workouts/no_gpx", methods=["POST"])
+@require_auth(scopes=["workouts:write"])
 def post_workout_no_gpx(
     auth_user: User,
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -1448,15 +1420,15 @@ def post_workout_no_gpx(
     workout_data = request.get_json()
     if (
         not workout_data
-        or not workout_data.get('sport_id')
-        or not workout_data.get('duration')
-        or not workout_data.get('distance')
-        or not workout_data.get('workout_date')
+        or not workout_data.get("sport_id")
+        or not workout_data.get("duration")
+        or not workout_data.get("distance")
+        or not workout_data.get("workout_date")
     ):
         return InvalidPayloadErrorResponse()
 
-    ascent = workout_data.get('ascent')
-    descent = workout_data.get('descent')
+    ascent = workout_data.get("ascent")
+    descent = workout_data.get("descent")
     try:
         if (
             (ascent is None and descent is not None)
@@ -1474,10 +1446,10 @@ def post_workout_no_gpx(
     # sport preferences exists
     if "equipment_ids" not in workout_data:
         sport_preferences = UserSportPreference.query.filter_by(
-            user_id=auth_user.id, sport_id=workout_data['sport_id']
+            user_id=auth_user.id, sport_id=workout_data["sport_id"]
         ).first()
         if sport_preferences:
-            workout_data['equipments_list'] = [
+            workout_data["equipments_list"] = [
                 equipment
                 for equipment in sport_preferences.default_equipments.all()
                 if equipment.is_active is True
@@ -1485,11 +1457,11 @@ def post_workout_no_gpx(
     else:
         try:
             equipments_list = handle_equipments(
-                workout_data.get('equipment_ids'),
+                workout_data.get("equipment_ids"),
                 auth_user,
-                workout_data['sport_id'],
+                workout_data["sport_id"],
             )
-            workout_data['equipments_list'] = equipments_list
+            workout_data["equipments_list"] = equipments_list
         except InvalidEquipmentsException as e:
             return InvalidPayloadErrorResponse(str(e))
         except InvalidEquipmentException as e:
@@ -1504,9 +1476,9 @@ def post_workout_no_gpx(
 
         return (
             {
-                'status': 'created',
-                'data': {
-                    'workouts': [
+                "status": "created",
+                "data": {
+                    "workouts": [
                         new_workout.serialize(user=auth_user, light=False)
                     ]
                 },
@@ -1517,16 +1489,16 @@ def post_workout_no_gpx(
     except (exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(
             error=e,
-            message='Error during workout save.',
-            status='fail',
+            message="Error during workout save.",
+            status="fail",
             db=db,
         )
 
 
 @workouts_blueprint.route(
-    '/workouts/<string:workout_short_id>', methods=['PATCH']
+    "/workouts/<string:workout_short_id>", methods=["PATCH"]
 )
-@require_auth(scopes=['workouts:write'])
+@require_auth(scopes=["workouts:write"])
 @check_workout()
 def update_workout(
     auth_user: User, workout: Workout, workout_short_id: str
@@ -1707,21 +1679,21 @@ def update_workout(
                 # provided.
                 if (
                     (
-                        'ascent' in workout_data
-                        and 'descent' not in workout_data
+                        "ascent" in workout_data
+                        and "descent" not in workout_data
                     )
                     or (
-                        'ascent' not in workout_data
-                        and 'descent' in workout_data
+                        "ascent" not in workout_data
+                        and "descent" in workout_data
                     )
                 ) or (
                     not (
-                        workout_data.get('ascent') is None
-                        and workout_data.get('descent') is None
+                        workout_data.get("ascent") is None
+                        and workout_data.get("descent") is None
                     )
                     and (
-                        float(workout_data.get('ascent')) < 0
-                        or float(workout_data.get('descent')) < 0
+                        float(workout_data.get("ascent")) < 0
+                        or float(workout_data.get("descent")) < 0
                     )
                 ):
                     return InvalidPayloadErrorResponse()
@@ -1729,21 +1701,21 @@ def update_workout(
                 return InvalidPayloadErrorResponse()
 
         sport = None
-        if 'sport_id' in workout_data:
-            sport = Sport.query.filter_by(id=workout_data['sport_id']).first()
+        if "sport_id" in workout_data:
+            sport = Sport.query.filter_by(id=workout_data["sport_id"]).first()
             if not sport:
                 return InvalidPayloadErrorResponse(
                     f"sport id {workout_data['sport_id']} not found"
                 )
 
-        if 'equipment_ids' in workout_data:
+        if "equipment_ids" in workout_data:
             sport_id = (
                 workout_data["sport_id"]
                 if workout_data.get("sport_id")
                 else workout.sport_id
             )
-            workout_data['equipments_list'] = handle_equipments(
-                workout_data.get('equipment_ids'),
+            workout_data["equipments_list"] = handle_equipments(
+                workout_data.get("equipment_ids"),
                 auth_user,
                 sport_id,
                 workout.equipments,
@@ -1755,15 +1727,15 @@ def update_workout(
                 if sport.label not in SPORT_EQUIPMENT_TYPES.get(
                     equipment.equipment_type.label, []
                 ):
-                    workout_data['equipments_list'] = []
+                    workout_data["equipments_list"] = []
 
         workout = edit_workout(workout, workout_data, auth_user)
         db.session.commit()
 
         return {
-            'status': 'success',
-            'data': {
-                'workouts': [workout.serialize(user=auth_user, light=False)]
+            "status": "success",
+            "data": {
+                "workouts": [workout.serialize(user=auth_user, light=False)]
             },
         }
 
@@ -1778,9 +1750,9 @@ def update_workout(
 
 
 @workouts_blueprint.route(
-    '/workouts/<string:workout_short_id>', methods=['DELETE']
+    "/workouts/<string:workout_short_id>", methods=["DELETE"]
 )
-@require_auth(scopes=['workouts:write'])
+@require_auth(scopes=["workouts:write"])
 @check_workout()
 def delete_workout(
     auth_user: User, workout: Workout, workout_short_id: str
@@ -1826,7 +1798,7 @@ def delete_workout(
 
         db.session.delete(workout)
         db.session.commit()
-        return {'status': 'no content'}, 204
+        return {"status": "no content"}, 204
     except (
         exc.IntegrityError,
         exc.OperationalError,
@@ -1837,9 +1809,9 @@ def delete_workout(
 
 
 @workouts_blueprint.route(
-    '/workouts/<string:workout_short_id>/like', methods=['POST']
+    "/workouts/<string:workout_short_id>/like", methods=["POST"]
 )
-@require_auth(scopes=['workouts:write'])
+@require_auth(scopes=["workouts:write"])
 @check_workout(only_owner=False)
 def like_workout(
     auth_user: User, workout: Workout, workout_short_id: str
@@ -1940,15 +1912,15 @@ def like_workout(
     except IntegrityError:
         db.session.rollback()
     return {
-        'status': 'success',
-        'data': {'workouts': [workout.serialize(user=auth_user, light=False)]},
+        "status": "success",
+        "data": {"workouts": [workout.serialize(user=auth_user, light=False)]},
     }, 200
 
 
 @workouts_blueprint.route(
-    '/workouts/<string:workout_short_id>/like/undo', methods=['POST']
+    "/workouts/<string:workout_short_id>/like/undo", methods=["POST"]
 )
-@require_auth(scopes=['workouts:write'])
+@require_auth(scopes=["workouts:write"])
 @check_workout(only_owner=False)
 def undo_workout_like(
     auth_user: User, workout: Workout, workout_short_id: str
@@ -2049,15 +2021,15 @@ def undo_workout_like(
         db.session.commit()
 
     return {
-        'status': 'success',
-        'data': {'workouts': [workout.serialize(user=auth_user, light=False)]},
+        "status": "success",
+        "data": {"workouts": [workout.serialize(user=auth_user, light=False)]},
     }, 200
 
 
 @workouts_blueprint.route(
-    '/workouts/<string:workout_short_id>/likes', methods=['GET']
+    "/workouts/<string:workout_short_id>/likes", methods=["GET"]
 )
-@require_auth(scopes=['workouts:read'], optional_auth_user=True)
+@require_auth(scopes=["workouts:read"], optional_auth_user=True)
 @check_workout(only_owner=False)
 def get_workout_likes(
     auth_user: Optional[User], workout: Workout, workout_short_id: str
@@ -2131,7 +2103,7 @@ def get_workout_likes(
 
     """
     params = request.args.copy()
-    page = int(params.get('page', 1))
+    page = int(params.get("page", 1))
     likes_pagination = (
         User.query.join(WorkoutLike, User.id == WorkoutLike.user_id)
         .filter(WorkoutLike.workout_id == workout.id)
@@ -2142,16 +2114,16 @@ def get_workout_likes(
     )
     users = likes_pagination.items
     return {
-        'status': 'success',
-        'data': {
-            'likes': [user.serialize(current_user=auth_user) for user in users]
+        "status": "success",
+        "data": {
+            "likes": [user.serialize(current_user=auth_user) for user in users]
         },
-        'pagination': {
-            'has_next': likes_pagination.has_next,
-            'has_prev': likes_pagination.has_prev,
-            'page': likes_pagination.page,
-            'pages': likes_pagination.pages,
-            'total': likes_pagination.total,
+        "pagination": {
+            "has_next": likes_pagination.has_next,
+            "has_prev": likes_pagination.has_prev,
+            "page": likes_pagination.page,
+            "pages": likes_pagination.pages,
+            "total": likes_pagination.total,
         },
     }
 

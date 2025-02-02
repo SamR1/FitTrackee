@@ -12,8 +12,8 @@ from fittrackee.workouts.models import Sport
 from fittrackee.workouts.utils.workouts import get_gpx_info, process_files
 
 folders = {
-    'extract_dir': '/tmp/fitTrackee/uploads',
-    'tmp_dir': '/tmp/fitTrackee/uploads/tmp',
+    "extract_dir": "/tmp/fitTrackee/uploads",
+    "tmp_dir": "/tmp/fitTrackee/uploads/tmp",
 }
 moving_data = MovingData(
     moving_time=1,
@@ -26,7 +26,7 @@ moving_data = MovingData(
 
 class TestStoppedSpeedThreshold:
     @pytest.mark.parametrize(
-        'sport_id, expected_threshold',
+        "sport_id, expected_threshold",
         [(1, 1.0), (2, 0.1)],
     )
     def test_it_calls_get_moving_data_with_threshold_depending_on_sport(
@@ -41,18 +41,18 @@ class TestStoppedSpeedThreshold:
     ) -> None:
         with (
             patch(
-                'fittrackee.workouts.utils.workouts.get_new_file_path',
-                return_value='/tmp/fitTrackee/uploads/test.png',
+                "fittrackee.workouts.utils.workouts.get_new_file_path",
+                return_value="/tmp/fitTrackee/uploads/test.png",
             ),
             patch(
-                'gpxpy.gpx.GPXTrackSegment.get_moving_data',
+                "gpxpy.gpx.GPXTrackSegment.get_moving_data",
                 return_value=moving_data,
             ) as gpx_track_segment_mock,
         ):
             process_files(
                 auth_user=user_1,
                 folders=folders,
-                workout_data={'sport_id': sport_id},
+                workout_data={"sport_id": sport_id},
                 workout_file=gpx_file_storage,
             )
 
@@ -78,18 +78,18 @@ class TestStoppedSpeedThreshold:
         user_1_sport_1_preference.stopped_speed_threshold = expected_threshold
         with (
             patch(
-                'fittrackee.workouts.utils.workouts.get_new_file_path',
-                return_value='/tmp/fitTrackee/uploads/test.png',
+                "fittrackee.workouts.utils.workouts.get_new_file_path",
+                return_value="/tmp/fitTrackee/uploads/test.png",
             ),
             patch(
-                'gpxpy.gpx.GPXTrackSegment.get_moving_data',
+                "gpxpy.gpx.GPXTrackSegment.get_moving_data",
                 return_value=moving_data,
             ) as gpx_track_segment_mock,
         ):
             process_files(
                 auth_user=user_1,
                 folders=folders,
-                workout_data={'sport_id': sport_1_cycling.id},
+                workout_data={"sport_id": sport_1_cycling.id},
                 workout_file=gpx_file_storage,
             )
 
@@ -105,7 +105,7 @@ class TestStoppedSpeedThreshold:
 
 
 class TestUseRawGpxSpeed:
-    @pytest.mark.parametrize('input_use_raw_gpx_speed', [True, False])
+    @pytest.mark.parametrize("input_use_raw_gpx_speed", [True, False])
     def test_it_calls_get_moving_data_with_user_use_raw_gpx_speed_preference(
         self,
         app: Flask,
@@ -117,18 +117,18 @@ class TestUseRawGpxSpeed:
         user_1.use_raw_gpx_speed = input_use_raw_gpx_speed
         with (
             patch(
-                'fittrackee.workouts.utils.workouts.get_new_file_path',
-                return_value='/tmp/fitTrackee/uploads/test.png',
+                "fittrackee.workouts.utils.workouts.get_new_file_path",
+                return_value="/tmp/fitTrackee/uploads/test.png",
             ),
             patch(
-                'gpxpy.gpx.GPXTrackSegment.get_moving_data',
+                "gpxpy.gpx.GPXTrackSegment.get_moving_data",
                 return_value=moving_data,
             ) as gpx_track_segment_mock,
         ):
             process_files(
                 auth_user=user_1,
                 folders=folders,
-                workout_data={'sport_id': sport_1_cycling.id},
+                workout_data={"sport_id": sport_1_cycling.id},
                 workout_file=gpx_file_storage,
             )
 
@@ -152,12 +152,12 @@ class TestGetGpxInfoStopTime:
         stopped_speed_threshold to 0 to avoid calculated stopped time
         in segments
         """
-        with patch('builtins.open', return_value=gpx_file):
+        with patch("builtins.open", return_value=gpx_file):
             gpx_data, _, _ = get_gpx_info(
                 gpx_file=random_string(), stopped_speed_threshold=0.0
             )
 
-        assert gpx_data['stop_time'] == timedelta(seconds=0)
+        assert gpx_data["stop_time"] == timedelta(seconds=0)
 
     def test_stop_time_equals_to_stopped_time_sum_between_all_segments(
         self, gpx_file_with_3_segments: str
@@ -166,9 +166,9 @@ class TestGetGpxInfoStopTime:
         stopped_speed_threshold to 0 to avoid calculated stopped time
         in segments
         """
-        with patch('builtins.open', return_value=gpx_file_with_3_segments):
+        with patch("builtins.open", return_value=gpx_file_with_3_segments):
             gpx_data, _, _ = get_gpx_info(
                 gpx_file=random_string(), stopped_speed_threshold=0.0
             )
 
-        assert gpx_data['stop_time'] == timedelta(seconds=120)
+        assert gpx_data["stop_time"] == timedelta(seconds=120)

@@ -20,7 +20,7 @@ class InvalidNotificationTypeException(Exception):
 
 class InvalidUserRole(Exception):
     def __init__(self) -> None:
-        super().__init__('invalid role')
+        super().__init__("invalid role")
 
 
 class MissingAdminIdException(Exception):

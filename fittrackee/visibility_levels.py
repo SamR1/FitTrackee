@@ -3,14 +3,15 @@ from typing import TYPE_CHECKING, Optional, Union
 
 if TYPE_CHECKING:
     from fittrackee.comments.models import Comment
+    from fittrackee.equipments.models import Equipment
     from fittrackee.users.models import User
     from fittrackee.workouts.models import Workout
 
 
 class VisibilityLevel(str, Enum):  # to make enum serializable
-    PUBLIC = 'public'
-    FOLLOWERS = 'followers_only'  # only followers
-    PRIVATE = 'private'  # in case of comments, for mentioned users only
+    PUBLIC = "public"
+    FOLLOWERS = "followers_only"  # only followers
+    PRIVATE = "private"  # in case of comments, for mentioned users only
 
 
 def get_calculated_visibility(
@@ -27,11 +28,13 @@ def get_calculated_visibility(
 
 
 def can_view(
-    target_object: Union['Workout', 'Comment'],
+    target_object: Union["Workout", "Comment", "Equipment"],
     visibility: str,
-    user: Optional['User'] = None,
+    user: Optional["User"] = None,
     for_report: bool = False,
 ) -> bool:
+    from fittrackee.comments.models import Comment
+
     owner = target_object.user
     if user and (
         user.id == owner.id or (user.has_moderator_rights and for_report)
@@ -40,13 +43,10 @@ def can_view(
 
     if (
         target_object.__class__.__name__ == "Workout"
-        and target_object.suspended_at
+        and target_object.suspended_at  # type: ignore
     ):
         if not user:
             return False
-
-        from fittrackee.comments.models import Comment
-
         user_comments_count = Comment.query.filter_by(
             workout_id=target_object.id, user_id=user.id
         ).count()
@@ -64,7 +64,7 @@ def can_view(
         return False
 
     if (
-        target_object.__class__.__name__ == "Comment"
+        isinstance(target_object, Comment)
         and user in target_object.mentioned_users.all()
     ):
         return True

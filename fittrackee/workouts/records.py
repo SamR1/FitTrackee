@@ -7,11 +7,11 @@ from fittrackee.users.models import User
 
 from .models import Record
 
-records_blueprint = Blueprint('records', __name__)
+records_blueprint = Blueprint("records", __name__)
 
 
-@records_blueprint.route('/records', methods=['GET'])
-@require_auth(scopes=['workouts:read'])
+@records_blueprint.route("/records", methods=["GET"])
+@require_auth(scopes=["workouts:read"])
 def get_records(auth_user: User) -> Dict:
     """
     Get all records for authenticated user.
@@ -125,6 +125,6 @@ def get_records(auth_user: User) -> Dict:
         .all()
     )
     return {
-        'status': 'success',
-        'data': {'records': [record.serialize() for record in records]},
+        "status": "success",
+        "data": {"records": [record.serialize() for record in records]},
     }

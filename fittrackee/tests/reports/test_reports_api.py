@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List
 from unittest.mock import MagicMock, patch
 
@@ -270,7 +270,7 @@ class TestPostCommentReport(ReportTestCase):
             workout_cycling_user_1,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -359,7 +359,7 @@ class TestPostCommentReport(ReportTestCase):
 
         assert response.status_code == 201
         assert response.json == {"status": "created"}
-        new_report = Report.query.filter_by(reported_by=user_1.id).first()
+        new_report = Report.query.filter_by(reported_by=user_1.id).one()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -408,7 +408,7 @@ class TestPostCommentReport(ReportTestCase):
         assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(
             reported_by=user_1.id, object_type="comment"
-        ).first()
+        ).one()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -459,7 +459,7 @@ class TestPostCommentReport(ReportTestCase):
         assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(
             reported_by=user_1.id, object_type="comment"
-        ).first()
+        ).one()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -541,7 +541,7 @@ class TestPostWorkoutReport(ReportTestCase):
             workout_cycling_user_2,
             text_visibility=VisibilityLevel.PUBLIC,
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -624,7 +624,7 @@ class TestPostWorkoutReport(ReportTestCase):
 
         assert response.status_code == 201
         assert response.json == {"status": "created"}
-        new_report = Report.query.filter_by(reported_by=user_1.id).first()
+        new_report = Report.query.filter_by(reported_by=user_1.id).one()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -668,7 +668,7 @@ class TestPostWorkoutReport(ReportTestCase):
         assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(
             reported_by=user_1.id, object_type="workout"
-        ).first()
+        ).one()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -717,7 +717,7 @@ class TestPostWorkoutReport(ReportTestCase):
         assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(
             reported_by=user_1.id, object_type="workout"
-        ).first()
+        ).one()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -789,7 +789,7 @@ class TestPostUserReport(ReportTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
     ) -> None:
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -864,7 +864,7 @@ class TestPostUserReport(ReportTestCase):
 
         assert response.status_code == 201
         assert response.json == {"status": "created"}
-        new_report = Report.query.filter_by(reported_by=user_1.id).first()
+        new_report = Report.query.filter_by(reported_by=user_1.id).one()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -909,7 +909,7 @@ class TestPostUserReport(ReportTestCase):
         assert response.json == {"status": "created"}
         new_report = Report.query.filter_by(
             reported_by=user_1.id, object_type="user"
-        ).first()
+        ).one()
         assert new_report.note == report_note
         assert new_report.object_type == self.object_type
         assert new_report.reported_by == user_1.id
@@ -1348,7 +1348,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         reports = self.create_reports(
             user_2, user_3, user_4, workout_cycling_user_2
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         reports[1].updated_at = now
         reports[0].updated_at = now + timedelta(minutes=1)
         db.session.commit()
@@ -1422,7 +1422,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         reports = self.create_reports(
             user_2, user_3, user_4, workout_cycling_user_2
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         reports[1].updated_at = now
         reports[0].updated_at = now + timedelta(minutes=1)
         db.session.commit()
@@ -1924,7 +1924,7 @@ class TestPatchReport(ReportTestCase):
         response = client.patch(
             self.route.format(report_id=report.id),
             content_type="application/json",
-            data='{}',
+            data="{}",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -1937,7 +1937,7 @@ class TestPatchReport(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         comment = self.random_string()
 
         with travel(now, tick=False):
@@ -1971,7 +1971,7 @@ class TestPatchReport(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         comment = self.random_string()
 
         with travel(now, tick=False):
@@ -2000,13 +2000,13 @@ class TestPatchReport(ReportTestCase):
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         report.resolved = True
-        report.resolved_at = datetime.utcnow()
+        report.resolved_at = datetime.now(timezone.utc)
         report.resolved_by = user_1_moderator.id
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         comment = self.random_string()
 
         with travel(now, tick=False):
@@ -2038,14 +2038,14 @@ class TestPatchReport(ReportTestCase):
             reporter=user_3, reported_object=user_2_admin
         )
         report.resolved = True
-        resolved_time = datetime.utcnow()
+        resolved_time = datetime.now(timezone.utc)
         report.resolved_at = resolved_time
         report.resolved_by = user_2_admin.id
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        comment_time = datetime.utcnow()
+        comment_time = datetime.now(timezone.utc)
         comment = self.random_string()
 
         with travel(comment_time, tick=False):
@@ -2268,7 +2268,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             response = client.post(
@@ -2283,7 +2283,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
 
         assert response.status_code == 200
         assert (
-            User.query.filter_by(username=user_2.username).first().suspended_at
+            User.query.filter_by(username=user_2.username).one().suspended_at
             == now
         )
 
@@ -2294,7 +2294,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
 
         response = client.post(
@@ -2340,7 +2340,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         self, app: Flask, user_1_moderator: User, user_2: User, user_3: User
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
@@ -2358,11 +2358,11 @@ class TestPostReportActionForUserAction(ReportTestCase):
 
         assert response.status_code == 200
         assert (
-            User.query.filter_by(username=user_2.username).first().suspended_at
+            User.query.filter_by(username=user_2.username).one().suspended_at
             is None
         )
 
-    @pytest.mark.parametrize('input_action_type', USER_ACTION_TYPES)
+    @pytest.mark.parametrize("input_action_type", USER_ACTION_TYPES)
     def test_it_creates_report_action(
         self,
         app: Flask,
@@ -2373,7 +2373,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         if input_action_type == "user_unsuspension":
-            user_2.suspended_at = datetime.utcnow()
+            user_2.suspended_at = datetime.now(timezone.utc)
             db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
@@ -2428,7 +2428,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
-        updated_report = Report.query.filter_by(id=report.id).first()
+        updated_report = Report.query.filter_by(id=report.id).one()
         assert data["report"] == jsonify_dict(
             updated_report.serialize(user_1_moderator, full=True)
         )
@@ -2459,7 +2459,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         )
 
         response = client.post(
-            '/api/auth/register',
+            "/api/auth/register",
             data=json.dumps(
                 dict(
                     username=self.random_string(),
@@ -2469,10 +2469,10 @@ class TestPostReportActionForUserAction(ReportTestCase):
                     accepted_policy=True,
                 )
             ),
-            content_type='application/json',
+            content_type="application/json",
         )
 
-        self.assert_403(response, 'error, registration is disabled')
+        self.assert_403(response, "error, registration is disabled")
 
     def test_it_sends_an_email_on_user_suspension(
         self,
@@ -2509,7 +2509,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         user_unsuspension_email_mock: MagicMock,
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
-        user_2.suspended_at = datetime.utcnow()
+        user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
@@ -2684,7 +2684,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             response = client.post(
@@ -2700,7 +2700,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         assert response.status_code == 200
         assert (
             Workout.query.filter_by(id=workout_cycling_user_2.id)
-            .first()
+            .one()
             .suspended_at
             == now
         )
@@ -2721,7 +2721,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
 
         response = client.post(
@@ -2755,7 +2755,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
 
         response = client.post(
             self.route.format(report_id=report.id),
@@ -2770,7 +2770,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         assert response.status_code == 200
         assert (
             Workout.query.filter_by(id=workout_cycling_user_2.id)
-            .first()
+            .one()
             .suspended_at
             is None
         )
@@ -2840,7 +2840,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
-        updated_report = Report.query.filter_by(id=report.id).first()
+        updated_report = Report.query.filter_by(id=report.id).one()
         assert data["report"] == jsonify_dict(
             updated_report.serialize(user_1_moderator, full=True)
         )
@@ -2890,7 +2890,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         report = self.create_report(
             reporter=user_3, reported_object=workout_cycling_user_2
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
@@ -3048,7 +3048,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             response = client.post(
@@ -3062,9 +3062,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
             )
 
         assert response.status_code == 200
-        assert (
-            Comment.query.filter_by(id=comment.id).first().suspended_at == now
-        )
+        assert Comment.query.filter_by(id=comment.id).one().suspended_at == now
 
     def test_it_returns_400_when_when_comment_already_suspended(
         self,
@@ -3083,9 +3081,9 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             response = client.post(
@@ -3120,7 +3118,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
 
         response = client.post(
             self.route.format(report_id=report.id),
@@ -3134,7 +3132,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
 
         assert response.status_code == 200
         assert (
-            Comment.query.filter_by(id=comment.id).first().suspended_at is None
+            Comment.query.filter_by(id=comment.id).one().suspended_at is None
         )
 
     def test_it_creates_report_action(
@@ -3190,7 +3188,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             response = client.post(
@@ -3206,7 +3204,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
-        updated_report = Report.query.filter_by(id=report.id).first()
+        updated_report = Report.query.filter_by(id=report.id).one()
         assert data["report"] == jsonify_dict(
             updated_report.serialize(user_1_moderator, full=True)
         )
@@ -3266,7 +3264,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
             with_mentions=True,
         )
         report = self.create_report(reporter=user_2, reported_object=comment)
-        comment.suspended_at = datetime.utcnow()
+        comment.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
@@ -3325,7 +3323,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
 class TestProcessReportActionAppeal(
     CommentMixin, ReportMixin, ApiTestCaseMixin
 ):
-    route = '/api/appeals/{appeal_id}'
+    route = "/api/appeals/{appeal_id}"
 
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, user_1: User
@@ -3352,7 +3350,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal_id),
             data=json.dumps(dict(approved=False)),
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_403(response)
@@ -3369,7 +3367,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal_id),
             data=json.dumps(dict(approved=False)),
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
@@ -3399,7 +3397,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             data=json.dumps(input_data),
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(response)
@@ -3421,7 +3419,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(response, "user account has already been reactivated")
@@ -3452,7 +3450,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             data=json.dumps(input_data),
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
@@ -3460,7 +3458,7 @@ class TestProcessReportActionAppeal(
             "status": "success",
             "appeal": jsonify_dict(appeal.serialize(user_1_moderator)),
         }
-        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
+        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).one()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
 
@@ -3486,7 +3484,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         user_unsuspension_email_mock.send.assert_called_once()
@@ -3513,7 +3511,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": False, "reason": "not ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         appeal_rejected_email_mock.send.assert_called_once()
@@ -3547,7 +3545,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             data=json.dumps(input_data),
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
@@ -3555,7 +3553,7 @@ class TestProcessReportActionAppeal(
             "status": "success",
             "appeal": jsonify_dict(appeal.serialize(user_1_moderator)),
         }
-        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
+        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).one()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
 
@@ -3581,7 +3579,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         user_warning_lifting_email_mock.send.assert_called_once()
@@ -3608,7 +3606,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": False, "reason": "not ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         appeal_rejected_email_mock.send.assert_called_once()
@@ -3650,7 +3648,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             data=json.dumps(input_data),
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
@@ -3658,7 +3656,7 @@ class TestProcessReportActionAppeal(
             "status": "success",
             "appeal": jsonify_dict(appeal.serialize(user_1_moderator)),
         }
-        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
+        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).one()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
 
@@ -3692,7 +3690,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         comment_unsuspension_email_mock.send.assert_called_once()
@@ -3727,7 +3725,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": False, "reason": "not ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         appeal_rejected_email_mock.send.assert_called_once()
@@ -3763,7 +3761,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(response, "comment already reactivated")
@@ -3787,21 +3785,21 @@ class TestProcessReportActionAppeal(
         suspension_action = self.create_report_workout_action(
             user_1_moderator, user_2, workout_cycling_user_2
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_moderator.email
         )
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
             response = client.patch(
                 self.route.format(appeal_id=appeal.short_id),
                 data=json.dumps(input_data),
                 content_type="application/json",
-                headers=dict(Authorization=f'Bearer {auth_token}'),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         assert response.status_code == 200
@@ -3809,7 +3807,7 @@ class TestProcessReportActionAppeal(
             "status": "success",
             "appeal": jsonify_dict(appeal.serialize(user_1_moderator)),
         }
-        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).first()
+        appeal = ReportActionAppeal.query.filter_by(id=appeal.id).one()
         assert appeal.approved is input_data["approved"]
         assert appeal.reason == input_data["reason"]
 
@@ -3825,7 +3823,7 @@ class TestProcessReportActionAppeal(
         suspension_action = self.create_report_workout_action(
             user_1_moderator, user_2, workout_cycling_user_2
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         db.session.commit()
@@ -3837,7 +3835,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         workout_unsuspension_email_mock.send.assert_called_once()
@@ -3854,7 +3852,7 @@ class TestProcessReportActionAppeal(
         suspension_action = self.create_report_workout_action(
             user_1_moderator, user_2, workout_cycling_user_2
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         db.session.commit()
@@ -3866,7 +3864,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": False, "reason": "not ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         appeal_rejected_email_mock.send.assert_called_once()
@@ -3882,7 +3880,7 @@ class TestProcessReportActionAppeal(
         suspension_action = self.create_report_workout_action(
             user_1_moderator, user_2, workout_cycling_user_2
         )
-        workout_cycling_user_2.suspended_at = datetime.utcnow()
+        workout_cycling_user_2.suspended_at = datetime.now(timezone.utc)
         db.session.flush()
         appeal = self.create_action_appeal(suspension_action.id, user_2)
         db.session.commit()
@@ -3896,7 +3894,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {auth_token}'),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(response, "workout already reactivated")
@@ -3927,7 +3925,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal_id),
             data=json.dumps(dict(approved=False, reason="OK")),
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)
@@ -4058,7 +4056,7 @@ class TestGetReportsUnresolved(ReportTestCase):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_response_scope(response, can_access)

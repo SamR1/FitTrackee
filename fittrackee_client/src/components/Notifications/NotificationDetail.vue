@@ -309,7 +309,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '~@/scss/vars';
+  @use '~@/scss/vars.scss' as *;
 
   .notification-card {
     ::v-deep(.card-title) {

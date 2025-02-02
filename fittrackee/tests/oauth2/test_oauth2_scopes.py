@@ -8,10 +8,10 @@ from ..mixins import ApiTestCaseMixin
 
 class TestOAuth2Scopes(ApiTestCaseMixin):
     @pytest.mark.parametrize(
-        'endpoint_url,scope',
+        "endpoint_url,scope",
         [
-            ('/api/auth/profile', 'profile:read'),
-            ('/api/workouts', 'workouts:read'),
+            ("/api/auth/profile", "profile:read"),
+            ("/api/workouts", "workouts:read"),
         ],
     )
     def test_oauth_client_can_access_authorized_endpoints(
@@ -26,17 +26,17 @@ class TestOAuth2Scopes(ApiTestCaseMixin):
 
         response = client.get(
             endpoint_url,
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_not_insufficient_scope_error(response)
 
     @pytest.mark.parametrize(
-        'endpoint_url,scope',
+        "endpoint_url,scope",
         [
-            ('/api/auth/profile', 'workouts:read'),
-            ('/api/workouts', 'profile:read'),
+            ("/api/auth/profile", "workouts:read"),
+            ("/api/workouts", "profile:read"),
         ],
     )
     def test_oauth_client_can_not_access_unauthorized_endpoints(
@@ -51,8 +51,8 @@ class TestOAuth2Scopes(ApiTestCaseMixin):
 
         response = client.get(
             endpoint_url,
-            content_type='application/json',
-            headers=dict(Authorization=f'Bearer {access_token}'),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
         self.assert_insufficient_scope(response)

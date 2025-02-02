@@ -20,13 +20,14 @@ from fittrackee.users.models import (
     UserSportPreferenceEquipment,
 )
 from fittrackee.utils import decode_short_id
-from fittrackee.workouts.models import Sport, Workout, WorkoutEquipment
+from fittrackee.visibility_levels import VisibilityLevel
+from fittrackee.workouts.models import Sport, Workout
 
 from .exceptions import InvalidEquipmentsException
-from .models import Equipment, EquipmentType
+from .models import Equipment, EquipmentType, WorkoutEquipment
 from .utils import SPORT_EQUIPMENT_TYPES
 
-equipments_blueprint = Blueprint('equipments', __name__)
+equipments_blueprint = Blueprint("equipments", __name__)
 
 
 def handle_default_sports(
@@ -67,8 +68,8 @@ def handle_default_sports(
     return user_sport_preferences
 
 
-@equipments_blueprint.route('/equipments', methods=['GET'])
-@require_auth(scopes=['equipments:read'], allow_suspended_user=True)
+@equipments_blueprint.route("/equipments", methods=["GET"])
+@require_auth(scopes=["equipments:read"], allow_suspended_user=True)
 def get_equipments(auth_user: User) -> Dict:
     """
     Get all user equipments.
@@ -157,29 +158,29 @@ def get_equipments(auth_user: User) -> Dict:
 
     """
     params = request.args.copy()
-    type_id = params.get('equipment_type_id', None)
+    type_id = params.get("equipment_type_id", None)
 
-    equipments = (
-        Equipment.query.filter(
-            Equipment.user_id == auth_user.id,
-            Equipment.equipment_type_id == type_id if type_id else True,
-        )
-        .order_by(Equipment.id)
-        .all()
-    )
+    filters = [Equipment.user_id == auth_user.id]
+    if type_id:
+        filters.append(Equipment.equipment_type_id == type_id)
+
+    equipments = Equipment.query.filter(*filters).order_by(Equipment.id).all()
 
     return {
-        'status': 'success',
-        'data': {
-            'equipments': [equipment.serialize() for equipment in equipments]
+        "status": "success",
+        "data": {
+            "equipments": [
+                equipment.serialize(current_user=auth_user)
+                for equipment in equipments
+            ]
         },
     }
 
 
 @equipments_blueprint.route(
-    '/equipments/<string:equipment_short_id>', methods=['GET']
+    "/equipments/<string:equipment_short_id>", methods=["GET"]
 )
-@require_auth(scopes=['equipments:read'], allow_suspended_user=True)
+@require_auth(scopes=["equipments:read"], allow_suspended_user=True)
 def get_equipment_by_id(
     auth_user: User, equipment_short_id: str
 ) -> Union[Dict, HttpResponse]:
@@ -262,20 +263,22 @@ def get_equipment_by_id(
 
     """
     filter_args = {
-        'uuid': decode_short_id(equipment_short_id),
-        'user_id': auth_user.id,
+        "uuid": decode_short_id(equipment_short_id),
+        "user_id": auth_user.id,
     }
     equipment = Equipment.query.filter_by(**filter_args).first()
     if equipment:
         return {
-            'status': 'success',
-            'data': {'equipments': [equipment.serialize()]},
+            "status": "success",
+            "data": {
+                "equipments": [equipment.serialize(current_user=auth_user)]
+            },
         }
-    return DataNotFoundErrorResponse('equipments')
+    return DataNotFoundErrorResponse("equipments")
 
 
-@equipments_blueprint.route('/equipments', methods=['POST'])
-@require_auth(scopes=['equipments:write'])
+@equipments_blueprint.route("/equipments", methods=["POST"])
+@require_auth(scopes=["equipments:write"])
 def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Post a new piece of equipment.
@@ -332,6 +335,8 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         active (default: ``true``)
     :<json array of integers default_for_sport_ids: the default sport ids
         to use for this equipment, not mandatory
+    :<json string visibility: visibility level (``public``, ``followers_only``,
+        ``private``), not mandatory (default value: ``private``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -358,17 +363,17 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     equipment_data = request.get_json()
     if (
         not equipment_data
-        or not equipment_data.get('label')
-        or equipment_data.get('equipment_type_id') is None
+        or not equipment_data.get("label")
+        or equipment_data.get("equipment_type_id") is None
     ):
         return InvalidPayloadErrorResponse(
             "the 'label' and 'equipment_type_id' parameters must be provided"
         )
 
-    label = equipment_data['label']
+    label = equipment_data["label"]
     if len(label) > 50:
         return InvalidPayloadErrorResponse("label exceeds 50 characters")
-    equipment_type_id = equipment_data['equipment_type_id']
+    equipment_type_id = equipment_data["equipment_type_id"]
 
     if (
         Equipment.query.filter_by(user_id=auth_user.id, label=label).first()
@@ -394,16 +399,27 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     except InvalidEquipmentsException as e:
         return InvalidPayloadErrorResponse(str(e))
 
+    visibility = equipment_data.get("visibility")
+    if visibility is not None:
+        try:
+            VisibilityLevel(visibility)
+        except ValueError:
+            return InvalidPayloadErrorResponse("invalid visibility")
+
     try:
         new_equipment = Equipment(
             user_id=auth_user.id,
             label=label,
             equipment_type_id=equipment_type_id,
             is_active=True,
-            description=equipment_data.get('description'),
+            description=equipment_data.get("description"),
         )
         db.session.add(new_equipment)
         db.session.flush()
+
+        if visibility:
+            new_equipment.visibility = visibility
+
         if user_sport_preferences:
             # remove existing equipments for default sports
             # (for now only one default equipment/sport)
@@ -430,8 +446,12 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
         return (
             {
-                'status': 'created',
-                'data': {'equipments': [new_equipment.serialize()]},
+                "status": "created",
+                "data": {
+                    "equipments": [
+                        new_equipment.serialize(current_user=auth_user)
+                    ]
+                },
             },
             201,
         )
@@ -439,16 +459,16 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     except (exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(
             error=e,
-            message='Error during equipment save',
-            status='fail',
+            message="Error during equipment save",
+            status="fail",
             db=db,
         )
 
 
 @equipments_blueprint.route(
-    '/equipments/<string:equipment_short_id>', methods=['PATCH']
+    "/equipments/<string:equipment_short_id>", methods=["PATCH"]
 )
-@require_auth(scopes=['equipments:write'])
+@require_auth(scopes=["equipments:write"])
 def update_equipment(
     auth_user: User, equipment_short_id: str
 ) -> Union[Dict, HttpResponse]:
@@ -529,6 +549,8 @@ def update_equipment(
         active (default: ``true``)
     :<json array of integers default_for_sport_ids: the default sport ids
         to use for this equipment
+    :<json string visibility: visibility level (``public``, ``followers_only``,
+        ``private``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -556,20 +578,21 @@ def update_equipment(
     """
     equipment_data = request.get_json()
     if not equipment_data:
-        return InvalidPayloadErrorResponse('no request data was supplied')
+        return InvalidPayloadErrorResponse("no request data was supplied")
 
     if not any(
         e
         in [
-            'label',
-            'description',
-            'equipment_type_id',
-            'is_active',
-            'default_for_sport_ids',
+            "label",
+            "description",
+            "equipment_type_id",
+            "is_active",
+            "default_for_sport_ids",
+            "visibility",
         ]
         for e in equipment_data
     ):
-        return InvalidPayloadErrorResponse('no valid parameters supplied')
+        return InvalidPayloadErrorResponse("no valid parameters supplied")
 
     new_default_for_sport_ids = equipment_data.get(
         "default_for_sport_ids", None
@@ -580,16 +603,16 @@ def update_equipment(
             uuid=decode_short_id(equipment_short_id), user_id=auth_user.id
         ).first()
         if not equipment:
-            return DataNotFoundErrorResponse('equipments')
+            return DataNotFoundErrorResponse("equipments")
 
         check_default_sports = True
         equipment_type = equipment.equipment_type
 
         # set new values if they were in the request
-        if 'is_active' in equipment_data:
-            equipment.is_active = equipment_data.get('is_active')
-        if 'label' in equipment_data:
-            label = equipment_data.get('label')
+        if "is_active" in equipment_data:
+            equipment.is_active = equipment_data.get("is_active")
+        if "label" in equipment_data:
+            label = equipment_data.get("label")
             if len(label) > 50:
                 return InvalidPayloadErrorResponse(
                     "label exceeds 50 characters"
@@ -606,10 +629,19 @@ def update_equipment(
                     "equipment already exists with the same label"
                 )
             equipment.label = label
-        if 'description' in equipment_data:
-            equipment.description = equipment_data.get('description')
-        if 'equipment_type_id' in equipment_data:
-            equipment_type_id = equipment_data.get('equipment_type_id')
+        if "description" in equipment_data:
+            equipment.description = equipment_data.get("description")
+
+        if "visibility" in equipment_data:
+            visibility = equipment_data["visibility"]
+            try:
+                VisibilityLevel(visibility)
+            except ValueError:
+                return InvalidPayloadErrorResponse("invalid visibility")
+            equipment.visibility = visibility
+
+        if "equipment_type_id" in equipment_data:
+            equipment_type_id = equipment_data.get("equipment_type_id")
             equipment_type = EquipmentType.query.filter_by(
                 id=equipment_type_id
             ).first()
@@ -715,23 +747,25 @@ def update_equipment(
         db.session.commit()
 
         return {
-            'status': 'success',
-            'data': {'equipments': [equipment.serialize()]},
+            "status": "success",
+            "data": {
+                "equipments": [equipment.serialize(current_user=auth_user)]
+            },
         }
 
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(
             error=e,
             db=db,
-            message='Error during equipment update',
-            status='fail',
+            message="Error during equipment update",
+            status="fail",
         )
 
 
 @equipments_blueprint.route(
-    '/equipments/<string:equipment_short_id>/refresh', methods=['POST']
+    "/equipments/<string:equipment_short_id>/refresh", methods=["POST"]
 )
-@require_auth(scopes=['equipments:write'])
+@require_auth(scopes=["equipments:write"])
 def refresh_equipment(
     auth_user: User, equipment_short_id: str
 ) -> Union[Dict, HttpResponse]:
@@ -797,19 +831,20 @@ def refresh_equipment(
         uuid=decode_short_id(equipment_short_id), user_id=auth_user.id
     ).first()
     if not equipment:
-        return DataNotFoundErrorResponse('equipments')
+        return DataNotFoundErrorResponse("equipments")
 
     try:
-        totals = dict(
+        totals = (
             db.session.query(
-                func.sum(Workout.distance).label('total_distance'),
-                func.sum(Workout.duration).label('total_duration'),
-                func.sum(Workout.moving).label('total_moving'),
-                func.count(Workout.id).label('total_workouts'),
+                func.sum(Workout.distance).label("total_distance"),
+                func.sum(Workout.duration).label("total_duration"),
+                func.sum(Workout.moving).label("total_moving"),
+                func.count(Workout.id).label("total_workouts"),
             )
             .join(WorkoutEquipment)
             .filter(WorkoutEquipment.c.equipment_id == equipment.id)
-            .first()
+            .one()
+            ._asdict()
         )
         equipment.total_distance = (
             0.0
@@ -831,23 +866,25 @@ def refresh_equipment(
         db.session.commit()
 
         return {
-            'status': 'success',
-            'data': {'equipments': [equipment.serialize()]},
+            "status": "success",
+            "data": {
+                "equipments": [equipment.serialize(current_user=auth_user)]
+            },
         }
 
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(
             error=e,
             db=db,
-            message='Error during equipment update',
-            status='fail',
+            message="Error during equipment update",
+            status="fail",
         )
 
 
 @equipments_blueprint.route(
-    '/equipments/<string:equipment_short_id>', methods=['DELETE']
+    "/equipments/<string:equipment_short_id>", methods=["DELETE"]
 )
-@require_auth(scopes=['equipments:write'])
+@require_auth(scopes=["equipments:write"])
 def delete_equipment(
     auth_user: User, equipment_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
@@ -899,7 +936,7 @@ def delete_equipment(
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """
-    force_delete = 'force' in request.args
+    force_delete = "force" in request.args
     equipment_uuid = decode_short_id(equipment_short_id)
 
     try:
@@ -907,7 +944,7 @@ def delete_equipment(
             uuid=equipment_uuid, user_id=auth_user.id
         ).first()
         if not equipment:
-            return DataNotFoundErrorResponse('equipments')
+            return DataNotFoundErrorResponse("equipments")
         if equipment.total_workouts > 0 and not force_delete:
             return ForbiddenErrorResponse(
                 f"Cannot delete equipment that has associated workouts. "
@@ -927,7 +964,7 @@ def delete_equipment(
             Equipment.id == equipment.id
         ).delete()
         db.session.commit()
-        return {'status': 'no content'}, 204
+        return {"status": "no content"}, 204
     except (
         exc.IntegrityError,
         exc.OperationalError,

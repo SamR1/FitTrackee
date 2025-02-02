@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Fonctionnalités - Documentation FitTrackee 0.9.0</title>
+        <title>Fonctionnalités - Documentation FitTrackee 0.9.1</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.0
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.1
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.0
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.1
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -410,7 +410,8 @@
 </li>
 <li><div class="line-block">
 <div class="line">Un <a class="reference external" href="features.html#equipments">équipement</a> peut être associé à une séance (<em>nouveau dans la version 0.8.0</em>). Pour le moment, un seul équipement peut être associé.</div>
-<div class="line">Les équipements ne sont visibles que par leur propriétaire.</div>
+<div class="line">Un équipement associé est affiché en fonction de sa visibilité dans le détail de l’équipement (<em>nouveau dans la version 0.9.1</em>).</div>
+<div class="line">Le détail de l’équipement n’est visible que par son propriétaire.</div>
 </div>
 </li>
 <li><p>Les segments peuvent être affichés.</p></li>
@@ -769,7 +770,14 @@
 <li><p>Raquettes : Raquettes.</p></li>
 </ul>
 </li>
-<li><p>Les équipements ne sont visibles que par leur propriétaire.</p></li>
+<li><p>Un utilisateur peut définir la visibilité de l’équipement (<em>nouveau dans la version 0.9.1</em>)</p>
+<ul>
+<li><p>privé: seul le propriétaire peut voir l’équipement dans le détail de la séance,</p></li>
+<li><p>abonnés seulement: seul le propriétaire et les abonnés peuvent voir l’équipement dans le détail de la séance,</p></li>
+<li><p>public: tout le monde peut voir l’équipement dans le détail de la séance, même les utilisateurs non authentifiés.</p></li>
+</ul>
+</li>
+<li><p>Le détail de l’équipement n’est visible que par son propriétaire.</p></li>
 <li><p>Pour le moment, un seul équipement peut être associé à une séance.</p></li>
 <li><p>Les totaux suivants sont affichés pour chaque équipement :</p>
 <ul>
@@ -787,7 +795,7 @@
 </div>
 <ul class="simple">
 <li><p>Il est possible de définir des sports par défaut : à l’ajout de la séance, l’équipement sera automatiquement affiché dans la liste déroulante selon le sport sélectionné.</p></li>
-<li><p>Un équipement peut être modifié (label, type d’équipement, description, status actif et sports par défaut).</p></li>
+<li><p>Un équipement peut être modifié (label, type d’équipement, description, visibilité, status actif et sports par défaut) (<em>modifié dans la version 0.9.1</em>).</p></li>
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
@@ -1122,7 +1130,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2018 - 2024, SamR1
+                Copyright &#169; 2018 - 2025, SamR1
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -1207,7 +1215,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=b137f06f"></script>
+</div><script src="_static/documentation_options.js?v=154f7476"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

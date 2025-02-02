@@ -130,7 +130,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars.scss';
+  @use '~@/scss/vars.scss' as *;
   #user-infos-edition {
     padding-top: $default-padding;
     .form-items {

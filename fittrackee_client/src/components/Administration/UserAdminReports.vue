@@ -168,7 +168,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~@/scss/vars';
+  @use '~@/scss/vars.scss' as *;
 
   #user-moderation-detail {
     margin-bottom: $default-margin;
