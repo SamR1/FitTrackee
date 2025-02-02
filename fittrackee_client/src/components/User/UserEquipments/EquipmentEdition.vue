@@ -166,6 +166,7 @@
     IEquipmentType,
     ITranslatedEquipmentType,
   } from '@/types/equipments'
+  import type { ICustomTextareaData } from '@/types/forms.ts'
   import type { ITranslatedSport } from '@/types/sports'
   import type { TVisibilityLevels } from '@/types/user.ts'
   import { useStore } from '@/use/useStore'
@@ -252,8 +253,8 @@
       equipmentForm
     )
   }
-  function updateDescription(value: string) {
-    equipmentForm.description = value
+  function updateDescription(textareaData: ICustomTextareaData) {
+    equipmentForm.description = textareaData.value
   }
   function invalidateForm() {
     formErrors.value = true
