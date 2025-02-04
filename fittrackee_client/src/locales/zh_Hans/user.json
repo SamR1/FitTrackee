@@ -111,7 +111,7 @@
     "INTERFACE": "界面",
     "LANGUAGE": "语言",
     "LAST_NAME": "姓氏",
-    "LATEST_SANCTIONS_RECEIVED": "最新收到的制裁",
+    "LATEST_SANCTIONS_RECEIVED": "最新收到的处罚",
     "LOCATION": "位置",
     "MONDAY": "星期一",
     "NOTIFICATIONS": {
@@ -126,7 +126,7 @@
     },
     "NOTIFICATIONS_EDITION": "通知偏好编辑",
     "NOTIFICATION_PREFERENCES": "通知偏好",
-    "NO_SANCTIONS": "没有制裁",
+    "NO_SANCTIONS": "没有处罚",
     "PICTURE": "图片",
     "PICTURE_EDITION": "图片编辑",
     "PICTURE_REMOVE": "移除图片",
@@ -147,7 +147,7 @@
       "user_warning": "警告（{date}）",
       "workout_suspension": "锻炼暂停（{date}）"
     },
-    "SANCTIONS_RECEIVED": "收到的制裁",
+    "SANCTIONS_RECEIVED": "收到的处罚",
     "SANCTION_APPEAL": {
       "APPROVED": "您的上诉已被批准",
       "IN_PROGRESS": "您的上诉正在处理中",
@@ -176,7 +176,7 @@
       "BLOCKED-USERS": "已屏蔽用户",
       "EQUIPMENTS": "设备",
       "FOLLOW-REQUESTS": "关注请求",
-      "MODERATION": "管理",
+      "MODERATION": "审核",
       "NOTIFICATIONS": "通知",
       "PICTURE": "图片",
       "PREFERENCES": "偏好设置",
