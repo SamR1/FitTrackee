@@ -22,6 +22,29 @@
   "TYPES": {
     "ALL": "wszystko",
     "LABEL": "Typ",
-    "comment_like": "polubień komentarzy"
-  }
+    "comment_like": "polubień komentarzy",
+    "comment_suspension": "zawieszenia komentarzy",
+    "comment_unsuspension": "odwieszonych komentarzy",
+    "follow": "obserwowani",
+    "follow_request": "prośby o obserwowanie",
+    "follow_request_approved": "zaakceptowane prośby o obserwowanie",
+    "mention": "wspomnienia",
+    "report": "zgłoszenia",
+    "suspension_appeal": "odwołania zawieszeń",
+    "user_warning": "ostrzeżenia",
+    "user_warning_appeal": "odwołania ostrzeżeń",
+    "user_warning_lifting": "zniesienia ostrzeżeń",
+    "workout_comment": "komentarze",
+    "workout_like": "polubienia",
+    "workout_suspension": "zawieszenia treningów",
+    "workout_unsuspension": "odwieszenia treningów"
+  },
+  "UNREAD": "Nieprzeczytane",
+  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "Konto zawieszone",
+  "YOUR_COMMENT_HAS_BEEN_SUSPENDED": "Komentarz zawieszony",
+  "YOUR_COMMENT_HAS_BEEN_UNSUSPENDED": "Zniesiono zawieszenie tego komentarza",
+  "YOUR_WARNING_HAS_BEEN_LIFTED": "Zniesiono ostrzeżenie.",
+  "YOUR_WORKOUT_HAS_BEEN_SUSPENDED": "Trening zawieszony",
+  "YOUR_WORKOUT_HAS_BEEN_UNSUSPENDED": "Zniesiono zawieszenie treningu",
+  "YOU_RECEIVED_A_WARNING": "Otrzymano ostrzeżenie"
 }
