@@ -6,7 +6,7 @@
   "ACTION": "操作",
   "ACTIVATE_USER_ACCOUNT": "激活账号",
   "ACTIVE": "活跃",
-  "ADMIN": "管理员",
+  "ADMIN": "管理",
   "ADMINISTRATION": "管理",
   "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "添加/移除管理员权限，删除用户账号。",
   "APPLICATION": "应用",
@@ -84,11 +84,11 @@
       "UNSUSPEND": "添加评论（非必填）。",
       "UPDATE_APPEAL": "说明此申诉处理的原因。"
     },
-    "TITLE": "管理",
+    "TITLE": "审核",
     "UNRESOLVED_REPORTS_EXIST": "存在未解决的报告。",
     "VIEW_REPORT": "查看报告"
   },
-  "BACK_TO_ADMIN": "返回管理员",
+  "BACK_TO_ADMIN": "返回管理",
   "CONFIRM_SUSPEND_ACCOUNT": "您确定要暂停 {0} 账号吗？",
   "CONFIRM_SUSPEND_CONTENT": "你确定要暂停报告的内容吗？",
   "CONFIRM_USER_ACCOUNT_DELETION": "您确定要删除 {0} 账号吗？所有数据将被删除，此操作不可撤销。",
