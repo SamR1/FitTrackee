@@ -3,6 +3,7 @@
   "NOT_FOUND": {
     "COMMENT": "Iruzkina ez da aurkitu",
     "PAGE": "Orrialdea ez da aurkitu",
+    "REPORT": "Salaketa ez da aurkitu",
     "SEGMENT": "Segmentua ez da aurkitu",
     "USER": "Erabiltzailea ez da aurkitu",
     "WORKOUT": "Entrenamendua ez da aurkitu"
