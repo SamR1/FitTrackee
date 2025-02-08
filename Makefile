@@ -60,6 +60,18 @@ docker-check-all: docker-run docker-bandit docker-lint-all docker-type-check doc
 docker-downgrade-db:
 	docker compose -f docker-compose-dev.yml exec fittrackee flask db downgrade --directory $(DOCKER_MIGRATIONS)
 
+docker-install-postgis:
+	echo 'Installing postgis extension on each database...'
+	echo '- fittrackee'
+	docker compose -f docker-compose-dev.yml exec fittrackee-db psql -U postgres -d fittrackee -c 'CREATE EXTENSION IF NOT EXISTS postgis;'
+	echo '- fittrackee_test'
+	docker compose -f docker-compose-dev.yml exec fittrackee-db psql -U postgres -d fittrackee_test -c 'CREATE EXTENSION IF NOT EXISTS postgis;'
+	number=0 ; while [[ $$number -le 7 ]] ; do \
+		echo '- fittrackee_test_gw'$$number; \
+        docker compose -f docker-compose-dev.yml exec fittrackee-db psql -U postgres -d fittrackee_test_gw$$number -c 'CREATE EXTENSION IF NOT EXISTS postgis;'; \
+        ((number = number + 1)) ; \
+    done
+
 docker-lint-all: docker-run docker-lint-client docker-lint-python
 
 docker-lint-client:
