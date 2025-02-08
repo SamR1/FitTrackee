@@ -20,12 +20,12 @@ env:
 jobs:
   python:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
-    name: python ${{ matrix.python-version }} (postgresql 17)
+    name: python ${{ matrix.python-version }} (postgresql 17 - postgis 3.5)
     runs-on: ubuntu-latest
     container: python:${{ matrix.python-version }}
     services:
       postgres:
-        image: postgres:17
+        image: postgis/postgis:17-3.5
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
@@ -77,7 +77,7 @@ jobs:
     container: python:3.10
     services:
       postgres:
-        image: postgres:${{ matrix.psql-version }}
+        image: postgis/postgis:${{ matrix.psql-version }}-3.5
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
@@ -113,7 +113,7 @@ jobs:
     container: python:3.13
     services:
       postgres:
-        image: postgres:17
+        image: postgis/postgis:17-3.5
         env:
           POSTGRES_DB: fittrackee_test
           POSTGRES_USER: fittrackee
