@@ -24,7 +24,10 @@
   "NO_DESCRIPTION": "Deskribapenik gabe",
   "NO_NOTES": "Ez dago oharrik",
   "PREVIOUS": "aurrekoa",
+  "REPORT_PLACEHOLDER": "eman salaketaren arrazoia",
+  "REPORT_SUBMITTED": "Salaketa bidalita.",
   "SECONDS": "segundu|segundu",
+  "SEE_REPORT": "Ikusi {0} salaketa.",
   "SELECTS": {
     "ORDER": {
       "ASC": "gorantz",

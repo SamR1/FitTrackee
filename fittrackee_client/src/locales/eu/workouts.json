@@ -15,6 +15,7 @@
     "LABEL": "iruzkin | iruzkinak",
     "LIKE_COMMENT": "Iruzkina atsegin",
     "NO_COMMENTS": "Iruzkinik ez",
+    "REPORT": "salatu iruzkina",
     "SUSPENDED_COMMENT_BY_ADMIN": "Iruzkin hau kudeatzaileak ezabatu du."
   },
   "DATE": "data",
@@ -81,6 +82,7 @@
   "RECORD_MS": "Abiadura handiena",
   "REMAINING_CHARS": "falta den karaktereak",
   "REMOVE_LIKE": "Ezabatu atsegitea",
+  "REPORT_WORKOUT": "salatu ariketa",
   "RESET_ZOOM": "Berrezarri zooma",
   "SEGMENT": "segmentu | segmentu",
   "SPEED": "abiadura",
