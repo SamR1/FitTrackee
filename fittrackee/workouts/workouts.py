@@ -1368,9 +1368,6 @@ def post_workout_no_gpx(
           "status": "success"
         }
 
-    :<json string analysis_visibility: analysis visibility
-        (``private``, ``followers_only`` or ``public``). Not mandatory,
-        defaults to user preferences.
     :<json float ascent: workout ascent (not mandatory,
            must be provided with descent)
     :<json float descent: workout descent (not mandatory,
@@ -1384,9 +1381,6 @@ def post_workout_no_gpx(
         **Note**: for now only one equipment can be associated.
         If not provided and default equipment exists for sport,
         default equipment will be associated.
-    :<json string map_visibility: map visibility
-        (``private``, ``followers_only`` or ``public``). Not mandatory,
-        defaults to user preferences.
     :<json string notes: notes (not mandatory, max length: 500
         characters, otherwise they will be truncated)
     :<json integer sport_id: workout sport id

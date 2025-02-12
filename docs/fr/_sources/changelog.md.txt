@@ -1,5 +1,39 @@
 # Change log
 
+## Version 0.9.2 (2025/02/12)
+
+### Translations
+
+* [PR#711](https://github.com/SamR1/FitTrackee/pull/711) - Translations update (Chinese (Simplified Han script))
+* [PR#712](https://github.com/SamR1/FitTrackee/pull/712) - Translations update (Polish, Basque)
+
+Translation status:
+- Basque: 73%
+- Bulgarian: 64%
+- Chinese (Simplified): 100%
+- Czech: 47%
+- Dutch: 64%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 76%
+- Italian: 53%
+- Norwegian Bokmål: 34%
+- Polish: 100%
+- Portuguese: 63%
+- Russian: 40%
+- Spanish: 64%
+
+### Misc
+
+* [2612cd9](https://github.com/SamR1/FitTrackee/commit/2612cd9e4aa747036b79ed4a8492d0f7fea60c80) - fix Dockerfile used for development
+
+Thanks to the contributors:
+- @erral
+- Poesty Li
+- Wiktor Jędrzejczak
+
+
 ## Version 0.9.1 (2025/02/02)
 
 **Note**: The minimum version for Python is now 3.9.2.
