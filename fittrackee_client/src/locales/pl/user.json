@@ -140,6 +140,19 @@
       "LABEL": "Profil w katalogu użytkowników"
     },
     "REGISTRATION_DATE": "Data rejestracji",
+    "REPORTS_FROM_OTHER_USERS": "Zgłoszenia od innych użytkowników",
+    "SANCTIONS": {
+      "comment_suspension": "Zawieszenie komentarza ({date})",
+      "user_suspension": "Zawieszenie konta ({date})",
+      "user_warning": "Ostrzeżenie ({date})",
+      "workout_suspension": "Zawieszenie treningu ({date})"
+    },
+    "SANCTIONS_RECEIVED": "Otrzymane ograniczenia",
+    "SANCTION_APPEAL": {
+      "APPROVED": "twoje odwołanie zostało zaakceptowane",
+      "IN_PROGRESS": "twoje odwołanie jest w trakcie weryfikacji",
+      "REJECTED": "twoje odwołanie zostało odrzucone"
+    },
     "SPORT": {
       "ACTION": "akcja",
       "COLOR": "kolor",
@@ -185,6 +198,7 @@
       "LABEL": "Jednostki dystansu",
       "METRIC": "System metryczny (m, km, m/s, °C)"
     },
+    "USER_RECEIVED_SANCTIONS": "Użytkownik otrzymał {count} ograniczenie.|Użytkownik otrzymał ostrzeżeń: {count}.",
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Odfiltrowana",
       "HELP": "Przy filtrowaniu wartości odstające (które mogą sugerować błąd GPS) nie są brane pod uwagę przy wyliczaniu maksymalnej prędkości.",
@@ -227,6 +241,7 @@
   "USER_PICTURE": "zdjęcie użytkownika",
   "USER_PROFILE": "profil",
   "WARNING_REASON": "Powód ostrzeżenia",
+  "YOU": "Ty",
   "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "Twoje konto zostało zawieszone",
   "YOU_CAN_APPEAL_ONCE": "Możesz się odwołać tylko raz.",
   "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Zaakceptowałeś(-aś) {0}."

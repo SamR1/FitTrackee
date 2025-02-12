@@ -12,12 +12,18 @@
       "application:write_DESCRIPTION": "nadaje dostęp do zapisu konfiguracji aplikacji.",
       "equipments:read_DESCRIPTION": "nadaje dostęp do odczytu z adresów <code>equipments</code>.",
       "equipments:write_DESCRIPTION": "nadaje dostęp do zapisu na adresach <code>equipments</code>.",
+      "follow:read_DESCRIPTION": "daje dostęp do odczytu związanego z obserwowaniami użytkowników.",
+      "follow:write_DESCRIPTION": "daje dostęp związany z zapisem, akceptowaniem, usuwaniem osób obserwowanych.",
+      "notifications:read_DESCRIPTION": "daje dostęp do odczytu <code>powiadomień</code>.",
+      "notifications:write_DESCRIPTION": "daje dostęp do zapisu <code>powiadomień</code>.",
       "profile:read_DESCRIPTION": "nadaje dostęp do odczytu z adresów <code>auth</code>.",
       "profile:write_DESCRIPTION": "nadaje dostęp do zapisu na adresach <code>auth</code>.",
+      "reports:read_DESCRIPTION": "daje dostęp do odczytu <code>zgłoszeń</code>.",
+      "reports:write_DESCRIPTION": "daje dostęp do zapisu <code>zgłoszeń</code>.",
       "users:read_DESCRIPTION": "nadaje dostęp do odczytu z adresów <code>users</code>.",
       "users:write_DESCRIPTION": "nadaje dostęp do zapisu na adresach <code>users</code>.",
-      "workouts:read_DESCRIPTION": "nadaje dostęp do odczytu z adresów <code>workouts</code>.",
-      "workouts:write_DESCRIPTION": "nadaje dostęp do zapisu na adresach <code>workouts</code>."
+      "workouts:read_DESCRIPTION": "nadaje dostęp do odczytu z treningów i komentarzy.",
+      "workouts:write_DESCRIPTION": "nadaje dostęp do zapisu treningów i komentarzy."
     },
     "URL": "Adres URL aplikacji"
   },

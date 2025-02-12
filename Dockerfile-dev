@@ -17,6 +17,5 @@ RUN . $VIRTUAL_ENV/bin/activate && poetry install --no-interaction --quiet
 
 # run fittrackee server and workers
 COPY ./docker-entrypoint-dev.sh /docker-entrypoint.sh
-COPY ./docker/set-admin.sh /usr/bin/set-admin
-RUN chmod +x /usr/bin/set-admin && chmod +x /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
