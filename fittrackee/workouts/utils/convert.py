@@ -14,14 +14,15 @@ def convert_timedelta_to_integer(value: str) -> int:
 
 
 def convert_value_to_integer(
-    record_type: str, val: Union[str, float]
+    record_type: str, val: Union[float, timedelta]
 ) -> Optional[int]:
-    if val is None:
+    if val is None or record_type not in ["AS", "FD", "HA", "LD", "MS"]:
         return None
 
-    if record_type == "LD":
+    if isinstance(val, timedelta):  # "LD"
         return convert_timedelta_to_integer(str(val))
-    elif record_type in ["AS", "MS"]:
-        return int(val * 100)
-    else:  # 'FD'
-        return int(val * 1000)
+
+    multiplier = (
+        100 if record_type in ["AS", "MS"] else 1000  # 'FD' and 'HA
+    )
+    return round(val * multiplier)

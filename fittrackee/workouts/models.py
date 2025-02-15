@@ -960,11 +960,11 @@ class Record(BaseModel):
 
     def serialize(self) -> Dict:
         if self.value is None:
-            value = None
+            value: Union[float, str, None] = None
         elif self.record_type in ["AS", "FD", "HA", "MS"]:
-            value = float(self.value)  # type: ignore
+            value = float(self.value)
         else:  # 'LD'
-            value = str(self.value)  # type: ignore
+            value = str(self.value)
 
         return {
             "id": self.id,
