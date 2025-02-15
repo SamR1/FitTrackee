@@ -1,7 +1,7 @@
 import os
 import shutil
 from typing import Generator, Iterator, Optional, Union
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from flask import current_app
@@ -9,13 +9,17 @@ from flask import current_app
 from fittrackee import create_app, db, limiter
 from fittrackee.application.models import AppConfig
 from fittrackee.application.utils import update_app_config_from_database
-from fittrackee.workouts.utils.gpx import weather_service
+from fittrackee.workouts.services.workout_from_file.base_workout_with_segment_service import (  # noqa
+    weather_service,
+)
 
 
 @pytest.fixture(autouse=True)
-def default_weather_service() -> Iterator[None]:
-    with patch.object(weather_service, "get_weather", return_value=None):
-        yield
+def default_weather_service() -> Iterator[MagicMock]:
+    with patch.object(
+        weather_service, "get_weather", return_value=None
+    ) as mock:
+        yield mock
 
 
 def get_app_config(

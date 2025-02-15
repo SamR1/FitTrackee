@@ -598,20 +598,6 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "with_gpx": False,
         }
 
-    def test_workout_segment_model(
-        self,
-        app: Flask,
-        sport_1_cycling: Sport,
-        user_1: User,
-        workout_cycling_user_1: Workout,
-        workout_cycling_user_1_segment: WorkoutSegment,
-    ) -> None:
-        assert (
-            f"<Segment '{workout_cycling_user_1_segment.segment_id}' "
-            f"for workout '{workout_cycling_user_1.short_id}'>"
-            == str(workout_cycling_user_1_segment)
-        )
-
     def test_it_returns_previous_workout(
         self,
         app: Flask,
@@ -2628,3 +2614,19 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "with_analysis": True,
             "with_gpx": True,
         }
+
+
+class TestWorkoutSegmentModel:
+    def test_workout_segment_model(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        assert (
+            f"<Segment '{workout_cycling_user_1_segment.segment_id}' "
+            f"for workout '{workout_cycling_user_1.short_id}'>"
+            == str(workout_cycling_user_1_segment)
+        )

@@ -15,7 +15,9 @@ from fittrackee.workouts.models import (
     Workout,
     WorkoutSegment,
 )
-from fittrackee.workouts.utils.maps import StaticMap
+from fittrackee.workouts.services.workout_from_file.base_workout_with_segment_service import (  # noqa
+    StaticMap,
+)
 
 from ..utils import random_string
 
@@ -307,6 +309,37 @@ def workout_cycling_user_2() -> Workout:
     db.session.add(workout)
     db.session.commit()
     return workout
+
+
+track_points_part_1_coordinates = [
+    (6.07367, 44.68095),
+    (6.07367, 44.68091),
+    (6.07364, 44.6808),
+    (6.07364, 44.68075),
+    (6.07364, 44.68071),
+    (6.07361, 44.68049),
+    (6.07356, 44.68019),
+    (6.07355, 44.68014),
+    (6.07358, 44.67995),
+]
+track_points_part_2_coordinates = [
+    (6.07364, 44.67977),
+    (6.07367, 44.67972),
+    (6.07368, 44.67966),
+    (6.0737, 44.67961),
+    (6.07377, 44.67938),
+    (6.07381, 44.67933),
+    (6.07385, 44.67922),
+    (6.0739, 44.67911),
+    (6.07399, 44.679),
+    (6.07402, 44.67896),
+    (6.07408, 44.67884),
+    (6.07423, 44.67863),
+    (6.07425, 44.67858),
+    (6.07434, 44.67842),
+    (6.07435, 44.67837),
+    (6.07442, 44.67822),
+]
 
 
 track_points_part_1 = (

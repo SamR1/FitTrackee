@@ -356,14 +356,16 @@ class Workout(BaseModel):
         user_id: int,
         sport_id: int,
         workout_date: datetime,
-        distance: float,
-        duration: timedelta,
+        distance: Optional[float] = None,
+        duration: Optional[timedelta] = None,
     ) -> None:
         self.user_id = user_id
         self.sport_id = sport_id
         self.workout_date = workout_date
-        self.distance = distance
-        self.duration = duration
+        if distance is not None:
+            self.distance = distance
+        # to allow workout creation before gpx data extraction
+        self.duration = timedelta(seconds=0) if duration is None else duration
 
     @property
     def short_id(self) -> str:
