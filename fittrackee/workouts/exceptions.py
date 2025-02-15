@@ -9,6 +9,10 @@ class WorkoutException(GenericException):
     pass
 
 
+class WorkoutFileException(GenericException):
+    pass
+
+
 class WorkoutGPXException(GenericException):
     pass
 
