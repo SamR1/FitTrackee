@@ -2,6 +2,7 @@ import os
 import secrets
 import zipfile
 from dataclasses import dataclass
+from io import BytesIO
 from typing import IO, TYPE_CHECKING, Dict, List, Optional, Type, Union
 
 import pytz
@@ -284,8 +285,19 @@ class WorkoutsFromFileCreationService(BaseWorkoutService):
             raise WorkoutException("error", "no workout file provided")
         files_to_process = self.get_files_from_archive()
         new_workouts = []
+
+        # handle Python < 3.11, see:
+        # - https://github.com/python/cpython/issues/70363
+        # - https://docs.python.org/3.11/whatsnew/3.11.html#tempfile
+        if not hasattr(self.file.stream, "seekable"):
+            archive_content: Union[BytesIO, IO[bytes]] = BytesIO(
+                self.file.getvalue()
+            )
+        else:
+            archive_content = self.file.stream
+
         try:
-            with zipfile.ZipFile(self.file.stream, "r") as zip_ref:
+            with zipfile.ZipFile(archive_content, "r") as zip_ref:
                 for file in files_to_process:
                     extension = self._get_extension(file)
                     file_content = zip_ref.open(file)
