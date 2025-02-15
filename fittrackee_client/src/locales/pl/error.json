@@ -1,7 +1,11 @@
 {
   "APP_ERROR": "Wygląda na to, że aplikacja napotkała pewne problemy.<br />Spróbuj ponownie później lub skontaktuj się z administratorem.",
   "NOT_FOUND": {
+    "COMMENT": "Nie odnaleziono komentarza",
     "PAGE": "Nie znaleziono strony",
+    "REPORT": "Nie odnaleziono zgłoszenia",
+    "SEGMENT": "Nie odnaleziono segmentu",
+    "USER": "Nie odnaleziono użytkownika",
     "WORKOUT": "Nie znaleziono treningu"
   },
   "SOMETHING_WRONG": "Coś poszło nie tak",
