@@ -7,6 +7,7 @@ from fittrackee import db
 
 from ...exceptions import WorkoutFileException
 from ...models import Workout, WorkoutSegment
+from ...utils.duration import _remove_microseconds
 from .base_workout_with_segment_service import (
     BaseWorkoutWithSegmentsCreationService,
 )
@@ -84,7 +85,7 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
             * 3600
         )
         object_to_update.descent = None if hill is None else hill.downhill
-        object_to_update.duration = (
+        object_to_update.duration = _remove_microseconds(
             timedelta(seconds=duration if duration else 0)
             + stopped_time_between_seg
         )

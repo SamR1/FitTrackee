@@ -18,9 +18,7 @@ from fittrackee.workouts.models import (
     TITLE_MAX_CHARACTERS,
     Record,
 )
-from fittrackee.workouts.services.workout_update_service import (
-    WorkoutUpdateService,
-)
+from fittrackee.workouts.services import WorkoutUpdateService
 
 if TYPE_CHECKING:
     from flask import Flask

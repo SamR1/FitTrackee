@@ -1,22 +1,24 @@
 from datetime import datetime, timezone
-from typing import Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 import pytz
 
-from fittrackee.users.models import User
 from fittrackee.utils import decode_short_id
 from fittrackee.visibility_levels import can_view
 
 from ..exceptions import WorkoutForbiddenException
 from ..models import Workout
 
+if TYPE_CHECKING:
+    from fittrackee.users.models import User
+
 
 def get_workout_datetime(
-    workout_date: Union[datetime, str],
+    workout_date: Union["datetime", str],
     user_timezone: Optional[str],
     date_str_format: Optional[str] = None,
     with_user_timezone: bool = False,
-) -> Tuple[datetime, Optional[datetime]]:
+) -> Tuple["datetime", Optional["datetime"]]:
     """
     Return datetime in UTC and datetime in user timezone if with_user_timezone
     is True.
@@ -51,8 +53,8 @@ def get_workout_datetime(
 
 
 def get_datetime_from_request_args(
-    params: Dict, user: User
-) -> Tuple[Optional[datetime], Optional[datetime]]:
+    params: Dict, user: "User"
+) -> Tuple[Optional["datetime"], Optional["datetime"]]:
     date_from = None
     date_to = None
 
@@ -87,15 +89,19 @@ def get_average_speed(
     )
 
 
-def get_ordered_workouts(workouts: List[Workout], limit: int) -> List[Workout]:
+def get_ordered_workouts(
+    workouts: List["Workout"], limit: int
+) -> List["Workout"]:
     return sorted(
         workouts, key=lambda workout: workout.workout_date, reverse=True
     )[:limit]
 
 
 def get_workout(
-    workout_short_id: str, auth_user: Optional[User], allow_admin: bool = False
-) -> Workout:
+    workout_short_id: str,
+    auth_user: Optional["User"],
+    allow_admin: bool = False,
+) -> "Workout":
     workout_uuid = decode_short_id(workout_short_id)
     workout = Workout.query.filter(Workout.uuid == workout_uuid).first()
     if not workout or (

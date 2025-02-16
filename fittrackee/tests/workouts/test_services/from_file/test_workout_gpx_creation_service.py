@@ -16,9 +16,7 @@ from fittrackee.tests.mixins import RandomMixin
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import WorkoutFileException
 from fittrackee.workouts.models import Record, Sport, Workout, WorkoutSegment
-from fittrackee.workouts.services.workout_from_file import (
-    WorkoutGpxCreationService,
-)
+from fittrackee.workouts.services import WorkoutGpxCreationService
 from fittrackee.workouts.services.workout_from_file.workout_point import (
     WorkoutPoint,
 )

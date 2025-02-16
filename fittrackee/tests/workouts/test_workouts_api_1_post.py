@@ -2,27 +2,24 @@ import json
 import os
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
-from typing import Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 import pytest
 from flask import Flask
 from time_machine import travel
 
 from fittrackee import db
-from fittrackee.equipments.models import Equipment
 from fittrackee.reports.models import ReportActionAppeal
-from fittrackee.users.models import (
-    User,
-)
+from fittrackee.users.models import User
 from fittrackee.visibility_levels import VisibilityLevel
-from fittrackee.workouts.models import (
-    Sport,
-    Workout,
-)
+from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import BaseTestMixin, ReportMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin
+
+if TYPE_CHECKING:
+    from fittrackee.equipments.models import Equipment
 
 
 def assert_workout_data_with_gpx(data: Dict, user: User) -> None:
@@ -239,7 +236,7 @@ def assert_workout_data_wo_gpx(data: Dict, user: User) -> None:
 
 
 def assert_files_are_deleted(
-    app: Flask, user: User, expected_count: Optional[int] = 0
+    app: "Flask", user: User, expected_count: Optional[int] = 0
 ) -> None:
     upload_directory = os.path.join(
         app.config["UPLOAD_FOLDER"], f"workouts/{user.id}"
@@ -258,7 +255,7 @@ def assert_files_are_deleted(
 
 class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
-        self, app: Flask, sport_1_cycling: Sport, gpx_file: str
+        self, app: "Flask", sport_1_cycling: "Sport", gpx_file: str
     ) -> None:
         client = app.test_client()
 
@@ -275,9 +272,9 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
 
     def test_it_returns_error_when_user_is_suspended(
         self,
-        app: Flask,
-        suspended_user: User,
-        sport_1_cycling: Sport,
+        app: "Flask",
+        suspended_user: "User",
+        sport_1_cycling: "Sport",
         gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -299,7 +296,11 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
         self.assert_403(response)
 
     def test_it_adds_a_workout_with_gpx_file(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -326,9 +327,9 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
 
     def test_it_returns_400_when_quotes_are_not_escaped_in_notes(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
         gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -351,9 +352,9 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
 
     def test_it_returns_400_when_quotes_are_not_escaped_in_description(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
         gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -376,9 +377,9 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
 
     def test_it_returns_500_if_gpx_file_has_not_tracks(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
         gpx_file_wo_track: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -402,9 +403,9 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
 
     def test_it_returns_500_if_gpx_has_invalid_xml(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
         gpx_file_invalid_xml: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -431,9 +432,9 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
 
     def test_it_returns_500_if_gpx_has_no_time(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
         gpx_file_without_time: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -459,7 +460,11 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
         assert "data" not in data
 
     def test_it_returns_400_if_workout_gpx_has_invalid_extension(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -480,7 +485,11 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
         self.assert_400(response, "file extension not allowed", "fail")
 
     def test_it_returns_400_if_sport_id_is_not_provided(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -500,7 +509,11 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
         self.assert_400(response)
 
     def test_it_returns_400_if_sport_id_does_not_exist(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -521,7 +534,7 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
         self.assert_400(response, "Sport id: 2 does not exist", "invalid")
 
     def test_returns_400_if_no_gpx_file_is_provided(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -541,8 +554,8 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
     def test_it_returns_error_when_file_size_exceeds_limit(
         self,
         app_with_max_file_size: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
+        user_1: "User",
+        sport_1_cycling: "Sport",
         gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -576,8 +589,8 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
     )
     def test_expected_scopes_are_defined(
         self,
-        app: Flask,
-        user_1: User,
+        app: "Flask",
+        user_1: "User",
         client_scope: str,
         can_access: bool,
     ) -> None:
@@ -604,7 +617,7 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
 
 class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
-        self, app: Flask, sport_1_cycling: Sport, gpx_file: str
+        self, app: "Flask", sport_1_cycling: "Sport", gpx_file: str
     ) -> None:
         client = app.test_client()
 
@@ -625,7 +638,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         self.assert_401(response)
 
     def test_it_adds_a_workout_without_gpx(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -652,7 +665,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         assert_workout_data_wo_gpx(data, user_1)
 
     def test_it_returns_error_when_user_is_suspended(
-        self, app: Flask, suspended_user: User, sport_1_cycling: Sport
+        self, app: "Flask", suspended_user: "User", sport_1_cycling: "Sport"
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, suspended_user.email
@@ -675,7 +688,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         self.assert_403(response)
 
     def test_it_adds_a_workout_without_gpx_and_title(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -738,9 +751,9 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     )
     def test_it_returns_400_if_key_is_missing(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
         description: str,
         input_data: Dict,
     ) -> None:
@@ -758,7 +771,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         self.assert_400(response)
 
     def test_it_returns_400_when_ascent_or_descent_are_provided_together(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -790,9 +803,9 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     )
     def test_it_returns_400_when_ascent_or_descent_are_invalid(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
         description: str,
         input_data: Dict,
     ) -> None:
@@ -818,7 +831,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         self.assert_400(response, "invalid ascent or descent", "invalid")
 
     def test_it_returns_500_if_workout_date_format_is_invalid(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -845,9 +858,9 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize("input_distance", [0, "", None])
     def test_it_returns_400_when_distance_is_invalid(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
         input_distance: Any,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -873,9 +886,9 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize("input_duration", [0, "", None])
     def test_it_returns_400_when_duration_is_invalid(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
         input_duration: Any,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -899,7 +912,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         self.assert_400(response)
 
     def test_it_adds_a_workout_with_notes(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         notes = "test"
         client, auth_token = self.get_test_client_and_auth_token(
@@ -928,7 +941,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["notes"] == notes
 
     def test_it_adds_a_workout_with_description(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         description = "test"
         client, auth_token = self.get_test_client_and_auth_token(
@@ -958,10 +971,10 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
 
     def test_it_adds_a_workout_with_equipments(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        equipment_bike_user_1: Equipment,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        equipment_bike_user_1: "Equipment",
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -997,10 +1010,10 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
 
     def test_it_returns_400_when_equipment_is_invalid_for_given_sport(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        equipment_shoes_user_1: Equipment,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        equipment_shoes_user_1: "Equipment",
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1031,10 +1044,10 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
 
     def test_it_returns_400_when_equipment_is_inactive_for_given_sport(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        equipment_bike_user_1: Equipment,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        equipment_bike_user_1: "Equipment",
     ) -> None:
         equipment_bike_user_1.is_active = False
         db.session.commit()
@@ -1064,11 +1077,11 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
 
     def test_it_returns_400_when_multiple_equipments_are_provided(
         self,
-        app: Flask,
-        user_1: User,
+        app: "Flask",
+        user_1: "User",
         sport_2_running: Sport,
-        equipment_shoes_user_1: Equipment,
-        equipment_another_shoes_user_1: Equipment,
+        equipment_shoes_user_1: "Equipment",
+        equipment_another_shoes_user_1: "Equipment",
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1098,8 +1111,8 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     )
     def test_expected_scopes_are_defined(
         self,
-        app: Flask,
-        user_1: User,
+        app: "Flask",
+        user_1: "User",
         client_scope: str,
         can_access: bool,
     ) -> None:
@@ -1126,7 +1139,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
 
 class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
     def test_it_adds_workouts_with_zip_archive(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
         file_path = os.path.join(app.root_path, "tests/files/gpx_test.zip")
@@ -1192,7 +1205,7 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
             assert segment["pauses"] is None
 
     def test_it_returns_500_if_one_file_in_zip_archive_is_invalid(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         # 'gpx_test_incorrect.zip' contains 2 gpx files, one is incorrect
         file_path = os.path.join(
@@ -1220,9 +1233,9 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
 
     def test_it_returns_400_when_files_in_archive_exceed_limit(
         self,
-        app_with_max_workouts: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
+        app_with_max_workouts: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
     ) -> None:
         file_path = os.path.join(
             app_with_max_workouts.root_path, "tests/files/gpx_test.zip"
@@ -1252,9 +1265,9 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
 
     def test_it_returns_413_if_archive_size_exceeds_limit(
         self,
-        app_with_max_zip_file_size: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
+        app_with_max_zip_file_size: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
     ) -> None:
         # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
         file_path = os.path.join(
@@ -1285,11 +1298,11 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
 
     def test_it_adds_a_workouts_with_equipments(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
         gpx_file: str,
-        equipment_bike_user_1: Equipment,
+        equipment_bike_user_1: "Equipment",
     ) -> None:
         file_path = os.path.join(app.root_path, "tests/files/gpx_test.zip")
         # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
@@ -1335,7 +1348,7 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
 
 class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
     def workout_assertion(
-        self, app: Flask, user_1: User, gpx_file: str, with_segments: bool
+        self, app: "Flask", user_1: "User", gpx_file: str, with_segments: bool
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1393,15 +1406,19 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
         assert response.status_code == 200
 
     def test_it_gets_a_workout_created_with_gpx(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
     ) -> None:
         return self.workout_assertion(app, user_1, gpx_file, False)
 
     def test_it_gets_a_workout_created_with_gpx_with_segments(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
         gpx_file_with_segments: str,
     ) -> None:
         return self.workout_assertion(
@@ -1409,7 +1426,11 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
         )
 
     def test_it_gets_chart_data_for_a_workout_created_with_gpx(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1450,9 +1471,9 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
 
     def test_it_gets_chart_data_for_a_workout_created_with_gpx_without_elevation(  # noqa
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
         gpx_file_without_elevation: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1498,7 +1519,11 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
         }
 
     def test_it_gets_segment_chart_data_for_a_workout_created_with_gpx(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1540,10 +1565,10 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
 
     def test_it_returns_404_on_getting_chart_data_if_workout_belongs_to_another_user(  # noqa
         self,
-        app: Flask,
-        user_1: User,
+        app: "Flask",
+        user_1: "User",
         user_2: User,
-        sport_1_cycling: Sport,
+        sport_1_cycling: "Sport",
         gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1574,7 +1599,11 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
         self.assert_404(response)
 
     def test_it_returns_500_on_invalid_segment_id(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1601,7 +1630,11 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
         self.assert_500(response, "Incorrect segment id")
 
     def test_it_returns_404_if_segment_id_does_not_exist(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1633,7 +1666,7 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
 
 class TestPostAndGetWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     def test_it_add_and_gets_a_workout_wo_gpx(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1666,7 +1699,7 @@ class TestPostAndGetWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         assert_workout_data_wo_gpx(data, user_1)
 
     def test_it_adds_and_gets_a_workout_wo_gpx_notes(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1702,7 +1735,7 @@ class TestPostAndGetWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
 
 class TestPostAndGetWorkoutUsingTimezones(WorkoutApiTestCaseMixin):
     def test_it_add_and_gets_a_workout_wo_gpx_with_timezone(
-        self, app: Flask, user_1: User, sport_1_cycling: Sport
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         user_1.timezone = "Europe/Paris"
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1743,7 +1776,7 @@ class TestPostAndGetWorkoutUsingTimezones(WorkoutApiTestCaseMixin):
         )
 
     def test_it_adds_and_gets_workouts_date_filter_with_timezone_new_york(
-        self, app: Flask, user_1_full: User, sport_1_cycling: Sport
+        self, app: "Flask", user_1_full: "User", sport_1_cycling: "Sport"
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_full.email
@@ -1782,10 +1815,10 @@ class TestPostAndGetWorkoutUsingTimezones(WorkoutApiTestCaseMixin):
 
     def test_it_adds_and_gets_workouts_date_filter_with_timezone_paris(
         self,
-        app: Flask,
+        app: "Flask",
         user_1_paris: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_paris.email
@@ -1865,10 +1898,10 @@ class TestPostWorkoutSuspensionAppeal(
 ):
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
     ) -> None:
         client = app.test_client()
 
@@ -1882,8 +1915,8 @@ class TestPostWorkoutSuspensionAppeal(
 
     def test_it_returns_404_if_workout_does_not_exist(
         self,
-        app: Flask,
-        user_1: User,
+        app: "Flask",
+        user_1: "User",
     ) -> None:
         workout_short_id = self.random_short_id()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1902,11 +1935,11 @@ class TestPostWorkoutSuspensionAppeal(
 
     def test_it_returns_403_if_user_is_not_workout_owner(
         self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
+        app: "Flask",
+        user_1: "User",
+        user_2: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_2: "Workout",
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1924,10 +1957,10 @@ class TestPostWorkoutSuspensionAppeal(
 
     def test_it_returns_400_if_workout_is_not_suspended(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1944,10 +1977,10 @@ class TestPostWorkoutSuspensionAppeal(
 
     def test_it_returns_400_if_suspended_workout_has_no_report_action(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
     ) -> None:
         workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
@@ -1969,11 +2002,11 @@ class TestPostWorkoutSuspensionAppeal(
     )
     def test_it_returns_400_when_appeal_text_is_missing(
         self,
-        app: Flask,
-        user_1: User,
+        app: "Flask",
+        user_1: "User",
         user_2_admin: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
         input_data: Dict,
     ) -> None:
         workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
@@ -1996,11 +2029,11 @@ class TestPostWorkoutSuspensionAppeal(
 
     def test_user_can_appeal_comment_suspension(
         self,
-        app: Flask,
-        user_1: User,
+        app: "Flask",
+        user_1: "User",
         user_2_admin: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
     ) -> None:
         workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
         action = self.create_report_workout_action(
@@ -2032,11 +2065,11 @@ class TestPostWorkoutSuspensionAppeal(
 
     def test_user_can_appeal_comment_suspension_only_once(
         self,
-        app: Flask,
-        user_1: User,
+        app: "Flask",
+        user_1: "User",
         user_2_admin: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
     ) -> None:
         workout_cycling_user_1.suspended_at = datetime.now(timezone.utc)
         action = self.create_report_workout_action(
@@ -2069,10 +2102,10 @@ class TestPostWorkoutSuspensionAppeal(
     )
     def test_expected_scopes_are_defined(
         self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
         client_scope: str,
         can_access: bool,
     ) -> None:
