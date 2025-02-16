@@ -160,15 +160,15 @@ class WorkoutUpdateService:
         if self.equipments_list is not None:
             self.workout.equipments = self.equipments_list
 
-        if "description" in self.workout_data:
+        if self.workout_data.get("description") is not None:
             self.workout.description = self.workout_data["description"][
                 :DESCRIPTION_MAX_CHARACTERS
             ]
-        if "notes" in self.workout_data:
+        if self.workout_data.get("notes") is not None:
             self.workout.notes = self.workout_data["notes"][
                 :NOTES_MAX_CHARACTERS
             ]
-        if "title" in self.workout_data:
+        if self.workout_data.get("title") is not None:
             self.workout.title = self.workout_data["title"][
                 :TITLE_MAX_CHARACTERS
             ]

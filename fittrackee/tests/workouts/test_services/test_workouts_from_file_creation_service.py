@@ -28,12 +28,12 @@ from fittrackee.workouts.models import (
     Workout,
     WorkoutSegment,
 )
-from fittrackee.workouts.services.workout_from_file import (
+from fittrackee.workouts.services import (
     WorkoutGpxCreationService,
+    WorkoutsFromFileCreationService,
 )
 from fittrackee.workouts.services.workouts_from_file_creation_service import (
     WorkoutsData,
-    WorkoutsFromFileCreationService,
 )
 
 if TYPE_CHECKING:

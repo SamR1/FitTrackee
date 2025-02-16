@@ -31,9 +31,7 @@ if TYPE_CHECKING:
     from fittrackee.users.models import User
     from fittrackee.workouts.models import Workout
 
-    from .workout_from_file.base_workout_with_segment_service import (
-        BaseWorkoutWithSegmentsCreationService,
-    )
+    from .workout_from_file import BaseWorkoutWithSegmentsCreationService
 
 
 WORKOUT_FROM_FILE_SERVICES: Dict[

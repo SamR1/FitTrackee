@@ -48,10 +48,10 @@ from .exceptions import (
     WorkoutFileException,
 )
 from .models import Workout, WorkoutLike
-from .services.workout_creation_service import WorkoutCreationService
-from .services.workout_update_service import WorkoutUpdateService
-from .services.workouts_from_file_creation_service import (
+from .services import (
+    WorkoutCreationService,
     WorkoutsFromFileCreationService,
+    WorkoutUpdateService,
 )
 from .utils.convert import convert_in_duration
 from .utils.gpx import (

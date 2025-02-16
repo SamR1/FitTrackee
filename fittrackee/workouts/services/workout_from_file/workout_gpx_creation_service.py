@@ -8,6 +8,7 @@ from fittrackee import db
 
 from ...exceptions import WorkoutFileException
 from ...models import Workout, WorkoutSegment
+from ...utils.duration import _remove_microseconds
 from .base_workout_with_segment_service import (
     BaseWorkoutWithSegmentsCreationService,
 )
@@ -119,7 +120,7 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
         )
         object_to_update.descent = gpx_info.descent
         object_to_update.distance = gpx_info.distance / 1000
-        object_to_update.duration = (
+        object_to_update.duration = _remove_microseconds(
             timedelta(seconds=gpx_info.duration if gpx_info.duration else 0)
             + stopped_time_between_seg
         )
