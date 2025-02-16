@@ -21,10 +21,6 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentsException,
 )
 from fittrackee.equipments.models import Equipment, WorkoutEquipment
-from fittrackee.equipments.utils import (
-    SPORT_EQUIPMENT_TYPES,
-    handle_equipments,
-)
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
 from fittrackee.reports.models import ReportActionAppeal
@@ -51,8 +47,9 @@ from .exceptions import (
     WorkoutException,
     WorkoutFileException,
 )
-from .models import Sport, Workout, WorkoutLike
+from .models import Workout, WorkoutLike
 from .services.workout_creation_service import WorkoutCreationService
+from .services.workout_update_service import WorkoutUpdateService
 from .services.workouts_from_file_creation_service import (
     WorkoutsFromFileCreationService,
 )
@@ -62,10 +59,7 @@ from .utils.gpx import (
     extract_segment_from_gpx_file,
     get_chart_data,
 )
-from .utils.workouts import (
-    edit_workout,
-    get_datetime_from_request_args,
-)
+from .utils.workouts import get_datetime_from_request_args
 
 if TYPE_CHECKING:
     from sqlalchemy.sql.selectable import Subquery
@@ -1816,63 +1810,8 @@ def update_workout(
         return InvalidPayloadErrorResponse()
 
     try:
-        if not workout.gpx:
-            try:
-                # for workout without gpx file, both elevation values must be
-                # provided.
-                if (
-                    (
-                        "ascent" in workout_data
-                        and "descent" not in workout_data
-                    )
-                    or (
-                        "ascent" not in workout_data
-                        and "descent" in workout_data
-                    )
-                ) or (
-                    not (
-                        workout_data.get("ascent") is None
-                        and workout_data.get("descent") is None
-                    )
-                    and (
-                        float(workout_data.get("ascent")) < 0
-                        or float(workout_data.get("descent")) < 0
-                    )
-                ):
-                    return InvalidPayloadErrorResponse()
-            except (TypeError, ValueError):
-                return InvalidPayloadErrorResponse()
-
-        sport = None
-        if "sport_id" in workout_data:
-            sport = Sport.query.filter_by(id=workout_data["sport_id"]).first()
-            if not sport:
-                return InvalidPayloadErrorResponse(
-                    f"sport id {workout_data['sport_id']} not found"
-                )
-
-        if "equipment_ids" in workout_data:
-            sport_id = (
-                workout_data["sport_id"]
-                if workout_data.get("sport_id")
-                else workout.sport_id
-            )
-            workout_data["equipments_list"] = handle_equipments(
-                workout_data.get("equipment_ids"),
-                auth_user,
-                sport_id,
-                workout.equipments,
-            )
-        elif sport:
-            # remove equipment if invalid for new sport
-            # Note: for now only one equipment can be added
-            for equipment in workout.equipments:
-                if sport.label not in SPORT_EQUIPMENT_TYPES.get(
-                    equipment.equipment_type.label, []
-                ):
-                    workout_data["equipments_list"] = []
-
-        workout = edit_workout(workout, workout_data, auth_user)
+        service = WorkoutUpdateService(auth_user, workout, workout_data)
+        service.update()
         db.session.commit()
 
         return {
@@ -1891,6 +1830,13 @@ def update_workout(
         return EquipmentInvalidPayloadErrorResponse(
             equipment_id=e.equipment_id, message=e.message, status=e.status
         )
+    except WorkoutException as e:
+        db.session.rollback()
+        if e.e:
+            appLog.error(e.e)
+        if e.status == "error":
+            return InternalServerErrorResponse(e.message)
+        return InvalidPayloadErrorResponse(e.message, e.status)
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e)
 
