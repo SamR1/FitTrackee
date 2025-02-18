@@ -3,7 +3,7 @@
     "DESCRIPTION": "Zure erabiltzaileentzat erabilgarri izan daitekeen edozein informazioa. Markdown sintaxia erabili dezakezu.",
     "TEXT": "Instantziaren informazio xehetua"
   },
-  "ACTION": "Ekintza",
+  "ACTION": "Ekintza | Ekintzak",
   "ACTIVATE_USER_ACCOUNT": "Aktibatu kontua",
   "ACTIVE": "Aktibo",
   "ADMIN": "Kudeatzailea",
@@ -21,6 +21,23 @@
     "STATS_WORKOUTS_LIMIT_LABEL": "Saio kopuru maximoa kirolaren estatistikatarako",
     "TITLE": "Aplikazioaren konfigurazioa",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "zip fitxategiaren gehienezko tamaina (Mbtan)"
+  },
+  "APP_MODERATION": {
+    "ACTIONS": {
+      "ADD_COMMENT": "Gehitu iruzkina",
+      "MARK_AS_RESOLVED": "Markatu ebatzita",
+      "MARK_AS_UNRESOLVED": "Markatu ez-ebatzita",
+      "SEND_WARNING_EMAIL": "Bidali ohartarazpena",
+      "SUSPEND_ACCOUNT": "Bertan behera utzi erabiltzaile-kontua",
+      "SUSPEND_CONTENT": "Bertan behera utzi edukia",
+      "UNSUSPEND_ACCOUNT": "Biraktibatu erabiltzaile-kontua",
+      "UNSUSPEND_CONTENT": "Biraktibatu edukia"
+    },
+    "APPEAL": {
+      "APPROVED": "Apelazio hau onartu egin da {0}.",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "Apelazio hau onartu egin da bertan behera uztea altxatuz.",
+      "HIDE": "Ezkutatu apelazioa"
+    }
   },
   "BACK_TO_ADMIN": "Kudeaketara itzuli",
   "CONFIRM_USER_ACCOUNT_DELETION": "Ziur zaude {0} kontua ezabatu nahi duzula? Datu guztiak ezabatuko dira eta ekintza hau ezin da desegin.",
