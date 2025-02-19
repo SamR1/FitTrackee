@@ -1,7 +1,7 @@
 from datetime import timedelta
 from typing import Optional, Union
 
-from .duration import _remove_microseconds
+from .duration import remove_microseconds
 
 
 def convert_in_duration(value: str) -> timedelta:
@@ -22,7 +22,7 @@ def convert_value_to_integer(
         return None
 
     if isinstance(val, timedelta):  # "LD"
-        return convert_timedelta_to_integer(str(_remove_microseconds(val)))
+        return convert_timedelta_to_integer(str(remove_microseconds(val)))
 
     multiplier = (
         100 if record_type in ["AS", "MS"] else 1000  # 'FD' and 'HA

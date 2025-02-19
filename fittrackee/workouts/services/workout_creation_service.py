@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from typing import TYPE_CHECKING, Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 
 import pytz
 
@@ -12,7 +12,6 @@ from ..exceptions import WorkoutException
 from ..models import (
     DESCRIPTION_MAX_CHARACTERS,
     NOTES_MAX_CHARACTERS,
-    TITLE_MAX_CHARACTERS,
     Workout,
 )
 from .base_workout_service import BaseWorkoutService
@@ -67,10 +66,9 @@ class WorkoutCreationService(BaseWorkoutService):
         # in case no timezone is set for authenticated user
         return workout_date.replace(tzinfo=timezone.utc)
 
-    def process(self) -> List["Workout"]:
+    def _get_elevation(self) -> Tuple[Optional[float], Optional[float]]:
         ascent = self.workout_data.ascent
         descent = self.workout_data.descent
-
         try:
             if (
                 (ascent is None and descent is not None)
@@ -83,16 +81,23 @@ class WorkoutCreationService(BaseWorkoutService):
             raise WorkoutException(
                 "invalid", "invalid ascent or descent"
             ) from e
+        return ascent, descent
 
+    def _get_workout_title(self, workout_date: datetime) -> str:
+        return self._get_title(workout_date, self.workout_data.title)
+
+    def process(self) -> List["Workout"]:
+        ascent, descent = self._get_elevation()
         duration = timedelta(seconds=self.workout_data.duration)
         distance = self.workout_data.distance
 
+        workout_date = self.get_workout_date()
         new_workout = Workout(
             distance=distance,
             duration=duration,
             sport_id=self.workout_data.sport_id,
             user_id=self.auth_user.id,
-            workout_date=self.get_workout_date(),
+            workout_date=workout_date,
         )
         db.session.add(new_workout)
         new_workout.moving = duration
@@ -106,17 +111,7 @@ class WorkoutCreationService(BaseWorkoutService):
         new_workout.ascent = ascent
         new_workout.descent = descent
 
-        if self.workout_data.title:
-            new_workout.title = self.workout_data.title[:TITLE_MAX_CHARACTERS]
-        else:
-            workout_datetime = (
-                new_workout.workout_date.astimezone(
-                    pytz.timezone(self.auth_user.timezone)
-                )
-                if self.auth_user.timezone
-                else new_workout.workout_date
-            ).strftime("%Y-%m-%d %H:%M:%S")
-            new_workout.title = f"{self.sport.label} - {workout_datetime}"
+        new_workout.title = self._get_workout_title(workout_date)
         new_workout.description = (
             self.workout_data.description[:DESCRIPTION_MAX_CHARACTERS]
             if self.workout_data.description
