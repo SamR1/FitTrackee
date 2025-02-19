@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from typing import IO, TYPE_CHECKING, Optional, Union
+from typing import IO, TYPE_CHECKING, List, Optional, Tuple, Union
 
 import gpxpy.gpx
 
@@ -8,13 +8,15 @@ from fittrackee import db
 
 from ...exceptions import WorkoutFileException
 from ...models import Workout, WorkoutSegment
-from ...utils.duration import _remove_microseconds
+from ...utils.duration import remove_microseconds
 from .base_workout_with_segment_service import (
     BaseWorkoutWithSegmentsCreationService,
 )
 from .workout_point import WorkoutPoint
 
 if TYPE_CHECKING:
+    from uuid import UUID
+
     from fittrackee.users.models import User
 
 
@@ -95,7 +97,7 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
         *,
         parsed_gpx: Union["gpxpy.gpx.GPXTrack", "gpxpy.gpx.GPXTrackSegment"],
         object_to_update: Union["Workout", "WorkoutSegment"],
-        stopped_time_between_seg: timedelta,
+        stopped_time_between_segments: timedelta,
         stopped_speed_threshold: float,
         use_raw_gpx_speed: bool,
     ) -> Union["Workout", "WorkoutSegment"]:
@@ -120,15 +122,16 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
         )
         object_to_update.descent = gpx_info.descent
         object_to_update.distance = gpx_info.distance / 1000
-        object_to_update.duration = _remove_microseconds(
+        object_to_update.duration = remove_microseconds(
             timedelta(seconds=gpx_info.duration if gpx_info.duration else 0)
-            + stopped_time_between_seg
+            + stopped_time_between_segments
         )
         object_to_update.max_alt = gpx_info.max_alt
         object_to_update.min_alt = gpx_info.min_alt
         object_to_update.moving = timedelta(seconds=gpx_info.moving_time)
         object_to_update.pauses = (
-            timedelta(seconds=gpx_info.stopped_time) + stopped_time_between_seg
+            timedelta(seconds=gpx_info.stopped_time)
+            + stopped_time_between_segments
         )
         return object_to_update
 
@@ -138,6 +141,82 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
                 "error", "<time> is missing in gpx file"
             )
         return self.start_point.time.astimezone(timezone.utc)
+
+    def _process_segment_points(
+        self,
+        points: List["gpxpy.gpx.GPXTrackPoint"],
+        stopped_time_between_segments: timedelta,
+        previous_segment_last_point_time: Optional[datetime],
+        is_last_segment: bool,
+    ) -> Tuple[timedelta, Optional[datetime]]:
+        last_point_index = len(points) - 1
+        for point_idx, point in enumerate(points):
+            if point_idx == 0:
+                # if a previous segment exists, calculate stopped time
+                # between the two segments
+                if previous_segment_last_point_time and point.time:
+                    stopped_time_between_segments += (
+                        point.time - previous_segment_last_point_time
+                    )
+
+            # last segment point
+            if point_idx == last_point_index:
+                previous_segment_last_point_time = point.time
+
+                # last gpx point
+                if is_last_segment and point.time:
+                    self.end_point = WorkoutPoint(
+                        point.longitude,
+                        point.latitude,
+                        point.time,
+                    )
+            self.coordinates.append([point.longitude, point.latitude])
+        return stopped_time_between_segments, previous_segment_last_point_time
+
+    def _process_segments(
+        self,
+        segments: List["gpxpy.gpx.GPXTrackSegment"],
+        new_workout_id: int,
+        new_workout_uuid: "UUID",
+    ) -> Tuple[timedelta, float]:
+        last_segment_index = len(segments) - 1
+        max_speed = 0.0
+        previous_segment_last_point_time: Optional[datetime] = None
+        stopped_time_between_segments = timedelta(seconds=0)
+
+        for segment_idx, segment in enumerate(segments):
+            new_workout_segment = WorkoutSegment(
+                segment_id=segment_idx,
+                workout_id=new_workout_id,
+                workout_uuid=new_workout_uuid,
+            )
+            db.session.add(new_workout_segment)
+
+            is_last_segment = segment_idx == last_segment_index
+            stopped_time_between_segments, previous_segment_last_point_time = (
+                self._process_segment_points(
+                    segment.points,
+                    stopped_time_between_segments,
+                    previous_segment_last_point_time,
+                    is_last_segment,
+                )
+            )
+
+            self.set_calculated_data(
+                parsed_gpx=segment,
+                object_to_update=new_workout_segment,
+                stopped_time_between_segments=timedelta(seconds=0),
+                stopped_speed_threshold=self.stopped_speed_threshold,
+                use_raw_gpx_speed=self.auth_user.use_raw_gpx_speed,
+            )
+
+            if (
+                new_workout_segment.max_speed
+                and new_workout_segment.max_speed > max_speed
+            ):
+                max_speed = new_workout_segment.max_speed
+            db.session.flush()
+        return stopped_time_between_segments, max_speed
 
     def _process_file(self) -> "Workout":
         if not self.gpx:
@@ -164,60 +243,14 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
         db.session.add(new_workout)
         db.session.flush()
 
-        segments_nb = len(track.segments)
-        max_speed = 0.0
-        prev_seg_last_point: Optional[datetime] = None
-        no_stopped_time = timedelta(seconds=0)
-        stopped_time_between_seg = no_stopped_time
-
-        for segment_idx, segment in enumerate(track.segments):
-            new_workout_segment = WorkoutSegment(
-                segment_id=segment_idx,
-                workout_id=new_workout.id,
-                workout_uuid=new_workout.uuid,
-            )
-            db.session.add(new_workout_segment)
-
-            for point_idx, point in enumerate(segment.points):
-                if point_idx == 0:
-                    # if a previous segment exists, calculate stopped time
-                    # between the two segments
-                    if prev_seg_last_point and point.time:
-                        stopped_time_between_seg += (
-                            point.time - prev_seg_last_point
-                        )
-
-                # last segment point
-                if point_idx == (len(segment.points) - 1):
-                    prev_seg_last_point = point.time
-
-                    # last gpx point
-                    if segment_idx == (segments_nb - 1) and point.time:
-                        self.end_point = WorkoutPoint(
-                            point.longitude,
-                            point.latitude,
-                            point.time,
-                        )
-                self.coordinates.append([point.longitude, point.latitude])
-
-            self.set_calculated_data(
-                parsed_gpx=segment,
-                object_to_update=new_workout_segment,
-                stopped_time_between_seg=no_stopped_time,
-                stopped_speed_threshold=self.stopped_speed_threshold,
-                use_raw_gpx_speed=self.auth_user.use_raw_gpx_speed,
-            )
-            if (
-                new_workout_segment.max_speed
-                and new_workout_segment.max_speed > max_speed
-            ):
-                max_speed = new_workout_segment.max_speed
-            db.session.flush()
+        stopped_time_between_segments, max_speed = self._process_segments(
+            track.segments, new_workout.id, new_workout.uuid
+        )
 
         self.set_calculated_data(
             parsed_gpx=track,
             object_to_update=new_workout,
-            stopped_time_between_seg=stopped_time_between_seg,
+            stopped_time_between_segments=stopped_time_between_segments,
             stopped_speed_threshold=self.stopped_speed_threshold,
             use_raw_gpx_speed=self.auth_user.use_raw_gpx_speed,
         )

@@ -2,10 +2,10 @@ import os
 import secrets
 import zipfile
 from dataclasses import dataclass
+from datetime import datetime
 from io import BytesIO
 from typing import IO, TYPE_CHECKING, Dict, List, Optional, Type, Union
 
-import pytz
 from flask import current_app
 
 from fittrackee.equipments.exceptions import InvalidEquipmentsException
@@ -17,7 +17,6 @@ from fittrackee.visibility_levels import (
 from fittrackee.workouts.models import (
     DESCRIPTION_MAX_CHARACTERS,
     NOTES_MAX_CHARACTERS,
-    TITLE_MAX_CHARACTERS,
 )
 
 from ..exceptions import WorkoutException, WorkoutFileException
@@ -39,6 +38,7 @@ WORKOUT_FROM_FILE_SERVICES: Dict[
 ] = {
     "gpx": WorkoutGpxCreationService,
 }
+NO_FILE_ERROR_MESSAGE = "no workout file provided"
 
 
 @dataclass
@@ -90,6 +90,54 @@ class WorkoutsFromFileCreationService(BaseWorkoutService):
         file_path = os.path.join(dir_path, new_filename.split("/")[-1])
         return file_path
 
+    def _get_workout_title(
+        self, service_workout_name: Optional[str], workout_date: datetime
+    ) -> Optional[str]:
+        title = ""
+        if self.workouts_data.title:
+            title = self.workouts_data.title
+        elif service_workout_name:
+            title = service_workout_name
+        return self._get_title(workout_date, title)
+
+    def _get_workout_description(
+        self, service_workout_description: Optional[str]
+    ) -> Optional[str]:
+        if self.workouts_data.description:
+            return self.workouts_data.description[:DESCRIPTION_MAX_CHARACTERS]
+
+        if service_workout_description:
+            return service_workout_description[:DESCRIPTION_MAX_CHARACTERS]
+
+        return None
+
+    def _get_workout_notes(self) -> Optional[str]:
+        if self.workouts_data.notes is None:
+            return None
+        return self.workouts_data.notes[:NOTES_MAX_CHARACTERS]
+
+    def _store_file(self, new_workout: "Workout") -> str:
+        absolute_workout_filepath = ""
+        if self.file:
+            workout_filepath = self.get_file_path(
+                workout_date=new_workout.workout_date.strftime(
+                    "%Y-%m-%d_%H-%M-%S"
+                ),
+                extension=".gpx",
+            )
+            new_workout.gpx = workout_filepath
+            absolute_workout_filepath = get_absolute_file_path(
+                workout_filepath
+            )
+            try:
+                self.file.stream.seek(0)
+                self.file.save(absolute_workout_filepath)
+            except Exception as e:
+                raise WorkoutException(
+                    "error", "error when storing gpx file"
+                ) from e
+        return absolute_workout_filepath
+
     def create_workout_from_file(
         self,
         extension: str,
@@ -100,7 +148,7 @@ class WorkoutsFromFileCreationService(BaseWorkoutService):
         Return map absolute file path in order to delete file on error
         """
         if workout_file is None and self.file is None:
-            raise WorkoutException("error", "no workout file provided")
+            raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
 
         workout_service = WORKOUT_FROM_FILE_SERVICES[extension](
             auth_user=self.auth_user,
@@ -117,39 +165,13 @@ class WorkoutsFromFileCreationService(BaseWorkoutService):
         new_workout = workout_service.process_workout()
 
         # store title, description and notes
-        title = (
-            self.workouts_data.title
-            if self.workouts_data.title
-            else workout_service.workout_name
-            if workout_service.workout_name
-            else ""
+        new_workout.title = self._get_workout_title(
+            workout_service.workout_name, new_workout.workout_date
         )
-        if title:
-            new_workout.title = title[:TITLE_MAX_CHARACTERS]
-        else:
-            workout_datetime = (
-                new_workout.workout_date.astimezone(
-                    pytz.timezone(self.auth_user.timezone)
-                )
-                if self.auth_user.timezone
-                else new_workout.workout_date
-            ).strftime("%Y-%m-%d %H:%M:%S")
-            new_workout.title = f"{self.sport.label} - {workout_datetime}"
-
-        new_workout.description = (
-            self.workouts_data.description[:DESCRIPTION_MAX_CHARACTERS]
-            if self.workouts_data.description
-            else workout_service.workout_description[
-                :DESCRIPTION_MAX_CHARACTERS
-            ]
-            if workout_service.workout_description
-            else None
+        new_workout.description = self._get_workout_description(
+            workout_service.workout_description
         )
-        new_workout.notes = (
-            None
-            if self.workouts_data.notes is None
-            else self.workouts_data.notes[:NOTES_MAX_CHARACTERS]
-        )
+        new_workout.notes = self._get_workout_notes()
 
         # add equipments if ids provided
         if equipments is not None:
@@ -179,24 +201,7 @@ class WorkoutsFromFileCreationService(BaseWorkoutService):
         )
 
         # store workout file
-        if self.file:
-            workout_filepath = self.get_file_path(
-                workout_date=new_workout.workout_date.strftime(
-                    "%Y-%m-%d_%H-%M-%S"
-                ),
-                extension=".gpx",
-            )
-            new_workout.gpx = workout_filepath
-            absolute_workout_filepath = get_absolute_file_path(
-                workout_filepath
-            )
-            try:
-                self.file.stream.seek(0)
-                self.file.save(absolute_workout_filepath)
-            except Exception as e:
-                raise WorkoutException(
-                    "error", "error when storing gpx file"
-                ) from e
+        absolute_workout_filepath = self._store_file(new_workout)
 
         # generate and store map image
         map_filepath = self.get_file_path(
@@ -236,7 +241,7 @@ class WorkoutsFromFileCreationService(BaseWorkoutService):
 
     def get_files_from_archive(self) -> List[str]:
         if not self.file:
-            raise WorkoutException("error", "no workout file provided")
+            raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
         files_to_process = []
         max_file_size = current_app.config["max_single_file_size"]
         try:
@@ -276,23 +281,25 @@ class WorkoutsFromFileCreationService(BaseWorkoutService):
 
         return files_to_process
 
-    def process_zip_archive(
-        self, equipments: Union[List["Equipment"], None]
-    ) -> List["Workout"]:
+    def _get_archive_content(self) -> Union[BytesIO, IO[bytes]]:
         if not self.file:
-            raise WorkoutException("error", "no workout file provided")
-        files_to_process = self.get_files_from_archive()
-        new_workouts = []
+            raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
 
         # handle Python < 3.11, see:
         # - https://github.com/python/cpython/issues/70363
         # - https://docs.python.org/3.11/whatsnew/3.11.html#tempfile
         if not hasattr(self.file.stream, "seekable"):
-            archive_content: Union[BytesIO, IO[bytes]] = BytesIO(
-                self.file.getvalue()
-            )
-        else:
-            archive_content = self.file.stream
+            return BytesIO(self.file.getvalue())
+        return self.file.stream
+
+    def process_zip_archive(
+        self, equipments: Union[List["Equipment"], None]
+    ) -> List["Workout"]:
+        if not self.file:
+            raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
+        files_to_process = self.get_files_from_archive()
+        new_workouts = []
+        archive_content = self._get_archive_content()
 
         try:
             with zipfile.ZipFile(archive_content, "r") as zip_ref:
@@ -323,7 +330,7 @@ class WorkoutsFromFileCreationService(BaseWorkoutService):
 
     def process(self) -> List["Workout"]:
         if self.file is None:
-            raise WorkoutException("error", "no workout file provided")
+            raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
         if self.file.filename is None:
             raise WorkoutFileException("error", "workout file has no filename")
 
