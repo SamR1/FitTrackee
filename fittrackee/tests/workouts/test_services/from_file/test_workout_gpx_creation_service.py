@@ -462,6 +462,35 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert workout_segments[2].moving == timedelta(seconds=10)
         assert workout_segments[2].pauses == timedelta(seconds=0)
 
+    def test_it_creates_workout_when_gpx_file_contains_microseconds(
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_microseconds: str,
+    ) -> None:
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_with_microseconds
+        )
+
+        service.process_workout()
+        db.session.commit()
+
+        # workout
+        workout = Workout.query.one()
+        assert workout.duration == timedelta(minutes=4, seconds=10)
+        assert workout.moving == timedelta(minutes=3, seconds=55)
+        assert workout.pauses == timedelta(seconds=14)
+        # workout segments
+        workout_segments = WorkoutSegment.query.all()
+        assert len(workout_segments) == 2
+        assert workout_segments[0].duration == timedelta(minutes=1, seconds=30)
+        assert workout_segments[0].moving == timedelta(minutes=1, seconds=30)
+        assert workout_segments[0].pauses == timedelta(seconds=0)
+        assert workout_segments[1].duration == timedelta(minutes=2, seconds=25)
+        assert workout_segments[1].moving == timedelta(minutes=2, seconds=25)
+        assert workout_segments[1].pauses == timedelta(seconds=0)
+
     def test_it_calls_weather_service_for_start_and_endpoint(
         self,
         app: "Flask",

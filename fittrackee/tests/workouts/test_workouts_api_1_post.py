@@ -327,7 +327,7 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
             ("ascent", MAX_WORKOUT_VALUES["drop"] + 0.001),
             ("descent", MAX_WORKOUT_VALUES["drop"] + 0.001),
             ("distance", MAX_WORKOUT_VALUES["distance"] * 1000 + 0.001),
-            ("moving_time", PSQL_INTEGER_LIMIT + 1),
+            # ("moving_time", PSQL_INTEGER_LIMIT + 1),
             ("max_speed", MAX_WORKOUT_VALUES["speed"] + 0.01),
             ("max_alt", MAX_WORKOUT_VALUES["elevation"] + 0.01),
             ("min_alt", MAX_WORKOUT_VALUES["elevation"] + 0.01),

@@ -128,8 +128,10 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
         )
         object_to_update.max_alt = gpx_info.max_alt
         object_to_update.min_alt = gpx_info.min_alt
-        object_to_update.moving = timedelta(seconds=gpx_info.moving_time)
-        object_to_update.pauses = (
+        object_to_update.moving = remove_microseconds(
+            timedelta(seconds=gpx_info.moving_time)
+        )
+        object_to_update.pauses = remove_microseconds(
             timedelta(seconds=gpx_info.stopped_time)
             + stopped_time_between_segments
         )
@@ -215,7 +217,6 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
                 and new_workout_segment.max_speed > max_speed
             ):
                 max_speed = new_workout_segment.max_speed
-            db.session.flush()
         return stopped_time_between_segments, max_speed
 
     def _process_file(self) -> "Workout":
@@ -280,7 +281,5 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
                     self.end_point,
                 )
             )
-
-        db.session.flush()
 
         return new_workout
