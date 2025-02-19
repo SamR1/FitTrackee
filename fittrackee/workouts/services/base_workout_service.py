@@ -1,11 +1,15 @@
 from abc import ABC, abstractmethod
+from datetime import datetime
 from typing import TYPE_CHECKING, List, Optional, Union
+
+import pytz
 
 from fittrackee.equipments.utils import handle_equipments
 from fittrackee.users.models import UserSportPreference
 from fittrackee.workouts.models import Sport
 
 from ..exceptions import WorkoutException
+from ..models import TITLE_MAX_CHARACTERS, Workout
 
 if TYPE_CHECKING:
     from fittrackee.equipments.models import Equipment
@@ -52,6 +56,17 @@ class BaseWorkoutService(ABC):
             self.auth_user,
             self.sport.id,
         )
+
+    def _get_title(self, workout_date: datetime, title: Optional[str]) -> str:
+        if title:
+            return title[:TITLE_MAX_CHARACTERS]
+
+        workout_datetime = (
+            workout_date.astimezone(pytz.timezone(self.auth_user.timezone))
+            if self.auth_user.timezone
+            else workout_date
+        ).strftime("%Y-%m-%d %H:%M:%S")
+        return f"{self.sport.label} - {workout_datetime}"
 
     @abstractmethod
     def process(self) -> List["Workout"]:
