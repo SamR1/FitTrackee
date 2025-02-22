@@ -107,7 +107,7 @@
                   </span>
                   <div class="roles">
                     <div
-                      v-if="isUserInEdition(user.username)"
+                      v-if="isUserInEdition(getUserName(user))"
                       class="roles-buttons"
                     >
                       <button
@@ -116,7 +116,7 @@
                           danger: user.role === 'admin' || role === 'user',
                         }"
                         :key="role"
-                        @click="updateUser(user.username, role)"
+                        @click="updateUser(getUserName(user), role)"
                       >
                         {{
                           $t(
@@ -131,7 +131,7 @@
                     <div v-else>
                       <button
                         :disabled="isButtonDisabled(user)"
-                        @click="userInEdition = user.username"
+                        @click="userInEdition = getUserName(user)"
                       >
                         {{ $t('admin.USERS.TABLE.CHANGE_ROLE') }}
                       </button>
@@ -186,6 +186,7 @@
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
+  import { getUserName } from '@/utils/user'
 
   const store = useStore()
   const route = useRoute()
@@ -254,7 +255,7 @@
   }
   function isButtonDisabled(user: IUserProfile) {
     return (
-      user.username === authUser.value.username ||
+      getUserName(user) === getUserName(authUser.value) ||
       user.suspended_at !== null ||
       user.role === 'owner'
     )
