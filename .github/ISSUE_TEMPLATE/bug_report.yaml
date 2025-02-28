@@ -1,0 +1,119 @@
+name: Bug report
+description: Create a report to help us improve
+title: "[bug]: "
+labels: ["bug"]
+projects: [""]
+assignees:
+  - ""
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For installation and configuration instructions please refer to the [documentation](https://docs.fittrackee.org/en/installation.html)
+
+        **NB** Please copy and paste commands and output rather than including screenshots as sharing text facilitates recreating and investigating the error. You can use [GitHub Markdown](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#quoting-code)
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      description: A Checklist is provided below for you to track each of the subsequent tasks.
+      options:
+        - label: Describe the bug.
+          required: true
+        - label: Copy of the output/log.
+          required: true
+        - label: Include your `.env` file.
+          required: true
+        - label: Steps to Reproduce
+          required: true
+        - label: The exact command that failed. This is what you typed at the command line, including any options.
+          required: true
+        - label: FitTrackee version, this is reported by `pip show fittrackee`
+          required: true
+        - label: Operating System and Python Version
+          required: true
+        - label: Installed Python packages
+          required: false
+  - type: textarea
+    id: describe-the-bug
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is and what may be causing it.
+    validations:
+      required: true
+  - type: textarea
+    id: copy-of-output
+    attributes:
+      label: Copy of the output/log
+      description: |
+        Please copy and paste any output from your terminal below and/or relevant sections from your log file. At a minimum this should include the bottom section showing where the error arose and the subsequent output.
+    validations:
+      required: true
+  - type: textarea
+    id: config-file
+    attributes:
+      label: Include the `.env` file
+      description: |
+        Please include the `.env` file you have used.
+    validations:
+      required: true
+  - type: textarea
+    id: to-reproduce
+    attributes:
+      label: To Reproduce
+      description: |
+        If it is possible to share the files (e.g. via cloud services) that caused the error that would greatly assist in reproducing and investigating the problem. In addition the _exact_ command used that failed should be pasted below.
+    validations:
+      required: false
+  - type: dropdown
+    id: version-fittrackee
+    attributes:
+      label: FitTrackee Version
+      description: What version of our software are you running? You can find this out using `pip show isoslam`.
+      options:
+        - "0.8."
+        - "0.9.0"
+        - "0.9.1"
+        - "0.9.2"
+        - "Git main branch"
+      default: 3
+    validations:
+      required: true
+  - type: dropdown
+    id: version-python
+    attributes:
+      label: Python Version
+      description: |
+        What version of Python are you running? If unsure type `python --version`.
+      options:
+        - "3.9"
+        - "3.10"
+        - "3.11"
+        - "3.12"
+        - "3.13"
+      default: 3
+    validations:
+      required: true
+  - type: dropdown
+    id: version-os
+    attributes:
+      label: Operating System
+      description: |
+        What Operating System are you running?
+      options:
+        - Windows
+        - MacOS Intel (pre-2021)
+        - MacOS M1/M2 (post-2021)
+        - GNU/Linux
+      default: 3
+    validations:
+      required: true
+  - type: textarea
+    id: version-dependencies
+    attributes:
+      label: Python Packages
+      description: |
+        If you are able to provide a list of your installed packages that may be useful. The best way to get this is to copy and paste the results of typing `pip freeze`.
+    validations:
+      required: false
