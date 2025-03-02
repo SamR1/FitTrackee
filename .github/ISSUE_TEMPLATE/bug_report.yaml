@@ -1,6 +1,6 @@
 name: Bug report
 description: Create a report to help us improve
-title: "[bug]: "
+title: "[bug] "
 labels: ["bug"]
 projects: [""]
 assignees:
@@ -55,7 +55,7 @@ body:
     attributes:
       label: Include the `.env` file
       description: |
-        Please include the `.env` file you have used.
+        Please include the `.env` file you have used. Don't forget to remove passwords and other sensitive data.
     validations:
       required: true
   - type: textarea
@@ -70,9 +70,8 @@ body:
     id: version-fittrackee
     attributes:
       label: FitTrackee Version
-      description: What version of our software are you running? You can find this out using `pip show isoslam`.
-      options:
-        - "0.8."
+      description: What version of our software are you running? You can find this out using `pip show fittrackee`.
+        - "0.8.x or earlier"
         - "0.9.0"
         - "0.9.1"
         - "0.9.2"
@@ -96,11 +95,22 @@ body:
     validations:
       required: true
   - type: dropdown
+    id: install-method
+    attributes:
+      label: FitTrackee installation method
+      description: How was FitTrackee installed?
+      options:
+        - "From PyPI"
+        - "From source"
+        - "With Docker image"
+    validations:
+      required: true
+  - type: dropdown
     id: version-os
     attributes:
       label: Operating System
       description: |
-        What Operating System are you running?
+        What Operating System are you running? (Note: FitTrackee is only tested on Linux OS, see documentation).
       options:
         - Windows
         - MacOS Intel (pre-2021)
