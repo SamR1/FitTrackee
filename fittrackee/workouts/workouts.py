@@ -43,7 +43,7 @@ from fittrackee.responses import (
 )
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.utils import decode_short_id
-from fittrackee.visibility_levels import can_view
+from fittrackee.visibility_levels import VisibilityLevel, can_view
 
 from .decorators import check_workout
 from .models import Sport, Workout, WorkoutLike
@@ -248,6 +248,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                          **Note**: It's not a filter.
                          **Warning**: Needed for 3rd-party applications
                          updating equipments.
+    :query string workout_visibility: workout visibility (``private``,
+                         ``followers_only`` or ``public``)
 
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -294,6 +296,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 equipment_id = equipment.id if equipment else 0
         else:
             equipment_id = None
+        workout_visibility = params.get("workout_visibility")
         per_page = int(params.get("per_page", DEFAULT_WORKOUTS_PER_PAGE))
         if per_page > MAX_WORKOUTS_PER_PAGE:
             per_page = MAX_WORKOUTS_PER_PAGE
@@ -340,6 +343,17 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
             filters.append(WorkoutEquipment.c.equipment_id == None)  # noqa
         elif equipment_id is not None:
             filters.append(WorkoutEquipment.c.equipment_id == equipment_id)
+        if workout_visibility:
+            if workout_visibility not in set(
+                item.value for item in VisibilityLevel
+            ):
+                return InvalidPayloadErrorResponse(
+                    "invalid value for visibility"
+                )
+            filters.append(
+                Workout.workout_visibility
+                == VisibilityLevel(workout_visibility).value
+            )
 
         workouts_pagination = (
             Workout.query.outerjoin(WorkoutEquipment)
