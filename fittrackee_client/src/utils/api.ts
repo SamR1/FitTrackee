@@ -70,6 +70,11 @@ export const getQuery = (
   } else {
     delete query.resolved
   }
+  if (typeof locationQuery.workout_visibility === 'string') {
+    query.workout_visibility = locationQuery.workout_visibility
+  } else {
+    delete query.workout_visibility
+  }
 
   return query
 }
