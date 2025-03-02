@@ -2,11 +2,13 @@ import type { ISport, ITranslatedSport, TActiveStatus } from '@/types/sports'
 import type { IWorkout } from '@/types/workouts'
 
 export const sportColors: Record<string, string> = {
+  Canoeing: '#75b3be',
   'Cycling (Sport)': '#4c9792',
   'Cycling (Trekking)': '#a8af88',
   'Cycling (Transport)': '#88af98',
   'Cycling (Virtual)': '#64a360',
   Hiking: '#bb757c',
+  Kayaking: '#4978c4',
   'Mountain Biking': '#d4b371',
   'Mountain Biking (Electric)': '#fc9d6f',
   Mountaineering: '#48b3b7',
