@@ -1,4 +1,7 @@
 {
+  "Canoeing": {
+    "LABEL": "划艇"
+  },
   "Cycling (Sport)": {
     "LABEL": "骑行（运动）"
   },
@@ -13,6 +16,9 @@
   },
   "Hiking": {
     "LABEL": "徒步"
+  },
+  "Kayaking": {
+    "LABEL": "皮艇"
   },
   "Mountain Biking": {
     "LABEL": "山地自行车"
