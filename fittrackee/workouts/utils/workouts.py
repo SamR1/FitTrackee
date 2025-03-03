@@ -174,6 +174,10 @@ def create_workout(
         description[:DESCRIPTION_MAX_CHARACTERS] if description else None
     )
 
+    # for remote workout
+    new_workout.ap_id = workout_data.get("id")
+    new_workout.remote_url = workout_data.get("url")
+
     new_workout.workout_visibility = VisibilityLevel(
         workout_data.get("workout_visibility", user.workouts_visibility.value)
     )
@@ -605,10 +609,10 @@ def get_average_speed(
     )
 
 
-def get_ordered_workouts(workouts: List[Workout], limit: int) -> List[Workout]:
+def get_ordered_workouts(workouts: List[Workout]) -> List[Workout]:
     return sorted(
         workouts, key=lambda workout: workout.workout_date, reverse=True
-    )[:limit]
+    )
 
 
 def get_workout(
