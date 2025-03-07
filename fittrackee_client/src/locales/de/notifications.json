@@ -3,6 +3,9 @@
   "ALL": "Alle",
   "APPEALED_SUSPENSION": "die Sperre anfechten",
   "APPEALED_USER_WARNING": "Einspruch gegen die Verwarnung eingelegt",
+  "COMMENTED_YOUR_WORKOUT": "hat dein Training kommentiert",
+  "LIKED_YOUR_COMMENT": "gefällt dein Kommentar",
+  "LIKED_YOUR_WORKOUT": "gefällt dein Training",
   "MARK_ALL_AS_READ": "Alle als gelesen markieren",
   "MARK_AS_READ": "als gelesen markieren",
   "MARK_AS_UNREAD": "Als ungelesen markieren",
@@ -22,6 +25,15 @@
     "comment_like": "Likes auf Kommentare",
     "comment_suspension": "deaktivierte Kommentare",
     "comment_unsuspension": "reaktivierte Kommentare",
-    "follow": "folgen"
-  }
+    "follow": "folgen",
+    "user_warning": "Warnungen"
+  },
+  "UNREAD": "Ungelesen",
+  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "Dein Konto wurde gesperrt",
+  "YOUR_COMMENT_HAS_BEEN_SUSPENDED": "Dein Kommentar wurde gesperrt",
+  "YOUR_COMMENT_HAS_BEEN_UNSUSPENDED": "Die Sperrung des Kommentars wurde zurück genommen",
+  "YOUR_WARNING_HAS_BEEN_LIFTED": "Deine Warnung wurde zurück genommen.",
+  "YOUR_WORKOUT_HAS_BEEN_SUSPENDED": "Dein Training wurde gesperrt",
+  "YOUR_WORKOUT_HAS_BEEN_UNSUSPENDED": "Die Sperrung dieses Trainings wurde zurück genommen",
+  "YOU_RECEIVED_A_WARNING": "Du hast eine Warnung erhalten"
 }
