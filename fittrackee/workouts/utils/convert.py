@@ -16,12 +16,13 @@ def convert_in_duration(value: str) -> timedelta:
 def convert_value_to_integer(
     record_type: str, val: Union[timedelta, float, None]
 ) -> Optional[int]:
-    if val is None:
+    if val is None or record_type not in ["AS", "FD", "HA", "LD", "MS"]:
         return None
 
     if isinstance(val, timedelta):  # record_type == "LD"
         return int(val.total_seconds())
-    elif record_type in ["AS", "MS"]:
-        return int(val * 100)
-    else:  # 'FD'
-        return int(val * 1000)
+
+    multiplier = (
+        100 if record_type in ["AS", "MS"] else 1000  # 'FD' and 'HA
+    )
+    return round(val * multiplier)

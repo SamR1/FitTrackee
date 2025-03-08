@@ -38,6 +38,9 @@ class TestConvertValueToInteger:
     ) -> None:
         assert convert_value_to_integer("LD", None) is None
 
+    def test_it_returns_none_when_input_record_in_invalid(self) -> None:
+        assert convert_value_to_integer("invalid", 100) is None
+
     @pytest.mark.parametrize(
         "input_value,expected_value",
         [
