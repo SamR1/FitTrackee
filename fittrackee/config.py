@@ -4,7 +4,6 @@ from typing import Type, Union
 from dramatiq.brokers.redis import RedisBroker
 from dramatiq.brokers.stub import StubBroker
 from flask import current_app
-from sqlalchemy.pool import NullPool
 
 from fittrackee import DEFAULT_PRIVACY_POLICY_DATA, VERSION
 from fittrackee.languages import SUPPORTED_LANGUAGES
