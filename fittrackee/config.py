@@ -108,12 +108,6 @@ class End2EndTestingConfig(TestingConfig):
 
 class ProductionConfig(BaseConfig):
     DEBUG = False
-    # https://docs.sqlalchemy.org/en/13/core/pooling.html#using-connection-pools-with-multiprocessing-or-os-fork  # noqa
-    SQLALCHEMY_ENGINE_OPTIONS = (
-        {"poolclass": NullPool}
-        if os.getenv("DATABASE_DISABLE_POOLING", "False") == "True"
-        else {}
-    )
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
     SECRET_KEY = os.getenv("APP_SECRET_KEY")
     DRAMATIQ_BROKER_URL = os.getenv("REDIS_URL", "redis://")

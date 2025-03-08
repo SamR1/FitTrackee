@@ -150,6 +150,7 @@ deployment method.
 .. envvar:: DATABASE_DISABLE_POOLING
 
     .. versionadded:: 0.4.0
+    .. versionremoved:: 0.9.3
 
     Disable pooling if needed (when starting application with **FitTrackee** entry point and not directly with **Gunicorn**),
     see `SqlAlchemy documentation <https://docs.sqlalchemy.org/en/13/core/pooling.html#using-connection-pools-with-multiprocessing-or-os-fork>`__.
