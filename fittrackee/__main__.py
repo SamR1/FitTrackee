@@ -15,6 +15,7 @@ if TYPE_CHECKING:
 HOST = os.getenv("HOST", "127.0.0.1")
 PORT = os.getenv("PORT", "5000")
 WORKERS = os.getenv("APP_WORKERS", 1)
+TIMEOUT = os.getenv("APP_TIMEOUT", 30)
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
 app = create_app()
 
@@ -55,6 +56,7 @@ def main() -> None:
         "bind": f"{HOST}:{PORT}",
         "workers": WORKERS,
         "pre_fork": pre_fork,
+        "timeout": TIMEOUT,
     }
     StandaloneApplication(app, options).run()
 

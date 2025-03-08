@@ -114,10 +114,17 @@ deployment method.
 
 .. envvar:: APP_WORKERS
 
-    Number of workers spawned by **Gunicorn**.
+    Number of workers spawned by **Gunicorn** (when starting application with **FitTrackee** entry point, see `Gunicorn documentation <https://docs.gunicorn.org/en/stable/settings.html#workers>`__).
 
     :default: 1
 
+.. envvar:: APP_TIMEOUT
+
+    .. versionadded:: 0.9.3
+
+    Timeout for workers spawned by **Gunicorn** (when starting application with **FitTrackee** entry point, see `Gunicorn documentation <https://docs.gunicorn.org/en/stable/settings.html#timeout>`__).
+
+    :default: 30
 
 .. envvar:: APP_LOG
 
