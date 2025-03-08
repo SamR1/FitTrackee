@@ -27,6 +27,7 @@
   "REPORT_PLACEHOLDER": "den Grund für die Meldung angeben",
   "REPORT_SUBMITTED": "Meldung übermittelt.",
   "SECONDS": "Sekunde|Sekunden",
+  "SEE_REPORT": "Siehe Bericht {0}.",
   "SELECTS": {
     "ORDER": {
       "ASC": "aufsteigend",
@@ -41,5 +42,6 @@
     }
   },
   "TOTAL": "Insgesamt",
-  "TOTAL_DURATION_WITH_PAUSES": "Gesamtdauer mit Pause"
+  "TOTAL_DURATION_WITH_PAUSES": "Gesamtdauer mit Pause",
+  "TYPE": "Typ"
 }
