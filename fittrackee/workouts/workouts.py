@@ -46,6 +46,7 @@ from fittrackee.utils import decode_short_id
 from fittrackee.visibility_levels import VisibilityLevel, can_view
 
 from .decorators import check_workout
+from .exceptions import InvalidDurationException
 from .models import Sport, Workout, WorkoutLike
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
@@ -392,6 +393,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "total": workouts_pagination.total,
             },
         }
+    except InvalidDurationException as e:
+        return InvalidPayloadErrorResponse(str(e))
     except Exception as e:
         return handle_error_and_return_response(e)
 

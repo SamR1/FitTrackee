@@ -1,8 +1,13 @@
+import re
 from datetime import timedelta
 from typing import Optional, Union
 
+from ..exceptions import InvalidDurationException
+
 
 def convert_in_duration(value: str) -> timedelta:
+    if not re.match(r"^([0-1]?\d|2[0-3]):[0-5]\d(:[0-5]\d)?$", value):
+        raise InvalidDurationException()
     hours = int(value.split(":")[0])
     minutes = int(value.split(":")[1])
     return timedelta(seconds=(hours * 3600 + minutes * 60))

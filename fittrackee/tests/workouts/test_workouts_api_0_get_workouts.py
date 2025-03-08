@@ -943,6 +943,32 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
             "total": 1,
         }
 
+    @pytest.mark.parametrize(
+        "input_duration",
+        [
+            "duration_from=00h52&duration_to=01:20",
+            "duration_from=00:52&duration_to=01h20",
+        ],
+    )
+    def test_it_returns_400_when_duration_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: List[Workout],
+        input_duration: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/workouts?{input_duration}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, error_message="invalid duration")
+
     def test_it_gets_workouts_with_average_speed_filter(
         self,
         app: Flask,

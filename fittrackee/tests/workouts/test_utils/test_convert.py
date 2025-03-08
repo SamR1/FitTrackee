@@ -2,7 +2,33 @@ from datetime import timedelta
 
 import pytest
 
-from fittrackee.workouts.utils.convert import convert_value_to_integer
+from fittrackee.workouts.exceptions import InvalidDurationException
+from fittrackee.workouts.utils.convert import (
+    convert_in_duration,
+    convert_value_to_integer,
+)
+
+
+class TestConvertInDuration:
+    def test_it_raises_exception_format_is_invalid(self) -> None:
+        with pytest.raises(InvalidDurationException, match="invalid duration"):
+            convert_in_duration("00h01m")
+
+    @pytest.mark.parametrize(
+        "input_value,expected_seconds",
+        [
+            ("00:01", 60),
+            ("00:01:00", 60),
+            ("01:00", 3600),
+            ("00:00", 0),
+        ],
+    )
+    def test_it_converts_str_into_time_delta(
+        self, input_value: str, expected_seconds: int
+    ) -> None:
+        assert convert_in_duration(input_value) == timedelta(
+            seconds=expected_seconds
+        )
 
 
 class TestConvertValueToInteger:
