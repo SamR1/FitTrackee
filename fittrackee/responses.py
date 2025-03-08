@@ -67,6 +67,21 @@ class DataInvalidPayloadErrorResponse(HttpResponse):
         super().__init__(response=response, status_code=400)
 
 
+class InvalidConfigValueErrorResponse(HttpResponse):
+    def __init__(
+        self,
+        key: str,
+        max_value: int,
+    ) -> None:
+        response = {
+            "status": "config_value_exceeding_limit",
+            "key": key,
+            "max_value": max_value,
+            "message": f"'{key}' must be less than {max_value}",
+        }
+        super().__init__(response=response, status_code=400)
+
+
 class EquipmentInvalidPayloadErrorResponse(HttpResponse):
     def __init__(
         self,

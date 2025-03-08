@@ -201,6 +201,58 @@ class TestUpdateConfig(ApiTestCaseMixin):
 
         self.assert_500(response, "error when updating configuration")
 
+    @pytest.mark.parametrize(
+        "input_param",
+        [
+            "gpx_limit_import",
+            "max_zip_file_size",
+            "max_users",
+            "stats_workouts_limit",
+        ],
+    )
+    def test_it_raises_error_if_archive_max_size_exceeds_limit(
+        self, app: Flask, user_1_admin: User, input_param: str
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            "/api/config",
+            content_type="application/json",
+            json={input_param: 2147483648},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            f"'{input_param}' must be less than 2147483648",
+            "config_value_exceeding_limit",
+        )
+
+    def test_it_raises_error_if_param_exceeds(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            "/api/config",
+            content_type="application/json",
+            json={
+                "max_single_file_size": 2147483648,
+                "max_zip_file_size": 2147483648,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            "'max_single_file_size' must be less than 2147483648",
+            "config_value_exceeding_limit",
+        )
+
     def test_it_raises_error_if_archive_max_size_is_below_files_max_size(
         self, app: Flask, user_1_admin: User
     ) -> None:
@@ -216,7 +268,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                     gpx_limit_import=20,
                     max_single_file_size=10000,
                     max_zip_file_size=1000,
-                    max_users=50,
+                    max_users=2147483647,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
