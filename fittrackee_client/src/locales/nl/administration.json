@@ -18,7 +18,7 @@
     "NO_CONTACT_EMAIL": "geen contact email",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. grootte van bestanden voor upload (in Mb)",
     "STATS_WORKOUTS_LIMIT_HELP": "Bij 0, geen beperking op het aantal trainingen.",
-    "STATS_WORKOUTS_LIMIT_LABEL": "Max. aantal trainingen voor sportstatistieken",
+    "STATS_WORKOUTS_LIMIT_LABEL": "Max. aantal trainingen voor statistieken",
     "TITLE": "Applicatie configureren",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. grootte van zip archief (in Mb)"
   },
