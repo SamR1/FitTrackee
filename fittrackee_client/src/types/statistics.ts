@@ -1,6 +1,6 @@
 import type { IChartDataset } from '@/types/chart'
 
-export type TStatisticsTimeFrame = 'week' | 'month' | 'year'
+export type TStatisticsTimeFrame = 'day' | 'week' | 'month' | 'year'
 
 export type TStatisticsType = 'average' | 'total'
 

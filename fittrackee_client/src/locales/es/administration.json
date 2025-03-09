@@ -18,7 +18,7 @@
     "NO_CONTACT_EMAIL": "sin email de contacto",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Tamaño máx. de los ficheros subidos (en Mb)",
     "STATS_WORKOUTS_LIMIT_HELP": "Si es 0, no hay limitación en el número de entrenamientos.",
-    "STATS_WORKOUTS_LIMIT_LABEL": "Número máximo de sesiones. para estadísticas deportivas",
+    "STATS_WORKOUTS_LIMIT_LABEL": "Número máximo de sesiones. para estadísticas",
     "TITLE": "Configuración de la aplicación",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Tamaño máx. del fichero zip (en Mb)"
   },

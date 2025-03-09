@@ -141,7 +141,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         response = client.get(
             (
                 f"/api/stats/{user_1.username}/by_time"
-                f"?from=2018-04-01&to=2018-04-30&time=day"
+                f"?from=2018-04-01&to=2018-04-30&time=hour"
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
@@ -1374,6 +1374,286 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 }
             },
         }
+
+    def test_it_gets_stats_by_day(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: List[Workout],
+        workout_running_user_1: Workout,
+        three_workouts_2025_user_1: List[Workout],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/stats/{user_1.username}/by_time?time=day",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["data"]["statistics"] == {
+            "2017-04-02": {
+                "1": {
+                    "total_ascent": 120.0,
+                    "total_descent": 200.0,
+                    "total_distance": 5.0,
+                    "total_duration": 1024,
+                    "total_workouts": 1,
+                }
+            },
+            "2017-12-31": {
+                "1": {
+                    "total_ascent": 100.0,
+                    "total_descent": 80.0,
+                    "total_distance": 10.0,
+                    "total_duration": 3456,
+                    "total_workouts": 1,
+                }
+            },
+            "2018-01-01": {
+                "1": {
+                    "total_ascent": 80.0,
+                    "total_descent": 100.0,
+                    "total_distance": 10.0,
+                    "total_duration": 1024,
+                    "total_workouts": 1,
+                }
+            },
+            "2018-02-23": {
+                "1": {
+                    "total_ascent": 220.0,
+                    "total_descent": 380.0,
+                    "total_distance": 11.0,
+                    "total_duration": 1600,
+                    "total_workouts": 2,
+                }
+            },
+            "2018-04-01": {
+                "1": {
+                    "total_ascent": 40.0,
+                    "total_descent": 20.0,
+                    "total_distance": 8.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
+                }
+            },
+            "2018-04-02": {
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
+                }
+            },
+            "2018-05-09": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 10.0,
+                    "total_duration": 3000,
+                    "total_workouts": 1,
+                }
+            },
+            "2025-01-01": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 20.0,
+                    "total_duration": 3600,
+                    "total_workouts": 1,
+                }
+            },
+            "2025-01-05": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 20.0,
+                    "total_duration": 3600,
+                    "total_workouts": 1,
+                }
+            },
+            "2025-01-06": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 20.0,
+                    "total_duration": 3600,
+                    "total_workouts": 1,
+                }
+            },
+        }
+
+    def test_it_gets_stats_by_day_when_total_workouts_exceed_limit(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: List[Workout],
+        workout_running_user_1: Workout,
+        three_workouts_2025_user_1: List[Workout],
+    ) -> None:
+        app.config["stats_workouts_limit"] = 5
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/stats/{user_1.username}/by_time?time=day",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2018-04-02": {
+                "2": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 12.0,
+                    "total_duration": 6000,
+                    "total_workouts": 1,
+                }
+            },
+            "2018-05-09": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 10.0,
+                    "total_duration": 3000,
+                    "total_workouts": 1,
+                }
+            },
+            "2025-01-01": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 20.0,
+                    "total_duration": 3600,
+                    "total_workouts": 1,
+                }
+            },
+            "2025-01-05": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 20.0,
+                    "total_duration": 3600,
+                    "total_workouts": 1,
+                }
+            },
+            "2025-01-06": {
+                "1": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 20.0,
+                    "total_duration": 3600,
+                    "total_workouts": 1,
+                }
+            },
+        }
+
+    def test_it_gets_stats_by_day_for_week_1(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: List[Workout],
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            (
+                f"/api/stats/{user_1.username}/by_time"
+                f"?from=2018-01-01&to=2018-01-07&time=day"
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["data"]["statistics"] == {
+            "2018-01-01": {
+                "1": {
+                    "total_ascent": 80.0,
+                    "total_descent": 100.0,
+                    "total_distance": 10.0,
+                    "total_duration": 1024,
+                    "total_workouts": 1,
+                }
+            }
+        }
+
+    def test_it_gets_stats_by_day_with_paris_timezone(
+        self,
+        app: Flask,
+        user_1_paris: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: List[Workout],
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_paris.email
+        )
+
+        response = client.get(
+            f"/api/stats/{user_1_paris.username}/by_time"
+            f"?from=2018-01-01&to=2018-01-07&time=day",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["data"]["statistics"] == {
+            "2018-01-01": {
+                "1": {
+                    "total_ascent": 180.0,
+                    "total_descent": 180.0,
+                    "total_distance": 20.0,
+                    "total_duration": 4480,
+                    "total_workouts": 2,
+                }
+            }
+        }
+
+    def test_it_gets_stats_by_day_for_week_1_with_new_york_timezone(
+        self,
+        app: Flask,
+        user_1_full: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: List[Workout],
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_full.email
+        )
+
+        response = client.get(
+            f"/api/stats/{user_1_full.username}/by_time"
+            f"?from=2018-01-01&to=2018-01-07&time=day",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["data"]["statistics"] == {}
 
     def test_it_gets_average_stats_by_time_all_workouts(
         self,

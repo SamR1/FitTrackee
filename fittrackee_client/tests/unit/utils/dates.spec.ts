@@ -30,6 +30,12 @@ describe('startDate (week starting Sunday)', () => {
       inputDate: 'August 21, 2021 20:00:00',
       expectedDate: 'January 1, 2021 00:00:00',
     },
+    {
+      description: "returns start day for 'day' duration",
+      inputDuration: 'day',
+      inputDate: 'August 21, 2021 20:00:00',
+      expectedDate: 'August 21, 2021 20:00:00',
+    },
   ]
 
   testsParams.map((testParams) =>
@@ -80,7 +86,7 @@ describe('startDate (week starting Monday)', () => {
   it('it throws an exception if duration is invalid', () => {
     const day: Date = new Date('August 21, 2021 20:00:00')
     expect(() => getStartDate('invalid duration', day, true)).to.throw(
-      'Invalid duration, expected: "week", "month", "year", got: "invalid duration"'
+      'Invalid duration, expected: "day", "week", "month", "year", got: "invalid duration"'
     )
   })
 })
@@ -125,6 +131,12 @@ describe('dateIncrement', () => {
       inputDate: 'February 29, 2020 20:00:00',
       expectedDate: 'February 28, 2021 20:00:00',
     },
+    {
+      description: "returns incremented day for 'day' duration",
+      inputDuration: 'day',
+      inputDate: 'August 21, 2021 20:00:00',
+      expectedDate: 'August 22, 2021 20:00:00',
+    },
   ]
 
   testsParams.map((testParams) =>
@@ -136,13 +148,11 @@ describe('dateIncrement', () => {
       )
     })
   )
-})
 
-describe('dateIncrement', () => {
   it('it throws an exception if duration is invalid', () => {
     const day: Date = new Date('August 21, 2021 20:00:00')
     expect(() => incrementDate('invalid duration', day)).to.throw(
-      'Invalid duration, expected: "week", "month", "year", got: "invalid duration"'
+      'Invalid duration, expected: "day", "week", "month", "year", got: "invalid duration"'
     )
   })
 })

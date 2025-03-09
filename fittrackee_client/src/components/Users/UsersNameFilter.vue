@@ -46,7 +46,7 @@
 
   function searchUsers() {
     if (username.value !== '') {
-      emit('filterOnUsername', username)
+      emit('filterOnUsername', username.value)
     }
   }
   function resetFilter() {

@@ -2167,7 +2167,7 @@ describe("getStatsDateParams when time frame is 'month')", () => {
     })
   })
 })
-//
+
 describe("getStatsDateParams when time frame is 'year')", () => {
   const weekStartingMonday = [false, true]
 
@@ -2283,6 +2283,36 @@ describe("getStatsDateParams when time frame is 'week')", () => {
           'week',
           testParams.input.weekStartingMonday,
           'total'
+        )
+      ).toStrictEqual(testParams.expected)
+    })
+  })
+})
+
+describe("getStatsDateParams when time frame is 'day')", () => {
+  const weekStartingMonday = [false]
+
+  weekStartingMonday.map((weekStartingMonday) => {
+    const testParams = {
+      description: 'it returns date params when input date is 04/10/2021',
+      input: {
+        date: new Date('October 04, 2021 11:00:00'),
+      },
+      expected: {
+        duration: 'day',
+        start: new Date('September 20, 2021 00:00:00'),
+        end: new Date('October 04, 2021 23:59:59.999'),
+        statsType: 'average',
+      },
+    }
+
+    it(testParams.description, () => {
+      expect(
+        getStatsDateParams(
+          testParams.input.date,
+          'day',
+          weekStartingMonday,
+          'average'
         )
       ).toStrictEqual(testParams.expected)
     })
@@ -2573,6 +2603,65 @@ describe("updateChartParams when time frame is 'week')", () => {
           testParams.input.weekStartingMonday
         )
       ).toStrictEqual(testParams.expected)
+    })
+  })
+})
+
+describe("updateChartParams when time frame is 'day')", () => {
+  const weekStartingMonday = [false, true]
+
+  weekStartingMonday.map((weekStartingMonday) => {
+    const testsParams = [
+      {
+        description:
+          'it returns start date params when start date is 20/09/2021',
+        input: {
+          chartParams: {
+            duration: 'day',
+            start: new Date('September 20, 2021 00:00:00'),
+            end: new Date('October 04, 2021 23:59:59.999'),
+            statsType: 'total',
+          },
+          backward: false,
+        },
+        expected: {
+          duration: 'day',
+          start: new Date('September 21, 2021 00:00:00'),
+          end: new Date('October 05, 2021 23:59:59.999'),
+          statsType: 'total',
+        },
+      },
+      {
+        description:
+          'it returns backwards date params when start date is 20/09/2021',
+        input: {
+          chartParams: {
+            duration: 'day',
+            start: new Date('September 20, 2021 00:00:00'),
+            end: new Date('October 04, 2021 23:59:59.999'),
+            statsType: 'total',
+          },
+          backward: true,
+        },
+        expected: {
+          duration: 'day',
+          start: new Date('September 19, 2021 00:00:00'),
+          end: new Date('October 03, 2021 23:59:59.999'),
+          statsType: 'total',
+        },
+      },
+    ]
+
+    testsParams.map((testParams) => {
+      it(testParams.description, () => {
+        expect(
+          updateChartParams(
+            testParams.input.chartParams,
+            testParams.input.backward,
+            weekStartingMonday
+          )
+        ).toStrictEqual(testParams.expected)
+      })
     })
   })
 })
