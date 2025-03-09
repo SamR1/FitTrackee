@@ -58,6 +58,15 @@ class InvalidPayloadErrorResponse(GenericErrorResponse):
         super().__init__(status_code=400, message=message, status=status)
 
 
+class ExceedingValueErrorResponse(InvalidPayloadErrorResponse):
+    def __init__(self) -> None:
+        super().__init__(
+            message=(
+                "one or more values, entered or calculated, exceed the limits"
+            )
+        )
+
+
 class DataInvalidPayloadErrorResponse(HttpResponse):
     def __init__(self, data_type: str, status: Optional[str] = None) -> None:
         response = {

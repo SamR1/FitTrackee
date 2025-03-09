@@ -7,6 +7,7 @@ import pytest
 from flask import Flask
 
 from fittrackee import db
+from fittrackee.database import PSQL_INTEGER_LIMIT
 from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.utils import decode_short_id
@@ -21,7 +22,7 @@ from fittrackee.workouts.models import (
 
 from ..utils import OAUTH_SCOPES, jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin
-from .utils import post_a_workout
+from .utils import MAX_WORKOUT_VALUES, post_a_workout
 
 
 def assert_workout_data_with_gpx(
@@ -1428,6 +1429,88 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         )
 
         self.assert_400(response)
+
+    @pytest.mark.parametrize("input_key", ["distance", "ascent", "descent"])
+    def test_it_returns_error_when_workout_value_exceeds_max_value(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_key: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        max_key = input_key if input_key == "distance" else "drop"
+        data = {input_key: MAX_WORKOUT_VALUES[max_key] + 0.001}
+        if input_key == "ascent":
+            data["descent"] = 10
+        if input_key == "descent":
+            data["ascent"] = 10
+
+        response = client.patch(
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            content_type="application/json",
+            json=data,
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            error_message=(
+                "one or more values, entered or calculated, exceed the limits"
+            ),
+        )
+
+    def test_it_returns_error_when_speed_exceeds_max_value(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        response = client.patch(
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            content_type="application/json",
+            json={"duration": 36, "distance": 100},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            error_message=(
+                "one or more values, entered or calculated, exceed the limits"
+            ),
+        )
+
+    def test_it_returns_error_when_duration_exceeds_max_value(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            content_type="application/json",
+            json={"duration": PSQL_INTEGER_LIMIT + 1},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            error_message=(
+                "one or more values, entered or calculated, exceed the limits"
+            ),
+        )
 
     def test_it_returns_500_if_date_format_is_invalid(
         self,

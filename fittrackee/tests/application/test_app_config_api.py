@@ -9,6 +9,7 @@ from time_machine import travel
 
 from fittrackee import db
 from fittrackee.application.models import AppConfig
+from fittrackee.database import PSQL_INTEGER_LIMIT
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport
 
@@ -316,7 +317,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                     gpx_limit_import=20,
                     max_single_file_size=10000,
                     max_zip_file_size=1000,
-                    max_users=2147483647,
+                    max_users=PSQL_INTEGER_LIMIT,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),

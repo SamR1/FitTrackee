@@ -5,6 +5,7 @@ from flask import Blueprint, current_app, request
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
 from fittrackee import db
+from fittrackee.database import PSQL_INTEGER_LIMIT
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
@@ -20,8 +21,6 @@ from .models import AppConfig
 from .utils import update_app_config_from_database, verify_app_config
 
 config_blueprint = Blueprint("config", __name__)
-
-PSQL_INTEGER_LIMIT = 2147483647
 
 
 @config_blueprint.route("/config", methods=["GET"])
