@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2024-11-01 19:45+0100\n"
-"PO-Revision-Date: 2025-03-07 16:30+0000\n"
-"Last-Translator: LeafShredder <mbw83@gmx.de>\n"
+"PO-Revision-Date: 2025-03-09 14:28+0000\n"
+"Last-Translator: LordSexy <jonas@kunigkeit.eu>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/fittrackee/"
 "fittrackee-api-emails/de/>\n"
 "Language: de\n"
@@ -223,7 +223,7 @@ msgstr "Die Deaktivierung Deines Kommentars wurde aufgehoben"
 #: fittrackee/emails/templates/comment_unsuspension/body.html:4
 #: fittrackee/emails/templates/comment_unsuspension/body.txt:1
 msgid "The suspension on your comment has been lifted, it is visible again"
-msgstr ""
+msgstr "Die Sperrung Ihres Kommentars wurde aufgehoben, er ist wieder sichtbar"
 
 #: fittrackee/emails/templates/data_export_ready/body.html:2
 #: fittrackee/emails/templates/data_export_ready/subject.txt:1
@@ -453,21 +453,22 @@ msgstr "Deine Verwarnung wurde zurück genommen"
 #: fittrackee/emails/templates/workout_suspension/body.html:2
 #: fittrackee/emails/templates/workout_suspension/subject.txt:1
 msgid "Your workout has been suspended"
-msgstr ""
+msgstr "Ihr Training wurde unterbrochen"
 
 #: fittrackee/emails/templates/workout_suspension/body.html:3
 #: fittrackee/emails/templates/workout_suspension/body.html:4
 #: fittrackee/emails/templates/workout_suspension/body.txt:1
 msgid "Your workout has been suspended, it is no longer visible"
-msgstr ""
+msgstr "Ihr Training wurde unterbrochen, es ist nicht länger sichtbar"
 
 #: fittrackee/emails/templates/workout_unsuspension/body.html:2
 #: fittrackee/emails/templates/workout_unsuspension/subject.txt:1
 msgid "The suspension on your workout has been lifted"
-msgstr ""
+msgstr "Die Unterbrechung ihres Trainings wurde aufgehoben"
 
 #: fittrackee/emails/templates/workout_unsuspension/body.html:3
 #: fittrackee/emails/templates/workout_unsuspension/body.html:4
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:1
 msgid "The suspension on your workout has been lifted, it is visible again"
 msgstr ""
+"Die Unterbrechung ihres Trainings wurde aufgehoben, es ist wieder sichtbar"
