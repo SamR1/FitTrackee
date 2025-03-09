@@ -111,7 +111,7 @@ export const getDatasets = (displayedSports: ISport[]): TStatisticsDatasets => {
     total_ascent: [],
     total_descent: [],
   }
-  displayedSports.map((sport) => {
+  displayedSports.forEach((sport) => {
     const color = sport.color ? sport.color : sportColors[sport.label]
     datasets.average_ascent.push(
       getStatisticsChartDataset(sport.label, color, true)
@@ -159,10 +159,10 @@ export const convertStatsValue = (
         value,
         useImperialUnits
       )
-    default:
     case 'total_workouts':
     case 'total_duration':
     case 'average_duration':
+    default:
       return value
   }
 }
@@ -198,11 +198,11 @@ export const formatStats = (
   const labels: string[] = []
   const datasets = getDatasets(displayedSports)
   const sportsId: Record<string, number> = {}
-  displayedSports.map(
+  displayedSports.forEach(
     (displayedSport) => (sportsId[displayedSport.label] = displayedSport.id)
   )
 
-  dayKeys.map((key) => {
+  dayKeys.forEach((key) => {
     const date: string = format(key, dateFormat.api)
     const label: string = formatDateLabel(
       key,
@@ -210,27 +210,20 @@ export const formatStats = (
       userDateFormat,
       dateFormat.chart
     )
-    format(
-      key,
-      params.duration === 'week'
-        ? getDateFormat(userDateFormat, locale.value)
-        : dateFormat.chart,
-      { locale: localeFromLanguage[locale.value] }
-    )
     labels.push(label)
-    datasetKeys.map((datasetKey) => {
-      datasets[datasetKey].map((dataset) => {
-        dataset.data.push(
-          date in apiStats && sportsId[dataset.label] in apiStats[date]
-            ? convertStatsValue(
-                datasetKey,
-                apiStats[date][sportsId[dataset.label]][datasetKey],
-                useImperialUnits
-              )
-            : datasetKey.startsWith('average')
-              ? null
-              : 0
-        )
+    datasetKeys.forEach((datasetKey) => {
+      datasets[datasetKey].forEach((dataset) => {
+        if (date in apiStats && sportsId[dataset.label] in apiStats[date]) {
+          dataset.data.push(
+            convertStatsValue(
+              datasetKey,
+              apiStats[date][sportsId[dataset.label]][datasetKey],
+              useImperialUnits
+            )
+          )
+        } else {
+          dataset.data.push(datasetKey.startsWith('average') ? null : 0)
+        }
       })
     })
   })
@@ -247,18 +240,18 @@ export const getStatsDateParams = (
   statsType: TStatisticsType
 ): IStatisticsDateParams => {
   const weekStartsOn = weekStartingMonday ? 1 : 0
-  const start =
-    timeFrame === 'year'
-      ? startOfYear(subYears(date, 9))
-      : timeFrame === 'week'
-        ? startOfWeek(subMonths(date, 2), { weekStartsOn })
-        : startOfMonth(subMonths(date, 11)) // month
-  const end =
-    timeFrame === 'year'
-      ? endOfYear(date)
-      : timeFrame === 'week'
-        ? endOfWeek(date, { weekStartsOn })
-        : endOfMonth(date) // month
+
+  let start, end
+  if (timeFrame === 'year') {
+    start = startOfYear(subYears(date, 9))
+    end = endOfYear(date)
+  } else if (timeFrame === 'week') {
+    start = startOfWeek(subMonths(date, 2), { weekStartsOn })
+    end = endOfWeek(date, { weekStartsOn })
+  } else {
+    start = startOfMonth(subMonths(date, 11)) // month
+    end = endOfMonth(date) // month
+  }
   return {
     duration: timeFrame,
     end,
@@ -274,42 +267,48 @@ export const updateChartParams = (
 ): IStatisticsDateParams => {
   const { duration, start, end } = chartParams
   const weekStartsOn = weekStartingMonday ? 1 : 0
+  if (duration === 'year') {
+    return {
+      duration,
+      end: endOfYear(backward ? subYears(end, 1) : addYears(end, 1)),
+      start: startOfYear(backward ? subYears(start, 1) : addYears(start, 1)),
+      statsType: chartParams.statsType,
+    }
+  }
+  if (duration === 'week') {
+    return {
+      duration,
+      end: endOfWeek(backward ? subWeeks(end, 1) : addWeeks(end, 1), {
+        weekStartsOn,
+      }),
+      start: startOfWeek(backward ? subWeeks(start, 1) : addWeeks(start, 1), {
+        weekStartsOn,
+      }),
+      statsType: chartParams.statsType,
+    }
+  }
+
   return {
     duration,
-    end:
-      duration === 'year'
-        ? endOfYear(backward ? subYears(end, 1) : addYears(end, 1))
-        : duration === 'week'
-          ? endOfWeek(backward ? subWeeks(end, 1) : addWeeks(end, 1), {
-              weekStartsOn,
-            })
-          : endOfMonth(backward ? subMonths(end, 1) : addMonths(end, 1)),
-    start:
-      duration === 'year'
-        ? startOfYear(backward ? subYears(start, 1) : addYears(start, 1))
-        : duration === 'week'
-          ? startOfWeek(backward ? subWeeks(start, 1) : addWeeks(start, 1), {
-              weekStartsOn,
-            })
-          : startOfMonth(backward ? subMonths(start, 1) : addMonths(start, 1)),
+    end: endOfMonth(backward ? subMonths(end, 1) : addMonths(end, 1)),
+    start: startOfMonth(backward ? subMonths(start, 1) : addMonths(start, 1)),
     statsType: chartParams.statsType,
   }
 }
 
 const getAverage = (values: (number | null)[]): number => {
-  const sum = values.reduce((total, value) => (total || 0) + (value || 0), 0)
-  const average = values.length ? (sum || 0) / values.length : 0
+  const sum = values.reduce((total, value) => (total ?? 0) + (value ?? 0), 0)
+  const average = values.length ? (sum ?? 0) / values.length : 0
   return +average.toFixed(1)
 }
 
 const sortDatasets = (a: IChartDataset, b: IChartDataset): number => {
   const datasetALabel = a.label.toLowerCase()
   const datasetBLabel = b.label.toLowerCase()
-  return datasetALabel > datasetBLabel
-    ? 1
-    : datasetALabel < datasetBLabel
-      ? -1
-      : 0
+  if (datasetALabel > datasetBLabel) {
+    return 1
+  }
+  return datasetALabel < datasetBLabel ? -1 : 0
 }
 
 export const getWorkoutsAverageDatasets = (
@@ -335,10 +334,10 @@ export const getWorkoutsAverageDatasets = (
     labels.push(dataset.label)
     if (all_workouts.length > 0) {
       all_workouts = all_workouts.map(
-        (value, index) => value + (dataset.data[index] || 0)
+        (value, index) => value + (dataset.data[index] ?? 0)
       )
     } else {
-      all_workouts = dataset.data.map((value) => value || 0)
+      all_workouts = dataset.data.map((value) => value ?? 0)
     }
   }
   return {
