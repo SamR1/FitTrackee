@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -9,6 +10,7 @@ from time_machine import travel
 from fittrackee import db
 from fittrackee.application.models import AppConfig
 from fittrackee.users.models import User
+from fittrackee.workouts.models import Sport
 
 from ..mixins import ApiTestCaseMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
@@ -152,6 +154,52 @@ class TestUpdateConfig(ApiTestCaseMixin):
         assert data["data"]["max_zip_file_size"] == 25000
         assert data["data"]["max_users"] == 50
         assert data["data"]["stats_workouts_limit"] == 5000
+
+    def test_it_refreshes_config_after_update(
+        self,
+        app_with_max_workouts: Flask,  # 2 workouts max in archive
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_max_workouts, user_1_admin.email
+        )
+
+        client.patch(
+            "/api/config",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    gpx_limit_import=3,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        file_path = os.path.join(
+            app_with_max_workouts.root_path, "tests/files/gpx_test.zip"
+        )
+        # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
+        with open(file_path, "rb") as zip_file:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app_with_max_workouts, user_2.email
+            )
+
+            response = client.post(
+                "/api/workouts",
+                data=dict(
+                    file=(zip_file, "gpx_test.zip"), data='{"sport_id": 1}'
+                ),
+                headers=dict(
+                    content_type="multipart/form-data",
+                    Authorization=f"Bearer {auth_token}",
+                ),
+            )
+
+            assert response.status_code == 201
+            data = json.loads(response.data.decode())
+            assert len(data["data"]["workouts"]) == 3
 
     def test_it_returns_403_when_user_is_not_an_admin(
         self, app: Flask, user_1: User
