@@ -1,14 +1,18 @@
 import {
+  addDays,
   addMonths,
   addWeeks,
   addYears,
+  endOfDay,
   endOfMonth,
   endOfWeek,
   endOfYear,
   format,
+  startOfDay,
   startOfMonth,
   startOfWeek,
   startOfYear,
+  subDays,
   subMonths,
   subWeeks,
   subYears,
@@ -35,6 +39,10 @@ import { convertStatsDistance } from '@/utils/units'
 const { locale } = createI18n.global
 
 export const dateFormats: Record<string, Record<string, string>> = {
+  day: {
+    api: 'yyyy-MM-dd',
+    chart: 'MM/dd/yyyy',
+  },
   week: {
     api: 'yyyy-MM-dd',
     chart: 'MM/dd/yyyy',
@@ -248,6 +256,9 @@ export const getStatsDateParams = (
   } else if (timeFrame === 'week') {
     start = startOfWeek(subMonths(date, 2), { weekStartsOn })
     end = endOfWeek(date, { weekStartsOn })
+  } else if (timeFrame === 'day') {
+    start = startOfDay(subWeeks(date, 2))
+    end = endOfDay(date)
   } else {
     start = startOfMonth(subMonths(date, 11)) // month
     end = endOfMonth(date) // month
@@ -284,6 +295,14 @@ export const updateChartParams = (
       start: startOfWeek(backward ? subWeeks(start, 1) : addWeeks(start, 1), {
         weekStartsOn,
       }),
+      statsType: chartParams.statsType,
+    }
+  }
+  if (duration === 'day') {
+    return {
+      duration,
+      end: endOfDay(backward ? subDays(end, 1) : addDays(end, 1)),
+      start: startOfDay(backward ? subDays(start, 1) : addDays(start, 1)),
       statsType: chartParams.statsType,
     }
   }

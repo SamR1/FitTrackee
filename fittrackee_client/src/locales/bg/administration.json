@@ -18,7 +18,7 @@
     "NO_CONTACT_EMAIL": "без имейл за връзка",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Макс. големина на качените файлове (в Mb)",
     "STATS_WORKOUTS_LIMIT_HELP": "0 - без лимит на броя тренировки.",
-    "STATS_WORKOUTS_LIMIT_LABEL": "Макс. тренировки за спортни статистики",
+    "STATS_WORKOUTS_LIMIT_LABEL": "Макс. тренировки за статистики",
     "TITLE": "Конфигурация на приложението",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Макс. размер на zip архива (в Mb)"
   },

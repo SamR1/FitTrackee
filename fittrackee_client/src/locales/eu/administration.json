@@ -18,7 +18,7 @@
     "NO_CONTACT_EMAIL": "ez dago kontakturako eposta helbiderik",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Kargatutako fitxategien tamaina-muga (Mbtan)",
     "STATS_WORKOUTS_LIMIT_HELP": "0 bada, ez da saio kopuruaren mugarik erabiliko.",
-    "STATS_WORKOUTS_LIMIT_LABEL": "Saio kopuru maximoa kirolaren estatistikatarako",
+    "STATS_WORKOUTS_LIMIT_LABEL": "Saio kopuru maximoa estatistikatarako",
     "TITLE": "Aplikazioaren konfigurazioa",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "zip fitxategiaren gehienezko tamaina (Mbtan)"
   },
