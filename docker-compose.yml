@@ -34,7 +34,7 @@ services:
 #    build: .
     volumes:
       - ${UPLOAD_DIR:-./data/uploads}:/usr/src/app/uploads
-      - ${UPLOAD_LOG:-./data/logs}:/usr/src/app/logs
+      - ${LOG_DIR:-./data/logs}:/usr/src/app/logs
     post_start:
       - command: chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/logs
         user: root
@@ -67,7 +67,7 @@ services:
 ## Uncomment following line to build image instead of using pre-built image
 ##    build: .
 #    volumes:
-#      - ${UPLOAD_LOG:-./data/logs}:/usr/src/app/logs
+#      - ${LOG_DIR:-./data/logs}:/usr/src/app/logs
 #    post_start:
 #      - command: chown -R fittrackee:fittrackee /usr/src/app/logs
 #        user: root
