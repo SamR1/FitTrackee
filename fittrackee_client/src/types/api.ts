@@ -17,6 +17,7 @@ export type TPaginationPayload = {
   description?: string
   object_type?: string
   resolved?: string
+  workout_visibility?: string
 }
 
 export interface IQueryOptions {

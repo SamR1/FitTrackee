@@ -173,6 +173,7 @@ def get_workouts_by_time(
     :query string to: end date (format: ``%Y-%m-%d``)
     :query string time: time frame:
 
+      - ``day``: day
       - ``week``: week starting Sunday
       - ``weekm``: week starting Monday
       - ``month``: month
@@ -214,6 +215,8 @@ def get_workouts_by_time(
 
         if not time or time == "year":
             time_format = "yyyy"
+        elif time == "day":
+            time_format = "yyyy-mm-dd"
         elif time == "month":
             time_format = "yyyy-mm"
         elif time.startswith("week"):
@@ -247,7 +250,8 @@ def get_workouts_by_time(
             filters.append(
                 Workout.workout_date < date_to + timedelta(seconds=1)
             )
-        results = (
+
+        workouts_query = (
             db.session.query(
                 Workout.sport_id,
                 (
@@ -264,8 +268,21 @@ def get_workouts_by_time(
             )
             .filter(*filters)
             .group_by(stats_key, Workout.sport_id)
-            .all()
         )
+
+        if current_app.config["stats_workouts_limit"]:
+            last_workout_ids = (
+                db.session.query(
+                    Workout.id,
+                )
+                .order_by(Workout.workout_date.desc())
+                .limit(current_app.config["stats_workouts_limit"])
+                .subquery()
+            )
+            workouts_query = workouts_query.join(
+                last_workout_ids, Workout.id == last_workout_ids.c.id
+            )
+        results = workouts_query.all()
 
         statistics = {}
         for row in results:

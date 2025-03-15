@@ -2,15 +2,17 @@ import json
 import os
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional, Tuple
 from unittest.mock import Mock, patch
 
 import pytest
 from flask import Flask
+from gpxpy.gpxfield import SimpleTZ
 from sqlalchemy.dialects.postgresql import insert
 from time_machine import travel
 
 from fittrackee import VERSION, db
+from fittrackee.database import PSQL_INTEGER_LIMIT
 from fittrackee.equipments.models import Equipment
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.users.models import (
@@ -30,6 +32,7 @@ from fittrackee.workouts.models import (
 from ..mixins import BaseTestMixin, ReportMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin
+from .utils import MAX_WORKOUT_VALUES
 
 
 def assert_workout_data_with_gpx(data: Dict, user: User) -> None:
@@ -264,6 +267,61 @@ def assert_files_are_deleted(
 
 
 class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
+    @staticmethod
+    def generate_get_gpx_info_return_value(
+        updated_data: Dict,
+    ) -> Tuple[Dict, List, List]:
+        parsed_data = {
+            "max_speed": 5.1165730571530394,
+            "start": datetime(2018, 3, 13, 12, 44, 45, tzinfo=SimpleTZ("Z")),
+            "duration": timedelta(seconds=250),
+            "elevation_max": 998.0,
+            "elevation_min": 975.0,
+            "uphill": 0.39999999999997726,
+            "downhill": 23.399999999999977,
+            "moving_time": timedelta(seconds=250),
+            "stop_time": timedelta(0),
+            "distance": 0.32012787035769946,
+            "average_speed": 4.6098413331508725,
+            **updated_data,
+        }
+        gpx_data = {
+            "name": "just a workout",
+            "description": None,
+            "segments": [{**parsed_data, "idx": 0}],
+            "bounds": [44.67822, 6.07355, 44.68095, 6.07442],
+            **parsed_data,
+        }
+        map_data = [
+            [6.07367, 44.68095],
+            [6.07367, 44.68091],
+            [6.07364, 44.6808],
+            [6.07364, 44.68075],
+            [6.07364, 44.68071],
+            [6.07361, 44.68049],
+            [6.07356, 44.68019],
+            [6.07355, 44.68014],
+            [6.07358, 44.67995],
+            [6.07364, 44.67977],
+            [6.07367, 44.67972],
+            [6.07368, 44.67966],
+            [6.0737, 44.67961],
+            [6.07377, 44.67938],
+            [6.07381, 44.67933],
+            [6.07385, 44.67922],
+            [6.0739, 44.67911],
+            [6.07399, 44.679],
+            [6.07402, 44.67896],
+            [6.07408, 44.67884],
+            [6.07423, 44.67863],
+            [6.07425, 44.67858],
+            [6.07434, 44.67842],
+            [6.07435, 44.67837],
+            [6.07442, 44.67822],
+        ]
+        weather_data = [None, None]
+        return gpx_data, map_data, weather_data
+
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
@@ -304,6 +362,109 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
         )
 
         self.assert_403(response)
+
+    @pytest.mark.parametrize(
+        "input_key, input_parsed_key, input_value",
+        [
+            ("ascent", "uphill", MAX_WORKOUT_VALUES["drop"] + 0.001),
+            (
+                "ave_speed",
+                "average_speed",
+                MAX_WORKOUT_VALUES["speed"] + 0.01,
+            ),
+            ("descent", "downhill", MAX_WORKOUT_VALUES["drop"] + 0.001),
+            ("distance", "distance", MAX_WORKOUT_VALUES["distance"] + 0.001),
+            ("max_speed", "max_speed", MAX_WORKOUT_VALUES["speed"] + 0.01),
+            (
+                "max_alt",
+                "elevation_max",
+                MAX_WORKOUT_VALUES["elevation"] + 0.01,
+            ),
+            (
+                "min_alt",
+                "elevation_min",
+                MAX_WORKOUT_VALUES["elevation"] + 0.01,
+            ),
+        ],
+    )
+    def test_it_returns_error_when_parsed_value_exceeds_limit(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        input_key: str,
+        input_parsed_key: str,
+        input_value: float,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        with patch(
+            "fittrackee.workouts.utils.workouts.get_gpx_info"
+        ) as get_gpx_info_mock:
+            get_gpx_info_mock.return_value = (
+                self.generate_get_gpx_info_return_value(
+                    {input_parsed_key: input_value}
+                )
+            )
+            response = client.post(
+                "/api/workouts",
+                data=dict(
+                    file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
+                    data='{"sport_id": 1}',
+                ),
+                headers=dict(
+                    content_type="multipart/form-data",
+                    Authorization=f"Bearer {auth_token}",
+                ),
+            )
+
+        self.assert_400(
+            response,
+            error_message=(
+                "one or more values, entered or calculated, exceed the limits"
+            ),
+        )
+
+    def test_it_returns_error_when_parsed_duration_exceeds_limit(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        with patch(
+            "fittrackee.workouts.utils.workouts.get_gpx_info"
+        ) as get_gpx_info_mock:
+            """
+            workout.moving is used for 'longest duration' record which is 
+            stored as an integer
+            """
+            get_gpx_info_mock.return_value = (
+                self.generate_get_gpx_info_return_value(
+                    {"moving_time": timedelta(seconds=PSQL_INTEGER_LIMIT + 1)}
+                )
+            )
+            response = client.post(
+                "/api/workouts",
+                data=dict(
+                    file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
+                    data='{"sport_id": 1}',
+                ),
+                headers=dict(
+                    content_type="multipart/form-data",
+                    Authorization=f"Bearer {auth_token}",
+                ),
+            )
+
+        self.assert_400(
+            response,
+            error_message=(
+                "one or more values, entered or calculated, exceed the limits"
+            ),
+        )
 
     def test_it_adds_a_workout_with_gpx_file(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
@@ -1957,6 +2118,99 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         )
 
         self.assert_403(response)
+
+    @pytest.mark.parametrize("input_key", ["distance", "ascent", "descent"])
+    def test_it_returns_error_when_workout_value_exceeds_max_value(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, input_key: str
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        workout_data = {
+            "sport_id": sport_1_cycling.id,
+            "duration": 3600,
+            "workout_date": "2023-07-26 12:00",
+            "distance": 10,
+            "ascent": 120,
+            "descent": 80,
+        }
+        max_key = input_key if input_key == "distance" else "drop"
+
+        response = client.post(
+            "/api/workouts/no_gpx",
+            content_type="application/json",
+            json={
+                **workout_data,
+                input_key: MAX_WORKOUT_VALUES[max_key] + 0.001,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            error_message=(
+                "one or more values, entered or calculated, exceed the limits"
+            ),
+        )
+
+    def test_it_returns_error_when_speed_exceeds_max_value(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        response = client.post(
+            "/api/workouts/no_gpx",
+            content_type="application/json",
+            json={
+                "sport_id": sport_1_cycling.id,
+                "duration": 36,
+                "workout_date": "2023-07-26 12:00",
+                "distance": 100,
+                "ascent": 120,
+                "descent": 80,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+        self.assert_400(
+            response,
+            error_message=(
+                "one or more values, entered or calculated, exceed the limits"
+            ),
+        )
+
+    def test_it_returns_error_when_duration_exceeds_max_value(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        response = client.post(
+            "/api/workouts/no_gpx",
+            content_type="application/json",
+            json={
+                "sport_id": sport_1_cycling.id,
+                "duration": PSQL_INTEGER_LIMIT + 1,
+                "workout_date": "2023-07-26 12:00",
+                "distance": 10,
+                "ascent": 120,
+                "descent": 80,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            error_message=(
+                "one or more values, entered or calculated, exceed the limits"
+            ),
+        )
 
     def test_it_adds_a_workout_without_gpx_and_title(
         self, app: Flask, user_1: User, sport_1_cycling: Sport

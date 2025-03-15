@@ -1,4 +1,7 @@
 {
+  "Canoeing": {
+    "LABEL": "Piragüismo (canoa)"
+  },
   "Cycling (Sport)": {
     "LABEL": "Ciclismo (Deportivo)"
   },
@@ -13,6 +16,9 @@
   },
   "Hiking": {
     "LABEL": "Sendeirismo"
+  },
+  "Kayaking": {
+    "LABEL": "Piragüismo (caiac)"
   },
   "Mountain Biking": {
     "LABEL": "Ciclismo por Montaña"

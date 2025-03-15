@@ -50,7 +50,7 @@ class TestOAuth2CleanTokens(OAuth2Mixin):
         self.create_oauth2_token(oauth_client)
         self.create_oauth2_token(
             oauth_client,
-            issued_at=(int(time.time()) - expires_in - (days * 86400)),
+            issued_at=(int(time.time()) - expires_in - (days * 86400) + 2),
             expires_in=expires_in,
         )
 

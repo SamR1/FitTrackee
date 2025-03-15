@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Recherche" href="../search.html" /><link rel="next" title="Dépannage" href="../troubleshooting/index.html" /><link rel="prev" title="Utilisateurs" href="users.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Séances - Documentation FitTrackee 0.9.2</title>
+        <title>Séances - Documentation FitTrackee 0.9.3</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.9.2
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.9.3
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.2
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.3
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -455,6 +455,7 @@
 <li><p><strong>notes</strong> (<em>string</em>) – une partie (ou la totalité) des notes de la séance, la correspondance avec les notes ne tient pas compte des majuscules et des minuscules</p></li>
 <li><p><strong>description</strong> (<em>string</em>) – une partie de la description de la séance, la correspondance avec la description ne tient pas compte des majuscules et des minuscules</p></li>
 <li><p><strong>return_equipments</strong> (<em>string</em>) – renvoie les séances avec l’équipement (par défaut, l’équipement n’est pas renvoyé). <strong>Note</strong>: Il ne s’agit pas d’un filtre. <strong>Attention</strong>: nécessaire pour les applications tierces mettant à jour les équipements.</p></li>
+<li><p><strong>workout_visibility</strong> (<em>string</em>) – visibilité de la séance (<code class="docutils literal notranslate"><span class="pre">private</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> ou <code class="docutils literal notranslate"><span class="pre">public</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
@@ -1135,6 +1136,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">with</span> <span class="pre">id</span> <span class="pre">&lt;equipment_id&gt;</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">equipment</span> <span class="pre">id</span> <span class="pre">&lt;equipment_id&gt;</span> <span class="pre">for</span> <span class="pre">sport</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">with</span> <span class="pre">id</span> <span class="pre">&lt;equipment_id&gt;</span> <span class="pre">is</span> <span class="pre">inactive</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">one</span> <span class="pre">or</span> <span class="pre">more</span> <span class="pre">values,</span> <span class="pre">entered</span> <span class="pre">or</span> <span class="pre">calculated,</span> <span class="pre">exceed</span> <span class="pre">the</span> <span class="pre">limits</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
@@ -1294,6 +1296,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">with</span> <span class="pre">id</span> <span class="pre">&lt;equipment_id&gt;</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">equipment</span> <span class="pre">id</span> <span class="pre">&lt;equipment_id&gt;</span> <span class="pre">for</span> <span class="pre">sport</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">with</span> <span class="pre">id</span> <span class="pre">&lt;equipment_id&gt;</span> <span class="pre">is</span> <span class="pre">inactive</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">one</span> <span class="pre">or</span> <span class="pre">more</span> <span class="pre">values,</span> <span class="pre">entered</span> <span class="pre">or</span> <span class="pre">calculated,</span> <span class="pre">exceed</span> <span class="pre">the</span> <span class="pre">limits</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
@@ -1441,7 +1444,7 @@
 <li><p><strong>sport_id</strong> (<em>integer</em>) – identifiant du sport de la séance</p></li>
 <li><p><strong>title</strong> (<em>string</em>) – titre de la séance (longueur max. : 255 caractères, dans le cas contraire il sera tronqué)</p></li>
 <li><p><strong>workout_date</strong> (<em>string</em>) – date de la séance dans le fuseau horaire de l’utilisateur (format : <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span> <span class="pre">%H:%M</span></code>) (seulement pour les séances sans gpx)</p></li>
-<li><p><strong>workout_visibility</strong> (<em>string</em>) – visibilité de la séance (<code class="docutils literal notranslate"><span class="pre">private</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> or <code class="docutils literal notranslate"><span class="pre">public</span></code>)</p></li>
+<li><p><strong>workout_visibility</strong> (<em>string</em>) – visibilité de la séance (<code class="docutils literal notranslate"><span class="pre">private</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> ou <code class="docutils literal notranslate"><span class="pre">public</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
@@ -1459,6 +1462,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">with</span> <span class="pre">id</span> <span class="pre">&lt;equipment_id&gt;</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">equipment</span> <span class="pre">id</span> <span class="pre">&lt;equipment_id&gt;</span> <span class="pre">for</span> <span class="pre">sport</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">with</span> <span class="pre">id</span> <span class="pre">&lt;equipment_id&gt;</span> <span class="pre">is</span> <span class="pre">inactive</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">one</span> <span class="pre">or</span> <span class="pre">more</span> <span class="pre">values,</span> <span class="pre">entered</span> <span class="pre">or</span> <span class="pre">calculated,</span> <span class="pre">exceed</span> <span class="pre">the</span> <span class="pre">limits</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
@@ -1920,7 +1924,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=22b7fe1c"></script>
+</div><script src="../_static/documentation_options.js?v=86cf7a05"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>

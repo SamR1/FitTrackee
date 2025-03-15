@@ -7,6 +7,9 @@ if TYPE_CHECKING:
     from sqlalchemy.engine import Dialect
 
 
+PSQL_INTEGER_LIMIT = 2147483647
+
+
 # Store Timezone Aware Timestamps as Timezone Naive UTC
 # source: https://docs.sqlalchemy.org/en/14/core/custom_types.html#store-timezone-aware-timestamps-as-timezone-naive-utc  # noqa
 class TZDateTime(TypeDecorator):

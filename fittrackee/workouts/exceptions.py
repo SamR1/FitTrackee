@@ -1,6 +1,11 @@
 from fittrackee.exceptions import GenericException
 
 
+class InvalidDurationException(Exception):
+    def __init__(self) -> None:
+        super().__init__("invalid duration")
+
+
 class InvalidGPXException(GenericException):
     pass
 

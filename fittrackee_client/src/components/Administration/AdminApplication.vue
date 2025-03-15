@@ -28,6 +28,7 @@
               name="max_users"
               type="number"
               min="0"
+              max="2147483647"
               v-model="appData.max_users"
               :disabled="!edition"
             />
@@ -46,6 +47,7 @@
               type="number"
               step="0.1"
               min="0"
+              max="2047"
               v-model="appData.max_single_file_size"
               :disabled="!edition"
             />
@@ -58,6 +60,7 @@
               type="number"
               step="0.1"
               min="0"
+              max="2047"
               v-model="appData.max_zip_file_size"
               :disabled="!edition"
             />
@@ -69,6 +72,7 @@
               name="gpx_limit_import"
               type="number"
               min="0"
+              max="2147483647"
               v-model="appData.gpx_limit_import"
               :disabled="!edition"
             />
@@ -80,6 +84,7 @@
               name="stats_workouts_limit"
               type="number"
               min="0"
+              max="2147483647"
               v-model="appData.stats_workouts_limit"
               :disabled="!edition"
             />
@@ -197,18 +202,20 @@
   })
 
   function updateForm(appConfig: TAppConfig) {
-    Object.keys(appData).map((key) => {
-      ;['max_single_file_size', 'max_zip_file_size'].includes(key)
-        ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          (appData[key] = getFileSizeInMB(appConfig[key]))
-        : ['about', 'privacy_policy'].includes(key)
-          ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            (appData[key] = appConfig[key] !== null ? appConfig[key] : '')
-          : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            (appData[key] = appConfig[key])
+    Object.keys(appData).forEach((key) => {
+      if (['max_single_file_size', 'max_zip_file_size'].includes(key)) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        appData[key] = getFileSizeInMB(appConfig[key])
+      } else if (['about', 'privacy_policy'].includes(key)) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        appData[key] = appConfig[key] !== null ? appConfig[key] : ''
+      } else {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        appData[key] = appConfig[key]
+      }
     })
   }
   function onCancel() {
@@ -217,7 +224,7 @@
     router.push('/admin/application')
   }
   function onSubmit() {
-    const formData: TAppConfigForm = Object.assign({}, appData)
+    const formData: TAppConfigForm = { ...appData }
     formData.max_single_file_size *= 1048576
     formData.max_zip_file_size *= 1048576
     store.dispatch(ROOT_STORE.ACTIONS.UPDATE_APPLICATION_CONFIG, formData)

@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -8,7 +9,9 @@ from time_machine import travel
 
 from fittrackee import db
 from fittrackee.application.models import AppConfig
+from fittrackee.database import PSQL_INTEGER_LIMIT
 from fittrackee.users.models import User
+from fittrackee.workouts.models import Sport
 
 from ..mixins import ApiTestCaseMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
@@ -153,6 +156,52 @@ class TestUpdateConfig(ApiTestCaseMixin):
         assert data["data"]["max_users"] == 50
         assert data["data"]["stats_workouts_limit"] == 5000
 
+    def test_it_refreshes_config_after_update(
+        self,
+        app_with_max_workouts: Flask,  # 2 workouts max in archive
+        user_1_admin: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_max_workouts, user_1_admin.email
+        )
+
+        client.patch(
+            "/api/config",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    gpx_limit_import=3,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        file_path = os.path.join(
+            app_with_max_workouts.root_path, "tests/files/gpx_test.zip"
+        )
+        # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
+        with open(file_path, "rb") as zip_file:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app_with_max_workouts, user_2.email
+            )
+
+            response = client.post(
+                "/api/workouts",
+                data=dict(
+                    file=(zip_file, "gpx_test.zip"), data='{"sport_id": 1}'
+                ),
+                headers=dict(
+                    content_type="multipart/form-data",
+                    Authorization=f"Bearer {auth_token}",
+                ),
+            )
+
+            assert response.status_code == 201
+            data = json.loads(response.data.decode())
+            assert len(data["data"]["workouts"]) == 3
+
     def test_it_returns_403_when_user_is_not_an_admin(
         self, app: Flask, user_1: User
     ) -> None:
@@ -201,6 +250,58 @@ class TestUpdateConfig(ApiTestCaseMixin):
 
         self.assert_500(response, "error when updating configuration")
 
+    @pytest.mark.parametrize(
+        "input_param",
+        [
+            "gpx_limit_import",
+            "max_zip_file_size",
+            "max_users",
+            "stats_workouts_limit",
+        ],
+    )
+    def test_it_raises_error_if_given_param_exceeds_limit(
+        self, app: Flask, user_1_admin: User, input_param: str
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            "/api/config",
+            content_type="application/json",
+            json={input_param: 2147483648},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            f"'{input_param}' must be less than 2147483648",
+            "config_value_exceeding_limit",
+        )
+
+    def test_it_raises_error_if_max_single_file_size_exceeds_limit(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            "/api/config",
+            content_type="application/json",
+            json={
+                "max_single_file_size": 2147483648,
+                "max_zip_file_size": 2147483648,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            "'max_single_file_size' must be less than 2147483648",
+            "config_value_exceeding_limit",
+        )
+
     def test_it_raises_error_if_archive_max_size_is_below_files_max_size(
         self, app: Flask, user_1_admin: User
     ) -> None:
@@ -216,7 +317,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                     gpx_limit_import=20,
                     max_single_file_size=10000,
                     max_zip_file_size=1000,
-                    max_users=50,
+                    max_users=PSQL_INTEGER_LIMIT,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),

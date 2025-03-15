@@ -92,7 +92,7 @@
 
   const emit = defineEmits(['arrowClick', 'statsTypeUpdate', 'timeFrameUpdate'])
 
-  const timeFrames: TStatisticsTimeFrame[] = ['week', 'month', 'year']
+  const timeFrames: TStatisticsTimeFrame[] = ['day', 'week', 'month', 'year']
 
   const selectedTimeFrame: Ref<TStatisticsTimeFrame> = ref('month')
   const selectedStatsType: Ref<TStatisticsType> = ref('total')

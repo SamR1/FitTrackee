@@ -3,6 +3,8 @@
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Hast du keine Anweisungen erhalten?",
   "ACCOUNT_CONFIRMATION_SENT": "Prüfe deine E-Mail. Eine neue Bestätigungs-E-Mail wurde an die angegebene Adresse geschickt.",
   "ACCOUNT_SUSPENDED_AT": "Konto um {0} gesperrt.",
+  "ACTIVE_ACCOUNT": "Der Account ist aktiv",
+  "ACTIVE_USER": "aktiver Benutzer | aktive Benutzer",
   "ALREADY_HAVE_ACCOUNT": "Hast du bereits ein Konto?",
   "APPEAL": "Einspruch",
   "APPEAL_APPROVED": "Einspruch bewilligt.",

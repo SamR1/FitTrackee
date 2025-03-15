@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.9.2"
+version = "0.9.3"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0-only"
@@ -30,32 +30,32 @@ Changelog = "https://docs.fittrackee.org/en/changelog.html"
 
 [tool.poetry.dependencies]
 python = "^3.9.2"
-authlib = "=1.4.1"
+authlib = "=1.5.1"
 babel = "^2.11.0"
 click = "^8.1.7"
 dramatiq = {version = "^1.15.0", extras = ["redis"]}
 flask = "^3.1.0"
 flask-bcrypt = "^1.0.1"
 flask-dramatiq = "^0.6.0"
-flask-limiter = {version = "^3.10.1", extras = ["redis"]}
+flask-limiter = {version = "^3.11.0", extras = ["redis"]}
 flask-migrate = "4.1.0"
 flask-sqlalchemy = "3.1.1"
 gpxpy = "=1.6.2"
 gunicorn = "^23.0.0"
-humanize = "^4.11.0"
+humanize = "^4.12.1"
 jsonschema = "^4.23.0"
-nh3 = "^0.2.20"
+nh3 = "^0.2.21"
 psycopg2-binary = "^2.9.10"
 pyjwt = "^2.10.1"
 pyopenssl = "^25.0.0"
 pytz = "^2025.1"
 shortuuid = "^1.0.13"
 staticmap = "^0.5.7"
-sqlalchemy = "=2.0.38"
+sqlalchemy = "=2.0.39"
 ua-parser = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
-bandit = "^1.8.2"
+bandit = "^1.8.3"
 furo = "^2024.8.6"
 mypy = "^1.15.0"
 pytest = "^8.3.4"
@@ -65,8 +65,8 @@ pytest-runner = "^6.0.1"
 pytest-selenium = "^4.1.0"
 pytest-xdist = {extras = ["psutil"], version = "^3.6.0"}
 recommonmark = "^0.7.1"
-ruff = "^0.9.6"
-selenium = "^4.28.1"
+ruff = "^0.11.0"
+selenium = "^4.29.0"
 sphinx = "^7.4.7"
 sphinx-copybutton = "^0.5.2"
 sphinx-intl = "^2.3.1"
@@ -112,6 +112,7 @@ ignore = ["RUF012"]
 quote-style = "double"
 
 [tool.ruff.lint.per-file-ignores]
+"fittrackee/__main__.py" = ["E501"]
 "fittrackee/activities/stats.py" = ["E501"]
 "fittrackee/application/app_config.py" = ["E501"]
 "fittrackee/tests/test_email.py" = ["E501"]

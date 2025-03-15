@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Fonctionnalités - Documentation FitTrackee 0.9.2</title>
+        <title>Fonctionnalités - Documentation FitTrackee 0.9.3</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.2
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.3
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.2
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.3
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -300,19 +300,21 @@
 <section id="sports">
 <h3>Sports<a class="headerlink" href="#sports" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
-<li><p>18 sports sont pris en charge :</p>
+<li><p>20 sports sont pris en charge :</p>
 <ul>
+<li><p>Canoë  (<em>nouveau dans la version 0.9.3</em>)</p></li>
 <li><p>Vélo (Sport)</p></li>
 <li><p>Vélo (Transport)</p></li>
 <li><p>Vélo (Trekking)  (<em>nouveau dans la version 0.7.27</em>)</p></li>
 <li><p>Vélo (Virtuel)  (<em>nouveau dans la version 0.7.3</em>)</p></li>
 <li><p>Randonnée</p></li>
+<li><p>Kayak  (<em>nouveau dans la version 0.9.3</em>)</p></li>
 <li><p>VTT</p></li>
 <li><p>VTT (Électrique)  (<em>nouveau dans la version in 0.5.0</em>)</p></li>
 <li><p>Alpinisme  (<em>nouveau dans la version 0.7.9</em>)</p></li>
 <li><p>Nage en eau libre  (<em>nouveau dans la version 0.7.20</em>)</p></li>
 <li><p>Parapente (<em>nouveau dans la version 0.7.19</em>)</p></li>
-<li><p>Aviron  (<em>nouveau dans la version 0.5.0</em>)</p></li>
+<li><p>Aviron  (<em>nouveau dans la version 0.5.0, image modifiée dans la version 0.9.3</em>)</p></li>
 <li><p>Course à pied</p></li>
 <li><p>Ski (Alpin) (<em>nouveau dans la version 0.5.0</em>)</p></li>
 <li><p>Ski (Randonnée)  (<em>nouveau dans la version 0.5.0</em>)</p></li>
@@ -338,13 +340,13 @@
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Elle peut être remplacée dans les préférences de l’utilisateur.</p>
+<p>La valeur peut être remplacée dans les préférences de l’utilisateur.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
 <div class="line">A l’exception du seuil de vitesse arrêté, tous les sports sont analysés de la même manière (aucune spécificité prise en compte pour le moment).</div>
-<div class="line">Le Swimrun s’affiche comme une seule activité sans différence entre les segments pour le moment.</div>
+<div class="line">Le sport Swimrun s’affiche comme une seule activité sans différence entre les segments pour le moment.</div>
 </div>
 </div>
 </section>
@@ -465,7 +467,7 @@
 <li><p>équipement</p></li>
 <li><p>description (<em>nouveau dans la version 0.8.9</em>)</p></li>
 <li><p>notes personnelles</p></li>
-<li><p>visibilité de la séance (<em>nouveau dans la version 0.9.0</em>)</p></li>
+<li><p>la visibilité de la séance (<em>nouveau dans la version 0.9.0</em>)</p></li>
 <li><p>visibilité de l’analyse (<em>nouveau dans la version 0.9.0</em>)</p></li>
 <li><p>visibilité de la carte (<em>nouveau dans la version 0.9.0</em>)</p></li>
 <li><p>date (seulement pour les séances sans gpx)</p></li>
@@ -486,6 +488,7 @@
 <li><p>le titre (<em>nouveau dans la version 0.7.15</em>)</p></li>
 <li><p>description (<em>nouveau dans la version 0.8.9</em>)</p></li>
 <li><p>les notes (<em>nouveau dans la version 0.8.0</em>)</p></li>
+<li><p>visibilité de la séance (<em>nouveau dans la version 0.9.3</em>)</p></li>
 <li><p>la distance</p></li>
 <li><p>la durée</p></li>
 <li><p>la vitesse moyenne</p></li>
@@ -644,7 +647,7 @@
 <section id="statistics">
 <h2>Statistiques<a class="headerlink" href="#statistics" title="Lien vers cette rubrique">¶</a></h2>
 <ul class="simple">
-<li><p>Statistiques pour l’utilisateur, par période (semaine, mois, année) et par sport :</p>
+<li><p>Statistiques pour l’utilisateur, par période (jour (<em>nouveau dans la version 0.9.3</em>), semaine, mois, année) et par sport :</p>
 <ul>
 <li><p>totaux :</p>
 <ul>
@@ -706,7 +709,7 @@
 <li><p>L’utilisateur peut définir la langue, le fuseau horaire et le premier jour de la semaine.</p></li>
 <li><p>Un utilisateur peut configurer l’approbation des demandes de suivi : manuel (par défaut) ou automatique (<em>nouveau dans la version 0.9.0</em>)</p></li>
 <li><p>Un utilisateur peut configurer sa visibilité dans le répertoire : masqué (par défaut) ou affiché (<em>nouveau dans la version 0.9.0</em>)</p></li>
-<li><p>L’utilisateur peut définir le theme de l’interface (clair (valeur par défaut), sombre ou selon les préférences du navigateur). (<em>nouveau dans la version 0.7.27</em>).</p></li>
+<li><p>L’utilisateur peut définir le theme de l’interface (clair (valeur par défaut), sombre ou selon les préférences du navigateur) (<em>nouveau dans la version 0.7.27</em>)</p></li>
 <li><p>L’utilisateur peut choisir entre le système métrique et le système impérial pour la distance, l’affichage de l’altitude et de la vitesse (<em>nouveau dans la version 0.5.0</em>)</p></li>
 <li><p>Un utilisateur peut choisir d’afficher ou cacher les records et le total de dénivelé positif sur le tableau de bord (<em>nouveau dans la version 0.6.11</em>)</p></li>
 <li><p>L’utilisateur peut choisir le format d’affichage des dates (<em>nouveau dans la version 0.7.3</em>)</p></li>
@@ -765,7 +768,7 @@
 <li><p>Chaussures : Randonnées, Alpinisme, Course, Trail et Marche</p></li>
 <li><p>Vélo : Vélo (Sport, Transport, Trekking), VTT et VTT (Électrique),</p></li>
 <li><p>Vélo d’entraînement : Vélo (Virtuel),</p></li>
-<li><p>Kayak/Boat : Aviron,</p></li>
+<li><p>Kayak/Boat : Aviron, Canöe et Kayak (<em>modifié dans la version 0.9.3</em>)</p></li>
 <li><p>Skis : Ski (Alpin et Randonnée)</p></li>
 <li><p>Raquettes : Raquettes.</p></li>
 </ul>
@@ -845,7 +848,12 @@
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
-<p>La mise à jour de la configuration du serveur peut être nécessaire pour gérer des fichiers volumineux (comme <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">nginx</a> par exemple).</p>
+<div class="line-block">
+<div class="line">Si plusieurs <em>workers</em> pour l’application sont lancés (voir la <a class="reference external" href="installation.html#envvar-APP_WORKERS">variables d’environnement</a>), il peut être nécessaire de tous les redémarrer pour prendre en compte les changements.</div>
+<div class="line">La mise à jour du <em>timeout</em> (voir la <a class="reference external" href="installation.html#envvar-APP_TIMEOUT">variable d’environnement</a>) ou de la configuration du serveur peut être nécessaire pour gérer des fichiers volumineux (comme <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">nginx</a> par exemple).</div>
+<div class="line">Des valeurs trop élevées pour la taille ou le nombre de fichiers peuvent être entraîner des erreurs.</div>
+<div class="line">Si un fournisseur de données météo est configuré, des erreurs liées à la limitation de l’API peuvent être rencontrées.</div>
+</div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1215,7 +1223,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=22b7fe1c"></script>
+</div><script src="_static/documentation_options.js?v=86cf7a05"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
