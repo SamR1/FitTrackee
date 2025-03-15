@@ -259,7 +259,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             "stats_workouts_limit",
         ],
     )
-    def test_it_raises_error_if_archive_max_size_exceeds_limit(
+    def test_it_raises_error_if_given_param_exceeds_limit(
         self, app: Flask, user_1_admin: User, input_param: str
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -279,7 +279,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             "config_value_exceeding_limit",
         )
 
-    def test_it_raises_error_if_param_exceeds(
+    def test_it_raises_error_if_max_single_file_size_exceeds_limit(
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
