@@ -24,7 +24,7 @@ SPORT_EQUIPMENT_TYPES = {
         "Mountain Biking (Electric)",
     ],
     "Bike Trainer": ["Cycling (Virtual)"],
-    "Kayak_Boat": ["Rowing"],
+    "Kayak_Boat": ["Canoeing", "Rowing", "Kayaking"],
     "Skis": ["Skiing (Alpine)", "Skiing (Cross Country)"],
     "Snowshoes": ["Snowshoes"],
 }

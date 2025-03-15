@@ -29,22 +29,24 @@ def get_or_init_config() -> AppConfig:
 def update_app_config_from_database(
     current_app: Flask, db_config: AppConfig
 ) -> None:
-    current_app.config["gpx_limit_import"] = db_config.gpx_limit_import
-    current_app.config["max_single_file_size"] = db_config.max_single_file_size
-    current_app.config["MAX_CONTENT_LENGTH"] = db_config.max_zip_file_size
-    current_app.config["max_users"] = db_config.max_users
-    current_app.config["is_registration_enabled"] = (
-        db_config.is_registration_enabled
+    current_app.config.update(
+        {
+            "gpx_limit_import": db_config.gpx_limit_import,
+            "max_single_file_size": db_config.max_single_file_size,
+            "MAX_CONTENT_LENGTH": db_config.max_zip_file_size,
+            "max_users": db_config.max_users,
+            "is_registration_enabled": db_config.is_registration_enabled,
+            "privacy_policy_date": (
+                db_config.privacy_policy_date
+                if db_config.privacy_policy
+                else get_datetime_in_utc(
+                    current_app.config["DEFAULT_PRIVACY_POLICY_DATA"],
+                    "%Y-%m-%d %H:%M:%S",
+                )
+            ),
+            "stats_workouts_limit": db_config.stats_workouts_limit,
+        }
     )
-    current_app.config["privacy_policy_date"] = (
-        db_config.privacy_policy_date
-        if db_config.privacy_policy
-        else get_datetime_in_utc(
-            current_app.config["DEFAULT_PRIVACY_POLICY_DATA"],
-            "%Y-%m-%d %H:%M:%S",
-        )
-    )
-    current_app.config["stats_workouts_limit"] = db_config.stats_workouts_limit
 
 
 def verify_app_config(config_data: Dict) -> List:

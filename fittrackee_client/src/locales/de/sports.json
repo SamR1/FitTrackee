@@ -1,4 +1,7 @@
 {
+  "Canoeing": {
+    "LABEL": "Kanufahren"
+  },
   "Cycling (Sport)": {
     "LABEL": "Radfahren (Sport)"
   },
@@ -13,6 +16,9 @@
   },
   "Hiking": {
     "LABEL": "Wandern"
+  },
+  "Kayaking": {
+    "LABEL": "Kajakfahren"
   },
   "Mountain Biking": {
     "LABEL": "Mountainbiken"

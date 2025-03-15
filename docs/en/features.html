@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Features - FitTrackee 0.9.2 documentation</title>
+        <title>Features - FitTrackee 0.9.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.9.2
+      <a href="index.html"><div class="brand">FitTrackee 0.9.3
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.9.2
+  <span class="sidebar-brand-text">FitTrackee 0.9.3
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -300,19 +300,21 @@
 <section id="sports">
 <h3>Sports<a class="headerlink" href="#sports" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>18 sports are supported:</p>
+<li><p>20 sports are supported:</p>
 <ul>
+<li><p>Canoeing  (<em>new in 0.9.3</em>)</p></li>
 <li><p>Cycling (Sport)</p></li>
 <li><p>Cycling (Transport)</p></li>
 <li><p>Cycling (Trekking)  (<em>new in 0.7.27</em>)</p></li>
 <li><p>Cycling (Virtual)  (<em>new in 0.7.3</em>)</p></li>
 <li><p>Hiking</p></li>
+<li><p>Kayaking  (<em>new in 0.9.3</em>)</p></li>
 <li><p>Mountain Biking</p></li>
 <li><p>Mountain Biking (Electric)  (<em>new in 0.5.0</em>)</p></li>
 <li><p>Mountaineering  (<em>new in 0.7.9</em>)</p></li>
 <li><p>Open Water Swimming  (<em>new in 0.7.20</em>)</p></li>
 <li><p>Paragliding  (<em>new in 0.7.19</em>)</p></li>
-<li><p>Rowing  (<em>new in 0.5.0</em>)</p></li>
+<li><p>Rowing  (<em>new in 0.5.0, image changed in 0.9.3</em>)</p></li>
 <li><p>Running</p></li>
 <li><p>Skiing (Alpine) (<em>new in 0.5.0</em>)</p></li>
 <li><p>Skiing (Cross Country)  (<em>new in 0.5.0</em>)</p></li>
@@ -486,6 +488,7 @@
 <li><p>title (<em>new in 0.7.15</em>)</p></li>
 <li><p>description (<em>new in 0.8.9</em>)</p></li>
 <li><p>notes (<em>new in 0.8.0</em>)</p></li>
+<li><p>workout visibility (<em>new in 0.9.3</em>)</p></li>
 <li><p>distance</p></li>
 <li><p>duration</p></li>
 <li><p>average speed</p></li>
@@ -644,7 +647,7 @@
 <section id="statistics">
 <h2>Statistics<a class="headerlink" href="#statistics" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>User statistics, by time period (week, month, year) and sport:</p>
+<li><p>User statistics, by time period (day (<em>new in 0.9.3</em>), week, month, year) and sport:</p>
 <ul>
 <li><p>totals:</p>
 <ul>
@@ -766,7 +769,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><p>Shoes: Hiking, Mountaineering, Running, Trail and Walking,</p></li>
 <li><p>Bike: Cycling (Sport, Transport, Trekking), Mountain Biking and Mountain Biking (Electric),</p></li>
 <li><p>Bike Trainer: Cycling (Virtual),</p></li>
-<li><p>Kayak/Boat: Rowing,</p></li>
+<li><p>Kayak/Boat: Canoeing, Rowing and Kayaking (<em>changed in 0.9.3</em>),</p></li>
 <li><p>Skis: Skiing (Alpine and Cross Country),</p></li>
 <li><p>Snowshoes: Snowshoes.</p></li>
 </ul>
@@ -846,7 +849,12 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 </ul>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Updating server configuration may be necessary to handle large files (like <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">nginx</a> for instance).</p>
+<div class="line-block">
+<div class="line">If several application workers are running (see <a class="reference external" href="installation.html#envvar-APP_WORKERS">environment variable</a>), it may be necessary to restart all the workers so that the changes are taken into account.</div>
+<div class="line">Updating timeout (see <a class="reference external" href="installation.html#envvar-APP_TIMEOUT">environment variable</a>) or server configuration may be necessary to handle large files (like <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">nginx</a> for instance).</div>
+<div class="line">Setting values that are too high for file size or number may cause errors.</div>
+<div class="line">If a weather data provider is configured, errors related to API limitations may occur.</div>
+</div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1216,7 +1224,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=aa3b121e"></script>
+</div><script src="_static/documentation_options.js?v=0e439607"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

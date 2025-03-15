@@ -18,7 +18,7 @@
     "NO_CONTACT_EMAIL": "brak adresu e-mail do kontaktu",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Maks. wielkość nadesłanych plików (w Mb)",
     "STATS_WORKOUTS_LIMIT_HELP": "Zero oznacza brak limitu ćwiczeń.",
-    "STATS_WORKOUTS_LIMIT_LABEL": "Maksymalna ilość treningów do statystyk sportu",
+    "STATS_WORKOUTS_LIMIT_LABEL": "Maksymalna ilość treningów do statystyk",
     "TITLE": "Konfiguracja aplikacji",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Maks. wielkość archiwum zip (w Mb)"
   },

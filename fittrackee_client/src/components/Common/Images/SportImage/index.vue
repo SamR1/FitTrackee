@@ -4,11 +4,13 @@
     :style="{ fill: color ? color : sportColors[sportLabel] }"
     :title="title ? title : $t(`sports.${sportLabel}.LABEL`)"
   >
+    <Canoeing v-if="sportLabel === 'Canoeing'" />
     <CyclingSport v-if="sportLabel === 'Cycling (Sport)'" />
     <CyclingTrekking v-if="sportLabel === 'Cycling (Trekking)'" />
     <CyclingTransport v-if="sportLabel === 'Cycling (Transport)'" />
     <CyclingVirtual v-if="sportLabel === 'Cycling (Virtual)'" />
     <Hiking v-if="sportLabel === 'Hiking'" />
+    <Kayaking v-if="sportLabel === 'Kayaking'" />
     <MountainBiking v-if="sportLabel === 'Mountain Biking'" />
     <MountainBikingElectric
       v-if="sportLabel === 'Mountain Biking (Electric)'"
@@ -30,11 +32,13 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
+  import Canoeing from '@/components/Common/Images/SportImage/Canoeing.vue'
   import CyclingSport from '@/components/Common/Images/SportImage/CyclingSport.vue'
   import CyclingTransport from '@/components/Common/Images/SportImage/CyclingTransport.vue'
   import CyclingTrekking from '@/components/Common/Images/SportImage/CyclingTrekking.vue'
   import CyclingVirtual from '@/components/Common/Images/SportImage/CyclingVirtual.vue'
   import Hiking from '@/components/Common/Images/SportImage/Hiking.vue'
+  import Kayaking from '@/components/Common/Images/SportImage/Kayaking.vue'
   import MountainBiking from '@/components/Common/Images/SportImage/MountainBiking.vue'
   import MountainBikingElectric from '@/components/Common/Images/SportImage/MountainBikingElectric.vue'
   import Mountaineering from '@/components/Common/Images/SportImage/Mountaineering.vue'

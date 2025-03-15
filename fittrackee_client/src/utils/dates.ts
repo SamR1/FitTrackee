@@ -23,6 +23,8 @@ export const getStartDate = (
   weekStartingMonday: boolean
 ): Date => {
   switch (duration) {
+    case 'day':
+      return day
     case 'week':
       return startOfWeek(day, { weekStartsOn: weekStartingMonday ? 1 : 0 })
     case 'year':
@@ -31,13 +33,15 @@ export const getStartDate = (
       return startOfMonth(day)
     default:
       throw new Error(
-        `Invalid duration, expected: "week", "month", "year", got: "${duration}"`
+        `Invalid duration, expected: "day", "week", "month", "year", got: "${duration}"`
       )
   }
 }
 
 export const incrementDate = (duration: string, day: Date): Date => {
   switch (duration) {
+    case 'day':
+      return addDays(day, 1)
     case 'week':
       return addDays(day, 7)
     case 'year':
@@ -46,7 +50,7 @@ export const incrementDate = (duration: string, day: Date): Date => {
       return addMonths(day, 1)
     default:
       throw new Error(
-        `Invalid duration, expected: "week", "month", "year", got: "${duration}"`
+        `Invalid duration, expected: "day", "week", "month", "year", got: "${duration}"`
       )
   }
 }
@@ -132,7 +136,10 @@ export const formatDate = (
   if (!language) {
     language = locale.value
   }
-  const timeFormat = withTime ? (withSeconds ? ' HH:mm:ss' : ' HH:mm') : ''
+  let timeFormat = ''
+  if (withTime) {
+    timeFormat = withSeconds ? ' HH:mm:ss' : ' HH:mm'
+  }
   return format(
     getDateWithTZ(dateString, timezone),
     `${getDateFormat(dateFormat, language)}${timeFormat}`,
@@ -145,9 +152,9 @@ export const availableDateFormatOptions = (
   timezone: string,
   language: TLanguage | null = null
 ) => {
-  const l: TLanguage = language ? language : locale.value
+  const l: TLanguage = language ?? locale.value
   const options: Record<string, string>[] = []
-  availableDateFormats.map((df) => {
+  availableDateFormats.forEach((df) => {
     const dateFormat = getDateFormat(df, l)
     options.push({
       label: `${dateFormat} - ${formatDate(

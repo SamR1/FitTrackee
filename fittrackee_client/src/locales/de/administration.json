@@ -18,7 +18,7 @@
     "NO_CONTACT_EMAIL": "keine Kontakt-E-Mail",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. Größe der hochgeladenen Dateien (in Mb)",
     "STATS_WORKOUTS_LIMIT_HELP": "Wenn 0, keine Limitierung der Workout-Anzahl.",
-    "STATS_WORKOUTS_LIMIT_LABEL": "Maximale Workouts für Sport-Statistiken",
+    "STATS_WORKOUTS_LIMIT_LABEL": "Maximale Workouts für Statistiken",
     "TITLE": "Anwendungskonfiguration",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. Größe des zip Archives (in Mb)"
   },
@@ -32,7 +32,33 @@
       "SUSPEND_CONTENT": "Inhalt deaktivieren",
       "UNSUSPEND_ACCOUNT": "Benutzerkonto reaktivieren",
       "UNSUSPEND_CONTENT": "Inhalt reaktivieren"
-    }
+    },
+    "APPEAL": {
+      "APPROVED": "Dieser Beschwerde wurde stattgegeben {0}.",
+      "REASON_IS": "Der Grund ist:",
+      "REJECTED": "Dieser Einspruch wurde zurückgewiesen {0}.",
+      "SEE": "Siehe Einspruch"
+    },
+    "NO_REPORTS_FOUND": "Keine Berichte gefunden",
+    "ORDER_BY": {
+      "CREATED_AT": "Erstelldatum",
+      "UPDATED_AT": "Aktualisierdatum"
+    },
+    "REASON": "Grund",
+    "REPORT": "Bericht | Berichte",
+    "REPORTED_BY": "Gemeldet von",
+    "REPORTER": "Melder",
+    "REPORT_ACTIONS": {
+      "comment_suspension": "Der Kommentar wurde gesperrt von {1} {2}.",
+      "comment_unsuspension": "Die Sperrung des Kommentars wurde zurück genommen von {1} {2}.",
+      "user_suspension": "{0} wurde gesperrt durch {1} {2}.",
+      "user_unsuspension": "Die Sperrung von {0} wurde zurück genommen durch {1} {2}.",
+      "user_warning": "Eine Warnung wurde von {1} {2} gesendet an {0}.",
+      "user_warning_lifting": "Die {0} Warnung wurde zurück genommen von {1} {2}.",
+      "workout_suspension": "Das Training wurde gesperrt von {1} {2}.",
+      "workout_unsuspension": "Die Sperrung des Trainings wurde zurück genommen von {1} {2}."
+    },
+    "STATUS": "Status"
   },
   "BACK_TO_ADMIN": "Zurück zu Admin",
   "CONFIRM_USER_ACCOUNT_DELETION": "Möchtest du wirklich das {0} Konto löschen? Alle Daten werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.",

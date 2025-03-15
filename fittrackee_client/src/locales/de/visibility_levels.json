@@ -5,6 +5,10 @@
     "private": "Privat (nur erwähnte Nutzer)",
     "public": "Öffentlich (Jeder)"
   },
+  "LEVELS": {
+    "private": "Privat (nur ich)",
+    "public": "Öffentlich (jeder)"
+  },
   "MAP_VISIBILITY": "Karten-Sichtbarkeit",
   "VISIBILITY": "Sichtbarkeit",
   "WORKOUTS_VISIBILITY": "Sichtbarkeit von Trainingsdaten",

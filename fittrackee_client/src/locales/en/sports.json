@@ -1,4 +1,7 @@
 {
+  "Canoeing": {
+    "LABEL": "Canoeing"
+  },
   "Cycling (Sport)": {
     "LABEL": "Cycling (Sport)"
   },
@@ -13,6 +16,9 @@
   },
   "Hiking": {
     "LABEL": "Hiking"
+  },
+  "Kayaking": {
+    "LABEL": "Kayaking"
   },
   "Mountain Biking": {
     "LABEL": "Mountain Biking"

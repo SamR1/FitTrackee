@@ -22,8 +22,13 @@ def generate_map(map_filepath: str, map_data: List) -> None:
     """
     Generate and save map image from map data
     """
-    m = StaticMap(400, 225, 10)
-    m.headers = {"User-Agent": f"FitTrackee v{VERSION}"}
+    m = StaticMap(
+        width=400,
+        height=225,
+        padding_x=10,
+        headers={"User-Agent": f"FitTrackee v{VERSION}"},
+        delay_between_retries=5,
+    )
     if not current_app.config["TILE_SERVER"]["DEFAULT_STATICMAP"]:
         m.url_template = get_static_map_tile_server_url(
             current_app.config["TILE_SERVER"]

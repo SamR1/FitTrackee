@@ -137,6 +137,27 @@
                 />
               </div>
             </div>
+            <div class="form-item form-item-text">
+              <label for="workout_visibility">
+                {{ $t('visibility_levels.WORKOUT_VISIBILITY').toLowerCase() }}:
+              </label>
+              <select
+                id="workout_visibility"
+                name="workout_visibility"
+                :value="$route.query.workout_visibility"
+                @change="handleFilterChange"
+                @keyup.enter="onFilter"
+              >
+                <option value="" />
+                <option
+                  v-for="level in visibilityLevels"
+                  :value="level"
+                  :key="level"
+                >
+                  {{ $t(`visibility_levels.LEVELS.${level}`) }}
+                </option>
+              </select>
+            </div>
           </div>
 
           <div class="form-items-group">
@@ -272,12 +293,14 @@
   import type { LocationQuery } from 'vue-router'
   import { useStore } from 'vuex'
 
+  import useApp from '@/composables/useApp.ts'
   import { EQUIPMENTS_STORE } from '@/store/constants'
   import type { IEquipment } from '@/types/equipments'
   import type { ITranslatedSport } from '@/types/sports'
-  import type { IAuthUserProfile } from '@/types/user'
+  import type { IAuthUserProfile, TVisibilityLevels } from '@/types/user'
   import { sortEquipments } from '@/utils/equipments'
   import { units } from '@/utils/units'
+  import { getAllVisibilityLevels } from '@/utils/visibility_levels.ts'
 
   interface Props {
     authUser: IAuthUserProfile
@@ -293,16 +316,20 @@
   const store = useStore()
   const { t } = useI18n()
 
-  let params: LocationQuery = Object.assign({}, route.query)
+  const { appConfig } = useApp()
+
+  let params: LocationQuery = { ...route.query }
 
   const toUnit: ComputedRef<string> = computed(() =>
     authUser.value.imperial_units ? units['km'].defaultTarget : 'km'
   )
-
   const equipmentsWithWorkouts: ComputedRef<Record<string, IEquipment[]>> =
     computed(() =>
       getEquipmentsFilters(store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS])
     )
+  const visibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
+    getAllVisibilityLevels(appConfig.value.federation_enabled)
+  )
 
   function handleFilterChange(event: Event) {
     const name = (event.target as HTMLInputElement).name

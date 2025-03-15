@@ -11,11 +11,10 @@ const sortEquipmentTypes = (
 ): number => {
   const equipmentTypeATranslatedLabel = a.translatedLabel.toLowerCase()
   const equipmentTypeBTranslatedLabel = b.translatedLabel.toLowerCase()
-  return equipmentTypeATranslatedLabel > equipmentTypeBTranslatedLabel
-    ? 1
-    : equipmentTypeATranslatedLabel < equipmentTypeBTranslatedLabel
-      ? -1
-      : 0
+  if (equipmentTypeATranslatedLabel > equipmentTypeBTranslatedLabel) {
+    return 1
+  }
+  return equipmentTypeATranslatedLabel < equipmentTypeBTranslatedLabel ? -1 : 0
 }
 
 export const translateEquipmentTypes = (
@@ -31,12 +30,11 @@ export const translateEquipmentTypes = (
 
 export const sortEquipments = (a: IEquipment, b: IEquipment): number => {
   const equipmentALabel = a.label.toLowerCase()
-  const equipmenteBLabel = b.label.toLowerCase()
-  return equipmentALabel > equipmenteBLabel
-    ? 1
-    : equipmentALabel < equipmenteBLabel
-      ? -1
-      : 0
+  const equipmentBLabel = b.label.toLowerCase()
+  if (equipmentALabel > equipmentBLabel) {
+    return 1
+  }
+  return equipmentALabel < equipmentBLabel ? -1 : 0
 }
 
 export const SPORT_EQUIPMENT_TYPES: Record<string, string[]> = {
@@ -49,7 +47,7 @@ export const SPORT_EQUIPMENT_TYPES: Record<string, string[]> = {
     'Mountain Biking (Electric)',
   ],
   'Bike Trainer': ['Cycling (Virtual)'],
-  Kayak_Boat: ['Rowing'],
+  Kayak_Boat: ['Canoeing', 'Rowing', 'Kayaking'],
   Skis: ['Skiing (Alpine)', 'Skiing (Cross Country)'],
   Snowshoes: ['Snowshoes'],
 }
@@ -58,7 +56,7 @@ export const getEquipments = (
   equipments: IEquipment[],
   t: CallableFunction,
   activeStatus: 'all' | 'withIncludedIds' | 'is_active' = 'all',
-  sport: ITranslatedSport | null,
+  sport: ITranslatedSport | null = null,
   equipmentToIncludeIds: string[] = []
 ): IEquipment[] => {
   if (!sport) {

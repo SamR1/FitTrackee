@@ -9,6 +9,7 @@ from flask import Flask
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import User
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..utils import OAUTH_SCOPES, jsonify_dict
@@ -942,6 +943,32 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
             "total": 1,
         }
 
+    @pytest.mark.parametrize(
+        "input_duration",
+        [
+            "duration_from=00h52&duration_to=01:20",
+            "duration_from=00:52&duration_to=01h20",
+        ],
+    )
+    def test_it_returns_400_when_duration_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        seven_workouts_user_1: List[Workout],
+        input_duration: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/workouts?{input_duration}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, error_message="invalid duration")
+
     def test_it_gets_workouts_with_average_speed_filter(
         self,
         app: Flask,
@@ -1295,6 +1322,52 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         assert len(workouts) == 2
         assert workouts[0]["id"] == workout_running_user_1.short_id
         assert workouts[1]["id"] == workout_cycling_user_1.short_id
+
+    def test_it_filters_workouts_on_visibility(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        another_workout_cycling_user_1: Workout,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,
+    ) -> None:
+        another_workout_cycling_user_1.workout_visibility = (
+            VisibilityLevel.FOLLOWERS
+        )
+        workout_running_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?workout_visibility=followers_only",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        workouts = data["data"]["workouts"]
+        assert len(workouts) == 1
+        assert workouts[0]["id"] == another_workout_cycling_user_1.short_id
+
+    def test_it_returns_400_when_visibility_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?workout_visibility=invalid",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "invalid value for visibility")
 
 
 class TestGetWorkoutsWithFiltersAndPagination(WorkoutApiTestCaseMixin):

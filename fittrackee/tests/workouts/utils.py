@@ -7,6 +7,13 @@ from flask import Flask
 from fittrackee.users.models import User
 from fittrackee.visibility_levels import VisibilityLevel
 
+MAX_WORKOUT_VALUES = {
+    "drop": 99999.999,
+    "speed": 9999.99,
+    "distance": 999.999,
+    "elevation": 9999.99,
+}
+
 
 def post_a_workout(
     app: Flask,

@@ -20,7 +20,7 @@ from fittrackee.federation.utils import (
 
 # revision identifiers, used by Alembic.
 revision = '8842c351a2d8'
-down_revision = 'ce68b3914ff7'
+down_revision = '78a90b587a9b'
 branch_labels = None
 depends_on = None
 

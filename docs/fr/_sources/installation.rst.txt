@@ -114,10 +114,19 @@ deployment method.
 
 .. envvar:: APP_WORKERS
 
-    Number of workers spawned by **Gunicorn**.
+    .. versionchanged:: 0.9.3 used by the Docker image entry point script
+
+    Number of workers spawned by **Gunicorn** (when starting application with **FitTrackee** entry point or with Docker image), see `Gunicorn documentation <https://docs.gunicorn.org/en/stable/settings.html#workers>`__.
 
     :default: 1
 
+.. envvar:: APP_TIMEOUT
+
+    .. versionadded:: 0.9.3
+
+    Timeout (in seconds) for workers spawned by **Gunicorn** (when starting application with **FitTrackee** entry point or with Docker image), see `Gunicorn documentation <https://docs.gunicorn.org/en/stable/settings.html#timeout>`__).
+
+    :default: 30
 
 .. envvar:: APP_LOG
 
@@ -150,6 +159,7 @@ deployment method.
 .. envvar:: DATABASE_DISABLE_POOLING
 
     .. versionadded:: 0.4.0
+    .. versionremoved:: 0.9.3
 
     Disable pooling if needed (when starting application with **FitTrackee** entry point and not directly with **Gunicorn**),
     see `SqlAlchemy documentation <https://docs.sqlalchemy.org/en/13/core/pooling.html#using-connection-pools-with-multiprocessing-or-os-fork>`__.
@@ -590,13 +600,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.9.2):
+-  Download the last release (for now, it is the release v0.9.3):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.9.2.tar.gz
-   $ tar -xzf v0.9.2.tar.gz
-   $ mv FitTrackee-0.9.2 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.9.3.tar.gz
+   $ tar -xzf v0.9.3.tar.gz
+   $ mv FitTrackee-0.9.3 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -728,13 +738,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.9.2) and overwrite existing files:
+- Download the last release (for now, it is the release v0.9.3) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.9.2.tar.gz
-   $ tar -xzf v0.9.2.tar.gz
-   $ cp -R FitTrackee-0.9.2/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.9.3.tar.gz
+   $ tar -xzf v0.9.3.tar.gz
+   $ cp -R FitTrackee-0.9.3/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).

@@ -14,7 +14,7 @@ from flask import (
     send_from_directory,
 )
 from sqlalchemy import asc, desc, exc
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import DataError, IntegrityError
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
@@ -36,6 +36,7 @@ from fittrackee.responses import (
     DataInvalidPayloadErrorResponse,
     DataNotFoundErrorResponse,
     EquipmentInvalidPayloadErrorResponse,
+    ExceedingValueErrorResponse,
     HttpResponse,
     InternalServerErrorResponse,
     InvalidPayloadErrorResponse,
@@ -49,6 +50,7 @@ from fittrackee.utils import decode_short_id
 from fittrackee.visibility_levels import VisibilityLevel, can_view
 
 from .decorators import check_workout
+from .exceptions import InvalidDurationException
 from .models import Sport, Workout, WorkoutLike
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
@@ -277,6 +279,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                          **Note**: It's not a filter.
                          **Warning**: Needed for 3rd-party applications
                          updating equipments.
+    :query string workout_visibility: workout visibility (``private``,
+                         ``followers_only`` or ``public``)
 
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -323,6 +327,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 equipment_id = equipment.id if equipment else 0
         else:
             equipment_id = None
+        workout_visibility = params.get("workout_visibility")
         per_page = int(params.get("per_page", DEFAULT_WORKOUTS_PER_PAGE))
         if per_page > MAX_WORKOUTS_PER_PAGE:
             per_page = MAX_WORKOUTS_PER_PAGE
@@ -369,6 +374,17 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
             filters.append(WorkoutEquipment.c.equipment_id == None)  # noqa
         elif equipment_id is not None:
             filters.append(WorkoutEquipment.c.equipment_id == equipment_id)
+        if workout_visibility:
+            if workout_visibility not in set(
+                item.value for item in VisibilityLevel
+            ):
+                return InvalidPayloadErrorResponse(
+                    "invalid value for visibility"
+                )
+            filters.append(
+                Workout.workout_visibility
+                == VisibilityLevel(workout_visibility).value
+            )
 
         workouts_pagination = (
             Workout.query.outerjoin(WorkoutEquipment)
@@ -407,6 +423,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "total": workouts_pagination.total,
             },
         }
+    except InvalidDurationException as e:
+        return InvalidPayloadErrorResponse(str(e))
     except Exception as e:
         return handle_error_and_return_response(e)
 
@@ -1194,6 +1212,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``equipment with id <equipment_id> does not exist``
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``
+        - ``one or more values, entered or calculated, exceed the limits``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -1285,6 +1304,10 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             return DataInvalidPayloadErrorResponse("workouts", "fail")
     except WorkoutException as e:
         db.session.rollback()
+        if e.status == "exceeding_value_error":
+            if e.e:
+                appLog.error(e.e.args[0])
+            return ExceedingValueErrorResponse()
         if e.e:
             appLog.error(e.e)
         if e.status == "error":
@@ -1448,6 +1471,7 @@ def post_workout_no_gpx(
         - ``equipment with id <equipment_id> does not exist``
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``
+        - ``one or more values, entered or calculated, exceed the limits``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -1535,7 +1559,9 @@ def post_workout_no_gpx(
             },
             201,
         )
-
+    except DataError as e:
+        appLog.error(e.args[0])
+        return ExceedingValueErrorResponse()
     except (exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(
             error=e,
@@ -1708,6 +1734,7 @@ def update_workout(
         - ``equipment with id <equipment_id> does not exist``
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``
+        - ``one or more values, entered or calculated, exceed the limits``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -1812,6 +1839,9 @@ def update_workout(
             },
         }
 
+    except DataError as e:
+        appLog.error(e.args[0])
+        return ExceedingValueErrorResponse()
     except InvalidEquipmentsException as e:
         return InvalidPayloadErrorResponse(str(e))
     except InvalidEquipmentException as e:

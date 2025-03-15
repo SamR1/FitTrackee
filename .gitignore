@@ -48,3 +48,10 @@ nohup.out
 
 # docker
 data
+
+# Emacs
+*~
+\#*
+.\#*
+.dir-locals.el
+.projectile-cache.eld
