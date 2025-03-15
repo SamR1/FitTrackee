@@ -114,10 +114,19 @@ deployment method.
 
 .. envvar:: APP_WORKERS
 
-    Number of workers spawned by **Gunicorn**.
+    .. versionchanged:: 0.9.3 Added to docker image entry point script
+
+    Number of workers spawned by **Gunicorn** (when starting application with **FitTrackee** entry point or with Docker image), see `Gunicorn documentation <https://docs.gunicorn.org/en/stable/settings.html#workers>`__.
 
     :default: 1
 
+.. envvar:: APP_TIMEOUT
+
+    .. versionadded:: 0.9.3
+
+    Timeout (in seconds) for workers spawned by **Gunicorn** (when starting application with **FitTrackee** entry point or with Docker image), see `Gunicorn documentation <https://docs.gunicorn.org/en/stable/settings.html#timeout>`__).
+
+    :default: 30
 
 .. envvar:: APP_LOG
 
@@ -150,6 +159,7 @@ deployment method.
 .. envvar:: DATABASE_DISABLE_POOLING
 
     .. versionadded:: 0.4.0
+    .. versionremoved:: 0.9.3
 
     Disable pooling if needed (when starting application with **FitTrackee** entry point and not directly with **Gunicorn**),
     see `SqlAlchemy documentation <https://docs.sqlalchemy.org/en/13/core/pooling.html#using-connection-pools-with-multiprocessing-or-os-fork>`__.

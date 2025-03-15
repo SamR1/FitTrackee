@@ -112,6 +112,7 @@ ignore = ["RUF012"]
 quote-style = "double"
 
 [tool.ruff.lint.per-file-ignores]
+"fittrackee/__main__.py" = ["E501"]
 "fittrackee/activities/stats.py" = ["E501"]
 "fittrackee/application/app_config.py" = ["E501"]
 "fittrackee/tests/test_email.py" = ["E501"]

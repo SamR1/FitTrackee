@@ -415,7 +415,8 @@ The following parameters can be set:
 - administrator email for contact (*new in 0.6.0*)
 
 .. warning::
-  Updating server configuration may be necessary to handle large files (like `nginx <https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_ for instance).
+  | If several application workers are running (see `environment variables <installation.html#envvar-APP_WORKERS>`__), it may be necessary to restart all the workers so that the changes are taken into account.
+  | Updating timeout (see `environment variable <installation.html#envvar-APP_TIMEOUT>`__) or server configuration may be necessary to handle large files (like `nginx <https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_ for instance).
 
 .. note::
   If email sending is disabled, a warning is displayed.

@@ -5,9 +5,11 @@ from flask import Blueprint, current_app, request
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
 
 from fittrackee import db
+from fittrackee.database import PSQL_INTEGER_LIMIT
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
+    InvalidConfigValueErrorResponse,
     InvalidPayloadErrorResponse,
     handle_error_and_return_response,
 )
@@ -140,6 +142,11 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         - ``max users must be greater than or equal to 0``
         - ``max number of workouts for statistics must be greater than or equal to 0``
         - ``valid email must be provided for admin contact``
+        - ``'gpx_limit_import' must be less than 2147483647``
+        - ``'max_single_file_size' must be less than 2147483647``
+        - ``'max_zip_file_size' must be less than 2147483647``
+        - ``'max_users' must be less than 2147483647``
+        - ``'stats_workouts_limit' must be less than 2147483647``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -172,6 +179,13 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
             "stats_workouts_limit",
         ]:
             if param in config_data:
+                if (
+                    isinstance(config_data[param], int)
+                    and config_data[param] > PSQL_INTEGER_LIMIT
+                ):
+                    return InvalidConfigValueErrorResponse(
+                        param, PSQL_INTEGER_LIMIT + 1
+                    )
                 setattr(config, param, config_data[param])
         if "admin_contact" in config_data:
             config.admin_contact = admin_contact if admin_contact else None

@@ -8,6 +8,7 @@ from uuid import UUID
 import gpxpy.gpx
 import pytz
 from flask import current_app
+from sqlalchemy.exc import DataError
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
@@ -464,6 +465,12 @@ def process_one_gpx_file(
             db.session.add(new_segment)
         db.session.commit()
         return new_workout
+    except DataError as e:
+        raise WorkoutException(
+            "exceeding_value_error",
+            "one or more values, entered or calculated, exceed the limits",
+            e=e,
+        ) from e
     except Exception as e:
         delete_files(absolute_gpx_filepath, absolute_map_filepath)
         raise WorkoutException("error", "error when saving workout", e) from e
