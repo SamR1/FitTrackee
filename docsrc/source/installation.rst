@@ -114,7 +114,9 @@ deployment method.
 
 .. envvar:: APP_WORKERS
 
-    Number of workers spawned by **Gunicorn** (when starting application with **FitTrackee** entry point, see `Gunicorn documentation <https://docs.gunicorn.org/en/stable/settings.html#workers>`__).
+    .. versionchanged:: 0.9.3 Added to docker image entry point script
+
+    Number of workers spawned by **Gunicorn** (when starting application with **FitTrackee** entry point or with Docker image), see `Gunicorn documentation <https://docs.gunicorn.org/en/stable/settings.html#workers>`__.
 
     :default: 1
 
@@ -122,7 +124,7 @@ deployment method.
 
     .. versionadded:: 0.9.3
 
-    Timeout for workers spawned by **Gunicorn** (when starting application with **FitTrackee** entry point, see `Gunicorn documentation <https://docs.gunicorn.org/en/stable/settings.html#timeout>`__).
+    Timeout (in seconds) for workers spawned by **Gunicorn** (when starting application with **FitTrackee** entry point or with Docker image), see `Gunicorn documentation <https://docs.gunicorn.org/en/stable/settings.html#timeout>`__).
 
     :default: 30
 
