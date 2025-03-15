@@ -17,19 +17,21 @@ Workouts
 Sports
 ------
 
-- 18 sports are supported:
+- 20 sports are supported:
 
+  - Canoeing  (*new in 0.9.3*)
   - Cycling (Sport)
   - Cycling (Transport)
   - Cycling (Trekking)  (*new in 0.7.27*)
   - Cycling (Virtual)  (*new in 0.7.3*)
   - Hiking
+  - Kayaking  (*new in 0.9.3*)
   - Mountain Biking
   - Mountain Biking (Electric)  (*new in 0.5.0*)
   - Mountaineering  (*new in 0.7.9*)
   - Open Water Swimming  (*new in 0.7.20*)
   - Paragliding  (*new in 0.7.19*)
-  - Rowing  (*new in 0.5.0*)
+  - Rowing  (*new in 0.5.0, image changed in 0.9.3*)
   - Running
   - Skiing (Alpine) (*new in 0.5.0*)
   - Skiing (Cross Country)  (*new in 0.5.0*)
@@ -146,6 +148,7 @@ Workouts
     - title (*new in 0.7.15*)
     - description (*new in 0.8.9*)
     - notes (*new in 0.8.0*)
+    - workout visibility (*new in 0.9.3*)
     - distance
     - duration
     - average speed
@@ -258,7 +261,7 @@ Dashboard
 Statistics
 ==========
 
-- User statistics, by time period (week, month, year) and sport:
+- User statistics, by time period (day (*new in 0.9.3*), week, month, year) and sport:
 
   - totals:
 
@@ -353,7 +356,7 @@ Equipments
   - Shoes: Hiking, Mountaineering, Running, Trail and Walking,
   - Bike: Cycling (Sport, Transport, Trekking), Mountain Biking and Mountain Biking (Electric),
   - Bike Trainer: Cycling (Virtual),
-  - Kayak/Boat: Rowing,
+  - Kayak/Boat: Canoeing, Rowing and Kayaking (*changed in 0.9.3*),
   - Skis: Skiing (Alpine and Cross Country),
   - Snowshoes: Snowshoes.
 
@@ -415,7 +418,10 @@ The following parameters can be set:
 - administrator email for contact (*new in 0.6.0*)
 
 .. warning::
-  Updating server configuration may be necessary to handle large files (like `nginx <https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_ for instance).
+  | If several application workers are running (see `environment variable <installation.html#envvar-APP_WORKERS>`__), it may be necessary to restart all the workers so that the changes are taken into account.
+  | Updating timeout (see `environment variable <installation.html#envvar-APP_TIMEOUT>`__) or server configuration may be necessary to handle large files (like `nginx <https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_ for instance).
+  | Setting values that are too high for file size or number may cause errors.
+  | If a weather data provider is configured, errors related to API limitations may occur.
 
 .. note::
   If email sending is disabled, a warning is displayed.

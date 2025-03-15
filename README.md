@@ -46,4 +46,5 @@ Map data from [OpenStreetMap](https://www.openstreetmap.org).
 FitTrackee uses [Weblate](https://hosted.weblate.org/engage/fittrackee/) for translation management.
 
 Status (on development branch, may differ from the released version):
+
 [![Translation status](https://hosted.weblate.org/widget/fittrackee/multi-auto.svg)](https://hosted.weblate.org/engage/fittrackee/)
