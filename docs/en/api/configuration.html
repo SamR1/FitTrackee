@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Comments" href="comments.html" /><link rel="prev" title="Authentication and account" href="auth.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Configuration - FitTrackee 0.9.2 documentation</title>
+        <title>Configuration - FitTrackee 0.9.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">FitTrackee 0.9.2
+      <a href="../index.html"><div class="brand">FitTrackee 0.9.3
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.9.2
+  <span class="sidebar-brand-text">FitTrackee 0.9.3
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -315,7 +315,7 @@
 <span class="w">    </span><span class="nt">&quot;privacy_policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;privacy_policy_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;stats_workouts_limit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.9.2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.9.3&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;weather_provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span>
@@ -361,7 +361,7 @@
 <span class="w">    </span><span class="nt">&quot;privacy_policy&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;privacy_policy_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;stats_workouts_limit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.9.2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.9.3&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;weather_provider&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span>
@@ -400,6 +400,11 @@ statistics</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">max</span> <span class="pre">users</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">greater</span> <span class="pre">than</span> <span class="pre">or</span> <span class="pre">equal</span> <span class="pre">to</span> <span class="pre">0</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">max</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">workouts</span> <span class="pre">for</span> <span class="pre">statistics</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">greater</span> <span class="pre">than</span> <span class="pre">or</span> <span class="pre">equal</span> <span class="pre">to</span> <span class="pre">0</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">valid</span> <span class="pre">email</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">provided</span> <span class="pre">for</span> <span class="pre">admin</span> <span class="pre">contact</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'gpx_limit_import'</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">less</span> <span class="pre">than</span> <span class="pre">2147483647</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'max_single_file_size'</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">less</span> <span class="pre">than</span> <span class="pre">2147483647</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'max_zip_file_size'</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">less</span> <span class="pre">than</span> <span class="pre">2147483647</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'max_users'</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">less</span> <span class="pre">than</span> <span class="pre">2147483647</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'stats_workouts_limit'</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">less</span> <span class="pre">than</span> <span class="pre">2147483647</span></code></p></li>
 </ul>
 </p></li>
 <li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
@@ -503,7 +508,7 @@ statistics</p></li>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=aa3b121e"></script>
+</div><script src="../_static/documentation_options.js?v=0e439607"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>

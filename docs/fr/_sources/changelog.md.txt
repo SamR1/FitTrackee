@@ -1,5 +1,62 @@
 # Change log
 
+## Version 0.9.3 (2025/03/15)
+
+### Features and enhancements
+
+* [#714](https://github.com/SamR1/FitTrackee/issues/714) - New sports: Kayaking and Canoeing
+* [#719](https://github.com/SamR1/FitTrackee/issues/719) - Filter workouts according to visibility in workout list
+* [#722](https://github.com/SamR1/FitTrackee/issues/722) - Statistics per day
+
+
+### Bugs Fixed
+
+* [PR#725](https://github.com/SamR1/FitTrackee/pull/725) - Workout files upload fixes, including:
+  * [#716](https://github.com/SamR1/FitTrackee/issues/716) - Trouble importing tracks
+  * [#720](https://github.com/SamR1/FitTrackee/issues/720) - Increase WORKER TIMEOUT
+* [PR#728](https://github.com/SamR1/FitTrackee/pull/728) - fixed docker-compose.yml
+
+### Translations
+
+* [PR#713](https://github.com/SamR1/FitTrackee/pull/713) - Translations update (Basque, German)
+* [PR#721](https://github.com/SamR1/FitTrackee/pull/721) - Translations update (Chinese (Simplified Han script), Galicien, German)
+* [PR#726](https://github.com/SamR1/FitTrackee/pull/726) - Translations update (German)
+* [PR#729](https://github.com/SamR1/FitTrackee/pull/729) - Translations update (Galician)
+
+Translation status:
+- Basque: 81%
+- Bulgarian: 63%
+- Chinese (Simplified): 99%
+- Czech: 46%
+- Dutch: 64%
+- English: 100%
+- French: 100%
+- Galician: 99%
+- German: 85%
+- Italian: 52%
+- Norwegian Bokmål: 34%
+- Polish: 99%
+- Portuguese: 62%
+- Russian: 39%
+- Spanish: 64%
+
+### Misc
+
+* [PR#717](https://github.com/SamR1/FitTrackee/pull/717) - Adds YAML bug report template
+
+Thanks to the contributors:
+- @erral
+- @LordSexy
+- @mbw83
+- @OliverPifferi
+- @slackline
+- @Von-Birne
+- @xmgz
+- Poesty Li
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
+
+
 ## Version 0.9.2 (2025/02/12)
 
 ### Translations
