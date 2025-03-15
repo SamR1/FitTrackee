@@ -37,7 +37,7 @@ dramatiq = {version = "^1.15.0", extras = ["redis"]}
 flask = "^3.1.0"
 flask-bcrypt = "^1.0.1"
 flask-dramatiq = "^0.6.0"
-flask-limiter = {version = "^3.10.1", extras = ["redis"]}
+flask-limiter = {version = "^3.11.0", extras = ["redis"]}
 flask-migrate = "4.1.0"
 flask-sqlalchemy = "3.1.1"
 gpxpy = "=1.6.2"
@@ -51,7 +51,7 @@ pyopenssl = "^25.0.0"
 pytz = "^2025.1"
 shortuuid = "^1.0.13"
 staticmap = "^0.5.7"
-sqlalchemy = "=2.0.38"
+sqlalchemy = "=2.0.39"
 ua-parser = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
@@ -65,7 +65,7 @@ pytest-runner = "^6.0.1"
 pytest-selenium = "^4.1.0"
 pytest-xdist = {extras = ["psutil"], version = "^3.6.0"}
 recommonmark = "^0.7.1"
-ruff = "^0.9.10"
+ruff = "^0.11.0"
 selenium = "^4.29.0"
 sphinx = "^7.4.7"
 sphinx-copybutton = "^0.5.2"
