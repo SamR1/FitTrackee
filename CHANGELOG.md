@@ -5,7 +5,7 @@
 ### Features and enhancements
 
 * [#714](https://github.com/SamR1/FitTrackee/issues/714) - New sports: Kayaking and Canoeing
-* [#719](https://github.com/SamR1/FitTrackee/issues/719) - Filter workouts according to visibility in workout list
+* [PR#719](https://github.com/SamR1/FitTrackee/pull/719) - Filter workouts according to visibility in workout list
 * [#722](https://github.com/SamR1/FitTrackee/issues/722) - Statistics per day
 
 
