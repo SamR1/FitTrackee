@@ -31,6 +31,7 @@
     "no file part": "Ez duzu fitxategirik gehitu.",
     "no selected file": "Ez duzu fitxategirik aukeratu.",
     "no tracks in gpx file": "Ez dago arrastorik (<trk>) .gpx fitxategian.",
+    "one or more values, entered or calculated, exceed the limits": "Balio bat edo gehiagok, sartutakoek edo kalkulatutakoe, mugak gainditzen dituzte.",
     "ongoing request exists": "Datuak esportatzeko eskaera bat jada badago.",
     "password: password and password confirmation do not match": "Pasahitza: pasahitza eta baieztapena ez datoz bat.",
     "provide a valid auth token": "Autentifikazio token zuzen bat eman behar duzu.",
