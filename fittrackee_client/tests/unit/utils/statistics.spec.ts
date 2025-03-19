@@ -12,6 +12,7 @@ import {
   TStatisticsFromApi,
 } from '@/types/statistics'
 import {
+  formatDateLabel,
   formatStats,
   getDateKeys,
   getDatasets,
@@ -2751,5 +2752,48 @@ describe('getWorkoutsAverageDatasets', () => {
     expect(getWorkoutsAverageDatasets(inputTotalWorkouts, t)).toStrictEqual(
       expected
     )
+  })
+})
+
+describe('formatDateLabel', () => {
+  const inputDate = new Date('March 19, 2025 10:00:00')
+  const inputData = [
+    {
+      duration: 'day',
+      userDateFormat: 'dd/MM/yyyy',
+      dateFormat: 'MM/dd/yyyy',
+      expectedDate: '19/03/2025',
+    },
+    {
+      duration: 'week',
+      userDateFormat: 'dd/MM/yyyy',
+      dateFormat: 'MM/dd/yyyy',
+      expectedDate: '19/03/2025',
+    },
+    {
+      duration: 'month',
+      userDateFormat: 'dd/MM/yyyy',
+      dateFormat: 'MM/yyyy',
+      expectedDate: '03/2025',
+    },
+    {
+      duration: 'month',
+      userDateFormat: 'dd/MM/yyyy',
+      dateFormat: 'yyyy',
+      expectedDate: '2025',
+    },
+  ]
+
+  inputData.forEach((data) => {
+    it(`returns date label for statistics for date '${inputDate}', duration '${data.duration}, userDateFormat '${data.userDateFormat}, dateFormat '${data.dateFormat}, '`, () => {
+      expect(
+        formatDateLabel(
+          inputDate,
+          data.duration,
+          data.userDateFormat,
+          data.dateFormat
+        )
+      ).toStrictEqual(data.expectedDate)
+    })
   })
 })

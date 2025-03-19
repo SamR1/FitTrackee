@@ -180,10 +180,10 @@ export const formatDateLabel = (
   duration: string,
   userDateFormat: string,
   dateFormat: string
-) =>
+): string =>
   format(
     date,
-    duration === 'week'
+    ['day', 'week'].includes(duration)
       ? getDateFormat(userDateFormat, locale.value)
       : dateFormat,
     { locale: localeFromLanguage[locale.value] }
