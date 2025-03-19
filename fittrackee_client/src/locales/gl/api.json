@@ -31,6 +31,7 @@
     "no file part": "Sen ficheiro proporcionado.",
     "no selected file": "Sen ficheiro seleccionado.",
     "no tracks in gpx file": "Non hai ruta (<trk>) no ficheiro .gpx.",
+    "one or more values, entered or calculated, exceed the limits": "Un ou varios valores, escritos ou calculados, excenden os límites.",
     "ongoing request exists": "Xa existe unha solicitude de exportación de datos.",
     "password: password and password confirmation do not match": "Contrasinal: o contrasinal e a súa confirmación non concordan.",
     "provide a valid auth token": "Proporciona unha chave secreta válida.",
