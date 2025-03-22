@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 
 import { IChartDataset } from '../../../src/types/chart'
 
@@ -2785,7 +2785,7 @@ describe('formatDateLabel', () => {
   ]
 
   inputData.forEach((data) => {
-    it(`returns date label for statistics for date '${inputDate}', duration '${data.duration}, userDateFormat '${data.userDateFormat}, dateFormat '${data.dateFormat}, '`, () => {
+    it(`returns date label for statistics for date '${inputDate}', duration '${data.duration}', userDateFormat '${data.userDateFormat}', dateFormat '${data.dateFormat}'`, () => {
       expect(
         formatDateLabel(
           inputDate,
@@ -2795,5 +2795,27 @@ describe('formatDateLabel', () => {
         )
       ).toStrictEqual(data.expectedDate)
     })
+  })
+
+  it(`returns date label for statistics for date '${inputDate}', duration 'day, userDateFormat 'date_string'`, () => {
+    locale.value = 'fr'
+    expect(
+      formatDateLabel(inputDate, 'day', 'date_string', 'MM/dd/yyyy')
+    ).toStrictEqual('19 mars 2025')
+  })
+
+  it(`returns date label for statistics for date '${inputDate}', duration 'day, userDateFormat 'browser_settings'`, () => {
+    const DateTimeFormat = Intl.DateTimeFormat
+    vi.spyOn(global.Intl, 'DateTimeFormat').mockImplementation(
+      (locales, options) => {
+        return new DateTimeFormat('de', options)
+      }
+    )
+
+    expect(
+      formatDateLabel(inputDate, 'day', 'browser_settings', 'MM/dd/yyyy')
+    ).toStrictEqual('19.3.2025')
+
+    vi.clearAllMocks()
   })
 })
