@@ -3,6 +3,7 @@
   "DATES": "日期",
   "STATISTICS": "统计",
   "STATISTICS_CHARTS": {
+    "day": "每日统计",
     "month": "每月统计",
     "week": "每周统计",
     "year": "年度统计"
@@ -15,6 +16,7 @@
     "by_time": "按时间段"
   },
   "TIME_FRAMES": {
+    "day": "日",
     "month": "月",
     "week": "周",
     "year": "年"
