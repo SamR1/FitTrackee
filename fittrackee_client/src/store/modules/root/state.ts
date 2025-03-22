@@ -16,7 +16,7 @@ export const state: IRootState = {
       workouts: 0,
     },
     displayOptions: {
-      dateFormat: 'MM/dd/yyyy',
+      dateFormat: 'browser_settings',
       displayAscent: true,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
         ? Intl.DateTimeFormat().resolvedOptions().timeZone
