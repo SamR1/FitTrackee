@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, timezone
+from unittest.mock import Mock, patch
 
 import pytest
 from flask import Flask
@@ -10,7 +11,7 @@ from ..mixins import ApiTestCaseMixin
 from ..utils import OAUTH_SCOPES, random_string
 
 
-class TestFollow(ApiTestCaseMixin):
+class TestFollowWithoutFederation(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, user_1: User
     ) -> None:
@@ -149,6 +150,26 @@ class TestFollow(ApiTestCaseMixin):
             == f"Follow request to user '{user_2.username}' is sent."
         )
 
+    @patch("fittrackee.users.models.send_to_remote_inbox")
+    def test_it_does_not_call_send_to_user_inbox(
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.post(
+            f"/api/users/{user_2.username}/follow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        send_to_remote_inbox_mock.send.assert_not_called()
+
     @pytest.mark.parametrize(
         "client_scope, can_access",
         {**OAUTH_SCOPES, "follow:write": True}.items(),
@@ -179,7 +200,7 @@ class TestFollow(ApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestUnfollow(ApiTestCaseMixin):
+class TestUnfollowWithoutFederation(ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, user_1: User
     ) -> None:
@@ -286,6 +307,27 @@ class TestUnfollow(ApiTestCaseMixin):
         )
 
         self.assert_404_with_message(response, "relationship does not exist")
+
+    @patch("fittrackee.users.models.send_to_remote_inbox")
+    def test_it_does_not_call_send_to_user_inbox(
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        client.post(
+            f"/api/users/{user_2.username}/unfollow",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        send_to_remote_inbox_mock.send.assert_not_called()
 
     @pytest.mark.parametrize(
         "client_scope, can_access",

@@ -293,6 +293,7 @@
   import type { LocationQuery } from 'vue-router'
   import { useStore } from 'vuex'
 
+  import useApp from '@/composables/useApp.ts'
   import { EQUIPMENTS_STORE } from '@/store/constants'
   import type { IEquipment } from '@/types/equipments'
   import type { ITranslatedSport } from '@/types/sports'
@@ -315,7 +316,9 @@
   const store = useStore()
   const { t } = useI18n()
 
-  let params: LocationQuery = Object.assign({}, route.query)
+  const { appConfig } = useApp()
+
+  let params: LocationQuery = { ...route.query }
 
   const toUnit: ComputedRef<string> = computed(() =>
     authUser.value.imperial_units ? units['km'].defaultTarget : 'km'
@@ -325,7 +328,7 @@
       getEquipmentsFilters(store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS])
     )
   const visibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
-    getAllVisibilityLevels()
+    getAllVisibilityLevels(appConfig.value.federation_enabled)
   )
 
   function handleFilterChange(event: Event) {

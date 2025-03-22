@@ -62,6 +62,9 @@
     authUser: IAuthUserProfile,
     currentPath: string
   ): string {
+    if (user.is_remote) {
+      return `users/${user.fullname}`
+    }
     return user.username === authUser?.username &&
       currentPath.includes('/profile')
       ? 'profile'
