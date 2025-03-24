@@ -13,6 +13,7 @@ from fittrackee.users.export_data import (
     generate_user_data_archives,
 )
 from fittrackee.users.roles import UserRole
+from fittrackee.users.timezones import get_timezone
 from fittrackee.users.users_service import UserManagerService
 from fittrackee.users.utils.language import get_language
 from fittrackee.users.utils.tokens import clean_blacklisted_tokens
@@ -47,6 +48,14 @@ def users_cli() -> None:
     ),
 )
 @click.option(
+    "--tz",
+    type=str,
+    help=(
+        "User preference for timezone. If not provided or not supported, "
+        "it falls back to 'Europe/Paris'."
+    ),
+)
+@click.option(
     "--role", type=click.Choice(UserRole.db_choices()), help="Set user role."
 )
 def create_user(
@@ -55,6 +64,7 @@ def create_user(
     password: Optional[str],
     lang: Optional[str],
     role: Optional[str],
+    tz: Optional[str],
 ) -> None:
     """Create an active user account."""
     with app.app_context():
@@ -67,6 +77,8 @@ def create_user(
                 db.session.add(user)
                 user_language = get_language(lang)
                 user.language = user_language
+                user_timezone = get_timezone(tz)
+                user.timezone = user_timezone
                 db.session.commit()
                 user_manager_service.update(activate=True)
                 click.echo(f"User '{username}' created.")
@@ -74,6 +86,10 @@ def create_user(
                     click.echo(
                         "The user preference for interface language "
                         f"is: {user_language}"
+                    )
+                if tz != user_timezone:
+                    click.echo(
+                        f"The user preference for timezone is: {user_timezone}"
                     )
                 if not password:
                     click.echo(f"The user password is: {user_password}")

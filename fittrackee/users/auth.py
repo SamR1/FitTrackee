@@ -68,6 +68,7 @@ from .models import (
 )
 from .roles import UserRole
 from .tasks import export_data
+from .timezones import get_timezone
 from .utils.controls import check_password, is_valid_email
 from .utils.language import get_language
 from .utils.tokens import decode_user_token
@@ -145,6 +146,8 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     :<json string lang: user language preferences (if not provided or invalid,
                         fallback to 'en' (english))
     :<json boolean accepted_policy: ``true`` if user accepted privacy policy
+    :<json string timezone: user timezone (if not provided or invalid,
+                        fallback to 'Europe/Paris')
 
     :statuscode 200: ``success``
     :statuscode 400:
@@ -182,6 +185,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     email = post_data.get("email")
     password = post_data.get("password")
     language = get_language(post_data.get("language"))
+    tz = get_timezone(post_data.get("timezone"))
 
     try:
         user_manager_service = UserManagerService(username=username)
@@ -191,6 +195,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         # activate his account
         if new_user:
             new_user.language = language
+            new_user.timezone = tz
             new_user.accepted_policy_date = datetime.now(timezone.utc)
             for admin in User.query.filter(
                 User.role == UserRole.ADMIN.value,

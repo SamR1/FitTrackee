@@ -301,27 +301,7 @@ class TestUserRegistration(ApiTestCaseMixin):
         assert data["status"] == "success"
         assert "auth_token" not in data
 
-    def test_it_creates_user_with_user_role(self, app: Flask) -> None:
-        client = app.test_client()
-        username = self.random_string()
-
-        client.post(
-            "/api/auth/register",
-            data=json.dumps(
-                dict(
-                    username=username,
-                    email=self.random_email(),
-                    password=self.random_string(),
-                    accepted_policy=True,
-                )
-            ),
-            content_type="application/json",
-        )
-
-        new_user = User.query.filter_by(username=username).one()
-        assert new_user.role == UserRole.USER.value
-
-    def test_it_creates_user_with_default_date_format(
+    def test_it_creates_inactive_user_with_default_values_when_minimal_data_are_provided(  # noqa
         self, app: Flask
     ) -> None:
         client = app.test_client()
@@ -342,17 +322,65 @@ class TestUserRegistration(ApiTestCaseMixin):
 
         new_user = User.query.filter_by(username=username).one()
         assert new_user.date_format == "MM/dd/yyyy"
+        assert new_user.timezone == "Europe/Paris"
+        assert new_user.language == "en"
+        assert new_user.is_active is False
+        assert new_user.role == UserRole.USER.value
+
+    @pytest.mark.parametrize(
+        "input_timezone,expected_timezone",
+        [
+            ("Europe/Paris", "Europe/Paris"),
+            ("America/New_York", "America/New_York"),
+            ("invalid", "Europe/Paris"),
+            (None, "Europe/Paris"),
+        ],
+    )
+    def test_it_creates_user_when_timezone_is_provided(
+        self,
+        app: Flask,
+        input_timezone: Optional[str],
+        expected_timezone: str,
+    ) -> None:
+        """
+        When value is invalid, it defaults to 'Europe/Paris'
+        """
+        client = app.test_client()
+        username = self.random_string()
+        email = self.random_email()
+        accepted_policy_date = datetime.now(timezone.utc)
+
+        with travel(accepted_policy_date, tick=False):
+            client.post(
+                "/api/auth/register",
+                data=json.dumps(
+                    dict(
+                        username=username,
+                        email=email,
+                        password=self.random_string(),
+                        timezone=input_timezone,
+                        accepted_policy=True,
+                    )
+                ),
+                content_type="application/json",
+            )
+
+        new_user = User.query.filter_by(username=username).one()
+        assert new_user.timezone == expected_timezone
 
     @pytest.mark.parametrize(
         "input_language,expected_language",
         [("en", "en"), ("fr", "fr"), ("invalid", "en"), (None, "en")],
     )
-    def test_it_creates_user_with_inactive_account(
+    def test_it_creates_user_when_language_is_provided(
         self,
         app: Flask,
         input_language: Optional[str],
         expected_language: str,
     ) -> None:
+        """
+        When value is invalid, it defaults to 'en'
+        """
         client = app.test_client()
         username = self.random_string()
         email = self.random_email()
@@ -374,11 +402,7 @@ class TestUserRegistration(ApiTestCaseMixin):
             )
 
         new_user = User.query.filter_by(username=username).one()
-        assert new_user.email == email
-        assert new_user.password is not None
-        assert new_user.is_active is False
         assert new_user.language == expected_language
-        assert new_user.accepted_policy_date == accepted_policy_date
 
     @pytest.mark.parametrize(
         "input_language,expected_language",

@@ -164,6 +164,7 @@ export interface ILoginRegisterFormData {
   password: string
   language?: TLanguage
   accepted_policy?: boolean
+  timezone?: string
 }
 
 export interface ILoginOrRegisterData {
