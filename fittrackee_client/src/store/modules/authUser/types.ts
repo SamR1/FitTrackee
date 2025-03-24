@@ -40,6 +40,7 @@ export interface IAuthUserState {
   followRequests: IUserProfile[]
   blockedUsers: IUserProfile[]
   userReportAction: IUserReportAction
+  timezones: string[]
 }
 
 export interface IAuthUserActions {
@@ -171,6 +172,10 @@ export interface IAuthUserActions {
     context: ActionContext<IAuthUserState, IRootState>,
     payload: TNotificationPreferences
   ): void
+
+  [AUTH_USER_STORE.ACTIONS.GET_TIMEZONES](
+    context: ActionContext<IAuthUserState, IRootState>
+  ): void
 }
 
 export interface IAuthUserGetters {
@@ -221,6 +226,8 @@ export interface IAuthUserGetters {
   [AUTH_USER_STORE.GETTERS.USER_SANCTION](
     state: IAuthUserState
   ): IUserReportAction
+
+  [AUTH_USER_STORE.GETTERS.TIMEZONES](state: IAuthUserState): string[]
 }
 
 export type TAuthUserMutations<S = IAuthUserState> = {
@@ -265,6 +272,7 @@ export type TAuthUserMutations<S = IAuthUserState> = {
     state: S,
     sanction: IUserReportAction
   ): void
+  [AUTH_USER_STORE.MUTATIONS.SET_TIMEZONES](state: S, timezones: string[]): void
 }
 
 export type TAuthUserStoreModule<S = IAuthUserState> = Omit<
