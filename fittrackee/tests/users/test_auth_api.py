@@ -21,6 +21,7 @@ from fittrackee.users.models import (
     UserSportPreferenceEquipment,
 )
 from fittrackee.users.roles import UserRole
+from fittrackee.users.timezones import TIMEZONES
 from fittrackee.users.utils.tokens import get_user_token
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
@@ -5006,3 +5007,15 @@ class TestUserNotificationsPreferencesPost(ApiTestCaseMixin):
         assert (
             user_1.notification_preferences == updated_notification_preferences
         )
+
+
+class TestGetTimezones:
+    def test_it_returns_time_zones(self, app: Flask) -> None:
+        client = app.test_client()
+
+        response = client.get("/api/auth/timezones")
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["timezones"] == TIMEZONES
+        assert data["status"] == "success"

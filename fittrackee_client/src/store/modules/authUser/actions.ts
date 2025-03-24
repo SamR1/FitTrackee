@@ -737,4 +737,25 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
       )
   },
+  [AUTH_USER_STORE.ACTIONS.GET_TIMEZONES](
+    context: ActionContext<IAuthUserState, IRootState>
+  ): void {
+    const timezoneError = 'error when getting timezones'
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get('auth/timezones')
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.SET_TIMEZONES,
+            res.data.timezones
+          )
+        } else {
+          handleError(context, null, timezoneError)
+        }
+      })
+      .catch(() => {
+        handleError(context, null, timezoneError)
+      })
+  },
 }

@@ -15,6 +15,7 @@
     "error during gpx file parsing": "Error during gpx file parsing.",
     "error during gpx processing": "Error during gpx processing.",
     "error on getting configuration": "Error on getting configuration.",
+    "error when getting timezones": "Error when getting timezones.",
     "error when saving workout": "Error when saving workout.",
     "error when updating configuration": "Error when updating configuration.",
     "error while fetching comments": "Error while fetching comments.",

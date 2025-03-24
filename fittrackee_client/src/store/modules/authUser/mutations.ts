@@ -77,4 +77,10 @@ export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
   ) {
     state.userReportAction = sanction
   },
+  [AUTH_USER_STORE.MUTATIONS.SET_TIMEZONES](
+    state: IAuthUserState,
+    timezones: string[]
+  ) {
+    state.timezones = timezones
+  },
 }

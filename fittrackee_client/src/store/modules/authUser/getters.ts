@@ -68,4 +68,7 @@ export const getters: GetterTree<IAuthUserState, IRootState> &
   [AUTH_USER_STORE.GETTERS.USER_SANCTION]: (state: IAuthUserState) => {
     return state.userReportAction
   },
+  [AUTH_USER_STORE.GETTERS.TIMEZONES]: (state: IAuthUserState) => {
+    return state.timezones
+  },
 }

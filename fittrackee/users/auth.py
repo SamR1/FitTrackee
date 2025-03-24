@@ -68,7 +68,7 @@ from .models import (
 )
 from .roles import UserRole
 from .tasks import export_data
-from .timezones import get_timezone
+from .timezones import TIMEZONES, get_timezone
 from .utils.controls import check_password, is_valid_email
 from .utils.language import get_language
 from .utils.tokens import decode_user_token
@@ -2717,3 +2717,44 @@ def appeal_user_sanction(
         return InvalidPayloadErrorResponse("you can appeal only once")
     except (exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route("/auth/timezones", methods=["GET"])
+def get_timezones() -> Tuple[Dict, int]:
+    """
+    Returns list of available time zones
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/auth/timezones HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "timezones": [
+          "Africa/Abidjan",
+          "Africa/Accra",
+          "Africa/Algiers",
+          "Africa/Bissau",
+          "Africa/Cairo",
+          "...",
+          "Pacific/Tahiti",
+          "Pacific/Tarawa",
+          "Pacific/Tongatapu",
+          "Pacific/Wake",
+          "Pacific/Wallis",
+        ],
+        "status": "success"
+      }
+
+    :statuscode 200: ``success``
+    """
+    return {"timezones": TIMEZONES, "status": "success"}, 200
