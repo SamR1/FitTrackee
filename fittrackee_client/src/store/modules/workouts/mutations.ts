@@ -12,6 +12,7 @@ import type {
   IWorkout,
   IWorkoutApiChartData,
   IWorkoutContentType,
+  TWorkoutsStatistics,
 } from '@/types/workouts'
 
 export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
@@ -56,6 +57,12 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     pagination: IPagination
   ) {
     state.pagination = pagination
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_STATISTICS](
+    state: IWorkoutsState,
+    stats: TWorkoutsStatistics
+  ) {
+    state.user_workouts_statistics = stats
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT](
     state: IWorkoutsState,

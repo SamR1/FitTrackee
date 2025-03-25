@@ -94,6 +94,8 @@
   "TITLE": "title",
   "TITLE_FIELD_HELP": "if provided, the title replaces that of the gpx file.",
   "TO": "to",
+  "TOTAL_ASCENT": "total ascent",
+  "TOTAL_DESCENT": "total descent",
   "TOTAL_DISTANCE": "total distance",
   "TOTAL_DURATION": "total duration",
   "UPLOAD_FIRST_WORKOUT": "Upload one!",
@@ -136,6 +138,11 @@
   "WITHOUT_GPX": "without .gpx file",
   "WITH_GPX": "with .gpx file",
   "WORKOUT": "workout | workouts",
+  "WORKOUTS_STATISTICS": {
+    "all": "statistics for all workouts",
+    "current_page": "statistics for current page",
+    "limited": "statistics for {count} workouts"
+  },
   "WORKOUT_CHART": "workout speed and elevation chart",
   "WORKOUT_DATE": "workout date",
   "WORKOUT_DELETION_CONFIRMATION": "Are you sure you want to delete this workout?",

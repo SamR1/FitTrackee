@@ -5,9 +5,9 @@
         <span class="total-label">
           {{ $t('common.TOTAL').toLowerCase() }}:
         </span>
-        <span v-if="pagination.total">
-          {{ pagination.total }}
-          {{ $t('workouts.WORKOUT', pagination.total) }}
+        <span>
+          {{ pagination.total || 0 }}
+          {{ $t('workouts.WORKOUT', pagination.total || 0) }}
         </span>
       </div>
       <FilterSelects
@@ -43,7 +43,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="workout in workouts" :key="workout.id">
+            <tr
+              v-for="(workout, index) in workouts"
+              :key="workout.id"
+              :class="{ 'last-workout': index === workouts.length - 1 }"
+            >
               <td class="sport-col">
                 <span class="cell-heading">
                   {{ $t('workouts.SPORT', 1) }}
@@ -113,7 +117,7 @@
                 <span class="cell-heading">
                   {{ $t('workouts.DURATION') }}
                 </span>
-                {{ workout.moving }}
+                {{ workout.moving ? getTotalDuration(workout.moving, $t) : '' }}
               </td>
               <td class="text-right">
                 <span class="cell-heading">
@@ -162,6 +166,114 @@
                 />
               </td>
             </tr>
+            <template v-if="pagination.total > 1">
+              <template v-for="statsKey in statsKeys" :key="statsKey">
+                <tr class="stats-label">
+                  <td
+                    colspan="9"
+                    v-if="
+                      statsKey === 'all' &&
+                      pagination.total !== workoutsStats.all.count
+                    "
+                  >
+                    {{
+                      $t(`workouts.WORKOUTS_STATISTICS.limited`, {
+                        count: workoutsStats.all.count,
+                      })
+                    }}
+                  </td>
+                  <td colspan="9" v-else>
+                    {{ $t(`workouts.WORKOUTS_STATISTICS.${statsKey}`) }}
+                  </td>
+                </tr>
+                <tr class="stats-cols-labels">
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td>{{ capitalize($t('workouts.TOTAL_DISTANCE')) }}</td>
+                  <td>{{ capitalize($t('workouts.TOTAL_DURATION')) }}</td>
+                  <td>{{ capitalize($t('workouts.AVE_SPEED')) }}</td>
+                  <td>{{ capitalize($t('workouts.MAX_SPEED')) }}</td>
+                  <td>{{ capitalize($t('workouts.TOTAL_ASCENT')) }}</td>
+                  <td>{{ capitalize($t('workouts.TOTAL_DESCENT')) }}</td>
+                </tr>
+                <tr v-if="workoutsStats[statsKey]" class="totals">
+                  <td class="sport-col hide-col"></td>
+                  <td class="workout-title hide-col"></td>
+                  <td class="workout-date hide-col"></td>
+                  <td class="text-right">
+                    <span class="cell-heading">
+                      {{ $t('workouts.TOTAL_DISTANCE') }}
+                    </span>
+                    <Distance
+                      v-if="workoutsStats[statsKey].total_distance !== null"
+                      :distance="workoutsStats[statsKey].total_distance"
+                      unitFrom="km"
+                      :useImperialUnits="user.imperial_units"
+                    />
+                  </td>
+                  <td class="text-right">
+                    <span class="cell-heading">
+                      {{ $t('workouts.TOTAL_DURATION') }}
+                    </span>
+                    {{
+                      workoutsStats[statsKey].total_duration
+                        ? getTotalDuration(
+                            workoutsStats[statsKey].total_duration,
+                            $t
+                          )
+                        : ''
+                    }}
+                  </td>
+                  <td class="text-right">
+                    <span class="cell-heading">
+                      {{ $t('workouts.AVE_SPEED') }}
+                    </span>
+                    <Distance
+                      v-if="workoutsStats[statsKey].ave_speed !== null"
+                      :distance="workoutsStats[statsKey].ave_speed"
+                      unitFrom="km"
+                      :speed="true"
+                      :useImperialUnits="user.imperial_units"
+                    />
+                  </td>
+                  <td class="text-right">
+                    <span class="cell-heading">
+                      {{ $t('workouts.MAX_SPEED') }}
+                    </span>
+                    <Distance
+                      v-if="workoutsStats[statsKey].max_speed !== null"
+                      :distance="workoutsStats[statsKey].max_speed"
+                      unitFrom="km"
+                      :speed="true"
+                      :useImperialUnits="user.imperial_units"
+                    />
+                  </td>
+                  <td class="text-right">
+                    <span class="cell-heading">
+                      {{ $t('workouts.TOTAL_ASCENT') }}
+                    </span>
+                    <Distance
+                      v-if="workoutsStats[statsKey].total_ascent !== null"
+                      :distance="workoutsStats[statsKey].total_ascent"
+                      unitFrom="m"
+                      :useImperialUnits="user.imperial_units"
+                    />
+                  </td>
+                  <td class="text-right">
+                    <span class="cell-heading">
+                      {{ $t('workouts.TOTAL_DESCENT') }}
+                    </span>
+                    <Distance
+                      v-if="workoutsStats[statsKey].total_descent !== null"
+                      :distance="workoutsStats[statsKey].total_descent"
+                      unitFrom="m"
+                      :useImperialUnits="user.imperial_units"
+                    />
+                  </td>
+                </tr>
+              </template>
+            </template>
           </tbody>
         </table>
         <Pagination :pagination="pagination" path="/workouts" :query="query" />
@@ -173,7 +285,15 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, toRefs, watch, capitalize, onBeforeMount } from 'vue'
+  import {
+    computed,
+    ref,
+    toRefs,
+    watch,
+    capitalize,
+    onBeforeMount,
+    onUnmounted,
+  } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import type { LocationQuery } from 'vue-router'
@@ -188,10 +308,15 @@
   import type { IPagination } from '@/types/api'
   import type { ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
-  import type { IWorkout, TWorkoutsPayload } from '@/types/workouts'
+  import type {
+    IWorkout,
+    TWorkoutsPayload,
+    TWorkoutsStatistics,
+  } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
+  import { getTotalDuration } from '@/utils/duration.ts'
   import { getSportColor, getSportLabel } from '@/utils/sports'
   import { convertDistance } from '@/utils/units'
   import { defaultOrder } from '@/utils/workouts'
@@ -227,6 +352,14 @@
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION]
   )
+  const workoutsStats: ComputedRef<TWorkoutsStatistics> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUTS_STATISTICS]
+  )
+  const statsKeys: ComputedRef<string[]> = computed(() =>
+    workoutsStats.value.all.count === workoutsStats.value.current_page.count
+      ? ['all']
+      : ['current_page', 'all']
+  )
 
   function loadWorkouts(payload: TWorkoutsPayload) {
     if (!isAuthUserSuspended.value) {
@@ -237,7 +370,7 @@
     }
   }
   function reloadWorkouts(queryParam: string, queryValue: string) {
-    const newQuery: LocationQuery = Object.assign({}, route.query)
+    const newQuery: LocationQuery = { ...route.query }
     newQuery[queryParam] = queryValue
     if (queryParam === 'per_page') {
       newQuery['page'] = '1'
@@ -291,6 +424,17 @@
   onBeforeMount(() => {
     loadWorkouts(query)
     store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
+  })
+  onUnmounted(() => {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS, [])
+    store.commit(
+      WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_STATISTICS,
+      {} as TWorkoutsStatistics
+    )
+    store.commit(
+      WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_PAGINATION,
+      {} as IPagination
+    )
   })
 </script>
 
@@ -381,6 +525,26 @@
           max-width: 60px;
           text-align: left;
         }
+        tr.last-workout td,
+        tr.totals td {
+          border: none;
+        }
+        .stats-label {
+          td {
+            padding-top: $default-padding * 2;
+            padding-bottom: 0;
+            font-size: 1.1em;
+            border: none;
+            text-align: left;
+            font-weight: bold;
+          }
+        }
+        .stats-cols-labels td {
+          text-align: center;
+          font-weight: bold;
+          border-bottom: 2px solid var(--card-border-color);
+        }
+
         @media screen and (max-width: $small-limit) {
           td,
           .workout-date,
@@ -391,6 +555,9 @@
             display: flex;
             justify-content: center;
             padding: $default-padding;
+            &.hide-col {
+              display: none;
+            }
           }
           .workout-date {
             max-width: initial;
@@ -400,6 +567,24 @@
             width: 45%;
           }
           .workout-title:hover .static-map {
+            display: none;
+          }
+          .hide-col {
+            display: none;
+          }
+          tr.last-workout td,
+          tr.totals td {
+            border: 1px solid var(--card-border-color);
+          }
+          .stats-label {
+            margin-bottom: $default-margin;
+            td {
+              padding: 0;
+              margin: 0;
+              border: none;
+            }
+          }
+          .stats-cols-labels {
             display: none;
           }
         }

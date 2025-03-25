@@ -36,7 +36,10 @@ const getWorkouts = (
   context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   authApi
     .get(target.match('TIMELINE') ? 'timeline' : 'workouts', {
-      params: payload,
+      params: {
+        ...payload,
+        ...(target === 'SET_USER_WORKOUTS' ? { with_statistics: true } : {}),
+      },
     })
     .then((res) => {
       if (res.data.status === 'success') {
@@ -51,6 +54,12 @@ const getWorkouts = (
           context.commit(
             WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_PAGINATION,
             res.data.pagination
+          )
+        }
+        if (target === WorkoutsMutations['SET_USER_WORKOUTS']) {
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_STATISTICS,
+            res.data.data.statistics
           )
         }
       } else {

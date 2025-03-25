@@ -373,6 +373,7 @@ button {
       td {
         padding: $default-padding;
         border-bottom: 1px solid var(--card-border-color);
+        text-wrap: balance;
       }
       tr:last-child td {
         border: none;
