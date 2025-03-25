@@ -15,6 +15,7 @@
     "error during gpx file parsing": "Errorea gpx fitxategia irakurtzean.",
     "error during gpx processing": "Errorea gpx fitxategia prozesatzean.",
     "error on getting configuration": "Errorea konfigurazioa lortzean.",
+    "error when getting timezones": "Errorea ordu-zonak lortzean.",
     "error when saving workout": "Errorea entrenamendua gordetzean.",
     "error when updating configuration": "Errorea konfigurazioa eguneratzean.",
     "error while fetching comments": "Errorea iruzkinak ekartzean.",
