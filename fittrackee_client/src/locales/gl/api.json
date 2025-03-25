@@ -15,6 +15,7 @@
     "error during gpx file parsing": "Erro ao procesar o ficheiro gpx.",
     "error during gpx processing": "Erro no procesado gpx.",
     "error on getting configuration": "Erro ao obter a configuración.",
+    "error when getting timezones": "Erro ao obter as zonas horarias.",
     "error when saving workout": "Erro ao gardar o adestramento.",
     "error when updating configuration": "Erro ao actualizar a configuración.",
     "error while fetching comments": "Erro ao obter os comentarios.",
