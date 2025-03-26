@@ -85,45 +85,53 @@ NO_STATISTICS = {
 }
 
 
-def get_statistics(workouts_subquery: "Subquery") -> Dict:
-    stats_query = db.session.query(
-        func.avg(workouts_subquery.c.ave_speed),
-        func.max(workouts_subquery.c.max_speed),
+def get_statistics(
+    workouts_subquery: "Subquery", *, get_speeds: bool = True
+) -> Dict:
+    columns: List = [
         func.sum(workouts_subquery.c.ascent),
         func.sum(workouts_subquery.c.descent),
         func.sum(workouts_subquery.c.distance),
         func.sum(workouts_subquery.c.moving),
         func.count(workouts_subquery.c.id),
         func.count(distinct(workouts_subquery.c.sport_id)),
-    ).first()
+    ]
+    if get_speeds:
+        columns = [
+            *columns,
+            func.avg(workouts_subquery.c.ave_speed),
+            func.max(workouts_subquery.c.max_speed),
+        ]
+    stats_query = db.session.query(*columns).first()
     if not stats_query:
         return NO_STATISTICS
-    total_sports = None if stats_query[7] is None else stats_query[7]
+    total_sports = None if stats_query[5] is None else stats_query[5]
+    return_speeds = total_sports == 1 and get_speeds
     return {
         "ave_speed": (
             None
-            if total_sports != 1 or stats_query[0] is None
-            else round(float(stats_query[0]), 2)
+            if not return_speeds or stats_query[6] is None
+            else round(float(stats_query[6]), 2)
         ),
-        "count": None if stats_query[6] is None else stats_query[6],
+        "count": None if stats_query[4] is None else stats_query[4],
         "max_speed": (
             None
-            if total_sports != 1 or stats_query[1] is None
-            else round(float(stats_query[1]), 2)
+            if not return_speeds or stats_query[7] is None
+            else round(float(stats_query[7]), 2)
         ),
         "total_ascent": (
-            None if stats_query[2] is None else round(float(stats_query[2]), 2)
+            None if stats_query[0] is None else round(float(stats_query[0]), 2)
         ),
         "total_descent": (
-            None if stats_query[3] is None else round(float(stats_query[3]), 2)
+            None if stats_query[1] is None else round(float(stats_query[1]), 2)
         ),
         "total_distance": (
-            None if stats_query[4] is None else round(float(stats_query[4]), 2)
+            None if stats_query[2] is None else round(float(stats_query[2]), 2)
         ),
         "total_duration": (
             None
-            if stats_query[5] is None
-            else str(stats_query[5]).split(".")[0]
+            if stats_query[3] is None
+            else str(stats_query[3]).split(".")[0]
         ),
         "total_sports": total_sports,
     }
@@ -498,7 +506,15 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                     .limit(per_page)
                     .subquery()
                 )
-                current_page_stats = get_statistics(workouts_subquery)
+                get_speeds = True
+                if workouts_pagination.pages == 1:
+                    sport_ids = {workout.sport_id for workout in workouts}
+                    # do not get speeds when workouts with different sport
+                    # are fetched
+                    get_speeds = len(sport_ids) == 1
+                current_page_stats = get_statistics(
+                    workouts_subquery, get_speeds=get_speeds
+                )
                 statistics = {
                     "statistics": {"current_page": current_page_stats}
                 }
