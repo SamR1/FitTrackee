@@ -1557,6 +1557,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": None,
             "total_distance": None,
             "total_duration": None,
+            "total_sports": 0,
         }
         assert (
             data["data"]["statistics"]["all"]
@@ -1591,6 +1592,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": workout_cycling_user_1.descent,
             "total_distance": workout_cycling_user_1.distance,
             "total_duration": str(workout_cycling_user_1.moving),
+            "total_sports": 1,
         }
         assert (
             data["data"]["statistics"]["all"]
@@ -1626,6 +1628,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": 500.0,
             "total_distance": 39.0,
             "total_duration": "3:13:44",
+            "total_sports": 1,
         }
         assert data["data"]["statistics"]["all"] == {
             "ave_speed": 17.4,
@@ -1635,6 +1638,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": 580.0,
             "total_distance": 49.0,
             "total_duration": "4:11:20",
+            "total_sports": 1,
         }
         assert data["pagination"] == {
             "has_next": True,
@@ -1673,6 +1677,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": 780.0,
             "total_distance": 54.0,
             "total_duration": "4:28:24",
+            "total_sports": 1,
         }
         assert (
             data["data"]["statistics"]["all"]
@@ -1714,6 +1719,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": 280.0,
             "total_distance": 15.0,
             "total_duration": "1:14:40",
+            "total_sports": 1,
         }
         assert data["data"]["statistics"]["all"] == {
             "ave_speed": 17.42,
@@ -1723,6 +1729,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": 780.0,
             "total_distance": 54.0,
             "total_duration": "4:28:24",
+            "total_sports": 1,
         }
         assert data["pagination"] == {
             "has_next": False,
@@ -1762,6 +1769,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": 380.0,
             "total_distance": 11.0,
             "total_duration": "0:26:40",
+            "total_sports": 1,
         }
         assert (
             data["data"]["statistics"]["all"]
@@ -1796,6 +1804,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": 220.0,
             "total_distance": 13.0,
             "total_duration": "1:57:04",
+            "total_sports": 1,
         }
         assert (
             data["data"]["statistics"]["all"]
@@ -1831,6 +1840,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": workout["descent"],
             "total_distance": workout["distance"],
             "total_duration": workout["duration"],
+            "total_sports": 1,
         }
         assert (
             data["data"]["statistics"]["all"]
@@ -1866,6 +1876,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": workout["descent"],
             "total_distance": workout["distance"],
             "total_duration": workout["duration"],
+            "total_sports": 1,
         }
         assert (
             data["data"]["statistics"]["all"]
@@ -1905,6 +1916,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": workout["descent"],
             "total_distance": workout["distance"],
             "total_duration": workout["duration"],
+            "total_sports": 1,
         }
         assert (
             data["data"]["statistics"]["all"]
@@ -1942,6 +1954,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": workout["descent"],
             "total_distance": workout["distance"],
             "total_duration": workout["duration"],
+            "total_sports": 1,
         }
         assert (
             data["data"]["statistics"]["all"]
@@ -1977,6 +1990,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": workout["descent"],
             "total_distance": workout["distance"],
             "total_duration": workout["duration"],
+            "total_sports": 1,
         }
         assert (
             data["data"]["statistics"]["all"]
@@ -2019,6 +2033,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": workout["descent"],
             "total_distance": workout["distance"],
             "total_duration": workout["duration"],
+            "total_sports": 1,
         }
         assert (
             data["data"]["statistics"]["all"]
@@ -2065,6 +2080,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": 100.0,
             "total_distance": 18.0,
             "total_duration": "2:37:36",
+            "total_sports": 1,
         }
         assert (
             data["data"]["statistics"]["all"]
@@ -2110,6 +2126,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": 100.0,
             "total_distance": 18.0,
             "total_duration": "2:37:36",
+            "total_sports": 1,
         }
         assert (
             data["data"]["statistics"]["all"]
@@ -2152,8 +2169,140 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_descent": workout["descent"],
             "total_distance": workout["distance"],
             "total_duration": workout["duration"],
+            "total_sports": 1,
         }
         assert (
             data["data"]["statistics"]["all"]
             == data["data"]["statistics"]["current_page"]
         )
+
+    def test_it_gets_workouts_with_stats_when_multiple_sports_and_one_page(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.ascent = 100
+        workout_cycling_user_1.descent = 120
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?with_statistics=true",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 2
+        assert data["data"]["statistics"]["current_page"] == {
+            "ave_speed": None,
+            "count": 2,
+            "max_speed": None,
+            "total_ascent": float(workout_cycling_user_1.ascent),
+            "total_descent": float(workout_cycling_user_1.descent),
+            "total_distance": float(
+                workout_cycling_user_1.distance  # type: ignore
+                + workout_running_user_1.distance
+            ),
+            "total_duration": str(
+                workout_cycling_user_1.duration  # type: ignore
+                + workout_running_user_1.duration
+            ),
+            "total_sports": 2,
+        }
+        assert (
+            data["data"]["statistics"]["all"]
+            == data["data"]["statistics"]["current_page"]
+        )
+
+    def test_it_gets_workouts_with_stats_for_page_1_when_multiple_sports(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: List[Workout],
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?with_statistics=true",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 5
+        assert data["data"]["statistics"]["current_page"] == {
+            "ave_speed": None,
+            "count": 5,
+            "max_speed": None,
+            "total_ascent": 260.0,
+            "total_descent": 400.0,
+            "total_distance": 41.0,
+            "total_duration": "4:36:40",
+            "total_sports": 2,
+        }
+        assert data["data"]["statistics"]["all"] == {
+            "ave_speed": None,
+            "count": 8,
+            "max_speed": None,
+            "total_ascent": 560.0,
+            "total_descent": 780.0,
+            "total_distance": 66.0,
+            "total_duration": "6:08:24",
+            "total_sports": 2,
+        }
+
+    def test_it_gets_workouts_with_stats_for_page_2_when_multiple_sports(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: List[Workout],
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?with_statistics=true&page=2",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 3
+        assert data["data"]["statistics"]["current_page"] == {
+            "ave_speed": 21.05,
+            "count": 3,
+            "max_speed": 35.16,
+            "total_ascent": 300.0,
+            "total_descent": 380.0,
+            "total_distance": 25.0,
+            "total_duration": "1:31:44",
+            "total_sports": 1,
+        }
+        assert data["data"]["statistics"]["all"] == {
+            "ave_speed": None,
+            "count": 8,
+            "max_speed": None,
+            "total_ascent": 560.0,
+            "total_descent": 780.0,
+            "total_distance": 66.0,
+            "total_duration": "6:08:24",
+            "total_sports": 2,
+        }

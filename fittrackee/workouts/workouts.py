@@ -12,7 +12,7 @@ from flask import (
     request,
     send_from_directory,
 )
-from sqlalchemy import asc, desc, exc, func
+from sqlalchemy import asc, desc, distinct, exc, func
 from sqlalchemy.exc import DataError, IntegrityError
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
@@ -81,6 +81,7 @@ NO_STATISTICS = {
     "total_descent": None,
     "total_distance": None,
     "total_duration": None,
+    "total_sports": 0,
 }
 
 
@@ -93,16 +94,22 @@ def get_statistics(workouts_subquery: "Subquery") -> Dict:
         func.sum(workouts_subquery.c.distance),
         func.sum(workouts_subquery.c.moving),
         func.count(workouts_subquery.c.id),
+        func.count(distinct(workouts_subquery.c.sport_id)),
     ).first()
     if not stats_query:
         return NO_STATISTICS
+    total_sports = None if stats_query[7] is None else stats_query[7]
     return {
         "ave_speed": (
-            None if stats_query[0] is None else round(float(stats_query[0]), 2)
+            None
+            if total_sports != 1 or stats_query[0] is None
+            else round(float(stats_query[0]), 2)
         ),
         "count": None if stats_query[6] is None else stats_query[6],
         "max_speed": (
-            None if stats_query[1] is None else round(float(stats_query[1]), 2)
+            None
+            if total_sports != 1 or stats_query[1] is None
+            else round(float(stats_query[1]), 2)
         ),
         "total_ascent": (
             None if stats_query[2] is None else round(float(stats_query[2]), 2)
@@ -118,6 +125,7 @@ def get_statistics(workouts_subquery: "Subquery") -> Dict:
             if stats_query[5] is None
             else str(stats_query[5]).split(".")[0]
         ),
+        "total_sports": total_sports,
     }
 
 
@@ -476,6 +484,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                     "total_duration": (
                         None if workout.moving is None else str(workout.moving)
                     ),
+                    "total_sports": 1,
                 }
                 statistics = {
                     "statistics": {
