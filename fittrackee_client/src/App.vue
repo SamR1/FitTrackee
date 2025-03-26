@@ -73,9 +73,9 @@
     setTimeout(() => {
       displayScrollButton.value = false
       // for now scroll down button only exists in workouts list
-      const scrollUpBtn = document.getElementById('scroll-down-button')
-      if (scrollUpBtn) {
-        scrollUpBtn.focus()
+      const scrollDownBtn = document.getElementById('scroll-down-button')
+      if (scrollDownBtn) {
+        scrollDownBtn.focus()
       } else {
         const ft = document.getElementById('fittrackee-name')
         ft?.focus()
