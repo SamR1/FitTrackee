@@ -94,6 +94,8 @@
   "TITLE": "titre",
   "TITLE_FIELD_HELP": "si fourni, le titre remplace celui du fichier gpx.",
   "TO": "jusqu'au",
+  "TOTAL_ASCENT": "dénivelé positif total",
+  "TOTAL_DESCENT": "dénivelé négatif total",
   "TOTAL_DISTANCE": "distance totale",
   "TOTAL_DURATION": "durée totale",
   "UPLOAD_FIRST_WORKOUT": "Ajoutez votre première séance !",
