@@ -15,18 +15,19 @@ class TestLogin:
     def test_it_displays_login_form(self, selenium):
         selenium.get(URL)
 
-        inputs = selenium.find_elements(By.TAG_NAME, "input")
+        user_form = selenium.find_element(By.ID, "user-form")
+        inputs = user_form.find_elements(By.TAG_NAME, "input")
         assert len(inputs) == 2
         assert inputs[0].get_attribute("id") == "email"
         assert inputs[0].get_attribute("type") == "email"
         assert inputs[1].get_attribute("id") == "password"
         assert inputs[1].get_attribute("type") == "password"
 
-        button = selenium.find_elements(By.TAG_NAME, "button")[-1]
+        button = user_form.find_elements(By.TAG_NAME, "button")[-1]
         assert button.get_attribute("type") == "submit"
         assert "Log in" in button.text
 
-        links = selenium.find_elements(By.CLASS_NAME, "links")
+        links = user_form.find_elements(By.CLASS_NAME, "links")
         assert links[0].tag_name == "a"
         assert "Register" in links[0].text
         assert links[1].tag_name == "a"
