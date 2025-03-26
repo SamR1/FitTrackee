@@ -2,7 +2,7 @@ import json
 import os
 import shutil
 from datetime import timedelta
-from typing import Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 import requests
 from flask import (
@@ -12,7 +12,7 @@ from flask import (
     request,
     send_from_directory,
 )
-from sqlalchemy import asc, desc, exc
+from sqlalchemy import asc, desc, exc, func
 from sqlalchemy.exc import DataError, IntegrityError
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
@@ -64,12 +64,61 @@ from .utils.workouts import (
     process_files,
 )
 
+if TYPE_CHECKING:
+    from sqlalchemy.sql.selectable import Subquery
+
 workouts_blueprint = Blueprint("workouts", __name__)
 
 DEFAULT_WORKOUTS_PER_PAGE = 5
 MAX_WORKOUTS_PER_PAGE = 100
 MAX_WORKOUTS_TO_SEND = 5
 DEFAULT_WORKOUT_LIKES_PER_PAGE = 10
+NO_STATISTICS = {
+    "ave_speed": None,
+    "count": 0,
+    "max_speed": None,
+    "total_ascent": None,
+    "total_descent": None,
+    "total_distance": None,
+    "total_duration": None,
+}
+
+
+def get_statistics(workouts_subquery: "Subquery") -> Dict:
+    stats_query = db.session.query(
+        func.avg(workouts_subquery.c.ave_speed),
+        func.max(workouts_subquery.c.max_speed),
+        func.sum(workouts_subquery.c.ascent),
+        func.sum(workouts_subquery.c.descent),
+        func.sum(workouts_subquery.c.distance),
+        func.sum(workouts_subquery.c.moving),
+        func.count(workouts_subquery.c.id),
+    ).first()
+    if not stats_query:
+        return NO_STATISTICS
+    return {
+        "ave_speed": (
+            None if stats_query[0] is None else round(float(stats_query[0]), 2)
+        ),
+        "count": None if stats_query[6] is None else stats_query[6],
+        "max_speed": (
+            None if stats_query[1] is None else round(float(stats_query[1]), 2)
+        ),
+        "total_ascent": (
+            None if stats_query[2] is None else round(float(stats_query[2]), 2)
+        ),
+        "total_descent": (
+            None if stats_query[3] is None else round(float(stats_query[3]), 2)
+        ),
+        "total_distance": (
+            None if stats_query[4] is None else round(float(stats_query[4]), 2)
+        ),
+        "total_duration": (
+            None
+            if stats_query[5] is None
+            else str(stats_query[5]).split(".")[0]
+        ),
+    }
 
 
 @workouts_blueprint.route("/workouts", methods=["GET"])
@@ -109,13 +158,12 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
               {
                 "analysis_visibility": "private",
                 "ascent": null,
-                "ave_speed": 10.0,
+                "ave_speed": 18.0,
                 "bounds": [],
                 "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
                 "descent": null,
-                "description": null,
-                "distance": 10.0,
-                "duration": "0:17:04",
+                "distance": 18.0,
+                "duration": "1:00:00",
                 "equipments": [],
                 "id": "kjxavSTUrJvoAh2wvCeGEF",
                 "liked": false,
@@ -123,66 +171,20 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "map": null,
                 "map_visibility": "private",
                 "max_alt": null,
-                "max_speed": 10.0,
+                "max_speed": 18.0,
                 "min_alt": null,
                 "modification_date": null,
-                "moving": "0:17:04",
-                "next_workout": 3,
-                "notes": null,
+                "moving": "1:00:00",
+                "next_workout": null,
+                "notes": "",
                 "pauses": null,
                 "previous_workout": null,
-                "records": [
-                  {
-                    "id": 4,
-                    "record_type": "MS",
-                    "sport_id": 1,
-                    "user": "admin",
-                    "value": 10.0,
-                    "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "workout_id": "kjxavSTUrJvoAh2wvCeGEF"
-                  },
-                  {
-                    "id": 13,
-                    "record_type": "HA",
-                    "sport_id": 1,
-                    "user": "Sam",
-                    "value": 43.97,
-                    "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
-                    "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
-                  },
-                  {
-                    "id": 3,
-                    "record_type": "LD",
-                    "sport_id": 1,
-                    "user": "admin",
-                    "value": "0:17:04",
-                    "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "workout_id": "kjxavSTUrJvoAh2wvCeGEF"
-                  },
-                  {
-                    "id": 2,
-                    "record_type": "FD",
-                    "sport_id": 1,
-                    "user": "admin",
-                    "value": 10.0,
-                    "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "workout_id": "kjxavSTUrJvoAh2wvCeGEF"
-                  },
-                  {
-                    "id": 1,
-                    "record_type": "AS",
-                    "sport_id": 1,
-                    "user": "admin",
-                    "value": 10.0,
-                    "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
-                    "workout_id": "kjxavSTUrJvoAh2wvCeGEF"
-                  }
-                ],
+                "records": [],
                 "segments": [],
                 "sport_id": 1,
                 "suspended": false,
                 "suspended_at": null,
-                "title": null,
+                "title": "Cycling (Sport) - 2018-01-01 08:00:00",
                 "user": {
                   "created_at": "Sun, 31 Dec 2017 09:00:00 GMT",
                   "followers": 0,
@@ -197,10 +199,17 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "weather_start": null,
                 "with_analysis": false,
                 "with_gpx": false,
-                "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
+                "workout_date": "Mon, 01 Jan 2018 07:00:00 GMT",
                 "workout_visibility": "private"
               }
             ]
+          },
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 1,
+            "total": 1
           },
           "status": "success"
         }
@@ -213,10 +222,58 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
       Content-Type: application/json
 
         {
-            "data": {
-                "workouts": []
+          "data": {
+            "workouts": []
+          },
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 0,
+            "total": 0
+          },
+          "status": "success"
+        }
+
+    - with statistics
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "statistics": {
+              "all": {
+                "ave_speed": null,
+                "count": 0,
+                "max_speed": null,
+                "total_ascent": null,
+                "total_descent": null,
+                "total_distance": null,
+                "total_duration": null
+              },
+              "current_page": {
+                "ave_speed": null,
+                "count": 0,
+                "max_speed": null,
+                "total_ascent": null,
+                "total_descent": null,
+                "total_distance": null,
+                "total_duration": null
+              }
             },
-            "status": "success"
+            "workouts": []
+          },
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 0,
+            "total": 0
+          },
+          "status": "success"
         }
 
     :query integer page: page if using pagination (default: 1)
@@ -245,14 +302,15 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                          notes matching is case-insensitive
     :query string description: any part of the workout description;
                          description matching is case-insensitive
-    :query string return_equipments: return workouts with equipment
+    :query boolean return_equipments: return workouts with equipment
                          (by default, equipment is not returned).
                          **Note**: It's not a filter.
                          **Warning**: Needed for 3rd-party applications
                          updating equipments.
     :query string workout_visibility: workout visibility (``private``,
                          ``followers_only`` or ``public``)
-
+    :query boolean with_statistics: return statistics when ``true``
+                        (by default, statistics are not returned)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -357,7 +415,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 == VisibilityLevel(workout_visibility).value
             )
 
-        workouts_pagination = (
+        workouts_query = (
             Workout.query.outerjoin(WorkoutEquipment)
             .filter(*filters)
             .order_by(
@@ -367,13 +425,91 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                     else desc(workout_column)
                 ),
             )
-            .paginate(page=page, per_page=per_page, error_out=False)
         )
 
+        workouts_pagination = workouts_query.paginate(
+            page=page, per_page=per_page, error_out=False
+        )
         workouts = workouts_pagination.items
         with_equipments = (
             params.get("return_equipments", "false").lower() == "true"
         )
+
+        statistics = {}
+        if params.get("with_statistics", "false").lower() == "true":
+            if workouts_pagination.total == 0:
+                statistics = {
+                    "statistics": {
+                        "current_page": {**NO_STATISTICS},
+                        "all": {**NO_STATISTICS},
+                    }
+                }
+            elif workouts_pagination.total == 1:
+                workout = workouts[0]
+                workout_total: Dict = {
+                    "ave_speed": (
+                        None
+                        if workout.ave_speed is None
+                        else float(workout.ave_speed)
+                    ),
+                    "count": 1,
+                    "max_speed": (
+                        None
+                        if workout.max_speed is None
+                        else float(workout.max_speed)
+                    ),
+                    "total_ascent": (
+                        None
+                        if workout.ascent is None
+                        else float(workout.ascent)
+                    ),
+                    "total_descent": (
+                        None
+                        if workout.descent is None
+                        else float(workout.descent)
+                    ),
+                    "total_distance": (
+                        None
+                        if workout.distance is None
+                        else float(workout.distance)
+                    ),
+                    "total_duration": (
+                        None if workout.moving is None else str(workout.moving)
+                    ),
+                }
+                statistics = {
+                    "statistics": {
+                        "current_page": {**workout_total},
+                        "all": {**workout_total},
+                    }
+                }
+            else:
+                workouts_subquery = (
+                    workouts_query.offset((page - 1) * per_page)
+                    .limit(per_page)
+                    .subquery()
+                )
+                current_page_stats = get_statistics(workouts_subquery)
+                statistics = {
+                    "statistics": {"current_page": current_page_stats}
+                }
+
+                if current_page_stats["count"] == workouts_pagination.total:
+                    statistics["statistics"]["all"] = {**current_page_stats}
+                else:
+                    all_workouts_subquery = workouts_query
+                    if current_app.config["stats_workouts_limit"]:
+                        all_workouts_subquery = all_workouts_subquery.limit(
+                            max(
+                                current_app.config["stats_workouts_limit"],
+                                per_page,
+                            )
+                        )
+                    workouts_subquery = all_workouts_subquery.subquery()
+                    statistics["statistics"]["all"] = get_statistics(
+                        workouts_subquery
+                    )
+
         return {
             "status": "success",
             "data": {
@@ -384,7 +520,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                         with_equipments=with_equipments,
                     )
                     for workout in workouts
-                ]
+                ],
+                **statistics,
             },
             "pagination": {
                 "has_next": workouts_pagination.has_next,

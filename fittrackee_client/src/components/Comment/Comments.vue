@@ -80,7 +80,7 @@
   const route = useRoute()
   const store = useStore()
 
-  const timer: Ref<number | undefined> = ref()
+  const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
 
   const comments: ComputedRef<IComment[]> = computed(
     () => workoutData.value.comments

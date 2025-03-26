@@ -12,13 +12,15 @@
       <NoConfig v-else />
     </div>
     <div class="container scroll">
-      <div
+      <button
         class="scroll-button"
         :class="{ 'display-button': displayScrollButton }"
         @click="scrollToTop"
+        :title="$t('common.SCROLL_UP')"
+        id="scroll-up-button"
       >
         <i class="fa fa-chevron-up" aria-hidden="true"></i>
-      </div>
+      </button>
     </div>
   </main>
   <Footer
@@ -45,8 +47,8 @@
 
   const { appConfig, appLoading } = useApp()
 
-  const hideScrollBar: Ref<Boolean> = ref(false)
-  const displayScrollButton: Ref<Boolean> = ref(false)
+  const hideScrollBar: Ref<boolean> = ref(false)
+  const displayScrollButton: Ref<boolean> = ref(false)
 
   function updateHideScrollBar(isMenuOpen: boolean) {
     hideScrollBar.value = isMenuOpen
@@ -70,6 +72,14 @@
     })
     setTimeout(() => {
       displayScrollButton.value = false
+      // for now scroll down button only exists in workouts list
+      const scrollUpBtn = document.getElementById('scroll-down-button')
+      if (scrollUpBtn) {
+        scrollUpBtn.focus()
+      } else {
+        const ft = document.getElementById('fittrackee-name')
+        ft?.focus()
+      }
     }, 300)
   }
   function initLanguage() {
@@ -120,12 +130,6 @@
     padding: 0 $default-padding * 2.5;
 
     .scroll-button {
-      background-color: var(--scroll-button-bg-color);
-      border-radius: $border-radius;
-      box-shadow: 1px 1px 3px var(--app-shadow-color);
-      display: none;
-      padding: 0 $default-padding;
-
       &.display-button {
         display: block;
       }

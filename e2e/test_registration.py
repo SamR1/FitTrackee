@@ -15,7 +15,8 @@ class TestRegistration:
         selenium.get(URL)
         selenium.implicitly_wait(1)
 
-        inputs = selenium.find_elements(By.TAG_NAME, "input")
+        user_form = selenium.find_element(By.ID, "user-form")
+        inputs = user_form.find_elements(By.TAG_NAME, "input")
         assert len(inputs) == 5
         assert inputs[0].get_attribute("id") == "username"
         assert inputs[0].get_attribute("type") == "text"
@@ -26,7 +27,7 @@ class TestRegistration:
         assert inputs[4].get_attribute("id") == "accepted_policy"
         assert inputs[4].get_attribute("type") == "checkbox"
 
-        form_infos = selenium.find_elements(By.CLASS_NAME, "form-info")
+        form_infos = user_form.find_elements(By.CLASS_NAME, "form-info")
         assert len(form_infos) == 3
         assert form_infos[0].text == (
             "3 to 30 characters required, only alphanumeric characters and "
@@ -35,11 +36,11 @@ class TestRegistration:
         assert form_infos[1].text == "Enter a valid email address."
         assert form_infos[2].text == "At least 8 characters required."
 
-        button = selenium.find_elements(By.TAG_NAME, "button")[-1]
+        button = user_form.find_elements(By.TAG_NAME, "button")[-1]
         assert button.get_attribute("type") == "submit"
         assert "Register" in button.text
 
-        links = selenium.find_elements(By.CLASS_NAME, "links")
+        links = user_form.find_elements(By.CLASS_NAME, "links")
         assert links[0].tag_name == "a"
         assert "Login" in links[0].text
         assert links[1].tag_name == "a"

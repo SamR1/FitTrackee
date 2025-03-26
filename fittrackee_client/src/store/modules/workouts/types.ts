@@ -25,10 +25,12 @@ import type {
   IWorkoutContentType,
   IWorkoutContentEdition,
   ILikesPayload,
+  TWorkoutsStatistics,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
   user_workouts: IWorkout[]
+  user_workouts_statistics: TWorkoutsStatistics
   calendar_workouts: IWorkout[]
   timeline_workouts: IWorkout[]
   workoutData: IWorkoutData
@@ -140,6 +142,9 @@ export interface IWorkoutsGetters {
   [WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION](
     state: IWorkoutsState
   ): IPagination
+  [WORKOUTS_STORE.GETTERS.WORKOUTS_STATISTICS](
+    state: IWorkoutsState
+  ): TWorkoutsStatistics
 }
 
 export type TWorkoutsMutations<S = IWorkoutsState> = {
@@ -188,6 +193,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_PAGINATION](
     state: S,
     pagination: IPagination
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_STATISTICS](
+    state: S,
+    totals: TWorkoutsStatistics
   ): void
   [WORKOUTS_STORE.MUTATIONS.EMPTY_CALENDAR_WORKOUTS](state: S): void
   [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS](state: S): void
