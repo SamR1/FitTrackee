@@ -139,7 +139,7 @@
   "WITH_GPX": "with .gpx file",
   "WORKOUT": "workout | workouts",
   "WORKOUTS_STATISTICS": {
-    "all": "statistics for all workouts",
+    "all": "statistics for all pages",
     "current_page": "statistics for current page",
     "limited": "statistics for {count} workouts"
   },

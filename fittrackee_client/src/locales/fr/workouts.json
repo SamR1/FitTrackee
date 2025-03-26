@@ -139,7 +139,7 @@
   "WITH_GPX": "avec un fichier .gpx",
   "WORKOUT": "séance | séances",
   "WORKOUTS_STATISTICS": {
-    "all": "statistiques pour toutes les séances",
+    "all": "statistiques pour toutes les pages",
     "current_page": "statistiques pour la page en cours",
     "limited": "statistiques pour les {count} séances"
   },

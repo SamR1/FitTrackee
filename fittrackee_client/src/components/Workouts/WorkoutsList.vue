@@ -180,9 +180,12 @@
             <template v-if="pagination.total > 1">
               <template v-for="statsKey in statsKeys" :key="statsKey">
                 <tr class="stats-label" :id="`stats_${statsKey}`">
+                  <td colspan="9" v-if="pagination.pages === 1">
+                    {{ $t('statistics.STATISTICS') }}
+                  </td>
                   <td
                     colspan="9"
-                    v-if="
+                    v-else-if="
                       statsKey === 'all' &&
                       pagination.total !== workoutsStats.all.count
                     "
@@ -564,6 +567,7 @@
             padding-top: $default-padding * 2;
             padding-bottom: 0;
             font-size: 1.1em;
+            text-transform: lowercase;
             border: none;
             text-align: left;
             font-weight: bold;
