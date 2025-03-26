@@ -1,13 +1,57 @@
 # Change log
 
+## Version 0.9.4 (2025/03/26)
+
+### Features and enhancements
+
+* [#117](https://github.com/SamR1/FitTrackee/issues/117) - Total data of filtered workouts
+* [PR#736](https://github.com/SamR1/FitTrackee/pull/736) - Display date with browser settings when user is unlogged
+* [PR#737](https://github.com/SamR1/FitTrackee/pull/737) - Register user with time zone detected from browser
+
+### Bugs Fixed
+
+* [#731](https://github.com/SamR1/FitTrackee/issues/731) - date format inconsistency in statistics
+* [#739](https://github.com/SamR1/FitTrackee/issues/739) - total duration displayed on the dashboard is incorrect
+
+### Translations
+
+* [PR#732](https://github.com/SamR1/FitTrackee/pull/732) - Translations update (Basque, Galician)
+* [PR#734](https://github.com/SamR1/FitTrackee/pull/734) - Translations update (Basque)
+* [PR#735](https://github.com/SamR1/FitTrackee/pull/735) - Translations update (Chinese (Simplified Han script))
+* [PR#738](https://github.com/SamR1/FitTrackee/pull/738) - Translations update (Galician, German)
+* [PR#740](https://github.com/SamR1/FitTrackee/pull/740) - Translations update (Basque)
+
+Translation status:
+- Basque: 82%
+- Bulgarian: 63%
+- Chinese (Simplified): 98%
+- Czech: 46%
+- Dutch: 63%
+- English: 100%
+- French: 100%
+- Galician: 99%
+- German: 85%
+- Italian: 52%
+- Norwegian Bokmål: 33%
+- Polish: 98%
+- Portuguese: 62%
+- Russian: 39%
+- Spanish: 63%
+
+Thanks to the contributors:
+- @erral
+- @Medformatik
+- @xmgz
+- Poesty Li
+
+
 ## Version 0.9.3 (2025/03/15)
 
 ### Features and enhancements
 
 * [#714](https://github.com/SamR1/FitTrackee/issues/714) - New sports: Kayaking and Canoeing
-* [#719](https://github.com/SamR1/FitTrackee/issues/719) - Filter workouts according to visibility in workout list
+* [PR#719](https://github.com/SamR1/FitTrackee/pull/719) - Filter workouts according to visibility in workout list
 * [#722](https://github.com/SamR1/FitTrackee/issues/722) - Statistics per day
-
 
 ### Bugs Fixed
 

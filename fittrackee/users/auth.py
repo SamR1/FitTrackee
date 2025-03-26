@@ -68,6 +68,7 @@ from .models import (
 )
 from .roles import UserRole
 from .tasks import export_data
+from .timezones import TIMEZONES, get_timezone
 from .utils.controls import check_password, is_valid_email
 from .utils.language import get_language
 from .utils.tokens import decode_user_token
@@ -145,6 +146,8 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     :<json string lang: user language preferences (if not provided or invalid,
                         fallback to 'en' (english))
     :<json boolean accepted_policy: ``true`` if user accepted privacy policy
+    :<json string timezone: user timezone (if not provided or invalid,
+                        fallback to 'Europe/Paris')
 
     :statuscode 200: ``success``
     :statuscode 400:
@@ -182,6 +185,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
     email = post_data.get("email")
     password = post_data.get("password")
     language = get_language(post_data.get("language"))
+    tz = get_timezone(post_data.get("timezone"))
 
     try:
         user_manager_service = UserManagerService(username=username)
@@ -191,6 +195,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
         # activate his account
         if new_user:
             new_user.language = language
+            new_user.timezone = tz
             new_user.accepted_policy_date = datetime.now(timezone.utc)
             for admin in User.query.filter(
                 User.role == UserRole.ADMIN.value,
@@ -2712,3 +2717,44 @@ def appeal_user_sanction(
         return InvalidPayloadErrorResponse("you can appeal only once")
     except (exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
+
+
+@auth_blueprint.route("/auth/timezones", methods=["GET"])
+def get_timezones() -> Tuple[Dict, int]:
+    """
+    Returns list of available time zones
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/auth/timezones HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "timezones": [
+          "Africa/Abidjan",
+          "Africa/Accra",
+          "Africa/Algiers",
+          "Africa/Bissau",
+          "Africa/Cairo",
+          "...",
+          "Pacific/Tahiti",
+          "Pacific/Tarawa",
+          "Pacific/Tongatapu",
+          "Pacific/Wake",
+          "Pacific/Wallis",
+        ],
+        "status": "success"
+      }
+
+    :statuscode 200: ``success``
+    """
+    return {"timezones": TIMEZONES, "status": "success"}, 200

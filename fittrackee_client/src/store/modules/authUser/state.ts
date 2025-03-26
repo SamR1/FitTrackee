@@ -11,4 +11,5 @@ export const authUserState: IAuthUserState = {
   followRequests: [],
   blockedUsers: [],
   userReportAction: <IUserReportAction>{},
+  timezones: [],
 }

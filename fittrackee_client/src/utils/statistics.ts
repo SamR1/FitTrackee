@@ -8,6 +8,7 @@ import {
   endOfWeek,
   endOfYear,
   format,
+  intlFormat,
   startOfDay,
   startOfMonth,
   startOfWeek,
@@ -180,14 +181,18 @@ export const formatDateLabel = (
   duration: string,
   userDateFormat: string,
   dateFormat: string
-) =>
-  format(
-    date,
-    duration === 'week'
-      ? getDateFormat(userDateFormat, locale.value)
-      : dateFormat,
-    { locale: localeFromLanguage[locale.value] }
-  )
+): string => {
+  if (['day', 'week'].includes(duration)) {
+    // note: for now, statistics are not publicly available.
+    if (userDateFormat === 'browser_settings') {
+      return intlFormat(date)
+    }
+    return format(date, getDateFormat(userDateFormat, locale.value), {
+      locale: localeFromLanguage[locale.value],
+    })
+  }
+  return format(date, dateFormat, { locale: localeFromLanguage[locale.value] })
+}
 
 export const formatStats = (
   params: IStatisticsDateParams,

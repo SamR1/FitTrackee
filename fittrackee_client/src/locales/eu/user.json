@@ -114,6 +114,10 @@
     "LATEST_SANCTIONS_RECEIVED": "Jasotako azken zigorrak",
     "LOCATION": "Herria",
     "MONDAY": "Astelehena",
+    "NOTIFICATIONS": {
+      "account_creation": "Norbait erregistratzen da",
+      "comment_like": "Norbaitek zure iruzkina atsegin du"
+    },
     "PICTURE": "Argazkia",
     "PICTURE_EDITION": "Editatu argazkia",
     "PICTURE_REMOVE": "Ezabatu argazkia",

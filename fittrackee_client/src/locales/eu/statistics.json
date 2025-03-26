@@ -3,6 +3,7 @@
   "DATES": "Datak",
   "STATISTICS": "Estatistikak",
   "STATISTICS_CHARTS": {
+    "day": "Eguneroko estatistikak",
     "month": "Hileroko estatistikak",
     "week": "Asteroko estatistikak",
     "year": "Urteroko estatistikak"
@@ -15,6 +16,7 @@
     "by_time": "denbora tarteka"
   },
   "TIME_FRAMES": {
+    "day": "eguna",
     "month": "hilabetea",
     "week": "astea",
     "year": "urtea"

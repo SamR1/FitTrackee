@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Fonctionnalités - Documentation FitTrackee 0.9.3</title>
+        <title>Fonctionnalités - Documentation FitTrackee 0.9.4</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.3
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.4
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.3
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.4
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -459,9 +459,9 @@
 <div class="line">Veuillez garder à l’esprit que l’équipe d’exploitation du serveur ou l’équipe de modération peuvent visualiser les contenus à visibilité restreinte.</div>
 </div>
 </div>
-<ul class="simple">
-<li><p>Une séance peut être modifiée :</p>
 <ul>
+<li><p>Une séance peut être modifiée :</p>
+<ul class="simple">
 <li><p>sport</p></li>
 <li><p>titre</p></li>
 <li><p>équipement</p></li>
@@ -481,7 +481,7 @@
 <li><p>Liste des séances.</p>
 <ul>
 <li><p>L’utilisateur peut filtrer les séances selon :</p>
-<ul>
+<ul class="simple">
 <li><p>la date</p></li>
 <li><p>le sport (seuls les sports comportant des séances sont affichés dans la liste déroulante)</p></li>
 <li><p>l’équipement (seuls les équipements associés des séances sont affichés dans la liste déroulante) (<em>nouveau dans la version 0.8.0</em>)</p></li>
@@ -496,15 +496,35 @@
 </ul>
 </li>
 <li><p>Les séances peuvent être triées par :</p>
-<ul>
+<ul class="simple">
 <li><p>la date</p></li>
 <li><p>la distance</p></li>
 <li><p>la durée</p></li>
 <li><p>la vitesse moyenne</p></li>
 </ul>
 </li>
+<li><p>Des statistiques sont affichées quand plus d’une séance est affichée (<em>nouveau dans la version 0.9.4</em>):</p>
+<ul class="simple">
+<li><p>distance totale</p></li>
+<li><p>durée totale</p></li>
+<li><p>vitesse moyenne (quand les séances appartiennent au même sport)</p></li>
+<li><p>vitesse maximale (quand les séances appartiennent au même sport)</p></li>
+<li><p>dénivelé positif total</p></li>
+<li><p>dénivelé négatif total</p></li>
+</ul>
+<p>Quand plusieurs pages sont récupérées, les statistiques pour l’ensemble des pages sont également affichées.</p>
+</li>
 </ul>
 </li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Il existe une limite au nombre de séances utilisées pour calculer les statistiques afin d’éviter les problèmes de performances. La valeur peut être modifiée dans l’administration.</div>
+<div class="line">Si la limite est atteinte, le nombre des séances utilisées est affiché.</div>
+</div>
+</div>
+<ul class="simple">
 <li><p>Un utilisateur peut signaler une séance qui enfreint les règles de l’instance. Une notification sera envoyée aux modérateurs et administrateurs.</p></li>
 </ul>
 </section>
@@ -696,7 +716,7 @@
 <ul class="simple">
 <li><p>Un utilisateur peut créer, modifier et supprimer son compte.</p></li>
 <li><p>L’utilisateur doit accepter la politique de confidentialité pour s’inscrire. Si une politique plus récente est disponible, un message s’affiche sur le tableau de bord pour consulter la nouvelle version (<em>nouveau dans la version 0.7.13</em>).</p></li>
-<li><p>Lors de l’inscription, la langue sélectionnée dans le menu déroulant est enregistrée comme préférence de l’utilisateur (<em>nouveauté dans la version 0.6.9</em>).</p></li>
+<li><p>Lors de l’inscription, le compte de l’utilisateur est créé avec comme préférences la langue (<em>nouveauté dans la version 0.6.9</em>) et la fuseau horaire (<em>nouveauté dans la version 0.9.4</em>) détectés à partir du navigateur.</p></li>
 <li><p>Après l’enregistrement, le compte d’utilisateur est inactif et un courriel contenant des instructions de confirmation est envoyé pour l’activer. Un utilisateur dont le compte est inactif ne peut pas se connecter (<em>nouveauté dans la version 0.6.0</em>).</p></li>
 </ul>
 <div class="admonition note">
@@ -1223,7 +1243,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=86cf7a05"></script>
+</div><script src="_static/documentation_options.js?v=4d46eac8"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

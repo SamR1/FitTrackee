@@ -1,4 +1,7 @@
 {
+  "Canoeing": {
+    "LABEL": "Kanoa"
+  },
   "Cycling (Sport)": {
     "LABEL": "Txirrindularitza (Kirola)"
   },
@@ -13,6 +16,9 @@
   },
   "Hiking": {
     "LABEL": "Mendi ibilaldia"
+  },
+  "Kayaking": {
+    "LABEL": "Kayak"
   },
   "Mountain Biking": {
     "LABEL": "Mendiko bizikleta"
@@ -48,7 +54,7 @@
     "LABEL": "Igerikorrika"
   },
   "Trail": {
-    "LABEL": "Bidea"
+    "LABEL": "Mendiko lasterketa"
   },
   "Walking": {
     "LABEL": "Oinez ibiltzea"

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 
 import {
   getCalendarStartAndEnd,
@@ -198,7 +198,6 @@ describe('formatWorkoutDate', () => {
       inputParams: {
         date: new Date('August 21, 2021 20:00:00'),
         dateFormat: null,
-        timeFormat: null,
       },
       expected: {
         workout_date: '2021/08/21',
@@ -210,35 +209,10 @@ describe('formatWorkoutDate', () => {
       inputParams: {
         date: new Date('August 21, 2021 20:00:00'),
         dateFormat: 'dd MM yyyy',
-        timeFormat: null,
       },
       expected: {
         workout_date: '21 08 2021',
         workout_time: '20:00',
-      },
-    },
-    {
-      description: 'returns date and time with provided time format',
-      inputParams: {
-        date: new Date('August 21, 2021 20:00:00'),
-        dateFormat: null,
-        timeFormat: 'HH:mm:ss',
-      },
-      expected: {
-        workout_date: '2021/08/21',
-        workout_time: '20:00:00',
-      },
-    },
-    {
-      description: 'returns date and time with provided date and time formats',
-      inputParams: {
-        date: new Date('August 21, 2021 20:00:00'),
-        dateFormat: 'dd-MM-yyyy',
-        timeFormat: 'HH:mm:ss',
-      },
-      expected: {
-        workout_date: '21-08-2021',
-        workout_time: '20:00:00',
       },
     },
   ]
@@ -247,8 +221,7 @@ describe('formatWorkoutDate', () => {
       expect(
         formatWorkoutDate(
           testParams.inputParams.date,
-          testParams.inputParams.dateFormat,
-          testParams.inputParams.timeFormat
+          testParams.inputParams.dateFormat
         )
       ).toStrictEqual(testParams.expected)
     })
@@ -310,6 +283,80 @@ describe('formatDate', () => {
           testParams.inputParams.withTime
         )
       ).toStrictEqual(testParams.expectedDate)
+    })
+  })
+
+  const DateTimeFormat = Intl.DateTimeFormat
+  const testsParamsEn = [
+    {
+      description:
+        'format date for "America/New_York" timezone and "browser_settings" format (w/ time) and "en-US" locale',
+      inputWithSeconds: false,
+      expectedDate: '11/1/2022, 8:00 PM',
+    },
+    {
+      description:
+        'format date for "America/New_York" timezone and "browser_settings" format (w/ seconds) and "en-US" locale',
+      inputWithSeconds: true,
+      expectedDate: '11/1/2022, 8:00:00 PM',
+    },
+  ]
+
+  testsParamsEn.map((testParams) => {
+    it(testParams.description, () => {
+      vi.spyOn(global.Intl, 'DateTimeFormat').mockImplementation(
+        (locales, options) => {
+          return new DateTimeFormat('en-US', options)
+        }
+      )
+
+      expect(
+        formatDate(
+          'Tue, 02 Nov 2022 00:00:00 GMT',
+          'America/New_York',
+          'browser_settings',
+          true,
+          'en',
+          testParams.inputWithSeconds
+        )
+      ).toStrictEqual(testParams.expectedDate)
+
+      vi.clearAllMocks()
+    })
+  })
+
+  const testsParamsFr = [
+    {
+      description:
+        'format date for "Europe/Paris" timezone and "browser_settings" format (w/ time) and "fr-FR" locale',
+      inputWithSeconds: false,
+      expectedDate: '01/11/2022 01:00',
+    },
+    {
+      description:
+        'format date for "Europe/Paris" timezone and "browser_settings" format (w/ seconds) and "fr-FR" locale',
+      inputWithSeconds: true,
+      expectedDate: '01/11/2022 01:00:00',
+    },
+  ]
+  testsParamsFr.map((testParams) => {
+    it(testParams.description, () => {
+      vi.spyOn(global.Intl, 'DateTimeFormat').mockImplementation(
+        (locales, options) => {
+          return new DateTimeFormat('fr-FR', options)
+        }
+      )
+      expect(
+        formatDate(
+          dateString,
+          'Europe/Paris',
+          'browser_settings',
+          true,
+          'fr',
+          testParams.inputWithSeconds
+        )
+      ).toStrictEqual(testParams.expectedDate)
+      vi.clearAllMocks()
     })
   })
 })
@@ -387,6 +434,13 @@ describe('getDateFormat', () => {
         language: 'de',
       },
       expectedFormat: 'do MMM yyyy',
+    },
+    {
+      inputParams: {
+        dateFormat: 'browser_settings',
+        language: 'fr',
+      },
+      expectedFormat: 'browser_settings',
     },
   ]
   testsParams.map((testParams) => {

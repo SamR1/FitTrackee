@@ -11,7 +11,9 @@
     />
     <div class="nav-container">
       <div class="nav-app-name">
-        <router-link class="nav-item app-name" to="/"> FitTrackee </router-link>
+        <router-link class="nav-item app-name" to="/" id="fittrackee-name">
+          FitTrackee
+        </router-link>
       </div>
       <div class="nav-icon-open" :class="{ 'menu-open': isMenuOpen }">
         <router-link
