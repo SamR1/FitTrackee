@@ -99,6 +99,7 @@ Remove blacklisted tokens expired for more than provided number of days.
 .. versionadded:: 0.7.15
 .. versionchanged:: 0.8.4  User preference for interface language is added.
 .. versionchanged:: 0.9.0  Add option for user role.
+.. versionchanged:: 0.9.4  User preference for timezone is added.
 
 Create a user account.
 
@@ -122,6 +123,8 @@ Create a user account.
      - User password (if not provided, a random password is generated).
    * - ``--lang LANGUAGE``
      - User preference for interface language (two-letter code, ISO 639-1). If not provided or not supported, it falls back to English ('en').
+   * - ``--tz TIMEZONE``
+     - User preference for timezone. If not provided or not supported, it falls back to 'Europe/Paris'.
    * - ``--role [owner|admin|moderator|user]``
      - User role (default: 'user').
 

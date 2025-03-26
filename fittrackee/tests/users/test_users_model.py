@@ -587,6 +587,24 @@ class TestUserRecords(UserModelAssertMixin):
         assert records[0]["workout_id"] == workout_cycling_user_1.short_id
         assert records[0]["workout_date"]
 
+    def test_it_returns_totals_when_workout_has_pauses(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.pauses = timedelta(minutes=5)
+        workout_cycling_user_1.duration = (
+            workout_cycling_user_1.pauses + workout_cycling_user_1.moving  # type: ignore
+        )
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
+        assert serialized_user["total_ascent"] == 0
+        assert serialized_user["total_distance"] == 10
+        assert serialized_user["total_duration"] == str(
+            workout_cycling_user_1.moving
+        )
+
     def test_it_returns_totals_when_user_has_workout_without_ascent(
         self,
         app: Flask,

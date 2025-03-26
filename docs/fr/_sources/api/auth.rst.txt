@@ -28,4 +28,5 @@ Authentication and account
     auth.get_user_suspension,
     auth.appeal_user_suspension,
     auth.get_user_sanction,
-    auth.appeal_user_sanction
+    auth.appeal_user_sanction,
+    auth.get_timezones

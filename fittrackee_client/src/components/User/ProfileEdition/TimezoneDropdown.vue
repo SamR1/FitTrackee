@@ -44,10 +44,11 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, toRefs, watch } from 'vue'
+  import { computed, onBeforeMount, ref, toRefs, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
 
-  import { timeZones } from '@/utils/timezone'
+  import { AUTH_USER_STORE } from '@/store/constants.ts'
+  import { useStore } from '@/use/useStore.ts'
 
   interface Props {
     input: string
@@ -58,14 +59,22 @@
   })
   const { input, disabled } = toRefs(props)
 
+  const store = useStore()
+
   const emit = defineEmits(['updateTimezone'])
 
   const timezone: Ref<string> = ref(input.value)
   const isOpen: Ref<boolean> = ref(false)
   const focusItemIndex: Ref<number> = ref(0)
 
+  let timeZones: ComputedRef<string[]> = computed(
+    () => store.getters[AUTH_USER_STORE.GETTERS.TIMEZONES]
+  )
+
   const filteredTimezones: ComputedRef<string[]> = computed(() =>
-    input.value ? timeZones.filter((t) => matchTimezone(t)) : timeZones
+    input.value
+      ? timeZones.value.filter((t) => matchTimezone(t))
+      : timeZones.value
   )
 
   function matchTimezone(t: string): RegExpMatchArray | null {
@@ -135,6 +144,12 @@
       timezone.value = value
     }
   )
+
+  onBeforeMount(() => {
+    if (timeZones.value.length === 0) {
+      store.dispatch(AUTH_USER_STORE.ACTIONS.GET_TIMEZONES)
+    }
+  })
 </script>
 
 <style lang="scss" scoped>

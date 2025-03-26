@@ -21,7 +21,7 @@
   })
   const { target } = toRefs(props)
 
-  const timer: Ref<number | undefined> = ref()
+  const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
   const errorDisplayed: Ref<boolean> = ref(false)
 
   function displayError() {

@@ -965,7 +965,7 @@ class User(BaseModel):
                 total = tuple(
                     db.session.query(
                         func.sum(Workout.distance),
-                        func.sum(Workout.duration),
+                        func.sum(Workout.moving),
                         func.sum(Workout.ascent),
                     )
                     .filter(Workout.user_id == self.id)

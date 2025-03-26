@@ -201,7 +201,7 @@
   const route = useRoute()
   const store = useStore()
 
-  const { appConfig, appLanguage, errorMessages } = useApp()
+  const { appConfig, appLanguage, displayOptions, errorMessages } = useApp()
   const { authUserSuccess } = useAuthUser()
 
   const formData: Reactive<ILoginRegisterFormData> = reactive({
@@ -272,6 +272,7 @@
         )
       default:
         formData['language'] = appLanguage.value
+        formData['timezone'] = displayOptions.value.timezone
         store.dispatch(AUTH_USER_STORE.ACTIONS.LOGIN_OR_REGISTER, {
           actionType,
           formData,

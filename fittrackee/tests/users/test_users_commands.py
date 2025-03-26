@@ -184,6 +184,76 @@ class TestCliUserCreate:
             in result.output
         )
 
+    def test_it_creates_user_with_default_timezone(
+        self, app: Flask, user_1: User
+    ) -> None:
+        username = random_string()
+        runner = CliRunner()
+
+        result = runner.invoke(
+            cli,
+            ["users", "create", username, "--email", random_email()],
+        )
+
+        user = User.query.filter_by(username=username).one()
+        assert user.timezone == "Europe/Paris"
+        assert (
+            "The user preference for timezone is: Europe/Paris"
+            in result.output
+        )
+
+    def test_it_creates_user_with_provided_timezone(
+        self, app: Flask, user_1: User
+    ) -> None:
+        username = random_string()
+        tz = "America/New_York"
+        runner = CliRunner()
+
+        result = runner.invoke(
+            cli,
+            [
+                "users",
+                "create",
+                username,
+                "--email",
+                random_email(),
+                "--tz",
+                tz,
+            ],
+        )
+
+        user = User.query.filter_by(username=username).one()
+        assert user.timezone == tz
+        assert (
+            f"The user preference for timezone is: {tz}" not in result.output
+        )
+
+    def test_it_creates_user_with_default_timezone_when_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        username = random_string()
+        runner = CliRunner()
+
+        result = runner.invoke(
+            cli,
+            [
+                "users",
+                "create",
+                username,
+                "--email",
+                random_email(),
+                "--tz",
+                "invalid",
+            ],
+        )
+
+        user = User.query.filter_by(username=username).one()
+        assert user.timezone == "Europe/Paris"
+        assert (
+            "The user preference for timezone is: Europe/Paris"
+            in result.output
+        )
+
     def test_it_creates_user_with_provided_role(
         self, app: Flask, user_1: User
     ) -> None:

@@ -26,26 +26,28 @@ def random_string(length=8):
 def register(selenium, user):
     selenium.get(f"{TEST_URL}/register")
     selenium.implicitly_wait(1)
-    username = selenium.find_element(By.ID, "username")
+    user_form = selenium.find_element(By.ID, "user-form")
+    username = user_form.find_element(By.ID, "username")
     username.send_keys(user.get("username"))
-    email = selenium.find_element(By.ID, "email")
+    email = user_form.find_element(By.ID, "email")
     email.send_keys(user.get("email"))
-    password = selenium.find_element(By.ID, "password")
+    password = user_form.find_element(By.ID, "password")
     password.send_keys(user.get("password"))
-    accepted_policy = selenium.find_element(By.ID, "accepted_policy")
+    accepted_policy = user_form.find_element(By.ID, "accepted_policy")
     accepted_policy.click()
-    submit_button = selenium.find_elements(By.TAG_NAME, "button")[-1]
+    submit_button = user_form.find_elements(By.TAG_NAME, "button")[-1]
     submit_button.click()
 
 
 def login(selenium, user):
     selenium.get(f"{TEST_URL}/login")
     selenium.implicitly_wait(1)
-    email = selenium.find_element(By.ID, "email")
+    user_form = selenium.find_element(By.ID, "user-form")
+    email = user_form.find_element(By.ID, "email")
     email.send_keys(user.get("email"))
-    password = selenium.find_element(By.ID, "password")
+    password = user_form.find_element(By.ID, "password")
     password.send_keys(user.get("password"))
-    submit_button = selenium.find_elements(By.TAG_NAME, "button")[-1]
+    submit_button = user_form.find_elements(By.TAG_NAME, "button")[-1]
     submit_button.click()
 
 

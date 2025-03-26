@@ -275,3 +275,20 @@ export interface IAppealPayload {
   objectType: 'comment' | 'workout'
   text: string
 }
+
+export interface TWorkoutsStatistic {
+  ave_speed: number | null
+  count: number
+  max_speed: number | null
+  total_ascent: number | null
+  total_descent: number | null
+  total_distance: number | null
+  total_duration: string | null
+  total_sports: number
+}
+
+export type TWorkoutsStatistics = {
+  [key: string]: TWorkoutsStatistic
+  current_page: TWorkoutsStatistic
+  all: TWorkoutsStatistic
+}
