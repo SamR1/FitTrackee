@@ -239,24 +239,46 @@
                         : ''
                     }}
                   </td>
-                  <td class="text-right">
-                    <span class="cell-heading">
+                  <td
+                    class="text-right"
+                    :class="{
+                      'hide-col': workoutsStats[statsKey].total_sports > 1,
+                    }"
+                  >
+                    <span
+                      class="cell-heading"
+                      v-if="workoutsStats[statsKey].total_sports === 1"
+                    >
                       {{ $t('workouts.AVE_SPEED') }}
                     </span>
                     <Distance
-                      v-if="workoutsStats[statsKey].ave_speed !== null"
+                      v-if="
+                        workoutsStats[statsKey].total_sports === 1 &&
+                        workoutsStats[statsKey].ave_speed !== null
+                      "
                       :distance="workoutsStats[statsKey].ave_speed"
                       unitFrom="km"
                       :speed="true"
                       :useImperialUnits="user.imperial_units"
                     />
                   </td>
-                  <td class="text-right">
-                    <span class="cell-heading">
+                  <td
+                    class="text-right"
+                    :class="{
+                      'hide-col': workoutsStats[statsKey].total_sports > 1,
+                    }"
+                  >
+                    <span
+                      class="cell-heading"
+                      v-if="workoutsStats[statsKey].total_sports === 1"
+                    >
                       {{ $t('workouts.MAX_SPEED') }}
                     </span>
                     <Distance
-                      v-if="workoutsStats[statsKey].max_speed !== null"
+                      v-if="
+                        workoutsStats[statsKey].total_sports === 1 &&
+                        workoutsStats[statsKey].max_speed !== null
+                      "
                       :distance="workoutsStats[statsKey].max_speed"
                       unitFrom="km"
                       :speed="true"

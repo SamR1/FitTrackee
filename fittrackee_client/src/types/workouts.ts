@@ -279,6 +279,7 @@ export interface TWorkoutsStatistic {
   total_descent: number | null
   total_distance: number | null
   total_duration: string | null
+  total_sports: number
 }
 
 export type TWorkoutsStatistics = {
