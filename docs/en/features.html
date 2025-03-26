@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Features - FitTrackee 0.9.3 documentation</title>
+        <title>Features - FitTrackee 0.9.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.9.3
+      <a href="index.html"><div class="brand">FitTrackee 0.9.4
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.9.3
+  <span class="sidebar-brand-text">FitTrackee 0.9.4
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -459,9 +459,9 @@
 <div class="line">Please keep in mind that the server operating team or the moderation team may view content with restricted visibility.</div>
 </div>
 </div>
-<ul class="simple">
-<li><p>Workout can be edited:</p>
 <ul>
+<li><p>Workout can be edited:</p>
+<ul class="simple">
 <li><p>sport</p></li>
 <li><p>title</p></li>
 <li><p>equipment</p></li>
@@ -481,7 +481,7 @@
 <li><p>Workouts list.</p>
 <ul>
 <li><p>The user can filter workouts on:</p>
-<ul>
+<ul class="simple">
 <li><p>date</p></li>
 <li><p>sports (only sports with workouts are displayed in sport dropdown)</p></li>
 <li><p>equipment (only equipments with workouts are displayed in equipment dropdown) (<em>new in 0.8.0</em>)</p></li>
@@ -496,15 +496,35 @@
 </ul>
 </li>
 <li><p>Workouts can be sorted by:</p>
-<ul>
+<ul class="simple">
 <li><p>date</p></li>
 <li><p>distance</p></li>
 <li><p>duration</p></li>
 <li><p>average speed</p></li>
 </ul>
 </li>
+<li><p>Statistics are displayed when more than one workout is displayed (<em>new in 0.9.4</em>):</p>
+<ul class="simple">
+<li><p>total distance</p></li>
+<li><p>total duration</p></li>
+<li><p>average speed (when workouts belong to the same sport)</p></li>
+<li><p>maximum speed (when workouts belong to the same sport)</p></li>
+<li><p>total ascent</p></li>
+<li><p>total descent</p></li>
+</ul>
+<p>When multiple pages are fetched, statistics for all pages are also displayed.</p>
+</li>
 </ul>
 </li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">There is a limit on the number of workouts used to calculate statistics to avoid performance issues. The value can be set in administration.</div>
+<div class="line">If the limit is reached, the number of workouts used is displayed.</div>
+</div>
+</div>
+<ul class="simple">
 <li><p>A user can report a workout that violates instance rules. This will send a notification to moderators and administrators.</p></li>
 </ul>
 </section>
@@ -696,7 +716,7 @@
 <ul class="simple">
 <li><p>A user can create, update and deleted his account.</p></li>
 <li><p>The user must agree to the privacy policy to register. If a more recent policy is available, a message is displayed on the dashboard to review the new version (<em>new in 0.7.13</em>).</p></li>
-<li><p>On registration, the user account is created with selected language in dropdown as user preference (<em>new in 0.6.9</em>).</p></li>
+<li><p>On registration, the user account is created with language if supported (<em>new in 0.6.9</em>) and time zone (<em>new in 0.9.4</em>) detected from browser.</p></li>
 <li><p>After registration, the user account is inactive and an email with confirmation instructions is sent to activate it.
 A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 </ul>
@@ -1224,7 +1244,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=0e439607"></script>
+</div><script src="_static/documentation_options.js?v=c5ca06ca"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

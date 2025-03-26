@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Third-party tools" href="third_party_tools.html" /><link rel="prev" title="Installation" href="installation.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Command line interface - FitTrackee 0.9.3 documentation</title>
+        <title>Command line interface - FitTrackee 0.9.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.9.3
+      <a href="index.html"><div class="brand">FitTrackee 0.9.4
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.9.3
+  <span class="sidebar-brand-text">FitTrackee 0.9.4
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -411,6 +411,9 @@ Commands:
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.9.0: </span>Add option for user role.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.9.4: </span>User preference for timezone is added.</p>
+</div>
 <p>Create a user account.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -443,7 +446,10 @@ Commands:
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--lang</span> <span class="pre">LANGUAGE</span></code></p></td>
 <td><p>User preference for interface language (two-letter code, ISO 639-1). If not provided or not supported, it falls back to English (‘en’).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--role</span> <span class="pre">[owner|admin|moderator|user]</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--tz</span> <span class="pre">TIMEZONE</span></code></p></td>
+<td><p>User preference for timezone. If not provided or not supported, it falls back to ‘Europe/Paris’.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--role</span> <span class="pre">[owner|admin|moderator|user]</span></code></p></td>
 <td><p>User role (default: ‘user’).</p></td>
 </tr>
 </tbody>
@@ -610,7 +616,7 @@ Can be used if redis is not set (no dramatiq workers running).</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=0e439607"></script>
+</div><script src="_static/documentation_options.js?v=c5ca06ca"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

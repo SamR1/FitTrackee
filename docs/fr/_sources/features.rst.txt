@@ -161,6 +161,21 @@ Workouts
     - duration
     - average speed
 
+  - Statistics are displayed when more than one workout is displayed (*new in 0.9.4*):
+
+    - total distance
+    - total duration
+    - average speed (when workouts belong to the same sport)
+    - maximum speed (when workouts belong to the same sport)
+    - total ascent
+    - total descent
+
+    When multiple pages are fetched, statistics for all pages are also displayed.
+
+.. note::
+  | There is a limit on the number of workouts used to calculate statistics to avoid performance issues. The value can be set in administration.
+  | If the limit is reached, the number of workouts used is displayed.
+
 - A user can report a workout that violates instance rules. This will send a notification to moderators and administrators.
 
 Interactions
@@ -300,7 +315,7 @@ Account & preferences
 
 - A user can create, update and deleted his account.
 - The user must agree to the privacy policy to register. If a more recent policy is available, a message is displayed on the dashboard to review the new version (*new in 0.7.13*).
-- On registration, the user account is created with selected language in dropdown as user preference (*new in 0.6.9*).
+- On registration, the user account is created with language if supported (*new in 0.6.9*) and time zone (*new in 0.9.4*) detected from browser.
 - After registration, the user account is inactive and an email with confirmation instructions is sent to activate it.
   A user with an inactive account cannot log in. (*new in 0.6.0*).
 
