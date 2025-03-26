@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Configuration" href="configuration.html" /><link rel="prev" title="API documentation" href="index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Authentication and account - FitTrackee 0.9.3 documentation</title>
+        <title>Authentication and account - FitTrackee 0.9.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">FitTrackee 0.9.3
+      <a href="../index.html"><div class="brand">FitTrackee 0.9.4
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.9.3
+  <span class="sidebar-brand-text">FitTrackee 0.9.4
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -332,6 +332,8 @@ to activate it.</p>
 <li><p><strong>lang</strong> (<em>string</em>) – user language preferences (if not provided or invalid,
 fallback to ‘en’ (english))</p></li>
 <li><p><strong>accepted_policy</strong> (<em>boolean</em>) – <code class="docutils literal notranslate"><span class="pre">true</span></code> if user accepted privacy policy</p></li>
+<li><p><strong>timezone</strong> (<em>string</em>) – user timezone (if not provided or invalid,
+fallback to ‘Europe/Paris’)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Status Codes<span class="colon">:</span></dt>
@@ -2191,6 +2193,46 @@ If a valid token is provided, it will be blacklisted.</p>
 </dl>
 </dd></dl>
 
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-auth-timezones">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/auth/timezones</span></span><a class="headerlink" href="#get--api-auth-timezones" title="Link to this definition">¶</a></dt>
+<dd><p>Returns list of available time zones</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/auth/timezones</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;timezones&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;Africa/Abidjan&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;Africa/Accra&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;Africa/Algiers&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;Africa/Bissau&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;Africa/Cairo&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;Pacific/Tahiti&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;Pacific/Tarawa&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;Pacific/Tongatapu&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;Pacific/Wake&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;Pacific/Wallis&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
         </article>
@@ -2246,7 +2288,7 @@ If a valid token is provided, it will be blacklisted.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=0e439607"></script>
+</div><script src="../_static/documentation_options.js?v=c5ca06ca"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>

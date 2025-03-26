@@ -165,12 +165,12 @@ Workouts
 
     - total distance
     - total duration
-    - average speed
-    - maximum speed
+    - average speed (when workouts belong to the same sport)
+    - maximum speed (when workouts belong to the same sport)
     - total ascent
     - total descent
 
-    When multiple pages are fetched, statistics for all workouts are also displayed.
+    When multiple pages are fetched, statistics for all pages are also displayed.
 
 .. note::
   | There is a limit on the number of workouts used to calculate statistics to avoid performance issues. The value can be set in administration.
