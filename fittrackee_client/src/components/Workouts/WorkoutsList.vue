@@ -2,13 +2,24 @@
   <div class="workouts-list">
     <div class="box" :class="{ 'empty-table': workouts.length === 0 }">
       <div class="total">
-        <span class="total-label">
-          {{ $t('common.TOTAL').toLowerCase() }}:
-        </span>
-        <span>
-          {{ pagination.total || 0 }}
-          {{ $t('workouts.WORKOUT', pagination.total || 0) }}
-        </span>
+        <div>
+          <span class="total-label">
+            {{ $t('common.TOTAL').toLowerCase() }}:
+          </span>
+          <span>
+            {{ pagination.total || 0 }}
+            {{ $t('workouts.WORKOUT', pagination.total || 0) }}
+          </span>
+        </div>
+        <button
+          v-if="pagination.total > 1"
+          class="scroll-button"
+          @click="scrollToStatistics()"
+          :title="$t('common.SCROLL_DOWN')"
+          id="scroll-down-button"
+        >
+          <i class="fa fa-chevron-down" aria-hidden="true"></i>
+        </button>
       </div>
       <FilterSelects
         :sort="sortList"
@@ -168,7 +179,7 @@
             </tr>
             <template v-if="pagination.total > 1">
               <template v-for="statsKey in statsKeys" :key="statsKey">
-                <tr class="stats-label">
+                <tr class="stats-label" :id="`stats_${statsKey}`">
                   <td
                     colspan="9"
                     v-if="
@@ -345,6 +356,7 @@
   let query: TWorkoutsPayload = getWorkoutsQuery(route.query)
 
   const hoverWorkoutId: Ref<string | null> = ref(null)
+  const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
 
   const workouts: ComputedRef<IWorkout[]> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS]
@@ -412,6 +424,16 @@
   function onHover(workoutId: string | null) {
     hoverWorkoutId.value = workoutId
   }
+  function scrollToStatistics() {
+    const stats = document.getElementById('stats_all')
+    if (stats) {
+      stats.scrollIntoView({ behavior: 'smooth' })
+      timer.value = setTimeout(() => {
+        const scrollUpBtn = document.getElementById('scroll-up-button')
+        scrollUpBtn?.focus()
+      }, 300)
+    }
+  }
 
   watch(
     () => route.query,
@@ -426,6 +448,9 @@
     store.dispatch(EQUIPMENTS_STORE.ACTIONS.GET_EQUIPMENTS)
   })
   onUnmounted(() => {
+    if (timer.value) {
+      clearTimeout(timer.value)
+    }
     store.commit(WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS, [])
     store.commit(
       WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_STATISTICS,
@@ -457,9 +482,14 @@
       .total {
         display: flex;
         gap: $default-padding * 0.5;
+        justify-content: space-between;
+        align-items: center;
         .total-label {
           font-weight: bold;
         }
+      }
+      .scroll-button {
+        display: block;
       }
 
       .top-pagination {

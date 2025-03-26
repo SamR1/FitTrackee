@@ -433,6 +433,17 @@ button {
   }
 }
 
+.scroll-button {
+  background-color: var(--scroll-button-bg-color);
+  border: none;
+  border-radius: $border-radius;
+  box-shadow: 1px 1px 3px var(--app-shadow-color);
+  display: none;
+  padding: $default-padding * 0.3 $default-padding;
+  &:hover {
+    color: var(--app-color);
+  }
+}
 .profile-buttons {
   display: flex;
   align-items: baseline;
