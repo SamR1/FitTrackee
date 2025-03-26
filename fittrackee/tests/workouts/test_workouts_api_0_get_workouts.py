@@ -1528,11 +1528,13 @@ class TestGetWorkoutsWithEquipments(WorkoutApiTestCaseMixin):
 
 
 class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
-    def test_it_gets_workouts_with_stats_when_no_workouts(
+    def test_it_gets_workouts_with_stats_when_no_workouts_for_user(
         self,
         app: Flask,
         user_1: User,
+        user_2: User,
         sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
