@@ -161,6 +161,21 @@ Workouts
     - duration
     - average speed
 
+  - Statistics are displayed when more than one workout is displayed (*new in 0.9.4*):
+
+    - total distance
+    - total duration
+    - average speed
+    - maximum speed
+    - total ascent
+    - total descent
+
+    When multiple pages are fetched, statistics for all workouts are also displayed.
+
+.. note::
+  | There is a limit on the number of workouts used to calculate statistics to avoid performance issues. The value can be set in administration.
+  | If the limit is reached, the number of workouts used is displayed.
+
 - A user can report a workout that violates instance rules. This will send a notification to moderators and administrators.
 
 Interactions
