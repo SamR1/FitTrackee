@@ -4,17 +4,7 @@ from flask import current_app
 
 from fittrackee.comments.models import Comment
 from fittrackee.dates import get_date_string_for_user
-from fittrackee.emails.tasks import (
-    appeal_rejected_email,
-    comment_suspension_email,
-    comment_unsuspension_email,
-    user_suspension_email,
-    user_unsuspension_email,
-    user_warning_email,
-    user_warning_lifting_email,
-    workout_suspension_email,
-    workout_unsuspension_email,
-)
+from fittrackee.emails.tasks import send_email
 from fittrackee.users.models import User
 from fittrackee.users.utils.language import get_language
 from fittrackee.workouts.models import Workout
@@ -107,7 +97,7 @@ class ReportEmailService:
             report, reason
         )
         email_data["appeal_url"] = f"{fittrackee_url}/profile/suspension"
-        user_suspension_email.send(user_data, email_data)
+        send_email.send(user_data, email_data, template="user_suspension")
 
     def _send_user_unsuspension_email(
         self,
@@ -118,7 +108,7 @@ class ReportEmailService:
     ) -> None:
         user_data, email_data, _ = self._get_email_data(report, reason)
         email_data["without_user_action"] = True
-        user_unsuspension_email.send(user_data, email_data)
+        send_email.send(user_data, email_data, template="user_unsuspension")
 
     def _send_user_warning_email(
         self,
@@ -151,7 +141,7 @@ class ReportEmailService:
             f"{fittrackee_url}/profile/moderation/"
             f"sanctions/{report_action.short_id}"
         )
-        user_warning_email.send(user_data, email_data)
+        send_email.send(user_data, email_data, template="user_warning")
 
     def _send_user_warning_lifting_email(
         self,
@@ -181,7 +171,7 @@ class ReportEmailService:
                 fittrackee_url,
             )
         email_data["without_user_action"] = True
-        user_warning_lifting_email.send(user_data, email_data)
+        send_email.send(user_data, email_data, template="user_warning_lifting")
 
     def _send_comment_suspension_email(
         self,
@@ -199,7 +189,7 @@ class ReportEmailService:
             report.reported_user,
             fittrackee_url,
         )
-        comment_suspension_email.send(user_data, email_data)
+        send_email.send(user_data, email_data, template="comment_suspension")
 
     def _send_comment_unsuspension_email(
         self,
@@ -218,7 +208,7 @@ class ReportEmailService:
             fittrackee_url,
         )
         email_data["without_user_action"] = True
-        comment_unsuspension_email.send(user_data, email_data)
+        send_email.send(user_data, email_data, template="comment_unsuspension")
 
     def _send_workout_suspension_email(
         self,
@@ -236,7 +226,7 @@ class ReportEmailService:
             report.reported_user,
             fittrackee_url,
         )
-        workout_suspension_email.send(user_data, email_data)
+        send_email.send(user_data, email_data, template="workout_suspension")
 
     def _send_workout_unsuspension_email(
         self,
@@ -255,7 +245,7 @@ class ReportEmailService:
             fittrackee_url,
         )
         email_data["without_user_action"] = True
-        workout_unsuspension_email.send(user_data, email_data)
+        send_email.send(user_data, email_data, template="workout_unsuspension")
 
     def _send_appeal_rejected_email(
         self,
@@ -287,7 +277,7 @@ class ReportEmailService:
             )
         email_data["without_user_action"] = True
         email_data["action_type"] = report_action.action_type
-        appeal_rejected_email.send(user_data, email_data)
+        send_email.send(user_data, email_data, template="appeal_rejected")
 
     def send_report_action_email(
         self,
