@@ -7,11 +7,7 @@ from sqlalchemy import and_, asc, desc, exc, func, nullslast, or_
 
 from fittrackee import appLog, db, limiter
 from fittrackee.dates import get_readable_duration
-from fittrackee.emails.tasks import (
-    email_updated_to_new_address,
-    password_change_email,
-    reset_password_email,
-)
+from fittrackee.emails.tasks import send_email
 from fittrackee.equipments.models import Equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
@@ -716,19 +712,20 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
                     "language": user_language,
                     "email": user.email,
                 }
-                password_change_email.send(
+                send_email.send(
                     user_data,
-                    {
+                    email_data={
                         "username": user.username,
                         "fittrackee_url": fittrackee_url,
                     },
+                    template="password_change",
                 )
                 password_reset_token = user.encode_password_reset_token(
                     user.id
                 )
-                reset_password_email.send(
+                send_email.send(
                     user_data,
-                    {
+                    email_data={
                         "expiration_delay": get_readable_duration(
                             current_app.config[
                                 "PASSWORD_TOKEN_EXPIRATION_SECONDS"
@@ -742,6 +739,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
                         ),
                         "fittrackee_url": fittrackee_url,
                     },
+                    template="password_reset_request",
                 )
 
             if new_email:
@@ -757,7 +755,9 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
                         f"?token={user.confirmation_token}"
                     ),
                 }
-                email_updated_to_new_address.send(user_data, email_data)
+                send_email.send(
+                    user_data, email_data, template="email_update_to_new_email"
+                )
 
         return {
             "status": "success",

@@ -8,7 +8,7 @@ from zipfile import ZipFile
 from flask import current_app
 
 from fittrackee import appLog, db
-from fittrackee.emails.tasks import data_export_email
+from fittrackee.emails.tasks import send_email
 from fittrackee.files import get_absolute_file_path
 
 from .models import User, UserDataExport
@@ -170,7 +170,9 @@ def export_user_data(export_request_id: int) -> None:
                     "language": get_language(user.language),
                     "email": user.email,
                 }
-                data_export_email.send(user_data, email_data)
+                send_email.send(
+                    user_data, email_data, template="data_export_ready"
+                )
         else:
             db.session.commit()
     except Exception as e:
