@@ -79,7 +79,7 @@ body:
         - "0.9.3"
         - "0.9.4"
         - "Git main branch"
-      default: 3
+      default: 5
     validations:
       required: true
   - type: dropdown
