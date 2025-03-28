@@ -1,19 +1,21 @@
 import os
 import secrets
+import tempfile
 import zipfile
-from dataclasses import dataclass
+from abc import abstractmethod
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from io import BytesIO
-from typing import IO, TYPE_CHECKING, Dict, List, Optional, Type, Union
+from typing import IO, TYPE_CHECKING, Dict, List, Optional, Tuple, Type, Union
 
 from flask import current_app
 
+from fittrackee import db
 from fittrackee.equipments.exceptions import InvalidEquipmentsException
+from fittrackee.equipments.models import Equipment
 from fittrackee.files import get_absolute_file_path
-from fittrackee.visibility_levels import (
-    VisibilityLevel,
-    get_calculated_visibility,
-)
+from fittrackee.users.models import User, UserTask
+from fittrackee.visibility_levels import get_calculated_visibility
 from fittrackee.workouts.models import (
     DESCRIPTION_MAX_CHARACTERS,
     NOTES_MAX_CHARACTERS,
@@ -26,12 +28,10 @@ from .workout_from_file import WorkoutGpxCreationService
 if TYPE_CHECKING:
     from werkzeug.datastructures import FileStorage
 
-    from fittrackee.equipments.models import Equipment
-    from fittrackee.users.models import User
+    from fittrackee.visibility_levels import VisibilityLevel
     from fittrackee.workouts.models import Workout
 
     from .workout_from_file import BaseWorkoutWithSegmentsCreationService
-
 
 WORKOUT_FROM_FILE_SERVICES: Dict[
     str, Type["BaseWorkoutWithSegmentsCreationService"]
@@ -39,21 +39,22 @@ WORKOUT_FROM_FILE_SERVICES: Dict[
     "gpx": WorkoutGpxCreationService,
 }
 NO_FILE_ERROR_MESSAGE = "no workout file provided"
+MAX_ARCHIVES_FOR_SYNC = 10
 
 
 @dataclass
 class WorkoutsData:
     sport_id: int
-    analysis_visibility: Optional[VisibilityLevel] = None
+    analysis_visibility: Optional["VisibilityLevel"] = None
     description: Optional[str] = None
     equipment_ids: Optional[List[str]] = None
-    map_visibility: Optional[VisibilityLevel] = None
+    map_visibility: Optional["VisibilityLevel"] = None
     notes: Optional[str] = None
     title: Optional[str] = None
-    workout_visibility: Optional[VisibilityLevel] = None
+    workout_visibility: Optional["VisibilityLevel"] = None
 
 
-class WorkoutsFromFileCreationService(BaseWorkoutService):
+class AbstractWorkoutsCreationService(BaseWorkoutService):
     def __init__(
         self,
         auth_user: "User",
@@ -67,6 +68,10 @@ class WorkoutsFromFileCreationService(BaseWorkoutService):
         )
         self.file: Optional["FileStorage"] = file
         self.workouts_data = WorkoutsData(**workouts_data)
+
+    @abstractmethod
+    def process(self) -> Tuple[List["Workout"], bool]:
+        pass
 
     def _get_user_path(
         self,
@@ -226,11 +231,61 @@ class WorkoutsFromFileCreationService(BaseWorkoutService):
             raise WorkoutException(
                 "error", "error when generating map image"
             ) from e
+        db.session.commit()
         return new_workout
 
     @staticmethod
     def _get_extension(filename: str) -> str:
         return filename.rsplit(".", 1)[-1].lower()
+
+    def process_archive_content(
+        self,
+        archive_content: Union[BytesIO, IO[bytes]],
+        files_to_process: List[str],
+        equipments: Union[List["Equipment"], None],
+    ) -> List["Workout"]:
+        if not files_to_process:
+            raise WorkoutFileException(
+                "error", "No files from archive to process"
+            )
+
+        new_workouts = []
+        try:
+            with zipfile.ZipFile(archive_content, "r") as zip_ref:
+                for file in files_to_process:
+                    extension = self._get_extension(file)
+                    file_content = zip_ref.open(file)
+                    new_workouts.append(
+                        self.create_workout_from_file(
+                            extension, equipments, file_content
+                        )
+                    )
+        except WorkoutFileException as e:
+            raise e
+        except Exception as e:
+            for workout in new_workouts:
+                if workout.gpx and os.path.exists(
+                    get_absolute_file_path(workout.gpx)
+                ):
+                    os.remove(get_absolute_file_path(workout.gpx))
+                if workout.map and os.path.exists(
+                    get_absolute_file_path(workout.map)
+                ):
+                    os.remove(get_absolute_file_path(workout.map))
+            raise WorkoutException(
+                "error", "error when processing archive"
+            ) from e
+        return new_workouts
+
+
+class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
+    def __init__(
+        self,
+        auth_user: "User",
+        workouts_data: Dict,
+        file: Optional["FileStorage"] = None,
+    ):
+        super().__init__(auth_user, workouts_data, file)
 
     def _is_workout_file(self, filename: str) -> bool:
         extension = self._get_extension(filename)
@@ -292,43 +347,60 @@ class WorkoutsFromFileCreationService(BaseWorkoutService):
             return BytesIO(self.file.getvalue())
         return self.file.stream
 
+    def add_workouts_import_task(
+        self,
+        files_to_process: List[str],
+        equipments: Union[List["Equipment"], None],
+    ) -> None:
+        from fittrackee.workouts.tasks import import_workout_archive
+
+        if self.file is None:
+            raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
+        if not files_to_process:
+            raise WorkoutFileException(
+                "error", "No files from archive to process"
+            )
+
+        _, path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+        self.file.stream.seek(0)
+        self.file.save(path)
+
+        import_task = UserTask(
+            user_id=self.auth_user.id,
+            task_type="workouts_archive_import",
+            data={
+                "workouts_data": asdict(self.workouts_data),
+                "files_to_process": files_to_process,
+                "equipment_ids": (
+                    None
+                    if equipments is None
+                    else [equipment.short_id for equipment in equipments]
+                ),
+            },
+            file_path=path,
+        )
+        db.session.add(import_task)
+        db.session.commit()
+
+        import_workout_archive.send(task_id=import_task.id)
+
     def process_zip_archive(
         self, equipments: Union[List["Equipment"], None]
-    ) -> List["Workout"]:
+    ) -> Tuple[List["Workout"], bool]:
         if not self.file:
             raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
         files_to_process = self.get_files_from_archive()
-        new_workouts = []
-        archive_content = self._get_archive_content()
+        if len(files_to_process) > MAX_ARCHIVES_FOR_SYNC:
+            self.add_workouts_import_task(files_to_process, equipments)
+            return [], True
 
-        try:
-            with zipfile.ZipFile(archive_content, "r") as zip_ref:
-                for file in files_to_process:
-                    extension = self._get_extension(file)
-                    file_content = zip_ref.open(file)
-                    new_workouts.append(
-                        self.create_workout_from_file(
-                            extension, equipments, file_content
-                        )
-                    )
-        except WorkoutFileException as e:
-            raise e
-        except Exception as e:
-            for workout in new_workouts:
-                if workout.gpx and os.path.exists(
-                    get_absolute_file_path(workout.gpx)
-                ):
-                    os.remove(get_absolute_file_path(workout.gpx))
-                if workout.map and os.path.exists(
-                    get_absolute_file_path(workout.map)
-                ):
-                    os.remove(get_absolute_file_path(workout.map))
-            raise WorkoutException(
-                "error", "error when processing archive"
-            ) from e
-        return new_workouts
+        return self.process_archive_content(
+            archive_content=self._get_archive_content(),
+            files_to_process=files_to_process,
+            equipments=equipments,
+        ), False
 
-    def process(self) -> List["Workout"]:
+    def process(self) -> Tuple[List["Workout"], bool]:
         if self.file is None:
             raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
         if self.file.filename is None:
@@ -343,11 +415,46 @@ class WorkoutsFromFileCreationService(BaseWorkoutService):
 
         try:
             if extension == "zip":
-                return self.process_zip_archive(equipments)
+                workouts, is_async = self.process_zip_archive(equipments)
+                return workouts, is_async
             else:
                 new_workout = self.create_workout_from_file(
                     extension, equipments
                 )
-                return [new_workout]
+                return [new_workout], False
         except InvalidEquipmentsException as e:
             raise WorkoutException("error", str(e)) from e
+
+
+class WorkoutsFromArchiveCreationAsyncService(AbstractWorkoutsCreationService):
+    def __init__(
+        self,
+        task_id: int,
+    ) -> None:
+        import_task = UserTask.query.filter_by(id=task_id).first()
+        if not import_task:
+            raise WorkoutException("error", "no import task found")
+        auth_user = User.query.filter_by(id=import_task.user_id).one()
+        import_data = import_task.data
+        super().__init__(auth_user, import_data["workouts_data"], None)
+        self.file_path = import_task.file_path
+        self.files_to_process = import_data["files_to_process"]
+        self.equipment_ids = import_data["equipment_ids"]
+
+    def process(self) -> Tuple[List["Workout"], bool]:
+        if self.equipment_ids is None:
+            equipments = None
+        elif not self.equipment_ids:
+            equipments = []
+        else:
+            equipments = Equipment.query.filter(
+                Equipment.id.in_(self.equipment_ids)
+            ).all()
+
+        with open(self.file_path, "rb") as zip_file:
+            workouts = self.process_archive_content(
+                archive_content=zip_file,
+                files_to_process=self.files_to_process,
+                equipments=equipments,
+            )
+        return workouts, True
