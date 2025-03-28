@@ -18,7 +18,7 @@
     "NO_CONTACT_EMAIL": "无联系邮箱",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "上传文件最大大小（以 Mb 计）",
     "STATS_WORKOUTS_LIMIT_HELP": "如果为 0，则锻炼次数无限制。",
-    "STATS_WORKOUTS_LIMIT_LABEL": "运动统计的最大锻炼次数",
+    "STATS_WORKOUTS_LIMIT_LABEL": "统计的最大锻炼次数",
     "TITLE": "应用配置",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "ZIP 归档最大大小（以 Mb 计）"
   },
