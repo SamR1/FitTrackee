@@ -26,7 +26,7 @@ def upgrade():
         sa.Column("updated_at", sa.DateTime(), nullable=True),
         sa.Column(
             "task_type",
-            sa.Enum("user_data_export", name="task_types"),
+            sa.Enum("user_data_export", "workouts_archive_import", name="task_types"),
             nullable=False,
         ),
         sa.Column("progress", sa.Integer(), nullable=False),
