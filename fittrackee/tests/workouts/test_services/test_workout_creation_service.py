@@ -237,7 +237,7 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
             },
         )
 
-        [new_workout] = service.process()
+        [new_workout], _ = service.process()
         db.session.commit()
 
         assert new_workout == Workout.query.one()

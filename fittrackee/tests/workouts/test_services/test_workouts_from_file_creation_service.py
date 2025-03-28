@@ -1,4 +1,6 @@
 import os
+import tempfile
+import zipfile
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from typing import TYPE_CHECKING, Dict, List, Optional
@@ -15,7 +17,7 @@ from fittrackee.equipments.exceptions import (
 )
 from fittrackee.files import get_absolute_file_path
 from fittrackee.tests.mixins import RandomMixin
-from fittrackee.users.models import UserSportPreferenceEquipment
+from fittrackee.users.models import UserSportPreferenceEquipment, UserTask
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import (
     WorkoutException,
@@ -39,9 +41,12 @@ from fittrackee.workouts.services.workouts_from_file_creation_service import (
 if TYPE_CHECKING:
     from flask import Flask
 
-    from fittrackee.equipments.models import Equipment
+    from fittrackee.equipments.models import Equipment, EquipmentType
     from fittrackee.users.models import User, UserSportPreference
     from fittrackee.workouts.models import Sport
+
+# files from gpx_test.zip
+TEST_FILES_LIST = ["test_1.gpx", "test_2.gpx", "test_3.gpx"]
 
 
 class TestWorkoutsFromFileCreationServiceInstantiation:
@@ -873,7 +878,7 @@ class TestWorkoutsFromFileCreationServiceGetFilesFromArchive(
 
         files_to_process = service.get_files_from_archive()
 
-        assert files_to_process == ["test_1.gpx", "test_2.gpx", "test_3.gpx"]
+        assert files_to_process == TEST_FILES_LIST
 
     def test_it_returns_files_list_when_archive_contains_folder(
         self,
@@ -894,7 +899,339 @@ class TestWorkoutsFromFileCreationServiceGetFilesFromArchive(
         ]
 
 
-class TestWorkoutsFromFileCreationServiceProcessArchiveFile(
+class TestWorkoutsFromFileCreationServiceProcessArchiveContent(
+    WorkoutsFromFileCreationServiceArchiveTestCase
+):
+    def test_it_raises_error_when_files_to_process_is_empty_list(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+        file_path = os.path.join(
+            app.root_path, "tests/files/gpx_test_no_gpx.zip"
+        )
+        with open(file_path, "rb") as zip_file:
+            archive_file_storage = FileStorage(
+                filename="workouts.zip", stream=BytesIO(zip_file.read())
+            )
+
+        with pytest.raises(
+            WorkoutFileException, match="No files from archive to process"
+        ):
+            service.process_archive_content(
+                archive_content=archive_file_storage.stream,
+                files_to_process=[],
+                equipments=None,
+            )
+
+    def test_it_raises_error_when_file_extension_is_invalid(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+        file_path = os.path.join(
+            app.root_path, "tests/files/gpx_test_no_gpx.zip"
+        )
+        with open(file_path, "rb") as zip_file:
+            archive_file_storage = FileStorage(
+                filename="workouts.zip", stream=BytesIO(zip_file.read())
+            )
+
+        with pytest.raises(
+            WorkoutException, match="error when processing archive"
+        ):
+            service.process_archive_content(
+                archive_content=archive_file_storage.stream,
+                files_to_process=["invalid.txt"],
+                equipments=None,
+            )
+
+    def test_it_creates_workouts(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+        file_path = os.path.join(app.root_path, "tests/files/gpx_test.zip")
+        with open(file_path, "rb") as zip_file:
+            archive_file_storage = FileStorage(
+                filename="workouts.zip", stream=BytesIO(zip_file.read())
+            )
+
+        service.process_archive_content(
+            archive_content=archive_file_storage.stream,
+            files_to_process=["test_1.gpx", "test_2.gpx"],
+            equipments=None,
+        )
+        db.session.commit()
+
+        workouts = Workout.query.all()
+        assert len(workouts) == 2
+        assert workouts[0].sport_id == sport_1_cycling.id
+        assert workouts[1].sport_id == sport_1_cycling.id
+        assert WorkoutSegment.query.count() == 2
+
+    def test_it_creates_workouts_with_equipments(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        equipment_type_1_shoe: "EquipmentType",
+        equipment_shoes_user_1: "Equipment",
+    ) -> None:
+        equipments = [equipment_shoes_user_1]
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+        file_path = os.path.join(app.root_path, "tests/files/gpx_test.zip")
+        with open(file_path, "rb") as zip_file:
+            archive_file_storage = FileStorage(
+                filename="workouts.zip", stream=BytesIO(zip_file.read())
+            )
+
+        service.process_archive_content(
+            archive_content=archive_file_storage.stream,
+            files_to_process=["test_1.gpx", "test_2.gpx"],
+            equipments=equipments,
+        )
+        db.session.commit()
+
+        workouts = Workout.query.all()
+        assert len(workouts) == 2
+        for n in range(2):
+            assert workouts[n].sport_id == sport_1_cycling.id
+            assert workouts[n].equipments == equipments
+
+
+class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
+    WorkoutsFromFileCreationServiceArchiveTestCase
+):
+    def test_it_raises_error_when_no_file_provided(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+
+        with pytest.raises(WorkoutException, match="no workout file provided"):
+            service.add_workouts_import_task(
+                files_to_process=TEST_FILES_LIST,
+                equipments=None,
+            )
+
+    def test_it_raises_error_when_files_to_process_is_empty_list(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        service = self.get_service(
+            app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
+        )
+
+        with pytest.raises(
+            WorkoutFileException, match="No files from archive to process"
+        ):
+            service.add_workouts_import_task(
+                files_to_process=[],
+                equipments=None,
+            )
+
+    def test_it_creates_task_with_minimal_data(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        service = self.get_service(
+            app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
+        )
+        fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+
+        with (
+            patch.object(
+                tempfile, "mkstemp", return_value=(fd, temp_file_path)
+            ),
+            patch("fittrackee.workouts.tasks.import_workout_archive"),
+        ):
+            service.add_workouts_import_task(
+                files_to_process=TEST_FILES_LIST,
+                equipments=None,
+            )
+
+        import_task = UserTask.query.filter_by(user_id=user_1.id).one()
+        assert import_task.data == {
+            "workouts_data": {
+                "sport_id": sport_1_cycling.id,
+                "analysis_visibility": None,
+                "description": None,
+                "equipment_ids": None,
+                "map_visibility": None,
+                "notes": None,
+                "title": None,
+                "workout_visibility": None,
+            },
+            "files_to_process": TEST_FILES_LIST,
+            "equipment_ids": None,
+        }
+        assert import_task.errored is False
+        assert import_task.errors == {}
+        assert import_task.file_path == temp_file_path
+        assert import_task.file_size is None
+        assert import_task.progress == 0
+        assert import_task.task_type == "workouts_archive_import"
+        assert import_task.user_id == user_1.id
+
+        # file cleanup
+        os.close(fd)
+        os.remove(temp_file_path)
+
+    def test_it_creates_task_with_all_data(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        equipment_type_1_shoe: "EquipmentType",
+        equipment_bike_user_1: "Equipment",
+    ) -> None:
+        workouts_data = {
+            "analysis_visibility": VisibilityLevel.FOLLOWERS,
+            "description": "some description",
+            "equipment_ids": [equipment_bike_user_1.short_id],
+            "map_visibility": VisibilityLevel.PRIVATE,
+            "notes": "some notes",
+            "title": "some title",
+            "workout_visibility": VisibilityLevel.PUBLIC,
+        }
+        service = self.get_service(
+            app,
+            user_1,
+            sport_1_cycling,
+            "tests/files/gpx_test.zip",
+            workouts_data,
+        )
+        fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+
+        with (
+            patch.object(
+                tempfile, "mkstemp", return_value=(fd, temp_file_path)
+            ),
+            patch("fittrackee.workouts.tasks.import_workout_archive"),
+        ):
+            service.add_workouts_import_task(
+                files_to_process=TEST_FILES_LIST,
+                equipments=[equipment_bike_user_1],
+            )
+
+        import_task = UserTask.query.filter_by(user_id=user_1.id).one()
+        assert import_task.data == {
+            "workouts_data": {
+                "sport_id": sport_1_cycling.id,
+                **workouts_data,
+            },
+            "files_to_process": TEST_FILES_LIST,
+            "equipment_ids": [equipment_bike_user_1.short_id],
+        }
+        assert import_task.errored is False
+        assert import_task.errors == {}
+        assert import_task.file_path == temp_file_path
+        assert import_task.file_size is None
+        assert import_task.progress == 0
+        assert import_task.task_type == "workouts_archive_import"
+        assert import_task.user_id == user_1.id
+
+        # file cleanup
+        os.close(fd)
+        os.remove(temp_file_path)
+
+    def test_it_calls_import_workout_archive_with_equipments(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        service = self.get_service(
+            app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
+        )
+        fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+
+        with (
+            patch.object(
+                tempfile, "mkstemp", return_value=(fd, temp_file_path)
+            ),
+            patch(
+                "fittrackee.workouts.tasks.import_workout_archive"
+            ) as import_workout_archive_mock,
+        ):
+            service.add_workouts_import_task(
+                files_to_process=TEST_FILES_LIST,
+                equipments=None,
+            )
+
+        import_task = UserTask.query.filter_by(user_id=user_1.id).one()
+        import_workout_archive_mock.send.assert_called_once_with(
+            task_id=import_task.id
+        )
+
+        # file cleanup
+        os.close(fd)
+        os.remove(temp_file_path)
+
+    def test_it_store_archive_content_in_temporary_file(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        equipment_type_1_shoe: "EquipmentType",
+        equipment_shoes_user_1: "Equipment",
+    ) -> None:
+        service = self.get_service(
+            app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
+        )
+        fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+
+        with (
+            patch.object(
+                tempfile, "mkstemp", return_value=(fd, temp_file_path)
+            ),
+            patch("fittrackee.workouts.tasks.import_workout_archive"),
+        ):
+            service.add_workouts_import_task(
+                files_to_process=TEST_FILES_LIST,
+                equipments=[equipment_shoes_user_1],
+            )
+
+        with zipfile.ZipFile(temp_file_path, "r") as zip_ref:
+            assert {file.filename for file in zip_ref.infolist()} == {
+                *TEST_FILES_LIST,
+                "fichier.doc",
+            }
+
+        # file cleanup
+        os.close(fd)
+        os.remove(temp_file_path)
+
+
+class TestWorkoutsFromFileCreationServiceProcessZipArchive(
     WorkoutsFromFileCreationServiceArchiveTestCase
 ):
     def test_it_raises_error_when_no_file_provided(
@@ -928,25 +1265,36 @@ class TestWorkoutsFromFileCreationServiceProcessArchiveFile(
         ):
             service.process_zip_archive(equipments=None)
 
-    def test_it_creates_workouts(
+    def test_it_calls_process_archive_content(
         self,
         app: "Flask",
         user_1: "User",
         sport_1_cycling: "Sport",
+        equipment_type_1_shoe: "EquipmentType",
+        equipment_shoes_user_1: "Equipment",
     ) -> None:
         service = self.get_service(
             app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
         )
 
-        service.process_zip_archive(equipments=None)
-        db.session.commit()
+        with (
+            patch.object(
+                WorkoutsFromFileCreationService, "process_archive_content"
+            ) as process_archive_content_mock,
+            patch.object(
+                WorkoutsFromFileCreationService, "add_workouts_import_task"
+            ) as add_workouts_import_task_mock,
+        ):
+            service.process_zip_archive(equipments=[equipment_shoes_user_1])
 
-        workouts = Workout.query.all()
-        assert len(workouts) == 3
-        assert workouts[0].sport_id == sport_1_cycling.id
-        assert WorkoutSegment.query.count() == 3
+        process_archive_content_mock.assert_called_once_with(
+            archive_content=service._get_archive_content(),
+            files_to_process=TEST_FILES_LIST,
+            equipments=[equipment_shoes_user_1],
+        )
+        add_workouts_import_task_mock.assert_not_called()
 
-    def test_it_creates_workouts_when_file_are_in_folder(
+    def test_it_calls_process_archive_content_when_file_are_in_folder(
         self,
         app: "Flask",
         user_1: "User",
@@ -956,13 +1304,55 @@ class TestWorkoutsFromFileCreationServiceProcessArchiveFile(
             app, user_1, sport_1_cycling, "tests/files/gpx_test_folder.zip"
         )
 
-        service.process_zip_archive(equipments=None)
-        db.session.commit()
+        with patch.object(
+            WorkoutsFromFileCreationService, "process_archive_content"
+        ) as process_archive_content_mock:
+            service.process_zip_archive(equipments=None)
 
-        workouts = Workout.query.all()
-        assert len(workouts) == 3
-        assert workouts[0].sport_id == sport_1_cycling.id
-        assert WorkoutSegment.query.count() == 3
+        process_archive_content_mock.assert_called_once_with(
+            archive_content=service._get_archive_content(),
+            files_to_process=[
+                "folder/test_1.gpx",
+                "folder/test_2.gpx",
+                "folder/test_3.gpx",
+            ],
+            equipments=None,
+        )
+
+    def test_it_calls_add_workouts_import_task_when_files_exceeds_limit(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        equipment_type_1_shoe: "EquipmentType",
+        equipment_shoes_user_1: "Equipment",
+    ) -> None:
+        equipments = [equipment_shoes_user_1]
+        service = self.get_service(
+            app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
+        )
+
+        with (
+            patch(
+                (
+                    "fittrackee.workouts.services.workouts_from_file_"
+                    "creation_service.MAX_ARCHIVES_FOR_SYNC"
+                ),
+                2,
+            ),
+            patch.object(
+                WorkoutsFromFileCreationService, "process_archive_content"
+            ) as process_archive_content_mock,
+            patch.object(
+                WorkoutsFromFileCreationService, "add_workouts_import_task"
+            ) as add_workouts_import_task_mock,
+        ):
+            service.process_zip_archive(equipments=equipments)
+
+        add_workouts_import_task_mock.assert_called_once_with(
+            TEST_FILES_LIST, equipments
+        )
+        process_archive_content_mock.assert_not_called()
 
 
 class TestWorkoutsFromFileCreationServiceProcess(
