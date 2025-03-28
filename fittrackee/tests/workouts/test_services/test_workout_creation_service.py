@@ -5,15 +5,20 @@ import pytest
 from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
+from fittrackee.database import PSQL_INTEGER_LIMIT
 from fittrackee.equipments.exceptions import InvalidEquipmentsException
 from fittrackee.tests.mixins import RandomMixin
 from fittrackee.users.models import UserSportPreferenceEquipment
 from fittrackee.visibility_levels import VisibilityLevel
-from fittrackee.workouts.exceptions import WorkoutException
+from fittrackee.workouts.exceptions import (
+    WorkoutExceedingValueException,
+    WorkoutException,
+)
 from fittrackee.workouts.models import (
     DESCRIPTION_MAX_CHARACTERS,
     NOTES_MAX_CHARACTERS,
     TITLE_MAX_CHARACTERS,
+    WORKOUT_VALUES_LIMIT,
     Record,
     Sport,
     Workout,
@@ -288,6 +293,81 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
 
         with pytest.raises(
             WorkoutException, match="invalid ascent or descent"
+        ):
+            service.process()
+
+    @pytest.mark.parametrize("input_key", ["distance", "ascent", "descent"])
+    def test_it_raises_error_when_workout_value_exceeds_limit(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+        input_key: str,
+    ) -> None:
+        workout_data = {
+            "ascent": 120,
+            "descent": 80,
+            "distance": 18,
+            "duration": 3600,
+            "sport_id": sport_1_cycling.id,
+            "workout_date": "2025-02-09 08:00",
+            **{input_key: WORKOUT_VALUES_LIMIT[input_key] + 0.001},
+        }
+        service = WorkoutCreationService(user_1, workout_data)
+
+        with pytest.raises(
+            WorkoutExceedingValueException,
+            match=(
+                "one or more values, entered or calculated, exceed the limits"
+            ),
+        ):
+            service.process()
+
+    def test_it_raises_error_when_duration_exceeds_limit(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+    ) -> None:
+        workout_data = {
+            "ascent": 120,
+            "descent": 80,
+            "distance": 18,
+            "duration": PSQL_INTEGER_LIMIT + 1,
+            "sport_id": sport_1_cycling.id,
+            "workout_date": "2025-02-09 08:00",
+        }
+        service = WorkoutCreationService(user_1, workout_data)
+
+        with pytest.raises(
+            WorkoutExceedingValueException,
+            match=(
+                "one or more values, entered or calculated, exceed the limits"
+            ),
+        ):
+            service.process()
+
+    def test_it_raises_error_when_speed_exceeds_limit(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+    ) -> None:
+        workout_data = {
+            "sport_id": sport_1_cycling.id,
+            "duration": 36,
+            "workout_date": "2023-07-26 12:00",
+            "distance": 100,
+            "ascent": 120,
+            "descent": 80,
+        }
+        service = WorkoutCreationService(user_1, workout_data)
+
+        with pytest.raises(
+            WorkoutExceedingValueException,
+            match=(
+                "one or more values, entered or calculated, exceed the limits"
+            ),
         ):
             service.process()
 

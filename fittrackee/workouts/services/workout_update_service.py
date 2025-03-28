@@ -19,6 +19,7 @@ from fittrackee.workouts.models import (
 from ..constants import WORKOUT_DATE_FORMAT
 from ..exceptions import WorkoutException
 from ..utils.workouts import get_workout_datetime
+from .mixins import CheckWorkoutMixin
 
 if TYPE_CHECKING:
     from fittrackee.equipments.models import Equipment
@@ -53,7 +54,7 @@ WITHOUT_FILE_KEYS = {
 }
 
 
-class WorkoutUpdateService:
+class WorkoutUpdateService(CheckWorkoutMixin):
     def __init__(
         self, auth_user: "User", workout: "Workout", workout_data: Dict
     ):
@@ -195,6 +196,8 @@ class WorkoutUpdateService:
                 / (self.workout.duration.seconds / 3600)
             )
             self.workout.max_speed = self.workout.ave_speed
+
+        self._check_workout(self.workout)
 
     def update(self) -> None:
         if "sport_id" in self.workout_data:

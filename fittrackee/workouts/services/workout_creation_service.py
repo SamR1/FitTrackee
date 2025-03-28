@@ -15,6 +15,7 @@ from ..models import (
     Workout,
 )
 from .base_workout_service import BaseWorkoutService
+from .mixins import CheckWorkoutMixin
 
 if TYPE_CHECKING:
     from fittrackee.users.models import User
@@ -35,7 +36,7 @@ class WorkoutData:
     workout_visibility: Optional[VisibilityLevel] = None
 
 
-class WorkoutCreationService(BaseWorkoutService):
+class WorkoutCreationService(CheckWorkoutMixin, BaseWorkoutService):
     """
     Workout creation without file
     """
@@ -111,6 +112,7 @@ class WorkoutCreationService(BaseWorkoutService):
         new_workout.ascent = ascent
         new_workout.descent = descent
 
+        self._check_workout(new_workout)
         new_workout.title = self._get_workout_title(workout_date)
         new_workout.description = (
             self.workout_data.description[:DESCRIPTION_MAX_CHARACTERS]

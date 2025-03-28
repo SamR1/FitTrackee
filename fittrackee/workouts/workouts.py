@@ -11,7 +11,7 @@ from flask import (
     send_from_directory,
 )
 from sqlalchemy import asc, desc, distinct, exc, func
-from sqlalchemy.exc import DataError, IntegrityError
+from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
@@ -44,6 +44,7 @@ from fittrackee.visibility_levels import VisibilityLevel, can_view
 from .decorators import check_workout
 from .exceptions import (
     InvalidDurationException,
+    WorkoutExceedingValueException,
     WorkoutException,
     WorkoutFileException,
 )
@@ -1394,8 +1395,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             }
         else:
             return DataInvalidPayloadErrorResponse("workouts", "fail")
-    except DataError as e:
-        appLog.error(e.args[0])
+    except WorkoutExceedingValueException as e:
+        appLog.error(e.detail)
         return ExceedingValueErrorResponse()
     except InvalidEquipmentsException as e:
         return InvalidPayloadErrorResponse(str(e))
@@ -1606,8 +1607,8 @@ def post_workout_no_gpx(
             },
             201,
         )
-    except DataError as e:
-        appLog.error(e.args[0])
+    except WorkoutExceedingValueException as e:
+        appLog.error(e.detail)
         return ExceedingValueErrorResponse()
     except InvalidEquipmentsException as e:
         return InvalidPayloadErrorResponse(str(e))
@@ -1820,9 +1821,8 @@ def update_workout(
                 "workouts": [workout.serialize(user=auth_user, light=False)]
             },
         }
-
-    except DataError as e:
-        appLog.error(e.args[0])
+    except WorkoutExceedingValueException as e:
+        appLog.error(e.detail)
         return ExceedingValueErrorResponse()
     except InvalidEquipmentsException as e:
         return InvalidPayloadErrorResponse(str(e))

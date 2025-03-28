@@ -6,8 +6,8 @@ import gpxpy.gpx
 
 from fittrackee import db
 
-from ...exceptions import WorkoutFileException
-from ...models import Workout, WorkoutSegment
+from ...exceptions import WorkoutExceedingValueException, WorkoutFileException
+from ...models import WORKOUT_VALUES_LIMIT, Workout, WorkoutSegment
 from ...utils.duration import remove_microseconds
 from .base_workout_with_segment_service import (
     BaseWorkoutWithSegmentsCreationService,
@@ -78,8 +78,9 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
         elevation = parsed_gpx.get_elevation_extremes()
         gpx_info = GpxInfo(
             duration=parsed_gpx.get_duration(),
-            distance=moving_data.moving_distance
-            + moving_data.stopped_distance,
+            distance=(
+                moving_data.moving_distance + moving_data.stopped_distance
+            ),
             moving_time=moving_data.moving_time,
             stopped_time=moving_data.stopped_time,
             max_speed=moving_data.max_speed,
@@ -91,6 +92,15 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
             gpx_info.ascent = hill.uphill
             gpx_info.descent = hill.downhill
         return gpx_info
+
+    @staticmethod
+    def check_gpx_info(gpx_info: "GpxInfo") -> None:
+        for key, value in WORKOUT_VALUES_LIMIT.items():
+            gpx_info_value = getattr(gpx_info, key)
+            if gpx_info_value and gpx_info_value > value:
+                raise WorkoutExceedingValueException(
+                    f"'{key}' exceeds max value ({value})"
+                )
 
     def set_calculated_data(
         self,
@@ -106,6 +116,7 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
             stopped_speed_threshold=stopped_speed_threshold,
             use_raw_gpx_speed=use_raw_gpx_speed,
         )
+        self.check_gpx_info(gpx_info)
 
         if isinstance(object_to_update, WorkoutSegment):
             object_to_update.max_speed = (gpx_info.max_speed / 1000) * 3600

@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from typing import IO, TYPE_CHECKING
-from unittest.mock import MagicMock, call
+from unittest.mock import MagicMock, call, patch
 
 import gpxpy
 import pytest
@@ -13,9 +13,19 @@ from fittrackee.tests.fixtures.fixtures_workouts import (
     track_points_part_2_coordinates,
 )
 from fittrackee.tests.mixins import RandomMixin
+from fittrackee.tests.workouts.mixins import WorkoutGpxInfoMixin
 from fittrackee.visibility_levels import VisibilityLevel
-from fittrackee.workouts.exceptions import WorkoutFileException
-from fittrackee.workouts.models import Record, Sport, Workout, WorkoutSegment
+from fittrackee.workouts.exceptions import (
+    WorkoutExceedingValueException,
+    WorkoutFileException,
+)
+from fittrackee.workouts.models import (
+    WORKOUT_VALUES_LIMIT,
+    Record,
+    Sport,
+    Workout,
+    WorkoutSegment,
+)
 from fittrackee.workouts.services import WorkoutGpxCreationService
 from fittrackee.workouts.services.workout_from_file.workout_point import (
     WorkoutPoint,
@@ -132,7 +142,7 @@ class TestWorkoutGpxCreationServiceGetWeatherData:
 
 @pytest.mark.disable_autouse_update_records_patch
 class TestWorkoutGpxCreationServiceProcessFile(
-    WorkoutGpxCreationServiceTestCase
+    WorkoutGpxInfoMixin, WorkoutGpxCreationServiceTestCase
 ):
     @staticmethod
     def assert_workout(
@@ -272,6 +282,47 @@ class TestWorkoutGpxCreationServiceProcessFile(
 
         with pytest.raises(
             WorkoutFileException, match="<time> is missing in gpx file"
+        ):
+            service.process_workout()
+
+    @pytest.mark.parametrize(
+        "input_key",
+        [
+            "ascent",
+            "descent",
+            "distance",
+            "moving_time",
+            "max_speed",
+            "max_alt",
+            "min_alt",
+        ],
+    )
+    def test_it_raises_error_when_gpx_info_exceeds_limit(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+        gpx_file: str,
+        input_key: str,
+    ) -> None:
+        service = self.init_service_with_gpx(user_1, sport_1_cycling, gpx_file)
+        max_value = WORKOUT_VALUES_LIMIT[input_key]
+
+        with (
+            patch.object(
+                WorkoutGpxCreationService,
+                "get_gpx_info",
+                return_value=self.generate_get_gpx_info_return_value(
+                    {input_key: max_value + 0.001}
+                ),
+            ),
+            pytest.raises(
+                WorkoutExceedingValueException,
+                match=(
+                    "one or more values, entered or calculated, "
+                    "exceed the limits"
+                ),
+            ),
         ):
             service.process_workout()
 
