@@ -56,6 +56,7 @@ if TYPE_CHECKING:
 
 TASK_TYPES = [
     "user_data_export",
+    "workouts_archive_import",
 ]
 
 
@@ -1024,6 +1025,7 @@ class UserTask(BaseModel):
     errored: Mapped[bool] = mapped_column(nullable=False, default=False)
     # can be input or output file
     file_size: Mapped[Optional[int]] = mapped_column(nullable=True)
+    # relative or absolute path
     file_path: Mapped[Optional[str]] = mapped_column(
         db.String(255), nullable=True
     )

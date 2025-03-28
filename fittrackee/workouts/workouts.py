@@ -1407,8 +1407,13 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         service = WorkoutsFromFileCreationService(
             auth_user, workout_data, workout_file
         )
-        new_workouts = service.process()
-        db.session.commit()
+        new_workouts, is_async = service.process()
+        if is_async:
+            return {
+                "status": "in_progress",
+                "data": {"workouts": []},
+            }, 200
+
         if len(new_workouts) > 0:
             response_object = {
                 "status": "created",
@@ -1619,7 +1624,7 @@ def post_workout_no_gpx(
 
     try:
         service = WorkoutCreationService(auth_user, workout_data)
-        [new_workout] = service.process()
+        [new_workout], _ = service.process()
         db.session.commit()
 
         return (
