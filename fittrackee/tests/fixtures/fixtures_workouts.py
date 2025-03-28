@@ -15,7 +15,9 @@ from fittrackee.workouts.models import (
     Workout,
     WorkoutSegment,
 )
-from fittrackee.workouts.utils.maps import StaticMap
+from fittrackee.workouts.services.workout_from_file.base_workout_with_segment_service import (  # noqa
+    StaticMap,
+)
 
 from ..utils import random_string
 
@@ -309,6 +311,37 @@ def workout_cycling_user_2() -> Workout:
     return workout
 
 
+track_points_part_1_coordinates = [
+    (6.07367, 44.68095),
+    (6.07367, 44.68091),
+    (6.07364, 44.6808),
+    (6.07364, 44.68075),
+    (6.07364, 44.68071),
+    (6.07361, 44.68049),
+    (6.07356, 44.68019),
+    (6.07355, 44.68014),
+    (6.07358, 44.67995),
+]
+track_points_part_2_coordinates = [
+    (6.07364, 44.67977),
+    (6.07367, 44.67972),
+    (6.07368, 44.67966),
+    (6.0737, 44.67961),
+    (6.07377, 44.67938),
+    (6.07381, 44.67933),
+    (6.07385, 44.67922),
+    (6.0739, 44.67911),
+    (6.07399, 44.679),
+    (6.07402, 44.67896),
+    (6.07408, 44.67884),
+    (6.07423, 44.67863),
+    (6.07425, 44.67858),
+    (6.07434, 44.67842),
+    (6.07435, 44.67837),
+    (6.07442, 44.67822),
+]
+
+
 track_points_part_1 = (
     '      <trkpt lat="44.68095" lon="6.07367">'
     "        <ele>998</ele>"
@@ -591,6 +624,122 @@ def gpx_file_with_offset() -> str:
         '      <trkpt lat="44.67822" lon="6.07442">'
         "        <ele>975</ele>"
         "        <time>2018-03-13T13:48:55+01:00</time>"
+        "      </trkpt>"
+        "    </trkseg>"
+        "  </trk>"
+        "</gpx>"
+    )
+
+
+@pytest.fixture()
+def gpx_file_with_microseconds() -> str:
+    return (
+        "<?xml version='1.0' encoding='UTF-8'?>"
+        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
+        "  <metadata/>"
+        "  <trk>"
+        "    <trkseg>"
+        '      <trkpt lat="44.68095" lon="6.07367">'
+        "        <ele>998</ele>"
+        "        <time>2018-03-13T13:44:45.787Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.68091" lon="6.07367">'
+        "        <ele>998</ele>"
+        "        <time>2018-03-13T13:44:50.912Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.6808" lon="6.07364">'
+        "        <ele>994</ele>"
+        "        <time>2018-03-13T13:45:00.895Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.68075" lon="6.07364">'
+        "        <ele>994</ele>"
+        "        <time>2018-03-13T13:45:05.894Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.68071" lon="6.07364">'
+        "        <ele>994</ele>"
+        "        <time>2018-03-13T13:45:10.875Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.68049" lon="6.07361">'
+        "        <ele>993</ele>"
+        "        <time>2018-03-13T13:45:30.834Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.68019" lon="6.07356">'
+        "        <ele>992</ele>"
+        "        <time>2018-03-13T13:45:55.887Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.68014" lon="6.07355">'
+        "        <ele>992</ele>"
+        "        <time>2018-03-13T13:46:00.898Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.67995" lon="6.07358">'
+        "        <ele>987</ele>"
+        "        <time>2018-03-13T13:46:15.904Z</time>"
+        "      </trkpt>"
+        "    </trkseg>"
+        "    <trkseg>"
+        '      <trkpt lat="44.67977" lon="6.07364">'
+        "        <ele>987</ele>"
+        "        <time>2018-03-13T13:46:30.883Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.67972" lon="6.07367">'
+        "        <ele>987</ele>"
+        "        <time>2018-03-13T13:46:35.899Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.67966" lon="6.07368">'
+        "        <ele>987</ele>"
+        "        <time>2018-03-13T13:46:40.909Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.67961" lon="6.0737">'
+        "        <ele>986</ele>"
+        "        <time>2018-03-13T13:46:45.889Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.67938" lon="6.07377">'
+        "        <ele>986</ele>"
+        "        <time>2018-03-13T13:47:05.884Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.67933" lon="6.07381">'
+        "        <ele>986</ele>"
+        "        <time>2018-03-13T13:47:10.918Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.67922" lon="6.07385">'
+        "        <ele>985</ele>"
+        "        <time>2018-03-13T13:47:20.903Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.67911" lon="6.0739">'
+        "        <ele>980</ele>"
+        "        <time>2018-03-13T13:47:30.917Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.679" lon="6.07399">'
+        "        <ele>980</ele>"
+        "        <time>2018-03-13T13:47:40.902Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.67896" lon="6.07402">'
+        "        <ele>980</ele>"
+        "        <time>2018-03-13T13:47:45.918Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.67884" lon="6.07408">'
+        "        <ele>979</ele>"
+        "        <time>2018-03-13T13:47:55.909Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.67863" lon="6.07423">'
+        "        <ele>981</ele>"
+        "        <time>2018-03-13T13:48:15.922Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.67858" lon="6.07425">'
+        "        <ele>980</ele>"
+        "        <time>2018-03-13T13:48:20.916Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.67842" lon="6.07434">'
+        "        <ele>979</ele>"
+        "        <time>2018-03-13T13:48:35.889Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.67837" lon="6.07435">'
+        "        <ele>979</ele>"
+        "        <time>2018-03-13T13:48:40.911Z</time>"
+        "      </trkpt>"
+        '      <trkpt lat="44.67822" lon="6.07442">'
+        "        <ele>975</ele>"
+        "        <time>2018-03-13T13:48:55.891Z</time>"
         "      </trkpt>"
         "    </trkseg>"
         "  </trk>"
