@@ -1,7 +1,7 @@
 {
   "ADD_WORKOUT": "添加锻炼",
   "ANALYSIS": "分析",
-  "ASCENT": "上升",
+  "ASCENT": "爬升",
   "AVERAGE_SPEED": "平均速度",
   "AVE_SPEED": "平均速度",
   "BACK_TO_COMMENT": "返回评论",
@@ -77,7 +77,7 @@
   "RECORD": "记录",
   "RECORD_AS": "平均速度",
   "RECORD_FD": "最远距离",
-  "RECORD_HA": "最高上升海拔",
+  "RECORD_HA": "最高爬升",
   "RECORD_LD": "最长持续时间",
   "RECORD_MS": "最大速度",
   "REMAINING_CHARS": "剩余字符",
@@ -94,6 +94,8 @@
   "TITLE": "标题",
   "TITLE_FIELD_HELP": "如果提供，标题将替换 gpx 文件的标题。",
   "TO": "至",
+  "TOTAL_ASCENT": "总爬升",
+  "TOTAL_DESCENT": "总下降",
   "TOTAL_DISTANCE": "总距离",
   "TOTAL_DURATION": "总持续时间",
   "UPLOAD_FIRST_WORKOUT": "上传一个！",
@@ -136,6 +138,11 @@
   "WITHOUT_GPX": "没有 .gpx 文件",
   "WITH_GPX": "有 .gpx 文件",
   "WORKOUT": "锻炼",
+  "WORKOUTS_STATISTICS": {
+    "all": "所有页面的统计数据",
+    "current_page": "当前页面的统计数据",
+    "limited": "{count} 次锻炼的统计信息"
+  },
   "WORKOUT_CHART": "锻炼速度和海拔图",
   "WORKOUT_DATE": "锻炼日期",
   "WORKOUT_DELETION_CONFIRMATION": "你确定要删除此锻炼吗？",
