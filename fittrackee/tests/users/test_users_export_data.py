@@ -15,7 +15,7 @@ from fittrackee.users.export_data import (
     export_user_data,
     generate_user_data_archives,
 )
-from fittrackee.users.models import User, UserDataExport
+from fittrackee.users.models import User, UserTask
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
@@ -559,7 +559,7 @@ class TestExportUserData:
     ) -> None:
         request_id = random_int()
 
-        export_user_data(export_request_id=request_id)
+        export_user_data(task_id=request_id)
 
         logger_mock.error.assert_called_once_with(
             f"No export to process for id '{request_id}'"
@@ -572,12 +572,14 @@ class TestExportUserData:
         app: Flask,
         user_1: User,
     ) -> None:
-        export_request = UserDataExport(user_id=user_1.id)
+        export_request = UserTask(
+            user_id=user_1.id, task_type="user_data_export"
+        )
         db.session.add(export_request)
-        export_request.completed = True
+        export_request.progress = 100
         db.session.commit()
 
-        export_user_data(export_request_id=export_request.id)
+        export_user_data(task_id=export_request.id)
 
         logger_mock.info.assert_called_once_with(
             f"Export id '{export_request.id}' already processed"
@@ -591,7 +593,9 @@ class TestExportUserData:
         app: Flask,
         user_1: User,
     ) -> None:
-        export_request = UserDataExport(user_id=user_1.id)
+        export_request = UserTask(
+            user_id=user_1.id, task_type="user_data_export"
+        )
         db.session.add(export_request)
         db.session.commit()
         archive_name = random_string()
@@ -602,11 +606,13 @@ class TestExportUserData:
             "fittrackee.users.export_data.os.path.getsize",
             return_value=archive_size,
         ):
-            export_user_data(export_request_id=export_request.id)
+            export_user_data(task_id=export_request.id)
 
         assert export_request.completed is True
         assert export_request.updated_at is not None
-        assert export_request.file_name == archive_name
+        assert export_request.file_path == (
+            f"exports/{user_1.id}/{archive_name}"
+        )
         assert export_request.file_size == archive_size
 
     def test_it_updates_export_request_when_export_fails(
@@ -616,16 +622,18 @@ class TestExportUserData:
         app: Flask,
         user_1: User,
     ) -> None:
-        export_request = UserDataExport(user_id=user_1.id)
+        export_request = UserTask(
+            user_id=user_1.id, task_type="user_data_export"
+        )
         db.session.add(export_request)
         db.session.commit()
         generate_archive_mock.return_value = (None, None)
 
-        export_user_data(export_request_id=export_request.id)
+        export_user_data(task_id=export_request.id)
 
         assert export_request.completed is True
         assert export_request.updated_at is not None
-        assert export_request.file_name is None
+        assert export_request.file_path is None
         assert export_request.file_size is None
 
     def test_it_does_not_call_send_email_when_export_failed(
@@ -636,12 +644,14 @@ class TestExportUserData:
         app: Flask,
         user_1: User,
     ) -> None:
-        export_request = UserDataExport(user_id=user_1.id)
+        export_request = UserTask(
+            user_id=user_1.id, task_type="user_data_export"
+        )
         db.session.add(export_request)
         db.session.commit()
         generate_archive_mock.return_value = (None, None)
 
-        export_user_data(export_request_id=export_request.id)
+        export_user_data(task_id=export_request.id)
 
         export_data_send_email_mock.send.assert_not_called()
 
@@ -653,7 +663,9 @@ class TestExportUserData:
         app: Flask,
         user_1: User,
     ) -> None:
-        export_request = UserDataExport(user_id=user_1.id)
+        export_request = UserTask(
+            user_id=user_1.id, task_type="user_data_export"
+        )
         db.session.add(export_request)
         db.session.commit()
         archive_name = random_string()
@@ -664,7 +676,7 @@ class TestExportUserData:
             "fittrackee.users.export_data.os.path.getsize",
             return_value=archive_size,
         ):
-            export_user_data(export_request_id=export_request.id)
+            export_user_data(task_id=export_request.id)
 
         export_data_send_email_mock.send.assert_called_once_with(
             {
@@ -683,24 +695,23 @@ class TestExportUserData:
 class UserDataExportTestCase:
     @staticmethod
     def create_user_request(
-        user: User, days: int = 0, completed: bool = True
-    ) -> UserDataExport:
-        user_data_export = UserDataExport(
+        user: User, days: int = 0, progress: int = 100
+    ) -> UserTask:
+        user_data_export = UserTask(
             user_id=user.id,
             created_at=datetime.now(timezone.utc) - timedelta(days=days),
+            task_type="user_data_export",
         )
         db.session.add(user_data_export)
-        user_data_export.completed = completed
+        user_data_export.progress = progress
         db.session.commit()
         return user_data_export
 
-    def generate_archive(
-        self, user: User
-    ) -> Tuple[UserDataExport, Optional[str]]:
+    def generate_archive(self, user: User) -> Tuple[UserTask, Optional[str]]:
         user_data_export = self.create_user_request(user, days=7)
         exporter = UserDataExporter(user)
         archive_path, archive_file_name = exporter.generate_archive()
-        user_data_export.file_name = archive_file_name
+        user_data_export.file_path = f"exports/{user.id}/{archive_file_name}"
         user_data_export.file_size = random_int()
         db.session.commit()
         return user_data_export, archive_path
@@ -715,7 +726,7 @@ class TestCleanUserDataExport(UserDataExportTestCase):
     def test_it_returns_0_when_export_request_is_not_completed(
         self, app: Flask, user_1: User
     ) -> None:
-        self.create_user_request(user_1, days=7, completed=False)
+        self.create_user_request(user_1, days=7, progress=50)
 
         counts = clean_user_data_export(days=7)
 
@@ -777,9 +788,7 @@ class TestCleanUserDataExport(UserDataExportTestCase):
 
         clean_user_data_export(days=7)
 
-        assert (
-            UserDataExport.query.filter_by(user_id=user_1.id).first() is None
-        )
+        assert UserTask.query.filter_by(user_id=user_1.id).first() is None
 
 
 class TestGenerateUsersArchives(UserDataExportTestCase):
@@ -791,7 +800,7 @@ class TestGenerateUsersArchives(UserDataExportTestCase):
     def test_it_returns_0_when_request_request_completed(
         self, app: Flask, user_1: User
     ) -> None:
-        self.create_user_request(user_1, completed=True)
+        self.create_user_request(user_1, progress=100)
 
         count = generate_user_data_archives(max_count=1)
 
@@ -800,7 +809,7 @@ class TestGenerateUsersArchives(UserDataExportTestCase):
     def test_it_returns_count_when_archive_is_generated_user_archive(
         self, app: Flask, user_1: User
     ) -> None:
-        self.create_user_request(user_1, completed=False)
+        self.create_user_request(user_1, progress=0)
 
         count = generate_user_data_archives(max_count=1)
 
@@ -818,7 +827,7 @@ class TestGenerateUsersArchives(UserDataExportTestCase):
             str(user_1.id),
             f"archive_{token_urlsafe}.zip",
         )
-        self.create_user_request(user_1, completed=False)
+        self.create_user_request(user_1, progress=0)
 
         generate_user_data_archives(max_count=1)
 
@@ -827,22 +836,17 @@ class TestGenerateUsersArchives(UserDataExportTestCase):
     def test_it_generates_max_count_of_archives(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        self.create_user_request(user_3, completed=False)
-        self.create_user_request(user_1, completed=False)
-        self.create_user_request(user_2, completed=False)
+        self.create_user_request(user_3, progress=0)
+        self.create_user_request(user_1, progress=0)
+        self.create_user_request(user_2, progress=0)
 
         count = generate_user_data_archives(max_count=2)
 
         assert count == 2
         assert (
-            UserDataExport.query.filter_by(user_id=user_1.id).one().completed
-            is True
+            UserTask.query.filter_by(user_id=user_1.id).one().progress == 100
         )
+        assert UserTask.query.filter_by(user_id=user_2.id).one().progress == 0
         assert (
-            UserDataExport.query.filter_by(user_id=user_2.id).one().completed
-            is False
-        )
-        assert (
-            UserDataExport.query.filter_by(user_id=user_3.id).one().completed
-            is True
+            UserTask.query.filter_by(user_id=user_3.id).one().progress == 100
         )
