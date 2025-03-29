@@ -750,7 +750,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
         assert new_workout == Workout.query.one()
 
 
-class WorkoutsFromFileCreationServiceArchiveTestCase:
+class WorkoutsFromFileCreationServiceTestCase:
     @staticmethod
     def get_service(
         app: "Flask",
@@ -772,9 +772,20 @@ class WorkoutsFromFileCreationServiceArchiveTestCase:
                 workouts_data={"sport_id": sport.id, **workout_data},
             )
 
+    @staticmethod
+    def get_undeleted_files(app: "Flask", user: "User") -> List[str]:
+        upload_directory = os.path.join(
+            app.config["UPLOAD_FOLDER"], f"workouts/{user.id}"
+        )
+        return [
+            name
+            for name in os.listdir(upload_directory)
+            if os.path.isfile(os.path.join(upload_directory, name))
+        ]
+
 
 class TestWorkoutsFromFileCreationServiceGetFilesFromArchive(
-    WorkoutsFromFileCreationServiceArchiveTestCase
+    WorkoutsFromFileCreationServiceTestCase
 ):
     def test_it_raises_error_when_no_file_provided(
         self,
@@ -900,7 +911,7 @@ class TestWorkoutsFromFileCreationServiceGetFilesFromArchive(
 
 
 class TestWorkoutsFromFileCreationServiceProcessArchiveContent(
-    WorkoutsFromFileCreationServiceArchiveTestCase
+    WorkoutsFromFileCreationServiceTestCase
 ):
     def test_it_raises_error_when_files_to_process_is_empty_list(
         self,
@@ -1019,7 +1030,7 @@ class TestWorkoutsFromFileCreationServiceProcessArchiveContent(
 
 
 class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
-    WorkoutsFromFileCreationServiceArchiveTestCase
+    WorkoutsFromFileCreationServiceTestCase
 ):
     def test_it_raises_error_when_no_file_provided(
         self,
@@ -1232,7 +1243,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
 
 
 class TestWorkoutsFromFileCreationServiceProcessZipArchive(
-    WorkoutsFromFileCreationServiceArchiveTestCase
+    WorkoutsFromFileCreationServiceTestCase
 ):
     def test_it_raises_error_when_no_file_provided(
         self,
@@ -1355,20 +1366,9 @@ class TestWorkoutsFromFileCreationServiceProcessZipArchive(
         process_archive_content_mock.assert_not_called()
 
 
-class TestWorkoutsFromFileCreationServiceProcess(
-    WorkoutsFromFileCreationServiceArchiveTestCase
+class TestWorkoutsFromFileCreationServiceProcessForOneFile(
+    WorkoutsFromFileCreationServiceTestCase
 ):
-    @staticmethod
-    def get_undeleted_files(app: "Flask", user: "User") -> List[str]:
-        upload_directory = os.path.join(
-            app.config["UPLOAD_FOLDER"], f"workouts/{user.id}"
-        )
-        return [
-            name
-            for name in os.listdir(upload_directory)
-            if os.path.isfile(os.path.join(upload_directory, name))
-        ]
-
     def test_it_raises_when_no_file_is_provided(
         self,
         app: "Flask",
@@ -1557,7 +1557,120 @@ class TestWorkoutsFromFileCreationServiceProcess(
         ):
             service.process()
 
-    def test_it_creates_workout_when_file_has_zip_extension(
+    def test_it_deletes_workout_files_on_error(
+        self,
+        app: "Flask",
+        user_1: "User",
+        gpx_file: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        gpx_file_storage = FileStorage(
+            filename="file.gpx", stream=BytesIO(str.encode(gpx_file))
+        )
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            file=gpx_file_storage,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+
+        with (
+            patch.object(
+                WorkoutGpxCreationService,
+                "get_map_hash",
+                side_effect=[Exception("error")],
+            ),
+            pytest.raises(
+                WorkoutException, match="error when generating map image"
+            ),
+        ):
+            service.process()
+            db.session.commit()
+
+        undeleted_files = self.get_undeleted_files(app, user_1)
+        assert len(undeleted_files) == 0
+
+    def test_it_deletes_map_files_on_error_with_workout_files(
+        self,
+        app: "Flask",
+        user_1: "User",
+        gpx_file: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        gpx_file_storage = FileStorage(
+            filename="file.gpx", stream=BytesIO(str.encode(gpx_file))
+        )
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            file=gpx_file_storage,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+
+        with (
+            patch.object(
+                WorkoutGpxCreationService,
+                "get_map_hash",
+                side_effect=[Exception("error")],
+            ),
+            pytest.raises(
+                WorkoutException, match="error when generating map image"
+            ),
+        ):
+            service.process()
+            db.session.commit()
+
+        undeleted_files = self.get_undeleted_files(app, user_1)
+        assert len(undeleted_files) == 0
+
+    def test_it_does_not_delete_previous_workout(
+        self,
+        app: "Flask",
+        user_1: "User",
+        gpx_file: str,
+        gpx_file_with_description: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        # successful creation
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            file=FileStorage(
+                filename="file.gpx",
+                stream=BytesIO(str.encode(gpx_file_with_description)),
+            ),
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+        service.process()
+        db.session.commit()
+        # second creation (with error)
+        gpx_file_storage = FileStorage(
+            filename="file.gpx", stream=BytesIO(str.encode(gpx_file))
+        )
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            file=gpx_file_storage,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+
+        with (
+            patch.object(
+                WorkoutGpxCreationService,
+                "get_map_hash",
+                side_effect=[Exception("error")],
+            ),
+            pytest.raises(
+                WorkoutException, match="error when generating map image"
+            ),
+        ):
+            service.process()
+            db.session.commit()
+
+        undeleted_files = self.get_undeleted_files(app, user_1)
+        assert len(undeleted_files) == 2  # gpx and map files
+
+
+class TestWorkoutsFromFileCreationServiceProcessForSyncArchiveUpload(
+    WorkoutsFromFileCreationServiceTestCase
+):
+    def test_it_creates_workouts_when_file_has_zip_extension(
         self,
         app: "Flask",
         user_1: "User",
@@ -1574,7 +1687,7 @@ class TestWorkoutsFromFileCreationServiceProcess(
         assert Workout.query.count() == 3
         assert WorkoutSegment.query.count() == 3
 
-    def test_it_creates_workout_from_archive_with_default_equipment(
+    def test_it_creates_workouts_from_archive_with_default_equipment(
         self,
         app: "Flask",
         user_1: "User",
@@ -1685,71 +1798,7 @@ class TestWorkoutsFromFileCreationServiceProcess(
             assert workout.map_visibility == input_visibility
             assert workout.workout_visibility == input_visibility
 
-    def test_it_deletes_workout_files_on_error(
-        self,
-        app: "Flask",
-        user_1: "User",
-        gpx_file: str,
-        sport_1_cycling: "Sport",
-    ) -> None:
-        gpx_file_storage = FileStorage(
-            filename="file.gpx", stream=BytesIO(str.encode(gpx_file))
-        )
-        service = WorkoutsFromFileCreationService(
-            auth_user=user_1,
-            file=gpx_file_storage,
-            workouts_data={"sport_id": sport_1_cycling.id},
-        )
-
-        with (
-            patch.object(
-                WorkoutGpxCreationService,
-                "get_map_hash",
-                side_effect=[Exception("error")],
-            ),
-            pytest.raises(
-                WorkoutException, match="error when generating map image"
-            ),
-        ):
-            service.process()
-            db.session.commit()
-
-        undeleted_files = self.get_undeleted_files(app, user_1)
-        assert len(undeleted_files) == 0
-
-    def test_it_deletes_map_files_on_error_with_workout_files(
-        self,
-        app: "Flask",
-        user_1: "User",
-        gpx_file: str,
-        sport_1_cycling: "Sport",
-    ) -> None:
-        gpx_file_storage = FileStorage(
-            filename="file.gpx", stream=BytesIO(str.encode(gpx_file))
-        )
-        service = WorkoutsFromFileCreationService(
-            auth_user=user_1,
-            file=gpx_file_storage,
-            workouts_data={"sport_id": sport_1_cycling.id},
-        )
-
-        with (
-            patch.object(
-                WorkoutGpxCreationService,
-                "get_map_hash",
-                side_effect=[Exception("error")],
-            ),
-            pytest.raises(
-                WorkoutException, match="error when generating map image"
-            ),
-        ):
-            service.process()
-            db.session.commit()
-
-        undeleted_files = self.get_undeleted_files(app, user_1)
-        assert len(undeleted_files) == 0
-
-    def test_it_deletes_workout_and_map_files_on_error_with_archive(
+    def test_it_deletes_all_workout_and_map_files_on_error_with_archive(
         self,
         app: "Flask",
         user_1: "User",
@@ -1779,48 +1828,3 @@ class TestWorkoutsFromFileCreationServiceProcess(
 
         undeleted_files = self.get_undeleted_files(app, user_1)
         assert len(undeleted_files) == 0
-
-    def test_it_does_not_delete_previous_workout(
-        self,
-        app: "Flask",
-        user_1: "User",
-        gpx_file: str,
-        gpx_file_with_description: str,
-        sport_1_cycling: "Sport",
-    ) -> None:
-        # successful creation
-        service = WorkoutsFromFileCreationService(
-            auth_user=user_1,
-            file=FileStorage(
-                filename="file.gpx",
-                stream=BytesIO(str.encode(gpx_file_with_description)),
-            ),
-            workouts_data={"sport_id": sport_1_cycling.id},
-        )
-        service.process()
-        db.session.commit()
-        # second creation (with error)
-        gpx_file_storage = FileStorage(
-            filename="file.gpx", stream=BytesIO(str.encode(gpx_file))
-        )
-        service = WorkoutsFromFileCreationService(
-            auth_user=user_1,
-            file=gpx_file_storage,
-            workouts_data={"sport_id": sport_1_cycling.id},
-        )
-
-        with (
-            patch.object(
-                WorkoutGpxCreationService,
-                "get_map_hash",
-                side_effect=[Exception("error")],
-            ),
-            pytest.raises(
-                WorkoutException, match="error when generating map image"
-            ),
-        ):
-            service.process()
-            db.session.commit()
-
-        undeleted_files = self.get_undeleted_files(app, user_1)
-        assert len(undeleted_files) == 2  # gpx and map files
