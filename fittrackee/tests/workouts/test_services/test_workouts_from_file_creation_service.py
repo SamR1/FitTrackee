@@ -940,7 +940,7 @@ class TestWorkoutsFromFileCreationServiceProcessArchiveContent(
                 equipments=None,
             )
 
-    def test_it_raises_error_when_file_extension_is_invalid(
+    def test_it_returns_error_when_file_does_not_exist_in_archive(
         self,
         app: "Flask",
         user_1: "User",
@@ -958,14 +958,18 @@ class TestWorkoutsFromFileCreationServiceProcessArchiveContent(
                 filename="workouts.zip", stream=BytesIO(zip_file.read())
             )
 
-        with pytest.raises(
-            WorkoutException, match="error when processing archive"
-        ):
-            service.process_archive_content(
-                archive_content=archive_file_storage.stream,
-                files_to_process=["invalid.txt"],
-                equipments=None,
+        new_workouts, processing_output = service.process_archive_content(
+            archive_content=archive_file_storage.stream,
+            files_to_process=["invalid.txt"],
+            equipments=None,
+        )
+
+        assert new_workouts == []
+        assert processing_output == {
+            "invalid.txt": (
+                "There is no item named 'invalid.txt' in the archive"
             )
+        }
 
     def test_it_creates_workouts(
         self,
@@ -1259,7 +1263,7 @@ class TestWorkoutsFromFileCreationServiceProcessZipArchive(
         with pytest.raises(WorkoutException, match="no workout file provided"):
             service.process_zip_archive(equipments=None)
 
-    def test_it_raises_error_when_archive_contains_invalid_file(
+    def test_it_creates_one_workout_and_returns_errored_workout_when_archive_contains_invalid_file(  # noqa
         self,
         app: "Flask",
         user_1: "User",
@@ -1270,11 +1274,15 @@ class TestWorkoutsFromFileCreationServiceProcessZipArchive(
             app, user_1, sport_1_cycling, "tests/files/gpx_test_incorrect.zip"
         )
 
-        with pytest.raises(
-            WorkoutFileException,
-            match="no tracks in gpx file",
-        ):
-            service.process_zip_archive(equipments=None)
+        new_workouts, processing_output = service.process_zip_archive(
+            equipments=None
+        )
+
+        assert len(new_workouts) == 1
+        assert processing_output == {
+            "async": False,
+            "errored_workouts": {"test_4.gpx": "no tracks in gpx file"},
+        }
 
     def test_it_calls_process_archive_content(
         self,
@@ -1290,7 +1298,9 @@ class TestWorkoutsFromFileCreationServiceProcessZipArchive(
 
         with (
             patch.object(
-                WorkoutsFromFileCreationService, "process_archive_content"
+                WorkoutsFromFileCreationService,
+                "process_archive_content",
+                return_value=([], {}),
             ) as process_archive_content_mock,
             patch.object(
                 WorkoutsFromFileCreationService, "add_workouts_import_task"
@@ -1316,7 +1326,9 @@ class TestWorkoutsFromFileCreationServiceProcessZipArchive(
         )
 
         with patch.object(
-            WorkoutsFromFileCreationService, "process_archive_content"
+            WorkoutsFromFileCreationService,
+            "process_archive_content",
+            return_value=([], {}),
         ) as process_archive_content_mock:
             service.process_zip_archive(equipments=None)
 
@@ -1670,7 +1682,26 @@ class TestWorkoutsFromFileCreationServiceProcessForOneFile(
 class TestWorkoutsFromFileCreationServiceProcessForSyncArchiveUpload(
     WorkoutsFromFileCreationServiceTestCase
 ):
-    def test_it_creates_workouts_when_file_has_zip_extension(
+    def test_it_returns_created_workouts_and_processing_data(
+        self,
+        app: "Flask",
+        user_1: "User",
+        gpx_file: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        service = self.get_service(
+            app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
+        )
+
+        new_workouts, processing_output = service.process()
+
+        assert len(new_workouts) == 3
+        assert processing_output == {
+            "async": False,
+            "errored_workouts": {},
+        }
+
+    def test_it_creates_workouts(
         self,
         app: "Flask",
         user_1: "User",
@@ -1682,7 +1713,6 @@ class TestWorkoutsFromFileCreationServiceProcessForSyncArchiveUpload(
         )
 
         service.process()
-        db.session.commit()
 
         assert Workout.query.count() == 3
         assert WorkoutSegment.query.count() == 3
@@ -1713,7 +1743,6 @@ class TestWorkoutsFromFileCreationServiceProcessForSyncArchiveUpload(
         )
 
         service.process()
-        db.session.commit()
 
         workouts = Workout.query.all()
         total_distance = 0
@@ -1754,7 +1783,6 @@ class TestWorkoutsFromFileCreationServiceProcessForSyncArchiveUpload(
         )
 
         service.process()
-        db.session.commit()
 
         for workout in Workout.query.all():
             assert workout.analysis_visibility == input_visibility
@@ -1791,14 +1819,13 @@ class TestWorkoutsFromFileCreationServiceProcessForSyncArchiveUpload(
         )
 
         service.process()
-        db.session.commit()
 
         for workout in Workout.query.all():
             assert workout.analysis_visibility == input_visibility
             assert workout.map_visibility == input_visibility
             assert workout.workout_visibility == input_visibility
 
-    def test_it_deletes_all_workout_and_map_files_on_error_with_archive(
+    def test_it_creates_workouts_and_returns_error_when_one_workout_is_errored(
         self,
         app: "Flask",
         user_1: "User",
@@ -1815,16 +1842,20 @@ class TestWorkoutsFromFileCreationServiceProcessForSyncArchiveUpload(
                 "get_map_hash",
                 side_effect=[
                     None,  # processing first file w/o error
-                    None,  # processing second file w/o error
-                    Exception("error"),  # error on third file
+                    Exception("error"),  # error on second file
+                    None,  # processing third file w/o error
                 ],
-            ),
-            pytest.raises(
-                WorkoutException, match="error when processing archive"
             ),
         ):
             service.process()
             db.session.commit()
 
+        workouts = Workout.query.all()
+        assert len(workouts) == 2
+        assert {workout.title for workout in workouts} == {
+            "just a workout n°1",
+            "just a workout n°3",
+        }
+
         undeleted_files = self.get_undeleted_files(app, user_1)
-        assert len(undeleted_files) == 0
+        assert len(undeleted_files) == 4  # 2 gpx and 2 map gpx
