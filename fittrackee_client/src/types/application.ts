@@ -9,6 +9,7 @@ export type TAppConfig = {
   [key: string]: number | boolean | string | null
   about: string | null
   admin_contact: string
+  federation_enabled: boolean
   gpx_limit_import: number
   is_email_sending_enabled: boolean
   is_registration_enabled: boolean
@@ -39,6 +40,7 @@ export type TAppConfigForm = {
   [key: string]: number | string | boolean
   about: string
   admin_contact: string
+  federation_enabled: boolean
   gpx_limit_import: number
   max_single_file_size: number
   max_users: number
