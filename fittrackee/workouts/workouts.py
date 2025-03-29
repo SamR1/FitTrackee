@@ -1212,6 +1212,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
         {
           "data": {
+            "errored_workouts": [],
             "workouts": [
               {
                 "analysis_visibility": "private",
@@ -1407,11 +1408,11 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         service = WorkoutsFromFileCreationService(
             auth_user, workout_data, workout_file
         )
-        new_workouts, is_async = service.process()
-        if is_async:
+        new_workouts, processing_output = service.process()
+        if processing_output["async"]:
             return {
                 "status": "in_progress",
-                "data": {"workouts": []},
+                "data": {"workouts": [], "errored_workouts": []},
             }, 200
 
         if len(new_workouts) > 0:
@@ -1421,7 +1422,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                     "workouts": [
                         new_workout.serialize(user=auth_user, light=False)
                         for new_workout in new_workouts
-                    ]
+                    ],
+                    "errored_workouts": processing_output["errored_workouts"],
                 },
             }
         else:
@@ -1437,16 +1439,11 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         )
     except (WorkoutException, WorkoutFileException) as e:
         db.session.rollback()
-        if e.status == "exceeding_value_error":
-            if e.e:
-                appLog.error(e.e.args[0])
-            return ExceedingValueErrorResponse()
         if e.e:
             appLog.error(e.e)
         if e.status == "error":
             return InternalServerErrorResponse(e.message)
         return InvalidPayloadErrorResponse(e.message, e.status)
-
     return response_object, 201
 
 

@@ -15,6 +15,9 @@ from fittrackee.equipments.models import Equipment
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.users.models import User
 from fittrackee.visibility_levels import VisibilityLevel
+from fittrackee.workouts.exceptions import (
+    WorkoutExceedingValueException,
+)
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.services.workout_from_file import (
     WorkoutGpxCreationService,
@@ -1275,7 +1278,7 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
             assert segment["moving"] == "0:04:10"
             assert segment["pauses"] is None
 
-    def test_it_returns_500_if_one_file_in_zip_archive_is_invalid(
+    def test_it_adds_valid_workout_when_one_file_in_zip_archive_is_invalid(
         self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         # 'gpx_test_incorrect.zip' contains 2 gpx files, one is incorrect
@@ -1299,8 +1302,63 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
                 ),
             )
 
-            data = self.assert_500(response, "no tracks in gpx file")
-            assert "data" not in data
+            assert response.status_code == 201
+            data = json.loads(response.data.decode())
+            assert "created" in data["status"]
+            assert len(data["data"]["workouts"]) == 1
+            assert data["data"]["errored_workouts"] == {
+                "test_4.gpx": "no tracks in gpx file"
+            }
+
+    def test_it_adds_valid_workout_when_one_file_has_invalid_calculated_value(
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
+    ) -> None:
+        # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
+        file_path = os.path.join(app.root_path, "tests/files/gpx_test.zip")
+        with open(file_path, "rb") as zip_file:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app, user_1.email
+            )
+
+            with patch.object(
+                WorkoutGpxCreationService,
+                "check_gpx_info",
+                side_effect=[
+                    # 1st gpx files
+                    None,
+                    None,
+                    # 2nd gpx files
+                    WorkoutExceedingValueException(
+                        "'distance' exceeds max value (999999.9)"
+                    ),
+                    None,
+                    # 3rd gpx files
+                    None,
+                    None,
+                ],
+            ):
+                response = client.post(
+                    "/api/workouts",
+                    data=dict(
+                        file=(zip_file, "gpx_test_incorrect.zip"),
+                        data='{"sport_id": 1}',
+                    ),
+                    headers=dict(
+                        content_type="multipart/form-data",
+                        Authorization=f"Bearer {auth_token}",
+                    ),
+                )
+
+            assert response.status_code == 201
+            data = json.loads(response.data.decode())
+            assert "created" in data["status"]
+            assert len(data["data"]["workouts"]) == 2
+            assert data["data"]["errored_workouts"] == {
+                "test_2.gpx": (
+                    "one or more values, entered or calculated, "
+                    "exceed the limits"
+                ),
+            }
 
     def test_it_returns_400_when_files_in_archive_exceed_limit(
         self,

@@ -87,7 +87,7 @@ class WorkoutCreationService(CheckWorkoutMixin, BaseWorkoutService):
     def _get_workout_title(self, workout_date: datetime) -> str:
         return self._get_title(workout_date, self.workout_data.title)
 
-    def process(self) -> Tuple[List["Workout"], bool]:
+    def process(self) -> Tuple[List["Workout"], Dict]:
         ascent, descent = self._get_elevation()
         duration = timedelta(seconds=self.workout_data.duration)
         distance = self.workout_data.distance
@@ -136,4 +136,4 @@ class WorkoutCreationService(CheckWorkoutMixin, BaseWorkoutService):
         )
 
         db.session.flush()
-        return [new_workout], False
+        return [new_workout], {}

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 import pytz
 
@@ -69,5 +69,11 @@ class BaseWorkoutService(ABC):
         return f"{self.sport.label} - {workout_datetime}"
 
     @abstractmethod
-    def process(self) -> Tuple[List["Workout"], bool]:
+    def process(self) -> Tuple[List["Workout"], Dict]:
+        """
+        returns:
+        - list of workouts created successfully
+        - a dict with errored workouts and flag indicating asynchronous
+          processing
+        """
         pass
