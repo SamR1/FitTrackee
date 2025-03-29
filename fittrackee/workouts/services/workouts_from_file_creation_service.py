@@ -70,7 +70,7 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
         self.workouts_data = WorkoutsData(**workouts_data)
 
     @abstractmethod
-    def process(self) -> Tuple[List["Workout"], bool]:
+    def process(self) -> Tuple[List["Workout"], Dict]:
         pass
 
     def _get_user_path(
@@ -243,39 +243,28 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
         archive_content: Union[BytesIO, IO[bytes]],
         files_to_process: List[str],
         equipments: Union[List["Equipment"], None],
-    ) -> List["Workout"]:
+    ) -> Tuple[List["Workout"], Dict]:
         if not files_to_process:
             raise WorkoutFileException(
                 "error", "No files from archive to process"
             )
 
         new_workouts = []
-        try:
-            with zipfile.ZipFile(archive_content, "r") as zip_ref:
-                for file in files_to_process:
+        errored_workouts = {}
+        with zipfile.ZipFile(archive_content, "r") as zip_ref:
+            for file in files_to_process:
+                try:
                     extension = self._get_extension(file)
                     file_content = zip_ref.open(file)
-                    new_workouts.append(
-                        self.create_workout_from_file(
-                            extension, equipments, file_content
-                        )
+                    new_workout = self.create_workout_from_file(
+                        extension, equipments, file_content
                     )
-        except WorkoutFileException as e:
-            raise e
-        except Exception as e:
-            for workout in new_workouts:
-                if workout.gpx and os.path.exists(
-                    get_absolute_file_path(workout.gpx)
-                ):
-                    os.remove(get_absolute_file_path(workout.gpx))
-                if workout.map and os.path.exists(
-                    get_absolute_file_path(workout.map)
-                ):
-                    os.remove(get_absolute_file_path(workout.map))
-            raise WorkoutException(
-                "error", "error when processing archive"
-            ) from e
-        return new_workouts
+                except Exception as e:
+                    db.session.rollback()
+                    errored_workouts[file] = e.args[0]
+                    continue
+                new_workouts.append(new_workout)
+        return new_workouts, errored_workouts
 
 
 class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
@@ -386,21 +375,25 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
 
     def process_zip_archive(
         self, equipments: Union[List["Equipment"], None]
-    ) -> Tuple[List["Workout"], bool]:
+    ) -> Tuple[List["Workout"], Dict]:
         if not self.file:
             raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
         files_to_process = self.get_files_from_archive()
         if len(files_to_process) > MAX_ARCHIVES_FOR_SYNC:
             self.add_workouts_import_task(files_to_process, equipments)
-            return [], True
+            return [], {"async": True}
 
-        return self.process_archive_content(
+        new_workouts, errored_workouts = self.process_archive_content(
             archive_content=self._get_archive_content(),
             files_to_process=files_to_process,
             equipments=equipments,
-        ), False
+        )
+        return new_workouts, {
+            "async": False,
+            "errored_workouts": errored_workouts,
+        }
 
-    def process(self) -> Tuple[List["Workout"], bool]:
+    def process(self) -> Tuple[List["Workout"], Dict]:
         if self.file is None:
             raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
         if self.file.filename is None:
@@ -415,13 +408,15 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
 
         try:
             if extension == "zip":
-                workouts, is_async = self.process_zip_archive(equipments)
-                return workouts, is_async
+                new_workouts, processing_output = self.process_zip_archive(
+                    equipments
+                )
+                return new_workouts, processing_output
             else:
                 new_workout = self.create_workout_from_file(
                     extension, equipments
                 )
-                return [new_workout], False
+                return [new_workout], {"async": False, "errored_workouts": []}
         except InvalidEquipmentsException as e:
             raise WorkoutException("error", str(e)) from e
 
@@ -441,7 +436,7 @@ class WorkoutsFromArchiveCreationAsyncService(AbstractWorkoutsCreationService):
         self.files_to_process = import_data["files_to_process"]
         self.equipment_ids = import_data["equipment_ids"]
 
-    def process(self) -> Tuple[List["Workout"], bool]:
+    def process(self) -> Tuple[List["Workout"], Dict]:
         if self.equipment_ids is None:
             equipments = None
         elif not self.equipment_ids:
@@ -452,9 +447,12 @@ class WorkoutsFromArchiveCreationAsyncService(AbstractWorkoutsCreationService):
             ).all()
 
         with open(self.file_path, "rb") as zip_file:
-            workouts = self.process_archive_content(
+            new_workouts, errored_workouts = self.process_archive_content(
                 archive_content=zip_file,
                 files_to_process=self.files_to_process,
                 equipments=equipments,
             )
-        return workouts, True
+        return new_workouts, {
+            "errored_workouts": errored_workouts,
+            "async": True,
+        }
