@@ -21,12 +21,17 @@ def upgrade():
     op.create_table(
         "user_tasks",
         sa.Column("id", sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column("uuid", sa.UUID(), nullable=False),
         sa.Column("user_id", sa.Integer(), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=False),
         sa.Column("updated_at", sa.DateTime(), nullable=True),
         sa.Column(
             "task_type",
-            sa.Enum("user_data_export", "workouts_archive_import", name="task_types"),
+            sa.Enum(
+                "user_data_export",
+                "workouts_archive_import",
+                name="task_types",
+            ),
             nullable=False,
         ),
         sa.Column("progress", sa.Integer(), nullable=False),
@@ -58,8 +63,9 @@ def upgrade():
 
     op.execute("""
         INSERT INTO user_tasks
-          (user_id, created_at, updated_at, task_type, progress, errored, file_path, file_size)
+          (uuid, user_id, created_at, updated_at, task_type, progress, errored, file_path, file_size)
         SELECT
+          gen_random_uuid(),
           ude.user_id,
           ude.created_at,
           ude.updated_at,
@@ -77,10 +83,13 @@ def upgrade():
 
     op.drop_table("users_data_export")
 
-
-    with op.batch_alter_table('app_config', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('file_sync_limit_import', sa.Integer(), nullable=True))
-        batch_op.add_column(sa.Column('file_limit_import', sa.Integer(), nullable=True))
+    with op.batch_alter_table("app_config", schema=None) as batch_op:
+        batch_op.add_column(
+            sa.Column("file_sync_limit_import", sa.Integer(), nullable=True)
+        )
+        batch_op.add_column(
+            sa.Column("file_limit_import", sa.Integer(), nullable=True)
+        )
 
     op.execute("""
         UPDATE app_config
@@ -88,10 +97,11 @@ def upgrade():
             file_limit_import = app_config.gpx_limit_import;
     """)
 
-    with op.batch_alter_table('app_config', schema=None) as batch_op:
-        batch_op.alter_column('file_sync_limit_import', nullable=False)
-        batch_op.alter_column('file_limit_import', nullable=False)
-        batch_op.drop_column('gpx_limit_import')
+    with op.batch_alter_table("app_config", schema=None) as batch_op:
+        batch_op.alter_column("file_sync_limit_import", nullable=False)
+        batch_op.alter_column("file_limit_import", nullable=False)
+        batch_op.drop_column("gpx_limit_import")
+
 
 def downgrade():
     op.create_table(
@@ -159,15 +169,22 @@ def downgrade():
     op.drop_table("user_tasks")
     op.execute("drop type task_types;")
 
-    with op.batch_alter_table('app_config', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('gpx_limit_import', sa.INTEGER(), autoincrement=False, nullable=True))
+    with op.batch_alter_table("app_config", schema=None) as batch_op:
+        batch_op.add_column(
+            sa.Column(
+                "gpx_limit_import",
+                sa.INTEGER(),
+                autoincrement=False,
+                nullable=True,
+            )
+        )
 
     op.execute("""
         UPDATE app_config
         SET gpx_limit_import = app_config.file_sync_limit_import
     """)
 
-    with op.batch_alter_table('app_config', schema=None) as batch_op:
-        batch_op.alter_column('gpx_limit_import', nullable=False)
-        batch_op.drop_column('file_limit_import')
-        batch_op.drop_column('file_sync_limit_import')
+    with op.batch_alter_table("app_config", schema=None) as batch_op:
+        batch_op.alter_column("gpx_limit_import", nullable=False)
+        batch_op.drop_column("file_limit_import")
+        batch_op.drop_column("file_sync_limit_import")
