@@ -1113,7 +1113,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
         assert import_task.file_path == temp_file_path
         assert import_task.file_size is None
         assert import_task.progress == 0
-        assert import_task.task_type == "workouts_archive_import"
+        assert import_task.task_type == "workouts_archive_upload"
         assert import_task.user_id == user_1.id
 
         # file cleanup
@@ -1171,7 +1171,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
         assert import_task.file_path == temp_file_path
         assert import_task.file_size is None
         assert import_task.progress == 0
-        assert import_task.task_type == "workouts_archive_import"
+        assert import_task.task_type == "workouts_archive_upload"
         assert import_task.user_id == user_1.id
 
         # file cleanup
@@ -1280,7 +1280,7 @@ class TestWorkoutsFromFileCreationServiceProcessZipArchive(
 
         assert len(new_workouts) == 1
         assert processing_output == {
-            "async": False,
+            "task_short_id": None,
             "errored_workouts": {"test_4.gpx": "no tracks in gpx file"},
         }
 
@@ -1693,8 +1693,8 @@ class TestWorkoutsFromFileCreationServiceProcessForSyncArchiveUpload(
 
         assert len(new_workouts) == 3
         assert processing_output == {
-            "async": False,
             "errored_workouts": {},
+            "task_short_id": None,
         }
 
     def test_it_creates_workouts(

@@ -27,6 +27,9 @@ import AuthorizeUserApp from '@/components/User/UserApps/AuthorizeUserApp.vue'
 import UserApps from '@/components/User/UserApps/index.vue'
 import UserApp from '@/components/User/UserApps/UserApp.vue'
 import UserAppsList from '@/components/User/UserApps/UserAppsList.vue'
+import UserArchiveUploads from '@/components/User/UserArchiveUploads/index.vue'
+import UserArchiveUpload from '@/components/User/UserArchiveUploads/UserArchiveUpload.vue'
+import UserArchiveUploadsList from '@/components/User/UserArchiveUploads/UserArchiveUploadsList.vue'
 import EquipmentEdition from '@/components/User/UserEquipments/EquipmentEdition.vue'
 import UserEquipments from '@/components/User/UserEquipments/index.vue'
 import UserEquipment from '@/components/User/UserEquipments/UserEquipment.vue'
@@ -388,6 +391,29 @@ const routes: RouteRecordRaw[] = [
                 path: 'sanctions/:action_id',
                 name: 'UserSanctionDetail',
                 component: UserSanctionDetail,
+              },
+            ],
+          },
+          {
+            path: 'archive-uploads',
+            name: 'UserArchiveUploads',
+            component: UserArchiveUploads,
+            children: [
+              {
+                path: '',
+                name: 'UserArchiveUploadsList',
+                component: UserArchiveUploadsList,
+                meta: {
+                  title: 'user.PROFILE.TABS.ARCHIVE_UPLOADS',
+                },
+              },
+              {
+                path: ':task_id',
+                name: 'UserArchiveUpload',
+                component: UserArchiveUpload,
+                meta: {
+                  title: 'user.PROFILE.TABS.ARCHIVE_UPLOADS',
+                },
               },
             ],
           },

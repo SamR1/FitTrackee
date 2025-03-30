@@ -317,7 +317,9 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
         },
       })
       .then((res) => {
-        if (res.data.status === 'created') {
+        if (res.data.status === 'in_progress') {
+          router.push(`/profile/archive-uploads/${res.data.data.task_id}`)
+        } else if (res.data.status === 'created') {
           context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
           const workout: IWorkout = res.data.data.workouts[0]
           router.push(

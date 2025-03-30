@@ -890,7 +890,7 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
         data_export = UserTask(
             user_id=user_1.id,
             created_at=created_at,
-            task_type="workouts_archive_import",
+            task_type="workouts_archive_upload",
             data={
                 "workouts_data": {"sport_id": sport_1_cycling.id},
                 "files_to_process": ["file_1.gpx", "file_2.gpx", "file_3.gpx"],
@@ -910,7 +910,7 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "files_count": 3,
             "progress": 0,
             "status": "queued",
-            "type": "workouts_archive_import",
+            "type": "workouts_archive_upload",
         }
 
     def test_it_returns_ongoing_import(
@@ -920,7 +920,7 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
         data_export = UserTask(
             user_id=user_1.id,
             created_at=created_at,
-            task_type="workouts_archive_import",
+            task_type="workouts_archive_upload",
             data={
                 "workouts_data": {"sport_id": sport_1_cycling.id},
                 "files_to_process": ["file_1.gpx", "file_2.gpx", "file_3.gpx"],
@@ -941,7 +941,7 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "files_count": 3,
             "progress": 50,
             "status": "in_progress",
-            "type": "workouts_archive_import",
+            "type": "workouts_archive_upload",
         }
 
     def test_it_returns_successful_import(
@@ -951,7 +951,7 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
         data_export = UserTask(
             user_id=user_1.id,
             created_at=created_at,
-            task_type="workouts_archive_import",
+            task_type="workouts_archive_upload",
             data={
                 "workouts_data": {"sport_id": sport_1_cycling.id},
                 "files_to_process": ["file_1.gpx", "file_2.gpx", "file_3.gpx"],
@@ -972,17 +972,17 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "files_count": 3,
             "progress": 100,
             "status": "successful",
-            "type": "workouts_archive_import",
+            "type": "workouts_archive_upload",
         }
 
-    def test_it_returns_errored_import(
+    def test_it_returns_partially_errored_import(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         created_at = datetime.now(timezone.utc)
         data_export = UserTask(
             user_id=user_1.id,
             created_at=created_at,
-            task_type="workouts_archive_import",
+            task_type="workouts_archive_upload",
             data={
                 "workouts_data": {"sport_id": sport_1_cycling.id},
                 "files_to_process": ["file_1.gpx", "file_2.gpx", "file_3.gpx"],
@@ -1004,8 +1004,42 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "errored_files": {"file_2.gpx": "some error"},
             "files_count": 3,
             "progress": 100,
+            "status": "partially_in_error",
+            "type": "workouts_archive_upload",
+        }
+
+    def test_it_returns_errored_import(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        created_at = datetime.now(timezone.utc)
+        data_export = UserTask(
+            user_id=user_1.id,
+            created_at=created_at,
+            task_type="workouts_archive_upload",
+            data={
+                "workouts_data": {"sport_id": sport_1_cycling.id},
+                "files_to_process": ["file_1.gpx", "file_2.gpx", "file_3.gpx"],
+                "equipment_ids": None,
+            },
+            file_path="some/path",
+        )
+        errors = {f"file_{n}.gpx": "some error" for n in range(1, 4)}
+        data_export.progress = 100
+        data_export.errored = True
+        data_export.errors = errors
+        db.session.add(data_export)
+        db.session.commit()
+
+        serialized_data_export = data_export.serialize()
+
+        assert serialized_data_export == {
+            "id": data_export.short_id,
+            "created_at": created_at,
+            "errored_files": errors,
+            "files_count": 3,
+            "progress": 100,
             "status": "errored",
-            "type": "workouts_archive_import",
+            "type": "workouts_archive_upload",
         }
 
 

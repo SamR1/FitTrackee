@@ -226,3 +226,12 @@ export interface IUserAppealPayload {
 }
 
 export type TToken = string | LocationQueryValue | LocationQueryValue[]
+
+export interface IArchiveUploadTask {
+  created_at: string
+  errored_files: Record<string, string>
+  files_count: number
+  id: string
+  progress: string
+  status: string
+}

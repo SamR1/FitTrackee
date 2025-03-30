@@ -1391,14 +1391,13 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
             assert response.status_code == 200
             data = json.loads(response.data.decode())
             assert "in_progress" in data["status"]
-            assert data["data"]["workouts"] == []
-            assert data["data"]["errored_workouts"] == []
             import_task = UserTask.query.filter_by(
-                user_id=user_1.id, task_type="workouts_archive_import"
+                user_id=user_1.id, task_type="workouts_archive_upload"
             ).one()
             import_workout_archive_mock.send.assert_called_once_with(
                 task_id=import_task.id
             )
+            assert data["data"] == {"task_id": import_task.short_id}
 
     def test_it_returns_400_when_files_in_archive_exceed_limit(
         self,
