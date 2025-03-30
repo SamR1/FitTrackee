@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from typing import Generator, Iterator, List
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 from uuid import uuid4
 
 import pytest
@@ -999,3 +999,9 @@ def gpx_file_storage(gpx_file: str) -> FileStorage:
     return FileStorage(
         filename=f"{uuid4().hex}.gpx", stream=BytesIO(str.encode(gpx_file))
     )
+
+
+@pytest.fixture()
+def import_workout_archive_mock() -> Iterator[MagicMock]:
+    with patch("fittrackee.workouts.tasks.import_workout_archive") as mock:
+        yield mock

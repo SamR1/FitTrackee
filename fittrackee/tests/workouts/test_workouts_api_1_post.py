@@ -3,7 +3,7 @@ import os
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from typing import TYPE_CHECKING, Any, Dict, Optional
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from flask import Flask
@@ -13,7 +13,7 @@ from fittrackee import db
 from fittrackee.database import PSQL_INTEGER_LIMIT
 from fittrackee.equipments.models import Equipment
 from fittrackee.reports.models import ReportActionAppeal
-from fittrackee.users.models import User
+from fittrackee.users.models import User, UserTask
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import (
     WorkoutExceedingValueException,
@@ -1212,7 +1212,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
 
 
 class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
-    def test_it_adds_workouts_with_zip_archive(
+    def test_it_adds_workouts_synchronously_with_zip_archive(
         self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
@@ -1359,6 +1359,46 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
                     "exceed the limits"
                 ),
             }
+
+    def test_it_creates_task_to_add_workouts_asynchronously_when_files_exceed_limit(  # noqa
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        import_workout_archive_mock: "MagicMock",
+    ) -> None:
+        app.config.update(
+            {"file_limit_import": 3, "file_sync_limit_import": 2}
+        )
+        # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
+        file_path = os.path.join(app.root_path, "tests/files/gpx_test.zip")
+        with open(file_path, "rb") as zip_file:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app, user_1.email
+            )
+
+            response = client.post(
+                "/api/workouts",
+                data=dict(
+                    file=(zip_file, "gpx_test.zip"), data='{"sport_id": 1}'
+                ),
+                headers=dict(
+                    content_type="multipart/form-data",
+                    Authorization=f"Bearer {auth_token}",
+                ),
+            )
+
+            assert response.status_code == 200
+            data = json.loads(response.data.decode())
+            assert "in_progress" in data["status"]
+            assert data["data"]["workouts"] == []
+            assert data["data"]["errored_workouts"] == []
+            import_task = UserTask.query.filter_by(
+                user_id=user_1.id, task_type="workouts_archive_import"
+            ).one()
+            import_workout_archive_mock.send.assert_called_once_with(
+                task_id=import_task.id
+            )
 
     def test_it_returns_400_when_files_in_archive_exceed_limit(
         self,

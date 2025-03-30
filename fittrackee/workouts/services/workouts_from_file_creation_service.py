@@ -39,7 +39,6 @@ WORKOUT_FROM_FILE_SERVICES: Dict[
     "gpx": WorkoutGpxCreationService,
 }
 NO_FILE_ERROR_MESSAGE = "no workout file provided"
-MAX_ARCHIVES_FOR_SYNC = 10
 
 
 @dataclass
@@ -310,7 +309,7 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
 
                         if (
                             len(files_to_process)
-                            > current_app.config["gpx_limit_import"]
+                            > current_app.config["file_limit_import"]
                         ):
                             raise WorkoutFileException(
                                 "fail",
@@ -384,7 +383,10 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
         if not self.file:
             raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
         files_to_process = self.get_files_from_archive()
-        if len(files_to_process) > MAX_ARCHIVES_FOR_SYNC:
+        if (
+            len(files_to_process)
+            > current_app.config["file_sync_limit_import"]
+        ):
             self.add_workouts_import_task(files_to_process, equipments)
             return [], {"async": True}
 

@@ -23,6 +23,7 @@ def default_weather_service() -> Iterator[MagicMock]:
 
 
 def get_app_config(
+    max_sync_workouts: Optional[int] = None,
     max_workouts: Optional[int] = None,
     max_single_file_size: Optional[Union[int, float]] = None,
     max_zip_file_size: Optional[Union[int, float]] = None,
@@ -33,7 +34,10 @@ def get_app_config(
         config = AppConfig()
         db.session.add(config)
         db.session.flush()
-    config.gpx_limit_import = 10 if max_workouts is None else max_workouts
+    config.file_sync_limit_import = (
+        10 if max_sync_workouts is None else max_sync_workouts
+    )
+    config.file_limit_import = 100 if max_workouts is None else max_workouts
     config.max_single_file_size = (
         (1 if max_single_file_size is None else max_single_file_size)
         * 1024
@@ -48,7 +52,9 @@ def get_app_config(
 
 
 def get_app(
+    *,
     with_config: Optional[bool] = False,
+    max_sync_workouts: Optional[int] = None,
     max_workouts: Optional[int] = None,
     max_single_file_size: Optional[Union[int, float]] = None,
     max_zip_file_size: Optional[Union[int, float]] = None,
@@ -61,6 +67,7 @@ def get_app(
             db.create_all()
             if with_config:
                 app_db_config = get_app_config(
+                    max_sync_workouts,
                     max_workouts,
                     max_single_file_size,
                     max_zip_file_size,
@@ -108,7 +115,7 @@ def app_default_static_map(monkeypatch: pytest.MonkeyPatch) -> Generator:
 @pytest.fixture
 def app_with_max_workouts(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv("EMAIL_URL", "smtp://none:none@0.0.0.0:1025")
-    yield from get_app(with_config=True, max_workouts=2)
+    yield from get_app(with_config=True, max_sync_workouts=1, max_workouts=2)
 
 
 @pytest.fixture
@@ -173,7 +180,8 @@ def app_wo_email_activation(monkeypatch: pytest.MonkeyPatch) -> Generator:
 @pytest.fixture()
 def app_config() -> AppConfig:
     config = AppConfig()
-    config.gpx_limit_import = 10
+    config.file_sync_limit_import = 10
+    config.file_limit_import = 100
     config.max_single_file_size = 1048576
     config.max_zip_file_size = 10485760
     config.max_users = 0
