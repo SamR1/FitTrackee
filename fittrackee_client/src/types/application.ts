@@ -39,7 +39,8 @@ export type TAppConfigForm = {
   [key: string]: number | string | boolean
   about: string
   admin_contact: string
-  gpx_limit_import: number
+  file_limit_import: number
+  file_sync_limit_import: number
   max_single_file_size: number
   max_users: number
   max_zip_file_size: number
