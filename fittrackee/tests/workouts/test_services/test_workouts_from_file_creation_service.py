@@ -1350,19 +1350,15 @@ class TestWorkoutsFromFileCreationServiceProcessZipArchive(
         equipment_type_1_shoe: "EquipmentType",
         equipment_shoes_user_1: "Equipment",
     ) -> None:
+        app.config.update(
+            {"file_limit_import": 10, "file_sync_limit_import": 2}
+        )
         equipments = [equipment_shoes_user_1]
         service = self.get_service(
             app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
         )
 
         with (
-            patch(
-                (
-                    "fittrackee.workouts.services.workouts_from_file_"
-                    "creation_service.MAX_ARCHIVES_FOR_SYNC"
-                ),
-                2,
-            ),
             patch.object(
                 WorkoutsFromFileCreationService, "process_archive_content"
             ) as process_archive_content_mock,

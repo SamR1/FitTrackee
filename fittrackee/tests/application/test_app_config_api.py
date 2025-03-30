@@ -108,14 +108,15 @@ class TestUpdateConfig(ApiTestCaseMixin):
         response = client.patch(
             "/api/config",
             content_type="application/json",
-            data=json.dumps(dict(gpx_limit_import=100, max_users=10)),
+            data=json.dumps(dict(file_limit_import=100, max_users=10)),
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
         data = json.loads(response.data.decode())
 
         assert response.status_code == 200
         assert "success" in data["status"]
-        assert data["data"]["gpx_limit_import"] == 100
+        assert data["data"]["file_sync_limit_import"] == 10
+        assert data["data"]["file_limit_import"] == 100
         assert data["data"]["is_registration_enabled"] is True
         assert data["data"]["max_single_file_size"] == 1048576
         assert data["data"]["max_zip_file_size"] == 10485760
@@ -135,7 +136,8 @@ class TestUpdateConfig(ApiTestCaseMixin):
             data=json.dumps(
                 dict(
                     admin_contact=admin_email,
-                    gpx_limit_import=20,
+                    file_limit_import=200,
+                    file_sync_limit_import=20,
                     max_single_file_size=10000,
                     max_zip_file_size=25000,
                     max_users=50,
@@ -149,7 +151,8 @@ class TestUpdateConfig(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
         assert data["data"]["admin_contact"] == admin_email
-        assert data["data"]["gpx_limit_import"] == 20
+        assert data["data"]["file_limit_import"] == 200
+        assert data["data"]["file_sync_limit_import"] == 20
         assert data["data"]["is_registration_enabled"] is True
         assert data["data"]["max_single_file_size"] == 10000
         assert data["data"]["max_zip_file_size"] == 25000
@@ -172,7 +175,8 @@ class TestUpdateConfig(ApiTestCaseMixin):
             content_type="application/json",
             data=json.dumps(
                 dict(
-                    gpx_limit_import=3,
+                    file_sync_limit_import=3,
+                    file_limit_import=5,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -212,7 +216,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         response = client.patch(
             "/api/config",
             content_type="application/json",
-            data=json.dumps(dict(gpx_limit_import=100, max_users=10)),
+            data=json.dumps(dict(file_limit_import=100, max_users=10)),
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -244,7 +248,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         response = client.patch(
             "/api/config",
             content_type="application/json",
-            data=json.dumps(dict(gpx_limit_import=100, max_users=10)),
+            data=json.dumps(dict(file_limit_import=100, max_users=10)),
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -253,7 +257,8 @@ class TestUpdateConfig(ApiTestCaseMixin):
     @pytest.mark.parametrize(
         "input_param",
         [
-            "gpx_limit_import",
+            "file_sync_limit_import",
+            "file_limit_import",
             "max_zip_file_size",
             "max_users",
             "stats_workouts_limit",
@@ -314,7 +319,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             content_type="application/json",
             data=json.dumps(
                 dict(
-                    gpx_limit_import=20,
+                    file_limit_import=20,
                     max_single_file_size=10000,
                     max_zip_file_size=1000,
                     max_users=PSQL_INTEGER_LIMIT,
@@ -375,7 +380,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             response, "max size of uploaded files must be greater than 0"
         )
 
-    def test_it_raises_error_if_gpx_limit_import_equals_0(
+    def test_it_raises_error_if_file_limit_import_equals_0(
         self, app: Flask, user_1_admin: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -387,7 +392,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             content_type="application/json",
             data=json.dumps(
                 dict(
-                    gpx_limit_import=0,
+                    file_limit_import=0,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -395,6 +400,52 @@ class TestUpdateConfig(ApiTestCaseMixin):
 
         self.assert_400(
             response, "max files in a zip archive must be greater than 0"
+        )
+
+    def test_it_raises_error_if_file_sync_limit_import_equals_0(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            "/api/config",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    file_sync_limit_import=0,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            "max files in a zip archive processed synchronously "
+            "must be greater than 0",
+        )
+
+    def test_it_raises_error_if_file_sync_limit_exceeds_file_limit_import(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            "/api/config",
+            content_type="application/json",
+            data=json.dumps(
+                dict(file_sync_limit_import=20, file_limit_import=10)
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            "max files in a zip archive must be equal or greater than "
+            "max files in a zip archive processed synchronously",
         )
 
     def test_it_raises_error_when_max_users_below_0(
