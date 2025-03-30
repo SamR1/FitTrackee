@@ -758,4 +758,72 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         handleError(context, null, timezoneError)
       })
   },
+  [AUTH_USER_STORE.ACTIONS.GET_ARCHIVE_UPLOAD_TASKS](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: { page?: number }
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(
+      AUTH_USER_STORE.MUTATIONS.SET_ARCHIVE_UPLOAD_TASKS_LOADING,
+      true
+    )
+    authApi
+      .get('workouts/upload-tasks', {
+        params: payload,
+      })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.SET_ARCHIVE_UPLOAD_TASKS,
+            res.data.data.tasks
+          )
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.SET_ARCHIVE_UPLOAD_TASKS_PAGINATION,
+            res.data.pagination
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch(() => {
+        handleError(context, null)
+      })
+      .finally(() =>
+        context.commit(
+          AUTH_USER_STORE.MUTATIONS.SET_ARCHIVE_UPLOAD_TASKS_LOADING,
+          false
+        )
+      )
+  },
+  [AUTH_USER_STORE.ACTIONS.GET_ARCHIVE_UPLOAD_TASK](
+    context: ActionContext<IAuthUserState, IRootState>,
+    taskId: string
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(
+      AUTH_USER_STORE.MUTATIONS.SET_ARCHIVE_UPLOAD_TASKS_LOADING,
+      true
+    )
+    authApi
+      .get(`workouts/upload-tasks/${taskId}`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.SET_ARCHIVE_UPLOAD_TASK,
+            res.data.task
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch(() => {
+        handleError(context, null)
+      })
+      .finally(() =>
+        context.commit(
+          AUTH_USER_STORE.MUTATIONS.SET_ARCHIVE_UPLOAD_TASKS_LOADING,
+          false
+        )
+      )
+  },
 }

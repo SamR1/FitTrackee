@@ -7,7 +7,7 @@ import type {
 
 import { AUTH_USER_STORE } from '@/store/constants'
 import type { IRootState } from '@/store/modules/root/types'
-import type { IPagePayload } from '@/types/api'
+import type { IPagePayload, IPagination } from '@/types/api'
 import type { TNotificationPreferences } from '@/types/notifications.ts'
 import type {
   IAuthUserProfile,
@@ -28,6 +28,7 @@ import type {
   IUserReportAction,
   IUserAppealPayload,
   IGetUserProfilePayload,
+  IArchiveUploadTask,
 } from '@/types/user'
 
 export interface IAuthUserState {
@@ -41,6 +42,12 @@ export interface IAuthUserState {
   blockedUsers: IUserProfile[]
   userReportAction: IUserReportAction
   timezones: string[]
+  archiveUploadTasks: {
+    task: IArchiveUploadTask
+    tasks: IArchiveUploadTask[]
+    loading: boolean
+    pagination: IPagination
+  }
 }
 
 export interface IAuthUserActions {
@@ -176,9 +183,35 @@ export interface IAuthUserActions {
   [AUTH_USER_STORE.ACTIONS.GET_TIMEZONES](
     context: ActionContext<IAuthUserState, IRootState>
   ): void
+
+  [AUTH_USER_STORE.ACTIONS.GET_ARCHIVE_UPLOAD_TASK](
+    context: ActionContext<IAuthUserState, IRootState>,
+    taskId: string
+  ): void
+
+  [AUTH_USER_STORE.ACTIONS.GET_ARCHIVE_UPLOAD_TASKS](
+    context: ActionContext<IAuthUserState, IRootState>,
+    payload: { page?: number }
+  ): void
 }
 
 export interface IAuthUserGetters {
+  [AUTH_USER_STORE.GETTERS.ARCHIVE_UPLOAD_TASK](
+    state: IAuthUserState
+  ): IArchiveUploadTask
+
+  [AUTH_USER_STORE.GETTERS.ARCHIVE_UPLOAD_TASKS](
+    state: IAuthUserState
+  ): IArchiveUploadTask[]
+
+  [AUTH_USER_STORE.GETTERS.ARCHIVE_UPLOAD_TASKS_LOADING](
+    state: IAuthUserState
+  ): boolean
+
+  [AUTH_USER_STORE.GETTERS.ARCHIVE_UPLOAD_TASKS_PAGINATION](
+    state: IAuthUserState
+  ): IPagination
+
   [AUTH_USER_STORE.GETTERS.AUTH_TOKEN](state: IAuthUserState): string | null
 
   [AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE](
@@ -273,6 +306,22 @@ export type TAuthUserMutations<S = IAuthUserState> = {
     sanction: IUserReportAction
   ): void
   [AUTH_USER_STORE.MUTATIONS.SET_TIMEZONES](state: S, timezones: string[]): void
+  [AUTH_USER_STORE.MUTATIONS.SET_ARCHIVE_UPLOAD_TASK](
+    state: S,
+    task: IArchiveUploadTask
+  ): void
+  [AUTH_USER_STORE.MUTATIONS.SET_ARCHIVE_UPLOAD_TASKS](
+    state: S,
+    tasks: IArchiveUploadTask[]
+  ): void
+  [AUTH_USER_STORE.MUTATIONS.SET_ARCHIVE_UPLOAD_TASKS_LOADING](
+    state: S,
+    loading: boolean
+  ): void
+  [AUTH_USER_STORE.MUTATIONS.SET_ARCHIVE_UPLOAD_TASKS_PAGINATION](
+    state: S,
+    pagination: IPagination
+  ): void
 }
 
 export type TAuthUserStoreModule<S = IAuthUserState> = Omit<

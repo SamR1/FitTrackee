@@ -1180,6 +1180,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     **Example response**:
 
+    - when upload is synchronous
+
     .. sourcecode:: http
 
       HTTP/1.1 201 CREATED
@@ -1308,6 +1310,20 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
           "status": "success"
         }
 
+    - when upload is asynchronous
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+        {
+          "data": {
+            "task_id": "JKtd4tpQDgAPwNTsjjPdVh"
+          },
+          "status": "in_progress"
+        }
+
     :form file: gpx file (allowed extensions: .gpx, .zip)
     :form data: sport id, equipment id, description, title, notes, visibility
        for workout, analysis and map
@@ -1334,6 +1350,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
+    :statuscode 200: archive upload in progress
     :statuscode 201: workout created
     :statuscode 400:
         - ``invalid payload``
@@ -1384,10 +1401,10 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             auth_user, workout_data, workout_file
         )
         new_workouts, processing_output = service.process()
-        if processing_output["async"]:
+        if processing_output["task_short_id"]:
             return {
                 "status": "in_progress",
-                "data": {"workouts": [], "errored_workouts": []},
+                "data": {"task_id": processing_output["task_short_id"]},
             }, 200
 
         if len(new_workouts) > 0:
@@ -2299,9 +2316,9 @@ def appeal_workout_suspension(
         return handle_error_and_return_response(e, db=db)
 
 
-@workouts_blueprint.route("/workouts/tasks", methods=["GET"])
+@workouts_blueprint.route("/workouts/upload-tasks", methods=["GET"])
 @require_auth(scopes=["workouts:read"])
-def get_workouts_import_tasks(
+def get_workouts_upload_tasks(
     auth_user: User,
 ) -> Tuple[Dict, int]:
     """
@@ -2339,8 +2356,8 @@ def get_workouts_import_tasks(
               "files_count": 10,
               "id": "JEiR6cDcADX8bZ6ZeQssnr",
               "progress": 10,
-              "status": 'in_progress',
-              "type": "workouts_archive_import"
+              "status": "in_progress",
+              "type": "workouts_archive_upload"
             }
           ]
         },
@@ -2369,7 +2386,7 @@ def get_workouts_import_tasks(
     per_page = DEFAULT_TASKS_PER_PAGE
     tasks_pagination = (
         UserTask.query.filter_by(
-            user_id=auth_user.id, task_type="workouts_archive_import"
+            user_id=auth_user.id, task_type="workouts_archive_upload"
         )
         .order_by(UserTask.created_at.desc())
         .paginate(page=page, per_page=per_page, error_out=False)
@@ -2390,10 +2407,10 @@ def get_workouts_import_tasks(
 
 
 @workouts_blueprint.route(
-    "/workouts/tasks/<string:task_short_id>", methods=["GET"]
+    "/workouts/upload-tasks/<string:task_short_id>", methods=["GET"]
 )
 @require_auth(scopes=["workouts:read"])
-def get_workouts_import_task(
+def get_workouts_upload_task(
     auth_user: User, task_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
@@ -2420,8 +2437,8 @@ def get_workouts_import_task(
           "files_count": 10,
           "id": "JEiR6cDcADX8bZ6ZeQssnr",
           "progress": 10,
-          "status": 'in_progress',
-          "type": "workouts_archive_import"
+          "status": "in_progress",
+          "type": "workouts_archive_upload"
         },
         "status": "success"
       }
