@@ -12,7 +12,9 @@
   "APPLICATION": "Application",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Email de l'administrateur pour contact ",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "L'upload asynchrone des archives zip est désactivé.",
     "MAX_FILES_IN_ZIP_LABEL": "Nombre max. de fichiers dans une archive zip ",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Nombre max. de fichiers pour le traitement synchrone",
     "MAX_USERS_HELP": "Si égal à 0, pas limite d'inscription",
     "MAX_USERS_LABEL": "Nombre maximum d'utilisateurs actifs ",
     "NO_CONTACT_EMAIL": "non renseigné",

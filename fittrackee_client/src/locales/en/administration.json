@@ -12,7 +12,9 @@
   "APPLICATION": "Application",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Administrator email for contact",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "Asynchronous zip archive upload is disabled.",
     "MAX_FILES_IN_ZIP_LABEL": "Max. files of zip archive",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Max. files for synchronous processing",
     "MAX_USERS_HELP": "If 0, no limitation on registration.",
     "MAX_USERS_LABEL": "Max. number of active users",
     "NO_CONTACT_EMAIL": "no contact email",
@@ -89,9 +91,9 @@
     "VIEW_REPORT": "View report"
   },
   "BACK_TO_ADMIN": "Back to admin",
-  "CONFIRM_USER_ACCOUNT_DELETION": "Are you sure you want to delete {0} account? All data will be deleted, this cannot be undone.",
   "CONFIRM_SUSPEND_ACCOUNT": "Are you sure you want to suspend {0} account?",
   "CONFIRM_SUSPEND_CONTENT": "Are you sure you want to suspend reported content?",
+  "CONFIRM_USER_ACCOUNT_DELETION": "Are you sure you want to delete {0} account? All data will be deleted, this cannot be undone.",
   "CONFIRM_USER_PASSWORD_RESET": "Are you sure you want to reset {0} password?",
   "CURRENT_EMAIL": "Current email",
   "DELETED_COMMENT": "Deleted comment",
