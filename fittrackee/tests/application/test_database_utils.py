@@ -34,13 +34,21 @@ class TestGetOrInitAppConfig:
         config = AppConfig.query.one()
         assert config.max_zip_file_size == 10485760  # 10MB
 
-    def test_it_inits_gpx_limit_import_with_default_value(
+    def test_it_inits_file_limit_import_with_default_value(
         self, app_no_config: Flask
     ) -> None:
         get_or_init_config()
 
         config = AppConfig.query.one()
-        assert config.gpx_limit_import == 10
+        assert config.file_limit_import == 10
+
+    def test_it_inits_file_sync_limit_import_with_default_value(
+        self, app_no_config: Flask
+    ) -> None:
+        get_or_init_config()
+
+        config = AppConfig.query.one()
+        assert config.file_sync_limit_import == 10
 
     def test_it_returns_existing_config(self, app: Flask) -> None:
         config = get_or_init_config()

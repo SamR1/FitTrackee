@@ -31,7 +31,8 @@ def update_app_config_from_database(
 ) -> None:
     current_app.config.update(
         {
-            "gpx_limit_import": db_config.gpx_limit_import,
+            "file_limit_import": db_config.file_limit_import,
+            "file_sync_limit_import": db_config.file_sync_limit_import,
             "max_single_file_size": db_config.max_single_file_size,
             "MAX_CONTENT_LENGTH": db_config.max_zip_file_size,
             "max_users": db_config.max_users,
@@ -58,7 +59,11 @@ def verify_app_config(config_data: Dict) -> List:
     ret = []
 
     params = [
-        ("gpx_limit_import", "max files in a zip archive"),
+        (
+            "file_sync_limit_import",
+            "max files in a zip archive processed synchronously",
+        ),
+        ("file_limit_import", "max files in a zip archive"),
         ("max_single_file_size", "max size of uploaded files"),
         ("max_zip_file_size", "max size of zip archive"),
     ]

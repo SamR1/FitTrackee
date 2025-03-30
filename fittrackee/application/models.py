@@ -19,7 +19,9 @@ class AppConfig(BaseModel):
     __tablename__ = "app_config"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     max_users: Mapped[int] = mapped_column(default=0, nullable=False)
-    gpx_limit_import: Mapped[int] = mapped_column(default=10, nullable=False)
+    file_sync_limit_import: Mapped[int] = mapped_column(
+        default=10, nullable=False
+    )
     max_single_file_size: Mapped[int] = mapped_column(
         default=1048576, nullable=False
     )
@@ -39,6 +41,7 @@ class AppConfig(BaseModel):
     stats_workouts_limit: Mapped[int] = mapped_column(
         default=10000, nullable=False
     )
+    file_limit_import: Mapped[int] = mapped_column(default=10, nullable=False)
 
     @property
     def is_registration_enabled(self) -> bool:
@@ -55,7 +58,8 @@ class AppConfig(BaseModel):
         return {
             "about": self.about,
             "admin_contact": self.admin_contact,
-            "gpx_limit_import": self.gpx_limit_import,
+            "file_limit_import": self.file_limit_import,
+            "file_sync_limit_import": self.file_sync_limit_import,
             "is_email_sending_enabled": current_app.config["CAN_SEND_EMAILS"],
             "is_registration_enabled": self.is_registration_enabled,
             "max_single_file_size": self.max_single_file_size,
