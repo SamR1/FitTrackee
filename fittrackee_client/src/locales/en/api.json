@@ -28,6 +28,7 @@
     "invalid payload": "Provided data are invalid.",
     "invalid token, please log in again": "Invalid token, please log in again.",
     "invalid token, please request a new token": "Invalid token, please log in again.",
+    "max files in a zip archive must be equal or greater than max files in a zip archive processed synchronously": "Max files in a zip archive must be equal or greater than max files in a zip archive processed synchronously.",
     "new email must be different than current email": "The new email must be different than current email.",
     "no file part": "No file provided.",
     "no selected file": "No selected file.",

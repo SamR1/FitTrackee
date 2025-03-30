@@ -28,6 +28,7 @@
     "invalid payload": "Données fournies incorrectes.",
     "invalid token, please log in again": "Jeton de connexion invalide, merci de vous reconnecter.",
     "invalid token, please request a new token": "Jeton de connexion invalide, veuillez demander un nouveau jeton.",
+    "max files in a zip archive must be equal or greater than max files in a zip archive processed synchronously": "Le nombre max. de fichiers dans une archive doit être supérieur ou égal au nombre max. de fichiers à traiter en synchrone.",
     "new email must be different than current email": "La nouvelle adresse électronique doit être différente de l'adresse actuelle.",
     "no file part": "Pas de fichier fourni.",
     "no selected file": "Pas de fichier sélectionné.",
