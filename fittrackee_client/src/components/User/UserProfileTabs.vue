@@ -38,6 +38,8 @@
       case 'PICTURE':
       case 'PRIVACY-POLICY':
         return `/profile/edit/${tab.toLocaleLowerCase()}`
+      case 'ARCHIVE_UPLOADS':
+        return '/profile/archive-uploads'
       case 'APPS':
       case 'BLOCKED-USERS':
       case 'EQUIPMENTS':
@@ -49,8 +51,8 @@
         return `/profile${
           edition.value ? '/edit' : ''
         }/${tab.toLocaleLowerCase()}`
-      default:
       case 'PROFILE':
+      default:
         return `/profile${edition.value ? '/edit' : ''}`
     }
   }

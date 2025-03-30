@@ -56,7 +56,7 @@ if TYPE_CHECKING:
 
 TASK_TYPES = [
     "user_data_export",
-    "workouts_archive_import",
+    "workouts_archive_upload",
 ]
 
 
@@ -1066,33 +1066,42 @@ class UserTask(BaseModel):
     def short_id(self) -> str:
         return encode_uuid(self.uuid)
 
-    def serialize(self) -> Dict:
+    def _get_user_data_export(self, serialized_task: Dict) -> Dict:
         if self.progress == 100:
             status = "errored" if self.errored else "successful"
         else:
             status = "in_progress"
-        serialized_task = {
-            "id": self.short_id,
-            "created_at": self.created_at,
-            "type": self.task_type,
+        return {
+            **serialized_task,
+            "file_name": (
+                self.file_path.split("/")[-1]
+                if status == "successful" and self.file_path
+                else None
+            ),
+            "file_size": (
+                self.file_size
+                if status == "successful" and self.file_size is not None
+                else None
+            ),
             "status": status,
         }
 
-        if self.task_type == "user_data_export":
-            return {
-                **serialized_task,
-                "file_name": (
-                    self.file_path.split("/")[-1]
-                    if status == "successful" and self.file_path
-                    else None
-                ),
-                "file_size": (
-                    self.file_size
-                    if status == "successful" and self.file_size is not None
-                    else None
-                ),
-            }
-
+    def _get_workouts_archive_upload(self, serialized_task: Dict) -> Dict:
+        if self.progress == 0:
+            serialized_task["status"] = "queued"
+        elif self.progress == 100:
+            if self.errors:
+                serialized_task["status"] = (
+                    "partially_in_error"
+                    if isinstance(self.data, dict)
+                    and len(self.errors.keys())
+                    != len(self.data.get("files_to_process", []))
+                    else "errored"
+                )
+            else:
+                serialized_task["status"] = "successful"
+        else:
+            serialized_task["status"] = "in_progress"
         serialized_task = {
             **serialized_task,
             "files_count": (
@@ -1103,9 +1112,19 @@ class UserTask(BaseModel):
             "errored_files": self.errors,
             "progress": self.progress,
         }
-        if self.progress == 0:
-            serialized_task["status"] = "queued"
         return serialized_task
+
+    def serialize(self) -> Dict:
+        serialized_task = {
+            "id": self.short_id,
+            "created_at": self.created_at,
+            "type": self.task_type,
+        }
+
+        if self.task_type == "user_data_export":
+            return self._get_user_data_export(serialized_task)
+
+        return self._get_workouts_archive_upload(serialized_task)
 
 
 @listens_for(UserTask, "after_delete")

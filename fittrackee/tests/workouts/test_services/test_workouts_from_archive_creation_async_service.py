@@ -35,7 +35,7 @@ class WorkoutsFromArchiveCreationAsyncServiceTestCase:
     ) -> "UserTask":
         import_task = UserTask(
             user_id=user.id,
-            task_type="workouts_archive_import",
+            task_type="workouts_archive_upload",
             data={
                 "workouts_data": workouts_data,
                 "files_to_process": files_to_process,
@@ -127,8 +127,8 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
 
         assert new_workouts == []
         assert processing_output == {
-            "errored_workouts": [],
-            "async": True,
+            "errored_workouts": {},
+            "task_short_id": import_task.short_id,
         }
 
     def test_it_updates_task_with_error_when_file_does_not_exist(
@@ -156,7 +156,9 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
 
         assert import_task.progress == 100
         assert import_task.errored is True
-        assert import_task.errors == {"file": "archive file does not exist"}
+        assert import_task.errors == {
+            "archive zip": "archive file does not exist"
+        }
 
     @pytest.mark.parametrize("input_equipment_ids", [None, []])
     def test_it_calls_process_archive_content_when_no_equipment_ids(
@@ -268,8 +270,8 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
 
         assert len(workouts) == 3
         assert processing_output == {
-            "async": True,
             "errored_workouts": {},
+            "task_short_id": import_task.short_id,
         }
 
     def test_it_updates_task(
@@ -329,3 +331,33 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
         service.process()
 
         assert os.path.isfile(file_path) is False
+
+    def test_it_creates_workout_and_store_error_when_one_file_is_invalid(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        files_to_process = ["test_1.gpx", "test_4.gpx"]
+        fd, file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+        shutil.copyfile(
+            os.path.join(app.root_path, "tests/files/gpx_test_incorrect.zip"),
+            file_path,
+        )
+        import_task = self.get_import_task(
+            user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+            files_to_process=files_to_process,
+            equipment_ids=None,
+            file_path=file_path,
+        )
+        service = WorkoutsFromArchiveCreationAsyncService(
+            task_id=import_task.id
+        )
+
+        new_workouts, _ = service.process()
+
+        assert len(new_workouts) == 1
+        assert import_task.progress == 100
+        assert import_task.errored is True
+        assert import_task.errors == {"test_4.gpx": "no tracks in gpx file"}

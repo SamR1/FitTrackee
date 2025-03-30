@@ -29,7 +29,7 @@ def upgrade():
             "task_type",
             sa.Enum(
                 "user_data_export",
-                "workouts_archive_import",
+                "workouts_archive_upload",
                 name="task_types",
             ),
             nullable=False,

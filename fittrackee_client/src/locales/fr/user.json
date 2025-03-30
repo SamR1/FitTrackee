@@ -74,6 +74,23 @@
   "PRIVACY_POLICY_TO_VALIDATE": "Veuillez {0} la politique de confidentialité avant de poursuivre.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Mise à jour du compte",
+    "ARCHIVE_UPLOADS": {
+      "ERRORED_FILES": "Fichiers en erreur",
+      "ERRORS": {
+        "no tracks in gpx file": "pas de <tracks> dans le fichier gpx."
+      },
+      "FILES_COUNT": "{count} fichiers",
+      "NOT_FOUND": "Pas de chargement d'archive trouvé.",
+      "PROGRESS": "Progression",
+      "STATUS": {
+        "LABEL": "État",
+        "errored": "en erreur",
+        "in_progress": "en cours",
+        "partially_in_error": "partiellement en erreur",
+        "queued": "en attente",
+        "successful": "terminé avec succès"
+      }
+    },
     "ASCENT_DATA": "Données relatives au dénivelé positif (records, total)",
     "BACK_TO_PROFILE": "Revenir au profil",
     "BIO": "Bio",
@@ -126,6 +143,7 @@
     },
     "NOTIFICATIONS_EDITION": "Edition des préférences de notification",
     "NOTIFICATION_PREFERENCES": "Préférences de notification",
+    "NO_ARCHIVE_UPLOADS": "Pas de chargement d'archives",
     "NO_SANCTIONS": "Pas de sanctions",
     "PICTURE": "Image de profil",
     "PICTURE_EDITION": "Mise à jour de l'image de profil",
@@ -173,6 +191,7 @@
     "TABS": {
       "ACCOUNT": "compte",
       "APPS": "apps",
+      "ARCHIVE_UPLOADS": "chargement des archives",
       "BLOCKED-USERS": "utilisateurs bloqués",
       "EQUIPMENTS": "équipements",
       "FOLLOW-REQUESTS": "demandes d'abonnement",
