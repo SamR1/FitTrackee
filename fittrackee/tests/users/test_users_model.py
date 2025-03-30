@@ -809,7 +809,7 @@ class TestUserSportModel:
         )
 
 
-class TestUserTaskSerializer:
+class TestUserTaskSerializerForUserDataExport:
     def test_it_returns_ongoing_export(self, app: Flask, user_1: User) -> None:
         created_at = datetime.now(timezone.utc)
         data_export = UserTask(
@@ -817,13 +817,19 @@ class TestUserTaskSerializer:
             created_at=created_at,
             task_type="user_data_export",
         )
+        db.session.add(data_export)
+        db.session.commit()
 
         serialized_data_export = data_export.serialize()
 
-        assert serialized_data_export["created_at"] == created_at
-        assert serialized_data_export["status"] == "in_progress"
-        assert serialized_data_export["file_name"] is None
-        assert serialized_data_export["file_size"] is None
+        assert serialized_data_export == {
+            "id": data_export.short_id,
+            "created_at": created_at,
+            "file_name": None,
+            "file_size": None,
+            "status": "in_progress",
+            "type": "user_data_export",
+        }
 
     def test_it_returns_successful_export(
         self, app: Flask, user_1: User
@@ -838,13 +844,19 @@ class TestUserTaskSerializer:
         file_name = random_string()
         data_export.file_path = f"exports/{user_1.id}/{file_name}"
         data_export.file_size = random_int()
+        db.session.add(data_export)
+        db.session.commit()
 
         serialized_data_export = data_export.serialize()
 
-        assert serialized_data_export["created_at"] == created_at
-        assert serialized_data_export["status"] == "successful"
-        assert serialized_data_export["file_name"] == file_name
-        assert serialized_data_export["file_size"] == data_export.file_size
+        assert serialized_data_export == {
+            "id": data_export.short_id,
+            "created_at": created_at,
+            "file_name": file_name,
+            "file_size": data_export.file_size,
+            "status": "successful",
+            "type": "user_data_export",
+        }
 
     def test_it_returns_errored_export(self, app: Flask, user_1: User) -> None:
         created_at = datetime.now(timezone.utc)
@@ -855,13 +867,146 @@ class TestUserTaskSerializer:
         )
         data_export.progress = 100
         data_export.errored = True
+        db.session.add(data_export)
+        db.session.commit()
 
         serialized_data_export = data_export.serialize()
 
-        assert serialized_data_export["created_at"] == created_at
-        assert serialized_data_export["status"] == "errored"
-        assert serialized_data_export["file_name"] is None
-        assert serialized_data_export["file_size"] is None
+        assert serialized_data_export == {
+            "id": data_export.short_id,
+            "created_at": created_at,
+            "file_name": None,
+            "file_size": None,
+            "status": "errored",
+            "type": "user_data_export",
+        }
+
+
+class TestUserTaskSerializerForWorkoutArchiveImport:
+    def test_it_returns_queued_import(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        created_at = datetime.now(timezone.utc)
+        data_export = UserTask(
+            user_id=user_1.id,
+            created_at=created_at,
+            task_type="workouts_archive_import",
+            data={
+                "workouts_data": {"sport_id": sport_1_cycling.id},
+                "files_to_process": ["file_1.gpx", "file_2.gpx", "file_3.gpx"],
+                "equipment_ids": None,
+            },
+            file_path="some/path",
+        )
+        db.session.add(data_export)
+        db.session.commit()
+
+        serialized_data_export = data_export.serialize()
+
+        assert serialized_data_export == {
+            "id": data_export.short_id,
+            "created_at": created_at,
+            "errored_files": {},
+            "files_count": 3,
+            "progress": 0,
+            "status": "queued",
+            "type": "workouts_archive_import",
+        }
+
+    def test_it_returns_ongoing_import(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        created_at = datetime.now(timezone.utc)
+        data_export = UserTask(
+            user_id=user_1.id,
+            created_at=created_at,
+            task_type="workouts_archive_import",
+            data={
+                "workouts_data": {"sport_id": sport_1_cycling.id},
+                "files_to_process": ["file_1.gpx", "file_2.gpx", "file_3.gpx"],
+                "equipment_ids": None,
+            },
+            file_path="some/path",
+        )
+        data_export.progress = 50
+        db.session.add(data_export)
+        db.session.commit()
+
+        serialized_data_export = data_export.serialize()
+
+        assert serialized_data_export == {
+            "id": data_export.short_id,
+            "created_at": created_at,
+            "errored_files": {},
+            "files_count": 3,
+            "progress": 50,
+            "status": "in_progress",
+            "type": "workouts_archive_import",
+        }
+
+    def test_it_returns_successful_import(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        created_at = datetime.now(timezone.utc)
+        data_export = UserTask(
+            user_id=user_1.id,
+            created_at=created_at,
+            task_type="workouts_archive_import",
+            data={
+                "workouts_data": {"sport_id": sport_1_cycling.id},
+                "files_to_process": ["file_1.gpx", "file_2.gpx", "file_3.gpx"],
+                "equipment_ids": None,
+            },
+            file_path="some/path",
+        )
+        data_export.progress = 100
+        db.session.add(data_export)
+        db.session.commit()
+
+        serialized_data_export = data_export.serialize()
+
+        assert serialized_data_export == {
+            "id": data_export.short_id,
+            "created_at": created_at,
+            "errored_files": {},
+            "files_count": 3,
+            "progress": 100,
+            "status": "successful",
+            "type": "workouts_archive_import",
+        }
+
+    def test_it_returns_errored_import(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        created_at = datetime.now(timezone.utc)
+        data_export = UserTask(
+            user_id=user_1.id,
+            created_at=created_at,
+            task_type="workouts_archive_import",
+            data={
+                "workouts_data": {"sport_id": sport_1_cycling.id},
+                "files_to_process": ["file_1.gpx", "file_2.gpx", "file_3.gpx"],
+                "equipment_ids": None,
+            },
+            file_path="some/path",
+        )
+        data_export.progress = 100
+        data_export.errored = True
+        data_export.errors = {"file_2.gpx": "some error"}
+        db.session.add(data_export)
+        db.session.commit()
+
+        serialized_data_export = data_export.serialize()
+
+        assert serialized_data_export == {
+            "id": data_export.short_id,
+            "created_at": created_at,
+            "errored_files": {"file_2.gpx": "some error"},
+            "files_count": 3,
+            "progress": 100,
+            "status": "errored",
+            "type": "workouts_archive_import",
+        }
 
 
 class TestFollowRequestModel:

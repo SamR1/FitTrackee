@@ -37,7 +37,7 @@ from fittrackee.responses import (
     get_error_response_if_file_is_invalid,
     handle_error_and_return_response,
 )
-from fittrackee.users.models import User
+from fittrackee.users.models import User, UserTask
 from fittrackee.utils import decode_short_id
 from fittrackee.visibility_levels import VisibilityLevel, can_view
 
@@ -85,6 +85,7 @@ NO_STATISTICS = {
     "total_duration": None,
     "total_sports": 0,
 }
+DEFAULT_TASKS_PER_PAGE = 5
 
 
 def get_statistics(
@@ -2322,3 +2323,150 @@ def appeal_workout_suspension(
         return InvalidPayloadErrorResponse("you can appeal only once")
     except (exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
+
+
+@workouts_blueprint.route("/workouts/tasks", methods=["GET"])
+@require_auth(scopes=["workouts:read"])
+def get_workouts_import_tasks(
+    auth_user: User,
+) -> Tuple[Dict, int]:
+    """
+    Get user tasks for workouts archive upload
+
+    **Example request**:
+
+    - without parameters:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/tasks HTTP/1.1
+      Content-Type: application/json
+
+    - with 'page' parameter:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/tasks?page=2 HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+      {
+        "data": {
+          "tasks": [
+            {
+              "created_at": "Sun, 30 Mar 2025 10:26:17 GMT",
+              "errored_files": {},
+              "files_count": 10,
+              "id": "JEiR6cDcADX8bZ6ZeQssnr",
+              "progress": 10,
+              "status": 'in_progress',
+              "type": "workouts_archive_import"
+            }
+          ]
+        },
+        "pagination": {
+          "has_next": false,
+          "has_prev": false,
+          "page": 1,
+          "pages": 1,
+          "total": 1
+        },
+        "status": "success"
+      }
+
+    :query integer page: page for pagination (default: 1)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    """
+    params = request.args.copy()
+    page = int(params.get("page", 1))
+    per_page = DEFAULT_TASKS_PER_PAGE
+    tasks_pagination = (
+        UserTask.query.filter_by(
+            user_id=auth_user.id, task_type="workouts_archive_import"
+        )
+        .order_by(UserTask.created_at.desc())
+        .paginate(page=page, per_page=per_page, error_out=False)
+    )
+    return {
+        "status": "success",
+        "data": {
+            "tasks": [task.serialize() for task in tasks_pagination.items]
+        },
+        "pagination": {
+            "has_next": tasks_pagination.has_next,
+            "has_prev": tasks_pagination.has_prev,
+            "page": tasks_pagination.page,
+            "pages": tasks_pagination.pages,
+            "total": tasks_pagination.total,
+        },
+    }, 200
+
+
+@workouts_blueprint.route(
+    "/workouts/tasks/<string:task_short_id>", methods=["GET"]
+)
+@require_auth(scopes=["workouts:read"])
+def get_workouts_import_task(
+    auth_user: User, task_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Get task for workouts archive upload
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/tasks/JEiR6cDcADX8bZ6ZeQssnr HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+      {
+        "task": {
+          "created_at": "Sun, 30 Mar 2025 10:26:17 GMT",
+          "errored_files": {},
+          "files_count": 10,
+          "id": "JEiR6cDcADX8bZ6ZeQssnr",
+          "progress": 10,
+          "status": 'in_progress',
+          "type": "workouts_archive_import"
+        },
+        "status": "success"
+      }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404:
+        - ``no task found``
+    """
+    task = UserTask.query.filter_by(
+        user_id=auth_user.id, uuid=decode_short_id(task_short_id)
+    ).first()
+
+    if not task:
+        return NotFoundErrorResponse("no task found")
+
+    return {"status": "success", "task": task.serialize()}, 200

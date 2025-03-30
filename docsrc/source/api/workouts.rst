@@ -19,4 +19,6 @@ Workouts
     workouts.like_workout,
     workouts.undo_workout_like,
     workouts.get_workout_likes,
-    workouts.appeal_workout_suspension
+    workouts.appeal_workout_suspension,
+    workouts.get_workouts_import_tasks,
+    workouts.get_workouts_import_task

@@ -1009,6 +1009,12 @@ class UserTask(BaseModel):
     __tablename__ = "user_tasks"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    uuid: Mapped[UUID] = mapped_column(
+        postgresql.UUID(as_uuid=True),
+        default=uuid4,
+        unique=True,
+        nullable=False,
+    )
     user_id: Mapped[int] = mapped_column(
         db.ForeignKey("users.id", ondelete="CASCADE"), index=True
     )
@@ -1056,27 +1062,50 @@ class UserTask(BaseModel):
     def completed(self) -> bool:
         return self.progress == 100
 
+    @property
+    def short_id(self) -> str:
+        return encode_uuid(self.uuid)
+
     def serialize(self) -> Dict:
         if self.progress == 100:
             status = "errored" if self.errored else "successful"
         else:
             status = "in_progress"
-        return {
+        serialized_task = {
+            "id": self.short_id,
             "created_at": self.created_at,
             "type": self.task_type,
             "status": status,
-            "progress": self.progress,
-            "file_name": (
-                self.file_path.split("/")[-1]
-                if status == "successful" and self.file_path
-                else None
-            ),
-            "file_size": (
-                self.file_size
-                if status == "successful" and self.file_size is not None
-                else None
-            ),
         }
+
+        if self.task_type == "user_data_export":
+            return {
+                **serialized_task,
+                "file_name": (
+                    self.file_path.split("/")[-1]
+                    if status == "successful" and self.file_path
+                    else None
+                ),
+                "file_size": (
+                    self.file_size
+                    if status == "successful" and self.file_size is not None
+                    else None
+                ),
+            }
+
+        serialized_task = {
+            **serialized_task,
+            "files_count": (
+                0
+                if self.data is None
+                else len(self.data.get("files_to_process", []))
+            ),
+            "errored_files": self.errors,
+            "progress": self.progress,
+        }
+        if self.progress == 0:
+            serialized_task["status"] = "queued"
+        return serialized_task
 
 
 @listens_for(UserTask, "after_delete")
