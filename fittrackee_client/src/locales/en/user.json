@@ -74,6 +74,23 @@
   "PRIVACY_POLICY_TO_VALIDATE": "Please {0} the privacy policy before proceeding.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Account edition",
+    "ARCHIVE_UPLOADS": {
+      "ERRORED_FILES": "Errored files",
+      "ERRORS": {
+        "no tracks in gpx file": "no <tracks> in gpx file."
+      },
+      "FILES_COUNT": "{count} files",
+      "NOT_FOUND": "No archive upload found.",
+      "PROGRESS": "Progress",
+      "STATUS": {
+        "LABEL": "Status",
+        "errored": "errored",
+        "in_progress": "in progress",
+        "partially_in_error": "partially in error",
+        "queued": "queued",
+        "successful": "successful"
+      }
+    },
     "ASCENT_DATA": "Ascent-related data (records, total)",
     "BACK_TO_PROFILE": "Back to profile",
     "BIO": "Bio",
@@ -126,6 +143,7 @@
     },
     "NOTIFICATIONS_EDITION": "Notification preferences edition",
     "NOTIFICATION_PREFERENCES": "Notification preferences",
+    "NO_ARCHIVE_UPLOADS": "No archive uploads",
     "NO_SANCTIONS": "No sanctions",
     "PICTURE": "Picture",
     "PICTURE_EDITION": "Picture edition",
@@ -173,6 +191,7 @@
     "TABS": {
       "ACCOUNT": "account",
       "APPS": "apps",
+      "ARCHIVE_UPLOADS": "archive uploads",
       "BLOCKED-USERS": "blocked users",
       "EQUIPMENTS": "equipments",
       "FOLLOW-REQUESTS": "follow requests",

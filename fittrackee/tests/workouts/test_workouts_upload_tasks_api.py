@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class TestWorkoutsTasksGetTasks(ApiTestCaseMixin, BaseTestMixin):
-    route = "/api/workouts/tasks"
+    route = "/api/workouts/upload-tasks"
 
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
@@ -33,7 +33,7 @@ class TestWorkoutsTasksGetTasks(ApiTestCaseMixin, BaseTestMixin):
         user_2: "User",
     ) -> None:
         user_2_workout_import_task = UserTask(
-            user_id=user_2.id, task_type="workouts_archive_import"
+            user_id=user_2.id, task_type="workouts_archive_upload"
         )
         db.session.add(user_2_workout_import_task)
         user_1_export_data_task = UserTask(
@@ -71,7 +71,7 @@ class TestWorkoutsTasksGetTasks(ApiTestCaseMixin, BaseTestMixin):
         tasks = []
         for _ in range(3):
             export_data_task = UserTask(
-                user_id=user_1.id, task_type="workouts_archive_import"
+                user_id=user_1.id, task_type="workouts_archive_upload"
             )
             db.session.add(export_data_task)
             db.session.commit()
@@ -110,7 +110,7 @@ class TestWorkoutsTasksGetTasks(ApiTestCaseMixin, BaseTestMixin):
         tasks = []
         for _ in range(6):
             export_data_task = UserTask(
-                user_id=user_1.id, task_type="workouts_archive_import"
+                user_id=user_1.id, task_type="workouts_archive_upload"
             )
             db.session.add(export_data_task)
             db.session.commit()
@@ -139,7 +139,7 @@ class TestWorkoutsTasksGetTasks(ApiTestCaseMixin, BaseTestMixin):
 
 
 class TestWorkoutsTasksGetTask(ApiTestCaseMixin, BaseTestMixin):
-    route = "/api/workouts/tasks/{task_id}"
+    route = "/api/workouts/upload-tasks/{task_id}"
 
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
@@ -176,7 +176,7 @@ class TestWorkoutsTasksGetTask(ApiTestCaseMixin, BaseTestMixin):
         user_2: "User",
     ) -> None:
         export_data_task = UserTask(
-            user_id=user_2.id, task_type="workouts_archive_import"
+            user_id=user_2.id, task_type="workouts_archive_upload"
         )
         db.session.add(export_data_task)
         db.session.commit()
@@ -197,7 +197,7 @@ class TestWorkoutsTasksGetTask(ApiTestCaseMixin, BaseTestMixin):
         user_1: "User",
     ) -> None:
         export_data_task = UserTask(
-            user_id=user_1.id, task_type="workouts_archive_import"
+            user_id=user_1.id, task_type="workouts_archive_upload"
         )
         db.session.add(export_data_task)
         db.session.commit()
