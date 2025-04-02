@@ -120,26 +120,34 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
             return None
         return self.workouts_data.notes[:NOTES_MAX_CHARACTERS]
 
-    def _store_file(self, new_workout: "Workout") -> str:
-        absolute_workout_filepath = ""
-        if self.file:
-            workout_filepath = self.get_file_path(
-                workout_date=new_workout.workout_date.strftime(
-                    "%Y-%m-%d_%H-%M-%S"
-                ),
-                extension=".gpx",
-            )
-            new_workout.gpx = workout_filepath
-            absolute_workout_filepath = get_absolute_file_path(
-                workout_filepath
-            )
-            try:
+    def _store_file(
+        self, new_workout: "Workout", workout_file: Optional["IO[bytes]"]
+    ) -> str:
+        if not workout_file and not self.file:
+            return ""
+
+        workout_filepath = self.get_file_path(
+            workout_date=new_workout.workout_date.strftime(
+                "%Y-%m-%d_%H-%M-%S"
+            ),
+            extension=".gpx",
+        )
+        new_workout.gpx = workout_filepath
+        absolute_workout_filepath = get_absolute_file_path(workout_filepath)
+        try:
+            if workout_file:  # when file from archive
+                with open(absolute_workout_filepath, "wb") as f:
+                    workout_file.seek(0)
+                    f.write(workout_file.read())
+            elif self.file:
                 self.file.stream.seek(0)
                 self.file.save(absolute_workout_filepath)
-            except Exception as e:
-                raise WorkoutException(
-                    "error", "error when storing gpx file"
-                ) from e
+            else:
+                return ""
+        except Exception as e:
+            raise WorkoutException(
+                "error", "error when storing gpx file"
+            ) from e
         return absolute_workout_filepath
 
     def create_workout_from_file(
@@ -205,7 +213,7 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
         )
 
         # store workout file
-        absolute_workout_filepath = self._store_file(new_workout)
+        absolute_workout_filepath = self._store_file(new_workout, workout_file)
 
         # generate and store map image
         map_filepath = self.get_file_path(
