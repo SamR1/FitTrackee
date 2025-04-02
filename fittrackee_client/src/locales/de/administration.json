@@ -35,10 +35,13 @@
     },
     "APPEAL": {
       "APPROVED": "Dieser Beschwerde wurde stattgegeben {0}.",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "Dieser Einspruch wurde durch Aufhebung der Sperre genehmigt.",
+      "HIDE": "Einspruch ausblenden",
       "REASON_IS": "Der Grund ist:",
       "REJECTED": "Dieser Einspruch wurde zurückgewiesen {0}.",
       "SEE": "Siehe Einspruch"
     },
+    "NOTES_AND_ACTIONS": "Notizen und Maßnahmen",
     "NO_REPORTS_FOUND": "Keine Berichte gefunden",
     "ORDER_BY": {
       "CREATED_AT": "Erstelldatum",
