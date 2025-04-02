@@ -1102,6 +1102,34 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
                 equipments=None,
             )
 
+    def test_it_raises_error_when_ongoing_task_exists(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        ongoing_task = UserTask(
+            user_id=user_1.id,
+            task_type="workouts_archive_upload",
+        )
+        ongoing_task.progress = 10
+        db.session.add(ongoing_task)
+        db.session.commit()
+        service = self.get_service(
+            app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
+        )
+
+        with (
+            patch.object(tempfile, "mkstemp", return_value=(None, None)),
+            pytest.raises(
+                WorkoutException, match="ongoing upload task exists"
+            ),
+        ):
+            service.add_workouts_import_task(
+                files_to_process=TEST_FILES_LIST,
+                equipments=None,
+            )
+
     def test_it_creates_task_with_minimal_data(
         self,
         app: "Flask",
@@ -1204,6 +1232,51 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
         assert import_task.progress == 0
         assert import_task.task_type == "workouts_archive_upload"
         assert import_task.user_id == user_1.id
+
+        # file cleanup
+        os.close(fd)
+        os.remove(temp_file_path)
+
+    def test_it_creates_task_when_completed_tasks_for_user_exist(
+        self,
+        app: "Flask",
+        user_1: "User",
+        user_2: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        for n in range(2):
+            task = UserTask(
+                user_id=user_1.id,
+                task_type="workouts_archive_upload",
+            )
+            task.progress = 100
+            if n == 0:
+                task.errored = True
+            db.session.add(task)
+        task = UserTask(
+            user_id=user_2.id,
+            task_type="workouts_archive_upload",
+        )
+        task.progress = 20
+        db.session.add(task)
+        db.session.commit()
+        service = self.get_service(
+            app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
+        )
+        fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+
+        with (
+            patch.object(
+                tempfile, "mkstemp", return_value=(fd, temp_file_path)
+            ),
+            patch("fittrackee.workouts.tasks.import_workout_archive"),
+        ):
+            service.add_workouts_import_task(
+                files_to_process=TEST_FILES_LIST,
+                equipments=None,
+            )
+
+        assert UserTask.query.filter_by(user_id=user_1.id).count() == 3
 
         # file cleanup
         os.close(fd)
