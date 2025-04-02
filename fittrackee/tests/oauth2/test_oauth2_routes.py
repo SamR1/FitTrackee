@@ -464,7 +464,7 @@ class TestOAuthClientAuthorizationWithCodeChallenge(ApiTestCaseMixin):
             ),
         )
 
-        self.assert_400(response, 'Unsupported "code_challenge_method"')
+        self.assert_400(response, "Unsupported 'code_challenge_method'")
 
     def test_it_creates_authorization_code(
         self, app: Flask, user_1: User
@@ -729,7 +729,7 @@ class TestOAuthIssueAccessTokenWithCodeChallenge(OAuthIssueTokenTestCase):
             },
             headers=dict(content_type="multipart/form-data"),
         )
-        self.assert_invalid_request(response, 'Invalid "code_verifier"')
+        self.assert_invalid_request(response, "Invalid 'code_verifier'")
 
     def test_it_returns_access_token(self, app: Flask, user_1: User) -> None:
         code_verifier = generate_token(48)
