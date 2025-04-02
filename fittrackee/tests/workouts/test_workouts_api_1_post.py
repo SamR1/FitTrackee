@@ -1399,6 +1399,42 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
             )
             assert data["data"] == {"task_id": import_task.short_id}
 
+    def test_it_returns_error_when_ongoing_task_exists(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        import_workout_archive_mock: "MagicMock",
+    ) -> None:
+        ongoing_task = UserTask(
+            user_id=user_1.id,
+            task_type="workouts_archive_upload",
+        )
+        db.session.add(ongoing_task)
+        db.session.commit()
+        app.config.update(
+            {"file_limit_import": 3, "file_sync_limit_import": 2}
+        )
+        # 'gpx_test.zip' contains 3 gpx files (same data) and 1 non-gpx file
+        file_path = os.path.join(app.root_path, "tests/files/gpx_test.zip")
+        with open(file_path, "rb") as zip_file:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app, user_1.email
+            )
+
+            response = client.post(
+                "/api/workouts",
+                data=dict(
+                    file=(zip_file, "gpx_test.zip"), data='{"sport_id": 1}'
+                ),
+                headers=dict(
+                    content_type="multipart/form-data",
+                    Authorization=f"Bearer {auth_token}",
+                ),
+            )
+
+            self.assert_400(response, "ongoing upload task exists", "invalid")
+
     def test_it_returns_400_when_files_in_archive_exceed_limit(
         self,
         app_with_max_workouts: "Flask",

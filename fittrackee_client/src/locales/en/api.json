@@ -35,6 +35,7 @@
     "no tracks in gpx file": "No track (<trk>) in .gpx file.",
     "one or more values, entered or calculated, exceed the limits": "One or more values, entered or calculated, exceed the limits.",
     "ongoing request exists": "A data export request already exists.",
+    "ongoing upload task exists": "A file upload is already in progress.",
     "password: password and password confirmation do not match": "Password: password and password confirmation don't match.",
     "provide a valid auth token": "Provide a valid auth token.",
     "signature expired, please log in again": "Signature expired. Please log in again.",

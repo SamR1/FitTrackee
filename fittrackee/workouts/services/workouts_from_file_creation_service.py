@@ -366,6 +366,12 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
             raise WorkoutFileException(
                 "error", "No files from archive to process"
             )
+        if UserTask.query.filter(
+            UserTask.user_id == self.auth_user.id,
+            UserTask.task_type == "workouts_archive_upload",
+            UserTask.progress != 100,
+        ).first():
+            raise WorkoutException("invalid", "ongoing upload task exists")
 
         _, path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
         self.file.stream.seek(0)

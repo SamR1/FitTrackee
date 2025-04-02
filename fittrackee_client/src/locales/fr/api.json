@@ -35,6 +35,7 @@
     "no tracks in gpx file": "Pas de trace (<trk>) dans le fichier .gpx.",
     "one or more values, entered or calculated, exceed the limits": "Une ou plusieurs valeurs, saisies ou calculées, dépassent les limites.",
     "ongoing request exists": "Une demande d'exportation de données existe déjà.",
+    "ongoing upload task exists": "Un chargement de fichier est déjà en cours.",
     "password: password and password confirmation do not match": "Mot de passe : les mots de passe saisis sont différents.",
     "provide a valid auth token": "Merci de fournir un jeton de connexion valide.",
     "signature expired, please log in again": "Signature expirée. Merci de vous reconnecter.",
