@@ -482,6 +482,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
         self,
         app: "Flask",
         user_1: "User",
+        gpx_file: str,
         gpx_file_storage: "FileStorage",  # gpx file, date: 2018-03-13 12:44:45
         sport_1_cycling: "Sport",
     ) -> None:
@@ -502,7 +503,8 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
             f"workouts/{user_1.id}/2018-03-13_12-44-45_"
             f"{sport_1_cycling.id}_{expected_token}.gpx"
         )
-        assert os.path.exists(get_absolute_file_path(new_workout.gpx))
+        with open(get_absolute_file_path(new_workout.gpx)) as f:
+            assert f.read() == gpx_file
 
     def test_it_creates_map_image_in_user_directory(
         self,
@@ -516,7 +518,6 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
             file=gpx_file_storage,
             workouts_data={"sport_id": sport_1_cycling.id},
         )
-
         expected_token = self.random_string()
 
         with patch("secrets.token_urlsafe", return_value=expected_token):
@@ -748,6 +749,36 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
         db.session.commit()
 
         assert new_workout == Workout.query.one()
+
+    def test_it_returns_new_workout_from_workout_file_content(
+        self,
+        app: "Flask",
+        user_1: "User",
+        gpx_file: str,
+        gpx_file_storage: "FileStorage",  # gpx file with name
+        sport_1_cycling: "Sport",
+    ) -> None:
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+        expected_token = self.random_string()
+
+        with patch("secrets.token_urlsafe", return_value=expected_token):
+            new_workout = service.create_workout_from_file(
+                extension="gpx",
+                equipments=None,
+                workout_file=gpx_file_storage.stream,
+            )
+        db.session.commit()
+
+        assert new_workout == Workout.query.one()
+        assert new_workout.gpx == (
+            f"workouts/{user_1.id}/2018-03-13_12-44-45_"
+            f"{sport_1_cycling.id}_{expected_token}.gpx"
+        )
+        with open(get_absolute_file_path(new_workout.gpx)) as f:
+            assert f.read() == gpx_file
 
 
 class WorkoutsFromFileCreationServiceTestCase:
