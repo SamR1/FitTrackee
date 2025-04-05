@@ -255,7 +255,11 @@
     displayDistance.value = !displayDistance.value
   }
   function formatDuration(duration: string | number): string {
-    return new Date(+duration * 1000).toISOString().substr(11, 8)
+    const totalSeconds: number =
+      typeof duration === 'string'
+        ? parseInt(duration.replace(/\s/g, ''))
+        : duration
+    return new Date(totalSeconds * 1000).toISOString().substr(11, 8)
   }
   function emitCoordinates(coordinates: TCoordinates) {
     emit('getCoordinates', coordinates)
