@@ -214,6 +214,13 @@ deployment method.
     Number of processes used by **Dramatiq**.
 
 
+.. envvar:: DRAMATIQ_LOG
+
+    .. versionadded:: 0.9.5
+
+    Path to **Dramatiq** log file.
+
+
 .. envvar:: API_RATE_LIMITS
 
     .. versionadded:: 0.7.0
@@ -517,11 +524,20 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 
     $ fittrackee
 
-- Start task queue workers **if email sending is enabled**, with flask-dramatiq CLI:
+- Start task queue workers **if email sending is enabled**, with dramatiq CLI:
 
 .. code-block:: bash
 
-    $ flask worker --processes 2
+    $ dramatiq fittrackee.tasks:broker --processes=$WORKERS_PROCESSES --log-file=$DRAMATIQ_LOG
+
+.. note::
+    | It is also possible to start task queue workers with Flask-dramatiq CLI:
+
+    .. code-block:: bash
+
+        $ flask worker --processes 2
+
+    | But running Flask-dramatiq CLI on Python 3.13+ raises errors. Emails and user data export are sent, but the `middleware <https://dramatiq.io/reference.html#dramatiq.middleware.TimeLimit>`__ preventing actors from running too long is not active. Please use dramatiq CLI instead for now.
 
 .. note::
     | To start application and workers with **systemd** service, see `Deployment <installation.html#deployment>`__
@@ -857,7 +873,7 @@ Examples:
     Environment="SENDER_EMAIL="
     Environment="REDIS_URL="
     WorkingDirectory=/home/<USER>/<FITTRACKEE DIRECTORY>
-    ExecStart=/home/<USER>/<FITTRACKEE DIRECTORY>/.venv/bin/flask worker --processes <NUMBER OF PROCESSES>
+    ExecStart=/home/<USER>/<FITTRACKEE DIRECTORY>/.venv/bin/dramatiq fittrackee.tasks:broker --processes=<NUMBER OF PROCESSES> --log-file=<DRAMATIQ_LOG_FILE_PATH>
     Restart=always
 
     [Install]
