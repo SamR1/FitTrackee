@@ -31,6 +31,7 @@
     "no file part": "Keine Datei angegeben.",
     "no selected file": "Keine Datei ausgewählt.",
     "no tracks in gpx file": "Kein Track (<trk>) in der .gpx-Datei.",
+    "one or more values, entered or calculated, exceed the limits": "Ein oder mehrere eingegebene oder berechnete Werte überschreiten die Grenzwerte.",
     "ongoing request exists": "Eine Anfrage zum Datenexport existiert bereits.",
     "password: password and password confirmation do not match": "Passwort: Passwort und Passwortbestätigung stimmen nicht überein.",
     "provide a valid auth token": "Gebe ein gültiges Authentifizierungstoken an.",
