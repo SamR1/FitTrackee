@@ -89,8 +89,8 @@
   const fromKmUnit = getUnitTo('km')
   const fromMUnit = getUnitTo('m')
 
-  const beginElevationAtZero: ComputedRef<boolean> = computed(
-    () => authUser.value.start_elevation_at_zero
+  const beginElevationAtZero: Ref<boolean> = ref(
+    authUser.value.username ? authUser.value.start_elevation_at_zero : false
   )
   const hasElevation: ComputedRef<boolean> = computed(
     () => datasets.value && datasets.value.datasets.elevation.data.length > 0
@@ -255,7 +255,11 @@
     displayDistance.value = !displayDistance.value
   }
   function formatDuration(duration: string | number): string {
-    return new Date(+duration * 1000).toISOString().substr(11, 8)
+    const totalSeconds: number =
+      typeof duration === 'string'
+        ? parseInt(duration.replace(/\s/g, ''))
+        : duration
+    return new Date(totalSeconds * 1000).toISOString().substr(11, 8)
   }
   function emitCoordinates(coordinates: TCoordinates) {
     emit('getCoordinates', coordinates)
