@@ -89,8 +89,8 @@
   const fromKmUnit = getUnitTo('km')
   const fromMUnit = getUnitTo('m')
 
-  const beginElevationAtZero: ComputedRef<boolean> = computed(
-    () => authUser.value.start_elevation_at_zero
+  const beginElevationAtZero: Ref<boolean> = ref(
+    authUser.value.username ? authUser.value.start_elevation_at_zero : false
   )
   const hasElevation: ComputedRef<boolean> = computed(
     () => datasets.value && datasets.value.datasets.elevation.data.length > 0
