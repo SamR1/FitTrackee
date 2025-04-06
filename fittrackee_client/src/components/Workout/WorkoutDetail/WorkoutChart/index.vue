@@ -67,6 +67,7 @@
   import type { TUnit } from '@/types/units'
   import type { IAuthUserProfile } from '@/types/user'
   import type { IWorkoutChartData, IWorkoutData } from '@/types/workouts'
+  import { formatDuration } from '@/utils/duration.ts'
   import { units } from '@/utils/units'
   import { chartsColors, getDatasets } from '@/utils/workouts'
 
@@ -150,7 +151,7 @@
           callback: function (value) {
             return displayDistance.value
               ? Number(value).toFixed(2)
-              : formatDuration(value)
+              : convertAndFormatDuration(value)
           },
           ...textColors.value,
         },
@@ -235,7 +236,7 @@
                 ? `${t('workouts.DISTANCE')}: ${
                     tooltipItems[0].label
                   } ${fromKmUnit}`
-                : `${t('workouts.DURATION')}: ${formatDuration(
+                : `${t('workouts.DURATION')}: ${convertAndFormatDuration(
                     tooltipItems[0].label.replace(',', '')
                   )}`
           },
@@ -254,12 +255,12 @@
   function updateDisplayDistance() {
     displayDistance.value = !displayDistance.value
   }
-  function formatDuration(duration: string | number): string {
+  function convertAndFormatDuration(duration: string | number): string {
     const totalSeconds: number =
       typeof duration === 'string'
         ? parseInt(duration.replace(/\s/g, ''))
         : duration
-    return new Date(totalSeconds * 1000).toISOString().substr(11, 8)
+    return formatDuration(totalSeconds, { withHours: true })
   }
   function emitCoordinates(coordinates: TCoordinates) {
     emit('getCoordinates', coordinates)

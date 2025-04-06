@@ -15,7 +15,7 @@ export const formatTooltipValue = (
       return `${value.toFixed(2)} ${unitTo}/h`
     case 'average_duration':
     case 'total_duration':
-      return formatDuration(value, formatWithUnits)
+      return formatDuration(value, { formatWithUnits })
     case 'average_distance':
     case 'average_ascent':
     case 'average_descent':
