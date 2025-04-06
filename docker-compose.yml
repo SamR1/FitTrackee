@@ -57,7 +57,7 @@ services:
       - internal_network
     restart: unless-stopped
 
-# Uncomment the following lines for email sending
+# Uncomment the following lines for user data export and email sending
 #  fittrackee-workers:
 #    container_name: fittrackee-workers
 #    env_file:
@@ -71,7 +71,8 @@ services:
 #    post_start:
 #      - command: chown -R fittrackee:fittrackee /usr/src/app/logs
 #        user: root
-#    command: "flask worker --processes 2 >> /usr/src/app/logs/dramatiq.log 2>&1"
+## Adjust processes if needed, see https://dramatiq.io/guide.html#workers
+#    command: "dramatiq fittrackee.tasks:broker --processes=2 --log-file=/usr/src/app/logs/dramatiq.log"
 #    depends_on:
 #      fittrackee:
 #        condition: service_healthy
@@ -80,7 +81,7 @@ services:
 #      - external_network
 #    restart: unless-stopped
 
-# Uncomment the following lines for API rate limit and email sending
+# Uncomment the following lines for API rate limit, user data export and email sending
 #  fittrackee-redis:
 #    image: "redis:7.4"
 #    container_name: fittrackee-redis
