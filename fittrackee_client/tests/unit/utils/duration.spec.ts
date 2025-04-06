@@ -23,6 +23,11 @@ describe('formatDuration (without days)', () => {
       expectedDuration: '01:00',
     },
     {
+      description: 'returns 01:00 if 83.96767 seconds are provided',
+      inputDuration: 83.96767,
+      expectedDuration: '01:23',
+    },
+    {
       description: 'returns 20:34 if 1234 seconds are provided',
       inputDuration: 1234,
       expectedDuration: '20:34',
@@ -69,6 +74,11 @@ describe('formatDuration (with units)', () => {
       description: 'returns 01m 00s if 60 seconds are provided',
       inputDuration: 60,
       expectedDuration: '01m 00s',
+    },
+    {
+      description: 'returns 01:00 if 83.96767 seconds are provided',
+      inputDuration: 83.96767,
+      expectedDuration: '01m 23s',
     },
     {
       description: 'returns 20m 34s if 1234 seconds are provided',
@@ -119,6 +129,11 @@ describe('formatDuration (with hours)', () => {
       expectedDuration: '00:01:00',
     },
     {
+      description: 'returns 01:00 if 83.96767 seconds are provided',
+      inputDuration: 83.96767,
+      expectedDuration: '00:01:23',
+    },
+    {
       description: 'returns 20:34 if 1234 seconds are provided',
       inputDuration: 1234,
       expectedDuration: '00:20:34',
@@ -165,6 +180,11 @@ describe('formatDuration (with units and hours)', () => {
       description: 'returns 01m 00s if 60 seconds are provided',
       inputDuration: 60,
       expectedDuration: '00h 01m 00s',
+    },
+    {
+      description: 'returns 01:00 if 83.96767 seconds are provided',
+      inputDuration: 83.96767,
+      expectedDuration: '00h 01m 23s',
     },
     {
       description: 'returns 20m 34s if 1234 seconds are provided',
