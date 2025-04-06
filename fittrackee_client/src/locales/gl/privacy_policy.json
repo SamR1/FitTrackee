@@ -5,15 +5,15 @@
       "TITLE": "Eliminación da conta"
     },
     "CHANGES_TO_OUR_PRIVACY_POLICY": {
-      "CONTENT": "Se decidimos cambiar a nosa política de privacidade, publicaremos os cambios nesta páxina.\nEste documento está baixo licenza [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Adaptado do orixinal da política de privacidade de [Discourse](https://github.com/discourse/discourse).",
-      "TITLE": "Cambios na nosa Política de Privacidade"
+      "CONTENT": "Se decidimos cambiar a nosa directiva de privacidade, publicaremos os cambios nesta páxina.\nEste documento está baixo licenza [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Adaptado do orixinal da política de privacidade de [Discourse](https://github.com/discourse/discourse).",
+      "TITLE": "Cambios na nosa Directiva de Privacidade"
     },
     "DATA_COLLECTED": {
       "CONTENT": "Recollemos a seguinte información:\n- Información da conta (identificador, enderezo de correo e contrasinal). Poderías engadir información adicional ao perfil como o nome, apelido, data de nacemento, localización, biografía e subir unha foto de perfil.\n- Ficheiros [GPX](https://en.wikipedia.org/wiki/GPS_Exchange_Format). Estes ficheiros conteñen datos relacionados coas túas actividades (coordenadas xeográficas, data, distancia, duración, velocidades máxima e media, altitude, título, descrición, pulso cardíaco…). Se non queres mostrar algún dos datos, elimínaos antes de subir ou engadir adestramentos con ficheiros GPX.\n- Datos do adestramento (deporte, título, descrición, data, duración, distancia, ascenso, descenso, notas).\n- Followers and following users.\n- Comments and likes.\n- Información técnica (nome do navegador e sistema operativo).",
       "TITLE": "Que información recollemos?"
     },
     "INFORMATION_DISCLOSURE": {
-      "CONTENT": "Non vendemos, comerciamos ou transferimos de ningún xeito a terceiras partes externas ningunha información que te identifique persoalmente.\nIsto non inclúe a terceiras partes de confianza que nos axudan a xestionar e proporcionarche o noso servizo, mentras esas terceiras partes acepten manter a confidencialidade desta información.\nPoderiamos liberar esta información sempre que facelo sexa acorde co cumprimento da ley, reforce as nosas políticas da web, ou protexa os nosos dereitos e seguridade ou os de outras persoas.\nCando autorizas a terceiras partes a usar a túa conta, dependendo dos permisos concedidos, podería acceder á túa información de perfil ou adestramentos. As aplicacións nunca teñen acceso ao teu contrasinal.",
+      "CONTENT": "Non vendemos, comerciamos ou transferimos de ningún xeito a terceiras partes externas ningunha información que te identifique persoalmente.\nIsto non inclúe a terceiras partes de confianza que nos axudan a xestionar e proporcionarche o noso servizo, mentras esas terceiras partes acepten manter a confidencialidade desta información.\nPoderiamos liberar esta información sempre que facelo sexa acorde co cumprimento da ley, facer valer as normas do noso sitio web, ou protexa os nosos dereitos e seguridade ou os de outras persoas.\nCando autorizas a terceiras partes a usar a túa conta, dependendo dos permisos concedidos, podería acceder á túa información de perfil ou adestramentos. As aplicacións nunca teñen acceso ao teu contrasinal.",
       "TITLE": "Mostramos algún tipo de información a terceiras partes externas?"
     },
     "INFORMATION_PROTECTION": {
@@ -29,10 +29,10 @@
       "TITLE": "Uso da web por menores"
     },
     "YOUR_CONSENT": {
-      "CONTENT": "Ao usar esta web, aceptas a política de privacidade desta web.",
+      "CONTENT": "Ao usar esta web, aceptas a directiva de privacidade desta web.",
       "TITLE": "O teu consentimento"
     }
   },
   "LAST_UPDATE": "Última actualización",
-  "TITLE": "política de privacidade"
+  "TITLE": "directiva de privacidade"
 }

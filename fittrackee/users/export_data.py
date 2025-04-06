@@ -8,7 +8,7 @@ from zipfile import ZipFile
 from flask import current_app
 
 from fittrackee import appLog, db
-from fittrackee.emails.tasks import data_export_email
+from fittrackee.emails.tasks import send_email
 from fittrackee.files import get_absolute_file_path
 
 from .models import User, UserDataExport
@@ -129,6 +129,8 @@ class UserDataExporter:
             file_exists = os.path.exists(zip_path)
             os.remove(user_data_file_name)
             os.remove(workout_data_file_name)
+            os.remove(equipments_data_file_name)
+            os.remove(comments_data_file_name)
             return (zip_path, zip_file) if file_exists else (None, None)
         except Exception as e:
             appLog.error(f"Error when generating user data archive: {e!s}")
@@ -170,7 +172,9 @@ def export_user_data(export_request_id: int) -> None:
                     "language": get_language(user.language),
                     "email": user.email,
                 }
-                data_export_email.send(user_data, email_data)
+                send_email.send(
+                    user_data, email_data, template="data_export_ready"
+                )
         else:
             db.session.commit()
     except Exception as e:

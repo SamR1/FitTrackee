@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timedelta, timezone
 from typing import Dict, List
-from unittest.mock import MagicMock, patch
+from unittest.mock import ANY, MagicMock, patch
 
 import pytest
 from flask import Flask
@@ -2480,7 +2480,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         user_1_moderator: User,
         user_2: User,
         user_3: User,
-        user_suspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2498,7 +2498,9 @@ class TestPostReportActionForUserAction(ReportTestCase):
         )
 
         assert response.status_code == 200
-        user_suspension_email_mock.send.assert_called_once()
+        reports_send_email_mock.send.assert_called_with(
+            ANY, ANY, template="user_suspension"
+        )
 
     def test_it_sends_an_email_on_user_reactivation(
         self,
@@ -2506,7 +2508,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         user_1_moderator: User,
         user_2: User,
         user_3: User,
-        user_unsuspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         user_2.suspended_at = datetime.now(timezone.utc)
@@ -2526,7 +2528,9 @@ class TestPostReportActionForUserAction(ReportTestCase):
         )
 
         assert response.status_code == 200
-        user_unsuspension_email_mock.send.assert_called_once()
+        reports_send_email_mock.send.assert_called_with(
+            ANY, ANY, template="user_unsuspension"
+        )
 
     def test_it_sends_an_email_on_user_warning(
         self,
@@ -2534,7 +2538,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         user_1_moderator: User,
         user_2: User,
         user_3: User,
-        user_warning_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2552,7 +2556,9 @@ class TestPostReportActionForUserAction(ReportTestCase):
         )
 
         assert response.status_code == 200
-        user_warning_email_mock.send.assert_called_once()
+        reports_send_email_mock.send.assert_called_with(
+            ANY, ANY, template="user_warning"
+        )
 
     def test_it_does_not_send_when_email_sending_is_disabled(
         self,
@@ -2560,7 +2566,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         user_1_moderator: User,
         user_2: User,
         user_3: User,
-        user_suspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report = self.create_report(reporter=user_3, reported_object=user_2)
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2578,7 +2584,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
         )
 
         assert response.status_code == 200
-        user_suspension_email_mock.send.assert_not_called()
+        reports_send_email_mock.send.assert_not_called()
 
 
 class TestPostReportActionForWorkoutAction(ReportTestCase):
@@ -2853,7 +2859,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        workout_suspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = self.create_report(
@@ -2874,7 +2880,9 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         )
 
         assert response.status_code == 200
-        workout_suspension_email_mock.send.assert_called_once()
+        reports_send_email_mock.send.assert_called_with(
+            ANY, ANY, template="workout_suspension"
+        )
 
     def test_it_sends_an_email_on_workout_unsuspension(
         self,
@@ -2884,7 +2892,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        workout_unsuspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = self.create_report(
@@ -2907,7 +2915,9 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         )
 
         assert response.status_code == 200
-        workout_unsuspension_email_mock.send.assert_called_once()
+        reports_send_email_mock.send.assert_called_with(
+            ANY, ANY, template="workout_unsuspension"
+        )
 
     def test_it_does_not_send_an_email_when_email_sending_is_disabled(
         self,
@@ -2917,7 +2927,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        workout_suspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         report = self.create_report(
@@ -2938,7 +2948,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
         )
 
         assert response.status_code == 200
-        workout_suspension_email_mock.send.assert_not_called()
+        reports_send_email_mock.send.assert_not_called()
 
 
 class TestPostReportActionForCommentAction(ReportTestCase):
@@ -3217,7 +3227,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        comment_suspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
@@ -3243,7 +3253,9 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         )
 
         assert response.status_code == 200
-        comment_suspension_email_mock.send.assert_called_once()
+        reports_send_email_mock.send.assert_called_with(
+            ANY, ANY, template="comment_suspension"
+        )
 
     def test_it_sends_an_email_on_comment_unsuspension(
         self,
@@ -3253,7 +3265,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        comment_unsuspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
@@ -3281,7 +3293,9 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         )
 
         assert response.status_code == 200
-        comment_unsuspension_email_mock.send.assert_called_once()
+        reports_send_email_mock.send.assert_called_with(
+            ANY, ANY, template="comment_unsuspension"
+        )
 
     def test_it_does_not_send_email_when_email_sending_id_disabled(
         self,
@@ -3291,7 +3305,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        comment_suspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
@@ -3317,7 +3331,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
         )
 
         assert response.status_code == 200
-        comment_suspension_email_mock.send.assert_not_called()
+        reports_send_email_mock.send.assert_not_called()
 
 
 class TestProcessReportActionAppeal(
@@ -3467,7 +3481,7 @@ class TestProcessReportActionAppeal(
         app: Flask,
         user_1_moderator: User,
         user_2: User,
-        user_unsuspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report = self.create_report(
             reporter=user_1_moderator, reported_object=user_2
@@ -3487,14 +3501,16 @@ class TestProcessReportActionAppeal(
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        user_unsuspension_email_mock.send.assert_called_once()
+        reports_send_email_mock.send.assert_called_with(
+            ANY, ANY, template="user_unsuspension"
+        )
 
     def test_it_sends_an_email_when_appeal_on_user_suspension_is_rejected(
         self,
         app: Flask,
         user_1_moderator: User,
         user_2: User,
-        appeal_rejected_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report = self.create_report(
             reporter=user_1_moderator, reported_object=user_2
@@ -3514,7 +3530,9 @@ class TestProcessReportActionAppeal(
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        appeal_rejected_email_mock.send.assert_called_once()
+        reports_send_email_mock.send.assert_called_with(
+            ANY, ANY, template="appeal_rejected"
+        )
 
     @pytest.mark.parametrize(
         "input_data",
@@ -3562,7 +3580,7 @@ class TestProcessReportActionAppeal(
         app: Flask,
         user_1_moderator: User,
         user_2: User,
-        user_warning_lifting_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report = self.create_report(
             reporter=user_1_moderator, reported_object=user_2
@@ -3582,14 +3600,16 @@ class TestProcessReportActionAppeal(
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        user_warning_lifting_email_mock.send.assert_called_once()
+        reports_send_email_mock.send.assert_called_with(
+            ANY, ANY, template="user_warning_lifting"
+        )
 
     def test_it_sends_an_email_when_appeal_on_user_warning_is_rejected(
         self,
         app: Flask,
         user_1_moderator: User,
         user_2: User,
-        appeal_rejected_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report = self.create_report(
             reporter=user_1_moderator, reported_object=user_2
@@ -3609,7 +3629,9 @@ class TestProcessReportActionAppeal(
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        appeal_rejected_email_mock.send.assert_called_once()
+        reports_send_email_mock.send.assert_called_with(
+            ANY, ANY, template="appeal_rejected"
+        )
 
     @pytest.mark.parametrize(
         "input_data",
@@ -3668,7 +3690,7 @@ class TestProcessReportActionAppeal(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        comment_unsuspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
@@ -3693,7 +3715,9 @@ class TestProcessReportActionAppeal(
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        comment_unsuspension_email_mock.send.assert_called_once()
+        reports_send_email_mock.send.assert_called_with(
+            ANY, ANY, template="comment_unsuspension"
+        )
 
     def test_it_sends_an_email_when_appeal_on_comment_suspension_is_rejected(
         self,
@@ -3703,7 +3727,7 @@ class TestProcessReportActionAppeal(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        appeal_rejected_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
@@ -3728,7 +3752,9 @@ class TestProcessReportActionAppeal(
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        appeal_rejected_email_mock.send.assert_called_once()
+        reports_send_email_mock.send.assert_called_with(
+            ANY, ANY, template="appeal_rejected"
+        )
 
     def test_it_returns_400_when_comment_already_unsuspended(
         self,
@@ -3818,7 +3844,7 @@ class TestProcessReportActionAppeal(
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        workout_unsuspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         suspension_action = self.create_report_workout_action(
             user_1_moderator, user_2, workout_cycling_user_2
@@ -3838,7 +3864,9 @@ class TestProcessReportActionAppeal(
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        workout_unsuspension_email_mock.send.assert_called_once()
+        reports_send_email_mock.send.assert_called_with(
+            ANY, ANY, template="workout_unsuspension"
+        )
 
     def test_it_sends_an_email_when_appeal_on_workout_suspension_is_rejected(
         self,
@@ -3847,7 +3875,7 @@ class TestProcessReportActionAppeal(
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        appeal_rejected_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         suspension_action = self.create_report_workout_action(
             user_1_moderator, user_2, workout_cycling_user_2
@@ -3867,7 +3895,9 @@ class TestProcessReportActionAppeal(
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        appeal_rejected_email_mock.send.assert_called_once()
+        reports_send_email_mock.send.assert_called_with(
+            ANY, ANY, template="appeal_rejected"
+        )
 
     def test_it_returns_400_when_workout_already_unsuspended(
         self,

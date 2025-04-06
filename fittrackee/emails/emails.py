@@ -1,5 +1,4 @@
 import email.utils as email_utils
-import logging
 import smtplib
 import ssl
 from email.mime.multipart import MIMEMultipart
@@ -13,9 +12,6 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from urllib3.util import parse_url
 
 from .exceptions import InvalidEmailUrlScheme
-
-email_log = logging.getLogger("fittrackee_api_email")
-email_log.setLevel(logging.DEBUG)
 
 
 class EmailMessage:
