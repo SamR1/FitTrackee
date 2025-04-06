@@ -585,6 +585,35 @@ class TestUserDataExporterGenerateArchive:
 
         assert os.path.isfile(expected_path)
 
+    @patch.object(secrets, "token_urlsafe")
+    def test_it_deletes_temporary_files(
+        self,
+        secrets_mock: Mock,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        token_urlsafe = random_string()
+        secrets_mock.return_value = token_urlsafe
+        user_directory = os.path.join(
+            app.config["UPLOAD_FOLDER"], "exports", str(user_1.id)
+        )
+        exporter = UserDataExporter(user_1)
+
+        exporter.generate_archive()
+
+        for file_name in [
+            "user_data",
+            "workouts_data",
+            "equipments_data",
+            "comments_data",
+        ]:
+            assert (
+                os.path.isfile(
+                    os.path.join(user_directory, f"{file_name}.json")
+                )
+                is False
+            )
+
 
 @patch("fittrackee.users.export_data.appLog")
 @patch.object(UserDataExporter, "generate_archive")
@@ -625,7 +654,7 @@ class TestExportUserData:
         self,
         generate_archive_mock: Mock,
         logger_mock: Mock,
-        data_export_email_mock: Mock,
+        export_data_send_email_mock: Mock,
         app: Flask,
         user_1: User,
     ) -> None:
@@ -666,11 +695,11 @@ class TestExportUserData:
         assert export_request.file_name is None
         assert export_request.file_size is None
 
-    def test_it_does_not_call_data_export_email_when_export_failed(
+    def test_it_does_not_call_send_email_when_export_failed(
         self,
         generate_archive_mock: Mock,
         logger_mock: Mock,
-        data_export_email_mock: Mock,
+        export_data_send_email_mock: Mock,
         app: Flask,
         user_1: User,
     ) -> None:
@@ -681,13 +710,13 @@ class TestExportUserData:
 
         export_user_data(export_request_id=export_request.id)
 
-        data_export_email_mock.send.assert_not_called()
+        export_data_send_email_mock.send.assert_not_called()
 
-    def test_it_calls_data_export_email_when_export_is_successful(
+    def test_it_calls_send_email_when_export_is_successful(
         self,
         generate_archive_mock: Mock,
         logger_mock: Mock,
-        data_export_email_mock: Mock,
+        export_data_send_email_mock: Mock,
         app: Flask,
         user_1: User,
     ) -> None:
@@ -704,7 +733,7 @@ class TestExportUserData:
         ):
             export_user_data(export_request_id=export_request.id)
 
-        data_export_email_mock.send.assert_called_once_with(
+        export_data_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_1.email,
@@ -714,6 +743,7 @@ class TestExportUserData:
                 "account_url": "https://example.com/profile/edit/account",
                 "fittrackee_url": "https://example.com",
             },
+            template="data_export_ready",
         )
 
 

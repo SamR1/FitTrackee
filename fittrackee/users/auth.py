@@ -19,13 +19,7 @@ from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
 from fittrackee.dates import get_datetime_in_utc, get_readable_duration
-from fittrackee.emails.tasks import (
-    account_confirmation_email,
-    email_updated_to_current_address,
-    email_updated_to_new_address,
-    password_change_email,
-    reset_password_email,
-)
+from fittrackee.emails.tasks import send_email
 from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
@@ -97,7 +91,7 @@ def send_account_confirmation_email(user: User) -> None:
             "language": get_language(user.language),
             "email": user.email,
         }
-        account_confirmation_email.send(user_data, email_data)
+        send_email.send(user_data, email_data, template="account_confirmation")
 
 
 @auth_blueprint.route("/auth/register", methods=["POST"])
@@ -834,7 +828,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
             }
 
             if new_password is not None:
-                password_change_email.send(user_data, data)
+                send_email.send(user_data, data, template="password_change")
 
             if (
                 auth_user.email_to_confirm is not None
@@ -844,7 +838,11 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
                     **data,
                     **{"new_email_address": email_to_confirm},
                 }
-                email_updated_to_current_address.send(user_data, email_data)
+                send_email.send(
+                    user_data,
+                    email_data,
+                    template="email_update_to_current_email",
+                )
 
                 email_data = {
                     **data,
@@ -859,7 +857,9 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
                     **user_data,
                     **{"email": auth_user.email_to_confirm},
                 }
-                email_updated_to_new_address.send(user_data, email_data)
+                send_email.send(
+                    user_data, email_data, template="email_update_to_new_email"
+                )
 
         return {
             "status": "success",
@@ -1730,7 +1730,9 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
             "language": user_language,
             "email": user.email,
         }
-        reset_password_email.send(user_data, email_data)
+        send_email.send(
+            user_data, email_data, template="password_reset_request"
+        )
     return {
         "status": "success",
         "message": "password reset request processed",
@@ -1799,17 +1801,18 @@ def update_password() -> Union[Dict, HttpResponse]:
         db.session.commit()
 
         if current_app.config["CAN_SEND_EMAILS"]:
-            password_change_email.send(
-                {
+            send_email.send(
+                user_data={
                     "language": get_language(user.language),
                     "email": user.email,
                 },
-                {
+                email_data={
                     "username": user.username,
                     "fittrackee_url": current_app.config["UI_URL"],
                     "operating_system": request.user_agent.platform,
                     "browser_name": request.user_agent.browser,
                 },
+                template="password_change",
             )
 
         return {

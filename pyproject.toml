@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.9.4"
+version = "0.9.5"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0-only"
@@ -30,14 +30,14 @@ Changelog = "https://docs.fittrackee.org/en/changelog.html"
 
 [tool.poetry.dependencies]
 python = "^3.9.2"
-authlib = "=1.5.1"
+authlib = "=1.5.2"
 babel = "^2.11.0"
 click = "^8.1.7"
 dramatiq = {version = "^1.15.0", extras = ["redis"]}
 flask = "^3.1.0"
 flask-bcrypt = "^1.0.1"
 flask-dramatiq = "^0.6.0"
-flask-limiter = {version = "^3.11.0", extras = ["redis"]}
+flask-limiter = {version = "^3.11.0", extras = ["redis"]}  # flask-limiter 3.12+ requires python 3.10+
 flask-migrate = "4.1.0"
 flask-sqlalchemy = "3.1.1"
 gpxpy = "=1.6.2"
@@ -52,7 +52,7 @@ pyopenssl = "^25.0.0"
 pytz = "^2025.2"
 shortuuid = "^1.0.13"
 staticmap = "^0.5.7"
-sqlalchemy = "=2.0.39"
+sqlalchemy = "=2.0.40"
 ua-parser = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
@@ -60,7 +60,7 @@ bandit = "^1.8.3"
 furo = "^2024.8.6"
 mypy = "^1.15.0"
 pytest = "^8.3.4"
-pytest-cov = "^6.0.0"
+pytest-cov = "^6.1.0"
 pytest-html = "^4.1.1"
 pytest-runner = "^6.0.1"
 pytest-selenium = "^4.1.0"
@@ -68,7 +68,7 @@ pytest-xdist = {extras = ["psutil"], version = "^3.6.0"}
 recommonmark = "^0.7.1"
 ruff = "^0.11.2"
 selenium = "^4.30.0"
-sphinx = "^7.4.7"
+sphinx = "^7.4.7" # sphinx 8+ requires python 3.10+
 sphinx-copybutton = "^0.5.2"
 sphinx-intl = "^2.3.1"
 sphinxcontrib-httpdomain = "^1.8.1"

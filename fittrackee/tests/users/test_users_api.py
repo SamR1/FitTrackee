@@ -2,7 +2,7 @@ import json
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from typing import List, Tuple
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, call, patch
 
 import pytest
 from flask import Flask
@@ -2052,8 +2052,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         app: Flask,
         user_1_admin: User,
         user_2: User,
-        user_password_change_email_mock: MagicMock,
-        user_reset_password_email: MagicMock,
+        users_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -2067,11 +2066,14 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         )
 
         assert response.status_code == 200
-        user_password_change_email_mock.send.assert_not_called()
-        user_reset_password_email.send.assert_not_called()
+        users_send_email_mock.send.assert_not_called()
 
     def test_it_resets_user_password(
-        self, app: Flask, user_1_admin: User, user_2: User
+        self,
+        app: Flask,
+        user_1_admin: User,
+        user_2: User,
+        users_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -2088,63 +2090,12 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         assert response.status_code == 200
         assert user_2.password != user_2_password
 
-    def test_it_calls_password_change_email_when_password_reset_is_successful(
+    def test_it_calls_send_email_when_password_reset_is_successful(
         self,
         app: Flask,
         user_1_admin: User,
         user_2: User,
-        user_password_change_email_mock: MagicMock,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
-
-        response = client.patch(
-            f"/api/users/{user_2.username}",
-            content_type="application/json",
-            data=json.dumps(dict(reset_password=True)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        assert response.status_code == 200
-        user_password_change_email_mock.send.assert_called_once_with(
-            {
-                "language": "en",
-                "email": user_2.email,
-            },
-            {
-                "username": user_2.username,
-                "fittrackee_url": app.config["UI_URL"],
-            },
-        )
-
-    def test_it_does_not_call_password_change_email_when_email_sending_is_disabled(  # noqa
-        self,
-        app_wo_email_activation: Flask,
-        user_1_admin: User,
-        user_2: User,
-        user_password_change_email_mock: MagicMock,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app_wo_email_activation, user_1_admin.email
-        )
-
-        response = client.patch(
-            f"/api/users/{user_2.username}",
-            content_type="application/json",
-            data=json.dumps(dict(reset_password=True)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        assert response.status_code == 200
-        user_password_change_email_mock.send.assert_not_called()
-
-    def test_it_calls_reset_password_email_when_password_reset_is_successful(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        user_reset_password_email: MagicMock,
+        users_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -2162,30 +2113,46 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             )
 
         assert response.status_code == 200
-        user_reset_password_email.send.assert_called_once_with(
-            {
-                "language": "en",
-                "email": user_2.email,
-            },
-            {
-                "expiration_delay": get_readable_duration(
-                    app.config["PASSWORD_TOKEN_EXPIRATION_SECONDS"],
-                    "en",
-                ),
-                "username": user_2.username,
-                "password_reset_url": (
-                    f"{app.config['UI_URL']}/password-reset?token=xxx"
-                ),
-                "fittrackee_url": app.config["UI_URL"],
-            },
+        users_send_email_mock.send.assert_has_calls(
+            [
+                call(
+                    {
+                        "language": "en",
+                        "email": user_2.email,
+                    },
+                    email_data={
+                        "username": user_2.username,
+                        "fittrackee_url": app.config["UI_URL"],
+                    },
+                    template="password_change",
+                )
+            ],
+            call(
+                {
+                    "language": "en",
+                    "email": user_2.email,
+                },
+                {
+                    "expiration_delay": get_readable_duration(
+                        app.config["PASSWORD_TOKEN_EXPIRATION_SECONDS"],
+                        "en",
+                    ),
+                    "username": user_2.username,
+                    "password_reset_url": (
+                        f"{app.config['UI_URL']}/password-reset?token=xxx"
+                    ),
+                    "fittrackee_url": app.config["UI_URL"],
+                },
+                template="user_reset_password",
+            ),
         )
 
-    def test_it_does_not_call_reset_password_email_when_email_sending_is_disabled(  # noqa
+    def test_it_does_not_send_email_when_email_sending_is_disabled(
         self,
         app_wo_email_activation: Flask,
         user_1_admin: User,
         user_2: User,
-        user_reset_password_email: MagicMock,
+        users_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app_wo_email_activation, user_1_admin.email
@@ -2199,7 +2166,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         )
 
         assert response.status_code == 200
-        user_reset_password_email.send.assert_not_called()
+        users_send_email_mock.send.assert_not_called()
 
     def test_it_returns_error_when_updating_email_with_invalid_address(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -2240,7 +2207,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         app: Flask,
         user_1_admin: User,
         user_2: User,
-        user_email_updated_to_new_address_mock: MagicMock,
+        users_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -2253,7 +2220,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        user_email_updated_to_new_address_mock.send.assert_not_called()
+        users_send_email_mock.send.assert_not_called()
 
     def test_it_updates_user_email_to_confirm_when_email_sending_is_enabled(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -2302,7 +2269,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         app: Flask,
         user_1_admin: User,
         user_2: User,
-        user_email_updated_to_new_address_mock: MagicMock,
+        users_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
@@ -2319,7 +2286,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             )
 
         assert response.status_code == 200
-        user_email_updated_to_new_address_mock.send.assert_called_once_with(
+        users_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": new_email,
@@ -2332,6 +2299,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
                     f"?token={expected_token}"
                 ),
             },
+            template="email_update_to_new_email",
         )
 
     def test_it_does_not_call_email_updated_to_new_address_when_email_sending_is_disabled(  # noqa
@@ -2339,7 +2307,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         app_wo_email_activation: Flask,
         user_1_admin: User,
         user_2: User,
-        user_email_updated_to_new_address_mock: MagicMock,
+        users_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app_wo_email_activation, user_1_admin.email
@@ -2354,7 +2322,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         )
 
         assert response.status_code == 200
-        user_email_updated_to_new_address_mock.send.assert_not_called()
+        users_send_email_mock.send.assert_not_called()
 
     def test_it_activates_user_account(
         self, app: Flask, user_1_admin: User, inactive_user: User

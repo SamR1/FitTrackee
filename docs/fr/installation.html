@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Interface de ligne de commande" href="cli.html" /><link rel="prev" title="OAuth 2.0" href="oauth.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Installation - Documentation FitTrackee 0.9.4</title>
+        <title>Installation - Documentation FitTrackee 0.9.5</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.4
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.5
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.4
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.5
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -317,7 +317,7 @@
 <li><p>Flask</p></li>
 <li><p><a class="reference external" href="https://github.com/tkrajina/gpxpy">gpxpy</a> pour analyser les fichiers gpx</p></li>
 <li><p><a class="reference external" href="https://github.com/komoot/staticmap">staticmap</a> pour générer une image de la trace à partir des données du fichier gpx</p></li>
-<li><p><a class="reference external" href="https://flask-dramatiq.readthedocs.io/en/latest/">dramatiq</a> pour la file d’attente des tâches</p></li>
+<li><p><a class="reference external" href="https://dramatiq.io/">Dramatiq</a> et <a class="reference external" href="https://flask-dramatiq.readthedocs.io">Flask-Dramatiq</a> pour la file d’attente des tâches</p></li>
 <li><p><a class="reference external" href="https://docs.authlib.org/en/latest/">Authlib</a> pour le support de l’autorisation OAuth 2.0</p></li>
 <li><p><a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable">Flask-Limiter</a> pour les limitations d’accès à l’API</p></li>
 <li><p><a class="reference external" href="https://gunicorn.org/">gunicorn</a> pour servir l’application</p></li>
@@ -471,7 +471,7 @@
 <dd><div class="versionadded">
 <p><span class="versionmodified added">Ajouté dans la version 0.4.0.</span></p>
 </div>
-<p>Chemin du fichier log</p>
+<p>Chemin du fichier de log</p>
 </dd></dl>
 
 <dl class="std envvar">
@@ -591,6 +591,15 @@
 <p><span class="versionmodified added">Ajouté dans la version 0.3.0.</span></p>
 </div>
 <p>Nombre de processus utilisés par <strong>Dramatiq</strong>.</p>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-DRAMATIQ_LOG">
+<span class="sig-name descname"><span class="pre">DRAMATIQ_LOG</span></span><a class="headerlink" href="#envvar-DRAMATIQ_LOG" title="Lien vers cette définition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 0.9.5.</span></p>
+</div>
+<p>Chemin du fichier de log de <strong>Dramatiq</strong></p>
 </dd></dl>
 
 <dl class="std envvar">
@@ -813,7 +822,7 @@
 <li><p>levée de suspension et d’avertissement (<em>nouveau dans la version 0.9.0</em>)</p></li>
 <li><p>appel rejeté (<em>nouveau dans la version 0.9.0</em>)</p></li>
 </ul>
-<p>Dans le cas des instances avec un seul utilisateur, il est possible de désactiver l’envoi de courriels en laissant la variable <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> vide (dans ce cas il n’est pas nécessaire de lancer les <em>workers</em> de dramatiq).</p>
+<p>Dans le cas des instances avec un seul utilisateur, il est possible de désactiver l’envoi de courriels en laissant la variable <code class="docutils literal notranslate"><span class="pre">EMAIL_URL</span></code> vide (dans ce cas il n’est pas nécessaire de lancer les <em>workers</em> de <strong>Dramatiq</strong>).</p>
 <p>Une <a class="reference external" href="cli.html#ftcli-users-update">interface de ligne de commande (CLI)</a> est disponible pour activer les comptes, modifier l’adresse électronique et le mot de passe et gérer les demandes d’exports de données.</p>
 </section>
 <section id="map-tile-server">
@@ -968,10 +977,22 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Démarrer les <em>workers</em> de la file d’attente des tâches <strong>si l’envoi des courriels est activé</strong>, avec l’interface de ligne de commandes de flask-dramatiq :</p></li>
+<li><p>Démarrer les <em>workers</em> de la file d’attente des tâches <strong>si l’envoi des courriels est activé</strong>, avec l’interface de ligne de commandes de <strong>Dramatiq</strong> (cf. <a class="reference external" href="https://dramatiq.io/guide.html#workers">documentation</a>):</p></li>
 </ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>dramatiq<span class="w"> </span>fittrackee.tasks:broker<span class="w"> </span>--processes<span class="o">=</span><span class="nv">$WORKERS_PROCESSES</span><span class="w"> </span>--log-file<span class="o">=</span><span class="nv">$DRAMATIQ_LOG</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Il est également possible de démarrer les <em>workers</em> de la file d’attente des tâches avec l’interface de ligne de commandes de <strong>Flask-dramatiq</strong> :</div>
+</div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>flask<span class="w"> </span>worker<span class="w"> </span>--processes<span class="w"> </span><span class="m">2</span>
 </pre></div>
+</div>
+<div class="line-block">
+<div class="line">Mais lancer l’interface de ligne de commandes de <strong>Flask-Dramatiq</strong> génère des erreurs sur Python 3.13+. Les emails et les exports de données de l’utilisateur sont bien envoyés, mais le <a class="reference external" href="https://dramatiq.io/reference.html#dramatiq.middleware.TimeLimit">middleware</a> évitant que les acteurs de fonctionner trop longtemps n’est pas actif. Veuillez utiliser l’interface de ligne de commandes de <strong>Dramatiq</strong> à la place pour le moment.</div>
+</div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1033,7 +1054,7 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Démarrer les <em>workers</em> dramatiq :</p></li>
+<li><p>Démarrer les <em>workers</em> de <strong>Dramatiq</strong> :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>run-workers
 </pre></div>
@@ -1059,11 +1080,11 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Télécharger la dernière version (à ce jour, la version v0.9.4) :</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v0.9.5) :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.9.4.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.9.4.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.9.4<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.9.5.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.9.5.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.9.5<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1081,7 +1102,7 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Démarrer le serveur et les <em>workers</em> dramatiq :</p></li>
+<li><p>Démarrer le serveur et les <em>workers</em> de <strong>Dramatiq</strong> :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>run
 </pre></div>
@@ -1186,7 +1207,7 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Démarrer les <em>workers</em> dramatiq :</p></li>
+<li><p>Démarrer les <em>workers</em> de <strong>Dramatiq</strong> :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>run-workers
 </pre></div>
@@ -1197,11 +1218,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <ul class="simple">
 <li><p>Arrêter l’application</p></li>
 <li><p>Changer pour le répertoire dans lequel FitTrackee est localisé</p></li>
-<li><p>Télécharger la dernière version (à ce jour, la version v0.9.4) et écraser les fichiers existants :</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v0.9.5) et écraser les fichiers existants :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.9.4.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.9.4.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.9.4/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.9.5.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.9.5.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.9.5/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1219,7 +1240,7 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Redémarrer le serveur et les <em>workers</em> dramatiq :</p></li>
+<li><p>Redémarrer le serveur et les <em>workers</em> de <strong>Dramatiq</strong> :</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>run
 </pre></div>
@@ -1313,12 +1334,16 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;SENDER_EMAIL=&quot;</span>
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;REDIS_URL=&quot;</span>
 <span class="n">WorkingDirectory</span><span class="o">=/</span><span class="n">home</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/&lt;</span><span class="n">FITTRACKEE</span> <span class="n">DIRECTORY</span><span class="o">&gt;</span>
-<span class="n">ExecStart</span><span class="o">=/</span><span class="n">home</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/&lt;</span><span class="n">FITTRACKEE</span> <span class="n">DIRECTORY</span><span class="o">&gt;/.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">flask</span> <span class="n">worker</span> <span class="o">--</span><span class="n">processes</span> <span class="o">&lt;</span><span class="n">NUMBER</span> <span class="n">OF</span> <span class="n">PROCESSES</span><span class="o">&gt;</span>
+<span class="n">ExecStart</span><span class="o">=/</span><span class="n">home</span><span class="o">/&lt;</span><span class="n">USER</span><span class="o">&gt;/&lt;</span><span class="n">FITTRACKEE</span> <span class="n">DIRECTORY</span><span class="o">&gt;/.</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">dramatiq</span> <span class="n">fittrackee</span><span class="o">.</span><span class="n">tasks</span><span class="p">:</span><span class="n">broker</span> <span class="o">--</span><span class="n">processes</span><span class="o">=&lt;</span><span class="n">NUMBER</span> <span class="n">OF</span> <span class="n">PROCESSES</span><span class="o">&gt;</span> <span class="o">--</span><span class="n">log</span><span class="o">-</span><span class="n">file</span><span class="o">=&lt;</span><span class="n">DRAMATIQ_LOG_FILE_PATH</span><span class="o">&gt;</span>
 <span class="n">Restart</span><span class="o">=</span><span class="n">always</span>
 
 <span class="p">[</span><span class="n">Install</span><span class="p">]</span>
 <span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span>
 </pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">Voir aussi</p>
+<p>Plus d’informations sur l’interface de ligne de commandes de <strong>Dramatiq</strong> dans sa <a class="reference external" href="https://docs.gunicorn.org/en/stable/deploy.html">documentation</a>.</p>
 </div>
 <ul class="simple">
 <li><p>Configuration <strong>Nginx</strong> :</p></li>
@@ -1592,7 +1617,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=4d46eac8"></script>
+</div><script src="_static/documentation_options.js?v=e93e6ed1"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

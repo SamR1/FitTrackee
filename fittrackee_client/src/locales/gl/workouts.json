@@ -94,6 +94,8 @@
   "TITLE": "título",
   "TITLE_FIELD_HELP": "Se o escribes, o título substituirá ao do ficheiro gpx.",
   "TO": "a",
+  "TOTAL_ASCENT": "ascenso total",
+  "TOTAL_DESCENT": "descenso total",
   "TOTAL_DISTANCE": "distancia total",
   "TOTAL_DURATION": "duración total",
   "UPLOAD_FIRST_WORKOUT": "Sube un!",
@@ -136,6 +138,11 @@
   "WITHOUT_GPX": "sen ficheiro .gpx",
   "WITH_GPX": "con ficheiro .gpx",
   "WORKOUT": "actividade | actividades",
+  "WORKOUTS_STATISTICS": {
+    "all": "estatísticas en todas as páxinas",
+    "current_page": "estatísticas na páxina actual",
+    "limited": "estatísticas para {count} actividades"
+  },
   "WORKOUT_CHART": "gráfico de velocidade e altitude da actividade",
   "WORKOUT_DATE": "data da actividade",
   "WORKOUT_DELETION_CONFIRMATION": "Tes certeza de querer borrar esta actividade?",

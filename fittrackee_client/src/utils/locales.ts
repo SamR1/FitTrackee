@@ -62,19 +62,19 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
 export const languageLabels: Record<TLanguage, string> = {
   bg: 'български (63%)',
   cs: 'Česky (46%)',
-  de: 'Deutsch (85%)',
+  de: 'Deutsch (86%)',
   en: 'English',
   es: 'Español (63%)',
   eu: 'Euskara (82%)',
   fr: 'Français',
-  gl: 'Galego (99%)',
+  gl: 'Galego',
   it: 'Italiano (52%)',
   nl: 'Nederlands (63%)',
   nb: 'Norsk bokmål (33%)',
   pl: 'Polski (98%)',
   pt: 'Português (62%)',
   ru: 'Русский (39%)',
-  zh_Hans: '中文（简体）(98%)',
+  zh_Hans: '中文（简体',
 }
 
 export const availableLanguages = Object.keys(languageLabels).map((l) => {

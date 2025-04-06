@@ -2,7 +2,7 @@ import json
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from typing import Dict, Optional, Union
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import ANY, MagicMock, Mock, call, patch
 
 import pytest
 from flask import Flask
@@ -263,7 +263,7 @@ class TestUserRegistration(ApiTestCaseMixin):
         self.assert_400(response, "email: valid email must be provided\n")
 
     def test_it_does_not_send_email_after_error(
-        self, app: Flask, account_confirmation_email_mock: Mock
+        self, app: Flask, auth_send_email_mock: MagicMock
     ) -> None:
         client = app.test_client()
 
@@ -279,7 +279,7 @@ class TestUserRegistration(ApiTestCaseMixin):
             content_type="application/json",
         )
 
-        account_confirmation_email_mock.send.assert_not_called()
+        auth_send_email_mock.send.assert_not_called()
 
     def test_it_returns_success_if_payload_is_valid(self, app: Flask) -> None:
         client = app.test_client()
@@ -414,10 +414,10 @@ class TestUserRegistration(ApiTestCaseMixin):
         "input_language,expected_language",
         [("en", "en"), ("fr", "fr"), ("invalid", "en"), (None, "en")],
     )
-    def test_it_calls_account_confirmation_email_when_payload_is_valid(
+    def test_it_calls_send_email_for_account_confirmation_when_payload_is_valid(  # noqa
         self,
         app: Flask,
-        account_confirmation_email_mock: Mock,
+        auth_send_email_mock: MagicMock,
         input_language: Optional[str],
         expected_language: str,
     ) -> None:
@@ -442,7 +442,7 @@ class TestUserRegistration(ApiTestCaseMixin):
                 environ_base={"HTTP_USER_AGENT": USER_AGENT},
             )
 
-        account_confirmation_email_mock.send.assert_called_once_with(
+        auth_send_email_mock.send.assert_called_once_with(
             {
                 "language": expected_language,
                 "email": email,
@@ -457,12 +457,13 @@ class TestUserRegistration(ApiTestCaseMixin):
                     f"?token={expected_token}"
                 ),
             },
+            template="account_confirmation",
         )
 
-    def test_it_does_not_call_account_confirmation_email_when_email_sending_is_disabled(  # noqa
+    def test_it_does_not_call_send_email_for_account_confirmation_when_email_sending_is_disabled(  # noqa
         self,
         app_wo_email_activation: Flask,
-        account_confirmation_email_mock: Mock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client = app_wo_email_activation.test_client()
         email = self.random_email()
@@ -483,7 +484,7 @@ class TestUserRegistration(ApiTestCaseMixin):
         )
 
         assert response.status_code == 200
-        account_confirmation_email_mock.send.assert_not_called()
+        auth_send_email_mock.send.assert_not_called()
 
     @pytest.mark.parametrize(
         "text_transformation",
@@ -516,8 +517,8 @@ class TestUserRegistration(ApiTestCaseMixin):
         assert data["status"] == "success"
         assert "auth_token" not in data
 
-    def test_it_does_not_call_account_confirmation_email_if_user_already_exists(  # noqa
-        self, app: Flask, user_1: User, account_confirmation_email_mock: Mock
+    def test_it_does_not_call_send_email_for_account_confirmation_if_user_already_exists(  # noqa
+        self, app: Flask, user_1: User, auth_send_email_mock: MagicMock
     ) -> None:
         client = app.test_client()
 
@@ -534,7 +535,7 @@ class TestUserRegistration(ApiTestCaseMixin):
             content_type="application/json",
         )
 
-        account_confirmation_email_mock.send.assert_not_called()
+        auth_send_email_mock.send.assert_not_called()
 
     def test_it_creates_notifications_for_admins_on_registration(
         self,
@@ -542,7 +543,7 @@ class TestUserRegistration(ApiTestCaseMixin):
         user_1_admin: User,
         user_2_admin: User,
         user_3: User,
-        account_confirmation_email_mock: Mock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         email = self.random_email()
         client = app.test_client()
@@ -579,7 +580,7 @@ class TestUserRegistration(ApiTestCaseMixin):
         app: Flask,
         user_1_admin: User,
         user_2_admin: User,
-        account_confirmation_email_mock: Mock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         user_1_admin.update_preferences({"account_creation": False})
         email = self.random_email()
@@ -922,16 +923,6 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
 
 
 class TestUserAccountUpdate(ApiTestCaseMixin):
-    @staticmethod
-    def assert_no_emails_sent(
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
-    ) -> None:
-        email_updated_to_current_address_mock.send.assert_not_called()
-        email_updated_to_new_address_mock.send.assert_not_called()
-        password_change_email_mock.send.assert_not_called()
-
     def test_it_returns_error_if_payload_is_empty(
         self, app: Flask, user_1: User
     ) -> None:
@@ -1016,9 +1007,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         self,
         app: Flask,
         user_1: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1037,19 +1026,11 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_no_emails_sent(
-            email_updated_to_current_address_mock,
-            email_updated_to_new_address_mock,
-            password_change_email_mock,
-        )
-
-    def test_it_does_not_returns_error_if_no_new_password_provided(
+    def test_it_does_not_return_error_if_no_new_password_provided(
         self,
         app: Flask,
         user_1: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1076,9 +1057,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         self,
         app: Flask,
         user_1: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1096,19 +1075,13 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_no_emails_sent(
-            email_updated_to_current_address_mock,
-            email_updated_to_new_address_mock,
-            password_change_email_mock,
-        )
+        auth_send_email_mock.send.assert_not_called()
 
     def test_it_returns_error_if_new_email_is_invalid(
         self,
         app: Flask,
         user_1: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1132,9 +1105,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         self,
         app: Flask,
         user_1: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1163,9 +1134,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         self,
         app_wo_email_activation: Flask,
         user_1: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app_wo_email_activation, user_1.email
@@ -1189,53 +1158,11 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         assert user_1.email_to_confirm is None
         assert user_1.confirmation_token is None
 
-    def test_it_calls_email_updated_to_current_email_send_when_new_email_provided(  # noqa
+    def test_it_calls_send_email_for_current_and_new_email_when_new_email_provided(  # noqa
         self,
         app: Flask,
         user_1: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-        new_email = "new.email@example.com"
-
-        client.patch(
-            "/api/auth/profile/edit/account",
-            content_type="application/json",
-            data=json.dumps(
-                dict(
-                    email=new_email,
-                    password="12345678",
-                )
-            ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-            environ_base={"HTTP_USER_AGENT": USER_AGENT},
-        )
-
-        email_updated_to_current_address_mock.send.assert_called_once_with(
-            {
-                "language": "en",
-                "email": user_1.email,
-            },
-            {
-                "username": user_1.username,
-                "fittrackee_url": app.config["UI_URL"],
-                "operating_system": "Linux",
-                "browser_name": "Firefox",
-                "new_email_address": new_email,
-            },
-        )
-
-    def test_it_calls_email_updated_to_new_email_send_when_new_email_provided(
-        self,
-        app: Flask,
-        user_1: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1257,60 +1184,47 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                 environ_base={"HTTP_USER_AGENT": USER_AGENT},
             )
 
-        email_updated_to_new_address_mock.send.assert_called_once_with(
-            {
-                "language": "en",
-                "email": user_1.email_to_confirm,
-            },
-            {
-                "username": user_1.username,
-                "fittrackee_url": app.config["UI_URL"],
-                "operating_system": "Linux",
-                "browser_name": "Firefox",
-                "email_confirmation_url": (
-                    f"{app.config['UI_URL']}/email-update"
-                    f"?token={expected_token}"
+        auth_send_email_mock.send.assert_has_calls(
+            [
+                call(
+                    {
+                        "language": "en",
+                        "email": user_1.email,
+                    },
+                    {
+                        "username": user_1.username,
+                        "fittrackee_url": app.config["UI_URL"],
+                        "operating_system": "Linux",
+                        "browser_name": "Firefox",
+                        "new_email_address": new_email,
+                    },
+                    template="email_update_to_current_email",
                 ),
-            },
-        )
-
-    def test_it_does_not_calls_password_change_email_send_when_new_email_provided(  # noqa
-        self,
-        app: Flask,
-        user_1: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-        new_email = "new.email@example.com"
-        expected_token = self.random_string()
-
-        with patch("secrets.token_urlsafe", return_value=expected_token):
-            client.patch(
-                "/api/auth/profile/edit/account",
-                content_type="application/json",
-                data=json.dumps(
-                    dict(
-                        email=new_email,
-                        password="12345678",
-                    )
+                call(
+                    {
+                        "language": "en",
+                        "email": user_1.email_to_confirm,
+                    },
+                    {
+                        "username": user_1.username,
+                        "fittrackee_url": app.config["UI_URL"],
+                        "operating_system": "Linux",
+                        "browser_name": "Firefox",
+                        "email_confirmation_url": (
+                            f"{app.config['UI_URL']}/email-update"
+                            f"?token={expected_token}"
+                        ),
+                    },
+                    template="email_update_to_new_email",
                 ),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
-                environ_base={"HTTP_USER_AGENT": USER_AGENT},
-            )
-
-        password_change_email_mock.send.assert_not_called()
+            ]
+        )
 
     def test_it_returns_error_if_controls_fail_on_new_password(
         self,
         app: Flask,
         user_1: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1335,9 +1249,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         self,
         app: Flask,
         user_1: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1367,9 +1279,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         self,
         app: Flask,
         suspended_user: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, suspended_user.email
@@ -1399,9 +1309,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         self,
         app: Flask,
         user_1: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1424,13 +1332,11 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         assert response.status_code == 200
         assert new_password != user_1.password
 
-    def test_it_calls_password_change_email_when_new_password_provided(
+    def test_it_calls_send_email_for_password_change_when_new_password_is_provided(  # noqa
         self,
         app: Flask,
         user_1: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1450,7 +1356,9 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             environ_base={"HTTP_USER_AGENT": USER_AGENT},
         )
 
-        password_change_email_mock.send.assert_called_once_with(
+        # it does not call auth_send_email_mock with
+        # "email_updated_to_current_address" and "email_updated_to_new_address"
+        auth_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_1.email,
@@ -1461,43 +1369,14 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                 "operating_system": "Linux",
                 "browser_name": "Firefox",
             },
+            template="password_change",
         )
-
-    def test_it_does_not_call_email_updated_emails_send_when_new_password_provided(  # noqa
-        self,
-        app: Flask,
-        user_1: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        client.patch(
-            "/api/auth/profile/edit/account",
-            content_type="application/json",
-            data=json.dumps(
-                dict(
-                    email=user_1.email,
-                    password="12345678",
-                    new_password=self.random_string(),
-                )
-            ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        email_updated_to_current_address_mock.send.assert_not_called()
-        email_updated_to_new_address_mock.send.assert_not_called()
 
     def test_it_updates_email_to_confirm_and_password_when_new_email_and_password_provided(  # noqa
         self,
         app: Flask,
         user_1: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1527,13 +1406,11 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         assert user_1.email_to_confirm == new_email
         assert user_1.password != current_hashed_password
 
-    def test_it_calls_all_email_send_when_new_email_and_password_provided(
+    def test_it_calls_email_send_for_all_mails_when_new_email_and_password_provided(  # noqa
         self,
         app: Flask,
         user_1: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1552,17 +1429,31 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        email_updated_to_current_address_mock.send.assert_called_once()
-        email_updated_to_new_address_mock.send.assert_called_once()
-        password_change_email_mock.send.assert_called_once()
+        auth_send_email_mock.send.assert_has_calls(
+            [
+                call(
+                    ANY,
+                    ANY,
+                    template="password_change",
+                ),
+                call(
+                    ANY,
+                    ANY,
+                    template="email_update_to_current_email",
+                ),
+                call(
+                    ANY,
+                    ANY,
+                    template="email_update_to_new_email",
+                ),
+            ]
+        )
 
-    def test_it_does_not_calls_all_email_send_when_email_sending_is_disabled(
+    def test_it_does_not_call_email_send_for_all_mails_when_email_sending_is_disabled(  # noqa
         self,
         app_wo_email_activation: Flask,
         user_1: User,
-        email_updated_to_current_address_mock: MagicMock,
-        email_updated_to_new_address_mock: MagicMock,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app_wo_email_activation, user_1.email
@@ -1581,11 +1472,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_no_emails_sent(
-            email_updated_to_current_address_mock,
-            email_updated_to_new_address_mock,
-            password_change_email_mock,
-        )
+        auth_send_email_mock.send.assert_not_called()
 
     @pytest.mark.parametrize(
         "client_scope, can_access",
@@ -2879,7 +2766,7 @@ class TestPasswordResetRequest(ApiTestCaseMixin):
         )
 
     def test_it_requests_password_reset_when_user_exists(
-        self, app: Flask, user_1: User, user_reset_password_email: Mock
+        self, app: Flask, user_1: User, auth_send_email_mock: Mock
     ) -> None:
         client = app.test_client()
 
@@ -2895,7 +2782,7 @@ class TestPasswordResetRequest(ApiTestCaseMixin):
         assert data["message"] == "password reset request processed"
 
     def test_it_requests_password_reset_when_user_is_suspended(
-        self, app: Flask, suspended_user: User, user_reset_password_email: Mock
+        self, app: Flask, suspended_user: User, auth_send_email_mock: Mock
     ) -> None:
         client = app.test_client()
 
@@ -2910,8 +2797,8 @@ class TestPasswordResetRequest(ApiTestCaseMixin):
         assert data["status"] == "success"
         assert data["message"] == "password reset request processed"
 
-    def test_it_calls_reset_password_email_when_user_exists(
-        self, app: Flask, user_1: User, reset_password_email: Mock
+    def test_it_calls_send_email_for_password_reset_request_when_user_exists(
+        self, app: Flask, user_1: User, auth_send_email_mock: Mock
     ) -> None:
         client = app.test_client()
         token = self.random_string()
@@ -2924,7 +2811,7 @@ class TestPasswordResetRequest(ApiTestCaseMixin):
                 environ_base={"HTTP_USER_AGENT": USER_AGENT},
             )
 
-        reset_password_email.send.assert_called_once_with(
+        auth_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_1.email,
@@ -2939,6 +2826,7 @@ class TestPasswordResetRequest(ApiTestCaseMixin):
                 "operating_system": "Linux",
                 "browser_name": "Firefox",
             },
+            template="password_reset_request",
         )
 
     def test_it_does_not_return_error_when_user_does_not_exist(
@@ -2957,8 +2845,8 @@ class TestPasswordResetRequest(ApiTestCaseMixin):
         assert data["status"] == "success"
         assert data["message"] == "password reset request processed"
 
-    def test_it_does_not_call_reset_password_email_when_user_does_not_exist(
-        self, app: Flask, reset_password_email: Mock
+    def test_it_does_not_call_send_email_for_password_reset_request_when_user_does_not_exist(  # noqa
+        self, app: Flask, auth_send_email_mock: Mock
     ) -> None:
         client = app.test_client()
 
@@ -2968,7 +2856,7 @@ class TestPasswordResetRequest(ApiTestCaseMixin):
             content_type="application/json",
         )
 
-        reset_password_email.assert_not_called()
+        auth_send_email_mock.assert_not_called()
 
 
 class TestPasswordUpdate(ApiTestCaseMixin):
@@ -3076,7 +2964,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
         self,
         app: Flask,
         user_1: User,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         token = get_user_token(user_1.id, password_reset=True)
         client = app.test_client()
@@ -3092,13 +2980,13 @@ class TestPasswordUpdate(ApiTestCaseMixin):
             content_type="application/json",
         )
 
-        password_change_email_mock.assert_not_called()
+        auth_send_email_mock.assert_not_called()
 
     def test_it_updates_password(
         self,
         app: Flask,
         user_1: User,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         token = get_user_token(user_1.id, password_reset=True)
         client = app.test_client()
@@ -3123,7 +3011,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
         self,
         app: Flask,
         suspended_user: User,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         token = get_user_token(suspended_user.id, password_reset=True)
         client = app.test_client()
@@ -3144,11 +3032,11 @@ class TestPasswordUpdate(ApiTestCaseMixin):
         assert data["status"] == "success"
         assert data["message"] == "password updated"
 
-    def test_it_sends_email_after_successful_update(
+    def test_it_sends_email_for_password_change_after_successful_update(
         self,
         app: Flask,
         user_1: User,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         token = get_user_token(user_1.id, password_reset=True)
         client = app.test_client()
@@ -3166,24 +3054,25 @@ class TestPasswordUpdate(ApiTestCaseMixin):
         )
 
         assert response.status_code == 200
-        password_change_email_mock.send.assert_called_once_with(
-            {
+        auth_send_email_mock.send.assert_called_once_with(
+            user_data={
                 "language": "en",
                 "email": user_1.email,
             },
-            {
+            email_data={
                 "username": user_1.username,
                 "fittrackee_url": app.config["UI_URL"],
                 "operating_system": "Linux",
                 "browser_name": "Firefox",
             },
+            template="password_change",
         )
 
-    def test_it_does_not_send_email_when_email_sending_is_disabled(
+    def test_it_does_not_send_email_for_password_change_when_email_sending_is_disabled(  # noqa
         self,
         app_wo_email_activation: Flask,
         user_1: User,
-        password_change_email_mock: MagicMock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         token = get_user_token(user_1.id, password_reset=True)
         client = app_wo_email_activation.test_client()
@@ -3200,7 +3089,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
             environ_base={"HTTP_USER_AGENT": USER_AGENT},
         )
 
-        password_change_email_mock.send.assert_not_called()
+        auth_send_email_mock.send.assert_not_called()
 
 
 class TestEmailUpdateWitUnauthenticatedUser(ApiTestCaseMixin):
@@ -3352,11 +3241,11 @@ class TestResendAccountConfirmationEmail(ApiTestCaseMixin):
         assert data["status"] == "success"
         assert data["message"] == "confirmation email resent"
 
-    def test_it_does_not_call_account_confirmation_email_if_user_is_active(
+    def test_it_does_not_call_send_email_for_account_confirmation_if_user_is_active(  # noqa
         self,
         app: Flask,
         user_1: User,
-        account_confirmation_email_mock: Mock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client = app.test_client()
 
@@ -3367,7 +3256,7 @@ class TestResendAccountConfirmationEmail(ApiTestCaseMixin):
             environ_base={"HTTP_USER_AGENT": USER_AGENT},
         )
 
-        account_confirmation_email_mock.send.assert_not_called()
+        auth_send_email_mock.send.assert_not_called()
 
     def test_it_returns_success_if_user_is_inactive(
         self, app: Flask, inactive_user: User
@@ -3399,11 +3288,11 @@ class TestResendAccountConfirmationEmail(ApiTestCaseMixin):
 
         assert inactive_user.confirmation_token != previous_token
 
-    def test_it_calls_account_confirmation_email_if_user_is_inactive(
+    def test_it_calls_send_email_for_account_confirmation_if_user_is_inactive(
         self,
         app: Flask,
         inactive_user: User,
-        account_confirmation_email_mock: Mock,
+        auth_send_email_mock: MagicMock,
     ) -> None:
         client = app.test_client()
         expected_token = self.random_string()
@@ -3417,7 +3306,7 @@ class TestResendAccountConfirmationEmail(ApiTestCaseMixin):
                 environ_base={"HTTP_USER_AGENT": USER_AGENT},
             )
 
-        account_confirmation_email_mock.send.assert_called_once_with(
+        auth_send_email_mock.send.assert_called_once_with(
             {
                 "language": inactive_user.language,
                 "email": inactive_user.email,
@@ -3432,6 +3321,7 @@ class TestResendAccountConfirmationEmail(ApiTestCaseMixin):
                     f"?token={expected_token}"
                 ),
             },
+            template="account_confirmation",
         )
 
     def test_it_returns_error_if_email_sending_is_disabled(

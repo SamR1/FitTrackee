@@ -26,7 +26,7 @@ class TestReportEmailServiceForUserSuspension(
         user_1_moderator: User,
         user_2: User,
         user_3: User,
-        user_suspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
         input_reason: Dict,
     ) -> None:
         report_service = ReportService()
@@ -39,7 +39,7 @@ class TestReportEmailServiceForUserSuspension(
             report, "user_suspension", input_reason.get("reason")
         )
 
-        user_suspension_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_3.email,
@@ -50,6 +50,7 @@ class TestReportEmailServiceForUserSuspension(
                 "appeal_url": f"{app.config['UI_URL']}/profile/suspension",
                 "reason": input_reason.get("reason"),
             },
+            template="user_suspension",
         )
 
 
@@ -63,7 +64,7 @@ class TestReportEmailServiceForUserReactivation(
         user_1_moderator: User,
         user_2: User,
         user_3: User,
-        user_unsuspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
         input_reason: Dict,
     ) -> None:
         report_service = ReportService()
@@ -78,7 +79,7 @@ class TestReportEmailServiceForUserReactivation(
             report, "user_unsuspension", input_reason.get("reason")
         )
 
-        user_unsuspension_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_3.email,
@@ -89,6 +90,7 @@ class TestReportEmailServiceForUserReactivation(
                 "reason": input_reason.get("reason"),
                 "without_user_action": True,
             },
+            template="user_unsuspension",
         )
 
 
@@ -102,7 +104,7 @@ class TestReportEmailServiceForUserWarning(
         user_1_moderator: User,
         user_2: User,
         user_3: User,
-        user_warning_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
         input_reason: Dict,
     ) -> None:
         report_service = ReportService()
@@ -125,7 +127,7 @@ class TestReportEmailServiceForUserWarning(
             report, "user_warning", input_reason.get("reason"), user_warning
         )
 
-        user_warning_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_3.email,
@@ -140,6 +142,7 @@ class TestReportEmailServiceForUserWarning(
                 "reason": input_reason.get("reason"),
                 "user_image_url": f"{app.config['UI_URL']}/img/user.png",
             },
+            template="user_warning",
         )
 
     def test_it_sends_an_email_on_user_warning_for_comment_report(
@@ -150,7 +153,7 @@ class TestReportEmailServiceForUserWarning(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        user_warning_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report_service = ReportService()
         report = self.create_report_for_comment(
@@ -173,7 +176,7 @@ class TestReportEmailServiceForUserWarning(
             report, "user_warning", None, user_warning
         )
 
-        user_warning_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_3.email,
@@ -197,6 +200,7 @@ class TestReportEmailServiceForUserWarning(
                 "user_image_url": f"{app.config['UI_URL']}/img/user.png",
                 "username": user_3.username,
             },
+            template="user_warning",
         )
 
     def test_it_sends_an_email_on_user_warning_for_comment_report_when_workout_is_deleted(  # noqa
@@ -207,7 +211,7 @@ class TestReportEmailServiceForUserWarning(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        user_warning_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report_service = ReportService()
         report = self.create_report_for_comment(
@@ -231,7 +235,7 @@ class TestReportEmailServiceForUserWarning(
             report, "user_warning", None, user_warning
         )
 
-        user_warning_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_3.email,
@@ -254,6 +258,7 @@ class TestReportEmailServiceForUserWarning(
                 "user_image_url": f"{app.config['UI_URL']}/img/user.png",
                 "username": user_3.username,
             },
+            template="user_warning",
         )
 
     def test_it_sends_an_email_on_user_warning_for_workout_report(
@@ -264,7 +269,7 @@ class TestReportEmailServiceForUserWarning(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        user_warning_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report_service = ReportService()
         report = self.create_report_for_workout(
@@ -286,7 +291,7 @@ class TestReportEmailServiceForUserWarning(
             report, "user_warning", None, user_warning
         )
 
-        user_warning_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_2.email,
@@ -310,6 +315,7 @@ class TestReportEmailServiceForUserWarning(
                     f"{workout_cycling_user_2.short_id}"
                 ),
             },
+            template="user_warning",
         )
 
     def test_it_sends_an_email_on_user_warning_for_workout_with_gpx_report(
@@ -320,7 +326,7 @@ class TestReportEmailServiceForUserWarning(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        user_warning_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         workout_cycling_user_2.map_id = self.random_short_id()
         report_service = ReportService()
@@ -343,7 +349,7 @@ class TestReportEmailServiceForUserWarning(
             report, "user_warning", None, user_warning
         )
 
-        user_warning_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_2.email,
@@ -370,6 +376,7 @@ class TestReportEmailServiceForUserWarning(
                     f"{workout_cycling_user_2.short_id}"
                 ),
             },
+            template="user_warning",
         )
 
 
@@ -382,7 +389,7 @@ class TestReportEmailServiceForUserWarningLifting(
         user_1_moderator: User,
         user_2: User,
         user_3: User,
-        user_warning_lifting_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report_service = ReportService()
         report = self.create_report_for_user(
@@ -404,7 +411,7 @@ class TestReportEmailServiceForUserWarningLifting(
             report, "user_warning_lifting", None, user_warning
         )
 
-        user_warning_lifting_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_3.email,
@@ -416,6 +423,7 @@ class TestReportEmailServiceForUserWarningLifting(
                 "user_image_url": f"{app.config['UI_URL']}/img/user.png",
                 "without_user_action": True,
             },
+            template="user_warning_lifting",
         )
 
     def test_it_sends_an_email_on_user_warning_for_comment_report(
@@ -426,7 +434,7 @@ class TestReportEmailServiceForUserWarningLifting(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        user_warning_lifting_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report_service = ReportService()
         report = self.create_report_for_comment(
@@ -449,7 +457,7 @@ class TestReportEmailServiceForUserWarningLifting(
             report, "user_warning_lifting", None, user_warning
         )
 
-        user_warning_lifting_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_3.email,
@@ -470,6 +478,7 @@ class TestReportEmailServiceForUserWarningLifting(
                 "username": user_3.username,
                 "without_user_action": True,
             },
+            template="user_warning_lifting",
         )
 
     def test_it_sends_an_email_on_user_warning_for_workout_report(
@@ -480,7 +489,7 @@ class TestReportEmailServiceForUserWarningLifting(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        user_warning_lifting_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report_service = ReportService()
         report = self.create_report_for_workout(
@@ -502,7 +511,7 @@ class TestReportEmailServiceForUserWarningLifting(
             report, "user_warning_lifting", None, user_warning
         )
 
-        user_warning_lifting_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_2.email,
@@ -523,6 +532,7 @@ class TestReportEmailServiceForUserWarningLifting(
                 ),
                 "without_user_action": True,
             },
+            template="user_warning_lifting",
         )
 
     def test_it_sends_an_email_on_user_warning_for_workout_with_gpx_report(
@@ -533,7 +543,7 @@ class TestReportEmailServiceForUserWarningLifting(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        user_warning_lifting_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         workout_cycling_user_2.map_id = self.random_short_id()
         report_service = ReportService()
@@ -556,7 +566,7 @@ class TestReportEmailServiceForUserWarningLifting(
             report, "user_warning_lifting", None, user_warning
         )
 
-        user_warning_lifting_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_2.email,
@@ -580,6 +590,7 @@ class TestReportEmailServiceForUserWarningLifting(
                 ),
                 "without_user_action": True,
             },
+            template="user_warning_lifting",
         )
 
 
@@ -594,7 +605,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         input_reason: Dict,
-        comment_suspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report_service = ReportService()
         report = self.create_report_for_comment(
@@ -609,7 +620,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
             report, "comment_suspension", input_reason.get("reason")
         )
 
-        comment_suspension_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_3.email,
@@ -629,6 +640,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
                 "user_image_url": f"{app.config['UI_URL']}/img/user.png",
                 "username": user_3.username,
             },
+            template="comment_suspension",
         )
 
     def test_it_sends_an_email_on_comment_suspension_when_workout_is_deleted(
@@ -639,7 +651,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        comment_suspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report_service = ReportService()
         report = self.create_report_for_comment(
@@ -656,7 +668,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
             report, "comment_suspension", None
         )
 
-        comment_suspension_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_3.email,
@@ -675,6 +687,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
                 "user_image_url": f"{app.config['UI_URL']}/img/user.png",
                 "username": user_3.username,
             },
+            template="comment_suspension",
         )
 
     @pytest.mark.parametrize("input_reason", [{}, {"reason": "foo"}])
@@ -686,7 +699,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        comment_unsuspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
         input_reason: Dict,
     ) -> None:
         report_service = ReportService()
@@ -704,7 +717,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
             report, "comment_unsuspension", input_reason.get("reason")
         )
 
-        comment_unsuspension_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_3.email,
@@ -725,6 +738,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
                 "username": user_3.username,
                 "without_user_action": True,
             },
+            template="comment_unsuspension",
         )
 
     def test_it_sends_an_email_on_comment_reactivation_when_workout_is_deleted(
@@ -735,7 +749,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        comment_unsuspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report_service = ReportService()
         report = self.create_report_for_comment(
@@ -753,7 +767,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
             report, "comment_unsuspension", None
         )
 
-        comment_unsuspension_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_3.email,
@@ -773,6 +787,7 @@ class TestReportEmailServiceForComment(ReportServiceCreateReportActionMixin):
                 "username": user_3.username,
                 "without_user_action": True,
             },
+            template="comment_unsuspension",
         )
 
 
@@ -787,7 +802,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         input_reason: Dict,
-        workout_suspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report_service = ReportService()
         report = self.create_report_for_workout(
@@ -801,7 +816,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
             report, "workout_suspension", input_reason.get("reason")
         )
 
-        workout_suspension_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_2.email,
@@ -821,6 +836,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
                     f"{workout_cycling_user_2.short_id}"
                 ),
             },
+            template="workout_suspension",
         )
 
     def test_it_sends_an_email_on_workout_with_gpx_suspension(
@@ -829,10 +845,9 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
         user_1_moderator: User,
         user_2: User,
         user_3: User,
-        user_suspension_email_mock: MagicMock,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        workout_suspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         workout_cycling_user_2.map_id = self.random_short_id()
         report_service = ReportService()
@@ -847,7 +862,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
             report, "workout_suspension", None
         )
 
-        workout_suspension_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_2.email,
@@ -870,6 +885,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
                     f"{workout_cycling_user_2.short_id}"
                 ),
             },
+            template="workout_suspension",
         )
 
     @pytest.mark.parametrize("input_reason", [{}, {"reason": "foo"}])
@@ -881,7 +897,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        workout_unsuspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
         input_reason: Dict,
     ) -> None:
         report_service = ReportService()
@@ -898,7 +914,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
             report, "workout_unsuspension", input_reason.get("reason")
         )
 
-        workout_unsuspension_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_2.email,
@@ -919,6 +935,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
                     f"{workout_cycling_user_2.short_id}"
                 ),
             },
+            template="workout_unsuspension",
         )
 
     def test_it_sends_an_email_on_workout_with_gpx_reactivation(
@@ -929,7 +946,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        workout_unsuspension_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         workout_cycling_user_2.map_id = self.random_short_id()
         report_service = ReportService()
@@ -946,7 +963,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
             report, "workout_unsuspension", None
         )
 
-        workout_unsuspension_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_2.email,
@@ -970,6 +987,7 @@ class TestReportEmailServiceForWorkout(ReportServiceCreateReportActionMixin):
                     f"{workout_cycling_user_2.short_id}"
                 ),
             },
+            template="workout_unsuspension",
         )
 
 
@@ -985,7 +1003,7 @@ class TestReportEmailServiceForAppealRejected(
         user_1_moderator: User,
         user_2: User,
         user_3: User,
-        appeal_rejected_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
         input_action_type: str,
     ) -> None:
         report_service = ReportService()
@@ -1002,7 +1020,7 @@ class TestReportEmailServiceForAppealRejected(
             report, "appeal_rejected", None, report_action
         )
 
-        appeal_rejected_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_3.email,
@@ -1015,6 +1033,7 @@ class TestReportEmailServiceForAppealRejected(
                 "without_user_action": True,
                 "action_type": input_action_type,
             },
+            template="appeal_rejected",
         )
 
     def test_it_sends_an_email_on_workout_action(
@@ -1025,7 +1044,7 @@ class TestReportEmailServiceForAppealRejected(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        appeal_rejected_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         workout_cycling_user_2.map_id = self.random_short_id()
         report_service = ReportService()
@@ -1046,7 +1065,7 @@ class TestReportEmailServiceForAppealRejected(
             report, "appeal_rejected", None, report_action
         )
 
-        appeal_rejected_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_2.email,
@@ -1071,6 +1090,7 @@ class TestReportEmailServiceForAppealRejected(
                     f"{workout_cycling_user_2.short_id}"
                 ),
             },
+            template="appeal_rejected",
         )
 
     def test_it_sends_an_email_on_comment_action(
@@ -1081,7 +1101,7 @@ class TestReportEmailServiceForAppealRejected(
         user_3: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
-        appeal_rejected_email_mock: MagicMock,
+        reports_send_email_mock: MagicMock,
     ) -> None:
         report_service = ReportService()
         report = self.create_report_for_comment(
@@ -1100,7 +1120,7 @@ class TestReportEmailServiceForAppealRejected(
             report, "appeal_rejected", None, report_action
         )
 
-        appeal_rejected_email_mock.send.assert_called_once_with(
+        reports_send_email_mock.send.assert_called_once_with(
             {
                 "language": "en",
                 "email": user_3.email,
@@ -1122,4 +1142,5 @@ class TestReportEmailServiceForAppealRejected(
                 ),
                 "text": report.reported_comment.handle_mentions()[0],
             },
+            template="appeal_rejected",
         )
