@@ -40,6 +40,8 @@
   "NEW_PASSWORD": "Neues Passwort",
   "NO_SPORT_FOUND": "Keinen Sport gefunden.",
   "NO_USERS_FOUND": "Keine Nutzer gefunden.",
+  "NO_WARNING_FOUND": "Keine Warnung gefunden.",
+  "ONLY_USERS_FROM_THIS_INSTANCE_ARE_DISPLAYED": ", nur {0} von dieser Instanz werden angezeigt",
   "PASSWORD": "Passwort",
   "PASSWORD_FORGOTTEN": "Passwort vergessen?",
   "PASSWORD_INFO": "Mindestens 8 Zeichen sind erforderlich.",
@@ -69,14 +71,17 @@
     "WEAK": "schwach"
   },
   "PASSWORD_UPDATED": "Dein Passwort wurde aktualisiert. Klicke {0} um dich anzumelden.",
+  "PRIVACY_POLICY_TO_VALIDATE": "Bitte {0} die Datenschutzrichtlinie vor dem Fortfahren.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Kontoausgabe",
     "ASCENT_DATA": "Anstiegs-bezogene Daten (Aufnahmen, gesamt)",
     "BACK_TO_PROFILE": "Zurück zum Profil",
     "BIO": "Biographie",
     "BIRTH_DATE": "Geburtsdatum",
+    "CREATED_REPORTS": "Erstellte Berichte",
     "DATE_FORMAT": "Datumsanzeigeformat",
     "EDIT": "Profil bearbeiten",
+    "EDIT_NOTIFICATION_PREFERENCES": "Benachrichtigungseinstellungen bearbeiten",
     "EDIT_PREFERENCES": "Einstellungen ändern",
     "EDIT_SPORTS_PREFERENCES": "Einstellungen für Sportarten ändern",
     "ELEVATION_CHART_START": {
@@ -98,6 +103,11 @@
     "ERRORED_EMAIL_UPDATE": "Bitte {0} um Deine E-Mail Adresse nochmals zu ändern oder kontaktiere den Administrator",
     "FIRST_DAY_OF_WEEK": "Erster Tag der Woche",
     "FIRST_NAME": "Vorname",
+    "FOLLOW_REQUESTS_APPROVAL": {
+      "AUTOMATICALLY": "Automatisch",
+      "LABEL": "Genehmigung von Follower-Anfragen",
+      "MANUALLY": "Manuell"
+    },
     "INTERFACE": "Schnittstelle",
     "LANGUAGE": "Sprache",
     "LAST_NAME": "Nachname",

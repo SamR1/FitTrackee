@@ -26,7 +26,14 @@
     "comment_suspension": "deaktivierte Kommentare",
     "comment_unsuspension": "reaktivierte Kommentare",
     "follow": "folgen",
-    "user_warning": "Warnungen"
+    "follow_request": "Follower-Anfragen",
+    "follow_request_approved": "Akzeptierte Follower-Anfragen",
+    "mention": "Erwähnungen",
+    "report": "Berichte",
+    "user_warning": "Warnungen",
+    "user_warning_lifting": "Aufhebungen von Warnungen",
+    "workout_comment": "Kommentare zu Workouts",
+    "workout_like": "Likes für Workouts"
   },
   "UNREAD": "Ungelesen",
   "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "Dein Konto wurde gesperrt",

@@ -29,7 +29,7 @@ services:
     env_file:
       - .env
 # Image from Docker Hub
-    image: fittrackee/fittrackee:v0.9.4
+    image: fittrackee/fittrackee:v0.9.5
 # Uncomment following line to build image instead of using pre-built image
 #    build: .
     volumes:
@@ -57,21 +57,23 @@ services:
       - internal_network
     restart: unless-stopped
 
-# Uncomment the following lines for email sending
+# Uncomment the following lines for user data export and email sending
 #  fittrackee-workers:
 #    container_name: fittrackee-workers
 #    env_file:
 #      - .env
 ## Image from Docker Hub
-#    image: fittrackee/fittrackee:v0.9.4
+#    image: fittrackee/fittrackee:v0.9.5
 ## Uncomment following line to build image instead of using pre-built image
 ##    build: .
 #    volumes:
+#      - ${UPLOAD_DIR:-./data/uploads}:/usr/src/app/uploads
 #      - ${LOG_DIR:-./data/logs}:/usr/src/app/logs
 #    post_start:
 #      - command: chown -R fittrackee:fittrackee /usr/src/app/logs
 #        user: root
-#    command: "flask worker --processes 2 >> /usr/src/app/logs/dramatiq.log 2>&1"
+## Adjust CLI options if needed, see https://dramatiq.io/guide.html#workers
+#    command: "dramatiq fittrackee.tasks:broker --processes=2 --log-file=/usr/src/app/logs/dramatiq.log"
 #    depends_on:
 #      fittrackee:
 #        condition: service_healthy
@@ -80,7 +82,7 @@ services:
 #      - external_network
 #    restart: unless-stopped
 
-# Uncomment the following lines for API rate limit and email sending
+# Uncomment the following lines for API rate limit, user data export and email sending
 #  fittrackee-redis:
 #    image: "redis:7.4"
 #    container_name: fittrackee-redis

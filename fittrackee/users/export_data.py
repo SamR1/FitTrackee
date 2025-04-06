@@ -129,6 +129,8 @@ class UserDataExporter:
             file_exists = os.path.exists(zip_path)
             os.remove(user_data_file_name)
             os.remove(workout_data_file_name)
+            os.remove(equipments_data_file_name)
+            os.remove(comments_data_file_name)
             return (zip_path, zip_file) if file_exists else (None, None)
         except Exception as e:
             appLog.error(f"Error when generating user data archive: {e!s}")

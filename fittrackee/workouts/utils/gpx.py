@@ -77,7 +77,7 @@ def get_chart_data(
                 "distance": (
                     round(distance / 1000, 2) if distance is not None else 0
                 ),
-                "duration": point.time_difference(first_point),
+                "duration": int(point.time_difference(first_point)),
                 "latitude": point.latitude,
                 "longitude": point.longitude,
                 "speed": speed,

@@ -82,5 +82,5 @@ jobs:
           setsid nohup fittrackee >> nohup.out 2>&1 &
           export TEST_APP_URL=http://$(hostname --ip-address):5000
           sleep 5
-          nohup flask worker --processes=1 >> nohup.out 2>&1 &
+          nohup dramatiq fittrackee.tasks:broker --processes=1 >> nohup.out 2>&1 &
           pytest e2e --driver Remote --capability browserName firefox --selenium-host selenium --selenium-port 4444 --maxfail=1

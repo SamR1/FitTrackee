@@ -547,6 +547,35 @@ class TestUserDataExporterGenerateArchive:
 
         assert os.path.isfile(expected_path)
 
+    @patch.object(secrets, "token_urlsafe")
+    def test_it_deletes_temporary_files(
+        self,
+        secrets_mock: Mock,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        token_urlsafe = random_string()
+        secrets_mock.return_value = token_urlsafe
+        user_directory = os.path.join(
+            app.config["UPLOAD_FOLDER"], "exports", str(user_1.id)
+        )
+        exporter = UserDataExporter(user_1)
+
+        exporter.generate_archive()
+
+        for file_name in [
+            "user_data",
+            "workouts_data",
+            "equipments_data",
+            "comments_data",
+        ]:
+            assert (
+                os.path.isfile(
+                    os.path.join(user_directory, f"{file_name}.json")
+                )
+                is False
+            )
+
 
 @patch("fittrackee.users.export_data.appLog")
 @patch.object(UserDataExporter, "generate_archive")

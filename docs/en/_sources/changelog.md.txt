@@ -1,5 +1,53 @@
 # Change log
 
+## Version 0.9.5 (2025/04/06)
+
+### Bugs Fixed
+
+* [#751](https://github.com/SamR1/FitTrackee/issues/751) - Time in Analysis is not correct in overlay modal
+* [#753](https://github.com/SamR1/FitTrackee/issues/753) - the checkbox "start elevation axis at zero" has no effect
+* [PR#757](https://github.com/SamR1/FitTrackee/pull/757) - Fix tasks queue running on Python 3.13  
+  **Note**: It is now possible to use Dramatiq CLI directly to run task queue workers, see [documentation](https://docs.fittrackee.org/en/installation.html).
+  A new environment (`DRAMATIQ_LOG`) variable has also been added.
+* [PR#760](https://github.com/SamR1/FitTrackee/pull/760) - Fix docker files
+* [1f8ca78](https://github.com/SamR1/FitTrackee/commit/1f8ca78b82e3b0d91c176a3628bcffeae99e306b) - delete all temporary files when exporting user data export
+
+### Translations
+
+* [PR#745](https://github.com/SamR1/FitTrackee/pull/745) - Translations update (Galician)
+* [PR#749](https://github.com/SamR1/FitTrackee/pull/749) - Translations update (Chinese (Simplified Han script))
+* [PR#750](https://github.com/SamR1/FitTrackee/pull/750) - Translations update (German)
+* [PR#752](https://github.com/SamR1/FitTrackee/pull/752) - Translations update (Galician)
+* [PR#756](https://github.com/SamR1/FitTrackee/pull/756) - Translations update (Galician)
+
+Translation status:
+- Basque: 82%
+- Bulgarian: 63%
+- Chinese (Simplified): 100%
+- Czech: 46%
+- Dutch: 63%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 86%
+- Italian: 52%
+- Norwegian Bokmål: 33%
+- Polish: 98%
+- Portuguese: 62%
+- Russian: 39%
+- Spanish: 63%
+
+### Misc
+
+* [PR#746](https://github.com/SamR1/FitTrackee/pull/746) - email tasks refactoring
+
+
+Thanks to the contributors:
+- @glggr
+- @xmgz
+- Poesty Li
+
+
 ## Version 0.9.4 (2025/03/26)
 
 ### Features and enhancements
