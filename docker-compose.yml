@@ -29,7 +29,7 @@ services:
     env_file:
       - .env
 # Image from Docker Hub
-    image: fittrackee/fittrackee:v0.9.4
+    image: fittrackee/fittrackee:v0.9.5
 # Uncomment following line to build image instead of using pre-built image
 #    build: .
     volumes:
@@ -63,7 +63,7 @@ services:
 #    env_file:
 #      - .env
 ## Image from Docker Hub
-#    image: fittrackee/fittrackee:v0.9.4
+#    image: fittrackee/fittrackee:v0.9.5
 ## Uncomment following line to build image instead of using pre-built image
 ##    build: .
 #    volumes:
@@ -72,7 +72,7 @@ services:
 #    post_start:
 #      - command: chown -R fittrackee:fittrackee /usr/src/app/logs
 #        user: root
-## Adjust processes if needed, see https://dramatiq.io/guide.html#workers
+## Adjust CLI options if needed, see https://dramatiq.io/guide.html#workers
 #    command: "dramatiq fittrackee.tasks:broker --processes=2 --log-file=/usr/src/app/logs/dramatiq.log"
 #    depends_on:
 #      fittrackee:
