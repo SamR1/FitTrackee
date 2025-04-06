@@ -29,7 +29,7 @@ This application is written in Python (API) and Typescript (client):
     - Flask
     - `gpxpy <https://github.com/tkrajina/gpxpy>`_ to parse gpx files
     - `staticmap <https://github.com/komoot/staticmap>`_ to generate a static map image from gpx coordinates
-    - `dramatiq <https://flask-dramatiq.readthedocs.io/en/latest/>`_ for task queue
+    - `Dramatiq <https://dramatiq.io/>`_ and `Flask-Dramatiq <https://flask-dramatiq.readthedocs.io>`_ for task queue
     - `Authlib <https://docs.authlib.org/en/latest/>`_ for OAuth 2.0 Authorization support
     - `Flask-Limiter <https://flask-limiter.readthedocs.io/en/stable>`_ for API rate limits
     - `gunicorn <https://gunicorn.org/>`_ to serve application
@@ -381,7 +381,7 @@ Emails sent by FitTrackee are:
 - rejected appeal (*new in 0.9.0*)
 
 
-On single-user instance, it is possible to disable email sending with an empty ``EMAIL_URL`` (in this case, no need to start dramatiq workers).
+On single-user instance, it is possible to disable email sending with an empty ``EMAIL_URL`` (in this case, no need to start **Dramatiq** workers).
 
 A `CLI <cli.html#ftcli-users-update>`__ is available to activate account, modify email and password and handle data export requests.
 
@@ -524,20 +524,20 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 
     $ fittrackee
 
-- Start task queue workers **if email sending is enabled**, with dramatiq CLI:
+- Start task queue workers **if email sending is enabled**, with **Dramatiq** CLI (see `documentation <https://dramatiq.io/guide.html#workers>`__) :
 
 .. code-block:: bash
 
     $ dramatiq fittrackee.tasks:broker --processes=$WORKERS_PROCESSES --log-file=$DRAMATIQ_LOG
 
 .. note::
-    | It is also possible to start task queue workers with Flask-dramatiq CLI:
+    | It is also possible to start task queue workers with **Flask-Dramatiq** CLI:
 
     .. code-block:: bash
 
         $ flask worker --processes 2
 
-    | But running Flask-dramatiq CLI on Python 3.13+ raises errors. Emails and user data export are sent, but the `middleware <https://dramatiq.io/reference.html#dramatiq.middleware.TimeLimit>`__ preventing actors from running too long is not active. Please use dramatiq CLI instead for now.
+    | But running **Flask-Dramatiq** CLI on Python 3.13+ raises errors. Emails and user data export are sent, but the `middleware <https://dramatiq.io/reference.html#dramatiq.middleware.TimeLimit>`__ preventing actors from running too long is not active. Please use **Dramatiq** CLI instead for now.
 
 .. note::
     | To start application and workers with **systemd** service, see `Deployment <installation.html#deployment>`__
@@ -594,7 +594,7 @@ Dev environment
 
    $ make serve
 
--  Run dramatiq workers:
+-  Run **Dramatiq** workers:
 
 .. code:: bash
 
@@ -617,13 +617,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.9.4):
+-  Download the last release (for now, it is the release v0.9.5):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.9.4.tar.gz
-   $ tar -xzf v0.9.4.tar.gz
-   $ mv FitTrackee-0.9.4 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.9.5.tar.gz
+   $ tar -xzf v0.9.5.tar.gz
+   $ mv FitTrackee-0.9.5 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -642,7 +642,7 @@ Production environment
 
    $ make install-db
 
--  Start the server and dramatiq workers:
+-  Start the server and **Dramatiq** workers:
 
 .. code:: bash
 
@@ -742,7 +742,7 @@ Dev environment
 
    $ make serve
 
--  Run dramatiq workers:
+-  Run **Dramatiq** workers:
 
 .. code:: bash
 
@@ -755,13 +755,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.9.4) and overwrite existing files:
+- Download the last release (for now, it is the release v0.9.5) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.9.4.tar.gz
-   $ tar -xzf v0.9.4.tar.gz
-   $ cp -R FitTrackee-0.9.4/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.9.5.tar.gz
+   $ tar -xzf v0.9.5.tar.gz
+   $ cp -R FitTrackee-0.9.5/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -778,7 +778,7 @@ Prod environment
 
    $ make upgrade-db
 
-- Restart the server and dramatiq workers:
+- Restart the server and **Dramatiq** workers:
 
 .. code:: bash
 
@@ -878,6 +878,9 @@ Examples:
 
     [Install]
     WantedBy=multi-user.target
+
+.. seealso::
+    More information on **Dramatiq** CLI in its `documentation <https://dramatiq.io/guide.html#workers>`__.
 
 - **Nginx** configuration:
 
