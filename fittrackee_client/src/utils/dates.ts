@@ -110,6 +110,7 @@ const availableDateFormats = [
 ]
 export const dateStringFormats: Record<TLanguage, string> = {
   bg: 'd MMMM yyyy',
+  // bn: 'd MMMM, yyyy',
   cs: 'd. MMM yyyy',
   de: 'do MMM yyyy',
   en: 'MMM. do, yyyy',
