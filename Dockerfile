@@ -25,26 +25,23 @@ COPY pyproject.toml poetry.lock README.md /usr/src/app/
 COPY fittrackee/. /usr/src/app/fittrackee/
 RUN rm -rf /usr/src/app/fittrackee/tests
 
-RUN python3 -m venv $VIRTUAL_ENV && pip install --upgrade pip
-RUN pip install poetry==1.8.5 && . $VIRTUAL_ENV/bin/activate && poetry install --only main --no-interaction --quiet
+RUN python3 -m venv "$VIRTUAL_ENV" && pip install --upgrade pip
+RUN pip install poetry==2.1.1 && . "$VIRTUAL_ENV/bin/activate" && poetry install --only main --no-interaction --quiet
 
 FROM python:3.13-alpine AS runtime
 
-RUN apk add --no-cache tini
-
-RUN addgroup -g 1000 -S fittrackee && \
+RUN apk add --no-cache tini && \
+    addgroup -g 1000 -S fittrackee && \
     adduser -H -D -u 1000 -S fittrackee -G fittrackee
 
 WORKDIR /usr/src/app
 
 ENV VIRTUAL_ENV=/opt/venv PATH="/opt/venv/bin:$PATH"
 
-COPY --chown=fittrackee --from=python-builder /opt/venv "$VIRTUAL_ENV"
-COPY --chown=fittrackee --from=python-builder /usr/src/app/fittrackee /usr/src/app/fittrackee
-COPY --chown=fittrackee --from=node-builder /usr/src/app/fittrackee/dist /usr/src/app/fittrackee/dist
-COPY --chown=fittrackee docker-entrypoint.sh /usr/src/app/
-
-RUN chmod 555 /usr/src/app/docker-entrypoint.sh
+COPY --chown=root --chmod=755 --from=python-builder /opt/venv "$VIRTUAL_ENV"
+COPY --chown=root --chmod=755 --from=python-builder /usr/src/app/fittrackee /usr/src/app/fittrackee
+COPY --chown=root --chmod=755 --from=node-builder /usr/src/app/fittrackee/dist /usr/src/app/fittrackee/dist
+COPY --chown=root --chmod=755 docker-entrypoint.sh /usr/src/app/
 
 USER fittrackee
 
