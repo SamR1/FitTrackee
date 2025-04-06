@@ -220,7 +220,7 @@ run-server:
 	cd fittrackee && $(GUNICORN) -b $(HOST):$(PORT) "fittrackee:create_app()" --error-logfile ../gunicorn.log
 
 run-workers:
-	$(DRAMATIQ) fittrackee.tasks:broker --processes=$(WORKERS_PROCESSES) --log-file=dramatiq.log
+	$(DRAMATIQ) fittrackee.tasks:broker --processes=$(WORKERS_PROCESSES) --log-file=$(DRAMATIQ_LOG)
 
 serve:
     # for dev environments
