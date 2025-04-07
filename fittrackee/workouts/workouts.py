@@ -1,6 +1,4 @@
 import json
-import os
-import shutil
 from datetime import timedelta
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
@@ -13,7 +11,7 @@ from flask import (
     send_from_directory,
 )
 from sqlalchemy import asc, desc, distinct, exc, func
-from sqlalchemy.exc import DataError, IntegrityError
+from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
@@ -23,10 +21,7 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentsException,
 )
 from fittrackee.equipments.models import Equipment, WorkoutEquipment
-from fittrackee.equipments.utils import (
-    SPORT_EQUIPMENT_TYPES,
-    handle_equipments,
-)
+from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.responses import (
@@ -42,27 +37,30 @@ from fittrackee.responses import (
     get_error_response_if_file_is_invalid,
     handle_error_and_return_response,
 )
-from fittrackee.users.models import User, UserSportPreference
+from fittrackee.users.models import User
 from fittrackee.utils import decode_short_id
 from fittrackee.visibility_levels import VisibilityLevel, can_view
 
 from .decorators import check_workout
-from .exceptions import InvalidDurationException
-from .models import Sport, Workout, WorkoutLike
+from .exceptions import (
+    InvalidDurationException,
+    WorkoutExceedingValueException,
+    WorkoutException,
+    WorkoutFileException,
+)
+from .models import Workout, WorkoutLike
+from .services import (
+    WorkoutCreationService,
+    WorkoutsFromFileCreationService,
+    WorkoutUpdateService,
+)
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
     WorkoutGPXException,
     extract_segment_from_gpx_file,
     get_chart_data,
 )
-from .utils.workouts import (
-    WorkoutException,
-    create_workout,
-    edit_workout,
-    get_absolute_file_path,
-    get_datetime_from_request_args,
-    process_files,
-)
+from .utils.workouts import get_datetime_from_request_args
 
 if TYPE_CHECKING:
     from sqlalchemy.sql.selectable import Subquery
@@ -1377,35 +1375,14 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     if not workout_data or workout_data.get("sport_id") is None:
         return InvalidPayloadErrorResponse()
-
-    if "equipment_ids" in workout_data:
-        try:
-            equipments_list = handle_equipments(
-                workout_data["equipment_ids"],
-                auth_user,
-                workout_data["sport_id"],
-            )
-        except InvalidEquipmentsException as e:
-            return InvalidPayloadErrorResponse(str(e))
-        except InvalidEquipmentException as e:
-            return EquipmentInvalidPayloadErrorResponse(
-                equipment_id=e.equipment_id, message=e.message, status=e.status
-            )
-        workout_data["equipments_list"] = equipments_list
-
     workout_file = request.files["file"]
-    upload_dir = os.path.join(
-        current_app.config["UPLOAD_FOLDER"], "workouts", str(auth_user.id)
-    )
-    folders = {
-        "extract_dir": os.path.join(upload_dir, "extract"),
-        "tmp_dir": os.path.join(upload_dir, "tmp"),
-    }
 
     try:
-        new_workouts = process_files(
-            auth_user, workout_data, workout_file, folders
+        service = WorkoutsFromFileCreationService(
+            auth_user, workout_data, workout_file
         )
+        new_workouts = service.process()
+        db.session.commit()
         if len(new_workouts) > 0:
             response_object = {
                 "status": "created",
@@ -1418,7 +1395,16 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             }
         else:
             return DataInvalidPayloadErrorResponse("workouts", "fail")
-    except WorkoutException as e:
+    except WorkoutExceedingValueException as e:
+        appLog.error(e.detail)
+        return ExceedingValueErrorResponse()
+    except InvalidEquipmentsException as e:
+        return InvalidPayloadErrorResponse(str(e))
+    except InvalidEquipmentException as e:
+        return EquipmentInvalidPayloadErrorResponse(
+            equipment_id=e.equipment_id, message=e.message, status=e.status
+        )
+    except (WorkoutException, WorkoutFileException) as e:
         db.session.rollback()
         if e.status == "exceeding_value_error":
             if e.e:
@@ -1430,8 +1416,6 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             return InternalServerErrorResponse(e.message)
         return InvalidPayloadErrorResponse(e.message, e.status)
 
-    shutil.rmtree(folders["extract_dir"], ignore_errors=True)
-    shutil.rmtree(folders["tmp_dir"], ignore_errors=True)
     return response_object, 201
 
 
@@ -1607,51 +1591,9 @@ def post_workout_no_gpx(
     ):
         return InvalidPayloadErrorResponse()
 
-    ascent = workout_data.get("ascent")
-    descent = workout_data.get("descent")
     try:
-        if (
-            (ascent is None and descent is not None)
-            or (ascent is not None and descent is None)
-            or (
-                (ascent is not None and descent is not None)
-                and (float(ascent) < 0 or float(descent) < 0)
-            )
-        ):
-            return InvalidPayloadErrorResponse()
-    except ValueError:
-        return InvalidPayloadErrorResponse()
-
-    # get default equipment if not equipment_ids provided and
-    # sport preferences exists
-    if "equipment_ids" not in workout_data:
-        sport_preferences = UserSportPreference.query.filter_by(
-            user_id=auth_user.id, sport_id=workout_data["sport_id"]
-        ).first()
-        if sport_preferences:
-            workout_data["equipments_list"] = [
-                equipment
-                for equipment in sport_preferences.default_equipments.all()
-                if equipment.is_active is True
-            ]
-    else:
-        try:
-            equipments_list = handle_equipments(
-                workout_data.get("equipment_ids"),
-                auth_user,
-                workout_data["sport_id"],
-            )
-            workout_data["equipments_list"] = equipments_list
-        except InvalidEquipmentsException as e:
-            return InvalidPayloadErrorResponse(str(e))
-        except InvalidEquipmentException as e:
-            return EquipmentInvalidPayloadErrorResponse(
-                equipment_id=e.equipment_id, message=e.message, status=e.status
-            )
-
-    try:
-        new_workout = create_workout(auth_user, workout_data)
-        db.session.add(new_workout)
+        service = WorkoutCreationService(auth_user, workout_data)
+        [new_workout] = service.process()
         db.session.commit()
 
         return (
@@ -1665,9 +1607,22 @@ def post_workout_no_gpx(
             },
             201,
         )
-    except DataError as e:
-        appLog.error(e.args[0])
+    except WorkoutExceedingValueException as e:
+        appLog.error(e.detail)
         return ExceedingValueErrorResponse()
+    except InvalidEquipmentsException as e:
+        return InvalidPayloadErrorResponse(str(e))
+    except InvalidEquipmentException as e:
+        return EquipmentInvalidPayloadErrorResponse(
+            equipment_id=e.equipment_id, message=e.message, status=e.status
+        )
+    except WorkoutException as e:
+        db.session.rollback()
+        if e.e:
+            appLog.error(e.e)
+        if e.status == "error":
+            return InternalServerErrorResponse(e.message)
+        return InvalidPayloadErrorResponse(e.message, e.status)
     except (exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(
             error=e,
@@ -1856,63 +1811,8 @@ def update_workout(
         return InvalidPayloadErrorResponse()
 
     try:
-        if not workout.gpx:
-            try:
-                # for workout without gpx file, both elevation values must be
-                # provided.
-                if (
-                    (
-                        "ascent" in workout_data
-                        and "descent" not in workout_data
-                    )
-                    or (
-                        "ascent" not in workout_data
-                        and "descent" in workout_data
-                    )
-                ) or (
-                    not (
-                        workout_data.get("ascent") is None
-                        and workout_data.get("descent") is None
-                    )
-                    and (
-                        float(workout_data.get("ascent")) < 0
-                        or float(workout_data.get("descent")) < 0
-                    )
-                ):
-                    return InvalidPayloadErrorResponse()
-            except (TypeError, ValueError):
-                return InvalidPayloadErrorResponse()
-
-        sport = None
-        if "sport_id" in workout_data:
-            sport = Sport.query.filter_by(id=workout_data["sport_id"]).first()
-            if not sport:
-                return InvalidPayloadErrorResponse(
-                    f"sport id {workout_data['sport_id']} not found"
-                )
-
-        if "equipment_ids" in workout_data:
-            sport_id = (
-                workout_data["sport_id"]
-                if workout_data.get("sport_id")
-                else workout.sport_id
-            )
-            workout_data["equipments_list"] = handle_equipments(
-                workout_data.get("equipment_ids"),
-                auth_user,
-                sport_id,
-                workout.equipments,
-            )
-        elif sport:
-            # remove equipment if invalid for new sport
-            # Note: for now only one equipment can be added
-            for equipment in workout.equipments:
-                if sport.label not in SPORT_EQUIPMENT_TYPES.get(
-                    equipment.equipment_type.label, []
-                ):
-                    workout_data["equipments_list"] = []
-
-        workout = edit_workout(workout, workout_data, auth_user)
+        service = WorkoutUpdateService(auth_user, workout, workout_data)
+        service.update()
         db.session.commit()
 
         return {
@@ -1921,9 +1821,8 @@ def update_workout(
                 "workouts": [workout.serialize(user=auth_user, light=False)]
             },
         }
-
-    except DataError as e:
-        appLog.error(e.args[0])
+    except WorkoutExceedingValueException as e:
+        appLog.error(e.detail)
         return ExceedingValueErrorResponse()
     except InvalidEquipmentsException as e:
         return InvalidPayloadErrorResponse(str(e))
@@ -1931,6 +1830,13 @@ def update_workout(
         return EquipmentInvalidPayloadErrorResponse(
             equipment_id=e.equipment_id, message=e.message, status=e.status
         )
+    except WorkoutException as e:
+        db.session.rollback()
+        if e.e:
+            appLog.error(e.e)
+        if e.status == "error":
+            return InternalServerErrorResponse(e.message)
+        return InvalidPayloadErrorResponse(e.message, e.status)
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e)
 

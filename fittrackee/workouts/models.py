@@ -15,7 +15,7 @@ from sqlalchemy.sql.expression import nulls_last
 from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, appLog, db
-from fittrackee.database import TZDateTime
+from fittrackee.database import PSQL_INTEGER_LIMIT, TZDateTime
 from fittrackee.dates import aware_utc_now
 from fittrackee.equipments.models import WorkoutEquipment
 from fittrackee.files import get_absolute_file_path
@@ -61,6 +61,15 @@ EMPTY_WORKOUT_VALUES: Dict = {
     "notes": "",
     "likes_count": 0,
     "liked": False,
+}
+WORKOUT_VALUES_LIMIT = {
+    "ascent": 99999.999,
+    "descent": 99999.999,
+    "distance": 999999.9,
+    "max_alt": 9999.99,
+    "max_speed": 9999.99,
+    "min_alt": 9999.99,
+    "moving_time": PSQL_INTEGER_LIMIT,
 }
 
 record_types = [
@@ -356,14 +365,16 @@ class Workout(BaseModel):
         user_id: int,
         sport_id: int,
         workout_date: datetime,
-        distance: float,
-        duration: timedelta,
+        distance: Optional[float] = None,
+        duration: Optional[timedelta] = None,
     ) -> None:
         self.user_id = user_id
         self.sport_id = sport_id
         self.workout_date = workout_date
-        self.distance = distance
-        self.duration = duration
+        if distance is not None:
+            self.distance = distance
+        # to allow workout creation before gpx data extraction
+        self.duration = timedelta(seconds=0) if duration is None else duration
 
     @property
     def short_id(self) -> str:
