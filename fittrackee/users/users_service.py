@@ -5,6 +5,7 @@ from typing import Optional, Tuple
 from sqlalchemy import func
 
 from fittrackee import db
+from fittrackee.federation.utils.user import get_user_from_username
 from fittrackee.reports.models import ReportAction
 from fittrackee.users.constants import (
     ADMINISTRATOR_NOTIFICATION_TYPES,
@@ -14,6 +15,7 @@ from fittrackee.users.constants import (
 )
 from fittrackee.users.exceptions import (
     InvalidEmailException,
+    InvalidUserException,
     InvalidUserRole,
     MissingAdminIdException,
     MissingReportIdException,
@@ -22,7 +24,6 @@ from fittrackee.users.exceptions import (
     UserAlreadySuspendedException,
     UserControlsException,
     UserCreationException,
-    UserNotFoundException,
 )
 from fittrackee.users.models import (
     Notification,
@@ -38,9 +39,9 @@ class UserManagerService:
         self.moderator_id = moderator_id
 
     def _get_user(self) -> User:
-        user = User.query.filter_by(username=self.username).first()
-        if not user:
-            raise UserNotFoundException()
+        user = get_user_from_username(self.username)
+        if user.is_remote:
+            raise InvalidUserException
         return user
 
     @staticmethod
@@ -173,7 +174,8 @@ class UserManagerService:
             raise UserControlsException(ret)
 
         user = User.query.filter(
-            func.lower(User.username) == func.lower(self.username)
+            User.is_remote == False,  # noqa
+            func.lower(User.username) == func.lower(self.username),
         ).first()
         if user:
             raise UserCreationException(
@@ -183,7 +185,8 @@ class UserManagerService:
         # if a user exists with same email address, no error is returned
         # since a user has to confirm his email to activate his account
         user = User.query.filter(
-            func.lower(User.email) == func.lower(email)
+            User.is_remote == False,  # noqa
+            func.lower(User.email) == func.lower(email),
         ).first()
         if user:
             if check_email:

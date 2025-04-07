@@ -85,6 +85,7 @@
   import type { TCoordinates } from '@/types/map'
   import type { IWorkoutData, IWorkoutPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
+  import { getUserName } from '@/utils/user'
 
   interface Props {
     displaySegment: boolean
@@ -106,8 +107,10 @@
   const workoutData: ComputedRef<IWorkoutData> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
   )
-  const isWorkoutOwner: ComputedRef<boolean> = computed(
-    () => authUser.value.username === workoutData.value.workout.user.username
+  const isWorkoutOwner = computed(
+    () =>
+      getUserName(authUser.value) ===
+      getUserName(workoutData.value.workout.user)
   )
 
   function updateCoordinates(coordinates: TCoordinates) {

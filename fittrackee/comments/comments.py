@@ -1,10 +1,12 @@
 from datetime import datetime, timezone
-from typing import Dict, Optional, Tuple, Union
+from typing import Dict, List, Optional, Set, Tuple, Union
 
-from flask import Blueprint, request
+from flask import Blueprint, current_app, request
 from sqlalchemy import exc
 
 from fittrackee import db
+from fittrackee.exceptions import InvalidVisibilityException
+from fittrackee.federation.tasks.inbox import send_to_remote_inbox
 from fittrackee.oauth2.server import require_auth
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.responses import (
@@ -14,8 +16,8 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.models import User
-from fittrackee.utils import clean_input
-from fittrackee.visibility_levels import VisibilityLevel
+from fittrackee.utils import clean_input, decode_short_id
+from fittrackee.visibility_levels import VisibilityLevel, can_view
 from fittrackee.workouts.decorators import check_workout
 from fittrackee.workouts.models import Workout
 
@@ -25,6 +27,39 @@ from .models import Comment, CommentLike, get_comments
 comments_blueprint = Blueprint("comments", __name__)
 
 DEFAULT_COMMENT_LIKES_PER_PAGE = 10
+
+
+def get_all_recipients(
+    user: User,
+    comment: Comment,
+    deleted_mentioned_users: Optional[Set] = None,
+) -> List[str]:
+    recipients = user.get_followers_shared_inboxes_as_list()
+    mentions = [
+        user.actor.shared_inbox_url for user in comment.remote_mentions.all()
+    ]
+    if deleted_mentioned_users is None:
+        deleted_mentioned_users = set()
+    deleted_mentions = [
+        user.actor.shared_inbox_url for user in deleted_mentioned_users
+    ]
+    return list(set(recipients + mentions + deleted_mentions))
+
+
+def sending_comment_activities_allowed(
+    comment: Comment, deleted_mentioned_users: Optional[Set] = None
+) -> bool:
+    if deleted_mentioned_users is None:
+        deleted_mentioned_users = set()
+    return current_app.config["FEDERATION_ENABLED"] and (
+        comment.has_remote_mentions
+        or len(deleted_mentioned_users) > 0
+        or comment.text_visibility
+        in (
+            VisibilityLevel.PUBLIC,
+            VisibilityLevel.FOLLOWERS_AND_REMOTE,
+        )
+    )
 
 
 @comments_blueprint.route(
@@ -62,6 +97,8 @@ def post_workout_comment(
             "likes_count": 0,
             "mentions": [],
             "modification_date": null,
+            "replies": [],
+            "reply_to": null,
             "suspended_at": null,
             "text": "Great!",
             "text_html": "Great!",
@@ -86,12 +123,15 @@ def post_workout_comment(
     :<json string text: comment content
     :<json string text_visibility: visibility level (``public``,
            ``followers_only``, ``private``)
+    :<json string reply_to: id of the comment being replied to
+           (to be provided only for a reply)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 201: ``created``
     :statuscode 400:
         - ``invalid payload``
+        - ``'reply_to' is invalid``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -109,15 +149,49 @@ def post_workout_comment(
     ):
         return InvalidPayloadErrorResponse()
     try:
+        reply_to = comment_data.get("reply_to")
+        comment = None
+        if reply_to:
+            comment = Comment.query.filter(
+                Comment.uuid == decode_short_id(reply_to),
+                Comment.user_id.not_in(auth_user.get_blocked_by_user_ids()),
+            ).first()
+            if (
+                not comment
+                or comment.suspended_at
+                or not can_view(comment, "text_visibility", auth_user)
+            ):
+                return InvalidPayloadErrorResponse("'reply_to' is invalid")
+
         new_comment = Comment(
             user_id=auth_user.id,
             workout_id=workout.id,
             text=clean_input(comment_data["text"]),
             text_visibility=VisibilityLevel(comment_data["text_visibility"]),
+            reply_to=comment.id if comment else None,
         )
         db.session.add(new_comment)
         db.session.flush()
         new_comment.create_mentions()
+        if sending_comment_activities_allowed(new_comment):
+            new_comment.ap_id = (
+                f"{auth_user.actor.activitypub_id}/"
+                f"workouts/{workout.short_id}/"
+                f"comments/{new_comment.short_id}"
+            )
+            new_comment.remote_url = (
+                f"https://{auth_user.actor.domain.name}/"
+                f"workouts/{workout.short_id}/"
+                f"comments/{new_comment.short_id}"
+            )
+            note_activity = new_comment.get_activity(activity_type="Create")
+            recipients = get_all_recipients(auth_user, new_comment)
+            if recipients:
+                send_to_remote_inbox.send(
+                    sender_id=auth_user.actor.id,
+                    activity=note_activity,
+                    recipients=recipients,
+                )
         db.session.commit()
 
         return (
@@ -127,6 +201,8 @@ def post_workout_comment(
             },
             201,
         )
+    except InvalidVisibilityException as e:
+        return InvalidPayloadErrorResponse(message=str(e))
     except (exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(
             error=e,
@@ -171,6 +247,8 @@ def get_workout_comment(
             "likes_count": 0,
             "mentions": [],
             "modification_date": null,
+            "replies": [],
+            "reply_to": null,
             "suspended_at": null,
             "text": "Nice!",
             "text_html": "Nice!",
@@ -207,7 +285,7 @@ def get_workout_comment(
     return (
         {
             "status": "success",
-            "comment": comment.serialize(auth_user),
+            "comment": comment.serialize(auth_user, get_parent_comment=True),
         },
         200,
     )
@@ -253,6 +331,8 @@ def get_workout_comments(
                 "likes_count": 0,
                 "mentions": [],
                 "modification_date": null,
+                "replies": [],
+                "reply_to": null,
                 "suspended_at": null,
                 "text": "Great!",
                 "text_html": "Great!",
@@ -349,6 +429,16 @@ def delete_workout_comment(
     :statuscode 500: ``error, please try again or contact the administrator``
     """
     try:
+        if sending_comment_activities_allowed(comment):
+            note_activity = comment.get_activity(activity_type="Delete")
+            recipients = get_all_recipients(auth_user, comment)
+            if recipients:
+                send_to_remote_inbox.send(
+                    sender_id=auth_user.actor.id,
+                    activity=note_activity,
+                    recipients=recipients,
+                )
+
         db.session.delete(comment)
         db.session.commit()
         return {"status": "no content"}, 204
@@ -396,6 +486,8 @@ def update_workout_comment(
             "likes_count": 0,
             "mentions": [],
             "modification_date": null,
+            "replies": [],
+            "reply_to": null,
             "suspended_at": null,
             "text": "Great!",
             "text_html": "Great!",
@@ -441,8 +533,23 @@ def update_workout_comment(
     try:
         comment.text = clean_input(comment_data["text"])
         comment.modification_date = datetime.now(timezone.utc)
-        comment.update_mentions()
+        deleted_mentioned_users = comment.update_mentions()
         db.session.commit()
+
+        if sending_comment_activities_allowed(
+            comment, deleted_mentioned_users
+        ):
+            recipients = get_all_recipients(
+                auth_user, comment, deleted_mentioned_users
+            )
+            if recipients:
+                note_activity = comment.get_activity(activity_type="Update")
+                send_to_remote_inbox.send(
+                    sender_id=auth_user.actor.id,
+                    activity=note_activity,
+                    recipients=recipients,
+                )
+
         return {
             "status": "success",
             "comment": comment.serialize(auth_user),
@@ -487,6 +594,8 @@ def like_comment(
             "likes_count": 1,
             "mentions": [],
             "modification_date": null,
+            "replies": [],
+            "reply_to": null,
             "suspended_at": null,
             "text": "Great!",
             "text_html": "Great!",
@@ -526,6 +635,14 @@ def like_comment(
         like = CommentLike(user_id=auth_user.id, comment_id=comment.id)
         db.session.add(like)
         db.session.commit()
+
+        if current_app.config["FEDERATION_ENABLED"] and comment.user.is_remote:
+            like_activity = like.get_activity()
+            send_to_remote_inbox.send(
+                sender_id=auth_user.actor.id,
+                activity=like_activity,
+                recipients=[comment.user.actor.shared_inbox_url],
+            )
     except exc.IntegrityError:
         db.session.rollback()
     return {
@@ -570,6 +687,8 @@ def undo_comment_like(
             "likes_count": 0,
             "mentions": [],
             "modification_date": null,
+            "replies": [],
+            "reply_to": null,
             "suspended_at": null,
             "text": "Great!",
             "text_html": "Great!",
@@ -609,6 +728,15 @@ def undo_comment_like(
     if like:
         db.session.delete(like)
         db.session.commit()
+
+        if current_app.config["FEDERATION_ENABLED"] and comment.user.is_remote:
+            undo_activity = like.get_activity(is_undo=True)
+            send_to_remote_inbox.send(
+                sender_id=auth_user.actor.id,
+                activity=undo_activity,
+                recipients=[comment.user.actor.shared_inbox_url],
+            )
+
     return {
         "status": "success",
         "comment": comment.serialize(auth_user),
