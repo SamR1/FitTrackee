@@ -75,7 +75,9 @@
   "PROFILE": {
     "ACCOUNT_EDITION": "Mise à jour du compte",
     "ARCHIVE_UPLOADS": {
-      "ERRORED_FILES": "Fichiers en erreur",
+      "ARCHIVE": "Archive zip",
+      "CREATED_WORKOUTS": "Séances créées",
+      "ERRORED_FILES": "Fichier en erreur | Fichiers en erreur",
       "ERRORS": {
         "no tracks in gpx file": "pas de <tracks> dans le fichier gpx."
       },
@@ -86,7 +88,6 @@
         "LABEL": "État",
         "errored": "en erreur",
         "in_progress": "en cours",
-        "partially_in_error": "partiellement en erreur",
         "queued": "en attente",
         "successful": "terminé avec succès"
       }

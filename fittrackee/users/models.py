@@ -1035,10 +1035,10 @@ class UserTask(BaseModel):
     file_path: Mapped[Optional[str]] = mapped_column(
         db.String(255), nullable=True
     )
-    errors: Mapped[Optional[Dict]] = mapped_column(
+    errors: Mapped[Dict] = mapped_column(
         postgresql.JSONB, nullable=False, server_default="{}"
     )
-    data: Mapped[Optional[Dict]] = mapped_column(
+    data: Mapped[Dict] = mapped_column(
         postgresql.JSONB, nullable=False, server_default="{}"
     )
 
@@ -1055,8 +1055,13 @@ class UserTask(BaseModel):
         self.created_at = (
             datetime.now(timezone.utc) if created_at is None else created_at
         )
-        self.data = data
+        self.data = data if data else {}
         self.file_path = file_path
+        if task_type == "workouts_archive_upload":
+            self.errors = {
+                "archive": None,
+                "files": {},
+            }
 
     @property
     def completed(self) -> bool:
@@ -1086,30 +1091,23 @@ class UserTask(BaseModel):
             "status": status,
         }
 
-    def _get_workouts_archive_upload(self, serialized_task: Dict) -> Dict:
-        if self.progress == 0:
-            serialized_task["status"] = "queued"
+    def _get_status(self) -> str:
+        if self.errored is True:
+            return "errored"
+        elif self.progress == 0:
+            return "queued"
         elif self.progress == 100:
-            if self.errors:
-                serialized_task["status"] = (
-                    "partially_in_error"
-                    if isinstance(self.data, dict)
-                    and len(self.errors.keys())
-                    != len(self.data.get("files_to_process", []))
-                    else "errored"
-                )
-            else:
-                serialized_task["status"] = "successful"
-        else:
-            serialized_task["status"] = "in_progress"
+            return "successful"
+        return "in_progress"
+
+    def _get_workouts_archive_upload(self, serialized_task: Dict) -> Dict:
+        total_files = len(self.data.get("files_to_process", []))
         serialized_task = {
             **serialized_task,
-            "files_count": (
-                0
-                if self.data is None
-                else len(self.data.get("files_to_process", []))
-            ),
+            "status": self._get_status(),
+            "files_count": total_files,
             "errored_files": self.errors,
+            "new_workouts_count": self.data.get("new_workouts_count", 0),
             "progress": self.progress,
         }
         return serialized_task
