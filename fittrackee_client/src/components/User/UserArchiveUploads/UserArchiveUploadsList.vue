@@ -26,7 +26,7 @@
               class="info-box task-status"
               :class="{
                 success: task.status === 'successful',
-                errored: task.status.match('error'),
+                errored: task.status === 'errored',
               }"
             >
               {{ $t(`user.PROFILE.ARCHIVE_UPLOADS.STATUS.${task.status}`) }}
