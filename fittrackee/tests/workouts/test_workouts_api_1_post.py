@@ -1365,7 +1365,7 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
         app: "Flask",
         user_1: "User",
         sport_1_cycling: "Sport",
-        import_workout_archive_mock: "MagicMock",
+        upload_workouts_archive_mock: "MagicMock",
     ) -> None:
         app.config.update(
             {"file_limit_import": 3, "file_sync_limit_import": 2}
@@ -1391,20 +1391,20 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
             assert response.status_code == 200
             data = json.loads(response.data.decode())
             assert "in_progress" in data["status"]
-            import_task = UserTask.query.filter_by(
+            upload_task = UserTask.query.filter_by(
                 user_id=user_1.id, task_type="workouts_archive_upload"
             ).one()
-            import_workout_archive_mock.send.assert_called_once_with(
-                task_id=import_task.id
+            upload_workouts_archive_mock.send.assert_called_once_with(
+                task_id=upload_task.id
             )
-            assert data["data"] == {"task_id": import_task.short_id}
+            assert data["data"] == {"task_id": upload_task.short_id}
 
     def test_it_returns_error_when_ongoing_task_exists(
         self,
         app: "Flask",
         user_1: "User",
         sport_1_cycling: "Sport",
-        import_workout_archive_mock: "MagicMock",
+        upload_workouts_archive_mock: "MagicMock",
     ) -> None:
         ongoing_task = UserTask(
             user_id=user_1.id,

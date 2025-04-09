@@ -1002,6 +1002,6 @@ def gpx_file_storage(gpx_file: str) -> FileStorage:
 
 
 @pytest.fixture()
-def import_workout_archive_mock() -> Iterator[MagicMock]:
-    with patch("fittrackee.workouts.tasks.import_workout_archive") as mock:
+def upload_workouts_archive_mock() -> Iterator[MagicMock]:
+    with patch("fittrackee.workouts.tasks.upload_workouts_archive") as mock:
         yield mock

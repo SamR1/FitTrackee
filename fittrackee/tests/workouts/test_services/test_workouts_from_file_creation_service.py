@@ -1079,7 +1079,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
         )
 
         with pytest.raises(WorkoutException, match="no workout file provided"):
-            service.add_workouts_import_task(
+            service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
                 equipments=None,
             )
@@ -1097,7 +1097,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
         with pytest.raises(
             WorkoutFileException, match="No files from archive to process"
         ):
-            service.add_workouts_import_task(
+            service.add_workouts_upload_task(
                 files_to_process=[],
                 equipments=None,
             )
@@ -1125,7 +1125,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
                 WorkoutException, match="ongoing upload task exists"
             ),
         ):
-            service.add_workouts_import_task(
+            service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
                 equipments=None,
             )
@@ -1145,15 +1145,15 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
             patch.object(
                 tempfile, "mkstemp", return_value=(fd, temp_file_path)
             ),
-            patch("fittrackee.workouts.tasks.import_workout_archive"),
+            patch("fittrackee.workouts.tasks.upload_workouts_archive"),
         ):
-            service.add_workouts_import_task(
+            service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
                 equipments=None,
             )
 
-        import_task = UserTask.query.filter_by(user_id=user_1.id).one()
-        assert import_task.data == {
+        upload_task = UserTask.query.filter_by(user_id=user_1.id).one()
+        assert upload_task.data == {
             "workouts_data": {
                 "sport_id": sport_1_cycling.id,
                 "analysis_visibility": None,
@@ -1167,13 +1167,13 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
             "files_to_process": TEST_FILES_LIST,
             "equipment_ids": None,
         }
-        assert import_task.errored is False
-        assert import_task.errors == {}
-        assert import_task.file_path == temp_file_path
-        assert import_task.file_size is None
-        assert import_task.progress == 0
-        assert import_task.task_type == "workouts_archive_upload"
-        assert import_task.user_id == user_1.id
+        assert upload_task.errored is False
+        assert upload_task.errors == {}
+        assert upload_task.file_path == temp_file_path
+        assert upload_task.file_size is None
+        assert upload_task.progress == 0
+        assert upload_task.task_type == "workouts_archive_upload"
+        assert upload_task.user_id == user_1.id
 
         # file cleanup
         os.close(fd)
@@ -1209,15 +1209,15 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
             patch.object(
                 tempfile, "mkstemp", return_value=(fd, temp_file_path)
             ),
-            patch("fittrackee.workouts.tasks.import_workout_archive"),
+            patch("fittrackee.workouts.tasks.upload_workouts_archive"),
         ):
-            service.add_workouts_import_task(
+            service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
                 equipments=[equipment_bike_user_1],
             )
 
-        import_task = UserTask.query.filter_by(user_id=user_1.id).one()
-        assert import_task.data == {
+        upload_task = UserTask.query.filter_by(user_id=user_1.id).one()
+        assert upload_task.data == {
             "workouts_data": {
                 "sport_id": sport_1_cycling.id,
                 **workouts_data,
@@ -1225,13 +1225,13 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
             "files_to_process": TEST_FILES_LIST,
             "equipment_ids": [equipment_bike_user_1.short_id],
         }
-        assert import_task.errored is False
-        assert import_task.errors == {}
-        assert import_task.file_path == temp_file_path
-        assert import_task.file_size is None
-        assert import_task.progress == 0
-        assert import_task.task_type == "workouts_archive_upload"
-        assert import_task.user_id == user_1.id
+        assert upload_task.errored is False
+        assert upload_task.errors == {}
+        assert upload_task.file_path == temp_file_path
+        assert upload_task.file_size is None
+        assert upload_task.progress == 0
+        assert upload_task.task_type == "workouts_archive_upload"
+        assert upload_task.user_id == user_1.id
 
         # file cleanup
         os.close(fd)
@@ -1269,9 +1269,9 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
             patch.object(
                 tempfile, "mkstemp", return_value=(fd, temp_file_path)
             ),
-            patch("fittrackee.workouts.tasks.import_workout_archive"),
+            patch("fittrackee.workouts.tasks.upload_workouts_archive"),
         ):
-            service.add_workouts_import_task(
+            service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
                 equipments=None,
             )
@@ -1282,7 +1282,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
         os.close(fd)
         os.remove(temp_file_path)
 
-    def test_it_calls_import_workout_archive_with_equipments(
+    def test_it_calls_upload_workouts_archive_with_equipments(
         self,
         app: "Flask",
         user_1: "User",
@@ -1298,17 +1298,17 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
                 tempfile, "mkstemp", return_value=(fd, temp_file_path)
             ),
             patch(
-                "fittrackee.workouts.tasks.import_workout_archive"
-            ) as import_workout_archive_mock,
+                "fittrackee.workouts.tasks.upload_workouts_archive"
+            ) as upload_workouts_archive_mock,
         ):
-            service.add_workouts_import_task(
+            service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
                 equipments=None,
             )
 
-        import_task = UserTask.query.filter_by(user_id=user_1.id).one()
-        import_workout_archive_mock.send.assert_called_once_with(
-            task_id=import_task.id
+        upload_task = UserTask.query.filter_by(user_id=user_1.id).one()
+        upload_workouts_archive_mock.send.assert_called_once_with(
+            task_id=upload_task.id
         )
 
         # file cleanup
@@ -1332,9 +1332,9 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
             patch.object(
                 tempfile, "mkstemp", return_value=(fd, temp_file_path)
             ),
-            patch("fittrackee.workouts.tasks.import_workout_archive"),
+            patch("fittrackee.workouts.tasks.upload_workouts_archive"),
         ):
-            service.add_workouts_import_task(
+            service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
                 equipments=[equipment_shoes_user_1],
             )
@@ -1407,8 +1407,8 @@ class TestWorkoutsFromFileCreationServiceProcessZipArchive(
                 return_value=([], {}),
             ) as process_archive_content_mock,
             patch.object(
-                WorkoutsFromFileCreationService, "add_workouts_import_task"
-            ) as add_workouts_import_task_mock,
+                WorkoutsFromFileCreationService, "add_workouts_upload_task"
+            ) as add_workouts_upload_task_mock,
         ):
             service.process_zip_archive(equipments=[equipment_shoes_user_1])
 
@@ -1417,7 +1417,7 @@ class TestWorkoutsFromFileCreationServiceProcessZipArchive(
             files_to_process=TEST_FILES_LIST,
             equipments=[equipment_shoes_user_1],
         )
-        add_workouts_import_task_mock.assert_not_called()
+        add_workouts_upload_task_mock.assert_not_called()
 
     def test_it_calls_process_archive_content_when_file_are_in_folder(
         self,
@@ -1446,7 +1446,7 @@ class TestWorkoutsFromFileCreationServiceProcessZipArchive(
             equipments=None,
         )
 
-    def test_it_calls_add_workouts_import_task_when_files_exceeds_limit(
+    def test_it_calls_add_workouts_upload_task_when_files_exceeds_limit(
         self,
         app: "Flask",
         user_1: "User",
@@ -1467,12 +1467,12 @@ class TestWorkoutsFromFileCreationServiceProcessZipArchive(
                 WorkoutsFromFileCreationService, "process_archive_content"
             ) as process_archive_content_mock,
             patch.object(
-                WorkoutsFromFileCreationService, "add_workouts_import_task"
-            ) as add_workouts_import_task_mock,
+                WorkoutsFromFileCreationService, "add_workouts_upload_task"
+            ) as add_workouts_upload_task_mock,
         ):
             service.process_zip_archive(equipments=equipments)
 
-        add_workouts_import_task_mock.assert_called_once_with(
+        add_workouts_upload_task_mock.assert_called_once_with(
             TEST_FILES_LIST, equipments
         )
         process_archive_content_mock.assert_not_called()
