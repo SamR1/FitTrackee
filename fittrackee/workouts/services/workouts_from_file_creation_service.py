@@ -250,7 +250,7 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
         archive_content: Union[BytesIO, IO[bytes]],
         files_to_process: List[str],
         equipments: Union[List["Equipment"], None],
-        import_task: Optional["UserTask"] = None,
+        upload_task: Optional["UserTask"] = None,
     ) -> Tuple[List["Workout"], Dict]:
         if not files_to_process:
             raise WorkoutFileException(
@@ -271,14 +271,14 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
                 except Exception as e:
                     db.session.rollback()
                     errored_workouts[file] = e.args[0]
-                    if import_task:
-                        import_task.progress = int(100 * index / total_files)
+                    if upload_task:
+                        upload_task.progress = int(100 * index / total_files)
                         db.session.commit()
                     continue
 
                 new_workouts.append(new_workout)
-                if import_task:
-                    import_task.progress = int(100 * index / total_files)
+                if upload_task:
+                    upload_task.progress = int(100 * index / total_files)
                     db.session.commit()
 
         return new_workouts, errored_workouts
@@ -353,12 +353,12 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
             return BytesIO(self.file.getvalue())
         return self.file.stream
 
-    def add_workouts_import_task(
+    def add_workouts_upload_task(
         self,
         files_to_process: List[str],
         equipments: Union[List["Equipment"], None],
     ) -> str:
-        from fittrackee.workouts.tasks import import_workout_archive
+        from fittrackee.workouts.tasks import upload_workouts_archive
 
         if self.file is None:
             raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
@@ -377,7 +377,7 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
         self.file.stream.seek(0)
         self.file.save(path)
 
-        import_task = UserTask(
+        upload_task = UserTask(
             user_id=self.auth_user.id,
             task_type="workouts_archive_upload",
             data={
@@ -391,11 +391,11 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
             },
             file_path=path,
         )
-        db.session.add(import_task)
+        db.session.add(upload_task)
         db.session.commit()
 
-        import_workout_archive.send(task_id=import_task.id)
-        return import_task.short_id
+        upload_workouts_archive.send(task_id=upload_task.id)
+        return upload_task.short_id
 
     def process_zip_archive(
         self, equipments: Union[List["Equipment"], None]
@@ -407,7 +407,7 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
             len(files_to_process)
             > current_app.config["file_sync_limit_import"]
         ):
-            task_short_id = self.add_workouts_import_task(
+            task_short_id = self.add_workouts_upload_task(
                 files_to_process, equipments
             )
             return [], {"task_short_id": task_short_id}
@@ -458,19 +458,19 @@ class WorkoutsFromArchiveCreationAsyncService(AbstractWorkoutsCreationService):
         self,
         task_id: int,
     ) -> None:
-        import_task = UserTask.query.filter_by(id=task_id).first()
+        upload_task = UserTask.query.filter_by(id=task_id).first()
         if (
-            not import_task
-            or import_task.task_type != "workouts_archive_upload"
+            not upload_task
+            or upload_task.task_type != "workouts_archive_upload"
         ):
             raise WorkoutException("error", "no import task found")
-        auth_user = User.query.filter_by(id=import_task.user_id).one()
-        import_data = import_task.data
+        auth_user = User.query.filter_by(id=upload_task.user_id).one()
+        import_data = upload_task.data
         super().__init__(auth_user, import_data["workouts_data"], None)
-        self.file_path = import_task.file_path
+        self.file_path = upload_task.file_path
         self.files_to_process = import_data["files_to_process"]
         self.equipment_ids = import_data["equipment_ids"]
-        self.import_task = import_task
+        self.upload_task = upload_task
 
     def process(self) -> Tuple[List["Workout"], Dict]:
         if self.equipment_ids is None:
@@ -490,18 +490,18 @@ class WorkoutsFromArchiveCreationAsyncService(AbstractWorkoutsCreationService):
                     archive_content=zip_file,
                     files_to_process=self.files_to_process,
                     equipments=equipments,
-                    import_task=self.import_task,
+                    upload_task=self.upload_task,
                 )
         except FileNotFoundError:
-            self.import_task.errored = True
-            self.import_task.errors = {
+            self.upload_task.errored = True
+            self.upload_task.errors = {
                 "archive zip": "archive file does not exist"
             }
 
-        self.import_task.progress = 100
+        self.upload_task.progress = 100
         if errored_workouts:
-            self.import_task.errored = True
-            self.import_task.errors = errored_workouts
+            self.upload_task.errored = True
+            self.upload_task.errors = errored_workouts
 
         if os.path.exists(self.file_path):
             os.remove(self.file_path)
@@ -509,5 +509,5 @@ class WorkoutsFromArchiveCreationAsyncService(AbstractWorkoutsCreationService):
         db.session.commit()
         return new_workouts, {
             "errored_workouts": errored_workouts,
-            "task_short_id": self.import_task.short_id,
+            "task_short_id": self.upload_task.short_id,
         }

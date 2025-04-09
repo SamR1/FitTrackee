@@ -26,16 +26,16 @@ class TestWorkoutsTasksGetTasks(ApiTestCaseMixin, BaseTestMixin):
 
         self.assert_401(response)
 
-    def test_it_returns_empty_list_when_no_import_tasks_for_user(
+    def test_it_returns_empty_list_when_no_upload_tasks_for_user(
         self,
         app: "Flask",
         user_1: "User",
         user_2: "User",
     ) -> None:
-        user_2_workout_import_task = UserTask(
+        user_2_workout_upload_task = UserTask(
             user_id=user_2.id, task_type="workouts_archive_upload"
         )
-        db.session.add(user_2_workout_import_task)
+        db.session.add(user_2_workout_upload_task)
         user_1_export_data_task = UserTask(
             user_id=user_1.id, task_type="user_data_export"
         )

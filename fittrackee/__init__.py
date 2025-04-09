@@ -146,7 +146,7 @@ def create_app(init_email: bool = True) -> Flask:
             ):
                 pass
 
-    from .workouts.tasks import import_workout_archive  # noqa
+    from .workouts.tasks import upload_workouts_archive  # noqa
 
     from .application.app_config import config_blueprint
     from .comments.comments import comments_blueprint
