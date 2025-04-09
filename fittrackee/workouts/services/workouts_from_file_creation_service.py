@@ -369,6 +369,7 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
         if UserTask.query.filter(
             UserTask.user_id == self.auth_user.id,
             UserTask.task_type == "workouts_archive_upload",
+            UserTask.errored != True,  # noqa
             UserTask.progress != 100,
         ).first():
             raise WorkoutException("invalid", "ongoing upload task exists")
@@ -383,6 +384,7 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
             data={
                 "workouts_data": asdict(self.workouts_data),
                 "files_to_process": files_to_process,
+                "new_workouts_count": 0,
                 "equipment_ids": (
                     None
                     if equipments is None
@@ -391,6 +393,10 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
             },
             file_path=path,
         )
+        upload_task.errors = {
+            "archive": None,
+            "files": {},
+        }
         db.session.add(upload_task)
         db.session.commit()
 
@@ -495,13 +501,21 @@ class WorkoutsFromArchiveCreationAsyncService(AbstractWorkoutsCreationService):
         except FileNotFoundError:
             self.upload_task.errored = True
             self.upload_task.errors = {
-                "archive zip": "archive file does not exist"
+                **self.upload_task.errors,
+                "archive": "archive file does not exist",
             }
 
-        self.upload_task.progress = 100
+        self.upload_task.data = {
+            **self.upload_task.data,
+            "new_workouts_count": len(new_workouts),
+        }
+
         if errored_workouts:
             self.upload_task.errored = True
-            self.upload_task.errors = errored_workouts
+            self.upload_task.errors = {
+                **self.upload_task.errors,
+                "files": errored_workouts,
+            }
 
         if os.path.exists(self.file_path):
             os.remove(self.file_path)

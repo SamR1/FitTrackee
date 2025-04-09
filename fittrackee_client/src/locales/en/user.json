@@ -75,7 +75,9 @@
   "PROFILE": {
     "ACCOUNT_EDITION": "Account edition",
     "ARCHIVE_UPLOADS": {
-      "ERRORED_FILES": "Errored files",
+      "ARCHIVE": "Zip archive",
+      "CREATED_WORKOUTS": "Created workouts",
+      "ERRORED_FILES": "Errored file | Errored files",
       "ERRORS": {
         "no tracks in gpx file": "no <tracks> in gpx file."
       },
@@ -86,7 +88,6 @@
         "LABEL": "Status",
         "errored": "errored",
         "in_progress": "in progress",
-        "partially_in_error": "partially in error",
         "queued": "queued",
         "successful": "successful"
       }
