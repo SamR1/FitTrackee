@@ -21,7 +21,11 @@ from fittrackee.workouts.models import (
     NOTES_MAX_CHARACTERS,
 )
 
-from ..exceptions import WorkoutException, WorkoutFileException
+from ..exceptions import (
+    WorkoutExceedingValueException,
+    WorkoutException,
+    WorkoutFileException,
+)
 from .base_workout_service import BaseWorkoutService
 from .workout_from_file import WorkoutGpxCreationService
 
@@ -174,7 +178,16 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
         )
 
         # extract and calculate data from provided file
-        new_workout = workout_service.process_workout()
+        try:
+            new_workout = workout_service.process_workout()
+        except (WorkoutExceedingValueException, WorkoutFileException) as e:
+            db.session.rollback()
+            raise e
+        except Exception as e:
+            db.session.rollback()
+            raise WorkoutException(
+                "error", "error when processing workout"
+            ) from e
 
         # store title, description and notes
         new_workout.title = self._get_workout_title(
@@ -278,6 +291,10 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
 
                 new_workouts.append(new_workout)
                 if upload_task:
+                    upload_task.data = {
+                        **upload_task.data,
+                        "new_workouts_count": index,
+                    }
                     upload_task.progress = int(100 * index / total_files)
                     db.session.commit()
 
@@ -504,11 +521,12 @@ class WorkoutsFromArchiveCreationAsyncService(AbstractWorkoutsCreationService):
                 **self.upload_task.errors,
                 "archive": "archive file does not exist",
             }
-
-        self.upload_task.data = {
-            **self.upload_task.data,
-            "new_workouts_count": len(new_workouts),
-        }
+        except Exception:
+            self.upload_task.errored = True
+            self.upload_task.errors = {
+                **self.upload_task.errors,
+                "archive": "error during archive processing",
+            }
 
         if errored_workouts:
             self.upload_task.errored = True
