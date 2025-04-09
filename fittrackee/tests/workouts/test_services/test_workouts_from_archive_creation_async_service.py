@@ -26,14 +26,14 @@ if TYPE_CHECKING:
 
 class WorkoutsFromArchiveCreationAsyncServiceTestCase:
     @staticmethod
-    def get_import_task(
+    def get_upload_task(
         user: "User",
         workouts_data: Dict,
         files_to_process: List[str],
         equipment_ids: Optional[List[int]],
         file_path: str,
     ) -> "UserTask":
-        import_task = UserTask(
+        upload_task = UserTask(
             user_id=user.id,
             task_type="workouts_archive_upload",
             data={
@@ -43,9 +43,9 @@ class WorkoutsFromArchiveCreationAsyncServiceTestCase:
             },
             file_path=file_path,
         )
-        db.session.add(import_task)
+        db.session.add(upload_task)
         db.session.commit()
-        return import_task
+        return upload_task
 
 
 class TestWorkoutsFromArchiveCreationAsyncServiceInstantiation(
@@ -64,15 +64,15 @@ class TestWorkoutsFromArchiveCreationAsyncServiceInstantiation(
         app: "Flask",
         user_1: "User",
     ) -> None:
-        import_task = UserTask(
+        upload_task = UserTask(
             user_id=user_1.id,
             task_type="user_data_export",
         )
-        db.session.add(import_task)
+        db.session.add(upload_task)
         db.session.commit()
 
         with pytest.raises(WorkoutException, match="no import task found"):
-            WorkoutsFromArchiveCreationAsyncService(task_id=import_task.id)
+            WorkoutsFromArchiveCreationAsyncService(task_id=upload_task.id)
 
     def test_it_instantiates_service(
         self,
@@ -85,7 +85,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceInstantiation(
         files_to_process = ["example.gpx"]
         equipment_ids = [equipment_bike_user_1.id]
         file_path = "some path"
-        import_task = self.get_import_task(
+        upload_task = self.get_upload_task(
             user_1, workouts_data, files_to_process, equipment_ids, file_path
         )
 
@@ -95,7 +95,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceInstantiation(
         assert service.equipment_ids == equipment_ids
         assert service.file_path == file_path
         assert service.files_to_process == files_to_process
-        assert service.import_task == import_task
+        assert service.upload_task == upload_task
         assert service.workouts_data == WorkoutsData(**workouts_data)  # type: ignore
 
 
@@ -112,7 +112,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
         files_to_process = ["example.gpx"]
         equipment_ids = [equipment_bike_user_1.id]
         file_path = "invalid/path"
-        import_task = self.get_import_task(
+        upload_task = self.get_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
             files_to_process=files_to_process,
@@ -120,7 +120,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
             file_path=file_path,
         )
         service = WorkoutsFromArchiveCreationAsyncService(
-            task_id=import_task.id
+            task_id=upload_task.id
         )
 
         new_workouts, processing_output = service.process()
@@ -128,7 +128,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
         assert new_workouts == []
         assert processing_output == {
             "errored_workouts": {},
-            "task_short_id": import_task.short_id,
+            "task_short_id": upload_task.short_id,
         }
 
     def test_it_updates_task_with_error_when_file_does_not_exist(
@@ -141,7 +141,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
         files_to_process = ["example.gpx"]
         equipment_ids = [equipment_bike_user_1.id]
         file_path = "invalid/path"
-        import_task = self.get_import_task(
+        upload_task = self.get_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
             files_to_process=files_to_process,
@@ -149,14 +149,14 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
             file_path=file_path,
         )
         service = WorkoutsFromArchiveCreationAsyncService(
-            task_id=import_task.id
+            task_id=upload_task.id
         )
 
         service.process()
 
-        assert import_task.progress == 100
-        assert import_task.errored is True
-        assert import_task.errors == {
+        assert upload_task.progress == 100
+        assert upload_task.errored is True
+        assert upload_task.errors == {
             "archive zip": "archive file does not exist"
         }
 
@@ -169,7 +169,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
         input_equipment_ids: Union[List, None],
     ) -> None:
         files_to_process = ["example.gpx"]
-        import_task = self.get_import_task(
+        upload_task = self.get_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
             files_to_process=files_to_process,
@@ -177,7 +177,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
             file_path="some/path",
         )
         service = WorkoutsFromArchiveCreationAsyncService(
-            task_id=import_task.id
+            task_id=upload_task.id
         )
         open_mock = MagicMock()
 
@@ -198,7 +198,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
             archive_content=open_mock.__enter__(),
             files_to_process=files_to_process,
             equipments=input_equipment_ids,
-            import_task=import_task,
+            upload_task=upload_task,
         )
 
     def test_it_calls_process_archive_content_when_equipment_ids_are_provided(
@@ -210,7 +210,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
     ) -> None:
         files_to_process = ["example.gpx"]
         equipment_ids = [equipment_bike_user_1.id]
-        import_task = self.get_import_task(
+        upload_task = self.get_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
             files_to_process=files_to_process,
@@ -218,7 +218,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
             file_path="some/path",
         )
         service = WorkoutsFromArchiveCreationAsyncService(
-            task_id=import_task.id
+            task_id=upload_task.id
         )
         open_mock = MagicMock()
 
@@ -239,7 +239,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
             archive_content=open_mock.__enter__(),
             files_to_process=files_to_process,
             equipments=[equipment_bike_user_1],
-            import_task=import_task,
+            upload_task=upload_task,
         )
 
     def test_it_creates_workouts(
@@ -255,7 +255,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
         shutil.copyfile(
             os.path.join(app.root_path, "tests/files/gpx_test.zip"), file_path
         )
-        import_task = self.get_import_task(
+        upload_task = self.get_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
             files_to_process=files_to_process,
@@ -263,7 +263,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
             file_path=file_path,
         )
         service = WorkoutsFromArchiveCreationAsyncService(
-            task_id=import_task.id
+            task_id=upload_task.id
         )
 
         workouts, processing_output = service.process()
@@ -271,7 +271,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
         assert len(workouts) == 3
         assert processing_output == {
             "errored_workouts": {},
-            "task_short_id": import_task.short_id,
+            "task_short_id": upload_task.short_id,
         }
 
     def test_it_updates_task(
@@ -287,7 +287,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
         shutil.copyfile(
             os.path.join(app.root_path, "tests/files/gpx_test.zip"), file_path
         )
-        import_task = self.get_import_task(
+        upload_task = self.get_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
             files_to_process=files_to_process,
@@ -295,14 +295,14 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
             file_path=file_path,
         )
         service = WorkoutsFromArchiveCreationAsyncService(
-            task_id=import_task.id
+            task_id=upload_task.id
         )
 
         service.process()
 
-        assert import_task.progress == 100
-        assert import_task.errored is False
-        assert import_task.errors == {}
+        assert upload_task.progress == 100
+        assert upload_task.errored is False
+        assert upload_task.errors == {}
 
     def test_it_deletes_temp_file_after_import(
         self,
@@ -317,7 +317,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
         shutil.copyfile(
             os.path.join(app.root_path, "tests/files/gpx_test.zip"), file_path
         )
-        import_task = self.get_import_task(
+        upload_task = self.get_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
             files_to_process=files_to_process,
@@ -325,7 +325,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
             file_path=file_path,
         )
         service = WorkoutsFromArchiveCreationAsyncService(
-            task_id=import_task.id
+            task_id=upload_task.id
         )
 
         service.process()
@@ -344,7 +344,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
             os.path.join(app.root_path, "tests/files/gpx_test_incorrect.zip"),
             file_path,
         )
-        import_task = self.get_import_task(
+        upload_task = self.get_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
             files_to_process=files_to_process,
@@ -352,12 +352,12 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
             file_path=file_path,
         )
         service = WorkoutsFromArchiveCreationAsyncService(
-            task_id=import_task.id
+            task_id=upload_task.id
         )
 
         new_workouts, _ = service.process()
 
         assert len(new_workouts) == 1
-        assert import_task.progress == 100
-        assert import_task.errored is True
-        assert import_task.errors == {"test_4.gpx": "no tracks in gpx file"}
+        assert upload_task.progress == 100
+        assert upload_task.errored is True
+        assert upload_task.errors == {"test_4.gpx": "no tracks in gpx file"}
