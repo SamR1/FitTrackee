@@ -1130,6 +1130,38 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
                 equipments=None,
             )
 
+    def test_it_does_not_raises_error_when_existing_task_is_errored(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        errored_task = UserTask(
+            user_id=user_1.id,
+            task_type="workouts_archive_upload",
+        )
+        errored_task.progress = 10
+        errored_task.errored = True
+        db.session.add(errored_task)
+        db.session.commit()
+        service = self.get_service(
+            app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
+        )
+        fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+
+        with (
+            patch.object(
+                tempfile, "mkstemp", return_value=(fd, temp_file_path)
+            ),
+            patch("fittrackee.workouts.tasks.upload_workouts_archive"),
+        ):
+            service.add_workouts_upload_task(
+                files_to_process=TEST_FILES_LIST,
+                equipments=None,
+            )
+
+        assert UserTask.query.filter_by(user_id=user_1.id).count() == 2
+
     def test_it_creates_task_with_minimal_data(
         self,
         app: "Flask",
@@ -1154,6 +1186,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
 
         upload_task = UserTask.query.filter_by(user_id=user_1.id).one()
         assert upload_task.data == {
+            "new_workouts_count": 0,
             "workouts_data": {
                 "sport_id": sport_1_cycling.id,
                 "analysis_visibility": None,
@@ -1168,7 +1201,10 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
             "equipment_ids": None,
         }
         assert upload_task.errored is False
-        assert upload_task.errors == {}
+        assert upload_task.errors == {
+            "archive": None,
+            "files": {},
+        }
         assert upload_task.file_path == temp_file_path
         assert upload_task.file_size is None
         assert upload_task.progress == 0
@@ -1218,6 +1254,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
 
         upload_task = UserTask.query.filter_by(user_id=user_1.id).one()
         assert upload_task.data == {
+            "new_workouts_count": 0,
             "workouts_data": {
                 "sport_id": sport_1_cycling.id,
                 **workouts_data,
@@ -1226,7 +1263,10 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
             "equipment_ids": [equipment_bike_user_1.short_id],
         }
         assert upload_task.errored is False
-        assert upload_task.errors == {}
+        assert upload_task.errors == {
+            "archive": None,
+            "files": {},
+        }
         assert upload_task.file_path == temp_file_path
         assert upload_task.file_size is None
         assert upload_task.progress == 0

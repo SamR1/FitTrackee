@@ -154,10 +154,11 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
 
         service.process()
 
-        assert upload_task.progress == 100
+        assert upload_task.progress == 0
         assert upload_task.errored is True
         assert upload_task.errors == {
-            "archive zip": "archive file does not exist"
+            "archive": "archive file does not exist",
+            "files": {},
         }
 
     @pytest.mark.parametrize("input_equipment_ids", [None, []])
@@ -302,7 +303,10 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
 
         assert upload_task.progress == 100
         assert upload_task.errored is False
-        assert upload_task.errors == {}
+        assert upload_task.errors == {
+            "archive": None,
+            "files": {},
+        }
 
     def test_it_deletes_temp_file_after_import(
         self,
@@ -360,4 +364,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
         assert len(new_workouts) == 1
         assert upload_task.progress == 100
         assert upload_task.errored is True
-        assert upload_task.errors == {"test_4.gpx": "no tracks in gpx file"}
+        assert upload_task.errors == {
+            "archive": None,
+            "files": {"test_4.gpx": "no tracks in gpx file"},
+        }

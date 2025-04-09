@@ -22,12 +22,41 @@
         <dt>{{ $t('user.PROFILE.ARCHIVE_UPLOADS.PROGRESS') }}:</dt>
         <dd>{{ uploadTask.progress }}%</dd>
       </dl>
-      <dl v-if="uploadTask.status.match('error')">
+      <dl v-if="uploadTask.status == 'errored'">
+        <dt>{{ $t('user.PROFILE.ARCHIVE_UPLOADS.CREATED_WORKOUTS') }}:</dt>
+        <dd>{{ uploadTask.new_workouts_count }}</dd>
+      </dl>
+      <dl
+        v-if="
+          uploadTask.status == 'errored' && uploadTask.errored_files.archive
+        "
+      >
         <dt>{{ $t('user.PROFILE.ARCHIVE_UPLOADS.ERRORED_FILES') }}:</dt>
+        <dd>
+          {{ $t('user.PROFILE.ARCHIVE_UPLOADS.ARCHIVE') }}:
+          {{ getFileError(uploadTask.errored_files.archive) }}
+        </dd>
+      </dl>
+      <dl
+        v-if="
+          uploadTask.status == 'errored' &&
+          Object.keys(uploadTask.errored_files.files).length
+        "
+      >
+        <dt>
+          {{
+            $t(
+              'user.PROFILE.ARCHIVE_UPLOADS.ERRORED_FILES',
+              Object.keys(uploadTask.errored_files.files).length
+            )
+          }}:
+        </dt>
         <dd>
           <ul class="errored-files">
             <li
-              v-for="[file, error] of Object.entries(uploadTask.errored_files)"
+              v-for="[file, error] of Object.entries(
+                uploadTask.errored_files.files
+              )"
               :key="file"
             >
               {{ file }}: {{ getFileError(error) }}
@@ -116,9 +145,6 @@
     .buttons {
       display: flex;
       gap: $default-padding;
-      button {
-        text-transform: capitalize;
-      }
     }
   }
 </style>
