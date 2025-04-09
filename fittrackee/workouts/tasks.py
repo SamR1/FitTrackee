@@ -5,6 +5,6 @@ from fittrackee.workouts.services.workouts_from_file_creation_service import (
 
 
 @dramatiq.actor(queue_name="fittrackee_workouts")
-def import_workout_archive(task_id: int) -> None:
+def upload_workouts_archive(task_id: int) -> None:
     service = WorkoutsFromArchiveCreationAsyncService(task_id)
     service.process()
