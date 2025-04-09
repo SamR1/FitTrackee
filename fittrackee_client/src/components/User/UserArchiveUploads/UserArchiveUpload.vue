@@ -12,6 +12,15 @@
         <dt>{{ $t('common.FILES') }}:</dt>
         <dd>{{ uploadTask.files_count }}</dd>
       </dl>
+      <dl v-if="sport">
+        <dt>{{ capitalize($t('workouts.SPORT', 1)) }}:</dt>
+        <dd>
+          <SportBadge
+            :sport="sport"
+            :from="`?fromArchiveUploadId=${uploadTask.id}`"
+          />
+        </dd>
+      </dl>
       <dl>
         <dt>{{ $t('user.PROFILE.ARCHIVE_UPLOADS.STATUS.LABEL') }}:</dt>
         <dd>
@@ -85,12 +94,15 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted, onUnmounted } from 'vue'
+  import { capitalize, computed, onMounted, onUnmounted } from 'vue'
   import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
+  import SportBadge from '@/components/Common/SportBadge.vue'
+  import useSports from '@/composables/useSports.ts'
   import { AUTH_USER_STORE } from '@/store/constants'
+  import type { ITranslatedSport } from '@/types/sports.ts'
   import type { IArchiveUploadTask } from '@/types/user'
   import { useStore } from '@/use/useStore'
 
@@ -98,11 +110,18 @@
   const route = useRoute()
   const { t, te } = useI18n()
 
+  const { translatedSports } = useSports()
+
   const uploadTask: ComputedRef<IArchiveUploadTask> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.ARCHIVE_UPLOAD_TASK]
   )
   const loading: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.ARCHIVE_UPLOAD_TASKS_LOADING]
+  )
+  const sport: ComputedRef<ITranslatedSport | undefined> = computed(() =>
+    uploadTask.value.sport_id
+      ? translatedSports.value.find((s) => s.id === uploadTask.value.sport_id)
+      : undefined
   )
 
   function loadUploadTask() {

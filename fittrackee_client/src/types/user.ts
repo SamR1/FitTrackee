@@ -244,5 +244,6 @@ export interface IArchiveUploadTask {
   id: string
   new_workouts_count: number
   progress: string
+  sport_id: number | null
   status: IArchiveUploadTaskStatus
 }

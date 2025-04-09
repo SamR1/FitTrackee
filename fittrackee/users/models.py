@@ -1104,6 +1104,7 @@ class UserTask(BaseModel):
         total_files = len(self.data.get("files_to_process", []))
         serialized_task = {
             **serialized_task,
+            "sport_id": self.data.get("workouts_data", {}).get("sport_id"),
             "status": self._get_status(),
             "files_count": total_files,
             "errored_files": self.errors,
