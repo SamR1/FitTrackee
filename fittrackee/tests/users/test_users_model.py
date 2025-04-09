@@ -981,6 +981,7 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "new_workouts_count": 0,
             "progress": 0,
             "status": "queued",
+            "sport_id": sport_1_cycling.id,
             "type": "workouts_archive_upload",
         }
 
@@ -1017,6 +1018,7 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "new_workouts_count": 0,
             "progress": 50,
             "status": "in_progress",
+            "sport_id": sport_1_cycling.id,
             "type": "workouts_archive_upload",
         }
 
@@ -1053,6 +1055,7 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "new_workouts_count": 3,
             "progress": 100,
             "status": "successful",
+            "sport_id": sport_1_cycling.id,
             "type": "workouts_archive_upload",
         }
 
@@ -1090,6 +1093,7 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "files_count": 3,
             "new_workouts_count": 2,
             "progress": 100,
+            "sport_id": sport_1_cycling.id,
             "status": "errored",
             "type": "workouts_archive_upload",
         }
@@ -1129,6 +1133,7 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "files_count": 3,
             "new_workouts_count": 0,
             "progress": 100,
+            "sport_id": sport_1_cycling.id,
             "status": "errored",
             "type": "workouts_archive_upload",
         }
@@ -1167,6 +1172,7 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "files_count": 3,
             "new_workouts_count": 0,
             "progress": 0,
+            "sport_id": sport_1_cycling.id,
             "status": "errored",
             "type": "workouts_archive_upload",
         }

@@ -88,24 +88,12 @@
       <template v-if="equipment.default_for_sport_ids.length > 0">
         <dt>{{ capitalize($t('equipments.DEFAULT_FOR_SPORTS', 0)) }}</dt>
         <dd class="sports-list">
-          <span
-            class="sport-badge"
-            :class="{ inactive: !sport.is_active_for_user }"
+          <SportBadge
             v-for="sport in equipmentTranslatedSports"
             :key="sport.label"
-          >
-            <SportImage
-              :title="sport.translatedLabel"
-              :sport-label="sport.label"
-              :color="sport.color ? sport.color : sportColors[sport.label]"
-            />
-            <router-link
-              :to="`/profile/sports/${sport.id}?fromEquipmentId=${equipment.id}`"
-            >
-              {{ sport.translatedLabel }}
-              {{ sport.is_active_for_user ? '' : `(${$t('common.INACTIVE')})` }}
-            </router-link>
-          </span>
+            :sport="sport"
+            :from="`?fromEquipmentId=${equipment.id}`"
+          />
         </dd>
       </template>
     </dl>
@@ -164,6 +152,7 @@
   import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
 
+  import SportBadge from '@/components/Common/SportBadge.vue'
   import useApp from '@/composables/useApp'
   import useEquipments from '@/composables/useEquipments'
   import useSports from '@/composables/useSports'
@@ -187,7 +176,7 @@
 
   const { errorMessages } = useApp()
   const { equipment } = useEquipments()
-  const { sportColors, sports } = useSports()
+  const { sports } = useSports()
 
   const displayModal: Ref<boolean> = ref(false)
 
@@ -253,21 +242,6 @@
       gap: $default-padding;
       flex-wrap: wrap;
       padding-top: $default-padding * 0.5;
-      .sport-badge {
-        display: flex;
-        gap: $default-padding;
-        border: solid 1px var(--card-border-color);
-        border-radius: $border-radius;
-        padding: $default-padding * 0.75 $default-padding * 1.2;
-        &.inactive {
-          font-style: italic;
-        }
-        .sport-img {
-          height: 20px;
-          width: 20px;
-          margin: 0;
-        }
-      }
     }
     .duration-detail {
       font-style: italic;
