@@ -24,7 +24,7 @@
     "ONLY_ONE_EXPORT_PER_DAY": "You can request an archive by 24 hours",
     "STATUS": {
       "errored": "errored (please request another export)",
-      "in_progress": "in progres…"
+      "in_progress": "in progress…"
     }
   },
   "FILTER_ON_USERNAME": "Filter on username",

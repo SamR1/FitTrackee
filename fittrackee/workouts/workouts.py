@@ -2537,7 +2537,7 @@ def delete_workouts_upload_task(
     if not task or task.task_type != "workouts_archive_upload":
         return NotFoundErrorResponse("no task found")
 
-    if task.get_status() in ["in_progress", "queued"]:
+    if task.get_workouts_archive_upload_status() in ["in_progress", "queued"]:
         return InvalidPayloadErrorResponse(
             "queued or ongoing workout upload task can not be deleted"
         )

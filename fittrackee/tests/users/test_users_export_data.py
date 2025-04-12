@@ -650,7 +650,7 @@ class TestExportUserData(UserTaskMixin):
 
         export_user_data(task_id=export_request.id)
 
-        assert export_request.completed is True
+        assert export_request.completed is False
         assert export_request.updated_at is not None
         assert export_request.file_path is None
         assert export_request.file_size is None
