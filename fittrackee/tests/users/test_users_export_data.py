@@ -752,6 +752,21 @@ class TestCleanUserDataExport(UserDataExportTestCase):
 
         assert counts["deleted_requests"] == 0
 
+    def test_it_does_not_delete_when_workout_upload_tasks(
+        self, app: Flask, user_1: User
+    ) -> None:
+        upload_task = UserTask(
+            user_id=user_1.id,
+            task_type="workouts_archive_upload",
+        )
+        upload_task.progress = 100
+        db.session.add(upload_task)
+        db.session.commit()
+
+        clean_user_data_export(days=0)
+
+        assert UserTask.query.count() == 1
+
     def test_it_returns_0_when_export_request_is_not_completed(
         self, app: Flask, user_1: User
     ) -> None:
