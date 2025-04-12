@@ -1110,6 +1110,7 @@ class UserTask(BaseModel):
             "errored_files": self.errors,
             "new_workouts_count": self.data.get("new_workouts_count", 0),
             "progress": self.progress,
+            "original_file_name": self.data.get("original_file_name"),
         }
         return serialized_task
 
@@ -1312,8 +1313,10 @@ class Notification(BaseModel):
 
         if self.event_type == "workouts_archive_upload":
             task = UserTask.query.filter_by(id=self.event_object_id).first()
-            serialized_notification["task_id"] = (
-                task.short_id if task else None
-            )
+            if task:
+                serialized_notification["task"] = {
+                    "id": task.short_id,
+                    "original_file_name": task.data.get("original_file_name"),
+                }
 
         return serialized_notification
