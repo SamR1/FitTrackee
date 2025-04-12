@@ -557,6 +557,7 @@ class UserTaskMixin:
         file_path: str = "",
         progress: int = 0,
         errored: bool = False,
+        original_file_name: Optional[str] = None,
     ) -> "UserTask":
         upload_task = UserTask(
             user_id=user.id,
@@ -567,6 +568,7 @@ class UserTaskMixin:
                 if files_to_process
                 else [],
                 "equipment_ids": equipment_ids,
+                "original_file_name": original_file_name,
             },
             file_path=file_path,
         )
