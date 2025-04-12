@@ -1091,7 +1091,7 @@ class UserTask(BaseModel):
             "status": status,
         }
 
-    def _get_status(self) -> str:
+    def get_status(self) -> str:
         if self.errored is True:
             return "errored"
         elif self.progress == 0:
@@ -1105,7 +1105,7 @@ class UserTask(BaseModel):
         serialized_task = {
             **serialized_task,
             "sport_id": self.data.get("workouts_data", {}).get("sport_id"),
-            "status": self._get_status(),
+            "status": self.get_status(),
             "files_count": total_files,
             "errored_files": self.errors,
             "new_workouts_count": self.data.get("new_workouts_count", 0),

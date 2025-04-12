@@ -77,6 +77,7 @@
     "ARCHIVE_UPLOADS": {
       "ARCHIVE": "Archive zip",
       "CREATED_WORKOUTS": "Séances créées",
+      "CONFIRM_TASK_DELETION": "Êtes-vous sûr de vouloir supprimer cette tâche de chargement d'archive ?",
       "ERRORED_FILES": "Fichier en erreur | Fichiers en erreur",
       "ERRORS": {
         "no tracks in gpx file": "pas de <tracks> dans le fichier gpx."
