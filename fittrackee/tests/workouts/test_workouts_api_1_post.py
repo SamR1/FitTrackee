@@ -23,7 +23,7 @@ from fittrackee.workouts.services.workout_from_file import (
     WorkoutGpxCreationService,
 )
 
-from ..mixins import BaseTestMixin, ReportMixin
+from ..mixins import BaseTestMixin, ReportMixin, UserTaskMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin, WorkoutGpxInfoMixin
 
@@ -1211,7 +1211,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
+class TestPostWorkoutWithZipArchive(UserTaskMixin, WorkoutApiTestCaseMixin):
     def test_it_adds_workouts_synchronously_with_zip_archive(
         self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
@@ -1406,12 +1406,7 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
         sport_1_cycling: "Sport",
         upload_workouts_archive_mock: "MagicMock",
     ) -> None:
-        ongoing_task = UserTask(
-            user_id=user_1.id,
-            task_type="workouts_archive_upload",
-        )
-        db.session.add(ongoing_task)
-        db.session.commit()
+        self.create_workouts_upload_task(user_1)
         app.config.update(
             {"file_limit_import": 3, "file_sync_limit_import": 2}
         )

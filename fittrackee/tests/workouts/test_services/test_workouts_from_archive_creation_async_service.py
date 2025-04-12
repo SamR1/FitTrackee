@@ -1,13 +1,11 @@
 import os
 import shutil
 import tempfile
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, List, Union
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from fittrackee import db
-from fittrackee.users.models import UserTask
 from fittrackee.workouts.exceptions import WorkoutException
 from fittrackee.workouts.services import (
     WorkoutsFromArchiveCreationAsyncService,
@@ -15,6 +13,8 @@ from fittrackee.workouts.services import (
 from fittrackee.workouts.services.workouts_from_file_creation_service import (
     WorkoutsData,
 )
+
+from ...mixins import UserTaskMixin
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -24,33 +24,7 @@ if TYPE_CHECKING:
     from fittrackee.workouts.models import Sport
 
 
-class WorkoutsFromArchiveCreationAsyncServiceTestCase:
-    @staticmethod
-    def get_upload_task(
-        user: "User",
-        workouts_data: Dict,
-        files_to_process: List[str],
-        equipment_ids: Optional[List[int]],
-        file_path: str,
-    ) -> "UserTask":
-        upload_task = UserTask(
-            user_id=user.id,
-            task_type="workouts_archive_upload",
-            data={
-                "workouts_data": workouts_data,
-                "files_to_process": files_to_process,
-                "equipment_ids": equipment_ids,
-            },
-            file_path=file_path,
-        )
-        db.session.add(upload_task)
-        db.session.commit()
-        return upload_task
-
-
-class TestWorkoutsFromArchiveCreationAsyncServiceInstantiation(
-    WorkoutsFromArchiveCreationAsyncServiceTestCase
-):
+class TestWorkoutsFromArchiveCreationAsyncServiceInstantiation(UserTaskMixin):
     def test_it_raises_error_when_task_does_not_exist(
         self,
         app: "Flask",
@@ -64,15 +38,12 @@ class TestWorkoutsFromArchiveCreationAsyncServiceInstantiation(
         app: "Flask",
         user_1: "User",
     ) -> None:
-        upload_task = UserTask(
-            user_id=user_1.id,
-            task_type="user_data_export",
-        )
-        db.session.add(upload_task)
-        db.session.commit()
+        data_export_task = self.create_user_data_export_task(user_1)
 
         with pytest.raises(WorkoutException, match="no import task found"):
-            WorkoutsFromArchiveCreationAsyncService(task_id=upload_task.id)
+            WorkoutsFromArchiveCreationAsyncService(
+                task_id=data_export_task.id
+            )
 
     def test_it_instantiates_service(
         self,
@@ -85,8 +56,12 @@ class TestWorkoutsFromArchiveCreationAsyncServiceInstantiation(
         files_to_process = ["example.gpx"]
         equipment_ids = [equipment_bike_user_1.id]
         file_path = "some path"
-        upload_task = self.get_upload_task(
-            user_1, workouts_data, files_to_process, equipment_ids, file_path
+        upload_task = self.create_workouts_upload_task(
+            user_1,
+            workouts_data=workouts_data,
+            files_to_process=files_to_process,
+            equipment_ids=equipment_ids,
+            file_path=file_path,
         )
 
         service = WorkoutsFromArchiveCreationAsyncService(task_id=1)
@@ -99,9 +74,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceInstantiation(
         assert service.workouts_data == WorkoutsData(**workouts_data)  # type: ignore
 
 
-class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
-    WorkoutsFromArchiveCreationAsyncServiceTestCase
-):
+class TestWorkoutsFromArchiveCreationAsyncServiceProcess(UserTaskMixin):
     def test_it_returns_empty_workouts_lists_when_file_does_not_exist(
         self,
         app: "Flask",
@@ -112,7 +85,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
         files_to_process = ["example.gpx"]
         equipment_ids = [equipment_bike_user_1.id]
         file_path = "invalid/path"
-        upload_task = self.get_upload_task(
+        upload_task = self.create_workouts_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
             files_to_process=files_to_process,
@@ -141,7 +114,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
         files_to_process = ["example.gpx"]
         equipment_ids = [equipment_bike_user_1.id]
         file_path = "invalid/path"
-        upload_task = self.get_upload_task(
+        upload_task = self.create_workouts_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
             files_to_process=files_to_process,
@@ -170,7 +143,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
         input_equipment_ids: Union[List, None],
     ) -> None:
         files_to_process = ["example.gpx"]
-        upload_task = self.get_upload_task(
+        upload_task = self.create_workouts_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
             files_to_process=files_to_process,
@@ -211,7 +184,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
     ) -> None:
         files_to_process = ["example.gpx"]
         equipment_ids = [equipment_bike_user_1.id]
-        upload_task = self.get_upload_task(
+        upload_task = self.create_workouts_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
             files_to_process=files_to_process,
@@ -256,7 +229,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
         shutil.copyfile(
             os.path.join(app.root_path, "tests/files/gpx_test.zip"), file_path
         )
-        upload_task = self.get_upload_task(
+        upload_task = self.create_workouts_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
             files_to_process=files_to_process,
@@ -288,7 +261,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
         shutil.copyfile(
             os.path.join(app.root_path, "tests/files/gpx_test.zip"), file_path
         )
-        upload_task = self.get_upload_task(
+        upload_task = self.create_workouts_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
             files_to_process=files_to_process,
@@ -321,7 +294,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
         shutil.copyfile(
             os.path.join(app.root_path, "tests/files/gpx_test.zip"), file_path
         )
-        upload_task = self.get_upload_task(
+        upload_task = self.create_workouts_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
             files_to_process=files_to_process,
@@ -348,7 +321,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(
             os.path.join(app.root_path, "tests/files/gpx_test_incorrect.zip"),
             file_path,
         )
-        upload_task = self.get_upload_task(
+        upload_task = self.create_workouts_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
             files_to_process=files_to_process,

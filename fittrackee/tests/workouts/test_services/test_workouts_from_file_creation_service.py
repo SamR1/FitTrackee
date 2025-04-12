@@ -38,6 +38,8 @@ from fittrackee.workouts.services.workouts_from_file_creation_service import (
     WorkoutsData,
 )
 
+from ...mixins import UserTaskMixin
+
 if TYPE_CHECKING:
     from flask import Flask
 
@@ -1065,7 +1067,7 @@ class TestWorkoutsFromFileCreationServiceProcessArchiveContent(
 
 
 class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
-    WorkoutsFromFileCreationServiceTestCase
+    UserTaskMixin, WorkoutsFromFileCreationServiceTestCase
 ):
     def test_it_raises_error_when_no_file_provided(
         self,
@@ -1108,13 +1110,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
         user_1: "User",
         sport_1_cycling: "Sport",
     ) -> None:
-        ongoing_task = UserTask(
-            user_id=user_1.id,
-            task_type="workouts_archive_upload",
-        )
-        ongoing_task.progress = 10
-        db.session.add(ongoing_task)
-        db.session.commit()
+        self.create_workouts_upload_task(user_1, progress=10)
         service = self.get_service(
             app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
         )
@@ -1136,14 +1132,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
         user_1: "User",
         sport_1_cycling: "Sport",
     ) -> None:
-        errored_task = UserTask(
-            user_id=user_1.id,
-            task_type="workouts_archive_upload",
-        )
-        errored_task.progress = 10
-        errored_task.errored = True
-        db.session.add(errored_task)
-        db.session.commit()
+        self.create_workouts_upload_task(user_1, progress=10, errored=True)
         service = self.get_service(
             app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
         )
@@ -1284,22 +1273,10 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
         user_2: "User",
         sport_1_cycling: "Sport",
     ) -> None:
-        for n in range(2):
-            task = UserTask(
-                user_id=user_1.id,
-                task_type="workouts_archive_upload",
-            )
-            task.progress = 100
-            if n == 0:
-                task.errored = True
-            db.session.add(task)
-        task = UserTask(
-            user_id=user_2.id,
-            task_type="workouts_archive_upload",
-        )
-        task.progress = 20
-        db.session.add(task)
-        db.session.commit()
+        self.create_workouts_upload_task(user_1, progress=100)
+        self.create_workouts_upload_task(user_1, progress=100, errored=True)
+
+        self.create_workouts_upload_task(user_2, progress=20)
         service = self.get_service(
             app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
         )
