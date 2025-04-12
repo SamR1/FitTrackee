@@ -922,6 +922,29 @@ class TestUserTaskModel:
 
         assert os.path.isfile(self.absolute_path) is False
 
+    def test_it_deletes_notification_on_user_task_deletion(
+        self, app: Flask, user_1: User
+    ) -> None:
+        workouts_upload = UserTask(
+            user_id=user_1.id, task_type="workouts_archive_upload"
+        )
+        db.session.add(workouts_upload)
+        db.session.flush()
+        notification = Notification(
+            from_user_id=workouts_upload.user_id,
+            to_user_id=workouts_upload.user_id,
+            created_at=datetime.now(tz=timezone.utc),
+            event_object_id=workouts_upload.id,
+            event_type=workouts_upload.task_type,
+        )
+        db.session.add(notification)
+        db.session.commit()
+
+        db.session.delete(workouts_upload)
+        db.session.commit()
+
+        assert Notification.query.count() == 0
+
 
 class TestUserTaskSerializerForUserDataExport:
     def test_it_returns_ongoing_export(self, app: Flask, user_1: User) -> None:

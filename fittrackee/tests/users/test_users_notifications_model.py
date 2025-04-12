@@ -18,7 +18,7 @@ from fittrackee.users.models import FollowRequest, Notification, User
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
-from ..mixins import ReportMixin
+from ..mixins import ReportMixin, UserTaskMixin
 from ..utils import random_int, random_string
 
 
@@ -2038,3 +2038,59 @@ class TestNotificationForUserWarningAppeal(NotificationTestCase, ReportMixin):
             user_1_moderator
         )
         assert serialized_notification["type"] == "user_warning_appeal"
+
+
+class TestNotificationForUserTask(UserTaskMixin, NotificationTestCase):
+    def test_it_creates_notification_for_data_export(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_data_export = self.create_user_data_export_task(user_1)
+        now = datetime.now(tz=timezone.utc)
+        notification = Notification(
+            from_user_id=user_1.id,
+            to_user_id=user_1.id,
+            created_at=now,
+            event_object_id=user_data_export.id,
+            event_type=user_data_export.task_type,
+        )
+        db.session.add(notification)
+        db.session.commit()
+
+        serialized_notification = notification.serialize()
+
+        assert serialized_notification["created_at"] == notification.created_at
+        assert serialized_notification["from"] == user_1.serialize(
+            current_user=user_1
+        )
+        assert serialized_notification["id"] == notification.short_id
+        assert serialized_notification["marked_as_read"] is False
+        assert "task_id" not in serialized_notification
+        assert serialized_notification["type"] == "user_data_export"
+
+    def test_it_creates_notification_for_workouts_archive_upload(
+        self, app: Flask, user_1: User
+    ) -> None:
+        workouts_upload_task = self.create_workouts_upload_task(user_1)
+        now = datetime.now(tz=timezone.utc)
+        notification = Notification(
+            from_user_id=user_1.id,
+            to_user_id=user_1.id,
+            created_at=now,
+            event_object_id=workouts_upload_task.id,
+            event_type=workouts_upload_task.task_type,
+        )
+        db.session.add(notification)
+        db.session.commit()
+
+        serialized_notification = notification.serialize()
+
+        assert serialized_notification["created_at"] == notification.created_at
+        assert serialized_notification["from"] == user_1.serialize(
+            current_user=user_1
+        )
+        assert serialized_notification["id"] == notification.short_id
+        assert serialized_notification["marked_as_read"] is False
+        assert (
+            serialized_notification["task_id"] == workouts_upload_task.short_id
+        )
+        assert serialized_notification["type"] == "workouts_archive_upload"

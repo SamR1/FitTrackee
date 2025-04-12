@@ -1,11 +1,14 @@
 import os
 import shutil
 import tempfile
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING, List, Union
 from unittest.mock import MagicMock, patch
 
 import pytest
+from time_machine import travel
 
+from fittrackee.users.models import Notification
 from fittrackee.workouts.exceptions import WorkoutException
 from fittrackee.workouts.services import (
     WorkoutsFromArchiveCreationAsyncService,
@@ -308,6 +311,41 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(UserTaskMixin):
         service.process()
 
         assert os.path.isfile(file_path) is False
+
+    def test_it_creates_notification(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        files_to_process = ["test_1.gpx", "test_2.gpx", "test_3.gpx"]
+        fd, file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+        shutil.copyfile(
+            os.path.join(app.root_path, "tests/files/gpx_test.zip"), file_path
+        )
+        upload_task = self.create_workouts_upload_task(
+            user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+            files_to_process=files_to_process,
+            equipment_ids=None,
+            file_path=file_path,
+        )
+        service = WorkoutsFromArchiveCreationAsyncService(
+            task_id=upload_task.id
+        )
+        now = datetime.now(tz=timezone.utc)
+
+        with travel(now, tick=False):
+            service.process()
+
+        notification = Notification.query.filter_by(
+            event_object_id=upload_task.id
+        ).one()
+        assert notification.created_at == now
+        assert notification.event_type == upload_task.task_type
+        assert notification.from_user_id == user_1.id
+        assert notification.marked_as_read is False
+        assert notification.to_user_id == user_1.id
 
     def test_it_creates_workout_and_store_error_when_one_file_is_invalid(
         self,
