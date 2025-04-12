@@ -16,7 +16,7 @@ from fittrackee.comments.models import Comment
 from fittrackee.oauth2.client import create_oauth2_client
 from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
 from fittrackee.reports.models import Report, ReportAction, ReportActionAppeal
-from fittrackee.users.models import User
+from fittrackee.users.models import User, UserTask
 from fittrackee.utils import encode_uuid
 from fittrackee.workouts.models import Workout
 
@@ -525,3 +525,53 @@ class ReportMixin(RandomMixin):
         if with_commit:
             db.session.commit()
         return report_action_appeal
+
+
+class UserTaskMixin:
+    @staticmethod
+    def create_user_data_export_task(
+        user: "User",
+        *,
+        created_at: Optional[datetime] = None,
+        progress: int = 0,
+        file_path: Optional[str] = None,
+    ) -> "UserTask":
+        data_export_task = UserTask(
+            user_id=user.id,
+            created_at=created_at,
+            task_type="user_data_export",
+        )
+        data_export_task.progress = progress
+        data_export_task.file_path = file_path
+        db.session.add(data_export_task)
+        db.session.commit()
+        return data_export_task
+
+    @staticmethod
+    def create_workouts_upload_task(
+        user: "User",
+        *,
+        workouts_data: Optional[Dict] = None,
+        files_to_process: Optional[List[str]] = None,
+        equipment_ids: Optional[List[int]] = None,
+        file_path: str = "",
+        progress: int = 0,
+        errored: bool = False,
+    ) -> "UserTask":
+        upload_task = UserTask(
+            user_id=user.id,
+            task_type="workouts_archive_upload",
+            data={
+                "workouts_data": workouts_data if workouts_data else {},
+                "files_to_process": files_to_process
+                if files_to_process
+                else [],
+                "equipment_ids": equipment_ids,
+            },
+            file_path=file_path,
+        )
+        upload_task.progress = progress
+        upload_task.errored = errored
+        db.session.add(upload_task)
+        db.session.commit()
+        return upload_task
