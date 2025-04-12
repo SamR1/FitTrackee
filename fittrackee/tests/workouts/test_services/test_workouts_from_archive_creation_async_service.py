@@ -1,6 +1,4 @@
 import os
-import shutil
-import tempfile
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, List, Union
 from unittest.mock import MagicMock, patch
@@ -230,10 +228,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(UserTaskMixin):
     ) -> None:
         files_to_process = ["test_1.gpx", "test_2.gpx", "test_3.gpx"]
         equipment_ids = [equipment_bike_user_1.id]
-        fd, file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
-        shutil.copyfile(
-            os.path.join(app.root_path, "tests/files/gpx_test.zip"), file_path
-        )
+        file_path = self.generate_temporary_archive()
         upload_task = self.create_workouts_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
@@ -262,10 +257,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(UserTaskMixin):
     ) -> None:
         files_to_process = ["test_1.gpx", "test_2.gpx", "test_3.gpx"]
         equipment_ids = [equipment_bike_user_1.id]
-        fd, file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
-        shutil.copyfile(
-            os.path.join(app.root_path, "tests/files/gpx_test.zip"), file_path
-        )
+        file_path = self.generate_temporary_archive()
         upload_task = self.create_workouts_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
@@ -295,10 +287,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(UserTaskMixin):
     ) -> None:
         files_to_process = ["test_1.gpx", "test_2.gpx", "test_3.gpx"]
         equipment_ids = [equipment_bike_user_1.id]
-        fd, file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
-        shutil.copyfile(
-            os.path.join(app.root_path, "tests/files/gpx_test.zip"), file_path
-        )
+        file_path = self.generate_temporary_archive()
         upload_task = self.create_workouts_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
@@ -321,10 +310,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(UserTaskMixin):
         sport_1_cycling: "Sport",
     ) -> None:
         files_to_process = ["test_1.gpx", "test_2.gpx", "test_3.gpx"]
-        fd, file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
-        shutil.copyfile(
-            os.path.join(app.root_path, "tests/files/gpx_test.zip"), file_path
-        )
+        file_path = self.generate_temporary_archive()
         upload_task = self.create_workouts_upload_task(
             user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
@@ -356,10 +342,8 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(UserTaskMixin):
         sport_1_cycling: "Sport",
     ) -> None:
         files_to_process = ["test_1.gpx", "test_4.gpx"]
-        fd, file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
-        shutil.copyfile(
-            os.path.join(app.root_path, "tests/files/gpx_test_incorrect.zip"),
-            file_path,
+        file_path = self.generate_temporary_archive(
+            "tests/files/gpx_test_incorrect.zip"
         )
         upload_task = self.create_workouts_upload_task(
             user_1,

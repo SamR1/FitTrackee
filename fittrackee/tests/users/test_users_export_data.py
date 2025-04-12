@@ -808,7 +808,10 @@ class TestCleanUserDataExport(UserDataExportTestCase):
 
 
 class TestGenerateUsersArchives(UserDataExportTestCase):
-    def test_it_returns_0_when_no_request(self, app: Flask) -> None:
+    def test_it_returns_0_when_no_request(
+        self, app: Flask, user_1: "User"
+    ) -> None:
+        self.create_workouts_upload_task(user_1)
         count = generate_user_data_archives(max_count=1)
 
         assert count == 0
