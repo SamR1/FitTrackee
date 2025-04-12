@@ -176,6 +176,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(UserTaskMixin):
             files_to_process=files_to_process,
             equipments=input_equipment_ids,
             upload_task=upload_task,
+            get_weather=False,
         )
 
     def test_it_calls_process_archive_content_when_equipment_ids_are_provided(
@@ -217,6 +218,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceProcess(UserTaskMixin):
             files_to_process=files_to_process,
             equipments=[equipment_bike_user_1],
             upload_task=upload_task,
+            get_weather=False,
         )
 
     def test_it_creates_workouts(

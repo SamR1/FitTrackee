@@ -159,6 +159,7 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
         extension: str,
         equipments: Union[List["Equipment"], None],
         workout_file: Optional["IO[bytes]"] = None,
+        get_weather: bool = True,
     ) -> "Workout":
         """
         Return map absolute file path in order to delete file on error
@@ -175,6 +176,7 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
             ),
             sport_id=self.workouts_data.sport_id,
             stopped_speed_threshold=self.stopped_speed_threshold,
+            get_weather=get_weather,
         )
 
         # extract and calculate data from provided file
@@ -264,6 +266,7 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
         files_to_process: List[str],
         equipments: Union[List["Equipment"], None],
         upload_task: Optional["UserTask"] = None,
+        get_weather: bool = True,
     ) -> Tuple[List["Workout"], Dict]:
         if not files_to_process:
             raise WorkoutFileException(
@@ -279,7 +282,7 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
                     extension = self._get_extension(file)
                     file_content = zip_ref.open(file)
                     new_workout = self.create_workout_from_file(
-                        extension, equipments, file_content
+                        extension, equipments, file_content, get_weather
                     )
                 except Exception as e:
                     db.session.rollback()
@@ -515,6 +518,7 @@ class WorkoutsFromArchiveCreationAsyncService(AbstractWorkoutsCreationService):
                     files_to_process=self.files_to_process,
                     equipments=equipments,
                     upload_task=self.upload_task,
+                    get_weather=False,
                 )
         except FileNotFoundError:
             self.upload_task.errored = True
