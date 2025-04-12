@@ -11,7 +11,7 @@ from fittrackee import appLog, db
 from fittrackee.emails.tasks import send_email
 from fittrackee.files import get_absolute_file_path
 
-from .models import User, UserTask
+from .models import Notification, User, UserTask
 from .utils.language import get_language
 
 
@@ -150,15 +150,25 @@ def export_user_data(task_id: int) -> None:
 
     user = User.query.filter_by(id=export_request.user_id).one()
     exporter = UserDataExporter(user)
-    archive_file_path, archive_file_name = exporter.generate_archive()
 
     try:
-        export_request.progress = 100
+        archive_file_path, archive_file_name = exporter.generate_archive()
         if archive_file_name and archive_file_path:
             export_request.file_path = os.path.join(
                 "exports", str(user.id), archive_file_name
             )
             export_request.file_size = os.path.getsize(archive_file_path)
+            db.session.flush()
+            export_request.progress = 100
+
+            notification = Notification(
+                from_user_id=export_request.user_id,
+                to_user_id=export_request.user_id,
+                created_at=datetime.now(tz=timezone.utc),
+                event_object_id=export_request.id,
+                event_type=export_request.task_type,
+            )
+            db.session.add(notification)
             db.session.commit()
 
             if current_app.config["CAN_SEND_EMAILS"]:
@@ -176,8 +186,12 @@ def export_user_data(task_id: int) -> None:
                     user_data, email_data, template="data_export_ready"
                 )
         else:
+            export_request.errored = True
             db.session.commit()
+
     except Exception as e:
+        export_request.errored = True
+        db.session.commit()
         appLog.error(f"Error when exporting user data: {e!s}")
 
 

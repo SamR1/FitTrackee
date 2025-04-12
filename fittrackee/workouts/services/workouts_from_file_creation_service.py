@@ -4,7 +4,7 @@ import tempfile
 import zipfile
 from abc import abstractmethod
 from dataclasses import asdict, dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from io import BytesIO
 from typing import IO, TYPE_CHECKING, Dict, List, Optional, Tuple, Type, Union
 
@@ -14,7 +14,7 @@ from fittrackee import db
 from fittrackee.equipments.exceptions import InvalidEquipmentsException
 from fittrackee.equipments.models import Equipment
 from fittrackee.files import get_absolute_file_path
-from fittrackee.users.models import User, UserTask
+from fittrackee.users.models import Notification, User, UserTask
 from fittrackee.visibility_levels import get_calculated_visibility
 from fittrackee.workouts.models import (
     DESCRIPTION_MAX_CHARACTERS,
@@ -534,11 +534,21 @@ class WorkoutsFromArchiveCreationAsyncService(AbstractWorkoutsCreationService):
                 **self.upload_task.errors,
                 "files": errored_workouts,
             }
+        db.session.commit()
 
         if os.path.exists(self.file_path):
             os.remove(self.file_path)
 
+        notification = Notification(
+            from_user_id=self.upload_task.user_id,
+            to_user_id=self.upload_task.user_id,
+            created_at=datetime.now(tz=timezone.utc),
+            event_object_id=self.upload_task.id,
+            event_type=self.upload_task.task_type,
+        )
+        db.session.add(notification)
         db.session.commit()
+
         return new_workouts, {
             "errored_workouts": errored_workouts,
             "task_short_id": self.upload_task.short_id,

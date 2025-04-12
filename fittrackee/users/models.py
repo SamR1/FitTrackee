@@ -1091,7 +1091,7 @@ class UserTask(BaseModel):
             "status": status,
         }
 
-    def get_status(self) -> str:
+    def get_workouts_archive_upload_status(self) -> str:
         if self.errored is True:
             return "errored"
         elif self.progress == 0:
@@ -1105,7 +1105,7 @@ class UserTask(BaseModel):
         serialized_task = {
             **serialized_task,
             "sport_id": self.data.get("workouts_data", {}).get("sport_id"),
-            "status": self.get_status(),
+            "status": self.get_workouts_archive_upload_status(),
             "files_count": total_files,
             "errored_files": self.errors,
             "new_workouts_count": self.data.get("new_workouts_count", 0),
@@ -1127,11 +1127,14 @@ class UserTask(BaseModel):
 
 
 @listens_for(UserTask, "after_delete")
-def on_users_data_export_delete(
+def on_user_task_delete(
     mapper: Mapper, connection: Connection, old_record: "UserTask"
 ) -> None:
     @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
+        Notification.query.filter(
+            Notification.event_object_id == old_record.id,
+        ).delete()
         if old_record.file_path:
             try:
                 os.remove(get_absolute_file_path(old_record.file_path))
@@ -1306,5 +1309,11 @@ class Notification(BaseModel):
                 serialized_notification["workout"] = (
                     workout.serialize(user=to_user) if workout else None
                 )
+
+        if self.event_type == "workouts_archive_upload":
+            task = UserTask.query.filter_by(id=self.event_object_id).first()
+            serialized_notification["task_id"] = (
+                task.short_id if task else None
+            )
 
         return serialized_notification

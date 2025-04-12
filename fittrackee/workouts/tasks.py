@@ -1,11 +1,12 @@
 import os
+from datetime import datetime, timezone
 
 from dramatiq.middleware import Shutdown, TimeLimitExceeded
 
 from fittrackee import db, dramatiq
 from fittrackee.constants import TASKS_TIME_LIMIT, TaskPriority
 from fittrackee.exceptions import TaskException
-from fittrackee.users.models import UserTask
+from fittrackee.users.models import Notification, UserTask
 from fittrackee.workouts.services.workouts_from_file_creation_service import (
     WorkoutsFromArchiveCreationAsyncService,
 )
@@ -22,6 +23,19 @@ def update_task_and_clean(task_id: int, error: str) -> None:
         **upload_task.errors,
         "archive": error,
     }
+    db.session.flush()
+    if not Notification.query.filter_by(
+        event_object_id=upload_task.id,
+        event_type=upload_task.task_type,
+    ).first():
+        notification = Notification(
+            from_user_id=upload_task.user_id,
+            to_user_id=upload_task.user_id,
+            created_at=datetime.now(tz=timezone.utc),
+            event_object_id=upload_task.id,
+            event_type=upload_task.task_type,
+        )
+        db.session.add(notification)
     db.session.commit()
     if os.path.exists(upload_task.file_path):
         os.remove(upload_task.file_path)
