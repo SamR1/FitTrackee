@@ -225,7 +225,10 @@ def generate_user_data_archives(max_count: int) -> int:
     count = 0
     export_requests = (
         db.session.query(UserTask)
-        .filter(UserTask.progress != 100)
+        .filter(
+            UserTask.progress != 100,
+            UserTask.task_type == "user_data_export",
+        )
         .order_by(UserTask.created_at)
         .limit(max_count)
         .all()
