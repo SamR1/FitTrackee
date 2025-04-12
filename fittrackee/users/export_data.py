@@ -185,7 +185,9 @@ def clean_user_data_export(days: int) -> Dict:
     counts = {"deleted_requests": 0, "deleted_archives": 0, "freed_space": 0}
     limit = datetime.now(timezone.utc) - timedelta(days=days)
     export_requests = UserTask.query.filter(
-        UserTask.created_at < limit, UserTask.progress == 100
+        UserTask.created_at < limit,
+        UserTask.progress == 100,
+        UserTask.task_type == "user_data_export",
     ).all()
 
     if not export_requests:

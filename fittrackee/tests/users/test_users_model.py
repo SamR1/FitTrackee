@@ -1,5 +1,7 @@
+import os
 import re
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Dict
 
 import pytest
@@ -11,6 +13,7 @@ from time_machine import travel
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
+from fittrackee.files import get_absolute_file_path
 from fittrackee.reports.models import ReportAction
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.tests.utils import random_int, random_string
@@ -810,6 +813,16 @@ class TestUserSportModel:
 
 
 class TestUserTaskModel:
+    relative_path: str = ""
+    absolute_path: str = ""
+
+    def generate_file(self) -> None:
+        self.relative_path = "temporary_file.txt"
+        self.absolute_path = get_absolute_file_path(self.relative_path)
+        export_file = Path(self.absolute_path)
+        export_file.parent.mkdir(exist_ok=True, parents=True)
+        export_file.write_text("some text")
+
     def test_it_instantiates_task_for_user_data_export(
         self, app: Flask, user_1: User
     ) -> None:
@@ -874,6 +887,40 @@ class TestUserTaskModel:
         db.session.commit()
 
         assert data_export.created_at == now
+
+    def test_it_deletes_file_on_data_export_task_deletion(
+        self, app: Flask, user_1: User
+    ) -> None:
+        self.generate_file()
+        data_export = UserTask(
+            user_id=user_1.id,
+            task_type="user_data_export",
+            file_path=self.relative_path,
+        )
+        db.session.add(data_export)
+        db.session.commit()
+
+        db.session.delete(data_export)
+        db.session.commit()
+
+        assert os.path.isfile(self.absolute_path) is False
+
+    def test_it_deletes_file_on_workouts_upload_task_deletion(
+        self, app: Flask, user_1: User
+    ) -> None:
+        self.generate_file()
+        workouts_upload = UserTask(
+            user_id=user_1.id,
+            task_type="workouts_archive_upload",
+            file_path=self.absolute_path,
+        )
+        db.session.add(workouts_upload)
+        db.session.commit()
+
+        db.session.delete(workouts_upload)
+        db.session.commit()
+
+        assert os.path.isfile(self.absolute_path) is False
 
 
 class TestUserTaskSerializerForUserDataExport:
