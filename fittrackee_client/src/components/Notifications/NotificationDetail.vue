@@ -154,11 +154,18 @@
           {{ $t('user.EXPORT_REQUEST.DOWNLOAD_ARCHIVE') }}
         </button>
       </div>
-      <div v-if="notification.type === 'workouts_archive_upload'">
+      <div
+        v-if="notification.type === 'workouts_archive_upload'"
+        class="description-list archive-file-name"
+      >
+        <dl v-if="notification.task?.original_file_name">
+          <dt>{{ $t('user.PROFILE.ARCHIVE_UPLOADS.ARCHIVE') }}:</dt>
+          <dd>{{ notification.task?.original_file_name }}</dd>
+        </dl>
         <button
           @click="
             $router.push(
-              `/profile/archive-uploads/${notification.task_id}?fromNotifications=true`
+              `/profile/archive-uploads/${notification.task?.task_id}?fromNotifications=true`
             )
           "
         >
@@ -454,6 +461,10 @@
 
     .appeal-in-progress {
       margin-top: $default-margin * 0.5;
+    }
+
+    .archive-file-name dl {
+      margin: 0 0 $default-padding * 0.5;
     }
   }
 </style>

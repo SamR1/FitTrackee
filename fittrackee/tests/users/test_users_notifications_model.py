@@ -2070,7 +2070,10 @@ class TestNotificationForUserTask(UserTaskMixin, NotificationTestCase):
     def test_it_creates_notification_for_workouts_archive_upload(
         self, app: Flask, user_1: User
     ) -> None:
-        workouts_upload_task = self.create_workouts_upload_task(user_1)
+        original_file_name = "workouts.zip"
+        workouts_upload_task = self.create_workouts_upload_task(
+            user_1, original_file_name=original_file_name
+        )
         now = datetime.now(tz=timezone.utc)
         notification = Notification(
             from_user_id=user_1.id,
@@ -2090,7 +2093,8 @@ class TestNotificationForUserTask(UserTaskMixin, NotificationTestCase):
         )
         assert serialized_notification["id"] == notification.short_id
         assert serialized_notification["marked_as_read"] is False
-        assert (
-            serialized_notification["task_id"] == workouts_upload_task.short_id
-        )
+        assert serialized_notification["task"] == {
+            "id": workouts_upload_task.short_id,
+            "original_file_name": original_file_name,
+        }
         assert serialized_notification["type"] == "workouts_archive_upload"

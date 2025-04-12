@@ -407,6 +407,7 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
                     if equipments is None
                     else [equipment.short_id for equipment in equipments]
                 ),
+                "original_file_name": self.file.filename,
             },
             file_path=path,
         )

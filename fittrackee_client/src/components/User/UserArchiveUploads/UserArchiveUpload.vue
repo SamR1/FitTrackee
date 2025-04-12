@@ -16,6 +16,10 @@
         <dt>{{ $t('common.CREATION_DATE') }}:</dt>
         <dd>{{ uploadTask.created_at }}</dd>
       </dl>
+      <dl v-if="uploadTask.original_file_name">
+        <dt>{{ $t('user.PROFILE.ARCHIVE_UPLOADS.ARCHIVE') }}:</dt>
+        <dd>{{ uploadTask.original_file_name }}</dd>
+      </dl>
       <dl>
         <dt>{{ $t('common.FILES') }}:</dt>
         <dd>{{ uploadTask.files_count }}</dd>

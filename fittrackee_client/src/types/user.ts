@@ -243,6 +243,7 @@ export interface IArchiveUploadTask {
   files_count: number
   id: string
   new_workouts_count: number
+  original_file_name: string | null
   progress: string
   sport_id: number | null
   status: IArchiveUploadTaskStatus
