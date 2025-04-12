@@ -3,10 +3,9 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from fittrackee import db
 from fittrackee.users.models import UserTask
 
-from ..mixins import ApiTestCaseMixin, BaseTestMixin
+from ..mixins import ApiTestCaseMixin, BaseTestMixin, UserTaskMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 
 if TYPE_CHECKING:
@@ -15,7 +14,9 @@ if TYPE_CHECKING:
     from fittrackee.users.models import User
 
 
-class TestWorkoutsTasksGetTasks(ApiTestCaseMixin, BaseTestMixin):
+class TestWorkoutsTasksGetTasks(
+    ApiTestCaseMixin, BaseTestMixin, UserTaskMixin
+):
     route = "/api/workouts/upload-tasks"
 
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -34,15 +35,8 @@ class TestWorkoutsTasksGetTasks(ApiTestCaseMixin, BaseTestMixin):
         user_1: "User",
         user_2: "User",
     ) -> None:
-        user_2_workouts_upload_task = UserTask(
-            user_id=user_2.id, task_type="workouts_archive_upload"
-        )
-        db.session.add(user_2_workouts_upload_task)
-        user_1_export_data_task = UserTask(
-            user_id=user_1.id, task_type="user_data_export"
-        )
-        db.session.add(user_1_export_data_task)
-        db.session.commit()
+        self.create_workouts_upload_task(user_2)
+        self.create_user_data_export_task(user_1)
 
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -72,11 +66,7 @@ class TestWorkoutsTasksGetTasks(ApiTestCaseMixin, BaseTestMixin):
     ) -> None:
         tasks = []
         for _ in range(3):
-            workouts_upload_task = UserTask(
-                user_id=user_1.id, task_type="workouts_archive_upload"
-            )
-            db.session.add(workouts_upload_task)
-            db.session.commit()
+            workouts_upload_task = self.create_workouts_upload_task(user_1)
             tasks.append(workouts_upload_task)
 
         client, auth_token = self.get_test_client_and_auth_token(
@@ -111,11 +101,7 @@ class TestWorkoutsTasksGetTasks(ApiTestCaseMixin, BaseTestMixin):
     ) -> None:
         tasks = []
         for _ in range(6):
-            workouts_upload_task = UserTask(
-                user_id=user_1.id, task_type="workouts_archive_upload"
-            )
-            db.session.add(workouts_upload_task)
-            db.session.commit()
+            workouts_upload_task = self.create_workouts_upload_task(user_1)
             tasks.append(workouts_upload_task)
 
         client, auth_token = self.get_test_client_and_auth_token(
@@ -167,9 +153,8 @@ class TestWorkoutsTasksGetTasks(ApiTestCaseMixin, BaseTestMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestWorkoutsTasksGetTask(ApiTestCaseMixin, BaseTestMixin):
+class TestWorkoutsTasksGetTask(UserTaskMixin, ApiTestCaseMixin, BaseTestMixin):
     route = "/api/workouts/upload-tasks/{task_id}"
-    task_type = "workouts_archive_upload"
 
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
@@ -205,11 +190,7 @@ class TestWorkoutsTasksGetTask(ApiTestCaseMixin, BaseTestMixin):
         user_1: "User",
         user_2: "User",
     ) -> None:
-        workouts_upload_task = UserTask(
-            user_id=user_2.id, task_type=self.task_type
-        )
-        db.session.add(workouts_upload_task)
-        db.session.commit()
+        workouts_upload_task = self.create_workouts_upload_task(user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -226,11 +207,7 @@ class TestWorkoutsTasksGetTask(ApiTestCaseMixin, BaseTestMixin):
         app: "Flask",
         user_1: "User",
     ) -> None:
-        export_data_task = UserTask(
-            user_id=user_1.id, task_type="user_data_export"
-        )
-        db.session.add(export_data_task)
-        db.session.commit()
+        export_data_task = self.create_user_data_export_task(user_1)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -247,11 +224,7 @@ class TestWorkoutsTasksGetTask(ApiTestCaseMixin, BaseTestMixin):
         app: "Flask",
         user_1: "User",
     ) -> None:
-        workouts_upload_task = UserTask(
-            user_id=user_1.id, task_type=self.task_type
-        )
-        db.session.add(workouts_upload_task)
-        db.session.commit()
+        workouts_upload_task = self.create_workouts_upload_task(user_1)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -294,9 +267,10 @@ class TestWorkoutsTasksGetTask(ApiTestCaseMixin, BaseTestMixin):
         self.assert_response_scope(response, can_access)
 
 
-class TestWorkoutsTasksDeleteTask(ApiTestCaseMixin, BaseTestMixin):
+class TestWorkoutsTasksDeleteTask(
+    ApiTestCaseMixin, BaseTestMixin, UserTaskMixin
+):
     route = "/api/workouts/upload-tasks/{task_id}"
-    task_type = "workouts_archive_upload"
 
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
@@ -332,11 +306,7 @@ class TestWorkoutsTasksDeleteTask(ApiTestCaseMixin, BaseTestMixin):
         user_1: "User",
         user_2: "User",
     ) -> None:
-        workouts_upload_task = UserTask(
-            user_id=user_2.id, task_type=self.task_type
-        )
-        db.session.add(workouts_upload_task)
-        db.session.commit()
+        workouts_upload_task = self.create_workouts_upload_task(user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -353,11 +323,7 @@ class TestWorkoutsTasksDeleteTask(ApiTestCaseMixin, BaseTestMixin):
         app: "Flask",
         user_1: "User",
     ) -> None:
-        export_data_task = UserTask(
-            user_id=user_1.id, task_type="user_data_export"
-        )
-        db.session.add(export_data_task)
-        db.session.commit()
+        export_data_task = self.create_user_data_export_task(user_1)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -374,12 +340,9 @@ class TestWorkoutsTasksDeleteTask(ApiTestCaseMixin, BaseTestMixin):
         app: "Flask",
         user_1: "User",
     ) -> None:
-        workouts_upload_task = UserTask(
-            user_id=user_1.id, task_type=self.task_type
+        workouts_upload_task = self.create_workouts_upload_task(
+            user_1, errored=True
         )
-        workouts_upload_task.errored = True
-        db.session.add(workouts_upload_task)
-        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -397,12 +360,9 @@ class TestWorkoutsTasksDeleteTask(ApiTestCaseMixin, BaseTestMixin):
         app: "Flask",
         user_1: "User",
     ) -> None:
-        workouts_upload_task = UserTask(
-            user_id=user_1.id, task_type=self.task_type
+        workouts_upload_task = self.create_workouts_upload_task(
+            user_1, progress=100
         )
-        workouts_upload_task.progress = 100
-        db.session.add(workouts_upload_task)
-        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -420,12 +380,9 @@ class TestWorkoutsTasksDeleteTask(ApiTestCaseMixin, BaseTestMixin):
         app: "Flask",
         user_1: "User",
     ) -> None:
-        # task progress = 0
-        workouts_upload_task = UserTask(
-            user_id=user_1.id, task_type=self.task_type
+        workouts_upload_task = self.create_workouts_upload_task(
+            user_1, progress=0
         )
-        db.session.add(workouts_upload_task)
-        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -445,12 +402,9 @@ class TestWorkoutsTasksDeleteTask(ApiTestCaseMixin, BaseTestMixin):
         app: "Flask",
         user_1: "User",
     ) -> None:
-        workouts_upload_task = UserTask(
-            user_id=user_1.id, task_type=self.task_type
+        workouts_upload_task = self.create_workouts_upload_task(
+            user_1, progress=10
         )
-        workouts_upload_task.progress = 10
-        db.session.add(workouts_upload_task)
-        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )

@@ -19,6 +19,7 @@ from fittrackee.users.models import User, UserTask
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
+from ..mixins import UserTaskMixin
 from ..utils import random_int, random_string
 from ..workouts.utils import post_a_workout
 
@@ -579,7 +580,7 @@ class TestUserDataExporterGenerateArchive:
 
 @patch("fittrackee.users.export_data.appLog")
 @patch.object(UserDataExporter, "generate_archive")
-class TestExportUserData:
+class TestExportUserData(UserTaskMixin):
     def test_it_logs_error_if_not_request_for_given_id(
         self,
         generate_archive: Mock,
@@ -601,12 +602,9 @@ class TestExportUserData:
         app: Flask,
         user_1: User,
     ) -> None:
-        export_request = UserTask(
-            user_id=user_1.id, task_type="user_data_export"
+        export_request = self.create_user_data_export_task(
+            user_1, progress=100
         )
-        db.session.add(export_request)
-        export_request.progress = 100
-        db.session.commit()
 
         export_user_data(task_id=export_request.id)
 
@@ -622,11 +620,7 @@ class TestExportUserData:
         app: Flask,
         user_1: User,
     ) -> None:
-        export_request = UserTask(
-            user_id=user_1.id, task_type="user_data_export"
-        )
-        db.session.add(export_request)
-        db.session.commit()
+        export_request = self.create_user_data_export_task(user_1)
         archive_name = random_string()
         generate_archive_mock.return_value = (random_string(), archive_name)
         archive_size = random_int()
@@ -651,11 +645,7 @@ class TestExportUserData:
         app: Flask,
         user_1: User,
     ) -> None:
-        export_request = UserTask(
-            user_id=user_1.id, task_type="user_data_export"
-        )
-        db.session.add(export_request)
-        db.session.commit()
+        export_request = self.create_user_data_export_task(user_1)
         generate_archive_mock.return_value = (None, None)
 
         export_user_data(task_id=export_request.id)
@@ -673,11 +663,7 @@ class TestExportUserData:
         app: Flask,
         user_1: User,
     ) -> None:
-        export_request = UserTask(
-            user_id=user_1.id, task_type="user_data_export"
-        )
-        db.session.add(export_request)
-        db.session.commit()
+        export_request = self.create_user_data_export_task(user_1)
         generate_archive_mock.return_value = (None, None)
 
         export_user_data(task_id=export_request.id)
@@ -692,11 +678,7 @@ class TestExportUserData:
         app: Flask,
         user_1: User,
     ) -> None:
-        export_request = UserTask(
-            user_id=user_1.id, task_type="user_data_export"
-        )
-        db.session.add(export_request)
-        db.session.commit()
+        export_request = self.create_user_data_export_task(user_1)
         archive_name = random_string()
         generate_archive_mock.return_value = (random_string(), archive_name)
         archive_size = random_int()
@@ -721,19 +703,15 @@ class TestExportUserData:
         )
 
 
-class UserDataExportTestCase:
-    @staticmethod
+class UserDataExportTestCase(UserTaskMixin):
     def create_user_request(
-        user: User, days: int = 0, progress: int = 100
+        self, user: User, days: int = 0, progress: int = 100
     ) -> UserTask:
-        user_data_export = UserTask(
-            user_id=user.id,
+        user_data_export = self.create_user_data_export_task(
+            user,
             created_at=datetime.now(timezone.utc) - timedelta(days=days),
-            task_type="user_data_export",
+            progress=progress,
         )
-        db.session.add(user_data_export)
-        user_data_export.progress = progress
-        db.session.commit()
         return user_data_export
 
     def generate_archive(self, user: User) -> Tuple[UserTask, Optional[str]]:
@@ -755,13 +733,7 @@ class TestCleanUserDataExport(UserDataExportTestCase):
     def test_it_does_not_delete_when_workout_upload_tasks(
         self, app: Flask, user_1: User
     ) -> None:
-        upload_task = UserTask(
-            user_id=user_1.id,
-            task_type="workouts_archive_upload",
-        )
-        upload_task.progress = 100
-        db.session.add(upload_task)
-        db.session.commit()
+        self.create_workouts_upload_task(user_1, progress=100)
 
         clean_user_data_export(days=0)
 
