@@ -1,5 +1,6 @@
 import os
 from datetime import datetime, timezone
+from typing import Optional
 
 from dramatiq.middleware import Shutdown, TimeLimitExceeded
 
@@ -14,16 +15,25 @@ from fittrackee.workouts.services.workouts_from_file_creation_service import (
 GENERIC_ERROR = "error during archive processing"
 
 
-def update_task_and_clean(task_id: int, error: str) -> None:
-    upload_task = UserTask.query.filter_by(id=task_id).first()
-    if not upload_task:
+def update_task_and_clean(
+    *,
+    error: str,
+    upload_task: Optional["UserTask"] = None,
+    upload_task_id: Optional[int] = None,
+) -> None:
+    if not upload_task and not upload_task_id:
+        return
+    if upload_task is None:
+        upload_task = UserTask.query.filter_by(id=upload_task_id).first()
+    if upload_task is None:
         return
     upload_task.errored = True
     upload_task.errors = {
         **upload_task.errors,
         "archive": error,
     }
-    db.session.flush()
+    db.session.commit()
+
     if not Notification.query.filter_by(
         event_object_id=upload_task.id,
         event_type=upload_task.task_type,
@@ -36,8 +46,9 @@ def update_task_and_clean(task_id: int, error: str) -> None:
             event_type=upload_task.task_type,
         )
         db.session.add(notification)
-    db.session.commit()
-    if os.path.exists(upload_task.file_path):
+        db.session.commit()
+
+    if upload_task.file_path and os.path.exists(upload_task.file_path):
         os.remove(upload_task.file_path)
 
 
@@ -59,11 +70,40 @@ def upload_workouts_archive(task_id: int) -> None:
             if isinstance(e, TimeLimitExceeded)
             else GENERIC_ERROR
         )
-        update_task_and_clean(task_id, error)
+        update_task_and_clean(error=error, upload_task_id=task_id)
         raise TaskException(error) from None
     except Exception as e:
         db.session.rollback()
-        update_task_and_clean(task_id, GENERIC_ERROR)
+        update_task_and_clean(error=GENERIC_ERROR, upload_task_id=task_id)
         raise TaskException(GENERIC_ERROR) from e
     finally:
         db.session.close()
+
+
+def process_workouts_archives_upload(max_count: int) -> int:
+    count = 0
+    upload_tasks = (
+        db.session.query(UserTask)
+        .filter(
+            UserTask.progress == 0,
+            UserTask.errored == False,  # noqa
+            UserTask.task_type == "workouts_archive_upload",
+        )
+        .order_by(UserTask.created_at)
+        .limit(max_count)
+        .all()
+    )
+
+    for upload_task in upload_tasks:
+        try:
+            service = WorkoutsFromArchiveCreationAsyncService(upload_task.id)
+            service.process()
+            count += 1
+        except Exception as e:
+            db.session.rollback()
+            update_task_and_clean(
+                error=GENERIC_ERROR, upload_task_id=upload_task.id
+            )
+            raise e
+
+    return count

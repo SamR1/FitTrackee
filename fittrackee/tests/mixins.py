@@ -1,18 +1,23 @@
 import json
+import os
+import shutil
+import tempfile
 import time
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 from unittest.mock import Mock
 from urllib.parse import parse_qs
 from uuid import uuid4
 
-from flask import Flask
+from flask import Flask, current_app
 from flask.testing import FlaskClient
 from urllib3.util import parse_url
 from werkzeug.test import TestResponse
 
 from fittrackee import db
 from fittrackee.comments.models import Comment
+from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.client import create_oauth2_client
 from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
 from fittrackee.reports.models import Report, ReportAction, ReportActionAppeal
@@ -548,6 +553,19 @@ class UserTaskMixin:
         return data_export_task
 
     @staticmethod
+    def generate_temporary_data_export(
+        user_id: int,
+        file: str,
+    ) -> str:
+        file_path = get_absolute_file_path(
+            os.path.join("exports", str(user_id), file)
+        )
+        export_file = Path(file_path)
+        export_file.parent.mkdir(exist_ok=True, parents=True)
+        export_file.write_text("some text")
+        return file_path
+
+    @staticmethod
     def create_workouts_upload_task(
         user: "User",
         *,
@@ -577,3 +595,13 @@ class UserTaskMixin:
         db.session.add(upload_task)
         db.session.commit()
         return upload_task
+
+    @staticmethod
+    def generate_temporary_archive(
+        zip_archive: str = "tests/files/gpx_test.zip",
+    ) -> str:
+        _, file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+        shutil.copyfile(
+            os.path.join(current_app.root_path, zip_archive), file_path
+        )
+        return file_path
