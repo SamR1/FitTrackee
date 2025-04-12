@@ -2350,6 +2350,8 @@ def get_workouts_upload_tasks(
     """
     Get user tasks for workouts archive upload
 
+    **Scope**: ``workouts:read``
+
     **Example request**:
 
     - without parameters:
@@ -2442,6 +2444,8 @@ def get_workouts_upload_task(
     """
     Get task for workouts archive upload
 
+    **Scope**: ``workouts:read``
+
     **Example request**:
 
     .. sourcecode:: http
@@ -2483,7 +2487,64 @@ def get_workouts_upload_task(
         user_id=auth_user.id, uuid=decode_short_id(task_short_id)
     ).first()
 
-    if not task:
+    if not task or task.task_type != "workouts_archive_upload":
         return NotFoundErrorResponse("no task found")
 
     return {"status": "success", "task": task.serialize()}, 200
+
+
+@workouts_blueprint.route(
+    "/workouts/upload-tasks/<string:task_short_id>", methods=["DELETE"]
+)
+@require_auth(scopes=["workouts:read"])
+def delete_workouts_upload_task(
+    auth_user: User, task_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Delete workouts archive upload task if status is successful or errored
+
+    **Scope**: ``workouts:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      DELETE /api/workouts/tasks/JEiR6cDcADX8bZ6ZeQssnr HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 204 NO CONTENT
+      Content-Type: application/json
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404:
+        - ``no task found``
+    :statuscode 500: ``error, please try again or contact the administrator``
+    """
+    task = UserTask.query.filter_by(
+        user_id=auth_user.id, uuid=decode_short_id(task_short_id)
+    ).first()
+
+    if not task or task.task_type != "workouts_archive_upload":
+        return NotFoundErrorResponse("no task found")
+
+    if task.get_status() in ["in_progress", "queued"]:
+        return InvalidPayloadErrorResponse(
+            "queued or ongoing workout upload task can not be deleted"
+        )
+
+    try:
+        db.session.delete(task)
+        db.session.commit()
+        return {"status": "no content"}, 204
+    except Exception as e:
+        return handle_error_and_return_response(e, db=db)

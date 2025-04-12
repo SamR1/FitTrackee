@@ -826,4 +826,24 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         )
       )
   },
+  [AUTH_USER_STORE.ACTIONS.DELETE_ARCHIVE_UPLOAD_TASK](
+    context: ActionContext<IAuthUserState, IRootState>,
+    taskId: string
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .delete(`workouts/upload-tasks/${taskId}`)
+      .then((res) => {
+        if (res.status === 204) {
+          router.push('/profile/archive-uploads')
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
+  },
 }

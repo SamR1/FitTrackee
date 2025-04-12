@@ -1,5 +1,13 @@
 <template>
   <div id="archive-upload">
+    <Modal
+      v-if="displayModal"
+      :title="$t('common.CONFIRMATION')"
+      :message="$t('user.PROFILE.ARCHIVE_UPLOADS.CONFIRM_TASK_DELETION')"
+      @confirmAction="deleteTask"
+      @cancelAction="displayModal = false"
+      @keydown.esc="displayModal = false"
+    />
     <div v-if="loading">
       <Loader />
     </div>
@@ -83,6 +91,13 @@
       <button @click="loadUploadTask()">
         {{ $t('buttons.REFRESH') }}
       </button>
+      <button
+        v-if="['errored', 'successful'].includes(uploadTask.status)"
+        class="danger"
+        @click="displayModal = true"
+      >
+        {{ $t('buttons.DELETE') }}
+      </button>
       <button @click="$router.push('/profile/archive-uploads')">
         {{ $t('buttons.BACK') }}
       </button>
@@ -94,8 +109,8 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, computed, onMounted, onUnmounted } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import { capitalize, computed, onMounted, onUnmounted, ref } from 'vue'
+  import type { Ref, ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
@@ -111,6 +126,8 @@
   const { t, te } = useI18n()
 
   const { translatedSports } = useSports()
+
+  const displayModal: Ref<boolean> = ref(false)
 
   const uploadTask: ComputedRef<IArchiveUploadTask> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.ARCHIVE_UPLOAD_TASK]
@@ -135,6 +152,12 @@
       return t(`user.PROFILE.ARCHIVE_UPLOADS.ERRORS.${error}`)
     }
     return error
+  }
+  function deleteTask() {
+    store.dispatch(
+      AUTH_USER_STORE.ACTIONS.DELETE_ARCHIVE_UPLOAD_TASK,
+      route.params.task_id as string
+    )
   }
 
   onMounted(() => loadUploadTask())
