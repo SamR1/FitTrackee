@@ -29,6 +29,7 @@ class BaseWorkoutWithSegmentsCreationService:
         workout_file: IO[bytes],
         sport_id: int,
         stopped_speed_threshold: float,
+        get_weather: bool = True,
     ) -> None:
         self.auth_user = auth_user
         self.sport_id = sport_id
@@ -38,6 +39,7 @@ class BaseWorkoutWithSegmentsCreationService:
         self.workout_description: Optional[str] = None
         self.start_point: Optional["WorkoutPoint"] = None
         self.end_point: Optional["WorkoutPoint"] = None
+        self.get_weather = get_weather
 
     @abstractmethod
     def get_workout_date(self) -> "datetime":
@@ -99,7 +101,7 @@ class BaseWorkoutWithSegmentsCreationService:
     def process_workout(self) -> "Workout":
         new_workout = self._process_file()
 
-        if self.start_point and self.end_point:
+        if self.get_weather and self.start_point and self.end_point:
             new_workout.weather_start, new_workout.weather_end = (
                 self.get_weather_data(
                     self.start_point,

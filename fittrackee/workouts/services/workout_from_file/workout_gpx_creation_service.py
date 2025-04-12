@@ -40,9 +40,14 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
         workout_file: IO[bytes],
         sport_id: int,
         stopped_speed_threshold: float,
+        get_weather: bool = True,
     ):
         super().__init__(
-            auth_user, workout_file, sport_id, stopped_speed_threshold
+            auth_user,
+            workout_file,
+            sport_id,
+            stopped_speed_threshold,
+            get_weather,
         )
         self.gpx: "gpxpy.gpx.GPX" = self.parse_file(workout_file)
 
@@ -284,13 +289,5 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
             )
             else []
         )
-
-        if self.start_point and self.end_point:
-            new_workout.weather_start, new_workout.weather_end = (
-                self.get_weather_data(
-                    self.start_point,
-                    self.end_point,
-                )
-            )
 
         return new_workout

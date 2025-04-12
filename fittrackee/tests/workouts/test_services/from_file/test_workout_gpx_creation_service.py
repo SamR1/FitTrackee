@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
-from typing import IO, TYPE_CHECKING
+from typing import IO, TYPE_CHECKING, Dict
 from unittest.mock import MagicMock, call, patch
 
 import gpxpy
@@ -261,12 +261,14 @@ class TestWorkoutGpxCreationServiceProcessFile(
         user: "User",
         sport: "Sport",
         gpx_content: str,
+        get_weather: bool = True,
     ) -> "WorkoutGpxCreationService":
         return WorkoutGpxCreationService(
             user,
             self.get_file_content(gpx_content),
             sport.id,
             sport.stopped_speed_threshold,
+            get_weather=get_weather,
         )
 
     def test_it_raises_error_when_first_point_has_no_time(
@@ -542,6 +544,7 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert workout_segments[1].moving == timedelta(minutes=2, seconds=25)
         assert workout_segments[1].pauses == timedelta(seconds=0)
 
+    @pytest.mark.parametrize("input_get_weather", [{}, {"get_weather": True}])
     def test_it_calls_weather_service_for_start_and_endpoint(
         self,
         app: "Flask",
@@ -549,9 +552,13 @@ class TestWorkoutGpxCreationServiceProcessFile(
         user_1: "User",
         gpx_file_with_segments: str,
         default_weather_service: MagicMock,
+        input_get_weather: Dict,
     ) -> None:
         service = self.init_service_with_gpx(
-            user_1, sport_1_cycling, gpx_file_with_segments
+            user_1,
+            sport_1_cycling,
+            gpx_file_with_segments,
+            **input_get_weather,
         )
 
         service.process_workout()
@@ -573,6 +580,23 @@ class TestWorkoutGpxCreationServiceProcessFile(
                 ),
             ]
         )
+
+    def test_it_does_not_call_weather_service_when_flag_is_false(
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_segments: str,
+        default_weather_service: MagicMock,
+    ) -> None:
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_with_segments, get_weather=False
+        )
+
+        service.process_workout()
+        db.session.commit()
+
+        default_weather_service.assert_not_called()
 
     def test_it_processes_file_when_file_contains_description(
         self,
