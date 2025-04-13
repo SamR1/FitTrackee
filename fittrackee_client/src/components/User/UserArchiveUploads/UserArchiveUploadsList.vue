@@ -4,11 +4,24 @@
     <div v-if="loading">
       <Loader />
     </div>
-    <div id="user-sanctions" v-else-if="uploadTasks.length > 0">
-      <ul class="last-sanctions">
+    <div id="user-upload-tasks" v-else-if="uploadTasks.length > 0">
+      <ul class="last-upload-tasks">
         <li v-for="task in uploadTasks" :key="task.id">
-          <div>
-            <router-link :to="`/profile/archive-uploads/${task.id}`">
+          <div class="task-title">
+            <router-link
+              :to="`/profile/archive-uploads/${task.id}`"
+              :title="task.original_file_name"
+            >
+              {{ task.original_file_name }}
+            </router-link>
+            <span>
+              ({{
+                $t('user.PROFILE.ARCHIVE_UPLOADS.FILES_COUNT', {
+                  count: task.files_count,
+                })
+              }})
+            </span>
+            <span>
               {{
                 formatDate(
                   task.created_at,
@@ -16,12 +29,7 @@
                   displayOptions.dateFormat
                 )
               }}
-            </router-link>
-            ({{
-              $t('user.PROFILE.ARCHIVE_UPLOADS.FILES_COUNT', {
-                count: task.files_count,
-              })
-            }})
+            </span>
             <span
               class="info-box task-status"
               :class="{
@@ -44,7 +52,7 @@
       />
     </div>
     <div v-else>
-      <p class="no-sanctions">{{ $t('user.PROFILE.NO_ARCHIVE_UPLOADS') }}</p>
+      <p class="no-upload-tasks">{{ $t('user.PROFILE.NO_ARCHIVE_UPLOADS') }}</p>
     </div>
     <ErrorMessage
       v-if="errorMessages"
@@ -133,6 +141,12 @@
           flex-wrap: wrap;
           gap: $default-padding * 0.5;
         }
+      }
+    }
+    .task-title {
+      a {
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
     .task-status {
