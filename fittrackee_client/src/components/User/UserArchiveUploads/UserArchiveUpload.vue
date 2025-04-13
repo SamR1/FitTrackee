@@ -16,9 +16,11 @@
         <dt>{{ $t('common.CREATION_DATE') }}:</dt>
         <dd>{{ uploadTask.created_at }}</dd>
       </dl>
-      <dl v-if="uploadTask.original_file_name">
+      <dl v-if="uploadTask.original_file_name" class="file-name">
         <dt>{{ $t('user.PROFILE.ARCHIVE_UPLOADS.ARCHIVE') }}:</dt>
-        <dd>{{ uploadTask.original_file_name }}</dd>
+        <dd :title="uploadTask.original_file_name">
+          {{ uploadTask.original_file_name }}
+        </dd>
       </dl>
       <dl>
         <dt>{{ $t('common.FILES') }}:</dt>
@@ -181,6 +183,12 @@
     h1 {
       font-size: 1.05em;
       font-weight: bold;
+    }
+    .file-name {
+      dd {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
     .no-uploads {
       margin: $default-padding 0;
