@@ -6,6 +6,7 @@
     "public": "Öffentlich (Jeder)"
   },
   "LEVELS": {
+    "followers_only": "Nur Follower",
     "private": "Privat (nur ich)",
     "public": "Öffentlich (jeder)"
   },
