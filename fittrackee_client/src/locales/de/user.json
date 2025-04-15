@@ -111,8 +111,22 @@
     "INTERFACE": "Schnittstelle",
     "LANGUAGE": "Sprache",
     "LAST_NAME": "Nachname",
+    "LATEST_SANCTIONS_RECEIVED": "Letzte erhaltene Sanktionen",
     "LOCATION": "Ort",
     "MONDAY": "Montag",
+    "NOTIFICATIONS": {
+      "account_creation": "Jemand registriert",
+      "comment_like": "Jemand hat den Kommentar geliked",
+      "follow": "Neuer Follower",
+      "follow_request": "Neue Folgeanfrage",
+      "follow_request_approved": "Folgeanfrage akzeptiert",
+      "mention": "Neue Erwähnung",
+      "workout_comment": "Kommentar zu Workout erhalten",
+      "workout_like": "Like zu Workout erhalten"
+    },
+    "NOTIFICATIONS_EDITION": "Benachrichtigungseinstellungen bearbeiten",
+    "NOTIFICATION_PREFERENCES": "Benachrichtigungseinstellungen",
+    "NO_SANCTIONS": "Keine Sanktionen",
     "PICTURE": "Bild",
     "PICTURE_EDITION": "Bildausgabe",
     "PICTURE_REMOVE": "Bild entfernen",
@@ -120,7 +134,25 @@
     "PREFERENCES_EDITION": "Einstellungsausgabe",
     "PRIVACY-POLICY_EDITION": "Datenschutzrichtlinie",
     "PROFILE_EDITION": "Profil-Ausgabe",
+    "PROFILE_IN_USERS_DIRECTORY": {
+      "DISPLAYED": "Sichtbar",
+      "HIDDEN": "Versteckt",
+      "LABEL": "Profil im Benutzerverzeichnis"
+    },
     "REGISTRATION_DATE": "Registrierungsdatum",
+    "REPORTS_FROM_OTHER_USERS": "Meldungen anderer Nutzer",
+    "SANCTIONS": {
+      "comment_suspension": "Kommentar-Sperrung ({date})",
+      "user_suspension": "Konto-Sperrung ({date})",
+      "user_warning": "Warnung ({date})",
+      "workout_suspension": "Workout-Sperrung ({date})"
+    },
+    "SANCTIONS_RECEIVED": "Erhaltene Sanktionen",
+    "SANCTION_APPEAL": {
+      "APPROVED": "Einspruch wurde genehmigt",
+      "IN_PROGRESS": "Einspruch wird bearbeitet",
+      "REJECTED": "Einspruch wurde abgelehnt"
+    },
     "SPORT": {
       "ACTION": "Aktion",
       "COLOR": "Farbe",
@@ -141,7 +173,11 @@
     "TABS": {
       "ACCOUNT": "Konto",
       "APPS": "Anwendungen",
+      "BLOCKED-USERS": "gesperrte Nutzer",
       "EQUIPMENTS": "Equipments",
+      "FOLLOW-REQUESTS": "Folgeanfragen",
+      "MODERATION": "Moderation",
+      "NOTIFICATIONS": "Benachrichtigungen",
       "PICTURE": "Bild",
       "PREFERENCES": "Einstellungen",
       "PRIVACY-POLICY": "Datenschutzrichtlinie",
@@ -162,6 +198,7 @@
       "LABEL": "Einheiten für die Distanz",
       "METRIC": "Metrisches System (m, km, m/s, °C)"
     },
+    "USER_RECEIVED_SANCTIONS": "Dieser Nutzer hat {count} Sanktion erhalten.|Dieser Nutzer hat {count} Sanktionen erhalten.",
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Gefiltert",
       "HELP": "Wenn gefiltert wird, werden extreme Werte (welche GPS-Fehler sein können) beim Berechnen der Maximalgeschwindigkeit ausgeschlossen.",
@@ -172,17 +209,40 @@
   "READ_AND_ACCEPT_PRIVACY_POLICY": "Ich habe die {0} gelesen und stimme ihr zu.",
   "REGISTER": "Registrieren",
   "REGISTER_DISABLED": "Entschuldigung, die Registrierung ist deaktiviert.",
+  "RELATIONSHIPS": {
+    "BLOCKED": "blockiert",
+    "FOLLOWER": "Follower | Followers",
+    "FOLLOWING": "folgen | folgen",
+    "FOLLOWS_YOU": "folgt",
+    "NO_FOLLOWERS": "Noch keine Follower.",
+    "NO_FOLLOWING": "Noch niemandem gefolgt.",
+    "NO_FOLLOW_REQUESTS": "Keine Folgeanfragen zur Überprüfung."
+  },
+  "REPORT": "Meldung",
   "RESENT_ACCOUNT_CONFIRMATION": "E-Mail zur Kontobestätigung erneut senden",
   "RESET_PASSWORD": "Passwort zurücksetzen",
   "REVIEW": "überprüfen",
+  "ROLE": "Rolle",
   "ROLES": {
-    "admin": "Admin"
+    "admin": "Admin",
+    "moderator": "Moderator",
+    "owner": "Eigentümer",
+    "user": "Nutzer"
   },
   "SHOW_PASSWORD": "Passwort anzeigen",
+  "SUSPENDED": "Gesperrt",
+  "SUSPENDED_ACCOUNT": "Gesperrte Konten",
+  "SUSPENSION_REASON": "Grund für die Sperrung",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Dieser Account ist inaktiv.",
   "TOGGLE_THEME": "Thema ändern (Heller oder dunkler Modus)",
+  "USER": "Nutzer | Nutzer",
   "USERNAME": "Nutzername",
   "USERNAME_INFO": "3 bis 30 Zeichen sind erforderlich, nur alphanumerische Zeichen und der Unterstrich _ sind erlaubt.",
   "USER_PICTURE": "Benutzerbild",
+  "USER_PROFILE": "Nutzerprofil",
+  "WARNING_REASON": "Grund für die Warnung",
+  "YOU": "Eigenes Konto",
+  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "Das Konto wurde gesperrt",
+  "YOU_CAN_APPEAL_ONCE": "Nur ein Einspruch ist möglich.",
   "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Du hast die {0} akzeptiert."
 }
