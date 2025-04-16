@@ -19,10 +19,10 @@
       "profile:read_DESCRIPTION": "erlaubt Lesezugriff auf <code>auth</code>-Endpunkte",
       "profile:write_DESCRIPTION": "erlaubt Schreibzugriff auf <code>auth</code>-Endpunkte.",
       "reports:read_DESCRIPTION": "gewährt Lesezugriff auf die <code>Berichte</code> Endpunkte.",
-      "reports:write_DESCRIPTION": "gewährt Schreibzugriff auf <code>Berichte</code> Endpunkte.",
+      "reports:write_DESCRIPTION": "gewährt Schreibzugriff auf <code>Meldungen</code> Endpunkte.",
       "users:read_DESCRIPTION": "erlaubt Lesezugriff auf <code>users</code>-Endpunkte",
       "users:write_DESCRIPTION": "erlaubt Schreibzugriff auf <code>users</code>-Endpunkte",
-      "workouts:read_DESCRIPTION": "erlaubt Lesezugriff auf <code>workouts</code>-Endpunkte",
+      "workouts:read_DESCRIPTION": "erlaubt Lesezugriff auf Workouts- und Kommentar-Endpunkte.",
       "workouts:write_DESCRIPTION": "gewährt Schreibzugriff auf Workouts und Kommentar-Endpunkte."
     },
     "URL": "Anwendungs-URL"

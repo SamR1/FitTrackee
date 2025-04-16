@@ -36,12 +36,13 @@
     "APPEAL": {
       "APPROVED": "Dieser Beschwerde wurde stattgegeben {0}.",
       "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "Dieser Einspruch wurde durch Aufhebung der Sperre genehmigt.",
-      "HIDE": "Einspruch ausblenden",
+      "HIDE": "Einspruch verbergen",
       "REASON_IS": "Der Grund ist:",
       "REJECTED": "Dieser Einspruch wurde zurückgewiesen {0}.",
       "SEE": "Siehe Einspruch"
     },
-    "NOTES_AND_ACTIONS": "Notizen und Maßnahmen",
+    "DESCRIPTION": "Meldungsverwaltung.",
+    "NOTES_AND_ACTIONS": "Anmerkungen und Maßnahmen",
     "NO_REPORTS_FOUND": "Keine Berichte gefunden",
     "ORDER_BY": {
       "CREATED_AT": "Erstelldatum",
@@ -50,10 +51,14 @@
     "REASON": "Grund",
     "REPORT": "Bericht | Berichte",
     "REPORTED_BY": "Gemeldet von",
+    "REPORTED_CONTENT": "Gemeldete Inhalte",
+    "REPORTED_USER": "Gemeldete Benutzer",
     "REPORTER": "Melder",
     "REPORT_ACTIONS": {
       "comment_suspension": "Der Kommentar wurde gesperrt von {1} {2}.",
       "comment_unsuspension": "Die Sperrung des Kommentars wurde zurück genommen von {1} {2}.",
+      "report_reopening": "Die Meldung wurde wieder geöffnet von {1} {2}.",
+      "report_resolution": "Die Meldung wurde als gelöst markiert von {1} {2}.",
       "user_suspension": "{0} wurde gesperrt durch {1} {2}.",
       "user_unsuspension": "Die Sperrung von {0} wurde zurück genommen durch {1} {2}.",
       "user_warning": "Eine Warnung wurde von {1} {2} gesendet an {0}.",
@@ -61,12 +66,37 @@
       "workout_suspension": "Das Training wurde gesperrt von {1} {2}.",
       "workout_unsuspension": "Die Sperrung des Trainings wurde zurück genommen von {1} {2}."
     },
-    "STATUS": "Status"
+    "REPORT_NOTE": "Anmerkung von",
+    "RESOLVED": {
+      "FALSE": "Ungelöst",
+      "TRUE": "Gelöst"
+    },
+    "RESOLVED_AT": "Gelöst am",
+    "RESOLVED_BY": "Gelöst von",
+    "STATUS": "Status",
+    "TEXTAREA_PLACEHOLDER": {
+      "ADD_COMMENT": "Kommentar, ergriffene Maßnahmen oder sonstige hilfreiche Informationen hinzufügen.",
+      "INFORMATION_VISIBLE_TO_USER": "Diese Information ist für Benutzer sichtbar.",
+      "MARK_AS_RESOLVED": "Begründung für die Lösung angeben.",
+      "MARK_AS_UNRESOLVED": "Begründung für die Nicht-Lösung angeben.",
+      "SEND_WARNING_EMAIL": "Begründung für die Warnung angeben (optional).",
+      "SUSPEND": "Begründung für die Sperrung angeben (optional).",
+      "UNSUSPEND": "Kommentar hinzufügen (optional).",
+      "UPDATE_APPEAL": "Begründung für den Einspruch angeben."
+    },
+    "TITLE": "Moderation",
+    "UNRESOLVED_REPORTS_EXIST": "Es gibt ungelöste Meldungen.",
+    "VIEW_REPORT": "Meldungen anzeigen"
   },
   "BACK_TO_ADMIN": "Zurück zu Admin",
+  "CONFIRM_SUSPEND_ACCOUNT": "Das Konto von {0} wirklich sperren?",
+  "CONFIRM_SUSPEND_CONTENT": "Gemeldeten Inhalt wirklich sperren?",
   "CONFIRM_USER_ACCOUNT_DELETION": "Möchtest du wirklich das {0} Konto löschen? Alle Daten werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.",
   "CONFIRM_USER_PASSWORD_RESET": "Möchtest du wirklich das {0} Passwort zurücksetzen?",
   "CURRENT_EMAIL": "Aktuelle E-Mail",
+  "DELETED_COMMENT": "Kommentar gelöscht",
+  "DELETED_USER": "Nutzer gelöscht",
+  "DELETED_WORKOUT": "Workout gelöscht",
   "DELETE_USER": "Lösche Nutzer",
   "EMAIL_SENDING_DISABLED": "E-Mail-Versand ist deaktiviert.",
   "ENABLE_DISABLE_EQUIPMENT_TYPES": "Equipment-Typen aktivieren/deaktivieren.",
@@ -104,9 +134,16 @@
       "ORDER_BY": {
         "CREATED_AT": "Registrierungsdatum",
         "IS_ACTIVE": "Accountstatus",
+        "ROLE": "Rolle",
         "USERNAME": "Nutzername",
         "WORKOUTS_COUNT": "Trainingsanzahl"
       }
+    },
+    "TABLE": {
+      "CHANGE_ROLE": "Ändere Rolle",
+      "CHANGE_TO_ADMIN": "Als Administrator festlegen",
+      "CHANGE_TO_MODERATOR": "Als Moderator festlegen",
+      "CHANGE_TO_USER": "Als Nutzer festlegen"
     },
     "TITLE": "Administration - Benutzer"
   },
