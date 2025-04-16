@@ -389,7 +389,8 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
         if UserTask.query.filter(
             UserTask.user_id == self.auth_user.id,
             UserTask.task_type == "workouts_archive_upload",
-            UserTask.errored != True,  # noqa
+            UserTask.aborted == False,  # noqa
+            UserTask.errored == False,  # noqa
             UserTask.progress != 100,
         ).first():
             raise WorkoutException("invalid", "ongoing upload task exists")
@@ -421,7 +422,10 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
         db.session.add(upload_task)
         db.session.commit()
 
-        upload_workouts_archive.send(task_id=upload_task.id)
+        message = upload_workouts_archive.send(task_id=upload_task.id)
+        upload_task.message_id = message.message_id
+        db.session.commit()
+
         return upload_task.short_id
 
     def process_zip_archive(

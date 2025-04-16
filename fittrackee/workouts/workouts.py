@@ -3,6 +3,7 @@ from datetime import timedelta
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 import requests
+from dramatiq_abort import abort
 from flask import (
     Blueprint,
     Response,
@@ -15,7 +16,7 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
-from fittrackee import appLog, db, limiter
+from fittrackee import abortable, appLog, db, limiter
 from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
@@ -2489,6 +2490,88 @@ def get_workouts_upload_task(
 
     if not task or task.task_type != "workouts_archive_upload":
         return NotFoundErrorResponse("no task found")
+
+    return {"status": "success", "task": task.serialize()}, 200
+
+
+@workouts_blueprint.route(
+    "/workouts/upload-tasks/<string:task_short_id>/abort", methods=["POST"]
+)
+@require_auth(scopes=["workouts:write"])
+def abort_workouts_upload_task(
+    auth_user: User, task_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Abort ongoing task for workouts archive upload
+
+    **Scope**: ``workouts:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/workouts/tasks/JEiR6cDcADX8bZ6ZeQssnr/abort HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+      {
+        "task": {
+          "created_at": "Sun, 30 Mar 2025 10:26:17 GMT",
+          "errored_files": {},
+          "files_count": 10,
+          "id": "JEiR6cDcADX8bZ6ZeQssnr",
+          "progress": 10,
+          "status": "aborted",
+          "type": "workouts_archive_upload"
+        },
+        "status": "success"
+      }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 400:
+        - ``only queued and ongoing tasks can be aborted``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404:
+        - ``no task found``
+    :statuscode 500:
+        - ``error when aborting task``
+    """
+    task = UserTask.query.filter_by(
+        user_id=auth_user.id, uuid=decode_short_id(task_short_id)
+    ).first()
+
+    if not task or task.task_type != "workouts_archive_upload":
+        return NotFoundErrorResponse("no task found")
+
+    if not task.message_id:
+        return InternalServerErrorResponse("error when aborting task")
+
+    if task.get_workouts_archive_upload_status() not in [
+        "in_progress",
+        "queued",
+    ]:
+        return InvalidPayloadErrorResponse(
+            "only queued and ongoing tasks can be aborted"
+        )
+
+    try:
+        abort(message_id=task.message_id, middleware=abortable)
+        task.aborted = True
+        db.session.commit()
+    except Exception as e:
+        appLog.exception(e)
+        return InternalServerErrorResponse("error when aborting task")
 
     return {"status": "success", "task": task.serialize()}, 200
 

@@ -4,7 +4,7 @@ import zipfile
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from typing import TYPE_CHECKING, Dict, List, Optional
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from sqlalchemy.dialects.postgresql import insert
@@ -38,6 +38,7 @@ from fittrackee.workouts.services.workouts_from_file_creation_service import (
     WorkoutsData,
 )
 
+from ...fixtures.fixtures_workouts import MESSAGE_ID
 from ...mixins import UserTaskMixin
 
 if TYPE_CHECKING:
@@ -1066,7 +1067,7 @@ class TestWorkoutsFromFileCreationServiceProcessArchiveContent(
             assert workouts[n].equipments == equipments
 
 
-class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
+class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
     UserTaskMixin, WorkoutsFromFileCreationServiceTestCase
 ):
     def test_it_raises_error_when_no_file_provided(
@@ -1104,13 +1105,22 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
                 equipments=None,
             )
 
+    @pytest.mark.parametrize(
+        "input_status, input_task_data",
+        [
+            ("queued", {"progress": 0}),
+            ("in_progress", {"progress": 10}),
+        ],
+    )
     def test_it_raises_error_when_ongoing_task_exists(
         self,
         app: "Flask",
         user_1: "User",
         sport_1_cycling: "Sport",
+        input_status: str,
+        input_task_data: Dict,
     ) -> None:
-        self.create_workouts_upload_task(user_1, progress=10)
+        self.create_workouts_upload_task(user_1, **input_task_data)
         service = self.get_service(
             app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
         )
@@ -1126,23 +1136,31 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
                 equipments=None,
             )
 
+    @pytest.mark.parametrize(
+        "input_status, input_task_data",
+        [
+            ("aborted", {"aborted": True}),
+            ("errored", {"errored": True, "progress": 10}),
+            ("successful", {"progress": 100}),
+        ],
+    )
     def test_it_does_not_raises_error_when_existing_task_is_errored(
         self,
         app: "Flask",
         user_1: "User",
         sport_1_cycling: "Sport",
+        input_status: str,
+        input_task_data: Dict,
+        upload_workouts_archive_mock: MagicMock,
     ) -> None:
-        self.create_workouts_upload_task(user_1, progress=10, errored=True)
+        self.create_workouts_upload_task(user_1, **input_task_data)
         service = self.get_service(
             app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
         )
         fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
 
-        with (
-            patch.object(
-                tempfile, "mkstemp", return_value=(fd, temp_file_path)
-            ),
-            patch("fittrackee.workouts.tasks.upload_workouts_archive"),
+        with patch.object(
+            tempfile, "mkstemp", return_value=(fd, temp_file_path)
         ):
             service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
@@ -1156,17 +1174,15 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
         app: "Flask",
         user_1: "User",
         sport_1_cycling: "Sport",
+        upload_workouts_archive_mock: MagicMock,
     ) -> None:
         service = self.get_service(
             app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
         )
         fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
 
-        with (
-            patch.object(
-                tempfile, "mkstemp", return_value=(fd, temp_file_path)
-            ),
-            patch("fittrackee.workouts.tasks.upload_workouts_archive"),
+        with patch.object(
+            tempfile, "mkstemp", return_value=(fd, temp_file_path)
         ):
             service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
@@ -1197,6 +1213,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
         }
         assert upload_task.file_path == temp_file_path
         assert upload_task.file_size is None
+        assert upload_task.message_id == MESSAGE_ID
         assert upload_task.progress == 0
         assert upload_task.task_type == "workouts_archive_upload"
         assert upload_task.user_id == user_1.id
@@ -1212,6 +1229,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
         sport_1_cycling: "Sport",
         equipment_type_1_shoe: "EquipmentType",
         equipment_bike_user_1: "Equipment",
+        upload_workouts_archive_mock: MagicMock,
     ) -> None:
         workouts_data = {
             "analysis_visibility": VisibilityLevel.FOLLOWERS,
@@ -1235,7 +1253,6 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
             patch.object(
                 tempfile, "mkstemp", return_value=(fd, temp_file_path)
             ),
-            patch("fittrackee.workouts.tasks.upload_workouts_archive"),
         ):
             service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
@@ -1260,6 +1277,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
         }
         assert upload_task.file_path == temp_file_path
         assert upload_task.file_size is None
+        assert upload_task.message_id == MESSAGE_ID
         assert upload_task.progress == 0
         assert upload_task.task_type == "workouts_archive_upload"
         assert upload_task.user_id == user_1.id
@@ -1274,6 +1292,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
         user_1: "User",
         user_2: "User",
         sport_1_cycling: "Sport",
+        upload_workouts_archive_mock: MagicMock,
     ) -> None:
         self.create_workouts_upload_task(user_1, progress=100)
         self.create_workouts_upload_task(user_1, progress=100, errored=True)
@@ -1284,11 +1303,8 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
         )
         fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
 
-        with (
-            patch.object(
-                tempfile, "mkstemp", return_value=(fd, temp_file_path)
-            ),
-            patch("fittrackee.workouts.tasks.upload_workouts_archive"),
+        with patch.object(
+            tempfile, "mkstemp", return_value=(fd, temp_file_path)
         ):
             service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
@@ -1306,6 +1322,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
         app: "Flask",
         user_1: "User",
         sport_1_cycling: "Sport",
+        upload_workouts_archive_mock: MagicMock,
     ) -> None:
         service = self.get_service(
             app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
@@ -1316,9 +1333,6 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
             patch.object(
                 tempfile, "mkstemp", return_value=(fd, temp_file_path)
             ),
-            patch(
-                "fittrackee.workouts.tasks.upload_workouts_archive"
-            ) as upload_workouts_archive_mock,
         ):
             service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
@@ -1341,6 +1355,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
         sport_1_cycling: "Sport",
         equipment_type_1_shoe: "EquipmentType",
         equipment_shoes_user_1: "Equipment",
+        upload_workouts_archive_mock: MagicMock,
     ) -> None:
         service = self.get_service(
             app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
@@ -1351,7 +1366,6 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsImportTask(
             patch.object(
                 tempfile, "mkstemp", return_value=(fd, temp_file_path)
             ),
-            patch("fittrackee.workouts.tasks.upload_workouts_archive"),
         ):
             service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
