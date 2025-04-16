@@ -66,7 +66,7 @@ export const languageLabels: Record<TLanguage, string> = {
   bg: 'български (63%)',
   // bn: 'বাংলা',
   cs: 'Česky (46%)',
-  de: 'Deutsch (86%)',
+  de: 'Deutsch',
   en: 'English',
   es: 'Español (63%)',
   eu: 'Euskara (82%)',
