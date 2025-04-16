@@ -5,6 +5,7 @@ from importlib import import_module, reload
 from typing import TYPE_CHECKING, Any, Dict, Tuple
 
 import redis
+from dramatiq_abort import Abortable, backends
 from flask import (
     Flask,
     Response,
@@ -73,12 +74,15 @@ limiter = Limiter(
     strategy="fixed-window",
 )
 # if redis is not available, disable the rate limiter
-r = redis.from_url(REDIS_URL)
+redis_client = redis.from_url(REDIS_URL)
 try:
-    r.ping()
+    redis_client.ping()
 except redis.exceptions.ConnectionError:
     limiter.enabled = False
     appLog.warning("Redis not available, API rate limits are disabled.")
+
+backend = backends.RedisBackend(client=redis_client)
+abortable = Abortable(backend=backend)
 
 
 class CustomFlask(Flask):
@@ -109,6 +113,7 @@ def create_app(init_email: bool = True) -> Flask:
     bcrypt.init_app(app)
     migrate.init_app(app, db)
     dramatiq.init_app(app)
+    dramatiq.broker.add_middleware(abortable)
     limiter.init_app(app)
 
     # set oauth2

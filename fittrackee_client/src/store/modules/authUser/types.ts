@@ -198,6 +198,11 @@ export interface IAuthUserActions {
     context: ActionContext<IAuthUserState, IRootState>,
     taskId: string
   ): void
+
+  [AUTH_USER_STORE.ACTIONS.ABORT_ARCHIVE_UPLOAD_TASK](
+    context: ActionContext<IAuthUserState, IRootState>,
+    taskId: string
+  ): void
 }
 
 export interface IAuthUserGetters {

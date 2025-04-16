@@ -36,6 +36,7 @@ def upgrade():
         ),
         sa.Column("progress", sa.Integer(), nullable=False),
         sa.Column("errored", sa.Boolean(), nullable=False),
+        sa.Column("aborted", sa.Boolean(), nullable=False),
         sa.Column("file_size", sa.Integer(), nullable=True),
         sa.Column("file_path", sa.String(length=255), nullable=True),
         sa.Column(
@@ -50,8 +51,10 @@ def upgrade():
             server_default="{}",
             nullable=False,
         ),
+        sa.Column("message_id", sa.String(length=36), nullable=True),
         sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
+        sa.UniqueConstraint("uuid", name='user_tasks_uuid_key'),
     )
     with op.batch_alter_table("user_tasks", schema=None) as batch_op:
         batch_op.create_index(

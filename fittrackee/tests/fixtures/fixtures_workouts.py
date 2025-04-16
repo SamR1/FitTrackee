@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from typing import Generator, Iterator, List
@@ -24,6 +25,15 @@ from ..utils import random_string
 byte_io = BytesIO()
 Image.new("RGB", (256, 256)).save(byte_io, "PNG")
 byte_image = byte_io.getvalue()
+
+
+@dataclass
+class DramatiqMessage:
+    message_id: str
+
+
+MESSAGE_ID = "e7640357-3b8d-47be-885d-68104cdfe4b2"
+message = DramatiqMessage(message_id=MESSAGE_ID)
 
 
 @pytest.fixture(autouse=True)
@@ -1004,4 +1014,6 @@ def gpx_file_storage(gpx_file: str) -> FileStorage:
 @pytest.fixture()
 def upload_workouts_archive_mock() -> Iterator[MagicMock]:
     with patch("fittrackee.workouts.tasks.upload_workouts_archive") as mock:
+        mock.send = MagicMock()
+        mock.send.return_value = message
         yield mock

@@ -1,12 +1,16 @@
 <template>
   <div id="archive-upload">
     <Modal
-      v-if="displayModal"
+      v-if="displayedModal"
       :title="$t('common.CONFIRMATION')"
-      :message="$t('user.PROFILE.ARCHIVE_UPLOADS.CONFIRM_TASK_DELETION')"
-      @confirmAction="deleteTask"
-      @cancelAction="displayModal = false"
-      @keydown.esc="displayModal = false"
+      :message="
+        $t(
+          `user.PROFILE.ARCHIVE_UPLOADS.CONFIRM_TASK_${isDeletion ? 'DELETION' : 'ABORT'}`
+        )
+      "
+      @confirmAction="doAction"
+      @cancelAction="displayedModal = false"
+      @keydown.esc="displayedModal = false"
     />
     <div v-if="loading">
       <Loader />
@@ -45,7 +49,7 @@
         <dt>{{ $t('user.PROFILE.ARCHIVE_UPLOADS.PROGRESS') }}:</dt>
         <dd>{{ uploadTask.progress }}%</dd>
       </dl>
-      <dl v-if="uploadTask.status == 'errored'">
+      <dl v-if="['aborted', 'errored'].includes(uploadTask.status)">
         <dt>{{ $t('user.PROFILE.ARCHIVE_UPLOADS.CREATED_WORKOUTS') }}:</dt>
         <dd>{{ uploadTask.new_workouts_count }}</dd>
       </dl>
@@ -62,7 +66,7 @@
       </dl>
       <dl
         v-if="
-          uploadTask.status == 'errored' &&
+          ['aborted', 'errored'].includes(uploadTask.status) &&
           Object.keys(uploadTask.errored_files.files).length
         "
       >
@@ -93,14 +97,25 @@
         {{ $t('user.PROFILE.ARCHIVE_UPLOADS.NOT_FOUND') }}
       </div>
     </div>
+    <ErrorMessage :message="errorMessages" v-if="errorMessages" />
     <div class="buttons">
-      <button @click="loadUploadTask()">
+      <button
+        v-if="['queued', 'in_progress'].includes(uploadTask.status)"
+        @click="loadUploadTask()"
+      >
         {{ $t('buttons.REFRESH') }}
+      </button>
+      <button
+        v-if="['queued', 'in_progress'].includes(uploadTask.status)"
+        class="danger"
+        @click="displayModal(false)"
+      >
+        {{ $t('buttons.ABORT') }}
       </button>
       <button
         v-if="['errored', 'successful'].includes(uploadTask.status)"
         class="danger"
-        @click="displayModal = true"
+        @click="displayModal(true)"
       >
         {{ $t('buttons.DELETE') }}
       </button>
@@ -121,8 +136,9 @@
   import { useRoute } from 'vue-router'
 
   import SportBadge from '@/components/Common/SportBadge.vue'
+  import useApp from '@/composables/useApp.ts'
   import useSports from '@/composables/useSports.ts'
-  import { AUTH_USER_STORE } from '@/store/constants'
+  import { AUTH_USER_STORE, ROOT_STORE } from '@/store/constants'
   import type { ITranslatedSport } from '@/types/sports.ts'
   import type { IArchiveUploadTask } from '@/types/user'
   import { useStore } from '@/use/useStore'
@@ -131,9 +147,11 @@
   const route = useRoute()
   const { t, te } = useI18n()
 
+  const { errorMessages } = useApp()
   const { translatedSports } = useSports()
 
-  const displayModal: Ref<boolean> = ref(false)
+  const displayedModal: Ref<boolean> = ref(false)
+  const isDeletion: Ref<boolean> = ref(false)
 
   const uploadTask: ComputedRef<IArchiveUploadTask> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.ARCHIVE_UPLOAD_TASK]
@@ -159,11 +177,20 @@
     }
     return error
   }
-  function deleteTask() {
+  function displayModal(deletion: boolean) {
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    displayedModal.value = true
+    isDeletion.value = deletion
+  }
+  function doAction() {
+    const action = isDeletion.value
+      ? 'DELETE_ARCHIVE_UPLOAD_TASK'
+      : 'ABORT_ARCHIVE_UPLOAD_TASK'
     store.dispatch(
-      AUTH_USER_STORE.ACTIONS.DELETE_ARCHIVE_UPLOAD_TASK,
+      AUTH_USER_STORE.ACTIONS[action],
       route.params.task_id as string
     )
+    displayedModal.value = false
   }
 
   onMounted(() => loadUploadTask())

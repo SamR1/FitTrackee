@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from typing import Optional
 
 from dramatiq.middleware import Shutdown, TimeLimitExceeded
+from dramatiq_abort import Abort
 
 from fittrackee import db, dramatiq
 from fittrackee.constants import TASKS_TIME_LIMIT, TaskPriority
@@ -27,17 +28,24 @@ def update_task_and_clean(
         upload_task = UserTask.query.filter_by(id=upload_task_id).first()
     if upload_task is None:
         return
-    upload_task.errored = True
-    upload_task.errors = {
-        **upload_task.errors,
-        "archive": error,
-    }
+
+    if error == "task execution aborted":
+        upload_task.aborted = True
+    else:
+        upload_task.errored = True
+        upload_task.errors = {
+            **upload_task.errors,
+            "archive": error,
+        }
     db.session.commit()
 
-    if not Notification.query.filter_by(
-        event_object_id=upload_task.id,
-        event_type=upload_task.task_type,
-    ).first():
+    if (
+        not upload_task.aborted
+        and not Notification.query.filter_by(
+            event_object_id=upload_task.id,
+            event_type=upload_task.task_type,
+        ).first()
+    ):
         notification = Notification(
             from_user_id=upload_task.user_id,
             to_user_id=upload_task.user_id,
@@ -70,6 +78,11 @@ def upload_workouts_archive(task_id: int) -> None:
             if isinstance(e, TimeLimitExceeded)
             else GENERIC_ERROR
         )
+        update_task_and_clean(error=error, upload_task_id=task_id)
+        raise TaskException(error) from None
+    except Abort:
+        db.session.rollback()
+        error = "task execution aborted"
         update_task_and_clean(error=error, upload_task_id=task_id)
         raise TaskException(error) from None
     except Exception as e:

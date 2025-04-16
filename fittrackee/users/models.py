@@ -1029,6 +1029,7 @@ class UserTask(BaseModel):
     )
     progress: Mapped[int] = mapped_column(nullable=False, default=0)
     errored: Mapped[bool] = mapped_column(nullable=False, default=False)
+    aborted: Mapped[bool] = mapped_column(nullable=False, default=False)
     # can be input or output file
     file_size: Mapped[Optional[int]] = mapped_column(nullable=True)
     # relative or absolute path
@@ -1040,6 +1041,9 @@ class UserTask(BaseModel):
     )
     data: Mapped[Dict] = mapped_column(
         postgresql.JSONB, nullable=False, server_default="{}"
+    )
+    message_id: Mapped[Optional[str]] = mapped_column(
+        db.String(36), nullable=True
     )
 
     def __init__(
@@ -1092,8 +1096,10 @@ class UserTask(BaseModel):
         }
 
     def get_workouts_archive_upload_status(self) -> str:
-        if self.errored is True:
+        if self.errored:
             return "errored"
+        elif self.aborted:
+            return "aborted"
         elif self.progress == 0:
             return "queued"
         elif self.progress == 100:
