@@ -1,5 +1,6 @@
 export type TLanguage =
   | 'bg'
+  // | 'bn'  //disabled for now
   | 'cs'
   | 'de'
   | 'en'
