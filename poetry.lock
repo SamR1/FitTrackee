@@ -2654,14 +2654,18 @@ description = "A small, python-based library for creating map images with lines 
 optional = false
 python-versions = "*"
 groups = ["main"]
-files = [
-    {file = "staticmap-0.5.7-py3-none-any.whl", hash = "sha256:f4ffc40ee4502b92e91045e0df85a46a2fd68483b4e7e404a6b545fd7396ea01"},
-    {file = "staticmap-0.5.7.tar.gz", hash = "sha256:c7a96b902ba61292e818c20b0810619d6b81a6cdb50bcc1ab92d50ac4db20a7f"},
-]
+files = []
+develop = false
 
 [package.dependencies]
 Pillow = "*"
 requests = "*"
+
+[package.source]
+type = "git"
+url = "https://git@github.com/SamR1/staticmap.git"
+reference = "fix-except"
+resolved_reference = "bc695da943fd0f5cff2db69326b625ddca34e418"
 
 [[package]]
 name = "stevedore"
@@ -3173,4 +3177,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.9.2"
-content-hash = "a3416f81be54a7b19b531f44df9ea561b285d8597204dde56c54b980b98129ac"
+content-hash = "e83c9e12bd2a24cd6dbbe166ab61b6fa98070caf6a5030d8f22a716b7644e854"
