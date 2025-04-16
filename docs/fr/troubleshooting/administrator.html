@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Recherche" href="../search.html" /><link rel="next" title="Historique des modifications" href="../changelog.html" /><link rel="prev" title="Dépannage" href="index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Administrateur - Documentation FitTrackee 0.9.5</title>
+        <title>Administrateur - Documentation FitTrackee 0.9.6</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.9.5
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.9.6
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.5
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.6
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -318,6 +318,19 @@
 <li><p>Augmenter le <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#timeout">délai d’attente</a> (timeout) <strong>gunicorn</strong> si l’erreur suivante est affichée dans le journal de gunicorn : <code class="docutils literal notranslate"><span class="pre">[CRITICAL]</span> <span class="pre">WORKER</span> <span class="pre">TIMEOUT</span></code>.</p></li>
 </ul>
 </section>
+<section id="runtimeerror-thread-already-started">
+<h2><code class="docutils literal notranslate"><span class="pre">RuntimeError:</span> <span class="pre">thread</span> <span class="pre">already</span> <span class="pre">started</span></code><a class="headerlink" href="#runtimeerror-thread-already-started" title="Lien vers cette rubrique">¶</a></h2>
+<ul>
+<li><div class="line-block">
+<div class="line">Cette erreur apparait dans les logs des <em>workers</em> de la file d’attente des tâches avec l’interface de ligne de commandes (CLI) de <a class="reference external" href="https://flask-dramatiq.readthedocs.io">Flask-dramatiq</a> et une version 3.13+ de Python.</div>
+<div class="line">La solution est d’utiliser directement l’interface de ligne de commandes de <a class="reference external" href="https://dramatiq.io">Dramatiq</a>, par exemple :</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ dramatiq fittrackee.tasks:broker --processes=2 --log-file=dramatiq.log
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
 </section>
 
         </article>
@@ -383,6 +396,7 @@
 <li><a class="reference internal" href="#fittrackee-fails-to-start"><cite>FitTrackee ne démarre pas</cite></a></li>
 <li><a class="reference internal" href="#map-images-are-not-displayed-but-map-is-shown-in-workout-detail"><cite>Les images de la carte ne sont pas affichées mais la carte est affichée dans le détail de la séance</cite></a></li>
 <li><a class="reference internal" href="#failed-to-upload-or-download-files"><cite>Échec du chargement ou du téléchargement de fichiers</cite></a></li>
+<li><a class="reference internal" href="#runtimeerror-thread-already-started"><code class="docutils literal notranslate"><span class="pre">RuntimeError:</span> <span class="pre">thread</span> <span class="pre">already</span> <span class="pre">started</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -394,7 +408,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e93e6ed1"></script>
+</div><script src="../_static/documentation_options.js?v=dec6e4bb"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>

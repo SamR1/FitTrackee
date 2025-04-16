@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Change log" href="../changelog.html" /><link rel="prev" title="Troubleshooting" href="index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Administrator - FitTrackee 0.9.5 documentation</title>
+        <title>Administrator - FitTrackee 0.9.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">FitTrackee 0.9.5
+      <a href="../index.html"><div class="brand">FitTrackee 0.9.6
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.9.5
+  <span class="sidebar-brand-text">FitTrackee 0.9.6
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -318,6 +318,19 @@
 <li><p>Increase <strong>gunicorn</strong> <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#timeout">timeout</a> value if the following error is displayed in gunicorn log: <code class="docutils literal notranslate"><span class="pre">[CRITICAL]</span> <span class="pre">WORKER</span> <span class="pre">TIMEOUT</span></code>.</p></li>
 </ul>
 </section>
+<section id="runtimeerror-thread-already-started">
+<h2><code class="docutils literal notranslate"><span class="pre">RuntimeError:</span> <span class="pre">thread</span> <span class="pre">already</span> <span class="pre">started</span></code><a class="headerlink" href="#runtimeerror-thread-already-started" title="Link to this heading">¶</a></h2>
+<ul>
+<li><div class="line-block">
+<div class="line">This error appears in task queue workers logs with <a class="reference external" href="https://flask-dramatiq.readthedocs.io">Flask-dramatiq</a> CLI on Python 3.13+.</div>
+<div class="line">The workaround is to use <a class="reference external" href="https://dramatiq.io">Dramatiq</a> CLI directly, for instance:</div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ dramatiq fittrackee.tasks:broker --processes=2 --log-file=dramatiq.log
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
 </section>
 
         </article>
@@ -383,6 +396,7 @@
 <li><a class="reference internal" href="#fittrackee-fails-to-start"><cite>FitTrackee fails to start</cite></a></li>
 <li><a class="reference internal" href="#map-images-are-not-displayed-but-map-is-shown-in-workout-detail"><cite>Map images are not displayed but map is shown in Workout detail</cite></a></li>
 <li><a class="reference internal" href="#failed-to-upload-or-download-files"><cite>Failed to upload or download files</cite></a></li>
+<li><a class="reference internal" href="#runtimeerror-thread-already-started"><code class="docutils literal notranslate"><span class="pre">RuntimeError:</span> <span class="pre">thread</span> <span class="pre">already</span> <span class="pre">started</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -394,7 +408,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=61b282d3"></script>
+</div><script src="../_static/documentation_options.js?v=564a08b9"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>

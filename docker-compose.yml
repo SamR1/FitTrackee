@@ -4,8 +4,8 @@
 # minimal application (for single user) only needs fittrackee and fittrackee-db containers.
 #
 # for multi-users application, uncomment the following containers:
-# - fittrackee-workers for email sending (EMAIL_URL must be set in .env to enable emails)
-# - fittrackee-redis container for API rate limits and email sending
+# - fittrackee-workers for email sending and user data export (EMAIL_URL must be set in .env to enable emails)
+# - fittrackee-redis container for API rate limits, user data export and email sending
 
 services:
   fittrackee-db:
@@ -29,7 +29,7 @@ services:
     env_file:
       - .env
 # Image from Docker Hub
-    image: fittrackee/fittrackee:v0.9.5
+    image: fittrackee/fittrackee:v0.9.6
 # Uncomment following line to build image instead of using pre-built image
 #    build: .
     volumes:
@@ -63,14 +63,14 @@ services:
 #    env_file:
 #      - .env
 ## Image from Docker Hub
-#    image: fittrackee/fittrackee:v0.9.5
+#    image: fittrackee/fittrackee:v0.9.6
 ## Uncomment following line to build image instead of using pre-built image
 ##    build: .
 #    volumes:
 #      - ${UPLOAD_DIR:-./data/uploads}:/usr/src/app/uploads
 #      - ${LOG_DIR:-./data/logs}:/usr/src/app/logs
 #    post_start:
-#      - command: chown -R fittrackee:fittrackee /usr/src/app/logs
+#      - command: chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/logs
 #        user: root
 ## Adjust CLI options if needed, see https://dramatiq.io/guide.html#workers
 #    command: "dramatiq fittrackee.tasks:broker --processes=2 --log-file=/usr/src/app/logs/dramatiq.log"
