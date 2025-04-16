@@ -50,7 +50,7 @@ pyjwt = "^2.10.1"
 pyopenssl = "^25.0.0"
 pytz = "^2025.2"
 shortuuid = "^1.0.13"
-staticmap = "^0.5.7"
+staticmap = {git = "https://git@github.com/SamR1/staticmap.git", rev = "fix-except"}
 sqlalchemy = "=2.0.40"
 ua-parser = "^1.0.0"
 
