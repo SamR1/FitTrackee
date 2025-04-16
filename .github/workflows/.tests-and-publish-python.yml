@@ -62,14 +62,19 @@ jobs:
         if: matrix.python-version == '3.13'
         run: mypy fittrackee
 
-      - name: Pytest
+      - name: Pytest with coverage
+        if: matrix.python-version == '3.10'
         run: pytest fittrackee -n auto --maxprocesses=2  -p no:warnings --cov fittrackee --cov-report term-missing --maxfail=1
+
+      - name: Pytest
+        if: matrix.python-version != '3.10'
+        run: pytest fittrackee -n auto --maxprocesses=2  -p no:warnings --maxfail=1
 
   postgresql:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
-    name: postgresql ${{ matrix.psql-version }} (python 3.13)
+    name: postgresql ${{ matrix.psql-version }} (python 3.10)
     runs-on: ubuntu-latest
-    container: python:3.13
+    container: python:3.10
     services:
       postgres:
         image: postgres:${{ matrix.psql-version }}
@@ -98,7 +103,7 @@ jobs:
         run: python db/create_ci_test_db.py
 
       - name: Pytest
-        run: pytest fittrackee -n auto --maxprocesses=2 -p no:warnings --cov fittrackee --cov-report term-missing --maxfail=1
+        run: pytest fittrackee -n auto --maxprocesses=2 -p no:warnings --maxfail=1
 
   end2end:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}

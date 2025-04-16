@@ -36,7 +36,7 @@
           :query="query"
         />
         <table>
-          <thead :class="{ smaller: 'de' === appLanguage }">
+          <thead :class="{ smaller: appLanguage === 'de' }">
             <tr>
               <th class="sport-col">
                 <span class="visually-hidden">
@@ -200,7 +200,10 @@
                     {{ $t(`workouts.WORKOUTS_STATISTICS.${statsKey}`) }}
                   </td>
                 </tr>
-                <tr class="stats-cols-labels">
+                <tr
+                  class="stats-cols-labels"
+                  :class="{ smaller: appLanguage === 'de' }"
+                >
                   <td></td>
                   <td></td>
                   <td></td>
@@ -534,7 +537,8 @@
 
       .workouts-table {
         .smaller {
-          th {
+          th,
+          td {
             font-size: 0.95em;
             padding: $default-padding 0;
             max-width: 100px;

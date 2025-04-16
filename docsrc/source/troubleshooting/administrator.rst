@@ -34,3 +34,15 @@ Administrator
 - Check ``client_max_body_size`` in **nginx** config. Increase the value to handle larger files (see **nginx** `documentation <https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_).
 
 - Increase **gunicorn** `timeout <https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ value if the following error is displayed in gunicorn log: ``[CRITICAL] WORKER TIMEOUT``.
+
+
+``RuntimeError: thread already started``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- | This error appears in task queue workers logs with `Flask-dramatiq <https://flask-dramatiq.readthedocs.io>`__ CLI on Python 3.13+.
+  | The workaround is to use `Dramatiq <https://dramatiq.io>`__ CLI directly, for instance:
+
+  .. code::
+
+    $ dramatiq fittrackee.tasks:broker --processes=2 --log-file=dramatiq.log
+
