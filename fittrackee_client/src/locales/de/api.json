@@ -15,6 +15,7 @@
     "error during gpx file parsing": "Fehler beim Einlesen der GPX-Datei.",
     "error during gpx processing": "Fehler bei der GPX-Verarbeitung.",
     "error on getting configuration": "Fehler beim Abrufen der Konfiguration.",
+    "error when getting timezones": "Fehler bei der Zeitzonenabfrage.",
     "error when saving workout": "Fehler beim Speichern des Workouts.",
     "error when updating configuration": "Fehler beim Aktualisieren der Konfiguration.",
     "error while fetching comments": "Fehler beim Laden der Kommentare.",

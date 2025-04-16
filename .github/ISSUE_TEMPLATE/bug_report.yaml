@@ -79,6 +79,7 @@ body:
         - "0.9.3"
         - "0.9.4"
         - "0.9.5"
+        - "0.9.6"
         - "Git main branch"
       default: 6
     validations:

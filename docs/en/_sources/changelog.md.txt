@@ -1,5 +1,39 @@
 # Change log
 
+## Version 0.9.6 (2025/04/16)
+
+### Translations
+
+* [PR#762](https://github.com/SamR1/FitTrackee/pull/762) - Init Bengali translations files
+* [PR#763](https://github.com/SamR1/FitTrackee/pull/763) - Translations update (German)
+
+Translation status:
+- Basque: 82%
+- Bulgarian: 63%
+- Chinese (Simplified): 100%
+- Czech: 46%
+- Dutch: 63%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 52%
+- Norwegian Bokmål: 33%
+- Polish: 98%
+- Portuguese: 62%
+- Russian: 39%
+- Spanish: 63%
+
+### Misc
+
+* [2bc97bd](https://github.com/SamR1/FitTrackee/commit/2bc97bda644197dce5ccac9048889321209f84ac) - CI - run coverage only on one test job
+
+
+Thanks to the contributors:
+- @astridx
+- @frankzimper
+
+
 ## Version 0.9.5 (2025/04/06)
 
 ### Bugs Fixed
