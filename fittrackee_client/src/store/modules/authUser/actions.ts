@@ -846,4 +846,27 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
       )
   },
+  [AUTH_USER_STORE.ACTIONS.ABORT_ARCHIVE_UPLOAD_TASK](
+    context: ActionContext<IAuthUserState, IRootState>,
+    taskId: string
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
+    authApi
+      .post(`workouts/upload-tasks/${taskId}/abort`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.SET_ARCHIVE_UPLOAD_TASK,
+            res.data.task
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, false)
+      )
+  },
 }

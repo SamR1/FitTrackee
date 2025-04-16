@@ -36,6 +36,7 @@ class TestUpdateTaskAndClean(UserTaskMixin):
 
         update_task_and_clean(error=error, upload_task=task)
 
+        assert task.aborted is False
         assert task.errored is True
         assert task.errors == {
             "archive": error,
@@ -50,9 +51,26 @@ class TestUpdateTaskAndClean(UserTaskMixin):
 
         update_task_and_clean(error=error, upload_task_id=task.id)
 
+        assert task.aborted is False
         assert task.errored is True
         assert task.errors == {
             "archive": error,
+            "files": {},
+        }
+
+    def test_it_updates_task_when_task_is_aborted(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        task = self.create_workouts_upload_task(user_1)
+
+        update_task_and_clean(
+            error="task execution aborted", upload_task_id=task.id
+        )
+
+        assert task.aborted is True
+        assert task.errored is False
+        assert task.errors == {
+            "archive": None,
             "files": {},
         }
 
@@ -71,6 +89,25 @@ class TestUpdateTaskAndClean(UserTaskMixin):
                 event_type=task.task_type,
             ).first()
             is not None
+        )
+
+    def test_it_does_not_create_notification_when_task_is_aborted(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        task = self.create_workouts_upload_task(user_1)
+
+        update_task_and_clean(
+            error="task execution aborted", upload_task_id=task.id
+        )
+
+        assert (
+            Notification.query.filter_by(
+                from_user_id=task.user_id,
+                to_user_id=task.user_id,
+                event_object_id=task.id,
+                event_type=task.task_type,
+            ).first()
+            is None
         )
 
     def test_it_does_not_raise_error_when_notification_already_exists(

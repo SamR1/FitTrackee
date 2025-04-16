@@ -651,6 +651,28 @@ redis = ["redis (>=2.0,<6.0)"]
 watch = ["watchdog (>=4.0)", "watchdog-gevent (>=0.2)"]
 
 [[package]]
+name = "dramatiq-abort"
+version = "1.2.1"
+description = "Dramatiq middleware to abort tasks."
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "dramatiq_abort-1.2.1-py3-none-any.whl", hash = "sha256:d025e358875b437346cc2f665525735b1a079ce7dcac9c3dc70853fa798efd69"},
+    {file = "dramatiq_abort-1.2.1.tar.gz", hash = "sha256:795ee9a37d884d70e63b758031017cd1f7c33f40db5f4901aaa95fcb659c13c0"},
+]
+
+[package.dependencies]
+dramatiq = "*"
+redis = {version = ">=2.0,<6.0", optional = true, markers = "extra == \"redis\""}
+
+[package.extras]
+all = ["gevent (>=1.1)", "redis (>=2.0,<6.0)"]
+dev = ["black", "build", "flake8", "flake8-bugbear", "flake8-quotes", "gevent (>=1.1)", "isort", "mypy", "pytest", "pytest-cov", "redis (>=2.0,<6.0)", "sphinx", "sphinx-autodoc-typehints", "tox (>=3.14.0)", "twine", "types-redis", "wheel"]
+gevent = ["gevent (>=1.1)"]
+redis = ["redis (>=2.0,<6.0)"]
+
+[[package]]
 name = "exceptiongroup"
 version = "1.2.2"
 description = "Backport of PEP 654 (exception groups)"
@@ -3177,4 +3199,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.9.2"
-content-hash = "bc0a3397ea088a6bf18f69732b2d3646b799fa05f9296f941d5987217a53962f"
+content-hash = "dd91864c6fbd2566e06d9d9065175a32d9a73da2afcd558e4f6640eb6eeec0b9"

@@ -77,6 +77,7 @@
     "ARCHIVE_UPLOADS": {
       "ARCHIVE": "Archive zip",
       "CREATED_WORKOUTS": "Séances créées",
+      "CONFIRM_TASK_ABORT": "Êtes-vous sûr de vouloir interrompre cette tâche de chargement d'archive ?",
       "CONFIRM_TASK_DELETION": "Êtes-vous sûr de vouloir supprimer cette tâche de chargement d'archive ?",
       "ERRORED_FILES": "Fichier en erreur | Fichiers en erreur",
       "ERRORS": {
@@ -87,6 +88,7 @@
       "PROGRESS": "Progression",
       "STATUS": {
         "LABEL": "État",
+        "aborted": "annulé",
         "errored": "en erreur",
         "in_progress": "en cours",
         "queued": "en attente",

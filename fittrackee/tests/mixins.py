@@ -576,6 +576,8 @@ class UserTaskMixin:
         progress: int = 0,
         errored: bool = False,
         original_file_name: Optional[str] = None,
+        aborted: bool = False,
+        message_id: Optional[str] = None,
     ) -> "UserTask":
         upload_task = UserTask(
             user_id=user.id,
@@ -590,8 +592,10 @@ class UserTaskMixin:
             },
             file_path=file_path,
         )
+        upload_task.aborted = aborted
         upload_task.progress = progress
         upload_task.errored = errored
+        upload_task.message_id = message_id
         db.session.add(upload_task)
         db.session.commit()
         return upload_task
