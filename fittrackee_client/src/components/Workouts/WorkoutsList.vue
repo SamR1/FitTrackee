@@ -204,12 +204,12 @@
                   class="stats-cols-labels"
                   :class="{ smaller: appLanguage === 'de' }"
                 >
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td class="no-borders"></td>
+                  <td class="no-borders"></td>
+                  <td class="no-borders"></td>
                   <td>{{ capitalize($t('workouts.TOTAL_DISTANCE')) }}</td>
                   <td>{{ capitalize($t('workouts.TOTAL_DURATION')) }}</td>
-                  <td>{{ capitalize($t('workouts.AVE_SPEED')) }}</td>
+                  <td></td>
                   <td>{{ capitalize($t('workouts.MAX_SPEED')) }}</td>
                   <td>{{ capitalize($t('workouts.TOTAL_ASCENT')) }}</td>
                   <td>{{ capitalize($t('workouts.TOTAL_DESCENT')) }}</td>
@@ -242,29 +242,7 @@
                         : ''
                     }}
                   </td>
-                  <td
-                    class="text-right"
-                    :class="{
-                      'hide-col': workoutsStats[statsKey].total_sports > 1,
-                    }"
-                  >
-                    <span
-                      class="cell-heading"
-                      v-if="workoutsStats[statsKey].total_sports === 1"
-                    >
-                      {{ $t('workouts.AVE_SPEED') }}
-                    </span>
-                    <Distance
-                      v-if="
-                        workoutsStats[statsKey].total_sports === 1 &&
-                        workoutsStats[statsKey].ave_speed !== null
-                      "
-                      :distance="workoutsStats[statsKey].ave_speed"
-                      unitFrom="km"
-                      :speed="true"
-                      :useImperialUnits="user.imperial_units"
-                    />
-                  </td>
+                  <td class="text-right hide-col"></td>
                   <td
                     class="text-right"
                     :class="{
@@ -306,6 +284,95 @@
                     <Distance
                       v-if="workoutsStats[statsKey].total_descent !== null"
                       :distance="workoutsStats[statsKey].total_descent"
+                      unitFrom="m"
+                      :useImperialUnits="user.imperial_units"
+                    />
+                  </td>
+                </tr>
+                <tr
+                  class="stats-cols-labels"
+                  :class="{ smaller: appLanguage === 'de' }"
+                >
+                  <td class="no-borders"></td>
+                  <td class="no-borders"></td>
+                  <td class="no-borders"></td>
+                  <td>{{ capitalize($t('workouts.AVE_DISTANCE')) }}</td>
+                  <td>{{ capitalize($t('workouts.AVE_DURATION')) }}</td>
+                  <td>{{ capitalize($t('workouts.AVE_SPEED')) }}</td>
+                  <td></td>
+                  <td>{{ capitalize($t('workouts.AVE_ASCENT')) }}</td>
+                  <td>{{ capitalize($t('workouts.AVE_DESCENT')) }}</td>
+                </tr>
+                <tr v-if="workoutsStats[statsKey]" class="totals">
+                  <td class="sport-col hide-col"></td>
+                  <td class="workout-title hide-col"></td>
+                  <td class="workout-date hide-col"></td>
+                  <td class="text-right">
+                    <span class="cell-heading">
+                      {{ $t('workouts.AVE_DISTANCE') }}
+                    </span>
+                    <Distance
+                      v-if="workoutsStats[statsKey].average_distance !== null"
+                      :distance="workoutsStats[statsKey].average_distance"
+                      unitFrom="km"
+                      :useImperialUnits="user.imperial_units"
+                    />
+                  </td>
+                  <td class="text-right">
+                    <span class="cell-heading">
+                      {{ $t('workouts.AVE_DURATION') }}
+                    </span>
+                    {{
+                      workoutsStats[statsKey].average_duration
+                        ? getTotalDuration(
+                            workoutsStats[statsKey].average_duration,
+                            $t
+                          )
+                        : ''
+                    }}
+                  </td>
+                  <td
+                    class="text-right"
+                    :class="{
+                      'hide-col': workoutsStats[statsKey].total_sports > 1,
+                    }"
+                  >
+                    <span
+                      class="cell-heading"
+                      v-if="workoutsStats[statsKey].total_sports === 1"
+                    >
+                      {{ $t('workouts.AVE_SPEED') }}
+                    </span>
+                    <Distance
+                      v-if="
+                        workoutsStats[statsKey].total_sports === 1 &&
+                        workoutsStats[statsKey].average_speed !== null
+                      "
+                      :distance="workoutsStats[statsKey].average_speed"
+                      unitFrom="km"
+                      :speed="true"
+                      :useImperialUnits="user.imperial_units"
+                    />
+                  </td>
+                  <td class="text-right hide-col"></td>
+                  <td class="text-right">
+                    <span class="cell-heading">
+                      {{ $t('workouts.AVE_ASCENT') }}
+                    </span>
+                    <Distance
+                      v-if="workoutsStats[statsKey].average_ascent !== null"
+                      :distance="workoutsStats[statsKey].average_ascent"
+                      unitFrom="m"
+                      :useImperialUnits="user.imperial_units"
+                    />
+                  </td>
+                  <td class="text-right">
+                    <span class="cell-heading">
+                      {{ $t('workouts.AVE_DESCENT') }}
+                    </span>
+                    <Distance
+                      v-if="workoutsStats[statsKey].average_descent !== null"
+                      :distance="workoutsStats[statsKey].average_descent"
                       unitFrom="m"
                       :useImperialUnits="user.imperial_units"
                     />
@@ -599,10 +666,13 @@
             font-weight: bold;
           }
         }
-        .stats-cols-labels td {
+        .stats-cols-labels td:not(.no-borders) {
           text-align: center;
           font-weight: bold;
           border-bottom: 2px solid var(--card-border-color);
+        }
+        .no-borders {
+          border-bottom: none;
         }
 
         @media screen and (max-width: $small-limit) {

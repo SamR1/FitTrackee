@@ -4,6 +4,10 @@
   "ASCENT": "dénivelé positif",
   "AVERAGE_SPEED": "vitesse moyenne",
   "AVE_SPEED": "vitesse moy.",
+  "AVE_ASCENT": "dénivelé positif moy.",
+  "AVE_DESCENT": "dénivelé négatif moy.",
+  "AVE_DISTANCE": "distance moy.",
+  "AVE_DURATION": "durée moy.",
   "BACK_TO_COMMENT": "revenir au commentaire",
   "BACK_TO_WORKOUT": "revenir à la séance",
   "COMMENTS": {
