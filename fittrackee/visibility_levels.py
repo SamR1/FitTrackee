@@ -10,7 +10,8 @@ if TYPE_CHECKING:
 
 class VisibilityLevel(str, Enum):  # to make enum serializable
     PUBLIC = "public"
-    FOLLOWERS = "followers_only"  # only followers
+    FOLLOWERS_AND_REMOTE = "followers_and_remote_only"
+    FOLLOWERS = "followers_only"  # only local followers in federated instances
     PRIVATE = "private"  # in case of comments, for mentioned users only
 
 
@@ -19,9 +20,17 @@ def get_calculated_visibility(
 ) -> VisibilityLevel:
     # - workout visibility overrides analysis visibility, when stricter,
     # - analysis visibility overrides map visibility, when stricter.
-    if parent_visibility == VisibilityLevel.PRIVATE or (
-        parent_visibility == VisibilityLevel.FOLLOWERS
-        and visibility == VisibilityLevel.PUBLIC
+    if (
+        parent_visibility == VisibilityLevel.PRIVATE
+        or (
+            parent_visibility == VisibilityLevel.FOLLOWERS
+            and visibility
+            in [VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.PUBLIC]
+        )
+        or (
+            parent_visibility == VisibilityLevel.FOLLOWERS_AND_REMOTE
+            and visibility == VisibilityLevel.PUBLIC
+        )
     ):
         return parent_visibility
     return visibility
@@ -71,6 +80,15 @@ def can_view(
 
     if (
         target_object.__getattribute__(visibility) == VisibilityLevel.FOLLOWERS
+        and user.is_remote is False
+        and user in owner.followers.all()
+        and target_object.user.is_remote is False
+    ):
+        return True
+
+    if (
+        target_object.__getattribute__(visibility)
+        == VisibilityLevel.FOLLOWERS_AND_REMOTE
         and user in owner.followers.all()
     ):
         return True
