@@ -272,7 +272,11 @@ export interface IAppealPayload {
 }
 
 export interface TWorkoutsStatistic {
-  ave_speed: number | null
+  average_ascent: number | null
+  average_descent: number | null
+  average_distance: number | null
+  average_duration: string | null
+  average_speed: number | null
   count: number
   max_speed: number | null
   total_ascent: number | null

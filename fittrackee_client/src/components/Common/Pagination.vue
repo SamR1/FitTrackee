@@ -21,6 +21,7 @@
         :class="{ active: page === pagination.page }"
       >
         <span v-if="page === '...'"> ... </span>
+        <span v-else-if="page === pagination.page"> {{ page }} </span>
         <router-link
           v-else
           class="page-link"
@@ -123,7 +124,7 @@
 
     @media screen and (max-width: $medium-limit) {
       .pagination {
-        .page {
+        .page:not(.active) {
           display: none;
         }
       }
