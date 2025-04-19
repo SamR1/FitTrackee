@@ -11,15 +11,24 @@
             {{ $t('workouts.WORKOUT', pagination.total || 0) }}
           </span>
         </div>
-        <button
-          v-if="pagination.total > 1"
-          class="scroll-button"
-          @click="scrollToStatistics()"
-          :title="$t('common.SCROLL_DOWN')"
-          id="scroll-down-button"
-        >
-          <i class="fa fa-chevron-down" aria-hidden="true"></i>
-        </button>
+        <div class="buttons">
+          <button
+            v-if="pagination.total > 1 && showWorkouts"
+            class="scroll-button"
+            @click="scrollToStatistics()"
+            :title="$t('common.SCROLL_DOWN')"
+            id="scroll-down-button"
+          >
+            <i class="fa fa-chevron-down" aria-hidden="true"></i>
+          </button>
+          <button
+            v-if="pagination.total > 1"
+            class="hide-workouts-btn transparent"
+            @click="toggleWorkouts()"
+          >
+            {{ $t(`workouts.${showWorkouts ? 'HIDE' : 'SHOW'}_WORKOUTS`) }}
+          </button>
+        </div>
       </div>
       <FilterSelects
         :sort="sortList"
@@ -37,7 +46,7 @@
         />
         <table>
           <thead :class="{ smaller: appLanguage === 'de' }">
-            <tr>
+            <tr v-if="showWorkouts">
               <th class="sport-col">
                 <span class="visually-hidden">
                   {{ $t('workouts.SPORT') }}
@@ -54,129 +63,134 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="(workout, index) in workouts"
-              :key="workout.id"
-              :class="{ 'last-workout': index === workouts.length - 1 }"
-            >
-              <td class="sport-col">
-                <span class="cell-heading">
-                  {{ $t('workouts.SPORT', 1) }}
-                </span>
-                <SportImage
-                  v-if="translatedSports.length > 0"
-                  :title="
-                    translatedSports.filter((s) => s.id === workout.sport_id)[0]
-                      .translatedLabel
-                  "
-                  :sport-label="getSportLabel(workout, translatedSports)"
-                  :color="getSportColor(workout, translatedSports)"
-                />
-              </td>
-              <td
-                class="workout-title"
-                @mouseover="onHover(workout.id)"
-                @mouseleave="onHover(null)"
+            <template v-if="showWorkouts">
+              <tr
+                v-for="(workout, index) in workouts"
+                :key="workout.id"
+                :class="{ 'last-workout': index === workouts.length - 1 }"
               >
-                <span class="cell-heading">
-                  {{ capitalize($t('workouts.WORKOUT', 1)) }}
-                </span>
-                <router-link
-                  class="nav-item"
-                  :to="{ name: 'Workout', params: { workoutId: workout.id } }"
-                >
-                  <i
-                    v-if="workout.with_gpx"
-                    class="fa fa-map-o"
-                    aria-hidden="true"
+                <td class="sport-col">
+                  <span class="cell-heading">
+                    {{ $t('workouts.SPORT', 1) }}
+                  </span>
+                  <SportImage
+                    v-if="translatedSports.length > 0"
+                    :title="
+                      translatedSports.filter(
+                        (s) => s.id === workout.sport_id
+                      )[0].translatedLabel
+                    "
+                    :sport-label="getSportLabel(workout, translatedSports)"
+                    :color="getSportColor(workout, translatedSports)"
                   />
-                  <span class="title">{{ workout.title }}</span>
-                  <VisibilityIcon :visibility="workout.workout_visibility" />
-                </router-link>
-                <StaticMap
-                  v-if="workout.with_gpx && hoverWorkoutId === workout.id"
-                  :workout="workout"
-                  :display-hover="true"
-                />
-              </td>
-              <td class="workout-date">
-                <span class="cell-heading">
-                  {{ $t('workouts.DATE') }}
-                </span>
-                <time>
+                </td>
+                <td
+                  class="workout-title"
+                  @mouseover="onHover(workout.id)"
+                  @mouseleave="onHover(null)"
+                >
+                  <span class="cell-heading">
+                    {{ capitalize($t('workouts.WORKOUT', 1)) }}
+                  </span>
+                  <router-link
+                    class="nav-item"
+                    :to="{ name: 'Workout', params: { workoutId: workout.id } }"
+                  >
+                    <i
+                      v-if="workout.with_gpx"
+                      class="fa fa-map-o"
+                      aria-hidden="true"
+                    />
+                    <span class="title">{{ workout.title }}</span>
+                    <VisibilityIcon :visibility="workout.workout_visibility" />
+                  </router-link>
+                  <StaticMap
+                    v-if="workout.with_gpx && hoverWorkoutId === workout.id"
+                    :workout="workout"
+                    :display-hover="true"
+                  />
+                </td>
+                <td class="workout-date">
+                  <span class="cell-heading">
+                    {{ $t('workouts.DATE') }}
+                  </span>
+                  <time>
+                    {{
+                      formatDate(
+                        workout.workout_date,
+                        user.timezone,
+                        user.date_format
+                      )
+                    }}
+                  </time>
+                </td>
+                <td class="text-right">
+                  <span class="cell-heading">
+                    {{ $t('workouts.DISTANCE') }}
+                  </span>
+                  <Distance
+                    v-if="workout.distance !== null"
+                    :distance="workout.distance"
+                    unitFrom="km"
+                    :useImperialUnits="user.imperial_units"
+                  />
+                </td>
+                <td class="text-right">
+                  <span class="cell-heading">
+                    {{ $t('workouts.DURATION') }}
+                  </span>
                   {{
-                    formatDate(
-                      workout.workout_date,
-                      user.timezone,
-                      user.date_format
-                    )
+                    workout.moving ? getTotalDuration(workout.moving, $t) : ''
                   }}
-                </time>
-              </td>
-              <td class="text-right">
-                <span class="cell-heading">
-                  {{ $t('workouts.DISTANCE') }}
-                </span>
-                <Distance
-                  v-if="workout.distance !== null"
-                  :distance="workout.distance"
-                  unitFrom="km"
-                  :useImperialUnits="user.imperial_units"
-                />
-              </td>
-              <td class="text-right">
-                <span class="cell-heading">
-                  {{ $t('workouts.DURATION') }}
-                </span>
-                {{ workout.moving ? getTotalDuration(workout.moving, $t) : '' }}
-              </td>
-              <td class="text-right">
-                <span class="cell-heading">
-                  {{ $t('workouts.AVE_SPEED') }}
-                </span>
-                <Distance
-                  v-if="workout.ave_speed !== null"
-                  :distance="workout.ave_speed"
-                  unitFrom="km"
-                  :speed="true"
-                  :useImperialUnits="user.imperial_units"
-                />
-              </td>
-              <td class="text-right">
-                <span class="cell-heading">
-                  {{ $t('workouts.MAX_SPEED') }}
-                </span>
-                <Distance
-                  v-if="workout.max_speed !== null"
-                  :distance="workout.max_speed"
-                  unitFrom="km"
-                  :speed="true"
-                  :useImperialUnits="user.imperial_units"
-                />
-              </td>
-              <td class="text-right">
-                <span class="cell-heading">
-                  {{ $t('workouts.ASCENT') }}
-                </span>
-                <Distance
-                  v-if="workout.ascent !== null"
-                  :distance="workout.ascent"
-                  unitFrom="m"
-                  :useImperialUnits="user.imperial_units"
-                />
-              </td>
-              <td class="text-right">
-                <span class="cell-heading">
-                  {{ $t('workouts.DESCENT') }}
-                </span>
-                <Distance
-                  v-if="workout.descent !== null"
-                  :distance="workout.descent"
-                  unitFrom="m"
-                  :useImperialUnits="user.imperial_units"
-                />
-              </td>
-            </tr>
+                </td>
+                <td class="text-right">
+                  <span class="cell-heading">
+                    {{ $t('workouts.AVE_SPEED') }}
+                  </span>
+                  <Distance
+                    v-if="workout.ave_speed !== null"
+                    :distance="workout.ave_speed"
+                    unitFrom="km"
+                    :speed="true"
+                    :useImperialUnits="user.imperial_units"
+                  />
+                </td>
+                <td class="text-right">
+                  <span class="cell-heading">
+                    {{ $t('workouts.MAX_SPEED') }}
+                  </span>
+                  <Distance
+                    v-if="workout.max_speed !== null"
+                    :distance="workout.max_speed"
+                    unitFrom="km"
+                    :speed="true"
+                    :useImperialUnits="user.imperial_units"
+                  />
+                </td>
+                <td class="text-right">
+                  <span class="cell-heading">
+                    {{ $t('workouts.ASCENT') }}
+                  </span>
+                  <Distance
+                    v-if="workout.ascent !== null"
+                    :distance="workout.ascent"
+                    unitFrom="m"
+                    :useImperialUnits="user.imperial_units"
+                  />
+                </td>
+                <td class="text-right">
+                  <span class="cell-heading">
+                    {{ $t('workouts.DESCENT') }}
+                  </span>
+                  <Distance
+                    v-if="workout.descent !== null"
+                    :distance="workout.descent"
+                    unitFrom="m"
+                    :useImperialUnits="user.imperial_units"
+                  />
+                </td>
+              </tr>
+            </template>
             <template v-if="pagination.total > 1">
               <template v-for="statsKey in statsKeys" :key="statsKey">
                 <tr class="stats-label" :id="`stats_${statsKey}`">
@@ -452,6 +466,7 @@
 
   const hoverWorkoutId: Ref<string | null> = ref(null)
   const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
+  const showWorkouts: Ref<boolean> = ref(true)
 
   const workouts: ComputedRef<IWorkout[]> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS]
@@ -529,6 +544,9 @@
       }, 300)
     }
   }
+  function toggleWorkouts() {
+    showWorkouts.value = !showWorkouts.value
+  }
 
   watch(
     () => route.query,
@@ -583,8 +601,16 @@
           font-weight: bold;
         }
       }
-      .scroll-button {
-        display: block;
+      .buttons {
+        display: flex;
+        gap: $default-padding;
+        .scroll-button {
+          display: block;
+        }
+        .hide-workouts-btn {
+          font-size: 0.85em;
+          box-shadow: 1px 1px 3px var(--app-shadow-color);
+        }
       }
 
       .top-pagination {
