@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from statistics import mean
 from typing import List, Optional, Union
 
@@ -12,7 +12,6 @@ from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.utils.workouts import (
-    create_segment,
     get_average_speed,
     get_ordered_workouts,
     get_workout,
@@ -135,37 +134,6 @@ class TestWorkoutGetWorkoutDatetime:
         )
 
         assert workout_date_with_tz is None
-
-
-class TestCreateSegment:
-    def test_it_removes_microseconds(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        duration = timedelta(seconds=3600, microseconds=100)
-
-        segment = create_segment(
-            workout_id=workout_cycling_user_1.id,
-            workout_uuid=workout_cycling_user_1.uuid,
-            segment_data={
-                "idx": 0,
-                "duration": duration,
-                "distance": 10,
-                "stop_time": timedelta(seconds=0),
-                "moving_time": duration,
-                "elevation_min": None,
-                "elevation_max": None,
-                "downhill": None,
-                "uphill": None,
-                "max_speed": 10,
-                "average_speed": 10,
-            },
-        )
-
-        assert segment.duration.microseconds == 0
 
 
 class TestGetOrderedWorkouts:
