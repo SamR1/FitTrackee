@@ -211,7 +211,11 @@
                     }}
                   </td>
                   <td colspan="9" v-else>
-                    {{ $t(`workouts.WORKOUTS_STATISTICS.${statsKey}`) }}
+                    {{
+                      $t(`workouts.WORKOUTS_STATISTICS.${statsKey}`, {
+                        count: workoutsStats[statsKey].count,
+                      })
+                    }}
                   </td>
                 </tr>
                 <tr

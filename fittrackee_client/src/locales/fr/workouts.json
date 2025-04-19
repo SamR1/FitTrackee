@@ -145,8 +145,8 @@
   "WITH_GPX": "avec un fichier .gpx",
   "WORKOUT": "séance | séances",
   "WORKOUTS_STATISTICS": {
-    "all": "statistiques pour toutes les pages",
-    "current_page": "statistiques pour la page en cours",
+    "all": "statistiques pour toutes les pages ({count} séances)",
+    "current_page": "statistiques pour la page en cours ({count} séances)",
     "limited": "statistiques pour les {count} séances"
   },
   "WORKOUT_CHART": "graphe de vitesse et d'altitude de la séance",

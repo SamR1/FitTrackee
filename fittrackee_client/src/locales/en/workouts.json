@@ -145,8 +145,8 @@
   "WITH_GPX": "with .gpx file",
   "WORKOUT": "workout | workouts",
   "WORKOUTS_STATISTICS": {
-    "all": "statistics for all pages",
-    "current_page": "statistics for current page",
+    "all": "statistics for all pages ({count} workouts)",
+    "current_page": "statistics for current page ({count} workouts)",
     "limited": "statistics for {count} workouts"
   },
   "WORKOUT_CHART": "workout speed and elevation chart",
