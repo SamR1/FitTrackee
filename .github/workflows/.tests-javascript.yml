@@ -27,7 +27,10 @@ jobs:
           yarn install
       - name: Lint
         working-directory: ${{env.working-directory}}
-        run: yarn lint
+        run: yarn lint-check
+      - name: Prettier
+        working-directory: ${{env.working-directory}}
+        run: yarn format-check
       - name: Type check
         working-directory: ${{env.working-directory}}
         run: yarn type-check
