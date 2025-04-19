@@ -229,7 +229,11 @@
                   <td>{{ capitalize($t('workouts.TOTAL_DISTANCE')) }}</td>
                   <td>{{ capitalize($t('workouts.TOTAL_DURATION')) }}</td>
                   <td></td>
-                  <td>{{ capitalize($t('workouts.MAX_SPEED')) }}</td>
+                  <td>
+                    <span v-if="workoutsStats[statsKey].total_sports === 1">
+                      {{ capitalize($t('workouts.MAX_SPEED')) }}
+                    </span>
+                  </td>
                   <td>{{ capitalize($t('workouts.TOTAL_ASCENT')) }}</td>
                   <td>{{ capitalize($t('workouts.TOTAL_DESCENT')) }}</td>
                 </tr>
@@ -317,7 +321,11 @@
                   <td class="no-borders"></td>
                   <td>{{ capitalize($t('workouts.AVE_DISTANCE')) }}</td>
                   <td>{{ capitalize($t('workouts.AVE_DURATION')) }}</td>
-                  <td>{{ capitalize($t('workouts.AVE_SPEED')) }}</td>
+                  <td>
+                    <span v-if="workoutsStats[statsKey].total_sports === 1">
+                      {{ capitalize($t('workouts.AVE_SPEED')) }}
+                    </span>
+                  </td>
                   <td></td>
                   <td>{{ capitalize($t('workouts.AVE_ASCENT')) }}</td>
                   <td>{{ capitalize($t('workouts.AVE_DESCENT')) }}</td>
