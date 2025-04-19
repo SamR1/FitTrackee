@@ -1,4 +1,7 @@
 {
+  "Canoeing": {
+    "LABEL": "Kanoing"
+  },
   "Cycling (Sport)": {
     "LABEL": "Fietsen (Sport)"
   },
@@ -13,6 +16,9 @@
   },
   "Hiking": {
     "LABEL": "Trektocht"
+  },
+  "Kayaking": {
+    "LABEL": "Kayakken"
   },
   "Mountain Biking": {
     "LABEL": "Mountainbiken"
@@ -48,7 +54,7 @@
     "LABEL": "Zwemloop"
   },
   "Trail": {
-    "LABEL": "Trail"
+    "LABEL": "Traillopen"
   },
   "Walking": {
     "LABEL": "Wandelen"

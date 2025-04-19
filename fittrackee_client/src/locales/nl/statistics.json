@@ -3,17 +3,20 @@
   "DATES": "Datums",
   "STATISTICS": "Statistieken",
   "STATISTICS_CHARTS": {
+    "day": "Dagelijkse statistieken",
     "month": "Maandelijkse statistieken",
     "week": "Wekelijkse statistieken",
     "year": "Jaarlijkse statistieken"
   },
   "STATISTICS_ON_ALL_WORKOUTS": "Statistieken van alle trainingen:",
   "STATISTICS_ON_LAST_WORKOUTS": "Statistieken van de laatste {count} trainingen:",
+  "STATISTICS_TYPE": "Statistiektype",
   "STATISTICS_TYPES": {
     "by_sport": "op basis van sport",
     "by_time": "op basis van periode"
   },
   "TIME_FRAMES": {
+    "day": "dag",
     "month": "maand",
     "week": "week",
     "year": "jaar"

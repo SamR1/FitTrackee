@@ -1,7 +1,11 @@
 {
   "APP_ERROR": "Er heeft zich een onbekende fout voorgedaan.<br />Probeer het later opnieuw of contacteer de administrator.",
   "NOT_FOUND": {
+    "COMMENT": "Reactie niet gevonden",
     "PAGE": "Pagina niet gevonden",
+    "REPORT": "Melding niet gevonden",
+    "SEGMENT": "Segment niet gevonden",
+    "USER": "Gebruiker niet gevonden",
     "WORKOUT": "Training niet gevonden"
   },
   "SOMETHING_WRONG": "Er ging iets mis",
