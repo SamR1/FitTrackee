@@ -2,7 +2,7 @@
   <div class="workouts-list">
     <div class="box" :class="{ 'empty-table': workouts.length === 0 }">
       <div class="total">
-        <div>
+        <div class="total-workouts">
           <span class="total-label">
             {{ $t('common.TOTAL').toLowerCase() }}:
           </span>
@@ -12,6 +12,7 @@
           </span>
         </div>
         <div class="buttons">
+          <div class="spacer" />
           <button
             v-if="pagination.total > 1 && showWorkouts"
             class="scroll-button"
@@ -604,16 +605,36 @@
         .total-label {
           font-weight: bold;
         }
-      }
-      .buttons {
-        display: flex;
-        gap: $default-padding;
-        .scroll-button {
-          display: block;
+
+        .buttons {
+          display: flex;
+          gap: $default-padding;
+          .scroll-button {
+            display: block;
+          }
+          .hide-workouts-btn {
+            font-size: 0.85em;
+            box-shadow: 1px 1px 3px var(--app-shadow-color);
+          }
+          .spacer {
+            display: none;
+          }
         }
-        .hide-workouts-btn {
-          font-size: 0.85em;
-          box-shadow: 1px 1px 3px var(--app-shadow-color);
+
+        @media screen and (max-width: $x-small-limit) {
+          flex-wrap: wrap;
+          flex-direction: column-reverse;
+
+          .total-workouts,
+          .buttons {
+            width: 100%;
+          }
+          .buttons {
+            .spacer {
+              display: block;
+              flex-grow: 3;
+            }
+          }
         }
       }
 
