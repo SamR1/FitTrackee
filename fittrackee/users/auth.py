@@ -56,9 +56,9 @@ from .models import (
     BlockedUser,
     Notification,
     User,
-    UserDataExport,
     UserSportPreference,
     UserSportPreferenceEquipment,
+    UserTask,
 )
 from .roles import UserRole
 from .tasks import export_data
@@ -2156,8 +2156,8 @@ def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
         - ``invalid token, please log in again``
     :statuscode 500: ``error, please try again or contact the administrator``
     """
-    existing_export_request = UserDataExport.query.filter_by(
-        user_id=auth_user.id
+    existing_export_request = UserTask.query.filter_by(
+        task_type="user_data_export", user_id=auth_user.id
     ).first()
     if existing_export_request:
         if not existing_export_request.completed:
@@ -2175,11 +2175,13 @@ def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
         if existing_export_request:
             db.session.delete(existing_export_request)
             db.session.flush()
-        export_request = UserDataExport(user_id=auth_user.id)
+        export_request = UserTask(
+            user_id=auth_user.id, task_type="user_data_export"
+        )
         db.session.add(export_request)
         db.session.commit()
 
-        export_data.send(export_request_id=export_request.id)
+        export_data.send(task_id=export_request.id)
 
         return {"status": "success", "request": export_request.serialize()}
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
@@ -2246,8 +2248,8 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
     """
-    export_request = UserDataExport.query.filter_by(
-        user_id=auth_user.id
+    export_request = UserTask.query.filter_by(
+        user_id=auth_user.id, task_type="user_data_export"
     ).first()
     return {
         "status": "success",
@@ -2292,21 +2294,21 @@ def download_data_export(
         - ``invalid token, please log in again``
     :statuscode 404: ``file not found``
     """
-    export_request = UserDataExport.query.filter_by(
-        user_id=auth_user.id
+    export_request = UserTask.query.filter_by(
+        user_id=auth_user.id, task_type="user_data_export"
     ).first()
     if (
         not export_request
         or not export_request.completed
-        or export_request.file_name != file_name
+        or export_request.file_path.split("/")[-1] != file_name
     ):
         return DataNotFoundErrorResponse(
             data_type="archive", message="file not found"
         )
 
     return send_from_directory(
-        f"{current_app.config['UPLOAD_FOLDER']}/exports/{auth_user.id}",
-        export_request.file_name,
+        current_app.config["UPLOAD_FOLDER"],
+        export_request.file_path,
         mimetype="application/zip",
         as_attachment=True,
     )
