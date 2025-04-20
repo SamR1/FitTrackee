@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.9.6"
+version = "0.9.7"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0-only"
@@ -65,7 +65,7 @@ pytest-runner = "^6.0.1"
 pytest-selenium = "^4.1.0"
 pytest-xdist = {extras = ["psutil"], version = "^3.6.0"}
 recommonmark = "^0.7.1"
-ruff = "^0.11.5"
+ruff = "^0.11.6"
 selenium = "^4.31.0"
 sphinx = "^7.4.7" # sphinx 8+ requires python 3.10+
 sphinx-copybutton = "^0.5.2"

@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2024-11-01 19:45+0100\n"
-"PO-Revision-Date: 2023-03-05 07:12+0000\n"
-"Last-Translator: bjornclauw <bjorn.clauw.1@gmail.com>\n"
+"PO-Revision-Date: 2025-04-18 10:03+0000\n"
+"Last-Translator: Jeroen De Meerleer <me@jeroened.be>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/fittrackee/"
+"fittrackee-api-emails/nl/>\n"
 "Language: nl\n"
-"Language-Team: Dutch <https://hosted.weblate.org/projects/fittrackee"
-"/fittrackee-api-emails/nl/>\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.11.1-dev\n"
 "Generated-By: Babel 2.17.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
@@ -105,26 +106,27 @@ msgstr "Gebruik de onderstaande link om uw email adres te bevestigen."
 #: fittrackee/emails/templates/user_warning_lifting/subject.txt:1
 #, python-format
 msgid "Warning for %(username)s lifted"
-msgstr ""
+msgstr "Waarschuwing voor %(username)s is verwijderd"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:3
 msgid "Your appeal has been rejected"
-msgstr ""
+msgstr "Uw beroep is niet onontvankelijk verklaard"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:4
 #: fittrackee/emails/templates/appeal_rejected/body.txt:1
 msgid "Your appeal on your account suspension has been rejected"
 msgstr ""
+"Uw beroep tegen het verwijderen van uw account is onontvankelijk verklaard"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:4
 #: fittrackee/emails/templates/appeal_rejected/body.txt:1
 msgid "Your appeal on your warning has been rejected"
-msgstr ""
+msgstr "Uw beroep tegen uw waarschuwing is onontvankelijk verklaard"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:4
 #: fittrackee/emails/templates/appeal_rejected/body.txt:1
 msgid "Your appeal on the following content suspension has been rejected"
-msgstr ""
+msgstr "Uw beroep tegen volgende inhoudsblokkering is onontvankelijk verklaard"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:6
 #: fittrackee/emails/templates/appeal_rejected/body.txt:3
@@ -135,7 +137,7 @@ msgstr ""
 #: fittrackee/emails/templates/user_warning_lifting/body.html:6
 #: fittrackee/emails/templates/user_warning_lifting/body.txt:3
 msgid "Comment:"
-msgstr ""
+msgstr "Reageer:"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:22
 #: fittrackee/emails/templates/appeal_rejected/body.txt:7
@@ -146,7 +148,7 @@ msgstr ""
 #: fittrackee/emails/templates/workout_suspension/body.txt:5
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:5
 msgid "Workout:"
-msgstr ""
+msgstr "Training:"
 
 #: fittrackee/emails/templates/appeal_rejected/body.txt:5
 #: fittrackee/emails/templates/appeal_rejected/body.txt:9
@@ -157,22 +159,22 @@ msgstr ""
 #: fittrackee/emails/templates/user_warning_lifting/body.txt:9
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:7
 msgid "Link:"
-msgstr ""
+msgstr "Link:"
 
 #: fittrackee/emails/templates/appeal_rejected/subject.txt:1
 msgid "Appeal rejected"
-msgstr ""
+msgstr "Beroep onontvankelijk verklaard"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:2
 #: fittrackee/emails/templates/comment_suspension/subject.txt:1
 msgid "Your comment has been suspended"
-msgstr ""
+msgstr "Uw commentaar is geblokeerd"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:3
 #: fittrackee/emails/templates/comment_suspension/body.html:4
 #: fittrackee/emails/templates/comment_suspension/body.txt:1
 msgid "Your comment has been suspended, it is no longer visible"
-msgstr ""
+msgstr "Uw commentaar is geblokkeerd, het is niet langer zichtbaar"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:5
 #: fittrackee/emails/templates/comment_suspension/body.txt:3
@@ -189,7 +191,7 @@ msgstr ""
 #: fittrackee/emails/templates/workout_unsuspension/body.html:5
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:3
 msgid "Reason:"
-msgstr ""
+msgstr "Reden:"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:20
 #: fittrackee/emails/templates/comment_suspension/body.txt:7
@@ -200,25 +202,25 @@ msgstr ""
 #: fittrackee/emails/templates/workout_suspension/body.html:23
 #: fittrackee/emails/templates/workout_suspension/body.txt:7
 msgid "If you think this is an error, you can appeal:"
-msgstr ""
+msgstr "Als je denkt dat dit foutief is, kun je beroep aantekenen:"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:27
 #: fittrackee/emails/templates/user_suspension/body.html:14
 #: fittrackee/emails/templates/user_warning/body.html:48
 #: fittrackee/emails/templates/workout_suspension/body.html:30
 msgid "Appeal"
-msgstr ""
+msgstr "Beroep aantekenen"
 
 #: fittrackee/emails/templates/comment_unsuspension/body.html:2
 #: fittrackee/emails/templates/comment_unsuspension/subject.txt:1
 msgid "The suspension on your comment has been lifted"
-msgstr ""
+msgstr "De blokkering van jouw commentaar is weggehaald"
 
 #: fittrackee/emails/templates/comment_unsuspension/body.html:3
 #: fittrackee/emails/templates/comment_unsuspension/body.html:4
 #: fittrackee/emails/templates/comment_unsuspension/body.txt:1
 msgid "The suspension on your comment has been lifted, it is visible again"
-msgstr ""
+msgstr "De blokkering van uw commentaar is weggehaald, het is terug zichtbaar"
 
 #: fittrackee/emails/templates/data_export_ready/body.html:2
 #: fittrackee/emails/templates/data_export_ready/subject.txt:1
@@ -395,7 +397,7 @@ msgstr "Gebruik onderstaande link om het te resetten."
 #: fittrackee/emails/templates/user_suspension/body.txt:1
 #: fittrackee/emails/templates/user_suspension/subject.txt:1
 msgid "Your account has been suspended"
-msgstr ""
+msgstr "Uw account is geblokkeerd"
 
 #: fittrackee/emails/templates/user_suspension/body.html:3
 #: fittrackee/emails/templates/user_suspension/body.html:5
@@ -403,7 +405,7 @@ msgstr ""
 msgid ""
 "You can no longer use your account and your profile is no longer "
 "accessible"
-msgstr ""
+msgstr "Uw account is geblokkeerd is uw profiel is niet langer zichtbaar"
 
 #: fittrackee/emails/templates/user_suspension/body.html:5
 #: fittrackee/emails/templates/user_suspension/body.txt:2
@@ -411,6 +413,8 @@ msgid ""
 "You can still log in to request an export of your data or delete your "
 "account"
 msgstr ""
+"Je kan nog steeds aanmelden en een export van je data aanvragen of je "
+"account verwijderen"
 
 #: fittrackee/emails/templates/user_unsuspension/body.html:2
 #: fittrackee/emails/templates/user_unsuspension/body.html:3
@@ -418,51 +422,50 @@ msgstr ""
 #: fittrackee/emails/templates/user_unsuspension/body.txt:1
 #: fittrackee/emails/templates/user_unsuspension/subject.txt:1
 msgid "Your account has been reactivated"
-msgstr ""
+msgstr "Uw account is geheractiveerd"
 
 #: fittrackee/emails/templates/user_unsuspension/body.html:3
 #: fittrackee/emails/templates/user_unsuspension/body.html:4
 #: fittrackee/emails/templates/user_unsuspension/body.txt:2
 msgid "You can now use all the features on FitTrackee"
-msgstr ""
+msgstr "Je kan nu alle functies van FitTrackee gebruiken"
 
 #: fittrackee/emails/templates/user_warning/body.html:2
 #: fittrackee/emails/templates/user_warning/subject.txt:1
 #, python-format
 msgid "Warning for %(username)s"
-msgstr ""
+msgstr "Waarschuwing voor %(username)s"
 
 #: fittrackee/emails/templates/user_warning/body.html:3
 #: fittrackee/emails/templates/user_warning/body.html:4
 #: fittrackee/emails/templates/user_warning/body.txt:1
 msgid "You received a warning"
-msgstr ""
+msgstr "Je hebt een waarschuwing ontvangen"
 
 #: fittrackee/emails/templates/user_warning_lifting/body.html:3
 #: fittrackee/emails/templates/user_warning_lifting/body.html:4
 #: fittrackee/emails/templates/user_warning_lifting/body.txt:1
 msgid "Your warning has been lifted"
-msgstr ""
+msgstr "Uw waarschuwing is weggehaald"
 
 #: fittrackee/emails/templates/workout_suspension/body.html:2
 #: fittrackee/emails/templates/workout_suspension/subject.txt:1
 msgid "Your workout has been suspended"
-msgstr ""
+msgstr "Uw training is geblokkeerd"
 
 #: fittrackee/emails/templates/workout_suspension/body.html:3
 #: fittrackee/emails/templates/workout_suspension/body.html:4
 #: fittrackee/emails/templates/workout_suspension/body.txt:1
 msgid "Your workout has been suspended, it is no longer visible"
-msgstr ""
+msgstr "Uw training is geblokkeerd, het is niet langer zichtbaar"
 
 #: fittrackee/emails/templates/workout_unsuspension/body.html:2
 #: fittrackee/emails/templates/workout_unsuspension/subject.txt:1
 msgid "The suspension on your workout has been lifted"
-msgstr ""
+msgstr "De blokkering van je training is weggehaald"
 
 #: fittrackee/emails/templates/workout_unsuspension/body.html:3
 #: fittrackee/emails/templates/workout_unsuspension/body.html:4
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:1
 msgid "The suspension on your workout has been lifted, it is visible again"
-msgstr ""
-
+msgstr "The blokkering van je training is weggehaald, het is opnieuw zichtbaar"

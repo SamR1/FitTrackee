@@ -4,6 +4,10 @@
   "ASCENT": "dénivelé positif",
   "AVERAGE_SPEED": "vitesse moyenne",
   "AVE_SPEED": "vitesse moy.",
+  "AVE_ASCENT": "dénivelé positif moy.",
+  "AVE_DESCENT": "dénivelé négatif moy.",
+  "AVE_DISTANCE": "distance moy.",
+  "AVE_DURATION": "durée moy.",
   "BACK_TO_COMMENT": "revenir au commentaire",
   "BACK_TO_WORKOUT": "revenir à la séance",
   "COMMENTS": {
@@ -34,6 +38,7 @@
   "FROM": "à partir de",
   "GPX_FILE": "fichier .gpx",
   "HIDE_FILTERS": "masquer les filtres",
+  "HIDE_WORKOUTS": "masquer les séances",
   "INVALID_ASCENT_OR_DESCENT": "Les 2 valeurs pour l'élévation doivent être renseignées et être supérieures ou égales à 0.",
   "INVALID_DISTANCE": "La distance doit être supérieure à 0",
   "INVALID_DURATION": "La durée doit être supérieure à 0 secondes",
@@ -46,7 +51,7 @@
   "MAX_ALTITUDE": "altitude max",
   "MAX_FILES": "fichiers max. ",
   "MAX_SIZE": "taille max. ",
-  "MAX_SPEED": "vitesse max",
+  "MAX_SPEED": "vitesse max.",
   "MIN_ALTITUDE": "altitude min",
   "MULTISELECT": {
     "deselectLabel": "Appuyer sur Entrée pour supprimer",
@@ -85,6 +90,7 @@
   "REPORT_WORKOUT": "signaler la séance",
   "RESET_ZOOM": "Réinitialiser le zoom",
   "SEGMENT": "segment | segments",
+  "SHOW_WORKOUTS": "afficher les séances",
   "SPEED": "vitesse",
   "SPORT": "sport | sports",
   "START": "début",
@@ -139,8 +145,8 @@
   "WITH_GPX": "avec un fichier .gpx",
   "WORKOUT": "séance | séances",
   "WORKOUTS_STATISTICS": {
-    "all": "statistiques pour toutes les pages",
-    "current_page": "statistiques pour la page en cours",
+    "all": "statistiques pour toutes les pages ({count} séances)",
+    "current_page": "statistiques pour la page en cours ({count} séances)",
     "limited": "statistiques pour les {count} séances"
   },
   "WORKOUT_CHART": "graphe de vitesse et d'altitude de la séance",

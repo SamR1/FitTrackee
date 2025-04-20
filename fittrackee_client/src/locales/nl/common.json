@@ -6,20 +6,30 @@
   "CONTACT": "contacteer",
   "DAY": "dag | dagen",
   "DESCRIPTION": "Beschrijving",
+  "DISABLED": "uitgeschakeld",
   "DISPLAYED": "Weergegeven",
   "DOCUMENTATION": "documentatie",
+  "EDITED": "bewerkt",
+  "ENABLED": "ingeschakeld",
   "HERE": "hier",
   "HIDDEN": "Verborgen",
+  "HIDE": "Verberg",
   "HOME": "Startscherm",
   "HOURS": "uur|uren",
   "INACTIVE": "inactief",
   "LABEL": "label",
+  "LAST_UPDATED_ON": "Laatste wijziging op",
   "MINUTES": "minuut|minuten",
   "NEXT": "volgende",
   "NO_DESCRIPTION": "Geen beschrijving",
   "NO_NOTES": "Geen notities",
   "PREVIOUS": "vorige",
+  "REPORT_PLACEHOLDER": "Geef een reden voor de melding",
+  "REPORT_SUBMITTED": "Melding aangemaakt.",
+  "SCROLL_DOWN": "Scroll naar beneden",
+  "SCROLL_UP": "Scroll naar boven",
   "SECONDS": "seconde|secondes",
+  "SEE_REPORT": "Bekijk melding {0}.",
   "SELECTS": {
     "ORDER": {
       "ASC": "oplopend",
@@ -34,5 +44,6 @@
     }
   },
   "TOTAL": "Totaal",
-  "TOTAL_DURATION_WITH_PAUSES": "totale duur inclusief pauzes"
+  "TOTAL_DURATION_WITH_PAUSES": "totale duur inclusief pauzes",
+  "TYPE": "type"
 }

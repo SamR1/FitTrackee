@@ -72,7 +72,11 @@ MAX_WORKOUTS_PER_PAGE = 100
 MAX_WORKOUTS_TO_SEND = 5
 DEFAULT_WORKOUT_LIKES_PER_PAGE = 10
 NO_STATISTICS = {
-    "ave_speed": None,
+    "average_ascent": None,
+    "average_descent": None,
+    "average_distance": None,
+    "average_duration": None,
+    "average_speed": None,
     "count": 0,
     "max_speed": None,
     "total_ascent": None,
@@ -91,6 +95,10 @@ def get_statistics(
         func.sum(workouts_subquery.c.descent),
         func.sum(workouts_subquery.c.distance),
         func.sum(workouts_subquery.c.moving),
+        func.avg(workouts_subquery.c.ascent),
+        func.avg(workouts_subquery.c.descent),
+        func.avg(workouts_subquery.c.distance),
+        func.avg(workouts_subquery.c.moving),
         func.count(workouts_subquery.c.id),
         func.count(distinct(workouts_subquery.c.sport_id)),
     ]
@@ -103,19 +111,33 @@ def get_statistics(
     stats_query = db.session.query(*columns).first()
     if not stats_query:
         return NO_STATISTICS
-    total_sports = None if stats_query[5] is None else stats_query[5]
+    total_sports = None if stats_query[9] is None else stats_query[9]
     return_speeds = total_sports == 1 and get_speeds
     return {
-        "ave_speed": (
-            None
-            if not return_speeds or stats_query[6] is None
-            else round(float(stats_query[6]), 2)
+        "average_ascent": (
+            None if stats_query[4] is None else round(float(stats_query[4]), 2)
         ),
-        "count": None if stats_query[4] is None else stats_query[4],
+        "average_descent": (
+            None if stats_query[5] is None else round(float(stats_query[5]), 2)
+        ),
+        "average_distance": (
+            None if stats_query[6] is None else round(float(stats_query[6]), 2)
+        ),
+        "average_duration": (
+            None
+            if stats_query[7] is None
+            else str(stats_query[7]).split(".")[0]
+        ),
+        "average_speed": (
+            None
+            if not return_speeds or stats_query[10] is None
+            else round(float(stats_query[10]), 2)
+        ),
+        "count": None if stats_query[8] is None else stats_query[8],
         "max_speed": (
             None
-            if not return_speeds or stats_query[7] is None
-            else round(float(stats_query[7]), 2)
+            if not return_speeds or stats_query[11] is None
+            else round(float(stats_query[11]), 2)
         ),
         "total_ascent": (
             None if stats_query[0] is None else round(float(stats_query[0]), 2)
@@ -460,8 +482,26 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 }
             elif workouts_pagination.total == 1:
                 workout = workouts[0]
+                ascent = (
+                    None if workout.ascent is None else float(workout.ascent)
+                )
+                descent = (
+                    None if workout.descent is None else float(workout.descent)
+                )
+                distance = (
+                    None
+                    if workout.distance is None
+                    else float(workout.distance)
+                )
+                duration = (
+                    None if workout.moving is None else str(workout.moving)
+                )
                 workout_total: Dict = {
-                    "ave_speed": (
+                    "average_ascent": ascent,
+                    "average_descent": descent,
+                    "average_distance": distance,
+                    "average_duration": duration,
+                    "average_speed": (
                         None
                         if workout.ave_speed is None
                         else float(workout.ave_speed)
@@ -472,24 +512,10 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                         if workout.max_speed is None
                         else float(workout.max_speed)
                     ),
-                    "total_ascent": (
-                        None
-                        if workout.ascent is None
-                        else float(workout.ascent)
-                    ),
-                    "total_descent": (
-                        None
-                        if workout.descent is None
-                        else float(workout.descent)
-                    ),
-                    "total_distance": (
-                        None
-                        if workout.distance is None
-                        else float(workout.distance)
-                    ),
-                    "total_duration": (
-                        None if workout.moving is None else str(workout.moving)
-                    ),
+                    "total_ascent": ascent,
+                    "total_descent": descent,
+                    "total_distance": distance,
+                    "total_duration": duration,
                     "total_sports": 1,
                 }
                 statistics = {

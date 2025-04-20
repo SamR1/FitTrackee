@@ -191,10 +191,10 @@ lint-all: lint-python lint-client
 lint-all-fix: lint-python-fix lint-client-fix
 
 lint-client:
-	cd fittrackee_client && $(NPM) lint
+	cd fittrackee_client && $(NPM) lint-check && $(NPM) format-check
 
 lint-client-fix:
-	cd fittrackee_client && $(NPM) format
+	cd fittrackee_client && $(NPM) lint && $(NPM) format
 
 lint-python:
 	$(RUFF) check fittrackee e2e

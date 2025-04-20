@@ -43,6 +43,7 @@ export const SPORT_EQUIPMENT_TYPES: Record<string, string[]> = {
     'Cycling (Sport)',
     'Cycling (Transport)',
     'Cycling (Trekking)',
+    'Halfbike',
     'Mountain Biking',
     'Mountain Biking (Electric)',
   ],
