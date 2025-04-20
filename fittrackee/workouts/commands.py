@@ -30,9 +30,9 @@ def workouts_archive_upload(
 ) -> None:
     """
     Process workouts archive upload if incomplete tasks exist (progress = 0 and
-    (not errored).
+    not aborted/errored).
     To use in case redis is not set.
     """
     with app.app_context():
-        count = process_workouts_archives_upload(max_archives)
-        logger.info(f"Workouts archives processed: {count}.")
+        count = process_workouts_archives_upload(max_archives, logger)
+        logger.info(f"\nWorkouts archives processed: {count}.")

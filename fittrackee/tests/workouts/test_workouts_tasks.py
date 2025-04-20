@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from time_machine import travel
 
@@ -144,8 +144,9 @@ class TestProcessWorkoutsArchivesUpload(UserTaskMixin):
         self.create_user_data_export_task(user_1)
         self.create_workouts_upload_task(user_1, progress=10)
         self.create_workouts_upload_task(user_1, errored=True)
+        logger = MagicMock()
 
-        count = process_workouts_archives_upload(max_count=1)
+        count = process_workouts_archives_upload(max_count=1, logger=logger)
 
         assert count == 0
 
@@ -160,9 +161,12 @@ class TestProcessWorkoutsArchivesUpload(UserTaskMixin):
             user_1, workouts_data=workouts_data
         )
         now = datetime.now(tz=timezone.utc)
+        logger = MagicMock()
 
         with travel(now, tick=False):
-            count = process_workouts_archives_upload(max_count=1)
+            count = process_workouts_archives_upload(
+                max_count=1, logger=logger
+            )
 
         assert count == 1
         assert task_1.updated_at == now
@@ -176,6 +180,7 @@ class TestProcessWorkoutsArchivesUpload(UserTaskMixin):
             workouts_data={"sport_id": sport_1_cycling.id},
             file_path="invalid/file/path",
         )
+        logger = MagicMock()
 
         try:
             with (
@@ -188,7 +193,7 @@ class TestProcessWorkoutsArchivesUpload(UserTaskMixin):
                     "fittrackee.workouts.tasks.update_task_and_clean"
                 ) as update_task_and_clean_mock,
             ):
-                process_workouts_archives_upload(max_count=1)
+                process_workouts_archives_upload(max_count=1, logger=logger)
         except Exception:
             pass
 
