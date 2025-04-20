@@ -30,6 +30,8 @@ from .base_workout_service import BaseWorkoutService
 from .workout_from_file import WorkoutGpxCreationService
 
 if TYPE_CHECKING:
+    from logging import Logger
+
     from werkzeug.datastructures import FileStorage
 
     from fittrackee.visibility_levels import VisibilityLevel
@@ -454,7 +456,9 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
             "task_short_id": None,
         }
 
-    def process(self) -> Tuple[List["Workout"], Dict]:
+    def process(
+        self, logger: Optional["Logger"] = None
+    ) -> Tuple[List["Workout"], Dict]:
         if self.file is None:
             raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
         if self.file.filename is None:

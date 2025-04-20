@@ -1,9 +1,11 @@
 import os
 from datetime import datetime, timezone
+from logging import Logger
 from typing import Optional
 
 from dramatiq.middleware import Shutdown, TimeLimitExceeded
 from dramatiq_abort import Abort
+from humanize import naturalsize
 
 from fittrackee import db, dramatiq
 from fittrackee.constants import TASKS_TIME_LIMIT, TaskPriority
@@ -93,13 +95,14 @@ def upload_workouts_archive(task_id: int) -> None:
         db.session.close()
 
 
-def process_workouts_archives_upload(max_count: int) -> int:
+def process_workouts_archives_upload(max_count: int, logger: Logger) -> int:
     count = 0
     upload_tasks = (
         db.session.query(UserTask)
         .filter(
             UserTask.progress == 0,
             UserTask.errored == False,  # noqa
+            UserTask.aborted == False,  # noqa
             UserTask.task_type == "workouts_archive_upload",
         )
         .order_by(UserTask.created_at)
@@ -108,15 +111,33 @@ def process_workouts_archives_upload(max_count: int) -> int:
     )
 
     for upload_task in upload_tasks:
+        files_count = len(upload_task.data.get("files_to_process", []))
+        file_size = (
+            str(upload_task.file_size) if upload_task.file_size else "0"
+        )
+        logger.info(
+            f"Processing task '{upload_task.id}' (files: {files_count}, "
+            f"size: {naturalsize(file_size)})..."
+        )
         try:
             service = WorkoutsFromArchiveCreationAsyncService(upload_task.id)
             service.process()
+            db.session.refresh(upload_task)
+            archive_error = upload_task.errors.get("archive")
+            if archive_error:
+                logger.info(f" > archive error: {archive_error}")
+            files_error = upload_task.errors.get("files", {})
+            if files_error:
+                logger.info(f" > errored files: {len(files_error.keys())}")
             count += 1
-        except Exception as e:
+        except (KeyboardInterrupt, Exception) as e:
             db.session.rollback()
-            update_task_and_clean(
-                error=GENERIC_ERROR, upload_task_id=upload_task.id
+            error = (
+                "task execution aborted"
+                if isinstance(e, KeyboardInterrupt)
+                else GENERIC_ERROR
             )
+            update_task_and_clean(error=error, upload_task_id=upload_task.id)
             raise e
 
     return count
