@@ -25,9 +25,9 @@ from fittrackee.users.models import (
     FollowRequest,
     Notification,
     User,
-    UserDataExport,
     UserSportPreference,
     UserSportPreferenceEquipment,
+    UserTask,
 )
 from fittrackee.users.roles import UserRole
 from fittrackee.workouts.models import Sport, Workout
@@ -809,10 +809,14 @@ class TestUserSportModel:
         )
 
 
-class TestUserDataExportSerializer:
+class TestUserTaskSerializer:
     def test_it_returns_ongoing_export(self, app: Flask, user_1: User) -> None:
         created_at = datetime.now(timezone.utc)
-        data_export = UserDataExport(user_id=user_1.id, created_at=created_at)
+        data_export = UserTask(
+            user_id=user_1.id,
+            created_at=created_at,
+            task_type="user_data_export",
+        )
 
         serialized_data_export = data_export.serialize()
 
@@ -825,22 +829,32 @@ class TestUserDataExportSerializer:
         self, app: Flask, user_1: User
     ) -> None:
         created_at = datetime.now(timezone.utc)
-        data_export = UserDataExport(user_id=user_1.id, created_at=created_at)
-        data_export.completed = True
-        data_export.file_name = random_string()
+        data_export = UserTask(
+            user_id=user_1.id,
+            created_at=created_at,
+            task_type="user_data_export",
+        )
+        data_export.progress = 100
+        file_name = random_string()
+        data_export.file_path = f"exports/{user_1.id}/{file_name}"
         data_export.file_size = random_int()
 
         serialized_data_export = data_export.serialize()
 
         assert serialized_data_export["created_at"] == created_at
         assert serialized_data_export["status"] == "successful"
-        assert serialized_data_export["file_name"] == data_export.file_name
+        assert serialized_data_export["file_name"] == file_name
         assert serialized_data_export["file_size"] == data_export.file_size
 
     def test_it_returns_errored_export(self, app: Flask, user_1: User) -> None:
         created_at = datetime.now(timezone.utc)
-        data_export = UserDataExport(user_id=user_1.id, created_at=created_at)
-        data_export.completed = True
+        data_export = UserTask(
+            user_id=user_1.id,
+            created_at=created_at,
+            task_type="user_data_export",
+        )
+        data_export.progress = 100
+        data_export.errored = True
 
         serialized_data_export = data_export.serialize()
 

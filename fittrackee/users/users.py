@@ -32,7 +32,7 @@ from .exceptions import (
     OwnerException,
     UserNotFoundException,
 )
-from .models import FollowRequest, User, UserDataExport, UserSportPreference
+from .models import FollowRequest, User, UserSportPreference, UserTask
 from .roles import UserRole
 from .users_service import UserManagerService
 from .utils.language import get_language
@@ -855,9 +855,7 @@ def delete_user(
             WorkoutSegment.workout_id == Workout.id, Workout.user_id == user.id
         ).delete(synchronize_session=False)
         db.session.query(Workout).filter(Workout.user_id == user.id).delete()
-        db.session.query(UserDataExport).filter(
-            UserDataExport.user_id == user.id
-        ).delete()
+        db.session.query(UserTask).filter(UserTask.user_id == user.id).delete()
         db.session.flush()
         user_picture = user.picture
         db.session.delete(user)
