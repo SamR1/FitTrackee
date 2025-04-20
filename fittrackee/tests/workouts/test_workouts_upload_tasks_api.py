@@ -339,13 +339,23 @@ class TestWorkoutsTasksDeleteTask(
 
         self.assert_404_with_message(response, "no task found")
 
-    def test_it_deletes_user_task_when_task_is_errored(
+    @pytest.mark.parametrize(
+        "input_status, input_task_data",
+        [
+            ("aborted", {"aborted": True}),
+            ("errored", {"errored": True}),
+            ("successful", {"progress": 100}),
+        ],
+    )
+    def test_it_deletes_user_task_when_status_is_valid(
         self,
         app: "Flask",
         user_1: "User",
+        input_status: str,
+        input_task_data: Dict,
     ) -> None:
         workouts_upload_task = self.create_workouts_upload_task(
-            user_1, errored=True
+            user_1, **input_task_data
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -359,55 +369,19 @@ class TestWorkoutsTasksDeleteTask(
         assert response.status_code == 204
         assert UserTask.query.count() == 0
 
-    def test_it_deletes_user_task_when_task_is_successful(
+    @pytest.mark.parametrize(
+        "input_status, input_task_data",
+        [("queued", {"progress": 0}), ("in_progress", {"progress": 10})],
+    )
+    def test_it_returns_400_when_status_is_invalid(
         self,
         app: "Flask",
         user_1: "User",
+        input_status: str,
+        input_task_data: Dict,
     ) -> None:
         workouts_upload_task = self.create_workouts_upload_task(
-            user_1, progress=100
-        )
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.delete(
-            self.route.format(task_id=workouts_upload_task.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        assert response.status_code == 204
-        assert UserTask.query.count() == 0
-
-    def test_it_returns_400_when_task_is_queued(
-        self,
-        app: "Flask",
-        user_1: "User",
-    ) -> None:
-        workouts_upload_task = self.create_workouts_upload_task(
-            user_1, progress=0
-        )
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.delete(
-            self.route.format(task_id=workouts_upload_task.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        self.assert_400(
-            response,
-            "queued or ongoing workout upload task can not be deleted",
-        )
-
-    def test_it_returns_400_when_task_is_in_progress(
-        self,
-        app: "Flask",
-        user_1: "User",
-    ) -> None:
-        workouts_upload_task = self.create_workouts_upload_task(
-            user_1, progress=10
+            user_1, **input_task_data
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
