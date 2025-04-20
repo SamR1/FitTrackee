@@ -140,13 +140,15 @@ export const formatDate = (
   dateString: string,
   timezone: string,
   dateFormat: string,
-  withTime = true,
-  language: TLanguage | null = null,
-  withSeconds = false
+  options: {
+    withTime?: boolean
+    language?: TLanguage | null
+    withSeconds?: boolean
+  } = {}
 ): string => {
-  if (!language) {
-    language = locale.value
-  }
+  const language = options.language ?? locale.value
+  const withTime = options.withTime ?? true
+  const withSeconds = options.withSeconds ?? false
 
   const dateFormatForLanguage = getDateFormat(dateFormat, language)
   const dateWithTimezone = getDateWithTZ(dateString, timezone)
@@ -188,13 +190,10 @@ export const availableDateFormatOptions = (
   availableDateFormats.forEach((df) => {
     const dateFormat = getDateFormat(df, l)
     options.push({
-      label: `${dateFormat} - ${formatDate(
-        inputDate,
-        timezone,
-        dateFormat,
-        false,
-        l
-      )}`,
+      label: `${dateFormat} - ${formatDate(inputDate, timezone, dateFormat, {
+        withTime: false,
+        language: l,
+      })}`,
       value: df,
     })
   })

@@ -178,9 +178,7 @@
           exportRequest.value.created_at,
           user.value.timezone,
           user.value.date_format,
-          true,
-          null,
-          true
+          { withTime: true, language: null, withSeconds: true }
         )
       : null
   }

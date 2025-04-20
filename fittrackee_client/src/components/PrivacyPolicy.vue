@@ -55,7 +55,7 @@
       appConfig.value.privacy_policy_date,
       timezone.value,
       dateFormat.value,
-      false
+      { withTime: false }
     )
   }
 </script>
