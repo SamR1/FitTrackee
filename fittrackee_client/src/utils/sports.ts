@@ -7,6 +7,7 @@ export const sportColors: Record<string, string> = {
   'Cycling (Trekking)': '#a8af88',
   'Cycling (Transport)': '#88af98',
   'Cycling (Virtual)': '#64a360',
+  Halfbike: '#d3638a',
   Hiking: '#bb757c',
   Kayaking: '#4978c4',
   'Mountain Biking': '#d4b371',

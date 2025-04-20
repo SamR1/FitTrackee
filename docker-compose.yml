@@ -29,7 +29,7 @@ services:
     env_file:
       - .env
 # Image from Docker Hub
-    image: fittrackee/fittrackee:v0.9.6
+    image: fittrackee/fittrackee:v0.9.7
 # Uncomment following line to build image instead of using pre-built image
 #    build: .
     volumes:
@@ -44,7 +44,7 @@ services:
     depends_on:
       fittrackee-db:
         condition: service_healthy
-# Uncomment the following lines for API rate limit and email sending
+# Uncomment the following lines for API rate limit, user data export and email sending
 #      fittrackee-redis:
 #        condition: service_healthy
     healthcheck:
@@ -63,7 +63,7 @@ services:
 #    env_file:
 #      - .env
 ## Image from Docker Hub
-#    image: fittrackee/fittrackee:v0.9.6
+#    image: fittrackee/fittrackee:v0.9.7
 ## Uncomment following line to build image instead of using pre-built image
 ##    build: .
 #    volumes:

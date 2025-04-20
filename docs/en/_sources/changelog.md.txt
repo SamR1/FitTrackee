@@ -1,5 +1,43 @@
 # Change log
 
+## Version 0.9.7 (2025/04/20)
+
+### Features and enhancements
+
+* [PR#764](https://github.com/SamR1/FitTrackee/pull/764) - New sport: Halfbike
+  * [PR#768](https://github.com/SamR1/FitTrackee/pull/768) - add equipment (bike) to Halfbike workouts
+* [PR#767](https://github.com/SamR1/FitTrackee/pull/767) - Add averages in workouts list
+
+
+### Translations
+
+* [PR#765](https://github.com/SamR1/FitTrackee/pull/765) - Translations update (Dutch)
+
+Translation status:
+- Basque: 81%
+- Bulgarian: 62%
+- Chinese (Simplified): 98%
+- Czech: 46%
+- Dutch: 98%
+- English: 100%
+- French: 100%
+- Galician: 98%
+- German: 98%
+- Italian: 51%
+- Norwegian Bokmål: 33%
+- Polish: 97%
+- Portuguese: 61%
+- Russian: 39%
+- Spanish: 63%
+
+
+Thanks to the contributors:
+- @astridx
+- @JeroenED
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
+
+
 ## Version 0.9.6 (2025/04/16)
 
 ### Translations

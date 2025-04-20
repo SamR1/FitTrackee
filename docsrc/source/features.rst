@@ -17,13 +17,14 @@ Workouts
 Sports
 ------
 
-- 20 sports are supported:
+- 21 sports are supported:
 
   - Canoeing  (*new in 0.9.3*)
   - Cycling (Sport)
   - Cycling (Transport)
   - Cycling (Trekking)  (*new in 0.7.27*)
   - Cycling (Virtual)  (*new in 0.7.3*)
+  - Halfbike  (*new in 0.9.7*)
   - Hiking
   - Kayaking  (*new in 0.9.3*)
   - Mountain Biking
@@ -165,10 +166,14 @@ Workouts
 
     - total distance
     - total duration
-    - average speed (when workouts belong to the same sport)
     - maximum speed (when workouts belong to the same sport)
     - total ascent
     - total descent
+    - average distance (*new in 0.9.7*)
+    - average duration (*new in 0.9.7*)
+    - average speed (when workouts belong to the same sport)
+    - average ascent (*new in 0.9.7*)
+    - average descent (*new in 0.9.7*)
 
     When multiple pages are fetched, statistics for all pages are also displayed.
 
@@ -369,7 +374,7 @@ Equipments
 - The following equipment types are available, depending on the sport:
 
   - Shoes: Hiking, Mountaineering, Running, Trail and Walking,
-  - Bike: Cycling (Sport, Transport, Trekking), Mountain Biking and Mountain Biking (Electric),
+  - Bike: Cycling (Sport, Transport, Trekking), Halfbike, Mountain Biking and Mountain Biking (Electric) (*changed in 0.9.7*),
   - Bike Trainer: Cycling (Virtual),
   - Kayak/Boat: Canoeing, Rowing and Kayaking (*changed in 0.9.3*),
   - Skis: Skiing (Alpine and Cross Country),

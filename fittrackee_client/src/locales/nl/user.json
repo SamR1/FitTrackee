@@ -2,7 +2,15 @@
   "ACCOUNT_CONFIRMATION": "Account bevestigen",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Geen instructies ontvangen?",
   "ACCOUNT_CONFIRMATION_SENT": "Controleer uw email. Een nieuwe bevestigingsmail werd verzonden naar het opgegeven adres.",
+  "ACCOUNT_SUSPENDED_AT": "Gebruikers geblokkeerd op {0}.",
+  "ACTIVE_ACCOUNT": "Dit account is actief",
+  "ACTIVE_USER": "actieve gebruiker | actieve gebruikers",
   "ALREADY_HAVE_ACCOUNT": "Al een account aangemaakt?",
+  "APPEAL": "Beroep aantekenen",
+  "APPEAL_APPROVED": "Beroep goedgekeurd.",
+  "APPEAL_IN_PROGRESS": "Beroep word momenteel verwerkt.",
+  "APPEAL_REJECTED": "Beroep werd onontvankelijk verklaard.",
+  "APPEAL_SUBMITTED": "Beroep aangetekend.",
   "CONFIRM_ACCOUNT_DELETION": "Weet u zeker dat u uw account wilt verwijderen? Alle data wordt verwijderd, dit kan niet ongedaan worden.",
   "CURRENT_PASSWORD": "Huidig wachtwoord",
   "EMAIL": "Email",
@@ -32,6 +40,8 @@
   "NEW_PASSWORD": "Nieuw wachtwoord",
   "NO_SPORT_FOUND": "Geen sport gevonden.",
   "NO_USERS_FOUND": "Geen gebruikers gevonden.",
+  "NO_WARNING_FOUND": "Geen waarschuwingen gevonden.",
+  "ONLY_USERS_FROM_THIS_INSTANCE_ARE_DISPLAYED": ", enkel {0} van deze instatie worden weergegeven",
   "PASSWORD": "Wachtwoord",
   "PASSWORD_FORGOTTEN": "Wachtwoord vergeten?",
   "PASSWORD_INFO": "Tenminste 8 karakters vereist.",
@@ -61,14 +71,17 @@
     "WEAK": "zwak"
   },
   "PASSWORD_UPDATED": "Uw wachtwoord werd aangepast. Klik {0} om in te loggen.",
+  "PRIVACY_POLICY_TO_VALIDATE": "Gelieve de privacy verklaring {0} voor verder te gaan.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Account aanpassen",
     "ASCENT_DATA": "Hoogte gerelateerde data (opnames, totaal)",
     "BACK_TO_PROFILE": "Terug naar profiel",
     "BIO": "Bio",
     "BIRTH_DATE": "Geboortedatum",
+    "CREATED_REPORTS": "Aangemaakte meldingen",
     "DATE_FORMAT": "Weergaveformaat datum",
     "EDIT": "Profiel aanpassen",
+    "EDIT_NOTIFICATION_PREFERENCES": "Wijzig meldingen",
     "EDIT_PREFERENCES": "Voorkeuren wijzigen",
     "EDIT_SPORTS_PREFERENCES": "Sport voorkeuren wijzigen",
     "ELEVATION_CHART_START": {
@@ -90,11 +103,30 @@
     "ERRORED_EMAIL_UPDATE": "Gelieve {0} om uw email adres opnieuw te wijzigen of contacteer uw administrator",
     "FIRST_DAY_OF_WEEK": "Eerste dag van de week",
     "FIRST_NAME": "Voornaam",
+    "FOLLOW_REQUESTS_APPROVAL": {
+      "AUTOMATICALLY": "Automatisch",
+      "LABEL": "Volgverzoeken goedkeuren",
+      "MANUALLY": "Manueel"
+    },
     "INTERFACE": "Interface",
     "LANGUAGE": "Taal",
     "LAST_NAME": "Achternaam",
+    "LATEST_SANCTIONS_RECEIVED": "Laatste ontvangen sancties",
     "LOCATION": "Locatie",
     "MONDAY": "Maandag",
+    "NOTIFICATIONS": {
+      "account_creation": "Iemand is geregistreerd",
+      "comment_like": "Iemand vind uw reactie leuk",
+      "follow": "Iemand volgt u",
+      "follow_request": "Iemand heeft een volgverzoek verzonden",
+      "follow_request_approved": "Uw volgverzoek werd goedgekeurd",
+      "mention": "Iemand heeft u vermeld",
+      "workout_comment": "Iemand heeft gereageerd op uw training",
+      "workout_like": "Iemand vind uw training leuk"
+    },
+    "NOTIFICATIONS_EDITION": "Meldingseditie",
+    "NOTIFICATION_PREFERENCES": "Meldingsvoorkeuren",
+    "NO_SANCTIONS": "Geen sanctie",
     "PICTURE": "Afbeelding",
     "PICTURE_EDITION": "Afbeelding aanpassen",
     "PICTURE_REMOVE": "Afbeelding verwijderen",
@@ -102,7 +134,25 @@
     "PREFERENCES_EDITION": "Voorkeuren aanpassen",
     "PRIVACY-POLICY_EDITION": "Privacybeleid",
     "PROFILE_EDITION": "Profiel aanpassen",
+    "PROFILE_IN_USERS_DIRECTORY": {
+      "DISPLAYED": "Weergegeven",
+      "HIDDEN": "Verborgen",
+      "LABEL": "Gebruiker in gebruikersoverzicht"
+    },
     "REGISTRATION_DATE": "Datum registratie",
+    "REPORTS_FROM_OTHER_USERS": "Meldingen van andere gebruikers",
+    "SANCTIONS": {
+      "comment_suspension": "Reactieblokkering ({date})",
+      "user_suspension": "Gebruikersblokkering ({date})",
+      "user_warning": "Waarschuwing ({date})",
+      "workout_suspension": "Trainingsblokkering ({date})"
+    },
+    "SANCTIONS_RECEIVED": "Sancties ontvangen",
+    "SANCTION_APPEAL": {
+      "APPROVED": "uw beroep werd goedgekeurd",
+      "IN_PROGRESS": "Uw beroep word verwerkt",
+      "REJECTED": "Uw beroep werd onontvankelijk verklaard"
+    },
     "SPORT": {
       "ACTION": "actie",
       "COLOR": "kleur",
@@ -123,7 +173,11 @@
     "TABS": {
       "ACCOUNT": "account",
       "APPS": "apps",
+      "BLOCKED-USERS": "geblokkeerde gebruikers",
       "EQUIPMENTS": "materialen",
+      "FOLLOW-REQUESTS": "volgverzoeken",
+      "MODERATION": "moderatie",
+      "NOTIFICATIONS": "meldingen",
       "PICTURE": "afbeelding",
       "PREFERENCES": "voorkeuren",
       "PRIVACY-POLICY": "Privacybeleid",
@@ -144,6 +198,7 @@
       "LABEL": "Eenheid voor afstand",
       "METRIC": "Metrisch systeem (m, km, m/s, °C)"
     },
+    "USER_RECEIVED_SANCTIONS": "Deze gebruiker heeft {count} sanctie ontvangen.|Deze gebruiker heeft {count} sancties ontvangen.",
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Gefilterd",
       "HELP": "Bij filteren worden extreme waarden (dewelke mogelijk GPS fouten zijn) niet gebruikt om de maximum snelheid te berekenen.",
@@ -154,17 +209,40 @@
   "READ_AND_ACCEPT_PRIVACY_POLICY": "Ik heb het {0} gelezen en goedgekeurd.",
   "REGISTER": "Registreren",
   "REGISTER_DISABLED": "Sorry, registreren is uitgeschakeld.",
+  "RELATIONSHIPS": {
+    "BLOCKED": "geblokkeerd",
+    "FOLLOWER": "volger | volgers",
+    "FOLLOWING": "volgend | volgenden",
+    "FOLLOWS_YOU": "volgt jou",
+    "NO_FOLLOWERS": "Nog geen volgers.",
+    "NO_FOLLOWING": "Je volgt nog niemand.",
+    "NO_FOLLOW_REQUESTS": "Geen volgverzoeken te bekijken."
+  },
+  "REPORT": "Meld",
   "RESENT_ACCOUNT_CONFIRMATION": "Opnieuw zenden van account bevestigingsmail",
   "RESET_PASSWORD": "Reset uw wachtwoord",
   "REVIEW": "beoordeel",
+  "ROLE": "Rol",
   "ROLES": {
-    "admin": "Beheerder"
+    "admin": "Beheerder",
+    "moderator": "Moderator",
+    "owner": "Eigenaar",
+    "user": "Gebruiker"
   },
   "SHOW_PASSWORD": "toon wachtwoord",
+  "SUSPENDED": "Geblokkeerd",
+  "SUSPENDED_ACCOUNT": "Geblokkeerde gebruiker",
+  "SUSPENSION_REASON": "Reden voor blokkering",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Deze account is niet actief.",
   "TOGGLE_THEME": "Schakel thema (lichte of donkere modus)",
+  "USER": "gebruiker | gebruikers",
   "USERNAME": "Gebruikersnaam",
   "USERNAME_INFO": "3 tot 30 karakters vereist, enkel alfanumerieke karakters en het underscore karakter \"_\" zijn toegestaan.",
   "USER_PICTURE": "gebruikersafbeelding",
+  "USER_PROFILE": "gebruikersprofiel",
+  "WARNING_REASON": "Reden voor waarschuwing",
+  "YOU": "jij",
+  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "Uw account is geblokkeerd",
+  "YOU_CAN_APPEAL_ONCE": "Je kan slechts 1 keer beroep aantekenen.",
   "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "U hebt het {0} aanvaard."
 }
