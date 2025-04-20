@@ -241,6 +241,7 @@ export type IArchiveUploadTaskStatus =
 export interface IArchiveUploadTask {
   created_at: string
   errored_files: IArchiveUploadTaskError
+  file_size: number
   files_count: number
   id: string
   new_workouts_count: number
@@ -248,4 +249,5 @@ export interface IArchiveUploadTask {
   progress: string
   sport_id: number | null
   status: IArchiveUploadTaskStatus
+  updated_at: string
 }

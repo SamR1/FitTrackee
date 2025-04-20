@@ -18,12 +18,17 @@
     <div v-else-if="uploadTask.id" class="description-list">
       <dl>
         <dt>{{ $t('common.CREATION_DATE') }}:</dt>
-        <dd>{{ uploadTask.created_at }}</dd>
+        <dd>{{ uploadTaskCreationDate }}</dd>
+      </dl>
+      <dl>
+        <dt>{{ $t('common.LAST_UPDATE') }}:</dt>
+        <dd>{{ uploadTaskUpdateDate }}</dd>
       </dl>
       <dl v-if="uploadTask.original_file_name" class="file-name">
         <dt>{{ $t('user.PROFILE.ARCHIVE_UPLOADS.ARCHIVE') }}:</dt>
         <dd :title="uploadTask.original_file_name">
           {{ uploadTask.original_file_name }}
+          ({{ getReadableFileSizeAsText(uploadTask.file_size) }})
         </dd>
       </dl>
       <dl>
@@ -142,6 +147,8 @@
   import type { ITranslatedSport } from '@/types/sports.ts'
   import type { IArchiveUploadTask } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { formatDate } from '@/utils/dates.ts'
+  import { getReadableFileSizeAsText } from '@/utils/files'
 
   const store = useStore()
   const route = useRoute()
@@ -150,11 +157,37 @@
   const { errorMessages } = useApp()
   const { translatedSports } = useSports()
 
+  const { displayOptions } = useApp()
+
   const displayedModal: Ref<boolean> = ref(false)
   const isDeletion: Ref<boolean> = ref(false)
 
   const uploadTask: ComputedRef<IArchiveUploadTask> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.ARCHIVE_UPLOAD_TASK]
+  )
+  const uploadTaskCreationDate: ComputedRef<string> = computed(() =>
+    uploadTask.value.created_at
+      ? formatDate(
+          uploadTask.value.created_at,
+          displayOptions.value.timezone,
+          displayOptions.value.dateFormat,
+          true,
+          null,
+          true
+        )
+      : ''
+  )
+  const uploadTaskUpdateDate: ComputedRef<string> = computed(() =>
+    uploadTask.value.updated_at
+      ? formatDate(
+          uploadTask.value.updated_at,
+          displayOptions.value.timezone,
+          displayOptions.value.dateFormat,
+          true,
+          null,
+          true
+        )
+      : ''
   )
   const loading: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.ARCHIVE_UPLOAD_TASKS_LOADING]
