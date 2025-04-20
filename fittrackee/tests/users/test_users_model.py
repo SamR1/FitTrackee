@@ -1028,7 +1028,8 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         created_at = datetime.now(timezone.utc)
-        data_export = UserTask(
+        file_size = 1000
+        workouts_upload = UserTask(
             user_id=user_1.id,
             created_at=created_at,
             task_type="workouts_archive_upload",
@@ -1039,18 +1040,20 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             },
             file_path="some/path",
         )
-        db.session.add(data_export)
+        workouts_upload.file_size = file_size
+        db.session.add(workouts_upload)
         db.session.commit()
 
-        serialized_data_export = data_export.serialize()
+        serialized_data_export = workouts_upload.serialize()
 
         assert serialized_data_export == {
-            "id": data_export.short_id,
+            "id": workouts_upload.short_id,
             "created_at": created_at,
             "errored_files": {
                 "archive": None,
                 "files": {},
             },
+            "file_size": file_size,
             "files_count": 3,
             "new_workouts_count": 0,
             "original_file_name": None,
@@ -1058,13 +1061,16 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "status": "queued",
             "sport_id": sport_1_cycling.id,
             "type": "workouts_archive_upload",
+            "updated_at": None,
         }
 
     def test_it_returns_ongoing_import(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         created_at = datetime.now(timezone.utc)
-        data_export = UserTask(
+        file_size = 1000
+        updated_at = datetime.now(timezone.utc)
+        workouts_upload = UserTask(
             user_id=user_1.id,
             created_at=created_at,
             task_type="workouts_archive_upload",
@@ -1077,19 +1083,22 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             },
             file_path="some/path",
         )
-        data_export.progress = 50
-        db.session.add(data_export)
+        workouts_upload.progress = 50
+        workouts_upload.file_size = file_size
+        workouts_upload.updated_at = updated_at
+        db.session.add(workouts_upload)
         db.session.commit()
 
-        serialized_data_export = data_export.serialize()
+        serialized_data_export = workouts_upload.serialize()
 
         assert serialized_data_export == {
-            "id": data_export.short_id,
+            "id": workouts_upload.short_id,
             "created_at": created_at,
             "errored_files": {
                 "archive": None,
                 "files": {},
             },
+            "file_size": file_size,
             "files_count": 3,
             "new_workouts_count": 0,
             "original_file_name": "workouts.zip",
@@ -1097,13 +1106,16 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "status": "in_progress",
             "sport_id": sport_1_cycling.id,
             "type": "workouts_archive_upload",
+            "updated_at": updated_at,
         }
 
     def test_it_returns_successful_import(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         created_at = datetime.now(timezone.utc)
-        data_export = UserTask(
+        file_size = 1000
+        updated_at = datetime.now(timezone.utc)
+        workouts_upload = UserTask(
             user_id=user_1.id,
             created_at=created_at,
             task_type="workouts_archive_upload",
@@ -1116,19 +1128,22 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             },
             file_path="some/path",
         )
-        data_export.progress = 100
-        db.session.add(data_export)
+        workouts_upload.progress = 100
+        workouts_upload.file_size = file_size
+        workouts_upload.updated_at = updated_at
+        db.session.add(workouts_upload)
         db.session.commit()
 
-        serialized_data_export = data_export.serialize()
+        serialized_data_export = workouts_upload.serialize()
 
         assert serialized_data_export == {
-            "id": data_export.short_id,
+            "id": workouts_upload.short_id,
             "created_at": created_at,
             "errored_files": {
                 "archive": None,
                 "files": {},
             },
+            "file_size": file_size,
             "files_count": 3,
             "new_workouts_count": 3,
             "original_file_name": "workouts.zip",
@@ -1136,13 +1151,16 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "status": "successful",
             "sport_id": sport_1_cycling.id,
             "type": "workouts_archive_upload",
+            "updated_at": updated_at,
         }
 
     def test_it_returns_errored_upload_when_some_file_is_errored(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         created_at = datetime.now(timezone.utc)
-        data_export = UserTask(
+        file_size = 1000
+        updated_at = datetime.now(timezone.utc)
+        workouts_upload = UserTask(
             user_id=user_1.id,
             created_at=created_at,
             task_type="workouts_archive_upload",
@@ -1155,21 +1173,24 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             },
             file_path="some/path",
         )
-        data_export.progress = 100
-        data_export.errored = True
-        data_export.errors["files"] = {"file_2.gpx": "some error"}
-        db.session.add(data_export)
+        workouts_upload.progress = 100
+        workouts_upload.file_size = file_size
+        workouts_upload.errored = True
+        workouts_upload.errors["files"] = {"file_2.gpx": "some error"}
+        workouts_upload.updated_at = updated_at
+        db.session.add(workouts_upload)
         db.session.commit()
 
-        serialized_data_export = data_export.serialize()
+        serialized_data_export = workouts_upload.serialize()
 
         assert serialized_data_export == {
-            "id": data_export.short_id,
+            "id": workouts_upload.short_id,
             "created_at": created_at,
             "errored_files": {
                 "archive": None,
                 "files": {"file_2.gpx": "some error"},
             },
+            "file_size": file_size,
             "files_count": 3,
             "new_workouts_count": 2,
             "original_file_name": "workouts.zip",
@@ -1177,13 +1198,16 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "sport_id": sport_1_cycling.id,
             "status": "errored",
             "type": "workouts_archive_upload",
+            "updated_at": updated_at,
         }
 
     def test_it_returns_errored_upload_when_all_files_are_errored(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         created_at = datetime.now(timezone.utc)
-        data_export = UserTask(
+        file_size = 1000
+        updated_at = datetime.now(timezone.utc)
+        workouts_upload = UserTask(
             user_id=user_1.id,
             created_at=created_at,
             task_type="workouts_archive_upload",
@@ -1197,21 +1221,24 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             file_path="some/path",
         )
         errors = {f"file_{n}.gpx": "some error" for n in range(1, 4)}
-        data_export.progress = 100
-        data_export.errored = True
-        data_export.errors["files"] = errors
-        db.session.add(data_export)
+        workouts_upload.progress = 100
+        workouts_upload.file_size = file_size
+        workouts_upload.errored = True
+        workouts_upload.errors["files"] = errors
+        workouts_upload.updated_at = updated_at
+        db.session.add(workouts_upload)
         db.session.commit()
 
-        serialized_data_export = data_export.serialize()
+        serialized_data_export = workouts_upload.serialize()
 
         assert serialized_data_export == {
-            "id": data_export.short_id,
+            "id": workouts_upload.short_id,
             "created_at": created_at,
             "errored_files": {
                 "archive": None,
                 "files": errors,
             },
+            "file_size": file_size,
             "files_count": 3,
             "new_workouts_count": 0,
             "original_file_name": "workouts.zip",
@@ -1219,13 +1246,16 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "sport_id": sport_1_cycling.id,
             "status": "errored",
             "type": "workouts_archive_upload",
+            "updated_at": updated_at,
         }
 
     def test_it_returns_errored_upload_when_archive_is_errored(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         created_at = datetime.now(timezone.utc)
-        data_export = UserTask(
+        file_size = 1000
+        updated_at = datetime.now(timezone.utc)
+        workouts_upload = UserTask(
             user_id=user_1.id,
             created_at=created_at,
             task_type="workouts_archive_upload",
@@ -1238,21 +1268,24 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             },
             file_path="some/path",
         )
-        data_export.progress = 0
-        data_export.errored = True
-        data_export.errors["archive"] = "some error"
-        db.session.add(data_export)
+        workouts_upload.progress = 0
+        workouts_upload.file_size = file_size
+        workouts_upload.errored = True
+        workouts_upload.errors["archive"] = "some error"
+        workouts_upload.updated_at = updated_at
+        db.session.add(workouts_upload)
         db.session.commit()
 
-        serialized_data_export = data_export.serialize()
+        serialized_data_export = workouts_upload.serialize()
 
         assert serialized_data_export == {
-            "id": data_export.short_id,
+            "id": workouts_upload.short_id,
             "created_at": created_at,
             "errored_files": {
                 "archive": "some error",
                 "files": {},
             },
+            "file_size": file_size,
             "files_count": 3,
             "new_workouts_count": 0,
             "original_file_name": "workouts.zip",
@@ -1260,13 +1293,16 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "sport_id": sport_1_cycling.id,
             "status": "errored",
             "type": "workouts_archive_upload",
+            "updated_at": updated_at,
         }
 
     def test_it_returns_aborted_upload(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
         created_at = datetime.now(timezone.utc)
-        data_export = UserTask(
+        file_size = 1000
+        updated_at = datetime.now(timezone.utc)
+        workouts_upload = UserTask(
             user_id=user_1.id,
             created_at=created_at,
             task_type="workouts_archive_upload",
@@ -1279,20 +1315,23 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             },
             file_path="some/path",
         )
-        data_export.progress = 10
-        data_export.aborted = True
-        db.session.add(data_export)
+        workouts_upload.progress = 10
+        workouts_upload.file_size = file_size
+        workouts_upload.aborted = True
+        workouts_upload.updated_at = updated_at
+        db.session.add(workouts_upload)
         db.session.commit()
 
-        serialized_data_export = data_export.serialize()
+        serialized_data_export = workouts_upload.serialize()
 
         assert serialized_data_export == {
-            "id": data_export.short_id,
+            "id": workouts_upload.short_id,
             "created_at": created_at,
             "errored_files": {
                 "archive": None,
                 "files": {},
             },
+            "file_size": file_size,
             "files_count": 3,
             "new_workouts_count": 0,
             "original_file_name": "workouts.zip",
@@ -1300,6 +1339,7 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "sport_id": sport_1_cycling.id,
             "status": "aborted",
             "type": "workouts_archive_upload",
+            "updated_at": updated_at,
         }
 
 

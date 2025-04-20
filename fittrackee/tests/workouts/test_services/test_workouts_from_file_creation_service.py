@@ -1180,9 +1180,19 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
             app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
         )
         fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+        archive_size = 2000
 
-        with patch.object(
-            tempfile, "mkstemp", return_value=(fd, temp_file_path)
+        with (
+            patch(
+                (
+                    "fittrackee.workouts.services."
+                    "workouts_from_file_creation_service.os.path.getsize"
+                ),
+                return_value=archive_size,
+            ),
+            patch.object(
+                tempfile, "mkstemp", return_value=(fd, temp_file_path)
+            ),
         ):
             service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
@@ -1212,7 +1222,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
             "files": {},
         }
         assert upload_task.file_path == temp_file_path
-        assert upload_task.file_size is None
+        assert upload_task.file_size == archive_size
         assert upload_task.message_id == MESSAGE_ID
         assert upload_task.progress == 0
         assert upload_task.task_type == "workouts_archive_upload"
@@ -1248,8 +1258,16 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
             workouts_data,
         )
         fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+        archive_size = 2000
 
         with (
+            patch(
+                (
+                    "fittrackee.workouts.services."
+                    "workouts_from_file_creation_service.os.path.getsize"
+                ),
+                return_value=archive_size,
+            ),
             patch.object(
                 tempfile, "mkstemp", return_value=(fd, temp_file_path)
             ),
@@ -1276,7 +1294,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
             "files": {},
         }
         assert upload_task.file_path == temp_file_path
-        assert upload_task.file_size is None
+        assert upload_task.file_size == archive_size
         assert upload_task.message_id == MESSAGE_ID
         assert upload_task.progress == 0
         assert upload_task.task_type == "workouts_archive_upload"

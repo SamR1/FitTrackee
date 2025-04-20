@@ -1112,11 +1112,13 @@ class UserTask(BaseModel):
             **serialized_task,
             "sport_id": self.data.get("workouts_data", {}).get("sport_id"),
             "status": self.get_workouts_archive_upload_status(),
+            "file_size": self.file_size,
             "files_count": total_files,
             "errored_files": self.errors,
             "new_workouts_count": self.data.get("new_workouts_count", 0),
             "progress": self.progress,
             "original_file_name": self.data.get("original_file_name"),
+            "updated_at": self.updated_at,
         }
         return serialized_task
 

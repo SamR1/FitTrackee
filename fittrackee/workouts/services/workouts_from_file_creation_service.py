@@ -419,6 +419,7 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
             "archive": None,
             "files": {},
         }
+        upload_task.file_size = os.path.getsize(path)
         db.session.add(upload_task)
         db.session.commit()
 
