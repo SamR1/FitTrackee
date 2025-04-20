@@ -166,28 +166,10 @@
     () => store.getters[AUTH_USER_STORE.GETTERS.ARCHIVE_UPLOAD_TASK]
   )
   const uploadTaskCreationDate: ComputedRef<string> = computed(() =>
-    uploadTask.value.created_at
-      ? formatDate(
-          uploadTask.value.created_at,
-          displayOptions.value.timezone,
-          displayOptions.value.dateFormat,
-          true,
-          null,
-          true
-        )
-      : ''
+    formatTaskDate(uploadTask.value.created_at)
   )
   const uploadTaskUpdateDate: ComputedRef<string> = computed(() =>
-    uploadTask.value.updated_at
-      ? formatDate(
-          uploadTask.value.updated_at,
-          displayOptions.value.timezone,
-          displayOptions.value.dateFormat,
-          true,
-          null,
-          true
-        )
-      : ''
+    formatTaskDate(uploadTask.value.updated_at)
   )
   const loading: ComputedRef<boolean> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.ARCHIVE_UPLOAD_TASKS_LOADING]
@@ -224,6 +206,20 @@
       route.params.task_id as string
     )
     displayedModal.value = false
+  }
+  function formatTaskDate(taskDate: string) {
+    return taskDate
+      ? formatDate(
+          taskDate,
+          displayOptions.value.timezone,
+          displayOptions.value.dateFormat,
+          {
+            withTime: true,
+            language: null,
+            withSeconds: true,
+          }
+        )
+      : ''
   }
 
   onMounted(() => loadUploadTask())

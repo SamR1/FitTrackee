@@ -62,7 +62,9 @@ export const formatRecord = (
     sport_id: record.sport_id,
     value: value,
     user: record.user,
-    workout_date: formatDate(record.workout_date, tz, date_format, false),
+    workout_date: formatDate(record.workout_date, tz, date_format, {
+      withTime: false,
+    }),
     workout_id: record.workout_id,
   }
 }
