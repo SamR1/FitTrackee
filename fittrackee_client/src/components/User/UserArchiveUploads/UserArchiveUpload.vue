@@ -113,7 +113,7 @@
         {{ $t('buttons.ABORT') }}
       </button>
       <button
-        v-if="['errored', 'successful'].includes(uploadTask.status)"
+        v-if="['aborted', 'errored', 'successful'].includes(uploadTask.status)"
         class="danger"
         @click="displayModal(true)"
       >
