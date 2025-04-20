@@ -1550,7 +1550,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         assert "success" in data["status"]
         assert data["data"]["workouts"] == []
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": None,
+            "average_ascent": None,
+            "average_descent": None,
+            "average_distance": None,
+            "average_duration": None,
+            "average_speed": None,
             "count": 0,
             "max_speed": None,
             "total_ascent": None,
@@ -1585,7 +1589,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 1
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": workout_cycling_user_1.ave_speed,
+            "average_ascent": workout_cycling_user_1.ascent,
+            "average_descent": workout_cycling_user_1.descent,
+            "average_distance": workout_cycling_user_1.distance,
+            "average_duration": str(workout_cycling_user_1.moving),
+            "average_speed": workout_cycling_user_1.ave_speed,
             "count": 1,
             "max_speed": workout_cycling_user_1.max_speed,
             "total_ascent": workout_cycling_user_1.ascent,
@@ -1621,7 +1629,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 5
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": 18.79,
+            "average_ascent": 85.0,
+            "average_descent": 125.0,
+            "average_distance": 7.8,
+            "average_duration": "0:38:44",
+            "average_speed": 18.79,
             "count": 5,
             "max_speed": 36.0,
             "total_ascent": 340.0,
@@ -1631,7 +1643,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_sports": 1,
         }
         assert data["data"]["statistics"]["all"] == {
-            "ave_speed": 17.4,
+            "average_ascent": 88.0,
+            "average_descent": 116.0,
+            "average_distance": 8.17,
+            "average_duration": "0:41:53",
+            "average_speed": 17.4,
             "count": 6,
             "max_speed": 36.00,
             "total_ascent": 440.0,
@@ -1670,7 +1686,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 7
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": 17.42,
+            "average_ascent": 93.33,
+            "average_descent": 130.0,
+            "average_distance": 7.71,
+            "average_duration": "0:38:20",
+            "average_speed": 17.42,
             "count": 7,
             "max_speed": 36.0,
             "total_ascent": 560.0,
@@ -1712,7 +1732,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 2
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": 14.0,
+            "average_ascent": 110.0,
+            "average_descent": 140.0,
+            "average_distance": 7.5,
+            "average_duration": "0:37:20",
+            "average_speed": 14.0,
             "count": 2,
             "max_speed": 17.58,
             "total_ascent": 220.0,
@@ -1722,7 +1746,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_sports": 1,
         }
         assert data["data"]["statistics"]["all"] == {
-            "ave_speed": 17.42,
+            "average_ascent": 93.33,
+            "average_descent": 130.0,
+            "average_distance": 7.71,
+            "average_duration": "0:38:20",
+            "average_speed": 17.42,
             "count": 7,
             "max_speed": 36.00,
             "total_ascent": 560.0,
@@ -1762,7 +1790,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 2
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": 21.0,
+            "average_ascent": 110.0,
+            "average_descent": 190.0,
+            "average_distance": 5.5,
+            "average_duration": "0:13:20",
+            "average_speed": 21.0,
             "count": 2,
             "max_speed": 36.0,
             "total_ascent": 220.0,
@@ -1797,7 +1829,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 2
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": 11.19,
+            "average_ascent": 80.0,
+            "average_descent": 110.0,
+            "average_distance": 6.5,
+            "average_duration": "0:58:32",
+            "average_speed": 11.19,
             "count": 2,
             "max_speed": 17.58,
             "total_ascent": 160.0,
@@ -1833,7 +1869,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         assert len(data["data"]["workouts"]) == 1
         workout = data["data"]["workouts"][0]
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": workout["ave_speed"],
+            "average_ascent": workout["ascent"],
+            "average_descent": workout["descent"],
+            "average_distance": workout["distance"],
+            "average_duration": workout["duration"],
+            "average_speed": workout["ave_speed"],
             "count": 1,
             "max_speed": workout["max_speed"],
             "total_ascent": workout["ascent"],
@@ -1869,7 +1909,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         assert len(data["data"]["workouts"]) == 1
         workout = data["data"]["workouts"][0]
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": workout["ave_speed"],
+            "average_ascent": workout["ascent"],
+            "average_descent": workout["descent"],
+            "average_distance": workout["distance"],
+            "average_duration": workout["duration"],
+            "average_speed": workout["ave_speed"],
             "count": 1,
             "max_speed": workout["max_speed"],
             "total_ascent": workout["ascent"],
@@ -1909,7 +1953,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         assert len(data["data"]["workouts"]) == 1
         workout = data["data"]["workouts"][0]
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": workout["ave_speed"],
+            "average_ascent": workout["ascent"],
+            "average_descent": workout["descent"],
+            "average_distance": workout["distance"],
+            "average_duration": workout["duration"],
+            "average_speed": workout["ave_speed"],
             "count": 1,
             "max_speed": workout["max_speed"],
             "total_ascent": workout["ascent"],
@@ -1947,7 +1995,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         assert len(data["data"]["workouts"]) == 1
         workout = data["data"]["workouts"][0]
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": workout["ave_speed"],
+            "average_ascent": workout["ascent"],
+            "average_descent": workout["descent"],
+            "average_distance": workout["distance"],
+            "average_duration": workout["duration"],
+            "average_speed": workout["ave_speed"],
             "count": 1,
             "max_speed": workout["max_speed"],
             "total_ascent": workout["ascent"],
@@ -1983,7 +2035,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         assert len(data["data"]["workouts"]) == 1
         workout = data["data"]["workouts"][0]
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": workout["ave_speed"],
+            "average_ascent": workout["ascent"],
+            "average_descent": workout["descent"],
+            "average_distance": workout["distance"],
+            "average_duration": workout["duration"],
+            "average_speed": workout["ave_speed"],
             "count": 1,
             "max_speed": workout["max_speed"],
             "total_ascent": workout["ascent"],
@@ -2026,7 +2082,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         assert len(data["data"]["workouts"]) == 1
         workout = data["data"]["workouts"][0]
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": workout["ave_speed"],
+            "average_ascent": workout["ascent"],
+            "average_descent": workout["descent"],
+            "average_distance": workout["distance"],
+            "average_duration": workout["duration"],
+            "average_speed": workout["ave_speed"],
             "count": 1,
             "max_speed": workout["max_speed"],
             "total_ascent": workout["ascent"],
@@ -2073,7 +2133,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         workouts = data["data"]["workouts"]
         assert len(workouts) == 2
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": 7.61,
+            "average_ascent": 70.0,
+            "average_descent": 50.0,
+            "average_distance": 9.0,
+            "average_duration": "1:18:48",
+            "average_speed": 7.61,
             "count": 2,
             "max_speed": 10.42,
             "total_ascent": 140.0,
@@ -2119,7 +2183,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         workouts = data["data"]["workouts"]
         assert len(workouts) == 2
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": 7.61,
+            "average_ascent": 70.0,
+            "average_descent": 50.0,
+            "average_distance": 9.0,
+            "average_duration": "1:18:48",
+            "average_speed": 7.61,
             "count": 2,
             "max_speed": 10.42,
             "total_ascent": 140.0,
@@ -2162,7 +2230,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         assert len(data["data"]["workouts"]) == 1
         workout = data["data"]["workouts"][0]
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": workout["ave_speed"],
+            "average_ascent": workout["ascent"],
+            "average_descent": workout["descent"],
+            "average_distance": workout["distance"],
+            "average_duration": workout["duration"],
+            "average_speed": workout["ave_speed"],
             "count": 1,
             "max_speed": workout["max_speed"],
             "total_ascent": workout["ascent"],
@@ -2201,7 +2273,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 2
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": None,
+            "average_ascent": 100.0,
+            "average_descent": 120.0,
+            "average_distance": 11.0,
+            "average_duration": "1:20:00",
+            "average_speed": None,
             "count": 2,
             "max_speed": None,
             "total_ascent": float(workout_cycling_user_1.ascent),
@@ -2244,7 +2320,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 5
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": None,
+            "average_ascent": 86.67,
+            "average_descent": 133.33,
+            "average_distance": 8.2,
+            "average_duration": "0:55:20",
+            "average_speed": None,
             "count": 5,
             "max_speed": None,
             "total_ascent": 260.0,
@@ -2254,7 +2334,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_sports": 2,
         }
         assert data["data"]["statistics"]["all"] == {
-            "ave_speed": None,
+            "average_ascent": 93.33,
+            "average_descent": 130.0,
+            "average_distance": 8.25,
+            "average_duration": "0:46:03",
+            "average_speed": None,
             "count": 8,
             "max_speed": None,
             "total_ascent": 560.0,
@@ -2287,7 +2371,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 3
         assert data["data"]["statistics"]["current_page"] == {
-            "ave_speed": 21.05,
+            "average_ascent": 100.0,
+            "average_descent": 126.67,
+            "average_distance": 8.33,
+            "average_duration": "0:30:34",
+            "average_speed": 21.05,
             "count": 3,
             "max_speed": 35.16,
             "total_ascent": 300.0,
@@ -2297,7 +2385,11 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_sports": 1,
         }
         assert data["data"]["statistics"]["all"] == {
-            "ave_speed": None,
+            "average_ascent": 93.33,
+            "average_descent": 130.0,
+            "average_distance": 8.25,
+            "average_duration": "0:46:03",
+            "average_speed": None,
             "count": 8,
             "max_speed": None,
             "total_ascent": 560.0,

@@ -20,6 +20,7 @@ SPORT_EQUIPMENT_TYPES = {
         "Cycling (Sport)",
         "Cycling (Transport)",
         "Cycling (Trekking)",
+        "Halfbike",
         "Mountain Biking",
         "Mountain Biking (Electric)",
     ],

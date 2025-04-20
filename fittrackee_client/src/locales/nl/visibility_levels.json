@@ -1,1 +1,17 @@
-{}
+{
+  "ANALYSIS_VISIBILITY": "Zichtbaarheid Analyse",
+  "COMMENT_LEVELS": {
+    "followers_only": "Enkel volgers",
+    "private": "Privé (enkel vermelde gebruikers)",
+    "public": "Publiek (iedereen)"
+  },
+  "LEVELS": {
+    "followers_only": "Enkel volgers",
+    "private": "Privé (enkel ikzelf)",
+    "public": "Publiek (iedereen)"
+  },
+  "MAP_VISIBILITY": "Zichtbaarheid kaart",
+  "VISIBILITY": "Zichtbaarheid",
+  "WORKOUTS_VISIBILITY": "Zichtbaarheid traininggerelateerde data",
+  "WORKOUT_VISIBILITY": "Zichtbaarheid training"
+}

@@ -10,14 +10,20 @@
     "SCOPE": {
       "LABEL": "Omvang",
       "application:write_DESCRIPTION": "geeft toestemming tot aanpassen van de applicatie instellingen.",
-      "equipments:read_DESCRIPTION": "staat leestoegang toe aan <code>equipments</code> endpoints.",
-      "equipments:write_DESCRIPTION": "staat schrijftoegang toe aan <code>equipments</code> endpoints.",
+      "equipments:read_DESCRIPTION": "geef leestoegang tot <code>uitrustings</code>eindpunten.",
+      "equipments:write_DESCRIPTION": "geef schrijftoegang tot <code>uitrustings</code>eindpunten.",
+      "follow:read_DESCRIPTION": "geeft leestoegang aan eindpunten die te maken hebben met volgers en volgverzoeken.",
+      "follow:write_DESCRIPTION": "geeft schrijftoegang aan eindpunten die te maken hebben met volgers en volgverzoeken.",
+      "notifications:read_DESCRIPTION": "geef leestoegnag tot <code>meldings</code>eindpunten.",
+      "notifications:write_DESCRIPTION": "geef schrijftoegnag tot <code>meldings</code>eindpunten.",
       "profile:read_DESCRIPTION": "staat leestoegang toe aan <code>auth</code> endpoints.",
       "profile:write_DESCRIPTION": "staat schrijftoegang toe aan <code>auth</code> endpoints.",
+      "reports:read_DESCRIPTION": "geef leestoegang tot <code>rapporterings</code>eindpunten.",
+      "reports:write_DESCRIPTION": "geef schrijftoegang tot <code>rapporterings</code>eindpunten.",
       "users:read_DESCRIPTION": "staat leestoegang toe aan <code>users</code> endpoints.",
       "users:write_DESCRIPTION": "staat schrijftoegang toe aan <code>users</code> endpoints.",
-      "workouts:read_DESCRIPTION": "staat leestoegang toe aan <code>workouts</code> endpoints.",
-      "workouts:write_DESCRIPTION": "staat schrijftoegang toe aan <code>workouts</code> endpoints."
+      "workouts:read_DESCRIPTION": "geef leestoegang tot trainings en reactie eindpunten.",
+      "workouts:write_DESCRIPTION": "geef schrijftoegang tot trainings en reactie eindpunten."
     },
     "URL": "App URL"
   },

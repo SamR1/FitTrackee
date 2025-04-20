@@ -441,7 +441,7 @@ button {
   display: none;
   padding: $default-padding * 0.3 $default-padding;
   &:hover {
-    color: var(--app-color);
+    background: var(--app-color);
   }
 }
 .profile-buttons {
