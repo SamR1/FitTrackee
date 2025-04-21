@@ -16,6 +16,7 @@ from fittrackee.workouts.services.workouts_from_file_creation_service import (
 )
 
 GENERIC_ERROR = "error during archive processing"
+ABORT_ERROR = "task execution aborted"
 
 
 def update_task_and_clean(
@@ -31,7 +32,7 @@ def update_task_and_clean(
     if upload_task is None:
         return
 
-    if error == "task execution aborted":
+    if error == ABORT_ERROR:
         upload_task.aborted = True
     else:
         upload_task.errored = True
@@ -84,7 +85,7 @@ def upload_workouts_archive(task_id: int) -> None:
         raise TaskException(error) from None
     except Abort:
         db.session.rollback()
-        error = "task execution aborted"
+        error = ABORT_ERROR
         update_task_and_clean(error=error, upload_task_id=task_id)
         raise TaskException(error) from None
     except Exception as e:
@@ -117,7 +118,7 @@ def process_workouts_archives_upload(max_count: int, logger: Logger) -> int:
         )
         logger.info(
             f"Processing task '{upload_task.id}' (files: {files_count}, "
-            f"size: {naturalsize(file_size)})..."
+            f"size: {naturalsize(file_size)})"
         )
         try:
             service = WorkoutsFromArchiveCreationAsyncService(upload_task.id)
@@ -130,10 +131,11 @@ def process_workouts_archives_upload(max_count: int, logger: Logger) -> int:
             if files_error:
                 logger.info(f" > errored files: {len(files_error.keys())}")
             count += 1
+            logger.info(" > done.")
         except (KeyboardInterrupt, Exception) as e:
             db.session.rollback()
             error = (
-                "task execution aborted"
+                ABORT_ERROR
                 if isinstance(e, KeyboardInterrupt)
                 else GENERIC_ERROR
             )

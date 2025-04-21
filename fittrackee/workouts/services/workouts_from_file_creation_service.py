@@ -6,6 +6,7 @@ from abc import abstractmethod
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from io import BytesIO
+from logging import getLogger
 from typing import IO, TYPE_CHECKING, Dict, List, Optional, Tuple, Type, Union
 
 from flask import current_app
@@ -30,8 +31,6 @@ from .base_workout_service import BaseWorkoutService
 from .workout_from_file import WorkoutGpxCreationService
 
 if TYPE_CHECKING:
-    from logging import Logger
-
     from werkzeug.datastructures import FileStorage
 
     from fittrackee.visibility_levels import VisibilityLevel
@@ -45,6 +44,8 @@ WORKOUT_FROM_FILE_SERVICES: Dict[
     "gpx": WorkoutGpxCreationService,
 }
 NO_FILE_ERROR_MESSAGE = "no workout file provided"
+
+appLog = getLogger("fittrackee_workouts_upload")
 
 
 @dataclass
@@ -274,12 +275,14 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
             raise WorkoutFileException(
                 "error", "No files from archive to process"
             )
+        appLog.debug(" > starting archive processing...")
 
         new_workouts = []
         errored_workouts = {}
         total_files = len(files_to_process)
         with zipfile.ZipFile(archive_content, "r") as zip_ref:
             for index, file in enumerate(files_to_process, start=1):
+                appLog.debug(f"  - file {index}/{total_files}")
                 try:
                     extension = self._get_extension(file)
                     file_content = zip_ref.open(file)
@@ -288,13 +291,16 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
                     )
                 except Exception as e:
                     db.session.rollback()
-                    errored_workouts[file] = e.args[0]
+                    error = e.args[0]
+                    errored_workouts[file] = error
+                    appLog.debug(f"    > error occurred: {error}")
                     if upload_task:
                         upload_task.progress = int(100 * index / total_files)
                         db.session.commit()
                     continue
 
                 new_workouts.append(new_workout)
+                appLog.debug("    > upload done")
                 if upload_task:
                     upload_task.data = {
                         **upload_task.data,
@@ -456,9 +462,7 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
             "task_short_id": None,
         }
 
-    def process(
-        self, logger: Optional["Logger"] = None
-    ) -> Tuple[List["Workout"], Dict]:
+    def process(self) -> Tuple[List["Workout"], Dict]:
         if self.file is None:
             raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
         if self.file.filename is None:

@@ -25,14 +25,24 @@ def workouts_cli() -> None:
     required=True,
     help="Maximum number of workouts archive to process.",
 )
-def workouts_archive_upload(
-    max_archives: int,
-) -> None:
+@click.option(
+    "--verbose",
+    "-v",
+    "verbose",
+    is_flag=True,
+    default=False,
+    help="Enable verbose output log (default: disabled).",
+)
+def workouts_archive_upload(max_archives: int, verbose: bool) -> None:
     """
     Process workouts archive upload if incomplete tasks exist (progress = 0 and
     not aborted/errored).
     To use in case redis is not set.
     """
     with app.app_context():
+        if verbose:
+            upload_logger = logging.getLogger("fittrackee_workouts_upload")
+            upload_logger.setLevel(logging.DEBUG)
+            upload_logger.addHandler(handler)
         count = process_workouts_archives_upload(max_archives, logger)
         logger.info(f"\nWorkouts archives processed: {count}.")
