@@ -1,3 +1,5 @@
+import os
+import tempfile
 from typing import TYPE_CHECKING
 from unittest.mock import patch
 
@@ -135,10 +137,11 @@ class TestCliWorkoutsArchiveUpload(UserTaskMixin):
         assert result.exit_code == 0
         assert (
             caplog.records[0].message
-            == "Processing task '1' (files: 2, size: 0 Bytes)..."
+            == "Processing task '1' (files: 2, size: 0 Bytes)"
         )
         assert caplog.records[1].message == " > errored files: 1"
-        assert caplog.records[2].message == "\nWorkouts archives processed: 1."
+        assert caplog.records[2].message == " > done."
+        assert caplog.records[3].message == "\nWorkouts archives processed: 1."
 
     def test_it_displayed_archive_error(
         self,
@@ -171,13 +174,14 @@ class TestCliWorkoutsArchiveUpload(UserTaskMixin):
 
         assert (
             caplog.records[0].message
-            == "Processing task '1' (files: 2, size: 0 Bytes)..."
+            == "Processing task '1' (files: 2, size: 0 Bytes)"
         )
         assert (
             caplog.records[1].message
             == " > archive error: archive file does not exist"
         )
-        assert caplog.records[2].message == "\nWorkouts archives processed: 1."
+        assert caplog.records[2].message == " > done."
+        assert caplog.records[3].message == "\nWorkouts archives processed: 1."
 
     def test_it_displays_count_when_archives_are_processed(
         self,
@@ -213,9 +217,67 @@ class TestCliWorkoutsArchiveUpload(UserTaskMixin):
         assert result.exit_code == 0
         assert (
             caplog.records[0].message
-            == "Processing task '1' (files: 1, size: 0 Bytes)..."
+            == "Processing task '1' (files: 1, size: 0 Bytes)"
         )
-        assert caplog.records[1].message == "\nWorkouts archives processed: 1."
+        assert caplog.records[1].message == " > done."
+        assert caplog.records[2].message == "\nWorkouts archives processed: 1."
+
+    def test_it_displays_files_detail_when_verbose_is_enabled(
+        self,
+        app: "Flask",
+        caplog: "LogCaptureFixture",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+        with (
+            open(fd, "wb") as temp_file,
+            open(
+                os.path.join(
+                    app.root_path, "tests/files/gpx_test_incorrect.zip"
+                ),
+                "rb",
+            ) as zip_file,
+        ):
+            temp_file.write(zip_file.read())
+        upload_task = self.create_workouts_upload_task(
+            user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+            files_to_process=["test_4.gpx", "test_1.gpx"],
+            equipment_ids=None,
+            file_path=temp_file_path,
+        )
+        upload_task.file_size = 1000
+        db.session.commit()
+        runner = CliRunner()
+
+        result = runner.invoke(
+            cli,
+            [
+                "workouts",
+                "archive_upload",
+                "--max",
+                "1",
+                "--verbose",
+            ],
+        )
+
+        assert result.exit_code == 0
+        assert (
+            caplog.records[0].message
+            == "Processing task '1' (files: 2, size: 1.0 kB)"
+        )
+        assert caplog.records[1].message == " > starting archive processing..."
+        assert caplog.records[2].message == "  - file 1/2"
+        assert (
+            caplog.records[3].message
+            == "    > error occurred: no tracks in gpx file"
+        )
+        assert caplog.records[4].message == "  - file 2/2"
+        assert caplog.records[5].message == "    > upload done"
+        assert caplog.records[6].message == " > errored files: 1"
+        assert caplog.records[7].message == " > done."
+        assert caplog.records[8].message == "\nWorkouts archives processed: 1."
 
     def test_it_updates_task_on_keyboard_interruption(
         self,
@@ -256,7 +318,7 @@ class TestCliWorkoutsArchiveUpload(UserTaskMixin):
         assert len(caplog.records) == 1
         assert (
             caplog.records[0].message
-            == "Processing task '1' (files: 1, size: 0 Bytes)..."
+            == "Processing task '1' (files: 1, size: 0 Bytes)"
         )
 
     def test_it_updates_task_on_error(
@@ -301,5 +363,5 @@ class TestCliWorkoutsArchiveUpload(UserTaskMixin):
         assert len(caplog.records) == 1
         assert (
             caplog.records[0].message
-            == "Processing task '1' (files: 1, size: 0 Bytes)..."
+            == "Processing task '1' (files: 1, size: 0 Bytes)"
         )
