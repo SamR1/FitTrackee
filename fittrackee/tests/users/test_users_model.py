@@ -16,11 +16,12 @@ from fittrackee.equipments.models import Equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.reports.models import ReportAction
 from fittrackee.tests.comments.mixins import CommentMixin
-from fittrackee.tests.utils import random_int, random_string
 from fittrackee.users.exceptions import (
     BlockUserException,
     FollowRequestAlreadyProcessedError,
     NotExistingFollowRequestError,
+    UserTaskException,
+    UserTaskForbiddenException,
 )
 from fittrackee.users.models import (
     BlacklistedToken,
@@ -35,7 +36,7 @@ from fittrackee.users.models import (
 from fittrackee.users.roles import UserRole
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import RandomMixin, ReportMixin
+from ..mixins import RandomMixin, ReportMixin, UserTaskMixin
 
 NOTIFICATION_TYPES_FOR_PREFERENCES = [
     "account_creation",
@@ -705,7 +706,7 @@ class TestUserWorkouts(UserModelAssertMixin):
         )
 
 
-class TestUserModelToken:
+class TestUserModelToken(RandomMixin):
     def test_encode_auth_token(self, app: Flask, user_1: User) -> None:
         auth_token = user_1.encode_auth_token(user_1.id)
         assert isinstance(auth_token, str)
@@ -723,7 +724,7 @@ class TestUserModelToken:
         self, app: Flask, user_1: User
     ) -> None:
         assert (
-            User.decode_auth_token(random_string())
+            User.decode_auth_token(self.random_string())
             == "invalid token, please log in again"
         )
 
@@ -950,22 +951,15 @@ class TestUserTaskModel:
         assert Notification.query.count() == 0
 
 
-class TestUserTaskSerializerForUserDataExport:
+class TestUserTaskSerializerForUserDataExport(RandomMixin, UserTaskMixin):
     def test_it_returns_ongoing_export(self, app: Flask, user_1: User) -> None:
-        created_at = datetime.now(timezone.utc)
-        data_export = UserTask(
-            user_id=user_1.id,
-            created_at=created_at,
-            task_type="user_data_export",
-        )
-        db.session.add(data_export)
-        db.session.commit()
+        data_export = self.create_user_data_export_task(user=user_1)
 
-        serialized_data_export = data_export.serialize()
+        serialized_data_export = data_export.serialize(current_user=user_1)
 
         assert serialized_data_export == {
             "id": data_export.short_id,
-            "created_at": created_at,
+            "created_at": data_export.created_at,
             "file_name": None,
             "file_size": None,
             "status": "in_progress",
@@ -975,24 +969,19 @@ class TestUserTaskSerializerForUserDataExport:
     def test_it_returns_successful_export(
         self, app: Flask, user_1: User
     ) -> None:
-        created_at = datetime.now(timezone.utc)
-        data_export = UserTask(
-            user_id=user_1.id,
-            created_at=created_at,
-            task_type="user_data_export",
+        file_name = self.random_string()
+        data_export = self.create_user_data_export_task(
+            user=user_1,
+            progress=100,
+            file_path=f"exports/{user_1.id}/{file_name}",
+            file_size=self.random_int(),
         )
-        data_export.progress = 100
-        file_name = random_string()
-        data_export.file_path = f"exports/{user_1.id}/{file_name}"
-        data_export.file_size = random_int()
-        db.session.add(data_export)
-        db.session.commit()
 
-        serialized_data_export = data_export.serialize()
+        serialized_data_export = data_export.serialize(current_user=user_1)
 
         assert serialized_data_export == {
             "id": data_export.short_id,
-            "created_at": created_at,
+            "created_at": data_export.created_at,
             "file_name": file_name,
             "file_size": data_export.file_size,
             "status": "successful",
@@ -1000,60 +989,111 @@ class TestUserTaskSerializerForUserDataExport:
         }
 
     def test_it_returns_errored_export(self, app: Flask, user_1: User) -> None:
-        created_at = datetime.now(timezone.utc)
-        data_export = UserTask(
-            user_id=user_1.id,
-            created_at=created_at,
-            task_type="user_data_export",
+        data_export = self.create_user_data_export_task(
+            user=user_1, progress=100, errored=True
         )
-        data_export.progress = 100
-        data_export.errored = True
-        db.session.add(data_export)
-        db.session.commit()
 
-        serialized_data_export = data_export.serialize()
+        serialized_data_export = data_export.serialize(current_user=user_1)
 
         assert serialized_data_export == {
             "id": data_export.short_id,
-            "created_at": created_at,
+            "created_at": data_export.created_at,
             "file_name": None,
             "file_size": None,
             "status": "errored",
             "type": "user_data_export",
         }
 
+    def test_it_returns_export_for_admin(
+        self, app: Flask, user_1: User, user_2_admin: User
+    ) -> None:
+        data_export = self.create_user_data_export_task(
+            user=user_1, message_id=self.random_short_id()
+        )
 
-class TestUserTaskSerializerForWorkoutArchiveImport:
+        serialized_data_export = data_export.serialize(
+            current_user=user_2_admin, for_admin=True
+        )
+
+        assert serialized_data_export == {
+            "id": data_export.short_id,
+            "created_at": data_export.created_at,
+            "file_size": None,
+            "message_id": data_export.message_id,
+            "status": "in_progress",
+            "type": "user_data_export",
+        }
+
+    def test_it_returns_export_for_admin_with_task_user(
+        self, app: Flask, user_1: User, user_2_admin: User
+    ) -> None:
+        data_export = self.create_user_data_export_task(
+            user=user_1, message_id=self.random_short_id()
+        )
+
+        serialized_data_export = data_export.serialize(
+            current_user=user_2_admin, for_admin=True, task_user=user_1
+        )
+
+        assert serialized_data_export == {
+            "id": data_export.short_id,
+            "created_at": data_export.created_at,
+            "file_size": None,
+            "message_id": data_export.message_id,
+            "status": "in_progress",
+            "type": "user_data_export",
+            "user": user_1.serialize(current_user=user_2_admin, light=True),
+        }
+
+    def test_it_raises_error_when_user_has_no_admin_right(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        data_export = self.create_user_data_export_task(
+            user=user_1, message_id=self.random_short_id()
+        )
+
+        with pytest.raises(
+            UserTaskForbiddenException, match="you do not have permissions"
+        ):
+            data_export.serialize(current_user=user_2)
+
+    def test_it_raises_error_when_user_task_is_invalid(
+        self, app: Flask, user_1: User, user_2_admin: User, user_3: User
+    ) -> None:
+        data_export = self.create_user_data_export_task(
+            user=user_1, message_id=self.random_short_id()
+        )
+
+        with pytest.raises(UserTaskException, match="invalid tasks user"):
+            data_export.serialize(current_user=user_2_admin, task_user=user_3)
+
+
+class TestUserTaskSerializerForWorkoutArchiveUpload(
+    RandomMixin, UserTaskMixin
+):
     def test_it_returns_queued_import(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        created_at = datetime.now(timezone.utc)
-        file_size = 1000
-        workouts_upload = UserTask(
-            user_id=user_1.id,
-            created_at=created_at,
-            task_type="workouts_archive_upload",
-            data={
-                "workouts_data": {"sport_id": sport_1_cycling.id},
-                "files_to_process": ["file_1.gpx", "file_2.gpx", "file_3.gpx"],
-                "equipment_ids": None,
-            },
+        workouts_upload = self.create_workouts_upload_task(
+            user=user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+            files_to_process=["file_1.gpx", "file_2.gpx", "file_3.gpx"],
             file_path="some/path",
+            file_size=1000,
         )
-        workouts_upload.file_size = file_size
-        db.session.add(workouts_upload)
-        db.session.commit()
 
-        serialized_data_export = workouts_upload.serialize()
+        serialized_workouts_upload = workouts_upload.serialize(
+            current_user=user_1
+        )
 
-        assert serialized_data_export == {
+        assert serialized_workouts_upload == {
             "id": workouts_upload.short_id,
-            "created_at": created_at,
+            "created_at": workouts_upload.created_at,
             "errored_files": {
                 "archive": None,
                 "files": {},
             },
-            "file_size": file_size,
+            "file_size": workouts_upload.file_size,
             "files_count": 3,
             "new_workouts_count": 0,
             "original_file_name": None,
@@ -1067,38 +1107,29 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
     def test_it_returns_ongoing_import(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        created_at = datetime.now(timezone.utc)
-        file_size = 1000
-        updated_at = datetime.now(timezone.utc)
-        workouts_upload = UserTask(
-            user_id=user_1.id,
-            created_at=created_at,
-            task_type="workouts_archive_upload",
-            data={
-                "new_workouts_count": 0,
-                "workouts_data": {"sport_id": sport_1_cycling.id},
-                "files_to_process": ["file_1.gpx", "file_2.gpx", "file_3.gpx"],
-                "equipment_ids": None,
-                "original_file_name": "workouts.zip",
-            },
+        workouts_upload = self.create_workouts_upload_task(
+            user=user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+            files_to_process=["file_1.gpx", "file_2.gpx", "file_3.gpx"],
             file_path="some/path",
+            file_size=1000,
+            original_file_name="workouts.zip",
+            progress=50,
+            updated_at=datetime.now(timezone.utc),
         )
-        workouts_upload.progress = 50
-        workouts_upload.file_size = file_size
-        workouts_upload.updated_at = updated_at
-        db.session.add(workouts_upload)
-        db.session.commit()
 
-        serialized_data_export = workouts_upload.serialize()
+        serialized_workouts_upload = workouts_upload.serialize(
+            current_user=user_1
+        )
 
-        assert serialized_data_export == {
+        assert serialized_workouts_upload == {
             "id": workouts_upload.short_id,
-            "created_at": created_at,
+            "created_at": workouts_upload.created_at,
             "errored_files": {
                 "archive": None,
                 "files": {},
             },
-            "file_size": file_size,
+            "file_size": workouts_upload.file_size,
             "files_count": 3,
             "new_workouts_count": 0,
             "original_file_name": "workouts.zip",
@@ -1106,44 +1137,36 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "status": "in_progress",
             "sport_id": sport_1_cycling.id,
             "type": "workouts_archive_upload",
-            "updated_at": updated_at,
+            "updated_at": workouts_upload.updated_at,
         }
 
     def test_it_returns_successful_import(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        created_at = datetime.now(timezone.utc)
-        file_size = 1000
-        updated_at = datetime.now(timezone.utc)
-        workouts_upload = UserTask(
-            user_id=user_1.id,
-            created_at=created_at,
-            task_type="workouts_archive_upload",
-            data={
-                "new_workouts_count": 3,
-                "workouts_data": {"sport_id": sport_1_cycling.id},
-                "files_to_process": ["file_1.gpx", "file_2.gpx", "file_3.gpx"],
-                "equipment_ids": None,
-                "original_file_name": "workouts.zip",
-            },
+        workouts_upload = self.create_workouts_upload_task(
+            user=user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+            files_to_process=["file_1.gpx", "file_2.gpx", "file_3.gpx"],
+            new_workouts_count=3,
             file_path="some/path",
+            file_size=1000,
+            original_file_name="workouts.zip",
+            progress=100,
+            updated_at=datetime.now(timezone.utc),
         )
-        workouts_upload.progress = 100
-        workouts_upload.file_size = file_size
-        workouts_upload.updated_at = updated_at
-        db.session.add(workouts_upload)
-        db.session.commit()
 
-        serialized_data_export = workouts_upload.serialize()
+        serialized_workouts_upload = workouts_upload.serialize(
+            current_user=user_1
+        )
 
-        assert serialized_data_export == {
+        assert serialized_workouts_upload == {
             "id": workouts_upload.short_id,
-            "created_at": created_at,
+            "created_at": workouts_upload.created_at,
             "errored_files": {
                 "archive": None,
                 "files": {},
             },
-            "file_size": file_size,
+            "file_size": workouts_upload.file_size,
             "files_count": 3,
             "new_workouts_count": 3,
             "original_file_name": "workouts.zip",
@@ -1151,46 +1174,41 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "status": "successful",
             "sport_id": sport_1_cycling.id,
             "type": "workouts_archive_upload",
-            "updated_at": updated_at,
+            "updated_at": workouts_upload.updated_at,
         }
 
     def test_it_returns_errored_upload_when_some_file_is_errored(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        created_at = datetime.now(timezone.utc)
-        file_size = 1000
-        updated_at = datetime.now(timezone.utc)
-        workouts_upload = UserTask(
-            user_id=user_1.id,
-            created_at=created_at,
-            task_type="workouts_archive_upload",
-            data={
-                "new_workouts_count": 2,
-                "workouts_data": {"sport_id": sport_1_cycling.id},
-                "files_to_process": ["file_1.gpx", "file_2.gpx", "file_3.gpx"],
-                "equipment_ids": None,
-                "original_file_name": "workouts.zip",
-            },
+        workouts_upload = self.create_workouts_upload_task(
+            user=user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+            files_to_process=["file_1.gpx", "file_2.gpx", "file_3.gpx"],
+            new_workouts_count=2,
             file_path="some/path",
+            file_size=1000,
+            original_file_name="workouts.zip",
+            progress=100,
+            errored=True,
+            updated_at=datetime.now(timezone.utc),
         )
-        workouts_upload.progress = 100
-        workouts_upload.file_size = file_size
-        workouts_upload.errored = True
-        workouts_upload.errors["files"] = {"file_2.gpx": "some error"}
-        workouts_upload.updated_at = updated_at
-        db.session.add(workouts_upload)
+        workouts_upload.errors = {
+            **workouts_upload.errors,
+            "files": {"file_2.gpx": "some error"},
+        }
         db.session.commit()
+        serialized_workouts_upload = workouts_upload.serialize(
+            current_user=user_1
+        )
 
-        serialized_data_export = workouts_upload.serialize()
-
-        assert serialized_data_export == {
+        assert serialized_workouts_upload == {
             "id": workouts_upload.short_id,
-            "created_at": created_at,
+            "created_at": workouts_upload.created_at,
             "errored_files": {
                 "archive": None,
                 "files": {"file_2.gpx": "some error"},
             },
-            "file_size": file_size,
+            "file_size": workouts_upload.file_size,
             "files_count": 3,
             "new_workouts_count": 2,
             "original_file_name": "workouts.zip",
@@ -1198,47 +1216,39 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "sport_id": sport_1_cycling.id,
             "status": "errored",
             "type": "workouts_archive_upload",
-            "updated_at": updated_at,
+            "updated_at": workouts_upload.updated_at,
         }
 
     def test_it_returns_errored_upload_when_all_files_are_errored(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        created_at = datetime.now(timezone.utc)
-        file_size = 1000
-        updated_at = datetime.now(timezone.utc)
-        workouts_upload = UserTask(
-            user_id=user_1.id,
-            created_at=created_at,
-            task_type="workouts_archive_upload",
-            data={
-                "new_workouts_count": 0,
-                "workouts_data": {"sport_id": sport_1_cycling.id},
-                "files_to_process": ["file_1.gpx", "file_2.gpx", "file_3.gpx"],
-                "equipment_ids": None,
-                "original_file_name": "workouts.zip",
-            },
+        workouts_upload = self.create_workouts_upload_task(
+            user=user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+            files_to_process=["file_1.gpx", "file_2.gpx", "file_3.gpx"],
             file_path="some/path",
+            file_size=1000,
+            original_file_name="workouts.zip",
+            progress=100,
+            errored=True,
+            updated_at=datetime.now(timezone.utc),
         )
         errors = {f"file_{n}.gpx": "some error" for n in range(1, 4)}
-        workouts_upload.progress = 100
-        workouts_upload.file_size = file_size
-        workouts_upload.errored = True
-        workouts_upload.errors["files"] = errors
-        workouts_upload.updated_at = updated_at
-        db.session.add(workouts_upload)
+        workouts_upload.errors = {**workouts_upload.errors, "files": errors}
         db.session.commit()
 
-        serialized_data_export = workouts_upload.serialize()
+        serialized_workouts_upload = workouts_upload.serialize(
+            current_user=user_1
+        )
 
-        assert serialized_data_export == {
+        assert serialized_workouts_upload == {
             "id": workouts_upload.short_id,
-            "created_at": created_at,
+            "created_at": workouts_upload.created_at,
             "errored_files": {
                 "archive": None,
                 "files": errors,
             },
-            "file_size": file_size,
+            "file_size": workouts_upload.file_size,
             "files_count": 3,
             "new_workouts_count": 0,
             "original_file_name": "workouts.zip",
@@ -1246,46 +1256,41 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "sport_id": sport_1_cycling.id,
             "status": "errored",
             "type": "workouts_archive_upload",
-            "updated_at": updated_at,
+            "updated_at": workouts_upload.updated_at,
         }
 
     def test_it_returns_errored_upload_when_archive_is_errored(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        created_at = datetime.now(timezone.utc)
-        file_size = 1000
-        updated_at = datetime.now(timezone.utc)
-        workouts_upload = UserTask(
-            user_id=user_1.id,
-            created_at=created_at,
-            task_type="workouts_archive_upload",
-            data={
-                "new_workouts_count": 0,
-                "workouts_data": {"sport_id": sport_1_cycling.id},
-                "files_to_process": ["file_1.gpx", "file_2.gpx", "file_3.gpx"],
-                "equipment_ids": None,
-                "original_file_name": "workouts.zip",
-            },
+        workouts_upload = self.create_workouts_upload_task(
+            user=user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+            files_to_process=["file_1.gpx", "file_2.gpx", "file_3.gpx"],
             file_path="some/path",
+            file_size=1000,
+            original_file_name="workouts.zip",
+            progress=0,
+            errored=True,
+            updated_at=datetime.now(timezone.utc),
         )
-        workouts_upload.progress = 0
-        workouts_upload.file_size = file_size
-        workouts_upload.errored = True
-        workouts_upload.errors["archive"] = "some error"
-        workouts_upload.updated_at = updated_at
-        db.session.add(workouts_upload)
+        workouts_upload.errors = {
+            **workouts_upload.errors,
+            "archive": "some error",
+        }
         db.session.commit()
 
-        serialized_data_export = workouts_upload.serialize()
+        serialized_workouts_upload = workouts_upload.serialize(
+            current_user=user_1
+        )
 
-        assert serialized_data_export == {
+        assert serialized_workouts_upload == {
             "id": workouts_upload.short_id,
-            "created_at": created_at,
+            "created_at": workouts_upload.created_at,
             "errored_files": {
                 "archive": "some error",
                 "files": {},
             },
-            "file_size": file_size,
+            "file_size": workouts_upload.file_size,
             "files_count": 3,
             "new_workouts_count": 0,
             "original_file_name": "workouts.zip",
@@ -1293,45 +1298,36 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "sport_id": sport_1_cycling.id,
             "status": "errored",
             "type": "workouts_archive_upload",
-            "updated_at": updated_at,
+            "updated_at": workouts_upload.updated_at,
         }
 
     def test_it_returns_aborted_upload(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
     ) -> None:
-        created_at = datetime.now(timezone.utc)
-        file_size = 1000
-        updated_at = datetime.now(timezone.utc)
-        workouts_upload = UserTask(
-            user_id=user_1.id,
-            created_at=created_at,
-            task_type="workouts_archive_upload",
-            data={
-                "new_workouts_count": 0,
-                "workouts_data": {"sport_id": sport_1_cycling.id},
-                "files_to_process": ["file_1.gpx", "file_2.gpx", "file_3.gpx"],
-                "equipment_ids": None,
-                "original_file_name": "workouts.zip",
-            },
+        workouts_upload = self.create_workouts_upload_task(
+            user=user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+            files_to_process=["file_1.gpx", "file_2.gpx", "file_3.gpx"],
             file_path="some/path",
+            file_size=1000,
+            original_file_name="workouts.zip",
+            progress=10,
+            aborted=True,
+            updated_at=datetime.now(timezone.utc),
         )
-        workouts_upload.progress = 10
-        workouts_upload.file_size = file_size
-        workouts_upload.aborted = True
-        workouts_upload.updated_at = updated_at
-        db.session.add(workouts_upload)
-        db.session.commit()
 
-        serialized_data_export = workouts_upload.serialize()
+        serialized_workouts_upload = workouts_upload.serialize(
+            current_user=user_1
+        )
 
-        assert serialized_data_export == {
+        assert serialized_workouts_upload == {
             "id": workouts_upload.short_id,
-            "created_at": created_at,
+            "created_at": workouts_upload.created_at,
             "errored_files": {
                 "archive": None,
                 "files": {},
             },
-            "file_size": file_size,
+            "file_size": workouts_upload.file_size,
             "files_count": 3,
             "new_workouts_count": 0,
             "original_file_name": "workouts.zip",
@@ -1339,8 +1335,94 @@ class TestUserTaskSerializerForWorkoutArchiveImport:
             "sport_id": sport_1_cycling.id,
             "status": "aborted",
             "type": "workouts_archive_upload",
-            "updated_at": updated_at,
+            "updated_at": workouts_upload.updated_at,
         }
+
+    def test_it_returns_export_for_admin(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2_admin: User,
+    ) -> None:
+        workouts_upload = self.create_workouts_upload_task(
+            user=user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+            files_to_process=["file_1.gpx", "file_2.gpx", "file_3.gpx"],
+            file_path="some/path",
+            file_size=1000,
+            message_id=self.random_short_id(),
+        )
+
+        serialized_workouts_upload = workouts_upload.serialize(
+            current_user=user_2_admin, for_admin=True
+        )
+
+        assert serialized_workouts_upload == {
+            "id": workouts_upload.short_id,
+            "created_at": workouts_upload.created_at,
+            "files_count": 3,
+            "file_size": workouts_upload.file_size,
+            "message_id": workouts_upload.message_id,
+            "status": "queued",
+            "type": "workouts_archive_upload",
+        }
+
+    def test_it_returns_export_for_admin_with_task_user(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2_admin: User,
+    ) -> None:
+        workouts_upload = self.create_workouts_upload_task(
+            user=user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+            files_to_process=["file_1.gpx", "file_2.gpx", "file_3.gpx"],
+            file_path="some/path",
+            file_size=1000,
+            message_id=self.random_short_id(),
+        )
+
+        serialized_workouts_upload = workouts_upload.serialize(
+            current_user=user_2_admin, for_admin=True, task_user=user_1
+        )
+
+        assert serialized_workouts_upload == {
+            "id": workouts_upload.short_id,
+            "created_at": workouts_upload.created_at,
+            "files_count": 3,
+            "file_size": workouts_upload.file_size,
+            "message_id": workouts_upload.message_id,
+            "status": "queued",
+            "type": "workouts_archive_upload",
+            "user": user_1.serialize(current_user=user_2_admin, light=True),
+        }
+
+    def test_it_raises_error_when_user_has_no_admin_right(
+        self, app: Flask, sport_1_cycling: Sport, user_1: User, user_2: User
+    ) -> None:
+        workouts_upload = self.create_workouts_upload_task(user=user_1)
+
+        with pytest.raises(
+            UserTaskForbiddenException, match="you do not have permissions"
+        ):
+            workouts_upload.serialize(current_user=user_2)
+
+    def test_it_raises_error_when_user_task_is_invalid(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2_admin: User,
+        user_3: User,
+    ) -> None:
+        workouts_upload = self.create_workouts_upload_task(user=user_1)
+
+        with pytest.raises(UserTaskException, match="invalid tasks user"):
+            workouts_upload.serialize(
+                current_user=user_2_admin, task_user=user_3
+            )
 
 
 class TestFollowRequestModel:

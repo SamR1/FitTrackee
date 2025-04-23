@@ -28,4 +28,13 @@ export const getters: GetterTree<IRootState, IRootState> & IRootGetters = {
   [ROOT_STORE.GETTERS.DISPLAY_OPTIONS]: (state: IRootState) => {
     return state.application.displayOptions
   },
+  [ROOT_STORE.GETTERS.QUEUED_TASKS]: (state: IRootState) => {
+    return state.queuedTasks.tasks
+  },
+  [ROOT_STORE.GETTERS.QUEUED_TASKS_COUNTS]: (state: IRootState) => {
+    return state.queuedTasks.counts
+  },
+  [ROOT_STORE.GETTERS.QUEUED_TASKS_PAGINATION]: (state: IRootState) => {
+    return state.queuedTasks.pagination
+  },
 }

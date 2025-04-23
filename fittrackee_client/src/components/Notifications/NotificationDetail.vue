@@ -165,7 +165,7 @@
         <button
           @click="
             $router.push(
-              `/profile/archive-uploads/${notification.task?.task_id}?fromNotifications=true`
+              `/profile/archive-uploads/${notification.task?.id}?fromNotifications=true`
             )
           "
         >

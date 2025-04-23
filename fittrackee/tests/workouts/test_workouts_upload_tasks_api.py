@@ -66,7 +66,6 @@ class TestWorkoutsTasksGetTasks(
         self,
         app: "Flask",
         user_1: "User",
-        user_2: "User",
     ) -> None:
         tasks = []
         for _ in range(3):
@@ -86,9 +85,15 @@ class TestWorkoutsTasksGetTasks(
         assert data["status"] == "success"
         user_tasks = data["data"]["tasks"]
         assert len(user_tasks) == 3
-        assert user_tasks[0] == jsonify_dict(tasks[2].serialize())
-        assert user_tasks[1] == jsonify_dict(tasks[1].serialize())
-        assert user_tasks[2] == jsonify_dict(tasks[0].serialize())
+        assert user_tasks[0] == jsonify_dict(
+            tasks[2].serialize(current_user=user_1)
+        )
+        assert user_tasks[1] == jsonify_dict(
+            tasks[1].serialize(current_user=user_1)
+        )
+        assert user_tasks[2] == jsonify_dict(
+            tasks[0].serialize(current_user=user_1)
+        )
         assert data["pagination"] == {
             "has_next": False,
             "has_prev": False,
@@ -101,7 +106,6 @@ class TestWorkoutsTasksGetTasks(
         self,
         app: "Flask",
         user_1: "User",
-        user_2: "User",
     ) -> None:
         tasks = []
         for _ in range(6):
@@ -120,7 +124,9 @@ class TestWorkoutsTasksGetTasks(
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
-        assert data["data"]["tasks"] == [jsonify_dict(tasks[0].serialize())]
+        assert data["data"]["tasks"] == [
+            jsonify_dict(tasks[0].serialize(current_user=user_1))
+        ]
         assert data["pagination"] == {
             "has_next": False,
             "has_prev": True,
@@ -241,7 +247,9 @@ class TestWorkoutsTasksGetTask(UserTaskMixin, ApiTestCaseMixin, BaseTestMixin):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
-        assert data["task"] == jsonify_dict(workouts_upload_task.serialize())
+        assert data["task"] == jsonify_dict(
+            workouts_upload_task.serialize(current_user=user_1)
+        )
 
     @pytest.mark.parametrize(
         "client_scope, can_access",
@@ -608,7 +616,9 @@ class TestWorkoutsTasksAbortTask(
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
-        assert data["task"] == jsonify_dict(workouts_upload_task.serialize())
+        assert data["task"] == jsonify_dict(
+            workouts_upload_task.serialize(current_user=user_1)
+        )
         db.session.refresh(workouts_upload_task)
         assert workouts_upload_task.aborted is True
 

@@ -2423,7 +2423,10 @@ def get_workouts_upload_tasks(
     return {
         "status": "success",
         "data": {
-            "tasks": [task.serialize() for task in tasks_pagination.items]
+            "tasks": [
+                task.serialize(current_user=auth_user)
+                for task in tasks_pagination.items
+            ]
         },
         "pagination": {
             "has_next": tasks_pagination.has_next,
@@ -2491,7 +2494,10 @@ def get_workouts_upload_task(
     if not task or task.task_type != "workouts_archive_upload":
         return NotFoundErrorResponse("no task found")
 
-    return {"status": "success", "task": task.serialize()}, 200
+    return {
+        "status": "success",
+        "task": task.serialize(current_user=auth_user),
+    }, 200
 
 
 @workouts_blueprint.route(
@@ -2573,7 +2579,10 @@ def abort_workouts_upload_task(
         appLog.exception(e)
         return InternalServerErrorResponse("error when aborting task")
 
-    return {"status": "success", "task": task.serialize()}, 200
+    return {
+        "status": "success",
+        "task": task.serialize(current_user=auth_user),
+    }, 200
 
 
 @workouts_blueprint.route(
