@@ -37,7 +37,7 @@
                 errored: task.status === 'errored',
               }"
             >
-              {{ $t(`user.PROFILE.ARCHIVE_UPLOADS.STATUS.${task.status}`) }}
+              {{ $t(`user.TASKS.STATUS.${task.status}`) }}
               <span v-if="task.status === 'in_progress'">
                 ({{ task.progress }}%)
               </span>

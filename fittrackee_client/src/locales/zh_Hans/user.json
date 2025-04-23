@@ -22,10 +22,7 @@
     "DOWNLOAD_ARCHIVE": "下载归档",
     "GENERATING_LINK": "正在生成链接…",
     "ONLY_ONE_EXPORT_PER_DAY": "您可以在24小时内请求归档",
-    "STATUS": {
-      "errored": "出错（请重新请求导出）",
-      "in_progress": "进行中…"
-    }
+    "REQUEST_ANOTHER_EXPORT": "请重新请求导出"
   },
   "FILTER_ON_USERNAME": "按用户名过滤",
   "HIDE_PASSWORD": "隐藏密码",
@@ -233,6 +230,12 @@
   "SUSPENDED": "已暂停",
   "SUSPENDED_ACCOUNT": "已暂停的账号",
   "SUSPENSION_REASON": "暂停原因",
+  "TASKS": {
+    "STATUS": {
+      "errored": "出错",
+      "in_progress": "进行中"
+    }
+  },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "该用户账号未激活。",
   "TOGGLE_THEME": "切换主题（浅色或深色模式）",
   "USER": "用户",

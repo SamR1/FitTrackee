@@ -952,8 +952,24 @@ class TestUserTaskModel:
 
 
 class TestUserTaskSerializerForUserDataExport(RandomMixin, UserTaskMixin):
-    def test_it_returns_ongoing_export(self, app: Flask, user_1: User) -> None:
+    def test_it_returns_queued_export(self, app: Flask, user_1: User) -> None:
         data_export = self.create_user_data_export_task(user=user_1)
+
+        serialized_data_export = data_export.serialize(current_user=user_1)
+
+        assert serialized_data_export == {
+            "id": data_export.short_id,
+            "created_at": data_export.created_at,
+            "file_name": None,
+            "file_size": None,
+            "status": "queued",
+            "type": "user_data_export",
+        }
+
+    def test_it_returns_ongoing_export(self, app: Flask, user_1: User) -> None:
+        data_export = self.create_user_data_export_task(
+            user=user_1, progress=10
+        )
 
         serialized_data_export = data_export.serialize(current_user=user_1)
 
@@ -1020,7 +1036,7 @@ class TestUserTaskSerializerForUserDataExport(RandomMixin, UserTaskMixin):
             "created_at": data_export.created_at,
             "file_size": None,
             "message_id": data_export.message_id,
-            "status": "in_progress",
+            "status": "queued",
             "type": "user_data_export",
         }
 
@@ -1040,7 +1056,7 @@ class TestUserTaskSerializerForUserDataExport(RandomMixin, UserTaskMixin):
             "created_at": data_export.created_at,
             "file_size": None,
             "message_id": data_export.message_id,
-            "status": "in_progress",
+            "status": "queued",
             "type": "user_data_export",
             "user": user_1.serialize(current_user=user_2_admin, light=True),
         }

@@ -9,10 +9,7 @@
   "EXPORT_REQUEST": {
     "DATA_EXPORT": "Dataeksport",
     "DOWNLOAD_ARCHIVE": "Last ned arkiv",
-    "GENERATING_LINK": "genererer lenke…",
-    "STATUS": {
-      "in_progress": "underveis …"
-    }
+    "GENERATING_LINK": "genererer lenke…"
   },
   "FILTER_ON_USERNAME": "Filtrer på brukernavn",
   "HIDE_PASSWORD": "skjul passord",
@@ -108,6 +105,11 @@
     "admin": "Administrator"
   },
   "SHOW_PASSWORD": "vis passord",
+  "TASKS": {
+    "STATUS": {
+      "in_progress": "underveis"
+    }
+  },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Denne brukerkontoen er inaktiv.",
   "USERNAME": "Brukernavn",
   "USERNAME_INFO": "3 til 30 tegn kreves. Kun alfanumeriske tegn og understrek «_» tillates.",

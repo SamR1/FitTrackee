@@ -22,10 +22,7 @@
     "DOWNLOAD_ARCHIVE": "Télécharger l'archive",
     "GENERATING_LINK": "lien en cours de génération…",
     "ONLY_ONE_EXPORT_PER_DAY": "Vous pouvez demander un export par 24h",
-    "STATUS": {
-      "errored": "en erreur (veuillez demander une nouvelle archive)",
-      "in_progress": "en cours…"
-    }
+    "REQUEST_ANOTHER_EXPORT": "veuillez demander une nouvelle archive"
   },
   "FILTER_ON_USERNAME": "Filtrer sur le nom d'utilisateur",
   "HIDE_PASSWORD": "masquer le mot de passe",
@@ -85,15 +82,7 @@
       },
       "FILES_COUNT": "{count} fichiers",
       "NOT_FOUND": "Pas de chargement d'archive trouvé.",
-      "PROGRESS": "Progression",
-      "STATUS": {
-        "LABEL": "État",
-        "aborted": "annulé",
-        "errored": "en erreur",
-        "in_progress": "en cours",
-        "queued": "en attente",
-        "successful": "terminé avec succès"
-      }
+      "PROGRESS": "Progression"
     },
     "ASCENT_DATA": "Données relatives au dénivelé positif (records, total)",
     "BACK_TO_PROFILE": "Revenir au profil",
@@ -256,6 +245,16 @@
   "SUSPENDED": "Suspendu",
   "SUSPENDED_ACCOUNT": "Compte suspendu",
   "SUSPENSION_REASON": "Raison de la suspension",
+  "TASKS": {
+    "STATUS": {
+      "LABEL": "État",
+      "aborted": "annulé",
+      "errored": "en erreur",
+      "in_progress": "en cours",
+      "queued": "en attente",
+      "successful": "terminé avec succès"
+    }
+  },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Le compte de cet utilisateur est inactif.",
   "TOGGLE_THEME": "Modifier le thème (Mode Clair ou Sombre)",
   "USER": "utilisateur | utilisateurs",
