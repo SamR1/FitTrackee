@@ -1,4 +1,5 @@
 import logging
+import sys
 
 import click
 
@@ -57,7 +58,7 @@ def workouts_archive_uploads(max_archives: int, verbose: bool) -> None:
     "task_short_id",
     type=str,
     required=True,
-    help="Id of tasks to process",
+    help="Id of task to process",
 )
 @click.option(
     "--verbose",
@@ -78,5 +79,9 @@ def process_queued_archive_upload(task_short_id: str, verbose: bool) -> None:
             upload_logger = logging.getLogger("fittrackee_workouts_upload")
             upload_logger.setLevel(logging.DEBUG)
             upload_logger.addHandler(handler)
-        process_workouts_archive_upload(task_short_id, logger)
+        try:
+            process_workouts_archive_upload(task_short_id, logger)
+        except Exception as e:
+            logger.error(str(e))
+            sys.exit(1)
         logger.info("\nDone.")
