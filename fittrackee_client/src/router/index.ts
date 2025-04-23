@@ -787,7 +787,7 @@ const routes: RouteRecordRaw[] = [
         name: 'QueuedTasksCountAdministration',
         component: AdminQueuedTasksCount,
         meta: {
-          title: 'admin.TASKS_QUEUES.TITLE',
+          title: 'admin.QUEUED_TASKS.LABEL',
           minimumRole: 'admin',
         },
       },
@@ -796,7 +796,7 @@ const routes: RouteRecordRaw[] = [
         name: 'QueuedTaskListAdministration',
         component: AdminQueuedTasksList,
         meta: {
-          title: 'admin.TASKS_QUEUES.TITLE',
+          title: 'admin.QUEUED_TASKS.LABEL',
           minimumRole: 'admin',
         },
       },

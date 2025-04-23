@@ -50,6 +50,7 @@
       "CREATED_AT": "creation date",
       "UPDATED_AT": "update date"
     },
+    "QUEUED_TASKS_EXIST": "There are queued tasks",
     "REASON": "Reason",
     "REPORT": "report | reports",
     "REPORTED_BY": "Reported by",
@@ -119,7 +120,7 @@
   "QUEUED_TASKS": {
     "DESCRIPTION": "Display queued tasks",
     "LABEL": "Queued tasks",
-    "LIST_DESCRIPTION": "If no workers are running, use CLI to process them.",
+    "LIST_DESCRIPTION": "If no workers are running, please use CLI to process them.",
     "NO_QUEUED_TASKS": "No queued tasks",
     "TASK_TYPES": {
       "LABEL": "Tasks type",

@@ -71,7 +71,10 @@
                 </router-link>
               </dt>
               <dd>
-                {{ $t('admin.QUEUED_TASKS.DESCRIPTION') }}
+                <div>{{ $t('admin.QUEUED_TASKS.DESCRIPTION') }}</div>
+                <router-link to="/admin/queued-tasks" v-if="queuedTasksExist">
+                  {{ $t('admin.APP_MODERATION.QUEUED_TASKS_EXIST') }}
+                </router-link>
               </dd>
               <dt>
                 <router-link to="/admin/users">
@@ -98,7 +101,7 @@
   import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser'
   import { REPORTS_STORE, ROOT_STORE } from '@/store/constants'
-  import type { IAppStatistics } from '@/types/application'
+  import type { IAppStatistics, TQueuedTasksCounts } from '@/types/application'
   import { useStore } from '@/use/useStore'
 
   const store = useStore()
@@ -112,10 +115,19 @@
   const unresolvedReportsStatus: ComputedRef<boolean> = computed(
     () => store.getters[REPORTS_STORE.GETTERS.UNRESOLVED_REPORTS_STATUS]
   )
-
-  onBeforeMount(() =>
-    store.dispatch(REPORTS_STORE.ACTIONS.GET_UNRESOLVED_REPORTS_STATUS)
+  const queuedTasksCounts: ComputedRef<TQueuedTasksCounts> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.QUEUED_TASKS_COUNTS]
   )
+  const queuedTasksExist: ComputedRef<boolean> = computed(
+    () =>
+      queuedTasksCounts.value.user_data_export > 0 ||
+      queuedTasksCounts.value.workouts_archive_upload > 0
+  )
+
+  onBeforeMount(() => {
+    store.dispatch(REPORTS_STORE.ACTIONS.GET_UNRESOLVED_REPORTS_STATUS)
+    store.dispatch(ROOT_STORE.ACTIONS.GET_QUEUED_TASKS_COUNT)
+  })
   onMounted(() => {
     const applicationLink = document.getElementById('adminLink')
     if (applicationLink) {

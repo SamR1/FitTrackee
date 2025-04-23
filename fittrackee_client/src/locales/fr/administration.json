@@ -50,6 +50,7 @@
       "CREATED_AT": "date de création",
       "UPDATED_AT": "date de mise à jour"
     },
+    "QUEUED_TASKS_EXIST": "Il y a des tâches en attente",
     "REASON": "Raison",
     "REPORT": "signalement | signalements",
     "REPORTED_BY": "Signalé par",
@@ -120,7 +121,7 @@
   "QUEUED_TASKS": {
     "DESCRIPTION": "Afficher les tâches en attente",
     "LABEL": "Tâches en attente",
-    "LIST_DESCRIPTION": "Si aucun worker n'est lancé, utiliser l'interface en ligne de commande (CLI) pour les traiter.",
+    "LIST_DESCRIPTION": "Si aucun worker n'est lancé, veuillez utiliser l'interface en ligne de commande (CLI) pour les traiter.",
     "NO_QUEUED_TASKS": "Pas de tâches en attente",
     "TASK_TYPES": {
       "LABEL": "Type de tâches",
