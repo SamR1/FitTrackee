@@ -3526,7 +3526,9 @@ class TestPostUserTaskRequest(ApiUserTaskRequestMixin):
         data = json.loads(response.data.decode())
         data_export_request = UserTask.query.filter_by(user_id=user_1.id).one()
         assert data["status"] == "success"
-        assert data["request"] == jsonify_dict(data_export_request.serialize())
+        assert data["request"] == jsonify_dict(
+            data_export_request.serialize(current_user=user_1)
+        )
 
     def test_it_returns_error_if_ongoing_request_exist(
         self,
@@ -3593,7 +3595,9 @@ class TestPostUserTaskRequest(ApiUserTaskRequestMixin):
         data_export_request = UserTask.query.filter_by(user_id=user_1.id).one()
         assert data_export_request.id != completed_export_request.id
         assert data["status"] == "success"
-        assert data["request"] == jsonify_dict(data_export_request.serialize())
+        assert data["request"] == jsonify_dict(
+            data_export_request.serialize(current_user=user_1)
+        )
 
     def test_it_calls_export_data_tasks_when_request_is_created(
         self,
@@ -3685,7 +3689,9 @@ class TestPostUserTaskRequest(ApiUserTaskRequestMixin):
             user_id=suspended_user.id
         ).one()
         assert data["status"] == "success"
-        assert data["request"] == jsonify_dict(data_export_request.serialize())
+        assert data["request"] == jsonify_dict(
+            data_export_request.serialize(current_user=suspended_user)
+        )
 
 
 class TestGetUserTaskRequest(ApiUserTaskRequestMixin):
@@ -3754,7 +3760,7 @@ class TestGetUserTaskRequest(ApiUserTaskRequestMixin):
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["request"] == jsonify_dict(
-            completed_export_request.serialize()
+            completed_export_request.serialize(current_user=user_1)
         )
 
     def test_suspended_user_can_get_data_export_info(
@@ -3779,7 +3785,7 @@ class TestGetUserTaskRequest(ApiUserTaskRequestMixin):
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["request"] == jsonify_dict(
-            completed_export_request.serialize()
+            completed_export_request.serialize(current_user=suspended_user)
         )
 
 

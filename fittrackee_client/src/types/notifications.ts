@@ -34,7 +34,7 @@ export interface INotification {
   from?: IUserProfile
   marked_as_read: boolean
   report?: IReportForModerator
-  task?: { task_id: string; original_file_name: string | null }
+  task?: { id: string; original_file_name: string | null }
   type: TNotificationType
   workout?: IWorkout
 }

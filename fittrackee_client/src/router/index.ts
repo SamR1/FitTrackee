@@ -5,6 +5,8 @@ import type { RouteRecordRaw } from 'vue-router'
 import AdminApplication from '@/components/Administration/AdminApplication.vue'
 import AdminEquipmentTypes from '@/components/Administration/AdminEquipmentTypes.vue'
 import AdminMenu from '@/components/Administration/AdminMenu.vue'
+import AdminQueuedTasksCount from '@/components/Administration/AdminQueuedTasksCount.vue'
+import AdminQueuedTasksList from '@/components/Administration/AdminQueuedTasksList.vue'
 import AdminReport from '@/components/Administration/AdminReport.vue'
 import AdminReports from '@/components/Administration/AdminReports.vue'
 import AdminSports from '@/components/Administration/AdminSports.vue'
@@ -28,7 +30,7 @@ import UserApps from '@/components/User/UserApps/index.vue'
 import UserApp from '@/components/User/UserApps/UserApp.vue'
 import UserAppsList from '@/components/User/UserApps/UserAppsList.vue'
 import UserArchiveUploads from '@/components/User/UserArchiveUploads/index.vue'
-import UserArchiveUpload from '@/components/User/UserArchiveUploads/UserArchiveUpload.vue'
+import UserArchiveUploadDetail from '@/components/User/UserArchiveUploads/UserArchiveUploadDetail.vue'
 import UserArchiveUploadsList from '@/components/User/UserArchiveUploads/UserArchiveUploadsList.vue'
 import EquipmentEdition from '@/components/User/UserEquipments/EquipmentEdition.vue'
 import UserEquipments from '@/components/User/UserEquipments/index.vue'
@@ -409,8 +411,8 @@ const routes: RouteRecordRaw[] = [
               },
               {
                 path: ':task_id',
-                name: 'UserArchiveUpload',
-                component: UserArchiveUpload,
+                name: 'UserArchiveUploadDetail',
+                component: UserArchiveUploadDetail,
                 meta: {
                   title: 'user.PROFILE.TABS.ARCHIVE_UPLOADS',
                 },
@@ -777,6 +779,24 @@ const routes: RouteRecordRaw[] = [
         component: AdminUsers,
         meta: {
           title: 'admin.USERS.TITLE',
+          minimumRole: 'admin',
+        },
+      },
+      {
+        path: 'queued-tasks',
+        name: 'QueuedTasksCountAdministration',
+        component: AdminQueuedTasksCount,
+        meta: {
+          title: 'admin.TASKS_QUEUES.TITLE',
+          minimumRole: 'admin',
+        },
+      },
+      {
+        path: 'queued-tasks/:taskType',
+        name: 'QueuedTaskListAdministration',
+        component: AdminQueuedTasksList,
+        meta: {
+          title: 'admin.TASKS_QUEUES.TITLE',
           minimumRole: 'admin',
         },
       },

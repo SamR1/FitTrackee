@@ -539,7 +539,10 @@ class UserTaskMixin:
         *,
         created_at: Optional[datetime] = None,
         progress: int = 0,
+        errored: bool = False,
         file_path: Optional[str] = None,
+        file_size: Optional[int] = None,
+        message_id: Optional[str] = None,
     ) -> "UserTask":
         data_export_task = UserTask(
             user_id=user.id,
@@ -547,7 +550,10 @@ class UserTaskMixin:
             task_type="user_data_export",
         )
         data_export_task.progress = progress
+        data_export_task.errored = errored
         data_export_task.file_path = file_path
+        data_export_task.file_size = file_size
+        data_export_task.message_id = message_id
         db.session.add(data_export_task)
         db.session.commit()
         return data_export_task
@@ -573,16 +579,20 @@ class UserTaskMixin:
         files_to_process: Optional[List[str]] = None,
         equipment_ids: Optional[List[int]] = None,
         file_path: str = "",
+        file_size: Optional[int] = None,
         progress: int = 0,
+        new_workouts_count: int = 0,
         errored: bool = False,
         original_file_name: Optional[str] = None,
         aborted: bool = False,
         message_id: Optional[str] = None,
+        updated_at: Optional[datetime] = None,
     ) -> "UserTask":
         upload_task = UserTask(
             user_id=user.id,
             task_type="workouts_archive_upload",
             data={
+                "new_workouts_count": new_workouts_count,
                 "workouts_data": workouts_data if workouts_data else {},
                 "files_to_process": files_to_process
                 if files_to_process
@@ -595,7 +605,9 @@ class UserTaskMixin:
         upload_task.aborted = aborted
         upload_task.progress = progress
         upload_task.errored = errored
+        upload_task.file_size = file_size
         upload_task.message_id = message_id
+        upload_task.updated_at = updated_at
         db.session.add(upload_task)
         db.session.commit()
         return upload_task

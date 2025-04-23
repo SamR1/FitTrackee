@@ -2183,7 +2183,10 @@ def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
 
         export_data.send(task_id=export_request.id)
 
-        return {"status": "success", "request": export_request.serialize()}
+        return {
+            "status": "success",
+            "request": export_request.serialize(current_user=auth_user),
+        }
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e, db=db)
 
@@ -2253,7 +2256,9 @@ def get_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
     ).first()
     return {
         "status": "success",
-        "request": export_request.serialize() if export_request else None,
+        "request": export_request.serialize(current_user=auth_user)
+        if export_request
+        else None,
     }
 
 

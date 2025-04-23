@@ -154,6 +154,7 @@ def create_app(init_email: bool = True) -> Flask:
     from .workouts.tasks import upload_workouts_archive  # noqa
 
     from .application.app_config import config_blueprint
+    from .application.queued_tasks import queued_tasks_blueprint
     from .comments.comments import comments_blueprint
     from .equipments.equipment_types import equipment_types_blueprint
     from .equipments.equipments import equipments_blueprint
@@ -178,6 +179,7 @@ def create_app(init_email: bool = True) -> Flask:
     app.register_blueprint(records_blueprint, url_prefix="/api")
     app.register_blueprint(sports_blueprint, url_prefix="/api")
     app.register_blueprint(stats_blueprint, url_prefix="/api")
+    app.register_blueprint(queued_tasks_blueprint, url_prefix="/api")
     app.register_blueprint(users_blueprint, url_prefix="/api")
     app.register_blueprint(workouts_blueprint, url_prefix="/api")
     app.register_blueprint(follow_requests_blueprint, url_prefix="/api")

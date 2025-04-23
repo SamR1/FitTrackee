@@ -1,3 +1,5 @@
+import type { IUserLightProfile } from '@/types/user.ts'
+
 export interface IAppStatistics {
   sports: number
   uploads_dir_size: number
@@ -50,4 +52,24 @@ export type TAppConfigForm = {
 export interface IFileSize {
   size: string
   suffix: string
+}
+
+export type TTaskType = 'user_data_export' | 'workouts_archive_upload'
+
+export type TQueuedTasksCounts = {
+  [key in TTaskType]: number
+}
+
+export interface IQueuedTask {
+  file_size: number
+  created_at: string
+  id: string
+  message_id: string
+  files_count?: number
+  user: IUserLightProfile
+}
+
+export interface IQueuedTasksPayload {
+  page?: number
+  taskType: string
 }

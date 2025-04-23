@@ -39,6 +39,8 @@ from .exceptions import (
     FollowRequestAlreadyRejectedError,
     InvalidNotificationTypeException,
     NotExistingFollowRequestError,
+    UserTaskException,
+    UserTaskForbiddenException,
 )
 from .roles import (
     UserRole,
@@ -1075,11 +1077,27 @@ class UserTask(BaseModel):
     def short_id(self) -> str:
         return encode_uuid(self.uuid)
 
-    def _get_user_data_export(self, serialized_task: Dict) -> Dict:
+    def _get_user_data_export(
+        self, serialized_task: Dict, *, for_admin: bool = False
+    ) -> Dict:
         if self.progress == 100:
             status = "errored" if self.errored else "successful"
         else:
             status = "in_progress"
+
+        serialized_task = {
+            **serialized_task,
+            "file_size": (
+                self.file_size
+                if status == "successful" and self.file_size is not None
+                else None
+            ),
+            "status": status,
+        }
+
+        if for_admin:
+            return serialized_task
+
         return {
             **serialized_task,
             "file_name": (
@@ -1087,12 +1105,6 @@ class UserTask(BaseModel):
                 if status == "successful" and self.file_path
                 else None
             ),
-            "file_size": (
-                self.file_size
-                if status == "successful" and self.file_size is not None
-                else None
-            ),
-            "status": status,
         }
 
     def get_workouts_archive_upload_status(self) -> str:
@@ -1106,14 +1118,24 @@ class UserTask(BaseModel):
             return "successful"
         return "in_progress"
 
-    def _get_workouts_archive_upload(self, serialized_task: Dict) -> Dict:
+    def _get_workouts_archive_upload(
+        self, serialized_task: Dict, *, for_admin: bool = False
+    ) -> Dict:
         total_files = len(self.data.get("files_to_process", []))
+
         serialized_task = {
             **serialized_task,
-            "sport_id": self.data.get("workouts_data", {}).get("sport_id"),
             "status": self.get_workouts_archive_upload_status(),
             "file_size": self.file_size,
             "files_count": total_files,
+        }
+
+        if for_admin:
+            return serialized_task
+
+        serialized_task = {
+            **serialized_task,
+            "sport_id": self.data.get("workouts_data", {}).get("sport_id"),
             "errored_files": self.errors,
             "new_workouts_count": self.data.get("new_workouts_count", 0),
             "progress": self.progress,
@@ -1122,17 +1144,43 @@ class UserTask(BaseModel):
         }
         return serialized_task
 
-    def serialize(self) -> Dict:
+    def serialize(
+        self,
+        *,
+        current_user: "User",
+        for_admin: bool = False,
+        task_user: Optional["User"] = None,
+    ) -> Dict:
+        if (
+            current_user.id != self.user_id
+            and not current_user.has_admin_rights
+        ):
+            raise UserTaskForbiddenException()
+
+        if task_user and task_user.id != self.user_id:
+            raise UserTaskException("invalid tasks user")
+
         serialized_task = {
             "id": self.short_id,
             "created_at": self.created_at,
             "type": self.task_type,
         }
 
-        if self.task_type == "user_data_export":
-            return self._get_user_data_export(serialized_task)
+        if current_user.has_admin_rights and for_admin:
+            serialized_task["message_id"] = self.message_id
+            if task_user:
+                serialized_task["user"] = task_user.serialize(
+                    current_user=current_user, light=True
+                )
 
-        return self._get_workouts_archive_upload(serialized_task)
+        if self.task_type == "user_data_export":
+            return self._get_user_data_export(
+                serialized_task, for_admin=for_admin
+            )
+
+        return self._get_workouts_archive_upload(
+            serialized_task, for_admin=for_admin
+        )
 
 
 @listens_for(UserTask, "after_delete")

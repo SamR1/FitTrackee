@@ -66,6 +66,14 @@
                 {{ $t('admin.ENABLE_DISABLE_SPORTS') }}
               </dd>
               <dt>
+                <router-link to="/admin/queued-tasks">
+                  {{ capitalize($t('admin.QUEUED_TASKS.LABEL', 0)) }}
+                </router-link>
+              </dt>
+              <dd>
+                {{ $t('admin.QUEUED_TASKS.DESCRIPTION') }}
+              </dd>
+              <dt>
                 <router-link to="/admin/users">
                   {{ capitalize($t('user.USER', 0)) }}
                 </router-link>

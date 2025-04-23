@@ -1,6 +1,7 @@
 import { enUS } from 'date-fns/locale'
 
 import type { IRootState } from '@/store/modules/root/types'
+import type { IPagination } from '@/types/api.ts'
 import type { IApplication } from '@/types/application'
 
 export const state: IRootState = {
@@ -26,4 +27,12 @@ export const state: IRootState = {
   },
   appLoading: false,
   darkMode: null,
+  queuedTasks: {
+    counts: {
+      user_data_export: 0,
+      workouts_archive_upload: 0,
+    },
+    tasks: [],
+    pagination: <IPagination>{},
+  },
 }

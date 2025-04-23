@@ -116,6 +116,18 @@
   "NO_TEXT_ENTERED": "No text entered",
   "PASSWORD_RESET_SUCCESSFUL": "The password has been reset.",
   "PRIVACY_POLICY_DESCRIPTION": "Add your own privacy policy or leave blank to use the default one. Markdown syntax can be used.",
+  "QUEUED_TASKS": {
+    "DESCRIPTION": "Display queued tasks",
+    "LABEL": "Queued tasks",
+    "LIST_DESCRIPTION": "If no workers are running, use CLI to process them.",
+    "NO_QUEUED_TASKS": "No queued tasks",
+    "TASK_TYPES": {
+      "LABEL": "Tasks type",
+      "user_data_export": "User data export",
+      "workouts_archive_upload": "Workouts archive uploads"
+    },
+    "VIEW_OTHER_TASKS": "View other queued tasks"
+  },
   "REGISTRATION_DISABLED": "Registration is currently disabled.",
   "REGISTRATION_ENABLED": "Registration is currently enabled.",
   "RESET_USER_PASSWORD": "Reset password",
