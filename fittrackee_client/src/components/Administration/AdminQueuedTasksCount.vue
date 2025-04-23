@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-  import { onBeforeMount, computed } from 'vue'
+  import { onBeforeMount, computed, onUnmounted } from 'vue'
   import type { ComputedRef } from 'vue'
 
   import useApp from '@/composables/useApp'
@@ -67,6 +67,12 @@
   }
 
   onBeforeMount(() => loadQueues())
+  onUnmounted(() =>
+    store.commit(ROOT_STORE.MUTATIONS.UPDATE_QUEUED_TASKS_COUNTS, {
+      user_data_export: 0,
+      workouts_archive_upload: 0,
+    })
+  )
 </script>
 
 <style lang="scss" scoped>

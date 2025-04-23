@@ -6,6 +6,20 @@
       </template>
       <template #content>
         <template v-if="queuedTasks.length > 0">
+          <div class="top">
+            <div>
+              <span class="total">{{ $t('common.TOTAL') }} </span>:
+              {{ pagination.total }}
+            </div>
+            <button
+              v-if="queuedTasks.length > 2"
+              class="top-button"
+              @click.prevent="$router.push('/admin/queued-tasks')"
+            >
+              {{ $t('buttons.BACK') }}
+            </button>
+          </div>
+
           <div class="tasks-help">
             <div class="info-box">
               <i class="fa fa-info-circle" aria-hidden="true" />
@@ -78,7 +92,7 @@
 
           <Pagination
             :pagination="pagination"
-            path="/profile/archive-uploads"
+            :path="`/admin/queued-tasks/${taskType}`"
             :query="query"
           />
         </template>
@@ -86,9 +100,10 @@
           {{ $t('admin.QUEUED_TASKS.NO_QUEUED_TASKS') }}
         </div>
 
+        <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+
         <div class="buttons">
           <button
-            class="top-button"
             @click.prevent="
               $router.push(
                 `/admin/queued-tasks/${
@@ -101,10 +116,7 @@
           >
             {{ $t('admin.QUEUED_TASKS.VIEW_OTHER_TASKS') }}
           </button>
-          <button
-            class="top-button"
-            @click.prevent="$router.push('/admin/queued-tasks')"
-          >
+          <button @click.prevent="$router.push('/admin/queued-tasks')">
             {{ $t('buttons.BACK') }}
           </button>
         </div>
@@ -133,7 +145,7 @@
   const route = useRoute()
   const store = useStore()
 
-  const { displayOptions } = useApp()
+  const { displayOptions, errorMessages } = useApp()
 
   let query: { page?: number } = getTasksQuery(route.query)
   const taskType = computed(() => route.params.taskType as TTaskType)
@@ -184,6 +196,21 @@
 <style lang="scss" scoped>
   @use '~@/scss/vars.scss' as *;
   #admin-queued-tasks-list {
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: $default-margin * 1.5;
+      .top-button {
+        display: none;
+        @media screen and (max-width: $small-limit) {
+          display: block;
+        }
+      }
+      .total {
+        font-weight: bold;
+      }
+    }
     .tasks-help {
       margin: $default-margin 0;
       .info-box {
@@ -245,6 +272,7 @@
       display: flex;
       gap: $default-padding;
       flex-wrap: wrap;
+      margin-bottom: $default-margin;
     }
   }
 </style>
