@@ -26,7 +26,6 @@ from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.responses import (
-    DataInvalidPayloadErrorResponse,
     DataNotFoundErrorResponse,
     EquipmentInvalidPayloadErrorResponse,
     ExceedingValueErrorResponse,
@@ -1434,7 +1433,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 "data": {"task_id": processing_output["task_short_id"]},
             }, 200
 
-        if len(new_workouts) > 0:
+        if len(new_workouts) > 0 and not processing_output["errored_workouts"]:
             response_object = {
                 "status": "created",
                 "data": {
@@ -1442,11 +1441,14 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                         new_workout.serialize(user=auth_user, light=False)
                         for new_workout in new_workouts
                     ],
-                    "errored_workouts": processing_output["errored_workouts"],
                 },
             }
         else:
-            return DataInvalidPayloadErrorResponse("workouts", "fail")
+            return {
+                "status": "fail",
+                "new_workouts": len(new_workouts),
+                "errored_workouts": processing_output["errored_workouts"],
+            }, 400
     except WorkoutExceedingValueException as e:
         appLog.error(e.detail)
         return ExceedingValueErrorResponse()

@@ -250,7 +250,9 @@
       margin: $default-padding 0;
     }
     .errored-files {
-      padding-left: 10px;
+      padding-left: 18px;
+      max-height: 190px;
+      overflow-y: auto;
     }
     .buttons {
       display: flex;

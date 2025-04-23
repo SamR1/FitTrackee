@@ -1302,12 +1302,45 @@ class TestPostWorkoutWithZipArchive(UserTaskMixin, WorkoutApiTestCaseMixin):
                 ),
             )
 
-            assert response.status_code == 201
+            assert response.status_code == 400
             data = json.loads(response.data.decode())
-            assert "created" in data["status"]
-            assert len(data["data"]["workouts"]) == 1
-            assert data["data"]["errored_workouts"] == {
-                "test_4.gpx": "no tracks in gpx file"
+            assert data["status"] == "fail"
+            assert data["new_workouts"] == 1
+            assert data["errored_workouts"] == {
+                "test_4.gpx": "no tracks in gpx file",
+            }
+
+    def test_it_returns_400_when_all_files_in_zip_archive_are_invalid(
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
+    ) -> None:
+        # 'gpx_test_incorrect.zip' contains 2 incorrect gpx files
+        file_path = os.path.join(
+            app.root_path, "tests/files/gpx_test_all_incorrect.zip"
+        )
+        with open(file_path, "rb") as zip_file:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app, user_1.email
+            )
+
+            response = client.post(
+                "/api/workouts",
+                data=dict(
+                    file=(zip_file, "gpx_test_incorrect.zip"),
+                    data='{"sport_id": 1}',
+                ),
+                headers=dict(
+                    content_type="multipart/form-data",
+                    Authorization=f"Bearer {auth_token}",
+                ),
+            )
+
+            assert response.status_code == 400
+            data = json.loads(response.data.decode())
+            assert data["status"] == "fail"
+            assert data["new_workouts"] == 0
+            assert data["errored_workouts"] == {
+                "test_4.gpx": "no tracks in gpx file",
+                "test_5.gpx": "no tracks in gpx file",
             }
 
     def test_it_adds_valid_workout_when_one_file_has_invalid_calculated_value(
@@ -1349,15 +1382,13 @@ class TestPostWorkoutWithZipArchive(UserTaskMixin, WorkoutApiTestCaseMixin):
                     ),
                 )
 
-            assert response.status_code == 201
+            assert response.status_code == 400
             data = json.loads(response.data.decode())
-            assert "created" in data["status"]
-            assert len(data["data"]["workouts"]) == 2
-            assert data["data"]["errored_workouts"] == {
-                "test_2.gpx": (
-                    "one or more values, entered or calculated, "
-                    "exceed the limits"
-                ),
+            assert data["status"] == "fail"
+            assert data["new_workouts"] == 2
+            assert data["errored_workouts"] == {
+                "test_2.gpx": "one or more values, entered or calculated, "
+                "exceed the limits"
             }
 
     def test_it_creates_task_to_add_workouts_asynchronously_when_files_exceed_limit(  # noqa
