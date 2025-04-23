@@ -93,7 +93,14 @@
             ({{ getReadableFileSizeAsText(exportRequest.file_size) }})
           </span>
           <span v-else>
-            {{ $t(`user.EXPORT_REQUEST.STATUS.${exportRequest.status}`) }}
+            {{
+              `${$t(
+                `user.TASKS.STATUS.${exportRequest.status}`
+              )}${exportRequest.status === 'in_progress' ? '…' : ''}`
+            }}
+            <span v-if="exportRequest.status === 'errored'">
+              ({{ $t('user.EXPORT_REQUEST.REQUEST_ANOTHER_EXPORT') }})
+            </span>
           </span>
           <span v-if="generatingLink">
             {{ $t(`user.EXPORT_REQUEST.GENERATING_LINK`) }}

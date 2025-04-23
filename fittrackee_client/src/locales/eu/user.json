@@ -22,10 +22,7 @@
     "DOWNLOAD_ARCHIVE": "Deskargatu artxiboa",
     "GENERATING_LINK": "esteka sortzen…",
     "ONLY_ONE_EXPORT_PER_DAY": "24 orduero eskatu dezakezu artxiboa",
-    "STATUS": {
-      "errored": "huts egin du (eskatu beste esportazio bat)",
-      "in_progress": "jardunean…"
-    }
+    "REQUEST_ANOTHER_EXPORT": "eskatu beste esportazio bat"
   },
   "FILTER_ON_USERNAME": "Filtratu erabiltzaile-izenaren arabera",
   "HIDE_PASSWORD": "ezkutatu pasahitza",
@@ -184,6 +181,12 @@
     "admin": "Kudeatzailea"
   },
   "SHOW_PASSWORD": "erakutsi pasahitza",
+  "TASKS": {
+    "STATUS": {
+      "errored": "huts egin du",
+      "in_progress": "jardunean"
+    }
+  },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Erabiltzaile honen kontua desaktibatuta dago.",
   "TOGGLE_THEME": "Aldatu itxura (argia edo iluna)",
   "USERNAME": "Erabiltzaile-izena",

@@ -22,10 +22,7 @@
     "DOWNLOAD_ARCHIVE": "Download archive",
     "GENERATING_LINK": "generating link…",
     "ONLY_ONE_EXPORT_PER_DAY": "You can request an archive by 24 hours",
-    "STATUS": {
-      "errored": "errored (please request another export)",
-      "in_progress": "in progress…"
-    }
+    "REQUEST_ANOTHER_EXPORT": "please request another export"
   },
   "FILTER_ON_USERNAME": "Filter on username",
   "HIDE_PASSWORD": "hide password",
@@ -76,24 +73,16 @@
     "ACCOUNT_EDITION": "Account edition",
     "ARCHIVE_UPLOADS": {
       "ARCHIVE": "Zip archive",
-      "CREATED_WORKOUTS": "Created workouts",
       "CONFIRM_TASK_ABORT": "Are you sure you want to abort this archive upload task?",
       "CONFIRM_TASK_DELETION": "Are you sure you want to delete this archive upload task?",
+      "CREATED_WORKOUTS": "Created workouts",
       "ERRORED_FILES": "Errored file | Errored files",
       "ERRORS": {
         "no tracks in gpx file": "no <tracks> in gpx file."
       },
       "FILES_COUNT": "{count} files",
       "NOT_FOUND": "No archive upload found.",
-      "PROGRESS": "Progress",
-      "STATUS": {
-        "LABEL": "Status",
-        "aborted": "aborted",
-        "errored": "errored",
-        "in_progress": "in progress",
-        "queued": "queued",
-        "successful": "successful"
-      }
+      "PROGRESS": "Progress"
     },
     "ASCENT_DATA": "Ascent-related data (records, total)",
     "BACK_TO_PROFILE": "Back to profile",
@@ -256,6 +245,16 @@
   "SUSPENDED": "Suspended",
   "SUSPENDED_ACCOUNT": "Suspended account",
   "SUSPENSION_REASON": "Suspension reason",
+  "TASKS": {
+    "STATUS": {
+      "LABEL": "Status",
+      "aborted": "aborted",
+      "errored": "errored",
+      "in_progress": "in progress",
+      "queued": "queued",
+      "successful": "successful"
+    }
+  },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "This user account is inactive.",
   "TOGGLE_THEME": "Toggle theme (Light or Dark mode)",
   "USER": "user | users",

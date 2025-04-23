@@ -45,9 +45,9 @@
         </dd>
       </dl>
       <dl>
-        <dt>{{ $t('user.PROFILE.ARCHIVE_UPLOADS.STATUS.LABEL') }}:</dt>
+        <dt>{{ $t('user.TASKS.STATUS.LABEL') }}:</dt>
         <dd>
-          {{ $t(`user.PROFILE.ARCHIVE_UPLOADS.STATUS.${uploadTask.status}`) }}
+          {{ $t(`user.TASKS.STATUS.${uploadTask.status}`) }}
         </dd>
       </dl>
       <dl v-if="uploadTask.status === 'in_progress'">

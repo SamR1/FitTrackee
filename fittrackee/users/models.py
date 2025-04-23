@@ -1080,19 +1080,13 @@ class UserTask(BaseModel):
     def _get_user_data_export(
         self, serialized_task: Dict, *, for_admin: bool = False
     ) -> Dict:
-        if self.progress == 100:
-            status = "errored" if self.errored else "successful"
-        else:
-            status = "in_progress"
-
         serialized_task = {
             **serialized_task,
             "file_size": (
                 self.file_size
-                if status == "successful" and self.file_size is not None
+                if self.status == "successful" and self.file_size is not None
                 else None
             ),
-            "status": status,
         }
 
         if for_admin:
@@ -1102,12 +1096,13 @@ class UserTask(BaseModel):
             **serialized_task,
             "file_name": (
                 self.file_path.split("/")[-1]
-                if status == "successful" and self.file_path
+                if self.status == "successful" and self.file_path
                 else None
             ),
         }
 
-    def get_workouts_archive_upload_status(self) -> str:
+    @property
+    def status(self) -> str:
         if self.errored:
             return "errored"
         elif self.aborted:
@@ -1125,7 +1120,6 @@ class UserTask(BaseModel):
 
         serialized_task = {
             **serialized_task,
-            "status": self.get_workouts_archive_upload_status(),
             "file_size": self.file_size,
             "files_count": total_files,
         }
@@ -1163,6 +1157,7 @@ class UserTask(BaseModel):
         serialized_task = {
             "id": self.short_id,
             "created_at": self.created_at,
+            "status": self.status,
             "type": self.task_type,
         }
 
