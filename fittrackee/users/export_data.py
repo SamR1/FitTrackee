@@ -10,7 +10,9 @@ from flask import current_app
 from fittrackee import appLog, db
 from fittrackee.emails.tasks import send_email
 from fittrackee.files import get_absolute_file_path
+from fittrackee.utils import decode_short_id
 
+from .exceptions import UserTaskException
 from .models import Notification, User, UserTask
 from .utils.language import get_language
 
@@ -239,3 +241,24 @@ def generate_user_data_archives(max_count: int) -> int:
         count += 1
 
     return count
+
+
+def process_queued_data_export(task_short_id: str) -> None:
+    try:
+        task_id = decode_short_id(task_short_id)
+    except Exception as e:
+        raise UserTaskException("Invalid task id") from e
+
+    export_request = UserTask.query.filter_by(
+        uuid=task_id, task_type="user_data_export"
+    ).first()
+    if not export_request:
+        raise UserTaskException("No task found")
+    if (
+        export_request.progress > 0
+        or export_request.errored
+        or export_request.aborted
+    ):
+        raise UserTaskException("Task is not queued")
+
+    export_user_data(export_request.id)

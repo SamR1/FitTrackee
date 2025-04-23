@@ -407,11 +407,12 @@ class TestCliWorkoutsArchiveUploadTask(RandomMixin, UserTaskMixin):
             file_path="some path",
         )
         runner = CliRunner()
+        error = "some error"
 
         with patch.object(
             WorkoutsFromArchiveCreationAsyncService,
             "process",
-            side_effect=Exception(),
+            side_effect=Exception(error),
         ):
             result = runner.invoke(
                 cli,
@@ -431,12 +432,13 @@ class TestCliWorkoutsArchiveUploadTask(RandomMixin, UserTaskMixin):
             "files": {},
         }
         assert result.exit_code == 1
-        assert len(caplog.records) == 1
+        assert len(caplog.records) == 2
         assert (
             caplog.records[0].message
             == f"Processing task '{upload_task.short_id}' "
             f"(files: 1, size: 0 Bytes)"
         )
+        assert caplog.records[1].message == error
 
     def test_it_calls_process_workouts_archive_upload(
         self,

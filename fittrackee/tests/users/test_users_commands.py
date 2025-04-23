@@ -1,21 +1,25 @@
 import secrets
+from typing import TYPE_CHECKING
 from unittest.mock import patch
 
 import pytest
 from click.testing import CliRunner
-from flask import Flask
 
 from fittrackee import bcrypt, db
 from fittrackee.cli import cli
 from fittrackee.users.models import User
 from fittrackee.users.roles import UserRole
 
-from ..utils import random_email, random_string
+from ..mixins import RandomMixin, UserTaskMixin
+
+if TYPE_CHECKING:
+    from _pytest.logging import LogCaptureFixture
+    from flask import Flask
 
 
-class TestCliUserCreate:
+class TestCliUserCreate(RandomMixin):
     def test_it_displays_error_when_user_exists_with_same_username(
-        self, app: Flask, user_1: User
+        self, app: "Flask", user_1: "User"
     ) -> None:
         runner = CliRunner()
 
@@ -26,9 +30,9 @@ class TestCliUserCreate:
                 "create",
                 user_1.username,
                 "--email",
-                random_email(),
+                self.random_email(),
                 "--password",
-                random_string(),
+                self.random_string(),
             ],
         )
 
@@ -39,7 +43,7 @@ class TestCliUserCreate:
         )
 
     def test_it_displays_error_when_user_exists_with_same_email(
-        self, app: Flask, user_1: User
+        self, app: "Flask", user_1: "User"
     ) -> None:
         runner = CliRunner()
 
@@ -48,11 +52,11 @@ class TestCliUserCreate:
             [
                 "users",
                 "create",
-                random_string(),
+                self.random_string(),
                 "--email",
                 user_1.email,
                 "--password",
-                random_string(),
+                self.random_string(),
             ],
         )
 
@@ -63,11 +67,11 @@ class TestCliUserCreate:
 
     def test_it_creates_user(
         self,
-        app: Flask,
+        app: "Flask",
     ) -> None:
-        username = random_string()
-        email = random_email()
-        password = random_string()
+        username = self.random_string()
+        email = self.random_email()
+        password = self.random_string()
         runner = CliRunner()
 
         result = runner.invoke(
@@ -93,11 +97,11 @@ class TestCliUserCreate:
 
     def test_it_displays_password_when_password_is_not_provided(
         self,
-        app: Flask,
+        app: "Flask",
     ) -> None:
-        username = random_string()
-        email = random_email()
-        password = random_string()
+        username = self.random_string()
+        email = self.random_email()
+        password = self.random_string()
         runner = CliRunner()
 
         with patch.object(secrets, "token_urlsafe", return_value=password):
@@ -114,14 +118,14 @@ class TestCliUserCreate:
         assert bcrypt.check_password_hash(user.password, password)
 
     def test_it_creates_user_with_default_language(
-        self, app: Flask, user_1: User
+        self, app: "Flask", user_1: "User"
     ) -> None:
-        username = random_string()
+        username = self.random_string()
         runner = CliRunner()
 
         result = runner.invoke(
             cli,
-            ["users", "create", username, "--email", random_email()],
+            ["users", "create", username, "--email", self.random_email()],
         )
 
         user = User.query.filter_by(username=username).one()
@@ -132,9 +136,9 @@ class TestCliUserCreate:
         )
 
     def test_it_creates_user_with_provided_language(
-        self, app: Flask, user_1: User
+        self, app: "Flask", user_1: "User"
     ) -> None:
-        username = random_string()
+        username = self.random_string()
         language = "fr"
         runner = CliRunner()
 
@@ -145,7 +149,7 @@ class TestCliUserCreate:
                 "create",
                 username,
                 "--email",
-                random_email(),
+                self.random_email(),
                 "--lang",
                 language,
             ],
@@ -159,9 +163,9 @@ class TestCliUserCreate:
         )
 
     def test_it_creates_user_with_default_language_when_not_supported(
-        self, app: Flask, user_1: User
+        self, app: "Flask", user_1: "User"
     ) -> None:
-        username = random_string()
+        username = self.random_string()
         runner = CliRunner()
 
         result = runner.invoke(
@@ -171,7 +175,7 @@ class TestCliUserCreate:
                 "create",
                 username,
                 "--email",
-                random_email(),
+                self.random_email(),
                 "--lang",
                 "invalid",
             ],
@@ -185,14 +189,14 @@ class TestCliUserCreate:
         )
 
     def test_it_creates_user_with_default_timezone(
-        self, app: Flask, user_1: User
+        self, app: "Flask", user_1: "User"
     ) -> None:
-        username = random_string()
+        username = self.random_string()
         runner = CliRunner()
 
         result = runner.invoke(
             cli,
-            ["users", "create", username, "--email", random_email()],
+            ["users", "create", username, "--email", self.random_email()],
         )
 
         user = User.query.filter_by(username=username).one()
@@ -203,9 +207,9 @@ class TestCliUserCreate:
         )
 
     def test_it_creates_user_with_provided_timezone(
-        self, app: Flask, user_1: User
+        self, app: "Flask", user_1: "User"
     ) -> None:
-        username = random_string()
+        username = self.random_string()
         tz = "America/New_York"
         runner = CliRunner()
 
@@ -216,7 +220,7 @@ class TestCliUserCreate:
                 "create",
                 username,
                 "--email",
-                random_email(),
+                self.random_email(),
                 "--tz",
                 tz,
             ],
@@ -229,9 +233,9 @@ class TestCliUserCreate:
         )
 
     def test_it_creates_user_with_default_timezone_when_invalid(
-        self, app: Flask, user_1: User
+        self, app: "Flask", user_1: "User"
     ) -> None:
-        username = random_string()
+        username = self.random_string()
         runner = CliRunner()
 
         result = runner.invoke(
@@ -241,7 +245,7 @@ class TestCliUserCreate:
                 "create",
                 username,
                 "--email",
-                random_email(),
+                self.random_email(),
                 "--tz",
                 "invalid",
             ],
@@ -255,9 +259,9 @@ class TestCliUserCreate:
         )
 
     def test_it_creates_user_with_provided_role(
-        self, app: Flask, user_1: User
+        self, app: "Flask", user_1: "User"
     ) -> None:
-        username = random_string()
+        username = self.random_string()
         runner = CliRunner()
 
         runner.invoke(
@@ -267,7 +271,7 @@ class TestCliUserCreate:
                 "create",
                 username,
                 "--email",
-                random_email(),
+                self.random_email(),
                 "--role",
                 "owner",
             ],
@@ -277,7 +281,7 @@ class TestCliUserCreate:
         assert user.role == UserRole.OWNER.value
 
     def test_it_displays_error_when_role_is_invalid(
-        self, app: Flask, user_1: User
+        self, app: "Flask", user_1: "User"
     ) -> None:
         runner = CliRunner()
 
@@ -286,7 +290,7 @@ class TestCliUserCreate:
             [
                 "users",
                 "create",
-                random_string(),
+                self.random_string(),
                 "--email",
                 user_1.email,
                 "--role",
@@ -301,8 +305,10 @@ class TestCliUserCreate:
         ) in result.output
 
 
-class TestCliUserUpdate:
-    def test_it_returns_error_when_missing_user_name(self, app: Flask) -> None:
+class TestCliUserUpdate(RandomMixin):
+    def test_it_returns_error_when_missing_user_name(
+        self, app: "Flask"
+    ) -> None:
         runner = CliRunner()
 
         result = runner.invoke(cli, ["users", "update"])
@@ -310,8 +316,8 @@ class TestCliUserUpdate:
         assert result.exit_code == 2
         assert "Error: Missing argument 'USERNAME'." in result.output
 
-    def test_it_display_error_when_user_not_found(self, app: Flask) -> None:
-        username = random_string()
+    def test_it_display_error_when_user_not_found(self, app: "Flask") -> None:
+        username = self.random_string()
         runner = CliRunner()
 
         result = runner.invoke(cli, ["users", "update", username])
@@ -320,7 +326,7 @@ class TestCliUserUpdate:
         assert f"User '{username}' not found." in result.output
 
     def test_it_does_not_update_user_when_no_options_provided(
-        self, app: Flask, user_1: User
+        self, app: "Flask", user_1: "User"
     ) -> None:
         runner = CliRunner()
         previous_email = user_1.email
@@ -336,7 +342,7 @@ class TestCliUserUpdate:
         assert user_1.email == previous_email
         assert user_1.password == previous_password
 
-    def test_it_sets_admin_rights(self, app: Flask, user_1: User) -> None:
+    def test_it_sets_admin_rights(self, app: "Flask", user_1: "User") -> None:
         runner = CliRunner()
         previous_email = user_1.email
         previous_password = user_1.password
@@ -357,7 +363,7 @@ class TestCliUserUpdate:
         assert user_1.password == previous_password
 
     def test_it_displays_warning_when_using_deprecated_set_admin(
-        self, app: Flask, user_1: User
+        self, app: "Flask", user_1: "User"
     ) -> None:
         runner = CliRunner()
 
@@ -374,7 +380,7 @@ class TestCliUserUpdate:
         ) in result.stdout
 
     def test_it_removes_admin_rights(
-        self, app: Flask, user_1_admin: User
+        self, app: "Flask", user_1_admin: "User"
     ) -> None:
         runner = CliRunner()
         previous_email = user_1_admin.email
@@ -402,7 +408,7 @@ class TestCliUserUpdate:
         assert user_1_admin.password == previous_password
 
     def test_it_activates_user_when_adding_admin_rights(
-        self, app: Flask, inactive_user: User
+        self, app: "Flask", inactive_user: "User"
     ) -> None:
         runner = CliRunner()
         previous_email = inactive_user.email
@@ -429,7 +435,7 @@ class TestCliUserUpdate:
         assert inactive_user.email == previous_email
         assert inactive_user.password == previous_password
 
-    def test_it_sets_role(self, app: Flask, user_1: User) -> None:
+    def test_it_sets_role(self, app: "Flask", user_1: "User") -> None:
         runner = CliRunner()
         previous_email = user_1.email
         previous_password = user_1.password
@@ -460,8 +466,8 @@ class TestCliUserUpdate:
     )
     def test_it_activates_user_only_when_role_is_not_user(
         self,
-        app: Flask,
-        inactive_user: User,
+        app: "Flask",
+        inactive_user: "User",
         input_role: str,
         input_active: bool,
     ) -> None:
@@ -485,8 +491,8 @@ class TestCliUserUpdate:
 
     def test_it_displays_error_when_set_admin_and_set_role_are_used_together(
         self,
-        app: Flask,
-        user_1: User,
+        app: "Flask",
+        user_1: "User",
     ) -> None:
         runner = CliRunner()
 
@@ -510,7 +516,9 @@ class TestCliUserUpdate:
                 in result.stdout
             )
 
-    def test_it_activates_user(self, app: Flask, inactive_user: User) -> None:
+    def test_it_activates_user(
+        self, app: "Flask", inactive_user: "User"
+    ) -> None:
         runner = CliRunner()
         previous_email = inactive_user.email
         previous_password = inactive_user.password
@@ -535,10 +543,10 @@ class TestCliUserUpdate:
         assert inactive_user.email == previous_email
         assert inactive_user.password == previous_password
 
-    def test_it_resets_password(self, app: Flask, user_1: User) -> None:
+    def test_it_resets_password(self, app: "Flask", user_1: "User") -> None:
         runner = CliRunner()
         previous_email = user_1.email
-        new_password = random_string()
+        new_password = self.random_string()
 
         with (
             app.app_context(),
@@ -564,10 +572,10 @@ class TestCliUserUpdate:
         assert user_1.is_active is True
         assert user_1.email == previous_email
 
-    def test_it_updates_email(self, app: Flask, user_1: User) -> None:
+    def test_it_updates_email(self, app: "Flask", user_1: "User") -> None:
         runner = CliRunner()
         previous_password = user_1.password
-        new_email = random_email()
+        new_email = self.random_email()
 
         with app.app_context():
             result = runner.invoke(
@@ -591,7 +599,7 @@ class TestCliUserUpdate:
         assert user_1.password == previous_password
 
     def test_it_displays_error_when_email_is_invalid(
-        self, app: Flask, user_1: User
+        self, app: "Flask", user_1: "User"
     ) -> None:
         runner = CliRunner()
 
@@ -603,7 +611,7 @@ class TestCliUserUpdate:
                     "update",
                     user_1.username,
                     "--update-email",
-                    random_string(),
+                    self.random_string(),
                 ],
             )
 
@@ -613,10 +621,12 @@ class TestCliUserUpdate:
             == "An error occurred: valid email must be provided\n"
         )
 
-    def test_it_updates_user(self, app: Flask, inactive_user: User) -> None:
+    def test_it_updates_user(
+        self, app: "Flask", inactive_user: "User"
+    ) -> None:
         runner = CliRunner()
         previous_password = inactive_user.password
-        new_email = random_email()
+        new_email = self.random_email()
 
         with app.app_context():
             result = runner.invoke(
@@ -639,3 +649,53 @@ class TestCliUserUpdate:
         assert inactive_user.role == UserRole.ADMIN.value
         assert inactive_user.is_active is True
         assert inactive_user.password == previous_password
+
+
+class TestCliUserDataExportTask(RandomMixin, UserTaskMixin):
+    def test_it_raises_error_when_process_workouts_archives_upload_raisies_exceptio(  # noqa
+        self, app: "Flask", caplog: "LogCaptureFixture", user_1: "User"
+    ) -> None:
+        runner = CliRunner()
+
+        result = runner.invoke(
+            cli,
+            [
+                "users",
+                "export_archive",
+                "--id",
+                self.random_short_id(),
+            ],
+        )
+
+        assert result.exit_code == 1
+        assert len(caplog.records) == 1
+        assert caplog.records[0].message == "No task found"
+
+    def test_it_calls_process_workouts_archive_upload(
+        self,
+        app: "Flask",
+        user_1: "User",
+        caplog: "LogCaptureFixture",
+    ) -> None:
+        export_task = self.create_user_data_export_task(user_1)
+        runner = CliRunner()
+
+        with patch(
+            "fittrackee.users.commands.process_queued_data_export",
+        ) as process_queued_data_export_mock:
+            result = runner.invoke(
+                cli,
+                [
+                    "users",
+                    "export_archive",
+                    "--id",
+                    export_task.short_id,
+                ],
+            )
+
+        process_queued_data_export_mock.assert_called_once_with(
+            export_task.short_id
+        )
+
+        assert result.exit_code == 0
+        assert caplog.records[0].message == "\nDone."

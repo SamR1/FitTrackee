@@ -216,6 +216,17 @@ class TestProcessWorkoutsArchivesUploadTask(RandomMixin, UserTaskMixin):
                 task_short_id="invalid", logger=logger
             )
 
+    def test_it_raises_error_when_task_is_not_workout_archive_upload(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        logger = MagicMock()
+        data_export = self.create_user_data_export_task(user_1)
+
+        with pytest.raises(TaskException, match="No task found"):
+            process_workouts_archive_upload(
+                task_short_id=data_export.short_id, logger=logger
+            )
+
     def test_it_raises_error_when_task_does_not_exist(
         self, app: "Flask", user_1: "User"
     ) -> None:

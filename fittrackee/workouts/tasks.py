@@ -154,7 +154,9 @@ def process_workouts_archive_upload(
     except Exception as e:
         raise TaskException("Invalid task id") from e
 
-    upload_task = UserTask.query.filter_by(uuid=task_id).first()
+    upload_task = UserTask.query.filter_by(
+        uuid=task_id, task_type="workouts_archive_upload"
+    ).first()
     if not upload_task:
         raise TaskException("No task found")
     if upload_task.progress > 0 or upload_task.errored or upload_task.aborted:
