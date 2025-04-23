@@ -1,21 +1,24 @@
 import os
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict
 from unittest.mock import MagicMock, patch
 
+import pytest
 from time_machine import travel
 
 from fittrackee import db
+from fittrackee.exceptions import TaskException
 from fittrackee.users.models import Notification
 from fittrackee.workouts.services.workouts_from_file_creation_service import (
     WorkoutsFromArchiveCreationAsyncService,
 )
 from fittrackee.workouts.tasks import (
-    process_workouts_archives_upload,
+    process_workouts_archive_upload,
+    process_workouts_archives_uploads,
     update_task_and_clean,
 )
 
-from ..mixins import UserTaskMixin
+from ..mixins import RandomMixin, UserTaskMixin
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -137,7 +140,7 @@ class TestUpdateTaskAndClean(UserTaskMixin):
         assert os.path.isfile(file_path) is False
 
 
-class TestProcessWorkoutsArchivesUpload(UserTaskMixin):
+class TestProcessWorkoutsArchivesUploads(UserTaskMixin):
     def test_it_returns_0_when_no_queued_archive_upload_tasks(
         self, app: "Flask", user_1: "User"
     ) -> None:
@@ -146,7 +149,7 @@ class TestProcessWorkoutsArchivesUpload(UserTaskMixin):
         self.create_workouts_upload_task(user_1, errored=True)
         logger = MagicMock()
 
-        count = process_workouts_archives_upload(max_count=1, logger=logger)
+        count = process_workouts_archives_uploads(max_count=1, logger=logger)
 
         assert count == 0
 
@@ -164,7 +167,7 @@ class TestProcessWorkoutsArchivesUpload(UserTaskMixin):
         logger = MagicMock()
 
         with travel(now, tick=False):
-            count = process_workouts_archives_upload(
+            count = process_workouts_archives_uploads(
                 max_count=1, logger=logger
             )
 
@@ -193,10 +196,77 @@ class TestProcessWorkoutsArchivesUpload(UserTaskMixin):
                     "fittrackee.workouts.tasks.update_task_and_clean"
                 ) as update_task_and_clean_mock,
             ):
-                process_workouts_archives_upload(max_count=1, logger=logger)
+                process_workouts_archives_uploads(max_count=1, logger=logger)
         except Exception:
             pass
 
         update_task_and_clean_mock.assert_called_once_with(
             error="error during archive processing", upload_task_id=task.id
         )
+
+
+class TestProcessWorkoutsArchivesUploadTask(RandomMixin, UserTaskMixin):
+    def test_it_raises_error_when_task_id_is_invalid(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        logger = MagicMock()
+
+        with pytest.raises(TaskException, match="Invalid task id"):
+            process_workouts_archive_upload(
+                task_short_id="invalid", logger=logger
+            )
+
+    def test_it_raises_error_when_task_does_not_exist(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        logger = MagicMock()
+
+        with pytest.raises(TaskException, match="No task found"):
+            process_workouts_archive_upload(
+                task_short_id=self.random_short_id(), logger=logger
+            )
+
+    @pytest.mark.parametrize(
+        "input_status, input_task_data",
+        [
+            ("aborted", {"aborted": True}),
+            ("errored", {"errored": True}),
+            ("successful", {"progress": 100}),
+        ],
+    )
+    def test_it_raises_error_when_task_is_not_queued(
+        self,
+        app: "Flask",
+        user_1: "User",
+        input_status: str,
+        input_task_data: Dict,
+    ) -> None:
+        upload_task = self.create_workouts_upload_task(
+            user_1, **input_task_data
+        )
+        logger = MagicMock()
+
+        with pytest.raises(TaskException, match="Task is not queued"):
+            process_workouts_archive_upload(
+                task_short_id=upload_task.short_id, logger=logger
+            )
+
+    def test_it_process_queued_task(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        workouts_data = {"sport_id": sport_1_cycling.id}
+        upload_task = self.create_workouts_upload_task(
+            user_1, workouts_data=workouts_data
+        )
+        now = datetime.now(tz=timezone.utc)
+        logger = MagicMock()
+
+        with travel(now, tick=False):
+            process_workouts_archive_upload(
+                task_short_id=upload_task.short_id, logger=logger
+            )
+
+        assert upload_task.updated_at == now

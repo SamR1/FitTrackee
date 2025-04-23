@@ -3,7 +3,10 @@ import logging
 import click
 
 from fittrackee.cli.app import app
-from fittrackee.workouts.tasks import process_workouts_archives_upload
+from fittrackee.workouts.tasks import (
+    process_workouts_archive_upload,
+    process_workouts_archives_uploads,
+)
 
 handler = logging.StreamHandler()
 logger = logging.getLogger("fittrackee_workouts_cli")
@@ -17,7 +20,7 @@ def workouts_cli() -> None:
     pass
 
 
-@workouts_cli.command("archive_upload")
+@workouts_cli.command("archive_uploads")
 @click.option(
     "--max",
     "max_archives",
@@ -33,7 +36,7 @@ def workouts_cli() -> None:
     default=False,
     help="Enable verbose output log (default: disabled).",
 )
-def workouts_archive_upload(max_archives: int, verbose: bool) -> None:
+def workouts_archive_uploads(max_archives: int, verbose: bool) -> None:
     """
     Process workouts archive upload if incomplete tasks exist (progress = 0 and
     not aborted/errored).
@@ -44,5 +47,36 @@ def workouts_archive_upload(max_archives: int, verbose: bool) -> None:
             upload_logger = logging.getLogger("fittrackee_workouts_upload")
             upload_logger.setLevel(logging.DEBUG)
             upload_logger.addHandler(handler)
-        count = process_workouts_archives_upload(max_archives, logger)
+        count = process_workouts_archives_uploads(max_archives, logger)
         logger.info(f"\nWorkouts archives processed: {count}.")
+
+
+@workouts_cli.command("archive_upload")
+@click.option(
+    "--id",
+    "task_short_id",
+    type=str,
+    required=True,
+    help="Id of tasks to process",
+)
+@click.option(
+    "--verbose",
+    "-v",
+    "verbose",
+    is_flag=True,
+    default=False,
+    help="Enable verbose output log (default: disabled).",
+)
+def process_queued_archive_upload(task_short_id: str, verbose: bool) -> None:
+    """
+    Process given queued workouts archive upload.
+
+    To use in case redis is not set.
+    """
+    with app.app_context():
+        if verbose:
+            upload_logger = logging.getLogger("fittrackee_workouts_upload")
+            upload_logger.setLevel(logging.DEBUG)
+            upload_logger.addHandler(handler)
+        process_workouts_archive_upload(task_short_id, logger)
+        logger.info("\nDone.")
