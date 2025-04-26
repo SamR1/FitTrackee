@@ -8,7 +8,7 @@ export type TLanguage =
   | 'eu'
   | 'fr'
   | 'gl'
-  // | 'hr'  //disabled for now
+  | 'hr'
   | 'it'
   | 'nb'
   | 'nl'
