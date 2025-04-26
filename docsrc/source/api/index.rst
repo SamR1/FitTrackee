@@ -13,6 +13,7 @@ API documentation
    follow_requests
    oauth2
    notifications
+   queued_tasks
    records
    reports
    sports
