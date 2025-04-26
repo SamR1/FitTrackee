@@ -67,13 +67,13 @@
               </dd>
               <dt>
                 <router-link to="/admin/queued-tasks">
-                  {{ capitalize($t('admin.QUEUED_TASKS.LABEL', 0)) }}
+                  {{ capitalize($t('admin.USERS_QUEUED_TASKS.LABEL', 0)) }}
                 </router-link>
               </dt>
               <dd>
-                <div>{{ $t('admin.QUEUED_TASKS.DESCRIPTION') }}</div>
+                <div>{{ $t('admin.USERS_QUEUED_TASKS.DESCRIPTION') }}</div>
                 <router-link to="/admin/queued-tasks" v-if="queuedTasksExist">
-                  {{ $t('admin.APP_MODERATION.QUEUED_TASKS_EXIST') }}
+                  {{ $t('admin.APP_MODERATION.USERS_QUEUED_TASKS_EXIST') }}
                 </router-link>
               </dd>
               <dt>
@@ -100,7 +100,7 @@
   import Card from '@/components/Common/Card.vue'
   import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser'
-  import { REPORTS_STORE, ROOT_STORE } from '@/store/constants'
+  import { REPORTS_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
   import type { IAppStatistics, TQueuedTasksCounts } from '@/types/application'
   import { useStore } from '@/use/useStore'
 
@@ -116,7 +116,7 @@
     () => store.getters[REPORTS_STORE.GETTERS.UNRESOLVED_REPORTS_STATUS]
   )
   const queuedTasksCounts: ComputedRef<TQueuedTasksCounts> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.QUEUED_TASKS_COUNTS]
+    () => store.getters[USERS_STORE.GETTERS.USERS_QUEUED_TASKS_COUNTS]
   )
   const queuedTasksExist: ComputedRef<boolean> = computed(
     () =>
@@ -126,7 +126,7 @@
 
   onBeforeMount(() => {
     store.dispatch(REPORTS_STORE.ACTIONS.GET_UNRESOLVED_REPORTS_STATUS)
-    store.dispatch(ROOT_STORE.ACTIONS.GET_QUEUED_TASKS_COUNT)
+    store.dispatch(USERS_STORE.ACTIONS.GET_USERS_QUEUED_TASKS_COUNT)
   })
   onMounted(() => {
     const applicationLink = document.getElementById('adminLink')
