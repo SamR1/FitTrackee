@@ -37,14 +37,66 @@
       "APPROVED": "Apelazio hau onartu egin da {0}.",
       "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "Apelazio hau onartu egin da bertan behera uztea altxatuz.",
       "HIDE": "Ezkutatu apelazioa",
-      "REASON_IS": "Arrazoia hau da:"
+      "REASON_IS": "Arrazoia hau da:",
+      "REJECTED": "Apelazio hau baztertu egin da {0}.",
+      "SEE": "Ikusi apelazioa"
     },
-    "DESCRIPTION": "Txostenen kudeaketa."
+    "DESCRIPTION": "Txostenen kudeaketa.",
+    "NOTES_AND_ACTIONS": "Oharrak eta akzioak",
+    "NO_REPORTS_FOUND": "Salaketarik ez",
+    "ORDER_BY": {
+      "CREATED_AT": "sorrera-data",
+      "UPDATED_AT": "eguneraketa-data"
+    },
+    "REASON": "Arrazoia",
+    "REPORT": "salaketa | salaketa",
+    "REPORTED_BY": "Nork salatua",
+    "REPORTED_CONTENT": "Salatutako edukia",
+    "REPORTED_USER": "Salatutako erabiltzailea",
+    "REPORTER": "salatzailea",
+    "REPORT_ACTIONS": {
+      "comment_suspension": "Iruzkin hau bertan behera utzi du {1} {2} erabiltzaileak.",
+      "comment_unsuspension": "Erantzuna bertan behera uztea altxatu egin du {1} {2} erabiltzaileak.",
+      "report_reopening": "Salaketa berriz ireki du {1} {2} erabiltzaileak.",
+      "report_resolution": "Salaketa ebatzitzat markatu du {1} {2} erabiltzaileak.",
+      "user_suspension": "{1} {2} erabiltzaileak {0} bertan behera utzi du.",
+      "user_unsuspension": "{0} erabiltzailea bertan behera uztea {1} {2} erabiltzaileak altxatu egin du.",
+      "user_warning": "{0} erabiltzaileari ohartarazpena bidali dio {1} {2} erabiltzaileak.",
+      "user_warning_lifting": "{0} erabiltzailearen ohartarazpena altxatu egin du {1} {2} erabiltzaileak.",
+      "workout_suspension": "Ariketa bertan behera utzi du {1} {2} erabiltzaileak.",
+      "workout_unsuspension": "Ariketa bertan behera uztea altxatu egin du {1} {2} erabiltzaileak."
+    },
+    "REPORT_NOTE": "Oharra",
+    "RESOLVED": {
+      "FALSE": "Ebatzi gabe",
+      "TRUE": "Ebatzita"
+    },
+    "RESOLVED_AT": "Noiz ebatzita",
+    "RESOLVED_BY": "Nork ebatzita",
+    "STATUS": "egoera",
+    "TEXTAREA_PLACEHOLDER": {
+      "ADD_COMMENT": "Gehitu iruzkina, esan egindakoa edo idatzi beste edozein informazio erabilgarri.",
+      "INFORMATION_VISIBLE_TO_USER": "Informazio hau erabiltzaileak ikusiko du.",
+      "MARK_AS_RESOLVED": "Esan ebazpenaren arrazoia.",
+      "MARK_AS_UNRESOLVED": "Esan ez-ebaztearen arrazoia.",
+      "SEND_WARNING_EMAIL": "Esan ohartarazpenaren arrazoia (ez da derrigorrezkoa).",
+      "SUSPEND": "Esan bertan behera uzteko arrazoia (ez da derrigorrezkoa).",
+      "UNSUSPEND": "Gehitu iruzkina (ez da derrigorrezkoa).",
+      "UPDATE_APPEAL": "Esan apelazio hau prozesatzeko arrazoia."
+    },
+    "TITLE": "Moderazioa",
+    "UNRESOLVED_REPORTS_EXIST": "Ebatzi gabeko salaketak daude.",
+    "VIEW_REPORT": "Ikusi salaketa"
   },
   "BACK_TO_ADMIN": "Kudeaketara itzuli",
+  "CONFIRM_SUSPEND_ACCOUNT": "Ziur zaude {0} kontua bertan behera utzi nahi duzula?",
+  "CONFIRM_SUSPEND_CONTENT": "Ziur zaude salatutako edukia bertan behera utzi nahi duzula?",
   "CONFIRM_USER_ACCOUNT_DELETION": "Ziur zaude {0} kontua ezabatu nahi duzula? Datu guztiak ezabatuko dira eta ekintza hau ezin da desegin.",
   "CONFIRM_USER_PASSWORD_RESET": "Ziur zaude {0} pasahitza berrezarri nahi duzula?",
   "CURRENT_EMAIL": "Uneko eposta",
+  "DELETED_COMMENT": "Ezabatutako iruzkina",
+  "DELETED_USER": "Ezabatutako erabiltzailea",
+  "DELETED_WORKOUT": "Ezabatutako ariketa",
   "DELETE_USER": "Ezabatu erabiltzailea",
   "EMAIL_SENDING_DISABLED": "Eposta bidalketa desaktibatuta dago.",
   "ENABLE_DISABLE_EQUIPMENT_TYPES": "Aktibatu/Desaktibatu ekipamendu motak.",
@@ -82,9 +134,16 @@
       "ORDER_BY": {
         "CREATED_AT": "izen-emate data",
         "IS_ACTIVE": "kontuaren egoera",
+        "ROLE": "rola",
         "USERNAME": "erabiltzaile-izena",
         "WORKOUTS_COUNT": "entrenamendu kopurua"
       }
+    },
+    "TABLE": {
+      "CHANGE_ROLE": "Aldatu rola",
+      "CHANGE_TO_ADMIN": "Aldatu kudeatzaile izatera",
+      "CHANGE_TO_MODERATOR": "Aldatu moderatzaile izatera",
+      "CHANGE_TO_USER": "Aldatu erabiltzaile izatera"
     },
     "TITLE": "Kudeaketa - Erabiltzaileak"
   },
