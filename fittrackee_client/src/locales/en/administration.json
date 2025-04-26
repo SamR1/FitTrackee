@@ -50,7 +50,7 @@
       "CREATED_AT": "creation date",
       "UPDATED_AT": "update date"
     },
-    "QUEUED_TASKS_EXIST": "There are queued tasks",
+    "USERS_QUEUED_TASKS_EXIST": "There are queued tasks",
     "REASON": "Reason",
     "REPORT": "report | reports",
     "REPORTED_BY": "Reported by",
@@ -117,11 +117,11 @@
   "NO_TEXT_ENTERED": "No text entered",
   "PASSWORD_RESET_SUCCESSFUL": "The password has been reset.",
   "PRIVACY_POLICY_DESCRIPTION": "Add your own privacy policy or leave blank to use the default one. Markdown syntax can be used.",
-  "QUEUED_TASKS": {
+  "USERS_QUEUED_TASKS": {
     "DESCRIPTION": "Display queued tasks",
     "LABEL": "Queued tasks",
     "LIST_DESCRIPTION": "If no workers are running, please use CLI to process them.",
-    "NO_QUEUED_TASKS": "No queued tasks",
+    "NO_USERS_QUEUED_TASKS": "No queued tasks",
     "TASK_TYPES": {
       "LABEL": "Tasks type",
       "user_data_export": "User data export",

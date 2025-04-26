@@ -41,4 +41,13 @@ export const getters: GetterTree<IUsersState, IRootState> & IUsersGetters = {
   [USERS_STORE.GETTERS.USERS_PAGINATION]: (state: IUsersState) => {
     return state.pagination
   },
+  [USERS_STORE.GETTERS.USERS_QUEUED_TASKS]: (state: IUsersState) => {
+    return state.usersQueuedTasks.tasks
+  },
+  [USERS_STORE.GETTERS.USERS_QUEUED_TASKS_COUNTS]: (state: IUsersState) => {
+    return state.usersQueuedTasks.counts
+  },
+  [USERS_STORE.GETTERS.USERS_QUEUED_TASKS_PAGINATION]: (state: IUsersState) => {
+    return state.usersQueuedTasks.pagination
+  },
 }

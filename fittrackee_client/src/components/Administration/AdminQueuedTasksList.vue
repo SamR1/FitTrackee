@@ -2,7 +2,7 @@
   <div id="admin-queued-tasks-list" class="admin-card" v-if="taskType">
     <Card>
       <template #title>
-        {{ $t(`admin.QUEUED_TASKS.TASK_TYPES.${taskType}`) }}
+        {{ $t(`admin.USERS_QUEUED_TASKS.TASK_TYPES.${taskType}`) }}
       </template>
       <template #content>
         <template v-if="queuedTasks.length > 0">
@@ -23,7 +23,7 @@
           <div class="tasks-help">
             <div class="info-box">
               <i class="fa fa-info-circle" aria-hidden="true" />
-              {{ $t('admin.QUEUED_TASKS.LIST_DESCRIPTION') }}
+              {{ $t('admin.USERS_QUEUED_TASKS.LIST_DESCRIPTION') }}
             </div>
           </div>
 
@@ -97,7 +97,7 @@
           />
         </template>
         <div v-else class="no-queued-tasks">
-          {{ $t('admin.QUEUED_TASKS.NO_QUEUED_TASKS') }}
+          {{ $t('admin.USERS_QUEUED_TASKS.NO_USERS_QUEUED_TASKS') }}
         </div>
 
         <ErrorMessage :message="errorMessages" v-if="errorMessages" />
@@ -114,7 +114,7 @@
               )
             "
           >
-            {{ $t('admin.QUEUED_TASKS.VIEW_OTHER_TASKS') }}
+            {{ $t('admin.USERS_QUEUED_TASKS.VIEW_OTHER_TASKS') }}
           </button>
           <button @click.prevent="$router.push('/admin/queued-tasks')">
             {{ $t('buttons.BACK') }}
@@ -134,7 +134,7 @@
   import Username from '@/components/User/Username.vue'
   import UserPicture from '@/components/User/UserPicture.vue'
   import useApp from '@/composables/useApp.ts'
-  import { ROOT_STORE } from '@/store/constants'
+  import { USERS_STORE } from '@/store/constants'
   import type { IPagination } from '@/types/api.ts'
   import type { IQueuedTask, TTaskType } from '@/types/application.ts'
   import { useStore } from '@/use/useStore'
@@ -150,10 +150,10 @@
   let query: { page?: number } = getTasksQuery(route.query)
   const taskType = computed(() => route.params.taskType as TTaskType)
   const queuedTasks: ComputedRef<IQueuedTask[]> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.QUEUED_TASKS]
+    () => store.getters[USERS_STORE.GETTERS.USERS_QUEUED_TASKS]
   )
   const pagination: ComputedRef<IPagination> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.QUEUED_TASKS_PAGINATION]
+    () => store.getters[USERS_STORE.GETTERS.USERS_QUEUED_TASKS_PAGINATION]
   )
 
   function getTasksQuery(newQuery: LocationQuery): { page?: number } {
@@ -164,7 +164,7 @@
     return tasksQuery
   }
   function loadQueuedTasks(query: { page?: number }) {
-    store.dispatch(ROOT_STORE.ACTIONS.GET_QUEUED_TASKS_LIST, {
+    store.dispatch(USERS_STORE.ACTIONS.GET_USERS_QUEUED_TASKS_LIST, {
       page: query.page,
       taskType: taskType.value,
     })
@@ -190,7 +190,9 @@
   )
 
   onBeforeMount(() => loadQueuedTasks(query))
-  onUnmounted(() => store.commit(ROOT_STORE.MUTATIONS.UPDATE_QUEUED_TASKS, []))
+  onUnmounted(() =>
+    store.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_QUEUED_TASKS, [])
+  )
 </script>
 
 <style lang="scss" scoped>

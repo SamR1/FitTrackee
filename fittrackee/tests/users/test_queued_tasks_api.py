@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 from ..mixins import ApiTestCaseMixin, UserTaskMixin
-from ..utils import jsonify_dict
+from ..utils import OAUTH_SCOPES, jsonify_dict
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class TestGetQueuedTasksCount(UserTaskMixin, ApiTestCaseMixin):
-    route = "api/tasks/queued"
+    route = "api/users/tasks/queued"
 
     def test_it_returns_401_when_user_is_not_authenticated(
         self, app: "Flask"
@@ -87,9 +87,37 @@ class TestGetQueuedTasksCount(UserTaskMixin, ApiTestCaseMixin):
             "workouts_archive_upload": 2,
         }
 
+    @pytest.mark.parametrize(
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "users:read": True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: "Flask",
+        user_1_admin: "User",
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1_admin, scope=client_scope
+        )
+
+        response = client.get(
+            self.route,
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
+        )
+
+        self.assert_response_scope(response, can_access)
+
 
 class TestGetQueuedTasksForTaskType(UserTaskMixin, ApiTestCaseMixin):
-    route = "api/tasks/queued/{task_type}"
+    route = "api/users/tasks/queued/{task_type}"
 
     def test_it_returns_401_when_user_is_not_authenticated(
         self, app: "Flask"
@@ -276,3 +304,31 @@ class TestGetQueuedTasksForTaskType(UserTaskMixin, ApiTestCaseMixin):
             "pages": 2,
             "total": 6,
         }
+
+    @pytest.mark.parametrize(
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "users:read": True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: "Flask",
+        user_1_admin: "User",
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1_admin, scope=client_scope
+        )
+
+        response = client.get(
+            self.route.format(task_type="workouts_archive_upload"),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
+        )
+
+        self.assert_response_scope(response, can_access)

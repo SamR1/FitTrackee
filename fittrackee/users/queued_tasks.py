@@ -9,19 +9,21 @@ from fittrackee.responses import HttpResponse, InvalidPayloadErrorResponse
 from fittrackee.users.models import TASK_TYPES, User, UserTask
 from fittrackee.users.roles import UserRole
 
-queued_tasks_blueprint = Blueprint("queued-tasks", __name__)
+queued_tasks_blueprint = Blueprint("queued_users_tasks", __name__)
 
 TASKS_PER_PAGE = 5
-QUEUED_TASKS_FILTERS = [
+USERS_QUEUED_TASKS_FILTERS = [
     UserTask.progress == 0,
     UserTask.errored == False,  # noqa
     UserTask.aborted == False,  # noqa
 ]
 
 
-@queued_tasks_blueprint.route("/tasks/queued", methods=["GET"])
-@require_auth(scopes=["tasks:read"], role=UserRole.ADMIN)
-def get_queued_tasks_count(auth_user: "User") -> Union[Dict, HttpResponse]:
+@queued_tasks_blueprint.route("/users/tasks/queued", methods=["GET"])
+@require_auth(scopes=["users:read"], role=UserRole.ADMIN)
+def get_queued_users_tasks_count(
+    auth_user: "User",
+) -> Union[Dict, HttpResponse]:
     """
     Get queued tasks.
 
@@ -61,7 +63,7 @@ def get_queued_tasks_count(auth_user: "User") -> Union[Dict, HttpResponse]:
     """
     tasks_counts = (
         db.session.query(UserTask.task_type, func.count(UserTask.task_type))
-        .filter(*QUEUED_TASKS_FILTERS)
+        .filter(*USERS_QUEUED_TASKS_FILTERS)
         .group_by(UserTask.task_type)
         .all()
     )
@@ -76,10 +78,10 @@ def get_queued_tasks_count(auth_user: "User") -> Union[Dict, HttpResponse]:
 
 
 @queued_tasks_blueprint.route(
-    "/tasks/queued/<string:task_type>", methods=["GET"]
+    "/users/tasks/queued/<string:task_type>", methods=["GET"]
 )
-@require_auth(scopes=["tasks:read"], role=UserRole.ADMIN)
-def get_queued_tasks_list(
+@require_auth(scopes=["users:read"], role=UserRole.ADMIN)
+def get_queued_users_tasks_list(
     auth_user: "User", task_type: str
 ) -> Union[Dict, HttpResponse]:
     """
@@ -157,7 +159,7 @@ def get_queued_tasks_list(
     queued_tasks_pagination = (
         db.session.query(UserTask, User)  # type: ignore
         .join(User, User.id == UserTask.user_id)
-        .filter(*QUEUED_TASKS_FILTERS, UserTask.task_type == task_type)
+        .filter(*USERS_QUEUED_TASKS_FILTERS, UserTask.task_type == task_type)
         .order_by(UserTask.created_at.desc())
         .paginate(page=page, per_page=TASKS_PER_PAGE, error_out=False)
     )

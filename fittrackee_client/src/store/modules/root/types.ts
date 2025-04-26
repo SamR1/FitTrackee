@@ -7,16 +7,12 @@ import type {
 } from 'vuex'
 
 import { ROOT_STORE } from '@/store/constants'
-import type { IPagination } from '@/types/api.ts'
 import type {
   TAppConfig,
   IApplication,
   IAppStatistics,
   TAppConfigForm,
   IDisplayOptions,
-  IQueuedTask,
-  IQueuedTasksPayload,
-  TQueuedTasksCounts,
 } from '@/types/application'
 import type { IEquipmentError } from '@/types/equipments'
 import type { TLanguage } from '@/types/locales'
@@ -30,11 +26,6 @@ export interface IRootState {
   application: IApplication
   appLoading: boolean
   darkMode: boolean | null
-  queuedTasks: {
-    counts: TQueuedTasksCounts
-    tasks: IQueuedTask[]
-    pagination: IPagination
-  }
 }
 
 export interface IRootActions {
@@ -45,13 +36,6 @@ export interface IRootActions {
     context: ActionContext<IRootState, IRootState>
   ): void
   [ROOT_STORE.ACTIONS.GET_APPLICATION_PRIVACY_POLICY](
-    context: ActionContext<IRootState, IRootState>
-  ): void
-  [ROOT_STORE.ACTIONS.GET_QUEUED_TASKS_LIST](
-    context: ActionContext<IRootState, IRootState>,
-    payload: IQueuedTasksPayload
-  ): void
-  [ROOT_STORE.ACTIONS.GET_QUEUED_TASKS_COUNT](
     context: ActionContext<IRootState, IRootState>
   ): void
   [ROOT_STORE.ACTIONS.UPDATE_APPLICATION_CONFIG](
@@ -81,11 +65,6 @@ export interface IRootGetters {
 
   [ROOT_STORE.GETTERS.LOCALE](state: IRootState): Locale
   [ROOT_STORE.GETTERS.DISPLAY_OPTIONS](state: IRootState): IDisplayOptions
-  [ROOT_STORE.GETTERS.QUEUED_TASKS](state: IRootState): IQueuedTask[]
-  [ROOT_STORE.GETTERS.QUEUED_TASKS_COUNTS](
-    state: IRootState
-  ): TQueuedTasksCounts
-  [ROOT_STORE.GETTERS.QUEUED_TASKS_PAGINATION](state: IRootState): IPagination
 }
 
 export type TRootMutations<S = IRootState> = {
@@ -118,18 +97,6 @@ export type TRootMutations<S = IRootState> = {
   [ROOT_STORE.MUTATIONS.UPDATE_DISPLAY_OPTIONS](
     state: S,
     authUser: IAuthUserProfile
-  ): void
-  [ROOT_STORE.MUTATIONS.UPDATE_QUEUED_TASKS](
-    state: S,
-    tasks: IQueuedTask[]
-  ): void
-  [ROOT_STORE.MUTATIONS.UPDATE_QUEUED_TASKS_COUNTS](
-    state: S,
-    counts: TQueuedTasksCounts
-  ): void
-  [ROOT_STORE.MUTATIONS.UPDATE_QUEUED_TASKS_PAGINATION](
-    state: S,
-    pagination: IPagination
   ): void
 }
 

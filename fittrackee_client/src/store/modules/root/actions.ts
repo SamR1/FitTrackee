@@ -5,7 +5,7 @@ import createI18n from '@/i18n'
 import router from '@/router'
 import { ROOT_STORE } from '@/store/constants'
 import type { IRootActions, IRootState } from '@/store/modules/root/types'
-import type { TAppConfigForm, IQueuedTasksPayload } from '@/types/application'
+import type { TAppConfigForm } from '@/types/application'
 import type { TLanguage } from '@/types/locales'
 import { handleError } from '@/utils'
 
@@ -63,49 +63,6 @@ export const actions: ActionTree<IRootState, IRootState> & IRootActions = {
           context.commit(
             ROOT_STORE.MUTATIONS.UPDATE_APPLICATION_PRIVACY_POLICY,
             res.data.data
-          )
-        } else {
-          handleError(context, null)
-        }
-      })
-      .catch((error) => handleError(context, error))
-  },
-  [ROOT_STORE.ACTIONS.GET_QUEUED_TASKS_COUNT](
-    context: ActionContext<IRootState, IRootState>
-  ): void {
-    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-    authApi
-      .get('tasks/queued')
-      .then((res) => {
-        if (res.data.status === 'success') {
-          context.commit(
-            ROOT_STORE.MUTATIONS.UPDATE_QUEUED_TASKS_COUNTS,
-            res.data.counts
-          )
-        } else {
-          handleError(context, null)
-        }
-      })
-      .catch((error) => handleError(context, error))
-  },
-  [ROOT_STORE.ACTIONS.GET_QUEUED_TASKS_LIST](
-    context: ActionContext<IRootState, IRootState>,
-    payload: IQueuedTasksPayload
-  ): void {
-    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
-    authApi
-      .get(`tasks/queued/${payload.taskType}`, {
-        params: { page: payload.page },
-      })
-      .then((res) => {
-        if (res.data.status === 'success') {
-          context.commit(
-            ROOT_STORE.MUTATIONS.UPDATE_QUEUED_TASKS,
-            res.data.queued_tasks
-          )
-          context.commit(
-            ROOT_STORE.MUTATIONS.UPDATE_QUEUED_TASKS_PAGINATION,
-            res.data.pagination
           )
         } else {
           handleError(context, null)

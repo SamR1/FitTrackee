@@ -3,13 +3,7 @@ import type { MutationTree } from 'vuex'
 
 import { ROOT_STORE } from '@/store/constants'
 import type { IRootState, TRootMutations } from '@/store/modules/root/types'
-import type { IPagination } from '@/types/api.ts'
-import type {
-  TAppConfig,
-  IAppStatistics,
-  IQueuedTask,
-  TQueuedTasksCounts,
-} from '@/types/application'
+import type { TAppConfig, IAppStatistics } from '@/types/application'
 import type { TLanguage } from '@/types/locales'
 import type { IAuthUserProfile } from '@/types/user'
 import { localeFromLanguage } from '@/utils/locales'
@@ -75,23 +69,5 @@ export const mutations: MutationTree<IRootState> & TRootMutations = {
       timezone: authUser.timezone,
       useImperialUnits: authUser.imperial_units,
     }
-  },
-  [ROOT_STORE.MUTATIONS.UPDATE_QUEUED_TASKS](
-    state: IRootState,
-    tasks: IQueuedTask[]
-  ) {
-    state.queuedTasks.tasks = tasks
-  },
-  [ROOT_STORE.MUTATIONS.UPDATE_QUEUED_TASKS_COUNTS](
-    state: IRootState,
-    counts: TQueuedTasksCounts
-  ) {
-    state.queuedTasks.counts = counts
-  },
-  [ROOT_STORE.MUTATIONS.UPDATE_QUEUED_TASKS_PAGINATION](
-    state: IRootState,
-    pagination: IPagination
-  ) {
-    state.queuedTasks.pagination = pagination
   },
 }

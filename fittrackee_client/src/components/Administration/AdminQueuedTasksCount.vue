@@ -1,17 +1,17 @@
 <template>
   <div id="admin-tasks" class="admin-card">
     <Card>
-      <template #title>{{ $t('admin.QUEUED_TASKS.LABEL') }}</template>
+      <template #title>{{ $t('admin.USERS_QUEUED_TASKS.LABEL') }}</template>
       <template #content>
         <div class="responsive-table queues-table">
           <table>
             <thead>
               <tr>
                 <th class="task-type">
-                  {{ $t('admin.QUEUED_TASKS.TASK_TYPES.LABEL') }}
+                  {{ $t('admin.USERS_QUEUED_TASKS.TASK_TYPES.LABEL') }}
                 </th>
                 <th>
-                  {{ $t('admin.QUEUED_TASKS.LABEL') }}
+                  {{ $t('admin.USERS_QUEUED_TASKS.LABEL') }}
                 </th>
               </tr>
             </thead>
@@ -19,15 +19,15 @@
               <tr v-for="taskType in taskTypes" :key="taskType">
                 <td class="task-type">
                   <span class="cell-heading">
-                    {{ $t('admin.QUEUED_TASKS.TASK_TYPES.LABEL') }}
+                    {{ $t('admin.USERS_QUEUED_TASKS.TASK_TYPES.LABEL') }}
                   </span>
                   <router-link :to="`/admin/queued-tasks/${taskType}`">
-                    {{ $t(`admin.QUEUED_TASKS.TASK_TYPES.${taskType}`) }}
+                    {{ $t(`admin.USERS_QUEUED_TASKS.TASK_TYPES.${taskType}`) }}
                   </router-link>
                 </td>
                 <td>
                   <span class="cell-heading">
-                    {{ $t('admin.QUEUED_TASKS.LABEL') }}
+                    {{ $t('admin.USERS_QUEUED_TASKS.LABEL') }}
                   </span>
                   {{ counts[taskType] }}
                 </td>
@@ -49,7 +49,7 @@
   import type { ComputedRef } from 'vue'
 
   import useApp from '@/composables/useApp'
-  import { ROOT_STORE } from '@/store/constants'
+  import { USERS_STORE } from '@/store/constants'
   import type { TQueuedTasksCounts, TTaskType } from '@/types/application.ts'
   import { useStore } from '@/use/useStore'
 
@@ -59,16 +59,16 @@
 
   const taskTypes: TTaskType[] = ['user_data_export', 'workouts_archive_upload']
   const counts: ComputedRef<TQueuedTasksCounts> = computed(
-    () => store.getters[ROOT_STORE.GETTERS.QUEUED_TASKS_COUNTS]
+    () => store.getters[USERS_STORE.GETTERS.USERS_QUEUED_TASKS_COUNTS]
   )
 
   function loadQueues() {
-    store.dispatch(ROOT_STORE.ACTIONS.GET_QUEUED_TASKS_COUNT)
+    store.dispatch(USERS_STORE.ACTIONS.GET_USERS_QUEUED_TASKS_COUNT)
   }
 
   onBeforeMount(() => loadQueues())
   onUnmounted(() =>
-    store.commit(ROOT_STORE.MUTATIONS.UPDATE_QUEUED_TASKS_COUNTS, {
+    store.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_QUEUED_TASKS_COUNTS, {
       user_data_export: 0,
       workouts_archive_upload: 0,
     })
