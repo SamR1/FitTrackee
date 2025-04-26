@@ -38,7 +38,7 @@
       case 'PICTURE':
       case 'PRIVACY-POLICY':
         return `/profile/edit/${tab.toLocaleLowerCase()}`
-      case 'ARCHIVE_UPLOADS':
+      case 'ARCHIVE-UPLOADS':
         return '/profile/archive-uploads'
       case 'APPS':
       case 'BLOCKED-USERS':
