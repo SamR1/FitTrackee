@@ -1,6 +1,6 @@
 <template>
   <div id="upload-tasks-list">
-    <h1>{{ capitalize($t('user.PROFILE.TABS.ARCHIVE_UPLOADS')) }}</h1>
+    <h1>{{ capitalize($t('user.PROFILE.TABS.ARCHIVE-UPLOADS')) }}</h1>
     <div v-if="loading">
       <Loader />
     </div>

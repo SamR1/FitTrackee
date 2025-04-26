@@ -406,7 +406,7 @@ const routes: RouteRecordRaw[] = [
                 name: 'UserArchiveUploadsList',
                 component: UserArchiveUploadsList,
                 meta: {
-                  title: 'user.PROFILE.TABS.ARCHIVE_UPLOADS',
+                  title: 'user.PROFILE.TABS.ARCHIVE-UPLOADS',
                 },
               },
               {
@@ -414,7 +414,7 @@ const routes: RouteRecordRaw[] = [
                 name: 'UserArchiveUploadDetail',
                 component: UserArchiveUploadDetail,
                 meta: {
-                  title: 'user.PROFILE.TABS.ARCHIVE_UPLOADS',
+                  title: 'user.PROFILE.TABS.ARCHIVE-UPLOADS',
                 },
               },
             ],
