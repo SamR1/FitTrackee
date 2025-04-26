@@ -116,8 +116,17 @@
     "MONDAY": "Astelehena",
     "NOTIFICATIONS": {
       "account_creation": "Norbait erregistratzen da",
-      "comment_like": "Norbaitek zure iruzkina atsegin du"
+      "comment_like": "Norbaitek zure iruzkina atsegin du",
+      "follow": "Norbaitek jarraitzen dizu",
+      "follow_request": "Norbaitek jarraipen eskaria egin dizu",
+      "follow_request_approved": "Zure jarraipen eskaria onartu egin dute",
+      "mention": "Norbaitek aipatu egin zaitu",
+      "workout_comment": "Norbaitek zure ariketan iruzkina egin du",
+      "workout_like": "Norbaitek zure ariketa atsegin du"
     },
+    "NOTIFICATIONS_EDITION": "Jakinarazpenen hobespenak",
+    "NOTIFICATION_PREFERENCES": "Jakinarazpenen hobespenak",
+    "NO_SANCTIONS": "Zigorrik ez",
     "PICTURE": "Argazkia",
     "PICTURE_EDITION": "Editatu argazkia",
     "PICTURE_REMOVE": "Ezabatu argazkia",
@@ -125,7 +134,25 @@
     "PREFERENCES_EDITION": "Editatu ezarpenak",
     "PRIVACY-POLICY_EDITION": "Pribatutasun politika",
     "PROFILE_EDITION": "Editatu profila",
+    "PROFILE_IN_USERS_DIRECTORY": {
+      "DISPLAYED": "Bistan",
+      "HIDDEN": "Ezkutuan",
+      "LABEL": "Erabiltzaileen direktorioko profila"
+    },
     "REGISTRATION_DATE": "Izen-emate data",
+    "REPORTS_FROM_OTHER_USERS": "Beste erabiltzaile batzuen salaketak",
+    "SANCTIONS": {
+      "comment_suspension": "Iruzkina bertan behera uztea ({date})",
+      "user_suspension": "Kontua bertan behera uztea ({date})",
+      "user_warning": "Ohartarazpena ({date})",
+      "workout_suspension": "Ariketa bertan behera uztea ({date})"
+    },
+    "SANCTIONS_RECEIVED": "Jasotako zigorrak",
+    "SANCTION_APPEAL": {
+      "APPROVED": "zure apelazioa onartu egin da",
+      "IN_PROGRESS": "zure apleazioa prozesatzen ari da",
+      "REJECTED": "zure apelazioa baztertu egin da"
+    },
     "SPORT": {
       "ACTION": "akzioa",
       "COLOR": "kolorea",
@@ -146,7 +173,11 @@
     "TABS": {
       "ACCOUNT": "kontua",
       "APPS": "aplikazioak",
+      "BLOCKED-USERS": "blokeatutako erabiltzaileak",
       "EQUIPMENTS": "ekipamenduak",
+      "FOLLOW-REQUESTS": "jarraipen eskaerak",
+      "MODERATION": "moderazioa",
+      "NOTIFICATIONS": "jakinarazpenak",
       "PICTURE": "argazkia",
       "PREFERENCES": "ezarpenak",
       "PRIVACY-POLICY": "pribatutasun politika",
@@ -167,6 +198,7 @@
       "LABEL": "Distantziarako unitatea",
       "METRIC": "Sistema metrikoa (m, km, m/s, ºC)"
     },
+    "USER_RECEIVED_SANCTIONS": "Erabiltzaile honek zigor {count} jaso du. | Erabiltzaile honek {count} zigor jaso ditu.",
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Filtratuta",
       "HELP": "Filtratuta badago, ertzetako balioak ez dira erabiltzen abiadura maximoa kalkulatzean (GPSaren erroreak izan daitezke).",
@@ -177,17 +209,40 @@
   "READ_AND_ACCEPT_PRIVACY_POLICY": "{0} irakurri eta onartzen dut.",
   "REGISTER": "Izena eman",
   "REGISTER_DISABLED": "Barkatu, izen-ematea desaktibatuta dago.",
+  "RELATIONSHIPS": {
+    "BLOCKED": "blokeatuta",
+    "FOLLOWER": "jarraitzaile | jarraitzaile",
+    "FOLLOWING": "jarraitzen | jarraitzen",
+    "FOLLOWS_YOU": "jarraizen dizu",
+    "NO_FOLLOWERS": "Jarraitzailerik ez oraindik.",
+    "NO_FOLLOWING": "Ez duzu inor jarraitzen oraindik.",
+    "NO_FOLLOW_REQUESTS": "Ez duzu egiaztatzeko jarraipen eskaerarik."
+  },
+  "REPORT": "Salatu",
   "RESENT_ACCOUNT_CONFIRMATION": "Berriz bidali baieztapen eposta",
   "RESET_PASSWORD": "Berrezarri zure pasahitza",
   "REVIEW": "errebisatu",
+  "ROLE": "Rola",
   "ROLES": {
-    "admin": "Kudeatzailea"
+    "admin": "Kudeatzailea",
+    "moderator": "Moderatzailea",
+    "owner": "Jabea",
+    "user": "Erabiltzailea"
   },
   "SHOW_PASSWORD": "erakutsi pasahitza",
+  "SUSPENDED": "Bertan behera utzita",
+  "SUSPENDED_ACCOUNT": "Bertan behera utzitako kontua",
+  "SUSPENSION_REASON": "Bertan behera uztearen arrazoia",
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Erabiltzaile honen kontua desaktibatuta dago.",
   "TOGGLE_THEME": "Aldatu itxura (argia edo iluna)",
+  "USER": "erabiltzaile | erabiltzaile",
   "USERNAME": "Erabiltzaile-izena",
   "USERNAME_INFO": "3 eta 30 karaktere artekoa, hizkiak, zenbakiak eta \"_\" karakterea bakarrik erabili daitezke.",
   "USER_PICTURE": "erabiltzailearen argazkia",
+  "USER_PROFILE": "erabiltzailearen profila",
+  "WARNING_REASON": "Ohartarazpenaren arrazoia",
+  "YOU": "zu",
+  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "Zure kontua bertan behera utzi da",
+  "YOU_CAN_APPEAL_ONCE": "Behin bakarrik egin dezakezu apelazioa.",
   "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "{0} onartu duzu."
 }
