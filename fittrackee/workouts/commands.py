@@ -39,7 +39,7 @@ def workouts_cli() -> None:
 )
 def workouts_archive_uploads(max_archives: int, verbose: bool) -> None:
     """
-    Process workouts archive upload if incomplete tasks exist (progress = 0 and
+    Process workouts archive upload if queued tasks exist (progress = 0 and
     not aborted/errored).
     To use in case redis is not set.
     """
