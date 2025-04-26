@@ -1,1 +1,65 @@
-{}
+{
+  "Canoeing": {
+    "LABEL": "Vožnja kanuom"
+  },
+  "Cycling (Sport)": {
+    "LABEL": "Biciklizam (sport)"
+  },
+  "Cycling (Transport)": {
+    "LABEL": "Biciklizam (prijevoz)"
+  },
+  "Cycling (Trekking)": {
+    "LABEL": "Biciklizam (trekking)"
+  },
+  "Cycling (Virtual)": {
+    "LABEL": "Biciklizam (virtualno)"
+  },
+  "Halfbike": {
+    "LABEL": "Polubicikl"
+  },
+  "Hiking": {
+    "LABEL": "Planinarenje"
+  },
+  "Kayaking": {
+    "LABEL": "Vožnja kajakom"
+  },
+  "Mountain Biking": {
+    "LABEL": "Brdski biciklizam"
+  },
+  "Mountain Biking (Electric)": {
+    "LABEL": "Brdski biciklizam (električni)"
+  },
+  "Mountaineering": {
+    "LABEL": "Alpinizam"
+  },
+  "Open Water Swimming": {
+    "LABEL": "Plivanje u otvorenim vodama"
+  },
+  "Paragliding": {
+    "LABEL": "Paraglajding"
+  },
+  "Rowing": {
+    "LABEL": "Veslanje"
+  },
+  "Running": {
+    "LABEL": "Trčanje"
+  },
+  "Skiing (Alpine)": {
+    "LABEL": "Skijanje (alpsko)"
+  },
+  "Skiing (Cross Country)": {
+    "LABEL": "Skijanje (trčanje)"
+  },
+  "Snowshoes": {
+    "LABEL": "Krplje"
+  },
+  "Swimrun": {
+    "LABEL": "Trčanje u plivanju"
+  },
+  "Trail": {
+    "LABEL": "Trail trčanje"
+  },
+  "Walking": {
+    "LABEL": "Šetnja"
+  }
+}

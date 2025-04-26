@@ -1,1 +1,13 @@
-{}
+{
+  "APP_ERROR": "Čini se da je aplikacija naišla na probleme.<br />Molimo pokušajte ponovno kasnije ili kontaktirajte administratora.",
+  "NOT_FOUND": {
+    "COMMENT": "Komentar nije pronađen",
+    "PAGE": "Stranica nije pronađena",
+    "REPORT": "Izvještaj nije pronađen",
+    "SEGMENT": "Segment nije pronađen",
+    "USER": "Korisnik nije pronađen",
+    "WORKOUT": "Aktivnost nije pronađena"
+  },
+  "SOMETHING_WRONG": "Nešto nije u redu",
+  "UNKNOWN": "Greška. Pokušajte ponovo ili kontaktirajte administratora."
+}

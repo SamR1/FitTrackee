@@ -1,1 +1,8 @@
-{}
+{
+  "ABOUT_THIS_INSTANCE": "O ovoj instanci",
+  "CONTACT_ADMIN": "Kontaktirajte administratora",
+  "FITTRACKEE_DESCRIPTION": "<strong>FitTrackee</strong> je aplikacija za praćenje aktivnosti na otvorenom na vlastitom hostingu.",
+  "FITTRACKEE_LICENSE": "pod licencom {0} ",
+  "SOURCE_CODE": "Izvorni kod",
+  "WEATHER_DATA_FROM": "Podatci o vremenu iz:"
+}
