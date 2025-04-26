@@ -75,18 +75,14 @@ def upload_workouts_archive(task_id: int) -> None:
     try:
         service = WorkoutsFromArchiveCreationAsyncService(task_id)
         service.process()
-    except (Shutdown, TimeLimitExceeded) as e:
+    except (Abort, Shutdown, TimeLimitExceeded) as e:
         db.session.rollback()
-        error = (
-            "upload execution time exceeding limit"
-            if isinstance(e, TimeLimitExceeded)
-            else GENERIC_ERROR
-        )
-        update_task_and_clean(error=error, upload_task_id=task_id)
-        raise TaskException(error) from None
-    except Abort:
-        db.session.rollback()
-        error = ABORT_ERROR
+        if isinstance(e, Abort):
+            error = ABORT_ERROR
+        elif isinstance(e, TimeLimitExceeded):
+            error = "upload execution time exceeding limit"
+        else:
+            error = GENERIC_ERROR
         update_task_and_clean(error=error, upload_task_id=task_id)
         raise TaskException(error) from None
     except Exception as e:
