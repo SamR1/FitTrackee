@@ -53,3 +53,5 @@ def export_data(task_id: int) -> None:
     except Exception as e:
         update_task_and_clean(task_id)
         raise TaskException("error during user data export") from e
+    finally:
+        db.session.close()
