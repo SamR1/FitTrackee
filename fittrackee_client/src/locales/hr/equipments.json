@@ -1,1 +1,18 @@
-{}
+{
+  "50_CHARACTERS_MAX": "Maksimalno 50 znakova",
+  "ADD_A_NEW_EQUIPMENT": "Dodajte novu opremu",
+  "ALL_WORKOUTS_ASSOCIATIONS_REMOVED": "Sve asocijacije aktivnosti bit će uklonjene.",
+  "DEFAULT_FOR_SPORTS": "Zadano za sport",
+  "EDIT_EQUIPMENTS": "Uredite opremu",
+  "EQUIPMENT": "oprema|oprema",
+  "EQUIPMENT_TYPE": "vrsta opreme|vrste opreme",
+  "ERRORS": {
+    "inactive": "Oprema '{equipmentLabel}' je neaktivna.",
+    "invalid": "Oprema '{equipmentLabel}' nevažeća je za ovaj sport.",
+    "not_found": "Oprema nije pronađena."
+  },
+  "NEW_EQUIPMENT": "Nova oprema",
+  "NO_EQUIPMENT": "Nije pronađena nikakva oprema.",
+  "NO_EQUIPMENTS": "Bez opreme",
+  "WITHOUT_EQUIPMENTS": "bez opreme"
+}
