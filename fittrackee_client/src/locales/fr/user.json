@@ -77,9 +77,6 @@
       "CONFIRM_TASK_ABORT": "Êtes-vous sûr de vouloir interrompre cette tâche de chargement d'archive ?",
       "CONFIRM_TASK_DELETION": "Êtes-vous sûr de vouloir supprimer cette tâche de chargement d'archive ?",
       "ERRORED_FILES": "Fichier en erreur | Fichiers en erreur",
-      "ERRORS": {
-        "no tracks in gpx file": "pas de <tracks> dans le fichier gpx."
-      },
       "FILES_COUNT": "{count} fichiers",
       "NOT_FOUND": "Pas de chargement d'archive trouvé.",
       "PROGRESS": "Progression"

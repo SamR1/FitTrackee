@@ -91,7 +91,7 @@
               )"
               :key="file"
             >
-              {{ file }}: {{ getFileError(error) }}
+              <code> {{ file }} </code>: {{ getFileError(error) }}
             </li>
           </ul>
         </dd>
@@ -187,8 +187,8 @@
     )
   }
   function getFileError(error: string): string {
-    if (te(`user.PROFILE.ARCHIVE_UPLOADS.ERRORS.${error}`)) {
-      return t(`user.PROFILE.ARCHIVE_UPLOADS.ERRORS.${error}`)
+    if (te(`api.ERROR.${error}`)) {
+      return t(`api.ERROR.${error}`)
     }
     return error
   }
