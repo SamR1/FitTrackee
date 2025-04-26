@@ -43,6 +43,7 @@
     "sport does not exist": "Ce sport n'existe pas.",
     "successfully registered": "Inscription validée.",
     "the number of files in the archive exceeds the limit": "Le nombre de fichiers de l'archive dépasse la limite.",
+    "upload execution time exceeding limit": "Le temps de chargement de l'archive dépasse la limite",
     "user account already reactivated": "Le compte de l'utilisateur est déjà réactivé, veuillez rafraîchir la page.",
     "user account already suspended": "Le compte de l'utilisateur est déjà suspendu, veuillez rafraîchir la page.",
     "user account has already been reactivated": "Le compte utilisateur a déjà été réactivé.",

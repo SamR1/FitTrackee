@@ -43,6 +43,7 @@
     "sport does not exist": "Sport does not exist.",
     "successfully registered": "Successfully registered.",
     "the number of files in the archive exceeds the limit": "The number of files in the archive exceeds the limit.",
+    "upload execution time exceeding limit": "Archive upload time exceeds limit",
     "user account already reactivated": "The user account is already reactivated, please refresh this page.",
     "user account already suspended": "The user account is already suspended, please refresh this page.",
     "user account has already been reactivated": "User account has already been reactivated.",
