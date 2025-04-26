@@ -34,7 +34,7 @@
               class="info-box task-status"
               :class="{
                 success: task.status === 'successful',
-                errored: task.status === 'errored',
+                errored: ['aborted', 'errored'].includes(task.status),
               }"
             >
               {{ $t(`user.TASKS.STATUS.${task.status}`) }}
