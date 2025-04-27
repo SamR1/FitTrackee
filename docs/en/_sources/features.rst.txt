@@ -570,6 +570,7 @@ FitTrackee is available in the following languages (which can be saved in the us
 - Bulgarian (*new in 0.8.8*)
 - Russian (*new in 0.8.10*)
 - Chinese (Simplified Han script) (*new in 0.9.0*)
+- Croatian (*new in 0.9.8*)
 
 Application translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__ (development branch, may differ from the released version):
 

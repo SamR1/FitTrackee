@@ -1,0 +1,151 @@
+{
+  "ABOUT": {
+    "DESCRIPTION": "Dodatne informacije koje bi mogle biti korisne korisnicima. Može se koristiti markdown sintaksa.",
+    "TEXT": "Detaljne informacije o instanci"
+  },
+  "ACTION": "Radnja | Radnje",
+  "ACTIVATE_USER_ACCOUNT": "Aktiviraj račun",
+  "ACTIVE": "Aktivno",
+  "ADMIN": "Administrator",
+  "ADMINISTRATION": "Administracija",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Dodavanje/uklanjanje administratorskih prava, brisanje korisničkog računa.",
+  "APPLICATION": "Aplikacija",
+  "APP_CONFIG": {
+    "ADMIN_CONTACT": "E-pošta administratora za kontakt",
+    "MAX_FILES_IN_ZIP_LABEL": "Maks. broj datoteka u zip arhivi",
+    "MAX_USERS_HELP": "Ako je 0, nema ograničenja za registraciju.",
+    "MAX_USERS_LABEL": "Maks. broj aktivnih korisnika",
+    "NO_CONTACT_EMAIL": "nema adrese e-pošte za kontakt",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Maks. veličina učitanih datoteka (u Mb)",
+    "STATS_WORKOUTS_LIMIT_HELP": "Ako je 0, nema ograničenja broja aktivnosti.",
+    "STATS_WORKOUTS_LIMIT_LABEL": "Maks. aktivnosti za statistiku",
+    "TITLE": "Konfiguracija aplikacije",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Maks. veličina zip arhive (u Mb)"
+  },
+  "APP_MODERATION": {
+    "ACTIONS": {
+      "ADD_COMMENT": "Dodaj komentar",
+      "MARK_AS_RESOLVED": "Označi kao riješeno",
+      "MARK_AS_UNRESOLVED": "Označi kao neriješeno",
+      "SEND_WARNING_EMAIL": "Pošalji upozorenje",
+      "SUSPEND_ACCOUNT": "Suspendiraj korisnički račun",
+      "SUSPEND_CONTENT": "Suspendiraj sadržaj",
+      "UNSUSPEND_ACCOUNT": "Reaktiviraj korisnički račun",
+      "UNSUSPEND_CONTENT": "Reaktiviraj sadržaj"
+    },
+    "APPEAL": {
+      "APPROVED": "Ova je žalba odobrena {0}.",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "Ova je žalba odobrena povlačenjem suspenzije.",
+      "HIDE": "Sakrij žalbu",
+      "REASON_IS": "Razlog je:",
+      "REJECTED": "Ova žalba je odbijena {0}.",
+      "SEE": "Pogledaj žalbu"
+    },
+    "DESCRIPTION": "Upravljanje izvješćima.",
+    "NOTES_AND_ACTIONS": "Bilješke i radnje",
+    "NO_REPORTS_FOUND": "Bez izvješća",
+    "ORDER_BY": {
+      "CREATED_AT": "datum stvaranja",
+      "UPDATED_AT": "datum ažuriranja"
+    },
+    "REASON": "Razlog",
+    "REPORT": "izvješće | izvješća",
+    "REPORTED_BY": "Izvješće od",
+    "REPORTED_CONTENT": "Prijavljeni sadržaj",
+    "REPORTED_USER": "Prijavljeni korisnik",
+    "REPORTER": "izvjestitelj",
+    "REPORT_ACTIONS": {
+      "comment_suspension": "Komentar je suspendiran od strane {1} {2}.",
+      "comment_unsuspension": "Suspenzija komentara je povučena od strane {1} {2}.",
+      "report_reopening": "Izvješće je ponovno otvoreno od strane {1} {2}.",
+      "report_resolution": "Izvješće je označeno kao riješeno od strane {1} {2}.",
+      "user_suspension": "{0} dobiva suspenziju od strane {1} {2}.",
+      "user_unsuspension": "Suspenzija {0} je povučena od strane {1} {2}.",
+      "user_warning": "Poslano je upozorenje na {0} od strane {1} {2}.",
+      "user_warning_lifting": "Upozorenje za {0} je povučeno od strane {1} {2}.",
+      "workout_suspension": "Aktivnost je suspendirana od strane {1} {2}.",
+      "workout_unsuspension": "Suspenzija aktivnosti je povučena od strane {1} {2}."
+    },
+    "REPORT_NOTE": "Napomena od",
+    "RESOLVED": {
+      "FALSE": "Neriješeno",
+      "TRUE": "Riješeno"
+    },
+    "RESOLVED_AT": "Riješeno u",
+    "RESOLVED_BY": "Riješeno od",
+    "STATUS": "status",
+    "TEXTAREA_PLACEHOLDER": {
+      "ADD_COMMENT": "Dodaj komentar, poduzetu radnju ili neku drugu korisnu informaciju.",
+      "INFORMATION_VISIBLE_TO_USER": "Ove informacije će biti vidljive korisniku.",
+      "MARK_AS_RESOLVED": "Navedi razlog rješenja.",
+      "MARK_AS_UNRESOLVED": "Navedi razlog nerješavanja.",
+      "SEND_WARNING_EMAIL": "Navedi razlog upozorenja (nije obavezno).",
+      "SUSPEND": "Navedi razlog suspenzije (nije obavezno).",
+      "UNSUSPEND": "Dodaj komentar (nije obavezno).",
+      "UPDATE_APPEAL": "Navedi razlog za ovu obradu žalbe."
+    },
+    "TITLE": "Moderiranje",
+    "UNRESOLVED_REPORTS_EXIST": "Ima neriješenih prijava.",
+    "VIEW_REPORT": "Pogledaj izvješće"
+  },
+  "BACK_TO_ADMIN": "Natrag na administraciju",
+  "CONFIRM_SUSPEND_ACCOUNT": "Sigurno želiš suspendirati {0} račun?",
+  "CONFIRM_SUSPEND_CONTENT": "Sigurno želiš suspendirati prijavljeni sadržaj?",
+  "CONFIRM_USER_ACCOUNT_DELETION": "Sigurno želiš izbrisati {0} račun? Svi će podaci biti izbrisani, to se ne može poništiti.",
+  "CONFIRM_USER_PASSWORD_RESET": "Sigurno želiš poništiti lozinku za {0}?",
+  "CURRENT_EMAIL": "Trenutna e-pošta",
+  "DELETED_COMMENT": "Izbrisan komentar",
+  "DELETED_USER": "Izbrisan korisnik",
+  "DELETED_WORKOUT": "Izbrisana aktivnost",
+  "DELETE_USER": "Izbriši korisnika",
+  "EMAIL_SENDING_DISABLED": "Slanje e-pošte je onemogućeno.",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "Omogući/onemogući vrste opreme.",
+  "ENABLE_DISABLE_SPORTS": "Omogući/onemogući sportove.",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "ACTIVE": "Aktivno",
+      "HAS_EQUIPMENTS": "oprema postoji",
+      "IMAGE": "Slika",
+      "LABEL": "Oznaka"
+    },
+    "TITLE": "Administracija opreme"
+  },
+  "NEW_EMAIL": "Nova e-pošta",
+  "NO_TEXT_ENTERED": "Nema unesenog teksta",
+  "PASSWORD_RESET_SUCCESSFUL": "Lozinka je poništena.",
+  "PRIVACY_POLICY_DESCRIPTION": "Dodaj vlastita pravila o privatnosti ili ostavi prazno za korištenje zadanih. Može se koristiti markdown sintaksa.",
+  "REGISTRATION_DISABLED": "Registracija je trenutno onemogućena.",
+  "REGISTRATION_ENABLED": "Registracija je trenutno omogućena.",
+  "RESET_USER_PASSWORD": "Resetiraj lozinku",
+  "SPORTS": {
+    "TABLE": {
+      "ACTIVE": "Aktivno",
+      "HAS_WORKOUTS": "aktivnost postoji",
+      "IMAGE": "Slika",
+      "LABEL": "Oznaka"
+    },
+    "TITLE": "Administracija sportova"
+  },
+  "UPDATE_APPLICATION_DESCRIPTION": "Ažuriraj konfiguraciju aplikacije.",
+  "UPDATE_USER_EMAIL": "Ažuriraj e-poštu",
+  "USER": "korisnik | korisnici",
+  "USERS": {
+    "SELECTS": {
+      "ORDER_BY": {
+        "CREATED_AT": "datum registracije",
+        "IS_ACTIVE": "status računa",
+        "ROLE": "uloga",
+        "USERNAME": "korisničko ime",
+        "WORKOUTS_COUNT": "broj aktivnosti"
+      }
+    },
+    "TABLE": {
+      "CHANGE_ROLE": "Promijeni ulogu",
+      "CHANGE_TO_ADMIN": "Promijeni na administratora",
+      "CHANGE_TO_MODERATOR": "Promijeni na moderatora",
+      "CHANGE_TO_USER": "Promijeni na korisnika"
+    },
+    "TITLE": "Administracija - Korisnici"
+  },
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "Adresa e-pošte je ažurirana."
+}

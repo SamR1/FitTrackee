@@ -1,0 +1,462 @@
+# Croatian translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-04-26 10:48+0200\n"
+"PO-Revision-Date: 2025-04-26 15:22+0000\n"
+"Last-Translator: iggydev <igor@kraljic.info>\n"
+"Language: hr\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/fittrackee"
+"/fittrackee-api-emails/hr/>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: fittrackee/emails/templates/layout.html:232
+#: fittrackee/emails/templates/layout.txt:1
+#, python-format
+msgid "Hi %(username)s,"
+msgstr "Pozdrav %(username)s,"
+
+#: fittrackee/emails/templates/account_confirmation/body.txt:6
+#: fittrackee/emails/templates/email_update_to_current_email/body.txt:3
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:6
+#: fittrackee/emails/templates/layout.html:235
+#: fittrackee/emails/templates/password_change/body.txt:3
+#: fittrackee/emails/templates/password_reset_request/body.txt:6
+#, python-format
+msgid ""
+"For security, this request was received from a %(operating_system)s "
+"device using %(browser_name)s."
+msgstr ""
+"Radi sigurnosti, ovaj je zahtjev primljen s uređaja %(operating_system)s "
+"koji koristi %(browser_name)s."
+
+#: fittrackee/emails/templates/layout.html:238
+#: fittrackee/emails/templates/layout.txt:5
+msgid "Thanks,"
+msgstr "Hvala,"
+
+#: fittrackee/emails/templates/layout.html:239
+#: fittrackee/emails/templates/layout.txt:6
+msgid "The FitTrackee Team"
+msgstr "Tim FitTrackee"
+
+#: fittrackee/emails/templates/account_confirmation/body.html:2
+#: fittrackee/emails/templates/account_confirmation/subject.txt:1
+msgid "Confirm your account"
+msgstr "Potvrdite svoj račun"
+
+#: fittrackee/emails/templates/account_confirmation/body.html:3
+msgid "Use this link to confirm your account."
+msgstr "Koristite ovu poveznicu da potvrdite svoj račun."
+
+#: fittrackee/emails/templates/account_confirmation/body.html:4
+#: fittrackee/emails/templates/account_confirmation/body.txt:1
+msgid "You have created an account on FitTrackee."
+msgstr "Kreirali ste račun na FitTrackee."
+
+#: fittrackee/emails/templates/account_confirmation/body.html:4
+msgid "Use the button below to confirm your address email."
+msgstr "Upotrijebite gumb u nastavku da biste potvrdili svoju adresu e-pošte."
+
+#: fittrackee/emails/templates/account_confirmation/body.html:11
+#: fittrackee/emails/templates/account_confirmation/body.txt:4
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:11
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:4
+msgid "Verify your email"
+msgstr "Potvrdite svoju e-poštu"
+
+#: fittrackee/emails/templates/account_confirmation/body.html:18
+#: fittrackee/emails/templates/account_confirmation/body.txt:7
+msgid ""
+"If this account creation wasn't initiated by you, please ignore this "
+"email."
+msgstr "Ako ovu izradu računa niste inicirali vi, zanemarite ovu e-poruku."
+
+#: fittrackee/emails/templates/account_confirmation/body.html:22
+#: fittrackee/emails/templates/comment_suspension/body.html:37
+#: fittrackee/emails/templates/data_export_ready/body.html:22
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:22
+#: fittrackee/emails/templates/password_reset_request/body.html:24
+#: fittrackee/emails/templates/user_suspension/body.html:24
+#: fittrackee/emails/templates/user_warning/body.html:58
+#: fittrackee/emails/templates/workout_suspension/body.html:40
+msgid ""
+"If you're having trouble with the button above, copy and paste the URL "
+"below into your web browser."
+msgstr ""
+"Ako imate problema s gornjim gumbom, kopirajte i zalijepite donji URL u "
+"svoj web preglednik."
+
+#: fittrackee/emails/templates/account_confirmation/body.txt:2
+msgid "Use the link below to confirm your address email."
+msgstr "Upotrijebite poveznicu u nastavku da potvrdite svoju adresu e-pošte."
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:2
+#: fittrackee/emails/templates/user_warning_lifting/body.html:2
+#: fittrackee/emails/templates/user_warning_lifting/subject.txt:1
+#, python-format
+msgid "Warning for %(username)s lifted"
+msgstr "Upozorenje za %(username)s je povučeno"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:3
+msgid "Your appeal has been rejected"
+msgstr "Vaša žalba je odbijena"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:4
+#: fittrackee/emails/templates/appeal_rejected/body.txt:1
+msgid "Your appeal on your account suspension has been rejected"
+msgstr "Vaša žalba na obustavu vašeg računa je odbijena"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:4
+#: fittrackee/emails/templates/appeal_rejected/body.txt:1
+msgid "Your appeal on your warning has been rejected"
+msgstr "Vaša žalba na upozorenje je odbijena"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:4
+#: fittrackee/emails/templates/appeal_rejected/body.txt:1
+msgid "Your appeal on the following content suspension has been rejected"
+msgstr "Vaša žalba na suspenziju sljedećeg sadržaja je odbijena"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:6
+#: fittrackee/emails/templates/appeal_rejected/body.txt:3
+#: fittrackee/emails/templates/comment_suspension/body.txt:5
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:5
+#: fittrackee/emails/templates/user_warning/body.html:7
+#: fittrackee/emails/templates/user_warning/body.txt:5
+#: fittrackee/emails/templates/user_warning_lifting/body.html:6
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:3
+msgid "Comment:"
+msgstr "Komentar:"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:22
+#: fittrackee/emails/templates/appeal_rejected/body.txt:7
+#: fittrackee/emails/templates/user_warning/body.html:23
+#: fittrackee/emails/templates/user_warning/body.txt:9
+#: fittrackee/emails/templates/user_warning_lifting/body.html:22
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:7
+#: fittrackee/emails/templates/workout_suspension/body.txt:5
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:5
+msgid "Workout:"
+msgstr "Aktivnost:"
+
+#: fittrackee/emails/templates/appeal_rejected/body.txt:5
+#: fittrackee/emails/templates/appeal_rejected/body.txt:9
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:7
+#: fittrackee/emails/templates/user_warning/body.txt:7
+#: fittrackee/emails/templates/user_warning/body.txt:11
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:5
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:9
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:7
+msgid "Link:"
+msgstr "Poveznica:"
+
+#: fittrackee/emails/templates/appeal_rejected/subject.txt:1
+msgid "Appeal rejected"
+msgstr "Žalba je odbijena"
+
+#: fittrackee/emails/templates/comment_suspension/body.html:2
+#: fittrackee/emails/templates/comment_suspension/subject.txt:1
+msgid "Your comment has been suspended"
+msgstr "Vaš komentar je suspendiran"
+
+#: fittrackee/emails/templates/comment_suspension/body.html:3
+#: fittrackee/emails/templates/comment_suspension/body.html:4
+#: fittrackee/emails/templates/comment_suspension/body.txt:1
+msgid "Your comment has been suspended, it is no longer visible"
+msgstr "Vaš komentar je suspendiran, više nije vidljiv"
+
+#: fittrackee/emails/templates/comment_suspension/body.html:5
+#: fittrackee/emails/templates/comment_suspension/body.txt:3
+#: fittrackee/emails/templates/comment_unsuspension/body.html:5
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:3
+#: fittrackee/emails/templates/user_suspension/body.html:6
+#: fittrackee/emails/templates/user_suspension/body.txt:4
+#: fittrackee/emails/templates/user_unsuspension/body.html:5
+#: fittrackee/emails/templates/user_unsuspension/body.txt:4
+#: fittrackee/emails/templates/user_warning/body.html:5
+#: fittrackee/emails/templates/user_warning/body.txt:3
+#: fittrackee/emails/templates/workout_suspension/body.html:5
+#: fittrackee/emails/templates/workout_suspension/body.txt:3
+#: fittrackee/emails/templates/workout_unsuspension/body.html:5
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:3
+msgid "Reason:"
+msgstr "Razlog:"
+
+#: fittrackee/emails/templates/comment_suspension/body.html:20
+#: fittrackee/emails/templates/comment_suspension/body.txt:7
+#: fittrackee/emails/templates/user_suspension/body.html:7
+#: fittrackee/emails/templates/user_suspension/body.txt:6
+#: fittrackee/emails/templates/user_warning/body.html:41
+#: fittrackee/emails/templates/user_warning/body.txt:13
+#: fittrackee/emails/templates/workout_suspension/body.html:23
+#: fittrackee/emails/templates/workout_suspension/body.txt:7
+msgid "If you think this is an error, you can appeal:"
+msgstr "Ako mislite da je ovo pogreška, možete se žaliti:"
+
+#: fittrackee/emails/templates/comment_suspension/body.html:27
+#: fittrackee/emails/templates/user_suspension/body.html:14
+#: fittrackee/emails/templates/user_warning/body.html:48
+#: fittrackee/emails/templates/workout_suspension/body.html:30
+msgid "Appeal"
+msgstr "Žalba"
+
+#: fittrackee/emails/templates/comment_unsuspension/body.html:2
+#: fittrackee/emails/templates/comment_unsuspension/subject.txt:1
+msgid "The suspension on your comment has been lifted"
+msgstr "Suspenzija vašeg komentara je povučena"
+
+#: fittrackee/emails/templates/comment_unsuspension/body.html:3
+#: fittrackee/emails/templates/comment_unsuspension/body.html:4
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:1
+msgid "The suspension on your comment has been lifted, it is visible again"
+msgstr "Suspenzija vašeg komentara je povučena, ponovno je vidljiv"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:2
+#: fittrackee/emails/templates/data_export_ready/subject.txt:1
+msgid "Your archive is ready to be downloaded"
+msgstr "Vaša je arhiva spremna za preuzimanje"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:3
+msgid "A download link is available in your account."
+msgstr "Veza za preuzimanje dostupna je na vašem računu."
+
+#: fittrackee/emails/templates/data_export_ready/body.html:4
+#: fittrackee/emails/templates/data_export_ready/body.txt:1
+msgid "You have requested an export of your account on FitTrackee."
+msgstr "Zatražili ste izvoz vašeg računa na FitTrackee."
+
+#: fittrackee/emails/templates/data_export_ready/body.html:4
+#: fittrackee/emails/templates/data_export_ready/body.txt:2
+msgid "The archive is now ready to be downloaded from your account."
+msgstr "Arhiva je sada spremna za preuzimanje s vašeg računa."
+
+#: fittrackee/emails/templates/data_export_ready/body.html:11
+#: fittrackee/emails/templates/data_export_ready/body.txt:4
+msgid "Download your archive"
+msgstr "Preuzmite svoju arhivu"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:18
+#: fittrackee/emails/templates/data_export_ready/body.txt:5
+msgid ""
+"If you did not request the export, please change your password "
+"immediately or contact your administrator if your account is locked."
+msgstr ""
+"Ako niste zatražili izvoz, odmah promijenite lozinku ili kontaktirajte "
+"svog administratora ako je vaš račun zaključan."
+
+#: fittrackee/emails/templates/email_update_to_current_email/body.html:2
+#: fittrackee/emails/templates/email_update_to_current_email/subject.txt:1
+msgid "Email changed"
+msgstr "Adresa e-pošte je promijenjena"
+
+#: fittrackee/emails/templates/email_update_to_current_email/body.html:3
+msgid "Your email is being updated."
+msgstr "Vaša adresa e-pošte se ažurira."
+
+#: fittrackee/emails/templates/email_update_to_current_email/body.html:4
+#: fittrackee/emails/templates/email_update_to_current_email/body.txt:1
+msgid ""
+"You recently requested to change your email address for your FitTrackee "
+"account to:"
+msgstr "Nedavno ste zatražili promjenu adrese e-pošte za svoj FitTrackee račun na:"
+
+#: fittrackee/emails/templates/email_update_to_current_email/body.html:18
+#: fittrackee/emails/templates/email_update_to_current_email/body.txt:4
+msgid ""
+"If this email change wasn't initiated by you, please change your password"
+" immediately or contact your administrator if your account is locked."
+msgstr ""
+"Ako ovu promjenu adrese e-pošte niste pokrenuli vi, odmah promijenite "
+"lozinku ili kontaktirajte svog administratora ako je vaš račun zaključan."
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:2
+#: fittrackee/emails/templates/email_update_to_new_email/subject.txt:1
+msgid "Confirm email change"
+msgstr "Potvrdite promjenu adrese e-pošte"
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:3
+msgid "Use this link to confirm email change."
+msgstr "Koristite ovu poveznicu za potvrdu promjene adrese e-pošte."
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:4
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:1
+msgid ""
+"You recently requested to change your email address for your FitTrackee "
+"account."
+msgstr "Nedavno ste zatražili promjenu adrese e-pošte za svoj FitTrackee račun."
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:4
+msgid "Use the button below to confirm this address."
+msgstr "Upotrijebite gumb u nastavku za potvrdu ove adrese."
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:18
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:7
+msgid "If this email change wasn't initiated by you, please ignore this email."
+msgstr ""
+"Ako ovu promjenu adrese e-pošte niste pokrenuli vi, zanemarite ovu "
+"e-poruku."
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:2
+msgid "Use the link below to confirm this address."
+msgstr "Upotrijebite poveznicu u nastavku za potvrdu ove adrese."
+
+#: fittrackee/emails/templates/password_change/body.html:2
+#: fittrackee/emails/templates/password_change/subject.txt:1
+msgid "Password changed"
+msgstr "Lozinka je promijenjena"
+
+#: fittrackee/emails/templates/password_change/body.html:3
+msgid "Your password has been changed."
+msgstr "Vaša lozinka je promijenjena."
+
+#: fittrackee/emails/templates/password_change/body.html:4
+#: fittrackee/emails/templates/password_change/body.txt:1
+msgid "The password for your FitTrackee account has been changed."
+msgstr "Lozinka za vaš FitTrackee račun je promijenjena."
+
+#: fittrackee/emails/templates/password_change/body.html:5
+#: fittrackee/emails/templates/password_change/body.txt:4
+msgid ""
+"If this password change wasn't initiated by you, please change your "
+"password immediately or contact your administrator if your account is "
+"locked."
+msgstr ""
+"Ako ovu promjenu lozinke niste inicirali vi, odmah promijenite lozinku "
+"ili kontaktirajte svog administratora ako je vaš račun zaključan."
+
+#: fittrackee/emails/templates/password_reset_request/body.html:2
+#: fittrackee/emails/templates/password_reset_request/subject.txt:1
+msgid "Password reset request"
+msgstr "Zahtjev za ponovno postavljanje lozinke"
+
+#: fittrackee/emails/templates/password_reset_request/body.html:3
+#, python-format
+msgid ""
+"Use this link to reset your password. The link is only valid for "
+"%(expiration_delay)s."
+msgstr ""
+"Koristite ovu poveznicu za poništavanje lozinke. Poveznica je važeća samo"
+" do %(expiration_delay)s."
+
+#: fittrackee/emails/templates/password_reset_request/body.html:4
+#: fittrackee/emails/templates/password_reset_request/body.txt:1
+msgid "You recently requested to reset your password for your FitTrackee account."
+msgstr ""
+"Nedavno ste zatražili ponovno postavljanje lozinke za svoj FitTrackee "
+"račun."
+
+#: fittrackee/emails/templates/password_reset_request/body.html:4
+msgid "Use the button below to reset it."
+msgstr "Upotrijebite gumb u nastavku za resetiranje."
+
+#: fittrackee/emails/templates/password_reset_request/body.html:5
+#: fittrackee/emails/templates/password_reset_request/body.txt:2
+#, python-format
+msgid "This password reset link is only valid for %(expiration_delay)s."
+msgstr ""
+"Ova poveznica za poništavanje lozinke vrijedi samo do "
+"%(expiration_delay)s."
+
+#: fittrackee/emails/templates/password_reset_request/body.html:13
+#: fittrackee/emails/templates/password_reset_request/body.txt:4
+msgid "Reset your password"
+msgstr "Ponovno postavite lozinku"
+
+#: fittrackee/emails/templates/password_reset_request/body.html:20
+#: fittrackee/emails/templates/password_reset_request/body.txt:7
+msgid "If you did not request a password reset, please ignore this email."
+msgstr "Ako niste zatražili ponovno postavljanje lozinke, zanemarite ovu e-poruku."
+
+#: fittrackee/emails/templates/password_reset_request/body.txt:1
+msgid "Use the link below to reset it."
+msgstr "Upotrijebite poveznicu u nastavku da biste ju poništili."
+
+#: fittrackee/emails/templates/user_suspension/body.html:2
+#: fittrackee/emails/templates/user_suspension/body.html:3
+#: fittrackee/emails/templates/user_suspension/body.html:4
+#: fittrackee/emails/templates/user_suspension/body.txt:1
+#: fittrackee/emails/templates/user_suspension/subject.txt:1
+msgid "Your account has been suspended"
+msgstr "Vaš račun je suspendiran"
+
+#: fittrackee/emails/templates/user_suspension/body.html:3
+#: fittrackee/emails/templates/user_suspension/body.html:5
+#: fittrackee/emails/templates/user_suspension/body.txt:2
+msgid ""
+"You can no longer use your account and your profile is no longer "
+"accessible"
+msgstr "Više ne možete koristiti svoj račun i vaš profil više nije dostupan"
+
+#: fittrackee/emails/templates/user_suspension/body.html:5
+#: fittrackee/emails/templates/user_suspension/body.txt:2
+msgid ""
+"You can still log in to request an export of your data or delete your "
+"account"
+msgstr ""
+"I dalje se možete prijaviti kako biste zatražili izvoz svojih podataka "
+"ili izbrisali svoj račun"
+
+#: fittrackee/emails/templates/user_unsuspension/body.html:2
+#: fittrackee/emails/templates/user_unsuspension/body.html:3
+#: fittrackee/emails/templates/user_unsuspension/body.html:4
+#: fittrackee/emails/templates/user_unsuspension/body.txt:1
+#: fittrackee/emails/templates/user_unsuspension/subject.txt:1
+msgid "Your account has been reactivated"
+msgstr "Vaš račun je ponovno aktiviran"
+
+#: fittrackee/emails/templates/user_unsuspension/body.html:3
+#: fittrackee/emails/templates/user_unsuspension/body.html:4
+#: fittrackee/emails/templates/user_unsuspension/body.txt:2
+msgid "You can now use all the features on FitTrackee"
+msgstr "Sada možete koristiti sve značajke na FitTrackee"
+
+#: fittrackee/emails/templates/user_warning/body.html:2
+#: fittrackee/emails/templates/user_warning/subject.txt:1
+#, python-format
+msgid "Warning for %(username)s"
+msgstr "Upozorenje za %(username)s"
+
+#: fittrackee/emails/templates/user_warning/body.html:3
+#: fittrackee/emails/templates/user_warning/body.html:4
+#: fittrackee/emails/templates/user_warning/body.txt:1
+msgid "You received a warning"
+msgstr "Dobili ste upozorenje"
+
+#: fittrackee/emails/templates/user_warning_lifting/body.html:3
+#: fittrackee/emails/templates/user_warning_lifting/body.html:4
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:1
+msgid "Your warning has been lifted"
+msgstr "Vaše upozorenje je povučeno"
+
+#: fittrackee/emails/templates/workout_suspension/body.html:2
+#: fittrackee/emails/templates/workout_suspension/subject.txt:1
+msgid "Your workout has been suspended"
+msgstr "Vaša aktivnost je suspendirana"
+
+#: fittrackee/emails/templates/workout_suspension/body.html:3
+#: fittrackee/emails/templates/workout_suspension/body.html:4
+#: fittrackee/emails/templates/workout_suspension/body.txt:1
+msgid "Your workout has been suspended, it is no longer visible"
+msgstr "Vaša aktivnost je suspendirana, više nije vidljiva"
+
+#: fittrackee/emails/templates/workout_unsuspension/body.html:2
+#: fittrackee/emails/templates/workout_unsuspension/subject.txt:1
+msgid "The suspension on your workout has been lifted"
+msgstr "Suspenzija vaše aktivnosti je povučena"
+
+#: fittrackee/emails/templates/workout_unsuspension/body.html:3
+#: fittrackee/emails/templates/workout_unsuspension/body.html:4
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:1
+msgid "The suspension on your workout has been lifted, it is visible again"
+msgstr "Suspenzija vaše aktivnosti je povučena, ponovno je vidljiva"
+
