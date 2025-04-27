@@ -28,7 +28,10 @@ from ..exceptions import (
     WorkoutFileException,
 )
 from .base_workout_service import BaseWorkoutService
-from .workout_from_file import WorkoutGpxCreationService
+from .workout_from_file import (
+    WorkoutGpxCreationService,
+    WorkoutKmlCreationService,
+)
 
 if TYPE_CHECKING:
     from werkzeug.datastructures import FileStorage
@@ -42,6 +45,7 @@ WORKOUT_FROM_FILE_SERVICES: Dict[
     str, Type["BaseWorkoutWithSegmentsCreationService"]
 ] = {
     "gpx": WorkoutGpxCreationService,
+    "kml": WorkoutKmlCreationService,
 }
 NO_FILE_ERROR_MESSAGE = "no workout file provided"
 
@@ -128,7 +132,10 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
         return self.workouts_data.notes[:NOTES_MAX_CHARACTERS]
 
     def _store_file(
-        self, new_workout: "Workout", workout_file: Optional["IO[bytes]"]
+        self,
+        new_workout: "Workout",
+        workout_file: Optional["IO[bytes]"],
+        gpx_xml_content: Optional[str],  # for non-gpx files
     ) -> str:
         if not workout_file and not self.file:
             return ""
@@ -142,7 +149,10 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
         new_workout.gpx = workout_filepath
         absolute_workout_filepath = get_absolute_file_path(workout_filepath)
         try:
-            if workout_file:  # when file from archive
+            if gpx_xml_content:
+                with open(absolute_workout_filepath, "w") as f:
+                    f.write(gpx_xml_content)
+            elif workout_file:  # when file from archive
                 with open(absolute_workout_filepath, "wb") as f:
                     workout_file.seek(0)
                     f.write(workout_file.read())
@@ -152,9 +162,9 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
             else:
                 return ""
         except Exception as e:
-            raise WorkoutException(
-                "error", "error when storing gpx file"
-            ) from e
+            error = "error when storing gpx file"
+            appLog.exception(error)
+            raise WorkoutException("error", error) from e
         return absolute_workout_filepath
 
     def create_workout_from_file(
@@ -186,9 +196,11 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
         try:
             new_workout = workout_service.process_workout()
         except (WorkoutExceedingValueException, WorkoutFileException) as e:
+            appLog.exception(f"workout exception: {e!s}")
             db.session.rollback()
             raise e
         except Exception as e:
+            appLog.exception(f"exception: {e!s}")
             db.session.rollback()
             raise WorkoutException(
                 "error", "error when processing workout"
@@ -231,7 +243,11 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
         )
 
         # store workout file
-        absolute_workout_filepath = self._store_file(new_workout, workout_file)
+        absolute_workout_filepath = self._store_file(
+            new_workout,
+            workout_file,
+            None if extension == "gpx" else workout_service.gpx.to_xml(),
+        )
 
         # generate and store map image
         map_filepath = self.get_file_path(

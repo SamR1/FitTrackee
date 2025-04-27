@@ -33,7 +33,7 @@ class BaseConfig:
         os.getenv("UPLOAD_FOLDER", current_app.root_path), "uploads"
     )
     PICTURE_ALLOWED_EXTENSIONS = {"jpg", "png", "gif"}
-    WORKOUT_ALLOWED_EXTENSIONS = {"gpx", "zip"}
+    WORKOUT_ALLOWED_EXTENSIONS = {"gpx", "kml", "zip"}
     TEMPLATES_FOLDER = os.path.join(current_app.root_path, "emails/templates")
     UI_URL = os.environ["UI_URL"]
     EMAIL_URL = os.environ.get("EMAIL_URL")

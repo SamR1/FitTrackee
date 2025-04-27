@@ -783,6 +783,57 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
         with open(get_absolute_file_path(new_workout.gpx)) as f:
             assert f.read() == gpx_file
 
+    def test_it_creates_workout_when_extension_is_kml(
+        self,
+        app: "Flask",
+        user_1: "User",
+        kml_2_3_with_one_track: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        kml_file_storage = FileStorage(
+            filename="file.kml",
+            stream=BytesIO(str.encode(kml_2_3_with_one_track)),
+        )
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            file=kml_file_storage,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+
+        service.create_workout_from_file(extension="kml", equipments=None)
+        db.session.commit()
+
+        new_workout = Workout.query.one()
+        assert new_workout.user_id == user_1.id
+        assert new_workout.sport_id == sport_1_cycling.id
+        assert new_workout.workout_date == datetime(
+            2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc
+        )
+        assert new_workout.analysis_visibility == VisibilityLevel.PRIVATE
+        assert float(new_workout.ascent) == 0.4  # type: ignore
+        assert float(new_workout.ave_speed) == 4.61  # type: ignore
+        assert new_workout.bounds == [44.67822, 6.07355, 44.68095, 6.07442]
+        assert float(new_workout.descent) == 23.4  # type: ignore
+        assert new_workout.description == "some description"
+        assert float(new_workout.distance) == 0.32  # type: ignore
+        assert new_workout.duration == timedelta(minutes=4, seconds=10)
+        assert new_workout.gpx is not None
+        assert new_workout.map is not None
+        assert new_workout.map_visibility == VisibilityLevel.PRIVATE
+        assert new_workout.map_id is not None
+        assert float(new_workout.max_alt) == 998.0  # type: ignore
+        assert float(new_workout.max_speed) == 5.25  # type: ignore
+        assert float(new_workout.min_alt) == 975.0  # type: ignore
+        assert new_workout.moving == timedelta(minutes=4, seconds=10)
+        assert new_workout.notes is None
+        assert new_workout.pauses == timedelta(seconds=0)
+        assert new_workout.suspended_at is None
+        assert new_workout.title == "just a workout"
+        assert new_workout.weather_start is None
+        assert new_workout.weather_end is None
+        assert new_workout.workout_visibility == VisibilityLevel.PRIVATE
+        assert WorkoutSegment.query.count() == 1
+
 
 class WorkoutsFromFileCreationServiceTestCase:
     @staticmethod
