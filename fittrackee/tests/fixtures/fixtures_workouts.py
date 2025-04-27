@@ -1017,3 +1017,239 @@ def upload_workouts_archive_mock() -> Iterator[MagicMock]:
         mock.send = MagicMock()
         mock.send.return_value = message
         yield mock
+
+
+@pytest.fixture()
+def invalid_kml_file() -> str:
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1">'  # noqa
+        "  <Document>"
+        "    <open>1</open>"
+    )
+
+
+@pytest.fixture()
+def kml_file_wo_tracks() -> str:
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1">'  # noqa
+        "  <Document>"
+        "    <Placemark>"
+        "      <name>New York City</name>"
+        "      <Point>"
+        "       <coordinates>-74.006393,40.714172,0</coordinates>"
+        "      </Point>"
+        "    </Placemark>"
+        "  </Document>"
+        "</kml>"
+    )
+
+
+kml_track_points_part_1 = (
+    "        <when>2018-03-13T13:43:45+01:00</when>"
+    "        <gx:coord/>"
+    "        <when>2018-03-13T13:44:45+01:00</when>"
+    "        <gx:coord>6.07367 44.68095 998</gx:coord>"
+    "        <when>2018-03-13T13:44:50+01:00</when>"
+    "        <gx:coord>6.07367 44.68091 998</gx:coord>"
+    "        <when>2018-03-13T13:45:00+01:00</when>"
+    "        <gx:coord>6.07364 44.6808 994</gx:coord>"
+    "        <when>2018-03-13T13:45:05+01:00</when>"
+    "        <gx:coord>6.07364 44.68075 994</gx:coord>"
+    "        <when>2018-03-13T13:45:10+01:00</when>"
+    "        <gx:coord>6.07364 44.68071 994</gx:coord>"
+    "        <when>2018-03-13T13:45:30+01:00</when>"
+    "        <gx:coord>6.07361 44.68049 993</gx:coord>"
+    "        <when>2018-03-13T13:45:55+01:00</when>"
+    "        <gx:coord>6.07356 44.68019 992</gx:coord>"
+    "        <when>2018-03-13T13:46:00+01:00</when>"
+    "        <gx:coord>6.07355 44.68014 992</gx:coord>"
+    "        <when>2018-03-13T13:46:15+01:00</when>"
+    "        <gx:coord>6.07358 44.67995 987</gx:coord>"
+)
+kml_track_points_part_2 = (
+    "        <when>2018-03-13T13:46:30+01:00</when>"
+    "        <gx:coord>6.07364 44.67977 987</gx:coord>"
+    "        <when>2018-03-13T13:46:35+01:00</when>"
+    "        <gx:coord>6.07367 44.67972 987</gx:coord>"
+    "        <when>2018-03-13T13:46:40+01:00</when>"
+    "        <gx:coord>6.07368 44.67966 987</gx:coord>"
+    "        <when>2018-03-13T13:46:45+01:00</when>"
+    "        <gx:coord>6.0737 44.67961 986</gx:coord>"
+    "        <when>2018-03-13T13:47:05+01:00</when>"
+    "        <gx:coord>6.07377 44.67938 986</gx:coord>"
+    "        <when>2018-03-13T13:47:10+01:00</when>"
+    "        <gx:coord>6.07381 44.67933 986</gx:coord>"
+    "        <when>2018-03-13T13:47:20+01:00</when>"
+    "        <gx:coord>6.07385 44.67922 985</gx:coord>"
+    "        <when>2018-03-13T13:47:30+01:00</when>"
+    "        <gx:coord>6.0739 44.67911 985</gx:coord>"
+    "        <when>2018-03-13T13:47:40+01:00</when>"
+    "        <gx:coord>6.07399 44.679 980</gx:coord>"
+    "        <when>2018-03-13T13:47:45+01:00</when>"
+    "        <gx:coord>6.07402 44.67896 980</gx:coord>"
+    "        <when>2018-03-13T13:47:55+01:00</when>"
+    "        <gx:coord>6.07408 44.67884 979</gx:coord>"
+    "        <when>2018-03-13T13:48:15+01:00</when>"
+    "        <gx:coord>6.07423 44.67863 981</gx:coord>"
+    "        <when>2018-03-13T13:48:20+01:00</when>"
+    "        <gx:coord>6.07425 44.67858 980</gx:coord>"
+    "        <when>2018-03-13T13:48:35+01:00</when>"
+    "        <gx:coord>6.07434 44.67842 979</gx:coord>"
+    "        <when>2018-03-13T13:48:40+01:00</when>"
+    "        <gx:coord>6.07435 44.67837 979</gx:coord>"
+    "        <when>2018-03-13T13:48:55+01:00</when>"
+    "        <gx:coord>6.07442 44.67822 975</gx:coord>"
+)
+
+
+@pytest.fixture()
+def kml_2_2_with_one_track() -> str:
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1">'  # noqa
+        "  <Document>"
+        "    <open>1</open>"
+        "    <visibility>1</visibility>"
+        "    <name><![CDATA[just a workout]]></name>"
+        "    <atom:generator><![CDATA[OpenTracks]]></atom:generator>"
+        '    <Style id="track">'
+        "      <LineStyle>"
+        "        <color>7f0000ff</color>"
+        "        <width>4</width>"
+        "      </LineStyle>"
+        "      <IconStyle>"
+        "        <scale>1.3</scale>"
+        "        <Icon/>"
+        "      </IconStyle>"
+        "    </Style>"
+        '    <Style id="waypoint">'
+        "      <IconStyle>"
+        "        <Icon/>"
+        "      </IconStyle>"
+        "    </Style>"
+        '    <Schema id="schema">'
+        '      <gx:SimpleArrayField name="speed" type="float">'
+        "        <displayName><![CDATA[Vitesse (m/s)]]></displayName>"
+        "      </gx:SimpleArrayField>"
+        '      <gx:SimpleArrayField name="power" type="float">'
+        "        <displayName><![CDATA[Puissance (W)]]></displayName>"
+        "      </gx:SimpleArrayField>"
+        '      <gx:SimpleArrayField name="cadence" type="float">'
+        "        <displayName><![CDATA[Cadence (tr/min)]]></displayName>"
+        "      </gx:SimpleArrayField>"
+        '      <gx:SimpleArrayField name="heart_rate" type="float">'
+        "        <displayName><![CDATA[Fréquence cardiaque (bpm)]]></displayName>"  # noqa
+        "      </gx:SimpleArrayField>"
+        "    </Schema>"
+        "    <Placemark>"
+        "      <name><![CDATA[just a workout]]></name>"
+        "      <description><![CDATA[some description]]></description>"
+        "      <icon><![CDATA[WALK]]></icon>"
+        "      <opentracks:trackid>7ab3bdbd-6941-47be-9cbd-865b5cfe4f74 "
+        "       </opentracks:trackid>"
+        "      <styleUrl>#track</styleUrl>"
+        "      <ExtendedData>"
+        '        <Data name="type">'
+        "          <value><![CDATA[marche]]></value>"
+        "        </Data>"
+        "      </ExtendedData>"
+        "      <gx:MultiTrack>"
+        "        <altitudeMode>absolute</altitudeMode>"
+        "        <gx:interpolate>1</gx:interpolate>"
+        "        <gx:Track>"
+        + kml_track_points_part_1
+        + kml_track_points_part_2
+        + "    </gx:Track>"
+        "      </gx:MultiTrack>"
+        "    </Placemark>"
+        "  </Document>"
+        "</kml>"
+    )
+
+
+@pytest.fixture()
+def kml_2_2_with_two_tracks() -> str:
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1">'  # noqa
+        "  <Document>"
+        "    <open>1</open>"
+        "    <visibility>1</visibility>"
+        "    <name><![CDATA[just a workout]]></name>"
+        "    <atom:generator><![CDATA[OpenTracks]]></atom:generator>"
+        '    <Style id="track">'
+        "      <LineStyle>"
+        "        <color>7f0000ff</color>"
+        "        <width>4</width>"
+        "      </LineStyle>"
+        "      <IconStyle>"
+        "        <scale>1.3</scale>"
+        "        <Icon/>"
+        "      </IconStyle>"
+        "    </Style>"
+        '    <Style id="waypoint">'
+        "      <IconStyle>"
+        "        <Icon/>"
+        "      </IconStyle>"
+        "    </Style>"
+        '    <Schema id="schema">'
+        '      <gx:SimpleArrayField name="speed" type="float">'
+        "        <displayName><![CDATA[Vitesse (m/s)]]></displayName>"
+        "      </gx:SimpleArrayField>"
+        '      <gx:SimpleArrayField name="power" type="float">'
+        "        <displayName><![CDATA[Puissance (W)]]></displayName>"
+        "      </gx:SimpleArrayField>"
+        '      <gx:SimpleArrayField name="cadence" type="float">'
+        "        <displayName><![CDATA[Cadence (tr/min)]]></displayName>"
+        "      </gx:SimpleArrayField>"
+        '      <gx:SimpleArrayField name="heart_rate" type="float">'
+        "        <displayName><![CDATA[Fréquence cardiaque (bpm)]]></displayName>"  # noqa
+        "      </gx:SimpleArrayField>"
+        "    </Schema>"
+        "    <Placemark>"
+        "      <name><![CDATA[just a workout]]></name>"
+        "      <description><![CDATA[some description]]></description>"
+        "      <icon><![CDATA[WALK]]></icon>"
+        "      <opentracks:trackid>7ab3bdbd-6941-47be-9cbd-865b5cfe4f74 "
+        "       </opentracks:trackid>"
+        "      <styleUrl>#track</styleUrl>"
+        "      <ExtendedData>"
+        '        <Data name="type">'
+        "          <value><![CDATA[marche]]></value>"
+        "        </Data>"
+        "      </ExtendedData>"
+        "      <gx:MultiTrack>"
+        "        <altitudeMode>absolute</altitudeMode>"
+        "        <gx:interpolate>1</gx:interpolate>"
+        "        <gx:Track>" + kml_track_points_part_1 + "    </gx:Track>"
+        "        <gx:Track>" + kml_track_points_part_2 + "    </gx:Track>"
+        "      </gx:MultiTrack>"
+        "    </Placemark>"
+        "  </Document>"
+        "</kml>"
+    )
+
+
+def kml_2_2_to_kml_2_3(kml_content: str) -> str:
+    return kml_content.replace('/2.2"', '/2.3"').replace("gx:", "")
+
+
+@pytest.fixture()
+def kml_2_3_with_one_track(kml_2_2_with_one_track: str) -> str:
+    return kml_2_2_to_kml_2_3(kml_2_2_with_one_track)
+
+
+@pytest.fixture()
+def kml_2_3_with_two_tracks(kml_2_2_with_two_tracks: str) -> str:
+    return kml_2_2_to_kml_2_3(kml_2_2_with_two_tracks)
+
+
+@pytest.fixture()
+def kml_2_3_wo_name_and_description(kml_2_2_with_one_track: str) -> str:
+    return (
+        kml_2_2_to_kml_2_3(kml_2_2_with_one_track)
+        .replace("<name><![CDATA[just a workout]]></name>", "")
+        .replace("<description><![CDATA[some description]]></description>", "")
+    )

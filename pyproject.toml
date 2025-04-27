@@ -54,6 +54,7 @@ shortuuid = "^1.0.13"
 staticmap = {git = "https://git@github.com/SamR1/staticmap.git", rev = "fix-except"}
 sqlalchemy = "=2.0.40"
 ua-parser = "^1.0.0"
+xmltodict = "^0.14.2"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.8.3"
