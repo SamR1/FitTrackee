@@ -1,0 +1,17 @@
+{
+  "ANALYSIS_VISIBILITY": "Vidljivost analize",
+  "COMMENT_LEVELS": {
+    "followers_only": "Samo pratitelji",
+    "private": "Privatno (samo spomenuti korisnici)",
+    "public": "Javno (svi)"
+  },
+  "LEVELS": {
+    "followers_only": "Samo pratitelji",
+    "private": "Privatno (samo ja)",
+    "public": "Javno (svi)"
+  },
+  "MAP_VISIBILITY": "Vidljivost karte",
+  "VISIBILITY": "vidljivost",
+  "WORKOUTS_VISIBILITY": "Vidljivost podataka povezanih s aktivnostima",
+  "WORKOUT_VISIBILITY": "Vidljivost aktivnosti"
+}

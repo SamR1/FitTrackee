@@ -1,0 +1,38 @@
+{
+  "CONTENT": {
+    "ACCOUNT_DELETION": {
+      "CONTENT": "Možete zatražiti brisanje svog računa u bilo kojem trenutku tako da odete na ovu adresu (nakon prijave) i kliknete na gumb \"Izbriši moj račun\" u izdanju vašeg računa.",
+      "TITLE": "Brisanje računa"
+    },
+    "CHANGES_TO_OUR_PRIVACY_POLICY": {
+      "CONTENT": "Ako odlučimo promijeniti našu politiku privatnosti, objavit ćemo te promjene na ovoj stranici.\nOvaj dokument je pod licencom [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Izvorno prilagođeno iz pravila o privatnosti [Discourse](https://github.com/discourse/discourse).",
+      "TITLE": "Promjene u našim pravilima privatnosti"
+    },
+    "DATA_COLLECTED": {
+      "CONTENT": "Prikupljaju se sljedeće informacije:\n- Podaci o računu (korisničko ime, e-mail adresa i lozinka). Također možete unijeti dodatne informacije o profilu kao što su ime, prezime, datum rođenja, lokacija, biografija i učitati profilnu sliku.\n- [GPX](https://en.wikipedia.org/wiki/GPS_Exchange_Format) datoteke. Ove datoteke sadrže podatke koji se odnose na vaše aktivnosti (geografske koordinate, datum, udaljenost, vrijeme, maksimalne i prosječne brzine, nadmorska visina, naslov, opis, otkucaji srca…). Ako ne želite izložiti neke podatke, očistite ih prije prijenosa ili dodajte vježbe bez GPX datoteka.\n- Podaci o aktivnosti (sport, naslov, opis, datum, vrijeme, udaljenost, uspon, silazak, bilješke).\n- Pratitelji i korisnici koje pratite.\n- Komentari i lajkovi.\n- Tehničke informacije (naziv preglednika i operativni sustav).",
+      "TITLE": "Koje podatke prikupljamo?"
+    },
+    "INFORMATION_DISCLOSURE": {
+      "CONTENT": "Ne prodajemo, ne trgujemo niti na bilo koji drugi način prenosimo vaše osobne podatke vanjskim stranama.\nTo ne uključuje treće strane od povjerenja koje nam pomažu u upravljanju našom web stranicom i pružanju usluga vama, sve dok te strane pristaju čuvati ove podatke povjerljivima. \nTakođer možemo objaviti vaše podatke kada smatramo da je objavljivanje prikladno za usklađivanje sa zakonom, provođenje pravila naše stranice ili zaštita naših ili tuđih prava, imovine ili sigurnosti.\nKada ovlastite aplikaciju treće strane za korištenje vašeg računa, ovisno o opsegu dozvola koje odobrite, ona može pristupiti podacima vašeg profila ili vašim vježbama. Aplikacije nikada ne mogu pristupiti vašoj lozinci.",
+      "TITLE": "Otkrivamo li bilo kakve informacije vanjskim stranama?"
+    },
+    "INFORMATION_PROTECTION": {
+      "CONTENT": "Provodimo razne sigurnosne mjere kako bismo održali sigurnost vaših osobnih podataka kada ih unosite, šaljete ili im pristupate.",
+      "TITLE": "Kako štitimo vaše podatke?"
+    },
+    "INFORMATION_USAGE": {
+      "CONTENT": "Sve informacije koje prikupimo od vas mogu se koristiti za pružanje osnovne funkcionalnosti aplikacije **FitTrackee**:\n- GPX datoteke koriste se za izradu aktivnosti, prikaz tragova na karti (s [OpenStreetMap](https://www.openstreetmap.org) i konfiguriranim poslužiteljem karata) i grafikona, generiranje minijatura karata, izračunavanje zapisa i dobivanje podataka o vremenskim prilikama (ako je postavljen pružatelj meteoroloških informacija).\n- Ovisno o razini vidljivosti postavljenoj na aktivnostima i komentarima (javno, samo pratitelji, privatni i spomenuti korisnici), drugi korisnici ih mogu vidjeti i interaktivno sudjelovati nad njima. **Imajte na umu da operativni tim poslužitelja ili tim za moderiranje može vidjeti sadržaj s ograničenom vidljivošću.**\nMožete pratiti druge korisnike kako biste vidjeli aktivnosti na svojoj vremenskoj traci. Za interakciju potrebno se prijaviti.\n- Sve informacije o profilu nisu javno prikazane, osim korisničkog imena, uloge, datuma registracije, broja pratitelja i praćenih korisnika, suspenzije ako je postavljena i broja aktivnosti.\n- Adresa e-pošte koju navedete može se koristiti za slanje informacija i obavijesti ili za potvrdu izmjena na vašem računu.",
+      "TITLE": "Za što koristimo vaše podatke?"
+    },
+    "SITE_USAGE_BY_CHILDREN": {
+      "CONTENT": "Ako je ovaj poslužitelj u EU ili EEA, naše stranice i usluge namijenjene su ljudima koji imaju najmanje 16 godina. Ako ste mlađi od 16 godina, prema [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) (Opća uredba o zaštiti podataka) nemojte koristiti ovu stranicu.\nAko je ovaj poslužitelj u SAD-u, naše web mjesto, proizvodi i usluge namijenjeni su za ljude koji imaju najmanje 13 godina. Ako ste mlađi od 13 godina, prema [COPPA](https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Zakon o zaštiti privatnosti djece na internetu) nemojte koristiti ovu stranicu.\nZakonski zahtjevi mogu biti drugačiji ako je ovaj poslužitelj u drugoj jurisdikciji.",
+      "TITLE": "Korištenje stranice od strane djece"
+    },
+    "YOUR_CONSENT": {
+      "CONTENT": "Korištenjem ove stranice pristajete na naša pravila privatnosti.",
+      "TITLE": "Vaš pristanak"
+    }
+  },
+  "LAST_UPDATE": "Zadnje ažuriranje",
+  "TITLE": "pravila privatnosti"
+}

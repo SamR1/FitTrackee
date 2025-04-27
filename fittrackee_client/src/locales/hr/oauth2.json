@@ -1,0 +1,43 @@
+{
+  "ADD_A_NEW_APP": "Dodaj novu OAuth2 aplikaciju",
+  "APP": {
+    "CLIENT_ID": "Id",
+    "CLIENT_SECRET": "Tajna",
+    "DESCRIPTION": "Opis aplikacije",
+    "ISSUE_AT": "Izdano od",
+    "NAME": "Naziv aplikacije",
+    "REDIRECT_URL": "URL za preusmjeravanje",
+    "SCOPE": {
+      "LABEL": "Opseg",
+      "application:write_DESCRIPTION": "odobrava prava pisanja konfiguraciji aplikacije.",
+      "equipments:read_DESCRIPTION": "odobrava prava čitanja krajnjim točkama <code>opreme</code>.",
+      "equipments:write_DESCRIPTION": "odobrava prava za pisanje krajnjim točkama <code>opreme</code>.",
+      "follow:read_DESCRIPTION": "odobrava prava čitanja krajnjim točkama koje se odnose na zahtjeve za praćenje i pratitelje.",
+      "follow:write_DESCRIPTION": "odobrava prava za pisanje krajnjim točkama koje se odnose na zahtjeve za praćenje i pratitelje.",
+      "notifications:read_DESCRIPTION": "odobrava prava za čitanje krajnjim točkama <code>obavijesti</code>.",
+      "notifications:write_DESCRIPTION": "odobrava prava za pisanje krajnjim točkama <code>obavijesti</code>.",
+      "profile:read_DESCRIPTION": "odobrava prava za čitanje krajnjim točkama <code>auth</code>.",
+      "profile:write_DESCRIPTION": "odobrava prava za pisanje krajnjim točkama <code>auth</code>.",
+      "reports:read_DESCRIPTION": "odobrava prava za čitanje krajnjim točkama <code>izvješća</code>.",
+      "reports:write_DESCRIPTION": "odobrava prava za pisanje krajnjim točkama <code>izvješća</code>.",
+      "users:read_DESCRIPTION": "odobrava prava za čitanje krajnjim točkama <code>korisnika</code>.",
+      "users:write_DESCRIPTION": "odobrava prava za pisanje krajnjim točkama <code>korisnika</code>.",
+      "workouts:read_DESCRIPTION": "odobrava prava za čitanje krajnjim točkama aktivnosti i komentara.",
+      "workouts:write_DESCRIPTION": "odobrava prava za čitanje krajnjim točkama aktivnosti i komentara."
+    },
+    "URL": "URL aplikacije"
+  },
+  "APPS_LIST": "OAuth2 aplikacije",
+  "APP_CREATED_SUCCESSFULLY": "Aplikacija je uspješno kreirana. Obavezno sada kopirajte tajnu, jer se neće više moći vidjeti.",
+  "APP_DELETION_CONFIRMATION": "Jeste li sigurni da želite izbrisati ovu aplikaciju?",
+  "APP_REQUESTING_ACCESS": "Aplikacija {0} zahtijeva:",
+  "AUTHORIZE_APP": "Ovlastiti {0} da koristi vaš račun?",
+  "COPY_TO_CLIPBOARD": "kopiraj u međuspremnik",
+  "DELETE_APP": "Izbriši aplikaciju",
+  "NEW_APP": "Dodaj aplikaciju",
+  "NO_APP": "Aplikacija nije pronađena!",
+  "NO_APPS": "bez aplikacija",
+  "REVOKE_ALL_TOKENS": "Opozovi sve tokene",
+  "TOKENS_REVOCATION_CONFIRMATION": "Jeste li sigurni da želite opozvati sve tokene?",
+  "TOKENS_REVOKED": "Svi postojeći povezani tokeni su opozvani."
+}
