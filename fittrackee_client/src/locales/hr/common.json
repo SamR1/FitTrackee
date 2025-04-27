@@ -1,0 +1,49 @@
+{
+  "ABOUT": "o",
+  "ACTION": "akcija",
+  "ACTIVE": "aktivno",
+  "CONFIRMATION": "Potvrda",
+  "CONTACT": "kontakt",
+  "DAY": "dan | dana",
+  "DESCRIPTION": "Opis",
+  "DISABLED": "onemogućeno",
+  "DISPLAYED": "Prikazano",
+  "DOCUMENTATION": "dokumentacija",
+  "EDITED": "uređeno",
+  "ENABLED": "omogućeno",
+  "HERE": "ovdje",
+  "HIDDEN": "Skriveno",
+  "HIDE": "Sakrij",
+  "HOME": "Početna stranica",
+  "HOURS": "sat|sati",
+  "INACTIVE": "neaktivno",
+  "LABEL": "oznaka",
+  "LAST_UPDATED_ON": "Zadnji put ažurirano",
+  "MINUTES": "minuta|minuta",
+  "NEXT": "sljedeće",
+  "NO_DESCRIPTION": "Bez opisa",
+  "NO_NOTES": "Bez bilješki",
+  "PREVIOUS": "prethodno",
+  "REPORT_PLACEHOLDER": "navedite razlog prijave",
+  "REPORT_SUBMITTED": "Izvješće poslano.",
+  "SCROLL_DOWN": "Prema dolje",
+  "SCROLL_UP": "Prema gore",
+  "SECONDS": "sekunda|sekundi",
+  "SEE_REPORT": "Pogledajte izvješće {0}.",
+  "SELECTS": {
+    "ORDER": {
+      "ASC": "uzlazno",
+      "DESC": "silazno",
+      "LABEL": "razvrstaj"
+    },
+    "ORDER_BY": {
+      "LABEL": "poredaj po"
+    },
+    "PER_PAGE": {
+      "LABEL": "po stranici"
+    }
+  },
+  "TOTAL": "Ukupno",
+  "TOTAL_DURATION_WITH_PAUSES": "ukupno vrijeme s pauzama",
+  "TYPE": "vrsta"
+}
