@@ -15,6 +15,8 @@ from .workout_point import WorkoutPoint
 if TYPE_CHECKING:
     from datetime import datetime
 
+    from gpxpy.gpx import GPX
+
     from fittrackee.users.models import User
     from fittrackee.workouts.models import Workout
 
@@ -22,6 +24,9 @@ weather_service = WeatherService()
 
 
 class BaseWorkoutWithSegmentsCreationService:
+    # file is converted in gpx format if not in gpx format
+    gpx: "GPX"
+
     @abstractmethod
     def __init__(
         self,

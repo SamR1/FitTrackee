@@ -660,6 +660,61 @@ class TestPostWorkoutWithGpx(
         self.assert_response_scope(response, can_access)
 
 
+class TestPostWorkoutWithKml(
+    # WorkoutGpxInfoMixin, WorkoutApiTestCaseMixin, BaseTestMixin
+    WorkoutApiTestCaseMixin
+):
+    def test_it_adds_a_workout_with_gpx_file(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        kml_2_3_with_one_track: str,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/workouts",
+            data=dict(
+                file=(
+                    BytesIO(str.encode(kml_2_3_with_one_track)),
+                    "example.kml",
+                ),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type="multipart/form-data",
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert "created" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["title"] == "just a workout"
+        assert data["data"]["workouts"][0]["sport_id"] == 1
+        assert data["data"]["workouts"][0]["duration"] == "0:04:10"
+        assert data["data"]["workouts"][0]["ascent"] == 0.4
+        assert data["data"]["workouts"][0]["ave_speed"] == 4.61
+        assert data["data"]["workouts"][0]["descent"] == 23.4
+        assert data["data"]["workouts"][0]["description"] == "some description"
+        assert data["data"]["workouts"][0]["distance"] == 0.32
+        assert data["data"]["workouts"][0]["max_alt"] == 998.0
+        assert data["data"]["workouts"][0]["max_speed"] == 5.25
+        assert data["data"]["workouts"][0]["min_alt"] == 975.0
+        assert data["data"]["workouts"][0]["moving"] == "0:04:10"
+        assert data["data"]["workouts"][0]["pauses"] is None
+        assert data["data"]["workouts"][0]["with_gpx"] is True
+        assert data["data"]["workouts"][0]["map"] is not None
+        assert data["data"]["workouts"][0]["weather_start"] is None
+        assert data["data"]["workouts"][0]["weather_end"] is None
+        assert data["data"]["workouts"][0]["notes"] is None
+        assert len(data["data"]["workouts"][0]["segments"]) == 1
+
+
 class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: "Flask", sport_1_cycling: "Sport", gpx_file: str
