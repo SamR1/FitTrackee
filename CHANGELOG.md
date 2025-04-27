@@ -1,5 +1,45 @@
 # Change log
 
+## Version 0.9.8 (2025/04/27)
+
+### Bugs Fixed
+
+* [PR#779](https://github.com/SamR1/FitTrackee/pull/779) - Fix segments navigation when user is not workout owner
+
+
+### Translations
+
+* [PR#769](https://github.com/SamR1/FitTrackee/pull/769) - Translations update (Chinese (Simplified Han script))
+* [PR#770](https://github.com/SamR1/FitTrackee/pull/770) - Translations update (Galician)
+* [#773](https://github.com/SamR1/FitTrackee/issues/773) - [translations request] Croatian
+* [PR#774](https://github.com/SamR1/FitTrackee/pull/774) - Translations update (Basque)
+
+Translation status:
+- Basque: 100%
+- Bulgarian: 62%
+- Chinese (Simplified): 99%
+- Croatian: 100%
+- Czech: 46%
+- Dutch: 98%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 98%
+- Italian: 51%
+- Norwegian Bokmål: 33%
+- Polish: 97%
+- Portuguese: 61%
+- Russian: 39%
+- Spanish: 63%
+
+
+Thanks to the contributors:
+- @erral
+- @iggydev
+- @xmgz
+- Poesty Li
+
+
 ## Version 0.9.7 (2025/04/20)
 
 ### Features and enhancements
