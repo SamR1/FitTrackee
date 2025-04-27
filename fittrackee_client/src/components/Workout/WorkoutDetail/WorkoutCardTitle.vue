@@ -1,7 +1,7 @@
 <template>
   <div id="workout-card-title">
     <button
-      v-if="isWorkoutOwner"
+      v-if="isWorkoutOwner || workoutObject.segmentId !== null"
       class="workout-previous workout-arrow transparent"
       :class="{ inactive: !workoutObject.previousUrl }"
       :disabled="!workoutObject.previousUrl"
@@ -147,7 +147,7 @@
       </div>
     </div>
     <button
-      v-if="isWorkoutOwner"
+      v-if="isWorkoutOwner || workoutObject.segmentId !== null"
       class="workout-next workout-arrow transparent"
       :class="{ inactive: !workoutObject.nextUrl }"
       :disabled="!workoutObject.nextUrl"
