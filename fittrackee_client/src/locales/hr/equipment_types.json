@@ -3,10 +3,10 @@
     "LABEL": "Bicikl"
   },
   "Bike Trainer": {
-    "LABEL": "Biciklistički trener"
+    "LABEL": "Sobni bicikl"
   },
   "Kayak_Boat": {
-    "LABEL": "Kajak/Čamac"
+    "LABEL": "Kajak/čamac"
   },
   "Shoes": {
     "LABEL": "Obuća"
@@ -15,6 +15,6 @@
     "LABEL": "Skije"
   },
   "Snowshoes": {
-    "LABEL": "Krplje"
+    "LABEL": "Krpljanje"
   }
 }
