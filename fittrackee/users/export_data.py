@@ -49,6 +49,11 @@ class UserDataExporter:
             workout_data["gpx"] = (
                 workout.gpx.split("/")[-1] if workout.gpx else None
             )
+            workout_data["original_file"] = (
+                workout.original_file.split("/")[-1]
+                if workout.original_file
+                else None
+            )
             workouts_data.append(workout_data)
         return workouts_data
 
@@ -120,12 +125,17 @@ class UserDataExporter:
                         )
                 if os.path.exists(self.workouts_directory):
                     for file in os.listdir(self.workouts_directory):
-                        if os.path.isfile(
+                        extension = file.split(".")[-1]
+                        if extension in [
+                            "gpx",
+                            "kml",
+                            "kmz",
+                        ] and os.path.isfile(
                             os.path.join(self.workouts_directory, file)
-                        ) and file.endswith(".gpx"):
+                        ):
                             zip_object.write(
                                 os.path.join(self.workouts_directory, file),
-                                f"gpx/{file}",
+                                f"workout_files/{file}",
                             )
 
             file_exists = os.path.exists(zip_path)

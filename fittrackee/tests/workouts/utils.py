@@ -17,10 +17,11 @@ MAX_WORKOUT_VALUES = {
 
 def post_a_workout(
     app: Flask,
-    gpx_file: str,
+    workout_file: str,
     notes: Optional[str] = None,
     description: Optional[str] = None,
     workout_visibility: Optional[VisibilityLevel] = None,
+    extension: str = "gpx",
 ) -> Tuple[str, str]:
     client = app.test_client()
     resp_login = client.post(
@@ -40,7 +41,7 @@ def post_a_workout(
     response = client.post(
         "/api/workouts",
         data=dict(
-            file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
+            file=(BytesIO(str.encode(workout_file)), f"example.{extension}"),
             data=workout_data,
         ),
         headers=dict(
