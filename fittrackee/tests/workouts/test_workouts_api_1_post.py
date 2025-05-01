@@ -660,11 +660,8 @@ class TestPostWorkoutWithGpx(
         self.assert_response_scope(response, can_access)
 
 
-class TestPostWorkoutWithKml(
-    # WorkoutGpxInfoMixin, WorkoutApiTestCaseMixin, BaseTestMixin
-    WorkoutApiTestCaseMixin
-):
-    def test_it_adds_a_workout_with_gpx_file(
+class TestPostWorkoutWithKml(WorkoutApiTestCaseMixin):
+    def test_it_adds_a_workout_with_kml_file(
         self,
         app: "Flask",
         user_1: "User",
@@ -713,6 +710,52 @@ class TestPostWorkoutWithKml(
         assert data["data"]["workouts"][0]["weather_end"] is None
         assert data["data"]["workouts"][0]["notes"] is None
         assert len(data["data"]["workouts"][0]["segments"]) == 1
+
+
+class TestPostWorkoutWithKmz(WorkoutApiTestCaseMixin):
+    def test_it_adds_a_workout_with_kmz_file(
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
+    ) -> None:
+        file_path = os.path.join(app.root_path, "tests/files/example.kmz")
+        with open(file_path, "rb") as kmz_file:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app, user_1.email
+            )
+
+            response = client.post(
+                "/api/workouts",
+                data=dict(
+                    file=(kmz_file, "example.kmz"), data='{"sport_id": 1}'
+                ),
+                headers=dict(
+                    content_type="multipart/form-data",
+                    Authorization=f"Bearer {auth_token}",
+                ),
+            )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert "created" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["title"] == "just a workout"
+        assert data["data"]["workouts"][0]["sport_id"] == 1
+        assert data["data"]["workouts"][0]["duration"] == "0:04:10"
+        assert data["data"]["workouts"][0]["ascent"] == 0.4
+        assert data["data"]["workouts"][0]["ave_speed"] == 4.59
+        assert data["data"]["workouts"][0]["descent"] == 23.4
+        assert data["data"]["workouts"][0]["description"] == "some description"
+        assert data["data"]["workouts"][0]["distance"] == 0.299
+        assert data["data"]["workouts"][0]["max_alt"] == 998.0
+        assert data["data"]["workouts"][0]["max_speed"] == 5.41
+        assert data["data"]["workouts"][0]["min_alt"] == 975.0
+        assert data["data"]["workouts"][0]["moving"] == "0:03:55"
+        assert data["data"]["workouts"][0]["pauses"] == "0:00:15"
+        assert data["data"]["workouts"][0]["with_gpx"] is True
+        assert data["data"]["workouts"][0]["map"] is not None
+        assert data["data"]["workouts"][0]["weather_start"] is None
+        assert data["data"]["workouts"][0]["weather_end"] is None
+        assert data["data"]["workouts"][0]["notes"] is None
+        assert len(data["data"]["workouts"][0]["segments"]) == 2
 
 
 class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
