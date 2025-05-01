@@ -1629,7 +1629,6 @@ class TestPostWorkoutWithZipArchive(UserTaskMixin, WorkoutApiTestCaseMixin):
         app: "Flask",
         user_1: "User",
         sport_1_cycling: "Sport",
-        gpx_file: str,
         equipment_bike_user_1: "Equipment",
     ) -> None:
         file_path = os.path.join(app.root_path, "tests/files/gpx_test.zip")
@@ -1672,6 +1671,42 @@ class TestPostWorkoutWithZipArchive(UserTaskMixin, WorkoutApiTestCaseMixin):
         assert float(equipment_bike_user_1.total_distance) == 0.96
         assert equipment_bike_user_1.total_duration == timedelta(seconds=750)
         assert equipment_bike_user_1.total_moving == timedelta(seconds=750)
+
+    def test_it_adds_workouts_when_zip_contains_files_with_multiple_extensions(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        # 'gpx_multiple_extensions.zip' contains:
+        # - a gpx file
+        # - a kml file
+        # - a kmz file
+        file_path = os.path.join(
+            app.root_path, "tests/files/gpx_multiple_extensions.zip"
+        )
+        with open(file_path, "rb") as zip_file:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app, user_1.email
+            )
+
+            response = client.post(
+                "/api/workouts",
+                data=dict(
+                    file=(zip_file, "gpx_test.zip"), data='{"sport_id": 1}'
+                ),
+                headers=dict(
+                    content_type="multipart/form-data",
+                    Authorization=f"Bearer {auth_token}",
+                ),
+            )
+
+        data = json.loads(response.data.decode())
+
+        assert response.status_code == 201
+        assert "created" in data["status"]
+        assert len(data["data"]["workouts"]) == 3
+        assert Workout.query.count() == 3
 
 
 class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
