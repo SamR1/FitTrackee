@@ -169,6 +169,17 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
             raise WorkoutException("error", error) from e
         return absolute_workout_filepath
 
+    def _get_archive_content(self) -> Union[BytesIO, IO[bytes]]:
+        if not self.file:
+            raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
+
+        # handle Python < 3.11, see:
+        # - https://github.com/python/cpython/issues/70363
+        # - https://docs.python.org/3.11/whatsnew/3.11.html#tempfile
+        if not hasattr(self.file.stream, "seekable"):
+            return BytesIO(self.file.getvalue())
+        return self.file.stream
+
     def create_workout_from_file(
         self,
         extension: str,
@@ -181,6 +192,9 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
         """
         if workout_file is None and self.file is None:
             raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
+
+        if extension == "kmz" and workout_file is None:
+            workout_file = self._get_archive_content()
 
         workout_service = WORKOUT_FROM_FILE_SERVICES[extension](
             auth_user=self.auth_user,
@@ -387,17 +401,6 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
             )
 
         return files_to_process
-
-    def _get_archive_content(self) -> Union[BytesIO, IO[bytes]]:
-        if not self.file:
-            raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
-
-        # handle Python < 3.11, see:
-        # - https://github.com/python/cpython/issues/70363
-        # - https://docs.python.org/3.11/whatsnew/3.11.html#tempfile
-        if not hasattr(self.file.stream, "seekable"):
-            return BytesIO(self.file.getvalue())
-        return self.file.stream
 
     def add_workouts_upload_task(
         self,
