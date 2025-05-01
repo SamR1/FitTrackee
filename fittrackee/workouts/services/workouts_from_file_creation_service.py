@@ -137,7 +137,9 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
         self,
         new_workout: "Workout",
         workout_file: Optional["IO[bytes]"],
+        *,
         gpx_xml_content: Optional[str],  # for non-gpx files
+        extension: str = ".gpx",
     ) -> str:
         if not workout_file and not self.file:
             return ""
@@ -146,9 +148,12 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
             workout_date=new_workout.workout_date.strftime(
                 "%Y-%m-%d_%H-%M-%S"
             ),
-            extension=".gpx",
+            extension=extension,
         )
-        new_workout.gpx = workout_filepath
+
+        if extension == ".gpx":
+            new_workout.gpx = workout_filepath
+
         absolute_workout_filepath = get_absolute_file_path(workout_filepath)
         try:
             if gpx_xml_content:
@@ -262,8 +267,25 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
         absolute_workout_filepath = self._store_file(
             new_workout,
             workout_file,
-            None if extension == "gpx" else workout_service.gpx.to_xml(),
+            gpx_xml_content=(
+                None if extension == "gpx" else workout_service.gpx.to_xml()
+            ),
         )
+
+        if extension == "gpx":
+            new_workout.original_file = new_workout.gpx
+        # store original file if extension si not .gpx
+        elif new_workout.gpx:
+            original_extension = f".{extension}"
+            self._store_file(
+                new_workout,
+                workout_file,
+                gpx_xml_content=None,
+                extension=original_extension,
+            )
+            new_workout.original_file = new_workout.gpx.replace(
+                ".gpx", original_extension
+            )
 
         # generate and store map image
         map_filepath = self.get_file_path(

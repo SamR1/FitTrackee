@@ -344,6 +344,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
         assert float(new_workout.min_alt) == 975.0  # type: ignore
         assert new_workout.moving == timedelta(minutes=4, seconds=10)
         assert new_workout.notes is None
+        assert new_workout.original_file == new_workout.gpx
         assert new_workout.pauses == timedelta(seconds=0)
         assert new_workout.suspended_at is None
         assert new_workout.title == "just a workout"
@@ -825,6 +826,9 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
         assert float(new_workout.max_speed) == 5.25  # type: ignore
         assert float(new_workout.min_alt) == 975.0  # type: ignore
         assert new_workout.moving == timedelta(minutes=4, seconds=10)
+        assert new_workout.original_file == new_workout.gpx.replace(
+            "gpx", "kml"
+        )
         assert new_workout.notes is None
         assert new_workout.pauses == timedelta(seconds=0)
         assert new_workout.suspended_at is None
@@ -877,6 +881,9 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
         assert float(new_workout.min_alt) == 975.0  # type: ignore
         assert new_workout.moving == timedelta(minutes=3, seconds=55)
         assert new_workout.notes is None
+        assert new_workout.original_file == new_workout.gpx.replace(
+            "gpx", "kmz"
+        )
         assert new_workout.pauses == timedelta(seconds=15)
         assert new_workout.suspended_at is None
         assert new_workout.title == "just a workout"
