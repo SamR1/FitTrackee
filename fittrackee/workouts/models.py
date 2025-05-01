@@ -320,6 +320,9 @@ class Workout(BaseModel):
         server_default="PRIVATE",
         nullable=False,
     )
+    original_file: Mapped[Optional[str]] = mapped_column(
+        db.String(255), nullable=True
+    )
 
     user: Mapped["User"] = relationship(
         "User", lazy="select", single_parent=True

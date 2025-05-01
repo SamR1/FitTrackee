@@ -1,4 +1,4 @@
-"""replace 'users_data_export' table with 'user_tasks' table and update 'app_config' table
+"""replace 'users_data_export' table with 'user_tasks' table, update 'app_config' and 'workouts' tables
 
 Revision ID: b0ef6ca5ec92
 Revises: 78a90b587a9b
@@ -105,8 +105,29 @@ def upgrade():
         batch_op.alter_column("file_limit_import", nullable=False)
         batch_op.drop_column("gpx_limit_import")
 
+    with op.batch_alter_table('workouts', schema=None) as batch_op:
+        batch_op.add_column(sa.Column('original_file', sa.String(length=255), nullable=True))
+
 
 def downgrade():
+    with op.batch_alter_table('workouts', schema=None) as batch_op:
+        batch_op.drop_column('original_file')
+
+    with op.batch_alter_table("app_config", schema=None) as batch_op:
+        batch_op.add_column(
+            sa.Column(
+                "gpx_limit_import",
+                sa.INTEGER(),
+                autoincrement=False,
+                nullable=True,
+            )
+        )
+
+    op.execute("""
+               UPDATE app_config
+               SET gpx_limit_import = app_config.file_sync_limit_import
+               """)
+
     op.create_table(
         "users_data_export",
         sa.Column("id", sa.INTEGER(), autoincrement=True, nullable=False),
@@ -171,21 +192,6 @@ def downgrade():
 
     op.drop_table("user_tasks")
     op.execute("drop type task_types;")
-
-    with op.batch_alter_table("app_config", schema=None) as batch_op:
-        batch_op.add_column(
-            sa.Column(
-                "gpx_limit_import",
-                sa.INTEGER(),
-                autoincrement=False,
-                nullable=True,
-            )
-        )
-
-    op.execute("""
-        UPDATE app_config
-        SET gpx_limit_import = app_config.file_sync_limit_import
-    """)
 
     with op.batch_alter_table("app_config", schema=None) as batch_op:
         batch_op.alter_column("gpx_limit_import", nullable=False)
