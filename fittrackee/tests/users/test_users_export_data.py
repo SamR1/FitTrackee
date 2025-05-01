@@ -79,6 +79,7 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "max_speed": workout_cycling_user_1.max_speed,
                 "ave_speed": workout_cycling_user_1.ave_speed,
                 "gpx": None,
+                "original_file": None,
                 "records": [
                     record.serialize()
                     for record in workout_cycling_user_1.records
@@ -136,6 +137,7 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "max_speed": float(workout.max_speed),
                 "ave_speed": float(workout.ave_speed),
                 "gpx": workout.gpx.split("/")[-1],
+                "original_file": workout.original_file.split("/")[-1],
                 "records": [record.serialize() for record in workout.records],
                 "segments": [
                     segment.serialize() for segment in workout.segments
@@ -309,7 +311,7 @@ class TestUserDataExporterExportData(RandomMixin):
 
 
 class TestUserDataExporterGenerateArchive(RandomMixin):
-    @patch.object(secrets, "token_urlsafe")
+    @patch.object(secrets, "token_urlsafe", return_value="AOqFRRet8p4")
     @patch.object(UserDataExporter, "export_data")
     @patch("fittrackee.users.export_data.ZipFile")
     def test_it_gets_data_for_each_type(
@@ -334,7 +336,7 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
             ]
         )
 
-    @patch.object(secrets, "token_urlsafe")
+    @patch.object(secrets, "token_urlsafe", return_value="AOqFRRet8p4")
     @patch.object(UserDataExporter, "export_data")
     @patch("fittrackee.users.export_data.ZipFile")
     def test_it_calls_zipfile_with_expected_patch(
@@ -360,7 +362,7 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
 
         zipfile_mock.assert_called_once_with(expected_path, "w")
 
-    @patch.object(secrets, "token_urlsafe")
+    @patch.object(secrets, "token_urlsafe", return_value="AOqFRRet8p4")
     @patch.object(UserDataExporter, "export_data")
     @patch("fittrackee.users.export_data.ZipFile")
     def test_it_calls_zipfile_for_each_json_file(
@@ -396,7 +398,7 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
             )
         # fmt: on
 
-    @patch.object(secrets, "token_urlsafe")
+    @patch.object(secrets, "token_urlsafe", return_value="AOqFRRet8p4")
     @patch.object(UserDataExporter, "export_data")
     @patch("fittrackee.users.export_data.ZipFile")
     def test_it_calls_zipfile_for_gpx_file(
@@ -414,6 +416,48 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
         workout = Workout.query.one()
         expected_path = os.path.join(
             app.config["UPLOAD_FOLDER"],
+            workout.original_file,
+        )
+        exporter = UserDataExporter(user_1)
+
+        exporter.generate_archive()
+
+        # fmt: off
+        zipfile_mock.return_value.__enter__.\
+            return_value.write.assert_has_calls(
+                [
+                    call(
+                        expected_path,
+                        f"workout_files/{workout.original_file.split('/')[-1]}"
+                    ),
+                ]
+            )
+        # fmt: on
+
+    @patch.object(secrets, "token_urlsafe", return_value="AOqFRRet8p4")
+    @patch.object(UserDataExporter, "export_data")
+    @patch("fittrackee.users.export_data.ZipFile")
+    def test_it_calls_zipfile_for_file_different_than_gpx(
+        self,
+        zipfile_mock: Mock,
+        export_data: Mock,
+        secrets_mock: Mock,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        kml_2_3_with_two_tracks: str,
+    ) -> None:
+        _, workout_short_id = post_a_workout(
+            app, kml_2_3_with_two_tracks, extension="kml"
+        )
+        workout = Workout.query.one()
+        kml_expected_path = os.path.join(
+            app.config["UPLOAD_FOLDER"],
+            workout.original_file,
+        )
+        gpx_expected_path = os.path.join(
+            app.config["UPLOAD_FOLDER"],
             workout.gpx,
         )
         exporter = UserDataExporter(user_1)
@@ -424,8 +468,15 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
         zipfile_mock.return_value.__enter__.\
             return_value.write.assert_has_calls(
                 [
-                    call(expected_path, f"gpx/{workout.gpx.split('/')[-1]}"),
-                ]
+                    call(
+                        kml_expected_path,
+                        f"workout_files/{workout.original_file.split('/')[-1]}"
+                    ),
+                    call(
+                        gpx_expected_path,
+                        f"workout_files/{workout.gpx.split('/')[-1]}"
+                    ),
+                ], any_order=True
             )
         # fmt: on
 
