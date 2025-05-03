@@ -6,7 +6,7 @@
   "ACTION": "Radnja | Radnje",
   "ACTIVATE_USER_ACCOUNT": "Aktiviraj račun",
   "ACTIVE": "Aktivno",
-  "ADMIN": "Administrator",
+  "ADMIN": "Administracija",
   "ADMINISTRATION": "Administracija",
   "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Dodavanje/uklanjanje administratorskih prava, brisanje korisničkog računa.",
   "APPLICATION": "Aplikacija",
@@ -18,7 +18,7 @@
     "NO_CONTACT_EMAIL": "nema adrese e-pošte za kontakt",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Maks. veličina učitanih datoteka (u Mb)",
     "STATS_WORKOUTS_LIMIT_HELP": "Ako je 0, nema ograničenja broja aktivnosti.",
-    "STATS_WORKOUTS_LIMIT_LABEL": "Maks. aktivnosti za statistiku",
+    "STATS_WORKOUTS_LIMIT_LABEL": "Maks. broj aktivnosti za statistiku",
     "TITLE": "Konfiguracija aplikacije",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Maks. veličina zip arhive (u Mb)"
   },
@@ -45,8 +45,8 @@
     "NOTES_AND_ACTIONS": "Bilješke i radnje",
     "NO_REPORTS_FOUND": "Bez izvješća",
     "ORDER_BY": {
-      "CREATED_AT": "datum stvaranja",
-      "UPDATED_AT": "datum ažuriranja"
+      "CREATED_AT": "datumu stvaranja",
+      "UPDATED_AT": "datumu ažuriranja"
     },
     "REASON": "Razlog",
     "REPORT": "izvješće | izvješća",
@@ -104,9 +104,9 @@
   "EQUIPMENT_TYPES": {
     "TABLE": {
       "ACTIVE": "Aktivno",
-      "HAS_EQUIPMENTS": "oprema postoji",
+      "HAS_EQUIPMENTS": "oprema se koristi",
       "IMAGE": "Slika",
-      "LABEL": "Oznaka"
+      "LABEL": "Specifikacija"
     },
     "TITLE": "Administracija opreme"
   },
@@ -120,9 +120,9 @@
   "SPORTS": {
     "TABLE": {
       "ACTIVE": "Aktivno",
-      "HAS_WORKOUTS": "aktivnost postoji",
+      "HAS_WORKOUTS": "aktivnost se koristi",
       "IMAGE": "Slika",
-      "LABEL": "Oznaka"
+      "LABEL": "Specifikacija"
     },
     "TITLE": "Administracija sportova"
   },
@@ -133,10 +133,10 @@
     "SELECTS": {
       "ORDER_BY": {
         "CREATED_AT": "datum registracije",
-        "IS_ACTIVE": "status računa",
-        "ROLE": "uloga",
-        "USERNAME": "korisničko ime",
-        "WORKOUTS_COUNT": "broj aktivnosti"
+        "IS_ACTIVE": "statusu računa",
+        "ROLE": "ulozi",
+        "USERNAME": "korisničkom imenu",
+        "WORKOUTS_COUNT": "broju aktivnosti"
       }
     },
     "TABLE": {

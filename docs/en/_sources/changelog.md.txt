@@ -1,5 +1,41 @@
 # Change log
 
+## Version 0.9.9 (2025/05/03)
+
+### Bugs Fixed
+
+* [#780](https://github.com/SamR1/FitTrackee/issues/780) - y-Axis in monthly statistics on Dashboard not shown properly
+
+
+### Translations
+
+* [PR#781](https://github.com/SamR1/FitTrackee/pull/781) - Translations update (Croatian)
+* [PR#783](https://github.com/SamR1/FitTrackee/pull/783) - Translations update (Dutch)
+
+Translation status:
+- Basque: 100%
+- Bulgarian: 62%
+- Chinese (Simplified): 99%
+- Croatian: 100%
+- Czech: 46%
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 98%
+- Italian: 51%
+- Norwegian Bokmål: 33%
+- Polish: 97%
+- Portuguese: 61%
+- Russian: 39%
+- Spanish: 63%
+
+
+Thanks to the contributors:
+- @iggydev
+- @JeroenED
+
+
 ## Version 0.9.8 (2025/04/27)
 
 ### Bugs Fixed

@@ -1,12 +1,12 @@
 {
   "AVERAGE": "Prosječno",
   "DATES": "Datumi",
-  "STATISTICS": "Statistike",
+  "STATISTICS": "Statistika",
   "STATISTICS_CHARTS": {
-    "day": "Dnevne statistike",
-    "month": "Mjesečne statistike",
-    "week": "Tjedne statistike",
-    "year": "Godišnje statistike"
+    "day": "Dnevna statistika",
+    "month": "Mjesečna statistika",
+    "week": "Tjedna statistika",
+    "year": "Godišnja statistika"
   },
   "STATISTICS_ON_ALL_WORKOUTS": "Statistika svih aktivnosti:",
   "STATISTICS_ON_LAST_WORKOUTS": "Statistika zadnjih {count} aktivnosti:",

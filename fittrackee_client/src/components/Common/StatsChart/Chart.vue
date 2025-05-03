@@ -67,6 +67,8 @@
     layout: {
       padding: {
         top: fullStats.value ? 40 : 22,
+        left: fullStats.value ? 0 : 10,
+        right: fullStats.value ? 0 : 10,
       },
     },
     scales: {
@@ -106,7 +108,7 @@
           ...textColors.value,
         },
         afterFit: function (scale: LayoutItem) {
-          scale.width = fullStats.value ? 90 : 60
+          scale.width = fullStats.value ? 90 : 75
         },
       },
     },

@@ -77,7 +77,7 @@ export const languageLabels: Record<TLanguage, string> = {
   gl: 'Galego',
   hr: 'Hrvatski',
   it: 'Italiano (51%)',
-  nl: 'Nederlands (98%)',
+  nl: 'Nederlands',
   nb: 'Norsk bokmål (33%)',
   pl: 'Polski (97%)',
   pt: 'Português (61%)',

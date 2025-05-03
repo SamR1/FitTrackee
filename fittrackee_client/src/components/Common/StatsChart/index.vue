@@ -93,11 +93,11 @@
           ` (${chartStart} - ${chartEnd})`
         "
       />
-      <div class="workouts-average">
-        <div
-          v-if="displayedData === 'average_workouts' && selectedTimeFrame"
-          class="info-box"
-        >
+      <div
+        v-if="displayedData === 'average_workouts' && selectedTimeFrame"
+        class="workouts-average"
+      >
+        <div class="info-box">
           <i class="fa fa-info-circle" aria-hidden="true" />
           {{ $t('statistics.DATES') }}: {{ chartStart }} - {{ chartEnd }},
           {{ $t('statistics.WORKOUTS_AVERAGE') }}:
