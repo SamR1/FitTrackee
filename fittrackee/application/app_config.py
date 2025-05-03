@@ -56,7 +56,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "privacy_policy": null,
           "privacy_policy_date": null,
           "stats_workouts_limit": 10000,
-          "version": "0.9.8",
+          "version": "0.9.9",
           "weather_provider": null
         },
         "status": "success"
@@ -113,7 +113,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
           "privacy_policy": null,
           "privacy_policy_date": null,
           "stats_workouts_limit": 10000,
-          "version": "0.9.8",
+          "version": "0.9.9",
           "weather_provider": null
         },
         "status": "success"
