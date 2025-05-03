@@ -1,4 +1,7 @@
 {
+  "Canoeing": {
+    "LABEL": "Kanadyjkarstwo"
+  },
   "Cycling (Sport)": {
     "LABEL": "Kolarstwo (Sport)"
   },
@@ -13,6 +16,9 @@
   },
   "Hiking": {
     "LABEL": "Piesza wycieczka"
+  },
+  "Kayaking": {
+    "LABEL": "Kajakarstwo"
   },
   "Mountain Biking": {
     "LABEL": "Kolarstwo górskie"
