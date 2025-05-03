@@ -21,14 +21,14 @@
     "DATA_EXPORT": "Izvoz podataka",
     "DOWNLOAD_ARCHIVE": "Preuzmite arhivu",
     "GENERATING_LINK": "generiranje veze…",
-    "ONLY_ONE_EXPORT_PER_DAY": "Možete zatražiti arhivu do 24 sata",
+    "ONLY_ONE_EXPORT_PER_DAY": "Možete zatražiti arhivu jednom u 24 sata",
     "STATUS": {
       "errored": "pogreška (molimo zatražite drugi izvoz)",
       "in_progress": "u tijeku…"
     }
   },
   "FILTER_ON_USERNAME": "Filtrirajte prema korisničkom imenu",
-  "HIDE_PASSWORD": "sakriti lozinku",
+  "HIDE_PASSWORD": "sakrij lozinku",
   "INVALID_TOKEN": "Nevažeći token, zatražite ponovno postavljanje lozinke.",
   "I_WANT_TO_DELETE_MY_ACCOUNT": "Želim izbrisati svoj račun",
   "LANGUAGE": "Jezik | jezici",
@@ -73,21 +73,21 @@
   "PASSWORD_UPDATED": "Vaša lozinka je ažurirana. Kliknite {0} za prijavu.",
   "PRIVACY_POLICY_TO_VALIDATE": "{0} pravila privatnosti prije nastavka.",
   "PROFILE": {
-    "ACCOUNT_EDITION": "Izdanje računa",
-    "ASCENT_DATA": "Podaci vezani uz uspon (zapisi, ukupno)",
+    "ACCOUNT_EDITION": "Uređivanje računa",
+    "ASCENT_DATA": "Podatci vezani uz uspon (rekordi, ukupno)",
     "BACK_TO_PROFILE": "Povratak na profil",
     "BIO": "Biografija",
     "BIRTH_DATE": "Datum rođenja",
     "CREATED_REPORTS": "Izrađena izvješća",
     "DATE_FORMAT": "Format prikaza datuma",
-    "EDIT": "Uredi profil",
+    "EDIT": "Uredite profil",
     "EDIT_NOTIFICATION_PREFERENCES": "Uredite postavke obavijesti",
     "EDIT_PREFERENCES": "Uredite postavke",
     "EDIT_SPORTS_PREFERENCES": "Uredite postavke sportova",
     "ELEVATION_CHART_START": {
-      "LABEL": "Grafikon nadmorske visine počinje od",
-      "MIN_ALT": "Minimalna nadmorska visina",
-      "ZERO": "Nula"
+      "LABEL": "Započni grafikon nadmorske od",
+      "MIN_ALT": "Minimalne nadmorske visine",
+      "ZERO": "Nule"
     },
     "EQUIPMENTS": {
       "ACTION": "radnja",
@@ -96,10 +96,10 @@
       "DISABLED_BY_ADMIN": "onemogućio administrator",
       "EQUIPMENT_ASSOCIATED_WITH_WORKOUTS": "Ova oprema povezana je s aktivnostima.",
       "IS_ACTIVE": "aktivno",
-      "LABEL": "oznaka",
+      "LABEL": "specifikacija",
       "YOUR_EQUIPMENTS": "Vaša oprema"
     },
-    "EQUIPMENTS_EDITION": "Izdanje opreme",
+    "EQUIPMENTS_EDITION": "Uređivanje opreme",
     "ERRORED_EMAIL_UPDATE": "Molimo {0} da ponovno promijenite svoju adresu e-pošte ili kontaktirajte administratora",
     "FIRST_DAY_OF_WEEK": "Prvi dan u tjednu",
     "FIRST_NAME": "Ime",
@@ -124,16 +124,16 @@
       "workout_comment": "Netko komentira vašu aktivnost",
       "workout_like": "Netko lajka vašu aktivnost"
     },
-    "NOTIFICATIONS_EDITION": "Izdanje postavki obavijesti",
+    "NOTIFICATIONS_EDITION": "Uređivanje postavki obavijesti",
     "NOTIFICATION_PREFERENCES": "Postavke obavijesti",
     "NO_SANCTIONS": "Bez sankcija",
     "PICTURE": "Slika",
-    "PICTURE_EDITION": "Izdanje slike",
+    "PICTURE_EDITION": "Uređivanje profilne slike",
     "PICTURE_REMOVE": "Ukloni sliku",
     "PICTURE_UPDATE": "Ažuriraj sliku",
-    "PREFERENCES_EDITION": "Izdanje postavki",
+    "PREFERENCES_EDITION": "Uređivanje mogućnosti",
     "PRIVACY-POLICY_EDITION": "Pravila privatnosti",
-    "PROFILE_EDITION": "Izdanje profila",
+    "PROFILE_EDITION": "Uređivanje profila",
     "PROFILE_IN_USERS_DIRECTORY": {
       "DISPLAYED": "Prikazano",
       "HIDDEN": "Skriveno",
@@ -160,11 +160,11 @@
       "CONFIRM_SPORT_RESET_WITH_EQUIPMENTS": "Jeste li sigurni da želite resetirati ovaj sport? Sva zadana oprema bit će uklonjena.",
       "DEFAULT_EQUIPMENTS": "Zadana oprema",
       "DISABLED_BY_ADMIN": "onemogućio administrator",
-      "IS_ACTIVE": "aktivno",
-      "LABEL": "oznaka",
-      "STOPPED_SPEED_THRESHOLD": "prag zaustavljene brzine"
+      "IS_ACTIVE": "aktivan",
+      "LABEL": "specifikacija",
+      "STOPPED_SPEED_THRESHOLD": "prag kretanja"
     },
-    "SPORTS_EDITION": "Izdanje sportskih preferencija",
+    "SPORTS_EDITION": "Uređivanje sportova",
     "SUCCESSFUL_EMAIL_UPDATE": "Vaš račun je uspješno ažuriran. Provjerite svoju e-poštu kako biste potvrdili svoju novu adresu e-pošte.",
     "SUCCESSFUL_REGISTRATION": "Vaš račun je uspješno kreiran.",
     "SUCCESSFUL_REGISTRATION_WITH_EMAIL": "Veza za aktiviranje vašeg računa poslana je e-poštom na navedenu adresu.",
@@ -188,7 +188,7 @@
       "LABEL": "Tema",
       "VALUES": {
         "DARK": "Tamna",
-        "DEFAULT": "Postavke preglednika",
+        "DEFAULT": "Postavka preglednika",
         "LIGHT": "Svijetla"
       }
     },
@@ -201,7 +201,7 @@
     "USER_RECEIVED_SANCTIONS": "Ovaj korisnik je primio {count} sankciju.|Ovaj korisnik je primio {count} sankcija.",
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Filtrirano",
-      "HELP": "Ako se filtrira, isključuje ekstremne vrijednosti (koje mogu biti GPS pogreške) prilikom izračuna maksimalne brzine.",
+      "HELP": "Ako se filtrira, uklanja ekstremne vrijednosti (koje mogu biti GPS pogreške) prilikom izračuna maksimalne brzine.",
       "LABEL": "GPX strategija maksimalne brzine",
       "RAW_SPEED": "Originalno"
     }
@@ -211,8 +211,8 @@
   "REGISTER_DISABLED": "Nažalost, registracija je onemogućena.",
   "RELATIONSHIPS": {
     "BLOCKED": "blokirano",
-    "FOLLOWER": "pratitelj | pratitelji",
-    "FOLLOWING": "praćenje",
+    "FOLLOWER": "pratitelj | pratitelja",
+    "FOLLOWING": "pratite | pratite",
     "FOLLOWS_YOU": "prati vas",
     "NO_FOLLOWERS": "Još nema pratitelja.",
     "NO_FOLLOWING": "Još nikoga ne pratite.",
