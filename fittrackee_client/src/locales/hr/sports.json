@@ -6,10 +6,10 @@
     "LABEL": "Biciklizam (sport)"
   },
   "Cycling (Transport)": {
-    "LABEL": "Biciklizam (prijevoz)"
+    "LABEL": "Biciklizam (vožnja)"
   },
   "Cycling (Trekking)": {
-    "LABEL": "Biciklizam (trekking)"
+    "LABEL": "Biciklizam (treking)"
   },
   "Cycling (Virtual)": {
     "LABEL": "Biciklizam (virtualno)"
@@ -45,16 +45,16 @@
     "LABEL": "Trčanje"
   },
   "Skiing (Alpine)": {
-    "LABEL": "Skijanje (alpsko)"
+    "LABEL": "Skijanje"
   },
   "Skiing (Cross Country)": {
-    "LABEL": "Skijanje (trčanje)"
+    "LABEL": "Skijaško trčanje"
   },
   "Snowshoes": {
-    "LABEL": "Krplje"
+    "LABEL": "Krpljanje"
   },
   "Swimrun": {
-    "LABEL": "Trčanje u plivanju"
+    "LABEL": "Swimrun"
   },
   "Trail": {
     "LABEL": "Trail trčanje"
