@@ -82,8 +82,9 @@ body:
         - "0.9.6"
         - "0.9.7"
         - "0.9.8"
+        - "0.9.9"
         - "Git main branch"
-      default: 9
+      default: 10
     validations:
       required: true
   - type: dropdown
