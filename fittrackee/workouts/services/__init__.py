@@ -3,6 +3,7 @@ from .workout_from_file import (
     WorkoutGpxCreationService,
     WorkoutKmlCreationService,
     WorkoutKmzCreationService,
+    WorkoutTcxCreationService,
 )
 from .workout_update_service import WorkoutUpdateService
 from .workouts_from_file_creation_service import (
@@ -15,6 +16,7 @@ __all__ = [
     "WorkoutGpxCreationService",
     "WorkoutKmlCreationService",
     "WorkoutKmzCreationService",
+    "WorkoutTcxCreationService",
     "WorkoutUpdateService",
     "WorkoutsFromArchiveCreationAsyncService",
     "WorkoutsFromFileCreationService",

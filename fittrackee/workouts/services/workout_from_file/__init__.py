@@ -5,6 +5,7 @@ from .workout_gpx_creation_service import GpxInfo, WorkoutGpxCreationService
 from .workout_kml_creation_service import WorkoutKmlCreationService
 from .workout_kmz_creation_service import WorkoutKmzCreationService
 from .workout_point import WorkoutPoint
+from .workout_tcx_creation_service import WorkoutTcxCreationService
 
 __all__ = [
     "BaseWorkoutWithSegmentsCreationService",
@@ -13,4 +14,5 @@ __all__ = [
     "WorkoutKmlCreationService",
     "WorkoutKmzCreationService",
     "WorkoutPoint",
+    "WorkoutTcxCreationService",
 ]

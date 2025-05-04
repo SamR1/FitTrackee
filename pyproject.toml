@@ -119,6 +119,7 @@ quote-style = "double"
 "fittrackee/application/app_config.py" = ["E501"]
 "fittrackee/tests/test_email.py" = ["E501"]
 "fittrackee/tests/test_email_template_password_request.py" = ["E501"]
+"fittrackee/tests/fixtures/fixtures_workouts.py" = ["E501"]
 
 [tool.pytest.ini_options]
 markers = [

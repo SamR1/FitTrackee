@@ -1,11 +1,9 @@
 from datetime import datetime, timedelta, timezone
-from io import BytesIO
-from typing import IO, TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING, Dict
 from unittest.mock import MagicMock, call, patch
 
 import gpxpy
 import pytest
-from werkzeug.datastructures import FileStorage
 
 from fittrackee import db
 from fittrackee.tests.fixtures.fixtures_workouts import (
@@ -13,7 +11,10 @@ from fittrackee.tests.fixtures.fixtures_workouts import (
     track_points_part_2_coordinates,
 )
 from fittrackee.tests.mixins import RandomMixin
-from fittrackee.tests.workouts.mixins import WorkoutGpxInfoMixin
+from fittrackee.tests.workouts.mixins import (
+    WorkoutFileMixin,
+    WorkoutGpxInfoMixin,
+)
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import (
     WorkoutExceedingValueException,
@@ -37,23 +38,7 @@ if TYPE_CHECKING:
     from fittrackee.users.models import User
 
 
-class WorkoutGpxCreationServiceTestCase:
-    @staticmethod
-    def get_file_storage(
-        content: str, file_name: str = "file.gpx"
-    ) -> "FileStorage":
-        return FileStorage(
-            filename=file_name, stream=BytesIO(str.encode(content))
-        )
-
-    @staticmethod
-    def get_file_content(content: str) -> IO[bytes]:
-        return BytesIO(str.encode(content))
-
-
-class TestWorkoutGpxCreationServiceParseFile(
-    RandomMixin, WorkoutGpxCreationServiceTestCase
-):
+class TestWorkoutGpxCreationServiceParseFile(RandomMixin, WorkoutFileMixin):
     def test_it_raises_error_when_gpx_file_is_invalid(
         self, app: "Flask", gpx_file_invalid_xml: str
     ) -> None:
@@ -81,9 +66,7 @@ class TestWorkoutGpxCreationServiceParseFile(
             )
 
 
-class TestWorkoutGpxCreationServiceInstantiation(
-    WorkoutGpxCreationServiceTestCase
-):
+class TestWorkoutGpxCreationServiceInstantiation(WorkoutFileMixin):
     def test_it_instantiates_service(
         self,
         app: "Flask",
@@ -142,7 +125,7 @@ class TestWorkoutGpxCreationServiceGetWeatherData:
 
 @pytest.mark.disable_autouse_update_records_patch
 class TestWorkoutGpxCreationServiceProcessFile(
-    WorkoutGpxInfoMixin, WorkoutGpxCreationServiceTestCase
+    WorkoutGpxInfoMixin, WorkoutFileMixin
 ):
     @staticmethod
     def assert_workout(
