@@ -11,6 +11,12 @@ if TYPE_CHECKING:
 class WorkoutKmzCreationService(WorkoutKmlCreationService):
     @classmethod
     def parse_file(cls, workout_file: IO[bytes]) -> "gpxpy.gpx.GPX":
+        """
+        Only kmz files with Tracks are supported.
+        Note: for now kmz with photos are not supported.
+
+        Tested with files generated with OpenTracks.
+        """
         with zipfile.ZipFile(workout_file, "r") as kmz_ref:
             try:
                 kml_content = kmz_ref.open("doc.kml")
