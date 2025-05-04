@@ -1,9 +1,11 @@
-from io import BytesIO
-from typing import IO, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import gpxpy
 import pytest
 
+from fittrackee.tests.workouts.mixins import (
+    WorkoutFileMixin,
+)
 from fittrackee.workouts.exceptions import WorkoutFileException
 from fittrackee.workouts.services import WorkoutKmlCreationService
 
@@ -14,15 +16,7 @@ if TYPE_CHECKING:
     from fittrackee.workouts.models import Sport
 
 
-class WorkoutKmlCreationServiceTestCase:
-    @staticmethod
-    def get_file_content(content: str) -> IO[bytes]:
-        return BytesIO(str.encode(content))
-
-
-class TestWorkoutKmlCreationServiceParseFile(
-    WorkoutKmlCreationServiceTestCase
-):
+class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
     def test_it_raises_error_when_kml_file_is_invalid(
         self, app: "Flask", invalid_kml_file: str
     ) -> None:
@@ -135,9 +129,7 @@ class TestWorkoutKmlCreationServiceParseFile(
         assert gpx.description is None
 
 
-class TestWorkoutKmlCreationServiceInstantiation(
-    WorkoutKmlCreationServiceTestCase
-):
+class TestWorkoutKmlCreationServiceInstantiation(WorkoutFileMixin):
     def test_it_instantiates_service(
         self,
         app: "Flask",

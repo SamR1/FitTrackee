@@ -1,6 +1,8 @@
-from typing import Dict
+from io import BytesIO
+from typing import IO, Dict
 
 import pytest
+from werkzeug.datastructures import FileStorage
 
 from fittrackee.workouts.services.workout_from_file import GpxInfo
 
@@ -30,3 +32,17 @@ class WorkoutGpxInfoMixin:
             **updated_data,
         }
         return GpxInfo(**parsed_data)
+
+
+class WorkoutFileMixin:
+    @staticmethod
+    def get_file_storage(
+        content: str, file_name: str = "file.gpx"
+    ) -> "FileStorage":
+        return FileStorage(
+            filename=file_name, stream=BytesIO(str.encode(content))
+        )
+
+    @staticmethod
+    def get_file_content(content: str) -> IO[bytes]:
+        return BytesIO(str.encode(content))

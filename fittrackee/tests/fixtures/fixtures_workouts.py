@@ -16,7 +16,7 @@ from fittrackee.workouts.models import (
     Workout,
     WorkoutSegment,
 )
-from fittrackee.workouts.services.workout_from_file.base_workout_with_segment_service import (  # noqa
+from fittrackee.workouts.services.workout_from_file.base_workout_with_segment_service import (
     StaticMap,
 )
 
@@ -462,7 +462,7 @@ track_points_part_2 = (
 def gpx_file() -> str:
     return (
         "<?xml version='1.0' encoding='UTF-8'?>"
-        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
+        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'
         "  <metadata/>"
         "  <trk>"
         "    <name>just a workout</name>"
@@ -479,7 +479,7 @@ def gpx_file() -> str:
 def gpx_file_wo_name() -> str:
     return (
         "<?xml version='1.0' encoding='UTF-8'?>"
-        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
+        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'
         "  <metadata/>"
         "  <trk>"
         "    <trkseg>"
@@ -495,7 +495,7 @@ def gpx_file_wo_name() -> str:
 def gpx_file_with_description() -> str:
     return (
         "<?xml version='1.0' encoding='UTF-8'?>"
-        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
+        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'
         "  <metadata/>"
         "  <trk>"
         "    <name>just a workout</name>"
@@ -513,7 +513,7 @@ def gpx_file_with_description() -> str:
 def gpx_file_with_empty_description() -> str:
     return (
         "<?xml version='1.0' encoding='UTF-8'?>"
-        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
+        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'
         "  <metadata/>"
         "  <trk>"
         "    <name>just a workout</name>"
@@ -531,7 +531,7 @@ def gpx_file_with_empty_description() -> str:
 def gpx_file_with_offset() -> str:
     return (
         "<?xml version='1.0' encoding='UTF-8'?>"
-        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
+        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'
         "  <metadata/>"
         "  <trk>"
         "    <trkseg>"
@@ -645,7 +645,7 @@ def gpx_file_with_offset() -> str:
 def gpx_file_with_microseconds() -> str:
     return (
         "<?xml version='1.0' encoding='UTF-8'?>"
-        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
+        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'
         "  <metadata/>"
         "  <trk>"
         "    <trkseg>"
@@ -761,7 +761,7 @@ def gpx_file_with_microseconds() -> str:
 def gpx_file_without_elevation() -> str:
     return (
         "<?xml version='1.0' encoding='UTF-8'?>"
-        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
+        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'
         "  <metadata/>"
         "  <trk>"
         "    <name>just a workout</name>"
@@ -851,7 +851,7 @@ def gpx_file_without_elevation() -> str:
 def gpx_file_w_title_exceeding_limit() -> str:
     return (
         "<?xml version='1.0' encoding='UTF-8'?>"
-        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
+        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'
         "  <metadata/>"
         "  <trk>"
         f"    <name>{random_string(TITLE_MAX_CHARACTERS + 1)}</name>"
@@ -868,7 +868,7 @@ def gpx_file_w_title_exceeding_limit() -> str:
 def gpx_file_wo_track() -> str:
     return (
         "<?xml version='1.0' encoding='UTF-8'?>"
-        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
+        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'
         "  <metadata/>"
         "</gpx>"
     )
@@ -878,7 +878,7 @@ def gpx_file_wo_track() -> str:
 def gpx_file_invalid_xml() -> str:
     return (
         "<?xml version='1.0' encoding='UTF-8'?>"
-        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
+        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'
         "  <metadata/>"
         "  <trk>"
         "    <name>just a workout</name>"
@@ -889,7 +889,7 @@ def gpx_file_invalid_xml() -> str:
 def gpx_file_without_time() -> str:
     return (
         "<?xml version='1.0' encoding='UTF-8'?>"
-        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
+        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'
         "  <metadata/>"
         "  <trk>"
         "    <name>just a workout</name>"
@@ -937,7 +937,7 @@ def gpx_file_without_time() -> str:
 def gpx_file_with_segments() -> str:
     return (
         "<?xml version='1.0' encoding='UTF-8'?>"
-        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
+        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'
         "  <metadata/>"
         "  <trk>"
         "    <name>just a workout</name>"
@@ -953,7 +953,7 @@ def gpx_file_with_3_segments() -> str:
     """60 seconds between each segment"""
     return (
         "<?xml version='1.0' encoding='UTF-8'?>"
-        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'  # noqa
+        '<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">'
         "  <metadata/>"
         "  <trk>"
         "    <name>just a workout</name>"
@@ -1023,7 +1023,7 @@ def upload_workouts_archive_mock() -> Iterator[MagicMock]:
 def invalid_kml_file() -> str:
     return (
         '<?xml version="1.0" encoding="UTF-8"?>'
-        '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1">'  # noqa
+        '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1">'
         "  <Document>"
         "    <open>1</open>"
     )
@@ -1033,7 +1033,7 @@ def invalid_kml_file() -> str:
 def kml_file_wo_tracks() -> str:
     return (
         '<?xml version="1.0" encoding="UTF-8"?>'
-        '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1">'  # noqa
+        '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1">'
         "  <Document>"
         "    <Placemark>"
         "      <name>New York City</name>"
@@ -1108,7 +1108,7 @@ kml_track_points_part_2 = (
 def kml_2_2_with_one_track() -> str:
     return (
         '<?xml version="1.0" encoding="UTF-8"?>'
-        '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1">'  # noqa
+        '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1">'
         "  <Document>"
         "    <open>1</open>"
         "    <visibility>1</visibility>"
@@ -1140,7 +1140,7 @@ def kml_2_2_with_one_track() -> str:
         "        <displayName><![CDATA[Cadence (tr/min)]]></displayName>"
         "      </gx:SimpleArrayField>"
         '      <gx:SimpleArrayField name="heart_rate" type="float">'
-        "        <displayName><![CDATA[Fréquence cardiaque (bpm)]]></displayName>"  # noqa
+        "        <displayName><![CDATA[Fréquence cardiaque (bpm)]]></displayName>"
         "      </gx:SimpleArrayField>"
         "    </Schema>"
         "    <Placemark>"
@@ -1173,7 +1173,7 @@ def kml_2_2_with_one_track() -> str:
 def kml_2_2_with_two_tracks() -> str:
     return (
         '<?xml version="1.0" encoding="UTF-8"?>'
-        '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1">'  # noqa
+        '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1">'
         "  <Document>"
         "    <open>1</open>"
         "    <visibility>1</visibility>"
@@ -1205,7 +1205,7 @@ def kml_2_2_with_two_tracks() -> str:
         "        <displayName><![CDATA[Cadence (tr/min)]]></displayName>"
         "      </gx:SimpleArrayField>"
         '      <gx:SimpleArrayField name="heart_rate" type="float">'
-        "        <displayName><![CDATA[Fréquence cardiaque (bpm)]]></displayName>"  # noqa
+        "        <displayName><![CDATA[Fréquence cardiaque (bpm)]]></displayName>"
         "      </gx:SimpleArrayField>"
         "    </Schema>"
         "    <Placemark>"
@@ -1252,4 +1252,366 @@ def kml_2_3_wo_name_and_description(kml_2_2_with_one_track: str) -> str:
         kml_2_2_to_kml_2_3(kml_2_2_with_one_track)
         .replace("<name><![CDATA[just a workout]]></name>", "")
         .replace("<description><![CDATA[some description]]></description>", "")
+    )
+
+
+@pytest.fixture()
+def invalid_tcx_file() -> str:
+    return """<?xml version="1.0" encoding="UTF-8"?>
+<TrainingCenterDatabase
+        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+    <Activities>
+        <Activity Sport="Other">
+            <Id>2018-03-13T12:44:45Z</Id>
+    """
+
+
+@pytest.fixture()
+def tcx_file_wo_laps() -> str:
+    return """<?xml version="1.0" encoding="UTF-8"?>
+<TrainingCenterDatabase
+        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+    <Activities>
+        <Activity Sport="Other">
+            <Id>2018-03-13T12:44:45Z</Id>
+        </Activity>
+    </Activities>
+</TrainingCenterDatabase>"""
+
+
+@pytest.fixture()
+def tcx_file_wo_tracks() -> str:
+    return """<?xml version="1.0" encoding="UTF-8"?>
+<TrainingCenterDatabase
+        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+    <Activities>
+        <Activity Sport="Other">
+            <Id>2018-03-13T12:44:45Z</Id>
+            <Lap StartTime="2018-03-13T12:44:45Z">
+            </Lap>
+        </Activity>
+    </Activities>
+</TrainingCenterDatabase>"""
+
+
+tcx_track_points_part_1 = """        <Trackpoint>
+          <Time>2018-03-13T12:44:45Z</Time>
+          <Position>
+            <LatitudeDegrees>44.68095000</LatitudeDegrees>
+            <LongitudeDegrees>6.073670000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>997.00000</AltitudeMeters>
+          <DistanceMeters>0.000</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:44:50Z</Time>
+          <Position>
+            <LatitudeDegrees>44.68091000</LatitudeDegrees>
+            <LongitudeDegrees>6.073670000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>996.00000</AltitudeMeters>
+          <DistanceMeters>4.449</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:45:00Z</Time>
+          <Position>
+            <LatitudeDegrees>44.68080000</LatitudeDegrees>
+            <LongitudeDegrees>6.073640000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>996.00000</AltitudeMeters>
+          <DistanceMeters>16.908</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:45:05Z</Time>
+          <Position>
+            <LatitudeDegrees>44.68075000</LatitudeDegrees>
+            <LongitudeDegrees>6.073640000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>996.00000</AltitudeMeters>
+          <DistanceMeters>22.467</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:45:10Z</Time>
+          <Position>
+            <LatitudeDegrees>44.68071000</LatitudeDegrees>
+            <LongitudeDegrees>6.073640000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>996.00000</AltitudeMeters>
+          <DistanceMeters>26.914</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:45:30Z</Time>
+          <Position>
+            <LatitudeDegrees>44.68049000</LatitudeDegrees>
+            <LongitudeDegrees>6.073610000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>995.00000</AltitudeMeters>
+          <DistanceMeters>51.492</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:45:55Z</Time>
+          <Position>
+            <LatitudeDegrees>44.68019000</LatitudeDegrees>
+            <LongitudeDegrees>6.073560000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>993.00000</AltitudeMeters>
+          <DistanceMeters>85.083</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:46:00Z</Time>
+          <Position>
+            <LatitudeDegrees>44.68014000</LatitudeDegrees>
+            <LongitudeDegrees>6.073550000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>992.00000</AltitudeMeters>
+          <DistanceMeters>90.698</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:46:15Z</Time>
+          <Position>
+            <LatitudeDegrees>44.67995000</LatitudeDegrees>
+            <LongitudeDegrees>6.073580000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>991.00000</AltitudeMeters>
+          <DistanceMeters>111.958</DistanceMeters>
+        </Trackpoint>"""
+
+
+tcx_track_points_part_2 = """<Trackpoint>
+          <Time>2018-03-13T12:46:30Z</Time>
+          <Position>
+            <LatitudeDegrees>44.67977000</LatitudeDegrees>
+            <LongitudeDegrees>6.073640000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>989.00000</AltitudeMeters>
+          <DistanceMeters>132.527</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:46:35Z</Time>
+          <Position>
+            <LatitudeDegrees>44.67972000</LatitudeDegrees>
+            <LongitudeDegrees>6.073670000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>988.00000</AltitudeMeters>
+          <DistanceMeters>138.572</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:46:40Z</Time>
+          <Position>
+            <LatitudeDegrees>44.67966000</LatitudeDegrees>
+            <LongitudeDegrees>6.073680000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>988.00000</AltitudeMeters>
+          <DistanceMeters>145.290</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:46:45Z</Time>
+          <Position>
+            <LatitudeDegrees>44.67961000</LatitudeDegrees>
+            <LongitudeDegrees>6.073700000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>987.00000</AltitudeMeters>
+          <DistanceMeters>151.071</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:47:05Z</Time>
+          <Position>
+            <LatitudeDegrees>44.67938000</LatitudeDegrees>
+            <LongitudeDegrees>6.073770000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>985.00000</AltitudeMeters>
+          <DistanceMeters>177.238</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:47:10Z</Time>
+          <Position>
+            <LatitudeDegrees>44.67933000</LatitudeDegrees>
+            <LongitudeDegrees>6.073810000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>985.00000</AltitudeMeters>
+          <DistanceMeters>183.635</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:47:20Z</Time>
+          <Position>
+            <LatitudeDegrees>44.67922000</LatitudeDegrees>
+            <LongitudeDegrees>6.073850000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>985.00000</AltitudeMeters>
+          <DistanceMeters>196.269</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:47:30Z</Time>
+          <Position>
+            <LatitudeDegrees>44.67911000</LatitudeDegrees>
+            <LongitudeDegrees>6.073900000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>984.00000</AltitudeMeters>
+          <DistanceMeters>209.123</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:47:40Z</Time>
+          <Position>
+            <LatitudeDegrees>44.67900000</LatitudeDegrees>
+            <LongitudeDegrees>6.073990000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>983.00000</AltitudeMeters>
+          <DistanceMeters>223.274</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:47:45Z</Time>
+          <Position>
+            <LatitudeDegrees>44.67896000</LatitudeDegrees>
+            <LongitudeDegrees>6.074020000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>983.00000</AltitudeMeters>
+          <DistanceMeters>228.315</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:47:55Z</Time>
+          <Position>
+            <LatitudeDegrees>44.67884000</LatitudeDegrees>
+            <LongitudeDegrees>6.074080000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>982.00000</AltitudeMeters>
+          <DistanceMeters>242.477</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:48:15Z</Time>
+          <Position>
+            <LatitudeDegrees>44.67863000</LatitudeDegrees>
+            <LongitudeDegrees>6.074230000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>979.00000</AltitudeMeters>
+          <DistanceMeters>268.667</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:48:20Z</Time>
+          <Position>
+            <LatitudeDegrees>44.67858000</LatitudeDegrees>
+            <LongitudeDegrees>6.074250000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>979.00000</AltitudeMeters>
+          <DistanceMeters>274.448</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:48:35Z</Time>
+          <Position>
+            <LatitudeDegrees>44.67842000</LatitudeDegrees>
+            <LongitudeDegrees>6.074340000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>978.00000</AltitudeMeters>
+          <DistanceMeters>293.610</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:48:40Z</Time>
+          <Position>
+            <LatitudeDegrees>44.67837000</LatitudeDegrees>
+            <LongitudeDegrees>6.074350000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>978.00000</AltitudeMeters>
+          <DistanceMeters>299.225</DistanceMeters>
+        </Trackpoint>
+        <Trackpoint>
+          <Time>2018-03-13T12:48:55Z</Time>
+          <Position>
+            <LatitudeDegrees>44.67822000</LatitudeDegrees>
+            <LongitudeDegrees>6.074420000</LongitudeDegrees>
+          </Position>
+          <AltitudeMeters>976.00000</AltitudeMeters>
+          <DistanceMeters>316.798</DistanceMeters>
+        </Trackpoint>"""
+
+
+@pytest.fixture()
+def tcx_with_one_lap_and_one_track() -> str:
+    return (
+        """<?xml version="1.0" encoding="UTF-8"?>
+<TrainingCenterDatabase
+        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+    <Activities>
+        <Activity Sport="Other">
+            <Id>2018-03-13T12:44:45Z</Id>
+            <Lap StartTime="2018-03-13T12:44:45Z">
+                <Track>
+"""
+        + tcx_track_points_part_1
+        + tcx_track_points_part_2
+        + """
+                </Track>
+            </Lap>
+        </Activity>
+    </Activities>
+</TrainingCenterDatabase>
+"""
+    )
+
+
+@pytest.fixture()
+def tcx_with_one_lap_and_two_tracks() -> str:
+    return (
+        """<?xml version="1.0" encoding="UTF-8"?>
+<TrainingCenterDatabase
+        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+    <Activities>
+        <Activity Sport="Other">
+            <Id>2018-03-13T12:44:45Z</Id>
+            <Lap StartTime="2018-03-13T12:44:45Z">
+                <Track>
+"""
+        + tcx_track_points_part_1
+        + """
+                </Track>
+                <Track>
+"""
+        + tcx_track_points_part_2
+        + """
+                </Track>
+            </Lap>
+        </Activity>
+    </Activities>
+</TrainingCenterDatabase>
+"""
+    )
+
+
+@pytest.fixture()
+def tcx_with_with_two_laps() -> str:
+    return (
+        """<?xml version="1.0" encoding="UTF-8"?>
+<TrainingCenterDatabase
+        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+    <Activities>
+        <Activity Sport="Other">
+            <Id>2018-03-13T12:44:45Z</Id>
+            <Lap StartTime="2018-03-13T12:44:45Z">
+                <Track>
+"""
+        + tcx_track_points_part_1
+        + """
+                </Track>
+            </Lap>
+            <Lap StartTime="2018-03-13T12:46:30Z">
+                <Track>
+"""
+        + tcx_track_points_part_2
+        + """
+                </Track>
+            </Lap>
+        </Activity>
+    </Activities>
+</TrainingCenterDatabase>
+"""
     )

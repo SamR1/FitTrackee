@@ -32,6 +32,7 @@ from .workout_from_file import (
     WorkoutGpxCreationService,
     WorkoutKmlCreationService,
     WorkoutKmzCreationService,
+    WorkoutTcxCreationService,
 )
 
 if TYPE_CHECKING:
@@ -48,6 +49,7 @@ WORKOUT_FROM_FILE_SERVICES: Dict[
     "gpx": WorkoutGpxCreationService,
     "kml": WorkoutKmlCreationService,
     "kmz": WorkoutKmzCreationService,
+    "tcx": WorkoutTcxCreationService,
 }
 NO_FILE_ERROR_MESSAGE = "no workout file provided"
 
