@@ -798,6 +798,11 @@ def on_workout_delete(
                 os.remove(get_absolute_file_path(old_workout.gpx))
             except OSError:
                 appLog.error("gpx file not found when deleting workout")
+        if old_workout.original_file:
+            try:
+                os.remove(get_absolute_file_path(old_workout.original_file))
+            except OSError:
+                appLog.error("original file not found when deleting workout")
 
         Notification.query.filter(
             Notification.event_object_id == old_workout.id,

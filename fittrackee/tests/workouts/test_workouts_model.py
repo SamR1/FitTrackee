@@ -1,4 +1,6 @@
+import os
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Dict, List, Optional
 
 import pytest
@@ -6,6 +8,7 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
+from fittrackee.files import get_absolute_file_path
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import User
 from fittrackee.utils import encode_uuid
@@ -698,6 +701,48 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             db.session.commit()
 
         equipment_bike_user_1.total_workouts = 1
+
+    def test_it_deletes_workout_without_file(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        db.session.delete(workout_cycling_user_1)
+
+        assert Workout.query.count() == 0
+
+    def test_it_deletes_workout_with_files(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        files_paths = {}
+        extensions = ["gpx", "kml", "png"]
+        for extension in extensions:
+            relative_path = os.path.join(
+                "workouts", str(user_1.id), f"file.{extension}"
+            )
+            file_path = get_absolute_file_path(relative_path)
+            files_paths[extension] = file_path
+            workout_file = Path(file_path)
+            workout_file.parent.mkdir(exist_ok=True, parents=True)
+            workout_file.write_text("some text")
+            if extension == "gpx":
+                workout_cycling_user_1.gpx = relative_path
+            elif extension == "kml":
+                workout_cycling_user_1.original_file = relative_path
+            else:
+                workout_cycling_user_1.map = relative_path
+
+        db.session.delete(workout_cycling_user_1)
+
+        assert Workout.query.count() == 0
+        for extension in extensions:
+            assert os.path.exists(files_paths[extension]) is False
 
     def test_it_updates_equipments_totals(
         self,
