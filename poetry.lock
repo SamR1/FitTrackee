@@ -706,6 +706,21 @@ files = [
 testing = ["hatch", "pre-commit", "pytest", "tox"]
 
 [[package]]
+name = "fitdecode"
+version = "0.10.0"
+description = "FIT file parser and decoder"
+optional = false
+python-versions = ">=3.6"
+groups = ["main"]
+files = [
+    {file = "fitdecode-0.10.0-py3-none-any.whl", hash = "sha256:527dc2e4b0fe45dbe868a2131af0a544cb686f631f608d94e392bcce57b047cf"},
+    {file = "fitdecode-0.10.0.tar.gz", hash = "sha256:1b85d1303c87650c11377a7322757eaa1caf229776bbd5b545591dd6815123e4"},
+]
+
+[package.extras]
+docs = ["sphinx", "sphinx-rtd-theme"]
+
+[[package]]
 name = "flask"
 version = "3.1.0"
 description = "A simple framework for building complex web applications."
@@ -3213,4 +3228,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.9.2"
-content-hash = "d27edddd4f1cd04dcbdd53acfe3ac343a5023e8a803daef7ba095b7bb3e508a3"
+content-hash = "83ba3ac448ca05fec7550a49377b6e56198fbc7812544b819ddded0ea5ed08c1"
