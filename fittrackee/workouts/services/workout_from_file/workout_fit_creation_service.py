@@ -25,7 +25,8 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
         Activity File contains Laps (intervals in session) and Records.
 
         For now, only records are parsed and gpx file generated from fit file
-        contains only one track and one segment.
+        contains only one track. A new segment is created on after 'stop_all'
+        event.
 
         TODO:
         - handle multiple sports activities (see Session)
@@ -39,11 +40,20 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
 
         gpx_track = gpxpy.gpx.GPXTrack()
         gpx_segment = gpxpy.gpx.GPXTrackSegment()
-
+        has_stop = False
         try:
             for frame in fit_file:
                 if frame.frame_type != fitdecode.FIT_FRAME_DATA:
                     continue
+                # create a new segment after 'stop_all' event
+                if (
+                    frame.name == "event"
+                    and frame.get_value("event") == "timer"
+                    and frame.get_value("event_type") == "stop_all"
+                ):
+                    has_stop = True
+                    gpx_track.segments.append(gpx_segment)
+                    gpx_segment = gpxpy.gpx.GPXTrackSegment()
                 if frame.name != "record":
                     continue
                 longitude = frame.get_value("position_long")
@@ -65,7 +75,8 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                 "error", "error when parsing fit file"
             ) from e
 
-        gpx_track.segments.append(gpx_segment)
+        if not has_stop:
+            gpx_track.segments.append(gpx_segment)
         gpx = gpxpy.gpx.GPX()
         gpx.tracks.append(gpx_track)
         return gpx
