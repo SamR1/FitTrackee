@@ -29,6 +29,7 @@ from ..exceptions import (
 )
 from .base_workout_service import BaseWorkoutService
 from .workout_from_file import (
+    WorkoutFitCreationService,
     WorkoutGpxCreationService,
     WorkoutKmlCreationService,
     WorkoutKmzCreationService,
@@ -47,6 +48,7 @@ WORKOUT_FROM_FILE_SERVICES: Dict[
     str, Type["BaseWorkoutWithSegmentsCreationService"]
 ] = {
     "gpx": WorkoutGpxCreationService,
+    "fit": WorkoutFitCreationService,
     "kml": WorkoutKmlCreationService,
     "kmz": WorkoutKmzCreationService,
     "tcx": WorkoutTcxCreationService,

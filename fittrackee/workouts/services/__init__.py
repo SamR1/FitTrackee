@@ -1,5 +1,6 @@
 from .workout_creation_service import WorkoutCreationService
 from .workout_from_file import (
+    WorkoutFitCreationService,
     WorkoutGpxCreationService,
     WorkoutKmlCreationService,
     WorkoutKmzCreationService,
@@ -13,6 +14,7 @@ from .workouts_from_file_creation_service import (
 
 __all__ = [
     "WorkoutCreationService",
+    "WorkoutFitCreationService",
     "WorkoutGpxCreationService",
     "WorkoutKmlCreationService",
     "WorkoutKmzCreationService",
