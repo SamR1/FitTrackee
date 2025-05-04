@@ -29,11 +29,28 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
                 self.get_file_content(invalid_tcx_file)
             )
 
+    def test_it_raises_error_when_tcx_file_has_no_activities(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        tcx_file_wo_activities: str,
+    ) -> None:
+        with (
+            pytest.raises(
+                WorkoutFileException, match="no activities in tcx file"
+            ),
+        ):
+            WorkoutTcxCreationService.parse_file(
+                self.get_file_content(tcx_file_wo_activities)
+            )
+
     def test_it_raises_error_when_tcx_file_has_no_laps(
         self, app: "Flask", sport_1_cycling: "Sport", tcx_file_wo_laps: str
     ) -> None:
         with (
-            pytest.raises(WorkoutFileException, match="no laps in tcx file"),
+            pytest.raises(
+                WorkoutFileException, match="no laps or no tracks in tcx file"
+            ),
         ):
             WorkoutTcxCreationService.parse_file(
                 self.get_file_content(tcx_file_wo_laps)
@@ -43,13 +60,15 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         self, app: "Flask", sport_1_cycling: "Sport", tcx_file_wo_tracks: str
     ) -> None:
         with (
-            pytest.raises(WorkoutFileException, match="no tracks in tcx file"),
+            pytest.raises(
+                WorkoutFileException, match="no laps or no tracks in tcx file"
+            ),
         ):
             WorkoutTcxCreationService.parse_file(
                 self.get_file_content(tcx_file_wo_tracks)
             )
 
-    def test_it_return_gpx_with_tcx_with_one_lap_and_one_track(
+    def test_it_returns_gpx_with_tcx_with_one_lap_and_one_track(
         self,
         app: "Flask",
         sport_1_cycling: "Sport",
@@ -68,7 +87,7 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         assert moving_data.moving_time == 250.0
         assert round(moving_data.moving_distance, 1) == 318.2
 
-    def test_it_return_gpx_with_tcx_with_one_lap_and_two_trackss(
+    def test_it_returns_gpx_with_tcx_with_one_lap_and_two_trackss(
         self,
         app: "Flask",
         sport_1_cycling: "Sport",
@@ -85,7 +104,7 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         assert moving_data.moving_time == 250.0
         assert round(moving_data.moving_distance, 1) == 318.2
 
-    def test_it_return_gpx_with_tcx_with_two_laps(
+    def test_it_returns_gpx_with_tcx_with_two_laps(
         self,
         app: "Flask",
         sport_1_cycling: "Sport",
@@ -100,6 +119,22 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         moving_data = gpx.get_moving_data()
         assert moving_data.moving_time == 250.0
         assert round(moving_data.moving_distance, 1) == 318.2
+
+    def test_it_returns_gpx_with_tcx_with_two_activities(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        tcx_with_with_two_activities: str,
+    ) -> None:
+        gpx = WorkoutTcxCreationService.parse_file(
+            self.get_file_content(tcx_with_with_two_activities)
+        )
+
+        assert len(gpx.tracks) == 1
+        assert len(gpx.tracks[0].segments) == 2
+        moving_data = gpx.get_moving_data()
+        assert moving_data.moving_time == 235.0
+        assert round(moving_data.moving_distance, 1) == 297.5
 
 
 class TestWorkoutTcxCreationServiceInstantiation(WorkoutFileMixin):
