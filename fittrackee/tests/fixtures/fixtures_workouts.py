@@ -1269,6 +1269,16 @@ def invalid_tcx_file() -> str:
 
 
 @pytest.fixture()
+def tcx_file_wo_activities() -> str:
+    return """<?xml version="1.0" encoding="UTF-8"?>
+<TrainingCenterDatabase
+        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+</TrainingCenterDatabase>"""
+
+
+@pytest.fixture()
 def tcx_file_wo_laps() -> str:
     return """<?xml version="1.0" encoding="UTF-8"?>
 <TrainingCenterDatabase
@@ -1603,6 +1613,41 @@ def tcx_with_with_two_laps() -> str:
         + """
                 </Track>
             </Lap>
+            <Lap StartTime="2018-03-13T12:46:30Z">
+                <Track>
+"""
+        + tcx_track_points_part_2
+        + """
+                </Track>
+            </Lap>
+        </Activity>
+    </Activities>
+</TrainingCenterDatabase>
+"""
+    )
+
+
+@pytest.fixture()
+def tcx_with_with_two_activities() -> str:
+    return (
+        """<?xml version="1.0" encoding="UTF-8"?>
+<TrainingCenterDatabase
+        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+    <Activities>
+        <Activity Sport="Other">
+            <Id>2018-03-13T12:44:45Z</Id>
+            <Lap StartTime="2018-03-13T12:44:45Z">
+                <Track>
+"""
+        + tcx_track_points_part_1
+        + """
+                </Track>
+            </Lap>
+        </Activity>
+        <Activity Sport="Biking">
+            <Id>2018-03-13T12:46:30Z</Id>
             <Lap StartTime="2018-03-13T12:46:30Z">
                 <Track>
 """
