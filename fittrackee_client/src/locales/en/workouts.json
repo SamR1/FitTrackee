@@ -10,6 +10,7 @@
   "AVE_SPEED": "ave. speed",
   "BACK_TO_COMMENT": "back to comment",
   "BACK_TO_WORKOUT": "back to workout",
+  "CADENCE": "cadence",
   "COMMENTS": {
     "ADD": "add a comment",
     "COMMENT": "comment | comments",
@@ -38,6 +39,7 @@
   "EXIT_FULLSCREEN": "Exit Fullscreen",
   "FROM": "from",
   "GPX_FILE": ".gpx file",
+  "HEART_RATE": "heart rate",
   "HIDE_FILTERS": "hide filters",
   "HIDE_WORKOUTS": "hide workouts",
   "INVALID_ASCENT_OR_DESCENT": "Both elevation values must be provided and be greater than or equal to 0.",
@@ -105,6 +107,20 @@
   "TOTAL_DESCENT": "total descent",
   "TOTAL_DISTANCE": "total distance",
   "TOTAL_DURATION": "total duration",
+  "UNITS": {
+    "bpm": {
+      "LABEL": "beats per minute",
+      "UNIT": "bpm"
+    },
+    "spm": {
+      "LABEL": "steps per minute",
+      "UNIT": "spm"
+    },
+    "rpm": {
+      "LABEL": "revolutions per minute",
+      "UNIT": "rpm"
+    }
+  },
   "UPLOAD_FIRST_WORKOUT": "Upload one!",
   "VIEW_FULLSCREEN": "View Fullscreen",
   "WEATHER": {

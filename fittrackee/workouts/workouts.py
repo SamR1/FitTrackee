@@ -740,7 +740,7 @@ def get_workout_data(
         chart_data_content: Optional[List] = []
         if data_type == "chart_data":
             chart_data_content = get_chart_data(
-                absolute_gpx_filepath, segment_id
+                absolute_gpx_filepath, workout.sport.label, segment_id
             )
         else:  # data_type == 'gpx'
             with open(absolute_gpx_filepath, encoding="utf-8") as f:

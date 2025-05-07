@@ -13,7 +13,7 @@
           <WorkoutDetail
             v-else
             :workoutData="workoutData"
-            :sports="sports"
+            :sport="sport"
             :authUser="authUser"
             :markerCoordinates="markerCoordinates"
             :displaySegment="displaySegment"
@@ -27,6 +27,7 @@
             :workoutData="workoutData"
             :authUser="authUser"
             :displaySegment="displaySegment"
+            :sport="sport"
             @getCoordinates="updateCoordinates"
           />
           <WorkoutContent
@@ -83,6 +84,7 @@
   import useSports from '@/composables/useSports'
   import { SPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { TCoordinates } from '@/types/map'
+  import type { ISport } from '@/types/sports.ts'
   import type { IWorkoutData, IWorkoutPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
 
@@ -96,7 +98,7 @@
   const store = useStore()
 
   const { authUser } = useAuthUser()
-  const { sports } = useSports()
+  const { getWorkoutSport, sports } = useSports()
 
   const markerCoordinates: Ref<TCoordinates> = ref({
     latitude: null,
@@ -108,6 +110,9 @@
   )
   const isWorkoutOwner: ComputedRef<boolean> = computed(
     () => authUser.value.username === workoutData.value.workout.user.username
+  )
+  const sport: ComputedRef<ISport | null> = computed(() =>
+    getWorkoutSport(workoutData.value.workout)
   )
 
   function updateCoordinates(coordinates: TCoordinates) {

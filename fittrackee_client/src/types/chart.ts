@@ -1,4 +1,5 @@
 export interface IChartDataset {
+  id?: string
   label: string
   backgroundColor: string[]
   borderColor?: string[]

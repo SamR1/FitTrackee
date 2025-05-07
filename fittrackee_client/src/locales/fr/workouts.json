@@ -10,6 +10,7 @@
   "AVE_DURATION": "durée moy.",
   "BACK_TO_COMMENT": "revenir au commentaire",
   "BACK_TO_WORKOUT": "revenir à la séance",
+  "CADENCE": "cadence",
   "COMMENTS": {
     "ADD": "ajouter un commentaire",
     "COMMENT": "commentaire | commentaires",
@@ -38,6 +39,7 @@
   "EXIT_FULLSCREEN": "Sortir du plein-écran",
   "FROM": "à partir de",
   "GPX_FILE": "fichier .gpx",
+  "HEART_RATE": "fréquence cardiaque",
   "HIDE_FILTERS": "masquer les filtres",
   "HIDE_WORKOUTS": "masquer les séances",
   "INVALID_ASCENT_OR_DESCENT": "Les 2 valeurs pour l'élévation doivent être renseignées et être supérieures ou égales à 0.",
@@ -105,6 +107,20 @@
   "TOTAL_DESCENT": "dénivelé négatif total",
   "TOTAL_DISTANCE": "distance totale",
   "TOTAL_DURATION": "durée totale",
+  "UNITS": {
+    "bpm": {
+      "LABEL": "battements par minute",
+      "UNIT": "bpm"
+    },
+    "spm": {
+      "LABEL": "pas par minute",
+      "UNIT": "ppm"
+    },
+    "rpm": {
+      "LABEL": "révolutions par minute",
+      "UNIT": "rpm"
+    }
+  },
   "UPLOAD_FIRST_WORKOUT": "Ajoutez votre première séance !",
   "VIEW_FULLSCREEN": "Afficher en plein-écran",
   "WEATHER": {
