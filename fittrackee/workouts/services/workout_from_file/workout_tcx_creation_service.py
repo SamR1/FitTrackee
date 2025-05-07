@@ -1,4 +1,4 @@
-from typing import IO
+from typing import IO, Dict, Optional
 
 import gpxpy.gpx
 import xmltodict
@@ -9,6 +9,19 @@ from .workout_gpx_creation_service import WorkoutGpxCreationService
 
 
 class WorkoutTcxCreationService(WorkoutGpxCreationService):
+    @staticmethod
+    def _get_elevation(point: Dict) -> Optional[float]:
+        altitude_meters = point.get("AltitudeMeters")
+        if altitude_meters is None:
+            return None
+        elevation = float(altitude_meters)
+        # workaround
+        # some devices/softwares return invalid elevation values
+        # see https://github.com/piggz/harbour-amazfish/issues/494
+        if -9999.99 < elevation < 9999.99:
+            return elevation
+        return None
+
     @classmethod
     def parse_file(cls, workout_file: IO[bytes]) -> "gpxpy.gpx.GPX":
         """
@@ -71,7 +84,7 @@ class WorkoutTcxCreationService(WorkoutGpxCreationService):
                         coordinates = point.get("Position", {})
                         if not coordinates:
                             continue
-                        altitude = point.get("AltitudeMeters")
+
                         gpx_segment.points.append(
                             gpxpy.gpx.GPXTrackPoint(
                                 longitude=float(
@@ -80,9 +93,7 @@ class WorkoutTcxCreationService(WorkoutGpxCreationService):
                                 latitude=float(
                                     coordinates.get("LatitudeDegrees")
                                 ),
-                                elevation=float(altitude)
-                                if altitude
-                                else None,
+                                elevation=cls._get_elevation(point),
                                 time=parse_time(point.get("Time")),
                             )
                         )

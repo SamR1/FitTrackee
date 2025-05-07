@@ -1596,7 +1596,7 @@ def tcx_with_one_lap_and_two_tracks() -> str:
 
 
 @pytest.fixture()
-def tcx_with_with_two_laps() -> str:
+def tcx_with_two_laps() -> str:
     return (
         """<?xml version="1.0" encoding="UTF-8"?>
 <TrainingCenterDatabase
@@ -1628,7 +1628,7 @@ def tcx_with_with_two_laps() -> str:
 
 
 @pytest.fixture()
-def tcx_with_with_two_activities() -> str:
+def tcx_with_two_activities() -> str:
     return (
         """<?xml version="1.0" encoding="UTF-8"?>
 <TrainingCenterDatabase
@@ -1660,3 +1660,104 @@ def tcx_with_with_two_activities() -> str:
 </TrainingCenterDatabase>
 """
     )
+
+
+@pytest.fixture()
+def tcx_with_invalid_elevation() -> str:
+    return """<?xml version="1.0" encoding="UTF-8"?>
+<TrainingCenterDatabase
+        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+    <Activities>
+        <Activity Sport="Other">
+            <Id>2018-03-13T12:44:45Z</Id>
+            <Lap StartTime="2018-03-13T12:44:45Z">
+                <Track>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:44:45Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68095000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073670000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>10000.00</AltitudeMeters>
+                      <DistanceMeters>0.000</DistanceMeters>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:44:50Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68091000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073670000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>10000.00</AltitudeMeters>
+                      <DistanceMeters>4.449</DistanceMeters>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:45:00Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68080000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073640000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>11000.00</AltitudeMeters>
+                      <DistanceMeters>16.908</DistanceMeters>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:45:05Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68075000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073640000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>12000.00</AltitudeMeters>
+                      <DistanceMeters>22.467</DistanceMeters>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:45:10Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68071000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073640000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>13000.00</AltitudeMeters>
+                      <DistanceMeters>26.914</DistanceMeters>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:45:30Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68049000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073610000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>-10000.00</AltitudeMeters>
+                      <DistanceMeters>51.492</DistanceMeters>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:45:55Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68019000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073560000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>-12000.00</AltitudeMeters>
+                      <DistanceMeters>85.083</DistanceMeters>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:46:00Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68014000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073550000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>-1200000</AltitudeMeters>
+                      <DistanceMeters>90.698</DistanceMeters>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:46:15Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.67995000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073580000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>1200000</AltitudeMeters>
+                      <DistanceMeters>111.958</DistanceMeters>
+                    </Trackpoint>
+                </Track>
+            </Lap>
+        </Activity>
+    </Activities>
+</TrainingCenterDatabase>
+"""
