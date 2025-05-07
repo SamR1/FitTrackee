@@ -1024,6 +1024,52 @@ def gpx_file_with_3_segments() -> str:
 
 
 @pytest.fixture()
+def gpx_file_with_zero_distance_segment() -> str:
+    return """<?xml version='1.0' encoding='UTF-8'?>
+<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata/>
+  <trk>
+    <name>just a workout</name>
+    <trkseg>
+      <trkpt lat="44.68095" lon="6.07367">
+        <ele>998</ele>
+        <time>2018-03-13T12:44:50Z</time>
+      </trkpt>
+      <trkpt lat="44.68091" lon="6.07367">
+        <ele>998</ele>
+        <time>2018-03-13T12:44:55Z</time>
+      </trkpt>
+      <trkpt lat="44.6808" lon="6.07364">
+        <ele>994</ele>
+        <time>2018-03-13T12:45:00Z</time>
+      </trkpt>
+    </trkseg>
+    <trkseg>
+      <trkpt lat="44.67972" lon="6.07367">
+        <ele>987</ele>
+        <time>2018-03-13T12:46:00Z</time>
+      </trkpt>
+    </trkseg>
+    <trkseg>
+      <trkpt lat="44.67858" lon="6.07425">
+        <ele>980</ele>
+        <time>2018-03-13T12:47:10Z</time>
+      </trkpt>
+      <trkpt lat="44.67842" lon="6.07434">
+        <ele>979</ele>
+        <time>2018-03-13T12:47:15Z</time>
+      </trkpt>
+      <trkpt lat="44.67837" lon="6.07435">
+        <ele>979</ele>
+        <time>2018-03-13T12:47:20Z</time>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
+"""
+
+
+@pytest.fixture()
 def gpx_file_storage(gpx_file: str) -> FileStorage:
     return FileStorage(
         filename=f"{uuid4().hex}.gpx", stream=BytesIO(str.encode(gpx_file))

@@ -897,16 +897,26 @@ class WorkoutSegment(BaseModel):
         return {
             "workout_id": encode_uuid(self.workout_uuid),
             "segment_id": self.segment_id,
-            "duration": str(self.duration) if self.duration else None,
+            "duration": None if self.duration is None else str(self.duration),
             "pauses": str(self.pauses) if self.pauses else None,
-            "moving": str(self.moving) if self.moving else None,
-            "distance": float(self.distance) if self.distance else None,
-            "min_alt": float(self.min_alt) if self.min_alt else None,
-            "max_alt": float(self.max_alt) if self.max_alt else None,
-            "descent": float(self.descent) if self.descent else None,
-            "ascent": float(self.ascent) if self.ascent else None,
-            "max_speed": float(self.max_speed) if self.max_speed else None,
-            "ave_speed": float(self.ave_speed) if self.ave_speed else None,
+            "moving": None if self.moving is None else str(self.moving),
+            "distance": None
+            if self.distance is None
+            else float(self.distance),
+            "min_alt": (
+                float(self.min_alt) if self.min_alt is not None else None
+            ),
+            "max_alt": (
+                float(self.max_alt) if self.max_alt is not None else None
+            ),
+            "descent": None if self.descent is None else float(self.descent),
+            "ascent": None if self.ascent is None else float(self.ascent),
+            "max_speed": None
+            if self.max_speed is None
+            else float(self.max_speed),
+            "ave_speed": None
+            if self.ave_speed is None
+            else float(self.ave_speed),
         }
 
 

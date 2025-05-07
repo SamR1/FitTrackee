@@ -134,7 +134,7 @@ def assert_workout_data_with_gpx_segments(data: Dict, user: User) -> None:
     assert segment["workout_id"] == data["data"]["workouts"][0]["id"]
     assert segment["segment_id"] == 0
     assert segment["duration"] == "0:01:30"
-    assert segment["ascent"] is None
+    assert segment["ascent"] == 0
     assert segment["ave_speed"] == 4.53
     assert segment["descent"] == 11.0
     assert segment["distance"] == 0.113

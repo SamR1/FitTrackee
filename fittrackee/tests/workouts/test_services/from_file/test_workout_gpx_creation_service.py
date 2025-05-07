@@ -527,6 +527,103 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert workout_segments[1].moving == timedelta(minutes=2, seconds=25)
         assert workout_segments[1].pauses == timedelta(seconds=0)
 
+    def test_it_creates_workout_and_segments_when_one_segment_has_no_distance(
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_zero_distance_segment: str,
+    ) -> None:
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_with_zero_distance_segment
+        )
+
+        service.process_workout()
+        db.session.commit()
+
+        # no description in gpx file, only name is present
+        assert service.workout_description is None
+        assert service.workout_name == "just a workout"
+        # workout
+        workout = Workout.query.one()
+        assert workout.user_id == user_1.id
+        assert workout.sport_id == sport_1_cycling.id
+        assert workout.workout_date == datetime(
+            2018, 3, 13, 12, 44, 50, tzinfo=timezone.utc
+        )
+        assert float(workout.ascent) == 0.0
+        assert float(workout.ave_speed) == 7.63
+        assert workout.bounds == [44.67837, 6.07364, 44.68095, 6.07435]
+        assert float(workout.descent) == 5.0
+        assert float(workout.distance) == 0.042
+        assert workout.duration == timedelta(minutes=2, seconds=30)
+        assert float(workout.max_alt) == 998.0
+        assert float(workout.max_speed) == 13.83
+        assert float(workout.min_alt) == 979.0
+        assert workout.moving == timedelta(seconds=20)
+        assert workout.pauses == timedelta(minutes=2, seconds=10)
+        # workout segments
+        workout_segments = WorkoutSegment.query.all()
+        assert len(workout_segments) == 3
+        # first workout segment
+        assert workout_segments[0].workout_id == workout.id
+        assert workout_segments[0].workout_uuid == workout.uuid
+        assert workout_segments[0].segment_id == 0
+        assert float(workout_segments[0].ascent) == 0.0
+        assert float(workout_segments[0].ave_speed) == 6.32
+        assert float(workout_segments[0].descent) == 4.0
+        assert float(workout_segments[0].distance) == 0.018
+        assert workout_segments[0].duration == timedelta(seconds=10)
+        assert float(workout_segments[0].max_alt) == 998.0
+        assert float(workout_segments[0].max_speed) == 9.43
+        assert float(workout_segments[0].min_alt) == 994.0
+        assert workout_segments[0].moving == timedelta(seconds=10)
+        assert workout_segments[0].pauses == timedelta(seconds=0)
+        # second workout segment (no distance)
+        assert workout_segments[1].workout_id == workout.id
+        assert workout_segments[1].workout_uuid == workout.uuid
+        assert workout_segments[1].segment_id == 1
+        assert float(workout_segments[1].ascent) == 0
+        assert float(workout_segments[1].ave_speed) == 0
+        assert float(workout_segments[1].descent) == 0
+        assert float(workout_segments[1].distance) == 0
+        assert workout_segments[1].duration == timedelta()
+        assert float(workout_segments[1].max_alt) == 987.0
+        assert float(workout_segments[1].max_speed) == 0
+        assert float(workout_segments[1].min_alt) == 987.0
+        assert workout_segments[1].moving == timedelta()
+        assert workout_segments[1].pauses == timedelta()
+
+        serialized_segment = workout_segments[1].serialize()
+        assert serialized_segment == {
+            "ascent": 0.0,
+            "ave_speed": 0.0,
+            "descent": 0.0,
+            "distance": 0.0,
+            "duration": "0:00:00",
+            "max_alt": 987.0,
+            "max_speed": 0.0,
+            "min_alt": 987.0,
+            "moving": "0:00:00",
+            "pauses": None,
+            "segment_id": 1,
+            "workout_id": workout.short_id,
+        }
+        # third workout segment
+        assert workout_segments[2].workout_id == workout.id
+        assert workout_segments[2].workout_uuid == workout.uuid
+        assert workout_segments[2].segment_id == 2
+        assert float(workout_segments[2].ascent) == 0.0
+        assert float(workout_segments[2].ave_speed) == 8.94
+        assert float(workout_segments[2].descent) == 1.0
+        assert float(workout_segments[2].distance) == 0.025
+        assert workout_segments[2].duration == timedelta(seconds=10)
+        assert float(workout_segments[2].max_alt) == 980.0
+        assert float(workout_segments[2].max_speed) == 13.83
+        assert float(workout_segments[2].min_alt) == 979.0
+        assert workout_segments[2].moving == timedelta(seconds=10)
+        assert workout_segments[2].pauses == timedelta(seconds=0)
+
     @pytest.mark.parametrize("input_get_weather", [{}, {"get_weather": True}])
     def test_it_calls_weather_service_for_start_and_endpoint(
         self,
