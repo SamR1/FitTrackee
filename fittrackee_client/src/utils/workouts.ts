@@ -27,14 +27,16 @@ export const getDatasets = (
 ): IWorkoutChartData => {
   const datasets: TWorkoutDatasets = {
     speed: {
+      id: 'speed',
       label: t('workouts.SPEED'),
       backgroundColor: ['transparent'],
       borderColor: [useDarkMode ? '#5f5c97' : '#8884d8'],
       borderWidth: 2,
       data: [],
-      yAxisID: 'ySpeed',
+      yAxisID: 'yMultiple',
     },
     elevation: {
+      id: 'elevation',
       label: t('workouts.ELEVATION'),
       backgroundColor: [useDarkMode ? '#303030' : '#e5e5e5'],
       borderColor: [useDarkMode ? '#222222' : '#cccccc'],
@@ -43,12 +45,30 @@ export const getDatasets = (
       data: [],
       yAxisID: 'yElevation',
     },
+    hr: {
+      id: 'hr',
+      label: t('workouts.HEART_RATE'),
+      backgroundColor: ['transparent'],
+      borderColor: [useDarkMode ? '#b41e4a' : '#ec1f5e'],
+      borderWidth: 1,
+      data: [],
+      yAxisID: 'yMultiple',
+    },
+    cadence: {
+      id: 'cadence',
+      label: t('workouts.CADENCE'),
+      backgroundColor: ['transparent'],
+      borderColor: [useDarkMode ? '#989898' : '#494949'],
+      borderWidth: 1,
+      data: [],
+      yAxisID: 'yMultiple',
+    },
   }
   const distance_labels: unknown[] = []
   const duration_labels: unknown[] = []
   const coordinates: TCoordinates[] = []
 
-  chartData.map((data) => {
+  chartData.forEach((data) => {
     distance_labels.push(
       convertStatsDistance('km', data.distance, useImperialUnits)
     )
@@ -60,6 +80,12 @@ export const getDatasets = (
       datasets.elevation.data.push(
         convertStatsDistance('m', data.elevation, useImperialUnits)
       )
+    }
+    if (data.hr !== undefined) {
+      datasets.hr.data.push(data.hr)
+    }
+    if (data.cadence !== undefined) {
+      datasets.cadence.data.push(data.cadence)
     }
     coordinates.push({ latitude: data.latitude, longitude: data.longitude })
   })
@@ -76,7 +102,7 @@ export const getDonutDatasets = (
   }
 
   const datasets: Record<number, Record<string, number>> = {}
-  workouts.map((workout) => {
+  workouts.forEach((workout) => {
     if (!datasets[workout.sport_id]) {
       datasets[workout.sport_id] = {
         count: 0,

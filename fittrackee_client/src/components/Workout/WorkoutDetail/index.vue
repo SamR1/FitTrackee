@@ -89,7 +89,6 @@
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
   import WorkoutVisibility from '@/components/Workout/WorkoutDetail/WorkoutVisibility.vue'
-  import useSports from '@/composables/useSports'
   import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { IDisplayOptions } from '@/types/application'
   import type { TCoordinates } from '@/types/map'
@@ -107,7 +106,7 @@
   interface Props {
     authUser?: IAuthUserProfile
     displaySegment: boolean
-    sports: ISport[]
+    sport: ISport | null
     workoutData: IWorkoutData
     markerCoordinates?: TCoordinates
     isWorkoutOwner: boolean
@@ -118,8 +117,6 @@
 
   const route = useRoute()
   const store = useStore()
-
-  const { getWorkoutSport } = useSports()
 
   const { isWorkoutOwner, markerCoordinates, workoutData } = toRefs(props)
   const workout: ComputedRef<IWorkout> = computed(
@@ -134,9 +131,6 @@
       : null
   )
   const displayModal: Ref<boolean> = ref(false)
-  const sport: ComputedRef<ISport | null> = computed(() =>
-    getWorkoutSport(workout.value)
-  )
   const displayOptions: ComputedRef<IDisplayOptions> = computed(
     () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
   )
