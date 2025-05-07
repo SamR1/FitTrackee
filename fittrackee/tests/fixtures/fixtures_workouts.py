@@ -462,7 +462,12 @@ track_points_part_2 = """
 def gpx_file() -> str:
     return (
         """<?xml version='1.0' encoding='UTF-8'?>
-<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
   <metadata/>
   <trk>
     <name>just a workout</name>
@@ -482,7 +487,12 @@ def gpx_file() -> str:
 def gpx_file_wo_name() -> str:
     return (
         """<?xml version='1.0' encoding='UTF-8'?>
-<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
   <metadata/>
     <trk>
       <trkseg>
@@ -501,7 +511,12 @@ def gpx_file_wo_name() -> str:
 def gpx_file_with_description() -> str:
     return (
         """<?xml version='1.0' encoding='UTF-8'?>
-<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
   <metadata/>
   <trk>
     <name>just a workout</name>
@@ -522,7 +537,12 @@ def gpx_file_with_description() -> str:
 def gpx_file_with_empty_description() -> str:
     return (
         """<?xml version='1.0' encoding='UTF-8'?>
-<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
   <metadata/>
   <trk>
     <name>just a workout</name>
@@ -542,7 +562,12 @@ def gpx_file_with_empty_description() -> str:
 @pytest.fixture()
 def gpx_file_with_offset() -> str:
     return """<?xml version='1.0' encoding='UTF-8'?>
-<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
   <metadata/>
   <trk>
     <trkseg>
@@ -655,7 +680,12 @@ def gpx_file_with_offset() -> str:
 @pytest.fixture()
 def gpx_file_with_microseconds() -> str:
     return """<?xml version='1.0' encoding='UTF-8'?>
-<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
   <metadata/>
   <trk>
     <trkseg>
@@ -770,7 +800,12 @@ def gpx_file_with_microseconds() -> str:
 @pytest.fixture()
 def gpx_file_without_elevation() -> str:
     return """<?xml version='1.0' encoding='UTF-8'?>
-<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
   <metadata/>
   <trk>
     <name>just a workout</name>
@@ -860,7 +895,12 @@ def gpx_file_without_elevation() -> str:
 def gpx_file_w_title_exceeding_limit() -> str:
     return (
         """<?xml version='1.0' encoding='UTF-8'?>
-<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
   <metadata/>
   <trk>
     <name>"""
@@ -890,7 +930,12 @@ def gpx_file_wo_track() -> str:
 @pytest.fixture()
 def gpx_file_invalid_xml() -> str:
     return """<?xml version='1.0' encoding='UTF-8'?>
-<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
   <metadata/>
   <trk>
     <name>just a workout</name>
@@ -900,7 +945,12 @@ def gpx_file_invalid_xml() -> str:
 @pytest.fixture()
 def gpx_file_without_time() -> str:
     return """<?xml version='1.0' encoding='UTF-8'?>
-<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
   <metadata/>
   <trk>
     <name>just a workout</name>
@@ -948,7 +998,12 @@ def gpx_file_without_time() -> str:
 def gpx_file_with_segments() -> str:
     return (
         """<?xml version='1.0' encoding='UTF-8'?>
-<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
   <metadata/>
   <trk>
     <name>just a workout</name>
@@ -972,7 +1027,12 @@ def gpx_file_with_segments() -> str:
 def gpx_file_with_3_segments() -> str:
     """60 seconds between each segment"""
     return """<?xml version='1.0' encoding='UTF-8'?>
-<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
   <metadata/>
   <trk>
     <name>just a workout</name>
@@ -1026,7 +1086,12 @@ def gpx_file_with_3_segments() -> str:
 @pytest.fixture()
 def gpx_file_with_zero_distance_segment() -> str:
     return """<?xml version='1.0' encoding='UTF-8'?>
-<gpx xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3" xmlns="http://www.topografix.com/GPX/1/1">
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
   <metadata/>
   <trk>
     <name>just a workout</name>
@@ -1087,7 +1152,12 @@ def upload_workouts_archive_mock() -> Iterator[MagicMock]:
 @pytest.fixture()
 def invalid_kml_file() -> str:
     return """<?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1">
+<kml
+  xmlns="http://www.opengis.net/kml/2.2"
+  xmlns:gx="http://www.google.com/kml/ext/2.2"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1"
+>
   <Document>
     <open>1</open>
 """
@@ -1096,7 +1166,12 @@ def invalid_kml_file() -> str:
 @pytest.fixture()
 def kml_file_wo_tracks() -> str:
     return """<?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1">
+<kml
+  xmlns="http://www.opengis.net/kml/2.2"
+  xmlns:gx="http://www.google.com/kml/ext/2.2"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1"
+>
   <Document>
     <Placemark>
       <name>New York City</name>
@@ -1171,7 +1246,12 @@ kml_track_points_part_2 = """
 def kml_2_2_with_one_track() -> str:
     return (
         """<?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1">
+<kml
+  xmlns="http://www.opengis.net/kml/2.2"
+  xmlns:gx="http://www.google.com/kml/ext/2.2"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1"
+>
   <Document>
     <open>1</open>
     <visibility>1</visibility>
@@ -1239,7 +1319,12 @@ def kml_2_2_with_one_track() -> str:
 def kml_2_2_with_two_tracks() -> str:
     return (
         """<?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1">
+<kml
+  xmlns="http://www.opengis.net/kml/2.2"
+  xmlns:gx="http://www.google.com/kml/ext/2.2"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1"
+>
   <Document>
     <open>1</open>
     <visibility>1</visibility>
@@ -1334,9 +1419,10 @@ def kml_2_3_wo_name_and_description(kml_2_2_with_one_track: str) -> str:
 def invalid_tcx_file() -> str:
     return """<?xml version="1.0" encoding="UTF-8"?>
 <TrainingCenterDatabase
-        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+    xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd"
+>
     <Activities>
         <Activity Sport="Other">
             <Id>2018-03-13T12:44:45Z</Id>
@@ -1347,9 +1433,10 @@ def invalid_tcx_file() -> str:
 def tcx_file_wo_activities() -> str:
     return """<?xml version="1.0" encoding="UTF-8"?>
 <TrainingCenterDatabase
-        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+    xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd"
+>
 </TrainingCenterDatabase>"""
 
 
@@ -1357,9 +1444,10 @@ def tcx_file_wo_activities() -> str:
 def tcx_file_wo_laps() -> str:
     return """<?xml version="1.0" encoding="UTF-8"?>
 <TrainingCenterDatabase
-        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+    xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd"
+>
     <Activities>
         <Activity Sport="Other">
             <Id>2018-03-13T12:44:45Z</Id>
@@ -1372,9 +1460,10 @@ def tcx_file_wo_laps() -> str:
 def tcx_file_wo_tracks() -> str:
     return """<?xml version="1.0" encoding="UTF-8"?>
 <TrainingCenterDatabase
-        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+    xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd"
+>
     <Activities>
         <Activity Sport="Other">
             <Id>2018-03-13T12:44:45Z</Id>
@@ -1619,9 +1708,10 @@ def tcx_with_one_lap_and_one_track() -> str:
     return (
         """<?xml version="1.0" encoding="UTF-8"?>
 <TrainingCenterDatabase
-        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+    xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd"
+>
     <Activities>
         <Activity Sport="Other">
             <Id>2018-03-13T12:44:45Z</Id>
@@ -1645,9 +1735,10 @@ def tcx_with_one_lap_and_two_tracks() -> str:
     return (
         """<?xml version="1.0" encoding="UTF-8"?>
 <TrainingCenterDatabase
-        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+    xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd"
+>
     <Activities>
         <Activity Sport="Other">
             <Id>2018-03-13T12:44:45Z</Id>
@@ -1675,9 +1766,10 @@ def tcx_with_two_laps() -> str:
     return (
         """<?xml version="1.0" encoding="UTF-8"?>
 <TrainingCenterDatabase
-        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+    xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd"
+>
     <Activities>
         <Activity Sport="Other">
             <Id>2018-03-13T12:44:45Z</Id>
@@ -1707,9 +1799,10 @@ def tcx_with_two_activities() -> str:
     return (
         """<?xml version="1.0" encoding="UTF-8"?>
 <TrainingCenterDatabase
-        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+    xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd"
+>
     <Activities>
         <Activity Sport="Other">
             <Id>2018-03-13T12:44:45Z</Id>
@@ -1741,9 +1834,10 @@ def tcx_with_two_activities() -> str:
 def tcx_with_invalid_elevation() -> str:
     return """<?xml version="1.0" encoding="UTF-8"?>
 <TrainingCenterDatabase
-        xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd">
+    xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd"
+>
     <Activities>
         <Activity Sport="Other">
             <Id>2018-03-13T12:44:45Z</Id>
