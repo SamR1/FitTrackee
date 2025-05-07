@@ -8,7 +8,6 @@ from fittrackee import db
 
 from ...exceptions import WorkoutExceedingValueException, WorkoutFileException
 from ...models import WORKOUT_VALUES_LIMIT, Workout, WorkoutSegment
-from ...utils.duration import remove_microseconds
 from .base_workout_with_segment_service import (
     BaseWorkoutWithSegmentsCreationService,
 )
@@ -31,6 +30,10 @@ class GpxInfo:
     min_alt: Optional[float]
     ascent: Optional[float] = None
     descent: Optional[float] = None
+
+
+def remove_microseconds(delta: "timedelta") -> "timedelta":
+    return delta - timedelta(microseconds=delta.microseconds)
 
 
 class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
