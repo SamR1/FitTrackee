@@ -2,8 +2,10 @@ from typing import IO
 
 import fitdecode
 import gpxpy.gpx
+from lxml import etree as ET
 
 from ...exceptions import WorkoutFileException
+from .constants import NSMAP
 from .workout_gpx_creation_service import WorkoutGpxCreationService
 
 
@@ -54,22 +56,68 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                     has_stop = True
                     gpx_track.segments.append(gpx_segment)
                     gpx_segment = gpxpy.gpx.GPXTrackSegment()
+
                 if frame.name != "record":
                     continue
-                longitude = frame.get_value("position_long")
-                latitude = frame.get_value("position_lat")
-                time = frame.get_value("timestamp")
+
+                longitude = (
+                    frame.get_value("position_long")
+                    if frame.has_field("position_long")
+                    else None
+                )
+                latitude = (
+                    frame.get_value("position_lat")
+                    if frame.has_field("position_lat")
+                    else None
+                )
+                time = (
+                    frame.get_value("timestamp")
+                    if frame.has_field("timestamp")
+                    else None
+                )
                 if not longitude or not latitude or not time:
                     continue
-                elevation = frame.get_value("enhanced_altitude")
-                gpx_segment.points.append(
-                    gpxpy.gpx.GPXTrackPoint(
-                        longitude=cls._get_coordinate(longitude),
-                        latitude=cls._get_coordinate(latitude),
-                        elevation=float(elevation) if elevation else None,
-                        time=time,
-                    )
+
+                elevation = (
+                    frame.get_value("enhanced_altitude")
+                    if frame.has_field("enhanced_altitude")
+                    else None
                 )
+                heart_rate = (
+                    frame.get_value("heart_rate")
+                    if frame.has_field("heart_rate")
+                    else None
+                )
+                cadence = (
+                    frame.get_value("cadence")
+                    if frame.has_field("cadence")
+                    else None
+                )
+
+                point = gpxpy.gpx.GPXTrackPoint(
+                    longitude=cls._get_coordinate(longitude),
+                    latitude=cls._get_coordinate(latitude),
+                    elevation=float(elevation) if elevation else None,
+                    time=time,
+                )
+
+                if heart_rate is not None or cadence is not None:
+                    track_point_extension = ET.Element(
+                        "{gpxtpx}TrackPointExtension"
+                    )
+                    if heart_rate is not None:
+                        heart_rate_element = ET.SubElement(
+                            track_point_extension, "{gpxtpx}hr"
+                        )
+                        heart_rate_element.text = str(heart_rate)
+                    if cadence is not None:
+                        cadence_element = ET.SubElement(
+                            track_point_extension, "{gpxtpx}cad"
+                        )
+                        cadence_element.text = str(cadence)
+                    point.extensions.append(track_point_extension)
+                gpx_segment.points.append(point)
+
         except fitdecode.exceptions.FitHeaderError as e:
             raise WorkoutFileException(
                 "error", "error when parsing fit file"
@@ -77,6 +125,8 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
 
         if not has_stop:
             gpx_track.segments.append(gpx_segment)
+
         gpx = gpxpy.gpx.GPX()
+        gpx.nsmap = NSMAP
         gpx.tracks.append(gpx_track)
         return gpx
