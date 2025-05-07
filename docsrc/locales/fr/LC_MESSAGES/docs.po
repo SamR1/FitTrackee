@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-05-03 17:02+0200\n"
+"POT-Creation-Date: 2025-05-04 09:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -9239,7 +9239,7 @@ msgstr ""
 msgid "Table of contents"
 msgstr "Table des matières"
 
-#: ../source/installation.rst:2 ../source/installation.rst:474
+#: ../source/installation.rst:2 ../source/installation.rst:475
 msgid "Installation"
 msgstr "Installation"
 
@@ -10237,6 +10237,14 @@ msgstr ""
 "variables d'environnement suivantes :"
 
 #: ../source/installation.rst:470
+msgid ""
+"``WEATHER_API_PROVIDER``: the name of the provider (currently "
+"``visualcrossing`` is the only choice)"
+msgstr ""
+"``WEATHER_API_PROVIDER``: le nom du fournisseur de données météo (pour le "
+"moment, seul ``visualcrossing`` est disponible)"
+
+#: ../source/installation.rst:471
 msgid "``WEATHER_API_KEY``: the key to the corresponding weather provider"
 msgstr ""
 "``WEATHER_API_KEY`` : clé d'API correspondant au fournisseur de données "
@@ -10250,7 +10258,7 @@ msgstr ""
 "Remarque : FitTrackee est en cours de développement, certaines "
 "fonctionnalités peuvent être instables."
 
-#: ../source/installation.rst:480 ../source/installation.rst:680
+#: ../source/installation.rst:481 ../source/installation.rst:681
 msgid "From PyPI"
 msgstr "A partir de PyPI"
 
@@ -10258,7 +10266,7 @@ msgstr "A partir de PyPI"
 msgid "Simplest way to install FitTrackee."
 msgstr "Façon la plus simple d'installer FitTrackee"
 
-#: ../source/installation.rst:485
+#: ../source/installation.rst:486
 msgid ""
 "Create and activate a `virtualenv "
 "<https://docs.python.org/3/library/venv.html>`__"
@@ -10266,15 +10274,15 @@ msgstr ""
 "Créer et activer l'`environnement virtuel "
 "<https://docs.python.org/3/library/venv.html>`__"
 
-#: ../source/installation.rst:487
+#: ../source/installation.rst:488
 msgid "Install **FitTrackee** with pip"
 msgstr "Installer **FitTrackee** avec pip"
 
-#: ../source/installation.rst:493
+#: ../source/installation.rst:494
 msgid "Create ``fittrackee`` database"
 msgstr "Créer la base de données ``fittrackee``"
 
-#: ../source/installation.rst:495
+#: ../source/installation.rst:496
 msgid "Example :"
 msgstr "Exemple :"
 
@@ -10286,7 +10294,7 @@ msgstr ""
 "cf. `documentation <https://www.postgresql.org/docs/15/ddl-"
 "schemas.html>`_ PostgreSQL pour les schémas et privilèges."
 
-#: ../source/installation.rst:506
+#: ../source/installation.rst:507
 msgid ""
 "Initialize environment variables, see `Environment variables "
 "<installation.html#environment-variables>`__"
@@ -10294,7 +10302,7 @@ msgstr ""
 "Initialiser les variables d'environnement, cf. `Variables d'environnement"
 " <installation.html#environment-variables>`__"
 
-#: ../source/installation.rst:508
+#: ../source/installation.rst:509
 msgid ""
 "For instance, copy and update ``.env`` file from ``.env.example`` and "
 "source the file."
@@ -10302,15 +10310,15 @@ msgstr ""
 "Par exemple, copier et coller le fichier ``.env`` à partir de "
 "``.env.example`` et activer le fichier."
 
-#: ../source/installation.rst:515
+#: ../source/installation.rst:516
 msgid "Initialize database schema"
 msgstr "Initialiser le schéma de la base de données"
 
-#: ../source/installation.rst:521
+#: ../source/installation.rst:522
 msgid "Start the application"
 msgstr "Démarrer l'application"
 
-#: ../source/installation.rst:527
+#: ../source/installation.rst:528
 msgid ""
 "Start task queue workers **if email sending is enabled**, with "
 "**Dramatiq** CLI (see `documentation "
@@ -10353,12 +10361,12 @@ msgstr ""
 "Pour démarrer l'application et les *workers* avec le service **systemd**,"
 " cf. `Déploiement <installation.html#deployment>`__"
 
-#: ../source/installation.rst:545 ../source/installation.rst:654
+#: ../source/installation.rst:546 ../source/installation.rst:655
 msgid "Open http://localhost:5000 and register"
 msgstr "Ouvrir l'URL http://localhost:5000 avec un navigateur et s'inscrire"
 
-#: ../source/installation.rst:547 ../source/installation.rst:605
-#: ../source/installation.rst:656 ../source/installation.rst:986
+#: ../source/installation.rst:548 ../source/installation.rst:606
+#: ../source/installation.rst:657 ../source/installation.rst:987
 msgid ""
 "To set owner role to the newly created account, use the following command"
 " line:"
@@ -10366,12 +10374,12 @@ msgstr ""
 "Pour attribuer le rôle de propriétaire au compte nouvellement créé, "
 "utiliser la ligne de commande suivante :"
 
-#: ../source/installation.rst:554 ../source/installation.rst:612
-#: ../source/installation.rst:663 ../source/installation.rst:993
+#: ../source/installation.rst:555 ../source/installation.rst:613
+#: ../source/installation.rst:664 ../source/installation.rst:994
 msgid "If the user account is inactive, it activates it."
 msgstr "Si le compte de l'utilisateur est inactif, il sera alors activée."
 
-#: ../source/installation.rst:557 ../source/installation.rst:710
+#: ../source/installation.rst:558 ../source/installation.rst:711
 msgid "From sources"
 msgstr "A partir des sources"
 
@@ -10398,15 +10406,15 @@ msgstr ""
 "mettre à jour la `configuration <https://python-"
 "poetry.org/docs/configuration/#virtualenvsin-project>`__ de Poetry."
 
-#: ../source/installation.rst:571 ../source/installation.rst:717
+#: ../source/installation.rst:572 ../source/installation.rst:718
 msgid "Dev environment"
 msgstr "Environnements de développement"
 
-#: ../source/installation.rst:573
+#: ../source/installation.rst:574
 msgid "Clone this repo:"
 msgstr "Cloner ce dépôt :"
 
-#: ../source/installation.rst:580 ../source/installation.rst:629
+#: ../source/installation.rst:581 ../source/installation.rst:630
 msgid ""
 "Create **.env** from example and update it (see `Environment variables "
 "<installation.html#environment-variables>`__)."
@@ -10414,7 +10422,7 @@ msgstr ""
 "Créer le fichier **.env** à partir de l'exemple et le mettre à jour (cf. "
 "`Variables d'environnement <installation.html#environment-variables>`__)."
 
-#: ../source/installation.rst:583
+#: ../source/installation.rst:584
 msgid ""
 "Install Python virtualenv, Vue and all related packages and initialize "
 "the database:"
@@ -10422,19 +10430,19 @@ msgstr ""
 "Installer l'environnement virtuel Python, Vue et tous les paquets "
 "nécessaires et initialiser la base de données :"
 
-#: ../source/installation.rst:591
+#: ../source/installation.rst:592
 msgid "Start the server and the client:"
 msgstr "Démarrer le serveur et le client :"
 
-#: ../source/installation.rst:597 ../source/installation.rst:745
+#: ../source/installation.rst:598 ../source/installation.rst:746
 msgid "Run **Dramatiq** workers:"
 msgstr "Démarrer les *workers* de **Dramatiq** :"
 
-#: ../source/installation.rst:603
+#: ../source/installation.rst:604
 msgid "Open http://localhost:3000 and register"
 msgstr "Ouvrir l'URL http://localhost:3000 avec un navigateur et s'inscrire"
 
-#: ../source/installation.rst:615
+#: ../source/installation.rst:616
 msgid "Production environment"
 msgstr "Environnements de production"
 
@@ -10446,15 +10454,15 @@ msgstr ""
 "Note : FitTrackee est en cours de développement. Certaines "
 "fonctionnalités peuvent être instables."
 
-#: ../source/installation.rst:620
+#: ../source/installation.rst:621
 msgid "Download the last release (for now, it is the release v0.9.9):"
 msgstr "Télécharger la dernière version (à ce jour, la version v0.9.9) :"
 
-#: ../source/installation.rst:632
+#: ../source/installation.rst:633
 msgid "Install Python virtualenv and all related packages:"
 msgstr "Installer l'environnement virtuel Python et tous les paquets nécessaires :"
 
-#: ../source/installation.rst:638
+#: ../source/installation.rst:639
 msgid ""
 "Initialize the database (**after updating** ``db/create.sql`` **to change"
 " database credentials**):"
@@ -10463,25 +10471,25 @@ msgstr ""
 "``db/create.sql`` **pour changer les informations de connexion à la base "
 "de données**) :"
 
-#: ../source/installation.rst:645
+#: ../source/installation.rst:646
 msgid "Start the server and **Dramatiq** workers:"
 msgstr "Démarrer le serveur et les *workers* de **Dramatiq** :"
 
-#: ../source/installation.rst:652 ../source/installation.rst:788
+#: ../source/installation.rst:653 ../source/installation.rst:789
 msgid "If email sending is disabled: ``$ make run-server``"
 msgstr "Si l'envoi des courriels est désactivé : ``$ make run-server``"
 
-#: ../source/installation.rst:666
+#: ../source/installation.rst:667
 msgid "Upgrade"
 msgstr "Mise à jour"
 
-#: ../source/installation.rst:669
+#: ../source/installation.rst:670
 msgid "Before upgrading, make a backup of all data:"
 msgstr ""
 "Avant de procéder à la mise à jour, faire une sauvegarde de l'ensemble "
 "des données :"
 
-#: ../source/installation.rst:671
+#: ../source/installation.rst:672
 msgid ""
 "database (with `pg_dump <https://www.postgresql.org/docs/11/app-"
 "pgdump.html>`__ for instance)"
@@ -10489,7 +10497,7 @@ msgstr ""
 "base de données (avec la commande `pg_dump "
 "<https://www.postgresql.org/docs/11/app-pgdump.html>`__ par exemple)"
 
-#: ../source/installation.rst:672
+#: ../source/installation.rst:673
 msgid ""
 "upload directory (see `Environment variables <installation.html"
 "#environment-variables>`__)"
@@ -10497,7 +10505,7 @@ msgstr ""
 "répertoire des fichiers téléversés (see `Variables d'environnement "
 "<installation.html#environment-variables>`__)"
 
-#: ../source/installation.rst:676
+#: ../source/installation.rst:677
 msgid ""
 "For now, releases do not follow `semantic versioning "
 "<https://semver.org>`__). Any version may contain backward-incompatible "
@@ -10513,7 +10521,7 @@ msgstr ""
 "Seulement si **FitTrackee** a été installé initialement à partir de "
 "**PyPI**"
 
-#: ../source/installation.rst:685
+#: ../source/installation.rst:686
 msgid ""
 "Stop the application and activate the `virtualenv "
 "<https://docs.python.org/3/library/venv.html>`__"
@@ -10521,24 +10529,24 @@ msgstr ""
 "Stopper l'application et activer l'`environnement virtuel "
 "<https://docs.python.org/3/library/venv.html>`__"
 
-#: ../source/installation.rst:687
+#: ../source/installation.rst:688
 msgid "Upgrade with pip"
 msgstr "Mettre à jour avec pip"
 
-#: ../source/installation.rst:693
+#: ../source/installation.rst:694
 msgid ""
 "Update environment variables if needed and source environment variables "
 "file"
 msgstr "Mettre à jour les variables d'environnements si nécessaire et les activer"
 
-#: ../source/installation.rst:700 ../source/installation.rst:733
-#: ../source/installation.rst:775
+#: ../source/installation.rst:701 ../source/installation.rst:734
+#: ../source/installation.rst:776
 msgid "Upgrade database if needed (see changelog for migrations):"
 msgstr ""
 "Mettre à jour la base de données si nécessaire (voir le journal des "
 "changements pour les migrations) :"
 
-#: ../source/installation.rst:706
+#: ../source/installation.rst:707
 msgid ""
 "Restart the application and task queue workers (if email sending is "
 "enabled)."
@@ -10552,11 +10560,11 @@ msgstr ""
 "Seulement si **FitTrackee** a été installé initialement à partir des "
 "sources."
 
-#: ../source/installation.rst:719
+#: ../source/installation.rst:720
 msgid "Stop the application and pull the repository:"
 msgstr "Arrêter l'application et récupérer les derniers changements du dépôt :"
 
-#: ../source/installation.rst:725 ../source/installation.rst:767
+#: ../source/installation.rst:726 ../source/installation.rst:768
 msgid ""
 "Update **.env** if needed (see `Environment variables <installation.html"
 "#environment-variables>`__)."
@@ -10564,27 +10572,27 @@ msgstr ""
 "Mettre à jour le fichier **.env** si nécessaire (cf. `Variables "
 "d'environnement <installation.html#environment-variables>`__)."
 
-#: ../source/installation.rst:727 ../source/installation.rst:769
+#: ../source/installation.rst:728 ../source/installation.rst:770
 msgid "Upgrade packages:"
 msgstr "Mettre à jour les paquets :"
 
-#: ../source/installation.rst:739
+#: ../source/installation.rst:740
 msgid "Restart the server:"
 msgstr "Redémarrer le serveur :"
 
-#: ../source/installation.rst:752
+#: ../source/installation.rst:753
 msgid "Prod environment"
 msgstr "Environnement de production"
 
-#: ../source/installation.rst:754
+#: ../source/installation.rst:755
 msgid "Stop the application"
 msgstr "Arrêter l'application"
 
-#: ../source/installation.rst:756
+#: ../source/installation.rst:757
 msgid "Change to the directory where FitTrackee directory is located"
 msgstr "Changer pour le répertoire dans lequel FitTrackee est localisé"
 
-#: ../source/installation.rst:758
+#: ../source/installation.rst:759
 msgid ""
 "Download the last release (for now, it is the release v0.9.9) and "
 "overwrite existing files:"
@@ -10592,15 +10600,15 @@ msgstr ""
 "Télécharger la dernière version (à ce jour, la version v0.9.9) et écraser"
 " les fichiers existants :"
 
-#: ../source/installation.rst:781
+#: ../source/installation.rst:782
 msgid "Restart the server and **Dramatiq** workers:"
 msgstr "Redémarrer le serveur et les *workers* de **Dramatiq** :"
 
-#: ../source/installation.rst:791
+#: ../source/installation.rst:792
 msgid "Deployment"
 msgstr "Déploiement"
 
-#: ../source/installation.rst:793
+#: ../source/installation.rst:794
 msgid ""
 "There are several ways to start **FitTrackee** web application and task "
 "queue library. One way is to use a **systemd** services and **Nginx** to "
@@ -10611,21 +10619,21 @@ msgstr ""
 "tâches. Un des moyens est d'utiliser les services **systemd** et "
 "**Nginx** to proxy passer à **Gunicorn**."
 
-#: ../source/installation.rst:797
+#: ../source/installation.rst:798
 msgid "Examples:"
 msgstr "Exemples :"
 
-#: ../source/installation.rst:800
+#: ../source/installation.rst:801
 msgid "To adapt depending on your instance configuration and operating system"
 msgstr ""
 "À adapter selon la configuration de votre instance et votre système "
 "d'exploitation"
 
-#: ../source/installation.rst:802
+#: ../source/installation.rst:803
 msgid "for application: ``fittrackee.service``"
 msgstr "pour l'application : ``fittrackee.service``"
 
-#: ../source/installation.rst:842
+#: ../source/installation.rst:843
 msgid ""
 "To handle large files, a higher value for `timeout "
 "<https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ can be "
@@ -10636,7 +10644,7 @@ msgstr ""
 "<https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ peut être "
 "configurée."
 
-#: ../source/installation.rst:845
+#: ../source/installation.rst:846
 msgid ""
 "More information on deployment with Gunicorn in its `documentation "
 "<https://docs.gunicorn.org/en/stable/deploy.html>`__."
@@ -10644,11 +10652,11 @@ msgstr ""
 "Plus d'informations sur le déploiement avec Gunicorn dans sa "
 "`documentation <https://docs.gunicorn.org/en/stable/deploy.html>`__."
 
-#: ../source/installation.rst:847
+#: ../source/installation.rst:848
 msgid "for task queue workers: ``fittrackee_workers.service``"
 msgstr "pour les *workers* de la file d'attente : ``fittrackee_workers.service``"
 
-#: ../source/installation.rst:883
+#: ../source/installation.rst:884
 msgid ""
 "More information on **Dramatiq** CLI in its `documentation "
 "<https://dramatiq.io/guide.html#workers>`__."
@@ -10657,11 +10665,11 @@ msgstr ""
 " dans sa `documentation "
 "<https://docs.gunicorn.org/en/stable/deploy.html>`__."
 
-#: ../source/installation.rst:885
+#: ../source/installation.rst:886
 msgid "**Nginx** configuration:"
 msgstr "Configuration **Nginx** :"
 
-#: ../source/installation.rst:923
+#: ../source/installation.rst:924
 msgid ""
 "If needed, update configuration to handle larger files (see "
 "`client_max_body_size "
@@ -10671,23 +10679,23 @@ msgstr ""
 "importante (cf. `client_max_body_size "
 "<https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_)."
 
-#: ../source/installation.rst:927
+#: ../source/installation.rst:928
 msgid "Docker"
 msgstr ""
 
-#: ../source/installation.rst:930
+#: ../source/installation.rst:931
 msgid "add client application for development"
 msgstr "ajout de l'application cliente pour le développement"
 
-#: ../source/installation.rst:931
+#: ../source/installation.rst:932
 msgid "add docker image for production"
 msgstr "ajout de l'image Docker pour la production"
 
-#: ../source/installation.rst:935
+#: ../source/installation.rst:936
 msgid "Production"
 msgstr "Production"
 
-#: ../source/installation.rst:937
+#: ../source/installation.rst:938
 msgid ""
 "Images are available on `DockerHub "
 "<https://hub.docker.com/r/fittrackee/fittrackee>`_ or `Github registry "
@@ -10697,7 +10705,7 @@ msgstr ""
 "<https://hub.docker.com/r/fittrackee/fittrackee>`_ ou `Github registry "
 "<https://github.com/SamR1/FitTrackee/packages>`_."
 
-#: ../source/installation.rst:941
+#: ../source/installation.rst:942
 msgid ""
 "Images are available for ``linux/amd64`` and ``linux/arm64`` platforms. "
 "Only ``linux/amd64`` image has been tested."
@@ -10705,7 +10713,7 @@ msgstr ""
 "Les images sont disponibles pour les plateformes ``linux/amd64`` et "
 "``linux/arm64``. Seule l'image ``linux/amd64`` a été testée."
 
-#: ../source/installation.rst:943
+#: ../source/installation.rst:944
 msgid ""
 "create a ``docker-compose.yml`` file as needed (see the `example "
 "<https://github.com/SamR1/FitTrackee/blob/master/docker-compose.yml>`__ "
@@ -10715,15 +10723,15 @@ msgstr ""
 "l'`exemple <https://github.com/SamR1/FitTrackee/blob/master/docker-"
 "compose.yml>`__  dans le dépôt) :"
 
-#: ../source/installation.rst:945
+#: ../source/installation.rst:946
 msgid "the minimal set up requires at least the database and the web application"
 msgstr "l'installation minimale nécessite la base de données et l'application web"
 
-#: ../source/installation.rst:946
+#: ../source/installation.rst:947
 msgid "to activate the rate limit, redis is required"
 msgstr "pour activer les limitations d'accès à l'API, redis est requis"
 
-#: ../source/installation.rst:947
+#: ../source/installation.rst:948
 msgid ""
 "to send e-mails, redis and workers are required and a valid ``EMAIL_URL``"
 " variable must be set in ``.env``"
@@ -10732,11 +10740,11 @@ msgstr ""
 "variable ``EMAIL_URL`` valide doit être initialisée dans le fichier "
 "``.env``"
 
-#: ../source/installation.rst:950
+#: ../source/installation.rst:951
 msgid "The same image is used by the web application and workers."
 msgstr "La même image est utilisée pour l'application Web et les *workers*"
 
-#: ../source/installation.rst:952
+#: ../source/installation.rst:953
 msgid ""
 "create ``.env`` from example (``.env.docker.example``) and update it (see"
 " `Environment variables <installation.html#environment-variables>`__)."
@@ -10745,11 +10753,11 @@ msgstr ""
 "(``.env.docker.example``) et le mettre à jour (cf. `Variables "
 "d'environnement <installation.html#environment-variables>`__)."
 
-#: ../source/installation.rst:954
+#: ../source/installation.rst:955
 msgid "to start the application:"
 msgstr "pour démarrer l'application :"
 
-#: ../source/installation.rst:962
+#: ../source/installation.rst:963
 msgid ""
 "Migrations are executed at startup. Please backup data before updating "
 "FitTrackee image version."
@@ -10758,25 +10766,25 @@ msgstr ""
 "sauvegarder les données avant de mettre à jour la version de l'image "
 "FitTrackee."
 
-#: ../source/installation.rst:964
+#: ../source/installation.rst:965
 msgid "to run a CLI command, for instance to give admin rights:"
 msgstr ""
 "pour lancer une commande de l'interface de ligne de commandes (CLI), par "
 "example pour donner les droits d'administration :"
 
-#: ../source/installation.rst:972
+#: ../source/installation.rst:973
 msgid "Development"
 msgstr "Développement"
 
-#: ../source/installation.rst:974
+#: ../source/installation.rst:975
 msgid "To install and run **FitTrackee**:"
 msgstr "Pour installer et lancer **FitTrackee** :"
 
-#: ../source/installation.rst:982
+#: ../source/installation.rst:983
 msgid "Open http://localhost:5000 and register."
 msgstr "Ouvrir l'URL http://localhost:5000 avec un navigateur et s'inscrire."
 
-#: ../source/installation.rst:984
+#: ../source/installation.rst:985
 msgid ""
 "Open http://localhost:8025 to access `MailHog interface "
 "<https://github.com/mailhog/MailHog>`_ (email testing tool)"
@@ -10784,41 +10792,41 @@ msgstr ""
 "Ouvrir l'URL http://localhost:8025 pour accéder à l'interface de `MailHog"
 " <https://github.com/mailhog/MailHog>`_ (outil de test)"
 
-#: ../source/installation.rst:995
+#: ../source/installation.rst:996
 msgid "To stop **Fittrackee**:"
 msgstr "Pour arrêter **Fittrackee** :"
 
-#: ../source/installation.rst:1001
+#: ../source/installation.rst:1002
 msgid "To run shell inside **Fittrackee** container:"
 msgstr "Pour lancer le shell dans le container **Fittrackee** :"
 
-#: ../source/installation.rst:1007
+#: ../source/installation.rst:1008
 msgid "an additional step is needed to install ``fittrackee_client``"
 msgstr "une étape additionnelle est nécessaire pour installer `fittrackee_client`"
 
-#: ../source/installation.rst:1013
+#: ../source/installation.rst:1014
 msgid "to start **FitTrackee** with client dev tools:"
 msgstr "pour démarrer **FitTrackee** avec les outils de développement client :"
 
-#: ../source/installation.rst:1019
+#: ../source/installation.rst:1020
 msgid "Open http://localhost:3000"
 msgstr "Ouvrir http://localhost:3000"
 
-#: ../source/installation.rst:1022
+#: ../source/installation.rst:1023
 msgid "Some environment variables need to be updated like ``UI_URL``"
 msgstr ""
 "Certaines variables d'environnement doivent être mise à jour comme "
 "``UI_URL``"
 
-#: ../source/installation.rst:1024
+#: ../source/installation.rst:1025
 msgid "to run lint or tests:"
 msgstr "pour lancer le *lint* et les tests :"
 
-#: ../source/installation.rst:1035
+#: ../source/installation.rst:1036
 msgid "Yunohost"
 msgstr ""
 
-#: ../source/installation.rst:1037
+#: ../source/installation.rst:1038
 msgid ""
 "Thanks to contributors, a package is available, see https://github.com"
 "/YunoHost-Apps/fittrackee_ynh."
@@ -10826,11 +10834,11 @@ msgstr ""
 "Grâce aux contributeurs, un paquet est disponible, cf. https://github.com"
 "/YunoHost-Apps/fittrackee_ynh."
 
-#: ../source/installation.rst:1041
+#: ../source/installation.rst:1042
 msgid "NixOS"
 msgstr "NixOS"
 
-#: ../source/installation.rst:1043
+#: ../source/installation.rst:1044
 msgid ""
 "Thanks to contributors, a package is available on NixOS, see "
 "https://mynixos.com/nixpkgs/package/fit-trackee."

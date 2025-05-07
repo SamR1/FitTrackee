@@ -1,7 +1,9 @@
 {
+  "ACCEPT": "Aceptar",
   "ACCOUNT-CONFIRMATION-RESEND": "Reenviar correo de confirmación",
   "AUTHORIZE": "Autorizar",
   "BACK": "Volver",
+  "BLOCK": "Bloquear",
   "CANCEL": "Cancelar",
   "CLEAR_FILTER": "Eliminar filtros",
   "DELETE": "Borrar",
