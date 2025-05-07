@@ -187,9 +187,11 @@ export type TWorkoutsPayload = TPaginationPayload & {
 }
 
 export interface IWorkoutApiChartData {
+  cadence?: number
   distance: number
   duration: number
   elevation?: number
+  hr?: number
   latitude: number
   longitude: number
   speed: number
@@ -212,7 +214,7 @@ export interface IWorkoutData {
   currentReporting: boolean
 }
 
-export type TWorkoutDatasetKeys = 'speed' | 'elevation'
+export type TWorkoutDatasetKeys = 'speed' | 'elevation' | 'hr' | 'cadence'
 
 export type TWorkoutDatasets = {
   [key in TWorkoutDatasetKeys]: IChartDataset

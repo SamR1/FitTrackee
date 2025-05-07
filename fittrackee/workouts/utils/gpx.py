@@ -5,6 +5,23 @@ import gpxpy.gpx
 
 from ..exceptions import WorkoutGPXException
 
+HR_TAG = "{http://www.garmin.com/xmlschemas/TrackPointExtension/v1}hr"
+CADENCE_TAG = "{http://www.garmin.com/xmlschemas/TrackPointExtension/v1}cad"
+CADENCE_SPORTS = [
+    "Cycling (Sport)",
+    "Cycling (Trekking)",
+    "Cycling (Transport)",
+    "Cycling (Virtual)",
+    "Halfbike",
+    "Mountain Biking",
+    "Mountain Biking (Electric)",
+    "Hiking",
+    "Snowshoes",
+    "Running",
+    "Trail",
+    "Walking",
+]
+
 
 def open_gpx_file(gpx_file: str) -> Optional[gpxpy.gpx.GPX]:
     gpx_file = open(gpx_file, "r")  # type: ignore
@@ -36,10 +53,14 @@ def get_gpx_segments(
 
 
 def get_chart_data(
-    gpx_file: str, segment_id: Optional[int] = None
+    gpx_file: str, sport_label: str, segment_id: Optional[int] = None
 ) -> Optional[List]:
     """
-    Return data needed to generate chart with speed and elevation
+    Return data needed to generate chart with:
+    - speed
+    - elevation (if available)
+    - heart rate (if available)
+    - cadence (if available)
     """
     gpx = open_gpx_file(gpx_file)
     if gpx is None:
@@ -49,6 +70,7 @@ def get_chart_data(
     first_point = None
     previous_point = None
     previous_distance = 0
+    return_cadence = sport_label in CADENCE_SPORTS
 
     track_segments = gpx.tracks[0].segments
     segments = get_gpx_segments(track_segments, segment_id)
@@ -89,6 +111,16 @@ def get_chart_data(
             }
             if point.elevation:
                 data["elevation"] = round(point.elevation, 1)
+            if point.extensions:
+                for element in point.extensions[0]:
+                    if element.tag == HR_TAG and element.text:
+                        data["hr"] = int(element.text)
+                    if (
+                        return_cadence
+                        and element.tag == CADENCE_TAG
+                        and element.text
+                    ):
+                        data["cadence"] = int(element.text)
             chart_data.append(data)
             previous_point = point
             previous_distance = distance

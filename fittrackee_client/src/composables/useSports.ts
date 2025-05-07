@@ -63,7 +63,7 @@ export default function useSports() {
   }
   function getWorkoutSport(workout: IWorkout | null): ISport | null {
     return workout
-      ? sports.value.filter((s) => s.id === workout.sport_id)[0]
+      ? sports.value.find((s) => s.id === workout.sport_id) || null
       : null
   }
 
