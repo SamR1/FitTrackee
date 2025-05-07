@@ -108,10 +108,10 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         self,
         app: "Flask",
         sport_1_cycling: "Sport",
-        tcx_with_with_two_laps: str,
+        tcx_with_two_laps: str,
     ) -> None:
         gpx = WorkoutTcxCreationService.parse_file(
-            self.get_file_content(tcx_with_with_two_laps)
+            self.get_file_content(tcx_with_two_laps)
         )
 
         assert len(gpx.tracks) == 1
@@ -124,10 +124,10 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         self,
         app: "Flask",
         sport_1_cycling: "Sport",
-        tcx_with_with_two_activities: str,
+        tcx_with_two_activities: str,
     ) -> None:
         gpx = WorkoutTcxCreationService.parse_file(
-            self.get_file_content(tcx_with_with_two_activities)
+            self.get_file_content(tcx_with_two_activities)
         )
 
         assert len(gpx.tracks) == 1
@@ -135,6 +135,22 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         moving_data = gpx.get_moving_data()
         assert moving_data.moving_time == 235.0
         assert round(moving_data.moving_distance, 1) == 297.5
+
+    def test_it_ignores_invalid_elevation(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        tcx_with_invalid_elevation: str,
+    ) -> None:
+        gpx = WorkoutTcxCreationService.parse_file(
+            self.get_file_content(tcx_with_invalid_elevation)
+        )
+
+        assert len(gpx.tracks) == 1
+        assert len(gpx.tracks[0].segments) == 1
+        elevations = gpx.tracks[0].segments[0].get_elevation_extremes()
+        assert elevations.minimum is None
+        assert elevations.maximum is None
 
 
 class TestWorkoutTcxCreationServiceInstantiation(WorkoutFileMixin):
