@@ -5,6 +5,7 @@
     "private": "Private (only mentioned users)",
     "public": "Public (everyone)"
   },
+  "HR_VISIBILITY": "Heart rate visibility",
   "LEVELS": {
     "followers_only": "Followers only",
     "private": "Private (only me)",

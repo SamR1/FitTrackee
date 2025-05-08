@@ -23,6 +23,7 @@ from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import (
     VisibilityLevel,
     can_view,
+    can_view_heart_rate,
     get_calculated_visibility,
 )
 
@@ -323,6 +324,10 @@ class Workout(BaseModel):
     original_file: Mapped[Optional[str]] = mapped_column(
         db.String(255), nullable=True
     )
+    max_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
+    ave_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
+    max_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
+    ave_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
 
     user: Mapped["User"] = relationship(
         "User", lazy="select", single_parent=True
@@ -482,6 +487,7 @@ class Workout(BaseModel):
                 **EMPTY_WORKOUT_VALUES,
             }
 
+        can_see_heart_rate = can_view_heart_rate(self.user, user)
         workout_data = {
             **workout_data,
             **EMPTY_WORKOUT_VALUES,
@@ -521,6 +527,10 @@ class Workout(BaseModel):
                 if can_see_map_data
                 else VisibilityLevel.PRIVATE
             ),
+            "ave_cadence": self.ave_cadence,
+            "max_cadence": self.max_cadence,
+            "ave_hr": self.ave_hr if can_see_heart_rate else None,
+            "max_hr": self.max_hr if can_see_heart_rate else None,
         }
 
         if not light or with_equipments:
@@ -544,7 +554,10 @@ class Workout(BaseModel):
                 else [record.serialize() for record in self.records]
             ),
             "segments": (
-                [segment.serialize() for segment in self.segments]
+                [
+                    segment.serialize(can_see_heart_rate=can_see_heart_rate)
+                    for segment in self.segments
+                ]
                 if can_see_analysis_data
                 else []
             ),
@@ -875,6 +888,10 @@ class WorkoutSegment(BaseModel):
     ave_speed: Mapped[Optional[float]] = mapped_column(
         db.Numeric(6, 2), nullable=True
     )  # km/h
+    max_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
+    ave_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
+    max_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
+    ave_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
 
     workout: Mapped["Workout"] = relationship(
         "Workout", lazy="joined", single_parent=True
@@ -893,7 +910,7 @@ class WorkoutSegment(BaseModel):
         self.workout_id = workout_id
         self.workout_uuid = workout_uuid
 
-    def serialize(self) -> Dict:
+    def serialize(self, *, can_see_heart_rate: bool = False) -> Dict:
         return {
             "workout_id": encode_uuid(self.workout_uuid),
             "segment_id": self.segment_id,
@@ -911,12 +928,16 @@ class WorkoutSegment(BaseModel):
             ),
             "descent": None if self.descent is None else float(self.descent),
             "ascent": None if self.ascent is None else float(self.ascent),
-            "max_speed": None
-            if self.max_speed is None
-            else float(self.max_speed),
-            "ave_speed": None
-            if self.ave_speed is None
-            else float(self.ave_speed),
+            "max_speed": (
+                None if self.max_speed is None else float(self.max_speed)
+            ),
+            "ave_speed": (
+                None if self.ave_speed is None else float(self.ave_speed)
+            ),
+            "ave_cadence": self.ave_cadence,
+            "max_cadence": self.max_cadence,
+            "ave_hr": self.ave_hr if can_see_heart_rate else None,
+            "max_hr": self.max_hr if can_see_heart_rate else None,
         }
 
 

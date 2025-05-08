@@ -56,6 +56,7 @@
             :workoutObject="workoutObject"
             :useImperialUnits="displayOptions.useImperialUnits"
             :displayHARecord="displayOptions.displayAscent"
+            :cadenceUnit="cadenceUnit"
           />
         </div>
         <WorkoutVisibility
@@ -110,6 +111,7 @@
     workoutData: IWorkoutData
     markerCoordinates?: TCoordinates
     isWorkoutOwner: boolean
+    cadenceUnit: string
   }
   const props = withDefaults(defineProps<Props>(), {
     markerCoordinates: () => ({}) as TCoordinates,
@@ -188,6 +190,8 @@
     return {
       analysisVisibility: workout.analysis_visibility,
       ascent: segment ? segment.ascent : workout.ascent,
+      aveCadence: segment ? segment.ave_cadence : workout.ave_cadence,
+      aveHr: segment ? segment.ave_hr : workout.ave_hr,
       aveSpeed: segment ? segment.ave_speed : workout.ave_speed,
       distance: segment ? segment.distance : workout.distance,
       descent: segment ? segment.descent : workout.descent,
@@ -197,6 +201,8 @@
       likes_count: workout.likes_count,
       mapVisibility: workout.map_visibility,
       maxAlt: segment ? segment.max_alt : workout.max_alt,
+      maxCadence: segment ? segment.max_cadence : workout.max_cadence,
+      maxHr: segment ? segment.max_hr : workout.max_hr,
       maxSpeed: segment ? segment.max_speed : workout.max_speed,
       minAlt: segment ? segment.min_alt : workout.min_alt,
       moving: segment ? segment.moving : workout.moving,

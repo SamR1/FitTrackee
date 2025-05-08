@@ -329,6 +329,10 @@ class TestWorkoutGpxCreationServiceProcessFile(
         self.assert_workout(user_1, sport_1_cycling, workout)
         self.assert_workout_segment(workout)
         self.assert_workout_records(workout)
+        assert workout.ave_cadence is None
+        assert workout.ave_hr is None
+        assert workout.max_cadence is None
+        assert workout.max_hr is None
 
     def test_it_creates_workout_and_segment_when_gpx_file_has_offset(
         self,
@@ -350,6 +354,10 @@ class TestWorkoutGpxCreationServiceProcessFile(
         self.assert_workout(user_1, sport_1_cycling, workout)
         self.assert_workout_segment(workout)
         self.assert_workout_records(workout)
+        assert workout.ave_cadence is None
+        assert workout.ave_hr is None
+        assert workout.max_cadence is None
+        assert workout.max_hr is None
 
     def test_it_creates_workout_and_segment_when_raw_speed_is_true(
         self,
@@ -404,6 +412,10 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert workout.min_alt is None
         assert workout.moving == timedelta(minutes=4, seconds=10)
         assert workout.pauses == timedelta(seconds=0)
+        assert workout.ave_cadence is None
+        assert workout.ave_hr is None
+        assert workout.max_cadence is None
+        assert workout.max_hr is None
         # workout segment
         workout_segment = WorkoutSegment.query.one()
         assert workout_segment.duration == timedelta(minutes=4, seconds=10)
@@ -416,6 +428,10 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert workout_segment.min_alt is None
         assert workout_segment.moving == timedelta(minutes=4, seconds=10)
         assert workout_segment.pauses == timedelta(seconds=0)
+        assert workout_segment.ave_cadence is None
+        assert workout_segment.ave_hr is None
+        assert workout_segment.max_cadence is None
+        assert workout_segment.max_hr is None
 
     def test_it_creates_workout_and_segments_when_gpx_file_contains_3_segments(
         self,
@@ -452,6 +468,10 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert float(workout.min_alt) == 979.0
         assert workout.moving == timedelta(seconds=30)
         assert workout.pauses == timedelta(minutes=2)
+        assert workout.ave_cadence is None
+        assert workout.ave_hr is None
+        assert workout.max_cadence is None
+        assert workout.max_hr is None
         # workout segments
         workout_segments = WorkoutSegment.query.all()
         assert len(workout_segments) == 3
@@ -469,6 +489,10 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert float(workout_segments[0].min_alt) == 994.0
         assert workout_segments[0].moving == timedelta(seconds=10)
         assert workout_segments[0].pauses == timedelta(seconds=0)
+        assert workout_segments[0].ave_cadence is None
+        assert workout_segments[0].ave_hr is None
+        assert workout_segments[0].max_cadence is None
+        assert workout_segments[0].max_hr is None
         # second workout segment
         assert workout_segments[1].workout_id == workout.id
         assert workout_segments[1].workout_uuid == workout.uuid
@@ -483,6 +507,10 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert float(workout_segments[1].min_alt) == 986.0
         assert workout_segments[1].moving == timedelta(seconds=10)
         assert workout_segments[1].pauses == timedelta(seconds=0)
+        assert workout_segments[1].ave_cadence is None
+        assert workout_segments[1].ave_hr is None
+        assert workout_segments[1].max_cadence is None
+        assert workout_segments[1].max_hr is None
         # third workout segment
         assert workout_segments[2].workout_id == workout.id
         assert workout_segments[2].workout_uuid == workout.uuid
@@ -497,6 +525,10 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert float(workout_segments[2].min_alt) == 979.0
         assert workout_segments[2].moving == timedelta(seconds=10)
         assert workout_segments[2].pauses == timedelta(seconds=0)
+        assert workout_segments[2].ave_cadence is None
+        assert workout_segments[2].ave_hr is None
+        assert workout_segments[2].max_cadence is None
+        assert workout_segments[2].max_hr is None
 
     def test_it_creates_workout_when_gpx_file_contains_microseconds(
         self,
@@ -562,6 +594,10 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert float(workout.min_alt) == 979.0
         assert workout.moving == timedelta(seconds=20)
         assert workout.pauses == timedelta(minutes=2, seconds=10)
+        assert workout.ave_cadence is None
+        assert workout.ave_hr is None
+        assert workout.max_cadence is None
+        assert workout.max_hr is None
         # workout segments
         workout_segments = WorkoutSegment.query.all()
         assert len(workout_segments) == 3
@@ -597,11 +633,15 @@ class TestWorkoutGpxCreationServiceProcessFile(
         serialized_segment = workout_segments[1].serialize()
         assert serialized_segment == {
             "ascent": 0.0,
+            "ave_cadence": None,
+            "ave_hr": None,
             "ave_speed": 0.0,
             "descent": 0.0,
             "distance": 0.0,
             "duration": "0:00:00",
             "max_alt": 987.0,
+            "max_cadence": None,
+            "max_hr": None,
             "max_speed": 0.0,
             "min_alt": 987.0,
             "moving": "0:00:00",
@@ -623,6 +663,56 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert float(workout_segments[2].min_alt) == 979.0
         assert workout_segments[2].moving == timedelta(seconds=10)
         assert workout_segments[2].pauses == timedelta(seconds=0)
+
+    def test_it_creates_workout_when_gpx_file_has_gpxtpx_extensions(
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_gpxtpx_extensions: str,
+    ) -> None:
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_with_gpxtpx_extensions
+        )
+
+        service.process_workout()
+        db.session.commit()
+
+        assert service.workout_description is None
+        assert service.workout_name is None
+        workout = Workout.query.one()
+        self.assert_workout(user_1, sport_1_cycling, workout)
+        self.assert_workout_segment(workout)
+        self.assert_workout_records(workout)
+        assert workout.ave_cadence == 52
+        assert workout.ave_hr == 85
+        assert workout.max_cadence == 57
+        assert workout.max_hr == 92
+
+    def test_it_creates_workout_when_gpx_file_has_ns3_extensions(
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_ns3_extensions: str,
+    ) -> None:
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_with_ns3_extensions
+        )
+
+        service.process_workout()
+        db.session.commit()
+
+        assert service.workout_description is None
+        assert service.workout_name is None
+        workout = Workout.query.one()
+        self.assert_workout(user_1, sport_1_cycling, workout)
+        self.assert_workout_segment(workout)
+        self.assert_workout_records(workout)
+        assert workout.ave_cadence == 52
+        assert workout.ave_hr == 85
+        assert workout.max_cadence == 57
+        assert workout.max_hr == 92
 
     @pytest.mark.parametrize("input_get_weather", [{}, {"get_weather": True}])
     def test_it_calls_weather_service_for_start_and_endpoint(

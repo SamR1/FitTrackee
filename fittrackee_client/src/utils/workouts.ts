@@ -129,3 +129,34 @@ export const defaultOrder = {
   order: 'desc',
   order_by: 'workout_date',
 }
+
+export function getCadenceUnit(
+  sportLabel: string | undefined,
+  t: CallableFunction
+) {
+  let unit: string
+  switch (sportLabel) {
+    case 'Cycling (Sport)':
+    case 'Cycling (Trekking)':
+    case 'Cycling (Transport)':
+    case 'Cycling (Virtual)':
+    case 'Halfbike':
+    case 'Mountain Biking':
+    case 'Mountain Biking (Electric)':
+      unit = 'rpm'
+      break
+    case 'Hiking':
+    case 'Snowshoes':
+    case 'Running':
+    case 'Trail':
+    case 'Walking':
+      unit = 'spm'
+      break
+    default:
+      unit = ''
+  }
+  if (!unit) {
+    return ''
+  }
+  return t(`workouts.UNITS.${unit}.UNIT`)
+}
