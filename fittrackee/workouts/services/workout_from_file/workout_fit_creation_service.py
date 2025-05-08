@@ -2,7 +2,6 @@ from typing import IO
 
 import fitdecode
 import gpxpy.gpx
-from lxml import etree as ET
 
 from ...exceptions import WorkoutFileException
 from .constants import NSMAP
@@ -102,20 +101,9 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                 )
 
                 if heart_rate is not None or cadence is not None:
-                    track_point_extension = ET.Element(
-                        "{gpxtpx}TrackPointExtension"
+                    point.extensions.append(
+                        cls._get_extensions(heart_rate, cadence)
                     )
-                    if heart_rate is not None:
-                        heart_rate_element = ET.SubElement(
-                            track_point_extension, "{gpxtpx}hr"
-                        )
-                        heart_rate_element.text = str(heart_rate)
-                    if cadence is not None:
-                        cadence_element = ET.SubElement(
-                            track_point_extension, "{gpxtpx}cad"
-                        )
-                        cadence_element.text = str(cadence)
-                    point.extensions.append(track_point_extension)
                 gpx_segment.points.append(point)
 
         except fitdecode.exceptions.FitHeaderError as e:

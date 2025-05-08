@@ -57,7 +57,7 @@ class TestWorkoutFitCreationServiceParseFile(
 
 
 #
-class TestWorkoutKmzCreationServiceInstantiation(
+class TestWorkoutFitCreationServiceInstantiation(
     WorkoutFitCreationServiceTestCase
 ):
     def test_it_instantiates_service(
