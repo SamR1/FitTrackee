@@ -13,6 +13,7 @@ class WorkoutKmlCreationService(WorkoutGpxCreationService):
     def parse_file(cls, workout_file: IO[bytes]) -> "gpxpy.gpx.GPX":
         """
         Only kml files with Placemark/MultiTrack/Tracks are supported.
+        Files with folders or multiple Placemark are no supported.
 
         For now, a gpx file generated from kml file contains one track (<trk>)
         corresponding to the first MultiTrack, containing one segment
@@ -28,6 +29,10 @@ class WorkoutKmlCreationService(WorkoutGpxCreationService):
             ) from e
 
         placemarks = kml_dict["kml"].get("Document", {}).get("Placemark", [])
+        if not placemarks:
+            raise WorkoutFileException(
+                "error", "unsupported kml file"
+            ) from None
         if isinstance(placemarks, dict):
             placemarks = [placemarks]
         placemark = placemarks[0]
@@ -60,18 +65,39 @@ class WorkoutKmlCreationService(WorkoutGpxCreationService):
             if isinstance(times, dict):
                 times = [times]
 
+            heart_rates = []
+            cadences = []
+            extended_data = (
+                kml_track.get("ExtendedData", {})
+                .get("SchemaData", {})
+                .get("gx:SimpleArrayData", [])
+            )
+            for data in extended_data:
+                if data["@name"] == "heartrate":
+                    heart_rates = data["gx:value"]
+                if data["@name"] == "cadence":
+                    cadences = data["gx:value"]
+
             for index, date in enumerate(times):
                 if not coords[index]:
                     continue
                 longitude, latitude, elevation = coords[index].split()
-                gpx_segment.points.append(
-                    gpxpy.gpx.GPXTrackPoint(
-                        longitude=float(longitude),
-                        latitude=float(latitude),
-                        elevation=float(elevation),
-                        time=parse_time(date),
-                    )
+                point = gpxpy.gpx.GPXTrackPoint(
+                    longitude=float(longitude),
+                    latitude=float(latitude),
+                    elevation=float(elevation),
+                    time=parse_time(date),
                 )
+                heart_rate = (
+                    heart_rates[index] if len(heart_rates) > index else None
+                )
+                cadence = cadences[index] if len(cadences) > index else None
+                if heart_rate is not None or cadence is not None:
+                    point.extensions.append(
+                        cls._get_extensions(heart_rate, cadence)
+                    )
+
+                gpx_segment.points.append(point)
             gpx_track.segments.append(gpx_segment)
         gpx = gpxpy.gpx.GPX()
         gpx.tracks.append(gpx_track)

@@ -43,7 +43,21 @@ class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
                 self.get_file_content(kml_file_wo_tracks)
             )
 
-    def test_it_return_gpx_with_kml_2_2_with_one_track(
+    def test_it_raises_error_when_kml_file_has_folders(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+        kml_file_with_folders: str,
+    ) -> None:
+        with (
+            pytest.raises(WorkoutFileException, match="unsupported kml file"),
+        ):
+            WorkoutKmlCreationService.parse_file(
+                self.get_file_content(kml_file_with_folders)
+            )
+
+    def test_it_returns_gpx_with_kml_2_2_with_one_track(
         self,
         app: "Flask",
         sport_1_cycling: "Sport",
@@ -63,7 +77,7 @@ class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
         assert moving_data.moving_time == 250.0
         assert round(moving_data.moving_distance, 1) == 320.0
 
-    def test_it_return_gpx_with_kml_2_2_with_two_tracks(
+    def test_it_returns_gpx_with_kml_2_2_with_two_tracks(
         self,
         app: "Flask",
         sport_1_cycling: "Sport",
@@ -80,7 +94,7 @@ class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
         assert moving_data.moving_time == 235.0
         assert round(moving_data.moving_distance, 1) == 299.5
 
-    def test_it_return_gpx_with_kml_2_3_with_one_track(
+    def test_it_returns_gpx_with_kml_2_3_with_one_track(
         self,
         app: "Flask",
         sport_1_cycling: "Sport",
@@ -97,7 +111,7 @@ class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
         assert moving_data.moving_time == 250.0
         assert round(moving_data.moving_distance, 1) == 320.0
 
-    def test_it_return_gpx_with_kml_2_3_with_two_tracks(
+    def test_it_returns_gpx_with_kml_2_3_with_two_tracks(
         self,
         app: "Flask",
         sport_1_cycling: "Sport",
@@ -114,7 +128,7 @@ class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
         assert moving_data.moving_time == 235.0
         assert round(moving_data.moving_distance, 1) == 299.5
 
-    def test_it_return_gpx_with_kml_without_name_and_description(
+    def test_it_returns_gpx_with_kml_without_name_and_description(
         self,
         app: "Flask",
         sport_1_cycling: "Sport",
@@ -127,6 +141,40 @@ class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
 
         assert gpx.name is None
         assert gpx.description is None
+
+    def test_it_returns_gpx_with_kml_2_2_with_extended_data(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+        kml_2_2_with_extended_data: str,
+    ) -> None:
+        gpx = WorkoutKmlCreationService.parse_file(
+            self.get_file_content(kml_2_2_with_extended_data)
+        )
+
+        assert isinstance(gpx, gpxpy.gpx.GPX)
+        assert len(gpx.tracks) == 1
+        assert gpx.tracks[0].name == "just a workout"
+        assert gpx.tracks[0].description == "some description"
+        assert len(gpx.tracks[0].segments) == 1
+        moving_data = gpx.get_moving_data()
+        assert moving_data.moving_time == 250.0
+        assert round(moving_data.moving_distance, 1) == 320.0
+        first_point = gpx.tracks[0].segments[0].points[0]
+        first_point_hr = first_point.extensions[0][0]
+        assert first_point_hr.tag == "{gpxtpx}hr"
+        assert first_point_hr.text == "92"
+        first_point_cad = first_point.extensions[0][1]
+        assert first_point_cad.tag == "{gpxtpx}cad"
+        assert first_point_cad.text == "0"
+        last_point = gpx.tracks[0].segments[0].points[-1]
+        last_point_hr = last_point.extensions[0][0]
+        assert last_point_hr.tag == "{gpxtpx}hr"
+        assert last_point_hr.text == "81"
+        last_point_cad = last_point.extensions[0][1]
+        assert last_point_cad.tag == "{gpxtpx}cad"
+        assert last_point_cad.text == "50"
 
 
 class TestWorkoutKmlCreationServiceInstantiation(WorkoutFileMixin):

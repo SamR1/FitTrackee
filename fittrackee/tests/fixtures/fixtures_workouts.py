@@ -1769,6 +1769,43 @@ def kml_file_wo_tracks() -> str:
 """
 
 
+@pytest.fixture()
+def kml_file_with_folders() -> str:
+    return """<?xml version="1.0" encoding="UTF-8"?>
+<kml
+  xmlns="http://www.opengis.net/kml/2.2"
+  xmlns:gx="http://www.google.com/kml/ext/2.2"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1"
+>
+  <Document>
+    <Folder>
+      <name>Waypoints</name>
+      <Placemark>
+        <name>LAP001</name>
+        <TimeStamp>          
+          <when>2018-03-13T13:40:45+01:00</when>
+        </TimeStamp>
+        <styleUrl>#waypoint</styleUrl>
+      </Placemark>
+    </Folder>
+    <Folder>
+      <name>Tracks</name>
+      <Placemark>
+        <name>2018-03-13T13:44:45+01:00</name>
+        <gx:Track>
+          <when>2018-03-13T13:44:45+01:00</when>
+          <when>2018-03-13T13:44:50+01:00</when>
+          <gx:coord>6.07367 44.68095 998</gx:coord>
+          <gx:coord>6.07367 44.68091 998</gx:coord>
+        </gx:Track>
+      </Placemark>        
+    </Folder>
+  </Document>
+</kml>
+"""
+
+
 kml_track_points_part_1 = """
           <when>2018-03-13T13:43:45+01:00</when>
           <gx:coord/>
@@ -1968,6 +2005,139 @@ def kml_2_2_with_two_tracks() -> str:
 """
         + kml_track_points_part_2
         + """
+        </gx:Track>
+      </gx:MultiTrack>
+    </Placemark>
+  </Document>
+</kml>
+"""
+    )
+
+
+@pytest.fixture()
+def kml_2_2_with_extended_data() -> str:
+    return (
+        """<?xml version="1.0" encoding="UTF-8"?>
+<kml
+  xmlns="http://www.opengis.net/kml/2.2"
+  xmlns:gx="http://www.google.com/kml/ext/2.2"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:opentracks="http://opentracksapp.com/xmlschemas/v1"
+>
+  <Document>
+    <open>1</open>
+    <visibility>1</visibility>
+    <name><![CDATA[just a workout]]></name>
+    <atom:generator><![CDATA[OpenTracks]]></atom:generator>
+    <Style id="track">
+      <LineStyle>
+        <color>7f0000ff</color>
+        <width>4</width>
+      </LineStyle>
+      <IconStyle>
+        <scale>1.3</scale>
+        <Icon/>
+      </IconStyle>
+    </Style>
+    <Style id="waypoint">
+      <IconStyle>
+        <Icon/>
+      </IconStyle>
+    </Style>
+    <Schema id="schema">
+      <gx:SimpleArrayField name="speed" type="float">
+        <displayName><![CDATA[Vitesse (m/s)]]></displayName>
+      </gx:SimpleArrayField>
+      <gx:SimpleArrayField name="power" type="float">
+        <displayName><![CDATA[Puissance (W)]]></displayName>
+      </gx:SimpleArrayField>
+      <gx:SimpleArrayField name="cadence" type="float">
+        <displayName><![CDATA[Cadence (tr/min)]]></displayName>
+      </gx:SimpleArrayField>
+      <gx:SimpleArrayField name="heart_rate" type="float">
+        <displayName><![CDATA[Fréquence cardiaque (bpm)]]></displayName>
+      </gx:SimpleArrayField>
+    </Schema>
+    <Placemark>
+      <name><![CDATA[just a workout]]></name>
+      <description><![CDATA[some description]]></description>
+      <icon><![CDATA[WALK]]></icon>
+      <opentracks:trackid>7ab3bdbd-6941-47be-9cbd-865b5cfe4f74 "
+       </opentracks:trackid>
+      <styleUrl>#track</styleUrl>
+      <ExtendedData>
+        <Data name="type">
+          <value><![CDATA[marche]]></value>
+        </Data>
+      </ExtendedData>
+      <gx:MultiTrack>
+        <altitudeMode>absolute</altitudeMode>
+        <gx:interpolate>1</gx:interpolate>
+        <gx:Track>
+"""
+        + kml_track_points_part_1
+        + kml_track_points_part_2
+        + """
+          <ExtendedData>
+            <SchemaData schemaUrl="#schema_1">
+              <gx:SimpleArrayData name="heartrate">
+                <gx:value></gx:value>
+                <gx:value>92</gx:value>
+                <gx:value>87</gx:value>
+                <gx:value>88</gx:value>
+                <gx:value>90</gx:value>
+                <gx:value>87</gx:value>
+                <gx:value>85</gx:value>
+                <gx:value>86</gx:value>
+                <gx:value>84</gx:value>
+                <gx:value>86</gx:value>
+                <gx:value>88</gx:value>
+                <gx:value>86</gx:value>
+                <gx:value>83</gx:value>
+                <gx:value>83</gx:value>
+                <gx:value>85</gx:value>
+                <gx:value>86</gx:value>
+                <gx:value>85</gx:value>
+                <gx:value>84</gx:value>
+                <gx:value>86</gx:value>
+                <gx:value>83</gx:value>
+                <gx:value>83</gx:value>
+                <gx:value>82</gx:value>
+                <gx:value>85</gx:value>
+                <gx:value>84</gx:value>
+                <gx:value>84</gx:value>
+                <gx:value>81</gx:value>
+              </gx:SimpleArrayData>
+              <gx:SimpleArrayData name="cadence">
+                <gx:value>0</gx:value>
+                <gx:value>0</gx:value>
+                <gx:value>50</gx:value>
+                <gx:value>51</gx:value>
+                <gx:value>54</gx:value>
+                <gx:value>53</gx:value>
+                <gx:value>54</gx:value>
+                <gx:value>54</gx:value>
+                <gx:value>55</gx:value>
+                <gx:value>56</gx:value>
+                <gx:value>56</gx:value>
+                <gx:value>55</gx:value>
+                <gx:value>56</gx:value>
+                <gx:value>54</gx:value>
+                <gx:value>56</gx:value>
+                <gx:value>53</gx:value>
+                <gx:value>56</gx:value>
+                <gx:value>55</gx:value>
+                <gx:value>55</gx:value>
+                <gx:value>55</gx:value>
+                <gx:value>54</gx:value>
+                <gx:value>57</gx:value>
+                <gx:value>57</gx:value>
+                <gx:value>52</gx:value>
+                <gx:value>50</gx:value>
+                <gx:value>50</gx:value>
+              </gx:SimpleArrayData>
+            </SchemaData>
+          </ExtendedData>        
         </gx:Track>
       </gx:MultiTrack>
     </Placemark>
