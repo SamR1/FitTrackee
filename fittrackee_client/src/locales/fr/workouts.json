@@ -2,14 +2,14 @@
   "ADD_WORKOUT": "Ajouter une séance",
   "ANALYSIS": "analyse",
   "ASCENT": "dénivelé positif",
+  "AVERAGE_CADENCE": "cadence moyenne",
+  "AVERAGE_HR": "fréquence cardiaque moyenne",
   "AVERAGE_SPEED": "vitesse moyenne",
-  "AVE_SPEED": "vitesse moy.",
   "AVE_ASCENT": "dénivelé positif moy.",
-  "AVE_CADENCE": "cadence moyenne",
   "AVE_DESCENT": "dénivelé négatif moy.",
   "AVE_DISTANCE": "distance moy.",
   "AVE_DURATION": "durée moy.",
-  "AVE_HR": "fréquence cardiaque moyenne",
+  "AVE_SPEED": "vitesse moy.",
   "BACK_TO_COMMENT": "revenir au commentaire",
   "BACK_TO_WORKOUT": "revenir à la séance",
   "CADENCE": "cadence",
@@ -116,13 +116,13 @@
       "LABEL": "battements par minute",
       "UNIT": "bpm"
     },
-    "spm": {
-      "LABEL": "pas par minute",
-      "UNIT": "ppm"
-    },
     "rpm": {
       "LABEL": "révolutions par minute",
       "UNIT": "rpm"
+    },
+    "spm": {
+      "LABEL": "pas par minute",
+      "UNIT": "ppm"
     }
   },
   "UPLOAD_FIRST_WORKOUT": "Ajoutez votre première séance !",

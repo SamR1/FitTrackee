@@ -52,27 +52,23 @@
             :workoutData="workoutData"
             :markerCoordinates="markerCoordinates"
           />
-          <WorkoutData
-            :workoutObject="workoutObject"
-            :useImperialUnits="displayOptions.useImperialUnits"
-            :displayHARecord="displayOptions.displayAscent"
-            :cadenceUnit="cadenceUnit"
+          <WorkoutVisibilityEquipment
+            class="desktop"
+            :workout-object="workoutObject"
+            :display-options="displayOptions"
           />
         </div>
-        <WorkoutVisibility
+        <WorkoutData
           :workoutObject="workoutObject"
           :useImperialUnits="displayOptions.useImperialUnits"
           :displayHARecord="displayOptions.displayAscent"
-          v-if="workoutObject.workoutVisibility"
+          :cadenceUnit="cadenceUnit"
         />
-        <div class="workout-equipments" v-if="workoutObject.equipments">
-          <EquipmentBadge
-            v-for="equipment in workoutObject.equipments"
-            :equipment="equipment"
-            :workout-id="workoutObject.workoutId"
-            :key="equipment.label"
-          />
-        </div>
+        <WorkoutVisibilityEquipment
+          class="mobile"
+          :workout-object="workoutObject"
+          :display-options="displayOptions"
+        />
       </template>
     </Card>
   </div>
@@ -83,13 +79,12 @@
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
-  import EquipmentBadge from '@/components/Common/EquipmentBadge.vue'
   import ReportForm from '@/components/Common/ReportForm.vue'
   import WorkoutActionAppeal from '@/components/Workout/WorkoutActionAppeal.vue'
   import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
-  import WorkoutVisibility from '@/components/Workout/WorkoutDetail/WorkoutVisibility.vue'
+  import WorkoutVisibilityEquipment from '@/components/Workout/WorkoutDetail/WorkoutVisibilityEquipment.vue'
   import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { IDisplayOptions } from '@/types/application'
   import type { TCoordinates } from '@/types/map'
@@ -284,7 +279,6 @@
     ::v-deep(.card) {
       margin: 0 $default-margin;
       width: 100%;
-      margin-bottom: 0;
       .card-title {
         padding: $default-padding $default-padding * 1.5;
         .report-submitted {
@@ -303,10 +297,16 @@
       }
       .card-content {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         .workout-map-data {
           display: flex;
-          flex-direction: row;
+          flex-direction: column;
+        }
+        .desktop {
+          display: block;
+        }
+        .mobile {
+          display: none;
         }
         .workout-equipments {
           display: flex;
@@ -323,9 +323,15 @@
           font-size: 0.95em;
         }
         @media screen and (max-width: $medium-limit) {
+          flex-direction: column;
           .workout-map-data {
             display: flex;
-            flex-direction: column;
+          }
+          .desktop {
+            display: none;
+          }
+          .mobile {
+            display: block;
           }
         }
       }
