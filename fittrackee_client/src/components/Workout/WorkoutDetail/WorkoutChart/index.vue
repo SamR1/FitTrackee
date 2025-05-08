@@ -120,7 +120,9 @@
     if (datasets.value.datasets.cadence.data.length > 0) {
       displayedDatasets.push(datasets.value.datasets.cadence)
     }
-    displayedDatasets.push(datasets.value.datasets.elevation)
+    if (datasets.value.datasets.elevation.data.length > 0) {
+      displayedDatasets.push(datasets.value.datasets.elevation)
+    }
     return {
       labels: displayDistance.value
         ? datasets.value.distance_labels
@@ -180,11 +182,43 @@
           ...textColors.value,
         },
       },
-      yMultiple: {
-        display(context: any): boolean {
-          const displayedDatasets = getDisplayedDatasets(context)
-          return displayedDatasets.length === 1
+      yLeft: {
+        beginAtZero: beginElevationAtZero.value,
+        display: true,
+        grid: {
+          drawOnChartArea: false,
+          ...lineColors.value,
         },
+        border: {
+          ...lineColors.value,
+        },
+        position: 'left',
+        title: {
+          display: true,
+          text: (context: any): string[] => {
+            const displayedDatasets = getDisplayedDatasets(context, 'yLeft')
+            if (displayedDatasets.length === 0) {
+              return []
+            }
+            return displayedDatasets.map(
+              (d) => d.label + getUnitLabelForYAxis(d.id)
+            )
+          },
+          ...textColors.value,
+        },
+        ticks: {
+          display: (context: any): boolean => {
+            const displayedDatasets = getDisplayedDatasets(context, 'yLeft')
+            return displayedDatasets.length === 1
+          },
+          ...textColors.value,
+        },
+        afterFit: function (scale: LayoutItem) {
+          scale.width = 50
+        },
+      },
+      yRight: {
+        beginAtZero: beginElevationAtZero.value,
         grid: {
           drawOnChartArea: false,
           ...lineColors.value,
@@ -196,7 +230,7 @@
         title: {
           display: true,
           text: (context: any): string => {
-            const displayedDatasets = getDisplayedDatasets(context)
+            const displayedDatasets = getDisplayedDatasets(context, 'yRight')
             if (displayedDatasets.length !== 1) {
               return ''
             }
@@ -208,30 +242,14 @@
           ...textColors.value,
         },
         ticks: {
+          display(context: any): boolean {
+            const displayedDatasets = getDisplayedDatasets(context, 'yRight')
+            return displayedDatasets.length === 1
+          },
           ...textColors.value,
         },
         afterFit: function (scale: LayoutItem) {
           scale.width = 50
-        },
-      },
-      yElevation: {
-        beginAtZero: beginElevationAtZero.value,
-        display: hasElevation.value,
-        grid: {
-          drawOnChartArea: false,
-          ...lineColors.value,
-        },
-        border: {
-          ...lineColors.value,
-        },
-        position: 'left',
-        title: {
-          display: true,
-          text: t('workouts.ELEVATION') + ` (${fromMUnit})`,
-          ...textColors.value,
-        },
-        ticks: {
-          ...textColors.value,
         },
       },
     },
@@ -328,11 +346,14 @@
         return ''
     }
   }
-  function getDisplayedDatasets(context: any): IChartDataset[] {
+  function getDisplayedDatasets(
+    context: any,
+    yaxisID: string
+  ): IChartDataset[] {
     const chart = context.scale.chart
     return chart.data.datasets.filter(
       (dataset: IChartDataset, index: number) =>
-        dataset.yAxisID !== 'yElevation' && !chart.getDatasetMeta(index).hidden
+        dataset.yAxisID === yaxisID && !chart.getDatasetMeta(index).hidden
     )
   }
   function getTooltipTitle(tooltipItems: TooltipItem<any>[]) {
@@ -348,7 +369,7 @@
   }
   function getTooltipLabel(context: any) {
     const label = ` ${context.dataset.label}: ${context.formattedValue}`
-    if (context.dataset.yAxisID === 'yElevation') {
+    if (context.dataset.id === 'elevation') {
       return label + ` ${fromMUnit}`
     }
     if (context.dataset.id === 'cadence') {
@@ -393,6 +414,8 @@
             display: flex;
             margin-bottom: 0;
             padding: 0;
+            flex-wrap: wrap;
+            justify-content: space-around;
 
             li {
               cursor: pointer;

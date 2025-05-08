@@ -33,7 +33,7 @@ export const getDatasets = (
       borderColor: [useDarkMode ? '#5f5c97' : '#8884d8'],
       borderWidth: 2,
       data: [],
-      yAxisID: 'yMultiple',
+      yAxisID: 'yLeft',
     },
     elevation: {
       id: 'elevation',
@@ -43,7 +43,7 @@ export const getDatasets = (
       borderWidth: 1,
       fill: true,
       data: [],
-      yAxisID: 'yElevation',
+      yAxisID: 'yRight',
     },
     hr: {
       id: 'hr',
@@ -52,7 +52,7 @@ export const getDatasets = (
       borderColor: [useDarkMode ? '#b41e4a' : '#ec1f5e'],
       borderWidth: 1,
       data: [],
-      yAxisID: 'yMultiple',
+      yAxisID: 'yLeft',
     },
     cadence: {
       id: 'cadence',
@@ -61,7 +61,7 @@ export const getDatasets = (
       borderColor: [useDarkMode ? '#989898' : '#494949'],
       borderWidth: 1,
       data: [],
-      yAxisID: 'yMultiple',
+      yAxisID: 'yLeft',
     },
   }
   const distance_labels: unknown[] = []
@@ -89,6 +89,14 @@ export const getDatasets = (
     }
     coordinates.push({ latitude: data.latitude, longitude: data.longitude })
   })
+
+  if (datasets.elevation.data.length == 0) {
+    if (datasets.hr.data.length > 0) {
+      datasets.hr.yAxisID = 'yRight'
+    } else if (datasets.cadence.data.length > 0) {
+      datasets.cadence.yAxisID = 'yRight'
+    }
+  }
 
   return { distance_labels, duration_labels, datasets, coordinates }
 }
