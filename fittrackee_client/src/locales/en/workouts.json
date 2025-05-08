@@ -2,13 +2,13 @@
   "ADD_WORKOUT": "Add a workout",
   "ANALYSIS": "analysis",
   "ASCENT": "ascent",
+  "AVERAGE_CADENCE": "average cadence",
+  "AVERAGE_HR": "average heart rate",
   "AVERAGE_SPEED": "average speed",
   "AVE_ASCENT": "ave. ascent",
-  "AVE_CADENCE": "ave. cadence",
   "AVE_DESCENT": "ave. descent",
   "AVE_DISTANCE": "ave. distance",
   "AVE_DURATION": "ave. duration",
-  "AVE_HR": "ave. heart rate",
   "AVE_SPEED": "ave. speed",
   "BACK_TO_COMMENT": "back to comment",
   "BACK_TO_WORKOUT": "back to workout",
@@ -56,7 +56,7 @@
   "MAX_ALTITUDE": "max. altitude",
   "MAX_CADENCE": "max. cadence",
   "MAX_FILES": "max files",
-  "MAX_HR": "max. hr",
+  "MAX_HR": "max. heart rate",
   "MAX_SIZE": "max size",
   "MAX_SPEED": "max. speed",
   "MIN_ALTITUDE": "min. altitude",
@@ -116,13 +116,13 @@
       "LABEL": "beats per minute",
       "UNIT": "bpm"
     },
-    "spm": {
-      "LABEL": "steps per minute",
-      "UNIT": "spm"
-    },
     "rpm": {
       "LABEL": "revolutions per minute",
       "UNIT": "rpm"
+    },
+    "spm": {
+      "LABEL": "steps per minute",
+      "UNIT": "spm"
     }
   },
   "UPLOAD_FIRST_WORKOUT": "Upload one!",
