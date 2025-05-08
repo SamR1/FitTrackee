@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 from typing import IO, TYPE_CHECKING, List, Optional, Tuple, Union
 
 import gpxpy.gpx
+from lxml import etree as ET
 
 from fittrackee import db
 
@@ -53,6 +54,23 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
             get_weather,
         )
         self.gpx: "gpxpy.gpx.GPX" = self.parse_file(workout_file)
+
+    @staticmethod
+    def _get_extensions(
+        heart_rate: Optional[int], cadence: Optional[int]
+    ) -> "ET.Element":
+        track_point_extension = ET.Element("{gpxtpx}TrackPointExtension")
+        if heart_rate is not None:
+            heart_rate_element = ET.SubElement(
+                track_point_extension, "{gpxtpx}hr"
+            )
+            heart_rate_element.text = str(heart_rate)
+        if cadence is not None:
+            cadence_element = ET.SubElement(
+                track_point_extension, "{gpxtpx}cad"
+            )
+            cadence_element.text = str(cadence)
+        return track_point_extension
 
     @classmethod
     def parse_file(cls, workout_file: IO[bytes]) -> "gpxpy.gpx.GPX":
