@@ -77,3 +77,28 @@ def can_view(
 
     # visibility level is private
     return False
+
+
+def can_view_heart_rate(
+    target_user: "User",
+    user: Optional["User"] = None,
+) -> bool:
+    if user and (user.id == target_user.id):
+        return True
+
+    if target_user.hr_visibility == VisibilityLevel.PUBLIC and (
+        not user or not user.is_blocked_by(target_user)
+    ):
+        return True
+
+    if not user:
+        return False
+
+    if (
+        target_user.hr_visibility == VisibilityLevel.FOLLOWERS
+        and user in target_user.followers.all()
+    ):
+        return True
+
+    # visibility level is private
+    return False

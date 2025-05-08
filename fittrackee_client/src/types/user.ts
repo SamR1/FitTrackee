@@ -53,6 +53,7 @@ export interface IAuthUserProfile extends IUserProfile {
   display_ascent: boolean
   email: string
   hide_profile_in_users_directory: boolean
+  hr_visibility: TVisibilityLevels
   imperial_units: boolean
   start_elevation_at_zero: boolean
   use_raw_gpx_speed: boolean
@@ -114,6 +115,7 @@ export interface IUserPreferencesPayload {
   date_format: string
   display_ascent: boolean
   hide_profile_in_users_directory: boolean
+  hr_visibility: TVisibilityLevels
   imperial_units: boolean
   language: TLanguage
   manually_approves_followers: boolean

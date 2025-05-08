@@ -1,4 +1,8 @@
-"""replace 'users_data_export' table with 'user_tasks' table, update 'app_config' and 'workouts' tables
+"""replace 'users_data_export' table with 'user_tasks' table and update following tables:
+  - 'app_config'
+  - 'users'
+  - 'workouts'
+  - 'workout_segments'
 
 Revision ID: b0ef6ca5ec92
 Revises: 78a90b587a9b
@@ -54,7 +58,7 @@ def upgrade():
         sa.Column("message_id", sa.String(length=36), nullable=True),
         sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
         sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("uuid", name='user_tasks_uuid_key'),
+        sa.UniqueConstraint("uuid", name="user_tasks_uuid_key"),
     )
     with op.batch_alter_table("user_tasks", schema=None) as batch_op:
         batch_op.create_index(
@@ -105,13 +109,58 @@ def upgrade():
         batch_op.alter_column("file_limit_import", nullable=False)
         batch_op.drop_column("gpx_limit_import")
 
-    with op.batch_alter_table('workouts', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('original_file', sa.String(length=255), nullable=True))
+    with op.batch_alter_table("users", schema=None) as batch_op:
+        batch_op.add_column(
+            sa.Column(
+                "hr_visibility",
+                sa.Enum(
+                    "PUBLIC", "FOLLOWERS", "PRIVATE", name="visibility_levels"
+                ),
+                server_default="PRIVATE",
+                nullable=False,
+            )
+        )
+
+    with op.batch_alter_table("workout_segments", schema=None) as batch_op:
+        batch_op.add_column(sa.Column("max_hr", sa.Integer(), nullable=True))
+        batch_op.add_column(sa.Column("ave_hr", sa.Integer(), nullable=True))
+        batch_op.add_column(
+            sa.Column("max_cadence", sa.Integer(), nullable=True)
+        )
+        batch_op.add_column(
+            sa.Column("ave_cadence", sa.Integer(), nullable=True)
+        )
+
+    with op.batch_alter_table("workouts", schema=None) as batch_op:
+        batch_op.add_column(
+            sa.Column("original_file", sa.String(length=255), nullable=True)
+        )
+        batch_op.add_column(sa.Column("max_hr", sa.Integer(), nullable=True))
+        batch_op.add_column(sa.Column("ave_hr", sa.Integer(), nullable=True))
+        batch_op.add_column(
+            sa.Column("max_cadence", sa.Integer(), nullable=True)
+        )
+        batch_op.add_column(
+            sa.Column("ave_cadence", sa.Integer(), nullable=True)
+        )
 
 
 def downgrade():
-    with op.batch_alter_table('workouts', schema=None) as batch_op:
-        batch_op.drop_column('original_file')
+    with op.batch_alter_table("workouts", schema=None) as batch_op:
+        batch_op.drop_column("ave_cadence")
+        batch_op.drop_column("max_cadence")
+        batch_op.drop_column("ave_hr")
+        batch_op.drop_column("max_hr")
+        batch_op.drop_column("original_file")
+
+    with op.batch_alter_table("workout_segments", schema=None) as batch_op:
+        batch_op.drop_column("ave_cadence")
+        batch_op.drop_column("max_cadence")
+        batch_op.drop_column("ave_hr")
+        batch_op.drop_column("max_hr")
+
+    with op.batch_alter_table("users", schema=None) as batch_op:
+        batch_op.drop_column("hr_visibility")
 
     with op.batch_alter_table("app_config", schema=None) as batch_op:
         batch_op.add_column(

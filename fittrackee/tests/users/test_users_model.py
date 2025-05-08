@@ -206,6 +206,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             serialized_user["notification_preferences"]
             == user_1.notification_preferences
         )
+        assert serialized_user["hr_visibility"] == user_1.hr_visibility
 
     def test_it_returns_empty_dict_when_notification_preferences_are_none(
         self, app: Flask, user_1: User
@@ -333,6 +334,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
         assert "workouts_visibility" not in serialized_user
         assert "analysis_visibility" not in serialized_user
         assert "map_visibility" not in serialized_user
+        assert "hr_visibility" not in serialized_user
         assert "manually_approves_followers" not in serialized_user
         assert "hide_profile_in_users_directory" not in serialized_user
         assert "notification_preferences" not in serialized_user
@@ -419,6 +421,7 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
         assert "workouts_visibility" not in serialized_user
         assert "analysis_visibility" not in serialized_user
         assert "map_visibility" not in serialized_user
+        assert "hr_visibility" not in serialized_user
         assert "manually_approves_followers" not in serialized_user
         assert "hide_profile_in_users_directory" not in serialized_user
         assert "notification_preferences" not in serialized_user
@@ -498,6 +501,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert "workouts_visibility" not in serialized_user
         assert "analysis_visibility" not in serialized_user
         assert "map_visibility" not in serialized_user
+        assert "hr_visibility" not in serialized_user
         assert "manually_approves_followers" not in serialized_user
         assert "hide_profile_in_users_directory" not in serialized_user
         assert "notification_preferences" not in serialized_user

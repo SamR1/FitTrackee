@@ -18,6 +18,7 @@
             :markerCoordinates="markerCoordinates"
             :displaySegment="displaySegment"
             :isWorkoutOwner="isWorkoutOwner"
+            :cadenceUnit="cadenceUnit"
           />
           <WorkoutChart
             v-if="
@@ -28,6 +29,7 @@
             :authUser="authUser"
             :displaySegment="displaySegment"
             :sport="sport"
+            :cadenceUnit="cadenceUnit"
             @getCoordinates="updateCoordinates"
           />
           <WorkoutContent
@@ -71,6 +73,7 @@
 <script setup lang="ts">
   import { computed, ref, toRefs, watch, onBeforeMount, onUnmounted } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
+  import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
   import Comments from '@/components/Comment/Comments.vue'
@@ -87,6 +90,7 @@
   import type { ISport } from '@/types/sports.ts'
   import type { IWorkoutData, IWorkoutPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
+  import { getCadenceUnit } from '@/utils/workouts.ts'
 
   interface Props {
     displaySegment: boolean
@@ -94,6 +98,7 @@
   const props = defineProps<Props>()
   const { displaySegment } = toRefs(props)
 
+  const { t } = useI18n()
   const route = useRoute()
   const store = useStore()
 
@@ -113,6 +118,9 @@
   )
   const sport: ComputedRef<ISport | null> = computed(() =>
     getWorkoutSport(workoutData.value.workout)
+  )
+  const cadenceUnit: ComputedRef<string> = computed(() =>
+    getCadenceUnit(sport.value?.label, t)
   )
 
   function updateCoordinates(coordinates: TCoordinates) {
