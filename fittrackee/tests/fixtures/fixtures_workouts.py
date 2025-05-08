@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
@@ -2514,3 +2515,341 @@ def tcx_with_invalid_elevation() -> str:
     </Activities>
 </TrainingCenterDatabase>
 """
+
+
+@pytest.fixture()
+def tcx_with_heart_rate_and_cadence() -> str:
+    return """<?xml version="1.0" encoding="UTF-8"?>
+<TrainingCenterDatabase
+  xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd"
+  xmlns:ns5="http://www.garmin.com/xmlschemas/ActivityGoals/v1"
+  xmlns:ns3="http://www.garmin.com/xmlschemas/ActivityExtension/v2"
+  xmlns:ns2="http://www.garmin.com/xmlschemas/UserProfile/v2"
+  xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ns4="http://www.garmin.com/xmlschemas/ProfileExtension/v1"
+>
+    <Activities>
+        <Activity Sport="Biking">
+            <Id>2018-03-13T12:44:45Z</Id>
+            <Lap StartTime="2018-03-13T12:44:45Z">
+                <Track>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:44:45Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68095000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073670000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>997.00000</AltitudeMeters>
+                      <DistanceMeters>0.000</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>92</Value>
+                      </HeartRateBpm>
+                      <Cadence>0</Cadence>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:44:50Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68091000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073670000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>996.00000</AltitudeMeters>
+                      <DistanceMeters>4.449</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>87</Value>
+                      </HeartRateBpm>
+                      <Cadence>50</Cadence>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:45:00Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68080000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073640000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>996.00000</AltitudeMeters>
+                      <DistanceMeters>16.908</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>88</Value>
+                      </HeartRateBpm>
+                      <Cadence>51</Cadence>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:45:05Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68075000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073640000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>996.00000</AltitudeMeters>
+                      <DistanceMeters>22.467</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>90</Value>
+                      </HeartRateBpm>
+                      <Cadence>54</Cadence>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:45:10Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68071000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073640000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>996.00000</AltitudeMeters>
+                      <DistanceMeters>26.914</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>87</Value>
+                      </HeartRateBpm>
+                      <Cadence>53</Cadence>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:45:30Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68049000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073610000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>995.00000</AltitudeMeters>
+                      <DistanceMeters>51.492</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>85</Value>
+                      </HeartRateBpm>
+                      <Cadence>54</Cadence>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:45:55Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68019000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073560000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>993.00000</AltitudeMeters>
+                      <DistanceMeters>85.083</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>86</Value>
+                      </HeartRateBpm>
+                      <Cadence>54</Cadence>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:46:00Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68014000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073550000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>992.00000</AltitudeMeters>
+                      <DistanceMeters>90.698</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>84</Value>
+                      </HeartRateBpm>
+                      <Cadence>55</Cadence>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:46:15Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.67995000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073580000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>991.00000</AltitudeMeters>
+                      <DistanceMeters>111.958</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>86</Value>
+                      </HeartRateBpm>
+                      <Cadence>53</Cadence>
+                    </Trackpoint>
+                </Track>
+            </Lap>
+        </Activity>
+    </Activities>
+</TrainingCenterDatabase>
+"""
+
+
+@pytest.fixture()
+def tcx_with_heart_rate_and_ns3_run_cadence() -> str:
+    return """<?xml version="1.0" encoding="UTF-8"?>
+<TrainingCenterDatabase
+  xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd"
+  xmlns:ns5="http://www.garmin.com/xmlschemas/ActivityGoals/v1"
+  xmlns:ns3="http://www.garmin.com/xmlschemas/ActivityExtension/v2"
+  xmlns:ns2="http://www.garmin.com/xmlschemas/UserProfile/v2"
+  xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:ns4="http://www.garmin.com/xmlschemas/ProfileExtension/v1"
+>
+    <Activities>
+        <Activity Sport="Running">
+            <Id>2018-03-13T12:44:45Z</Id>
+            <Lap StartTime="2018-03-13T12:44:45Z">
+                <Track>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:44:45Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68095000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073670000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>997.00000</AltitudeMeters>
+                      <DistanceMeters>0.000</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>92</Value>
+                      </HeartRateBpm>                      
+                      <Extensions>
+                        <ns3:TPX>
+                          <ns3:RunCadence>0</ns3:RunCadence>
+                        </ns3:TPX>
+                      </Extensions>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:44:50Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68091000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073670000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>996.00000</AltitudeMeters>
+                      <DistanceMeters>4.449</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>87</Value>
+                      </HeartRateBpm>
+                      <Extensions>
+                        <ns3:TPX>
+                          <ns3:RunCadence>50</ns3:RunCadence>
+                        </ns3:TPX>
+                      </Extensions>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:45:00Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68080000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073640000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>996.00000</AltitudeMeters>
+                      <DistanceMeters>16.908</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>88</Value>
+                      </HeartRateBpm>
+                      <Extensions>
+                        <ns3:TPX>
+                          <ns3:RunCadence>51</ns3:RunCadence>
+                        </ns3:TPX>
+                      </Extensions>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:45:05Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68075000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073640000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>996.00000</AltitudeMeters>
+                      <DistanceMeters>22.467</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>90</Value>
+                      </HeartRateBpm>
+                      <Extensions>
+                        <ns3:TPX>
+                          <ns3:RunCadence>54</ns3:RunCadence>
+                        </ns3:TPX>
+                      </Extensions>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:45:10Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68071000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073640000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>996.00000</AltitudeMeters>
+                      <DistanceMeters>26.914</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>87</Value>
+                      </HeartRateBpm>
+                      <Extensions>
+                        <ns3:TPX>
+                          <ns3:RunCadence>53</ns3:RunCadence>
+                        </ns3:TPX>
+                      </Extensions>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:45:30Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68049000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073610000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>995.00000</AltitudeMeters>
+                      <DistanceMeters>51.492</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>85</Value>
+                      </HeartRateBpm>
+                      <Extensions>
+                        <ns3:TPX>
+                          <ns3:RunCadence>54</ns3:RunCadence>
+                        </ns3:TPX>
+                      </Extensions>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:45:55Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68019000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073560000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>993.00000</AltitudeMeters>
+                      <DistanceMeters>85.083</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>86</Value>
+                      </HeartRateBpm>
+                      <Extensions>
+                        <ns3:TPX>
+                          <ns3:RunCadence>54</ns3:RunCadence>
+                        </ns3:TPX>
+                      </Extensions>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:46:00Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.68014000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073550000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>992.00000</AltitudeMeters>
+                      <DistanceMeters>90.698</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>84</Value>
+                      </HeartRateBpm>
+                      <Extensions>
+                        <ns3:TPX>
+                          <ns3:RunCadence>55</ns3:RunCadence>
+                        </ns3:TPX>
+                      </Extensions>
+                    </Trackpoint>
+                    <Trackpoint>
+                      <Time>2018-03-13T12:46:15Z</Time>
+                      <Position>
+                        <LatitudeDegrees>44.67995000</LatitudeDegrees>
+                        <LongitudeDegrees>6.073580000</LongitudeDegrees>
+                      </Position>
+                      <AltitudeMeters>991.00000</AltitudeMeters>
+                      <DistanceMeters>111.958</DistanceMeters>
+                      <HeartRateBpm>
+                        <Value>86</Value>
+                      </HeartRateBpm>
+                      <Extensions>
+                        <ns3:TPX>
+                          <ns3:RunCadence>53</ns3:RunCadence>
+                        </ns3:TPX>
+                      </Extensions>
+                    </Trackpoint>
+                </Track>
+            </Lap>
+        </Activity>
+    </Activities>
+</TrainingCenterDatabase>
+"""
+
+
+@pytest.fixture()
+def tcx_with_heart_rate_and_run_cadence(
+    tcx_with_heart_rate_and_ns3_run_cadence: str,
+) -> str:
+    return tcx_with_heart_rate_and_ns3_run_cadence.replace("ns3:", "")
+
+
+@pytest.fixture()
+def tcx_without_coordinates(
+    tcx_with_one_lap_and_one_track: str,
+) -> str:
+    return re.sub(
+        r"<Position>([\r\n\W\S]*)</Position>",
+        "",
+        tcx_with_one_lap_and_one_track,
+    )

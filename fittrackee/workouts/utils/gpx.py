@@ -3,24 +3,8 @@ from typing import List, Optional
 
 import gpxpy.gpx
 
+from ..constants import CADENCE_SPORTS, CADENCE_TAG, HR_TAG
 from ..exceptions import WorkoutGPXException
-
-HR_TAG = "{http://www.garmin.com/xmlschemas/TrackPointExtension/v1}hr"
-CADENCE_TAG = "{http://www.garmin.com/xmlschemas/TrackPointExtension/v1}cad"
-CADENCE_SPORTS = [
-    "Cycling (Sport)",
-    "Cycling (Trekking)",
-    "Cycling (Transport)",
-    "Cycling (Virtual)",
-    "Halfbike",
-    "Mountain Biking",
-    "Mountain Biking (Electric)",
-    "Hiking",
-    "Snowshoes",
-    "Running",
-    "Trail",
-    "Walking",
-]
 
 
 def open_gpx_file(gpx_file: str) -> Optional[gpxpy.gpx.GPX]:
