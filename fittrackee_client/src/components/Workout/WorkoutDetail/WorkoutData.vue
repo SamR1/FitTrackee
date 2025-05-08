@@ -113,7 +113,7 @@
         src="/img/workouts/cadence.svg"
         :alt="$t('workouts.CADENCE')"
       />
-      <span class="label">{{ $t('workouts.AVE_CADENCE') }}</span
+      <span class="label">{{ $t('workouts.AVERAGE_CADENCE') }}</span
       >:
       <span class="value" :title="t(`workouts.UNITS.${cadenceUnit}.LABEL`)"
         >{{ workoutObject.aveCadence }} {{ cadenceUnit }}</span
@@ -130,7 +130,7 @@
       v-if="workoutObject.aveHr !== null && workoutObject.maxHr !== null"
     >
       <i class="fa fa-heartbeat" aria-hidden="true" />
-      <span class="label">{{ $t('workouts.AVE_HR') }}</span
+      <span class="label">{{ $t('workouts.AVERAGE_HR') }}</span
       >:
       <span class="value" :title="t(`workouts.UNITS.bpm.LABEL`)"
         >{{ workoutObject.aveHr }} {{ t(`workouts.UNITS.bpm.UNIT`) }}</span
@@ -191,7 +191,7 @@
     }
 
     .workout-data {
-      padding: $default-padding * 0.5 0;
+      padding: $default-padding * 0.25 0;
       .label {
         text-transform: capitalize;
       }
