@@ -281,6 +281,22 @@
             </option>
           </select>
         </label>
+        <label class="form-items">
+          {{ $t('visibility_levels.HR_VISIBILITY') }}
+          <select
+            id="hr_visibility"
+            v-model="userForm.hr_visibility"
+            :disabled="authUserLoading"
+          >
+            <option
+              v-for="level in visibilityLevels"
+              :value="level"
+              :key="level"
+            >
+              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+            </option>
+          </select>
+        </label>
         <div class="form-buttons">
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
@@ -420,6 +436,7 @@
     date_format: 'dd/MM/yyyy',
     display_ascent: true,
     hide_profile_in_users_directory: true,
+    hr_visibility: 'private',
     imperial_units: false,
     language: 'en',
     manually_approves_followers: true,
@@ -480,6 +497,7 @@
       : 'private'
     userForm.hide_profile_in_users_directory =
       user.hide_profile_in_users_directory
+    userForm.hr_visibility = user.hr_visibility ? user.hr_visibility : 'private'
   }
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES, userForm)
@@ -550,7 +568,8 @@
     #use_dark_mode,
     #map_visibility,
     #analysis_visibility,
-    #workouts_visibility {
+    #workouts_visibility,
+    #hr_visibility {
       padding: $default-padding * 0.5;
     }
   }

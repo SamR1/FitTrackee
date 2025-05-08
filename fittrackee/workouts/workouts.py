@@ -1,4 +1,5 @@
 import json
+import re
 from datetime import timedelta
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
@@ -39,7 +40,11 @@ from fittrackee.responses import (
 )
 from fittrackee.users.models import User, UserTask
 from fittrackee.utils import decode_short_id
-from fittrackee.visibility_levels import VisibilityLevel, can_view
+from fittrackee.visibility_levels import (
+    VisibilityLevel,
+    can_view,
+    can_view_heart_rate,
+)
 
 from .decorators import check_workout
 from .exceptions import (
@@ -738,9 +743,14 @@ def get_workout_data(
     try:
         absolute_gpx_filepath = get_absolute_file_path(workout.gpx)
         chart_data_content: Optional[List] = []
+        file_content: Optional[str] = None
+        can_see_heart_rate = can_view_heart_rate(workout.user, auth_user)
         if data_type == "chart_data":
             chart_data_content = get_chart_data(
-                absolute_gpx_filepath, workout.sport.label, segment_id
+                absolute_gpx_filepath,
+                workout.sport.label,
+                can_see_heart_rate=can_see_heart_rate,
+                segment_id=segment_id,
             )
         else:  # data_type == 'gpx'
             with open(absolute_gpx_filepath, encoding="utf-8") as f:
@@ -749,6 +759,15 @@ def get_workout_data(
                     gpx_segment_content = extract_segment_from_gpx_file(
                         gpx_content, segment_id
                     )
+            file_content = (
+                gpx_content if segment_id is None else gpx_segment_content
+            )
+            if file_content and not can_see_heart_rate:
+                file_content = re.sub(
+                    r"<(.*):hr>([\r\n\d]*)</(.*):hr>",
+                    "",
+                    file_content,
+                )
     except WorkoutGPXException as e:
         appLog.error(e.message)
         if e.status == "not found":
@@ -765,11 +784,7 @@ def get_workout_data(
                 data_type: (
                     chart_data_content
                     if data_type == "chart_data"
-                    else (
-                        gpx_content
-                        if segment_id is None
-                        else gpx_segment_content
-                    )
+                    else file_content
                 )
             }
         ),

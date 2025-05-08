@@ -20,7 +20,9 @@ class TestGetChartData:
             read_data=gpx_file_wo_track,
         ):
             chart_data = get_chart_data(
-                gpx_file_wo_track, sport_1_cycling.label
+                gpx_file_wo_track,
+                sport_1_cycling.label,
+                can_see_heart_rate=True,
             )
 
         assert chart_data is None
@@ -31,7 +33,9 @@ class TestGetChartData:
         with patch(
             "builtins.open", new_callable=mock_open, read_data=gpx_file
         ):
-            chart_data = get_chart_data(gpx_file, sport_1_cycling.label)
+            chart_data = get_chart_data(
+                gpx_file, sport_1_cycling.label, can_see_heart_rate=True
+            )
 
         assert chart_data is not None
         assert chart_data[0] == {
@@ -65,7 +69,10 @@ class TestGetChartData:
             read_data=gpx_file_with_3_segments,
         ):
             chart_data = get_chart_data(
-                gpx_file_with_3_segments, sport_1_cycling.label, 1
+                gpx_file_with_3_segments,
+                sport_1_cycling.label,
+                can_see_heart_rate=True,
+                segment_id=1,
             )
 
         assert chart_data is not None
@@ -100,7 +107,9 @@ class TestGetChartData:
             read_data=gpx_file_with_microseconds,
         ):
             chart_data = get_chart_data(
-                gpx_file_with_microseconds, sport_1_cycling.label
+                gpx_file_with_microseconds,
+                sport_1_cycling.label,
+                can_see_heart_rate=True,
             )
 
         assert chart_data is not None
@@ -165,7 +174,9 @@ class TestGetChartData:
             read_data=gpx_file_with_gpxtpx_extensions,
         ):
             chart_data = get_chart_data(
-                gpx_file_with_gpxtpx_extensions, sport_1_cycling.label
+                gpx_file_with_gpxtpx_extensions,
+                sport_1_cycling.label,
+                can_see_heart_rate=True,
             )
 
         self.assert_chart_data(chart_data)
@@ -182,7 +193,9 @@ class TestGetChartData:
             read_data=gpx_file_with_ns3_extensions,
         ):
             chart_data = get_chart_data(
-                gpx_file_with_ns3_extensions, sport_1_cycling.label
+                gpx_file_with_ns3_extensions,
+                sport_1_cycling.label,
+                can_see_heart_rate=True,
             )
 
         self.assert_chart_data(chart_data)
@@ -199,7 +212,9 @@ class TestGetChartData:
             read_data=gpx_file_with_gpxtpx_extensions,
         ):
             chart_data = get_chart_data(
-                gpx_file_with_gpxtpx_extensions, sport_4_paragliding.label
+                gpx_file_with_gpxtpx_extensions,
+                sport_4_paragliding.label,
+                can_see_heart_rate=True,
             )
 
         assert chart_data is not None
@@ -218,6 +233,45 @@ class TestGetChartData:
             "duration": 250.0,
             "elevation": 975.0,
             "hr": 81,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "speed": 4.33,
+            "time": datetime(2018, 3, 13, 12, 48, 55, tzinfo=timezone.utc),
+        }
+
+    def test_it_does_not_returns_heart_rate_when_flag_is_false(
+        self,
+        app: "Flask",
+        gpx_file_with_gpxtpx_extensions: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=gpx_file_with_gpxtpx_extensions,
+        ):
+            chart_data = get_chart_data(
+                gpx_file_with_gpxtpx_extensions,
+                sport_1_cycling.label,
+                can_see_heart_rate=False,
+            )
+
+        assert chart_data is not None
+        assert chart_data[0] == {
+            "cadence": 0,
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "speed": 3.21,
+            "time": datetime(2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc),
+        }
+        assert chart_data[-1] == {
+            "cadence": 50,
+            "distance": 0.32,
+            "duration": 250.0,
+            "elevation": 975.0,
             "latitude": 44.67822,
             "longitude": 6.07442,
             "speed": 4.33,

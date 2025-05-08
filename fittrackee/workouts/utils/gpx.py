@@ -37,7 +37,11 @@ def get_gpx_segments(
 
 
 def get_chart_data(
-    gpx_file: str, sport_label: str, segment_id: Optional[int] = None
+    gpx_file: str,
+    sport_label: str,
+    *,
+    can_see_heart_rate: bool,
+    segment_id: Optional[int] = None,
 ) -> Optional[List]:
     """
     Return data needed to generate chart with:
@@ -97,7 +101,11 @@ def get_chart_data(
                 data["elevation"] = round(point.elevation, 1)
             if point.extensions:
                 for element in point.extensions[0]:
-                    if element.tag == HR_TAG and element.text:
+                    if (
+                        can_see_heart_rate
+                        and element.tag == HR_TAG
+                        and element.text
+                    ):
                         data["hr"] = int(element.text)
                     if (
                         return_cadence

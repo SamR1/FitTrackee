@@ -102,6 +102,46 @@
         :useImperialUnits="useImperialUnits"
       />
     </div>
+    <div
+      class="workout-data"
+      v-if="
+        workoutObject.aveCadence !== null && workoutObject.maxCadence !== null
+      "
+    >
+      <img
+        class="cadence"
+        src="/img/workouts/cadence.svg"
+        :alt="$t('workouts.CADENCE')"
+      />
+      <span class="label">{{ $t('workouts.AVE_CADENCE') }}</span
+      >:
+      <span class="value" :title="t(`workouts.UNITS.${cadenceUnit}.LABEL`)"
+        >{{ workoutObject.aveCadence }} {{ cadenceUnit }}</span
+      >
+      <br />
+      <span class="label"> {{ $t('workouts.MAX_CADENCE') }}</span
+      >:
+      <span class="value" :title="t(`workouts.UNITS.${cadenceUnit}.LABEL`)"
+        >{{ workoutObject.maxCadence }} {{ cadenceUnit }}</span
+      >
+    </div>
+    <div
+      class="workout-data"
+      v-if="workoutObject.aveHr !== null && workoutObject.maxHr !== null"
+    >
+      <i class="fa fa-heartbeat" aria-hidden="true" />
+      <span class="label">{{ $t('workouts.AVE_HR') }}</span
+      >:
+      <span class="value" :title="t(`workouts.UNITS.bpm.LABEL`)"
+        >{{ workoutObject.aveHr }} {{ t(`workouts.UNITS.bpm.UNIT`) }}</span
+      >
+      <br />
+      <span class="label"> {{ $t('workouts.MAX_HR') }}</span
+      >:
+      <span class="value" :title="t(`workouts.UNITS.bpm.LABEL`)"
+        >{{ workoutObject.maxHr }} {{ t(`workouts.UNITS.bpm.UNIT`) }}</span
+      >
+    </div>
     <WorkoutWeather
       :workoutObject="workoutObject"
       :useImperialUnits="useImperialUnits"
@@ -112,6 +152,7 @@
 <script setup lang="ts">
   import { computed, toRefs } from 'vue'
   import type { ComputedRef } from 'vue'
+  import { useI18n } from 'vue-i18n'
 
   import WorkoutRecord from '@/components/Workout/WorkoutDetail/WorkoutRecord.vue'
   import WorkoutWeather from '@/components/Workout/WorkoutDetail/WorkoutWeather.vue'
@@ -121,9 +162,12 @@
     workoutObject: IWorkoutObject
     useImperialUnits: boolean
     displayHARecord: boolean
+    cadenceUnit: string
   }
   const props = defineProps<Props>()
   const { displayHARecord, workoutObject, useImperialUnits } = toRefs(props)
+
+  const { t } = useI18n()
 
   const withPause: ComputedRef<boolean> = computed(
     () =>
@@ -141,7 +185,8 @@
     width: 100%;
 
     .fa,
-    .mountains {
+    .mountains,
+    .cadence {
       padding-right: $default-padding * 0.5;
     }
 

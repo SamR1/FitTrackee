@@ -1043,6 +1043,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "date_format",
         "display_ascent",
         "hide_profile_in_users_directory",
+        "hr_visibility",
         "imperial_units",
         "language",
         "manually_approves_followers",
@@ -1073,6 +1074,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     hide_profile_in_users_directory = post_data.get(
         "hide_profile_in_users_directory"
     )
+    hr_visibility = post_data.get("hr_visibility")
 
     try:
         auth_user.date_format = date_format
@@ -1097,6 +1099,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.hide_profile_in_users_directory = (
             hide_profile_in_users_directory
         )
+        auth_user.hr_visibility = VisibilityLevel(hr_visibility)
         db.session.commit()
 
         return {

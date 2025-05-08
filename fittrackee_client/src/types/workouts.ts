@@ -11,11 +11,15 @@ import type {
 
 export interface IWorkoutSegment {
   ascent: number
+  ave_cadence: number | null
+  ave_hr: number | null
   ave_speed: number
   descent: number
   distance: number
   duration: string
   max_alt: number
+  max_cadence: number | null
+  max_hr: number | null
   max_speed: number
   min_alt: number
   moving: string
@@ -64,6 +68,8 @@ export interface IWeather {
 export interface IWorkout {
   analysis_visibility?: TVisibilityLevels
   ascent: number | null
+  ave_cadence: number | null
+  ave_hr: number | null
   ave_speed: number | null
   bounds: number[]
   creation_date: string | null
@@ -78,6 +84,8 @@ export interface IWorkout {
   map: string | null
   map_visibility?: TVisibilityLevels
   max_alt: number | null
+  max_cadence: number | null
+  max_hr: number | null
   max_speed: number | null
   min_alt: number | null
   modification_date: string | null
@@ -105,6 +113,8 @@ export interface IWorkout {
 export interface IWorkoutObject {
   analysisVisibility: TVisibilityLevels | null | undefined
   ascent: number | null
+  aveCadence: number | null
+  aveHr: number | null
   aveSpeed: number | null
   descent: number | null
   distance: number | null
@@ -113,6 +123,8 @@ export interface IWorkoutObject {
   liked: boolean
   likes_count: number
   maxAlt: number | null
+  maxCadence: number | null
+  maxHr: number | null
   maxSpeed: number | null
   mapVisibility: TVisibilityLevels | null | undefined
   minAlt: number | null

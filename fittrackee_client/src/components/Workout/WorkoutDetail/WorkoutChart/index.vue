@@ -61,8 +61,8 @@
     LayoutItem,
     TooltipItem,
   } from 'chart.js'
-  import { computed, ref, toRefs } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
+  import { computed, ref, toRefs } from 'vue'
   import { Line } from 'vue-chartjs'
   import { useI18n } from 'vue-i18n'
 
@@ -76,7 +76,7 @@
   import type { IWorkoutChartData, IWorkoutData } from '@/types/workouts'
   import { formatDuration } from '@/utils/duration.ts'
   import { units } from '@/utils/units'
-  import { chartsColors, getDatasets } from '@/utils/workouts'
+  import { chartsColors, getCadenceUnit, getDatasets } from '@/utils/workouts'
 
   interface Props {
     authUser: IAuthUserProfile
@@ -305,37 +305,10 @@
       ? units[unitFrom].defaultTarget
       : unitFrom
   }
-  function getCadenceUnit(sportLabel: string | undefined) {
-    let unit: string
-    switch (sportLabel) {
-      case 'Cycling (Sport)':
-      case 'Cycling (Trekking)':
-      case 'Cycling (Transport)':
-      case 'Cycling (Virtual)':
-      case 'Halfbike':
-      case 'Mountain Biking':
-      case 'Mountain Biking (Electric)':
-        unit = 'rpm'
-        break
-      case 'Hiking':
-      case 'Snowshoes':
-      case 'Running':
-      case 'Trail':
-      case 'Walking':
-        unit = 'spm'
-        break
-      default:
-        unit = ''
-    }
-    if (!unit) {
-      return ''
-    }
-    return t(`workouts.UNITS.${unit}.UNIT`)
-  }
   function getUnitLabelForYAxis(datasetId: string | undefined): string {
     switch (datasetId) {
       case 'cadence':
-        return ` (${getCadenceUnit(sport.value?.label)})`
+        return ` (${getCadenceUnit(sport.value?.label, t)})`
       case 'elevation':
         return ` (${fromMUnit})`
       case 'hr':
@@ -373,7 +346,7 @@
       return label + ` ${fromMUnit}`
     }
     if (context.dataset.id === 'cadence') {
-      const unit = getCadenceUnit(sport.value?.label)
+      const unit = getCadenceUnit(sport.value?.label, t)
       return label + ' ' + unit
     }
     return context.dataset.id === 'hr'
