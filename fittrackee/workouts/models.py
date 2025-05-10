@@ -15,7 +15,7 @@ from sqlalchemy.sql.expression import nulls_last
 from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, appLog, db
-from fittrackee.database import TZDateTime
+from fittrackee.database import PSQL_INTEGER_LIMIT, TZDateTime
 from fittrackee.dates import aware_utc_now
 from fittrackee.equipments.models import WorkoutEquipment
 from fittrackee.files import get_absolute_file_path
@@ -61,6 +61,15 @@ EMPTY_WORKOUT_VALUES: Dict = {
     "notes": "",
     "likes_count": 0,
     "liked": False,
+}
+WORKOUT_VALUES_LIMIT = {
+    "ascent": 99999.999,
+    "descent": 99999.999,
+    "distance": 999999.9,
+    "max_alt": 9999.99,
+    "max_speed": 9999.99,
+    "min_alt": 9999.99,
+    "moving_time": PSQL_INTEGER_LIMIT,
 }
 
 record_types = [
@@ -311,6 +320,9 @@ class Workout(BaseModel):
         server_default="PRIVATE",
         nullable=False,
     )
+    original_file: Mapped[Optional[str]] = mapped_column(
+        db.String(255), nullable=True
+    )
 
     user: Mapped["User"] = relationship(
         "User", lazy="select", single_parent=True
@@ -356,14 +368,16 @@ class Workout(BaseModel):
         user_id: int,
         sport_id: int,
         workout_date: datetime,
-        distance: float,
-        duration: timedelta,
+        distance: Optional[float] = None,
+        duration: Optional[timedelta] = None,
     ) -> None:
         self.user_id = user_id
         self.sport_id = sport_id
         self.workout_date = workout_date
-        self.distance = distance
-        self.duration = duration
+        if distance is not None:
+            self.distance = distance
+        # to allow workout creation before gpx data extraction
+        self.duration = timedelta(seconds=0) if duration is None else duration
 
     @property
     def short_id(self) -> str:
@@ -784,6 +798,11 @@ def on_workout_delete(
                 os.remove(get_absolute_file_path(old_workout.gpx))
             except OSError:
                 appLog.error("gpx file not found when deleting workout")
+        if old_workout.original_file:
+            try:
+                os.remove(get_absolute_file_path(old_workout.original_file))
+            except OSError:
+                appLog.error("original file not found when deleting workout")
 
         Notification.query.filter(
             Notification.event_object_id == old_workout.id,
@@ -878,16 +897,26 @@ class WorkoutSegment(BaseModel):
         return {
             "workout_id": encode_uuid(self.workout_uuid),
             "segment_id": self.segment_id,
-            "duration": str(self.duration) if self.duration else None,
+            "duration": None if self.duration is None else str(self.duration),
             "pauses": str(self.pauses) if self.pauses else None,
-            "moving": str(self.moving) if self.moving else None,
-            "distance": float(self.distance) if self.distance else None,
-            "min_alt": float(self.min_alt) if self.min_alt else None,
-            "max_alt": float(self.max_alt) if self.max_alt else None,
-            "descent": float(self.descent) if self.descent else None,
-            "ascent": float(self.ascent) if self.ascent else None,
-            "max_speed": float(self.max_speed) if self.max_speed else None,
-            "ave_speed": float(self.ave_speed) if self.ave_speed else None,
+            "moving": None if self.moving is None else str(self.moving),
+            "distance": None
+            if self.distance is None
+            else float(self.distance),
+            "min_alt": (
+                float(self.min_alt) if self.min_alt is not None else None
+            ),
+            "max_alt": (
+                float(self.max_alt) if self.max_alt is not None else None
+            ),
+            "descent": None if self.descent is None else float(self.descent),
+            "ascent": None if self.ascent is None else float(self.ascent),
+            "max_speed": None
+            if self.max_speed is None
+            else float(self.max_speed),
+            "ave_speed": None
+            if self.ave_speed is None
+            else float(self.ave_speed),
         }
 
 

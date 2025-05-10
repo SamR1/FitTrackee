@@ -226,3 +226,28 @@ export interface IUserAppealPayload {
 }
 
 export type TToken = string | LocationQueryValue | LocationQueryValue[]
+
+export interface IArchiveUploadTaskError {
+  archive: string | null
+  files: Record<string, string>
+}
+export type IArchiveUploadTaskStatus =
+  | 'aborted'
+  | 'errored'
+  | 'in_progress'
+  | 'queued'
+  | 'successful'
+
+export interface IArchiveUploadTask {
+  created_at: string
+  errored_files: IArchiveUploadTaskError
+  file_size: number
+  files_count: number
+  id: string
+  new_workouts_count: number
+  original_file_name: string | null
+  progress: string
+  sport_id: number | null
+  status: IArchiveUploadTaskStatus
+  updated_at: string
+}

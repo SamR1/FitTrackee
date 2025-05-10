@@ -22,6 +22,7 @@
     "REPORT": "report comment",
     "SUSPENDED_COMMENT_BY_ADMIN": "The comment has been suspended by an administrator."
   },
+  "CREATED_WORKOUTS": "Created workout | Created workouts",
   "DATE": "date",
   "DELETE_WORKOUT": "Delete the workout",
   "DESCENT": "descent",

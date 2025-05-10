@@ -22,10 +22,7 @@
     "DOWNLOAD_ARCHIVE": "Pobierz archiwum",
     "GENERATING_LINK": "generowanie linka…",
     "ONLY_ONE_EXPORT_PER_DAY": "Możesz poprosić o archiwum w przeciągu 24 godzin",
-    "STATUS": {
-      "errored": "niepowodzenie (proszę zlecić kolejny eksport)",
-      "in_progress": "w trakcie…"
-    }
+    "REQUEST_ANOTHER_EXPORT": "proszę zlecić kolejny eksport"
   },
   "FILTER_ON_USERNAME": "Filtruj po nazwie użytkownika",
   "HIDE_PASSWORD": "ukryj hasło",
@@ -233,6 +230,12 @@
   "SUSPENDED": "Zawieszone",
   "SUSPENDED_ACCOUNT": "Konto zawieszone",
   "SUSPENSION_REASON": "Powód zawieszenia",
+  "TASKS": {
+    "STATUS": {
+      "errored": "niepowodzenie",
+      "in_progress": "w trakcie"
+    }
+  },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "To konto użytkownika jest nieaktywne.",
   "TOGGLE_THEME": "Przełącz wygląd (jasny lub ciemny tryb)",
   "USER": "użytkownik | użytkownicy",

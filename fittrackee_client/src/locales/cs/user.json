@@ -13,10 +13,7 @@
     "DOWNLOAD_ARCHIVE": "Stáhnout archiv",
     "GENERATING_LINK": "generování odkazu…",
     "ONLY_ONE_EXPORT_PER_DAY": "Archiv lze požadovat po 24 hodinách",
-    "STATUS": {
-      "errored": "selhalo (prosím vyžádejte si další export)",
-      "in_progress": "probíhá…"
-    }
+    "REQUEST_ANOTHER_EXPORT": "prosím vyžádejte si další export"
   },
   "FILTER_ON_USERNAME": "Filtr na uživatelské jméno",
   "HIDE_PASSWORD": "skrýt heslo",
@@ -78,5 +75,11 @@
   },
   "ROLES": {
     "admin": "Správce"
+  },
+  "TASKS": {
+    "STATUS": {
+      "errored": "selhalo",
+      "in_progress": "probíhá"
+    }
   }
 }

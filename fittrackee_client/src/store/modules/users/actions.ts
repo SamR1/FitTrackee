@@ -6,6 +6,7 @@ import { AUTH_USER_STORE, ROOT_STORE, USERS_STORE } from '@/store/constants'
 import type { IAuthUserState } from '@/store/modules/authUser/types'
 import type { IRootState } from '@/store/modules/root/types'
 import type { IUsersActions, IUsersState } from '@/store/modules/users/types'
+import type { IQueuedTasksPayload } from '@/types/application.ts'
 import type {
   IAdminUserPayload,
   IUserDeletionPayload,
@@ -311,5 +312,48 @@ export const actions: ActionTree<IUsersState, IRootState> & IUsersActions = {
       username: payload.username,
       fromAdmin: true,
     })
+  },
+  [USERS_STORE.ACTIONS.GET_USERS_QUEUED_TASKS_COUNT](
+    context: ActionContext<IUsersState, IRootState>
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get('users/tasks/queued')
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USERS_QUEUED_TASKS_COUNTS,
+            res.data.counts
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+  },
+  [USERS_STORE.ACTIONS.GET_USERS_QUEUED_TASKS_LIST](
+    context: ActionContext<IUsersState, IRootState>,
+    payload: IQueuedTasksPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get(`users/tasks/queued/${payload.taskType}`, {
+        params: { page: payload.page },
+      })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USERS_QUEUED_TASKS,
+            res.data.queued_tasks
+          )
+          context.commit(
+            USERS_STORE.MUTATIONS.UPDATE_USERS_QUEUED_TASKS_PAGINATION,
+            res.data.pagination
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
   },
 }

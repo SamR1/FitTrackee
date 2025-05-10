@@ -1,10 +1,9 @@
 import json
-import os
-import shutil
 from datetime import timedelta
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 import requests
+from dramatiq_abort import abort
 from flask import (
     Blueprint,
     Response,
@@ -13,24 +12,20 @@ from flask import (
     send_from_directory,
 )
 from sqlalchemy import asc, desc, distinct, exc, func
-from sqlalchemy.exc import DataError, IntegrityError
+from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
-from fittrackee import appLog, db, limiter
+from fittrackee import abortable, appLog, db, limiter
 from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
 )
 from fittrackee.equipments.models import Equipment, WorkoutEquipment
-from fittrackee.equipments.utils import (
-    SPORT_EQUIPMENT_TYPES,
-    handle_equipments,
-)
+from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.responses import (
-    DataInvalidPayloadErrorResponse,
     DataNotFoundErrorResponse,
     EquipmentInvalidPayloadErrorResponse,
     ExceedingValueErrorResponse,
@@ -42,27 +37,30 @@ from fittrackee.responses import (
     get_error_response_if_file_is_invalid,
     handle_error_and_return_response,
 )
-from fittrackee.users.models import User, UserSportPreference
+from fittrackee.users.models import User, UserTask
 from fittrackee.utils import decode_short_id
 from fittrackee.visibility_levels import VisibilityLevel, can_view
 
 from .decorators import check_workout
-from .exceptions import InvalidDurationException
-from .models import Sport, Workout, WorkoutLike
+from .exceptions import (
+    InvalidDurationException,
+    WorkoutExceedingValueException,
+    WorkoutException,
+    WorkoutFileException,
+)
+from .models import Workout, WorkoutLike
+from .services import (
+    WorkoutCreationService,
+    WorkoutsFromFileCreationService,
+    WorkoutUpdateService,
+)
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
     WorkoutGPXException,
     extract_segment_from_gpx_file,
     get_chart_data,
 )
-from .utils.workouts import (
-    WorkoutException,
-    create_workout,
-    edit_workout,
-    get_absolute_file_path,
-    get_datetime_from_request_args,
-    process_files,
-)
+from .utils.workouts import get_datetime_from_request_args
 
 if TYPE_CHECKING:
     from sqlalchemy.sql.selectable import Subquery
@@ -87,6 +85,7 @@ NO_STATISTICS = {
     "total_duration": None,
     "total_sports": 0,
 }
+DEFAULT_TASKS_PER_PAGE = 5
 
 
 def get_statistics(
@@ -1207,6 +1206,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     **Example response**:
 
+    - when upload is synchronous
+
     .. sourcecode:: http
 
       HTTP/1.1 201 CREATED
@@ -1214,6 +1215,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
         {
           "data": {
+            "errored_workouts": [],
             "workouts": [
               {
                 "analysis_visibility": "private",
@@ -1334,6 +1336,20 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
           "status": "success"
         }
 
+    - when upload is asynchronous
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+        {
+          "data": {
+            "task_id": "JKtd4tpQDgAPwNTsjjPdVh"
+          },
+          "status": "in_progress"
+        }
+
     :form file: gpx file (allowed extensions: .gpx, .zip)
     :form data: sport id, equipment id, description, title, notes, visibility
        for workout, analysis and map
@@ -1360,6 +1376,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
+    :statuscode 200: archive upload in progress
     :statuscode 201: workout created
     :statuscode 400:
         - ``invalid payload``
@@ -1403,61 +1420,51 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     if not workout_data or workout_data.get("sport_id") is None:
         return InvalidPayloadErrorResponse()
-
-    if "equipment_ids" in workout_data:
-        try:
-            equipments_list = handle_equipments(
-                workout_data["equipment_ids"],
-                auth_user,
-                workout_data["sport_id"],
-            )
-        except InvalidEquipmentsException as e:
-            return InvalidPayloadErrorResponse(str(e))
-        except InvalidEquipmentException as e:
-            return EquipmentInvalidPayloadErrorResponse(
-                equipment_id=e.equipment_id, message=e.message, status=e.status
-            )
-        workout_data["equipments_list"] = equipments_list
-
     workout_file = request.files["file"]
-    upload_dir = os.path.join(
-        current_app.config["UPLOAD_FOLDER"], "workouts", str(auth_user.id)
-    )
-    folders = {
-        "extract_dir": os.path.join(upload_dir, "extract"),
-        "tmp_dir": os.path.join(upload_dir, "tmp"),
-    }
 
     try:
-        new_workouts = process_files(
-            auth_user, workout_data, workout_file, folders
+        service = WorkoutsFromFileCreationService(
+            auth_user, workout_data, workout_file
         )
-        if len(new_workouts) > 0:
+        new_workouts, processing_output = service.process()
+        if processing_output["task_short_id"]:
+            return {
+                "status": "in_progress",
+                "data": {"task_id": processing_output["task_short_id"]},
+            }, 200
+
+        if len(new_workouts) > 0 and not processing_output["errored_workouts"]:
             response_object = {
                 "status": "created",
                 "data": {
                     "workouts": [
                         new_workout.serialize(user=auth_user, light=False)
                         for new_workout in new_workouts
-                    ]
+                    ],
                 },
             }
         else:
-            return DataInvalidPayloadErrorResponse("workouts", "fail")
-    except WorkoutException as e:
+            return {
+                "status": "fail",
+                "new_workouts": len(new_workouts),
+                "errored_workouts": processing_output["errored_workouts"],
+            }, 400
+    except WorkoutExceedingValueException as e:
+        appLog.error(e.detail)
+        return ExceedingValueErrorResponse()
+    except InvalidEquipmentsException as e:
+        return InvalidPayloadErrorResponse(str(e))
+    except InvalidEquipmentException as e:
+        return EquipmentInvalidPayloadErrorResponse(
+            equipment_id=e.equipment_id, message=e.message, status=e.status
+        )
+    except (WorkoutException, WorkoutFileException) as e:
         db.session.rollback()
-        if e.status == "exceeding_value_error":
-            if e.e:
-                appLog.error(e.e.args[0])
-            return ExceedingValueErrorResponse()
         if e.e:
             appLog.error(e.e)
         if e.status == "error":
             return InternalServerErrorResponse(e.message)
         return InvalidPayloadErrorResponse(e.message, e.status)
-
-    shutil.rmtree(folders["extract_dir"], ignore_errors=True)
-    shutil.rmtree(folders["tmp_dir"], ignore_errors=True)
     return response_object, 201
 
 
@@ -1633,51 +1640,9 @@ def post_workout_no_gpx(
     ):
         return InvalidPayloadErrorResponse()
 
-    ascent = workout_data.get("ascent")
-    descent = workout_data.get("descent")
     try:
-        if (
-            (ascent is None and descent is not None)
-            or (ascent is not None and descent is None)
-            or (
-                (ascent is not None and descent is not None)
-                and (float(ascent) < 0 or float(descent) < 0)
-            )
-        ):
-            return InvalidPayloadErrorResponse()
-    except ValueError:
-        return InvalidPayloadErrorResponse()
-
-    # get default equipment if not equipment_ids provided and
-    # sport preferences exists
-    if "equipment_ids" not in workout_data:
-        sport_preferences = UserSportPreference.query.filter_by(
-            user_id=auth_user.id, sport_id=workout_data["sport_id"]
-        ).first()
-        if sport_preferences:
-            workout_data["equipments_list"] = [
-                equipment
-                for equipment in sport_preferences.default_equipments.all()
-                if equipment.is_active is True
-            ]
-    else:
-        try:
-            equipments_list = handle_equipments(
-                workout_data.get("equipment_ids"),
-                auth_user,
-                workout_data["sport_id"],
-            )
-            workout_data["equipments_list"] = equipments_list
-        except InvalidEquipmentsException as e:
-            return InvalidPayloadErrorResponse(str(e))
-        except InvalidEquipmentException as e:
-            return EquipmentInvalidPayloadErrorResponse(
-                equipment_id=e.equipment_id, message=e.message, status=e.status
-            )
-
-    try:
-        new_workout = create_workout(auth_user, workout_data)
-        db.session.add(new_workout)
+        service = WorkoutCreationService(auth_user, workout_data)
+        [new_workout], _ = service.process()
         db.session.commit()
 
         return (
@@ -1691,9 +1656,22 @@ def post_workout_no_gpx(
             },
             201,
         )
-    except DataError as e:
-        appLog.error(e.args[0])
+    except WorkoutExceedingValueException as e:
+        appLog.error(e.detail)
         return ExceedingValueErrorResponse()
+    except InvalidEquipmentsException as e:
+        return InvalidPayloadErrorResponse(str(e))
+    except InvalidEquipmentException as e:
+        return EquipmentInvalidPayloadErrorResponse(
+            equipment_id=e.equipment_id, message=e.message, status=e.status
+        )
+    except WorkoutException as e:
+        db.session.rollback()
+        if e.e:
+            appLog.error(e.e)
+        if e.status == "error":
+            return InternalServerErrorResponse(e.message)
+        return InvalidPayloadErrorResponse(e.message, e.status)
     except (exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(
             error=e,
@@ -1882,63 +1860,8 @@ def update_workout(
         return InvalidPayloadErrorResponse()
 
     try:
-        if not workout.gpx:
-            try:
-                # for workout without gpx file, both elevation values must be
-                # provided.
-                if (
-                    (
-                        "ascent" in workout_data
-                        and "descent" not in workout_data
-                    )
-                    or (
-                        "ascent" not in workout_data
-                        and "descent" in workout_data
-                    )
-                ) or (
-                    not (
-                        workout_data.get("ascent") is None
-                        and workout_data.get("descent") is None
-                    )
-                    and (
-                        float(workout_data.get("ascent")) < 0
-                        or float(workout_data.get("descent")) < 0
-                    )
-                ):
-                    return InvalidPayloadErrorResponse()
-            except (TypeError, ValueError):
-                return InvalidPayloadErrorResponse()
-
-        sport = None
-        if "sport_id" in workout_data:
-            sport = Sport.query.filter_by(id=workout_data["sport_id"]).first()
-            if not sport:
-                return InvalidPayloadErrorResponse(
-                    f"sport id {workout_data['sport_id']} not found"
-                )
-
-        if "equipment_ids" in workout_data:
-            sport_id = (
-                workout_data["sport_id"]
-                if workout_data.get("sport_id")
-                else workout.sport_id
-            )
-            workout_data["equipments_list"] = handle_equipments(
-                workout_data.get("equipment_ids"),
-                auth_user,
-                sport_id,
-                workout.equipments,
-            )
-        elif sport:
-            # remove equipment if invalid for new sport
-            # Note: for now only one equipment can be added
-            for equipment in workout.equipments:
-                if sport.label not in SPORT_EQUIPMENT_TYPES.get(
-                    equipment.equipment_type.label, []
-                ):
-                    workout_data["equipments_list"] = []
-
-        workout = edit_workout(workout, workout_data, auth_user)
+        service = WorkoutUpdateService(auth_user, workout, workout_data)
+        service.update()
         db.session.commit()
 
         return {
@@ -1947,9 +1870,8 @@ def update_workout(
                 "workouts": [workout.serialize(user=auth_user, light=False)]
             },
         }
-
-    except DataError as e:
-        appLog.error(e.args[0])
+    except WorkoutExceedingValueException as e:
+        appLog.error(e.detail)
         return ExceedingValueErrorResponse()
     except InvalidEquipmentsException as e:
         return InvalidPayloadErrorResponse(str(e))
@@ -1957,6 +1879,13 @@ def update_workout(
         return EquipmentInvalidPayloadErrorResponse(
             equipment_id=e.equipment_id, message=e.message, status=e.status
         )
+    except WorkoutException as e:
+        db.session.rollback()
+        if e.e:
+            appLog.error(e.e)
+        if e.status == "error":
+            return InternalServerErrorResponse(e.message)
+        return InvalidPayloadErrorResponse(e.message, e.status)
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(e)
 
@@ -2413,4 +2342,303 @@ def appeal_workout_suspension(
     except exc.IntegrityError:
         return InvalidPayloadErrorResponse("you can appeal only once")
     except (exc.OperationalError, ValueError) as e:
+        return handle_error_and_return_response(e, db=db)
+
+
+@workouts_blueprint.route("/workouts/upload-tasks", methods=["GET"])
+@require_auth(scopes=["workouts:read"])
+def get_workouts_upload_tasks(
+    auth_user: User,
+) -> Tuple[Dict, int]:
+    """
+    Get user tasks for workouts archive upload
+
+    **Scope**: ``workouts:read``
+
+    **Example request**:
+
+    - without parameters:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/tasks HTTP/1.1
+      Content-Type: application/json
+
+    - with 'page' parameter:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/tasks?page=2 HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+      {
+        "data": {
+          "tasks": [
+            {
+              "created_at": "Sun, 30 Mar 2025 10:26:17 GMT",
+              "errored_files": {},
+              "files_count": 10,
+              "id": "JEiR6cDcADX8bZ6ZeQssnr",
+              "progress": 10,
+              "status": "in_progress",
+              "type": "workouts_archive_upload"
+            }
+          ]
+        },
+        "pagination": {
+          "has_next": false,
+          "has_prev": false,
+          "page": 1,
+          "pages": 1,
+          "total": 1
+        },
+        "status": "success"
+      }
+
+    :query integer page: page for pagination (default: 1)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    """
+    params = request.args.copy()
+    page = int(params.get("page", 1))
+    per_page = DEFAULT_TASKS_PER_PAGE
+    tasks_pagination = (
+        UserTask.query.filter_by(
+            user_id=auth_user.id, task_type="workouts_archive_upload"
+        )
+        .order_by(UserTask.created_at.desc())
+        .paginate(page=page, per_page=per_page, error_out=False)
+    )
+    return {
+        "status": "success",
+        "data": {
+            "tasks": [
+                task.serialize(current_user=auth_user)
+                for task in tasks_pagination.items
+            ]
+        },
+        "pagination": {
+            "has_next": tasks_pagination.has_next,
+            "has_prev": tasks_pagination.has_prev,
+            "page": tasks_pagination.page,
+            "pages": tasks_pagination.pages,
+            "total": tasks_pagination.total,
+        },
+    }, 200
+
+
+@workouts_blueprint.route(
+    "/workouts/upload-tasks/<string:task_short_id>", methods=["GET"]
+)
+@require_auth(scopes=["workouts:read"])
+def get_workouts_upload_task(
+    auth_user: User, task_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Get task for workouts archive upload
+
+    **Scope**: ``workouts:read``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/tasks/JEiR6cDcADX8bZ6ZeQssnr HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+      {
+        "task": {
+          "created_at": "Sun, 30 Mar 2025 10:26:17 GMT",
+          "errored_files": {},
+          "files_count": 10,
+          "id": "JEiR6cDcADX8bZ6ZeQssnr",
+          "progress": 10,
+          "status": "in_progress",
+          "type": "workouts_archive_upload"
+        },
+        "status": "success"
+      }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404:
+        - ``no task found``
+    """
+    task = UserTask.query.filter_by(
+        user_id=auth_user.id, uuid=decode_short_id(task_short_id)
+    ).first()
+
+    if not task or task.task_type != "workouts_archive_upload":
+        return NotFoundErrorResponse("no task found")
+
+    return {
+        "status": "success",
+        "task": task.serialize(current_user=auth_user),
+    }, 200
+
+
+@workouts_blueprint.route(
+    "/workouts/upload-tasks/<string:task_short_id>/abort", methods=["POST"]
+)
+@require_auth(scopes=["workouts:write"])
+def abort_workouts_upload_task(
+    auth_user: User, task_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Abort ongoing task for workouts archive upload
+
+    **Scope**: ``workouts:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/workouts/tasks/JEiR6cDcADX8bZ6ZeQssnr/abort HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+      {
+        "task": {
+          "created_at": "Sun, 30 Mar 2025 10:26:17 GMT",
+          "errored_files": {},
+          "files_count": 10,
+          "id": "JEiR6cDcADX8bZ6ZeQssnr",
+          "progress": 10,
+          "status": "aborted",
+          "type": "workouts_archive_upload"
+        },
+        "status": "success"
+      }
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 400:
+        - ``only queued and ongoing tasks can be aborted``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404:
+        - ``no task found``
+    :statuscode 500:
+        - ``error when aborting task``
+    """
+    task = UserTask.query.filter_by(
+        user_id=auth_user.id, uuid=decode_short_id(task_short_id)
+    ).first()
+
+    if not task or task.task_type != "workouts_archive_upload":
+        return NotFoundErrorResponse("no task found")
+
+    if not task.message_id:
+        return InternalServerErrorResponse("error when aborting task")
+
+    if task.status not in [
+        "in_progress",
+        "queued",
+    ]:
+        return InvalidPayloadErrorResponse(
+            "only queued and ongoing tasks can be aborted"
+        )
+
+    try:
+        abort(message_id=task.message_id, middleware=abortable)
+        task.aborted = True
+        db.session.commit()
+    except Exception as e:
+        appLog.exception(e)
+        return InternalServerErrorResponse("error when aborting task")
+
+    return {
+        "status": "success",
+        "task": task.serialize(current_user=auth_user),
+    }, 200
+
+
+@workouts_blueprint.route(
+    "/workouts/upload-tasks/<string:task_short_id>", methods=["DELETE"]
+)
+@require_auth(scopes=["workouts:read"])
+def delete_workouts_upload_task(
+    auth_user: User, task_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Delete workouts archive upload task if status is successful or errored
+
+    **Scope**: ``workouts:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      DELETE /api/workouts/tasks/JEiR6cDcADX8bZ6ZeQssnr HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 204 NO CONTENT
+      Content-Type: application/json
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 404:
+        - ``no task found``
+    :statuscode 500: ``error, please try again or contact the administrator``
+    """
+    task = UserTask.query.filter_by(
+        user_id=auth_user.id, uuid=decode_short_id(task_short_id)
+    ).first()
+
+    if not task or task.task_type != "workouts_archive_upload":
+        return NotFoundErrorResponse("no task found")
+
+    if task.status in ["in_progress", "queued"]:
+        return InvalidPayloadErrorResponse(
+            "queued or ongoing workout upload task can not be deleted"
+        )
+
+    try:
+        db.session.delete(task)
+        db.session.commit()
+        return {"status": "no content"}, 204
+    except Exception as e:
         return handle_error_and_return_response(e, db=db)

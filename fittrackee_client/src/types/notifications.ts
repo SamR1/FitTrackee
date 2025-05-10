@@ -18,9 +18,11 @@ export type TNotificationType =
   | 'comment_unsuspension'
   | 'report'
   | 'suspension_appeal'
+  | 'user_data_export'
   | 'user_warning'
   | 'user_warning_appeal'
   | 'user_warning_lifting'
+  | 'workouts_archive_upload'
   | 'workout_suspension'
   | 'workout_unsuspension'
 
@@ -32,6 +34,7 @@ export interface INotification {
   from?: IUserProfile
   marked_as_read: boolean
   report?: IReportForModerator
+  task?: { id: string; original_file_name: string | null }
   type: TNotificationType
   workout?: IWorkout
 }

@@ -14,10 +14,7 @@
     "DOWNLOAD_ARCHIVE": "Изтегляне на архив",
     "GENERATING_LINK": "генериране на връзка…",
     "ONLY_ONE_EXPORT_PER_DAY": "Можете да поискате архив до 24 часа",
-    "STATUS": {
-      "errored": "грешка (моля, изискайте друг експорт)",
-      "in_progress": "в ход…"
-    }
+    "REQUEST_ANOTHER_EXPORT": "моля, изискайте друг експорт"
   },
   "FILTER_ON_USERNAME": "Филтриране по потребителско име",
   "HIDE_PASSWORD": "скрий паролата",
@@ -161,6 +158,12 @@
     "admin": "Админ"
   },
   "SHOW_PASSWORD": "покажи паролата",
+  "TASKS": {
+    "STATUS": {
+      "errored": "грешка",
+      "in_progress": "в ход"
+    }
+  },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Този потребителски акаунт е неактивен.",
   "TOGGLE_THEME": "Превключване на темата (светъл или тъмен режим)",
   "USERNAME": "Потребителско име",

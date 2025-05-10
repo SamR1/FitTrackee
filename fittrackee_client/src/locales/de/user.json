@@ -22,10 +22,7 @@
     "DOWNLOAD_ARCHIVE": "Archiv herunterladen",
     "GENERATING_LINK": "generiere Link…",
     "ONLY_ONE_EXPORT_PER_DAY": "Du kannst alle 24 Stunden ein Archiv anfragen",
-    "STATUS": {
-      "errored": "fehlgeschlagen (bitte frage einen anderen Export an)",
-      "in_progress": "in Arbeit…"
-    }
+    "REQUEST_ANOTHER_EXPORT": "bitte frage einen anderen Export an"
   },
   "FILTER_ON_USERNAME": "Nach Benutzernamen filtern",
   "HIDE_PASSWORD": "Passwort verbergen",
@@ -233,6 +230,12 @@
   "SUSPENDED": "Gesperrt",
   "SUSPENDED_ACCOUNT": "Gesperrte Konten",
   "SUSPENSION_REASON": "Grund für die Sperrung",
+  "TASKS": {
+    "STATUS": {
+      "errored": "fehlgeschlagen",
+      "in_progress": "in Arbeit"
+    }
+  },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Dieser Account ist inaktiv.",
   "TOGGLE_THEME": "Thema ändern (Heller oder dunkler Modus)",
   "USER": "Nutzer | Nutzer",

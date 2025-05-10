@@ -291,3 +291,8 @@ export type TWorkoutsStatistics = {
   current_page: TWorkoutsStatistic
   all: TWorkoutsStatistic
 }
+
+export interface IWorkoutFilesError {
+  createdWorkouts: number
+  erroredWorkouts: Record<string, string>
+}

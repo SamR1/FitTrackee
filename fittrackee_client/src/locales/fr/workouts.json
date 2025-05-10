@@ -22,6 +22,7 @@
     "REPORT": "signaler le commentaire",
     "SUSPENDED_COMMENT_BY_ADMIN": "Le commentaire a été suspendu par un administrateur."
   },
+  "CREATED_WORKOUTS": "Séance créée | Séances créées",
   "DATE": "date",
   "DELETE_WORKOUT": "Supprimer la séance",
   "DESCENT": "dénivelé négatif",
