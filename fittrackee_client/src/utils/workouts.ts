@@ -143,11 +143,13 @@ export function getCadenceUnit(
     case 'Halfbike':
     case 'Mountain Biking':
     case 'Mountain Biking (Electric)':
+    case 'Open Water Swimming':
       unit = 'rpm'
       break
     case 'Hiking':
-    case 'Snowshoes':
+    case 'Mountaineering':
     case 'Running':
+    case 'Snowshoes':
     case 'Trail':
     case 'Walking':
       unit = 'spm'

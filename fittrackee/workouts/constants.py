@@ -10,8 +10,10 @@ CADENCE_SPORTS = [
     "Mountain Biking",
     "Mountain Biking (Electric)",
     "Hiking",
+    "Mountaineering",
     "Snowshoes",
     "Running",
     "Trail",
     "Walking",
+    "Open Water Swimming",
 ]
