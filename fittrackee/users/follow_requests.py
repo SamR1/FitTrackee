@@ -1,9 +1,14 @@
 from typing import Dict, Union
 
 from flask import Blueprint, request
-from sqlalchemy import asc, desc, func
+from sqlalchemy import asc, desc
 
 from fittrackee import appLog
+from fittrackee.federation.exceptions import (
+    ActorNotFoundException,
+    DomainNotFoundException,
+)
+from fittrackee.federation.utils.user import get_user_from_username
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
@@ -15,6 +20,7 @@ from fittrackee.responses import (
 from .exceptions import (
     FollowRequestAlreadyProcessedError,
     NotExistingFollowRequestError,
+    UserNotFoundException,
 )
 from .models import FollowRequest, User
 
@@ -46,7 +52,9 @@ def get_follow_requests(auth_user: User) -> Dict:
 
       GET /api/follow-requests?page=1&order=desc  HTTP/1.1
 
-    **Example response**:
+    **Example responses**:
+
+    - if federation is disabled
 
     .. sourcecode:: http
 
@@ -145,13 +153,14 @@ def get_follow_requests(auth_user: User) -> Dict:
 def process_follow_request(
     auth_user: User, user_name: str, action: str
 ) -> Union[Dict, HttpResponse]:
-    from_user = User.query.filter(
-        func.lower(User.username) == func.lower(user_name),
-    ).first()
-    if not from_user:
-        appLog.error(
-            f"Error when accepting follow request: {user_name} does not exist"
-        )
+    try:
+        from_user = get_user_from_username(user_name)
+    except (
+        ActorNotFoundException,
+        DomainNotFoundException,
+        UserNotFoundException,
+    ) as e:
+        appLog.error(f"Error when accepting follow request: {e}")
         return UserNotFoundErrorResponse()
 
     try:
@@ -188,9 +197,17 @@ def accept_follow_request(
 
     **Example requests**:
 
+    - from local instance
+
     .. sourcecode:: http
 
       POST /api/follow-requests/Sam/accept HTTP/1.1
+
+    - from remote instance
+
+    .. sourcecode:: http
+
+      POST /api/follow-requests/sam@remote-instance.net/accept HTTP/1.1
 
     **Example responses**:
 
@@ -239,9 +256,17 @@ def reject_follow_request(
 
     **Example requests**:
 
+    - from local instance
+
     .. sourcecode:: http
 
       POST /api/follow-requests/Sam/reject HTTP/1.1
+
+    - from remote instance
+
+    .. sourcecode:: http
+
+      POST /api/follow-requests/sam@remote-instance.net/reject HTTP/1.1
 
     **Example responses**:
 
