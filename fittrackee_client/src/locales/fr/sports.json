@@ -61,5 +61,8 @@
   },
   "Walking": {
     "LABEL": "Marche"
+  },
+  "Windsurfing": {
+    "LABEL": "Planche à voile"
   }
 }
