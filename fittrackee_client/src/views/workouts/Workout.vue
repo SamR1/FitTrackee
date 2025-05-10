@@ -21,10 +21,7 @@
             :cadenceUnit="cadenceUnit"
           />
           <WorkoutChart
-            v-if="
-              workoutData.workout.with_analysis &&
-              workoutData.chartData.length > 0
-            "
+            v-if="workoutData.workout.with_analysis"
             :workoutData="workoutData"
             :authUser="authUser"
             :displaySegment="displaySegment"

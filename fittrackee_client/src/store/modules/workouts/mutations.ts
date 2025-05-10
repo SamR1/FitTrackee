@@ -76,6 +76,12 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   ) {
     state.workoutData.chartData = chartData
   },
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA_LOADING](
+    state: IWorkoutsState,
+    loading: boolean
+  ) {
+    state.workoutData.chartDataLoading = loading
+  },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX](
     state: IWorkoutsState,
     gpx: string
@@ -120,6 +126,7 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
       loading: false,
       workout: <IWorkout>{},
       chartData: [],
+      chartDataLoading: false,
       comments: [],
       commentsLoading: null,
       currentCommentEdition: <ICurrentCommentEdition>{},
