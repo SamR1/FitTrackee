@@ -219,6 +219,25 @@ class TestGetChartData:
 
         self.assert_chart_data(chart_data)
 
+    def test_it_returns_chart_data_for_gpx_file_with_power_before_track_point_extension(  # noqa
+        self,
+        app: "Flask",
+        gpx_file_with_gpxtpx_extensions_and_power: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=gpx_file_with_gpxtpx_extensions_and_power,
+        ):
+            chart_data = get_chart_data(
+                gpx_file_with_gpxtpx_extensions_and_power,
+                sport_1_cycling.label,
+                can_see_heart_rate=True,
+            )
+
+        self.assert_chart_data(chart_data)
+
     def test_it_does_not_return_cadence_when_sport_is_not_valid(
         self,
         app: "Flask",

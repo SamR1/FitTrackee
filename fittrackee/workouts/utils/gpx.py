@@ -100,10 +100,12 @@ def get_chart_data(
             if point.elevation:
                 data["elevation"] = round(point.elevation, 1)
             if point.extensions:
-                if "TrackPointExtension" in point.extensions[0].tag:
-                    extensions = point.extensions[0]
-                else:
-                    extensions = point.extensions
+                extensions = []
+                for extension in point.extensions:
+                    if "TrackPointExtension" in extension.tag:
+                        extensions.extend(extension)
+                    else:
+                        extensions.append(extension)
                 for element in extensions:
                     if (
                         can_see_heart_rate
