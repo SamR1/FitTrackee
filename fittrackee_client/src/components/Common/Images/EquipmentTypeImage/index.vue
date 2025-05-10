@@ -6,6 +6,7 @@
   >
     <Bike v-if="equipmentTypeLabel === 'Bike'" />
     <BikeTrainer v-if="equipmentTypeLabel === 'Bike Trainer'" />
+    <Board v-if="equipmentTypeLabel === 'Board'" />
     <Kayak_Boat v-if="equipmentTypeLabel === 'Kayak_Boat'" />
     <Shoes v-if="equipmentTypeLabel === 'Shoes'" />
     <Skis v-if="equipmentTypeLabel === 'Skis'" />
@@ -18,6 +19,7 @@
 
   import Bike from '@/components/Common/Images/EquipmentTypeImage/Bike.vue'
   import BikeTrainer from '@/components/Common/Images/EquipmentTypeImage/BikeTrainer.vue'
+  import Board from '@/components/Common/Images/EquipmentTypeImage/Board.vue'
   import Kayak_Boat from '@/components/Common/Images/EquipmentTypeImage/Kayak_Boat.vue'
   import Shoes from '@/components/Common/Images/EquipmentTypeImage/Shoes.vue'
   import Skis from '@/components/Common/Images/EquipmentTypeImage/Skis.vue'

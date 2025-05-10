@@ -1,4 +1,4 @@
-"""add windsurfing
+"""add windsurfing sport and board equipment
 
 Revision ID: 514c727b7feb
 Revises: 61ecbc76f410
@@ -20,12 +20,24 @@ def upgrade():
     op.execute(
         """
         INSERT INTO sports (label, is_active, stopped_speed_threshold)
-        VALUES ('Windsurfing', True, 1)
+        VALUES ('Windsurfing', True, 1);
+        """
+    )
+    op.execute(
+        """
+        INSERT INTO equipment_types (label, is_active)
+        VALUES ('Board', True);
         """
     )
 
 
 def downgrade():
+    op.execute(
+        """
+        DELETE FROM equipment_types
+        WHERE label = 'Board';
+        """
+    )
     op.execute(
         """
         DELETE FROM sports
