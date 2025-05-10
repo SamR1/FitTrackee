@@ -1383,6 +1383,258 @@ def gpx_file_with_ns3_extensions() -> str:
 
 
 @pytest.fixture()
+def gpx_file_without_track_point_extension() -> str:
+    return """<gpx
+  xmlns="http://www.topografix.com/GPX/1/1"
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 
+    https://www.topografix.com/GPX/1/1/gpx.xsd 
+    http://www.cluetrust.com/XML/GPXDATA/1/0 
+    https://www.cluetrust.com/Schemas/gpxdata10.xsd"
+  creator="COROS Wearables"
+  version="1.1"
+>
+<metadata>
+<link href="connect.garmin.com">
+<text>Garmin Connect</text>
+</link>
+<time>2017-06-07T12:55:10.000Z</time>
+</metadata>
+<trk>
+    <trkseg>
+      <trkpt lat="44.68095" lon="6.07367">
+        <ele>998</ele>
+        <time>2018-03-13T12:44:45Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>92</gpxdata:hr>
+          <gpxdata:cadence>0</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.68091" lon="6.07367">
+        <ele>998</ele>
+        <time>2018-03-13T12:44:50Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>87</gpxdata:hr>
+          <gpxdata:cadence>50</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.6808" lon="6.07364">
+        <ele>994</ele>
+        <time>2018-03-13T12:45:00Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>88</gpxdata:hr>
+          <gpxdata:cadence>51</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.68075" lon="6.07364">
+        <ele>994</ele>
+        <time>2018-03-13T12:45:05Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>90</gpxdata:hr>
+          <gpxdata:cadence>54</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.68071" lon="6.07364">
+        <ele>994</ele>
+        <time>2018-03-13T12:45:10Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>87</gpxdata:hr>
+          <gpxdata:cadence>53</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.68049" lon="6.07361">
+        <ele>993</ele>
+        <time>2018-03-13T12:45:30Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>85</gpxdata:hr>
+          <gpxdata:cadence>54</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.68019" lon="6.07356">
+        <ele>992</ele>
+        <time>2018-03-13T12:45:55Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>86</gpxdata:hr>
+          <gpxdata:cadence>54</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.68014" lon="6.07355">
+        <ele>992</ele>
+        <time>2018-03-13T12:46:00Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>84</gpxdata:hr>
+          <gpxdata:cadence>55</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67995" lon="6.07358">
+        <ele>987</ele>
+        <time>2018-03-13T12:46:15Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>86</gpxdata:hr>
+          <gpxdata:cadence>53</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67977" lon="6.07364">
+        <ele>987</ele>
+        <time>2018-03-13T12:46:30Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>88</gpxdata:hr>
+          <gpxdata:cadence>56</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67972" lon="6.07367">
+        <ele>987</ele>
+        <time>2018-03-13T12:46:35Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>86</gpxdata:hr>
+          <gpxdata:cadence>56</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67966" lon="6.07368">
+        <ele>987</ele>
+        <time>2018-03-13T12:46:40Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>83</gpxdata:hr>
+          <gpxdata:cadence>55</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67961" lon="6.0737">
+        <ele>986</ele>
+        <time>2018-03-13T12:46:45Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>83</gpxdata:hr>
+          <gpxdata:cadence>56</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67938" lon="6.07377">
+        <ele>986</ele>
+        <time>2018-03-13T12:47:05Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>85</gpxdata:hr>
+          <gpxdata:cadence>54</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67933" lon="6.07381">
+        <ele>986</ele>
+        <time>2018-03-13T12:47:10Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>86</gpxdata:hr>
+          <gpxdata:cadence>56</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67922" lon="6.07385">
+        <ele>985</ele>
+        <time>2018-03-13T12:47:20Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>85</gpxdata:hr>
+          <gpxdata:cadence>53</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67911" lon="6.0739">
+        <ele>980</ele>
+        <time>2018-03-13T12:47:30Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>84</gpxdata:hr>
+          <gpxdata:cadence>56</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.679" lon="6.07399">
+        <ele>980</ele>
+        <time>2018-03-13T12:47:40Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>86</gpxdata:hr>
+          <gpxdata:cadence>55</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67896" lon="6.07402">
+        <ele>980</ele>
+        <time>2018-03-13T12:47:45Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>83</gpxdata:hr>
+          <gpxdata:cadence>55</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67884" lon="6.07408">
+        <ele>979</ele>
+        <time>2018-03-13T12:47:55Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>83</gpxdata:hr>
+          <gpxdata:cadence>55</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67863" lon="6.07423">
+        <ele>981</ele>
+        <time>2018-03-13T12:48:15Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>82</gpxdata:hr>
+          <gpxdata:cadence>54</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67858" lon="6.07425">
+        <ele>980</ele>
+        <time>2018-03-13T12:48:20Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>85</gpxdata:hr>
+          <gpxdata:cadence>57</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67842" lon="6.07434">
+        <ele>979</ele>
+        <time>2018-03-13T12:48:35Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>84</gpxdata:hr>
+          <gpxdata:cadence>57</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67837" lon="6.07435">
+        <ele>979</ele>
+        <time>2018-03-13T12:48:40Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>84</gpxdata:hr>
+          <gpxdata:cadence>52</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67822" lon="6.07442">
+        <ele>975</ele>
+        <time>2018-03-13T12:48:55Z</time>
+        <extensions>
+          <gpxdata:atemp>28.0</gpxdata:atemp>
+          <gpxdata:hr>81</gpxdata:hr>
+          <gpxdata:cadence>50</gpxdata:cadence>
+        </extensions>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
+"""
+
+
+@pytest.fixture()
 def gpx_file_without_elevation() -> str:
     return """<?xml version='1.0' encoding='UTF-8'?>
 <gpx
