@@ -1,6 +1,4 @@
 WORKOUT_DATE_FORMAT = "%Y-%m-%d %H:%M"
-HR_TAG = "{http://www.garmin.com/xmlschemas/TrackPointExtension/v1}hr"
-CADENCE_TAG = "{http://www.garmin.com/xmlschemas/TrackPointExtension/v1}cad"
 CADENCE_SPORTS = [
     "Cycling (Sport)",
     "Cycling (Trekking)",

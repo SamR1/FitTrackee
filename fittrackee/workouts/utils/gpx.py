@@ -3,7 +3,7 @@ from typing import List, Optional
 
 import gpxpy.gpx
 
-from ..constants import CADENCE_SPORTS, CADENCE_TAG, HR_TAG
+from ..constants import CADENCE_SPORTS
 from ..exceptions import WorkoutGPXException
 
 
@@ -100,16 +100,23 @@ def get_chart_data(
             if point.elevation:
                 data["elevation"] = round(point.elevation, 1)
             if point.extensions:
-                for element in point.extensions[0]:
+                if "TrackPointExtension" in point.extensions[0].tag:
+                    extensions = point.extensions[0]
+                else:
+                    extensions = point.extensions
+                for element in extensions:
                     if (
                         can_see_heart_rate
-                        and element.tag == HR_TAG
+                        and element.tag.endswith("hr")
                         and element.text
                     ):
                         data["hr"] = int(element.text)
                     if (
                         return_cadence
-                        and element.tag == CADENCE_TAG
+                        and (
+                            element.tag.endswith("cad")
+                            or element.tag.endswith("cadence")
+                        )
                         and element.text
                     ):
                         data["cadence"] = int(element.text)
