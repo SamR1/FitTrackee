@@ -9,6 +9,7 @@
               type="radio"
               name="distance"
               :checked="displayDistance"
+              :disabled="loading"
               @click="updateDisplayDistance"
             />
             {{ $t('workouts.DISTANCE') }}
@@ -17,14 +18,16 @@
             <input
               type="radio"
               name="duration"
+              :disabled="loading"
               :checked="!displayDistance"
               @click="updateDisplayDistance"
             />
             {{ $t('workouts.DURATION') }}
           </label>
         </div>
-        <div id="chart-legend" />
-        <div class="line-chart">
+        <Loader v-if="loading" class="chart-loader" />
+        <div id="chart-legend" :class="{ loading }" />
+        <div class="line-chart" :class="{ loading }">
           <Line
             :data="chartData"
             :options="options"
@@ -61,11 +64,12 @@
     LayoutItem,
     TooltipItem,
   } from 'chart.js'
-  import type { ComputedRef, Ref } from 'vue'
+  import { type ComputedRef, onUnmounted, type Ref, watch } from 'vue'
   import { computed, ref, toRefs } from 'vue'
   import { Line } from 'vue-chartjs'
   import { useI18n } from 'vue-i18n'
 
+  import Loader from '@/components/Common/Loader.vue'
   import { htmlLegendPlugin } from '@/components/Workout/WorkoutDetail/WorkoutChart/legend'
   import useApp from '@/composables/useApp'
   import type { IChartDataset } from '@/types/chart.ts'
@@ -112,6 +116,11 @@
       darkTheme.value
     )
   )
+  const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
+  const chartLoading: ComputedRef<boolean> = computed(
+    () => workoutData.value.chartDataLoading
+  )
+  const loading: Ref<boolean> = ref(false)
   const chartData: ComputedRef<ChartData<'line'>> = computed(() => {
     const displayedDatasets = [datasets.value.datasets.speed]
     if (datasets.value.datasets.hr.data.length > 0) {
@@ -353,6 +362,27 @@
       ? label + ` ${t('workouts.UNITS.bpm.UNIT')}`
       : label + ` ${fromKmUnit}/h`
   }
+
+  watch(
+    () => chartLoading.value,
+    (newLoading) => {
+      if (newLoading) {
+        timer.value = setTimeout(() => {
+          loading.value = true
+        }, 500)
+      } else {
+        clearTimeout(timer.value)
+        loading.value = false
+      }
+    },
+    { immediate: true }
+  )
+
+  onUnmounted(() => {
+    if (timer.value) {
+      clearTimeout(timer.value)
+    }
+  })
 </script>
 
 <style lang="scss" scoped>
@@ -365,6 +395,7 @@
       .card-content {
         display: flex;
         flex-direction: column;
+        position: relative;
         .chart-radio {
           width: 100%;
           display: flex;
@@ -382,6 +413,11 @@
         #chart-legend {
           display: flex;
           justify-content: center;
+
+          &.loading {
+            opacity: 0.3;
+            pointer-events: none;
+          }
 
           ul {
             display: flex;
@@ -414,6 +450,16 @@
         }
         .line-chart {
           min-height: 400px;
+
+          &.loading {
+            opacity: 0.3;
+            pointer-events: none;
+          }
+        }
+        .chart-loader {
+          position: absolute;
+          margin-top: 200px;
+          margin-left: 45%;
         }
       }
 
@@ -432,6 +478,9 @@
           }
           .line-chart {
             min-height: 338px;
+          }
+          .chart-loader {
+            margin-left: 40%;
           }
         }
       }

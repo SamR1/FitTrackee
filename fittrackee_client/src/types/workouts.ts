@@ -220,6 +220,7 @@ export interface IWorkoutData {
   loading: boolean
   workout: IWorkout
   chartData: IWorkoutApiChartData[]
+  chartDataLoading: boolean
   comments: IComment[]
   commentsLoading: string | null
   currentCommentEdition: ICurrentCommentEdition
