@@ -101,6 +101,10 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "workout_visibility": (
                     workout_cycling_user_1.workout_visibility.value
                 ),
+                "ave_cadence": None,
+                "max_cadence": None,
+                "ave_hr": None,
+                "max_hr": None,
             }
         ]
 
@@ -154,6 +158,10 @@ class TestUserDataExporterGetUserWorkoutsData:
                 ),
                 "map_visibility": workout.calculated_map_visibility.value,
                 "workout_visibility": workout.workout_visibility.value,
+                "ave_cadence": None,
+                "max_cadence": None,
+                "ave_hr": None,
+                "max_hr": None,
             }
         ]
 

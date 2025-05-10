@@ -1,8 +1,10 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
-from typing import IO, TYPE_CHECKING, List, Optional, Tuple, Union
+from statistics import mean
+from typing import IO, TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 import gpxpy.gpx
+from lxml import etree as ET
 
 from fittrackee import db
 
@@ -53,6 +55,25 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
             get_weather,
         )
         self.gpx: "gpxpy.gpx.GPX" = self.parse_file(workout_file)
+        self.cadences: List[int] = []
+        self.heart_rates: List[int] = []
+
+    @staticmethod
+    def _get_extensions(
+        heart_rate: Optional[int], cadence: Optional[int]
+    ) -> "ET.Element":
+        track_point_extension = ET.Element("{gpxtpx}TrackPointExtension")
+        if heart_rate is not None:
+            heart_rate_element = ET.SubElement(
+                track_point_extension, "{gpxtpx}hr"
+            )
+            heart_rate_element.text = str(heart_rate)
+        if cadence is not None:
+            cadence_element = ET.SubElement(
+                track_point_extension, "{gpxtpx}cad"
+            )
+            cadence_element.text = str(cadence)
+        return track_point_extension
 
     @classmethod
     def parse_file(cls, workout_file: IO[bytes]) -> "gpxpy.gpx.GPX":
@@ -118,6 +139,7 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
         stopped_time_between_segments: timedelta,
         stopped_speed_threshold: float,
         use_raw_gpx_speed: bool,
+        hr_cadence_stats: dict,
     ) -> Union["Workout", "WorkoutSegment"]:
         gpx_info = self.get_gpx_info(
             parsed_gpx=parsed_gpx,
@@ -154,6 +176,12 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
             timedelta(seconds=gpx_info.stopped_time)
             + stopped_time_between_segments
         )
+
+        object_to_update.ave_cadence = hr_cadence_stats["ave_cadence"]
+        object_to_update.ave_hr = hr_cadence_stats["ave_hr"]
+        object_to_update.max_cadence = hr_cadence_stats["max_cadence"]
+        object_to_update.max_hr = hr_cadence_stats["max_hr"]
+
         return object_to_update
 
     def get_workout_date(self) -> "datetime":
@@ -169,8 +197,10 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
         stopped_time_between_segments: timedelta,
         previous_segment_last_point_time: Optional[datetime],
         is_last_segment: bool,
-    ) -> Tuple[timedelta, Optional[datetime]]:
+    ) -> Tuple[timedelta, Optional[datetime], Dict]:
         last_point_index = len(points) - 1
+        cadences = []
+        heart_rates = []
         for point_idx, point in enumerate(points):
             if point_idx == 0:
                 # if a previous segment exists, calculate stopped time
@@ -179,6 +209,13 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
                     stopped_time_between_segments += (
                         point.time - previous_segment_last_point_time
                     )
+
+            if point.extensions:
+                for element in point.extensions[0]:
+                    if element.tag.endswith("}hr") and element.text:
+                        heart_rates.append(int(element.text))
+                    if element.tag.endswith("}cad") and element.text:
+                        cadences.append(int(element.text))
 
             # last segment point
             if point_idx == last_point_index:
@@ -192,7 +229,20 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
                         point.time,
                     )
             self.coordinates.append([point.longitude, point.latitude])
-        return stopped_time_between_segments, previous_segment_last_point_time
+
+        hr_cadence_stats = {
+            "ave_cadence": mean(cadences) if cadences else None,
+            "ave_hr": mean(heart_rates) if heart_rates else None,
+            "max_cadence": max(cadences) if cadences else None,
+            "max_hr": max(heart_rates) if heart_rates else None,
+        }
+        self.cadences.extend(cadences)
+        self.heart_rates.extend(heart_rates)
+        return (
+            stopped_time_between_segments,
+            previous_segment_last_point_time,
+            hr_cadence_stats,
+        )
 
     def _process_segments(
         self,
@@ -204,7 +254,6 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
         max_speed = 0.0
         previous_segment_last_point_time: Optional[datetime] = None
         stopped_time_between_segments = timedelta(seconds=0)
-
         for segment_idx, segment in enumerate(segments):
             new_workout_segment = WorkoutSegment(
                 segment_id=segment_idx,
@@ -214,13 +263,15 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
             db.session.add(new_workout_segment)
 
             is_last_segment = segment_idx == last_segment_index
-            stopped_time_between_segments, previous_segment_last_point_time = (
-                self._process_segment_points(
-                    segment.points,
-                    stopped_time_between_segments,
-                    previous_segment_last_point_time,
-                    is_last_segment,
-                )
+            (
+                stopped_time_between_segments,
+                previous_segment_last_point_time,
+                hr_cadence_stats,
+            ) = self._process_segment_points(
+                segment.points,
+                stopped_time_between_segments,
+                previous_segment_last_point_time,
+                is_last_segment,
             )
 
             self.set_calculated_data(
@@ -229,6 +280,7 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
                 stopped_time_between_segments=timedelta(seconds=0),
                 stopped_speed_threshold=self.stopped_speed_threshold,
                 use_raw_gpx_speed=self.auth_user.use_raw_gpx_speed,
+                hr_cadence_stats=hr_cadence_stats,
             )
 
             if (
@@ -267,12 +319,19 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
             track.segments, new_workout.id, new_workout.uuid
         )
 
+        hr_cadence_stats = {
+            "ave_cadence": mean(self.cadences) if self.cadences else None,
+            "ave_hr": mean(self.heart_rates) if self.heart_rates else None,
+            "max_cadence": max(self.cadences) if self.cadences else None,
+            "max_hr": max(self.heart_rates) if self.heart_rates else None,
+        }
         self.set_calculated_data(
             parsed_gpx=track,
             object_to_update=new_workout,
             stopped_time_between_segments=stopped_time_between_segments,
             stopped_speed_threshold=self.stopped_speed_threshold,
             use_raw_gpx_speed=self.auth_user.use_raw_gpx_speed,
+            hr_cadence_stats=hr_cadence_stats,
         )
         new_workout.max_speed = max_speed
         bounds = track.get_bounds()

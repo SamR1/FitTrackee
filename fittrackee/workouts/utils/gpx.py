@@ -3,6 +3,7 @@ from typing import List, Optional
 
 import gpxpy.gpx
 
+from ..constants import CADENCE_SPORTS
 from ..exceptions import WorkoutGPXException
 
 
@@ -36,10 +37,18 @@ def get_gpx_segments(
 
 
 def get_chart_data(
-    gpx_file: str, segment_id: Optional[int] = None
+    gpx_file: str,
+    sport_label: str,
+    *,
+    can_see_heart_rate: bool,
+    segment_id: Optional[int] = None,
 ) -> Optional[List]:
     """
-    Return data needed to generate chart with speed and elevation
+    Return data needed to generate chart with:
+    - speed
+    - elevation (if available)
+    - heart rate (if available)
+    - cadence (if available)
     """
     gpx = open_gpx_file(gpx_file)
     if gpx is None:
@@ -49,6 +58,7 @@ def get_chart_data(
     first_point = None
     previous_point = None
     previous_distance = 0
+    return_cadence = sport_label in CADENCE_SPORTS
 
     track_segments = gpx.tracks[0].segments
     segments = get_gpx_segments(track_segments, segment_id)
@@ -89,6 +99,29 @@ def get_chart_data(
             }
             if point.elevation:
                 data["elevation"] = round(point.elevation, 1)
+            if point.extensions:
+                extensions = []
+                for extension in point.extensions:
+                    if "TrackPointExtension" in extension.tag:
+                        extensions.extend(extension)
+                    else:
+                        extensions.append(extension)
+                for element in extensions:
+                    if (
+                        can_see_heart_rate
+                        and element.tag.endswith("hr")
+                        and element.text
+                    ):
+                        data["hr"] = int(element.text)
+                    if (
+                        return_cadence
+                        and (
+                            element.tag.endswith("cad")
+                            or element.tag.endswith("cadence")
+                        )
+                        and element.text
+                    ):
+                        data["cadence"] = int(element.text)
             chart_data.append(data)
             previous_point = point
             previous_distance = distance
