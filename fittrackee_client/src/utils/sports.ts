@@ -23,6 +23,7 @@ export const sportColors: Record<string, string> = {
   Swimrun: '#3d9fc9',
   Trail: '#09a98a',
   Walking: '#838383',
+  Windsurfing: '#856ece',
 }
 
 export const sportIdColors = (sports: ISport[]): Record<number, string> => {

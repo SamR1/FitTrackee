@@ -155,6 +155,7 @@
                         class="workout-duration"
                         :class="{ errored: isDurationInvalid() }"
                         type="text"
+                        inputmode="numeric"
                         placeholder="HH"
                         minlength="1"
                         maxlength="2"
@@ -162,7 +163,7 @@
                         required
                         @invalid="invalidateForm"
                         :disabled="loading"
-                        v-model="workoutForm.workoutDurationHour"
+                        v-model="workoutForm.workoutDurationHours"
                       />
                       :
                       <label
@@ -177,6 +178,7 @@
                         class="workout-duration"
                         :class="{ errored: isDurationInvalid() }"
                         type="text"
+                        inputmode="numeric"
                         pattern="^([0-5][0-9])$"
                         minlength="2"
                         maxlength="2"
@@ -199,6 +201,7 @@
                         class="workout-duration"
                         :class="{ errored: isDurationInvalid() }"
                         type="text"
+                        inputmode="numeric"
                         pattern="^([0-5][0-9])$"
                         minlength="2"
                         maxlength="2"
@@ -478,7 +481,7 @@
     notes: '',
     workoutDate: '',
     workoutTime: '',
-    workoutDurationHour: '',
+    workoutDurationHours: '',
     workoutDurationMinutes: '',
     workoutDurationSeconds: '',
     workoutDistance: '',
@@ -590,10 +593,10 @@
         'yyyy-MM-dd'
       )
       if (workout.duration) {
-        const duration = workout.duration.split(':')
-        workoutForm.workoutDurationHour = duration[0]
-        workoutForm.workoutDurationMinutes = duration[1]
-        workoutForm.workoutDurationSeconds = duration[2]
+        const [hours, minutes, seconds] = workout.duration.split(':')
+        workoutForm.workoutDurationHours = hours
+        workoutForm.workoutDurationMinutes = minutes
+        workoutForm.workoutDurationSeconds = seconds
       }
       if (workout.distance) {
         workoutForm.workoutDistance = `${
@@ -636,7 +639,7 @@
   function formatPayload(payload: IWorkoutForm) {
     payloadErrorMessages.value = []
     payload.duration =
-      +workoutForm.workoutDurationHour * 3600 +
+      +workoutForm.workoutDurationHours * 3600 +
       +workoutForm.workoutDurationMinutes * 60 +
       +workoutForm.workoutDurationSeconds
     if (payload.duration <= 0) {

@@ -2,6 +2,7 @@
   "ACCOUNT_CONFIRMATION": "Confirmacion la cuenta",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "¿No has recibido instrucciones?",
   "ACCOUNT_CONFIRMATION_SENT": "Comprueba el correo. Se ha enviado un nuevo email de confirmación a la dirección proporcionada.",
+  "ACTIVE_ACCOUNT": "La cuenta está activada",
   "ALREADY_HAVE_ACCOUNT": "¿Ya tienes una cuenta?",
   "CONFIRM_ACCOUNT_DELETION": "¿Seguro que quieres eliminar tu cuenta? Se borrarán todos los datos, la decisión no es reversible.",
   "CURRENT_PASSWORD": "Contraseña actual",

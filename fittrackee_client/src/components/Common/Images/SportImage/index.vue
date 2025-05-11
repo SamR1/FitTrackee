@@ -27,6 +27,7 @@
     <Swimrun v-if="sportLabel === 'Swimrun'" />
     <Trail v-if="sportLabel === 'Trail'" />
     <Walking v-if="sportLabel === 'Walking'" />
+    <Windsurfing v-if="sportLabel === 'Windsurfing'" />
   </div>
 </template>
 
@@ -54,6 +55,7 @@
   import Swimrun from '@/components/Common/Images/SportImage/Swimrun.vue'
   import Trail from '@/components/Common/Images/SportImage/Trail.vue'
   import Walking from '@/components/Common/Images/SportImage/Walking.vue'
+  import Windsurfing from '@/components/Common/Images/SportImage/Windsurfing.vue'
   import useSports from '@/composables/useSports'
 
   interface Props {
