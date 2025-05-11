@@ -634,10 +634,10 @@
   dependencies:
     undici-types "~6.21.0"
 
-"@types/node@^22.15.14":
-  version "22.15.14"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.15.14.tgz#889fd356a04d003a6d5650ccc003ef4d712430d7"
-  integrity sha512-BL1eyu/XWsFGTtDWOYULQEs4KR0qdtYfCxYAUYRoB7JP7h9ETYLgQTww6kH8Sj2C0pFGgrpM0XKv6/kbIzYJ1g==
+"@types/node@^22.15.17":
+  version "22.15.17"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.15.17.tgz#355ccec95f705b664e4332bb64a7f07db30b7055"
+  integrity sha512-wIX2aSZL5FE+MR0JlvF87BNVrtFWf6AE6rxSE9X7OwnVvoyCQjpzSRJ+M87se/4QCkCiebQAqrJ0y6fwIyi7nw==
   dependencies:
     undici-types "~6.21.0"
 
@@ -826,10 +826,10 @@
   resolved "https://registry.yarnpkg.com/@unrs/resolver-binding-win32-x64-msvc/-/resolver-binding-win32-x64-msvc-1.7.2.tgz#7fd81d89e34a711d398ca87f6d5842735d49721e"
   integrity sha512-friS8NEQfHaDbkThxopGk+LuE5v3iY0StruifjQEt7SLbA46OnfgMO15sOTkbpJkol6RB+1l1TYPXh0sCddpvA==
 
-"@vitejs/plugin-vue@^5.2.3":
-  version "5.2.3"
-  resolved "https://registry.yarnpkg.com/@vitejs/plugin-vue/-/plugin-vue-5.2.3.tgz#71a8fc82d4d2e425af304c35bf389506f674d89b"
-  integrity sha512-IYSLEQj4LgZZuoVpdSUCw3dIynTWQgPlaRP6iAvMle4My0HdYwr5g5wQAfwOeHQBmYwEkqF70nRpSilr6PoUDg==
+"@vitejs/plugin-vue@^5.2.4":
+  version "5.2.4"
+  resolved "https://registry.yarnpkg.com/@vitejs/plugin-vue/-/plugin-vue-5.2.4.tgz#9e8a512eb174bfc2a333ba959bbf9de428d89ad8"
+  integrity sha512-7Yx/SXSOcQq5HiiV3orevHUFn+pmMB4cgbEkDYgnkUWb0WfeQ/wa2yFv6D5ICiCQOVpjA7vYDXrC7AGO8yjDHA==
 
 "@vitest/expect@3.1.3":
   version "3.1.3"
@@ -2752,15 +2752,15 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-linkify-html@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/linkify-html/-/linkify-html-4.3.0.tgz#734ad5d883428b3004826d539bd3bd42bc39975e"
-  integrity sha512-RmL3anhAhfZRLYPKV7Krtp2ooxYVXPONHpwIaZbna1WE+0NhDchP+lv7DqSfNSJiCHQuYWRZ8toTcuNyKfeRLA==
+linkify-html@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/linkify-html/-/linkify-html-4.3.1.tgz#6226a2205d96eb6a3b0c59571a2b02936c6386f3"
+  integrity sha512-6ZNyucw7fH9Ncu17s+hvHFB2sU6fLWowqH6MqkXxtVL2kKkhnrho/DMCE3fWovmzVPgWSFGvg6zLkW+VWrVr4w==
 
-linkifyjs@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/linkifyjs/-/linkifyjs-4.3.0.tgz#f3d46b363ccfb5d7c13f6d11c1dd9848bd854a7f"
-  integrity sha512-kaSIzMpYb3ihAbMm48CUNpSKPwKw8vPVUItiIvPSrISqHYzvQm/6LhaWYkZsiUHNMml1dw+yPMM1/qzigJNg5g==
+linkifyjs@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/linkifyjs/-/linkifyjs-4.3.1.tgz#1f246ebf4be040002accd1f4535b6af7c7e37898"
+  integrity sha512-DRSlB9DKVW04c4SUdGvKK5FR6be45lTU9M76JnngqPeeGDqPwYc0zdUErtsNVMtxPXgUWV4HbXbnC4sNyBxkYg==
 
 loader-utils@^2.0.0:
   version "2.0.4"
@@ -3344,10 +3344,10 @@ sanitize-html@^2.16.0:
     parse-srcset "^1.0.2"
     postcss "^8.3.11"
 
-sass@^1.87.0:
-  version "1.87.0"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.87.0.tgz#8cceb36fa63fb48a8d5d7f2f4c13b49c524b723e"
-  integrity sha512-d0NoFH4v6SjEK7BoX810Jsrhj7IQSYHAHLi/iSpgqKc7LaIDshFRlSg5LOymf9FqQhxEHs2W5ZQXlvy0KD45Uw==
+sass@^1.88.0:
+  version "1.88.0"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.88.0.tgz#cd1495749bebd9e4aca86e93ee60b3904a107789"
+  integrity sha512-sF6TWQqjFvr4JILXzG4ucGOLELkESHL+I5QJhh7CNaE+Yge0SI+ehCatsXhJ7ymU1hAFcIS3/PBpjdIbXoyVbg==
   dependencies:
     chokidar "^4.0.0"
     immutable "^5.0.2"
