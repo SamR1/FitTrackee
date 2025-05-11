@@ -1,5 +1,47 @@
 # Change log
 
+## Version 0.9.10 (2025/05/11)
+
+### Features and enhancements
+
+* [#795](https://github.com/SamR1/FitTrackee/issues/795) - New sport: Windsurfing
+
+### Bugs Fixed
+
+* [#793](https://github.com/SamR1/FitTrackee/issues/793) - Number-template for duration fields in new workout
+
+### Translations
+
+* [PR#787](https://github.com/SamR1/FitTrackee/pull/787) - Translations update (Galician, Polish)
+* [PR#789](https://github.com/SamR1/FitTrackee/pull/789) - Translations update (Dutch)
+
+Translation status:
+- Basque: 99%
+- Bulgarian: 62%
+- Chinese (Simplified): 99%
+- Croatian: 99%
+- Czech: 46%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 99%
+- German: 98%
+- Italian: 51%
+- Norwegian Bokmål: 33%
+- Polish: 99%
+- Portuguese: 61%
+- Russian: 38%
+- Spanish: 64%
+
+
+Thanks to the contributors:
+- @JcMinarro
+- @xmgz
+- Wiktor Jędrzejczak
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
+
+
 ## Version 0.9.9 (2025/05/03)
 
 ### Bugs Fixed

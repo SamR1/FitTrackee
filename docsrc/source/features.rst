@@ -17,7 +17,7 @@ Workouts
 Sports
 ------
 
-- 21 sports are supported:
+- 22 sports are supported:
 
   - Canoeing  (*new in 0.9.3*)
   - Cycling (Sport)
@@ -40,6 +40,7 @@ Sports
   - Swimrun (*new in 0.8.7*)
   - Trail (*new in 0.5.0*)
   - Walking
+  - Windsurfing  (*new in 0.9.10*)
 
 - (*new in 0.5.0*) Stopped speed threshold used by `gpxpy <https://github.com/tkrajina/gpxpy>`_ is not the default one for the following sports (0.1 km/h instead of 1 km/h):
 
@@ -373,10 +374,11 @@ Equipments
 - A user can create equipments that can be associated with workouts.
 - The following equipment types are available, depending on the sport:
 
-  - Shoes: Hiking, Mountaineering, Running, Trail and Walking,
   - Bike: Cycling (Sport, Transport, Trekking), Halfbike, Mountain Biking and Mountain Biking (Electric) (*changed in 0.9.7*),
   - Bike Trainer: Cycling (Virtual),
+  - Board: Windsurfing (*new in 0.9.10*),
   - Kayak/Boat: Canoeing, Rowing and Kayaking (*changed in 0.9.3*),
+  - Shoes: Hiking, Mountaineering, Running, Trail and Walking,
   - Skis: Skiing (Alpine and Cross Country),
   - Snowshoes: Snowshoes.
 
