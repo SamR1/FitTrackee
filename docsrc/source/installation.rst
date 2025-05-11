@@ -618,13 +618,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.9.9):
+-  Download the last release (for now, it is the release v0.9.10):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.9.9.tar.gz
-   $ tar -xzf v0.9.9.tar.gz
-   $ mv FitTrackee-0.9.9 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/0.9.10.tar.gz
+   $ tar -xzf v0.9.10.tar.gz
+   $ mv FitTrackee-0.9.10 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -674,7 +674,7 @@ Upgrade
 
 .. warning::
 
-    For now, releases do not follow `semantic versioning <https://semver.org>`__). Any version may contain backward-incompatible changes.
+    For now, releases do not follow `semantic versioning <https://semver.org>`__. Any version may contain backward-incompatible changes.
 
 
 From PyPI
@@ -756,13 +756,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.9.9) and overwrite existing files:
+- Download the last release (for now, it is the release v0.9.10) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.9.9.tar.gz
-   $ tar -xzf v0.9.9.tar.gz
-   $ cp -R FitTrackee-0.9.9/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.9.10.tar.gz
+   $ tar -xzf v0.9.10.tar.gz
+   $ cp -R FitTrackee-0.9.10/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).

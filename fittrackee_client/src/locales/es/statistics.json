@@ -3,6 +3,7 @@
   "DATES": "Fechas",
   "STATISTICS": "Estadísticas",
   "STATISTICS_CHARTS": {
+    "day": "Estadísticas diarias",
     "month": "Estadísticas mensuales",
     "week": "Estadísticas semanales",
     "year": "Estadísticas anuales"

@@ -1,1 +1,10 @@
-{}
+{
+  "COMMENT_LEVELS": {
+    "followers_only": "Seguidores sólo",
+    "public": "Público (todo el mundo)"
+  },
+  "LEVELS": {
+    "followers_only": "Seguidores sólo",
+    "private": "Privado (sólo yo)"
+  }
+}
