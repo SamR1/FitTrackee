@@ -4,7 +4,7 @@ import fitdecode
 import gpxpy.gpx
 
 from ...exceptions import WorkoutFileException
-from .constants import NSMAP
+from .constants import GARMIN_DEVICES, NSMAP
 from .workout_gpx_creation_service import WorkoutGpxCreationService
 
 
@@ -54,7 +54,10 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                     if frame.has_field("product") and frame.get_value(
                         "product"
                     ):
-                        creator = f"{creator} {frame.get_value('product')}"
+                        product = frame.get_value("product")
+                        if product in GARMIN_DEVICES.keys():
+                            product = GARMIN_DEVICES[product]
+                        creator = f"{creator} {product}"
                     continue
                 # create a new segment after 'stop_all' event
                 if (
