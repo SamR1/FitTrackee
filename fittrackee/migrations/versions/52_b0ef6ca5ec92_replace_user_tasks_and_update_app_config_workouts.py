@@ -70,7 +70,7 @@ def upgrade():
 
     op.execute("""
         INSERT INTO user_tasks
-          (uuid, user_id, created_at, updated_at, task_type, progress, errored, file_path, file_size)
+          (uuid, user_id, created_at, updated_at, task_type, progress, errored, aborted, file_path, file_size)
         SELECT
           gen_random_uuid(),
           ude.user_id,
@@ -79,6 +79,7 @@ def upgrade():
           'user_data_export',
           CASE WHEN ude.completed IS TRUE THEN 100 ELSE 0 END,
           ude.completed IS TRUE AND ude.file_name IS NULL,
+          FALSE,  
           ude.file_name,
           ude.file_size
         FROM users_data_export as ude
