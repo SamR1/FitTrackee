@@ -814,6 +814,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
         assert float(new_workout.ascent) == 0.4  # type: ignore
         assert float(new_workout.ave_speed) == 4.61  # type: ignore
         assert new_workout.bounds == [44.67822, 6.07355, 44.68095, 6.07442]
+        assert new_workout.source is None
         assert float(new_workout.descent) == 23.4  # type: ignore
         assert new_workout.description == "some description"
         assert float(new_workout.distance) == 0.32  # type: ignore
@@ -868,6 +869,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
         assert float(new_workout.ascent) == 0.4  # type: ignore
         assert float(new_workout.ave_speed) == 4.59  # type: ignore
         assert new_workout.bounds == [44.67822, 6.07355, 44.68095, 6.07442]
+        assert new_workout.source is None
         assert float(new_workout.descent) == 23.4  # type: ignore
         assert new_workout.description == "some description"
         assert float(new_workout.distance) == 0.299  # type: ignore
@@ -892,7 +894,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
         assert new_workout.workout_visibility == VisibilityLevel.PRIVATE
         assert WorkoutSegment.query.count() == 2
 
-    def test_it_creates_workout_when_extension_is_tcx(
+    def test_it_creates_workout_when_extension_is_tcx_and_creator_tag_exists(
         self,
         app: "Flask",
         user_1: "User",
@@ -922,6 +924,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
         assert float(new_workout.ascent) == 0.0  # type: ignore
         assert float(new_workout.ave_speed) == 4.58  # type: ignore
         assert new_workout.bounds == [44.67822, 6.07355, 44.68095, 6.07442]
+        assert new_workout.source == "vívoactive"
         assert float(new_workout.descent) == 21.0  # type: ignore
         assert new_workout.description is None
         assert float(new_workout.distance) == 0.318  # type: ignore
@@ -942,6 +945,52 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
         assert new_workout.weather_end is None
         assert new_workout.workout_visibility == VisibilityLevel.PRIVATE
         assert WorkoutSegment.query.count() == 1
+
+    def test_it_creates_workout_when_extension_is_tcx_and_author_tag_exists(
+        self,
+        app: "Flask",
+        user_1: "User",
+        tcx_with_one_lap_and_two_tracks: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        kml_file_storage = FileStorage(
+            filename="file.tcx",
+            stream=BytesIO(str.encode(tcx_with_one_lap_and_two_tracks)),
+        )
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            file=kml_file_storage,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+
+        service.create_workout_from_file(extension="tcx", equipments=None)
+        db.session.commit()
+
+        new_workout = Workout.query.one()
+        assert new_workout.source == "Garmin Connect API"
+
+    def test_it_creates_workout_when_extension_is_tcx_wo_author_and_creator_tags(  # noqa
+        self,
+        app: "Flask",
+        user_1: "User",
+        tcx_with_two_laps: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        kml_file_storage = FileStorage(
+            filename="file.tcx",
+            stream=BytesIO(str.encode(tcx_with_two_laps)),
+        )
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            file=kml_file_storage,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+
+        service.create_workout_from_file(extension="tcx", equipments=None)
+        db.session.commit()
+
+        new_workout = Workout.query.one()
+        assert new_workout.source is None
 
     def test_it_creates_workout_when_extension_is_fit(
         self,
@@ -973,6 +1022,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
         assert float(new_workout.ascent) == 0.0  # type: ignore
         assert float(new_workout.ave_speed) == 4.58  # type: ignore
         assert new_workout.bounds == [44.67822, 6.07355, 44.68095, 6.07442]
+        assert new_workout.source == "garmin 1001"
         assert float(new_workout.descent) == 21.0  # type: ignore
         assert new_workout.description is None
         assert float(new_workout.distance) == 0.318  # type: ignore

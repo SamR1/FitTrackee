@@ -3030,8 +3030,14 @@ def tcx_with_one_lap_and_one_track() -> str:
         + """
                 </Track>
             </Lap>
+          <Creator xsi:type="Device_t">
+            <Name>vívoactive</Name>
+          </Creator>
         </Activity>
     </Activities>
+    <Author xsi:type="Application_t">
+      <Name>Garmin Connect API</Name>
+    </Author>
 </TrainingCenterDatabase>
 """
     )
@@ -3063,6 +3069,9 @@ def tcx_with_one_lap_and_two_tracks() -> str:
             </Lap>
         </Activity>
     </Activities>
+    <Author xsi:type="Application_t">
+      <Name>Garmin Connect API</Name>
+    </Author>
 </TrainingCenterDatabase>
 """
     )

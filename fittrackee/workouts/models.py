@@ -328,6 +328,9 @@ class Workout(BaseModel):
     ave_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
     max_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
     ave_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
+    source: Mapped[Optional[str]] = mapped_column(
+        db.String(100), nullable=True
+    )
 
     user: Mapped["User"] = relationship(
         "User", lazy="select", single_parent=True
@@ -491,6 +494,7 @@ class Workout(BaseModel):
         workout_data = {
             **workout_data,
             **EMPTY_WORKOUT_VALUES,
+            "source": self.source,
             "title": self.title,
             "moving": None if self.moving is None else str(self.moving),
             "distance": (

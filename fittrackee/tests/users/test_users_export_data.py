@@ -85,6 +85,7 @@ class TestUserDataExporterGetUserWorkoutsData:
                     for record in workout_cycling_user_1.records
                 ],
                 "segments": [],
+                "source": workout_cycling_user_1.source,
                 "weather_start": None,
                 "weather_end": None,
                 "notes": workout_cycling_user_1.notes,
@@ -146,6 +147,7 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "segments": [
                     segment.serialize() for segment in workout.segments
                 ],
+                "source": workout.source,
                 "weather_start": None,
                 "weather_end": None,
                 "notes": workout.notes,

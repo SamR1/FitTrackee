@@ -57,9 +57,14 @@ class WorkoutTcxCreationService(WorkoutGpxCreationService):
         gpx_track = gpxpy.gpx.GPXTrack()
         has_tracks = False
         cadence_prefix_tag = ""
+        creator = ""
 
         for activity in activities:
             has_points = False
+
+            if not creator:
+                creator = activity.get("Creator", {}).get("Name", "")
+
             gpx_segment = gpxpy.gpx.GPXTrackSegment()
             laps = activity.get("Lap", [])
             if isinstance(laps, dict):
@@ -140,6 +145,10 @@ class WorkoutTcxCreationService(WorkoutGpxCreationService):
             ) from None
 
         gpx = gpxpy.gpx.GPX()
+        author = (
+            tcx_dict["TrainingCenterDatabase"].get("Author", {}).get("Name")
+        )
+        gpx.creator = creator if creator else author
         gpx.nsmap = NSMAP
         gpx.tracks.append(gpx_track)
         return gpx

@@ -314,6 +314,7 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
         )
         db.session.add(new_workout)
         db.session.flush()
+        new_workout.source = self.gpx.creator
 
         stopped_time_between_segments, max_speed = self._process_segments(
             track.segments, new_workout.id, new_workout.uuid
