@@ -68,10 +68,12 @@
   import { computed, ref, toRefs } from 'vue'
   import { Line } from 'vue-chartjs'
   import { useI18n } from 'vue-i18n'
+  import { useStore } from 'vuex'
 
   import Loader from '@/components/Common/Loader.vue'
   import { htmlLegendPlugin } from '@/components/Workout/WorkoutDetail/WorkoutChart/legend'
   import useApp from '@/composables/useApp'
+  import { WORKOUTS_STORE } from '@/store/constants.ts'
   import type { IChartDataset } from '@/types/chart.ts'
   import type { TCoordinates } from '@/types/map'
   import type { ISport } from '@/types/sports.ts'
@@ -93,6 +95,7 @@
   const emit = defineEmits(['getCoordinates'])
 
   const { t } = useI18n()
+  const store = useStore()
 
   const { darkTheme } = useApp()
 
@@ -368,6 +371,7 @@
     (newLoading) => {
       if (newLoading) {
         timer.value = setTimeout(() => {
+          store.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA, [])
           loading.value = true
         }, 500)
       } else {
