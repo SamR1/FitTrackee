@@ -96,6 +96,7 @@ export interface IWorkout {
   previous_workout: string | null
   records: IRecord[]
   segments: IWorkoutSegment[]
+  source?: string | null
   sport_id: number
   suspended?: boolean
   suspended_at?: string | null
@@ -134,6 +135,7 @@ export interface IWorkoutObject {
   previousUrl: string | null
   records: IRecord[]
   segmentId: number | null
+  source: string | null
   suspended: boolean
   title: string
   type: string

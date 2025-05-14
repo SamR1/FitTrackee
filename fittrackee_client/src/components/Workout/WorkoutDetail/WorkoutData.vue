@@ -1,5 +1,10 @@
 <template>
   <div id="workout-info">
+    <div class="workout-data" v-if="workoutObject.source !== null">
+      <i class="fa fa-info-circle" aria-hidden="true" />
+      <span class="label"> {{ $t('workouts.SOURCE') }} </span>:
+      <span class="label">{{ workoutObject.source }}</span>
+    </div>
     <div class="workout-data">
       <i class="fa fa-clock-o" aria-hidden="true" />
       <span class="label"> {{ $t('workouts.DURATION') }} </span>:

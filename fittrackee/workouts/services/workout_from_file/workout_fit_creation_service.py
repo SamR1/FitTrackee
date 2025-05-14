@@ -1,4 +1,4 @@
-from typing import IO
+from typing import IO, Optional
 
 import fitdecode
 import gpxpy.gpx
@@ -42,9 +42,19 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
         gpx_track = gpxpy.gpx.GPXTrack()
         gpx_segment = gpxpy.gpx.GPXTrackSegment()
         has_stop = False
+        creator: Optional[str] = None
         try:
             for frame in fit_file:
                 if frame.frame_type != fitdecode.FIT_FRAME_DATA:
+                    continue
+                if frame.name == "file_id":
+                    if not frame.has_field("manufacturer"):
+                        continue
+                    creator = frame.get_value("manufacturer")
+                    if frame.has_field("product") and frame.get_value(
+                        "product"
+                    ):
+                        creator = f"{creator} {frame.get_value('product')}"
                     continue
                 # create a new segment after 'stop_all' event
                 if (
@@ -55,6 +65,7 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                     has_stop = True
                     gpx_track.segments.append(gpx_segment)
                     gpx_segment = gpxpy.gpx.GPXTrackSegment()
+                    continue
 
                 if frame.name != "record":
                     continue
@@ -115,6 +126,7 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
             gpx_track.segments.append(gpx_segment)
 
         gpx = gpxpy.gpx.GPX()
+        gpx.creator = creator
         gpx.nsmap = NSMAP
         gpx.tracks.append(gpx_track)
         return gpx

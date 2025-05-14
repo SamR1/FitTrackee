@@ -333,6 +333,7 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert workout.ave_hr is None
         assert workout.max_cadence is None
         assert workout.max_hr is None
+        assert workout.source is None
 
     def test_it_creates_workout_and_segment_when_gpx_file_has_offset(
         self,
@@ -358,6 +359,7 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert workout.ave_hr is None
         assert workout.max_cadence is None
         assert workout.max_hr is None
+        assert workout.source is None
 
     def test_it_creates_workout_and_segment_when_raw_speed_is_true(
         self,
@@ -383,6 +385,7 @@ class TestWorkoutGpxCreationServiceProcessFile(
         workout_segment = WorkoutSegment.query.one()
         assert float(workout_segment.ave_speed) == 4.61
         assert float(workout_segment.max_speed) == 5.25
+        assert workout.source is None
 
     def test_it_creates_workout_and_segment_when_gpx_file_has_no_elevation(
         self,
@@ -416,6 +419,7 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert workout.ave_hr is None
         assert workout.max_cadence is None
         assert workout.max_hr is None
+        assert workout.source is None
         # workout segment
         workout_segment = WorkoutSegment.query.one()
         assert workout_segment.duration == timedelta(minutes=4, seconds=10)
@@ -472,6 +476,7 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert workout.ave_hr is None
         assert workout.max_cadence is None
         assert workout.max_hr is None
+        assert workout.source is None
         # workout segments
         workout_segments = WorkoutSegment.query.all()
         assert len(workout_segments) == 3
@@ -598,6 +603,7 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert workout.ave_hr is None
         assert workout.max_cadence is None
         assert workout.max_hr is None
+        assert workout.source is None
         # workout segments
         workout_segments = WorkoutSegment.query.all()
         assert len(workout_segments) == 3
@@ -688,6 +694,7 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert workout.ave_hr == 85
         assert workout.max_cadence == 57
         assert workout.max_hr == 92
+        assert workout.source == "Garmin Connect"
 
     def test_it_creates_workout_when_gpx_file_has_ns3_extensions(
         self,
@@ -713,6 +720,7 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert workout.ave_hr == 85
         assert workout.max_cadence == 57
         assert workout.max_hr == 92
+        assert workout.source == "Garmin Connect"
 
     @pytest.mark.parametrize("input_get_weather", [{}, {"get_weather": True}])
     def test_it_calls_weather_service_for_start_and_endpoint(

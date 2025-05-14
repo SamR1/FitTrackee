@@ -188,6 +188,7 @@
       aveCadence: segment ? segment.ave_cadence : workout.ave_cadence,
       aveHr: segment ? segment.ave_hr : workout.ave_hr,
       aveSpeed: segment ? segment.ave_speed : workout.ave_speed,
+      source: segment ? null : workout.source || null,
       distance: segment ? segment.distance : workout.distance,
       descent: segment ? segment.descent : workout.descent,
       duration: segment ? segment.duration : workout.duration,
