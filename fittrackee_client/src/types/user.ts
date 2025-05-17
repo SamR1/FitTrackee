@@ -53,6 +53,7 @@ export interface IAuthUserProfile extends IUserProfile {
   display_ascent: boolean
   email: string
   hide_profile_in_users_directory: boolean
+  hr_visibility: TVisibilityLevels
   imperial_units: boolean
   start_elevation_at_zero: boolean
   use_raw_gpx_speed: boolean
@@ -114,6 +115,7 @@ export interface IUserPreferencesPayload {
   date_format: string
   display_ascent: boolean
   hide_profile_in_users_directory: boolean
+  hr_visibility: TVisibilityLevels
   imperial_units: boolean
   language: TLanguage
   manually_approves_followers: boolean
@@ -226,3 +228,28 @@ export interface IUserAppealPayload {
 }
 
 export type TToken = string | LocationQueryValue | LocationQueryValue[]
+
+export interface IArchiveUploadTaskError {
+  archive: string | null
+  files: Record<string, string>
+}
+export type IArchiveUploadTaskStatus =
+  | 'aborted'
+  | 'errored'
+  | 'in_progress'
+  | 'queued'
+  | 'successful'
+
+export interface IArchiveUploadTask {
+  created_at: string
+  errored_files: IArchiveUploadTaskError
+  file_size: number
+  files_count: number
+  id: string
+  new_workouts_count: number
+  original_file_name: string | null
+  progress: string
+  sport_id: number | null
+  status: IArchiveUploadTaskStatus
+  updated_at: string
+}

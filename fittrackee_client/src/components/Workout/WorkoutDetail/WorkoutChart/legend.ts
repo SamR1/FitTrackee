@@ -31,12 +31,6 @@ export const htmlLegendPlugin = {
       : []
 
     legendItems.forEach((item: LegendItem) => {
-      if (
-        !chart.config.options?.scales?.yElevation?.display &&
-        item.datasetIndex === 1 // elevation
-      ) {
-        return
-      }
       const li = document.createElement('li')
       li.onclick = (e) => {
         e.preventDefault()

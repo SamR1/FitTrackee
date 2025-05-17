@@ -2,14 +2,17 @@
   "ADD_WORKOUT": "Ajouter une séance",
   "ANALYSIS": "analyse",
   "ASCENT": "dénivelé positif",
+  "AVERAGE_CADENCE": "cadence moyenne",
+  "AVERAGE_HR": "fréquence cardiaque moyenne",
   "AVERAGE_SPEED": "vitesse moyenne",
-  "AVE_SPEED": "vitesse moy.",
   "AVE_ASCENT": "dénivelé positif moy.",
   "AVE_DESCENT": "dénivelé négatif moy.",
   "AVE_DISTANCE": "distance moy.",
   "AVE_DURATION": "durée moy.",
+  "AVE_SPEED": "vitesse moy.",
   "BACK_TO_COMMENT": "revenir au commentaire",
   "BACK_TO_WORKOUT": "revenir à la séance",
+  "CADENCE": "cadence",
   "COMMENTS": {
     "ADD": "ajouter un commentaire",
     "COMMENT": "commentaire | commentaires",
@@ -22,6 +25,7 @@
     "REPORT": "signaler le commentaire",
     "SUSPENDED_COMMENT_BY_ADMIN": "Le commentaire a été suspendu par un administrateur."
   },
+  "CREATED_WORKOUTS": "Séance créée | Séances créées",
   "DATE": "date",
   "DELETE_WORKOUT": "Supprimer la séance",
   "DESCENT": "dénivelé négatif",
@@ -37,6 +41,7 @@
   "EXIT_FULLSCREEN": "Sortir du plein-écran",
   "FROM": "à partir de",
   "GPX_FILE": "fichier .gpx",
+  "HEART_RATE": "fréquence cardiaque",
   "HIDE_FILTERS": "masquer les filtres",
   "HIDE_WORKOUTS": "masquer les séances",
   "INVALID_ASCENT_OR_DESCENT": "Les 2 valeurs pour l'élévation doivent être renseignées et être supérieures ou égales à 0.",
@@ -48,8 +53,10 @@
   "LOAD_MORE_WORKOUT": "Charger les séances suivantes",
   "MAP": "carte",
   "MARKDOWN_SYNTAX": "La syntaxe Markdown suivante peut être utilisée : _italique_, **gras**, [lien](https://example.com), ![image](https://example.com/image.png)",
-  "MAX_ALTITUDE": "altitude max",
+  "MAX_ALTITUDE": "altitude max.",
+  "MAX_CADENCE": "cadence max.",
   "MAX_FILES": "fichiers max. ",
+  "MAX_HR": "fréquence cardiaque max.",
   "MAX_SIZE": "taille max. ",
   "MAX_SPEED": "vitesse max.",
   "MIN_ALTITUDE": "altitude min",
@@ -91,6 +98,7 @@
   "RESET_ZOOM": "Réinitialiser le zoom",
   "SEGMENT": "segment | segments",
   "SHOW_WORKOUTS": "afficher les séances",
+  "SOURCE": "source",
   "SPEED": "vitesse",
   "SPORT": "sport | sports",
   "START": "début",
@@ -104,6 +112,20 @@
   "TOTAL_DESCENT": "dénivelé négatif total",
   "TOTAL_DISTANCE": "distance totale",
   "TOTAL_DURATION": "durée totale",
+  "UNITS": {
+    "bpm": {
+      "LABEL": "battements par minute",
+      "UNIT": "bpm"
+    },
+    "rpm": {
+      "LABEL": "révolutions par minute",
+      "UNIT": "rpm"
+    },
+    "spm": {
+      "LABEL": "pas par minute",
+      "UNIT": "ppm"
+    }
+  },
   "UPLOAD_FIRST_WORKOUT": "Ajoutez votre première séance !",
   "VIEW_FULLSCREEN": "Afficher en plein-écran",
   "WEATHER": {

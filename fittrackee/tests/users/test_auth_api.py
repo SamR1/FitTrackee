@@ -16,9 +16,9 @@ from fittrackee.users.models import (
     BlacklistedToken,
     Notification,
     User,
-    UserDataExport,
     UserSportPreference,
     UserSportPreferenceEquipment,
+    UserTask,
 )
 from fittrackee.users.roles import UserRole
 from fittrackee.users.timezones import TIMEZONES
@@ -27,7 +27,7 @@ from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..comments.mixins import CommentMixin
-from ..mixins import ApiTestCaseMixin, ReportMixin
+from ..mixins import ApiTestCaseMixin, ReportMixin, UserTaskMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 
 USER_AGENT = (
@@ -1565,6 +1565,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     workouts_visibility="public",
                     manually_approves_followers=False,
                     hide_profile_in_users_directory=False,
+                    hr_visibility="followers_only",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1585,6 +1586,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data["data"]["use_dark_mode"] is True
         assert data["data"]["manually_approves_followers"] is False
         assert data["data"]["hide_profile_in_users_directory"] is False
+        assert data["data"]["hr_visibility"] == VisibilityLevel.FOLLOWERS
 
     @pytest.mark.parametrize(
         "input_map_visibility,input_analysis_visibility,input_workout_visibility,expected_map_visibility,expected_analysis_visibility",
@@ -1652,6 +1654,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     map_visibility=input_map_visibility.value,
                     analysis_visibility=input_analysis_visibility.value,
                     workouts_visibility=input_workout_visibility.value,
+                    hr_visibility=input_workout_visibility.value,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1697,6 +1700,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     manually_approves_followers=True,
                     hide_profile_in_users_directory=True,
                     use_dark_mode=None,
+                    hr_visibility=VisibilityLevel.PUBLIC.value,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -3488,8 +3492,22 @@ class TestUserPrivacyPolicyUpdate(ApiTestCaseMixin):
         assert response.status_code == 400
 
 
+class ApiUserTaskRequestMixin(UserTaskMixin, ApiTestCaseMixin):
+    def create_completed_export_request(
+        self, app: "Flask", user: "User"
+    ) -> "UserTask":
+        export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
+        return self.create_user_data_export_task(
+            user,
+            created_at=(
+                datetime.now(timezone.utc) - timedelta(hours=export_expiration)
+            ),
+            progress=100,
+        )
+
+
 @patch("fittrackee.users.auth.export_data")
-class TestPostUserDataExportRequest(ApiTestCaseMixin):
+class TestPostUserTaskRequest(ApiUserTaskRequestMixin):
     def test_it_returns_data_export_info_when_no_ongoing_request_exists_for_user(  # noqa
         self,
         export_data_mock: Mock,
@@ -3497,8 +3515,7 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         user_1: User,
         user_2: User,
     ) -> None:
-        db.session.add(UserDataExport(user_id=user_2.id))
-        db.session.commit()
+        self.create_user_data_export_task(user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -3511,11 +3528,11 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        data_export_request = UserDataExport.query.filter_by(
-            user_id=user_1.id
-        ).one()
+        data_export_request = UserTask.query.filter_by(user_id=user_1.id).one()
         assert data["status"] == "success"
-        assert data["request"] == jsonify_dict(data_export_request.serialize())
+        assert data["request"] == jsonify_dict(
+            data_export_request.serialize(current_user=user_1)
+        )
 
     def test_it_returns_error_if_ongoing_request_exist(
         self,
@@ -3523,7 +3540,9 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
     ) -> None:
-        db.session.add(UserDataExport(user_id=user_1.id))
+        db.session.add(
+            UserTask(user_id=user_1.id, task_type="user_data_export")
+        )
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -3543,10 +3562,7 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
     ) -> None:
-        completed_export_request = UserDataExport(user_id=user_1.id)
-        db.session.add(completed_export_request)
-        completed_export_request.completed = True
-        db.session.commit()
+        self.create_user_data_export_task(user_1, progress=100)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -3565,15 +3581,9 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
     ) -> None:
-        export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
-        completed_export_request = UserDataExport(
-            user_id=user_1.id,
-            created_at=datetime.now(timezone.utc)
-            - timedelta(hours=export_expiration),
+        completed_export_request = self.create_completed_export_request(
+            app, user_1
         )
-        db.session.add(completed_export_request)
-        completed_export_request.completed = True
-        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -3586,12 +3596,12 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        data_export_request = UserDataExport.query.filter_by(
-            user_id=user_1.id
-        ).one()
+        data_export_request = UserTask.query.filter_by(user_id=user_1.id).one()
         assert data_export_request.id != completed_export_request.id
         assert data["status"] == "success"
-        assert data["request"] == jsonify_dict(data_export_request.serialize())
+        assert data["request"] == jsonify_dict(
+            data_export_request.serialize(current_user=user_1)
+        )
 
     def test_it_calls_export_data_tasks_when_request_is_created(
         self,
@@ -3609,11 +3619,9 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        data_export_request = UserDataExport.query.filter_by(
-            user_id=user_1.id
-        ).one()
+        data_export_request = UserTask.query.filter_by(user_id=user_1.id).one()
         export_data_mock.send.assert_called_once_with(
-            export_request_id=data_export_request.id
+            task_id=data_export_request.id
         )
 
     def test_it_does_not_calls_export_data_tasks_when_request_already_exists(
@@ -3623,13 +3631,12 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         user_1: User,
     ) -> None:
         export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
-        completed_export_request = UserDataExport(
-            user_id=user_1.id,
-            created_at=datetime.now(timezone.utc)
-            - timedelta(hours=export_expiration),
+        self.create_user_data_export_task(
+            user_1,
+            created_at=(
+                datetime.now(timezone.utc) - timedelta(hours=export_expiration)
+            ),
         )
-        db.session.add(completed_export_request)
-        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -3648,15 +3655,7 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
     ) -> None:
-        export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
-        completed_export_request = UserDataExport(
-            user_id=user_1.id,
-            created_at=datetime.now(timezone.utc)
-            - timedelta(hours=export_expiration),
-        )
-        db.session.add(completed_export_request)
-        completed_export_request.completed = True
-        db.session.commit()
+        self.create_completed_export_request(app, user_1)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -3667,11 +3666,9 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        data_export_request = UserDataExport.query.filter_by(
-            user_id=user_1.id
-        ).one()
+        data_export_request = UserTask.query.filter_by(user_id=user_1.id).one()
         export_data_mock.send.assert_called_once_with(
-            export_request_id=data_export_request.id
+            task_id=data_export_request.id
         )
 
     def test_suspended_user_can_request_data_export(
@@ -3692,14 +3689,16 @@ class TestPostUserDataExportRequest(ApiTestCaseMixin):
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
-        data_export_request = UserDataExport.query.filter_by(
+        data_export_request = UserTask.query.filter_by(
             user_id=suspended_user.id
         ).one()
         assert data["status"] == "success"
-        assert data["request"] == jsonify_dict(data_export_request.serialize())
+        assert data["request"] == jsonify_dict(
+            data_export_request.serialize(current_user=suspended_user)
+        )
 
 
-class TestGetUserDataExportRequest(ApiTestCaseMixin):
+class TestGetUserTaskRequest(ApiUserTaskRequestMixin):
     def test_it_returns_none_if_no_request(
         self,
         app: Flask,
@@ -3727,14 +3726,7 @@ class TestGetUserDataExportRequest(ApiTestCaseMixin):
         user_1: User,
         user_2: User,
     ) -> None:
-        export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
-        completed_export_request = UserDataExport(
-            user_id=user_2.id,
-            created_at=datetime.now(timezone.utc)
-            - timedelta(hours=export_expiration),
-        )
-        db.session.add(completed_export_request)
-        db.session.commit()
+        self.create_completed_export_request(app, user_2)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -3755,14 +3747,9 @@ class TestGetUserDataExportRequest(ApiTestCaseMixin):
         app: Flask,
         user_1: User,
     ) -> None:
-        export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
-        completed_export_request = UserDataExport(
-            user_id=user_1.id,
-            created_at=datetime.now(timezone.utc)
-            - timedelta(hours=export_expiration),
+        completed_export_request = self.create_completed_export_request(
+            app, user_1
         )
-        db.session.add(completed_export_request)
-        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -3777,7 +3764,7 @@ class TestGetUserDataExportRequest(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["request"] == jsonify_dict(
-            completed_export_request.serialize()
+            completed_export_request.serialize(current_user=user_1)
         )
 
     def test_suspended_user_can_get_data_export_info(
@@ -3785,14 +3772,9 @@ class TestGetUserDataExportRequest(ApiTestCaseMixin):
         app: Flask,
         suspended_user: User,
     ) -> None:
-        export_expiration = app.config["DATA_EXPORT_EXPIRATION"]
-        completed_export_request = UserDataExport(
-            user_id=suspended_user.id,
-            created_at=datetime.now(timezone.utc)
-            - timedelta(hours=export_expiration),
+        completed_export_request = self.create_completed_export_request(
+            app, suspended_user
         )
-        db.session.add(completed_export_request)
-        db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, suspended_user.email
         )
@@ -3807,11 +3789,11 @@ class TestGetUserDataExportRequest(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["request"] == jsonify_dict(
-            completed_export_request.serialize()
+            completed_export_request.serialize(current_user=suspended_user)
         )
 
 
-class TestDownloadExportDataArchive(ApiTestCaseMixin):
+class TestDownloadExportDataArchive(UserTaskMixin, ApiTestCaseMixin):
     def test_it_returns_404_when_request_export_does_not_exist(
         self, app: Flask, user_1: User
     ) -> None:
@@ -3830,11 +3812,9 @@ class TestDownloadExportDataArchive(ApiTestCaseMixin):
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         archive_file_name = self.random_string()
-        export_request = UserDataExport(user_id=user_2.id)
-        db.session.add(export_request)
-        export_request.completed = True
-        export_request.file_name = archive_file_name
-        db.session.commit()
+        self.create_user_data_export_task(
+            user_2, progress=100, file_path=archive_file_name
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -3849,11 +3829,9 @@ class TestDownloadExportDataArchive(ApiTestCaseMixin):
     def test_it_returns_404_when_file_name_does_not_match(
         self, app: Flask, user_1: User
     ) -> None:
-        export_request = UserDataExport(user_id=user_1.id)
-        db.session.add(export_request)
-        export_request.completed = True
-        export_request.file_name = self.random_string()
-        db.session.commit()
+        self.create_user_data_export_task(
+            user_1, progress=100, file_path=self.random_string()
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -3869,11 +3847,9 @@ class TestDownloadExportDataArchive(ApiTestCaseMixin):
         self, app: Flask, user_1: User
     ) -> None:
         archive_file_name = self.random_string()
-        export_request = UserDataExport(user_id=user_1.id)
-        db.session.add(export_request)
-        export_request.completed = True
-        export_request.file_name = archive_file_name
-        db.session.commit()
+        self.create_user_data_export_task(
+            user_1, progress=100, file_path=archive_file_name
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -3886,7 +3862,7 @@ class TestDownloadExportDataArchive(ApiTestCaseMixin):
             )
 
         mock.assert_called_once_with(
-            f"{app.config['UPLOAD_FOLDER']}/exports/{user_1.id}",
+            app.config["UPLOAD_FOLDER"],
             archive_file_name,
             mimetype="application/zip",
             as_attachment=True,
@@ -3898,11 +3874,9 @@ class TestDownloadExportDataArchive(ApiTestCaseMixin):
         suspended_user: User,
     ) -> None:
         archive_file_name = self.random_string()
-        export_request = UserDataExport(user_id=suspended_user.id)
-        db.session.add(export_request)
-        export_request.completed = True
-        export_request.file_name = archive_file_name
-        db.session.commit()
+        self.create_user_data_export_task(
+            suspended_user, progress=100, file_path=archive_file_name
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, suspended_user.email
         )
@@ -3915,7 +3889,7 @@ class TestDownloadExportDataArchive(ApiTestCaseMixin):
             )
 
         mock.assert_called_once_with(
-            f"{app.config['UPLOAD_FOLDER']}/exports/{suspended_user.id}",
+            app.config["UPLOAD_FOLDER"],
             archive_file_name,
             mimetype="application/zip",
             as_attachment=True,

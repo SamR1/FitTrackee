@@ -43,6 +43,7 @@
           'BLOCKED-USERS',
           'NOTIFICATIONS',
           'MODERATION',
+          'ARCHIVE-UPLOADS',
         ]
   )
 </script>

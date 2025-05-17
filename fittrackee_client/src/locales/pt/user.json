@@ -14,10 +14,7 @@
     "DOWNLOAD_ARCHIVE": "Fazer download do ficheiro",
     "GENERATING_LINK": "criando link…",
     "ONLY_ONE_EXPORT_PER_DAY": "Você pode solicitar um arquivo a cada 24 horas",
-    "STATUS": {
-      "errored": "falhou (solicita uma nova exportação)",
-      "in_progress": "em progresso…"
-    }
+    "REQUEST_ANOTHER_EXPORT": "solicita uma nova exportação"
   },
   "FILTER_ON_USERNAME": "Filtrar por nome de usuário",
   "HIDE_PASSWORD": "esconder a senha",
@@ -161,6 +158,12 @@
     "admin": "Administrador"
   },
   "SHOW_PASSWORD": "mostrar senha",
+  "TASKS": {
+    "STATUS": {
+      "errored": "falhou",
+      "in_progress": "em progresso"
+    }
+  },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Esta conta de usuário não está ativa.",
   "TOGGLE_THEME": "Alternar tema (modo claro ou escuro)",
   "USERNAME": "Nome de utilizador",

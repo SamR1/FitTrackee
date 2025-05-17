@@ -7,6 +7,7 @@ import type { TAppConfig, IAppStatistics } from '@/types/application'
 import type { TLanguage } from '@/types/locales'
 import type { IAuthUserProfile } from '@/types/user'
 import { localeFromLanguage } from '@/utils/locales'
+
 export const mutations: MutationTree<IRootState> & TRootMutations = {
   [ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES](state: IRootState) {
     state.errorMessages = null

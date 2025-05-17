@@ -39,6 +39,8 @@ from .exceptions import (
     FollowRequestAlreadyRejectedError,
     InvalidNotificationTypeException,
     NotExistingFollowRequestError,
+    UserTaskException,
+    UserTaskForbiddenException,
 )
 from .roles import (
     UserRole,
@@ -52,6 +54,12 @@ if TYPE_CHECKING:
     from fittrackee.equipments.models import Equipment
     from fittrackee.reports.models import ReportAction
     from fittrackee.workouts.models import Record
+
+
+TASK_TYPES = [
+    "user_data_export",
+    "workouts_archive_upload",
+]
 
 
 class FollowRequest(BaseModel):
@@ -344,6 +352,11 @@ class User(BaseModel):
     )
     notification_preferences: Mapped[Optional[Dict]] = mapped_column(
         postgresql.JSONB, nullable=True
+    )
+    hr_visibility: Mapped[VisibilityLevel] = mapped_column(
+        Enum(VisibilityLevel, name="visibility_levels"),
+        server_default="PRIVATE",
+        nullable=False,
     )
 
     workouts: Mapped[List["Workout"]] = relationship(
@@ -872,6 +885,7 @@ class User(BaseModel):
                     "map_visibility": self.map_visibility.value,
                     "analysis_visibility": self.analysis_visibility.value,
                     "workouts_visibility": self.workouts_visibility.value,
+                    "hr_visibility": self.hr_visibility.value,
                     "manually_approves_followers": (
                         self.manually_approves_followers
                     ),
@@ -999,14 +1013,18 @@ class BlacklistedToken(BaseModel):
         return cls.query.filter_by(token=str(auth_token)).first() is not None
 
 
-class UserDataExport(BaseModel):
-    __tablename__ = "users_data_export"
+class UserTask(BaseModel):
+    __tablename__ = "user_tasks"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    user_id: Mapped[int] = mapped_column(
-        db.ForeignKey("users.id", ondelete="CASCADE"),
-        index=True,
+    uuid: Mapped[UUID] = mapped_column(
+        postgresql.UUID(as_uuid=True),
+        default=uuid4,
         unique=True,
+        nullable=False,
+    )
+    user_id: Mapped[int] = mapped_column(
+        db.ForeignKey("users.id", ondelete="CASCADE"), index=True
     )
     created_at: Mapped[datetime] = mapped_column(
         TZDateTime, nullable=False, default=aware_utc_now
@@ -1014,47 +1032,170 @@ class UserDataExport(BaseModel):
     updated_at: Mapped[Optional[datetime]] = mapped_column(
         TZDateTime, nullable=True, onupdate=aware_utc_now
     )
-    completed: Mapped[bool] = mapped_column(nullable=False, default=False)
-    file_name: Mapped[Optional[str]] = mapped_column(
-        db.String(100), nullable=True
+    task_type: Mapped[str] = mapped_column(
+        Enum(*TASK_TYPES, name="task_types"), index=True
     )
+    progress: Mapped[int] = mapped_column(nullable=False, default=0)
+    errored: Mapped[bool] = mapped_column(nullable=False, default=False)
+    aborted: Mapped[bool] = mapped_column(nullable=False, default=False)
+    # can be input or output file
     file_size: Mapped[Optional[int]] = mapped_column(nullable=True)
+    # relative or absolute path
+    file_path: Mapped[Optional[str]] = mapped_column(
+        db.String(255), nullable=True
+    )
+    errors: Mapped[Dict] = mapped_column(
+        postgresql.JSONB, nullable=False, server_default="{}"
+    )
+    data: Mapped[Dict] = mapped_column(
+        postgresql.JSONB, nullable=False, server_default="{}"
+    )
+    message_id: Mapped[Optional[str]] = mapped_column(
+        db.String(36), nullable=True
+    )
 
     def __init__(
         self,
         user_id: int,
+        task_type: str,
         created_at: Optional[datetime] = None,
+        data: Optional[Dict] = None,
+        file_path: Optional[str] = None,
     ):
         self.user_id = user_id
+        self.task_type = task_type
         self.created_at = (
             datetime.now(timezone.utc) if created_at is None else created_at
         )
+        self.data = data if data else {}
+        self.file_path = file_path
+        if task_type == "workouts_archive_upload":
+            self.errors = {
+                "archive": None,
+                "files": {},
+            }
 
-    def serialize(self) -> Dict:
-        if self.completed:
-            status = "successful" if self.file_name else "errored"
-        else:
-            status = "in_progress"
-        return {
-            "created_at": self.created_at,
-            "status": status,
-            "file_name": self.file_name if status == "successful" else None,
-            "file_size": self.file_size if status == "successful" else None,
+    @property
+    def completed(self) -> bool:
+        return self.progress == 100
+
+    @property
+    def short_id(self) -> str:
+        return encode_uuid(self.uuid)
+
+    def _get_user_data_export(
+        self, serialized_task: Dict, *, for_admin: bool = False
+    ) -> Dict:
+        serialized_task = {
+            **serialized_task,
+            "file_size": (
+                self.file_size
+                if self.status == "successful" and self.file_size is not None
+                else None
+            ),
         }
 
+        if for_admin:
+            return serialized_task
 
-@listens_for(UserDataExport, "after_delete")
-def on_users_data_export_delete(
-    mapper: Mapper, connection: Connection, old_record: "UserDataExport"
+        return {
+            **serialized_task,
+            "file_name": (
+                self.file_path.split("/")[-1]
+                if self.status == "successful" and self.file_path
+                else None
+            ),
+        }
+
+    @property
+    def status(self) -> str:
+        if self.errored:
+            return "errored"
+        elif self.aborted:
+            return "aborted"
+        elif self.progress == 0:
+            return "queued"
+        elif self.progress == 100:
+            return "successful"
+        return "in_progress"
+
+    def _get_workouts_archive_upload(
+        self, serialized_task: Dict, *, for_admin: bool = False
+    ) -> Dict:
+        total_files = len(self.data.get("files_to_process", []))
+
+        serialized_task = {
+            **serialized_task,
+            "file_size": self.file_size,
+            "files_count": total_files,
+        }
+
+        if for_admin:
+            return serialized_task
+
+        serialized_task = {
+            **serialized_task,
+            "sport_id": self.data.get("workouts_data", {}).get("sport_id"),
+            "errored_files": self.errors,
+            "new_workouts_count": self.data.get("new_workouts_count", 0),
+            "progress": self.progress,
+            "original_file_name": self.data.get("original_file_name"),
+            "updated_at": self.updated_at,
+        }
+        return serialized_task
+
+    def serialize(
+        self,
+        *,
+        current_user: "User",
+        for_admin: bool = False,
+        task_user: Optional["User"] = None,
+    ) -> Dict:
+        if (
+            current_user.id != self.user_id
+            and not current_user.has_admin_rights
+        ):
+            raise UserTaskForbiddenException()
+
+        if task_user and task_user.id != self.user_id:
+            raise UserTaskException("invalid tasks user")
+
+        serialized_task = {
+            "id": self.short_id,
+            "created_at": self.created_at,
+            "status": self.status,
+            "type": self.task_type,
+        }
+
+        if current_user.has_admin_rights and for_admin:
+            serialized_task["message_id"] = self.message_id
+            if task_user:
+                serialized_task["user"] = task_user.serialize(
+                    current_user=current_user, light=True
+                )
+
+        if self.task_type == "user_data_export":
+            return self._get_user_data_export(
+                serialized_task, for_admin=for_admin
+            )
+
+        return self._get_workouts_archive_upload(
+            serialized_task, for_admin=for_admin
+        )
+
+
+@listens_for(UserTask, "after_delete")
+def on_user_task_delete(
+    mapper: Mapper, connection: Connection, old_record: "UserTask"
 ) -> None:
     @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
-        if old_record.file_name:
+        Notification.query.filter(
+            Notification.event_object_id == old_record.id,
+        ).delete()
+        if old_record.file_path:
             try:
-                file_path = (
-                    f"exports/{old_record.user_id}/{old_record.file_name}"
-                )
-                os.remove(get_absolute_file_path(file_path))
+                os.remove(get_absolute_file_path(old_record.file_path))
             except OSError:
                 appLog.error("archive found when deleting export request")
 
@@ -1226,5 +1367,13 @@ class Notification(BaseModel):
                 serialized_notification["workout"] = (
                     workout.serialize(user=to_user) if workout else None
                 )
+
+        if self.event_type == "workouts_archive_upload":
+            task = UserTask.query.filter_by(id=self.event_object_id).first()
+            if task:
+                serialized_notification["task"] = {
+                    "id": task.short_id,
+                    "original_file_name": task.data.get("original_file_name"),
+                }
 
         return serialized_notification

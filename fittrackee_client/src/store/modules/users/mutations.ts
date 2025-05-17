@@ -3,6 +3,7 @@ import type { MutationTree } from 'vuex'
 import { USERS_STORE } from '@/store/constants'
 import type { IUsersState, TUsersMutations } from '@/store/modules/users/types'
 import type { IPagination } from '@/types/api'
+import type { IQueuedTask, TQueuedTasksCounts } from '@/types/application.ts'
 import type { IReportAction } from '@/types/reports'
 import type { IUserProfile } from '@/types/user'
 import type { IWorkout } from '@/types/workouts.ts'
@@ -98,5 +99,23 @@ export const mutations: MutationTree<IUsersState> & TUsersMutations = {
     loading: boolean
   ) {
     state.userWorkouts.loading = loading
+  },
+  [USERS_STORE.MUTATIONS.UPDATE_USERS_QUEUED_TASKS](
+    state: IUsersState,
+    tasks: IQueuedTask[]
+  ) {
+    state.usersQueuedTasks.tasks = tasks
+  },
+  [USERS_STORE.MUTATIONS.UPDATE_USERS_QUEUED_TASKS_COUNTS](
+    state: IUsersState,
+    counts: TQueuedTasksCounts
+  ) {
+    state.usersQueuedTasks.counts = counts
+  },
+  [USERS_STORE.MUTATIONS.UPDATE_USERS_QUEUED_TASKS_PAGINATION](
+    state: IUsersState,
+    pagination: IPagination
+  ) {
+    state.usersQueuedTasks.pagination = pagination
   },
 }

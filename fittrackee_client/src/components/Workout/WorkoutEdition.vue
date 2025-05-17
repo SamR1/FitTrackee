@@ -66,7 +66,7 @@
                   id="gpxFile"
                   name="gpxFile"
                   type="file"
-                  accept=".gpx, .zip"
+                  accept=".gpx, .fit, .kml, .kmz, .tcx, .zip"
                   :disabled="loading"
                   required
                   @invalid="invalidateForm"

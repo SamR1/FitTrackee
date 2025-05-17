@@ -2,6 +2,8 @@
   "ADD_WORKOUT": "Add a workout",
   "ANALYSIS": "analysis",
   "ASCENT": "ascent",
+  "AVERAGE_CADENCE": "average cadence",
+  "AVERAGE_HR": "average heart rate",
   "AVERAGE_SPEED": "average speed",
   "AVE_ASCENT": "ave. ascent",
   "AVE_DESCENT": "ave. descent",
@@ -10,6 +12,7 @@
   "AVE_SPEED": "ave. speed",
   "BACK_TO_COMMENT": "back to comment",
   "BACK_TO_WORKOUT": "back to workout",
+  "CADENCE": "cadence",
   "COMMENTS": {
     "ADD": "add a comment",
     "COMMENT": "comment | comments",
@@ -22,6 +25,7 @@
     "REPORT": "report comment",
     "SUSPENDED_COMMENT_BY_ADMIN": "The comment has been suspended by an administrator."
   },
+  "CREATED_WORKOUTS": "Created workout | Created workouts",
   "DATE": "date",
   "DELETE_WORKOUT": "Delete the workout",
   "DESCENT": "descent",
@@ -37,6 +41,7 @@
   "EXIT_FULLSCREEN": "Exit Fullscreen",
   "FROM": "from",
   "GPX_FILE": ".gpx file",
+  "HEART_RATE": "heart rate",
   "HIDE_FILTERS": "hide filters",
   "HIDE_WORKOUTS": "hide workouts",
   "INVALID_ASCENT_OR_DESCENT": "Both elevation values must be provided and be greater than or equal to 0.",
@@ -49,7 +54,9 @@
   "MAP": "map",
   "MARKDOWN_SYNTAX": "Following Markdown syntax can be used: _italic_, **bold**, [link](https://example.com), ![image](https://example.com/image.png)",
   "MAX_ALTITUDE": "max. altitude",
+  "MAX_CADENCE": "max. cadence",
   "MAX_FILES": "max files",
+  "MAX_HR": "max. heart rate",
   "MAX_SIZE": "max size",
   "MAX_SPEED": "max. speed",
   "MIN_ALTITUDE": "min. altitude",
@@ -91,6 +98,7 @@
   "RESET_ZOOM": "Reset zoom",
   "SEGMENT": "segment | segments",
   "SHOW_WORKOUTS": "show workouts",
+  "SOURCE": "source",
   "SPEED": "speed",
   "SPORT": "sport | sports",
   "START": "start",
@@ -104,6 +112,20 @@
   "TOTAL_DESCENT": "total descent",
   "TOTAL_DISTANCE": "total distance",
   "TOTAL_DURATION": "total duration",
+  "UNITS": {
+    "bpm": {
+      "LABEL": "beats per minute",
+      "UNIT": "bpm"
+    },
+    "rpm": {
+      "LABEL": "revolutions per minute",
+      "UNIT": "rpm"
+    },
+    "spm": {
+      "LABEL": "steps per minute",
+      "UNIT": "spm"
+    }
+  },
   "UPLOAD_FIRST_WORKOUT": "Upload one!",
   "VIEW_FULLSCREEN": "View Fullscreen",
   "WEATHER": {

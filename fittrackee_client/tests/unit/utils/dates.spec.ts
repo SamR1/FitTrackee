@@ -228,7 +228,15 @@ describe('formatWorkoutDate', () => {
   })
 })
 
-describe('formatDate', () => {
+describe('formatDate (w/ default value)', () => {
+  it('format date for "Europe/Paris" timezone and "dd/MM/yyyy" format', () => {
+    expect(
+      formatDate('Tue, 01 Nov 2022 00:00:00 GMT', 'Europe/Paris', 'yyyy-MM-dd')
+    ).toBe('2022-11-01 01:00')
+  })
+})
+
+describe("formatDate (w/ 'withTime' option)", () => {
   const dateString = 'Tue, 01 Nov 2022 00:00:00 GMT'
 
   const testsParams = [
@@ -280,12 +288,28 @@ describe('formatDate', () => {
           dateString,
           testParams.inputParams.timezone,
           testParams.inputParams.dateFormat,
-          testParams.inputParams.withTime
+          { withTime: testParams.inputParams.withTime }
         )
       ).toStrictEqual(testParams.expectedDate)
     })
   })
+})
 
+describe("formatDate with 'withSeconds' option", () => {
+  it('format date for "Europe/Paris" timezone and "dd/MM/yyyy" format and seconds', () => {
+    expect(
+      formatDate(
+        'Tue, 01 Nov 2022 00:00:00 GMT',
+        'Europe/Paris',
+        'yyyy-MM-dd',
+        { withSeconds: true }
+      )
+    ).toBe('2022-11-01 01:00:00')
+  })
+})
+
+describe('formatDate (w/ all options)', () => {
+  const dateString = 'Tue, 01 Nov 2022 00:00:00 GMT'
   const DateTimeFormat = Intl.DateTimeFormat
   const testsParamsEn = [
     {
@@ -315,9 +339,11 @@ describe('formatDate', () => {
           'Tue, 02 Nov 2022 00:00:00 GMT',
           'America/New_York',
           'browser_settings',
-          true,
-          'en',
-          testParams.inputWithSeconds
+          {
+            withTime: true,
+            locale: 'en',
+            withSeconds: testParams.inputWithSeconds,
+          }
         )
       ).toStrictEqual(testParams.expectedDate)
 
@@ -347,40 +373,14 @@ describe('formatDate', () => {
         }
       )
       expect(
-        formatDate(
-          dateString,
-          'Europe/Paris',
-          'browser_settings',
-          true,
-          'fr',
-          testParams.inputWithSeconds
-        )
+        formatDate(dateString, 'Europe/Paris', 'browser_settings', {
+          withTime: true,
+          locale: 'fr',
+          withSeconds: testParams.inputWithSeconds,
+        })
       ).toStrictEqual(testParams.expectedDate)
       vi.clearAllMocks()
     })
-  })
-})
-
-describe('formatDate (w/ default value)', () => {
-  it('format date for "Europe/Paris" timezone and "dd/MM/yyyy" format', () => {
-    expect(
-      formatDate('Tue, 01 Nov 2022 00:00:00 GMT', 'Europe/Paris', 'yyyy-MM-dd')
-    ).toBe('2022-11-01 01:00')
-  })
-})
-
-describe('formatDate with_seconds', () => {
-  it('format date for "Europe/Paris" timezone and "dd/MM/yyyy" format and seconds', () => {
-    expect(
-      formatDate(
-        'Tue, 01 Nov 2022 00:00:00 GMT',
-        'Europe/Paris',
-        'yyyy-MM-dd',
-        true,
-        null,
-        true
-      )
-    ).toBe('2022-11-01 01:00:00')
   })
 })
 

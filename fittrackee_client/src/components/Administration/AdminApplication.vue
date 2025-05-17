@@ -65,18 +65,39 @@
               :disabled="!edition"
             />
           </label>
-          <label for="gpx_limit_import">
+          <label for="file_limit_import">
             {{ $t('admin.APP_CONFIG.MAX_FILES_IN_ZIP_LABEL') }}:
             <input
-              id="gpx_limit_import"
-              name="gpx_limit_import"
+              id="file_limit_import"
+              name="file_limit_import"
               type="number"
               min="0"
               max="2147483647"
-              v-model="appData.gpx_limit_import"
+              v-model="appData.file_limit_import"
               :disabled="!edition"
             />
           </label>
+          <label for="file_sync_limit_import">
+            {{ $t('admin.APP_CONFIG.MAX_SYNC_FILES_IN_ZIP_LABEL') }}:
+            <input
+              id="file_sync_limit_import"
+              name="file_sync_limit_import"
+              type="number"
+              min="0"
+              max="2147483647"
+              v-model="appData.file_sync_limit_import"
+              :disabled="!edition"
+            />
+          </label>
+          <div
+            class="admin-help"
+            v-if="appData.file_sync_limit_import == appData.file_limit_import"
+          >
+            <span class="info-box">
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('admin.APP_CONFIG.ASYNCHRONOUS_UPLOAD_DISABLED') }}
+            </span>
+          </div>
           <label for="stats_workouts_limit">
             {{ $t('admin.APP_CONFIG.STATS_WORKOUTS_LIMIT_LABEL') }}:
             <input
@@ -195,7 +216,8 @@
     max_users: 0,
     max_single_file_size: 0,
     max_zip_file_size: 0,
-    gpx_limit_import: 0,
+    file_limit_import: 0,
+    file_sync_limit_import: 0,
     about: '',
     privacy_policy: '',
     stats_workouts_limit: 0,

@@ -17,6 +17,7 @@ export const workoutsState: IWorkoutsState = {
     loading: false,
     workout: <IWorkout>{},
     chartData: [],
+    chartDataLoading: false,
     comments: [],
     commentsLoading: null,
     currentCommentEdition: <ICurrentCommentEdition>{},
