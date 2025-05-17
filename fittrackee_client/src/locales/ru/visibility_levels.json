@@ -1,1 +1,17 @@
-{}
+{
+  "ANALYSIS_VISIBILITY": "Видимость аналитики",
+  "COMMENT_LEVELS": {
+    "followers_only": "только для подписчиков",
+    "private": "Приватно (только упомянутые пользователи)",
+    "public": "Публично (все)"
+  },
+  "LEVELS": {
+    "followers_only": "Только подписчики",
+    "private": "Приватно (только я)",
+    "public": "Публично (для всех)"
+  },
+  "MAP_VISIBILITY": "Видимость карты",
+  "VISIBILITY": "видимость",
+  "WORKOUTS_VISIBILITY": "Видимость данных, связанных с тренировками",
+  "WORKOUT_VISIBILITY": "видимость тренировок"
+}
