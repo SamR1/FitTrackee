@@ -4,7 +4,7 @@ from abc import abstractmethod
 from typing import IO, TYPE_CHECKING, Dict, List, Optional, Union
 
 from flask import current_app
-from staticmap import Line, StaticMap
+from staticmap3 import Line, StaticMap
 
 from fittrackee import VERSION, db
 from fittrackee.files import get_absolute_file_path

@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
 import pytest
-from staticmap import Line, StaticMap
+from staticmap3 import Line, StaticMap
 
 from fittrackee import VERSION
 from fittrackee.tests.fixtures.fixtures_workouts import (
@@ -144,9 +144,9 @@ class TestBaseWorkoutWithSegmentsCreationServiceGenerateMapImage(
 
         call_args = self.get_args(static_map_get_mock.call_args)
         assert (
-            app_default_static_map.config["TILE_SERVER"]["URL"]
-            .replace("{s}.", "")
-            .replace("/{z}/{x}/{y}.png", "")
+            app_default_static_map.config["TILE_SERVER"]["URL"].replace(
+                "/{z}/{x}/{y}.png", ""
+            )
             not in call_args[0]
         )
 

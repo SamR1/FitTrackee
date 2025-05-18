@@ -41,6 +41,7 @@ clean-install: clean
 	rm -fr $(VENV)
 	rm -rf *.egg-info
 	rm -rf dist/
+	rm -rf .staticmap_cache
 
 ## Docker commands for evaluation purposes
 docker-bandit:

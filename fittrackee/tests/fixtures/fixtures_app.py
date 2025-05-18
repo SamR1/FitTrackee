@@ -108,6 +108,9 @@ def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 @pytest.fixture
 def app_default_static_map(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv(
+        "TILE_SERVER_URL", "https://tile.openstreetmap.de/{z}/{x}/{y}.png"
+    )
     monkeypatch.setenv("DEFAULT_STATICMAP", "True")
     yield from get_app(with_config=True)
 
