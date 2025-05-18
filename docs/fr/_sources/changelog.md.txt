@@ -1,5 +1,41 @@
 # Change log
 
+## Version 0.9.11 (2025/05/18)
+
+### Translations
+
+* [PR#800](https://github.com/SamR1/FitTrackee/pull/800) - Translations update (Basque, Croatian and Galician)
+* [PR#802](https://github.com/SamR1/FitTrackee/pull/802) - Translations update (Dutch and Russian)
+* [PR#803](https://github.com/SamR1/FitTrackee/pull/803) - Translations update (Russian)
+
+
+Translation status:
+- Basque: 100%
+- Bulgarian: 62%
+- Chinese (Simplified): 99%
+- Croatian: 100%
+- Czech: 46%
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 98%
+- Italian: 51%
+- Norwegian Bokmål: 33%
+- Polish: 99%
+- Portuguese: 61%
+- Russian: 69%
+- Spanish: 64%
+
+
+Thanks to the contributors:
+- @erral
+- @iggydev
+- @JeroenED
+- @Lemetist
+- @xmgz
+
+
 ## Version 0.9.10 (2025/05/11)
 
 ### Features and enhancements

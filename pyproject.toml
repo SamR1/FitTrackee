@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.9.10"
+version = "0.9.11"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0-only"
@@ -36,7 +36,7 @@ click = "^8.1.7"
 dramatiq = {version = "^1.15.0", extras = ["redis"]}
 dramatiq-abort = {extras = ["redis"], version = "^1.2.1"}
 fitdecode = "^0.10.0"
-flask = "^3.1.0"
+flask = "^3.1.1"
 flask-bcrypt = "^1.0.1"
 flask-dramatiq = "^0.6.0"
 flask-limiter = {version = "^3.11.0", extras = ["redis"]}  # flask-limiter 3.12+ requires python 3.10+
@@ -50,11 +50,11 @@ lxml = "^5.4.0"
 nh3 = "^0.2.21"
 psycopg2-binary = "^2.9.10"
 pyjwt = "^2.10.1"
-pyopenssl = "^25.0.0"
+pyopenssl = "^25.1.0"
 pytz = "^2025.2"
 shortuuid = "^1.0.13"
 staticmap3 = {git = "https://git@github.com/SamR1/staticmap.git", rev = "v0.1.0", extras = ["filecache"]}
-sqlalchemy = "=2.0.40"
+sqlalchemy = "=2.0.41"
 ua-parser = "^1.0.0"
 xmltodict = "^0.14.2"
 
@@ -69,7 +69,7 @@ pytest-runner = "^6.0.1"
 pytest-selenium = "^4.1.0"
 pytest-xdist = {extras = ["psutil"], version = "^3.6.0"}
 recommonmark = "^0.7.1"
-ruff = "^0.11.9"
+ruff = "^0.11.10"
 selenium = "^4.32.0"
 sphinx = "^7.4.7" # sphinx 8+ requires python 3.10+
 sphinx-copybutton = "^0.5.2"
