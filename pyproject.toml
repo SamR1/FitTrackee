@@ -34,7 +34,7 @@ authlib = "=1.5.2"
 babel = "^2.11.0"
 click = "^8.1.7"
 dramatiq = {version = "^1.15.0", extras = ["redis"]}
-flask = "^3.1.0"
+flask = "^3.1.1"
 flask-bcrypt = "^1.0.1"
 flask-dramatiq = "^0.6.0"
 flask-limiter = {version = "^3.11.0", extras = ["redis"]}  # flask-limiter 3.12+ requires python 3.10+
@@ -47,11 +47,11 @@ jsonschema = "^4.23.0"
 nh3 = "^0.2.21"
 psycopg2-binary = "^2.9.10"
 pyjwt = "^2.10.1"
-pyopenssl = "^25.0.0"
+pyopenssl = "^25.1.0"
 pytz = "^2025.2"
 shortuuid = "^1.0.13"
 staticmap = "^0.5.7"
-sqlalchemy = "=2.0.40"
+sqlalchemy = "=2.0.41"
 ua-parser = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
@@ -65,7 +65,7 @@ pytest-runner = "^6.0.1"
 pytest-selenium = "^4.1.0"
 pytest-xdist = {extras = ["psutil"], version = "^3.6.0"}
 recommonmark = "^0.7.1"
-ruff = "^0.11.9"
+ruff = "^0.11.10"
 selenium = "^4.32.0"
 sphinx = "^7.4.7" # sphinx 8+ requires python 3.10+
 sphinx-copybutton = "^0.5.2"
