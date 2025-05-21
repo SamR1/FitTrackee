@@ -1398,6 +1398,19 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``no file part``
         - ``no selected file``
         - ``file extension not allowed``
+        - ``error when parsing fit file``
+        - ``error when parsing gpx file``
+        - ``error when parsing kml file``
+        - ``error when parsing kmz file``
+        - ``error when parsing tcx file``
+        - ``gpx file is invalid``
+        - ``no activities in tcx file``
+        - ``no coordinates in tcx file``
+        - ``no laps or no tracks in tcx file``
+        - ``no tracks in gpx file``
+        - ``no tracks in kml file``
+        - ``<time> is missing in gpx file``
+        - ``unsupported kml file``
         - ``equipment_ids must be an array of strings``
         - ``only one equipment can be added``
         - ``equipment with id <equipment_id> does not exist``
