@@ -130,6 +130,8 @@ class UserDataExporter:
                             "gpx",
                             "kml",
                             "kmz",
+                            "fit",
+                            "tcx",
                         ] and os.path.isfile(
                             os.path.join(self.workouts_directory, file)
                         ):
