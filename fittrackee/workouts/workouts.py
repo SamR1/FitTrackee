@@ -1365,7 +1365,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
           "status": "in_progress"
         }
 
-    :form file: gpx file (allowed extensions: .gpx, .zip)
+    :form file: workout file or archive (allowed extensions: .gpx, .kml, .kmz,
+       .fit, .tcx, .zip)
     :form data: sport id, equipment id, description, title, notes, visibility
        for workout, analysis and map
        for example:
@@ -2476,7 +2477,7 @@ def get_workouts_upload_task(
     auth_user: User, task_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Get task for workouts archive upload
+    Get tasks for workouts archive upload
 
     **Scope**: ``workouts:read``
 
