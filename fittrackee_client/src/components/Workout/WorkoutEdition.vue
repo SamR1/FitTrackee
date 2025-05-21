@@ -72,27 +72,40 @@
                   @invalid="invalidateForm"
                   @input="updateFile"
                 />
-                <div class="files-help info-box">
-                  <div>
-                    <strong>{{ $t('workouts.WORKOUT_FILE') }}:</strong>
-                    <ul>
-                      <li>
-                        {{ $t('workouts.MAX_SIZE') }}: {{ fileSizeLimit }}
-                      </li>
-                      <li>
-                        {{ $t('workouts.SUPPORTED_FILE_EXTENSIONS') }}: .gpx,
-                        .fit, .kml, .kmz, .tcx
-                      </li>
-                    </ul>
+                <div class="files-info-box info-box">
+                  <div class="files-help">
+                    <div>
+                      <strong>{{ $t('workouts.WORKOUT_FILE') }}:</strong>
+                      <ul>
+                        <li>
+                          {{ $t('workouts.MAX_SIZE') }}: {{ fileSizeLimit }}
+                        </li>
+                        <li>
+                          {{ $t('workouts.SUPPORTED_FILE_EXTENSIONS') }}: .gpx,
+                          .fit, .kml, .kmz, .tcx
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <strong>{{ $t('workouts.ZIP_ARCHIVE') }}:</strong>
+                      <ul>
+                        <li>
+                          {{ $t('workouts.MAX_SIZE') }}: {{ zipSizeLimit }}
+                        </li>
+                        <li>
+                          {{ $t('workouts.MAX_FILES') }}:
+                          {{ file_limit_import }}
+                        </li>
+                        <li>
+                          {{ $t('workouts.MAX_SYNC_FILES_IN_ZIP') }}:
+                          {{ file_sync_limit_import }}
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                  <div>
-                    <strong>{{ $t('workouts.ZIP_ARCHIVE') }}:</strong>
-                    <ul>
-                      <li>
-                        {{ $t('workouts.MAX_FILES') }}: {{ file_limit_import }}
-                      </li>
-                      <li>{{ $t('workouts.MAX_SIZE') }}: {{ zipSizeLimit }}</li>
-                    </ul>
+                  <div class="weather-info">
+                    <i class="fa fa-info-circle" aria-hidden="true" />
+                    {{ $t('workouts.NO_WEATHER_WITH_ASYNCHRONOUS_UPLOAD') }}
                   </div>
                 </div>
               </div>
@@ -496,6 +509,9 @@
   const file_limit_import: ComputedRef<number> = computed(
     () => appConfig.value.file_limit_import
   )
+  const file_sync_limit_import: ComputedRef<number> = computed(
+    () => appConfig.value.file_sync_limit_import
+  )
   const zipSizeLimit: ComputedRef<string> = computed(() =>
     appConfig.value.max_zip_file_size
       ? getReadableFileSizeAsText(appConfig.value.max_zip_file_size)
@@ -868,23 +884,32 @@
             }
           }
 
-          .files-help {
-            display: flex;
-            justify-content: space-around;
+          .files-info-box {
             margin-top: $default-margin;
-            padding: $default-padding * 0.75 $default-padding;
-            div {
+            padding: 0 $default-padding;
+            .files-help {
               display: flex;
-              ul {
-                margin: 0;
-                padding: 0 $default-padding * 2;
+              justify-content: space-around;
+              padding: $default-padding * 0.75 $default-padding;
+
+              div {
+                display: flex;
+
+                ul {
+                  margin: 0;
+                  padding: 0 $default-padding * 2;
+                }
+              }
+
+              @media screen and (max-width: $medium-limit) {
+                flex-direction: column;
+                div {
+                  flex-direction: column;
+                }
               }
             }
-            @media screen and (max-width: $medium-limit) {
-              flex-direction: column;
-              div {
-                flex-direction: column;
-              }
+            .weather-info {
+              padding: 0 $default-padding $default-padding;
             }
           }
 
