@@ -179,5 +179,5 @@
   "WORKOUT_FILE": "workout file",
   "WORKOUT_MAP": "workout map",
   "ZIP_ARCHIVE": ".zip file",
-  "ZIP_ARCHIVE_DESCRIPTION": "or .zip file containing files"
+  "ZIP_ARCHIVE_DESCRIPTION": "or .zip archive containing files"
 }

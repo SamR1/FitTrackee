@@ -94,16 +94,16 @@
                         </li>
                         <li>
                           {{ $t('workouts.MAX_FILES') }}:
-                          {{ file_limit_import }}
+                          {{ fileLimitImport }}
                         </li>
-                        <li>
+                        <li v-if="asyncUploadEnabled">
                           {{ $t('workouts.MAX_SYNC_FILES_IN_ZIP') }}:
-                          {{ file_sync_limit_import }}
+                          {{ fileSyncLimitImport }}
                         </li>
                       </ul>
                     </div>
                   </div>
-                  <div class="weather-info">
+                  <div class="weather-info" v-if="asyncUploadEnabled">
                     <i class="fa fa-info-circle" aria-hidden="true" />
                     {{ $t('workouts.NO_WEATHER_WITH_ASYNCHRONOUS_UPLOAD') }}
                   </div>
@@ -506,10 +506,10 @@
       ? getReadableFileSizeAsText(appConfig.value.max_single_file_size)
       : ''
   )
-  const file_limit_import: ComputedRef<number> = computed(
+  const fileLimitImport: ComputedRef<number> = computed(
     () => appConfig.value.file_limit_import
   )
-  const file_sync_limit_import: ComputedRef<number> = computed(
+  const fileSyncLimitImport: ComputedRef<number> = computed(
     () => appConfig.value.file_sync_limit_import
   )
   const zipSizeLimit: ComputedRef<string> = computed(() =>
@@ -517,7 +517,11 @@
       ? getReadableFileSizeAsText(appConfig.value.max_zip_file_size)
       : ''
   )
-
+  const asyncUploadEnabled: ComputedRef<boolean> = computed(
+    () =>
+      appConfig.value.file_sync_limit_import !=
+      appConfig.value.file_limit_import
+  )
   const equipments: ComputedRef<IEquipment[]> = computed(
     () => store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
   )
