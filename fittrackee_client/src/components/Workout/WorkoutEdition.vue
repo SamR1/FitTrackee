@@ -24,7 +24,7 @@
                     :disabled="loading"
                     @click="updateWithGpx"
                   />
-                  <label for="withGpx">{{ $t('workouts.WITH_GPX') }}</label>
+                  <label for="withGpx">{{ $t('workouts.WITH_FILE') }}</label>
                 </div>
                 <div>
                   <input
@@ -35,7 +35,7 @@
                     @click="updateWithGpx"
                   />
                   <label for="withoutGpx">
-                    {{ $t('workouts.WITHOUT_GPX') }}
+                    {{ $t('workouts.WITH_FILE') }}
                   </label>
                 </div>
               </div>
@@ -59,7 +59,7 @@
               </div>
               <div class="form-item" v-if="isCreation && withGpx">
                 <label for="gpxFile">
-                  {{ $t('workouts.GPX_FILE') }}
+                  {{ $t('workouts.WORKOUT_FILE') }}
                   {{ $t('workouts.ZIP_ARCHIVE_DESCRIPTION') }}*:
                 </label>
                 <input
@@ -74,19 +74,22 @@
                 />
                 <div class="files-help info-box">
                   <div>
-                    <strong>{{ $t('workouts.GPX_FILE') }}:</strong>
+                    <strong>{{ $t('workouts.WORKOUT_FILE') }}:</strong>
                     <ul>
                       <li>
                         {{ $t('workouts.MAX_SIZE') }}: {{ fileSizeLimit }}
+                      </li>
+                      <li>
+                        {{ $t('workouts.SUPPORTED_FILE_EXTENSIONS') }}: .gpx,
+                        .fit, .kml, .kmz, .tcx
                       </li>
                     </ul>
                   </div>
                   <div>
                     <strong>{{ $t('workouts.ZIP_ARCHIVE') }}:</strong>
                     <ul>
-                      <li>{{ $t('workouts.NO_FOLDER') }}</li>
                       <li>
-                        {{ $t('workouts.MAX_FILES') }}: {{ gpx_limit_import }}
+                        {{ $t('workouts.MAX_FILES') }}: {{ file_limit_import }}
                       </li>
                       <li>{{ $t('workouts.MAX_SIZE') }}: {{ zipSizeLimit }}</li>
                     </ul>
@@ -490,8 +493,8 @@
       ? getReadableFileSizeAsText(appConfig.value.max_single_file_size)
       : ''
   )
-  const gpx_limit_import: ComputedRef<number> = computed(
-    () => appConfig.value.gpx_limit_import
+  const file_limit_import: ComputedRef<number> = computed(
+    () => appConfig.value.file_limit_import
   )
   const zipSizeLimit: ComputedRef<string> = computed(() =>
     appConfig.value.max_zip_file_size
@@ -870,12 +873,15 @@
             padding: $default-padding * 0.75 $default-padding;
             div {
               display: flex;
-              @media screen and (max-width: $medium-limit) {
-                flex-direction: column;
-              }
               ul {
                 margin: 0;
                 padding: 0 $default-padding * 2;
+              }
+            }
+            @media screen and (max-width: $medium-limit) {
+              flex-direction: column;
+              div {
+                flex-direction: column;
               }
             }
           }

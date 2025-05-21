@@ -30,7 +30,7 @@
   "DELETE_WORKOUT": "Delete the workout",
   "DESCENT": "descent",
   "DESCRIPTION": "description",
-  "DESCRIPTION_FIELD_HELP": "if provided, the description replaces that of the gpx file.",
+  "DESCRIPTION_FIELD_HELP": "if provided, the description replaces that of the file.",
   "DISPLAY_FILTERS": "display filters",
   "DISTANCE": "distance",
   "DOWNLOAD_WORKOUT": "Download the workout",
@@ -40,7 +40,6 @@
   "END": "end",
   "EXIT_FULLSCREEN": "Exit Fullscreen",
   "FROM": "from",
-  "GPX_FILE": ".gpx file",
   "HEART_RATE": "heart rate",
   "HIDE_FILTERS": "hide filters",
   "HIDE_WORKOUTS": "hide workouts",
@@ -104,9 +103,10 @@
   "START": "start",
   "START_AND_FINISH": "Start and finish",
   "START_ELEVATION_AT_ZERO": "start elevation axis at zero",
+  "SUPPORTED_FILE_EXTENSIONS": "supported extensions",
   "SUSPENDED_BY_ADMIN": "The workout has been suspended by an administrator.",
   "TITLE": "title",
-  "TITLE_FIELD_HELP": "if provided, the title replaces that of the gpx file.",
+  "TITLE_FIELD_HELP": "if provided, the title replaces that of the file.",
   "TO": "to",
   "TOTAL_ASCENT": "total ascent",
   "TOTAL_DESCENT": "total descent",
@@ -163,8 +163,8 @@
       "WSW": "WSW"
     }
   },
-  "WITHOUT_GPX": "without .gpx file",
-  "WITH_GPX": "with .gpx file",
+  "WITHOUT_FILE": "without file",
+  "WITH_FILE": "with file",
   "WORKOUT": "workout | workouts",
   "WORKOUTS_STATISTICS": {
     "all": "statistics for all pages ({count} workouts)",
@@ -174,7 +174,8 @@
   "WORKOUT_CHART": "workout speed and elevation chart",
   "WORKOUT_DATE": "workout date",
   "WORKOUT_DELETION_CONFIRMATION": "Are you sure you want to delete this workout?",
+  "WORKOUT_FILE": "workout file",
   "WORKOUT_MAP": "workout map",
   "ZIP_ARCHIVE": ".zip file",
-  "ZIP_ARCHIVE_DESCRIPTION": "or .zip file containing .gpx files"
+  "ZIP_ARCHIVE_DESCRIPTION": "or .zip file containing files"
 }

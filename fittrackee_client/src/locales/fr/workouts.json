@@ -30,7 +30,7 @@
   "DELETE_WORKOUT": "Supprimer la séance",
   "DESCENT": "dénivelé négatif",
   "DESCRIPTION": "description",
-  "DESCRIPTION_FIELD_HELP": "si fournie, la description remplace celle du fichier gpx.",
+  "DESCRIPTION_FIELD_HELP": "si fournie, la description remplace celle du fichier.",
   "DISPLAY_FILTERS": "afficher les filtres",
   "DISTANCE": "distance",
   "DOWNLOAD_WORKOUT": "Télécharger la séance",
@@ -40,7 +40,6 @@
   "END": "fin",
   "EXIT_FULLSCREEN": "Sortir du plein-écran",
   "FROM": "à partir de",
-  "GPX_FILE": "fichier .gpx",
   "HEART_RATE": "fréquence cardiaque",
   "HIDE_FILTERS": "masquer les filtres",
   "HIDE_WORKOUTS": "masquer les séances",
@@ -104,9 +103,10 @@
   "START": "début",
   "START_AND_FINISH": "Départ et arrivée",
   "START_ELEVATION_AT_ZERO": "démarrer l'axe de l'altitude à 0",
+  "SUPPORTED_FILE_EXTENSIONS": "extensions supportées",
   "SUSPENDED_BY_ADMIN": "La séance a été suspendue par un administrateur.",
   "TITLE": "titre",
-  "TITLE_FIELD_HELP": "si fourni, le titre remplace celui du fichier gpx.",
+  "TITLE_FIELD_HELP": "si fourni, le titre remplace celui du fichier.",
   "TO": "jusqu'au",
   "TOTAL_ASCENT": "dénivelé positif total",
   "TOTAL_DESCENT": "dénivelé négatif total",
@@ -163,8 +163,8 @@
       "WSW": "OSO"
     }
   },
-  "WITHOUT_GPX": "sans fichier .gpx",
-  "WITH_GPX": "avec un fichier .gpx",
+  "WITHOUT_FILE": "sans fichier",
+  "WITH_FILE": "avec un fichier",
   "WORKOUT": "séance | séances",
   "WORKOUTS_STATISTICS": {
     "all": "statistiques pour toutes les pages ({count} séances)",
@@ -174,7 +174,8 @@
   "WORKOUT_CHART": "graphe de vitesse et d'altitude de la séance",
   "WORKOUT_DATE": "date de la séance",
   "WORKOUT_DELETION_CONFIRMATION": "Êtes-vous sûr de vouloir supprimer cette séance ?",
+  "WORKOUT_FILE": "fichier de la séance",
   "WORKOUT_MAP": "carte de la séance",
   "ZIP_ARCHIVE": "archive .zip",
-  "ZIP_ARCHIVE_DESCRIPTION": "ou une archive .zip contenant des fichiers .gpx"
+  "ZIP_ARCHIVE_DESCRIPTION": "ou une archive .zip contenant des fichiers"
 }

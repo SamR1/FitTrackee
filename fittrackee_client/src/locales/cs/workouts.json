@@ -17,7 +17,6 @@
   "END": "konec",
   "EXIT_FULLSCREEN": "Opustit celou obrazovku",
   "FROM": "od",
-  "GPX_FILE": "soubor .gpx",
   "HIDE_FILTERS": "skrýt filtry",
   "INVALID_DISTANCE": "Vzdálenost musí být větší než 0",
   "INVALID_DURATION": "Doba trvání musí být delší než 0 sekund",
@@ -103,13 +102,13 @@
       "WSW": "ZJZ"
     }
   },
-  "WITHOUT_GPX": "bez .gpx souboru",
-  "WITH_GPX": "s .gpx souborem",
+  "WITHOUT_FILE": "bez souboru",
+  "WITH_FILE": "s souborem",
   "WORKOUT": "cvičení | cvičení",
   "WORKOUT_CHART": "rychlost cvičení a výškový graf",
   "WORKOUT_DATE": "datum cvičení",
   "WORKOUT_DELETION_CONFIRMATION": "Jste si jistý, že chcete smazat cvičení?",
   "WORKOUT_MAP": "mapa cvičení",
   "ZIP_ARCHIVE": ".zip soubor",
-  "ZIP_ARCHIVE_DESCRIPTION": "nebo .zip soubor obsahující .gpx soubor"
+  "ZIP_ARCHIVE_DESCRIPTION": "nebo .zip soubor obsahující soubor"
 }

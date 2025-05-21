@@ -26,7 +26,7 @@
   "DELETE_WORKOUT": "Удалить тренировку",
   "DESCENT": "спуск",
   "DESCRIPTION": "описание",
-  "DESCRIPTION_FIELD_HELP": "если указано, описание заменяет описание из файла gpx.",
+  "DESCRIPTION_FIELD_HELP": "если указано, описание заменяет описание из файла.",
   "DISPLAY_FILTERS": "фильтры отображения",
   "DISTANCE": "расстояние",
   "DOWNLOAD_WORKOUT": "Загрузить тренировку",
@@ -36,7 +36,6 @@
   "END": "конец",
   "EXIT_FULLSCREEN": "Выйти из полноэкранного режима",
   "FROM": "от",
-  "GPX_FILE": ".gpx файл",
   "HIDE_FILTERS": "скрыть фильтры",
   "HIDE_WORKOUTS": "скрыть тренировки",
   "INVALID_ASCENT_OR_DESCENT": "Оба значения высоты должны быть указаны и быть больше или равны 0.",
@@ -87,12 +86,12 @@
       "W": "запад"
     }
   },
-  "WITHOUT_GPX": "без .gpx файла",
-  "WITH_GPX": "с .gpx файлом",
+  "WITHOUT_FILE": "без файла",
+  "WITH_FILE": "с файлом",
   "WORKOUT": "тренировка | тренировки",
   "WORKOUT_DATE": "дата тренировки",
   "WORKOUT_DELETION_CONFIRMATION": "Вы уверены, что хотите удалить эту тренировку?",
   "WORKOUT_MAP": "карта тренировки",
   "ZIP_ARCHIVE": ".zip файл",
-  "ZIP_ARCHIVE_DESCRIPTION": "или .zip файл, содержащий .gpx файлы"
+  "ZIP_ARCHIVE_DESCRIPTION": "или .zip файл, содержащий файлы"
 }

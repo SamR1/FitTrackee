@@ -26,7 +26,7 @@
   "DELETE_WORKOUT": "Ezabatu ekintza",
   "DESCENT": "jaitsiera",
   "DESCRIPTION": "deskribapena",
-  "DESCRIPTION_FIELD_HELP": "Idatziz gero, deskribapenak GPX fitxategikoa ordezkatuko du.",
+  "DESCRIPTION_FIELD_HELP": "Idatziz gero, deskribapenak fitxategikoa ordezkatuko du.",
   "DISPLAY_FILTERS": "erakutsi filtroak",
   "DISTANCE": "distantzia",
   "DOWNLOAD_WORKOUT": "Deskargatu ekintza",
@@ -36,7 +36,6 @@
   "END": "bukaera",
   "EXIT_FULLSCREEN": "Irten pantaila osotik",
   "FROM": "noiztik",
-  "GPX_FILE": ".gpx fitxategia",
   "HIDE_FILTERS": "ezkutatu filtroak",
   "HIDE_WORKOUTS": "ezkutatu ariketak",
   "INVALID_ASCENT_OR_DESCENT": "Altuera balio biak eman behar dituzu eta 0 edo handiagoak izan behar dira.",
@@ -98,7 +97,7 @@
   "START_ELEVATION_AT_ZERO": "hasierako altuera zeroan dago",
   "SUSPENDED_BY_ADMIN": "Ekintza hau kudeatzaileak ezabatu du.",
   "TITLE": "izenburua",
-  "TITLE_FIELD_HELP": "Idatziz gero, izenburuak GPX fitxategikoa ordezkatuko du.",
+  "TITLE_FIELD_HELP": "Idatziz gero, izenburuak fitxategikoa ordezkatuko du.",
   "TO": "nora",
   "TOTAL_ASCENT": "guztizko igoera",
   "TOTAL_DESCENT": "guztizko jaitsiera",
@@ -141,8 +140,8 @@
       "WSW": "MHM"
     }
   },
-  "WITHOUT_GPX": ".gpx fitxategi gabe",
-  "WITH_GPX": ".gpx fitxategiarekin",
+  "WITHOUT_FILE": "fitxategi gabe",
+  "WITH_FILE": "fitxategiarekin",
   "WORKOUT": "ekintza | ekintzak",
   "WORKOUTS_STATISTICS": {
     "all": "orrialde guztien estatistikak ({count} ariketa)",
@@ -154,5 +153,5 @@
   "WORKOUT_DELETION_CONFIRMATION": "Ziur zaude ekintza hau ezabatu nahi duzula?",
   "WORKOUT_MAP": "ekintzaren mapa",
   "ZIP_ARCHIVE": ".zip fitxategia",
-  "ZIP_ARCHIVE_DESCRIPTION": "edo .gpx fitxategiak dituen .zip fitxategia"
+  "ZIP_ARCHIVE_DESCRIPTION": "edo fitxategiak dituen .zip fitxategia"
 }

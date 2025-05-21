@@ -26,7 +26,7 @@
   "DELETE_WORKOUT": "删除锻炼",
   "DESCENT": "下降",
   "DESCRIPTION": "描述",
-  "DESCRIPTION_FIELD_HELP": "如果提供，此描述将替换 gpx 文件中的描述。",
+  "DESCRIPTION_FIELD_HELP": "如果提供，此描述将替换文件中的描述。",
   "DISPLAY_FILTERS": "显示过滤器",
   "DISTANCE": "距离",
   "DOWNLOAD_WORKOUT": "下载锻炼",
@@ -36,7 +36,6 @@
   "END": "结束",
   "EXIT_FULLSCREEN": "退出全屏",
   "FROM": "从",
-  "GPX_FILE": ".gpx 文件",
   "HIDE_FILTERS": "隐藏过滤器",
   "HIDE_WORKOUTS": "隐藏锻炼",
   "INVALID_ASCENT_OR_DESCENT": "必须提供两个海拔值，且必须大于或等于0。",
@@ -98,7 +97,7 @@
   "START_ELEVATION_AT_ZERO": "从零开始海拔轴",
   "SUSPENDED_BY_ADMIN": "该锻炼已被管理员暂停。",
   "TITLE": "标题",
-  "TITLE_FIELD_HELP": "如果提供，标题将替换 gpx 文件的标题。",
+  "TITLE_FIELD_HELP": "如果提供，标题将替换文件的标题。",
   "TO": "至",
   "TOTAL_ASCENT": "总爬升",
   "TOTAL_DESCENT": "总下降",
@@ -141,8 +140,8 @@
       "WSW": "西南偏西"
     }
   },
-  "WITHOUT_GPX": "没有 .gpx 文件",
-  "WITH_GPX": "有 .gpx 文件",
+  "WITHOUT_FILE": "没有文件",
+  "WITH_FILE": "有文件",
   "WORKOUT": "锻炼",
   "WORKOUTS_STATISTICS": {
     "all": "所有页面的统计数据（{count} 次锻炼）",
@@ -154,5 +153,5 @@
   "WORKOUT_DELETION_CONFIRMATION": "你确定要删除此锻炼吗？",
   "WORKOUT_MAP": "锻炼地图",
   "ZIP_ARCHIVE": ".zip 文件",
-  "ZIP_ARCHIVE_DESCRIPTION": "或包含 .gpx 文件的 .zip 文件"
+  "ZIP_ARCHIVE_DESCRIPTION": "或包含文件的 .zip 文件"
 }

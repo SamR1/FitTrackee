@@ -17,7 +17,6 @@
   "END": "край",
   "EXIT_FULLSCREEN": "Изход от цял екран",
   "FROM": "от",
-  "GPX_FILE": ".gpx файл",
   "HIDE_FILTERS": "скрий филтри",
   "INVALID_ASCENT_OR_DESCENT": "И двете стойности за надморска височина трябва да бъдат предоставени и да са по-големи или равни на 0.",
   "INVALID_DISTANCE": "Разстоянието трябва да е по-голямо от 0",
@@ -105,13 +104,13 @@
       "WSW": "Запад - югпзапад"
     }
   },
-  "WITHOUT_GPX": "без .gpx файл",
-  "WITH_GPX": "с .gpx файл",
+  "WITHOUT_FILE": "без файл",
+  "WITH_FILE": "с файл",
   "WORKOUT": "тренировка | тренировки",
   "WORKOUT_CHART": "графика на скоростта и височината на тренировката",
   "WORKOUT_DATE": "дата на тренировка",
   "WORKOUT_DELETION_CONFIRMATION": "Сигурни ли сте, че искате да изтриете тази тренировка?",
   "WORKOUT_MAP": "карта на тренировка",
   "ZIP_ARCHIVE": ".zip файл",
-  "ZIP_ARCHIVE_DESCRIPTION": "или .zip файл, съдържащ .gpx файлове"
+  "ZIP_ARCHIVE_DESCRIPTION": "или .zip файл, съдържащ файлове"
 }

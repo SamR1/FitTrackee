@@ -11,7 +11,8 @@ export type TAppConfig = {
   [key: string]: number | boolean | string | null
   about: string | null
   admin_contact: string
-  gpx_limit_import: number
+  file_limit_import: number
+  file_sync_limit_import: number
   is_email_sending_enabled: boolean
   is_registration_enabled: boolean
   map_attribution: string

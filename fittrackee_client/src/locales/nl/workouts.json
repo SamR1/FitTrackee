@@ -26,7 +26,7 @@
   "DELETE_WORKOUT": "Verwijder de training",
   "DESCENT": "gedaald",
   "DESCRIPTION": "beschrijving",
-  "DESCRIPTION_FIELD_HELP": "Indien toegevoegd zal dit de omschrijving uit het gpx bestand vervangen.",
+  "DESCRIPTION_FIELD_HELP": "Indien toegevoegd zal dit de omschrijving uit het bestand vervangen.",
   "DISPLAY_FILTERS": "toon filters",
   "DISTANCE": "afstand",
   "DOWNLOAD_WORKOUT": "Download de training",
@@ -36,7 +36,6 @@
   "END": "einde",
   "EXIT_FULLSCREEN": "Verlaat volledig scherm",
   "FROM": "van",
-  "GPX_FILE": ".gpx bestand",
   "HIDE_FILTERS": "verberg filters",
   "HIDE_WORKOUTS": "verberg trainingen",
   "INVALID_ASCENT_OR_DESCENT": "Beide waarden moeten opgegeven worden en dienen groter dan of gelijk aan 0 te zijn.",
@@ -98,7 +97,7 @@
   "START_ELEVATION_AT_ZERO": "Zet hoogte-as vast op 0",
   "SUSPENDED_BY_ADMIN": "Deze training werd geblokkeerd door een administrator.",
   "TITLE": "titel",
-  "TITLE_FIELD_HELP": "Indien toegevoegd zal dit de titel uit het gpx bestand vervangen.",
+  "TITLE_FIELD_HELP": "Indien toegevoegd zal dit de titel uit het bestand vervangen.",
   "TO": "tem.",
   "TOTAL_ASCENT": "totale stijging",
   "TOTAL_DESCENT": "totale afdaling",
@@ -141,8 +140,8 @@
       "WSW": "WZW"
     }
   },
-  "WITHOUT_GPX": "zonder .gpx bestand",
-  "WITH_GPX": "met .gpx bestand",
+  "WITHOUT_FILE": "zonder bestand",
+  "WITH_FILE": "met bestand",
   "WORKOUT": "training | trainingen",
   "WORKOUTS_STATISTICS": {
     "all": "statistieken voor alle pagina's ({count} trainingen)",
@@ -154,5 +153,5 @@
   "WORKOUT_DELETION_CONFIRMATION": "Weet u zeker dat u deze training wilt verwijderen?",
   "WORKOUT_MAP": "kaart training",
   "ZIP_ARCHIVE": ".zip bestand",
-  "ZIP_ARCHIVE_DESCRIPTION": "of .zip archief met .gpx bestanden"
+  "ZIP_ARCHIVE_DESCRIPTION": "of .zip archief met bestanden"
 }
