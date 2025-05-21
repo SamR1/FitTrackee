@@ -149,6 +149,7 @@
         >{{ workoutObject.maxHr }} {{ t(`workouts.UNITS.bpm.UNIT`) }}</span
       >
     </div>
+    <div class="spacer" />
     <WorkoutWeather
       :workoutObject="workoutObject"
       :useImperialUnits="useImperialUnits"
@@ -206,6 +207,10 @@
         font-weight: bold;
         text-transform: lowercase;
       }
+    }
+
+    .spacer {
+      flex-grow: 3;
     }
 
     @media screen and (max-width: $small-limit) {
