@@ -33,7 +33,7 @@
   "DESCRIPTION_FIELD_HELP": "si fournie, la description remplace celle du fichier.",
   "DISPLAY_FILTERS": "afficher les filtres",
   "DISTANCE": "distance",
-  "DOWNLOAD_WORKOUT": "Télécharger la séance",
+  "DOWNLOAD_WORKOUT": "Télécharger la séance (gpx)",
   "DURATION": "durée",
   "EDIT_WORKOUT": "Modifier la séance",
   "ELEVATION": "altitude",

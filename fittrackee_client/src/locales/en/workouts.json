@@ -33,7 +33,7 @@
   "DESCRIPTION_FIELD_HELP": "if provided, the description replaces that of the file.",
   "DISPLAY_FILTERS": "display filters",
   "DISTANCE": "distance",
-  "DOWNLOAD_WORKOUT": "Download the workout",
+  "DOWNLOAD_WORKOUT": "Download the workout (gpx)",
   "DURATION": "duration",
   "EDIT_WORKOUT": "Edit the workout",
   "ELEVATION": "elevation",
