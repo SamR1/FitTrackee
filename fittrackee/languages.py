@@ -1,6 +1,7 @@
 LANGUAGES_DATE_STRING = {
     "bg": "d MMM yyyy",  # Bulgarian
     # "bn": "d MMM, yyyy",  # Bengali  # disabled for now
+    # "ca": "d MMM yyyy",  # Catalan  # disabled for now
     "cs": "d. MMM yyyy",  # Czech
     "de": "d. MMM yyyy",  # German
     "en": "MMM. d, yyyy",  # English
