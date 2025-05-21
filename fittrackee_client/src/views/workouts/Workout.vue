@@ -70,7 +70,6 @@
 <script setup lang="ts">
   import { computed, ref, toRefs, watch, onBeforeMount, onUnmounted } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
-  import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
   import Comments from '@/components/Comment/Comments.vue'
@@ -95,7 +94,6 @@
   const props = defineProps<Props>()
   const { displaySegment } = toRefs(props)
 
-  const { t } = useI18n()
   const route = useRoute()
   const store = useStore()
 
@@ -117,7 +115,7 @@
     getWorkoutSport(workoutData.value.workout)
   )
   const cadenceUnit: ComputedRef<string> = computed(() =>
-    getCadenceUnit(sport.value?.label, t)
+    getCadenceUnit(sport.value?.label)
   )
 
   function updateCoordinates(coordinates: TCoordinates) {

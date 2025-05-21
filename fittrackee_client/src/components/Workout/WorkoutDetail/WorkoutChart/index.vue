@@ -320,7 +320,7 @@
   function getUnitLabelForYAxis(datasetId: string | undefined): string {
     switch (datasetId) {
       case 'cadence':
-        return ` (${getCadenceUnit(sport.value?.label, t)})`
+        return ` (${t(`workouts.UNITS.${getCadenceUnit(sport.value?.label)}.UNIT`)})`
       case 'elevation':
         return ` (${fromMUnit})`
       case 'hr':
@@ -358,8 +358,8 @@
       return label + ` ${fromMUnit}`
     }
     if (context.dataset.id === 'cadence') {
-      const unit = getCadenceUnit(sport.value?.label, t)
-      return label + ' ' + unit
+      const unit = getCadenceUnit(sport.value?.label)
+      return label + ' ' + t(`workouts.UNITS.${unit}.UNIT`)
     }
     return context.dataset.id === 'hr'
       ? label + ` ${t('workouts.UNITS.bpm.UNIT')}`

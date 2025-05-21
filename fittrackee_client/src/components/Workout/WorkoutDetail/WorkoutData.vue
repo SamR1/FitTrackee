@@ -121,13 +121,15 @@
       <span class="label">{{ $t('workouts.AVERAGE_CADENCE') }}</span
       >:
       <span class="value" :title="t(`workouts.UNITS.${cadenceUnit}.LABEL`)"
-        >{{ workoutObject.aveCadence }} {{ cadenceUnit }}</span
+        >{{ workoutObject.aveCadence }}
+        {{ t(`workouts.UNITS.${cadenceUnit}.UNIT`) }}</span
       >
       <br />
       <span class="label"> {{ $t('workouts.MAX_CADENCE') }}</span
       >:
       <span class="value" :title="t(`workouts.UNITS.${cadenceUnit}.LABEL`)"
-        >{{ workoutObject.maxCadence }} {{ cadenceUnit }}</span
+        >{{ workoutObject.maxCadence }}
+        {{ t(`workouts.UNITS.${cadenceUnit}.UNIT`) }}</span
       >
     </div>
     <div
