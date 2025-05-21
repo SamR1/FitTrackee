@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2024-11-01 19:45+0100\n"
-"PO-Revision-Date: 2025-05-17 05:37+0000\n"
+"PO-Revision-Date: 2025-05-22 14:01+0000\n"
 "Last-Translator: Maksim Maksimov <Lemetist@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/fittrackee/"
 "fittrackee-api-emails/ru/>\n"
@@ -281,6 +281,9 @@ msgid ""
 "If this email change wasn't initiated by you, please change your password"
 " immediately or contact your administrator if your account is locked."
 msgstr ""
+"Если изменение адреса электронной почты не было инициировано вами, "
+"немедленно измените свой пароль или обратитесь к администратору, если ваша "
+"учетная запись заблокирована."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_new_email/subject.txt:1
@@ -336,6 +339,8 @@ msgid ""
 "password immediately or contact your administrator if your account is "
 "locked."
 msgstr ""
+"Если вы не инициировали смену пароля, немедленно измените свой пароль или "
+"обратитесь к администратору, если ваша учетная запись заблокирована."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:2
 #: fittrackee/emails/templates/password_reset_request/subject.txt:1
@@ -407,6 +412,8 @@ msgid ""
 "You can still log in to request an export of your data or delete your "
 "account"
 msgstr ""
+"Вы всё ещё можете войти в систему, чтобы запросить экспорт ваших данных или "
+"удалить свою учётную запись"
 
 #: fittrackee/emails/templates/user_unsuspension/body.html:2
 #: fittrackee/emails/templates/user_unsuspension/body.html:3
