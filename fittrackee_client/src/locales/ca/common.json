@@ -1,1 +1,49 @@
-{}
+{
+  "ABOUT": "a sobre de",
+  "ACTION": "acció",
+  "ACTIVE": "actiu",
+  "CONFIRMATION": "Confirmació",
+  "CONTACT": "contacte",
+  "DAY": "dia | dies",
+  "DESCRIPTION": "Descripció",
+  "DISABLED": "deshabilitat",
+  "DISPLAYED": "Mostrat",
+  "DOCUMENTATION": "documentació",
+  "EDITED": "editat",
+  "ENABLED": "habilitat",
+  "HERE": "ací",
+  "HIDDEN": "Amagat",
+  "HIDE": "Amaga",
+  "HOME": "Inici",
+  "HOURS": "hora | hores",
+  "INACTIVE": "inactiu",
+  "LABEL": "etiqueta",
+  "LAST_UPDATED_ON": "Actualitzat per última vegada",
+  "MINUTES": "minut | minuts",
+  "NEXT": "següent",
+  "NO_DESCRIPTION": "Cap descripció",
+  "NO_NOTES": "Cap nota",
+  "PREVIOUS": "anterior",
+  "REPORT_PLACEHOLDER": "especifica la raó per a reportar",
+  "REPORT_SUBMITTED": "Informe enviat.",
+  "SCROLL_DOWN": "Desplaça cap avall",
+  "SCROLL_UP": "Desplaça cap a dalt",
+  "SECONDS": "segon | segons",
+  "SEE_REPORT": "Veure informe {0}.",
+  "SELECTS": {
+    "ORDER": {
+      "ASC": "ascendent",
+      "DESC": "descendent",
+      "LABEL": "ordena"
+    },
+    "ORDER_BY": {
+      "LABEL": "ordena per"
+    },
+    "PER_PAGE": {
+      "LABEL": "per pàgina"
+    }
+  },
+  "TOTAL": "Total",
+  "TOTAL_DURATION_WITH_PAUSES": "duració total amb pauses",
+  "TYPE": "tipus"
+}
