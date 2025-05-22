@@ -1,1 +1,23 @@
-{}
+{
+  "Bike": {
+    "LABEL": "Bici"
+  },
+  "Bike Trainer": {
+    "LABEL": "Entrenador de Bici"
+  },
+  "Board": {
+    "LABEL": "Taula"
+  },
+  "Kayak_Boat": {
+    "LABEL": "Kayak/Vaixell"
+  },
+  "Shoes": {
+    "LABEL": "Sabates"
+  },
+  "Skis": {
+    "LABEL": "Esquís"
+  },
+  "Snowshoes": {
+    "LABEL": "Raquetes de Neu"
+  }
+}
