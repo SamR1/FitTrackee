@@ -2477,7 +2477,7 @@ def get_workouts_upload_task(
     auth_user: User, task_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Get tasks for workouts archive upload
+    Get a given task for workouts archive upload
 
     **Scope**: ``workouts:read``
 

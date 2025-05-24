@@ -28,7 +28,7 @@ This application is written in Python (API) and Typescript (client):
 - API:
     - Flask
     - `gpxpy <https://github.com/tkrajina/gpxpy>`_ to parse gpx files
-    - a `fork <https://github.com/SamR1/staticmap>`_ of `staticmap <https://github.com/komoot/staticmap>`_ to generate a static map image from file coordinates
+    - `Static Map 3 <https://github.com/SamR1/staticmap>`_, a fork of `Static Map <https://github.com/komoot/staticmap>`_ to generate a static map image from file coordinates
     - `Dramatiq <https://dramatiq.io/>`_ and `Flask-Dramatiq <https://flask-dramatiq.readthedocs.io>`_ for task queue
     - `Authlib <https://docs.authlib.org/en/latest/>`_ for OAuth 2.0 Authorization support
     - `Flask-Limiter <https://flask-limiter.readthedocs.io/en/stable>`_ for API rate limits
@@ -277,7 +277,7 @@ deployment method.
 
     .. versionadded:: 0.4.9
 
-    | If ``True``, it keeps using **staticmap** default tile server to generate static maps (OSM tile server since **staticmap** 0.5.6 (Komoot.de tile server before this version)).
+    | If ``True``, it keeps using **Static Map 3** default tile server to generate static maps (OSM tile server).
     | Otherwise, it uses the tile server set in `TILE_SERVER_URL <installation.html#envvar-TILE_SERVER_URL>`__.
 
     .. versionchanged:: 0.6.10
@@ -286,6 +286,15 @@ deployment method.
     | If ``False``, depending on tile server, `subdomains <installation.html#envvar-STATICMAP_SUBDOMAINS>`__ may be mandatory.
 
     :default: ``False``
+
+
+.. envvar:: STATICMAP_CACHE_DIR
+
+    .. versionadded:: 0.10.0
+
+    Directory for **Static Map 3** cache
+
+    :default: .staticmap_cache
 
 
 .. envvar:: WEATHER_API_KEY
