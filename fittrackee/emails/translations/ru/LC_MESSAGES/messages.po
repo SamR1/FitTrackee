@@ -38,8 +38,8 @@ msgid ""
 "For security, this request was received from a %(operating_system)s "
 "device using %(browser_name)s."
 msgstr ""
-"Для безопасности, этот запрос был получен через %(browser_name), "
-"работающий под управлением %(operating_system)."
+"Для безопасности, этот запрос был получен через %(browser_name)s, "
+"работающий под управлением %(operating_system)s."
 
 #: fittrackee/emails/templates/layout.html:238
 #: fittrackee/emails/templates/layout.txt:5
