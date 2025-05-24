@@ -1327,6 +1327,45 @@ class TestWorkoutsFromFileCreationServiceProcessArchiveContent(
             assert workouts[n].sport_id == sport_1_cycling.id
             assert workouts[n].equipments == equipments
 
+    def test_it_updates_progress_and_new_workouts_count_when_task_is_provided(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        equipment_type_1_shoe: "EquipmentType",
+        equipment_shoes_user_1: "Equipment",
+    ) -> None:
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+        file_path = os.path.join(
+            app.root_path, "tests/files/gpx_test_incorrect.zip"
+        )
+        upload_task = UserTask(
+            user_id=user_1.id, task_type="workouts_archive_upload"
+        )
+        db.session.add(upload_task)
+        db.session.commit()
+        with open(file_path, "rb") as zip_file:
+            archive_file_storage = FileStorage(
+                filename="workouts.zip", stream=BytesIO(zip_file.read())
+            )
+
+        service.process_archive_content(
+            archive_content=archive_file_storage.stream,
+            files_to_process=[
+                "test_4.gpx",  # errored file
+                "test_1.gpx",  # valid file
+            ],
+            equipments=[],
+            upload_task=upload_task,
+        )
+        db.session.commit()
+
+        assert upload_task.progress == 100
+        assert upload_task.data.get("new_workouts_count") == 1
+
 
 class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
     UserTaskMixin, WorkoutsFromFileCreationServiceTestCase

@@ -362,7 +362,7 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
                 if upload_task:
                     upload_task.data = {
                         **upload_task.data,
-                        "new_workouts_count": index,
+                        "new_workouts_count": len(new_workouts),
                     }
                     upload_task.progress = int(100 * index / total_files)
                     db.session.commit()
