@@ -1,7 +1,7 @@
 Features
 ########
 
-| **FitTrackee** allows you to store and display files and some statistics from your **outdoor** activities.
+| **FitTrackee** allows you to store and display gpx files (or other formats) and some statistics from your outdoor activities.
 | Equipments can be associated with workouts.
 
 If registration is enabled, multiple users can register and interact with other users (comments, likes). Workouts and comments are visible to other users according to visibility levels.

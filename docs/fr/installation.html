@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Interface de ligne de commande" href="cli.html" /><link rel="prev" title="OAuth 2.0" href="oauth.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Installation - Documentation FitTrackee 0.9.11</title>
+        <title>Installation - Documentation FitTrackee 0.10.0b1</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.11
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.10.0b1
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.11
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.10.0b1
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -221,6 +221,7 @@
 <li class="toctree-l2"><a class="reference internal" href="api/follow_requests.html">Demandes de suivi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/oauth2.html">OAuth2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/notifications.html">Notifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/queued_tasks.html">Tâches en attente</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/reports.html">Signalements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
@@ -316,7 +317,7 @@
 <dt>API :</dt><dd><ul>
 <li><p>Flask</p></li>
 <li><p><a class="reference external" href="https://github.com/tkrajina/gpxpy">gpxpy</a> pour analyser les fichiers gpx</p></li>
-<li><p><a class="reference external" href="https://github.com/komoot/staticmap">staticmap</a> pour générer une image de la trace à partir des données du fichier gpx</p></li>
+<li><p><a class="reference external" href="https://github.com/SamR1/staticmap">Static Map 3</a>, un <em>fork</em> de <a class="reference external" href="https://github.com/komoot/staticmap">Static Map</a> pour générer une image de la trace à partir des données du fichier</p></li>
 <li><p><a class="reference external" href="https://dramatiq.io/">Dramatiq</a> et <a class="reference external" href="https://flask-dramatiq.readthedocs.io">Flask-Dramatiq</a> pour la file d’attente des tâches</p></li>
 <li><p><a class="reference external" href="https://docs.authlib.org/en/latest/">Authlib</a> pour le support de l’autorisation OAuth 2.0</p></li>
 <li><p><a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable">Flask-Limiter</a> pour les limitations d’accès à l’API</p></li>
@@ -338,6 +339,7 @@
 <div class="line-block">
 <div class="line">Le logo, les icônes de certains sports et celles des icônes météo ont été faites par <a class="reference external" href="https://www.freepik.com/">Freepik</a> sur <a class="reference external" href="https://www.flaticon.com/">www.flaticon.com</a>.</div>
 <div class="line">Les icônes des sports Aviron, Canoë et Kayak ont été faites par <a class="reference external" href="https://github.com/Von-Birne">&#64;Von-Birne</a>.</div>
+<div class="line">L’icône du sport Halfbike a été créé par <a class="reference external" href="https://github.com/astridx">&#64;astridx</a>.</div>
 <div class="line">FitTrackee utilise également les icônes de <a class="reference external" href="https://forkaweso.me">Fork Awesome</a>.</div>
 </div>
 </section>
@@ -361,7 +363,7 @@
 </li>
 <li><p>optionnels</p>
 <ul>
-<li><p>Redis pour la file d’attente de tâches (si l’envoi des courriels est activé et pour les demandes d’export de données) et les limitations d’accès à l’API (pour l’installation à partir des sources ou du paquet)</p></li>
+<li><p><a class="reference external" href="https://redis.io/">Redis</a> pour la <a class="reference external" href="installation.html#tasks-processing">file d’attente de tâches</a> (si l’envoi des courriels est activé et pour les demandes d’export de données) et les limitations d’accès à l’API (pour l’installation à partir des sources ou du paquet)</p></li>
 <li><p>Fournisseur SMTP (si l’envoi des courriels est activé)</p></li>
 <li><p>Clé d’API d’un <a class="reference external" href="installation.html#weather-data">fournisseur de données météo</a></p></li>
 <li><p><a class="reference external" href="https://python-poetry.org">Poetry</a> 1.2+ (pour l’installation à partir des sources uniquement)</p></li>
@@ -603,6 +605,20 @@
 </dd></dl>
 
 <dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-TASKS_TIME_LIMIT">
+<span class="sig-name descname"><span class="pre">TASKS_TIME_LIMIT</span></span><a class="headerlink" href="#envvar-TASKS_TIME_LIMIT" title="Lien vers cette définition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 0.10.0.</span></p>
+</div>
+<p><em>Timeout</em> en secondes pour l’exécution des tâches par <strong>Dramatiq</strong> pour éviter des exécutions trop longues</p>
+<dl class="field-list simple">
+<dt class="field-odd">défaut<span class="colon">:</span></dt>
+<dd class="field-odd"><p>1800</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-API_RATE_LIMITS">
 <span class="sig-name descname"><span class="pre">API_RATE_LIMITS</span></span><a class="headerlink" href="#envvar-API_RATE_LIMITS" title="Lien vers cette définition">¶</a></dt>
 <dd><div class="versionadded">
@@ -677,7 +693,7 @@
 <p><span class="versionmodified added">Ajouté dans la version 0.4.9.</span></p>
 </div>
 <div class="line-block">
-<div class="line">Si <code class="docutils literal notranslate"><span class="pre">True</span></code>, le serveur de tuile par défaut de <strong>staticmap</strong> est conservé pour générer les images statiques de cartes (serveur de tuiles OSM depuis la version 0.5.6 de <strong>staticmap</strong> (celui de Komoot.de avant cette version)).</div>
+<div class="line">Si <code class="docutils literal notranslate"><span class="pre">True</span></code>, le serveur de tuile par défaut de <strong>Static Map 3</strong> est conservé pour générer les images statiques de cartes (serveur de tuiles OSM).</div>
 <div class="line">Sinon, le serveur de tuiles configuré dans <a class="reference external" href="installation.html#envvar-TILE_SERVER_URL">TILE_SERVER_URL</a> sera utilisé.</div>
 </div>
 <div class="versionchanged">
@@ -690,6 +706,20 @@
 <dl class="field-list simple">
 <dt class="field-odd">défaut<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-STATICMAP_CACHE_DIR">
+<span class="sig-name descname"><span class="pre">STATICMAP_CACHE_DIR</span></span><a class="headerlink" href="#envvar-STATICMAP_CACHE_DIR" title="Lien vers cette définition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 0.10.0.</span></p>
+</div>
+<p>Répertoire pour le cache de <strong>Static Map 3</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">défaut<span class="colon">:</span></dt>
+<dd class="field-odd"><p>.staticmap_cache</p>
 </dd>
 </dl>
 </dd></dl>
@@ -919,8 +949,53 @@ Commands:
 <li><p><code class="docutils literal notranslate"><span class="pre">WEATHER_API_KEY</span></code> : clé d’API correspondant au fournisseur de données météo</p></li>
 </ul>
 </section>
-<section id="id2">
-<h2>Installation<a class="headerlink" href="#id2" title="Lien vers cette rubrique">¶</a></h2>
+<section id="tasks-processing">
+<h2>Traitement des tâches<a class="headerlink" href="#tasks-processing" title="Lien vers cette rubrique">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 0.3.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.10.0: </span>Ajout de la variable <code class="docutils literal notranslate"><span class="pre">TASKS_TIME_LIMIT</span></code></p>
+</div>
+<p>Le traitement des tâches est effectué en utilisant <a class="reference external" href="https://dramatiq.io/">Dramatiq</a>. Il requiert Redis et est utilisé pour l’envoi des emails, les exports de données utilisateurs et le chargement des archives de séances.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si aucun <em>worker</em> n’est lancé, une <a class="reference external" href="cli.html">interface de ligne de commandes</a> permet de traiter les tâches en attente.</p>
+</div>
+<p>Les variables d’environnement suivantes doivent être définies :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">REDIS_URL</span></code>: Instance Redis utilisée par <strong>Dramatiq</strong> et <strong>Flask-Limiter</strong>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WORKERS_PROCESSES</span></code>: Nombre de processus utilisés par <strong>Dramatiq</strong>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DRAMATIQ_LOG</span></code>: Chemin du fichier de log de <strong>Dramatiq</strong></p></li>
+</ul>
+<p>Pour éviter que des tâches d’export de données utilisateurs et de chargement d’archives s’exécutent indéfiniment, une durée limite est définie :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TASKS_TIME_LIMIT</span></code>: <em>Timeout</em> en secondes pour l’exécution des tâches par <strong>Dramatiq</strong>. La valeur par défaut est 1800 secondes (30 minutes).</p></li>
+</ul>
+<p>Pour démarrer les <em>workers</em> de la file d’attente, exécuter la commande suivante :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>dramatiq<span class="w"> </span>fittrackee.tasks:broker<span class="w"> </span>--processes<span class="o">=</span><span class="nv">$WORKERS_PROCESSES</span><span class="w"> </span>--log-file<span class="o">=</span><span class="nv">$DRAMATIQ_LOG</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Il est également possible de démarrer les <em>workers</em> de la file d’attente avec l’interface de ligne de commandes de <strong>Flask-dramatiq</strong>, mais il est recommandé d’utiliser l’interface de <strong>Dramatiq</strong> pour le moment.</div>
+</div>
+</div>
+<p>Il est possible de lancer les files d’attente séparément, par exemple pour le chargement d’archives de séances :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>dramatiq<span class="w"> </span>fittrackee.tasks:broker<span class="w"> </span>--processes<span class="o">=</span><span class="m">2</span><span class="w"> </span>-Q<span class="w"> </span>fittrackee_workouts
+</pre></div>
+</div>
+<p>Les files d’attente suivantes sont disponibles :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fittrackee_emails</span></code>: pour l’envoi des emails (priorité: haute)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fittrackee_users_exports</span></code>: pour les exports de données utilisateurs (priorité: moyenne)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fittrackee_workouts</span></code>: pour le chargement des archives de séances (priorité: moyenne)</p></li>
+</ul>
+<p>Lancer <code class="docutils literal notranslate"><span class="pre">dramatiq</span> <span class="pre">-h</span></code> pour afficher la liste des commandes disponibles.</p>
+</section>
+<section id="id3">
+<h2>Installation<a class="headerlink" href="#id3" title="Lien vers cette rubrique">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
@@ -1140,8 +1215,8 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 <p class="admonition-title">Avertissement</p>
 <p>Les versions publiées ne suivent pas la <a class="reference external" href="https://semver.org/lang/fr/">gestion sémantique de version</a>. Toute version peut contenir des changements non rétro-compatibles.</p>
 </div>
-<section id="id3">
-<h3>A partir de PyPI<a class="headerlink" href="#id3" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id4">
+<h3>A partir de PyPI<a class="headerlink" href="#id4" title="Lien vers cette rubrique">¶</a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
@@ -1172,16 +1247,16 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <li><p>Redémarrer l’application et les <em>workers</em> de la file d’attente des tâches (si l’envoi des courriels est activé).</p></li>
 </ul>
 </section>
-<section id="id4">
-<h3>A partir des sources<a class="headerlink" href="#id4" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id5">
+<h3>A partir des sources<a class="headerlink" href="#id5" title="Lien vers cette rubrique">¶</a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
 <div class="line">Seulement si <strong>FitTrackee</strong> a été installé initialement à partir des sources.</div>
 </div>
 </div>
-<section id="id5">
-<h4>Environnements de développement<a class="headerlink" href="#id5" title="Lien vers cette rubrique">¶</a></h4>
+<section id="id6">
+<h4>Environnements de développement<a class="headerlink" href="#id6" title="Lien vers cette rubrique">¶</a></h4>
 <ul class="simple">
 <li><p>Arrêter l’application et récupérer les derniers changements du dépôt :</p></li>
 </ul>
@@ -1581,7 +1656,8 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 <li><a class="reference internal" href="#map-tile-server">Serveur de tuiles</a></li>
 <li><a class="reference internal" href="#api-rate-limits">Limitation d’accès à l’API</a></li>
 <li><a class="reference internal" href="#weather-data">Données météo</a></li>
-<li><a class="reference internal" href="#id2">Installation</a><ul>
+<li><a class="reference internal" href="#tasks-processing">Traitement des tâches</a></li>
+<li><a class="reference internal" href="#id3">Installation</a><ul>
 <li><a class="reference internal" href="#from-pypi">A partir de PyPI</a></li>
 <li><a class="reference internal" href="#from-sources">A partir des sources</a><ul>
 <li><a class="reference internal" href="#dev-environment">Environnements de développement</a></li>
@@ -1591,9 +1667,9 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 </ul>
 </li>
 <li><a class="reference internal" href="#upgrade">Mise à jour</a><ul>
-<li><a class="reference internal" href="#id3">A partir de PyPI</a></li>
-<li><a class="reference internal" href="#id4">A partir des sources</a><ul>
-<li><a class="reference internal" href="#id5">Environnements de développement</a></li>
+<li><a class="reference internal" href="#id4">A partir de PyPI</a></li>
+<li><a class="reference internal" href="#id5">A partir des sources</a><ul>
+<li><a class="reference internal" href="#id6">Environnements de développement</a></li>
 <li><a class="reference internal" href="#prod-environment">Environnement de production</a></li>
 </ul>
 </li>
@@ -1618,7 +1694,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=003f56fb"></script>
+</div><script src="_static/documentation_options.js?v=be2ea2bb"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
