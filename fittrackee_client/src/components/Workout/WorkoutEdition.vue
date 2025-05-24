@@ -103,7 +103,12 @@
                       </ul>
                     </div>
                   </div>
-                  <div class="weather-info" v-if="asyncUploadEnabled">
+                  <div
+                    class="weather-info"
+                    v-if="
+                      asyncUploadEnabled && appConfig.weather_provider !== null
+                    "
+                  >
                     <i class="fa fa-info-circle" aria-hidden="true" />
                     {{ $t('workouts.NO_WEATHER_WITH_ASYNCHRONOUS_UPLOAD') }}
                   </div>
