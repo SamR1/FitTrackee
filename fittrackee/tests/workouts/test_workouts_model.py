@@ -6,6 +6,7 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
+from fittrackee.federation.exceptions import FederationDisabledException
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import User
 from fittrackee.utils import encode_uuid
@@ -852,6 +853,30 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         )
 
         assert serialized_workout["liked"] is True
+
+    def test_it_gets_workout_ap_id(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        assert workout_cycling_user_1.get_ap_id() == (
+            f"{user_1.actor.activitypub_id}/"
+            f"workouts/{workout_cycling_user_1.short_id}"
+        )
+
+    def test_it_gets_workout_remote_url(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        assert workout_cycling_user_1.get_remote_url() == (
+            f"https://{user_1.actor.domain.name}/"
+            f"workouts/{workout_cycling_user_1.short_id}"
+        )
 
 
 class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
@@ -2628,3 +2653,15 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "with_analysis": True,
             "with_gpx": True,
         }
+
+
+class TestWorkoutModelGetActivity:
+    def test_it_raises_error_if_federation_is_disabled(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        with pytest.raises(FederationDisabledException):
+            workout_cycling_user_1.get_activities(activity_type="Create")

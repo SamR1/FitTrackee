@@ -50,7 +50,7 @@ class TestCliUserCreate:
                 "create",
                 random_string(),
                 "--email",
-                user_1.email,
+                user_1.email,  # type: ignore
                 "--password",
                 random_string(),
             ],
@@ -288,7 +288,7 @@ class TestCliUserCreate:
                 "create",
                 random_string(),
                 "--email",
-                user_1.email,
+                user_1.email,  # type: ignore
                 "--role",
                 "invalid",
             ],

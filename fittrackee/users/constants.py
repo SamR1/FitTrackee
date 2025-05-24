@@ -19,6 +19,7 @@ NOTIFICATION_TYPES = (
     + MODERATOR_NOTIFICATION_TYPES
     + [
         "comment_like",
+        "comment_reply",
         "comment_suspension",
         "comment_unsuspension",
         "follow",

@@ -1609,6 +1609,49 @@ class TestPostWorkoutWithGpx(WorkoutApiTestCaseMixin, BaseTestMixin):
             == input_workout_visibility.value
         )
 
+    @pytest.mark.parametrize(
+        "input_map_visibility,input_workout_visibility",
+        [
+            (VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.FOLLOWERS),
+            (VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS_AND_REMOTE),
+        ],
+    )
+    def test_it_returns_400_when_privacy_level_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
+    ) -> None:
+        """
+        when workout visibility is stricter, map visibility is initialised
+        with workout visibility value
+        """
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/workouts",
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
+                data=(
+                    f'{{"sport_id": 1, "map_visibility": '
+                    f'"{input_map_visibility.value}", '
+                    f'"workout_visibility": '
+                    f'"{input_workout_visibility.value}"}}'
+                ),
+            ),
+            headers=dict(
+                content_type="multipart/form-data",
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        self.assert_400(response)
+
     def test_it_calls_configured_tile_server_for_static_map_when_default_static_map_to_false(  # noqa
         self,
         app: Flask,
@@ -3061,6 +3104,37 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
             == input_workout_visibility.value
         )
 
+    def test_it_returns_400_when_privacy_level_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        """
+        'FOLLOWERS_AND_REMOTE' is not available on un-federated instances
+        """
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/workouts/no_gpx",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date="2018-05-15 14:05",
+                    distance=10,
+                    workout_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE.value,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response)
+
     @pytest.mark.parametrize(
         "client_scope, can_access",
         {**OAUTH_SCOPES, "workouts:write": True}.items(),
@@ -3121,7 +3195,7 @@ class TestPostWorkoutWithZipArchive(WorkoutApiTestCaseMixin):
             assert len(data["data"]["workouts"]) == 3
             assert "creation_date" in data["data"]["workouts"][0]
             assert (
-                "Tue, 13 Mar 2018 12:44:45 GMT"
+                "Wed, 14 Mar 2018 12:44:45 GMT"
                 == data["data"]["workouts"][0]["workout_date"]
             )
             assert data["data"]["workouts"][0]["user"] == jsonify_dict(

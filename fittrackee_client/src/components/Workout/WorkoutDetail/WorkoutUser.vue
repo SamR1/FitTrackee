@@ -2,8 +2,14 @@
   <div class="box workout-user">
     <div class="user-img-name">
       <UserPicture :user="user" />
-      <router-link class="user-name" :to="`/users/${user.username}?from=users`">
+      <router-link
+        class="user-name"
+        :to="`/users/${getUserName(user)}?from=users`"
+      >
         {{ user.username }}
+        <div v-if="user.is_remote" class="user-remote-fullname">
+          {{ user.fullname }}
+        </div>
       </router-link>
     </div>
     <UserStats :user="user" />
@@ -16,6 +22,7 @@
   import UserPicture from '@/components/User/UserPicture.vue'
   import UserStats from '@/components/User/UserStats.vue'
   import type { IUserProfile } from '@/types/user'
+  import { getUserName } from '@/utils/user'
 
   interface Props {
     user: IUserProfile
@@ -52,6 +59,10 @@
 
       .user-name {
         font-size: 1.3em;
+        .user-remote-fullname {
+          font-size: 0.65em;
+          font-style: italic;
+        }
       }
     }
 
@@ -78,6 +89,9 @@
         .user-name {
           font-size: 1em;
           padding-left: $default-padding * 0.5;
+          .user-remote-fullname {
+            font-size: 0.8em;
+          }
         }
       }
       ::v-deep(.user-stats) {
