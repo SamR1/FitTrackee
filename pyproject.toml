@@ -53,8 +53,8 @@ pyjwt = "^2.10.1"
 pyopenssl = "^25.1.0"
 pytz = "^2025.2"
 shortuuid = "^1.0.13"
-staticmap3 = {git = "https://git@github.com/SamR1/staticmap.git", rev = "v0.1.0", extras = ["filecache"]}
 sqlalchemy = "=2.0.41"
+staticmap3 = {extras = ["filecache"], version = "^0.1.0"}
 ua-parser = "^1.0.0"
 xmltodict = "^0.14.2"
 
