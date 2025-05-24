@@ -1,7 +1,7 @@
 Command line interface
 ######################
 
-A command line interface (CLI) is available to manage database, OAuth2 tokens and users.
+A command line interface (CLI) is available to manage database, OAuth2 tokens, users and workouts archive uploads.
 
 .. code-block:: bash
 
@@ -14,9 +14,10 @@ A command line interface (CLI) is available to manage database, OAuth2 tokens an
       --help  Show this message and exit.
 
     Commands:
-      db      Manage database.
-      oauth2  Manage OAuth2 tokens.
-      users   Manage users.
+      db        Manage database.
+      oauth2    Manage OAuth2 tokens.
+      users     Manage users.
+      workouts  Manage workouts.
 
 
 Database
@@ -52,7 +53,7 @@ Remove tokens expired for more than provided number of days
 
    * - Options
      - Description
-   * - ``--days``
+   * - ``--days INTEGER``
      - Number of days.
 
 
@@ -73,7 +74,7 @@ Delete export requests and related archives created more than provided number of
 
    * - Options
      - Description
-   * - ``--days``
+   * - ``--days INTEGER``
      - Number of days.
 
 
@@ -90,7 +91,7 @@ Remove blacklisted tokens expired for more than provided number of days.
 
    * - Options
      - Description
-   * - ``--days``
+   * - ``--days INTEGER``
      - Number of days.
 
 
@@ -115,26 +116,26 @@ Create a user account.
 
    * - Arguments/options
      - Description
-   * - ``USERNAME``
+   * - ``USERNAME TEXT``
      - Username.
-   * - ``--email EMAIL``
+   * - ``--email TEXT``
      - User email (mandatory).
-   * - ``--password PASSWORD``
+   * - ``--password TEXT``
      - User password (if not provided, a random password is generated).
-   * - ``--lang LANGUAGE``
+   * - ``--lang TEXT``
      - User preference for interface language (two-letter code, ISO 639-1). If not provided or not supported, it falls back to English ('en').
-   * - ``--tz TIMEZONE``
+   * - ``--tz TEXT``
      - User preference for timezone. If not provided or not supported, it falls back to 'Europe/Paris'.
    * - ``--role [owner|admin|moderator|user]``
      - User role (default: 'user').
 
 
-
-``ftcli users export_archives``
+``ftcli users export_archive``
 """""""""""""""""""""""""""""""
-.. versionadded:: 0.7.13
+.. versionadded:: 0.10.0
 
-Process incomplete user export requests.
+Process a given queued user data export.
+
 Can be used if redis is not set (no dramatiq workers running).
 
 .. cssclass:: table-bordered
@@ -144,7 +145,26 @@ Can be used if redis is not set (no dramatiq workers running).
 
    * - Options
      - Description
-   * - ``--max``
+   * - ``--id TEXT``
+     - Id of task to process.
+
+
+``ftcli users export_archives``
+"""""""""""""""""""""""""""""""
+.. versionadded:: 0.7.13
+
+Process incomplete user export requests.
+
+Can be used if redis is not set (no dramatiq workers running).
+
+.. cssclass:: table-bordered
+.. list-table::
+   :widths: 25 50
+   :header-rows: 1
+
+   * - Options
+     - Description
+   * - ``--max INTEGER``
      - Maximum number of export requests to process.
 
 
@@ -172,5 +192,46 @@ Modify a user account (role, active status, email and password).
      - Activate user account.
    * - ``--reset-password``
      - Reset user password (a new password will be displayed).
-   * - ``--update-email EMAIL``
-     - Update user email.
+   * - ``--update-email TEXT``
+     - New user email.
+
+
+Workouts
+~~~~~~~~
+
+``ftcli users archive_upload``
+""""""""""""""""""""""""""""""
+.. versionadded:: 0.10.0
+
+Process a given queued workouts archive upload.
+
+Can be used if redis is not set (no dramatiq workers running).
+
+.. cssclass:: table-bordered
+.. list-table::
+   :widths: 25 50
+   :header-rows: 1
+
+   * - Options
+     - Description
+   * - ``--id TEXT``
+     - Id of task to process.
+
+
+``ftcli users archive_uploads``
+"""""""""""""""""""""""""""""""
+.. versionadded:: 0.10.0
+
+Process workouts archive uploads if queued tasks exist (progress = 0 and not aborted/errored).
+
+Can be used if redis is not set (no dramatiq workers running).
+
+.. cssclass:: table-bordered
+.. list-table::
+   :widths: 25 50
+   :header-rows: 1
+
+   * - Options
+     - Description
+   * - ``--max INTEGER``
+     - Maximum number of workouts archive to process.
