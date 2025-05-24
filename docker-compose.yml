@@ -84,7 +84,7 @@ services:
 
 # Uncomment the following lines for API rate limit, user data export and email sending
 #  fittrackee-redis:
-#    image: "redis:7.4"
+#    image: "redis:8.0"
 #    container_name: fittrackee-redis
 #    hostname: redis
 #    volumes:

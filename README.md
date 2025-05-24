@@ -18,16 +18,16 @@
 [![Mastodon Follow](https://img.shields.io/mastodon/follow/109270806934115805?domain=fosstodon.org)](https://fosstodon.org/@FitTrackee)  
 ---
 
-Web application allowing tracking of outdoor activities (workouts) from GPX files, \
+Web application allowing tracking of outdoor activities (workouts) from files, \
 with data on your own server.  
 
-Also works with other mobile apps to store workouts data locally, for export into a GPX file.  
+Several mobile apps or devices can store workouts data locally and export them into a file.  
 Examples for Android (non-exhaustive list):  
 * [Runner Up](https://github.com/jonasoreland/runnerup) (GPLv3)  
 * [OpenTracks](https://github.com/OpenTracksApp/OpenTracks) (Apache License)  
 * [FitoTrack](https://codeberg.org/jannis/FitoTrack) (GPLv3)  
 
-It is also possible to add a workout without a GPX file.
+It is also possible to add a workout without a file.
 
 Map data from [OpenStreetMap](https://www.openstreetmap.org).  
 

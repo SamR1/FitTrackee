@@ -26,17 +26,16 @@
   "DELETE_WORKOUT": "Usuń ten trening",
   "DESCENT": "zejście",
   "DESCRIPTION": "opis",
-  "DESCRIPTION_FIELD_HELP": "jeśli podano, opis zastępuje ten, z pliku gpx.",
+  "DESCRIPTION_FIELD_HELP": "jeśli podano, opis zastępuje ten, z pliku.",
   "DISPLAY_FILTERS": "filtry wyświetlania",
   "DISTANCE": "dystans",
-  "DOWNLOAD_WORKOUT": "Pobierz trening",
+  "DOWNLOAD_WORKOUT": "Pobierz trening (gpx)",
   "DURATION": "czas trwania",
   "EDIT_WORKOUT": "Edytuj trening",
   "ELEVATION": "wysokość",
   "END": "koniec",
   "EXIT_FULLSCREEN": "Wyłącz pełny ekran",
   "FROM": "z",
-  "GPX_FILE": "plik .gpx",
   "HIDE_FILTERS": "ukryj filtry",
   "HIDE_WORKOUTS": "ukryj treningi",
   "INVALID_ASCENT_OR_DESCENT": "Obie wysokości muszą być podane i muszą być większe niż lub równe zeru.",
@@ -98,7 +97,7 @@
   "START_ELEVATION_AT_ZERO": "zacznij oś wysokości od zera",
   "SUSPENDED_BY_ADMIN": "Trening został ukryty przez administrację.",
   "TITLE": "tytuł",
-  "TITLE_FIELD_HELP": "jeśli podano, tytuł zastępuje ten, z pliku gpx.",
+  "TITLE_FIELD_HELP": "jeśli podano, tytuł zastępuje ten, z pliku.",
   "TO": "do",
   "TOTAL_ASCENT": "całk. podjazdy",
   "TOTAL_DESCENT": "całk. zjazdy",
@@ -141,8 +140,8 @@
       "WSW": "Zach.-Płd.-Zach."
     }
   },
-  "WITHOUT_GPX": "bez pliku .gpx",
-  "WITH_GPX": "z plikiem .gpx",
+  "WITHOUT_FILE": "bez pliku",
+  "WITH_FILE": "z plikiem",
   "WORKOUT": "trening | treningi",
   "WORKOUTS_STATISTICS": {
     "all": "statystyki dla wszystkich ({count} treningów)",
@@ -154,5 +153,5 @@
   "WORKOUT_DELETION_CONFIRMATION": "Na pewno usunąć ten trening?",
   "WORKOUT_MAP": "mapa treningu",
   "ZIP_ARCHIVE": "plik .zip",
-  "ZIP_ARCHIVE_DESCRIPTION": "lub .zip zawierający pliki .gpx"
+  "ZIP_ARCHIVE_DESCRIPTION": "lub .zip zawierający pliki"
 }

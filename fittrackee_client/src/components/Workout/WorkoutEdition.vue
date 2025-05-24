@@ -24,7 +24,7 @@
                     :disabled="loading"
                     @click="updateWithGpx"
                   />
-                  <label for="withGpx">{{ $t('workouts.WITH_GPX') }}</label>
+                  <label for="withGpx">{{ $t('workouts.WITH_FILE') }}</label>
                 </div>
                 <div>
                   <input
@@ -35,7 +35,7 @@
                     @click="updateWithGpx"
                   />
                   <label for="withoutGpx">
-                    {{ $t('workouts.WITHOUT_GPX') }}
+                    {{ $t('workouts.WITH_FILE') }}
                   </label>
                 </div>
               </div>
@@ -59,37 +59,58 @@
               </div>
               <div class="form-item" v-if="isCreation && withGpx">
                 <label for="gpxFile">
-                  {{ $t('workouts.GPX_FILE') }}
+                  {{ $t('workouts.WORKOUT_FILE') }}
                   {{ $t('workouts.ZIP_ARCHIVE_DESCRIPTION') }}*:
                 </label>
                 <input
                   id="gpxFile"
                   name="gpxFile"
                   type="file"
-                  accept=".gpx, .zip"
+                  accept=".gpx, .fit, .kml, .kmz, .tcx, .zip"
                   :disabled="loading"
                   required
                   @invalid="invalidateForm"
                   @input="updateFile"
                 />
-                <div class="files-help info-box">
-                  <div>
-                    <strong>{{ $t('workouts.GPX_FILE') }}:</strong>
-                    <ul>
-                      <li>
-                        {{ $t('workouts.MAX_SIZE') }}: {{ fileSizeLimit }}
-                      </li>
-                    </ul>
+                <div class="files-info-box info-box">
+                  <div class="files-help">
+                    <div>
+                      <strong>{{ $t('workouts.WORKOUT_FILE') }}:</strong>
+                      <ul>
+                        <li>
+                          {{ $t('workouts.MAX_SIZE') }}: {{ fileSizeLimit }}
+                        </li>
+                        <li>
+                          {{ $t('workouts.SUPPORTED_FILE_EXTENSIONS') }}: .gpx,
+                          .fit, .kml, .kmz, .tcx
+                        </li>
+                      </ul>
+                    </div>
+                    <div>
+                      <strong>{{ $t('workouts.ZIP_ARCHIVE') }}:</strong>
+                      <ul>
+                        <li>
+                          {{ $t('workouts.MAX_SIZE') }}: {{ zipSizeLimit }}
+                        </li>
+                        <li>
+                          {{ $t('workouts.MAX_FILES') }}:
+                          {{ fileLimitImport }}
+                        </li>
+                        <li v-if="asyncUploadEnabled">
+                          {{ $t('workouts.MAX_SYNC_FILES_IN_ZIP') }}:
+                          {{ fileSyncLimitImport }}
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                  <div>
-                    <strong>{{ $t('workouts.ZIP_ARCHIVE') }}:</strong>
-                    <ul>
-                      <li>{{ $t('workouts.NO_FOLDER') }}</li>
-                      <li>
-                        {{ $t('workouts.MAX_FILES') }}: {{ gpx_limit_import }}
-                      </li>
-                      <li>{{ $t('workouts.MAX_SIZE') }}: {{ zipSizeLimit }}</li>
-                    </ul>
+                  <div
+                    class="weather-info"
+                    v-if="
+                      asyncUploadEnabled && appConfig.weather_provider !== null
+                    "
+                  >
+                    <i class="fa fa-info-circle" aria-hidden="true" />
+                    {{ $t('workouts.NO_WEATHER_WITH_ASYNCHRONOUS_UPLOAD') }}
                   </div>
                 </div>
               </div>
@@ -490,15 +511,22 @@
       ? getReadableFileSizeAsText(appConfig.value.max_single_file_size)
       : ''
   )
-  const gpx_limit_import: ComputedRef<number> = computed(
-    () => appConfig.value.gpx_limit_import
+  const fileLimitImport: ComputedRef<number> = computed(
+    () => appConfig.value.file_limit_import
+  )
+  const fileSyncLimitImport: ComputedRef<number> = computed(
+    () => appConfig.value.file_sync_limit_import
   )
   const zipSizeLimit: ComputedRef<string> = computed(() =>
     appConfig.value.max_zip_file_size
       ? getReadableFileSizeAsText(appConfig.value.max_zip_file_size)
       : ''
   )
-
+  const asyncUploadEnabled: ComputedRef<boolean> = computed(
+    () =>
+      appConfig.value.file_sync_limit_import !=
+      appConfig.value.file_limit_import
+  )
   const equipments: ComputedRef<IEquipment[]> = computed(
     () => store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
   )
@@ -714,8 +742,10 @@
         name: 'Workout',
         params: { workoutId: props.workout.id },
       })
-    } else {
+    } else if (window.history.length > 1) {
       router.go(-1)
+    } else {
+      router.push('/')
     }
   }
   function invalidateForm() {
@@ -863,20 +893,32 @@
             }
           }
 
-          .files-help {
-            display: flex;
-            justify-content: space-around;
+          .files-info-box {
             margin-top: $default-margin;
-            padding: $default-padding * 0.75 $default-padding;
-            div {
+            padding: 0 $default-padding;
+            .files-help {
               display: flex;
+              justify-content: space-around;
+              padding: $default-padding * 0.75 $default-padding;
+
+              div {
+                display: flex;
+
+                ul {
+                  margin: 0;
+                  padding: 0 $default-padding * 2;
+                }
+              }
+
               @media screen and (max-width: $medium-limit) {
                 flex-direction: column;
+                div {
+                  flex-direction: column;
+                }
               }
-              ul {
-                margin: 0;
-                padding: 0 $default-padding * 2;
-              }
+            }
+            .weather-info {
+              padding: 0 $default-padding $default-padding;
             }
           }
 

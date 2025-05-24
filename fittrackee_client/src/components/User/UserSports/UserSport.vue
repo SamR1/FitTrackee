@@ -83,7 +83,9 @@
           $router.push(
             route.query.fromEquipmentId
               ? `/profile/equipments/${route.query.fromEquipmentId}`
-              : '/profile/sports'
+              : route.query.fromArchiveUploadId
+                ? `/profile/archive-uploads/${route.query.fromArchiveUploadId}`
+                : '/profile/sports'
           )
         "
       >

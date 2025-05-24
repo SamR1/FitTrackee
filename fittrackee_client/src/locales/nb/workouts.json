@@ -12,7 +12,6 @@
   "EDIT_WORKOUT": "Rediger arbeidsøkten",
   "EXIT_FULLSCREEN": "Avslutt fullskjermsvisning",
   "FROM": "fra",
-  "GPX_FILE": ".gpx-fil",
   "INVALID_DISTANCE": "Avstanden må være større enn 0",
   "LATEST_WORKOUTS": "Seneste treningsøkter",
   "LOAD_MORE_WORKOUT": "Last inn flere arbeidsøkter",
@@ -77,10 +76,10 @@
       "WSW": "VSV"
     }
   },
-  "WITHOUT_GPX": "uten .gpx-fil",
-  "WITH_GPX": "med .gpx-fil",
+  "WITHOUT_FILE": "uten fil",
+  "WITH_FILE": "med fil",
   "WORKOUT_DATE": "treningsøktdato",
   "WORKOUT_DELETION_CONFIRMATION": "Slett denne treningsøkten?",
   "ZIP_ARCHIVE": ".zip-fil",
-  "ZIP_ARCHIVE_DESCRIPTION": "eller .zip fil som inneholder .gpx-filer"
+  "ZIP_ARCHIVE_DESCRIPTION": "eller .zip fil som inneholder filer"
 }

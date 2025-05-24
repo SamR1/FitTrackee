@@ -1,12 +1,12 @@
 Features
 ########
 
-| **FitTrackee** allows you to store and display **gpx** files and some statistics from your **outdoor** activities.
+| **FitTrackee** allows you to store and display files and some statistics from your **outdoor** activities.
 | Equipments can be associated with workouts.
 
 If registration is enabled, multiple users can register and interact with other users (comments, likes). Workouts and comments are visible to other users according to visibility levels.
 
-Gpx files are stored in an upload directory (**without encryption**).
+Files are stored in an upload directory (**without encryption**).
 
 With the default configuration, `Open Street Map <https://www.openstreetmap.org>`__ is used as tile server in Workout detail and for static map generation.
 
@@ -66,15 +66,15 @@ Workouts
 
 - A workout can be created by:
 
-  - uploading manually a gpx file or a zip archive containing a limited number of gpx files,
-  - | or entering date, time, duration and distance (without gpx file).
+  - uploading manually a file or a zip archive containing a limited number of files,
+  - | or entering date, time, duration and distance (without file).
     | Ascent and descent can also be provided (*new in 0.7.10*).
 
 .. warning::
-  | Only **gpx** files with time and elevation are supported (otherwise, errors may occur on upload).
+  | Only files containing at least time and coordinates are supported (otherwise, errors may occur on upload).
 
 .. note::
-  | Calculated values may differ from values calculated by the application that originally generated the gpx files, in particular the maximum speed.
+  | Calculated values may differ from values calculated by the application that originally generated the files, in particular the maximum speed.
 
 .. note::
   | Related data are stored in database in metric system.
@@ -82,13 +82,71 @@ Workouts
 .. note::
   | For now, **FitTrackee** has no importer, but some `third-party tools <third_party_tools.html#importers>`__ allow you to import workouts.
 
-- | If the name is present in the gpx file (``<name></name>``), it is used as the workout title. Otherwise, a title is generated from the sport and workout date.
-  | User can add title while uploading gpx file (*new in 0.8.10*).
+- | Archive file upload can be asynchronous if a limit for synchronous upload is set (*new in 0.10.0*).
+  | Asynchronous uploads can be displayed in user account and can be interrupted by the user.
+  | In case errors are encountered, the list of error files is displayed at the end of the upload.
+  | A notification is displayed after task completion.
+
+.. warning::
+  | A timeout is set to prevent long-running uploads.
+  | Errored or aborted uploads are not reprocessed.
+
+.. note::
+  Weather data are not collected during asynchronous uploads to avoid hitting API rate limit.
+
+- Supported files extensions are:
+
+  - .gpx
+  - .fit (*new in 0.10.0*)
+  - .kml and .kmz (*new in 0.10.0*)
+
+    - versions supported: 2.2.0 and 2.3.0
+    - only files with ``Placemark``/``MultiTrack``/``Tracks`` are supported.
+    - files with folders or multiple ``Placemark`` are not supported for now.
+
+  - .tcx (*new in 0.10.0*)
+
+.. note::
+  For extensions other than .gpx, files are converted to .gpx:
+
+  - .fit: generated .gpx file contains one track (``<trk>``). A new segment (``<trkseg>``) is created on after ``stop_all`` event.
+  - .kml: generated .gpx file contains one track (``<trk>``) corresponding to ``<MultiTrack>``, containing one segment (``<trkseg>``) per kml track (``<Track>``)
+  - .tcx: generated .gpx file contains one track (``<trk>``) containing one segment (``<trkseg>``) per activity (``<Activity>``)
+
+- If present in .gpx, .tcx and .fit files, the source (application or device) is displayed.
+
+.. note::
+   .fit files from Garmin devices may contain product id instead of product name. The mapping between the product id and the product name allows the product name to be displayed instead, if available.
+
+- | If the name is present in the file, it is used as the workout title. Otherwise, a title is generated from the sport and workout date.
+  | User can add title while uploading file (*new in 0.8.10*).
 - | The user can add description (*new in 0.8.9*) and private notes.
   | A limited Markdown syntax can be used (*new in 0.9.0*).
-- If present and no description is provided by the user, the description from the gpx file (``<desc></desc>``) is used as the workout description (*new in 0.8.10*).
-- | A workout with a gpx file can be displayed with map and charts (speed and elevation (if the gpx file contains elevation data, *updated in 0.7.20*)).
+- If present and no description is provided by the user, the description from the file is used as the workout description (*new in 0.8.10*).
+- | A map is displayed for workout with a file.
   | Controls allow full screen view and position reset (*new in 0.5.5*).
+- | A chart is displayed for workout with a file, with:
+
+  - speed
+  - elevation if available (*updated in 0.7.20*)
+  - heart rate if available (*new in 0.10.0*)
+  - cadence if available (*new in 0.10.0*), for the following sports:
+
+    - Cycling (Sport)
+    - Cycling (Trekking)
+    - Cycling (Transport)
+    - Cycling (Virtual)
+    - Halfbike
+    - Mountain Biking
+    - Mountain Biking (Electric)
+    - Hiking
+    - Mountaineering
+    - Snowshoes
+    - Running
+    - Trail
+    - Walking
+    - Open Water Swimming
+
 - | If **Visual Crossing** (*new in 0.7.11*) API key is provided, weather is displayed in workout detail. Data source is displayed in **About** page.
   | Wind is displayed, with an arrow indicating the direction (a tooltip can be displayed with the direction that the wind is coming **from**) (*new in 0.5.5*).
 - | An `equipment <features.html#equipments>`__ can be associated with a workout (*new in 0.8.0*). For now, only one equipment can be associated.
@@ -98,9 +156,9 @@ Workouts
 - Records associated with the workout are displayed.
 
 .. note::
-  Records may differ from records displayed by the application that originally generated the gpx files.
+  Records may differ from records displayed by the application that originally generated the files.
 
-- Visibility level can be set separately for workout data, analysis and map (*new in 0.9.0*):
+- Visibility level can be set separately for workout data, analysis, map (*new in 0.9.0*) and heart rate (*new in 0.10.0*) :
 
   - private: only owner can see data,
   - followers only: only owner and followers can see data,
@@ -108,13 +166,14 @@ Workouts
 
   |
   | Workout visibility applies to title, description, records and workout data except elevation.
-  | Analysis visibility applies to chart data, elevation and segments, if workout is associated with a gpx file.
-  | Map visibility applies to the map, if workout is associated with a gpx file.
+  | Analysis visibility applies to chart data, elevation and segments, if workout is associated with a file.
+  | Map visibility applies to the map, if workout is associated with a file.
+  | Heart rate visibility applies to heart rate data, if workout is associated with a file (*new in 0.10.0*).
   |
   | Default visibility can be set in user preferences.
 
 .. note::
-  | A workout with a gpx file whose visibility for map and analysis data does not allow them to be viewed appears as a workout without a gpx file.
+  | A workout with a file whose visibility for map and analysis data does not allow them to be viewed appears as a workout without a file.
   | Max speed is returned regardless analysis visibility.
 
 .. note::
@@ -138,7 +197,7 @@ Workouts
   - distance (only workouts without gpx)
   - ascent and descent (only workouts without gpx) (*new in 0.7.10*)
 
-- Workout gpx file can be downloaded (*new in 0.5.1*).
+- Gpx file can be downloaded (*new in 0.5.1*).
 - Workout can be deleted.
 - Workouts list.
 
@@ -358,6 +417,7 @@ Account & preferences
 
 - | A user can request a data export (*new in 0.7.13*).
   | It generates a zip archive containing 2 ``json`` files (user info and workouts data) and all uploaded gpx files.
+  | A notification is displayed after export completion (*new in 0.10.0*).
 
 .. note::
   For now, it's not possible to import these files into another **FitTrackee** instance.
@@ -365,6 +425,7 @@ Account & preferences
 - A user can display blocked users (*new in 0.9.0*).
 - A user can view follow requests to approve or reject (*new in 0.9.0*).
 - A user can view received sanctions and appeal (*new in 0.9.0*).
+- A user can view, interrupt and delete tasks for asynchronous uploads (*new in 0.10.0*).
 
 Equipments
 ==========
@@ -433,9 +494,10 @@ Configuration
 The following parameters can be set:
 
 - active users limit (default: 0). If 0, registration is enabled (no limit defined).
-- maximum size of gpx file (individually uploaded or in a zip archive, default: 1Mb) (*changed in 0.7.4*)
+- maximum size of workout file (individually uploaded or in a zip archive, default: 1Mb) (*changed in 0.7.4*)
 - maximum size of zip archive (default: 10Mb)
 - maximum number of files in the zip archive (default: 10) (*changed in 0.7.4*)
+- maximum number of files for synchronous processing (default: 10) (*new in 0.10.0*). If the maximum number of files in the zip archive equals the maximum number of files for synchronous processing, asynchronous upload is disabled.
 - maximum number of workouts for sport statistics (default: 10.000). If 0, all workouts are fetched to calculate statistics (*new in 0.8.5*)
 - administrator email for contact (*new in 0.6.0*)
 
@@ -550,6 +612,17 @@ Sports
 ------
 - Only users with administration rights can access sports administration.
 - Enable or disable a sport (a sport can be disabled even if workout with this sport exists).
+
+
+Queued tasks
+------------
+
+.. versionadded:: 0.10.0
+
+- Only users with administration rights can view queued tasks for user data export or workouts archive upload.
+
+.. note::
+  If no workers are running, a `command line <cli.html>`__ allows to process queued tasks.
 
 
 Translations

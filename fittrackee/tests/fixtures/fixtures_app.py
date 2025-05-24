@@ -1,7 +1,7 @@
 import os
 import shutil
 from typing import Generator, Iterator, Optional, Union
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from flask import current_app
@@ -9,16 +9,21 @@ from flask import current_app
 from fittrackee import create_app, db, limiter
 from fittrackee.application.models import AppConfig
 from fittrackee.application.utils import update_app_config_from_database
-from fittrackee.workouts.utils.gpx import weather_service
+from fittrackee.workouts.services.workout_from_file.base_workout_with_segment_service import (  # noqa
+    weather_service,
+)
 
 
 @pytest.fixture(autouse=True)
-def default_weather_service() -> Iterator[None]:
-    with patch.object(weather_service, "get_weather", return_value=None):
-        yield
+def default_weather_service() -> Iterator[MagicMock]:
+    with patch.object(
+        weather_service, "get_weather", return_value=None
+    ) as mock:
+        yield mock
 
 
 def get_app_config(
+    max_sync_workouts: Optional[int] = None,
     max_workouts: Optional[int] = None,
     max_single_file_size: Optional[Union[int, float]] = None,
     max_zip_file_size: Optional[Union[int, float]] = None,
@@ -29,7 +34,10 @@ def get_app_config(
         config = AppConfig()
         db.session.add(config)
         db.session.flush()
-    config.gpx_limit_import = 10 if max_workouts is None else max_workouts
+    config.file_sync_limit_import = (
+        10 if max_sync_workouts is None else max_sync_workouts
+    )
+    config.file_limit_import = 100 if max_workouts is None else max_workouts
     config.max_single_file_size = (
         (1 if max_single_file_size is None else max_single_file_size)
         * 1024
@@ -44,7 +52,9 @@ def get_app_config(
 
 
 def get_app(
+    *,
     with_config: Optional[bool] = False,
+    max_sync_workouts: Optional[int] = None,
     max_workouts: Optional[int] = None,
     max_single_file_size: Optional[Union[int, float]] = None,
     max_zip_file_size: Optional[Union[int, float]] = None,
@@ -57,6 +67,7 @@ def get_app(
             db.create_all()
             if with_config:
                 app_db_config = get_app_config(
+                    max_sync_workouts,
                     max_workouts,
                     max_single_file_size,
                     max_zip_file_size,
@@ -97,6 +108,9 @@ def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 @pytest.fixture
 def app_default_static_map(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv(
+        "TILE_SERVER_URL", "https://tile.openstreetmap.de/{z}/{x}/{y}.png"
+    )
     monkeypatch.setenv("DEFAULT_STATICMAP", "True")
     yield from get_app(with_config=True)
 
@@ -104,7 +118,7 @@ def app_default_static_map(monkeypatch: pytest.MonkeyPatch) -> Generator:
 @pytest.fixture
 def app_with_max_workouts(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv("EMAIL_URL", "smtp://none:none@0.0.0.0:1025")
-    yield from get_app(with_config=True, max_workouts=2)
+    yield from get_app(with_config=True, max_sync_workouts=1, max_workouts=2)
 
 
 @pytest.fixture
@@ -169,7 +183,8 @@ def app_wo_email_activation(monkeypatch: pytest.MonkeyPatch) -> Generator:
 @pytest.fixture()
 def app_config() -> AppConfig:
     config = AppConfig()
-    config.gpx_limit_import = 10
+    config.file_sync_limit_import = 10
+    config.file_limit_import = 100
     config.max_single_file_size = 1048576
     config.max_zip_file_size = 10485760
     config.max_users = 0
