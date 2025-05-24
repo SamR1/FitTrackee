@@ -1,9 +1,21 @@
 # Change log
 
+## Version 0.10.0b2 (2025/05/24)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+### Bugs Fixed
+
+* [PR#809](https://github.com/SamR1/FitTrackee/pull/809) - fix python package
+
+
 ## Version 0.10.0b1 (2025/05/24)
 
 **This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
 If you find bugs, please report them.
+
+**Note:** This version is not available on PyPI, due to an error when uploading the package.
 
 ### Features and enhancements
 
