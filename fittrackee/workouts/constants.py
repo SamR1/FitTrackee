@@ -1,3 +1,4 @@
+WORKOUT_ALLOWED_EXTENSIONS = {"gpx", "fit", "kml", "kmz", "tcx"}
 WORKOUT_DATE_FORMAT = "%Y-%m-%d %H:%M"
 CADENCE_SPORTS = [
     "Cycling (Sport)",

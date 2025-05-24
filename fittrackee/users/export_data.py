@@ -11,6 +11,7 @@ from fittrackee import appLog, db
 from fittrackee.emails.tasks import send_email
 from fittrackee.files import get_absolute_file_path
 from fittrackee.utils import decode_short_id
+from fittrackee.workouts.constants import WORKOUT_ALLOWED_EXTENSIONS
 
 from .exceptions import UserTaskException
 from .models import Notification, User, UserTask
@@ -126,14 +127,11 @@ class UserDataExporter:
                 if os.path.exists(self.workouts_directory):
                     for file in os.listdir(self.workouts_directory):
                         extension = file.split(".")[-1]
-                        if extension in [
-                            "gpx",
-                            "kml",
-                            "kmz",
-                            "fit",
-                            "tcx",
-                        ] and os.path.isfile(
-                            os.path.join(self.workouts_directory, file)
+                        if (
+                            extension in WORKOUT_ALLOWED_EXTENSIONS
+                            and os.path.isfile(
+                                os.path.join(self.workouts_directory, file)
+                            )
                         ):
                             zip_object.write(
                                 os.path.join(self.workouts_directory, file),
