@@ -1,5 +1,7 @@
 FROM python:3.13-slim
 
+RUN apt-get update && apt-get install -y --no-install-recommends git
+
 # set working directory
 RUN mkdir -p /usr/src/app/data/uploads /usr/src/app/data/logs
 WORKDIR /usr/src/app

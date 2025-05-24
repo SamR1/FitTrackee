@@ -13,6 +13,8 @@ RUN yarn build
 
 FROM python:3.13-alpine AS python-builder
 
+RUN apk add git
+
 RUN mkdir -p /usr/src/app/
 WORKDIR /usr/src/app/
 
