@@ -1,0 +1,68 @@
+{
+  "Canoeing": {
+    "LABEL": "Canoa"
+  },
+  "Cycling (Sport)": {
+    "LABEL": "Ciclisme (Esport)"
+  },
+  "Cycling (Transport)": {
+    "LABEL": "Ciclisme (Transport)"
+  },
+  "Cycling (Trekking)": {
+    "LABEL": "Ciclisme (Trekking)"
+  },
+  "Cycling (Virtual)": {
+    "LABEL": "Ciclisme (Virtual)"
+  },
+  "Halfbike": {
+    "LABEL": "Halfbike"
+  },
+  "Hiking": {
+    "LABEL": "Excursió"
+  },
+  "Kayaking": {
+    "LABEL": "Kaiak"
+  },
+  "Mountain Biking": {
+    "LABEL": "Bicicleta de Muntanya"
+  },
+  "Mountain Biking (Electric)": {
+    "LABEL": "Bicicleta de Muntanya (Elèctrica)"
+  },
+  "Mountaineering": {
+    "LABEL": "Muntanyisme"
+  },
+  "Open Water Swimming": {
+    "LABEL": "Natació en Aigües Obertes"
+  },
+  "Paragliding": {
+    "LABEL": "Parapent"
+  },
+  "Rowing": {
+    "LABEL": "Rem"
+  },
+  "Running": {
+    "LABEL": "Córrer"
+  },
+  "Skiing (Alpine)": {
+    "LABEL": "Esquís (Alpí)"
+  },
+  "Skiing (Cross Country)": {
+    "LABEL": "Esquís (Camp a través)"
+  },
+  "Snowshoes": {
+    "LABEL": "Raquetes"
+  },
+  "Swimrun": {
+    "LABEL": "Duatló (Natació-Carrera)"
+  },
+  "Trail": {
+    "LABEL": "Trail"
+  },
+  "Walking": {
+    "LABEL": "Caminar"
+  },
+  "Windsurfing": {
+    "LABEL": "Surf de vela"
+  }
+}

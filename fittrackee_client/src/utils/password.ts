@@ -5,6 +5,7 @@ export const loadLanguagePackage = async (language: string) => {
   // - Basque
   // - Bengali
   // - Bulgarian
+  // - Catalan
   // - Chinese
   // - Croatian
   // - Dutch (nl-NL)

@@ -1,0 +1,18 @@
+{
+  "50_CHARACTERS_MAX": "50 caràcters màxim",
+  "ADD_A_NEW_EQUIPMENT": "Afegeix un nou equipament",
+  "ALL_WORKOUTS_ASSOCIATIONS_REMOVED": "Totes les associacions amb entrenaments seran eliminades.",
+  "DEFAULT_FOR_SPORTS": "Per defecte per als esports",
+  "EDIT_EQUIPMENTS": "Edita equipaments",
+  "EQUIPMENT": "equipament | equipaments",
+  "EQUIPMENT_TYPE": "tipus d'equipament | tipus d'equipaments",
+  "ERRORS": {
+    "inactive": "Equipament '{equipmentLabel}' inactiu.",
+    "invalid": "Equipament '{equipmentLabel}' invàlid per a aquest esport.",
+    "not_found": "No s'ha trobat l'equipament."
+  },
+  "NEW_EQUIPMENT": "Nou equipament",
+  "NO_EQUIPMENT": "No s'ha trobat cap equipament.",
+  "NO_EQUIPMENTS": "Cap equipament",
+  "WITHOUT_EQUIPMENTS": "sense equipaments"
+}

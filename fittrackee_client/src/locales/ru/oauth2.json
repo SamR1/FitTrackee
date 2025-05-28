@@ -4,19 +4,40 @@
     "CLIENT_ID": "Id",
     "CLIENT_SECRET": "Секрет",
     "DESCRIPTION": "Описание приложения",
+    "ISSUE_AT": "Проблема в",
     "NAME": "Название приложения",
     "REDIRECT_URL": "URL перенаправления",
     "SCOPE": {
-      "application:write_DESCRIPTION": "предоставить доступ к конфигурации приложения."
-    }
+      "LABEL": "Область",
+      "application:write_DESCRIPTION": "предоставить доступ к конфигурации приложения.",
+      "equipments:read_DESCRIPTION": "предоставляет доступ только для чтения к конечным точкам (endpoint) <code>equipments</code>.",
+      "equipments:write_DESCRIPTION": "Предоставляет права на запись к эндпоинтам <code>equipments</code>.",
+      "follow:read_DESCRIPTION": "Предоставляет права на чтение к эндпоинтам, связанным с запросами на подписку и подписчиками.",
+      "follow:write_DESCRIPTION": "Предоставляет права на запись к эндпоинтам, связанным с запросами на подписку и подписчиками.",
+      "notifications:read_DESCRIPTION": "Предоставляет права на чтение к эндпоинтам <code>notifications</code>.",
+      "notifications:write_DESCRIPTION": "Предоставляет права на запись к эндпоинтам <code>notifications</code>.",
+      "profile:read_DESCRIPTION": "Предоставляет права на чтение к эндпоинтам <code>auth</code>.",
+      "profile:write_DESCRIPTION": "Предоставляет права на запись к эндпоинтам <code>auth</code>.",
+      "reports:read_DESCRIPTION": "Предоставляет права на чтение к эндпоинтам <code>reports</code>.",
+      "reports:write_DESCRIPTION": "Предоставляет права на запись к эндпоинтам <code>reports</code>.",
+      "users:read_DESCRIPTION": "Предоставляет права на чтение к эндпоинтам <code>users</code>.",
+      "users:write_DESCRIPTION": "Предоставляет права на запись к эндпоинтам <code>users</code>.",
+      "workouts:read_DESCRIPTION": "Предоставляет права на чтение к эндпоинтам workouts и comments.",
+      "workouts:write_DESCRIPTION": "предоставляет права на запись к эндпоинтам workouts и comments."
+    },
+    "URL": "URL приложения"
   },
   "APPS_LIST": "OAuth2 приложения",
+  "APP_CREATED_SUCCESSFULLY": "Приложение успешно создано. Обязательно скопируйте секрет сейчас, повторно он отображён не будет.",
   "APP_DELETION_CONFIRMATION": "Вы уверены, что хотите удалить это приложение?",
   "APP_REQUESTING_ACCESS": "Приложение {0} запрашивает:",
   "AUTHORIZE_APP": "Разрешить {0} использовать вашу учетную запись?",
+  "COPY_TO_CLIPBOARD": "скопировать в буфер обмена",
   "DELETE_APP": "Удалить приложение",
   "NEW_APP": "Добавить приложение",
   "NO_APP": "Приложение не найдено!",
   "NO_APPS": "нет приложений",
-  "TOKENS_REVOCATION_CONFIRMATION": "Вы уверены, что хотите отозвать все токены?"
+  "REVOKE_ALL_TOKENS": "Отозвать все токены",
+  "TOKENS_REVOCATION_CONFIRMATION": "Вы уверены, что хотите отозвать все токены?",
+  "TOKENS_REVOKED": "Все существующие связанные токены были отозваны."
 }

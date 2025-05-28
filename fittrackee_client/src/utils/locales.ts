@@ -2,6 +2,7 @@ import type { Locale } from 'date-fns'
 import {
   bg,
   // bn,
+  // ca,
   cs,
   de,
   enUS,
@@ -27,6 +28,7 @@ export const isLanguageSupported = (
   return [
     'bg',
     // 'bn',
+    // 'ca',
     'cs',
     'de',
     'en',
@@ -48,6 +50,7 @@ export const isLanguageSupported = (
 export const localeFromLanguage: Record<TLanguage, Locale> = {
   bg: bg,
   // bn: bn,
+  // ca: ca,
   cs: cs,
   de: de,
   en: enUS,
@@ -68,6 +71,7 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
 export const languageLabels: Record<TLanguage, string> = {
   bg: 'български (62%)',
   // bn: 'বাংলা',
+  // ca: 'Català',
   cs: 'Česky (46%)',
   de: 'Deutsch (98%)',
   en: 'English',
