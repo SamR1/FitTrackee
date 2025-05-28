@@ -11,7 +11,7 @@ Thanks to contributors, packages are also available on `Yunohost <installation.h
 
 For a single-user instance, registration can be disabled. So all you need is Python and PostgreSQL. A `CLI <cli.html#users>`__ is available to manage user account.
 
-| The following steps describe an installation on Linux systems (tested ArchLinux-based OS and Ubuntu on CI).
+| The following steps describe an installation on Linux systems (tested with ArchLinux-based OS and Ubuntu on CI).
 | On other operating systems, some issues can be encountered and adaptations may be necessary.
 
 .. note::
@@ -942,6 +942,9 @@ Examples:
 
     [Install]
     WantedBy=multi-user.target
+
+.. note::
+    Command to be adapted to run queues separately
 
 .. seealso::
     More information on **Dramatiq** CLI in its `documentation <https://dramatiq.io/guide.html#workers>`__.
