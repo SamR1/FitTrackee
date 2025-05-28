@@ -35,8 +35,9 @@ services:
     volumes:
       - ${UPLOAD_DIR:-./data/uploads}:/usr/src/app/uploads
       - ${LOG_DIR:-./data/logs}:/usr/src/app/logs
+      - ${STATICMAP_CACHE_DIR:-./data/staticmap_cache}:/usr/src/app/.staticmap_cache
     post_start:
-      - command: chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/logs
+      - command: chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/logs /usr/src/app/.staticmap_cache
         user: root
     ports:
       - "${APP_PORT:-5000}:5000"
@@ -69,8 +70,9 @@ services:
 #    volumes:
 #      - ${UPLOAD_DIR:-./data/uploads}:/usr/src/app/uploads
 #      - ${LOG_DIR:-./data/logs}:/usr/src/app/logs
+#      - ${STATICMAP_CACHE_DIR:-./data/staticmap_cache}:/usr/src/app/.staticmap_cache
 #    post_start:
-#      - command: chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/logs
+#      - command: chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/logs /usr/src/app/.staticmap_cache
 #        user: root
 ## Adjust CLI options if needed, see https://dramatiq.io/guide.html#workers
 #    command: "dramatiq fittrackee.tasks:broker --processes=2 --log-file=/usr/src/app/logs/dramatiq.log"
