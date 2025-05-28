@@ -35,7 +35,7 @@
                     @click="updateWithGpx"
                   />
                   <label for="withoutGpx">
-                    {{ $t('workouts.WITH_FILE') }}
+                    {{ $t('workouts.WITHOUT_FILE') }}
                   </label>
                 </div>
               </div>
