@@ -1,6 +1,5 @@
 import os
 import secrets
-import tempfile
 import zipfile
 from abc import abstractmethod
 from dataclasses import asdict, dataclass
@@ -450,7 +449,11 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
         ).first():
             raise WorkoutException("invalid", "ongoing upload task exists")
 
-        _, path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+        relative_path = os.path.join(
+            self._get_user_path(),
+            f"archive_{secrets.token_urlsafe(20)}.zip",
+        )
+        path = get_absolute_file_path(relative_path)
         self.file.stream.seek(0)
         self.file.save(path)
 
@@ -468,7 +471,7 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
                 ),
                 "original_file_name": self.file.filename,
             },
-            file_path=path,
+            file_path=relative_path,
         )
         upload_task.errors = {
             "archive": None,
@@ -554,7 +557,7 @@ class WorkoutsFromArchiveCreationAsyncService(AbstractWorkoutsCreationService):
         auth_user = User.query.filter_by(id=upload_task.user_id).one()
         import_data = upload_task.data
         super().__init__(auth_user, import_data["workouts_data"], None)
-        self.file_path = upload_task.file_path
+        self.file_path = get_absolute_file_path(upload_task.file_path)
         self.files_to_process = import_data["files_to_process"]
         self.equipment_ids = import_data["equipment_ids"]
         self.upload_task = upload_task

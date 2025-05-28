@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from time_machine import travel
 
+from fittrackee.files import get_absolute_file_path
 from fittrackee.users.models import Notification
 from fittrackee.workouts.exceptions import WorkoutException
 from fittrackee.workouts.services import (
@@ -56,7 +57,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceInstantiation(UserTaskMixin):
         workouts_data = {"sport_id": sport_1_cycling.id}
         files_to_process = ["example.gpx"]
         equipment_ids = [equipment_bike_user_1.id]
-        file_path = "some path"
+        file_path = "some/path/archive.zip"
         upload_task = self.create_workouts_upload_task(
             user_1,
             workouts_data=workouts_data,
@@ -69,7 +70,7 @@ class TestWorkoutsFromArchiveCreationAsyncServiceInstantiation(UserTaskMixin):
 
         assert service.auth_user == user_1
         assert service.equipment_ids == equipment_ids
-        assert service.file_path == file_path
+        assert service.file_path == get_absolute_file_path(file_path)
         assert service.files_to_process == files_to_process
         assert service.upload_task == upload_task
         assert service.workouts_data == WorkoutsData(**workouts_data)  # type: ignore

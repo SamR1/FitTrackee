@@ -1,5 +1,4 @@
 import os
-import tempfile
 import zipfile
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
@@ -1426,7 +1425,6 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
         )
 
         with (
-            patch.object(tempfile, "mkstemp", return_value=(None, None)),
             pytest.raises(
                 WorkoutException, match="ongoing upload task exists"
             ),
@@ -1457,17 +1455,21 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
         service = self.get_service(
             app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
         )
-        fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+        expected_token = "some_token"
+        expected_archive_path = (
+            f"workouts/{user_1.id}/archive_{expected_token}.zip"
+        )
 
-        with patch.object(
-            tempfile, "mkstemp", return_value=(fd, temp_file_path)
-        ):
+        with patch("secrets.token_urlsafe", return_value=expected_token):
             service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
                 equipments=None,
             )
 
         assert UserTask.query.filter_by(user_id=user_1.id).count() == 2
+
+        # file cleanup
+        os.remove(get_absolute_file_path(expected_archive_path))
 
     def test_it_creates_task_with_minimal_data(
         self,
@@ -1479,8 +1481,11 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
         service = self.get_service(
             app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
         )
-        fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
         archive_size = 2000
+        expected_token = "some_token"
+        expected_archive_path = (
+            f"workouts/{user_1.id}/archive_{expected_token}.zip"
+        )
 
         with (
             patch(
@@ -1490,9 +1495,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
                 ),
                 return_value=archive_size,
             ),
-            patch.object(
-                tempfile, "mkstemp", return_value=(fd, temp_file_path)
-            ),
+            patch("secrets.token_urlsafe", return_value=expected_token),
         ):
             service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
@@ -1521,7 +1524,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
             "archive": None,
             "files": {},
         }
-        assert upload_task.file_path == temp_file_path
+        assert upload_task.file_path == expected_archive_path
         assert upload_task.file_size == archive_size
         assert upload_task.message_id == MESSAGE_ID
         assert upload_task.progress == 0
@@ -1529,8 +1532,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
         assert upload_task.user_id == user_1.id
 
         # file cleanup
-        os.close(fd)
-        os.remove(temp_file_path)
+        os.remove(get_absolute_file_path(expected_archive_path))
 
     def test_it_creates_task_with_all_data(
         self,
@@ -1557,8 +1559,11 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
             "tests/files/gpx_test.zip",
             workouts_data,
         )
-        fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
         archive_size = 2000
+        expected_token = "some_token"
+        expected_archive_path = (
+            f"workouts/{user_1.id}/archive_{expected_token}.zip"
+        )
 
         with (
             patch(
@@ -1568,9 +1573,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
                 ),
                 return_value=archive_size,
             ),
-            patch.object(
-                tempfile, "mkstemp", return_value=(fd, temp_file_path)
-            ),
+            patch("secrets.token_urlsafe", return_value=expected_token),
         ):
             service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
@@ -1593,7 +1596,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
             "archive": None,
             "files": {},
         }
-        assert upload_task.file_path == temp_file_path
+        assert upload_task.file_path == expected_archive_path
         assert upload_task.file_size == archive_size
         assert upload_task.message_id == MESSAGE_ID
         assert upload_task.progress == 0
@@ -1601,8 +1604,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
         assert upload_task.user_id == user_1.id
 
         # file cleanup
-        os.close(fd)
-        os.remove(temp_file_path)
+        os.remove(get_absolute_file_path(expected_archive_path))
 
     def test_it_creates_task_when_completed_tasks_for_user_exist(
         self,
@@ -1619,11 +1621,12 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
         service = self.get_service(
             app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
         )
-        fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+        expected_token = "some_token"
+        archive_absolute_path = get_absolute_file_path(
+            f"workouts/{user_1.id}/archive_{expected_token}.zip"
+        )
 
-        with patch.object(
-            tempfile, "mkstemp", return_value=(fd, temp_file_path)
-        ):
+        with patch("secrets.token_urlsafe", return_value=expected_token):
             service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
                 equipments=None,
@@ -1632,8 +1635,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
         assert UserTask.query.filter_by(user_id=user_1.id).count() == 3
 
         # file cleanup
-        os.close(fd)
-        os.remove(temp_file_path)
+        os.remove(archive_absolute_path)
 
     def test_it_calls_upload_workouts_archive_with_equipments(
         self,
@@ -1645,13 +1647,12 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
         service = self.get_service(
             app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
         )
-        fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+        expected_token = "some_token"
+        archive_absolute_path = get_absolute_file_path(
+            f"workouts/{user_1.id}/archive_{expected_token}.zip"
+        )
 
-        with (
-            patch.object(
-                tempfile, "mkstemp", return_value=(fd, temp_file_path)
-            ),
-        ):
+        with patch("secrets.token_urlsafe", return_value=expected_token):
             service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
                 equipments=None,
@@ -1663,8 +1664,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
         )
 
         # file cleanup
-        os.close(fd)
-        os.remove(temp_file_path)
+        os.remove(archive_absolute_path)
 
     def test_it_store_archive_content_in_temporary_file(
         self,
@@ -1678,27 +1678,27 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
         service = self.get_service(
             app, user_1, sport_1_cycling, "tests/files/gpx_test.zip"
         )
-        fd, temp_file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+        expected_token = "some_token"
+        archive_absolute_path = get_absolute_file_path(
+            f"workouts/{user_1.id}/archive_{expected_token}.zip"
+        )
 
-        with (
-            patch.object(
-                tempfile, "mkstemp", return_value=(fd, temp_file_path)
-            ),
-        ):
+        with patch("secrets.token_urlsafe", return_value=expected_token):
             service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
                 equipments=[equipment_shoes_user_1],
             )
 
-        with zipfile.ZipFile(temp_file_path, "r") as zip_ref:
+        with zipfile.ZipFile(
+            get_absolute_file_path(archive_absolute_path), "r"
+        ) as zip_ref:
             assert {file.filename for file in zip_ref.infolist()} == {
                 *TEST_FILES_LIST,
                 "fichier.doc",
             }
 
         # file cleanup
-        os.close(fd)
-        os.remove(temp_file_path)
+        os.remove(archive_absolute_path)
 
 
 class TestWorkoutsFromFileCreationServiceProcessZipArchive(
