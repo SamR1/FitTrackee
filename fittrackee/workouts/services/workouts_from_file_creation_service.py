@@ -143,21 +143,23 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
         *,
         gpx_xml_content: Optional[str],  # for non-gpx files
         extension: str = ".gpx",
+        relative_path: Optional[str] = None,
     ) -> str:
         if not workout_file and not self.file:
             return ""
 
-        workout_filepath = self.get_file_path(
-            workout_date=new_workout.workout_date.strftime(
-                "%Y-%m-%d_%H-%M-%S"
-            ),
-            extension=extension,
-        )
+        if not relative_path:
+            relative_path = self.get_file_path(
+                workout_date=new_workout.workout_date.strftime(
+                    "%Y-%m-%d_%H-%M-%S"
+                ),
+                extension=extension,
+            )
 
         if extension == ".gpx":
-            new_workout.gpx = workout_filepath
+            new_workout.gpx = relative_path
 
-        absolute_workout_filepath = get_absolute_file_path(workout_filepath)
+        absolute_workout_filepath = get_absolute_file_path(relative_path)
         try:
             if gpx_xml_content:
                 with open(absolute_workout_filepath, "w") as f:
@@ -277,18 +279,18 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
 
         if extension == "gpx":
             new_workout.original_file = new_workout.gpx
-        # store original file if extension si not .gpx
+        # store original file if extension is not .gpx
         elif new_workout.gpx:
             original_extension = f".{extension}"
+            relative_path = new_workout.gpx.replace(".gpx", original_extension)
             self._store_file(
                 new_workout,
                 workout_file,
                 gpx_xml_content=None,
                 extension=original_extension,
+                relative_path=relative_path,
             )
-            new_workout.original_file = new_workout.gpx.replace(
-                ".gpx", original_extension
-            )
+            new_workout.original_file = relative_path
 
         # generate and store map image
         map_filepath = self.get_file_path(
