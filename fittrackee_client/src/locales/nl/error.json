@@ -1,5 +1,6 @@
 {
   "APP_ERROR": "Er heeft zich een onbekende fout voorgedaan.<br />Probeer het later opnieuw of contacteer de administrator.",
+  "ERRORS_ENCOUNTERED": "Er zijn fouten gebeurt",
   "NOT_FOUND": {
     "COMMENT": "Reactie niet gevonden",
     "PAGE": "Pagina niet gevonden",
