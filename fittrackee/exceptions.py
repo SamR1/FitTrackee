@@ -11,5 +11,9 @@ class GenericException(Exception):
         self.e = e
 
 
+class TaskException(Exception):
+    pass
+
+
 class InvalidVisibilityException(Exception):
     pass

@@ -27,7 +27,9 @@ from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.constants import WORKOUT_DATE_FORMAT
 from fittrackee.workouts.exceptions import SportNotFoundException
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
-from fittrackee.workouts.utils.workouts import create_workout
+from fittrackee.workouts.services.workout_creation_service import (
+    WorkoutCreationService,
+)
 
 from ..objects.workout import convert_workout_activity
 
@@ -252,10 +254,10 @@ class CreateActivity(AbstractActivity):
         workout_data["workout_visibility"] = self._get_visibility(
             workout_data, actor
         )
-        new_workout = create_workout(
+        service = WorkoutCreationService(
             actor.user, convert_workout_activity(workout_data)
         )
-        db.session.add(new_workout)
+        new_workout, _ = service.process()
         db.session.commit()
 
     def create_remote_note(self, actor: Actor) -> None:

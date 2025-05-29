@@ -167,6 +167,10 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
             res.data.data.workouts[0]
           )
           if (res.data.data.workouts[0].with_analysis) {
+            context.commit(
+              WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA_LOADING,
+              true
+            )
             authApi
               .get(`workouts/${payload.workoutId}/chart_data${segmentUrl}`)
               .then((res) => {
@@ -176,6 +180,18 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                     res.data.data.chart_data
                   )
                 }
+              })
+              .catch(() => {
+                context.commit(
+                  WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA,
+                  []
+                )
+              })
+              .finally(() => {
+                context.commit(
+                  WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA_LOADING,
+                  false
+                )
               })
           }
           if (res.data.data.workouts[0].with_gpx) {
@@ -317,7 +333,9 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
         },
       })
       .then((res) => {
-        if (res.data.status === 'created') {
+        if (res.data.status === 'in_progress') {
+          router.push(`/profile/archive-uploads/${res.data.data.task_id}`)
+        } else if (res.data.status === 'created') {
           context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
           const workout: IWorkout = res.data.data.workouts[0]
           router.push(

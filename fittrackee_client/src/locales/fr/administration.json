@@ -12,8 +12,10 @@
   "APPLICATION": "Application",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Email de l'administrateur pour contact ",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "L'upload asynchrone des archives zip est désactivé.",
     "FEDERATION_ENABLED": "Fédération activée",
     "MAX_FILES_IN_ZIP_LABEL": "Nombre max. de fichiers dans une archive zip ",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Nombre max. de fichiers pour le traitement synchrone",
     "MAX_USERS_HELP": "Si égal à 0, pas limite d'inscription",
     "MAX_USERS_LABEL": "Nombre maximum d'utilisateurs actifs ",
     "NO_CONTACT_EMAIL": "non renseigné",
@@ -49,6 +51,7 @@
       "CREATED_AT": "date de création",
       "UPDATED_AT": "date de mise à jour"
     },
+    "USERS_QUEUED_TASKS_EXIST": "Il y a des tâches en attente",
     "REASON": "Raison",
     "REPORT": "signalement | signalements",
     "REPORTED_BY": "Signalé par",
@@ -117,6 +120,19 @@
   "NO_TEXT_ENTERED": "pas de texte saisi",
   "PASSWORD_RESET_SUCCESSFUL": "Le mot de passe a été réinitialisé.",
   "PRIVACY_POLICY_DESCRIPTION": "Ajouter votre propre politique de confidentialité ou laisser vider pour utiliser la politique par défaut. La syntaxe Markdown peut être utilisée.",
+
+  "USERS_QUEUED_TASKS": {
+    "DESCRIPTION": "Afficher les tâches en attente",
+    "LABEL": "Tâches en attente",
+    "LIST_DESCRIPTION": "Si aucun worker n'est lancé, veuillez utiliser l'interface en ligne de commande (CLI) pour les traiter.",
+    "NO_USERS_QUEUED_TASKS": "Pas de tâches en attente",
+    "TASK_TYPES": {
+      "LABEL": "Type de tâches",
+      "user_data_export": "Export des données utilisateur",
+      "workouts_archive_upload": "Chargement d'archives de séances "
+    },
+    "VIEW_OTHER_TASKS": "Voir les autres tâches en attente"
+  },
   "REGISTRATION_DISABLED": "Les inscriptions sont actuellement désactivées.",
   "REGISTRATION_ENABLED": "Les inscriptions sont actuellement activées.",
   "RESET_USER_PASSWORD": "Réinit. le mot de passe",

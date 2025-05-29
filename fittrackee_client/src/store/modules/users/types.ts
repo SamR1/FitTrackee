@@ -8,6 +8,11 @@ import type {
 import { USERS_STORE } from '@/store/constants'
 import type { IRootState } from '@/store/modules/root/types'
 import type { IPagination } from '@/types/api'
+import type {
+  IQueuedTask,
+  IQueuedTasksPayload,
+  TQueuedTasksCounts,
+} from '@/types/application.ts'
 import type { IReportAction } from '@/types/reports'
 import type {
   IAdminUserPayload,
@@ -36,6 +41,11 @@ export interface IUsersState {
   isSuccess: boolean
   pagination: IPagination
   currentReporting: boolean
+  usersQueuedTasks: {
+    counts: TQueuedTasksCounts
+    tasks: IQueuedTask[]
+    pagination: IPagination
+  }
 }
 
 export interface IUsersActions {
@@ -84,6 +94,13 @@ export interface IUsersActions {
     context: ActionContext<IUsersState, IRootState>,
     payload: IUserDeletionPayload
   ): void
+  [USERS_STORE.ACTIONS.GET_USERS_QUEUED_TASKS_LIST](
+    context: ActionContext<IUsersState, IRootState>,
+    payload: IQueuedTasksPayload
+  ): void
+  [USERS_STORE.ACTIONS.GET_USERS_QUEUED_TASKS_COUNT](
+    context: ActionContext<IUsersState, IRootState>
+  ): void
 }
 
 export interface IUsersGetters {
@@ -101,6 +118,13 @@ export interface IUsersGetters {
   [USERS_STORE.GETTERS.USERS_IS_SUCCESS](state: IUsersState): boolean
   [USERS_STORE.GETTERS.USERS_LOADING](state: IUsersState): boolean
   [USERS_STORE.GETTERS.USERS_PAGINATION](state: IUsersState): IPagination
+  [USERS_STORE.GETTERS.USERS_QUEUED_TASKS](state: IUsersState): IQueuedTask[]
+  [USERS_STORE.GETTERS.USERS_QUEUED_TASKS_COUNTS](
+    state: IUsersState
+  ): TQueuedTasksCounts
+  [USERS_STORE.GETTERS.USERS_QUEUED_TASKS_PAGINATION](
+    state: IUsersState
+  ): IPagination
 }
 
 export type TUsersMutations<S = IUsersState> = {
@@ -147,6 +171,18 @@ export type TUsersMutations<S = IUsersState> = {
   [USERS_STORE.MUTATIONS.UPDATE_USER_WORKOUTS_LOADING](
     state: S,
     loading: boolean
+  ): void
+  [USERS_STORE.MUTATIONS.UPDATE_USERS_QUEUED_TASKS](
+    state: S,
+    tasks: IQueuedTask[]
+  ): void
+  [USERS_STORE.MUTATIONS.UPDATE_USERS_QUEUED_TASKS_COUNTS](
+    state: S,
+    counts: TQueuedTasksCounts
+  ): void
+  [USERS_STORE.MUTATIONS.UPDATE_USERS_QUEUED_TASKS_PAGINATION](
+    state: S,
+    pagination: IPagination
   ): void
 }
 

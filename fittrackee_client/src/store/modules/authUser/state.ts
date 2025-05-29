@@ -1,5 +1,10 @@
 import type { IAuthUserState } from '@/store/modules/authUser/types'
-import type { IUserReportAction, IAuthUserProfile } from '@/types/user'
+import type { IPagination } from '@/types/api.ts'
+import type {
+  IUserReportAction,
+  IAuthUserProfile,
+  IArchiveUploadTask,
+} from '@/types/user'
 
 export const authUserState: IAuthUserState = {
   authToken: null,
@@ -12,4 +17,10 @@ export const authUserState: IAuthUserState = {
   blockedUsers: [],
   userReportAction: <IUserReportAction>{},
   timezones: [],
+  archiveUploadTasks: {
+    task: <IArchiveUploadTask>{},
+    tasks: [],
+    loading: false,
+    pagination: <IPagination>{},
+  },
 }

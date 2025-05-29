@@ -15,7 +15,7 @@ from sqlalchemy.sql.expression import nulls_last
 from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, appLog, db
-from fittrackee.database import TZDateTime
+from fittrackee.database import PSQL_INTEGER_LIMIT, TZDateTime
 from fittrackee.dates import aware_utc_now
 from fittrackee.equipments.models import WorkoutEquipment
 from fittrackee.federation.decorators import federation_required
@@ -27,6 +27,7 @@ from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import (
     VisibilityLevel,
     can_view,
+    can_view_heart_rate,
     get_calculated_visibility,
 )
 
@@ -65,6 +66,15 @@ EMPTY_WORKOUT_VALUES: Dict = {
     "notes": "",
     "likes_count": 0,
     "liked": False,
+}
+WORKOUT_VALUES_LIMIT = {
+    "ascent": 99999.999,
+    "descent": 99999.999,
+    "distance": 999999.9,
+    "max_alt": 9999.99,
+    "max_speed": 9999.99,
+    "min_alt": 9999.99,
+    "moving_time": PSQL_INTEGER_LIMIT,
 }
 
 record_types = [
@@ -315,6 +325,16 @@ class Workout(BaseModel):
         server_default="PRIVATE",
         nullable=False,
     )
+    original_file: Mapped[Optional[str]] = mapped_column(
+        db.String(255), nullable=True
+    )
+    max_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
+    ave_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
+    max_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
+    ave_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
+    source: Mapped[Optional[str]] = mapped_column(
+        db.String(100), nullable=True
+    )
     ap_id: Mapped[Optional[str]] = mapped_column(db.Text(), nullable=True)
     remote_url: Mapped[Optional[str]] = mapped_column(db.Text(), nullable=True)
 
@@ -362,14 +382,16 @@ class Workout(BaseModel):
         user_id: int,
         sport_id: int,
         workout_date: datetime,
-        distance: float,
-        duration: timedelta,
+        distance: Optional[float] = None,
+        duration: Optional[timedelta] = None,
     ) -> None:
         self.user_id = user_id
         self.sport_id = sport_id
         self.workout_date = workout_date
-        self.distance = distance
-        self.duration = duration
+        if distance is not None:
+            self.distance = distance
+        # to allow workout creation before gpx data extraction
+        self.duration = timedelta(seconds=0) if duration is None else duration
 
     @property
     def short_id(self) -> str:
@@ -482,9 +504,11 @@ class Workout(BaseModel):
                 **EMPTY_WORKOUT_VALUES,
             }
 
+        can_see_heart_rate = can_view_heart_rate(self.user, user)
         workout_data = {
             **workout_data,
             **EMPTY_WORKOUT_VALUES,
+            "source": self.source,
             "title": self.title,
             "moving": None if self.moving is None else str(self.moving),
             "distance": (
@@ -521,6 +545,10 @@ class Workout(BaseModel):
                 if can_see_map_data
                 else VisibilityLevel.PRIVATE
             ),
+            "ave_cadence": self.ave_cadence,
+            "max_cadence": self.max_cadence,
+            "ave_hr": self.ave_hr if can_see_heart_rate else None,
+            "max_hr": self.max_hr if can_see_heart_rate else None,
         }
 
         if not light or with_equipments:
@@ -544,7 +572,10 @@ class Workout(BaseModel):
                 else [record.serialize() for record in self.records]
             ),
             "segments": (
-                [segment.serialize() for segment in self.segments]
+                [
+                    segment.serialize(can_see_heart_rate=can_see_heart_rate)
+                    for segment in self.segments
+                ]
                 if can_see_analysis_data
                 else []
             ),
@@ -817,6 +848,11 @@ def on_workout_delete(
                 os.remove(get_absolute_file_path(old_workout.gpx))
             except OSError:
                 appLog.error("gpx file not found when deleting workout")
+        if old_workout.original_file:
+            try:
+                os.remove(get_absolute_file_path(old_workout.original_file))
+            except OSError:
+                appLog.error("original file not found when deleting workout")
 
         Notification.query.filter(
             Notification.event_object_id == old_workout.id,
@@ -889,6 +925,10 @@ class WorkoutSegment(BaseModel):
     ave_speed: Mapped[Optional[float]] = mapped_column(
         db.Numeric(6, 2), nullable=True
     )  # km/h
+    max_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
+    ave_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
+    max_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
+    ave_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
 
     workout: Mapped["Workout"] = relationship(
         "Workout", lazy="joined", single_parent=True
@@ -907,20 +947,34 @@ class WorkoutSegment(BaseModel):
         self.workout_id = workout_id
         self.workout_uuid = workout_uuid
 
-    def serialize(self) -> Dict:
+    def serialize(self, *, can_see_heart_rate: bool = False) -> Dict:
         return {
             "workout_id": encode_uuid(self.workout_uuid),
             "segment_id": self.segment_id,
-            "duration": str(self.duration) if self.duration else None,
+            "duration": None if self.duration is None else str(self.duration),
             "pauses": str(self.pauses) if self.pauses else None,
-            "moving": str(self.moving) if self.moving else None,
-            "distance": float(self.distance) if self.distance else None,
-            "min_alt": float(self.min_alt) if self.min_alt else None,
-            "max_alt": float(self.max_alt) if self.max_alt else None,
-            "descent": float(self.descent) if self.descent else None,
-            "ascent": float(self.ascent) if self.ascent else None,
-            "max_speed": float(self.max_speed) if self.max_speed else None,
-            "ave_speed": float(self.ave_speed) if self.ave_speed else None,
+            "moving": None if self.moving is None else str(self.moving),
+            "distance": None
+            if self.distance is None
+            else float(self.distance),
+            "min_alt": (
+                float(self.min_alt) if self.min_alt is not None else None
+            ),
+            "max_alt": (
+                float(self.max_alt) if self.max_alt is not None else None
+            ),
+            "descent": None if self.descent is None else float(self.descent),
+            "ascent": None if self.ascent is None else float(self.ascent),
+            "max_speed": (
+                None if self.max_speed is None else float(self.max_speed)
+            ),
+            "ave_speed": (
+                None if self.ave_speed is None else float(self.ave_speed)
+            ),
+            "ave_cadence": self.ave_cadence,
+            "max_cadence": self.max_cadence,
+            "ave_hr": self.ave_hr if can_see_heart_rate else None,
+            "max_hr": self.max_hr if can_see_heart_rate else None,
         }
 
 

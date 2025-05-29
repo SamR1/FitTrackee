@@ -27,8 +27,12 @@ class TestConfigModel:
         assert serialized_app_config["admin_contact"] == config.admin_contact
         assert serialized_app_config["federation_enabled"] is False
         assert (
-            serialized_app_config["gpx_limit_import"]
-            == config.gpx_limit_import
+            serialized_app_config["file_limit_import"]
+            == config.file_limit_import
+        )
+        assert (
+            serialized_app_config["file_sync_limit_import"]
+            == config.file_sync_limit_import
         )
         assert serialized_app_config["is_email_sending_enabled"] is True
         assert serialized_app_config["is_registration_enabled"] is True

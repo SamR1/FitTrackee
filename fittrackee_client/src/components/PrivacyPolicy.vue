@@ -4,7 +4,7 @@
       {{ capitalize($t('privacy_policy.TITLE')) }}
     </h1>
     <p class="last-update">
-      {{ $t('privacy_policy.LAST_UPDATE') }}:
+      {{ $t('common.LAST_UPDATE') }}:
       <time>{{ privatePolicyDate }}</time>
     </p>
     <template v-if="appConfig.privacy_policy">
@@ -55,7 +55,7 @@
       appConfig.value.privacy_policy_date,
       timezone.value,
       dateFormat.value,
-      false
+      { withTime: false }
     )
   }
 </script>

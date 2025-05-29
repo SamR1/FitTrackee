@@ -7,6 +7,7 @@
     "private": "Private (only mentioned users)",
     "public": "Public (everyone)"
   },
+  "HR_VISIBILITY": "Heart rate visibility",
   "LEVELS": {
     "followers_and_remote_only": "Local and remote followers only",
     "followers_only": "Followers only",

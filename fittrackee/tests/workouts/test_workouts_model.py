@@ -1,4 +1,6 @@
+import os
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Dict, List, Optional
 
 import pytest
@@ -7,6 +9,7 @@ from flask import Flask
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
 from fittrackee.federation.exceptions import FederationDisabledException
+from fittrackee.files import get_absolute_file_path
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import User
 from fittrackee.utils import encode_uuid
@@ -130,6 +133,8 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         assert serialized_workout == {
             "analysis_visibility": workout.analysis_visibility.value,
             "ascent": None,
+            "ave_cadence": None,
+            "ave_hr": None,
             "ave_speed": workout.ave_speed,
             "bounds": [],
             "creation_date": workout.creation_date,
@@ -137,13 +142,15 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "description": None,
             "distance": workout.distance,
             "duration": str(workout.duration),
-            "id": workout.short_id,
             "equipments": [],
+            "id": workout.short_id,
             "liked": False,
             "likes_count": 0,
             "map": None,
             "map_visibility": workout.map_visibility.value,
             "max_alt": None,
+            "max_cadence": None,
+            "max_hr": None,
             "max_speed": workout.max_speed,
             "min_alt": None,
             "modification_date": None,
@@ -154,6 +161,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [record.serialize() for record in workout.records],
             "segments": [],
+            "source": workout.source,
             "sport_id": workout.sport_id,
             "suspended": False,
             "suspended_at": None,
@@ -183,6 +191,8 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         assert serialized_workout == {
             "analysis_visibility": workout.analysis_visibility.value,
             "ascent": workout.ascent,
+            "ave_cadence": None,
+            "ave_hr": None,
             "ave_speed": workout.ave_speed,
             "bounds": [],
             "creation_date": workout.creation_date,
@@ -190,13 +200,15 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "description": None,
             "distance": workout.distance,
             "duration": str(workout.duration),
-            "id": workout.short_id,
             "equipments": [],
+            "id": workout.short_id,
             "liked": False,
             "likes_count": 0,
             "map": None,
             "map_visibility": workout.map_visibility.value,
             "max_alt": None,
+            "max_cadence": None,
+            "max_hr": None,
             "max_speed": workout.max_speed,
             "min_alt": None,
             "modification_date": workout.modification_date,
@@ -207,6 +219,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [record.serialize() for record in workout.records],
             "segments": [],
+            "source": workout.source,
             "sport_id": workout.sport_id,
             "suspended": False,
             "suspended_at": None,
@@ -229,12 +242,18 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_cycling_user_1_segment: Workout,
     ) -> None:
         workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
+        workout.ave_cadence = 55
+        workout.ave_hr = 90
+        workout.max_cadence = 62
+        workout.max_hr = 110
 
         serialized_workout = workout.serialize(user=user_1, light=False)
 
         assert serialized_workout == {
             "analysis_visibility": workout.analysis_visibility.value,
             "ascent": workout.ascent,
+            "ave_cadence": workout.ave_cadence,
+            "ave_hr": workout.ave_hr,
             "ave_speed": workout.ave_speed,
             "bounds": workout.bounds,
             "creation_date": workout.creation_date,
@@ -242,13 +261,15 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "description": None,
             "distance": workout.distance,
             "duration": str(workout.duration),
-            "id": workout.short_id,
             "equipments": [],
+            "id": workout.short_id,
             "liked": False,
             "likes_count": 0,
             "map": None,
             "map_visibility": workout.map_visibility.value,
             "max_alt": workout.max_alt,
+            "max_cadence": workout.max_cadence,
+            "max_hr": workout.max_hr,
             "max_speed": workout.max_speed,
             "min_alt": workout.min_alt,
             "modification_date": workout.modification_date,
@@ -258,7 +279,11 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "pauses": str(workout.pauses),
             "previous_workout": None,
             "records": [record.serialize() for record in workout.records],
-            "segments": [segment.serialize() for segment in workout.segments],
+            "segments": [
+                segment.serialize(can_see_heart_rate=True)
+                for segment in workout.segments
+            ],
+            "source": workout.source,
             "sport_id": workout.sport_id,
             "suspended": False,
             "suspended_at": None,
@@ -382,6 +407,8 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 workout_cycling_user_1.analysis_visibility.value
             ),
             "ascent": None,
+            "ave_cadence": None,
+            "ave_hr": None,
             "ave_speed": workout_cycling_user_1.ave_speed,
             "bounds": [],
             "creation_date": workout_cycling_user_1.creation_date,
@@ -389,13 +416,15 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "description": None,
             "distance": workout_cycling_user_1.distance,
             "duration": str(workout_cycling_user_1.duration),
-            "id": workout_cycling_user_1.short_id,
             "equipments": [],
+            "id": workout_cycling_user_1.short_id,
             "liked": False,
             "likes_count": 0,
             "map": None,
             "map_visibility": workout_cycling_user_1.map_visibility.value,
             "max_alt": None,
+            "max_cadence": None,
+            "max_hr": None,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
             "modification_date": workout_cycling_user_1.modification_date,
@@ -408,6 +437,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 record.serialize() for record in workout_cycling_user_1.records
             ],
             "segments": [],
+            "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": True,
             "suspended_at": workout_cycling_user_1.suspended_at,
@@ -440,19 +470,23 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 workout_cycling_user_1.analysis_visibility.value
             ),
             "ascent": None,
+            "ave_cadence": None,
+            "ave_hr": None,
             "ave_speed": workout_cycling_user_1.ave_speed,
             "bounds": [],
             "creation_date": None,
             "descent": None,
             "distance": workout_cycling_user_1.distance,
             "duration": str(workout_cycling_user_1.duration),
-            "id": workout_cycling_user_1.short_id,
             "equipments": [],
+            "id": workout_cycling_user_1.short_id,
             "liked": False,
             "likes_count": 0,
             "map": None,
             "map_visibility": workout_cycling_user_1.map_visibility.value,
             "max_alt": None,
+            "max_cadence": None,
+            "max_hr": None,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
             "modification_date": workout_cycling_user_1.modification_date,
@@ -463,6 +497,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": False,
             "suspended_at": None,
@@ -498,19 +533,23 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 workout_cycling_user_1.analysis_visibility.value
             ),
             "ascent": workout_cycling_user_1.ascent,
+            "ave_cadence": workout_cycling_user_1.ave_cadence,
+            "ave_hr": workout_cycling_user_1.ave_hr,
             "ave_speed": workout_cycling_user_1.ave_speed,
             "bounds": [],
             "creation_date": None,
             "descent": workout_cycling_user_1.descent,
             "distance": workout_cycling_user_1.distance,
             "duration": str(workout_cycling_user_1.duration),
-            "id": workout_cycling_user_1.short_id,
             "equipments": [],
+            "id": workout_cycling_user_1.short_id,
             "liked": False,
             "likes_count": 0,
             "map": None,
             "map_visibility": workout_cycling_user_1.map_visibility.value,
             "max_alt": workout_cycling_user_1.max_alt,
+            "max_cadence": workout_cycling_user_1.max_cadence,
+            "max_hr": workout_cycling_user_1.max_hr,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": workout_cycling_user_1.min_alt,
             "modification_date": None,
@@ -521,6 +560,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": False,
             "suspended_at": None,
@@ -558,19 +598,23 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 workout_cycling_user_1.analysis_visibility.value
             ),
             "ascent": None,
+            "ave_cadence": None,
+            "ave_hr": None,
             "ave_speed": workout_cycling_user_1.ave_speed,
             "bounds": [],
             "creation_date": None,
             "descent": None,
             "distance": workout_cycling_user_1.distance,
             "duration": str(workout_cycling_user_1.duration),
-            "id": workout_cycling_user_1.short_id,
             "equipments": [],
+            "id": workout_cycling_user_1.short_id,
             "liked": False,
             "likes_count": 0,
             "map": None,
             "map_visibility": workout_cycling_user_1.map_visibility.value,
             "max_alt": None,
+            "max_cadence": None,
+            "max_hr": None,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
             "modification_date": None,
@@ -581,6 +625,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": True,
             "suspended_at": workout_cycling_user_1.suspended_at,
@@ -598,20 +643,6 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "with_analysis": False,
             "with_gpx": False,
         }
-
-    def test_workout_segment_model(
-        self,
-        app: Flask,
-        sport_1_cycling: Sport,
-        user_1: User,
-        workout_cycling_user_1: Workout,
-        workout_cycling_user_1_segment: WorkoutSegment,
-    ) -> None:
-        assert (
-            f"<Segment '{workout_cycling_user_1_segment.segment_id}' "
-            f"for workout '{workout_cycling_user_1.short_id}'>"
-            == str(workout_cycling_user_1_segment)
-        )
 
     def test_it_returns_previous_workout(
         self,
@@ -713,6 +744,48 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             db.session.commit()
 
         equipment_bike_user_1.total_workouts = 1
+
+    def test_it_deletes_workout_without_file(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        db.session.delete(workout_cycling_user_1)
+
+        assert Workout.query.count() == 0
+
+    def test_it_deletes_workout_with_files(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        files_paths = {}
+        extensions = ["gpx", "kml", "png"]
+        for extension in extensions:
+            relative_path = os.path.join(
+                "workouts", str(user_1.id), f"file.{extension}"
+            )
+            file_path = get_absolute_file_path(relative_path)
+            files_paths[extension] = file_path
+            workout_file = Path(file_path)
+            workout_file.parent.mkdir(exist_ok=True, parents=True)
+            workout_file.write_text("some text")
+            if extension == "gpx":
+                workout_cycling_user_1.gpx = relative_path
+            elif extension == "kml":
+                workout_cycling_user_1.original_file = relative_path
+            else:
+                workout_cycling_user_1.map = relative_path
+
+        db.session.delete(workout_cycling_user_1)
+
+        assert Workout.query.count() == 0
+        for extension in extensions:
+            assert os.path.exists(files_paths[extension]) is False
 
     def test_it_updates_equipments_totals(
         self,
@@ -1129,6 +1202,65 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             serialized_workout["workout_visibility"] == VisibilityLevel.PUBLIC
         )
 
+    @pytest.mark.parametrize(
+        "input_hr_visibility",
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC],
+    )
+    def test_serializer_returns_hr_related_data(
+        self,
+        input_hr_visibility: VisibilityLevel,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        user_1.hr_visibility = input_hr_visibility
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.ave_hr = 90
+        workout_cycling_user_1.max_hr = 110
+        add_follower(user_1, user_2)
+        workout = self.update_workout_with_gpx_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert serialized_workout["ave_hr"] == workout_cycling_user_1.ave_hr
+        assert serialized_workout["max_hr"] == workout_cycling_user_1.max_hr
+        assert serialized_workout["segments"] == [
+            workout_cycling_user_1_segment.serialize(can_see_heart_rate=True)
+        ]
+
+    def test_serializer_does_not_return_hr_related_data(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        user_1.hr_visibility = VisibilityLevel.PRIVATE
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.ave_hr = 90
+        workout_cycling_user_1.max_hr = 110
+        add_follower(user_1, user_2)
+        workout = self.update_workout_with_gpx_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert serialized_workout["ave_hr"] is None
+        assert serialized_workout["max_hr"] is None
+        assert serialized_workout["segments"] == [
+            workout_cycling_user_1_segment.serialize(can_see_heart_rate=False)
+        ]
+
     def test_serializer_does_not_return_next_workout(
         self,
         app: Flask,
@@ -1349,19 +1481,23 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
                 workout_cycling_user_1.analysis_visibility.value
             ),
             "ascent": None,
+            "ave_cadence": workout_cycling_user_1.ave_cadence,
+            "ave_hr": workout_cycling_user_1.ave_hr,
             "ave_speed": workout_cycling_user_1.ave_speed,
             "bounds": [],
             "creation_date": None,
             "descent": None,
             "distance": workout_cycling_user_1.distance,
             "duration": str(workout_cycling_user_1.duration),
-            "id": workout_cycling_user_1.short_id,
             "equipments": [],
+            "id": workout_cycling_user_1.short_id,
             "liked": False,
             "likes_count": 0,
             "map": None,
             "map_visibility": workout_cycling_user_1.map_visibility.value,
             "max_alt": None,
+            "max_cadence": workout_cycling_user_1.max_cadence,
+            "max_hr": workout_cycling_user_1.max_hr,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
             "modification_date": None,
@@ -1372,6 +1508,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": False,
             "title": None,
@@ -1595,6 +1732,63 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             serialized_workout["workout_visibility"] == VisibilityLevel.PUBLIC
         )
 
+    def test_serializer_returns_hr_related_data(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        user_1.hr_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.ave_hr = 90
+        workout_cycling_user_1.max_hr = 110
+        workout = self.update_workout_with_gpx_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert serialized_workout["ave_hr"] == workout_cycling_user_1.ave_hr
+        assert serialized_workout["max_hr"] == workout_cycling_user_1.max_hr
+        assert serialized_workout["segments"] == [
+            workout_cycling_user_1_segment.serialize(can_see_heart_rate=True)
+        ]
+
+    @pytest.mark.parametrize(
+        "input_hr_visibility",
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
+    )
+    def test_serializer_does_not_return_hr_related_data(
+        self,
+        input_hr_visibility: VisibilityLevel,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        user_1.hr_visibility = input_hr_visibility
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.ave_hr = 90
+        workout_cycling_user_1.max_hr = 110
+        workout = self.update_workout_with_gpx_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert serialized_workout["ave_hr"] is None
+        assert serialized_workout["max_hr"] is None
+        assert serialized_workout["segments"] == [
+            workout_cycling_user_1_segment.serialize(can_see_heart_rate=False)
+        ]
+
     def test_serializer_does_not_return_next_workout(
         self,
         app: Flask,
@@ -1799,6 +1993,8 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             "analysis_visibility": (
                 workout_cycling_user_1.analysis_visibility.value
             ),
+            "ave_cadence": workout_cycling_user_1.ave_cadence,
+            "ave_hr": workout_cycling_user_1.ave_hr,
             "ascent": None,
             "ave_speed": workout_cycling_user_1.ave_speed,
             "bounds": [],
@@ -1806,13 +2002,15 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             "descent": None,
             "distance": workout_cycling_user_1.distance,
             "duration": str(workout_cycling_user_1.duration),
-            "id": workout_cycling_user_1.short_id,
             "equipments": [],
+            "id": workout_cycling_user_1.short_id,
             "liked": False,
             "likes_count": 0,
             "map": None,
             "map_visibility": workout_cycling_user_1.map_visibility.value,
             "max_alt": None,
+            "max_cadence": workout_cycling_user_1.max_cadence,
+            "max_hr": workout_cycling_user_1.max_hr,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
             "modification_date": None,
@@ -1823,6 +2021,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": False,
             "title": None,
@@ -2045,6 +2244,61 @@ class TestWorkoutModelAsUnauthenticatedUser(
             serialized_workout["workout_visibility"] == VisibilityLevel.PUBLIC
         )
 
+    def test_serializer_returns_hr_related_data(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        user_1.hr_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.ave_hr = 90
+        workout_cycling_user_1.max_hr = 110
+        workout = self.update_workout_with_gpx_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(light=False)
+
+        assert serialized_workout["ave_hr"] == workout_cycling_user_1.ave_hr
+        assert serialized_workout["max_hr"] == workout_cycling_user_1.max_hr
+        assert serialized_workout["segments"] == [
+            workout_cycling_user_1_segment.serialize(can_see_heart_rate=True)
+        ]
+
+    @pytest.mark.parametrize(
+        "input_hr_visibility",
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
+    )
+    def test_serializer_does_not_return_hr_related_data(
+        self,
+        input_hr_visibility: VisibilityLevel,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        user_1.hr_visibility = input_hr_visibility
+        workout_cycling_user_1.ave_hr = 90
+        workout_cycling_user_1.max_hr = 110
+        workout = self.update_workout_with_gpx_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(light=False)
+
+        assert serialized_workout["ave_hr"] is None
+        assert serialized_workout["max_hr"] is None
+        assert serialized_workout["segments"] == [
+            workout_cycling_user_1_segment.serialize(can_see_heart_rate=False)
+        ]
+
     def test_serializer_does_not_return_next_workout(
         self,
         app: Flask,
@@ -2196,19 +2450,23 @@ class TestWorkoutModelAsUnauthenticatedUser(
                 workout_cycling_user_1.analysis_visibility.value
             ),
             "ascent": None,
+            "ave_cadence": None,
+            "ave_hr": None,
             "ave_speed": workout_cycling_user_1.ave_speed,
             "bounds": [],
             "creation_date": None,
             "descent": None,
             "distance": workout_cycling_user_1.distance,
             "duration": str(workout_cycling_user_1.duration),
-            "id": workout_cycling_user_1.short_id,
             "equipments": [],
+            "id": workout_cycling_user_1.short_id,
             "liked": False,
             "likes_count": 0,
             "map": None,
             "map_visibility": workout_cycling_user_1.map_visibility.value,
             "max_alt": None,
+            "max_cadence": None,
+            "max_hr": None,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
             "modification_date": None,
@@ -2219,6 +2477,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": False,
             "title": None,
@@ -2287,6 +2546,8 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
                 workout_cycling_user_2.analysis_visibility.value
             ),
             "ascent": None,
+            "ave_cadence": None,
+            "ave_hr": None,
             "ave_speed": workout_cycling_user_2.ave_speed,
             "bounds": [],
             "creation_date": workout_cycling_user_2.creation_date,
@@ -2294,13 +2555,15 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "description": None,
             "distance": workout_cycling_user_2.distance,
             "duration": str(workout_cycling_user_2.duration),
-            "id": workout_cycling_user_2.short_id,
             "equipments": [],
+            "id": workout_cycling_user_2.short_id,
             "liked": False,
             "likes_count": 0,
             "map": None,
             "map_visibility": workout_cycling_user_2.map_visibility.value,
             "max_alt": None,
+            "max_cadence": None,
+            "max_hr": None,
             "max_speed": workout_cycling_user_2.max_speed,
             "min_alt": None,
             "modification_date": workout_cycling_user_2.modification_date,
@@ -2311,6 +2574,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "source": workout_cycling_user_2.source,
             "sport_id": workout_cycling_user_2.sport_id,
             "suspended": False,
             "suspended_at": None,
@@ -2360,6 +2624,8 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
                 workout_cycling_user_2.analysis_visibility.value
             ),
             "ascent": workout_cycling_user_2.ascent,
+            "ave_cadence": None,
+            "ave_hr": None,
             "ave_speed": workout_cycling_user_2.ave_speed,
             "bounds": workout_cycling_user_2.bounds,
             "creation_date": workout_cycling_user_2.creation_date,
@@ -2367,13 +2633,15 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "description": None,
             "distance": workout_cycling_user_2.distance,
             "duration": str(workout_cycling_user_2.duration),
-            "id": workout_cycling_user_2.short_id,
             "equipments": [],
+            "id": workout_cycling_user_2.short_id,
             "liked": False,
             "likes_count": 0,
             "map": map_id,
             "map_visibility": workout_cycling_user_2.map_visibility.value,
             "max_alt": workout_cycling_user_2.max_alt,
+            "max_cadence": None,
+            "max_hr": None,
             "max_speed": workout_cycling_user_2.max_speed,
             "min_alt": workout_cycling_user_2.min_alt,
             "modification_date": workout_cycling_user_2.modification_date,
@@ -2384,6 +2652,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "source": workout_cycling_user_2.source,
             "sport_id": workout_cycling_user_2.sport_id,
             "suspended": False,
             "suspended_at": None,
@@ -2479,19 +2748,23 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
                 workout_cycling_user_2.analysis_visibility.value
             ),
             "ascent": None,
+            "ave_cadence": None,
+            "ave_hr": None,
             "ave_speed": workout_cycling_user_2.ave_speed,
             "bounds": [],
             "creation_date": None,
             "descent": None,
             "distance": workout_cycling_user_2.distance,
             "duration": str(workout_cycling_user_2.duration),
-            "id": workout_cycling_user_2.short_id,
             "equipments": [],
+            "id": workout_cycling_user_2.short_id,
             "liked": False,
             "likes_count": 0,
             "map": None,
             "map_visibility": workout_cycling_user_2.map_visibility.value,
             "max_alt": None,
+            "max_cadence": None,
+            "max_hr": None,
             "max_speed": workout_cycling_user_2.max_speed,
             "min_alt": None,
             "modification_date": None,
@@ -2502,6 +2775,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "source": workout_cycling_user_2.source,
             "sport_id": workout_cycling_user_2.sport_id,
             "suspended": False,
             "suspended_at": None,
@@ -2551,6 +2825,8 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
                 workout_cycling_user_2.analysis_visibility.value
             ),
             "ascent": None,
+            "ave_cadence": None,
+            "ave_hr": None,
             "ave_speed": workout_cycling_user_2.ave_speed,
             "bounds": [],
             "creation_date": workout_cycling_user_2.creation_date,
@@ -2558,13 +2834,15 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "description": None,
             "distance": workout_cycling_user_2.distance,
             "duration": str(workout_cycling_user_2.duration),
-            "id": workout_cycling_user_2.short_id,
             "equipments": [],
+            "id": workout_cycling_user_2.short_id,
             "liked": False,
             "likes_count": 0,
             "map": None,
             "map_visibility": workout_cycling_user_2.map_visibility.value,
             "max_alt": None,
+            "max_cadence": None,
+            "max_hr": None,
             "max_speed": workout_cycling_user_2.max_speed,
             "min_alt": None,
             "modification_date": workout_cycling_user_2.modification_date,
@@ -2575,6 +2853,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "source": workout_cycling_user_2.source,
             "sport_id": workout_cycling_user_2.sport_id,
             "suspended": False,
             "suspended_at": None,
@@ -2614,6 +2893,8 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "analysis_visibility": (
                 workout_cycling_user_2.analysis_visibility.value
             ),
+            "ave_cadence": None,
+            "ave_hr": None,
             "ascent": workout_cycling_user_2.ascent,
             "ave_speed": workout_cycling_user_2.ave_speed,
             "bounds": workout_cycling_user_2.bounds,
@@ -2622,13 +2903,15 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "description": None,
             "distance": workout_cycling_user_2.distance,
             "duration": str(workout_cycling_user_2.duration),
-            "id": workout_cycling_user_2.short_id,
             "equipments": [],
+            "id": workout_cycling_user_2.short_id,
             "liked": False,
             "likes_count": 0,
             "map": map_id,
             "map_visibility": workout_cycling_user_2.map_visibility.value,
             "max_alt": workout_cycling_user_2.max_alt,
+            "max_cadence": None,
+            "max_hr": None,
             "max_speed": workout_cycling_user_2.max_speed,
             "min_alt": workout_cycling_user_2.min_alt,
             "modification_date": workout_cycling_user_2.modification_date,
@@ -2639,6 +2922,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "source": workout_cycling_user_2.source,
             "sport_id": workout_cycling_user_2.sport_id,
             "suspended": False,
             "suspended_at": None,
@@ -2652,6 +2936,92 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             ),
             "with_analysis": True,
             "with_gpx": True,
+        }
+
+
+class TestWorkoutSegmentModel:
+    def test_workout_segment_model(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        assert (
+            f"<Segment '{workout_cycling_user_1_segment.segment_id}' "
+            f"for workout '{workout_cycling_user_1.short_id}'>"
+            == str(workout_cycling_user_1_segment)
+        )
+
+    def test_it_returns_serialized_segment_without_heart_rate(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1_segment.ave_cadence = 53
+        workout_cycling_user_1_segment.max_cadence = 60
+        workout_cycling_user_1_segment.ave_hr = 90
+        workout_cycling_user_1_segment.max_hr = 110
+
+        serialized_segment = workout_cycling_user_1_segment.serialize()
+
+        assert serialized_segment == {
+            "ascent": workout_cycling_user_1_segment.ascent,
+            "ave_cadence": workout_cycling_user_1_segment.ave_cadence,
+            "ave_hr": None,
+            "ave_speed": workout_cycling_user_1_segment.ave_speed,
+            "descent": workout_cycling_user_1_segment.descent,
+            "distance": workout_cycling_user_1_segment.distance,
+            "duration": str(workout_cycling_user_1_segment.duration),
+            "max_alt": workout_cycling_user_1_segment.max_alt,
+            "max_cadence": workout_cycling_user_1_segment.max_cadence,
+            "max_hr": None,
+            "max_speed": workout_cycling_user_1_segment.max_speed,
+            "min_alt": workout_cycling_user_1_segment.min_alt,
+            "moving": str(workout_cycling_user_1_segment.moving),
+            "pauses": workout_cycling_user_1_segment.pauses,
+            "segment_id": 0,
+            "workout_id": workout_cycling_user_1_segment.workout.short_id,
+        }
+
+    def test_it_returns_serialized_segment_with_heart_rate(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1_segment.ave_cadence = 53
+        workout_cycling_user_1_segment.max_cadence = 60
+        workout_cycling_user_1_segment.ave_hr = 90
+        workout_cycling_user_1_segment.max_hr = 110
+
+        serialized_segment = workout_cycling_user_1_segment.serialize(
+            can_see_heart_rate=True
+        )
+
+        assert serialized_segment == {
+            "ascent": workout_cycling_user_1_segment.ascent,
+            "ave_cadence": workout_cycling_user_1_segment.ave_cadence,
+            "ave_hr": workout_cycling_user_1_segment.ave_hr,
+            "ave_speed": workout_cycling_user_1_segment.ave_speed,
+            "descent": workout_cycling_user_1_segment.descent,
+            "distance": workout_cycling_user_1_segment.distance,
+            "duration": str(workout_cycling_user_1_segment.duration),
+            "max_alt": workout_cycling_user_1_segment.max_alt,
+            "max_cadence": workout_cycling_user_1_segment.max_cadence,
+            "max_hr": workout_cycling_user_1_segment.max_hr,
+            "max_speed": workout_cycling_user_1_segment.max_speed,
+            "min_alt": workout_cycling_user_1_segment.min_alt,
+            "moving": str(workout_cycling_user_1_segment.moving),
+            "pauses": workout_cycling_user_1_segment.pauses,
+            "segment_id": 0,
+            "workout_id": workout_cycling_user_1_segment.workout.short_id,
         }
 
 

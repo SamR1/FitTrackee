@@ -13,20 +13,20 @@
           <WorkoutDetail
             v-else
             :workoutData="workoutData"
-            :sports="sports"
+            :sport="sport"
             :authUser="authUser"
             :markerCoordinates="markerCoordinates"
             :displaySegment="displaySegment"
             :isWorkoutOwner="isWorkoutOwner"
+            :cadenceUnit="cadenceUnit"
           />
           <WorkoutChart
-            v-if="
-              workoutData.workout.with_analysis &&
-              workoutData.chartData.length > 0
-            "
+            v-if="workoutData.workout.with_analysis"
             :workoutData="workoutData"
             :authUser="authUser"
             :displaySegment="displaySegment"
+            :sport="sport"
+            :cadenceUnit="cadenceUnit"
             @getCoordinates="updateCoordinates"
           />
           <WorkoutContent
@@ -83,9 +83,11 @@
   import useSports from '@/composables/useSports'
   import { SPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { TCoordinates } from '@/types/map'
+  import type { ISport } from '@/types/sports.ts'
   import type { IWorkoutData, IWorkoutPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getUserName } from '@/utils/user'
+  import { getCadenceUnit } from '@/utils/workouts.ts'
 
   interface Props {
     displaySegment: boolean
@@ -97,7 +99,7 @@
   const store = useStore()
 
   const { authUser } = useAuthUser()
-  const { sports } = useSports()
+  const { getWorkoutSport, sports } = useSports()
 
   const markerCoordinates: Ref<TCoordinates> = ref({
     latitude: null,
@@ -111,6 +113,12 @@
     () =>
       getUserName(authUser.value) ===
       getUserName(workoutData.value.workout.user)
+  )
+  const sport: ComputedRef<ISport | null> = computed(() =>
+    getWorkoutSport(workoutData.value.workout)
+  )
+  const cadenceUnit: ComputedRef<string> = computed(() =>
+    getCadenceUnit(sport.value?.label)
   )
 
   function updateCoordinates(coordinates: TCoordinates) {

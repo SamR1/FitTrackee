@@ -13,7 +13,12 @@
         />
         <router-link
           :to="`/users/${notification.from.username}`"
-          v-if="notification.from"
+          v-if="
+            notification.from &&
+            !['user_data_export', 'workouts_archive_upload'].includes(
+              notification.type
+            )
+          "
         >
           {{ notification.from.username }}
         </router-link>
@@ -144,6 +149,29 @@
           {{ $t('user.APPEAL') }}
         </router-link>
       </div>
+      <div v-if="notification.type === 'user_data_export'">
+        <button @click="$router.push('/profile/edit/account')">
+          {{ $t('user.EXPORT_REQUEST.DOWNLOAD_ARCHIVE') }}
+        </button>
+      </div>
+      <div
+        v-if="notification.type === 'workouts_archive_upload'"
+        class="description-list archive-file-name"
+      >
+        <dl v-if="notification.task?.original_file_name">
+          <dt>{{ $t('user.PROFILE.ARCHIVE_UPLOADS.ARCHIVE') }}:</dt>
+          <dd>{{ notification.task?.original_file_name }}</dd>
+        </dl>
+        <button
+          @click="
+            $router.push(
+              `/profile/archive-uploads/${notification.task?.id}?fromNotifications=true`
+            )
+          "
+        >
+          {{ $t('buttons.SEE_DETAIL') }}
+        </button>
+      </div>
     </template>
   </Card>
 </template>
@@ -256,12 +284,16 @@
         return 'notifications.MENTIONED_YOU'
       case 'suspension_appeal':
         return 'notifications.APPEALED_SUSPENSION'
+      case 'user_data_export':
+        return 'notifications.YOUR_DATA_EXPORT_IS_READY'
       case 'user_warning':
         return 'notifications.YOU_RECEIVED_A_WARNING'
       case 'user_warning_appeal':
         return 'notifications.APPEALED_USER_WARNING'
       case 'user_warning_lifting':
         return 'notifications.YOUR_WARNING_HAS_BEEN_LIFTED'
+      case 'workouts_archive_upload':
+        return 'notifications.YOUR_ARCHIVE_HAS_BEEN_PROCESSED'
       case 'workout_comment':
         return 'notifications.COMMENTED_YOUR_WORKOUT'
       case 'workout_like':
@@ -432,6 +464,10 @@
 
     .appeal-in-progress {
       margin-top: $default-margin * 0.5;
+    }
+
+    .archive-file-name dl {
+      margin: 0 0 $default-padding * 0.5;
     }
   }
 </style>

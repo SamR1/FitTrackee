@@ -1,0 +1,16 @@
+{
+  "CONTENT": {
+    "ACCOUNT_DELETION": {
+      "CONTENT": "Pots sol·licitar la eliminació del teu compte en qualsevol moment venint a aquesta adreça (després d'iniciar sessió) i clicant al botó \"Elimina el meu compte\" en la pàgina d'editar el teu compte.",
+      "TITLE": "Eliminació del compte"
+    },
+    "CHANGES_TO_OUR_PRIVACY_POLICY": {
+      "CONTENT": "Si decidim canviar la política de privacitat, penjarem els canvis a aquesta pàgina.\nEl document té la llicència [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Originalment adaptada de la política de privacitat de [Discourse](https://github.com/discourse/discourse).",
+      "TITLE": "Canvia a la nostra Política de Privacitat"
+    },
+    "DATA_COLLECTED": {
+      "CONTENT": "Es recol·lecta la següent informació:\n- Informació sobre el compte (nom d'usuari, correu electrònic i contrasenya). També pots introduir informació addicional tal com nom, cognoms, data de naixement, ubicació, biografia, i carregar una imatge de perfil.\n- Fitxers [GPX](https://en.wikipedia.org/wiki/GPS_Exchange_Format). Aquests contenen informació relacionada a la teva activitat (coordenades geogràfiques, data, distància, duració, velocitats màxima i mínima, elevació, títol, descripció, ritme cardíac...). Si no vols exposar alguna dada, elimina-la abans de carregar els arxius, o crea entrenaments sense fitxers GPX.\n- Dades d'entrenaments (esport, títol, descripció, data, duració, distància, ascens, descens, notes).\n- Seguidors i seguits.\n- Comentaris i m'agrada.\n- Informació tècnica (nom del navegador i sistema operatiu).",
+      "TITLE": "Quina informació recol·lectem?"
+    }
+  }
+}

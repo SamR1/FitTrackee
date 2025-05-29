@@ -2,6 +2,7 @@ import type { Locale } from 'date-fns'
 import {
   bg,
   // bn,
+  ca,
   cs,
   de,
   enUS,
@@ -27,6 +28,7 @@ export const isLanguageSupported = (
   return [
     'bg',
     // 'bn',
+    'ca',
     'cs',
     'de',
     'en',
@@ -48,6 +50,7 @@ export const isLanguageSupported = (
 export const localeFromLanguage: Record<TLanguage, Locale> = {
   bg: bg,
   // bn: bn,
+  ca: ca,
   cs: cs,
   de: de,
   en: enUS,
@@ -66,23 +69,24 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
 }
 
 export const languageLabels: Record<TLanguage, string> = {
-  bg: 'български (62%)',
-  // bn: 'বাংলা',
-  cs: 'Česky (46%)',
-  de: 'Deutsch (98%)',
+  bg: 'български (57%)', // Bulgarian
+  // bn: 'বাংলা',  // Bengali
+  ca: 'Català (25%)', // Catalan
+  cs: 'Česky (42%)', // Czech
+  de: 'Deutsch (91%)', // German
   en: 'English',
-  es: 'Español (64%)',
-  eu: 'Euskara',
-  fr: 'Français',
-  gl: 'Galego',
-  hr: 'Hrvatski',
-  it: 'Italiano (51%)',
-  nl: 'Nederlands',
-  nb: 'Norsk bokmål (33%)',
-  pl: 'Polski (99%)',
-  pt: 'Português (61%)',
-  ru: 'Русский (69%)',
-  zh_Hans: '中文（简体）(99%)',
+  es: 'Español (59%)', // Spanish
+  eu: 'Euskara (92%)', // Basque
+  fr: 'Français', // French
+  gl: 'Galego (92%)', // Galician
+  hr: 'Hrvatski (91%)', // Croatian
+  it: 'Italiano (47%)', // Italian
+  nl: 'Nederlands (92%)', // Dutch
+  nb: 'Norsk bokmål (30%)', // Norwegian Bokmål
+  pl: 'Polski (92%)', // Polish
+  pt: 'Português (56%)', // Portuguese
+  ru: 'Русский (91%)', // Russian
+  zh_Hans: '中文（简体）(92%)', // Chinese (Simplified Han script)
 }
 
 export const availableLanguages = Object.keys(languageLabels).map((l) => {

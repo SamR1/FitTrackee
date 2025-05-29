@@ -5,11 +5,13 @@ import type {
   IAuthUserState,
   TAuthUserMutations,
 } from '@/store/modules/authUser/types'
+import type { IPagination } from '@/types/api.ts'
 import type {
   IUserReportAction,
   IAuthUserProfile,
   IExportRequest,
   IUserProfile,
+  IArchiveUploadTask,
 } from '@/types/user'
 
 export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
@@ -82,5 +84,29 @@ export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
     timezones: string[]
   ) {
     state.timezones = timezones
+  },
+  [AUTH_USER_STORE.MUTATIONS.SET_ARCHIVE_UPLOAD_TASK](
+    state: IAuthUserState,
+    task: IArchiveUploadTask
+  ) {
+    state.archiveUploadTasks.task = task
+  },
+  [AUTH_USER_STORE.MUTATIONS.SET_ARCHIVE_UPLOAD_TASKS](
+    state: IAuthUserState,
+    tasks: IArchiveUploadTask[]
+  ) {
+    state.archiveUploadTasks.tasks = tasks
+  },
+  [AUTH_USER_STORE.MUTATIONS.SET_ARCHIVE_UPLOAD_TASKS_LOADING](
+    state: IAuthUserState,
+    loading: boolean
+  ) {
+    state.archiveUploadTasks.loading = loading
+  },
+  [AUTH_USER_STORE.MUTATIONS.SET_ARCHIVE_UPLOAD_TASKS_PAGINATION](
+    state: IAuthUserState,
+    pagination: IPagination
+  ) {
+    state.archiveUploadTasks.pagination = pagination
   },
 }

@@ -102,6 +102,10 @@
           )
         }}
       </dd>
+      <dt>{{ $t('visibility_levels.HR_VISIBILITY') }}:</dt>
+      <dd>
+        {{ $t(`visibility_levels.LEVELS.${user.hr_visibility}`) }}
+      </dd>
     </dl>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">

@@ -102,6 +102,7 @@
 
   .workout-visibility-levels {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     font-size: 0.9em;
     font-style: italic;

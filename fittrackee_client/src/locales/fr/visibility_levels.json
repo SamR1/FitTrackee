@@ -7,6 +7,7 @@
     "private": "Privé (seulement les utilisateurs mentionnés)",
     "public": "Public (tout le monde)"
   },
+  "HR_VISIBILITY": "Visibilité de la fréquence cardiaque",
   "LEVELS": {
     "followers_and_remote_only": "Abonnées locaux et distants uniquement",
     "followers_only": "Abonnées uniquement",

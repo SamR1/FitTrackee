@@ -22,10 +22,7 @@
     "DOWNLOAD_ARCHIVE": "Télécharger l'archive",
     "GENERATING_LINK": "lien en cours de génération…",
     "ONLY_ONE_EXPORT_PER_DAY": "Vous pouvez demander un export par 24h",
-    "STATUS": {
-      "errored": "en erreur (veuillez demander une nouvelle archive)",
-      "in_progress": "en cours…"
-    }
+    "REQUEST_ANOTHER_EXPORT": "veuillez demander une nouvelle archive"
   },
   "FILTER_ON_USERNAME": "Filtrer sur le nom d'utilisateur",
   "HIDE_PASSWORD": "masquer le mot de passe",
@@ -74,6 +71,16 @@
   "PRIVACY_POLICY_TO_VALIDATE": "Veuillez {0} la politique de confidentialité avant de poursuivre.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Mise à jour du compte",
+    "ARCHIVE_UPLOADS": {
+      "ARCHIVE": "Archive zip",
+      "CREATED_WORKOUTS": "Séances créées",
+      "CONFIRM_TASK_ABORT": "Êtes-vous sûr de vouloir interrompre cette tâche de chargement d'archive ?",
+      "CONFIRM_TASK_DELETION": "Êtes-vous sûr de vouloir supprimer cette tâche de chargement d'archive ?",
+      "ERRORED_FILES": "Fichier en erreur | Fichiers en erreur",
+      "FILES_COUNT": "{count} fichiers",
+      "NOT_FOUND": "Pas de chargement d'archive trouvé.",
+      "PROGRESS": "Progression"
+    },
     "ASCENT_DATA": "Données relatives au dénivelé positif (records, total)",
     "BACK_TO_PROFILE": "Revenir au profil",
     "BIO": "Bio",
@@ -127,6 +134,7 @@
     },
     "NOTIFICATIONS_EDITION": "Edition des préférences de notification",
     "NOTIFICATION_PREFERENCES": "Préférences de notification",
+    "NO_ARCHIVE_UPLOADS": "Pas de chargement d'archives",
     "NO_SANCTIONS": "Pas de sanctions",
     "PICTURE": "Image de profil",
     "PICTURE_EDITION": "Mise à jour de l'image de profil",
@@ -174,6 +182,7 @@
     "TABS": {
       "ACCOUNT": "compte",
       "APPS": "apps",
+      "ARCHIVE-UPLOADS": "chargement des archives",
       "BLOCKED-USERS": "utilisateurs bloqués",
       "EQUIPMENTS": "équipements",
       "FOLLOW-REQUESTS": "demandes d'abonnement",
@@ -234,6 +243,16 @@
   "SUSPENDED": "Suspendu",
   "SUSPENDED_ACCOUNT": "Compte suspendu",
   "SUSPENSION_REASON": "Raison de la suspension",
+  "TASKS": {
+    "STATUS": {
+      "LABEL": "État",
+      "aborted": "annulé",
+      "errored": "en erreur",
+      "in_progress": "en cours",
+      "queued": "en attente",
+      "successful": "terminé avec succès"
+    }
+  },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Le compte de cet utilisateur est inactif.",
   "TOGGLE_THEME": "Modifier le thème (Mode Clair ou Sombre)",
   "USER": "utilisateur | utilisateurs",

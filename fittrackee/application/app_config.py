@@ -47,7 +47,8 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "about": null,
           "admin_contact": "admin@example.com",
           "federation_enabled": false,
-          "gpx_limit_import": 10,
+          "file_sync_limit_import": 10,
+          "file_limit_import": 10,
           "is_email_sending_enabled": true,
           "is_registration_enabled": false,
           "max_single_file_size": 1048576,
@@ -57,7 +58,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "privacy_policy": null,
           "privacy_policy_date": null,
           "stats_workouts_limit": 10000,
-          "version": "0.9.11",
+          "version": "0.10.0",
           "weather_provider": null
         },
         "status": "success"
@@ -105,7 +106,8 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
           "about": null,
           "admin_contact": "admin@example.com",
           "federation_enabled": true,
-          "gpx_limit_import": 10,
+          "file_sync_limit_import": 10,
+          "file_limit_import": 10,
           "is_email_sending_enabled": true,
           "is_registration_enabled": false,
           "max_single_file_size": 1048576,
@@ -115,7 +117,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
           "privacy_policy": null,
           "privacy_policy_date": null,
           "stats_workouts_limit": 10000,
-          "version": "0.9.11",
+          "version": "0.10.0",
           "weather_provider": null
         },
         "status": "success"
@@ -123,7 +125,10 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
 
     :<json string about: instance information
     :<json string admin_contact: email to contact the administrator
-    :<json integer gpx_limit_import: max number of files in zip archive
+    :<json integer file_sync_limit_import: max number of files in zip archive,
+                   processed synchronously (it must not exceed
+                   ``file_limit_import``)
+    :<json integer file_limit_import: max number of files in zip archive
     :<json boolean is_registration_enabled: is registration enabled?
     :<json integer max_single_file_size: max size of a single file
     :<json integer max_users: max users allowed to register on instance
@@ -141,10 +146,13 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         - ``max size of zip archive must be equal or greater than max size of uploaded files``
         - ``max size of uploaded files must be greater than 0``
         - ``max files in a zip archive must be greater than 0``
+        - ``max files in a zip archive processed synchronously must be greater than 0``
+        - ``max files in a zip archive must be equal or greater than max files in a zip archive processed synchronously``
         - ``max users must be greater than or equal to 0``
         - ``max number of workouts for statistics must be greater than or equal to 0``
         - ``valid email must be provided for admin contact``
-        - ``'gpx_limit_import' must be less than 2147483647``
+        - ``'file_sync_limit_import' must be less than 2147483647``
+        - ``'file_limit_import' must be less than 2147483647``
         - ``'max_single_file_size' must be less than 2147483647``
         - ``'max_zip_file_size' must be less than 2147483647``
         - ``'max_users' must be less than 2147483647``
@@ -174,7 +182,8 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         config = AppConfig.query.one()
 
         for param in [
-            "gpx_limit_import",
+            "file_sync_limit_import",
+            "file_limit_import",
             "max_single_file_size",
             "max_zip_file_size",
             "max_users",
@@ -206,6 +215,11 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
             return InvalidPayloadErrorResponse(
                 "max size of zip archive must be equal or greater than "
                 "max size of uploaded files"
+            )
+        if config.file_limit_import < config.file_sync_limit_import:
+            return InvalidPayloadErrorResponse(
+                "max files in a zip archive must be equal or greater than "
+                "max files in a zip archive processed synchronously"
             )
         db.session.commit()
         update_app_config_from_database(current_app, config)

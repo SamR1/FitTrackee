@@ -14,7 +14,20 @@ class SportNotFoundException(Exception):
     pass
 
 
+class WorkoutExceedingValueException(GenericException):
+    def __init__(self, detail: str) -> None:
+        super().__init__(
+            "invalid",
+            "one or more values, entered or calculated, exceed the limits",
+        )
+        self.detail = detail
+
+
 class WorkoutException(GenericException):
+    pass
+
+
+class WorkoutFileException(GenericException):
     pass
 
 

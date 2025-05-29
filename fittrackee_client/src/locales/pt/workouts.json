@@ -10,14 +10,13 @@
   "DESCENT": "descida",
   "DISPLAY_FILTERS": "mostrar filtros",
   "DISTANCE": "distância",
-  "DOWNLOAD_WORKOUT": "Baixe o treino",
+  "DOWNLOAD_WORKOUT": "Baixe o treino (gpx)",
   "DURATION": "duração",
   "EDIT_WORKOUT": "Editar treino",
   "ELEVATION": "altitude",
   "END": "fim",
   "EXIT_FULLSCREEN": "Sair da tela inteira",
   "FROM": "desde",
-  "GPX_FILE": "arquivo .gpx",
   "HIDE_FILTERS": "ocultar filtros",
   "INVALID_ASCENT_OR_DESCENT": "Você deve fornecer os dois valores de altura e eles devem ser iguais ou maiores que 0.",
   "INVALID_DISTANCE": "A distância deve ser maior que 0",
@@ -105,13 +104,13 @@
       "WSW": "WSW"
     }
   },
-  "WITHOUT_GPX": "sem arquivo .gpx",
-  "WITH_GPX": "com arquivo .gpx",
+  "WITHOUT_FILE": "sem arquivo",
+  "WITH_FILE": "com arquivo",
   "WORKOUT": "treino | treinos",
   "WORKOUT_CHART": "gráfico de velocidade e elevação de treinamento",
   "WORKOUT_DATE": "data do treino",
   "WORKOUT_DELETION_CONFIRMATION": "Tem certeza de que deseja eliminar este treino?",
   "WORKOUT_MAP": "mapa de treino",
   "ZIP_ARCHIVE": "arquivo .zip",
-  "ZIP_ARCHIVE_DESCRIPTION": "ou arquivo .zip contendo arquivos .gpx"
+  "ZIP_ARCHIVE_DESCRIPTION": "ou arquivo .zip contendo arquivos"
 }
