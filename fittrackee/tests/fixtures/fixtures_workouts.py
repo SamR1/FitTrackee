@@ -2823,6 +2823,34 @@ def kml_2_2_with_extended_data() -> str:
                 <gx:value>50</gx:value>
                 <gx:value>50</gx:value>
               </gx:SimpleArrayData>
+              <gx:SimpleArrayData name="power">
+                <gx:value>0</gx:value>
+                <gx:value>0</gx:value>
+                <gx:value>101</gx:value>
+                <gx:value>90</gx:value>
+                <gx:value>120</gx:value>
+                <gx:value>130</gx:value>
+                <gx:value>100</gx:value>
+                <gx:value>90</gx:value>
+                <gx:value>102</gx:value>
+                <gx:value>100</gx:value>
+                <gx:value>90</gx:value>
+                <gx:value>91</gx:value>
+                <gx:value>99</gx:value>
+                <gx:value>101</gx:value>
+                <gx:value>101</gx:value>
+                <gx:value>102</gx:value>
+                <gx:value>99</gx:value>
+                <gx:value>90</gx:value>
+                <gx:value>90</gx:value>
+                <gx:value>99</gx:value>
+                <gx:value>90</gx:value>
+                <gx:value>99</gx:value>
+                <gx:value>103</gx:value>
+                <gx:value>111</gx:value>
+                <gx:value>100</gx:value>
+                <gx:value>90</gx:value>
+              </gx:SimpleArrayData>
             </SchemaData>
           </ExtendedData>        
         </gx:Track>
@@ -3384,7 +3412,7 @@ def tcx_with_invalid_elevation() -> str:
 
 
 @pytest.fixture()
-def tcx_with_heart_rate_and_cadence() -> str:
+def tcx_with_heart_rate_cadence_and_power() -> str:
     return """<?xml version="1.0" encoding="UTF-8"?>
 <TrainingCenterDatabase
   xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd"
@@ -3412,6 +3440,11 @@ def tcx_with_heart_rate_and_cadence() -> str:
                         <Value>92</Value>
                       </HeartRateBpm>
                       <Cadence>0</Cadence>
+                      <Extensions>
+                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <Watts>0</Watts>
+                        </TPX>
+                      </Extensions>
                     </Trackpoint>
                     <Trackpoint>
                       <Time>2018-03-13T12:44:50Z</Time>
@@ -3425,6 +3458,11 @@ def tcx_with_heart_rate_and_cadence() -> str:
                         <Value>87</Value>
                       </HeartRateBpm>
                       <Cadence>50</Cadence>
+                      <Extensions>
+                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <Watts>101</Watts>
+                        </TPX>
+                      </Extensions>
                     </Trackpoint>
                     <Trackpoint>
                       <Time>2018-03-13T12:45:00Z</Time>
@@ -3438,6 +3476,11 @@ def tcx_with_heart_rate_and_cadence() -> str:
                         <Value>88</Value>
                       </HeartRateBpm>
                       <Cadence>51</Cadence>
+                      <Extensions>
+                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <Watts>90</Watts>
+                        </TPX>
+                      </Extensions>
                     </Trackpoint>
                     <Trackpoint>
                       <Time>2018-03-13T12:45:05Z</Time>
@@ -3451,6 +3494,11 @@ def tcx_with_heart_rate_and_cadence() -> str:
                         <Value>90</Value>
                       </HeartRateBpm>
                       <Cadence>54</Cadence>
+                      <Extensions>
+                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <Watts>120</Watts>
+                        </TPX>
+                      </Extensions>
                     </Trackpoint>
                     <Trackpoint>
                       <Time>2018-03-13T12:45:10Z</Time>
@@ -3464,6 +3512,11 @@ def tcx_with_heart_rate_and_cadence() -> str:
                         <Value>87</Value>
                       </HeartRateBpm>
                       <Cadence>53</Cadence>
+                      <Extensions>
+                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <Watts>130</Watts>
+                        </TPX>
+                      </Extensions>
                     </Trackpoint>
                     <Trackpoint>
                       <Time>2018-03-13T12:45:30Z</Time>
@@ -3477,6 +3530,11 @@ def tcx_with_heart_rate_and_cadence() -> str:
                         <Value>85</Value>
                       </HeartRateBpm>
                       <Cadence>54</Cadence>
+                      <Extensions>
+                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <Watts>100</Watts>
+                        </TPX>
+                      </Extensions>
                     </Trackpoint>
                     <Trackpoint>
                       <Time>2018-03-13T12:45:55Z</Time>
@@ -3490,6 +3548,11 @@ def tcx_with_heart_rate_and_cadence() -> str:
                         <Value>86</Value>
                       </HeartRateBpm>
                       <Cadence>54</Cadence>
+                      <Extensions>
+                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <Watts>90</Watts>
+                        </TPX>
+                      </Extensions>
                     </Trackpoint>
                     <Trackpoint>
                       <Time>2018-03-13T12:46:00Z</Time>
@@ -3503,6 +3566,11 @@ def tcx_with_heart_rate_and_cadence() -> str:
                         <Value>84</Value>
                       </HeartRateBpm>
                       <Cadence>55</Cadence>
+                      <Extensions>
+                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <Watts>102</Watts>
+                        </TPX>
+                      </Extensions>
                     </Trackpoint>
                     <Trackpoint>
                       <Time>2018-03-13T12:46:15Z</Time>
@@ -3516,6 +3584,11 @@ def tcx_with_heart_rate_and_cadence() -> str:
                         <Value>86</Value>
                       </HeartRateBpm>
                       <Cadence>53</Cadence>
+                      <Extensions>
+                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <Watts>100</Watts>
+                        </TPX>
+                      </Extensions>
                     </Trackpoint>
                 </Track>
             </Lap>

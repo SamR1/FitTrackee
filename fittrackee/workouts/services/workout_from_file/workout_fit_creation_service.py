@@ -146,7 +146,7 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
 
                 if heart_rate is not None or cadence is not None:
                     point.extensions.append(
-                        cls._get_extensions(heart_rate, cadence)
+                        cls._get_extensions(heart_rate, cadence, None)
                     )
                 gpx_segment.points.append(point)
 
