@@ -296,6 +296,9 @@ deployment method.
 
     :default: .staticmap_cache
 
+    .. warning::
+        This is the library's default variable, to be modified to set another directory.
+
 
 .. envvar:: WEATHER_API_KEY
 
@@ -681,13 +684,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.9.11):
+-  Download the last release (for now, it is the release v0.10.0):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/0.9.11.tar.gz
-   $ tar -xzf v0.9.11.tar.gz
-   $ mv FitTrackee-0.9.11 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/0.10.0.tar.gz
+   $ tar -xzf v0.10.0.tar.gz
+   $ mv FitTrackee-0.10.0 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -819,13 +822,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.9.11) and overwrite existing files:
+- Download the last release (for now, it is the release v0.10.0) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.9.11.tar.gz
-   $ tar -xzf v0.9.11.tar.gz
-   $ cp -R FitTrackee-0.9.11/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.10.0.tar.gz
+   $ tar -xzf v0.10.0.tar.gz
+   $ cp -R FitTrackee-0.10.0/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -894,6 +897,7 @@ Examples:
     Environment="STATICMAP_SUBDOMAINS="
     Environment="MAP_ATTRIBUTION="
     Environment="WEATHER_API_KEY="
+    Environment="STATICMAP_CACHE_DIR="
     WorkingDirectory=/home/<USER>/<FITTRACKEE DIRECTORY>
     ExecStart=/home/<USER>/<FITTRACKEE DIRECTORY>/.venv/bin/gunicorn -b 127.0.0.1:5000 "fittrackee:create_app()" --error-logfile /home/<USER>/<FITTRACKEE DIRECTORY>/gunicorn.log
     Restart=always
@@ -936,6 +940,8 @@ Examples:
     Environment="EMAIL_URL="
     Environment="SENDER_EMAIL="
     Environment="REDIS_URL="
+    Environment="TASKS_TIME_LIMIT="
+    Environment="STATICMAP_CACHE_DIR="
     WorkingDirectory=/home/<USER>/<FITTRACKEE DIRECTORY>
     ExecStart=/home/<USER>/<FITTRACKEE DIRECTORY>/.venv/bin/dramatiq fittrackee.tasks:broker --processes=<NUMBER OF PROCESSES> --log-file=<DRAMATIQ_LOG_FILE_PATH>
     Restart=always

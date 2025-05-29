@@ -1,5 +1,66 @@
 # Change log
 
+## Version 0.10.0 (2025/05/29)
+
+In addition to a new language and translation updates, this version brings asynchronous archives upload, support for several file formats and heart rate and cadence display.
+
+2 environment variables are also added: `TASKS_TIME_LIMIT` and `STATICMAP_CACHE_DIR`  (see [documentation](https://docs.fittrackee.org/en/installation.html#environment-variables)).
+
+**Note**: This version also includes the changes from the beta versions.
+
+### Features and enhancements
+
+* [#87](https://github.com/SamR1/FitTrackee/issues/87) - Prevent gpx parse error with zip import
+* [#89](https://github.com/SamR1/FitTrackee/issues/89) - Asynchronous archives upload
+* [#122](https://github.com/SamR1/FitTrackee/issues/122) - Allow to upload Fit file
+* [#143](https://github.com/SamR1/FitTrackee/issues/143) - KML/KMZ support
+* [#194](https://github.com/SamR1/FitTrackee/issues/194) - Rewrite workout file processing [1st part]
+* [#529](https://github.com/SamR1/FitTrackee/issues/529) - Support import TCX file
+* [#642](https://github.com/SamR1/FitTrackee/issues/642) - Support Heartrate and cadence
+* [PR#801](https://github.com/SamR1/FitTrackee/pull/801) - Display file source in workout data
+
+### Bugs Fixed
+
+Fix on v0.10.0beta2:
+* [9f05417](https://github.com/SamR1/FitTrackee/commit/9f0541751ae15d6c106e7ba3c7892d9747488fa9) - fix radio label on workout form
+* [d46ba03](https://github.com/SamR1/FitTrackee/commit/d46ba03803fa8b77606f365830a8429143843481) - store archive in upload directory
+* [3827067](https://github.com/SamR1/FitTrackee/commit/382706751cbc444b74232f4f405408d729c4c9f7) - fix original file storage
+
+### Translations
+
+* [PR#804](https://github.com/SamR1/FitTrackee/pull/804) - Translations update (Russian)
+* [#805](https://github.com/SamR1/FitTrackee/issues/805) - [translations request] Catalan
+* [PR#808](https://github.com/SamR1/FitTrackee/pull/808) - Translations update (Catalan, Russian)
+* [PR#813](https://github.com/SamR1/FitTrackee/pull/813) - Translations update (Translation files cleanup)
+
+Translation status:
+- Basque: 92%
+- Bulgarian: 57%
+- Catalan: 25%
+- Chinese (Simplified): 92%
+- Croatian: 91%
+- Czech: 42%
+- Dutch: 92%
+- English: 100%
+- French: 100%
+- Galician: 92%
+- German: 91%
+- Italian: 47%
+- Norwegian Bokmål: 30%
+- Polish: 92%
+- Portuguese: 56%
+- Russian: 91%
+- Spanish: 59%
+
+
+Thanks to the contributors:
+- @ArnyminerZ
+- @Lemetist
+
+
+**Note:** If you upgrade from the v0.9.x, there are migrations to apply (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
+
+
 ## Version 0.10.0b2 (2025/05/24)
 
 **This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
@@ -19,14 +80,14 @@ If you find bugs, please report them.
 
 ### Features and enhancements
 
-* [#194](https://github.com/SamR1/FitTrackee/issues/194) - Rewrite workout file processing and new features
-  * [#87](https://github.com/SamR1/FitTrackee/issues/87) - Prevent gpx parse error with zip import
-  * [#89](https://github.com/SamR1/FitTrackee/issues/89) - Asynchrone archives upload
-  * [#122](https://github.com/SamR1/FitTrackee/issues/122) - Allow to upload Fit file
-  * [#143](https://github.com/SamR1/FitTrackee/issues/143) - KML/KMZ support
-  * [#529](https://github.com/SamR1/FitTrackee/issues/529) - Support import TCX file
-  * [#642](https://github.com/SamR1/FitTrackee/issues/642) - Support Heartrate and cadence
-  * [PR#801](https://github.com/SamR1/FitTrackee/pull/801) - Display file source in workout data
+* [#87](https://github.com/SamR1/FitTrackee/issues/87) - Prevent gpx parse error with zip import
+* [#89](https://github.com/SamR1/FitTrackee/issues/89) - Asynchronous archives upload
+* [#122](https://github.com/SamR1/FitTrackee/issues/122) - Allow to upload Fit file
+* [#143](https://github.com/SamR1/FitTrackee/issues/143) - KML/KMZ support
+* [#194](https://github.com/SamR1/FitTrackee/issues/194) - Rewrite workout file processing [1st part]
+* [#529](https://github.com/SamR1/FitTrackee/issues/529) - Support import TCX file
+* [#642](https://github.com/SamR1/FitTrackee/issues/642) - Support Heartrate and cadence
+* [PR#801](https://github.com/SamR1/FitTrackee/pull/801) - Display file source in workout data
 
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
