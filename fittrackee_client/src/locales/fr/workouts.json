@@ -2,14 +2,17 @@
   "ADD_WORKOUT": "Ajouter une séance",
   "ANALYSIS": "analyse",
   "ASCENT": "dénivelé positif",
+  "AVERAGE_CADENCE": "cadence moyenne",
+  "AVERAGE_HR": "fréquence cardiaque moyenne",
   "AVERAGE_SPEED": "vitesse moyenne",
-  "AVE_SPEED": "vitesse moy.",
   "AVE_ASCENT": "dénivelé positif moy.",
   "AVE_DESCENT": "dénivelé négatif moy.",
   "AVE_DISTANCE": "distance moy.",
   "AVE_DURATION": "durée moy.",
+  "AVE_SPEED": "vitesse moy.",
   "BACK_TO_COMMENT": "revenir au commentaire",
   "BACK_TO_WORKOUT": "revenir à la séance",
+  "CADENCE": "cadence",
   "COMMENTS": {
     "ADD": "ajouter un commentaire",
     "COMMENT": "commentaire | commentaires",
@@ -22,21 +25,22 @@
     "REPORT": "signaler le commentaire",
     "SUSPENDED_COMMENT_BY_ADMIN": "Le commentaire a été suspendu par un administrateur."
   },
+  "CREATED_WORKOUTS": "Séance créée | Séances créées",
   "DATE": "date",
   "DELETE_WORKOUT": "Supprimer la séance",
   "DESCENT": "dénivelé négatif",
   "DESCRIPTION": "description",
-  "DESCRIPTION_FIELD_HELP": "si fournie, la description remplace celle du fichier gpx.",
+  "DESCRIPTION_FIELD_HELP": "si fournie, la description remplace celle du fichier.",
   "DISPLAY_FILTERS": "afficher les filtres",
   "DISTANCE": "distance",
-  "DOWNLOAD_WORKOUT": "Télécharger la séance",
+  "DOWNLOAD_WORKOUT": "Télécharger la séance (gpx)",
   "DURATION": "durée",
   "EDIT_WORKOUT": "Modifier la séance",
   "ELEVATION": "altitude",
   "END": "fin",
   "EXIT_FULLSCREEN": "Sortir du plein-écran",
   "FROM": "à partir de",
-  "GPX_FILE": "fichier .gpx",
+  "HEART_RATE": "fréquence cardiaque",
   "HIDE_FILTERS": "masquer les filtres",
   "HIDE_WORKOUTS": "masquer les séances",
   "INVALID_ASCENT_OR_DESCENT": "Les 2 valeurs pour l'élévation doivent être renseignées et être supérieures ou égales à 0.",
@@ -48,10 +52,13 @@
   "LOAD_MORE_WORKOUT": "Charger les séances suivantes",
   "MAP": "carte",
   "MARKDOWN_SYNTAX": "La syntaxe Markdown suivante peut être utilisée : _italique_, **gras**, [lien](https://example.com), ![image](https://example.com/image.png)",
-  "MAX_ALTITUDE": "altitude max",
-  "MAX_FILES": "fichiers max. ",
+  "MAX_ALTITUDE": "altitude max.",
+  "MAX_CADENCE": "cadence max.",
+  "MAX_FILES": "nombre max. de fichiers ",
+  "MAX_HR": "fréquence cardiaque max.",
   "MAX_SIZE": "taille max. ",
   "MAX_SPEED": "vitesse max.",
+  "MAX_SYNC_FILES_IN_ZIP": "nombre max. de fichiers pour un chargement synchrone ",
   "MIN_ALTITUDE": "altitude min",
   "MULTISELECT": {
     "deselectLabel": "Appuyer sur Entrée pour supprimer",
@@ -72,6 +79,7 @@
   "NO_PREVIOUS_SEGMENT": "Pas de segment précédent",
   "NO_PREVIOUS_WORKOUT": "Pas de séance précédente",
   "NO_RECORDS": "Pas de records.",
+  "NO_WEATHER_WITH_ASYNCHRONOUS_UPLOAD": "Dans le cas d'un chargement asynchrone, les données météorologiques ne sont pas collectées.",
   "NO_WORKOUTS": "Pas de séance. | Pas de séances.",
   "NO_WORKOUT_AVAILABLE": "La séance a été supprimée ou n'est pas visible.",
   "PAUSES": "pauses",
@@ -91,19 +99,35 @@
   "RESET_ZOOM": "Réinitialiser le zoom",
   "SEGMENT": "segment | segments",
   "SHOW_WORKOUTS": "afficher les séances",
+  "SOURCE": "source",
   "SPEED": "vitesse",
   "SPORT": "sport | sports",
   "START": "début",
   "START_AND_FINISH": "Départ et arrivée",
   "START_ELEVATION_AT_ZERO": "démarrer l'axe de l'altitude à 0",
+  "SUPPORTED_FILE_EXTENSIONS": "extensions supportées ",
   "SUSPENDED_BY_ADMIN": "La séance a été suspendue par un administrateur.",
   "TITLE": "titre",
-  "TITLE_FIELD_HELP": "si fourni, le titre remplace celui du fichier gpx.",
+  "TITLE_FIELD_HELP": "si fourni, le titre remplace celui du fichier.",
   "TO": "jusqu'au",
   "TOTAL_ASCENT": "dénivelé positif total",
   "TOTAL_DESCENT": "dénivelé négatif total",
   "TOTAL_DISTANCE": "distance totale",
   "TOTAL_DURATION": "durée totale",
+  "UNITS": {
+    "bpm": {
+      "LABEL": "battements par minute",
+      "UNIT": "bpm"
+    },
+    "rpm": {
+      "LABEL": "révolutions par minute",
+      "UNIT": "rpm"
+    },
+    "spm": {
+      "LABEL": "pas par minute",
+      "UNIT": "ppm"
+    }
+  },
   "UPLOAD_FIRST_WORKOUT": "Ajoutez votre première séance !",
   "VIEW_FULLSCREEN": "Afficher en plein-écran",
   "WEATHER": {
@@ -141,8 +165,8 @@
       "WSW": "OSO"
     }
   },
-  "WITHOUT_GPX": "sans fichier .gpx",
-  "WITH_GPX": "avec un fichier .gpx",
+  "WITHOUT_FILE": "sans fichier",
+  "WITH_FILE": "avec un fichier",
   "WORKOUT": "séance | séances",
   "WORKOUTS_STATISTICS": {
     "all": "statistiques pour toutes les pages ({count} séances)",
@@ -152,7 +176,8 @@
   "WORKOUT_CHART": "graphe de vitesse et d'altitude de la séance",
   "WORKOUT_DATE": "date de la séance",
   "WORKOUT_DELETION_CONFIRMATION": "Êtes-vous sûr de vouloir supprimer cette séance ?",
+  "WORKOUT_FILE": "fichier de la séance",
   "WORKOUT_MAP": "carte de la séance",
   "ZIP_ARCHIVE": "archive .zip",
-  "ZIP_ARCHIVE_DESCRIPTION": "ou une archive .zip contenant des fichiers .gpx"
+  "ZIP_ARCHIVE_DESCRIPTION": "ou archive .zip contenant des fichiers"
 }

@@ -55,3 +55,6 @@ data
 .\#*
 .dir-locals.el
 .projectile-cache.eld
+
+
+.staticmap_cache

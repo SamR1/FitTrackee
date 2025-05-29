@@ -59,3 +59,12 @@ class UserCreationException(Exception):
 
 class UserNotFoundException(Exception):
     pass
+
+
+class UserTaskException(Exception):
+    pass
+
+
+class UserTaskForbiddenException(Exception):
+    def __init__(self) -> None:
+        super().__init__("you do not have permissions")

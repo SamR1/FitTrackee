@@ -3,13 +3,20 @@
   "DATES": "Даты",
   "STATISTICS": "Статистика",
   "STATISTICS_CHARTS": {
+    "day": "Ежедневная статистика",
     "month": "Ежемесячная статистика",
     "week": "Еженедельная статистика",
     "year": "Ежегодная статистика"
   },
   "STATISTICS_ON_ALL_WORKOUTS": "Статистика всех тренировок:",
   "STATISTICS_ON_LAST_WORKOUTS": "Статистика по последним {count} тренировкам:",
+  "STATISTICS_TYPE": "Тип статистики",
+  "STATISTICS_TYPES": {
+    "by_sport": "по виду спорта",
+    "by_time": "по периоду времени"
+  },
   "TIME_FRAMES": {
+    "day": "день",
     "month": "месяц",
     "week": "неделя",
     "year": "год"

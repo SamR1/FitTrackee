@@ -10,8 +10,11 @@ from flask import current_app
 from fittrackee import appLog, db
 from fittrackee.emails.tasks import send_email
 from fittrackee.files import get_absolute_file_path
+from fittrackee.utils import decode_short_id
+from fittrackee.workouts.constants import WORKOUT_ALLOWED_EXTENSIONS
 
-from .models import User, UserDataExport
+from .exceptions import UserTaskException
+from .models import Notification, User, UserTask
 from .utils.language import get_language
 
 
@@ -46,6 +49,11 @@ class UserDataExporter:
             workout_data["sport_label"] = workout.sport.label
             workout_data["gpx"] = (
                 workout.gpx.split("/")[-1] if workout.gpx else None
+            )
+            workout_data["original_file"] = (
+                workout.original_file.split("/")[-1]
+                if workout.original_file
+                else None
             )
             workouts_data.append(workout_data)
         return workouts_data
@@ -118,12 +126,16 @@ class UserDataExporter:
                         )
                 if os.path.exists(self.workouts_directory):
                     for file in os.listdir(self.workouts_directory):
-                        if os.path.isfile(
-                            os.path.join(self.workouts_directory, file)
-                        ) and file.endswith(".gpx"):
+                        extension = file.split(".")[-1]
+                        if (
+                            extension in WORKOUT_ALLOWED_EXTENSIONS
+                            and os.path.isfile(
+                                os.path.join(self.workouts_directory, file)
+                            )
+                        ):
                             zip_object.write(
                                 os.path.join(self.workouts_directory, file),
-                                f"gpx/{file}",
+                                f"workout_files/{file}",
                             )
 
             file_exists = os.path.exists(zip_path)
@@ -137,28 +149,38 @@ class UserDataExporter:
             return None, None
 
 
-def export_user_data(export_request_id: int) -> None:
-    export_request = UserDataExport.query.filter_by(
-        id=export_request_id
-    ).first()
+def export_user_data(task_id: int) -> None:
+    export_request = UserTask.query.filter_by(id=task_id).first()
 
     if not export_request:
-        appLog.error(f"No export to process for id '{export_request_id}'")
+        appLog.error(f"No export to process for id '{task_id}'")
         return
 
     if export_request.completed:
-        appLog.info(f"Export id '{export_request_id}' already processed")
+        appLog.info(f"Export id '{task_id}' already processed")
         return
 
     user = User.query.filter_by(id=export_request.user_id).one()
     exporter = UserDataExporter(user)
-    archive_file_path, archive_file_name = exporter.generate_archive()
 
     try:
-        export_request.completed = True
+        archive_file_path, archive_file_name = exporter.generate_archive()
         if archive_file_name and archive_file_path:
-            export_request.file_name = archive_file_name
+            export_request.file_path = os.path.join(
+                "exports", str(user.id), archive_file_name
+            )
             export_request.file_size = os.path.getsize(archive_file_path)
+            db.session.flush()
+            export_request.progress = 100
+
+            notification = Notification(
+                from_user_id=export_request.user_id,
+                to_user_id=export_request.user_id,
+                created_at=datetime.now(tz=timezone.utc),
+                event_object_id=export_request.id,
+                event_type=export_request.task_type,
+            )
+            db.session.add(notification)
             db.session.commit()
 
             if current_app.config["CAN_SEND_EMAILS"]:
@@ -176,28 +198,30 @@ def export_user_data(export_request_id: int) -> None:
                     user_data, email_data, template="data_export_ready"
                 )
         else:
+            export_request.errored = True
             db.session.commit()
+
     except Exception as e:
+        export_request.errored = True
+        db.session.commit()
         appLog.error(f"Error when exporting user data: {e!s}")
 
 
 def clean_user_data_export(days: int) -> Dict:
     counts = {"deleted_requests": 0, "deleted_archives": 0, "freed_space": 0}
     limit = datetime.now(timezone.utc) - timedelta(days=days)
-    export_requests = UserDataExport.query.filter(
-        UserDataExport.created_at < limit,
-        UserDataExport.completed == True,  # noqa
+    export_requests = UserTask.query.filter(
+        UserTask.created_at < limit,
+        UserTask.progress == 100,
+        UserTask.task_type == "user_data_export",
     ).all()
 
     if not export_requests:
         return counts
 
-    archive_directory = get_absolute_file_path("exports")
     for request in export_requests:
-        if request.file_name:
-            archive_path = os.path.join(
-                archive_directory, f"{request.user_id}", request.file_name
-            )
+        if request.file_path:
+            archive_path = get_absolute_file_path(request.file_path)
             if os.path.exists(archive_path):
                 counts["deleted_archives"] += 1
                 counts["freed_space"] += request.file_size
@@ -212,9 +236,12 @@ def clean_user_data_export(days: int) -> Dict:
 def generate_user_data_archives(max_count: int) -> int:
     count = 0
     export_requests = (
-        db.session.query(UserDataExport)
-        .filter(UserDataExport.completed == False)  # noqa
-        .order_by(UserDataExport.created_at)
+        db.session.query(UserTask)
+        .filter(
+            UserTask.progress != 100,
+            UserTask.task_type == "user_data_export",
+        )
+        .order_by(UserTask.created_at)
         .limit(max_count)
         .all()
     )
@@ -224,3 +251,24 @@ def generate_user_data_archives(max_count: int) -> int:
         count += 1
 
     return count
+
+
+def process_queued_data_export(task_short_id: str) -> None:
+    try:
+        task_id = decode_short_id(task_short_id)
+    except Exception as e:
+        raise UserTaskException("Invalid task id") from e
+
+    export_request = UserTask.query.filter_by(
+        uuid=task_id, task_type="user_data_export"
+    ).first()
+    if not export_request:
+        raise UserTaskException("No task found")
+    if (
+        export_request.progress > 0
+        or export_request.errored
+        or export_request.aborted
+    ):
+        raise UserTaskException("Task is not queued")
+
+    export_user_data(export_request.id)

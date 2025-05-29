@@ -17,9 +17,9 @@ from fittrackee.users.models import (
     FollowRequest,
     Notification,
     User,
-    UserDataExport,
     UserSportPreference,
     UserSportPreferenceEquipment,
+    UserTask,
 )
 from fittrackee.users.roles import UserRole
 from fittrackee.visibility_levels import VisibilityLevel
@@ -2545,7 +2545,9 @@ class TestDeleteUser(ReportMixin, ApiTestCaseMixin):
     def test_user_with_export_request_can_delete_its_own_account(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        db.session.add(UserDataExport(user_id=user_1.id))
+        db.session.add(
+            UserTask(user_id=user_1.id, task_type="user_data_export")
+        )
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email

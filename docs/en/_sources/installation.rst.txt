@@ -11,7 +11,7 @@ Thanks to contributors, packages are also available on `Yunohost <installation.h
 
 For a single-user instance, registration can be disabled. So all you need is Python and PostgreSQL. A `CLI <cli.html#users>`__ is available to manage user account.
 
-| The following steps describe an installation on Linux systems (tested ArchLinux-based OS and Ubuntu on CI).
+| The following steps describe an installation on Linux systems (tested with ArchLinux-based OS and Ubuntu on CI).
 | On other operating systems, some issues can be encountered and adaptations may be necessary.
 
 .. note::
@@ -28,7 +28,7 @@ This application is written in Python (API) and Typescript (client):
 - API:
     - Flask
     - `gpxpy <https://github.com/tkrajina/gpxpy>`_ to parse gpx files
-    - `staticmap <https://github.com/komoot/staticmap>`_ to generate a static map image from gpx coordinates
+    - `Static Map 3 <https://github.com/SamR1/staticmap>`_, a fork of `Static Map <https://github.com/komoot/staticmap>`_ to generate a static map image from file coordinates
     - `Dramatiq <https://dramatiq.io/>`_ and `Flask-Dramatiq <https://flask-dramatiq.readthedocs.io>`_ for task queue
     - `Authlib <https://docs.authlib.org/en/latest/>`_ for OAuth 2.0 Authorization support
     - `Flask-Limiter <https://flask-limiter.readthedocs.io/en/stable>`_ for API rate limits
@@ -40,6 +40,7 @@ This application is written in Python (API) and Typescript (client):
 
 | Logo, some sports and weather icons are made by `Freepik <https://www.freepik.com/>`__ from `www.flaticon.com <https://www.flaticon.com/>`__.
 | Sports icons for Canoeing, Kayaking and Rowing are made by `@Von-Birne <https://github.com/Von-Birne>`__.
+| Sports icon for Halfbike is made by `@astridx <https://github.com/astridx>`__.
 | FitTrackee also uses icons from `Fork Awesome <https://forkaweso.me>`__.
 
 
@@ -59,7 +60,7 @@ Prerequisites
 
 - optional
 
-  - `Redis <https://redis.io/>`__ for task queue (if email sending is enabled and for data export requests) and API rate limits (for installation from sources or package)
+  - `Redis <https://redis.io/>`__ for `task queue <installation.html#tasks-processing>`__ (if email sending is enabled and for data export requests, asynchronous archive uploads) and API rate limits (for installation from sources or package)
   - SMTP provider (if email sending is enabled)
   - API key from a `weather data provider <installation.html#weather-data>`__
   - `Poetry <https://python-poetry.org>`__ 1.2+ (for installation from sources only)
@@ -221,6 +222,15 @@ deployment method.
     Path to **Dramatiq** log file.
 
 
+.. envvar:: TASKS_TIME_LIMIT
+
+    .. versionadded:: 0.10.0
+
+    Timeout in seconds for **Dramatiq** task execution to avoid long-running tasks.
+
+    :default: 1800
+
+
 .. envvar:: API_RATE_LIMITS
 
     .. versionadded:: 0.7.0
@@ -267,7 +277,7 @@ deployment method.
 
     .. versionadded:: 0.4.9
 
-    | If ``True``, it keeps using **staticmap** default tile server to generate static maps (OSM tile server since **staticmap** 0.5.6 (Komoot.de tile server before this version)).
+    | If ``True``, it keeps using **Static Map 3** default tile server to generate static maps (OSM tile server).
     | Otherwise, it uses the tile server set in `TILE_SERVER_URL <installation.html#envvar-TILE_SERVER_URL>`__.
 
     .. versionchanged:: 0.6.10
@@ -276,6 +286,18 @@ deployment method.
     | If ``False``, depending on tile server, `subdomains <installation.html#envvar-STATICMAP_SUBDOMAINS>`__ may be mandatory.
 
     :default: ``False``
+
+
+.. envvar:: STATICMAP_CACHE_DIR
+
+    .. versionadded:: 0.10.0
+
+    Directory for **Static Map 3** cache
+
+    :default: .staticmap_cache
+
+    .. warning::
+        This is the library's default variable, to be modified to set another directory.
 
 
 .. envvar:: WEATHER_API_KEY
@@ -471,6 +493,50 @@ To configure a weather provider, set the following environment variables:
 - ``WEATHER_API_KEY``: the key to the corresponding weather provider
 
 
+Tasks processing
+~~~~~~~~~~~~~~~~
+
+.. versionadded:: 0.3.0
+.. versionchanged:: 0.10.0 Add ``TASKS_TIME_LIMIT`` variable
+
+Tasks processing is done using `Dramatiq <https://dramatiq.io/>`_. It requires Redis and is used for email sending, user data exports and workouts archives uploads.
+
+.. note::
+    If no workers are running, a `command line <cli.html>`__ allows to process queued tasks.
+
+The following environment variables must be set:
+
+- ``REDIS_URL``: Redis instance used by **Dramatiq** and **Flask-Limiter**.
+- ``WORKERS_PROCESSES``: Number of processes used by **Dramatiq**.
+- ``DRAMATIQ_LOG``: Path to **Dramatiq** log file.
+
+To avoid long-running tasks for user data exports and workouts archives uploads, a time limit is set:
+
+- ``TASKS_TIME_LIMIT``: Timeout in seconds for **Dramatiq** task execution. The default value is 1800 seconds (30 minutes).
+
+To start task queue workers, run the following command:
+
+.. code-block:: bash
+
+    $ dramatiq fittrackee.tasks:broker --processes=$WORKERS_PROCESSES --log-file=$DRAMATIQ_LOG
+
+.. note::
+    | It is also possible to start task queue workers with **Flask-Dramatiq** CLI, but it is recommended to use **Dramatiq** CLI instead for now.
+
+It is possible to run queues independently, for instance for workouts archive uploads:
+
+.. code-block:: bash
+
+    $ dramatiq fittrackee.tasks:broker --processes=2 -Q fittrackee_workouts
+
+The following queues are available:
+
+- ``fittrackee_emails``: for emails sending (priority: high)
+- ``fittrackee_users_exports``: for user data exports (priority: medium)
+- ``fittrackee_workouts``: for workouts archive uploads (priority: medium)
+
+Run ``dramatiq -h`` to see a list of the available commands.
+
 Installation
 ~~~~~~~~~~~~
 
@@ -618,13 +684,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.9.11):
+-  Download the last release (for now, it is the release v0.10.0):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/0.9.11.tar.gz
-   $ tar -xzf v0.9.11.tar.gz
-   $ mv FitTrackee-0.9.11 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/0.10.0.tar.gz
+   $ tar -xzf v0.10.0.tar.gz
+   $ mv FitTrackee-0.10.0 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -756,13 +822,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.9.11) and overwrite existing files:
+- Download the last release (for now, it is the release v0.10.0) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.9.11.tar.gz
-   $ tar -xzf v0.9.11.tar.gz
-   $ cp -R FitTrackee-0.9.11/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.10.0.tar.gz
+   $ tar -xzf v0.10.0.tar.gz
+   $ cp -R FitTrackee-0.10.0/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -831,6 +897,7 @@ Examples:
     Environment="STATICMAP_SUBDOMAINS="
     Environment="MAP_ATTRIBUTION="
     Environment="WEATHER_API_KEY="
+    Environment="STATICMAP_CACHE_DIR="
     WorkingDirectory=/home/<USER>/<FITTRACKEE DIRECTORY>
     ExecStart=/home/<USER>/<FITTRACKEE DIRECTORY>/.venv/bin/gunicorn -b 127.0.0.1:5000 "fittrackee:create_app()" --error-logfile /home/<USER>/<FITTRACKEE DIRECTORY>/gunicorn.log
     Restart=always
@@ -873,12 +940,17 @@ Examples:
     Environment="EMAIL_URL="
     Environment="SENDER_EMAIL="
     Environment="REDIS_URL="
+    Environment="TASKS_TIME_LIMIT="
+    Environment="STATICMAP_CACHE_DIR="
     WorkingDirectory=/home/<USER>/<FITTRACKEE DIRECTORY>
     ExecStart=/home/<USER>/<FITTRACKEE DIRECTORY>/.venv/bin/dramatiq fittrackee.tasks:broker --processes=<NUMBER OF PROCESSES> --log-file=<DRAMATIQ_LOG_FILE_PATH>
     Restart=always
 
     [Install]
     WantedBy=multi-user.target
+
+.. note::
+    Command to be adapted to run queues separately
 
 .. seealso::
     More information on **Dramatiq** CLI in its `documentation <https://dramatiq.io/guide.html#workers>`__.

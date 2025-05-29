@@ -5,6 +5,7 @@ from importlib import import_module, reload
 from typing import TYPE_CHECKING, Any, Dict, Tuple
 
 import redis
+from dramatiq_abort import Abortable, backends
 from flask import (
     Flask,
     Response,
@@ -26,7 +27,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from fittrackee.emails.emails import EmailService
 from fittrackee.request import CustomRequest
 
-VERSION = __version__ = "0.9.11"
+VERSION = __version__ = "0.10.0"
 DEFAULT_PRIVACY_POLICY_DATA = "2024-12-23 19:00:00"
 REDIS_URL = os.getenv("REDIS_URL", "redis://")
 API_RATE_LIMITS = os.environ.get("API_RATE_LIMITS", "300 per 5 minutes").split(
@@ -73,12 +74,15 @@ limiter = Limiter(
     strategy="fixed-window",
 )
 # if redis is not available, disable the rate limiter
-r = redis.from_url(REDIS_URL)
+redis_client = redis.from_url(REDIS_URL)
 try:
-    r.ping()
+    redis_client.ping()
 except redis.exceptions.ConnectionError:
     limiter.enabled = False
     appLog.warning("Redis not available, API rate limits are disabled.")
+
+backend = backends.RedisBackend(client=redis_client)
+abortable = Abortable(backend=backend)
 
 
 class CustomFlask(Flask):
@@ -109,6 +113,7 @@ def create_app(init_email: bool = True) -> Flask:
     bcrypt.init_app(app)
     migrate.init_app(app, db)
     dramatiq.init_app(app)
+    dramatiq.broker.add_middleware(abortable)
     limiter.init_app(app)
 
     # set oauth2
@@ -146,6 +151,8 @@ def create_app(init_email: bool = True) -> Flask:
             ):
                 pass
 
+    from .workouts.tasks import upload_workouts_archive  # noqa
+
     from .application.app_config import config_blueprint
     from .comments.comments import comments_blueprint
     from .equipments.equipment_types import equipment_types_blueprint
@@ -155,6 +162,7 @@ def create_app(init_email: bool = True) -> Flask:
     from .users.auth import auth_blueprint
     from .users.follow_requests import follow_requests_blueprint
     from .users.notifications import notifications_blueprint
+    from .users.queued_tasks import queued_tasks_blueprint
     from .users.users import users_blueprint
     from .workouts.records import records_blueprint
     from .workouts.sports import sports_blueprint
@@ -171,6 +179,7 @@ def create_app(init_email: bool = True) -> Flask:
     app.register_blueprint(records_blueprint, url_prefix="/api")
     app.register_blueprint(sports_blueprint, url_prefix="/api")
     app.register_blueprint(stats_blueprint, url_prefix="/api")
+    app.register_blueprint(queued_tasks_blueprint, url_prefix="/api")
     app.register_blueprint(users_blueprint, url_prefix="/api")
     app.register_blueprint(workouts_blueprint, url_prefix="/api")
     app.register_blueprint(follow_requests_blueprint, url_prefix="/api")

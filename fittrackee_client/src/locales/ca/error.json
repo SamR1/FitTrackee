@@ -1,0 +1,13 @@
+{
+  "APP_ERROR": "Sembla que s'ha trobat algun problema.<br />Per favor, torna-ho a intentar més tard o contacta amb l'administrador.",
+  "NOT_FOUND": {
+    "COMMENT": "No s'ha trobat el comentari",
+    "PAGE": "No s'ha trobat la pàgina",
+    "REPORT": "No s'ha trobat l'informe",
+    "SEGMENT": "No s'ha trobat el segment",
+    "USER": "No s'ha trobat l'usuari",
+    "WORKOUT": "No s'ha trobat l'entrenament"
+  },
+  "SOMETHING_WRONG": "Alguna cosa ha anat malament",
+  "UNKNOWN": "Error. Per favor, torna-ho a provar o contacta amb l'administrador."
+}

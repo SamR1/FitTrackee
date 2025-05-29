@@ -22,10 +22,7 @@
     "DOWNLOAD_ARCHIVE": "Archief downloaden",
     "GENERATING_LINK": "link aanmaken…",
     "ONLY_ONE_EXPORT_PER_DAY": "Je kan 1 keer per 24h een archief aanvragen",
-    "STATUS": {
-      "errored": "fout (gelieve een nieuw archief aan te vragen)",
-      "in_progress": "Bezig met verwerken…"
-    }
+    "REQUEST_ANOTHER_EXPORT": "gelieve een nieuw archief aan te vragen"
   },
   "FILTER_ON_USERNAME": "Filter op gebruikersnaam",
   "HIDE_PASSWORD": "verberg wachtwoord",
@@ -233,6 +230,12 @@
   "SUSPENDED": "Geblokkeerd",
   "SUSPENDED_ACCOUNT": "Geblokkeerde gebruiker",
   "SUSPENSION_REASON": "Reden voor blokkering",
+  "TASKS": {
+    "STATUS": {
+      "errored": "fout",
+      "in_progress": "Bezig met verwerken"
+    }
+  },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Deze account is niet actief.",
   "TOGGLE_THEME": "Schakel thema (lichte of donkere modus)",
   "USER": "gebruiker | gebruikers",

@@ -9,6 +9,7 @@
               type="radio"
               name="distance"
               :checked="displayDistance"
+              :disabled="loading"
               @click="updateDisplayDistance"
             />
             {{ $t('workouts.DISTANCE') }}
@@ -17,14 +18,16 @@
             <input
               type="radio"
               name="duration"
+              :disabled="loading"
               :checked="!displayDistance"
               @click="updateDisplayDistance"
             />
             {{ $t('workouts.DURATION') }}
           </label>
         </div>
-        <div id="chart-legend" />
-        <div class="line-chart">
+        <Loader v-if="loading" class="chart-loader" />
+        <div id="chart-legend" :class="{ loading }" />
+        <div class="line-chart" :class="{ loading }">
           <Line
             :data="chartData"
             :options="options"
@@ -55,32 +58,44 @@
 </template>
 
 <script setup lang="ts">
-  import type { ChartData, ChartOptions } from 'chart.js'
+  import type {
+    ChartData,
+    ChartOptions,
+    LayoutItem,
+    TooltipItem,
+  } from 'chart.js'
+  import { type ComputedRef, onUnmounted, type Ref, watch } from 'vue'
   import { computed, ref, toRefs } from 'vue'
-  import type { ComputedRef, Ref } from 'vue'
   import { Line } from 'vue-chartjs'
   import { useI18n } from 'vue-i18n'
+  import { useStore } from 'vuex'
 
+  import Loader from '@/components/Common/Loader.vue'
   import { htmlLegendPlugin } from '@/components/Workout/WorkoutDetail/WorkoutChart/legend'
   import useApp from '@/composables/useApp'
+  import { WORKOUTS_STORE } from '@/store/constants.ts'
+  import type { IChartDataset } from '@/types/chart.ts'
   import type { TCoordinates } from '@/types/map'
+  import type { ISport } from '@/types/sports.ts'
   import type { TUnit } from '@/types/units'
   import type { IAuthUserProfile } from '@/types/user'
   import type { IWorkoutChartData, IWorkoutData } from '@/types/workouts'
   import { formatDuration } from '@/utils/duration.ts'
   import { units } from '@/utils/units'
-  import { chartsColors, getDatasets } from '@/utils/workouts'
+  import { chartsColors, getCadenceUnit, getDatasets } from '@/utils/workouts'
 
   interface Props {
     authUser: IAuthUserProfile
     workoutData: IWorkoutData
+    sport: ISport | null
   }
   const props = defineProps<Props>()
-  const { authUser, workoutData } = toRefs(props)
+  const { authUser, sport, workoutData } = toRefs(props)
 
   const emit = defineEmits(['getCoordinates'])
 
   const { t } = useI18n()
+  const store = useStore()
 
   const { darkTheme } = useApp()
 
@@ -104,17 +119,29 @@
       darkTheme.value
     )
   )
-  const chartData: ComputedRef<ChartData<'line'>> = computed(() => ({
-    labels: displayDistance.value
-      ? datasets.value.distance_labels
-      : datasets.value.duration_labels,
-    datasets: JSON.parse(
-      JSON.stringify([
-        datasets.value.datasets.speed,
-        datasets.value.datasets.elevation,
-      ])
-    ),
-  }))
+  const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
+  const chartLoading: ComputedRef<boolean> = computed(
+    () => workoutData.value.chartDataLoading
+  )
+  const loading: Ref<boolean> = ref(false)
+  const chartData: ComputedRef<ChartData<'line'>> = computed(() => {
+    const displayedDatasets = [datasets.value.datasets.speed]
+    if (datasets.value.datasets.hr.data.length > 0) {
+      displayedDatasets.push(datasets.value.datasets.hr)
+    }
+    if (datasets.value.datasets.cadence.data.length > 0) {
+      displayedDatasets.push(datasets.value.datasets.cadence)
+    }
+    if (datasets.value.datasets.elevation.data.length > 0) {
+      displayedDatasets.push(datasets.value.datasets.elevation)
+    }
+    return {
+      labels: displayDistance.value
+        ? datasets.value.distance_labels
+        : datasets.value.duration_labels,
+      datasets: JSON.parse(JSON.stringify(displayedDatasets)),
+    }
+  })
   const coordinates: ComputedRef<TCoordinates[]> = computed(
     () => datasets.value.coordinates
   )
@@ -128,6 +155,8 @@
       ? chartsColors.darkMode.text
       : chartsColors.ligthMode.text,
   }))
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   const options: ComputedRef<ChartOptions<'line'>> = computed(() => ({
     responsive: true,
     maintainAspectRatio: false,
@@ -165,7 +194,9 @@
           ...textColors.value,
         },
       },
-      ySpeed: {
+      yLeft: {
+        beginAtZero: beginElevationAtZero.value,
+        display: true,
         grid: {
           drawOnChartArea: false,
           ...lineColors.value,
@@ -176,16 +207,30 @@
         position: 'left',
         title: {
           display: true,
-          text: t('workouts.SPEED') + ` (${fromKmUnit}/h)`,
+          text: (context: any): string[] => {
+            const displayedDatasets = getDisplayedDatasets(context, 'yLeft')
+            if (displayedDatasets.length === 0) {
+              return []
+            }
+            return displayedDatasets.map(
+              (d) => d.label + getUnitLabelForYAxis(d.id)
+            )
+          },
           ...textColors.value,
         },
         ticks: {
+          display: (context: any): boolean => {
+            const displayedDatasets = getDisplayedDatasets(context, 'yLeft')
+            return displayedDatasets.length === 1
+          },
           ...textColors.value,
         },
+        afterFit: function (scale: LayoutItem) {
+          scale.width = 50
+        },
       },
-      yElevation: {
+      yRight: {
         beginAtZero: beginElevationAtZero.value,
-        display: hasElevation.value,
         grid: {
           drawOnChartArea: false,
           ...lineColors.value,
@@ -196,11 +241,27 @@
         position: 'right',
         title: {
           display: true,
-          text: t('workouts.ELEVATION') + ` (${fromMUnit})`,
+          text: (context: any): string => {
+            const displayedDatasets = getDisplayedDatasets(context, 'yRight')
+            if (displayedDatasets.length !== 1) {
+              return ''
+            }
+            return (
+              displayedDatasets[0].label +
+              getUnitLabelForYAxis(displayedDatasets[0].id)
+            )
+          },
           ...textColors.value,
         },
         ticks: {
+          display(context: any): boolean {
+            const displayedDatasets = getDisplayedDatasets(context, 'yRight')
+            return displayedDatasets.length === 1
+          },
           ...textColors.value,
+        },
+        afterFit: function (scale: LayoutItem) {
+          scale.width = 50
         },
       },
     },
@@ -220,26 +281,9 @@
           mode: 'index',
         },
         callbacks: {
-          label: function (context) {
-            const label = ` ${context.dataset.label}: ${context.formattedValue}`
-            return context.dataset.yAxisID === 'yElevation'
-              ? label + ` ${fromMUnit}`
-              : label + ` ${fromKmUnit}/h`
-          },
-          title: function (tooltipItems) {
-            if (tooltipItems.length > 0) {
-              emitCoordinates(coordinates.value[tooltipItems[0].dataIndex])
-            }
-            return tooltipItems.length === 0
-              ? ''
-              : displayDistance.value
-                ? `${t('workouts.DISTANCE')}: ${
-                    tooltipItems[0].label
-                  } ${fromKmUnit}`
-                : `${t('workouts.DURATION')}: ${convertAndFormatDuration(
-                    tooltipItems[0].label.replace(',', '')
-                  )}`
-          },
+          label: (context) => getTooltipLabel(context),
+          title: (tooltipItems: TooltipItem<any>[]) =>
+            getTooltipTitle(tooltipItems),
         },
       },
       legend: {
@@ -273,6 +317,76 @@
       ? units[unitFrom].defaultTarget
       : unitFrom
   }
+  function getUnitLabelForYAxis(datasetId: string | undefined): string {
+    switch (datasetId) {
+      case 'cadence':
+        return ` (${t(`workouts.UNITS.${getCadenceUnit(sport.value?.label)}.UNIT`)})`
+      case 'elevation':
+        return ` (${fromMUnit})`
+      case 'hr':
+        return ` (${t('workouts.UNITS.bpm.UNIT')}})`
+      case 'speed':
+        return ` (${fromKmUnit}/h)`
+      default:
+        return ''
+    }
+  }
+  function getDisplayedDatasets(
+    context: any,
+    yaxisID: string
+  ): IChartDataset[] {
+    const chart = context.scale.chart
+    return chart.data.datasets.filter(
+      (dataset: IChartDataset, index: number) =>
+        dataset.yAxisID === yaxisID && !chart.getDatasetMeta(index).hidden
+    )
+  }
+  function getTooltipTitle(tooltipItems: TooltipItem<any>[]) {
+    if (tooltipItems.length === 0) {
+      return ''
+    }
+    emitCoordinates(coordinates.value[tooltipItems[0].dataIndex])
+    return displayDistance.value
+      ? `${t('workouts.DISTANCE')}: ${tooltipItems[0].label} ${fromKmUnit}`
+      : `${t('workouts.DURATION')}: ${convertAndFormatDuration(
+          tooltipItems[0].label.replace(',', '')
+        )}`
+  }
+  function getTooltipLabel(context: any) {
+    const label = ` ${context.dataset.label}: ${context.formattedValue}`
+    if (context.dataset.id === 'elevation') {
+      return label + ` ${fromMUnit}`
+    }
+    if (context.dataset.id === 'cadence') {
+      const unit = getCadenceUnit(sport.value?.label)
+      return label + ' ' + t(`workouts.UNITS.${unit}.UNIT`)
+    }
+    return context.dataset.id === 'hr'
+      ? label + ` ${t('workouts.UNITS.bpm.UNIT')}`
+      : label + ` ${fromKmUnit}/h`
+  }
+
+  watch(
+    () => chartLoading.value,
+    (newLoading) => {
+      if (newLoading) {
+        timer.value = setTimeout(() => {
+          store.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA, [])
+          loading.value = true
+        }, 500)
+      } else {
+        clearTimeout(timer.value)
+        loading.value = false
+      }
+    },
+    { immediate: true }
+  )
+
+  onUnmounted(() => {
+    if (timer.value) {
+      clearTimeout(timer.value)
+    }
+  })
 </script>
 
 <style lang="scss" scoped>
@@ -285,6 +399,7 @@
       .card-content {
         display: flex;
         flex-direction: column;
+        position: relative;
         .chart-radio {
           width: 100%;
           display: flex;
@@ -303,10 +418,17 @@
           display: flex;
           justify-content: center;
 
+          &.loading {
+            opacity: 0.3;
+            pointer-events: none;
+          }
+
           ul {
             display: flex;
             margin-bottom: 0;
             padding: 0;
+            flex-wrap: wrap;
+            justify-content: space-around;
 
             li {
               cursor: pointer;
@@ -332,6 +454,16 @@
         }
         .line-chart {
           min-height: 400px;
+
+          &.loading {
+            opacity: 0.3;
+            pointer-events: none;
+          }
+        }
+        .chart-loader {
+          position: absolute;
+          margin-top: 200px;
+          margin-left: 45%;
         }
       }
 
@@ -350,6 +482,9 @@
           }
           .line-chart {
             min-height: 338px;
+          }
+          .chart-loader {
+            margin-left: 40%;
           }
         }
       }

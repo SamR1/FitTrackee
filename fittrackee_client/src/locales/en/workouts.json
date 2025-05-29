@@ -2,6 +2,8 @@
   "ADD_WORKOUT": "Add a workout",
   "ANALYSIS": "analysis",
   "ASCENT": "ascent",
+  "AVERAGE_CADENCE": "average cadence",
+  "AVERAGE_HR": "average heart rate",
   "AVERAGE_SPEED": "average speed",
   "AVE_ASCENT": "ave. ascent",
   "AVE_DESCENT": "ave. descent",
@@ -10,6 +12,7 @@
   "AVE_SPEED": "ave. speed",
   "BACK_TO_COMMENT": "back to comment",
   "BACK_TO_WORKOUT": "back to workout",
+  "CADENCE": "cadence",
   "COMMENTS": {
     "ADD": "add a comment",
     "COMMENT": "comment | comments",
@@ -22,21 +25,22 @@
     "REPORT": "report comment",
     "SUSPENDED_COMMENT_BY_ADMIN": "The comment has been suspended by an administrator."
   },
+  "CREATED_WORKOUTS": "Created workout | Created workouts",
   "DATE": "date",
   "DELETE_WORKOUT": "Delete the workout",
   "DESCENT": "descent",
   "DESCRIPTION": "description",
-  "DESCRIPTION_FIELD_HELP": "if provided, the description replaces that of the gpx file.",
+  "DESCRIPTION_FIELD_HELP": "if provided, the description replaces that of the file.",
   "DISPLAY_FILTERS": "display filters",
   "DISTANCE": "distance",
-  "DOWNLOAD_WORKOUT": "Download the workout",
+  "DOWNLOAD_WORKOUT": "Download the workout (gpx)",
   "DURATION": "duration",
   "EDIT_WORKOUT": "Edit the workout",
   "ELEVATION": "elevation",
   "END": "end",
   "EXIT_FULLSCREEN": "Exit Fullscreen",
   "FROM": "from",
-  "GPX_FILE": ".gpx file",
+  "HEART_RATE": "heart rate",
   "HIDE_FILTERS": "hide filters",
   "HIDE_WORKOUTS": "hide workouts",
   "INVALID_ASCENT_OR_DESCENT": "Both elevation values must be provided and be greater than or equal to 0.",
@@ -49,9 +53,12 @@
   "MAP": "map",
   "MARKDOWN_SYNTAX": "Following Markdown syntax can be used: _italic_, **bold**, [link](https://example.com), ![image](https://example.com/image.png)",
   "MAX_ALTITUDE": "max. altitude",
-  "MAX_FILES": "max files",
-  "MAX_SIZE": "max size",
+  "MAX_CADENCE": "max. cadence",
+  "MAX_FILES": "max. number of files",
+  "MAX_HR": "max. heart rate",
+  "MAX_SIZE": "max. size",
   "MAX_SPEED": "max. speed",
+  "MAX_SYNC_FILES_IN_ZIP": "max. number of files for synchronous upload",
   "MIN_ALTITUDE": "min. altitude",
   "MULTISELECT": {
     "deselectLabel": "Press enter to remove",
@@ -72,6 +79,7 @@
   "NO_PREVIOUS_SEGMENT": "No previous segment",
   "NO_PREVIOUS_WORKOUT": "No previous workout",
   "NO_RECORDS": "No records.",
+  "NO_WEATHER_WITH_ASYNCHRONOUS_UPLOAD": "In the case of asynchronous upload, weather data are not collected.",
   "NO_WORKOUTS": "No workout. | No workouts.",
   "NO_WORKOUT_AVAILABLE": "The workout has been deleted or is not visible.",
   "PAUSES": "pauses",
@@ -91,19 +99,35 @@
   "RESET_ZOOM": "Reset zoom",
   "SEGMENT": "segment | segments",
   "SHOW_WORKOUTS": "show workouts",
+  "SOURCE": "source",
   "SPEED": "speed",
   "SPORT": "sport | sports",
   "START": "start",
   "START_AND_FINISH": "Start and finish",
   "START_ELEVATION_AT_ZERO": "start elevation axis at zero",
+  "SUPPORTED_FILE_EXTENSIONS": "supported extensions",
   "SUSPENDED_BY_ADMIN": "The workout has been suspended by an administrator.",
   "TITLE": "title",
-  "TITLE_FIELD_HELP": "if provided, the title replaces that of the gpx file.",
+  "TITLE_FIELD_HELP": "if provided, the title replaces that of the file.",
   "TO": "to",
   "TOTAL_ASCENT": "total ascent",
   "TOTAL_DESCENT": "total descent",
   "TOTAL_DISTANCE": "total distance",
   "TOTAL_DURATION": "total duration",
+  "UNITS": {
+    "bpm": {
+      "LABEL": "beats per minute",
+      "UNIT": "bpm"
+    },
+    "rpm": {
+      "LABEL": "revolutions per minute",
+      "UNIT": "rpm"
+    },
+    "spm": {
+      "LABEL": "steps per minute",
+      "UNIT": "spm"
+    }
+  },
   "UPLOAD_FIRST_WORKOUT": "Upload one!",
   "VIEW_FULLSCREEN": "View Fullscreen",
   "WEATHER": {
@@ -141,8 +165,8 @@
       "WSW": "WSW"
     }
   },
-  "WITHOUT_GPX": "without .gpx file",
-  "WITH_GPX": "with .gpx file",
+  "WITHOUT_FILE": "without file",
+  "WITH_FILE": "with file",
   "WORKOUT": "workout | workouts",
   "WORKOUTS_STATISTICS": {
     "all": "statistics for all pages ({count} workouts)",
@@ -152,7 +176,8 @@
   "WORKOUT_CHART": "workout speed and elevation chart",
   "WORKOUT_DATE": "workout date",
   "WORKOUT_DELETION_CONFIRMATION": "Are you sure you want to delete this workout?",
+  "WORKOUT_FILE": "workout file",
   "WORKOUT_MAP": "workout map",
   "ZIP_ARCHIVE": ".zip file",
-  "ZIP_ARCHIVE_DESCRIPTION": "or .zip file containing .gpx files"
+  "ZIP_ARCHIVE_DESCRIPTION": "or .zip archive containing files"
 }

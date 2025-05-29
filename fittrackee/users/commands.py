@@ -1,4 +1,5 @@
 import logging
+import sys
 from typing import Optional
 
 import click
@@ -11,6 +12,7 @@ from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.export_data import (
     clean_user_data_export,
     generate_user_data_archives,
+    process_queued_data_export,
 )
 from fittrackee.users.roles import UserRole
 from fittrackee.users.timezones import get_timezone
@@ -208,13 +210,35 @@ def clean_export_archives(
     required=True,
     help="Maximum number of export requests to process.",
 )
-def export_archives(
-    max_reports: int,
-) -> None:
+def export_archives(max_reports: int) -> None:
     """
-    Export user data in zip archive if incomplete requests exist.
+    Export user data in zip archive if queued requests exist.
+
     To use in case redis is not set.
     """
     with app.app_context():
         count = generate_user_data_archives(max_reports)
         logger.info(f"Generated data export archives: {count}.")
+
+
+@users_cli.command("export_archive")
+@click.option(
+    "--id",
+    "task_id",
+    type=str,
+    required=True,
+    help="Id of task to process",
+)
+def export_archive(task_id: str) -> None:
+    """
+    Process queued user data export.
+
+    To use in case redis is not set.
+    """
+    with app.app_context():
+        try:
+            process_queued_data_export(task_id)
+        except Exception as e:
+            logger.error(str(e))
+            sys.exit(1)
+        logger.info("\nDone.")

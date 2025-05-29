@@ -27,28 +27,48 @@ export const getDatasets = (
 ): IWorkoutChartData => {
   const datasets: TWorkoutDatasets = {
     speed: {
+      id: 'speed',
       label: t('workouts.SPEED'),
       backgroundColor: ['transparent'],
       borderColor: [useDarkMode ? '#5f5c97' : '#8884d8'],
       borderWidth: 2,
       data: [],
-      yAxisID: 'ySpeed',
+      yAxisID: 'yLeft',
     },
     elevation: {
+      id: 'elevation',
       label: t('workouts.ELEVATION'),
       backgroundColor: [useDarkMode ? '#303030' : '#e5e5e5'],
       borderColor: [useDarkMode ? '#222222' : '#cccccc'],
       borderWidth: 1,
       fill: true,
       data: [],
-      yAxisID: 'yElevation',
+      yAxisID: 'yRight',
+    },
+    hr: {
+      id: 'hr',
+      label: t('workouts.HEART_RATE'),
+      backgroundColor: ['transparent'],
+      borderColor: [useDarkMode ? '#b41e4a' : '#ec1f5e'],
+      borderWidth: 1,
+      data: [],
+      yAxisID: 'yLeft',
+    },
+    cadence: {
+      id: 'cadence',
+      label: t('workouts.CADENCE'),
+      backgroundColor: ['transparent'],
+      borderColor: [useDarkMode ? '#989898' : '#494949'],
+      borderWidth: 1,
+      data: [],
+      yAxisID: 'yLeft',
     },
   }
   const distance_labels: unknown[] = []
   const duration_labels: unknown[] = []
   const coordinates: TCoordinates[] = []
 
-  chartData.map((data) => {
+  chartData.forEach((data) => {
     distance_labels.push(
       convertStatsDistance('km', data.distance, useImperialUnits)
     )
@@ -61,8 +81,22 @@ export const getDatasets = (
         convertStatsDistance('m', data.elevation, useImperialUnits)
       )
     }
+    if (data.hr !== undefined) {
+      datasets.hr.data.push(data.hr)
+    }
+    if (data.cadence !== undefined) {
+      datasets.cadence.data.push(data.cadence)
+    }
     coordinates.push({ latitude: data.latitude, longitude: data.longitude })
   })
+
+  if (datasets.elevation.data.length == 0) {
+    if (datasets.hr.data.length > 0) {
+      datasets.hr.yAxisID = 'yRight'
+    } else if (datasets.cadence.data.length > 0) {
+      datasets.cadence.yAxisID = 'yRight'
+    }
+  }
 
   return { distance_labels, duration_labels, datasets, coordinates }
 }
@@ -76,7 +110,7 @@ export const getDonutDatasets = (
   }
 
   const datasets: Record<number, Record<string, number>> = {}
-  workouts.map((workout) => {
+  workouts.forEach((workout) => {
     if (!datasets[workout.sport_id]) {
       datasets[workout.sport_id] = {
         count: 0,
@@ -94,4 +128,27 @@ export const getDonutDatasets = (
 export const defaultOrder = {
   order: 'desc',
   order_by: 'workout_date',
+}
+
+export function getCadenceUnit(sportLabel: string | undefined) {
+  switch (sportLabel) {
+    case 'Cycling (Sport)':
+    case 'Cycling (Trekking)':
+    case 'Cycling (Transport)':
+    case 'Cycling (Virtual)':
+    case 'Halfbike':
+    case 'Mountain Biking':
+    case 'Mountain Biking (Electric)':
+    case 'Open Water Swimming':
+      return 'rpm'
+    case 'Hiking':
+    case 'Mountaineering':
+    case 'Running':
+    case 'Snowshoes':
+    case 'Trail':
+    case 'Walking':
+      return 'spm'
+    default:
+      return ''
+  }
 }

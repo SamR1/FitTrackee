@@ -1,4 +1,5 @@
 import json
+import re
 from datetime import datetime, timezone
 from typing import List
 from unittest.mock import mock_open, patch
@@ -7,6 +8,7 @@ import pytest
 from flask import Flask
 
 from fittrackee import db
+from fittrackee.files import get_absolute_file_path
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.visibility_levels import VisibilityLevel
@@ -632,14 +634,16 @@ class TestGetWorkoutGpxAsWorkoutOwner(GetWorkoutGpxTestCase):
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        gpx_file_with_gpxtpx_extensions: str,
     ) -> None:
-        gpx_content = self.random_string()
         workout_cycling_user_1.gpx = "file.gpx"
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
         with patch(
-            "builtins.open", new_callable=mock_open, read_data=gpx_content
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=gpx_file_with_gpxtpx_extensions,
         ):
             response = client.get(
                 self.route.format(
@@ -651,7 +655,7 @@ class TestGetWorkoutGpxAsWorkoutOwner(GetWorkoutGpxTestCase):
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
-        assert data["data"]["gpx"] == gpx_content
+        assert data["data"]["gpx"] == gpx_file_with_gpxtpx_extensions
 
 
 class TestGetWorkoutGpxAsFollower(
@@ -709,6 +713,7 @@ class TestGetWorkoutGpxAsFollower(
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
+        gpx_file_with_gpxtpx_extensions: str,
     ) -> None:
         self.init_test_data_for_follower(
             workout_cycling_user_2,
@@ -716,12 +721,14 @@ class TestGetWorkoutGpxAsFollower(
             follower=user_1,
             followed=user_2,
         )
-        gpx_content = self.random_string()
+        user_2.hr_visibility = VisibilityLevel.FOLLOWERS
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
         with patch(
-            "builtins.open", new_callable=mock_open, read_data=gpx_content
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=gpx_file_with_gpxtpx_extensions,
         ):
             response = client.get(
                 self.route.format(
@@ -733,7 +740,47 @@ class TestGetWorkoutGpxAsFollower(
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
-        assert data["data"]["gpx"] == gpx_content
+        assert data["data"]["gpx"] == gpx_file_with_gpxtpx_extensions
+
+    def test_it_does_not_return_heart_rate(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+        gpx_file_with_gpxtpx_extensions: str,
+    ) -> None:
+        self.init_test_data_for_follower(
+            workout_cycling_user_2,
+            map_visibility=VisibilityLevel.FOLLOWERS,
+            follower=user_1,
+            followed=user_2,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=gpx_file_with_gpxtpx_extensions,
+        ):
+            response = client.get(
+                self.route.format(
+                    workout_uuid=workout_cycling_user_2.short_id
+                ),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"]["gpx"] == re.sub(
+            r"<(.*):hr>([\r\n\d]*)</(.*):hr>",
+            "",
+            gpx_file_with_gpxtpx_extensions,
+        )
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -838,16 +885,19 @@ class TestGetWorkoutGpxAsUser(
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_2: Workout,
+        gpx_file_with_ns3_extensions: str,
     ) -> None:
         self.init_test_data_for_public_workout(
             workout_cycling_user_2, map_visibility=VisibilityLevel.PUBLIC
         )
-        gpx_content = self.random_string()
+        user_2.hr_visibility = VisibilityLevel.PUBLIC
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
         with patch(
-            "builtins.open", new_callable=mock_open, read_data=gpx_content
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=gpx_file_with_ns3_extensions,
         ):
             response = client.get(
                 self.route.format(
@@ -859,7 +909,44 @@ class TestGetWorkoutGpxAsUser(
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
-        assert data["data"]["gpx"] == gpx_content
+        assert data["data"]["gpx"] == gpx_file_with_ns3_extensions
+
+    def test_it_does_not_return_heart_rate(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+        gpx_file_with_ns3_extensions: str,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_2, map_visibility=VisibilityLevel.PUBLIC
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=gpx_file_with_ns3_extensions,
+        ):
+            response = client.get(
+                self.route.format(
+                    workout_uuid=workout_cycling_user_2.short_id
+                ),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"]["gpx"] == re.sub(
+            r"<(.*):hr>([\r\n\d]*)</(.*):hr>",
+            "",
+            gpx_file_with_ns3_extensions,
+        )
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -951,14 +1038,17 @@ class TestGetWorkoutGpxAsUnauthenticatedUser(
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        gpx_file_with_ns3_extensions: str,
     ) -> None:
-        gpx_content = self.random_string()
         self.init_test_data_for_public_workout(
             workout_cycling_user_1, map_visibility=VisibilityLevel.PUBLIC
         )
+        user_1.hr_visibility = VisibilityLevel.PUBLIC
         client = app.test_client()
         with patch(
-            "builtins.open", new_callable=mock_open, read_data=gpx_content
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=gpx_file_with_ns3_extensions,
         ):
             response = client.get(
                 self.route.format(
@@ -969,7 +1059,39 @@ class TestGetWorkoutGpxAsUnauthenticatedUser(
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
-        assert data["data"]["gpx"] == gpx_content
+        assert data["data"]["gpx"] == gpx_file_with_ns3_extensions
+
+    def test_it_does_not_return_heart_rate(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        gpx_file_with_ns3_extensions: str,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1, map_visibility=VisibilityLevel.PUBLIC
+        )
+        client = app.test_client()
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=gpx_file_with_ns3_extensions,
+        ):
+            response = client.get(
+                self.route.format(
+                    workout_uuid=workout_cycling_user_1.short_id
+                ),
+            )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"]["gpx"] == re.sub(
+            r"<(.*):hr>([\r\n\d]*)</(.*):hr>",
+            "",
+            gpx_file_with_ns3_extensions,
+        )
 
 
 class GetWorkoutChartDataTestCase(WorkoutApiTestCaseMixin):
@@ -1020,6 +1142,38 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         )
 
         self.assert_500(response)
+
+    def test_it_calls_get_chart_data(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        workout_cycling_user_1.gpx = "file.gpx"
+        with (
+            patch("builtins.open", new_callable=mock_open),
+            patch(
+                "fittrackee.workouts.workouts.get_chart_data",
+                return_value=[],
+            ) as get_chart_data_mock,
+        ):
+            client.get(
+                self.route.format(
+                    workout_uuid=workout_cycling_user_1.short_id
+                ),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        get_chart_data_mock.assert_called_once_with(
+            get_absolute_file_path(workout_cycling_user_1.gpx),
+            sport_1_cycling.label,
+            can_see_heart_rate=True,
+            segment_id=None,
+        )
 
     def test_it_returns_owner_workout_chart_data(
         self,
@@ -1113,7 +1267,7 @@ class TestGetWorkoutChartDataAsFollower(
             ("analysis visibility: public", VisibilityLevel.PUBLIC),
         ],
     )
-    def test_it_returns_chart_data_when_visibile_to_follower(
+    def test_it_returns_chart_data_when_visibility_to_follower(
         self,
         input_desc: str,
         input_analysis_visibility: VisibilityLevel,
@@ -1154,6 +1308,57 @@ class TestGetWorkoutChartDataAsFollower(
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
         assert data["data"]["chart_data"] == chart_data
+
+    @pytest.mark.parametrize(
+        "input_hr_visibility,expected_can_see_heart_rate",
+        [
+            (VisibilityLevel.FOLLOWERS, True),
+            (VisibilityLevel.PRIVATE, False),
+        ],
+    )
+    def test_it_calls_get_chart_data_when_user_can_not_see_heart_rate(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+        input_hr_visibility: VisibilityLevel,
+        expected_can_see_heart_rate: bool,
+    ) -> None:
+        self.init_test_data_for_follower(
+            workout_cycling_user_2,
+            analysis_visibility=VisibilityLevel.PUBLIC,
+            map_visibility=VisibilityLevel.PUBLIC,
+            follower=user_1,
+            followed=user_2,
+        )
+        user_2.hr_visibility = input_hr_visibility
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        workout_cycling_user_2.gpx = "file.gpx"
+        with (
+            patch("builtins.open", new_callable=mock_open),
+            patch(
+                "fittrackee.workouts.workouts.get_chart_data",
+                return_value=[],
+            ) as get_chart_data_mock,
+        ):
+            client.get(
+                self.route.format(
+                    workout_uuid=workout_cycling_user_2.short_id
+                ),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        get_chart_data_mock.assert_called_once_with(
+            get_absolute_file_path(workout_cycling_user_2.gpx),
+            sport_1_cycling.label,
+            can_see_heart_rate=expected_can_see_heart_rate,
+            segment_id=None,
+        )
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -1240,6 +1445,51 @@ class TestGetWorkoutChartDataAsUser(
         self.assert_404_with_message(
             response,
             f"workout not found (id: {workout_cycling_user_2.short_id})",
+        )
+
+    @pytest.mark.parametrize(
+        "input_hr_visibility,expected_can_see_heart_rate",
+        [
+            (VisibilityLevel.PUBLIC, True),
+            (VisibilityLevel.FOLLOWERS, False),
+        ],
+    )
+    def test_it_calls_get_chart_data_when_user_can_not_see_heart_rate(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        input_hr_visibility: VisibilityLevel,
+        expected_can_see_heart_rate: bool,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_2.analysis_visibility = VisibilityLevel.PUBLIC
+        user_2.hr_visibility = input_hr_visibility
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        workout_cycling_user_2.gpx = "file.gpx"
+        with (
+            patch("builtins.open", new_callable=mock_open),
+            patch(
+                "fittrackee.workouts.workouts.get_chart_data",
+                return_value=[],
+            ) as get_chart_data_mock,
+        ):
+            client.get(
+                self.route.format(
+                    workout_uuid=workout_cycling_user_2.short_id
+                ),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        get_chart_data_mock.assert_called_once_with(
+            get_absolute_file_path(workout_cycling_user_2.gpx),
+            sport_1_cycling.label,
+            can_see_heart_rate=expected_can_see_heart_rate,
+            segment_id=None,
         )
 
     def test_it_returns_chart_data_when_analysis_visibility_is_public(
@@ -1355,6 +1605,45 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         self.assert_404_with_message(
             response,
             f"workout not found (id: {workout_cycling_user_1.short_id})",
+        )
+
+    @pytest.mark.parametrize(
+        "input_hr_visibility,expected_can_see_heart_rate",
+        [
+            (VisibilityLevel.PUBLIC, True),
+            (VisibilityLevel.FOLLOWERS, False),
+        ],
+    )
+    def test_it_calls_get_chart_data_when_user_can_not_see_heart_rate(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_hr_visibility: VisibilityLevel,
+        expected_can_see_heart_rate: bool,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        user_1.hr_visibility = input_hr_visibility
+        client = app.test_client()
+        workout_cycling_user_1.gpx = "file.gpx"
+        with (
+            patch("builtins.open", new_callable=mock_open),
+            patch(
+                "fittrackee.workouts.workouts.get_chart_data",
+                return_value=[],
+            ) as get_chart_data_mock,
+        ):
+            client.get(
+                self.route.format(workout_uuid=workout_cycling_user_1.short_id)
+            )
+
+        get_chart_data_mock.assert_called_once_with(
+            get_absolute_file_path(workout_cycling_user_1.gpx),
+            sport_1_cycling.label,
+            can_see_heart_rate=expected_can_see_heart_rate,
+            segment_id=None,
         )
 
     def test_it_returns_chart_data_when_map_visibility_is_public(
