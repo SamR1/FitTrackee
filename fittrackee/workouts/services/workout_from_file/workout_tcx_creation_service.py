@@ -109,6 +109,12 @@ class WorkoutTcxCreationService(WorkoutGpxCreationService):
                         )
 
                         heart_rate = point.get("HeartRateBpm", {}).get("Value")
+                        power = (
+                            point.get("Extensions", {})
+                            .get("TPX", {})
+                            .get("Watts")
+                        )
+
                         cadence = point.get("Cadence", {})
                         if not cadence:
                             extensions = point.get("Extensions", {})
@@ -128,9 +134,13 @@ class WorkoutTcxCreationService(WorkoutGpxCreationService):
                                 f"{cadence_prefix_tag}TPX", {}
                             ).get(f"{cadence_prefix_tag}RunCadence")
 
-                        if heart_rate is not None or cadence is not None:
+                        if (
+                            heart_rate is not None
+                            or cadence is not None
+                            or power is not None
+                        ):
                             gpx_track_point.extensions.append(
-                                cls._get_extensions(heart_rate, cadence)
+                                cls._get_extensions(heart_rate, cadence, power)
                             )
 
                         gpx_segment.points.append(gpx_track_point)

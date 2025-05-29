@@ -74,6 +74,7 @@ class WorkoutKmlCreationService(WorkoutGpxCreationService):
 
             heart_rates = []
             cadences = []
+            powers = []
             extended_data = (
                 kml_track.get("ExtendedData", {})
                 .get("SchemaData", {})
@@ -84,6 +85,8 @@ class WorkoutKmlCreationService(WorkoutGpxCreationService):
                     heart_rates = data["gx:value"]
                 if data["@name"] == "cadence":
                     cadences = data["gx:value"]
+                if data["@name"] == "power":
+                    powers = data["gx:value"]
 
             for index, date in enumerate(times):
                 if not coords[index]:
@@ -99,9 +102,14 @@ class WorkoutKmlCreationService(WorkoutGpxCreationService):
                     heart_rates[index] if len(heart_rates) > index else None
                 )
                 cadence = cadences[index] if len(cadences) > index else None
-                if heart_rate is not None or cadence is not None:
+                power = powers[index] if len(powers) > index else None
+                if (
+                    heart_rate is not None
+                    or cadence is not None
+                    or power is not None
+                ):
                     point.extensions.append(
-                        cls._get_extensions(heart_rate, cadence)
+                        cls._get_extensions(heart_rate, cadence, power)
                     )
 
                 gpx_segment.points.append(point)
