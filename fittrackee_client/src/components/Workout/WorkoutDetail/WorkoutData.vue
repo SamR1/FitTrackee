@@ -1,5 +1,10 @@
 <template>
   <div id="workout-info">
+    <div class="workout-data" v-if="workoutObject.source !== null">
+      <i class="fa fa-info-circle" aria-hidden="true" />
+      <span class="label"> {{ $t('workouts.SOURCE') }} </span>:
+      <span class="label">{{ workoutObject.source }}</span>
+    </div>
     <div class="workout-data">
       <i class="fa fa-clock-o" aria-hidden="true" />
       <span class="label"> {{ $t('workouts.DURATION') }} </span>:
@@ -102,6 +107,49 @@
         :useImperialUnits="useImperialUnits"
       />
     </div>
+    <div
+      class="workout-data"
+      v-if="
+        workoutObject.aveCadence !== null && workoutObject.maxCadence !== null
+      "
+    >
+      <img
+        class="cadence"
+        src="/img/workouts/cadence.svg"
+        :alt="$t('workouts.CADENCE')"
+      />
+      <span class="label">{{ $t('workouts.AVERAGE_CADENCE') }}</span
+      >:
+      <span class="value" :title="t(`workouts.UNITS.${cadenceUnit}.LABEL`)"
+        >{{ workoutObject.aveCadence }}
+        {{ t(`workouts.UNITS.${cadenceUnit}.UNIT`) }}</span
+      >
+      <br />
+      <span class="label"> {{ $t('workouts.MAX_CADENCE') }}</span
+      >:
+      <span class="value" :title="t(`workouts.UNITS.${cadenceUnit}.LABEL`)"
+        >{{ workoutObject.maxCadence }}
+        {{ t(`workouts.UNITS.${cadenceUnit}.UNIT`) }}</span
+      >
+    </div>
+    <div
+      class="workout-data"
+      v-if="workoutObject.aveHr !== null && workoutObject.maxHr !== null"
+    >
+      <i class="fa fa-heartbeat" aria-hidden="true" />
+      <span class="label">{{ $t('workouts.AVERAGE_HR') }}</span
+      >:
+      <span class="value" :title="t(`workouts.UNITS.bpm.LABEL`)"
+        >{{ workoutObject.aveHr }} {{ t(`workouts.UNITS.bpm.UNIT`) }}</span
+      >
+      <br />
+      <span class="label"> {{ $t('workouts.MAX_HR') }}</span
+      >:
+      <span class="value" :title="t(`workouts.UNITS.bpm.LABEL`)"
+        >{{ workoutObject.maxHr }} {{ t(`workouts.UNITS.bpm.UNIT`) }}</span
+      >
+    </div>
+    <div class="spacer" />
     <WorkoutWeather
       :workoutObject="workoutObject"
       :useImperialUnits="useImperialUnits"
@@ -112,6 +160,7 @@
 <script setup lang="ts">
   import { computed, toRefs } from 'vue'
   import type { ComputedRef } from 'vue'
+  import { useI18n } from 'vue-i18n'
 
   import WorkoutRecord from '@/components/Workout/WorkoutDetail/WorkoutRecord.vue'
   import WorkoutWeather from '@/components/Workout/WorkoutDetail/WorkoutWeather.vue'
@@ -121,9 +170,12 @@
     workoutObject: IWorkoutObject
     useImperialUnits: boolean
     displayHARecord: boolean
+    cadenceUnit: string
   }
   const props = defineProps<Props>()
   const { displayHARecord, workoutObject, useImperialUnits } = toRefs(props)
+
+  const { t } = useI18n()
 
   const withPause: ComputedRef<boolean> = computed(
     () =>
@@ -141,12 +193,13 @@
     width: 100%;
 
     .fa,
-    .mountains {
+    .mountains,
+    .cadence {
       padding-right: $default-padding * 0.5;
     }
 
     .workout-data {
-      padding: $default-padding * 0.5 0;
+      padding: $default-padding * 0.25 0;
       .label {
         text-transform: capitalize;
       }
@@ -154,6 +207,10 @@
         font-weight: bold;
         text-transform: lowercase;
       }
+    }
+
+    .spacer {
+      flex-grow: 3;
     }
 
     @media screen and (max-width: $small-limit) {

@@ -173,6 +173,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     state: S,
     chartDate: IWorkoutApiChartData[]
   ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA_LOADING](
+    state: S,
+    loading: boolean
+  ): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CONTENT](
     state: S,
     workout: IWorkout

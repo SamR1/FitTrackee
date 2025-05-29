@@ -39,6 +39,7 @@ services:
       - .:/usr/src/app
       - ./data/uploads:/usr/src/app/data/uploads
       - ./data/logs:/usr/src/app/data/logs
+      - ./data/.staticmap_cache:/usr/src/app/data/.staticmap_cache
 
   fittrackee_client:
     container_name: fittrackee_client

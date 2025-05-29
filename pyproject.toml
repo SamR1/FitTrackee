@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.9.11"
+version = "0.10.0b2"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0-only"
@@ -34,6 +34,8 @@ authlib = "=1.5.2"
 babel = "^2.11.0"
 click = "^8.1.7"
 dramatiq = {version = "^1.15.0", extras = ["redis"]}
+dramatiq-abort = {extras = ["redis"], version = "^1.2.1"}
+fitdecode = "^0.10.0"
 flask = "^3.1.1"
 flask-bcrypt = "^1.0.1"
 flask-dramatiq = "^0.6.0"
@@ -44,15 +46,17 @@ gpxpy = "=1.6.2"
 gunicorn = "^23.0.0"
 humanize = "^4.12.2"
 jsonschema = "^4.23.0"
+lxml = "^5.4.0"
 nh3 = "^0.2.21"
 psycopg2-binary = "^2.9.10"
 pyjwt = "^2.10.1"
 pyopenssl = "^25.1.0"
 pytz = "^2025.2"
 shortuuid = "^1.0.13"
-staticmap = "^0.5.7"
 sqlalchemy = "=2.0.41"
+staticmap3 = {extras = ["filecache"], version = "^0.1.0"}
 ua-parser = "^1.0.0"
+xmltodict = "^0.14.2"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.8.3"
@@ -117,6 +121,7 @@ quote-style = "double"
 "fittrackee/application/app_config.py" = ["E501"]
 "fittrackee/tests/test_email.py" = ["E501"]
 "fittrackee/tests/test_email_template_password_request.py" = ["E501"]
+"fittrackee/tests/fixtures/fixtures_workouts.py" = ["E501"]
 
 [tool.pytest.ini_options]
 markers = [

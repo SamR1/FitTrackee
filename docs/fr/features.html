@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Fonctionnalités - Documentation FitTrackee 0.9.11</title>
+        <title>Fonctionnalités - Documentation FitTrackee 0.10.0b2</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.9.11
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.10.0b2
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.9.11
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.10.0b2
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -221,6 +221,7 @@
 <li class="toctree-l2"><a class="reference internal" href="api/follow_requests.html">Demandes de suivi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/oauth2.html">OAuth2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/notifications.html">Notifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/queued_tasks.html">Tâches en attente</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/reports.html">Signalements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
@@ -289,11 +290,11 @@
           <section id="features">
 <h1>Fonctionnalités<a class="headerlink" href="#features" title="Lien vers cette rubrique">¶</a></h1>
 <div class="line-block">
-<div class="line"><strong>FitTrackee</strong> vous permet de stocker et d’afficher les données issues des fichiers <strong>gpx</strong> et quelques statistiques à partir de vos activités sportives <strong>en plein air</strong>.</div>
+<div class="line"><strong>FitTrackee</strong> vous permet de stocker et d’afficher les données issues des fichiers gpx (ou d’autres formats) et quelques statistiques à partir de vos activités sportives en <strong>plein air</strong>.</div>
 <div class="line">Des équipements peuvent être associés aux séances.</div>
 </div>
 <p>Si l’inscription est activée, plusieurs utilisateurs peuvent s’inscrire et interagir avec les autres utilisateurs (commentaires, « likes »). Les séances et commentaires sont visibles selon le niveau de visibilité configuré.</p>
-<p>Les fichier .gpx sont stockés dans un répertoire du serveur (<strong>sans aucun chiffrement</strong>).</p>
+<p>Les fichier sont stockés dans un répertoire du serveur (<strong>sans aucun chiffrement</strong>).</p>
 <p>Avec la configuration par défaut, <a class="reference external" href="https://www.openstreetmap.org">Open Street Map</a> est utilisé comme serveur de tuile sur la page de détail de la séance et pour la génération des images statiques des traces.</p>
 <section id="workouts">
 <h2>Séances<a class="headerlink" href="#workouts" title="Lien vers cette rubrique">¶</a></h2>
@@ -357,9 +358,9 @@
 <ul>
 <li><p>Une séance peut être créée en :</p>
 <ul>
-<li><p>ajoutant manuellement d’un fichier gpx ou d’une archive zip contenant un nombre limité de fichiers gpx</p></li>
+<li><p>ajoutant manuellement un fichier ou une archive zip contenant un nombre limité de fichiers</p></li>
 <li><div class="line-block">
-<div class="line">ou entrant les date, heure, durée et distance (sans fichier gpx).</div>
+<div class="line">ou entrant les date, heure, durée et distance (sans fichier).</div>
 <div class="line">Les dénivelés positif et négatif peuvent être également fournis (<em>nouveau dans la version 0.7.10</em>).</div>
 </div>
 </li>
@@ -369,13 +370,13 @@
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
 <div class="line-block">
-<div class="line">Seuls les fichiers <strong>gpx</strong> contenant la date et l’heure ainsi que l’altitude sont pris en charge (dans le cas contraire, des erreurs peuvent se produire lors du téléversement).</div>
+<div class="line">Seuls les fichiers contenant <em>a minima</em> la date et l’heure ainsi que les coordonnées sont pris en charge (dans le cas contraire, des erreurs peuvent se produire lors du téléversement).</div>
 </div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Les valeurs calculées peuvent différer de celles calculées par l’application qui a généré les fichiers gpx à l’origine, en particulier la vitesse maximale.</div>
+<div class="line">Les valeurs calculées peuvent différer de celles calculées par l’application qui a généré les fichiers à l’origine, en particulier la vitesse maximale.</div>
 </div>
 </div>
 <div class="admonition note">
@@ -392,8 +393,60 @@
 </div>
 <ul>
 <li><div class="line-block">
-<div class="line">Si le nom est présent dans le fichier gpx  (<code class="docutils literal notranslate"><span class="pre">&lt;name&gt;&lt;/name&gt;</span></code>), il est utilisé comme titre de la séance. Sinon un titre est généré à partir du sport et de la date de la séance.</div>
-<div class="line">L’utilisateur peut ajouter un titre lors du téléversement du fichier gpx (<em>nouveau dans la version 0.8.10</em>)</div>
+<div class="line">Le chargement des archives de séances peut être asynchrone quand une limite pour le traitement synchrone est définie (<em>nouveau dans la version 0.10.0</em>).</div>
+<div class="line">Les tâches de chargement asynchrone peuvent être affichées dans le compte de l’utilisateur et peuvent être interrompues par l’utilisateur.</div>
+<div class="line">En cas d’erreur, la liste des erreurs rencontrées est affichée à la fin du chargement</div>
+<div class="line">Une notification est affichée après le traitement de la tâche.</div>
+</div>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<div class="line-block">
+<div class="line">Un délai est défini pour éviter l’exécution trop longue des tâches de chargement.</div>
+<div class="line">Les tâches de chargement en erreur ou interrompues ne sont pas retraités.</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Les données météo ne sont pas collectées pendant le chargement asynchrone pour éviter d’atteindre les limites d’accès des API.</p>
+</div>
+<ul class="simple">
+<li><p>Les extensions de fichiers sont supportés sont :</p>
+<ul>
+<li><p>.gpx</p></li>
+<li><p>.fit  (<em>nouveau dans la version 0.10.0</em>)</p></li>
+<li><p>.kml et .kmz  (<em>nouveau dans la version 0.10.0</em>)</p>
+<ul>
+<li><p>versions supportées : 2.2.0 and 2.3.0</p></li>
+<li><p>seuls les fichiers avec les tags <code class="docutils literal notranslate"><span class="pre">Placemark</span></code>/<code class="docutils literal notranslate"><span class="pre">MultiTrack</span></code>/<code class="docutils literal notranslate"><span class="pre">Tracks</span></code> sont supportées.</p></li>
+<li><p>les fichiers avec des répertoires ou plusieurs <code class="docutils literal notranslate"><span class="pre">Placemark</span></code> ne sont pas supportées pour le moment.</p></li>
+</ul>
+</li>
+<li><p>.tcx (<em>nouveau dans la version 0.10.0</em>)</p></li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Pour les extensions autre que .gpx, les fichiers sont converties to .gpx :</p>
+<ul class="simple">
+<li><p>.fit: le fichier .gpx généré contient une trace (<code class="docutils literal notranslate"><span class="pre">&lt;trk&gt;</span></code>). Un nouveau segment (<code class="docutils literal notranslate"><span class="pre">&lt;trkseg&gt;</span></code>) est créé après chaque évènement <code class="docutils literal notranslate"><span class="pre">stop_all</span></code>.</p></li>
+<li><p>.kml: le fichier .gpx généré contient une trace (<code class="docutils literal notranslate"><span class="pre">&lt;trk&gt;</span></code>) correspondant au  <code class="docutils literal notranslate"><span class="pre">&lt;MultiTrack&gt;</span></code>, contenant un segment (<code class="docutils literal notranslate"><span class="pre">&lt;trkseg&gt;</span></code>) par trace du fichier .kml (<code class="docutils literal notranslate"><span class="pre">&lt;Track&gt;</span></code>)</p></li>
+<li><p>.tcx: le fichier .gpx généré contient une trace (<code class="docutils literal notranslate"><span class="pre">&lt;trk&gt;</span></code>) contenant un segment (<code class="docutils literal notranslate"><span class="pre">&lt;trkseg&gt;</span></code>) per activité (<code class="docutils literal notranslate"><span class="pre">&lt;Activity&gt;</span></code>)</p></li>
+</ul>
+</div>
+<ul class="simple">
+<li><p>Si présent dans les fichiers .gpx, .tcx et .fit, la source (application ou appareil) est affichée.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Les fichiers .fit provenant des appareils Garmin peuvent contenir l’identifiant du produit au lieu du nom du produit. Une correspondance entre l’identifiant et le nom permet d’afficher le nom du produit à la place, si disponible.</p>
+</div>
+<ul>
+<li><div class="line-block">
+<div class="line">Si le nom est présent dans le fichier, il est utilisé comme titre de la séance. Sinon un titre est généré à partir du sport et de la date de la séance.</div>
+<div class="line">L’utilisateur peut ajouter un titre lors du téléversement du fichier (<em>nouveau dans la version 0.8.10</em>)</div>
 </div>
 </li>
 <li><div class="line-block">
@@ -401,11 +454,38 @@
 <div class="line">Une syntaxe Markdown limitée peut être utilisée (<em>nouveau dans la version 0.9.0</em>).</div>
 </div>
 </li>
-<li><p>Si présente et qu’aucune description n’est fournie par l’utilisateur, la description du fichier gpx (<code class="docutils literal notranslate"><span class="pre">&lt;desc&gt;&lt;/desc&gt;</span></code>) est utilisée comme description de la séance.</p></li>
+<li><p>Si présente et qu’aucune description n’est fournie par l’utilisateur, la description du fichier est utilisée comme description de la séance.</p></li>
 <li><div class="line-block">
-<div class="line">Une séance avec un fichier gpx est affichée avec une carte et des graphiques (vitesse et altitude (si le fichier contient les données relatives à l’altitude (<em>mis à jour dans la version 0.7.20</em>)).</div>
+<div class="line">La carte est affichée pour les séances avec un fichier.</div>
 <div class="line">Des boutons permettent une visualisation en plein écran et la réinitialisation de la position (<em>nouveau dans la version 0.5.5</em>).</div>
 </div>
+</li>
+<li><div class="line-block">
+<div class="line">Un graphique est affiché pour les séances avec un fichier, avec :</div>
+</div>
+<ul class="simple">
+<li><p>la vitesse</p></li>
+<li><p>l’altitude si disponible (<em>modifié dans la version 0.7.20</em>)</p></li>
+<li><p>la fréquence cardiaque si disponible (<em>nouveau dans la version 0.10.0</em>)</p></li>
+<li><p>la cadence si disponible (<em>nouveau dans la version 0.10.0</em>), pour les sports suivants :</p>
+<ul>
+<li><p>Vélo (Sport)</p></li>
+<li><p>Vélo (Trekking)</p></li>
+<li><p>Vélo (Transport)</p></li>
+<li><p>Vélo (Virtuel)</p></li>
+<li><p>Halfbike</p></li>
+<li><p>VTT</p></li>
+<li><p>VTT (Électrique)</p></li>
+<li><p>Randonnée</p></li>
+<li><p>Alpinisme</p></li>
+<li><p>Raquettes</p></li>
+<li><p>Course à pied</p></li>
+<li><p>Trail</p></li>
+<li><p>Marche</p></li>
+<li><p>Nage en eau libre</p></li>
+</ul>
+</li>
+</ul>
 </li>
 <li><div class="line-block">
 <div class="line">Si la clé d’API de <strong>Visual Crossing</strong> (<em>nouveau in 0.7.11</em>) est fournie, la météo est affichée dans les détails de l’entraînement. La source des données est affichée dans la page <strong>A propos</strong>.</div>
@@ -423,20 +503,21 @@
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Les records peuvent différer des records affichés par l’application qui a généré les fichiers gpx à l’origine.</p>
+<p>Les records peuvent différer des records affichés par l’application qui a généré les fichiers à l’origine.</p>
 </div>
 <ul>
-<li><p>Le niveau de visibilité peut être configuré séparément pour les données de la séance, l’analyse et la carte (<em>nouveau dans la version 0.9.0</em>)</p>
+<li><p>Le niveau de visibilité peut être configuré séparément pour les données de la séance, l’analyse, la carte (<em>nouveau dans la version 0.9.0</em>) et la fréquence cardiaque (<em>nouveau dans la version 0.10.0</em>) :</p>
 <ul class="simple">
-<li><p>privé: seul le propriétaire de la séance peut voir les données,</p></li>
-<li><p>abonnés seulement: seul le propriétaire de la séance et les abonnés peuvent voir les données,</p></li>
+<li><p>privé : seul le propriétaire de la séance peut voir les données,</p></li>
+<li><p>abonnés seulement : seul le propriétaire de la séance et les abonnés peuvent voir les données,</p></li>
 <li><p>public: tout le monde peut voir les données, même les utilisateurs non authentifiés.</p></li>
 </ul>
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line">La visibilité de la séance s’applique sur le titre, la description, les records et données de la séances à l’exception de l’altitude.</div>
-<div class="line">La visibilité de l’analyse s’applique sur les données du graphique, l’altitude et les segments, si la séance est associée à un fichier gpx.</div>
-<div class="line">La visibilité de la carte s’applique sur la carte, si la séance est associée à un fichier gpx.</div>
+<div class="line">La visibilité de l’analyse s’applique sur les données du graphique, l’altitude et les segments, si la séance est associée à un fichier.</div>
+<div class="line">La visibilité de la carte s’applique sur la carte, si la séance est associée à un fichier.</div>
+<div class="line">La visibilité de la fréquence cardiaque s’applique aux données liées à la fréquence cardiaque, si la séance est associée à un fichier (<em>nouveau dans la version 0.10.0</em>).</div>
 <div class="line"><br /></div>
 <div class="line">La visibilité peut être configurée dans les préférences de l’utilisateur.</div>
 </div>
@@ -445,7 +526,7 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Une séance avec un fichier gpx dont la visibilité pour la carte et l’analyse est privée apparait comme une séance sans fichier gpx.</div>
+<div class="line">Une séance avec un fichier dont la visibilité pour la carte et l’analyse est privée apparait comme une séance sans fichier.</div>
 <div class="line">La vitesse maximale est renvoyée quelque soit la visibilité de l’analyse.</div>
 </div>
 </div>
@@ -769,6 +850,7 @@
 <li><div class="line-block">
 <div class="line">Un utilisateur peut demander un export de données (<em>nouveau dans la version 0.7.13</em>).</div>
 <div class="line">Une archive zip sera générée, contenant 2 fichiers <code class="docutils literal notranslate"><span class="pre">json</span></code> (informations de l’utilisateur et données des séances) et tous les fichiers gpx ajoutée.</div>
+<div class="line">Une notification est affichée à la fin de l’export (<em>nouveau dans la version 0.10.0</em>).</div>
 </div>
 </li>
 </ul>
@@ -780,6 +862,7 @@
 <li><p>Un utilisateur peut afficher les utilisateurs bloqués (<em>nouveau dans la version 0.9.0</em>)</p></li>
 <li><p>Un utilisateur peut afficher les demandes d’abonnements pour les accepter ou les rejeter (<em>nouveau dans la version 0.9.0</em>).</p></li>
 <li><p>Un utilisateur peut afficher les sanctions reçues (<em>nouveau dans la version 0.9.0</em>).</p></li>
+<li><p>Un utilisateur peut voir, interrompre et supprimer les tâches de chargement d’archives (<em>nouveau dans la version 0.10.0</em>).</p></li>
 </ul>
 </section>
 <section id="equipments">
@@ -867,9 +950,10 @@
 <p>Les paramètres suivants peuvent être définis :</p>
 <ul class="simple">
 <li><p>limite d’utilisateurs actifs (valeur par défaut : 0). Si la valeur est égale  à 0, l’inscription est activée (aucune limite n’est définie).</p></li>
-<li><p>taille maximale du fichier gpx (ajouté unitairement ou dans une archive zip, valeur par défaut : 1 Mo) (<em>modifié dans la version 0.7.4</em>)</p></li>
+<li><p>taille maximale du fichier (ajouté unitairement ou dans une archive zip, valeur par défaut : 1 Mo) (<em>modifié dans la version 0.7.4</em>)</p></li>
 <li><p>taille maximale de l’archive zip (valeur par défaut : 10 Mo)</p></li>
 <li><p>nombre maximum de fichiers dans l’archive zip (valeur par défaut : 10) (<em>modifié dans la version 0.7.4</em>)</p></li>
+<li><p>nombre maximum de fichiers pour le traitement synchrone (valeur par défaut : 10) (<em>nouveau dans la version 0.10.0</em>). Si le nombre maximum de fichiers dans l’archive zip est égal à celui des fichiers traités en synchrone, le chargement asynchrone est désactivé.</p></li>
 <li><p>nombre maximum de séances pour les statistiques d’un sport (par défaut : 10 000). S’il est égal à 0, toutes les séances sont récupérées pour calculer les statistiques (<em>nouveau dans la version 0.8.5</em>)</p></li>
 <li><p>adresse électronique pour contacter l’administrateur (<em>nouveau dans la version 0.6.0</em>)</p></li>
 </ul>
@@ -1016,6 +1100,19 @@
 <li><p>Seuls les utilisateurs ayant des droits d’administration peuvent accéder à l’administration des sports.</p></li>
 <li><p>activer ou désactiver un sport (un sport peut être désactivé même si une séance avec ce sport existe).</p></li>
 </ul>
+</section>
+<section id="queued-tasks">
+<h3>Tâches en attente<a class="headerlink" href="#queued-tasks" title="Lien vers cette rubrique">¶</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 0.10.0.</span></p>
+</div>
+<ul class="simple">
+<li><p>Seuls les utilisateurs ayant des droits d’administration peuvent accéder aux tâches en attente pour les exports des données utilisateurs ou le chargement des archives de séances.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si aucun <em>worker</em> n’est lancé, une <a class="reference external" href="cli.html">interface de ligne de commandes</a> permet de traiter les tâches en attente.</p>
+</div>
 </section>
 </section>
 <section id="translations">
@@ -1225,6 +1322,7 @@
 <li><a class="reference internal" href="#moderation">Modération</a></li>
 <li><a class="reference internal" href="#equipment-types">Types d’équipement</a></li>
 <li><a class="reference internal" href="#id3">Sports</a></li>
+<li><a class="reference internal" href="#queued-tasks">Tâches en attente</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#translations">Traductions</a></li>
@@ -1251,7 +1349,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=003f56fb"></script>
+</div><script src="_static/documentation_options.js?v=89d628d1"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

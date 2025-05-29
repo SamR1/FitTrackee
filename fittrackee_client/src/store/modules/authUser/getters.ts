@@ -71,4 +71,20 @@ export const getters: GetterTree<IAuthUserState, IRootState> &
   [AUTH_USER_STORE.GETTERS.TIMEZONES]: (state: IAuthUserState) => {
     return state.timezones
   },
+  [AUTH_USER_STORE.GETTERS.ARCHIVE_UPLOAD_TASK]: (state: IAuthUserState) => {
+    return state.archiveUploadTasks.task
+  },
+  [AUTH_USER_STORE.GETTERS.ARCHIVE_UPLOAD_TASKS]: (state: IAuthUserState) => {
+    return state.archiveUploadTasks.tasks
+  },
+  [AUTH_USER_STORE.GETTERS.ARCHIVE_UPLOAD_TASKS_LOADING]: (
+    state: IAuthUserState
+  ) => {
+    return state.archiveUploadTasks.loading
+  },
+  [AUTH_USER_STORE.GETTERS.ARCHIVE_UPLOAD_TASKS_PAGINATION]: (
+    state: IAuthUserState
+  ) => {
+    return state.archiveUploadTasks.pagination
+  },
 }

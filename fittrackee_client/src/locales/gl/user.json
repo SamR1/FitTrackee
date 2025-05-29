@@ -22,10 +22,7 @@
     "DOWNLOAD_ARCHIVE": "Descargar arquivo",
     "GENERATING_LINK": "creando ligazón…",
     "ONLY_ONE_EXPORT_PER_DAY": "Podes solicitar un arquivo cada 24 horas",
-    "STATUS": {
-      "errored": "fallou (solicita outra exportación)",
-      "in_progress": "en progreso…"
-    }
+    "REQUEST_ANOTHER_EXPORT": "solicita outra exportación"
   },
   "FILTER_ON_USERNAME": "Filtrar por identificador",
   "HIDE_PASSWORD": "agochar contrasinal",
@@ -233,6 +230,12 @@
   "SUSPENDED": "Suspendida",
   "SUSPENDED_ACCOUNT": "Conta suspendida",
   "SUSPENSION_REASON": "Razón da suspensión",
+  "TASKS": {
+    "STATUS": {
+      "errored": "fallou",
+      "in_progress": "en progreso"
+    }
+  },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Esta conta de usuaria está desactivada.",
   "TOGGLE_THEME": "Cambiar decorado (modo Claro ou Escuro)",
   "USER": "usuaria | usuarias",

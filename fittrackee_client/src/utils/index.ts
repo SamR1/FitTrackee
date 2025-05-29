@@ -55,31 +55,45 @@ export const handleError = (
     return
   }
 
+  if (
+    error?.response?.status === 400 &&
+    errorInfo &&
+    'errored_workouts' in errorInfo &&
+    'new_workouts' in errorInfo
+  ) {
+    context.commit(ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES, {
+      createdWorkouts: errorInfo.new_workouts,
+      erroredWorkouts: errorInfo.errored_workouts,
+    })
+    return
+  }
+
   const equipmentError = getEquipmentError(error, context)
-  const errorMessages = equipmentError
-    ? ''
-    : !error
-      ? msg
-      : error.response
-        ? error.response.status === 413
-          ? 'file size is greater than the allowed size'
-          : errorInfo?.message
-            ? errorInfo.message
-            : msg
-        : error.message
-          ? error.message
+  if (equipmentError) {
+    context.commit(ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES, equipmentError)
+    return
+  }
+
+  const errorMessages = !error
+    ? msg
+    : error.response
+      ? error.response.status === 413
+        ? 'file size is greater than the allowed size'
+        : errorInfo?.message
+          ? errorInfo.message
           : msg
+      : error.message
+        ? error.message
+        : msg
 
   context.commit(
     ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
-    equipmentError
-      ? equipmentError
-      : errorMessages.includes('\n')
-        ? errorMessages
-            .split('\n')
-            .filter((m: string) => m !== '')
-            .map((m: string) => `api.ERROR.${m}`)
-        : `api.ERROR.${errorMessages}`
+    errorMessages.includes('\n')
+      ? errorMessages
+          .split('\n')
+          .filter((m: string) => m !== '')
+          .map((m: string) => `api.ERROR.${m}`)
+      : `api.ERROR.${errorMessages}`
   )
 }
 

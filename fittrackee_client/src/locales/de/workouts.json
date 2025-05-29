@@ -22,17 +22,16 @@
   "DELETE_WORKOUT": "Workout löschen",
   "DESCENT": "Abstieg",
   "DESCRIPTION": "Beschreibung",
-  "DESCRIPTION_FIELD_HELP": "Wenn gegeben, ersetzt die Beschreibung die der GPX-Datei.",
+  "DESCRIPTION_FIELD_HELP": "Wenn gegeben, ersetzt die Beschreibung die der Datei.",
   "DISPLAY_FILTERS": "zeige Filter",
   "DISTANCE": "Entfernung",
-  "DOWNLOAD_WORKOUT": "Workout herunterladen",
+  "DOWNLOAD_WORKOUT": "Workout herunterladen (gpx)",
   "DURATION": "Dauer",
   "EDIT_WORKOUT": "Training bearbeiten",
   "ELEVATION": "Höhe",
   "END": "Ende",
   "EXIT_FULLSCREEN": "Vollbild verlassen",
   "FROM": "Von",
-  "GPX_FILE": ".gpx Datei",
   "HIDE_FILTERS": "verberge Filter",
   "INVALID_ASCENT_OR_DESCENT": "Beide Höhenwerte müssen angegeben werden und größer oder gleich 0 sein.",
   "INVALID_DISTANCE": "Die Distanz muss größer als 0 sein",
@@ -92,7 +91,7 @@
   "START_ELEVATION_AT_ZERO": "Höhenachse bei Null starten",
   "SUSPENDED_BY_ADMIN": "Das Workout wurde von einem Administrator gesperrt.",
   "TITLE": "Titel",
-  "TITLE_FIELD_HELP": "Wenn gegeben, ersetzt der Titel den der GPX-Datei.",
+  "TITLE_FIELD_HELP": "Wenn gegeben, ersetzt der Titel den der Datei.",
   "TO": "bis",
   "TOTAL_ASCENT": "Gesamtanstieg",
   "TOTAL_DESCENT": "Gesamtabstieg",
@@ -135,8 +134,8 @@
       "WSW": "WSW"
     }
   },
-  "WITHOUT_GPX": "ohne .gpx Datei",
-  "WITH_GPX": "mit .gpx Datei",
+  "WITHOUT_FILE": "ohne Datei",
+  "WITH_FILE": "mit Datei",
   "WORKOUT": "Training | Trainings",
   "WORKOUTS_STATISTICS": {
     "all": "Statistiken für alle Seiten",
@@ -148,5 +147,5 @@
   "WORKOUT_DELETION_CONFIRMATION": "Bist du sicher, dass du dieses Training löschen möchtest?",
   "WORKOUT_MAP": "Workout-Karte",
   "ZIP_ARCHIVE": ".zip Datei",
-  "ZIP_ARCHIVE_DESCRIPTION": "oder .zip Datei mit .gpx Dateien"
+  "ZIP_ARCHIVE_DESCRIPTION": "oder .zip Datei mit Dateien"
 }

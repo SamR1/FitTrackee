@@ -26,17 +26,16 @@
   "DELETE_WORKOUT": "Obriši aktivnost",
   "DESCENT": "silazak",
   "DESCRIPTION": "opis",
-  "DESCRIPTION_FIELD_HELP": "ako je upisan, opis zamjenjuje onaj iz .gpx datoteke.",
+  "DESCRIPTION_FIELD_HELP": "ako je upisan, opis zamjenjuje onaj iz datoteke.",
   "DISPLAY_FILTERS": "prikaži filtre",
   "DISTANCE": "udaljenost",
-  "DOWNLOAD_WORKOUT": "Preuzmi aktivnost",
+  "DOWNLOAD_WORKOUT": "Preuzmi aktivnost (gpx)",
   "DURATION": "vrijeme",
   "EDIT_WORKOUT": "Uredi aktivnost",
   "ELEVATION": "elevacija",
   "END": "odredište",
   "EXIT_FULLSCREEN": "Izlazak iz prikaza preko cijelog zaslona",
   "FROM": "od",
-  "GPX_FILE": ".gpx datoteka",
   "HIDE_FILTERS": "sakrij filtre",
   "HIDE_WORKOUTS": "sakrij aktivnosti",
   "INVALID_ASCENT_OR_DESCENT": "Moraju biti navedene obje vrijednosti nadmorske visine te biti veće ili jednake 0.",
@@ -98,7 +97,7 @@
   "START_ELEVATION_AT_ZERO": "započni elevacijsku os na nuli",
   "SUSPENDED_BY_ADMIN": "Aktivnost je suspendirana od strane administratora.",
   "TITLE": "naslov",
-  "TITLE_FIELD_HELP": "ako je naveden, naslov zamjenjuje onaj iz .gpx datoteke.",
+  "TITLE_FIELD_HELP": "ako je naveden, naslov zamjenjuje onaj iz datoteke.",
   "TO": "do",
   "TOTAL_ASCENT": "ukupni uspon",
   "TOTAL_DESCENT": "ukupni silazak",
@@ -141,8 +140,8 @@
       "WSW": "ZJZ"
     }
   },
-  "WITHOUT_GPX": "bez .gpx datoteke",
-  "WITH_GPX": "s .gpx datotekom",
+  "WITHOUT_FILE": "bez datoteke",
+  "WITH_FILE": "s datotekom",
   "WORKOUT": "aktivnost | aktivnosti",
   "WORKOUTS_STATISTICS": {
     "all": "statistika za sve stranice ({count} aktivnosti)",
@@ -154,5 +153,5 @@
   "WORKOUT_DELETION_CONFIRMATION": "Jeste li sigurni da želite izbrisati ovu aktivnost?",
   "WORKOUT_MAP": "karta aktivnosti",
   "ZIP_ARCHIVE": ".zip datoteka",
-  "ZIP_ARCHIVE_DESCRIPTION": "ili .zip arhiva koja sadrži .gpx datoteke"
+  "ZIP_ARCHIVE_DESCRIPTION": "ili .zip arhiva koja sadrži datoteke"
 }

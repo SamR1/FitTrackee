@@ -1,17 +1,19 @@
 from datetime import datetime, timezone
-from typing import Dict, Optional
+from typing import Dict
 from unittest.mock import Mock, patch, sentinel
 
 import pytest
 import pytz
 import requests
-from gpxpy.gpx import GPXTrackPoint
 
 from fittrackee.dates import get_datetime_in_utc
 from fittrackee.tests.mixins import BaseTestMixin
 from fittrackee.tests.utils import random_string
-from fittrackee.workouts.utils.weather.visual_crossing import VisualCrossing
-from fittrackee.workouts.utils.weather.weather_service import WeatherService
+from fittrackee.workouts.services.weather.visual_crossing import VisualCrossing
+from fittrackee.workouts.services.weather.weather_service import WeatherService
+from fittrackee.workouts.services.workout_from_file.workout_point import (
+    WorkoutPoint,
+)
 
 VISUAL_CROSSING_RESPONSE = {
     "queryCost": 1,
@@ -51,8 +53,8 @@ class WeatherTestCase(BaseTestMixin):
     api_key = random_string()
 
     @staticmethod
-    def get_gpx_point(time: Optional[datetime] = None) -> GPXTrackPoint:
-        return GPXTrackPoint(latitude=48.866667, longitude=2.333333, time=time)
+    def get_gpx_point(time: datetime) -> WorkoutPoint:
+        return WorkoutPoint(latitude=48.866667, longitude=2.333333, time=time)
 
 
 class TestVisualCrossingGetTimestamp(WeatherTestCase):
@@ -210,15 +212,6 @@ class TestWeatherService(WeatherTestCase):
         weather_service = WeatherService()
         weather_service.weather_api = None
         point = self.get_gpx_point(datetime.now(timezone.utc))
-
-        weather_data = weather_service.get_weather(point)
-
-        assert weather_data is None
-
-    def test_it_returns_none_when_point_time_is_none(self) -> None:
-        weather_service = WeatherService()
-        weather_service.weather_api = VisualCrossing("api_key")
-        point = self.get_gpx_point(None)
 
         weather_data = weather_service.get_weather(point)
 

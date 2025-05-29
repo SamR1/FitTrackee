@@ -1,25 +1,29 @@
 import os
 import secrets
 from datetime import datetime, timedelta, timezone
-from typing import Optional, Tuple
+from typing import Dict, Optional, Tuple
 from unittest.mock import Mock, call, patch
 
+import pytest
 from flask import Flask
+from time_machine import travel
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
 from fittrackee.tests.comments.mixins import CommentMixin
+from fittrackee.users.exceptions import UserTaskException
 from fittrackee.users.export_data import (
     UserDataExporter,
     clean_user_data_export,
     export_user_data,
     generate_user_data_archives,
+    process_queued_data_export,
 )
-from fittrackee.users.models import User, UserDataExport
+from fittrackee.users.models import User, UserTask
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
-from ..utils import random_int, random_string
+from ..mixins import RandomMixin, UserTaskMixin
 from ..workouts.utils import post_a_workout
 
 
@@ -75,11 +79,13 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "max_speed": workout_cycling_user_1.max_speed,
                 "ave_speed": workout_cycling_user_1.ave_speed,
                 "gpx": None,
+                "original_file": None,
                 "records": [
                     record.serialize()
                     for record in workout_cycling_user_1.records
                 ],
                 "segments": [],
+                "source": workout_cycling_user_1.source,
                 "weather_start": None,
                 "weather_end": None,
                 "notes": workout_cycling_user_1.notes,
@@ -96,6 +102,10 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "workout_visibility": (
                     workout_cycling_user_1.workout_visibility.value
                 ),
+                "ave_cadence": None,
+                "max_cadence": None,
+                "ave_hr": None,
+                "max_hr": None,
             }
         ]
 
@@ -132,10 +142,12 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "max_speed": float(workout.max_speed),
                 "ave_speed": float(workout.ave_speed),
                 "gpx": workout.gpx.split("/")[-1],
+                "original_file": workout.original_file.split("/")[-1],
                 "records": [record.serialize() for record in workout.records],
                 "segments": [
                     segment.serialize() for segment in workout.segments
                 ],
+                "source": workout.source,
                 "weather_start": None,
                 "weather_end": None,
                 "notes": workout.notes,
@@ -148,6 +160,10 @@ class TestUserDataExporterGetUserWorkoutsData:
                 ),
                 "map_visibility": workout.calculated_map_visibility.value,
                 "workout_visibility": workout.workout_visibility.value,
+                "ave_cadence": None,
+                "max_cadence": None,
+                "ave_hr": None,
+                "max_hr": None,
             }
         ]
 
@@ -266,7 +282,7 @@ class TestUserDataExporterGetUserCommentsData(CommentMixin):
         ]
 
 
-class TestUserDataExporterExportData:
+class TestUserDataExporterExportData(RandomMixin):
     def test_export_data_generates_json_file_in_user_directory(
         self,
         app: Flask,
@@ -278,7 +294,7 @@ class TestUserDataExporterExportData:
             app.config["UPLOAD_FOLDER"], "exports", str(user_1.id)
         )
         os.makedirs(user_directory, exist_ok=True)
-        file_name = random_string()
+        file_name = self.random_string()
 
         export.export_data(data, file_name)
 
@@ -297,15 +313,15 @@ class TestUserDataExporterExportData:
         user_directory = os.path.join(
             app.config["UPLOAD_FOLDER"], "exports", str(user_1.id)
         )
-        file_name = random_string()
+        file_name = self.random_string()
 
         file_path = exporter.export_data(data, file_name)
 
         assert file_path == os.path.join(user_directory, f"{file_name}.json")
 
 
-class TestUserDataExporterGenerateArchive:
-    @patch.object(secrets, "token_urlsafe")
+class TestUserDataExporterGenerateArchive(RandomMixin):
+    @patch.object(secrets, "token_urlsafe", return_value="AOqFRRet8p4")
     @patch.object(UserDataExporter, "export_data")
     @patch("fittrackee.users.export_data.ZipFile")
     def test_it_gets_data_for_each_type(
@@ -330,7 +346,7 @@ class TestUserDataExporterGenerateArchive:
             ]
         )
 
-    @patch.object(secrets, "token_urlsafe")
+    @patch.object(secrets, "token_urlsafe", return_value="AOqFRRet8p4")
     @patch.object(UserDataExporter, "export_data")
     @patch("fittrackee.users.export_data.ZipFile")
     def test_it_calls_zipfile_with_expected_patch(
@@ -343,7 +359,7 @@ class TestUserDataExporterGenerateArchive:
         user_2: User,
     ) -> None:
         exporter = UserDataExporter(user_1)
-        token_urlsafe = random_string()
+        token_urlsafe = self.random_string()
         secrets_mock.return_value = token_urlsafe
         expected_path = os.path.join(
             app.config["UPLOAD_FOLDER"],
@@ -356,7 +372,7 @@ class TestUserDataExporterGenerateArchive:
 
         zipfile_mock.assert_called_once_with(expected_path, "w")
 
-    @patch.object(secrets, "token_urlsafe")
+    @patch.object(secrets, "token_urlsafe", return_value="AOqFRRet8p4")
     @patch.object(UserDataExporter, "export_data")
     @patch("fittrackee.users.export_data.ZipFile")
     def test_it_calls_zipfile_for_each_json_file(
@@ -369,7 +385,7 @@ class TestUserDataExporterGenerateArchive:
         user_2: User,
     ) -> None:
         exporter = UserDataExporter(user_1)
-        token_urlsafe = random_string()
+        token_urlsafe = self.random_string()
         secrets_mock.return_value = token_urlsafe
         export_data.side_effect = [
             call("user_info"),
@@ -392,7 +408,7 @@ class TestUserDataExporterGenerateArchive:
             )
         # fmt: on
 
-    @patch.object(secrets, "token_urlsafe")
+    @patch.object(secrets, "token_urlsafe", return_value="AOqFRRet8p4")
     @patch.object(UserDataExporter, "export_data")
     @patch("fittrackee.users.export_data.ZipFile")
     def test_it_calls_zipfile_for_gpx_file(
@@ -410,6 +426,48 @@ class TestUserDataExporterGenerateArchive:
         workout = Workout.query.one()
         expected_path = os.path.join(
             app.config["UPLOAD_FOLDER"],
+            workout.original_file,
+        )
+        exporter = UserDataExporter(user_1)
+
+        exporter.generate_archive()
+
+        # fmt: off
+        zipfile_mock.return_value.__enter__.\
+            return_value.write.assert_has_calls(
+                [
+                    call(
+                        expected_path,
+                        f"workout_files/{workout.original_file.split('/')[-1]}"
+                    ),
+                ]
+            )
+        # fmt: on
+
+    @patch.object(secrets, "token_urlsafe", return_value="AOqFRRet8p4")
+    @patch.object(UserDataExporter, "export_data")
+    @patch("fittrackee.users.export_data.ZipFile")
+    def test_it_calls_zipfile_for_file_different_than_gpx(
+        self,
+        zipfile_mock: Mock,
+        export_data: Mock,
+        secrets_mock: Mock,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        kml_2_3_with_two_tracks: str,
+    ) -> None:
+        _, workout_short_id = post_a_workout(
+            app, kml_2_3_with_two_tracks, extension="kml"
+        )
+        workout = Workout.query.one()
+        kml_expected_path = os.path.join(
+            app.config["UPLOAD_FOLDER"],
+            workout.original_file,
+        )
+        gpx_expected_path = os.path.join(
+            app.config["UPLOAD_FOLDER"],
             workout.gpx,
         )
         exporter = UserDataExporter(user_1)
@@ -420,8 +478,15 @@ class TestUserDataExporterGenerateArchive:
         zipfile_mock.return_value.__enter__.\
             return_value.write.assert_has_calls(
                 [
-                    call(expected_path, f"gpx/{workout.gpx.split('/')[-1]}"),
-                ]
+                    call(
+                        kml_expected_path,
+                        f"workout_files/{workout.original_file.split('/')[-1]}"
+                    ),
+                    call(
+                        gpx_expected_path,
+                        f"workout_files/{workout.gpx.split('/')[-1]}"
+                    ),
+                ], any_order=True
             )
         # fmt: on
 
@@ -471,7 +536,7 @@ class TestUserDataExporterGenerateArchive:
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        user_1.picture = random_string()
+        user_1.picture = self.random_string()
         expected_path = os.path.join(
             app.config["UPLOAD_FOLDER"],
             user_1.picture,
@@ -506,7 +571,7 @@ class TestUserDataExporterGenerateArchive:
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        user_1.picture = random_string()
+        user_1.picture = self.random_string()
         expected_path = os.path.join(
             app.config["UPLOAD_FOLDER"],
             user_1.picture,
@@ -533,7 +598,7 @@ class TestUserDataExporterGenerateArchive:
         app: Flask,
         user_1: User,
     ) -> None:
-        token_urlsafe = random_string()
+        token_urlsafe = self.random_string()
         secrets_mock.return_value = token_urlsafe
         expected_path = os.path.join(
             app.config["UPLOAD_FOLDER"],
@@ -554,7 +619,7 @@ class TestUserDataExporterGenerateArchive:
         app: Flask,
         user_1: User,
     ) -> None:
-        token_urlsafe = random_string()
+        token_urlsafe = self.random_string()
         secrets_mock.return_value = token_urlsafe
         user_directory = os.path.join(
             app.config["UPLOAD_FOLDER"], "exports", str(user_1.id)
@@ -579,16 +644,16 @@ class TestUserDataExporterGenerateArchive:
 
 @patch("fittrackee.users.export_data.appLog")
 @patch.object(UserDataExporter, "generate_archive")
-class TestExportUserData:
+class TestExportUserData(RandomMixin, UserTaskMixin):
     def test_it_logs_error_if_not_request_for_given_id(
         self,
         generate_archive: Mock,
         logger_mock: Mock,
         app: Flask,
     ) -> None:
-        request_id = random_int()
+        request_id = self.random_int()
 
-        export_user_data(export_request_id=request_id)
+        export_user_data(task_id=request_id)
 
         logger_mock.error.assert_called_once_with(
             f"No export to process for id '{request_id}'"
@@ -601,12 +666,11 @@ class TestExportUserData:
         app: Flask,
         user_1: User,
     ) -> None:
-        export_request = UserDataExport(user_id=user_1.id)
-        db.session.add(export_request)
-        export_request.completed = True
-        db.session.commit()
+        export_request = self.create_user_data_export_task(
+            user_1, progress=100
+        )
 
-        export_user_data(export_request_id=export_request.id)
+        export_user_data(task_id=export_request.id)
 
         logger_mock.info.assert_called_once_with(
             f"Export id '{export_request.id}' already processed"
@@ -620,22 +684,25 @@ class TestExportUserData:
         app: Flask,
         user_1: User,
     ) -> None:
-        export_request = UserDataExport(user_id=user_1.id)
-        db.session.add(export_request)
-        db.session.commit()
-        archive_name = random_string()
-        generate_archive_mock.return_value = (random_string(), archive_name)
-        archive_size = random_int()
+        export_request = self.create_user_data_export_task(user_1)
+        archive_name = self.random_string()
+        generate_archive_mock.return_value = (
+            self.random_string(),
+            archive_name,
+        )
+        archive_size = self.random_int()
 
         with patch(
             "fittrackee.users.export_data.os.path.getsize",
             return_value=archive_size,
         ):
-            export_user_data(export_request_id=export_request.id)
+            export_user_data(task_id=export_request.id)
 
         assert export_request.completed is True
         assert export_request.updated_at is not None
-        assert export_request.file_name == archive_name
+        assert export_request.file_path == (
+            f"exports/{user_1.id}/{archive_name}"
+        )
         assert export_request.file_size == archive_size
 
     def test_it_updates_export_request_when_export_fails(
@@ -645,16 +712,14 @@ class TestExportUserData:
         app: Flask,
         user_1: User,
     ) -> None:
-        export_request = UserDataExport(user_id=user_1.id)
-        db.session.add(export_request)
-        db.session.commit()
+        export_request = self.create_user_data_export_task(user_1)
         generate_archive_mock.return_value = (None, None)
 
-        export_user_data(export_request_id=export_request.id)
+        export_user_data(task_id=export_request.id)
 
-        assert export_request.completed is True
+        assert export_request.completed is False
         assert export_request.updated_at is not None
-        assert export_request.file_name is None
+        assert export_request.file_path is None
         assert export_request.file_size is None
 
     def test_it_does_not_call_send_email_when_export_failed(
@@ -665,12 +730,10 @@ class TestExportUserData:
         app: Flask,
         user_1: User,
     ) -> None:
-        export_request = UserDataExport(user_id=user_1.id)
-        db.session.add(export_request)
-        db.session.commit()
+        export_request = self.create_user_data_export_task(user_1)
         generate_archive_mock.return_value = (None, None)
 
-        export_user_data(export_request_id=export_request.id)
+        export_user_data(task_id=export_request.id)
 
         export_data_send_email_mock.send.assert_not_called()
 
@@ -682,18 +745,19 @@ class TestExportUserData:
         app: Flask,
         user_1: User,
     ) -> None:
-        export_request = UserDataExport(user_id=user_1.id)
-        db.session.add(export_request)
-        db.session.commit()
-        archive_name = random_string()
-        generate_archive_mock.return_value = (random_string(), archive_name)
-        archive_size = random_int()
+        export_request = self.create_user_data_export_task(user_1)
+        archive_name = self.random_string()
+        generate_archive_mock.return_value = (
+            self.random_string(),
+            archive_name,
+        )
+        archive_size = self.random_int()
 
         with patch(
             "fittrackee.users.export_data.os.path.getsize",
             return_value=archive_size,
         ):
-            export_user_data(export_request_id=export_request.id)
+            export_user_data(task_id=export_request.id)
 
         export_data_send_email_mock.send.assert_called_once_with(
             {
@@ -709,28 +773,23 @@ class TestExportUserData:
         )
 
 
-class UserDataExportTestCase:
-    @staticmethod
+class UserDataExportTestCase(RandomMixin, UserTaskMixin):
     def create_user_request(
-        user: User, days: int = 0, completed: bool = True
-    ) -> UserDataExport:
-        user_data_export = UserDataExport(
-            user_id=user.id,
+        self, user: User, days: int = 0, progress: int = 100
+    ) -> UserTask:
+        user_data_export = self.create_user_data_export_task(
+            user,
             created_at=datetime.now(timezone.utc) - timedelta(days=days),
+            progress=progress,
         )
-        db.session.add(user_data_export)
-        user_data_export.completed = completed
-        db.session.commit()
         return user_data_export
 
-    def generate_archive(
-        self, user: User
-    ) -> Tuple[UserDataExport, Optional[str]]:
+    def generate_archive(self, user: User) -> Tuple[UserTask, Optional[str]]:
         user_data_export = self.create_user_request(user, days=7)
         exporter = UserDataExporter(user)
         archive_path, archive_file_name = exporter.generate_archive()
-        user_data_export.file_name = archive_file_name
-        user_data_export.file_size = random_int()
+        user_data_export.file_path = f"exports/{user.id}/{archive_file_name}"
+        user_data_export.file_size = self.random_int()
         db.session.commit()
         return user_data_export, archive_path
 
@@ -741,10 +800,19 @@ class TestCleanUserDataExport(UserDataExportTestCase):
 
         assert counts["deleted_requests"] == 0
 
+    def test_it_does_not_delete_when_workout_upload_tasks(
+        self, app: Flask, user_1: User
+    ) -> None:
+        self.create_workouts_upload_task(user_1, progress=100)
+
+        clean_user_data_export(days=0)
+
+        assert UserTask.query.count() == 1
+
     def test_it_returns_0_when_export_request_is_not_completed(
         self, app: Flask, user_1: User
     ) -> None:
-        self.create_user_request(user_1, days=7, completed=False)
+        self.create_user_request(user_1, days=7, progress=50)
 
         counts = clean_user_data_export(days=7)
 
@@ -806,13 +874,14 @@ class TestCleanUserDataExport(UserDataExportTestCase):
 
         clean_user_data_export(days=7)
 
-        assert (
-            UserDataExport.query.filter_by(user_id=user_1.id).first() is None
-        )
+        assert UserTask.query.filter_by(user_id=user_1.id).first() is None
 
 
 class TestGenerateUsersArchives(UserDataExportTestCase):
-    def test_it_returns_0_when_no_request(self, app: Flask) -> None:
+    def test_it_returns_0_when_no_request(
+        self, app: Flask, user_1: "User"
+    ) -> None:
+        self.create_workouts_upload_task(user_1)
         count = generate_user_data_archives(max_count=1)
 
         assert count == 0
@@ -820,7 +889,7 @@ class TestGenerateUsersArchives(UserDataExportTestCase):
     def test_it_returns_0_when_request_request_completed(
         self, app: Flask, user_1: User
     ) -> None:
-        self.create_user_request(user_1, completed=True)
+        self.create_user_request(user_1, progress=100)
 
         count = generate_user_data_archives(max_count=1)
 
@@ -829,7 +898,7 @@ class TestGenerateUsersArchives(UserDataExportTestCase):
     def test_it_returns_count_when_archive_is_generated_user_archive(
         self, app: Flask, user_1: User
     ) -> None:
-        self.create_user_request(user_1, completed=False)
+        self.create_user_request(user_1, progress=0)
 
         count = generate_user_data_archives(max_count=1)
 
@@ -839,7 +908,7 @@ class TestGenerateUsersArchives(UserDataExportTestCase):
     def test_it_generates_user_archive(
         self, secrets_mock: Mock, app: Flask, user_1: User
     ) -> None:
-        token_urlsafe = random_string()
+        token_urlsafe = self.random_string()
         secrets_mock.return_value = token_urlsafe
         archive_path = os.path.join(
             app.config["UPLOAD_FOLDER"],
@@ -847,7 +916,7 @@ class TestGenerateUsersArchives(UserDataExportTestCase):
             str(user_1.id),
             f"archive_{token_urlsafe}.zip",
         )
-        self.create_user_request(user_1, completed=False)
+        self.create_user_request(user_1, progress=0)
 
         generate_user_data_archives(max_count=1)
 
@@ -856,22 +925,73 @@ class TestGenerateUsersArchives(UserDataExportTestCase):
     def test_it_generates_max_count_of_archives(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        self.create_user_request(user_3, completed=False)
-        self.create_user_request(user_1, completed=False)
-        self.create_user_request(user_2, completed=False)
+        self.create_user_request(user_3, progress=0)
+        self.create_user_request(user_1, progress=0)
+        self.create_user_request(user_2, progress=0)
 
         count = generate_user_data_archives(max_count=2)
 
         assert count == 2
         assert (
-            UserDataExport.query.filter_by(user_id=user_1.id).one().completed
-            is True
+            UserTask.query.filter_by(user_id=user_1.id).one().progress == 100
         )
+        assert UserTask.query.filter_by(user_id=user_2.id).one().progress == 0
         assert (
-            UserDataExport.query.filter_by(user_id=user_2.id).one().completed
-            is False
+            UserTask.query.filter_by(user_id=user_3.id).one().progress == 100
         )
-        assert (
-            UserDataExport.query.filter_by(user_id=user_3.id).one().completed
-            is True
+
+
+class TestProcessQueuedDataExport(UserDataExportTestCase):
+    def test_it_raises_error_when_task_id_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        with pytest.raises(UserTaskException, match="Invalid task id"):
+            process_queued_data_export(task_short_id="invalid")
+
+    def test_it_raises_error_when_task_is_not_user_data_export(
+        self, app: Flask, user_1: User
+    ) -> None:
+        workouts_upload = self.create_workouts_upload_task(user_1)
+
+        with pytest.raises(UserTaskException, match="No task found"):
+            process_queued_data_export(task_short_id=workouts_upload.short_id)
+
+    def test_it_raises_error_when_task_does_not_exist(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        with pytest.raises(UserTaskException, match="No task found"):
+            process_queued_data_export(task_short_id=self.random_short_id())
+
+    @pytest.mark.parametrize(
+        "input_status, input_task_data",
+        [
+            ("errored", {"errored": True}),
+            ("successful", {"progress": 100}),
+        ],
+    )
+    def test_it_raises_error_when_task_is_not_queued(
+        self,
+        app: "Flask",
+        user_1: "User",
+        input_status: str,
+        input_task_data: Dict,
+    ) -> None:
+        data_export_task = self.create_user_data_export_task(
+            user_1, **input_task_data
         )
+
+        with pytest.raises(UserTaskException, match="Task is not queued"):
+            process_queued_data_export(task_short_id=data_export_task.short_id)
+
+    def test_it_process_queued_task(
+        self,
+        app: "Flask",
+        user_1: "User",
+    ) -> None:
+        data_export_task = self.create_user_data_export_task(user_1)
+        now = datetime.now(tz=timezone.utc)
+
+        with travel(now, tick=False):
+            process_queued_data_export(task_short_id=data_export_task.short_id)
+
+        assert data_export_task.updated_at == now

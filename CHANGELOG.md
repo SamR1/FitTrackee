@@ -1,5 +1,37 @@
 # Change log
 
+## Version 0.10.0b2 (2025/05/24)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+### Bugs Fixed
+
+* [PR#809](https://github.com/SamR1/FitTrackee/pull/809) - fix python package
+
+
+## Version 0.10.0b1 (2025/05/24)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+**Note:** This version is not available on PyPI, due to an error when uploading the package.
+
+### Features and enhancements
+
+* [#194](https://github.com/SamR1/FitTrackee/issues/194) - Rewrite workout file processing and new features
+  * [#87](https://github.com/SamR1/FitTrackee/issues/87) - Prevent gpx parse error with zip import
+  * [#89](https://github.com/SamR1/FitTrackee/issues/89) - Asynchrone archives upload
+  * [#122](https://github.com/SamR1/FitTrackee/issues/122) - Allow to upload Fit file
+  * [#143](https://github.com/SamR1/FitTrackee/issues/143) - KML/KMZ support
+  * [#529](https://github.com/SamR1/FitTrackee/issues/529) - Support import TCX file
+  * [#642](https://github.com/SamR1/FitTrackee/issues/642) - Support Heartrate and cadence
+  * [PR#801](https://github.com/SamR1/FitTrackee/pull/801) - Display file source in workout data
+
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
+
+
 ## Version 0.9.11 (2025/05/18)
 
 ### Translations

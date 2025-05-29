@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Command line interface" href="cli.html" /><link rel="prev" title="OAuth 2.0" href="oauth.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Installation - FitTrackee 0.9.11 documentation</title>
+        <title>Installation - FitTrackee 0.10.0b2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.9.11
+      <a href="index.html"><div class="brand">FitTrackee 0.10.0b2
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.9.11
+  <span class="sidebar-brand-text">FitTrackee 0.10.0b2
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -221,6 +221,7 @@
 <li class="toctree-l2"><a class="reference internal" href="api/follow_requests.html">Follow requests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/oauth2.html">OAuth2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/notifications.html">Notifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/queued_tasks.html">Queued Tasks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/reports.html">Reports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
@@ -316,7 +317,7 @@
 <dt>API:</dt><dd><ul>
 <li><p>Flask</p></li>
 <li><p><a class="reference external" href="https://github.com/tkrajina/gpxpy">gpxpy</a> to parse gpx files</p></li>
-<li><p><a class="reference external" href="https://github.com/komoot/staticmap">staticmap</a> to generate a static map image from gpx coordinates</p></li>
+<li><p><a class="reference external" href="https://github.com/SamR1/staticmap">Static Map 3</a>, a fork of <a class="reference external" href="https://github.com/komoot/staticmap">Static Map</a> to generate a static map image from file coordinates</p></li>
 <li><p><a class="reference external" href="https://dramatiq.io/">Dramatiq</a> and <a class="reference external" href="https://flask-dramatiq.readthedocs.io">Flask-Dramatiq</a> for task queue</p></li>
 <li><p><a class="reference external" href="https://docs.authlib.org/en/latest/">Authlib</a> for OAuth 2.0 Authorization support</p></li>
 <li><p><a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable">Flask-Limiter</a> for API rate limits</p></li>
@@ -338,6 +339,7 @@
 <div class="line-block">
 <div class="line">Logo, some sports and weather icons are made by <a class="reference external" href="https://www.freepik.com/">Freepik</a> from <a class="reference external" href="https://www.flaticon.com/">www.flaticon.com</a>.</div>
 <div class="line">Sports icons for Canoeing, Kayaking and Rowing are made by <a class="reference external" href="https://github.com/Von-Birne">&#64;Von-Birne</a>.</div>
+<div class="line">Sports icon for Halfbike is made by <a class="reference external" href="https://github.com/astridx">&#64;astridx</a>.</div>
 <div class="line">FitTrackee also uses icons from <a class="reference external" href="https://forkaweso.me">Fork Awesome</a>.</div>
 </div>
 </section>
@@ -361,7 +363,7 @@
 </li>
 <li><p>optional</p>
 <ul>
-<li><p><a class="reference external" href="https://redis.io/">Redis</a> for task queue (if email sending is enabled and for data export requests) and API rate limits (for installation from sources or package)</p></li>
+<li><p><a class="reference external" href="https://redis.io/">Redis</a> for <a class="reference external" href="installation.html#tasks-processing">task queue</a> (if email sending is enabled and for data export requests, asynchronous archive uploads) and API rate limits (for installation from sources or package)</p></li>
 <li><p>SMTP provider (if email sending is enabled)</p></li>
 <li><p>API key from a <a class="reference external" href="installation.html#weather-data">weather data provider</a></p></li>
 <li><p><a class="reference external" href="https://python-poetry.org">Poetry</a> 1.2+ (for installation from sources only)</p></li>
@@ -608,6 +610,20 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 </dd></dl>
 
 <dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-TASKS_TIME_LIMIT">
+<span class="sig-name descname"><span class="pre">TASKS_TIME_LIMIT</span></span><a class="headerlink" href="#envvar-TASKS_TIME_LIMIT" title="Link to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.0.</span></p>
+</div>
+<p>Timeout in seconds for <strong>Dramatiq</strong> task execution to avoid long-running tasks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p>1800</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
 <dt class="sig sig-object std" id="envvar-API_RATE_LIMITS">
 <span class="sig-name descname"><span class="pre">API_RATE_LIMITS</span></span><a class="headerlink" href="#envvar-API_RATE_LIMITS" title="Link to this definition">¶</a></dt>
 <dd><div class="versionadded">
@@ -682,7 +698,7 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <p><span class="versionmodified added">Added in version 0.4.9.</span></p>
 </div>
 <div class="line-block">
-<div class="line">If <code class="docutils literal notranslate"><span class="pre">True</span></code>, it keeps using <strong>staticmap</strong> default tile server to generate static maps (OSM tile server since <strong>staticmap</strong> 0.5.6 (Komoot.de tile server before this version)).</div>
+<div class="line">If <code class="docutils literal notranslate"><span class="pre">True</span></code>, it keeps using <strong>Static Map 3</strong> default tile server to generate static maps (OSM tile server).</div>
 <div class="line">Otherwise, it uses the tile server set in <a class="reference external" href="installation.html#envvar-TILE_SERVER_URL">TILE_SERVER_URL</a>.</div>
 </div>
 <div class="versionchanged">
@@ -695,6 +711,20 @@ see <a class="reference external" href="https://docs.sqlalchemy.org/en/13/core/p
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-STATICMAP_CACHE_DIR">
+<span class="sig-name descname"><span class="pre">STATICMAP_CACHE_DIR</span></span><a class="headerlink" href="#envvar-STATICMAP_CACHE_DIR" title="Link to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.0.</span></p>
+</div>
+<p>Directory for <strong>Static Map 3</strong> cache</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p>.staticmap_cache</p>
 </dd>
 </dl>
 </dd></dl>
@@ -927,8 +957,53 @@ Commands:
 <li><p><code class="docutils literal notranslate"><span class="pre">WEATHER_API_KEY</span></code>: the key to the corresponding weather provider</p></li>
 </ul>
 </section>
-<section id="id2">
-<h2>Installation<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<section id="tasks-processing">
+<h2>Tasks processing<a class="headerlink" href="#tasks-processing" title="Link to this heading">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.3.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.10.0: </span>Add <code class="docutils literal notranslate"><span class="pre">TASKS_TIME_LIMIT</span></code> variable</p>
+</div>
+<p>Tasks processing is done using <a class="reference external" href="https://dramatiq.io/">Dramatiq</a>. It requires Redis and is used for email sending, user data exports and workouts archives uploads.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If no workers are running, a <a class="reference external" href="cli.html">command line</a> allows to process queued tasks.</p>
+</div>
+<p>The following environment variables must be set:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">REDIS_URL</span></code>: Redis instance used by <strong>Dramatiq</strong> and <strong>Flask-Limiter</strong>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WORKERS_PROCESSES</span></code>: Number of processes used by <strong>Dramatiq</strong>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DRAMATIQ_LOG</span></code>: Path to <strong>Dramatiq</strong> log file.</p></li>
+</ul>
+<p>To avoid long-running tasks for user data exports and workouts archives uploads, a time limit is set:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TASKS_TIME_LIMIT</span></code>: Timeout in seconds for <strong>Dramatiq</strong> task execution. The default value is 1800 seconds (30 minutes).</p></li>
+</ul>
+<p>To start task queue workers, run the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>dramatiq<span class="w"> </span>fittrackee.tasks:broker<span class="w"> </span>--processes<span class="o">=</span><span class="nv">$WORKERS_PROCESSES</span><span class="w"> </span>--log-file<span class="o">=</span><span class="nv">$DRAMATIQ_LOG</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">It is also possible to start task queue workers with <strong>Flask-Dramatiq</strong> CLI, but it is recommended to use <strong>Dramatiq</strong> CLI instead for now.</div>
+</div>
+</div>
+<p>It is possible to run queues independently, for instance for workouts archive uploads:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>dramatiq<span class="w"> </span>fittrackee.tasks:broker<span class="w"> </span>--processes<span class="o">=</span><span class="m">2</span><span class="w"> </span>-Q<span class="w"> </span>fittrackee_workouts
+</pre></div>
+</div>
+<p>The following queues are available:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fittrackee_emails</span></code>: for emails sending (priority: high)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fittrackee_users_exports</span></code>: for user data exports (priority: medium)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fittrackee_workouts</span></code>: for workouts archive uploads (priority: medium)</p></li>
+</ul>
+<p>Run <code class="docutils literal notranslate"><span class="pre">dramatiq</span> <span class="pre">-h</span></code> to see a list of the available commands.</p>
+</section>
+<section id="id3">
+<h2>Installation<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -1152,8 +1227,8 @@ database credentials</strong>):</p></li>
 <p class="admonition-title">Warning</p>
 <p>For now, releases do not follow <a class="reference external" href="https://semver.org">semantic versioning</a>. Any version may contain backward-incompatible changes.</p>
 </div>
-<section id="id3">
-<h3>From PyPI<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<section id="id4">
+<h3>From PyPI<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
@@ -1184,16 +1259,16 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <li><p>Restart the application and task queue workers (if email sending is enabled).</p></li>
 </ul>
 </section>
-<section id="id4">
-<h3>From sources<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<section id="id5">
+<h3>From sources<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <div class="line-block">
 <div class="line">Only if <strong>FitTrackee</strong> was initially installed from sources.</div>
 </div>
 </div>
-<section id="id5">
-<h4>Dev environment<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h4>
+<section id="id6">
+<h4>Dev environment<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h4>
 <ul class="simple">
 <li><p>Stop the application and pull the repository:</p></li>
 </ul>
@@ -1595,7 +1670,8 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 <li><a class="reference internal" href="#map-tile-server">Map tile server</a></li>
 <li><a class="reference internal" href="#api-rate-limits">API rate limits</a></li>
 <li><a class="reference internal" href="#weather-data">Weather data</a></li>
-<li><a class="reference internal" href="#id2">Installation</a><ul>
+<li><a class="reference internal" href="#tasks-processing">Tasks processing</a></li>
+<li><a class="reference internal" href="#id3">Installation</a><ul>
 <li><a class="reference internal" href="#from-pypi">From PyPI</a></li>
 <li><a class="reference internal" href="#from-sources">From sources</a><ul>
 <li><a class="reference internal" href="#dev-environment">Dev environment</a></li>
@@ -1605,9 +1681,9 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 </ul>
 </li>
 <li><a class="reference internal" href="#upgrade">Upgrade</a><ul>
-<li><a class="reference internal" href="#id3">From PyPI</a></li>
-<li><a class="reference internal" href="#id4">From sources</a><ul>
-<li><a class="reference internal" href="#id5">Dev environment</a></li>
+<li><a class="reference internal" href="#id4">From PyPI</a></li>
+<li><a class="reference internal" href="#id5">From sources</a><ul>
+<li><a class="reference internal" href="#id6">Dev environment</a></li>
 <li><a class="reference internal" href="#prod-environment">Prod environment</a></li>
 </ul>
 </li>
@@ -1632,7 +1708,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=88b3baf9"></script>
+</div><script src="_static/documentation_options.js?v=015ac4d3"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

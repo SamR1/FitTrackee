@@ -14,7 +14,6 @@
   "ELEVATION": "elevazione",
   "END": "fine",
   "FROM": "da",
-  "GPX_FILE": "file .gpx",
   "HIDE_FILTERS": "nascondi filtri",
   "INVALID_ASCENT_OR_DESCENT": "Entrambi i valori di elevazione devono essere forniti ed essere maggiori o uguali a 0.",
   "INVALID_DISTANCE": "La distanza dev'essere maggiore di 0",
@@ -94,11 +93,11 @@
       "WSW": "WSW"
     }
   },
-  "WITHOUT_GPX": "senza file .gpx",
-  "WITH_GPX": "con file .gpx",
+  "WITHOUT_FILE": "senza file",
+  "WITH_FILE": "con file",
   "WORKOUT": "allenamento | allenamenti",
   "WORKOUT_DATE": "data workout",
   "WORKOUT_DELETION_CONFIRMATION": "Sei sicuro di voler eliminare questo workout?",
   "ZIP_ARCHIVE": "file .zip",
-  "ZIP_ARCHIVE_DESCRIPTION": "o file .zip contenente files .gpx"
+  "ZIP_ARCHIVE_DESCRIPTION": "o file .zip contenente files"
 }

@@ -19,4 +19,12 @@ export const usersState: IUsersState = {
   isSuccess: false,
   pagination: <IPagination>{},
   currentReporting: false,
+  usersQueuedTasks: {
+    counts: {
+      user_data_export: 0,
+      workouts_archive_upload: 0,
+    },
+    tasks: [],
+    pagination: <IPagination>{},
+  },
 }

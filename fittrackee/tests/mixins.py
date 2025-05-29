@@ -1,22 +1,27 @@
 import json
+import os
+import shutil
+import tempfile
 import time
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 from unittest.mock import Mock
 from urllib.parse import parse_qs
 from uuid import uuid4
 
-from flask import Flask
+from flask import Flask, current_app
 from flask.testing import FlaskClient
 from urllib3.util import parse_url
 from werkzeug.test import TestResponse
 
 from fittrackee import db
 from fittrackee.comments.models import Comment
+from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.client import create_oauth2_client
 from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
 from fittrackee.reports.models import Report, ReportAction, ReportActionAppeal
-from fittrackee.users.models import User
+from fittrackee.users.models import User, UserTask
 from fittrackee.utils import encode_uuid
 from fittrackee.workouts.models import Workout
 
@@ -525,3 +530,94 @@ class ReportMixin(RandomMixin):
         if with_commit:
             db.session.commit()
         return report_action_appeal
+
+
+class UserTaskMixin:
+    @staticmethod
+    def create_user_data_export_task(
+        user: "User",
+        *,
+        created_at: Optional[datetime] = None,
+        progress: int = 0,
+        errored: bool = False,
+        file_path: Optional[str] = None,
+        file_size: Optional[int] = None,
+        message_id: Optional[str] = None,
+    ) -> "UserTask":
+        data_export_task = UserTask(
+            user_id=user.id,
+            created_at=created_at,
+            task_type="user_data_export",
+        )
+        data_export_task.progress = progress
+        data_export_task.errored = errored
+        data_export_task.file_path = file_path
+        data_export_task.file_size = file_size
+        data_export_task.message_id = message_id
+        db.session.add(data_export_task)
+        db.session.commit()
+        return data_export_task
+
+    @staticmethod
+    def generate_temporary_data_export(
+        user_id: int,
+        file: str,
+    ) -> str:
+        file_path = get_absolute_file_path(
+            os.path.join("exports", str(user_id), file)
+        )
+        export_file = Path(file_path)
+        export_file.parent.mkdir(exist_ok=True, parents=True)
+        export_file.write_text("some text")
+        return file_path
+
+    @staticmethod
+    def create_workouts_upload_task(
+        user: "User",
+        *,
+        workouts_data: Optional[Dict] = None,
+        files_to_process: Optional[List[str]] = None,
+        equipment_ids: Optional[List[int]] = None,
+        file_path: str = "",
+        file_size: Optional[int] = None,
+        progress: int = 0,
+        new_workouts_count: int = 0,
+        errored: bool = False,
+        original_file_name: Optional[str] = None,
+        aborted: bool = False,
+        message_id: Optional[str] = None,
+        updated_at: Optional[datetime] = None,
+    ) -> "UserTask":
+        upload_task = UserTask(
+            user_id=user.id,
+            task_type="workouts_archive_upload",
+            data={
+                "new_workouts_count": new_workouts_count,
+                "workouts_data": workouts_data if workouts_data else {},
+                "files_to_process": files_to_process
+                if files_to_process
+                else [],
+                "equipment_ids": equipment_ids,
+                "original_file_name": original_file_name,
+            },
+            file_path=file_path,
+        )
+        upload_task.aborted = aborted
+        upload_task.progress = progress
+        upload_task.errored = errored
+        upload_task.file_size = file_size
+        upload_task.message_id = message_id
+        upload_task.updated_at = updated_at
+        db.session.add(upload_task)
+        db.session.commit()
+        return upload_task
+
+    @staticmethod
+    def generate_temporary_archive(
+        zip_archive: str = "tests/files/gpx_test.zip",
+    ) -> str:
+        _, file_path = tempfile.mkstemp(prefix="archive_", suffix=".zip")
+        shutil.copyfile(
+            os.path.join(current_app.root_path, zip_archive), file_path
+        )
+        return file_path
