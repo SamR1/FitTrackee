@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Fonctionnalités - Documentation FitTrackee 0.10.0b2</title>
+        <title>Fonctionnalités - Documentation FitTrackee 0.10.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.10.0b2
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.10.0
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.10.0b2
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.10.0
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -376,7 +376,7 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Les valeurs calculées peuvent différer de celles calculées par l’application qui a généré les fichiers à l’origine, en particulier la vitesse maximale.</div>
+<div class="line">Les valeurs calculées peuvent différer de celles calculées par l’application ou l’appareil qui a généré les fichiers à l’origine, en particulier la vitesse maximale.</div>
 </div>
 </div>
 <div class="admonition note">
@@ -393,7 +393,7 @@
 </div>
 <ul>
 <li><div class="line-block">
-<div class="line">Le chargement des archives de séances peut être asynchrone quand une limite pour le traitement synchrone est définie (<em>nouveau dans la version 0.10.0</em>).</div>
+<div class="line">Le chargement des archives de séances peut être asynchrone quand une <a class="reference external" href="features.html#configuration">limite pour le traitement synchrone</a> est définie (<em>nouveau dans la version 0.10.0</em>).</div>
 <div class="line">Les tâches de chargement asynchrone peuvent être affichées dans le compte de l’utilisateur et peuvent être interrompues par l’utilisateur.</div>
 <div class="line">En cas d’erreur, la liste des erreurs rencontrées est affichée à la fin du chargement</div>
 <div class="line">Une notification est affichée après le traitement de la tâche.</div>
@@ -446,7 +446,7 @@
 <ul>
 <li><div class="line-block">
 <div class="line">Si le nom est présent dans le fichier, il est utilisé comme titre de la séance. Sinon un titre est généré à partir du sport et de la date de la séance.</div>
-<div class="line">L’utilisateur peut ajouter un titre lors du téléversement du fichier (<em>nouveau dans la version 0.8.10</em>)</div>
+<div class="line">L’utilisateur peut fournir un titre lors du téléversement du fichier (<em>nouveau dans la version 0.8.10</em>)</div>
 </div>
 </li>
 <li><div class="line-block">
@@ -517,7 +517,7 @@
 <div class="line">La visibilité de la séance s’applique sur le titre, la description, les records et données de la séances à l’exception de l’altitude.</div>
 <div class="line">La visibilité de l’analyse s’applique sur les données du graphique, l’altitude et les segments, si la séance est associée à un fichier.</div>
 <div class="line">La visibilité de la carte s’applique sur la carte, si la séance est associée à un fichier.</div>
-<div class="line">La visibilité de la fréquence cardiaque s’applique aux données liées à la fréquence cardiaque, si la séance est associée à un fichier (<em>nouveau dans la version 0.10.0</em>).</div>
+<div class="line">La visibilité de la fréquence cardiaque s’applique aux valeurs moyennes et maximales et aux données affichées dans le graphe, si la séance est associée à un fichier (<em>nouveau dans la version 0.10.0</em>).</div>
 <div class="line"><br /></div>
 <div class="line">La visibilité peut être configurée dans les préférences de l’utilisateur.</div>
 </div>
@@ -559,7 +559,7 @@
 <li><p>dénivelés positif et négatif (seulement pour les séances sans gpx) (<em>nouveau dans la version 0.7.10</em>).</p></li>
 </ul>
 </li>
-<li><p>Le fichier gpx peut être téléchargé (<em>nouveau dans la version 0.5.1</em>).</p></li>
+<li><p>Le fichier gpx (original or généré) peut être téléchargé (<em>nouveau dans la version 0.5.1</em>).</p></li>
 <li><p>Une séance peut être supprimée.</p></li>
 <li><p>Liste des séances.</p>
 <ul>
@@ -828,7 +828,7 @@
 <p>La modification de cette préférence n’affectera que les prochains fichiers ajoutés.</p>
 </div>
 <ul class="simple">
-<li><p>Un utilisateur peut configurer la visibilité par défaut des séances, de l’analyse et de la carte (<em>nouveau dans la version 0.9.0</em>)</p></li>
+<li><p>Un utilisateur peut configurer la visibilité par défaut des séances, de l’analyse, de la carte (<em>nouveau dans la version 0.9.0</em>) et de l’affichage de la fréquence cardiaque (<em>nouveau dans la version 0.10.0</em>)</p></li>
 <li><p>Un utilisateur peut définir des préférences en matière de sport (<em>nouveau dans la version 0.5.0</em>) :</p>
 <ul>
 <li><p>changer la couleur du sport (utilisée pour l’image du sport et les graphiques)</p></li>
@@ -849,7 +849,7 @@
 <ul>
 <li><div class="line-block">
 <div class="line">Un utilisateur peut demander un export de données (<em>nouveau dans la version 0.7.13</em>).</div>
-<div class="line">Une archive zip sera générée, contenant 2 fichiers <code class="docutils literal notranslate"><span class="pre">json</span></code> (informations de l’utilisateur et données des séances) et tous les fichiers gpx ajoutée.</div>
+<div class="line">Une archive zip sera générée, contenant 2 fichiers <code class="docutils literal notranslate"><span class="pre">json</span></code> (informations de l’utilisateur et données des séances) et tous les fichiers ajoutés.</div>
 <div class="line">Une notification est affichée à la fin de l’export (<em>nouveau dans la version 0.10.0</em>).</div>
 </div>
 </li>
@@ -954,6 +954,12 @@
 <li><p>taille maximale de l’archive zip (valeur par défaut : 10 Mo)</p></li>
 <li><p>nombre maximum de fichiers dans l’archive zip (valeur par défaut : 10) (<em>modifié dans la version 0.7.4</em>)</p></li>
 <li><p>nombre maximum de fichiers pour le traitement synchrone (valeur par défaut : 10) (<em>nouveau dans la version 0.10.0</em>). Si le nombre maximum de fichiers dans l’archive zip est égal à celui des fichiers traités en synchrone, le chargement asynchrone est désactivé.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Lors de la mise à jour vers la version 0.10.0, le téléchargement asynchrone est désactivé, puisque les deux valeurs sont égales.</p>
+</div>
+<ul class="simple">
 <li><p>nombre maximum de séances pour les statistiques d’un sport (par défaut : 10 000). S’il est égal à 0, toutes les séances sont récupérées pour calculer les statistiques (<em>nouveau dans la version 0.8.5</em>)</p></li>
 <li><p>adresse électronique pour contacter l’administrateur (<em>nouveau dans la version 0.6.0</em>)</p></li>
 </ul>
@@ -1135,6 +1141,7 @@
 <li><p>Russe (<em>nouveau dans la version 0.8.10</em>)</p></li>
 <li><p>Chinois (Simplifié) (<em>nouveau dans la version 0.9.0</em>)</p></li>
 <li><p>Croate (<em>nouveau dans la version 0.9.8</em>)</p></li>
+<li><p>Catalan (<em>nouveau dans la version 0.10.0</em>)</p></li>
 </ul>
 <p>État d’avancement de la traduction de l’application sur <a class="reference external" href="https://hosted.weblate.org/engage/fittrackee/">Weblate</a> (branche de développement, peut différer de la version publiée) :</p>
 <figure class="align-default">
@@ -1349,7 +1356,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=89d628d1"></script>
+</div><script src="_static/documentation_options.js?v=0aeac941"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

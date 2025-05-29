@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Features - FitTrackee 0.10.0b2 documentation</title>
+        <title>Features - FitTrackee 0.10.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.10.0b2
+      <a href="index.html"><div class="brand">FitTrackee 0.10.0
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.10.0b2
+  <span class="sidebar-brand-text">FitTrackee 0.10.0
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -376,7 +376,7 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Calculated values may differ from values calculated by the application that originally generated the files, in particular the maximum speed.</div>
+<div class="line">Calculated values may differ from values calculated by the application or device that originally generated the files, in particular the maximum speed.</div>
 </div>
 </div>
 <div class="admonition note">
@@ -393,7 +393,7 @@
 </div>
 <ul>
 <li><div class="line-block">
-<div class="line">Archive file upload can be asynchronous if a limit for synchronous upload is set (<em>new in 0.10.0</em>).</div>
+<div class="line">Archive file upload can be asynchronous if a <a class="reference external" href="features.html#configuration">limit for synchronous uploads</a> is set (<em>new in 0.10.0</em>).</div>
 <div class="line">Asynchronous uploads can be displayed in user account and can be interrupted by the user.</div>
 <div class="line">In case errors are encountered, the list of error files is displayed at the end of the upload.</div>
 <div class="line">A notification is displayed after task completion.</div>
@@ -446,7 +446,7 @@
 <ul>
 <li><div class="line-block">
 <div class="line">If the name is present in the file, it is used as the workout title. Otherwise, a title is generated from the sport and workout date.</div>
-<div class="line">User can add title while uploading file (<em>new in 0.8.10</em>).</div>
+<div class="line">User can provide title while uploading file (<em>new in 0.8.10</em>).</div>
 </div>
 </li>
 <li><div class="line-block">
@@ -517,7 +517,7 @@
 <div class="line">Workout visibility applies to title, description, records and workout data except elevation.</div>
 <div class="line">Analysis visibility applies to chart data, elevation and segments, if workout is associated with a file.</div>
 <div class="line">Map visibility applies to the map, if workout is associated with a file.</div>
-<div class="line">Heart rate visibility applies to heart rate data, if workout is associated with a file (<em>new in 0.10.0</em>).</div>
+<div class="line">Heart rate visibility applies to average and max values and chart data, if workout is associated with a file (<em>new in 0.10.0</em>).</div>
 <div class="line"><br /></div>
 <div class="line">Default visibility can be set in user preferences.</div>
 </div>
@@ -559,7 +559,7 @@
 <li><p>ascent and descent (only workouts without gpx) (<em>new in 0.7.10</em>)</p></li>
 </ul>
 </li>
-<li><p>Gpx file can be downloaded (<em>new in 0.5.1</em>).</p></li>
+<li><p>File in gpx format (original or generated) can be downloaded (<em>new in 0.5.1</em>).</p></li>
 <li><p>Workout can be deleted.</p></li>
 <li><p>Workouts list.</p>
 <ul>
@@ -829,7 +829,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <p>Changing this preference will only affect next file uploads.</p>
 </div>
 <ul class="simple">
-<li><p>A user can set default visibility for workout data, analysis and map (<em>new in 0.9.0</em>).</p></li>
+<li><p>A user can set default visibility for workout data, analysis, map (<em>new in 0.9.0</em>) and heart rate (<em>new in 0.10.0</em>).</p></li>
 <li><p>A user can set sport preferences (<em>new in 0.5.0</em>):</p>
 <ul>
 <li><p>change sport color (used for sport image and charts)</p></li>
@@ -850,7 +850,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <ul>
 <li><div class="line-block">
 <div class="line">A user can request a data export (<em>new in 0.7.13</em>).</div>
-<div class="line">It generates a zip archive containing 2 <code class="docutils literal notranslate"><span class="pre">json</span></code> files (user info and workouts data) and all uploaded gpx files.</div>
+<div class="line">It generates a zip archive containing 2 <code class="docutils literal notranslate"><span class="pre">json</span></code> files (user info and workouts data) and all uploaded files.</div>
 <div class="line">A notification is displayed after export completion (<em>new in 0.10.0</em>).</div>
 </div>
 </li>
@@ -955,6 +955,12 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><p>maximum size of zip archive (default: 10Mb)</p></li>
 <li><p>maximum number of files in the zip archive (default: 10) (<em>changed in 0.7.4</em>)</p></li>
 <li><p>maximum number of files for synchronous processing (default: 10) (<em>new in 0.10.0</em>). If the maximum number of files in the zip archive equals the maximum number of files for synchronous processing, asynchronous upload is disabled.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When upgrading to v0.10.0, asynchronous download is disabled, since both values are equal.</p>
+</div>
+<ul class="simple">
 <li><p>maximum number of workouts for sport statistics (default: 10.000). If 0, all workouts are fetched to calculate statistics (<em>new in 0.8.5</em>)</p></li>
 <li><p>administrator email for contact (<em>new in 0.6.0</em>)</p></li>
 </ul>
@@ -1136,6 +1142,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><p>Russian (<em>new in 0.8.10</em>)</p></li>
 <li><p>Chinese (Simplified Han script) (<em>new in 0.9.0</em>)</p></li>
 <li><p>Croatian (<em>new in 0.9.8</em>)</p></li>
+<li><p>Catalan (<em>new in 0.10.0</em>)</p></li>
 </ul>
 <p>Application translations status on <a class="reference external" href="https://hosted.weblate.org/engage/fittrackee/">Weblate</a> (development branch, may differ from the released version):</p>
 <figure class="align-default">
@@ -1350,7 +1357,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=015ac4d3"></script>
+</div><script src="_static/documentation_options.js?v=82662543"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
