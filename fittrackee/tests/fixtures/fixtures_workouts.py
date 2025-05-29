@@ -848,6 +848,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>92</gpxtpx:hr>
             <gpxtpx:cad>0</gpxtpx:cad>
+            <gpxtpx:power>0</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -858,6 +859,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>87</gpxtpx:hr>
             <gpxtpx:cad>50</gpxtpx:cad>
+            <gpxtpx:power>305</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -868,6 +870,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>88</gpxtpx:hr>
             <gpxtpx:cad>51</gpxtpx:cad>
+            <gpxtpx:power>326</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -878,6 +881,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>90</gpxtpx:hr>
             <gpxtpx:cad>54</gpxtpx:cad>
+            <gpxtpx:power>287</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -888,6 +892,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>87</gpxtpx:hr>
             <gpxtpx:cad>53</gpxtpx:cad>
+            <gpxtpx:power>251</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -898,6 +903,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>85</gpxtpx:hr>
             <gpxtpx:cad>54</gpxtpx:cad>
+            <gpxtpx:power>248</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -908,6 +914,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>86</gpxtpx:hr>
             <gpxtpx:cad>54</gpxtpx:cad>
+            <gpxtpx:power>246</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -918,6 +925,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>84</gpxtpx:hr>
             <gpxtpx:cad>55</gpxtpx:cad>
+            <gpxtpx:power>216</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -928,6 +936,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>86</gpxtpx:hr>
             <gpxtpx:cad>53</gpxtpx:cad>
+            <gpxtpx:power>243</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -938,6 +947,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>88</gpxtpx:hr>
             <gpxtpx:cad>56</gpxtpx:cad>
+            <gpxtpx:power>267</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -948,6 +958,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>86</gpxtpx:hr>
             <gpxtpx:cad>56</gpxtpx:cad>
+            <gpxtpx:power>278</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -958,6 +969,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>83</gpxtpx:hr>
             <gpxtpx:cad>55</gpxtpx:cad>
+            <gpxtpx:power>290</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -968,6 +980,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>83</gpxtpx:hr>
             <gpxtpx:cad>56</gpxtpx:cad>
+            <gpxtpx:power>228</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -978,6 +991,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>85</gpxtpx:hr>
             <gpxtpx:cad>54</gpxtpx:cad>
+            <gpxtpx:power>280</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -988,6 +1002,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>86</gpxtpx:hr>
             <gpxtpx:cad>56</gpxtpx:cad>
+            <gpxtpx:power>269</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -998,6 +1013,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>85</gpxtpx:hr>
             <gpxtpx:cad>53</gpxtpx:cad>
+            <gpxtpx:power>280</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1008,6 +1024,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>84</gpxtpx:hr>
             <gpxtpx:cad>56</gpxtpx:cad>
+            <gpxtpx:power>256</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1018,6 +1035,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>86</gpxtpx:hr>
             <gpxtpx:cad>55</gpxtpx:cad>
+            <gpxtpx:power>234</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1028,6 +1046,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>83</gpxtpx:hr>
             <gpxtpx:cad>55</gpxtpx:cad>
+            <gpxtpx:power>241</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1038,6 +1057,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>83</gpxtpx:hr>
             <gpxtpx:cad>55</gpxtpx:cad>
+            <gpxtpx:power>264</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1048,6 +1068,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>82</gpxtpx:hr>
             <gpxtpx:cad>54</gpxtpx:cad>
+            <gpxtpx:power>256</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1058,6 +1079,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>85</gpxtpx:hr>
             <gpxtpx:cad>57</gpxtpx:cad>
+            <gpxtpx:power>267</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1068,6 +1090,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>84</gpxtpx:hr>
             <gpxtpx:cad>57</gpxtpx:cad>
+            <gpxtpx:power>234</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1078,6 +1101,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>84</gpxtpx:hr>
             <gpxtpx:cad>52</gpxtpx:cad>
+            <gpxtpx:power>225</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1088,6 +1112,7 @@ def gpx_file_with_gpxtpx_extensions() -> str:
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>81</gpxtpx:hr>
             <gpxtpx:cad>50</gpxtpx:cad>
+            <gpxtpx:power>218</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1139,7 +1164,7 @@ def gpx_file_with_gpxtpx_extensions_and_power() -> str:
         <ele>998</ele>
         <time>2018-03-13T12:44:45Z</time>
         <extensions>
-          <power>363</power>
+          <power>0</power>
           <gpxtpx:TrackPointExtension>
             <gpxtpx:hr>92</gpxtpx:hr>
             <gpxtpx:cad>0</gpxtpx:cad>
@@ -1444,6 +1469,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>92</ns3:hr>
             <ns3:cad>0</ns3:cad>
+            <ns3:power>0</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1455,6 +1481,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>87</ns3:hr>
             <ns3:cad>50</ns3:cad>
+            <ns3:power>305</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1466,6 +1493,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>88</ns3:hr>
             <ns3:cad>51</ns3:cad>
+            <ns3:power>326</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1477,6 +1505,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>90</ns3:hr>
             <ns3:cad>54</ns3:cad>
+            <ns3:power>287</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1488,6 +1517,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>87</ns3:hr>
             <ns3:cad>53</ns3:cad>
+            <ns3:power>251</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1499,6 +1529,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>85</ns3:hr>
             <ns3:cad>54</ns3:cad>
+            <ns3:power>248</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1510,6 +1541,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>86</ns3:hr>
             <ns3:cad>54</ns3:cad>
+            <ns3:power>246</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1521,6 +1553,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>84</ns3:hr>
             <ns3:cad>55</ns3:cad>
+            <ns3:power>216</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1532,6 +1565,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>86</ns3:hr>
             <ns3:cad>53</ns3:cad>
+            <ns3:power>243</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1543,6 +1577,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>88</ns3:hr>
             <ns3:cad>56</ns3:cad>
+            <ns3:power>267</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1554,6 +1589,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>86</ns3:hr>
             <ns3:cad>56</ns3:cad>
+            <ns3:power>278</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1565,6 +1601,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>83</ns3:hr>
             <ns3:cad>55</ns3:cad>
+            <ns3:power>290</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1576,6 +1613,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>83</ns3:hr>
             <ns3:cad>56</ns3:cad>
+            <ns3:power>228</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1587,6 +1625,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>85</ns3:hr>
             <ns3:cad>54</ns3:cad>
+            <ns3:power>280</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1598,6 +1637,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>86</ns3:hr>
             <ns3:cad>56</ns3:cad>
+            <ns3:power>269</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1609,6 +1649,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>85</ns3:hr>
             <ns3:cad>53</ns3:cad>
+            <ns3:power>280</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1620,6 +1661,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>84</ns3:hr>
             <ns3:cad>56</ns3:cad>
+            <ns3:power>256</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1631,6 +1673,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>86</ns3:hr>
             <ns3:cad>55</ns3:cad>
+            <ns3:power>234</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1642,6 +1685,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>83</ns3:hr>
             <ns3:cad>55</ns3:cad>
+            <ns3:power>241</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1653,6 +1697,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>83</ns3:hr>
             <ns3:cad>55</ns3:cad>
+            <ns3:power>264</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1664,6 +1709,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>82</ns3:hr>
             <ns3:cad>54</ns3:cad>
+            <ns3:power>256</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1675,6 +1721,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>85</ns3:hr>
             <ns3:cad>57</ns3:cad>
+            <ns3:power>267</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1686,6 +1733,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>84</ns3:hr>
             <ns3:cad>57</ns3:cad>
+            <ns3:power>234</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1697,6 +1745,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>84</ns3:hr>
             <ns3:cad>52</ns3:cad>
+            <ns3:power>225</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
@@ -1708,6 +1757,7 @@ def gpx_file_with_ns3_extensions() -> str:
             <ns3:atemp>28.0</ns3:atemp>
             <ns3:hr>81</ns3:hr>
             <ns3:cad>50</ns3:cad>
+            <ns3:power>218</ns3:power>
           </ns3:TrackPointExtension>
         </extensions>
       </trkpt>
