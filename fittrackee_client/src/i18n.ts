@@ -2,7 +2,7 @@ import { createI18n } from 'vue-i18n'
 
 import bgMessages from '@/locales/bg/bg'
 // import bnMessages from '@/locales/bn/bn'
-// import caMessages from '@/locales/ca/ca'
+import caMessages from '@/locales/ca/ca'
 import csMessages from '@/locales/cs/cs'
 import deMessages from '@/locales/de/de'
 import enMessages from '@/locales/en/en'
@@ -27,7 +27,7 @@ export default createI18n({
   messages: {
     bg: bgMessages,
     // bn: bnMessages,
-    // ca: caMessages,
+    ca: caMessages,
     cs: csMessages,
     de: deMessages,
     en: enMessages,
