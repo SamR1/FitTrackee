@@ -21,11 +21,7 @@
     "DATA_EXPORT": "Izvoz podataka",
     "DOWNLOAD_ARCHIVE": "Preuzmite arhivu",
     "GENERATING_LINK": "generiranje veze…",
-    "ONLY_ONE_EXPORT_PER_DAY": "Možete zatražiti arhivu jednom u 24 sata",
-    "STATUS": {
-      "errored": "pogreška (molimo zatražite drugi izvoz)",
-      "in_progress": "u tijeku…"
-    }
+    "ONLY_ONE_EXPORT_PER_DAY": "Možete zatražiti arhivu jednom u 24 sata"
   },
   "FILTER_ON_USERNAME": "Filtrirajte prema korisničkom imenu",
   "HIDE_PASSWORD": "sakrij lozinku",
