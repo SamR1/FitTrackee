@@ -243,6 +243,7 @@ class TestGetChartData:
             "hr": 92,
             "latitude": 44.68095,
             "longitude": 6.07367,
+            "power": 0,
             "speed": 3.21,
             "time": datetime(2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc),
         }
@@ -253,6 +254,7 @@ class TestGetChartData:
             "hr": 81,
             "latitude": 44.67822,
             "longitude": 6.07442,
+            "power": 218,
             "speed": 4.33,
             "time": datetime(2018, 3, 13, 12, 48, 55, tzinfo=timezone.utc),
         }

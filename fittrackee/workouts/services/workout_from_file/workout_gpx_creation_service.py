@@ -62,7 +62,7 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
 
     @staticmethod
     def _get_extensions(
-        heart_rate: Optional[int], cadence: Optional[int]
+        heart_rate: Optional[int], cadence: Optional[int], power: Optional[int]
     ) -> "ET.Element":
         track_point_extension = ET.Element("{gpxtpx}TrackPointExtension")
         if heart_rate is not None:
@@ -75,6 +75,11 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
                 track_point_extension, "{gpxtpx}cad"
             )
             cadence_element.text = str(cadence)
+        if power is not None:
+            power_element = ET.SubElement(
+                track_point_extension, "{gpxtpx}power"
+            )
+            power_element.text = str(power)
         return track_point_extension
 
     @classmethod

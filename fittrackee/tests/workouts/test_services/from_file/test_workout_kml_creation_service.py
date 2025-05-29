@@ -177,6 +177,9 @@ class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
         first_point_cad = first_point.extensions[0][1]
         assert first_point_cad.tag == "{gpxtpx}cad"
         assert first_point_cad.text == "0"
+        first_point_cad = first_point.extensions[0][2]
+        assert first_point_cad.tag == "{gpxtpx}power"
+        assert first_point_cad.text == "0"
         last_point = gpx.tracks[0].segments[0].points[-1]
         last_point_hr = last_point.extensions[0][0]
         assert last_point_hr.tag == "{gpxtpx}hr"
@@ -184,6 +187,9 @@ class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
         last_point_cad = last_point.extensions[0][1]
         assert last_point_cad.tag == "{gpxtpx}cad"
         assert last_point_cad.text == "50"
+        last_point_cad = last_point.extensions[0][2]
+        assert last_point_cad.tag == "{gpxtpx}power"
+        assert last_point_cad.text == "90"
 
 
 class TestWorkoutKmlCreationServiceInstantiation(WorkoutFileMixin):
