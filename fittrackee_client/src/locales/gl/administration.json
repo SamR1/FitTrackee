@@ -12,7 +12,9 @@
   "APPLICATION": "Aplicación",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Enderezo de contacto da administración",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "Está desactivada a subida asíncrona de arquivos zip.",
     "MAX_FILES_IN_ZIP_LABEL": "Num. máximo ficheiros con arquivos zip",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Máx. de ficheiros para procesamento síncrono",
     "MAX_USERS_HELP": "Se 0, non hai límite de rexistros.",
     "MAX_USERS_LABEL": "Número máx. de usuarias activas",
     "NO_CONTACT_EMAIL": "sen correo de contacto",
@@ -86,6 +88,7 @@
     },
     "TITLE": "Moderación",
     "UNRESOLVED_REPORTS_EXIST": "Hai denuncias sen resolver.",
+    "USERS_QUEUED_TASKS_EXIST": "Hai tarefas pendentes",
     "VIEW_REPORT": "Ver denuncia"
   },
   "BACK_TO_ADMIN": "Volver a admin",
@@ -146,6 +149,18 @@
       "CHANGE_TO_USER": "Cambiar a usuaria"
     },
     "TITLE": "Administración - Usuarias"
+  },
+  "USERS_QUEUED_TASKS": {
+    "DESCRIPTION": "Mostrar tarefas pendentes",
+    "LABEL": "Tarefas pendentes",
+    "LIST_DESCRIPTION": "Se non hai traballos realizándose, utiliza a CLI para procesalos.",
+    "NO_USERS_QUEUED_TASKS": "Sen tarefas pendentes",
+    "TASK_TYPES": {
+      "LABEL": "Tipo de tarefas",
+      "user_data_export": "Exportación de datos da usuaria",
+      "workouts_archive_upload": "Subidas de arquivos de actividades"
+    },
+    "VIEW_OTHER_TASKS": "Ver outras tarefas pendentes"
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "Actualizouse o enderezo de correo."
 }
