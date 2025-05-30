@@ -5,7 +5,7 @@
 #
 # for multi-users application, uncomment the following containers:
 # - fittrackee-workers for email sending and user data export (EMAIL_URL must be set in .env to enable emails)
-# - fittrackee-redis container for API rate limits, user data export and email sending
+# - fittrackee-redis container for API rate limits, user data export, archive uploads and email sending
 
 services:
   fittrackee-db:
@@ -29,7 +29,7 @@ services:
     env_file:
       - .env
 # Image from Docker Hub
-    image: fittrackee/fittrackee:v0.10.0
+    image: fittrackee/fittrackee:v0.10.1
 # Uncomment following line to build image instead of using pre-built image
 #    build: .
     volumes:
@@ -45,7 +45,7 @@ services:
     depends_on:
       fittrackee-db:
         condition: service_healthy
-# Uncomment the following lines for API rate limit, user data export and email sending
+# Uncomment the following lines for API rate limit, user data export, archive uploads and email sending
 #      fittrackee-redis:
 #        condition: service_healthy
     healthcheck:
@@ -58,13 +58,13 @@ services:
       - internal_network
     restart: unless-stopped
 
-# Uncomment the following lines for user data export and email sending
+# Uncomment the following lines for user data export, archive uploads and email sending
 #  fittrackee-workers:
 #    container_name: fittrackee-workers
 #    env_file:
 #      - .env
 ## Image from Docker Hub
-#    image: fittrackee/fittrackee:v0.10.0
+#    image: fittrackee/fittrackee:v0.10.1
 ## Uncomment following line to build image instead of using pre-built image
 ##    build: .
 #    volumes:
@@ -84,7 +84,7 @@ services:
 #      - external_network
 #    restart: unless-stopped
 
-# Uncomment the following lines for API rate limit, user data export and email sending
+# Uncomment the following lines for API rate limit, user data export, archive uploads and email sending
 #  fittrackee-redis:
 #    image: "redis:8.0"
 #    container_name: fittrackee-redis
