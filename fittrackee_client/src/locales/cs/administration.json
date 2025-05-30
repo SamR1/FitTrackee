@@ -3,7 +3,7 @@
     "DESCRIPTION": "Libovolné další informace, které mohou být užitečné pro uživatele. Lze použít Markdown syntaxi.",
     "TEXT": "Detailní informace o instanci"
   },
-  "ACTION": "Akce",
+  "ACTION": "Akce | Akce",
   "ACTIVATE_USER_ACCOUNT": "Aktivovat účet",
   "ACTIVE": "Aktivní",
   "ADMIN": "Správce",
