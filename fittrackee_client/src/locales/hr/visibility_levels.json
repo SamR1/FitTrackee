@@ -5,6 +5,7 @@
     "private": "Privatno (samo spomenuti korisnici)",
     "public": "Javno (svi)"
   },
+  "HR_VISIBILITY": "Vidljivost otkucaja srca",
   "LEVELS": {
     "followers_only": "Samo pratitelji",
     "private": "Privatno (samo ja)",
