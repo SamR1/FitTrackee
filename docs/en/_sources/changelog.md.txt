@@ -1,5 +1,39 @@
 # Change log
 
+## Version 0.10.1 (2025/05/30)
+
+### Bugs Fixed
+
+* [#819](https://github.com/SamR1/FitTrackee/issues/819) - Cadence is displayed in rpm instead of spm
+
+### Translations
+
+* [PR#815](https://github.com/SamR1/FitTrackee/pull/815) - Translations update from Hosted Weblate (French)
+* [PR#821](https://github.com/SamR1/FitTrackee/pull/821) - Translations update from Hosted Weblate (Dutch)
+
+Translation status:
+- Basque: 92%
+- Bulgarian: 57%
+- Catalan: 25%
+- Chinese (Simplified): 92%
+- Croatian: 91%
+- Czech: 42%
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 92%
+- German: 91%
+- Italian: 47%
+- Norwegian Bokmål: 30%
+- Polish: 92%
+- Portuguese: 56%
+- Russian: 91%
+- Spanish: 59%
+
+Thanks to the contributors:
+- @JeroenED
+
+
 ## Version 0.10.0 (2025/05/29)
 
 In addition to a new language and translation updates, this version brings asynchronous archives upload, support for several file formats and heart rate and cadence display.
