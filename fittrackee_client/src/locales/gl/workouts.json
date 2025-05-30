@@ -2,6 +2,8 @@
   "ADD_WORKOUT": "Engadir actividade",
   "ANALYSIS": "análise",
   "ASCENT": "ascenso",
+  "AVERAGE_CADENCE": "cadencia promedio",
+  "AVERAGE_HR": "ritmo cardíaco promedio",
   "AVERAGE_SPEED": "velocidade media",
   "AVE_ASCENT": "ascenso medio",
   "AVE_DESCENT": "descenso medio",
@@ -10,6 +12,7 @@
   "AVE_SPEED": "vel. media",
   "BACK_TO_COMMENT": "volver ao comentario",
   "BACK_TO_WORKOUT": "volver á actividade",
+  "CADENCE": "cadencia",
   "COMMENTS": {
     "ADD": "engadir comentario",
     "COMMENT": "comentario | comentarios",
@@ -22,6 +25,7 @@
     "REPORT": "denunciar comentario",
     "SUSPENDED_COMMENT_BY_ADMIN": "O comentario foi suspendido pola administración."
   },
+  "CREATED_WORKOUTS": "Creouse a actividade | Creáronse as actividades",
   "DATE": "data",
   "DELETE_WORKOUT": "Eliminar a actividade",
   "DESCENT": "descenso",
@@ -36,6 +40,7 @@
   "END": "fin",
   "EXIT_FULLSCREEN": "Saír da pantalla completa",
   "FROM": "desde",
+  "HEART_RATE": "pulso cardíaco",
   "HIDE_FILTERS": "agochar filtros",
   "HIDE_WORKOUTS": "ocultar actividades",
   "INVALID_ASCENT_OR_DESCENT": "Hai que proporcionar os dous valores de altitude e deben ser iguais o maiores que 0.",
@@ -48,9 +53,12 @@
   "MAP": "mapa",
   "MARKDOWN_SYNTAX": "Pódese usar a sintaxe Markdown: _cursiva_, **resaltar**, [ligazón](https://examplo.com), ![imaxe](https://example.com/image.png)",
   "MAX_ALTITUDE": "Altitude máx.",
-  "MAX_FILES": "máx. de ficheiros",
-  "MAX_SIZE": "Tamaño máx.",
+  "MAX_CADENCE": "cadencia máx.",
+  "MAX_FILES": "Número máx. de ficheiros",
+  "MAX_HR": "Máx. ritmo cardíaco",
+  "MAX_SIZE": "tamaño máx.",
   "MAX_SPEED": "Vel. máxima",
+  "MAX_SYNC_FILES_IN_ZIP": "máx. número de ficheiros para a subida síncrona",
   "MIN_ALTITUDE": "Altitude min.",
   "MULTISELECT": {
     "deselectLabel": "Preme Enter para eliminar",
@@ -71,6 +79,7 @@
   "NO_PREVIOUS_SEGMENT": "Non hai tramo anterior",
   "NO_PREVIOUS_WORKOUT": "Sen actividade anterior",
   "NO_RECORDS": "Sen récords.",
+  "NO_WEATHER_WITH_ASYNCHRONOUS_UPLOAD": "No caso de subida asíncrona, se non se xuntan os datos.",
   "NO_WORKOUTS": "Sen actividade. | Sen actividades.",
   "NO_WORKOUT_AVAILABLE": "Borrouse a actividade ou non é visible.",
   "PAUSES": "pausas",
@@ -90,11 +99,13 @@
   "RESET_ZOOM": "Restablecer vista",
   "SEGMENT": "tramo | tramos",
   "SHOW_WORKOUTS": "mostrar actividades",
+  "SOURCE": "orixe",
   "SPEED": "velocidade",
   "SPORT": "deporte | deportes",
   "START": "inicio",
   "START_AND_FINISH": "Inicio e fin",
   "START_ELEVATION_AT_ZERO": "situar a altitude de inicio no cero da gráfica",
+  "SUPPORTED_FILE_EXTENSIONS": "extensións compatibles",
   "SUSPENDED_BY_ADMIN": "A actividade está suspendida pola administración.",
   "TITLE": "título",
   "TITLE_FIELD_HELP": "Se o escribes, o título substituirá ao do ficheiro.",
@@ -103,6 +114,20 @@
   "TOTAL_DESCENT": "descenso total",
   "TOTAL_DISTANCE": "distancia total",
   "TOTAL_DURATION": "duración total",
+  "UNITS": {
+    "bpm": {
+      "LABEL": "pulsacións por minuto",
+      "UNIT": "ppm"
+    },
+    "rpm": {
+      "LABEL": "voltas por minuto",
+      "UNIT": "rpm"
+    },
+    "spm": {
+      "LABEL": "pasos por minuto",
+      "UNIT": "spm"
+    }
+  },
   "UPLOAD_FIRST_WORKOUT": "Sube un!",
   "VIEW_FULLSCREEN": "Ver en pantalla completa",
   "WEATHER": {
@@ -151,6 +176,7 @@
   "WORKOUT_CHART": "gráfico de velocidade e altitude da actividade",
   "WORKOUT_DATE": "data da actividade",
   "WORKOUT_DELETION_CONFIRMATION": "Tes certeza de querer borrar esta actividade?",
+  "WORKOUT_FILE": "ficheiro de actividade",
   "WORKOUT_MAP": "actividade no mapa",
   "ZIP_ARCHIVE": "ficheiro .zip",
   "ZIP_ARCHIVE_DESCRIPTION": "ou ficheiro .zip que contén ficheiros"
