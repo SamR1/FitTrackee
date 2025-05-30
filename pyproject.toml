@@ -57,6 +57,7 @@ sqlalchemy = "=2.0.41"
 staticmap3 = {extras = ["filecache"], version = "^0.1.0"}
 ua-parser = "^1.0.0"
 xmltodict = "^0.14.2"
+geoalchemy2 = {extras = ["shapely"], version = "^0.17.1"}
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.8.3"
