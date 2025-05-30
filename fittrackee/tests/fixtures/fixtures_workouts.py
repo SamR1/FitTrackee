@@ -173,6 +173,22 @@ def workout_running_user_1() -> Workout:
 
 
 @pytest.fixture()
+def workout_paragliding_user_1(sport_4_paragliding: "Sport") -> Workout:
+    workout = Workout(
+        user_id=1,
+        sport_id=sport_4_paragliding.id,
+        # workout_date: 'Mon, 02 Apr 2018 00:00:00 GMT'
+        workout_date=datetime(2018, 4, 2, tzinfo=timezone.utc),
+        distance=12,
+        duration=timedelta(seconds=6000),
+    )
+    update_workout(workout)
+    db.session.add(workout)
+    db.session.commit()
+    return workout
+
+
+@pytest.fixture()
 def seven_workouts_user_1() -> List[Workout]:
     workouts = []
     workout_1 = Workout(
