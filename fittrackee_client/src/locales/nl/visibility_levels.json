@@ -5,6 +5,7 @@
     "private": "Privé (enkel vermelde gebruikers)",
     "public": "Publiek (iedereen)"
   },
+  "HR_VISIBILITY": "Hartslag zichtbaarheid",
   "LEVELS": {
     "followers_only": "Enkel volgers",
     "private": "Privé (enkel ikzelf)",
