@@ -181,6 +181,25 @@ class TestGetChartData:
 
         self.assert_chart_data(chart_data)
 
+    def test_it_returns_chart_data_for_gpx_with_cadence_float_value(
+        self,
+        app: "Flask",
+        gpx_file_with_cadence_float_value: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=gpx_file_with_cadence_float_value,
+        ):
+            chart_data = get_chart_data(
+                gpx_file_with_cadence_float_value,
+                sport_1_cycling.label,
+                can_see_heart_rate=True,
+            )
+
+        self.assert_chart_data(chart_data)
+
     def test_it_returns_chart_data_for_gpx_with_ns3_extensions(
         self,
         app: "Flask",

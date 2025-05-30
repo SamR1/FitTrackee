@@ -1098,6 +1098,15 @@ def gpx_file_with_gpxtpx_extensions() -> str:
 
 
 @pytest.fixture()
+def gpx_file_with_cadence_float_value(
+    gpx_file_with_gpxtpx_extensions: str,
+) -> str:
+    return gpx_file_with_gpxtpx_extensions.replace(
+        "</gpxtpx:cad>", ".0</gpxtpx:cad>"
+    )
+
+
+@pytest.fixture()
 def gpx_file_with_gpxtpx_extensions_and_power() -> str:
     return """<gpx
   xmlns="http://www.topografix.com/GPX/1/1"

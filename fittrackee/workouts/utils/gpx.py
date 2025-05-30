@@ -123,9 +123,9 @@ def get_chart_data(
                         and element.text
                     ):
                         data["cadence"] = (
-                            int(element.text) * 2
+                            int(float(element.text)) * 2
                             if cadence_in_spm
-                            else int(element.text)
+                            else int(float(element.text))
                         )
             chart_data.append(data)
             previous_point = point

@@ -215,7 +215,7 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
                     if element.tag.endswith("}hr") and element.text:
                         heart_rates.append(int(element.text))
                     if element.tag.endswith("}cad") and element.text:
-                        cadences.append(int(element.text))
+                        cadences.append(int(float(element.text)))
 
             # last segment point
             if point_idx == last_point_index:
