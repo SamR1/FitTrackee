@@ -1,1 +1,8 @@
-{}
+{
+  "ADD_A_NEW_APP": "Přidat novou OAuth2 aplikaci",
+  "APP": {
+    "CLIENT_ID": "Id",
+    "CLIENT_SECRET": "Tajný klíč",
+    "DESCRIPTION": "Popis aplikace"
+  }
+}

@@ -1,5 +1,6 @@
 {
   "APP_ERROR": "Čini se da je aplikacija naišla na probleme.<br />Molimo pokušajte ponovno kasnije ili kontaktirajte administratora.",
+  "ERRORS_ENCOUNTERED": "Bilo je grešaka",
   "NOT_FOUND": {
     "COMMENT": "Komentar nije pronađen",
     "PAGE": "Stranica nije pronađena",

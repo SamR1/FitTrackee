@@ -12,7 +12,9 @@
   "APPLICATION": "Aplikacija",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "E-pošta administratora za kontakt",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "Asinkroni prijenosa zip arhiva je onemogućen.",
     "MAX_FILES_IN_ZIP_LABEL": "Maks. broj datoteka u zip arhivi",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Maks. broj datoteka za sinkronu obradu",
     "MAX_USERS_HELP": "Ako je 0, nema ograničenja za registraciju.",
     "MAX_USERS_LABEL": "Maks. broj aktivnih korisnika",
     "NO_CONTACT_EMAIL": "nema adrese e-pošte za kontakt",
@@ -86,6 +88,7 @@
     },
     "TITLE": "Moderiranje",
     "UNRESOLVED_REPORTS_EXIST": "Ima neriješenih prijava.",
+    "USERS_QUEUED_TASKS_EXIST": "Postoje raspoređeni zadaci",
     "VIEW_REPORT": "Pogledaj izvješće"
   },
   "BACK_TO_ADMIN": "Natrag na administraciju",
@@ -146,6 +149,18 @@
       "CHANGE_TO_USER": "Promijeni na korisnika"
     },
     "TITLE": "Administracija - Korisnici"
+  },
+  "USERS_QUEUED_TASKS": {
+    "DESCRIPTION": "Prikaži raspoređene zadatke",
+    "LABEL": "Zadatci u redu čekanja",
+    "LIST_DESCRIPTION": "Ako nijedan worker nije pokrenut koristite CLI za njihovo obrađivanje.",
+    "NO_USERS_QUEUED_TASKS": "Nema raspoređenih zadataka",
+    "TASK_TYPES": {
+      "LABEL": "Oblik zadatka",
+      "user_data_export": "Izvoz podataka korisnika",
+      "workouts_archive_upload": "Arhiva prijenosa aktivnosti"
+    },
+    "VIEW_OTHER_TASKS": "Pogledaj druge raspoređene zadatke"
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "Adresa e-pošte je ažurirana."
 }
