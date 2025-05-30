@@ -32,7 +32,11 @@ from fittrackee.visibility_levels import (
 )
 
 from .exceptions import WorkoutForbiddenException
-from .utils.convert import convert_in_duration, convert_value_to_integer
+from .utils.convert import (
+    convert_in_duration,
+    convert_value_to_integer,
+    get_cadence,
+)
 
 if TYPE_CHECKING:
     from sqlalchemy.orm.attributes import AttributeEvent
@@ -330,8 +334,8 @@ class Workout(BaseModel):
     )
     max_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
     ave_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
-    max_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
-    ave_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
+    max_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # rpm
+    ave_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # rpm
     source: Mapped[Optional[str]] = mapped_column(
         db.String(100), nullable=True
     )
@@ -505,6 +509,7 @@ class Workout(BaseModel):
             }
 
         can_see_heart_rate = can_view_heart_rate(self.user, user)
+        sport_label = self.sport.label
         workout_data = {
             **workout_data,
             **EMPTY_WORKOUT_VALUES,
@@ -545,8 +550,8 @@ class Workout(BaseModel):
                 if can_see_map_data
                 else VisibilityLevel.PRIVATE
             ),
-            "ave_cadence": self.ave_cadence,
-            "max_cadence": self.max_cadence,
+            "ave_cadence": get_cadence(sport_label, self.ave_cadence),
+            "max_cadence": get_cadence(sport_label, self.max_cadence),
             "ave_hr": self.ave_hr if can_see_heart_rate else None,
             "max_hr": self.max_hr if can_see_heart_rate else None,
         }
@@ -927,8 +932,8 @@ class WorkoutSegment(BaseModel):
     )  # km/h
     max_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
     ave_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
-    max_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
-    ave_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
+    max_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # rpm
+    ave_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # rpm
 
     workout: Mapped["Workout"] = relationship(
         "Workout", lazy="joined", single_parent=True
@@ -948,6 +953,7 @@ class WorkoutSegment(BaseModel):
         self.workout_uuid = workout_uuid
 
     def serialize(self, *, can_see_heart_rate: bool = False) -> Dict:
+        sport_label = self.workout.sport.label
         return {
             "workout_id": encode_uuid(self.workout_uuid),
             "segment_id": self.segment_id,
@@ -971,8 +977,8 @@ class WorkoutSegment(BaseModel):
             "ave_speed": (
                 None if self.ave_speed is None else float(self.ave_speed)
             ),
-            "ave_cadence": self.ave_cadence,
-            "max_cadence": self.max_cadence,
+            "ave_cadence": get_cadence(sport_label, self.ave_cadence),
+            "max_cadence": get_cadence(sport_label, self.max_cadence),
             "ave_hr": self.ave_hr if can_see_heart_rate else None,
             "max_hr": self.max_hr if can_see_heart_rate else None,
         }

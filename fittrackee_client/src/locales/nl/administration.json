@@ -12,7 +12,9 @@
   "APPLICATION": "Applicatie",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Administrator email voor contact",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "Asyncrone zip upload is uitgeschakeld.",
     "MAX_FILES_IN_ZIP_LABEL": "Max. aantal bestanden in zip archief",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Max aantal bestanden voor synchrone upload",
     "MAX_USERS_HELP": "Bij 0, geen limiet op registratie.",
     "MAX_USERS_LABEL": "Max. aantal actieve gebruikers",
     "NO_CONTACT_EMAIL": "geen contact email",
@@ -86,6 +88,7 @@
     },
     "TITLE": "Moderatie",
     "UNRESOLVED_REPORTS_EXIST": "Er zijn onopgeloste meldingen.",
+    "USERS_QUEUED_TASKS_EXIST": "Er staan taken in de wachtrij",
     "VIEW_REPORT": "Toon melding"
   },
   "BACK_TO_ADMIN": "Terug naar beheer",
@@ -146,6 +149,18 @@
       "CHANGE_TO_USER": "Wijzig naar gebruiker"
     },
     "TITLE": "Administratie - Gebruikers"
+  },
+  "USERS_QUEUED_TASKS": {
+    "DESCRIPTION": "Taken in wachtrij bekijken",
+    "LABEL": "Taken in wachtrij",
+    "LIST_DESCRIPTION": "Indien geen workers draaiende zijn gebruik dan de CLI om ze te verwerken.",
+    "NO_USERS_QUEUED_TASKS": "Geen taken in wachtrij",
+    "TASK_TYPES": {
+      "LABEL": "Taaktype",
+      "user_data_export": "Gebruikersdata export",
+      "workouts_archive_upload": "Training archief uploads"
+    },
+    "VIEW_OTHER_TASKS": "Toon andere taken in de wachtrij"
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "Het emailadres werd bijgewerkt."
 }
