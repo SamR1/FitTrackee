@@ -7,13 +7,16 @@ WORKDIR /usr/src/app
 # copy source files
 COPY . /usr/src/app
 
+# For numpy installation (shapely dependency)
+RUN apt-get update -y && apt-get install -y build-essential gcc
+
 # install requirements
 ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 RUN pip install --upgrade pip
 RUN pip install poetry
-RUN . $VIRTUAL_ENV/bin/activate && poetry install --no-interaction --quiet
+RUN . $VIRTUAL_ENV/bin/activate && poetry install --no-interaction
 
 # run fittrackee server and workers
 COPY ./docker-entrypoint-dev.sh /docker-entrypoint.sh
