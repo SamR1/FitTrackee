@@ -3,7 +3,7 @@ from typing import List, Optional
 
 import gpxpy.gpx
 
-from ..constants import CADENCE_SPORTS
+from ..constants import RPM_CADENCE_SPORTS, SPM_CADENCE_SPORTS
 from ..exceptions import WorkoutGPXException
 
 
@@ -58,7 +58,8 @@ def get_chart_data(
     first_point = None
     previous_point = None
     previous_distance = 0
-    return_cadence = sport_label in CADENCE_SPORTS
+    return_cadence = sport_label in RPM_CADENCE_SPORTS + SPM_CADENCE_SPORTS
+    cadence_in_spm = sport_label in SPM_CADENCE_SPORTS
 
     track_segments = gpx.tracks[0].segments
     segments = get_gpx_segments(track_segments, segment_id)
@@ -121,7 +122,11 @@ def get_chart_data(
                         )
                         and element.text
                     ):
-                        data["cadence"] = int(element.text)
+                        data["cadence"] = (
+                            int(element.text) * 2
+                            if cadence_in_spm
+                            else int(element.text)
+                        )
             chart_data.append(data)
             previous_point = point
             previous_distance = distance

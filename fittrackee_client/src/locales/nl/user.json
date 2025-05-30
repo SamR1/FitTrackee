@@ -71,6 +71,16 @@
   "PRIVACY_POLICY_TO_VALIDATE": "Gelieve de privacy verklaring {0} voor verder te gaan.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Account aanpassen",
+    "ARCHIVE_UPLOADS": {
+      "ARCHIVE": "Zip archief",
+      "CONFIRM_TASK_ABORT": "Bent u zeken dat je deze archief upload taak wilt afbreken?",
+      "CONFIRM_TASK_DELETION": "Bent u zeken dat je deze archief upload taak wilt verwijderen?",
+      "CREATED_WORKOUTS": "Gecreëerde trainingen",
+      "ERRORED_FILES": "Fout bestand | Foute bestanden",
+      "FILES_COUNT": "{count} bestanden",
+      "NOT_FOUND": "Geen archief upload gevonden.",
+      "PROGRESS": "Voortgang"
+    },
     "ASCENT_DATA": "Hoogte gerelateerde data (opnames, totaal)",
     "BACK_TO_PROFILE": "Terug naar profiel",
     "BIO": "Bio",
@@ -123,6 +133,7 @@
     },
     "NOTIFICATIONS_EDITION": "Meldingseditie",
     "NOTIFICATION_PREFERENCES": "Meldingsvoorkeuren",
+    "NO_ARCHIVE_UPLOADS": "Geen archief uploads",
     "NO_SANCTIONS": "Geen sanctie",
     "PICTURE": "Afbeelding",
     "PICTURE_EDITION": "Afbeelding aanpassen",
@@ -170,6 +181,7 @@
     "TABS": {
       "ACCOUNT": "account",
       "APPS": "apps",
+      "ARCHIVE-UPLOADS": "Archief uploads",
       "BLOCKED-USERS": "geblokkeerde gebruikers",
       "EQUIPMENTS": "materialen",
       "FOLLOW-REQUESTS": "volgverzoeken",
@@ -232,8 +244,12 @@
   "SUSPENSION_REASON": "Reden voor blokkering",
   "TASKS": {
     "STATUS": {
+      "LABEL": "Status",
+      "aborted": "afgebroken",
       "errored": "fout",
-      "in_progress": "Bezig met verwerken"
+      "in_progress": "Bezig met verwerken",
+      "queued": "in wachtrij",
+      "successful": "geslaagd"
     }
   },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Deze account is niet actief.",

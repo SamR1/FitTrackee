@@ -238,6 +238,47 @@ class TestGetChartData:
 
         self.assert_chart_data(chart_data)
 
+    def test_it_returns_cadence_when_sport_is_running(
+        self,
+        app: "Flask",
+        gpx_file_with_gpxtpx_extensions: str,
+        sport_2_running: "Sport",
+    ) -> None:
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=gpx_file_with_gpxtpx_extensions,
+        ):
+            chart_data = get_chart_data(
+                gpx_file_with_gpxtpx_extensions,
+                sport_2_running.label,
+                can_see_heart_rate=True,
+            )
+
+        assert chart_data is not None
+        assert chart_data[0] == {
+            "cadence": 0,
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "hr": 92,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "speed": 3.21,
+            "time": datetime(2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc),
+        }
+        assert chart_data[-1] == {
+            "cadence": 100,
+            "distance": 0.32,
+            "duration": 250.0,
+            "elevation": 975.0,
+            "hr": 81,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "speed": 4.33,
+            "time": datetime(2018, 3, 13, 12, 48, 55, tzinfo=timezone.utc),
+        }
+
     def test_it_does_not_return_cadence_when_sport_is_not_valid(
         self,
         app: "Flask",
