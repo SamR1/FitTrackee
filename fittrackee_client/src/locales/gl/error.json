@@ -1,5 +1,6 @@
 {
   "APP_ERROR": "A aplicación atopou algún problema.<br />Inténtao máis tarde ou contacta coa administración.",
+  "ERRORS_ENCOUNTERED": "Atopáronse erros",
   "NOT_FOUND": {
     "COMMENT": "Non se atopa o comentario",
     "PAGE": "Non se atopa a páxina",

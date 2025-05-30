@@ -5,6 +5,7 @@
     "private": "Privada (só usuarias mencionadas)",
     "public": "Pública (calquera)"
   },
+  "HR_VISIBILITY": "Visibilidade do ritmo cardíaco",
   "LEVELS": {
     "followers_only": "Só seguidoras",
     "private": "Privada (só para min)",
