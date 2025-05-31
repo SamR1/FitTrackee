@@ -14,6 +14,7 @@ class TestGetChartData:
     def test_it_returns_none_when_gpx_has_no_tracks(
         self, app: "Flask", gpx_file_wo_track: str, sport_1_cycling: "Sport"
     ) -> None:
+        workout_ave_cadence = None
         with patch(
             "builtins.open",
             new_callable=mock_open,
@@ -22,6 +23,7 @@ class TestGetChartData:
             chart_data = get_chart_data(
                 gpx_file_wo_track,
                 sport_1_cycling.label,
+                workout_ave_cadence,
                 can_see_heart_rate=True,
             )
 
@@ -30,11 +32,15 @@ class TestGetChartData:
     def test_it_returns_chart_data_for_gpx(
         self, app: "Flask", gpx_file: str, sport_1_cycling: "Sport"
     ) -> None:
+        workout_ave_cadence = None
         with patch(
             "builtins.open", new_callable=mock_open, read_data=gpx_file
         ):
             chart_data = get_chart_data(
-                gpx_file, sport_1_cycling.label, can_see_heart_rate=True
+                gpx_file,
+                sport_1_cycling.label,
+                workout_ave_cadence,
+                can_see_heart_rate=True,
             )
 
         assert chart_data is not None
@@ -63,6 +69,7 @@ class TestGetChartData:
         gpx_file_with_3_segments: str,
         sport_1_cycling: "Sport",
     ) -> None:
+        workout_ave_cadence = None
         with patch(
             "builtins.open",
             new_callable=mock_open,
@@ -71,6 +78,7 @@ class TestGetChartData:
             chart_data = get_chart_data(
                 gpx_file_with_3_segments,
                 sport_1_cycling.label,
+                workout_ave_cadence,
                 can_see_heart_rate=True,
                 segment_id=1,
             )
@@ -101,6 +109,7 @@ class TestGetChartData:
         gpx_file_with_microseconds: str,
         sport_1_cycling: "Sport",
     ) -> None:
+        workout_ave_cadence = None
         with patch(
             "builtins.open",
             new_callable=mock_open,
@@ -109,6 +118,7 @@ class TestGetChartData:
             chart_data = get_chart_data(
                 gpx_file_with_microseconds,
                 sport_1_cycling.label,
+                workout_ave_cadence,
                 can_see_heart_rate=True,
             )
 
@@ -168,6 +178,7 @@ class TestGetChartData:
         gpx_file_with_gpxtpx_extensions: str,
         sport_1_cycling: "Sport",
     ) -> None:
+        workout_ave_cadence = 70
         with patch(
             "builtins.open",
             new_callable=mock_open,
@@ -176,6 +187,7 @@ class TestGetChartData:
             chart_data = get_chart_data(
                 gpx_file_with_gpxtpx_extensions,
                 sport_1_cycling.label,
+                workout_ave_cadence,
                 can_see_heart_rate=True,
             )
 
@@ -187,6 +199,7 @@ class TestGetChartData:
         gpx_file_with_cadence_float_value: str,
         sport_1_cycling: "Sport",
     ) -> None:
+        workout_ave_cadence = 70
         with patch(
             "builtins.open",
             new_callable=mock_open,
@@ -195,10 +208,52 @@ class TestGetChartData:
             chart_data = get_chart_data(
                 gpx_file_with_cadence_float_value,
                 sport_1_cycling.label,
+                workout_ave_cadence,
                 can_see_heart_rate=True,
             )
 
         self.assert_chart_data(chart_data)
+
+    def test_it_returns_chart_data_without_cadence_when_no_ave_cadence(
+        self,
+        app: "Flask",
+        gpx_file_with_cadence_zero_values: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        workout_ave_cadence = None
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=gpx_file_with_cadence_zero_values,
+        ):
+            chart_data = get_chart_data(
+                gpx_file_with_cadence_zero_values,
+                sport_1_cycling.label,
+                workout_ave_cadence,
+                can_see_heart_rate=True,
+            )
+
+        assert chart_data is not None
+        assert chart_data[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "hr": 92,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "speed": 3.21,
+            "time": datetime(2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc),
+        }
+        assert chart_data[-1] == {
+            "distance": 0.32,
+            "duration": 250.0,
+            "elevation": 975.0,
+            "hr": 81,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "speed": 4.33,
+            "time": datetime(2018, 3, 13, 12, 48, 55, tzinfo=timezone.utc),
+        }
 
     def test_it_returns_chart_data_for_gpx_with_ns3_extensions(
         self,
@@ -206,6 +261,7 @@ class TestGetChartData:
         gpx_file_with_ns3_extensions: str,
         sport_1_cycling: "Sport",
     ) -> None:
+        workout_ave_cadence = 70
         with patch(
             "builtins.open",
             new_callable=mock_open,
@@ -214,6 +270,7 @@ class TestGetChartData:
             chart_data = get_chart_data(
                 gpx_file_with_ns3_extensions,
                 sport_1_cycling.label,
+                workout_ave_cadence,
                 can_see_heart_rate=True,
             )
 
@@ -225,6 +282,7 @@ class TestGetChartData:
         gpx_file_without_track_point_extension: str,
         sport_1_cycling: "Sport",
     ) -> None:
+        workout_ave_cadence = 70
         with patch(
             "builtins.open",
             new_callable=mock_open,
@@ -233,6 +291,7 @@ class TestGetChartData:
             chart_data = get_chart_data(
                 gpx_file_without_track_point_extension,
                 sport_1_cycling.label,
+                workout_ave_cadence,
                 can_see_heart_rate=True,
             )
 
@@ -244,6 +303,7 @@ class TestGetChartData:
         gpx_file_with_gpxtpx_extensions_and_power: str,
         sport_1_cycling: "Sport",
     ) -> None:
+        workout_ave_cadence = 70
         with patch(
             "builtins.open",
             new_callable=mock_open,
@@ -252,6 +312,7 @@ class TestGetChartData:
             chart_data = get_chart_data(
                 gpx_file_with_gpxtpx_extensions_and_power,
                 sport_1_cycling.label,
+                workout_ave_cadence,
                 can_see_heart_rate=True,
             )
 
@@ -263,6 +324,7 @@ class TestGetChartData:
         gpx_file_with_gpxtpx_extensions: str,
         sport_2_running: "Sport",
     ) -> None:
+        workout_ave_cadence = 70
         with patch(
             "builtins.open",
             new_callable=mock_open,
@@ -271,6 +333,7 @@ class TestGetChartData:
             chart_data = get_chart_data(
                 gpx_file_with_gpxtpx_extensions,
                 sport_2_running.label,
+                workout_ave_cadence,
                 can_see_heart_rate=True,
             )
 
@@ -304,6 +367,7 @@ class TestGetChartData:
         gpx_file_with_gpxtpx_extensions: str,
         sport_4_paragliding: "Sport",
     ) -> None:
+        workout_ave_cadence = 70
         with patch(
             "builtins.open",
             new_callable=mock_open,
@@ -312,6 +376,7 @@ class TestGetChartData:
             chart_data = get_chart_data(
                 gpx_file_with_gpxtpx_extensions,
                 sport_4_paragliding.label,
+                workout_ave_cadence,
                 can_see_heart_rate=True,
             )
 
@@ -343,6 +408,7 @@ class TestGetChartData:
         gpx_file_with_gpxtpx_extensions: str,
         sport_1_cycling: "Sport",
     ) -> None:
+        workout_ave_cadence = 70
         with patch(
             "builtins.open",
             new_callable=mock_open,
@@ -351,6 +417,7 @@ class TestGetChartData:
             chart_data = get_chart_data(
                 gpx_file_with_gpxtpx_extensions,
                 sport_1_cycling.label,
+                workout_ave_cadence,
                 can_see_heart_rate=False,
             )
 

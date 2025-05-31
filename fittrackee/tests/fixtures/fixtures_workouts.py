@@ -1107,6 +1107,16 @@ def gpx_file_with_cadence_float_value(
 
 
 @pytest.fixture()
+def gpx_file_with_cadence_zero_values(
+    gpx_file_with_gpxtpx_extensions: str,
+) -> str:
+    regex = re.compile("<gpxtpx:cad>(.*)</gpxtpx:cad>")
+    return regex.sub(
+        "<gpxtpx:cad>0.0</gpxtpx:cad>", gpx_file_with_gpxtpx_extensions
+    )
+
+
+@pytest.fixture()
 def gpx_file_with_gpxtpx_extensions_and_power() -> str:
     return """<gpx
   xmlns="http://www.topografix.com/GPX/1/1"
