@@ -148,7 +148,7 @@ Workouts
     - Open Water Swimming
 
 .. note::
-  For now, average and max values for heart rate and cadence are not displayed for workouts created before v0.10.0 (see `issue #816 <https://github.com/SamR1/FitTrackee/issues/816>`__).
+  For now, source and average and max values for heart rate and cadence are not displayed for workouts created before v0.10.0 (see `issue #816 <https://github.com/SamR1/FitTrackee/issues/816>`__).
 
 - | If **Visual Crossing** (*new in 0.7.11*) API key is provided, weather is displayed in workout detail. Data source is displayed in **About** page.
   | Wind is displayed, with an arrow indicating the direction (a tooltip can be displayed with the direction that the wind is coming **from**) (*new in 0.5.5*).
