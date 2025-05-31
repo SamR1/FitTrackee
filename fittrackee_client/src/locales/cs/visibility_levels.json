@@ -1,1 +1,6 @@
-{}
+{
+  "COMMENT_LEVELS": {
+    "followers_only": "Pouze sledující",
+    "private": "Soukromé (pouze vyjmenovaní uživatelé)"
+  }
+}

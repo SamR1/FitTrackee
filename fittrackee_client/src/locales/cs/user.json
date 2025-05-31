@@ -1,6 +1,7 @@
 {
   "ACCOUNT_CONFIRMATION": "Potvrzení účtu",
   "ACCOUNT_CONFIRMATION_SENT": "Zkontrolujte Váš e-mail. Byl odeslán nový e-mail pro potvrzení zadané adresy.",
+  "ACCOUNT_SUSPENDED_AT": "Účet byl pozastaven v {0}.",
   "ALREADY_HAVE_ACCOUNT": "Máte již účet?",
   "CONFIRM_ACCOUNT_DELETION": "Jste si jistý, že chcete smazat Váš účet? Všechna data budou smazána, toto nejde vrátit.",
   "CURRENT_PASSWORD": "Současné heslo",

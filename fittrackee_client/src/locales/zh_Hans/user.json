@@ -11,7 +11,7 @@
   "APPEAL_IN_PROGRESS": "申诉正在处理中。",
   "APPEAL_REJECTED": "申诉被驳回。",
   "APPEAL_SUBMITTED": "申诉已提交。",
-  "CONFIRM_ACCOUNT_DELETION": "你确定要删除你的账号吗？所有数据将被删除，这不能撤销。",
+  "CONFIRM_ACCOUNT_DELETION": "您确定要删除您的账号吗？所有数据将被删除，这不能撤销。",
   "CURRENT_PASSWORD": "当前密码",
   "EMAIL": "电子邮件",
   "EMAIL_INFO": "输入有效的电子邮箱地址。",
@@ -32,7 +32,7 @@
   "LAST_PRIVACY_POLICY_TO_VALIDATE": "隐私政策已更新，请在继续之前{0}。",
   "LOGIN": "登入",
   "LOGOUT": "登出",
-  "LOGOUT_CONFIRMATION": "你确定要登出吗？",
+  "LOGOUT_CONFIRMATION": "您确定要登出吗？",
   "LOG_IN": "登入",
   "NEW_PASSWORD": "新密码",
   "NO_SPORT_FOUND": "未找到运动。",
@@ -52,13 +52,13 @@
     "SUGGESTIONS": {
       "allUppercase": "大写一些，但不是所有字母。",
       "anotherWord": "添加更多不常见的单词。",
-      "associatedYears": "避免使用与你相关的年份。",
+      "associatedYears": "避免使用与您相关的年份。",
       "capitalization": "大写不仅仅是第一个字母。",
-      "dates": "避免使用与你相关的日期和年份。",
+      "dates": "避免使用与您相关的日期和年份。",
       "l33t": "避免使用可预测的字母替换，如将 {'@'} 替换为 a。",
       "longerKeyboardPattern": "使用更长的键盘模式，并多次改变输入方向。",
-      "noNeed": "你可以创建强密码，而无需使用符号、数字或大写字母。",
-      "pwned": "如果你在其他地方使用此密码，你应该更改它。",
+      "noNeed": "您可以创建强密码，而无需使用符号、数字或大写字母。",
+      "pwned": "如果您在其他地方使用此密码，您应该更改它。",
       "recentYears": "避免使用最近的年份。",
       "repeated": "避免重复的单词和字符。",
       "reverseWords": "避免常用词的反向拼写。",
@@ -67,10 +67,20 @@
     },
     "WEAK": "弱"
   },
-  "PASSWORD_UPDATED": "你的密码已更新。点击 {0} 登录。",
+  "PASSWORD_UPDATED": "您的密码已更新。点击 {0} 登录。",
   "PRIVACY_POLICY_TO_VALIDATE": "请在继续之前{0}隐私政策。",
   "PROFILE": {
     "ACCOUNT_EDITION": "账号编辑",
+    "ARCHIVE_UPLOADS": {
+      "ARCHIVE": "Zip 归档",
+      "CONFIRM_TASK_ABORT": "您确定要中止此归档上传任务吗？",
+      "CONFIRM_TASK_DELETION": "您确定要删除此归档上传任务吗？",
+      "CREATED_WORKOUTS": "已创建的锻炼",
+      "ERRORED_FILES": "出错文件",
+      "FILES_COUNT": "{count} 个文件",
+      "NOT_FOUND": "未找到归档上传。",
+      "PROGRESS": "进度"
+    },
     "ASCENT_DATA": "爬升相关数据（记录，总计）",
     "BACK_TO_PROFILE": "返回个人资料",
     "BIO": "个人简介",
@@ -123,6 +133,7 @@
     },
     "NOTIFICATIONS_EDITION": "通知偏好编辑",
     "NOTIFICATION_PREFERENCES": "通知偏好",
+    "NO_ARCHIVE_UPLOADS": "没有归档上传",
     "NO_SANCTIONS": "没有处罚",
     "PICTURE": "图片",
     "PICTURE_EDITION": "图片编辑",
@@ -170,6 +181,7 @@
     "TABS": {
       "ACCOUNT": "账号",
       "APPS": "应用",
+      "ARCHIVE-UPLOADS": "归档上传",
       "BLOCKED-USERS": "已屏蔽用户",
       "EQUIPMENTS": "设备",
       "FOLLOW-REQUESTS": "关注请求",
@@ -210,7 +222,7 @@
     "BLOCKED": "已屏蔽",
     "FOLLOWER": "关注者",
     "FOLLOWING": "正在关注",
-    "FOLLOWS_YOU": "关注了你",
+    "FOLLOWS_YOU": "关注了您",
     "NO_FOLLOWERS": "暂无关注者。",
     "NO_FOLLOWING": "暂无正在关注。",
     "NO_FOLLOW_REQUESTS": "没有需要检查的关注请求。"
@@ -232,8 +244,12 @@
   "SUSPENSION_REASON": "暂停原因",
   "TASKS": {
     "STATUS": {
+      "LABEL": "状态",
+      "aborted": "已中止",
       "errored": "出错",
-      "in_progress": "进行中"
+      "in_progress": "进行中",
+      "queued": "排队中",
+      "successful": "成功"
     }
   },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "该用户账号未激活。",
@@ -244,8 +260,8 @@
   "USER_PICTURE": "用户图片",
   "USER_PROFILE": "用户资料",
   "WARNING_REASON": "警告原因",
-  "YOU": "你",
-  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "你的账号已被暂停",
-  "YOU_CAN_APPEAL_ONCE": "你只能申诉一次。",
-  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "你已接受{0}。"
+  "YOU": "您",
+  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "您的账号已被暂停",
+  "YOU_CAN_APPEAL_ONCE": "您只能申诉一次。",
+  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "您已接受{0}。"
 }

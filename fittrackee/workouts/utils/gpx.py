@@ -39,6 +39,7 @@ def get_gpx_segments(
 def get_chart_data(
     gpx_file: str,
     sport_label: str,
+    workout_ave_cadence: Optional[int],
     *,
     can_see_heart_rate: bool,
     segment_id: Optional[int] = None,
@@ -49,6 +50,9 @@ def get_chart_data(
     - elevation (if available)
     - heart rate (if available)
     - cadence (if available)
+
+    Note: some files contains only zero cadence values. In this case,
+    workout average cadence is None and cadence is not displayed.
     """
     gpx = open_gpx_file(gpx_file)
     if gpx is None:
@@ -58,7 +62,10 @@ def get_chart_data(
     first_point = None
     previous_point = None
     previous_distance = 0
-    return_cadence = sport_label in RPM_CADENCE_SPORTS + SPM_CADENCE_SPORTS
+    return_cadence = (
+        workout_ave_cadence
+        and sport_label in RPM_CADENCE_SPORTS + SPM_CADENCE_SPORTS
+    )
     cadence_in_spm = sport_label in SPM_CADENCE_SPORTS
 
     track_segments = gpx.tracks[0].segments
@@ -123,9 +130,9 @@ def get_chart_data(
                         and element.text
                     ):
                         data["cadence"] = (
-                            int(element.text) * 2
+                            int(float(element.text)) * 2
                             if cadence_in_spm
-                            else int(element.text)
+                            else int(float(element.text))
                         )
             chart_data.append(data)
             previous_point = point

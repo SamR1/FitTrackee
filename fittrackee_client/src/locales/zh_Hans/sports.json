@@ -58,5 +58,8 @@
   },
   "Walking": {
     "LABEL": "步行"
+  },
+  "Windsurfing": {
+    "LABEL": "帆板"
   }
 }

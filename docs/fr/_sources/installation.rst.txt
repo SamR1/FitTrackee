@@ -294,7 +294,7 @@ deployment method.
 
     Directory for **Static Map 3** cache
 
-    :default: .staticmap_cache
+    :default: ``.staticmap_cache``
 
     .. warning::
         This is the library's default variable, to be modified to set another directory.
@@ -684,13 +684,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.10.1):
+-  Download the last release (for now, it is the release v0.10.2):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/0.10.1.tar.gz
-   $ tar -xzf v0.10.1.tar.gz
-   $ mv FitTrackee-0.10.1 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/0.10.2.tar.gz
+   $ tar -xzf v0.10.2.tar.gz
+   $ mv FitTrackee-0.10.2 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -822,13 +822,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.10.1) and overwrite existing files:
+- Download the last release (for now, it is the release v0.10.2) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.10.1.tar.gz
-   $ tar -xzf v0.10.1.tar.gz
-   $ cp -R FitTrackee-0.10.1/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.10.2.tar.gz
+   $ tar -xzf v0.10.2.tar.gz
+   $ cp -R FitTrackee-0.10.2/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
