@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING, Dict, Optional
 from unittest.mock import MagicMock, call, patch
 
 import gpxpy
@@ -166,23 +166,26 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert workout.workout_visibility == VisibilityLevel.PRIVATE
 
     @staticmethod
-    def assert_workout_segment(workout: "Workout") -> None:
+    def assert_workout_segment(
+        workout: "Workout", workout_segment: Optional["WorkoutSegment"] = None
+    ) -> None:
         """
         assert workout segment data from 'gpx_file' fixture
         """
         assert WorkoutSegment.query.count() == 1
-        workout_segment = WorkoutSegment.query.one()
+        if workout_segment is None:
+            workout_segment = WorkoutSegment.query.one()
         assert workout_segment.workout_id == workout.id
         assert workout_segment.workout_uuid == workout.uuid
         assert workout_segment.segment_id == 0
-        assert float(workout_segment.ascent) == 0.4
-        assert float(workout_segment.ave_speed) == 4.61
-        assert float(workout_segment.descent) == 23.4
-        assert float(workout_segment.distance) == 0.32
+        assert float(workout_segment.ascent) == 0.4  # type: ignore[arg-type]
+        assert float(workout_segment.ave_speed) == 4.61  # type: ignore[arg-type]
+        assert float(workout_segment.descent) == 23.4  # type: ignore[arg-type]
+        assert float(workout_segment.distance) == 0.32  # type: ignore[arg-type]
         assert workout_segment.duration == timedelta(minutes=4, seconds=10)
-        assert float(workout_segment.max_alt) == 998.0
-        assert float(workout_segment.max_speed) == 5.12
-        assert float(workout_segment.min_alt) == 975.0
+        assert float(workout_segment.max_alt) == 998.0  # type: ignore[arg-type]
+        assert float(workout_segment.max_speed) == 5.12  # type: ignore[arg-type]
+        assert float(workout_segment.min_alt) == 975.0  # type: ignore[arg-type]
         assert workout_segment.moving == timedelta(minutes=4, seconds=10)
         assert workout_segment.pauses == timedelta(seconds=0)
 
@@ -695,6 +698,63 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert workout.max_cadence == 57
         assert workout.max_hr == 92
         assert workout.source == "Garmin Connect"
+
+    def test_it_creates_workout_when_gpx_file_has_cadence_float_value(
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_cadence_float_value: str,
+    ) -> None:
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_with_cadence_float_value
+        )
+
+        service.process_workout()
+        db.session.commit()
+
+        assert service.workout_description is None
+        assert service.workout_name is None
+        workout = Workout.query.one()
+        self.assert_workout(user_1, sport_1_cycling, workout)
+        self.assert_workout_segment(workout)
+        self.assert_workout_records(workout)
+        assert workout.ave_cadence == 52
+        assert workout.ave_hr == 85
+        assert workout.max_cadence == 57
+        assert workout.max_hr == 92
+        assert workout.source == "Garmin Connect"
+
+    def test_it_creates_workout_when_gpx_file_has_cadence_zero_values(
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_cadence_zero_values: str,
+    ) -> None:
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_with_cadence_zero_values
+        )
+
+        service.process_workout()
+        db.session.commit()
+
+        assert service.workout_description is None
+        assert service.workout_name is None
+        workout = Workout.query.one()
+        self.assert_workout(user_1, sport_1_cycling, workout)
+        workout_segment = WorkoutSegment.query.one()
+        self.assert_workout_segment(workout, workout_segment)
+        self.assert_workout_records(workout)
+        assert workout.ave_cadence is None
+        assert workout.ave_hr == 85
+        assert workout.max_cadence is None
+        assert workout.max_hr == 92
+        assert workout.source == "Garmin Connect"
+        assert workout_segment.ave_cadence is None
+        assert workout_segment.ave_hr == 85
+        assert workout_segment.max_cadence is None
+        assert workout_segment.max_hr == 92
 
     def test_it_creates_workout_when_gpx_file_has_ns3_extensions(
         self,
