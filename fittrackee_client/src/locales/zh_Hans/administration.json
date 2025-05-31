@@ -12,7 +12,9 @@
   "APPLICATION": "应用",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "联系管理员邮箱",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "异步 zip 归档上传已被禁用。",
     "MAX_FILES_IN_ZIP_LABEL": "ZIP 归档文件最大数量",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "最大同步处理文件数",
     "MAX_USERS_HELP": "如果为 0，则注册无限制。",
     "MAX_USERS_LABEL": "最大活跃用户数量",
     "NO_CONTACT_EMAIL": "无联系邮箱",
@@ -86,13 +88,14 @@
     },
     "TITLE": "审核",
     "UNRESOLVED_REPORTS_EXIST": "存在未解决的报告。",
+    "USERS_QUEUED_TASKS_EXIST": "存在排队的任务",
     "VIEW_REPORT": "查看报告"
   },
   "BACK_TO_ADMIN": "返回管理",
   "CONFIRM_SUSPEND_ACCOUNT": "您确定要暂停 {0} 账号吗？",
-  "CONFIRM_SUSPEND_CONTENT": "你确定要暂停报告的内容吗？",
+  "CONFIRM_SUSPEND_CONTENT": "您确定要暂停报告的内容吗？",
   "CONFIRM_USER_ACCOUNT_DELETION": "您确定要删除 {0} 账号吗？所有数据将被删除，此操作不可撤销。",
-  "CONFIRM_USER_PASSWORD_RESET": "你确定要重置 {0} 密码吗？",
+  "CONFIRM_USER_PASSWORD_RESET": "您确定要重置 {0} 密码吗？",
   "CURRENT_EMAIL": "当前邮箱",
   "DELETED_COMMENT": "已删除的评论",
   "DELETED_USER": "已删除的用户",
@@ -146,6 +149,18 @@
       "CHANGE_TO_USER": "更改为用户"
     },
     "TITLE": "管理 - 用户"
+  },
+  "USERS_QUEUED_TASKS": {
+    "DESCRIPTION": "显示排队的任务",
+    "LABEL": "排队的任务",
+    "LIST_DESCRIPTION": "如果没有 Worker 正在运行，请使用 CLI 进行处理。",
+    "NO_USERS_QUEUED_TASKS": "没有排队的任务",
+    "TASK_TYPES": {
+      "LABEL": "任务类型",
+      "user_data_export": "用户数据导出",
+      "workouts_archive_upload": "锻炼归档上传"
+    },
+    "VIEW_OTHER_TASKS": "查看其它排队的任务"
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "邮箱地址已更新。"
 }

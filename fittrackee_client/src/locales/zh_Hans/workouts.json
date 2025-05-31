@@ -2,6 +2,8 @@
   "ADD_WORKOUT": "添加锻炼",
   "ANALYSIS": "分析",
   "ASCENT": "爬升",
+  "AVERAGE_CADENCE": "平均步频",
+  "AVERAGE_HR": "平均心率",
   "AVERAGE_SPEED": "平均速度",
   "AVE_ASCENT": "平均爬升",
   "AVE_DESCENT": "平均下降",
@@ -10,6 +12,7 @@
   "AVE_SPEED": "平均速度",
   "BACK_TO_COMMENT": "返回评论",
   "BACK_TO_WORKOUT": "返回锻炼",
+  "CADENCE": "步频",
   "COMMENTS": {
     "ADD": "添加评论",
     "COMMENT": "评论",
@@ -22,6 +25,7 @@
     "REPORT": "举报评论",
     "SUSPENDED_COMMENT_BY_ADMIN": "该评论已被管理员暂停。"
   },
+  "CREATED_WORKOUTS": "已创建的锻炼",
   "DATE": "日期",
   "DELETE_WORKOUT": "删除锻炼",
   "DESCENT": "下降",
@@ -36,6 +40,7 @@
   "END": "结束",
   "EXIT_FULLSCREEN": "退出全屏",
   "FROM": "从",
+  "HEART_RATE": "心率",
   "HIDE_FILTERS": "隐藏过滤器",
   "HIDE_WORKOUTS": "隐藏锻炼",
   "INVALID_ASCENT_OR_DESCENT": "必须提供两个海拔值，且必须大于或等于0。",
@@ -48,9 +53,12 @@
   "MAP": "地图",
   "MARKDOWN_SYNTAX": "可以使用以下 Markdown 语法：_斜体_，**粗体**，[链接](https://example.com)，![图片](https://example.com/image.png)",
   "MAX_ALTITUDE": "最大海拔",
+  "MAX_CADENCE": "最大步频",
   "MAX_FILES": "最大文件数",
+  "MAX_HR": "最大心率",
   "MAX_SIZE": "最大大小",
   "MAX_SPEED": "最大速度",
+  "MAX_SYNC_FILES_IN_ZIP": "同步上传的最大文件数",
   "MIN_ALTITUDE": "最小海拔",
   "MULTISELECT": {
     "deselectLabel": "按回车键移除",
@@ -71,13 +79,14 @@
   "NO_PREVIOUS_SEGMENT": "没有上一个路段",
   "NO_PREVIOUS_WORKOUT": "没有上一个锻炼",
   "NO_RECORDS": "没有记录。",
+  "NO_WEATHER_WITH_ASYNCHRONOUS_UPLOAD": "异步上传时，不会收集天气数据。",
   "NO_WORKOUTS": "没有锻炼。",
   "NO_WORKOUT_AVAILABLE": "该锻炼已被删除或不可见。",
   "PAUSES": "暂停",
   "PREVIOUS_SEGMENT": "上一个路段",
   "PREVIOUS_WORKOUT": "上一个锻炼",
   "PRIVATE_NOTES": "私人备注",
-  "PRIVATE_NOTES_FIELD_HELP": "这些备注仅对你可见。",
+  "PRIVATE_NOTES_FIELD_HELP": "这些备注仅对您可见。",
   "RECORD": "记录",
   "RECORD_AS": "平均速度",
   "RECORD_FD": "最远距离",
@@ -90,11 +99,13 @@
   "RESET_ZOOM": "重置缩放",
   "SEGMENT": "路段",
   "SHOW_WORKOUTS": "显示锻炼",
+  "SOURCE": "来源",
   "SPEED": "速度",
   "SPORT": "运动",
   "START": "开始",
   "START_AND_FINISH": "起点和终点",
   "START_ELEVATION_AT_ZERO": "从零开始海拔轴",
+  "SUPPORTED_FILE_EXTENSIONS": "支持的扩展名",
   "SUSPENDED_BY_ADMIN": "该锻炼已被管理员暂停。",
   "TITLE": "标题",
   "TITLE_FIELD_HELP": "如果提供，标题将替换文件的标题。",
@@ -103,6 +114,20 @@
   "TOTAL_DESCENT": "总下降",
   "TOTAL_DISTANCE": "总距离",
   "TOTAL_DURATION": "总持续时间",
+  "UNITS": {
+    "bpm": {
+      "LABEL": "每分钟心跳数",
+      "UNIT": "bpm"
+    },
+    "rpm": {
+      "LABEL": "每分钟转数",
+      "UNIT": "rpm"
+    },
+    "spm": {
+      "LABEL": "每分钟步数",
+      "UNIT": "spm"
+    }
+  },
   "UPLOAD_FIRST_WORKOUT": "上传一个！",
   "VIEW_FULLSCREEN": "全屏查看",
   "WEATHER": {
@@ -150,7 +175,8 @@
   },
   "WORKOUT_CHART": "锻炼速度和海拔图",
   "WORKOUT_DATE": "锻炼日期",
-  "WORKOUT_DELETION_CONFIRMATION": "你确定要删除此锻炼吗？",
+  "WORKOUT_DELETION_CONFIRMATION": "您确定要删除此锻炼吗？",
+  "WORKOUT_FILE": "锻炼文件",
   "WORKOUT_MAP": "锻炼地图",
   "ZIP_ARCHIVE": ".zip 文件",
   "ZIP_ARCHIVE_DESCRIPTION": "或包含文件的 .zip 文件"

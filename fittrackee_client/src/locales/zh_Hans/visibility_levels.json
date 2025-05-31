@@ -5,6 +5,7 @@
     "private": "私密（仅提到的用户）",
     "public": "公开（所有人）"
   },
+  "HR_VISIBILITY": "心率可见性",
   "LEVELS": {
     "followers_only": "仅关注者",
     "private": "私密（仅我可见）",
