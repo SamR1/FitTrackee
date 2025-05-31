@@ -110,7 +110,7 @@
             <template v-if="user.role !== 'owner' && authUserHasAdminRights">
               <button
                 class="danger"
-                v-if="authUser?.username !== user.username"
+                v-if="!isAuthUser(user, authUser)"
                 @click.prevent="updateDisplayModal('delete')"
               >
                 {{ $t('admin.DELETE_USER') }}
@@ -122,14 +122,14 @@
                 {{ $t('admin.ACTIVATE_USER_ACCOUNT') }}
               </button>
               <button
-                v-if="authUser?.username !== user.username"
+                v-if="!isAuthUser(user, authUser)"
                 @click.prevent="displayEmailForm"
               >
                 {{ $t('admin.UPDATE_USER_EMAIL') }}
               </button>
               <button
                 v-if="
-                  authUser?.username !== user.username &&
+                  !isAuthUser(user, authUser) &&
                   appConfig.is_email_sending_enabled
                 "
                 @click.prevent="updateDisplayModal('reset')"
@@ -147,10 +147,7 @@
           </div>
           <div class="profile-buttons" v-else>
             <button
-              v-if="
-                $route.path === '/profile' ||
-                user.username === authUser?.username
-              "
+              v-if="$route.path === '/profile' || isAuthUser(user, authUser)"
               @click="$router.push('/profile/edit')"
             >
               {{ $t('user.PROFILE.EDIT') }}
@@ -164,7 +161,7 @@
             <button
               v-if="
                 $route.name === 'User' &&
-                user.username !== authUser?.username &&
+                !isAuthUser(user, authUser) &&
                 user.suspended_at === null &&
                 reportStatus !== `user-${user.username}-created`
               "
@@ -195,6 +192,7 @@
   import { useStore } from '@/use/useStore'
   import { formatDate, getDateFormat } from '@/utils/dates'
   import { localeFromLanguage } from '@/utils/locales'
+  import { isAuthUser } from '@/utils/user'
 
   interface Props {
     user: IUserProfile
@@ -353,6 +351,13 @@
     }
     .suspended {
       margin-top: $default-margin;
+    }
+
+    .remote-user-account {
+      margin: $default-margin * 2 0;
+      a {
+        text-decoration: underline;
+      }
     }
   }
 </style>

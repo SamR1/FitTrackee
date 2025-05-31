@@ -1,5 +1,5 @@
 <template>
-  <div class="user-actions" v-if="!(user.username === authUser.username)">
+  <div class="user-actions" v-if="!isAuthUser(user, authUser)">
     <div v-if="user.blocked" class="blocked-user">
       <div class="blocked">
         {{ $t('user.RELATIONSHIPS.BLOCKED') }}
@@ -11,7 +11,7 @@
     <div v-else-if="user.is_followed_by !== 'pending'" class="actions-buttons">
       <button
         @click="
-          updateRelationship(user.username, user.is_followed_by === 'true')
+          updateRelationship(getUserName(user), user.is_followed_by === 'true')
         "
         :class="{ danger: user.is_followed_by === 'true' }"
       >
@@ -22,7 +22,7 @@
       </button>
     </div>
     <div v-else>
-      <button @click="updateRelationship(user.username, true)">
+      <button @click="updateRelationship(getUserName(user), true)">
         {{ $t('buttons.CANCEL_FOLLOW_REQUEST') }}
       </button>
     </div>
@@ -37,7 +37,7 @@
   </div>
   <div
     class="user-actions"
-    v-if="user.username === authUser.username && from !== 'userInfos'"
+    v-if="isAuthUser(user, authUser) && from !== 'userInfos'"
   >
     <div class="follows-you">
       {{ $t('user.YOU') }}
@@ -51,6 +51,7 @@
   import { USERS_STORE } from '@/store/constants'
   import type { IAuthUserProfile, IUserLightProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { isAuthUser, getUserName } from '@/utils/user'
 
   interface Props {
     authUser: IAuthUserProfile
