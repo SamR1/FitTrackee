@@ -699,6 +699,32 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert workout.max_hr == 92
         assert workout.source == "Garmin Connect"
 
+    def test_it_creates_workout_when_gpx_file_has_gpxtpx_extensions_and_power(
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_gpxtpx_extensions_and_power: str,
+    ) -> None:
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_with_gpxtpx_extensions_and_power
+        )
+
+        service.process_workout()
+        db.session.commit()
+
+        assert service.workout_description is None
+        assert service.workout_name is None
+        workout = Workout.query.one()
+        self.assert_workout(user_1, sport_1_cycling, workout)
+        self.assert_workout_segment(workout)
+        self.assert_workout_records(workout)
+        assert workout.ave_cadence == 52
+        assert workout.ave_hr == 85
+        assert workout.max_cadence == 57
+        assert workout.max_hr == 92
+        assert workout.source == "Garmin Connect"
+
     def test_it_creates_workout_when_gpx_file_has_cadence_float_value(
         self,
         app: "Flask",
