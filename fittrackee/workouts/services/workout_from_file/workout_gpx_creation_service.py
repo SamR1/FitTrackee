@@ -191,6 +191,22 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
             )
         return self.start_point.time.astimezone(timezone.utc)
 
+    @staticmethod
+    def _get_hr_and_cadence_data(
+        heart_rates: List[int], cadences: List[int]
+    ) -> Dict:
+        """
+        Some files contains only zero cadence values. In this case, workout
+        average and max cadences is None and cadence is not displayed.
+        """
+        ave_cadence = mean(cadences) if cadences else None
+        return {
+            "ave_cadence": ave_cadence if ave_cadence else None,
+            "ave_hr": mean(heart_rates) if heart_rates else None,
+            "max_cadence": max(cadences) if ave_cadence else None,
+            "max_hr": max(heart_rates) if heart_rates else None,
+        }
+
     def _process_segment_points(
         self,
         points: List["gpxpy.gpx.GPXTrackPoint"],
@@ -211,11 +227,12 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
                     )
 
             if point.extensions:
-                for element in point.extensions[0]:
-                    if element.tag.endswith("}hr") and element.text:
-                        heart_rates.append(int(element.text))
-                    if element.tag.endswith("}cad") and element.text:
-                        cadences.append(int(element.text))
+                for extension in point.extensions:
+                    for element in extension:
+                        if element.tag.endswith("}hr") and element.text:
+                            heart_rates.append(int(element.text))
+                        if element.tag.endswith("}cad") and element.text:
+                            cadences.append(int(float(element.text)))
 
             # last segment point
             if point_idx == last_point_index:
@@ -230,12 +247,7 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
                     )
             self.coordinates.append([point.longitude, point.latitude])
 
-        hr_cadence_stats = {
-            "ave_cadence": mean(cadences) if cadences else None,
-            "ave_hr": mean(heart_rates) if heart_rates else None,
-            "max_cadence": max(cadences) if cadences else None,
-            "max_hr": max(heart_rates) if heart_rates else None,
-        }
+        hr_cadence_stats = self._get_hr_and_cadence_data(heart_rates, cadences)
         self.cadences.extend(cadences)
         self.heart_rates.extend(heart_rates)
         return (
@@ -320,12 +332,9 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
             track.segments, new_workout.id, new_workout.uuid
         )
 
-        hr_cadence_stats = {
-            "ave_cadence": mean(self.cadences) if self.cadences else None,
-            "ave_hr": mean(self.heart_rates) if self.heart_rates else None,
-            "max_cadence": max(self.cadences) if self.cadences else None,
-            "max_hr": max(self.heart_rates) if self.heart_rates else None,
-        }
+        hr_cadence_stats = self._get_hr_and_cadence_data(
+            self.heart_rates, self.cadences
+        )
         self.set_calculated_data(
             parsed_gpx=track,
             object_to_update=new_workout,

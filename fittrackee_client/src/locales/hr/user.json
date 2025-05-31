@@ -21,7 +21,8 @@
     "DATA_EXPORT": "Izvoz podataka",
     "DOWNLOAD_ARCHIVE": "Preuzmite arhivu",
     "GENERATING_LINK": "generiranje veze…",
-    "ONLY_ONE_EXPORT_PER_DAY": "Možete zatražiti arhivu jednom u 24 sata"
+    "ONLY_ONE_EXPORT_PER_DAY": "Možete zatražiti arhivu jednom u 24 sata",
+    "REQUEST_ANOTHER_EXPORT": "zatražite drugi izvoz"
   },
   "FILTER_ON_USERNAME": "Filtrirajte prema korisničkom imenu",
   "HIDE_PASSWORD": "sakrij lozinku",
@@ -70,6 +71,16 @@
   "PRIVACY_POLICY_TO_VALIDATE": "{0} pravila privatnosti prije nastavka.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Uređivanje računa",
+    "ARCHIVE_UPLOADS": {
+      "ARCHIVE": "Zip arhiva",
+      "CONFIRM_TASK_ABORT": "Jeste li sigurni da želite prekinuti ovaj zadatak prijenosa arhive?",
+      "CONFIRM_TASK_DELETION": "Jeste li sigurni da želite izbrisati ovaj zadatak prijenosa arhive?",
+      "CREATED_WORKOUTS": "Kreirane aktivnosti",
+      "ERRORED_FILES": "Datoteka s greškom | Datoteke s greškama",
+      "FILES_COUNT": "{count} datoteka",
+      "NOT_FOUND": "Nema pronađenih arhiva prijenosa.",
+      "PROGRESS": "Napredak"
+    },
     "ASCENT_DATA": "Podatci vezani uz uspon (rekordi, ukupno)",
     "BACK_TO_PROFILE": "Povratak na profil",
     "BIO": "Biografija",
@@ -122,6 +133,7 @@
     },
     "NOTIFICATIONS_EDITION": "Uređivanje postavki obavijesti",
     "NOTIFICATION_PREFERENCES": "Postavke obavijesti",
+    "NO_ARCHIVE_UPLOADS": "Nema prijenosa arhiva",
     "NO_SANCTIONS": "Bez sankcija",
     "PICTURE": "Slika",
     "PICTURE_EDITION": "Uređivanje profilne slike",
@@ -169,6 +181,7 @@
     "TABS": {
       "ACCOUNT": "račun",
       "APPS": "aplikacije",
+      "ARCHIVE-UPLOADS": "Prijenosi arhiva",
       "BLOCKED-USERS": "blokirani korisnici",
       "EQUIPMENTS": "oprema",
       "FOLLOW-REQUESTS": "zahtjevi za praćenje",
@@ -229,6 +242,16 @@
   "SUSPENDED": "Suspendiran",
   "SUSPENDED_ACCOUNT": "Suspendiran račun",
   "SUSPENSION_REASON": "Razlog suspenzije",
+  "TASKS": {
+    "STATUS": {
+      "LABEL": "Status",
+      "aborted": "prekinuto",
+      "errored": "s greškama",
+      "in_progress": "u tijeku",
+      "queued": "raspoređeno",
+      "successful": "uspješno"
+    }
+  },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Ovaj korisnički račun je neaktivan.",
   "TOGGLE_THEME": "Promjena teme (svijetli ili tamni način)",
   "USER": "korisnik | korisnici",

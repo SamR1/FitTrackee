@@ -16,6 +16,7 @@ from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 
 from ..utils import OAUTH_SCOPES, jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin
+from .utils import post_a_workout
 
 
 class GetWorkoutGpxAsFollowerMixin:
@@ -1171,6 +1172,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         get_chart_data_mock.assert_called_once_with(
             get_absolute_file_path(workout_cycling_user_1.gpx),
             sport_1_cycling.label,
+            workout_cycling_user_1.ave_cadence,
             can_see_heart_rate=True,
             segment_id=None,
         )
@@ -1205,6 +1207,38 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
         assert data["data"]["chart_data"] == chart_data
+
+    def test_it_returns_chart_data_when_cadence_zero_values(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file_with_cadence_zero_values: str,
+    ) -> None:
+        auth_token, workout_short_id = post_a_workout(
+            app, gpx_file_with_cadence_zero_values
+        )
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_short_id),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        # cadence key is not present
+        assert data["data"]["chart_data"][0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "hr": 92,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "speed": 3.21,
+            "time": "Tue, 13 Mar 2018 12:44:45 GMT",
+        }
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -1356,6 +1390,7 @@ class TestGetWorkoutChartDataAsFollower(
         get_chart_data_mock.assert_called_once_with(
             get_absolute_file_path(workout_cycling_user_2.gpx),
             sport_1_cycling.label,
+            workout_cycling_user_2.ave_cadence,
             can_see_heart_rate=expected_can_see_heart_rate,
             segment_id=None,
         )
@@ -1488,6 +1523,7 @@ class TestGetWorkoutChartDataAsUser(
         get_chart_data_mock.assert_called_once_with(
             get_absolute_file_path(workout_cycling_user_2.gpx),
             sport_1_cycling.label,
+            workout_cycling_user_2.ave_cadence,
             can_see_heart_rate=expected_can_see_heart_rate,
             segment_id=None,
         )
@@ -1642,6 +1678,7 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         get_chart_data_mock.assert_called_once_with(
             get_absolute_file_path(workout_cycling_user_1.gpx),
             sport_1_cycling.label,
+            workout_cycling_user_1.ave_cadence,
             can_see_heart_rate=expected_can_see_heart_rate,
             segment_id=None,
         )

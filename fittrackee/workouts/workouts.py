@@ -749,6 +749,7 @@ def get_workout_data(
             chart_data_content = get_chart_data(
                 absolute_gpx_filepath,
                 workout.sport.label,
+                workout.ave_cadence,
                 can_see_heart_rate=can_see_heart_rate,
                 segment_id=segment_id,
             )

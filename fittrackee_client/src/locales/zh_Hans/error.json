@@ -1,5 +1,6 @@
 {
   "APP_ERROR": "应用程序似乎遇到了一些问题。<br />请稍后再试或联系管理员。",
+  "ERRORS_ENCOUNTERED": "遇到错误",
   "NOT_FOUND": {
     "COMMENT": "未找到评论",
     "PAGE": "未找到页面",

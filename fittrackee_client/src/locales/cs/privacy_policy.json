@@ -1,1 +1,12 @@
-{}
+{
+  "CONTENT": {
+    "ACCOUNT_DELETION": {
+      "CONTENT": "Navštívením následující adresy (přihlášením) a kliknutím na tlačítko \"Smazat můj účet\" můžete požádat o smazání účtu.",
+      "TITLE": "Smazání účtu"
+    },
+    "CHANGES_TO_OUR_PRIVACY_POLICY": {
+      "CONTENT": "Pokud se rozhodneme změnit naše zásady ochrany osobních údajů, zveřejníme tyto změny na této stránce.\nTento dokument je licencován pod licencí [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Původně přizpůsobeno ze zásad ochrany osobních údajů [Discourse](https://github.com/discourse/discourse).",
+      "TITLE": "Změny zásad ochrany osobních údajů"
+    }
+  }
+}

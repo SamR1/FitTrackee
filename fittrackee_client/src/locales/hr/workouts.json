@@ -2,6 +2,8 @@
   "ADD_WORKOUT": "Dodaj aktivnost",
   "ANALYSIS": "analiza",
   "ASCENT": "uspon",
+  "AVERAGE_CADENCE": "prosječna kadenca",
+  "AVERAGE_HR": "prosječni broj otkucaja srca",
   "AVERAGE_SPEED": "prosj. brzina",
   "AVE_ASCENT": "prosj. uspon",
   "AVE_DESCENT": "prosj. silazak",
@@ -10,6 +12,7 @@
   "AVE_SPEED": "prosj. brzina",
   "BACK_TO_COMMENT": "natrag na komentar",
   "BACK_TO_WORKOUT": "natrag na aktivnost",
+  "CADENCE": "kadenca",
   "COMMENTS": {
     "ADD": "dodaj komentar",
     "COMMENT": "komentar | komentari",
@@ -22,6 +25,7 @@
     "REPORT": "prijavi komentar",
     "SUSPENDED_COMMENT_BY_ADMIN": "Komentar je suspendiran od strane administratora."
   },
+  "CREATED_WORKOUTS": "Kreirana aktivnost | Kreirane aktivnosti",
   "DATE": "datum",
   "DELETE_WORKOUT": "Obriši aktivnost",
   "DESCENT": "silazak",
@@ -36,6 +40,7 @@
   "END": "odredište",
   "EXIT_FULLSCREEN": "Izlazak iz prikaza preko cijelog zaslona",
   "FROM": "od",
+  "HEART_RATE": "otkucaji srca",
   "HIDE_FILTERS": "sakrij filtre",
   "HIDE_WORKOUTS": "sakrij aktivnosti",
   "INVALID_ASCENT_OR_DESCENT": "Moraju biti navedene obje vrijednosti nadmorske visine te biti veće ili jednake 0.",
@@ -48,9 +53,12 @@
   "MAP": "karta",
   "MARKDOWN_SYNTAX": "Može se koristiti sljedeća sintaksa markdowna: _kurziv_, **podebljano**, [link](https://example.com), ![image](https://example.com/image.png)",
   "MAX_ALTITUDE": "maks. nadmorska visina",
+  "MAX_CADENCE": "maks. kadenca",
   "MAX_FILES": "maks. broj datoteka",
+  "MAX_HR": "maks. otkucaja srca",
   "MAX_SIZE": "maks. veličina",
   "MAX_SPEED": "maks. brzina",
+  "MAX_SYNC_FILES_IN_ZIP": "maks. broj datoteka za sinkroni i prijenos",
   "MIN_ALTITUDE": "min. nadmorska visina",
   "MULTISELECT": {
     "deselectLabel": "Pritisnite enter za uklanjanje",
@@ -71,6 +79,7 @@
   "NO_PREVIOUS_SEGMENT": "Nema prethodnog segmenta",
   "NO_PREVIOUS_WORKOUT": "Nema prethodne aktivnosti",
   "NO_RECORDS": "Nema zapisa.",
+  "NO_WEATHER_WITH_ASYNCHRONOUS_UPLOAD": "U slučaju asinkronog prijenosa, meteorološki podatci se ne prikupljaju.",
   "NO_WORKOUTS": "Nema aktivnosti.",
   "NO_WORKOUT_AVAILABLE": "Aktivnost je izbrisana ili nije vidljiva.",
   "PAUSES": "pauze",
@@ -90,11 +99,13 @@
   "RESET_ZOOM": "Resetiraj zumiranje",
   "SEGMENT": "segment | segmenti",
   "SHOW_WORKOUTS": "prikaži aktivnosti",
+  "SOURCE": "izvor",
   "SPEED": "brzina",
   "SPORT": "sport | sportovi",
   "START": "polazna točka",
   "START_AND_FINISH": "polazna točka i odredište",
   "START_ELEVATION_AT_ZERO": "započni elevacijsku os na nuli",
+  "SUPPORTED_FILE_EXTENSIONS": "podržane ekstenzije",
   "SUSPENDED_BY_ADMIN": "Aktivnost je suspendirana od strane administratora.",
   "TITLE": "naslov",
   "TITLE_FIELD_HELP": "ako je naveden, naslov zamjenjuje onaj iz datoteke.",
@@ -103,6 +114,20 @@
   "TOTAL_DESCENT": "ukupni silazak",
   "TOTAL_DISTANCE": "ukupna udaljenost",
   "TOTAL_DURATION": "ukupno vrijeme",
+  "UNITS": {
+    "bpm": {
+      "LABEL": "kontrakcija u minuti",
+      "UNIT": "bpm"
+    },
+    "rpm": {
+      "LABEL": "ciklusa u minuti",
+      "UNIT": "rpm"
+    },
+    "spm": {
+      "LABEL": "koraka u minuti",
+      "UNIT": "spm"
+    }
+  },
   "UPLOAD_FIRST_WORKOUT": "Prenesite jednu!",
   "VIEW_FULLSCREEN": "Prikaz preko cijelog zaslona",
   "WEATHER": {
@@ -151,6 +176,7 @@
   "WORKOUT_CHART": "grafikon brzine i nadmorske visine aktivnosti",
   "WORKOUT_DATE": "datum aktivnosti",
   "WORKOUT_DELETION_CONFIRMATION": "Jeste li sigurni da želite izbrisati ovu aktivnost?",
+  "WORKOUT_FILE": "datoteka aktivnosti",
   "WORKOUT_MAP": "karta aktivnosti",
   "ZIP_ARCHIVE": ".zip datoteka",
   "ZIP_ARCHIVE_DESCRIPTION": "ili .zip arhiva koja sadrži datoteke"
