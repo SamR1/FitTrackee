@@ -227,11 +227,12 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
                     )
 
             if point.extensions:
-                for element in point.extensions[0]:
-                    if element.tag.endswith("}hr") and element.text:
-                        heart_rates.append(int(element.text))
-                    if element.tag.endswith("}cad") and element.text:
-                        cadences.append(int(float(element.text)))
+                for extension in point.extensions:
+                    for element in extension:
+                        if element.tag.endswith("}hr") and element.text:
+                            heart_rates.append(int(element.text))
+                        if element.tag.endswith("}cad") and element.text:
+                            cadences.append(int(float(element.text)))
 
             # last segment point
             if point_idx == last_point_index:
