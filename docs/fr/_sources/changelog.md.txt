@@ -1,5 +1,44 @@
 # Change log
 
+## Version 0.10.2 (2025/05/31)
+
+### Bugs Fixed
+
+* [#823](https://github.com/SamR1/FitTrackee/issues/823) - Unable to upload GPX files when cadence value is a float
+* [PR#827](https://github.com/SamR1/FitTrackee/pull/827) - Fix hr and cadence values when gpx points contain multiple values in extensions
+
+### Translations
+
+* [PR#822](https://github.com/SamR1/FitTrackee/pull/822) - Translations update from Hosted Weblate (Croatian and Czech)
+* [PR#824](https://github.com/SamR1/FitTrackee/pull/824) - Translations update from Hosted Weblate (Galician)
+* [PR#826](https://github.com/SamR1/FitTrackee/pull/826) - Translations update from Hosted Weblate (Chinese (Simplified Han script))
+
+Translation status:
+- Basque: 92%
+- Bulgarian: 57%
+- Catalan: 25%
+- Chinese (Simplified): 99%
+- Croatian: 100%
+- Czech: 44%
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 99%
+- German: 91%
+- Italian: 47%
+- Norwegian Bokmål: 30%
+- Polish: 92%
+- Portuguese: 56%
+- Russian: 91%
+- Spanish: 59%
+
+Thanks to the contributors:
+- @iggydev
+- @jmlich
+- @xmgz
+- Poesty Li
+
+
 ## Version 0.10.1 (2025/05/30)
 
 ### Bugs Fixed
