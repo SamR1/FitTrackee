@@ -8,8 +8,12 @@ from fittrackee import appLog
 from fittrackee.files import display_readable_file_size
 
 
-def get_empty_data_for_datatype(data_type: str) -> Union[str, List]:
-    return "" if data_type in ["gpx", "chart_data"] else []
+def get_empty_data_for_datatype(data_type: str) -> Union[str, List, None]:
+    if data_type in ["gpx", "chart_data"]:
+        return ""
+    if data_type in ["geojson"]:
+        return None
+    return []
 
 
 class HttpResponse(Response):
