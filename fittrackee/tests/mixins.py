@@ -5,13 +5,15 @@ import tempfile
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 from unittest.mock import Mock
 from urllib.parse import parse_qs
 from uuid import uuid4
 
 from flask import Flask, current_app
 from flask.testing import FlaskClient
+from geoalchemy2.shape import to_shape
+from shapely import to_geojson
 from urllib3.util import parse_url
 from werkzeug.test import TestResponse
 
@@ -36,6 +38,9 @@ from .utils import (
     random_int,
     random_string,
 )
+
+if TYPE_CHECKING:
+    from geoalchemy2.elements import WKBElement
 
 
 class BaseTestMixin:
@@ -621,3 +626,9 @@ class UserTaskMixin:
             os.path.join(current_app.root_path, zip_archive), file_path
         )
         return file_path
+
+
+class GeometryMixin:
+    @staticmethod
+    def get_geojson_from_geom(geometry: "WKBElement") -> Dict:
+        return json.loads(to_geojson(to_shape(geometry)))
