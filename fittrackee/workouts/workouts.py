@@ -63,7 +63,7 @@ from .utils.convert import convert_in_duration
 from .utils.gpx import (
     WorkoutGPXException,
     extract_segment_from_gpx_file,
-    get_chart_data,
+    get_chart_data_from_gpx,
     get_geojson_from_segments,
 )
 from .utils.workouts import get_datetime_from_request_args
@@ -746,7 +746,7 @@ def get_workout_data(
         can_see_heart_rate = can_view_heart_rate(workout.user, auth_user)
         if data_type == "chart_data":
             data: "Dict" = {
-                "chart_data": get_chart_data(
+                "chart_data": get_chart_data_from_gpx(
                     absolute_gpx_filepath,
                     workout.sport.label,
                     workout.ave_cadence,
