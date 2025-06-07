@@ -5,6 +5,7 @@ from typing import Dict, List, Optional
 import gpxpy.gpx
 from gpxpy.geo import distance as calculate_distance
 from sqlalchemy import func
+from sqlalchemy.sql import text
 from sqlalchemy.sql.expression import select
 
 from fittrackee import db
@@ -50,40 +51,50 @@ def get_chart_data(
     can_see_heart_rate: bool,
     segment_id: Optional[int] = None,
 ) -> Optional[List]:
-    filters = [WorkoutSegment.workout_id == workout.id]
+    sql = """
+        SELECT workout_segments.points
+        FROM workout_segments
+        WHERE workout_segments.workout_id  = :workout_id"""
+    values = {"workout_id": workout.id}
     if segment_id is not None:
         segment_index = segment_id - 1
         if segment_index < 0:
             raise WorkoutGPXException("error", "Incorrect segment id", None)
-        filters.append(WorkoutSegment.segment_id == segment_id - 1)
-    segment = WorkoutSegment.query.filter(*filters).first()
+        sql += """
+          AND workout_segments.segment_id  = :segment_id"""
+        values["segment_id"] = segment_index
 
-    if not segment:
+    segments_points = db.session.execute(text(sql), values).mappings().all()
+
+    if not segments_points:
         raise WorkoutGPXException(
             "not found",
-            f"No segment with id '{segment_id}'"
-            if segment_id is not None
-            else "No segments",
+            (
+                f"No segment with id '{segment_id}'"
+                if segment_id is not None
+                else "No segments"
+            ),
             None,
         )
 
-    if len(segment.points) == 0:
-        if not workout.gpx:
-            return []
-        absolute_gpx_filepath = get_absolute_file_path(workout.gpx)
-        return get_chart_data_from_gpx(
-            absolute_gpx_filepath,
+    if segments_points[0].points:
+        return get_chart_data_from_segment_points(
+            [segment["points"] for segment in segments_points],
             workout.sport.label,
-            workout.ave_cadence,
+            workout_ave_cadence=workout.ave_cadence,
             can_see_heart_rate=can_see_heart_rate,
-            segment_id=segment_id,
         )
 
-    return get_chart_data_from_segment_points(
-        [segment] if segment_id else workout.segments,
+    if not workout.gpx:
+        return []
+
+    absolute_gpx_filepath = get_absolute_file_path(workout.gpx)
+    return get_chart_data_from_gpx(
+        absolute_gpx_filepath,
         workout.sport.label,
-        workout_ave_cadence=workout.ave_cadence,
+        workout.ave_cadence,
         can_see_heart_rate=can_see_heart_rate,
+        segment_id=segment_id,
     )
 
 
@@ -244,7 +255,7 @@ def get_geojson_from_segments(
 
 
 def get_chart_data_from_segment_points(
-    segments: List["WorkoutSegment"],
+    segments_points: List[List[Dict]],
     sport_label: str,
     *,
     workout_ave_cadence: Optional[int],
@@ -265,15 +276,14 @@ def get_chart_data_from_segment_points(
     cadence_in_spm = sport_label in SPM_CADENCE_SPORTS
     previous_segment_point = None
 
-    for segment in segments:
-        if not segment.points:
+    for segment_points in segments_points:
+        if not segment_points:
             continue
 
-        points_count = len(segment.points)
-
-        first_point = segment.points[0]
+        points_count = len(segment_points)
+        first_point = segment_points[0]
         first_point_duration = (
-            first_point["duration"] if len(segments) == 1 else 0
+            first_point["duration"] if len(segments_points) == 1 else 0
         )
         previous_segment_point_distance = (
             calculate_distance(
@@ -289,7 +299,7 @@ def get_chart_data_from_segment_points(
             else 0.0
         )
 
-        for index, point in enumerate(segment.points, start=1):
+        for index, point in enumerate(segment_points, start=1):
             distance = round(
                 (point["distance"] + previous_segment_point_distance) / 1000, 2
             )
