@@ -594,7 +594,7 @@ class TestGetChartDataFromSegmentPoints:
         workout_cycling_user_1_segment: "WorkoutSegment",
     ) -> None:
         chart_data = get_chart_data_from_segment_points(
-            [workout_cycling_user_1_segment],
+            [workout_cycling_user_1_segment.points],
             sport_1_cycling.label,
             workout_ave_cadence=70,
             can_see_heart_rate=True,
@@ -610,15 +610,12 @@ class TestGetChartDataFromSegmentPoints:
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
         chart_data = get_chart_data_from_segment_points(
-            [workout_cycling_user_1_segment_0_with_coordinates],
+            [workout_cycling_user_1_segment_0_with_coordinates.points],
             sport_1_cycling.label,
             workout_ave_cadence=70,
             can_see_heart_rate=True,
         )
 
-        assert len(chart_data) == len(
-            workout_cycling_user_1_segment_0_with_coordinates.points
-        )
         first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
             0
         ]
@@ -658,18 +655,14 @@ class TestGetChartDataFromSegmentPoints:
     ) -> None:
         chart_data = get_chart_data_from_segment_points(
             [
-                workout_cycling_user_1_segment_0_with_coordinates,
-                workout_cycling_user_1_segment_1_with_coordinates,
+                workout_cycling_user_1_segment_0_with_coordinates.points,
+                workout_cycling_user_1_segment_1_with_coordinates.points,
             ],
             sport_1_cycling.label,
             workout_ave_cadence=70,
             can_see_heart_rate=True,
         )
 
-        assert len(chart_data) == len(
-            workout_cycling_user_1_segment_0_with_coordinates.points
-            + workout_cycling_user_1_segment_1_with_coordinates.points
-        )
         first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
             0
         ]
@@ -708,7 +701,7 @@ class TestGetChartDataFromSegmentPoints:
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
         chart_data = get_chart_data_from_segment_points(
-            [workout_cycling_user_1_segment_0_with_coordinates],
+            [workout_cycling_user_1_segment_0_with_coordinates.points],
             sport_1_cycling.label,
             workout_ave_cadence=70,
             can_see_heart_rate=False,
@@ -750,7 +743,7 @@ class TestGetChartDataFromSegmentPoints:
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
         chart_data = get_chart_data_from_segment_points(
-            [workout_cycling_user_1_segment_0_with_coordinates],
+            [workout_cycling_user_1_segment_0_with_coordinates.points],
             sport_4_paragliding.label,
             workout_ave_cadence=70,
             can_see_heart_rate=True,
@@ -792,7 +785,7 @@ class TestGetChartDataFromSegmentPoints:
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
         chart_data = get_chart_data_from_segment_points(
-            [workout_cycling_user_1_segment_0_with_coordinates],
+            [workout_cycling_user_1_segment_0_with_coordinates.points],
             sport_4_paragliding.label,
             workout_ave_cadence=0,
             can_see_heart_rate=True,
@@ -952,8 +945,8 @@ class TestGetChartData:
             )
         get_chart_data_from_segment_points_mock.assert_called_once_with(
             [
-                workout_cycling_user_1_segment_0_with_coordinates,
-                workout_cycling_user_1_segment_1_with_coordinates,
+                workout_cycling_user_1_segment_0_with_coordinates.points,
+                workout_cycling_user_1_segment_1_with_coordinates.points,
             ],
             workout_cycling_user_1_with_coordinates.sport.label,
             workout_ave_cadence=None,
@@ -977,7 +970,7 @@ class TestGetChartData:
                 segment_id=1,
             )
         get_chart_data_from_segment_points_mock.assert_called_once_with(
-            [workout_cycling_user_1_segment_0_with_coordinates],
+            [workout_cycling_user_1_segment_0_with_coordinates.points],
             workout_cycling_user_1_with_coordinates.sport.label,
             workout_ave_cadence=None,
             can_see_heart_rate=True,
