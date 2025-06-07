@@ -3,10 +3,12 @@ from datetime import timezone
 from typing import Dict, List, Optional
 
 import gpxpy.gpx
+from gpxpy.geo import distance as calculate_distance
 from sqlalchemy import func
 from sqlalchemy.sql.expression import select
 
 from fittrackee import db
+from fittrackee.files import get_absolute_file_path
 from fittrackee.workouts.models import Workout, WorkoutSegment
 
 from ..constants import RPM_CADENCE_SPORTS, SPM_CADENCE_SPORTS
@@ -40,6 +42,49 @@ def get_gpx_segments(
         segments = track_segments
 
     return segments
+
+
+def get_chart_data(
+    workout: "Workout",
+    *,
+    can_see_heart_rate: bool,
+    segment_id: Optional[int] = None,
+) -> Optional[List]:
+    filters = [WorkoutSegment.workout_id == workout.id]
+    if segment_id is not None:
+        segment_index = segment_id - 1
+        if segment_index < 0:
+            raise WorkoutGPXException("error", "Incorrect segment id", None)
+        filters.append(WorkoutSegment.segment_id == segment_id - 1)
+    segment = WorkoutSegment.query.filter(*filters).first()
+
+    if not segment:
+        raise WorkoutGPXException(
+            "not found",
+            f"No segment with id '{segment_id}'"
+            if segment_id is not None
+            else "No segments",
+            None,
+        )
+
+    if len(segment.points) == 0:
+        if not workout.gpx:
+            return []
+        absolute_gpx_filepath = get_absolute_file_path(workout.gpx)
+        return get_chart_data_from_gpx(
+            absolute_gpx_filepath,
+            workout.sport.label,
+            workout.ave_cadence,
+            can_see_heart_rate=can_see_heart_rate,
+            segment_id=segment_id,
+        )
+
+    return get_chart_data_from_segment_points(
+        [segment] if segment_id else workout.segments,
+        workout.sport.label,
+        workout_ave_cadence=workout.ave_cadence,
+        can_see_heart_rate=can_see_heart_rate,
+    )
 
 
 def get_chart_data_from_gpx(
@@ -196,3 +241,79 @@ def get_geojson_from_segments(
     if geojson:
         return json.loads(geojson)
     return None
+
+
+def get_chart_data_from_segment_points(
+    segments: List["WorkoutSegment"],
+    sport_label: str,
+    *,
+    workout_ave_cadence: Optional[int],
+    can_see_heart_rate: bool,
+) -> List:
+    """
+    Return data needed to generate chart with:
+    - speed
+    - elevation (if available)
+    - heart rate (if available)
+    - cadence (if available)
+    """
+    chart_data = []
+    return_cadence = (
+        workout_ave_cadence
+        and sport_label in RPM_CADENCE_SPORTS + SPM_CADENCE_SPORTS
+    )
+    cadence_in_spm = sport_label in SPM_CADENCE_SPORTS
+    previous_segment_point = None
+
+    for segment in segments:
+        if not segment.points:
+            continue
+
+        points_count = len(segment.points)
+
+        first_point = segment.points[0]
+        first_point_duration = (
+            first_point["duration"] if len(segments) == 1 else 0
+        )
+        previous_segment_point_distance = (
+            calculate_distance(
+                first_point["latitude"],
+                first_point["longitude"],
+                first_point.get("elevation"),
+                previous_segment_point["latitude"],
+                previous_segment_point["longitude"],
+                previous_segment_point.get("elevation"),
+            )
+            + previous_segment_point["distance"]
+            if previous_segment_point
+            else 0.0
+        )
+
+        for index, point in enumerate(segment.points, start=1):
+            distance = round(
+                (point["distance"] + previous_segment_point_distance) / 1000, 2
+            )
+            data = {
+                "distance": distance,
+                "duration": point["duration"] - first_point_duration,
+                "latitude": point["latitude"],
+                "longitude": point["longitude"],
+                "speed": point["speed"],
+                "time": point["time"],
+            }
+            if point.get("elevation"):
+                data["elevation"] = point["elevation"]
+            if return_cadence and "cadence" in point:
+                data["cadence"] = (
+                    point["cadence"] * 2
+                    if cadence_in_spm
+                    else point["cadence"]
+                )
+            if can_see_heart_rate and "heart_rate" in point:
+                data["hr"] = point["heart_rate"]
+
+            if index == points_count:
+                previous_segment_point = point
+            chart_data.append(data)
+
+    return chart_data
