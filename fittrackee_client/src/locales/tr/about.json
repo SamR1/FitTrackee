@@ -1,1 +1,7 @@
-{}
+{
+  "ABOUT_THIS_INSTANCE": "Bu örnek hakkında",
+  "CONTACT_ADMIN": "Yöneticiyle iletişime geçin",
+  "FITTRACKEE_DESCRIPTION": "<strong>FitTrackee</strong>, kendi kendine barındırılan bir açık hava etkinlik izleyicisidir.",
+  "SOURCE_CODE": "Kaynak kodu",
+  "WEATHER_DATA_FROM": "Hava durumu verileri:"
+}
