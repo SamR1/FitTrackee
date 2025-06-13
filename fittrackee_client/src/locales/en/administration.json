@@ -13,6 +13,7 @@
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Administrator email for contact",
     "ASYNCHRONOUS_UPLOAD_DISABLED": "Asynchronous zip archive upload is disabled.",
+    "FEDERATION_ENABLED": "Federation enabled",
     "MAX_FILES_IN_ZIP_LABEL": "Max. files of zip archive",
     "MAX_SYNC_FILES_IN_ZIP_LABEL": "Max. files for synchronous processing",
     "MAX_USERS_HELP": "If 0, no limitation on registration.",
@@ -53,6 +54,8 @@
     "USERS_QUEUED_TASKS_EXIST": "There are queued tasks",
     "REASON": "Reason",
     "REPORT": "report | reports",
+    "REPORT_COMMENT_PLACEHOLDER": "Add comment, action taken or any other useful information",
+    "REPORT_NOTE": "Note by",
     "REPORTED_BY": "Reported by",
     "REPORTED_CONTENT": "Reported content",
     "REPORTED_USER": "Reported user",
@@ -113,6 +116,8 @@
     },
     "TITLE": "Equipments administration"
   },
+  "FEDERATION_DISABLED": "Federation is currently disabled.",
+  "FEDERATION_ENABLED": "Federation is currently enabled.",
   "NEW_EMAIL": "New email",
   "NO_TEXT_ENTERED": "No text entered",
   "PASSWORD_RESET_SUCCESSFUL": "The password has been reset.",
