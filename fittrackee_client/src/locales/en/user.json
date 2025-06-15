@@ -161,6 +161,12 @@
       "IN_PROGRESS": "your appeal is being processed",
       "REJECTED": "your appeal has been rejected"
     },
+    "SEGMENTS_CREATION_EVENT": {
+      "LABEL": "Pause events triggering segment creation (.fit files only)",
+      "all": "All pause events",
+      "none": "None",
+      "only_manual": "Only manual pause"
+    },
     "SPORT": {
       "ACTION": "action",
       "COLOR": "color",

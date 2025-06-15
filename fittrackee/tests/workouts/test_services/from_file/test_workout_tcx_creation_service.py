@@ -26,7 +26,8 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
             ),
         ):
             WorkoutTcxCreationService.parse_file(
-                self.get_file_content(invalid_tcx_file)
+                self.get_file_content(invalid_tcx_file),
+                segments_creation_event="none",
             )
 
     def test_it_raises_error_when_tcx_file_has_no_activities(
@@ -41,7 +42,8 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
             ),
         ):
             WorkoutTcxCreationService.parse_file(
-                self.get_file_content(tcx_file_wo_activities)
+                self.get_file_content(tcx_file_wo_activities),
+                segments_creation_event="none",
             )
 
     def test_it_raises_error_when_tcx_file_has_no_laps(
@@ -53,7 +55,8 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
             ),
         ):
             WorkoutTcxCreationService.parse_file(
-                self.get_file_content(tcx_file_wo_laps)
+                self.get_file_content(tcx_file_wo_laps),
+                segments_creation_event="none",
             )
 
     def test_it_raises_error_when_tcx_file_has_no_tracks(
@@ -65,7 +68,8 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
             ),
         ):
             WorkoutTcxCreationService.parse_file(
-                self.get_file_content(tcx_file_wo_tracks)
+                self.get_file_content(tcx_file_wo_tracks),
+                segments_creation_event="none",
             )
 
     def test_it_raises_error_when_tcx_file_has_no_coordinates(
@@ -80,7 +84,8 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
             ),
         ):
             WorkoutTcxCreationService.parse_file(
-                self.get_file_content(tcx_without_coordinates)
+                self.get_file_content(tcx_without_coordinates),
+                segments_creation_event="none",
             )
 
     def test_it_returns_gpx_with_tcx_with_one_lap_and_one_track(
@@ -90,7 +95,8 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         tcx_with_one_lap_and_one_track: str,
     ) -> None:
         gpx = WorkoutTcxCreationService.parse_file(
-            self.get_file_content(tcx_with_one_lap_and_one_track)
+            self.get_file_content(tcx_with_one_lap_and_one_track),
+            segments_creation_event="none",
         )
 
         assert isinstance(gpx, gpxpy.gpx.GPX)
@@ -110,7 +116,8 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         tcx_with_one_lap_and_two_tracks: str,
     ) -> None:
         gpx = WorkoutTcxCreationService.parse_file(
-            self.get_file_content(tcx_with_one_lap_and_two_tracks)
+            self.get_file_content(tcx_with_one_lap_and_two_tracks),
+            segments_creation_event="none",
         )
 
         assert len(gpx.tracks) == 1
@@ -126,7 +133,8 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         tcx_with_two_laps: str,
     ) -> None:
         gpx = WorkoutTcxCreationService.parse_file(
-            self.get_file_content(tcx_with_two_laps)
+            self.get_file_content(tcx_with_two_laps),
+            segments_creation_event="none",
         )
 
         assert len(gpx.tracks) == 1
@@ -142,7 +150,8 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         tcx_with_two_activities: str,
     ) -> None:
         gpx = WorkoutTcxCreationService.parse_file(
-            self.get_file_content(tcx_with_two_activities)
+            self.get_file_content(tcx_with_two_activities),
+            segments_creation_event="none",
         )
 
         assert len(gpx.tracks) == 1
@@ -158,7 +167,8 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         tcx_with_invalid_elevation: str,
     ) -> None:
         gpx = WorkoutTcxCreationService.parse_file(
-            self.get_file_content(tcx_with_invalid_elevation)
+            self.get_file_content(tcx_with_invalid_elevation),
+            segments_creation_event="none",
         )
 
         assert len(gpx.tracks) == 1
@@ -196,7 +206,8 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         tcx_with_heart_rate_and_cadence: str,
     ) -> None:
         gpx = WorkoutTcxCreationService.parse_file(
-            self.get_file_content(tcx_with_heart_rate_and_cadence)
+            self.get_file_content(tcx_with_heart_rate_and_cadence),
+            segments_creation_event="none",
         )
 
         self.assert_gpx(gpx)
@@ -208,7 +219,8 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         tcx_with_heart_rate_and_run_cadence: str,
     ) -> None:
         gpx = WorkoutTcxCreationService.parse_file(
-            self.get_file_content(tcx_with_heart_rate_and_run_cadence)
+            self.get_file_content(tcx_with_heart_rate_and_run_cadence),
+            segments_creation_event="none",
         )
 
         self.assert_gpx(gpx)
@@ -220,7 +232,8 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         tcx_with_heart_rate_and_ns3_run_cadence: str,
     ) -> None:
         gpx = WorkoutTcxCreationService.parse_file(
-            self.get_file_content(tcx_with_heart_rate_and_ns3_run_cadence)
+            self.get_file_content(tcx_with_heart_rate_and_ns3_run_cadence),
+            segments_creation_event="none",
         )
 
         self.assert_gpx(gpx)

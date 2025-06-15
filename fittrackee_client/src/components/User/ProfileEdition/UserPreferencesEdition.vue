@@ -297,6 +297,22 @@
             </option>
           </select>
         </label>
+        <label class="form-items">
+          {{ $t('user.PROFILE.SEGMENTS_CREATION_EVENT.LABEL') }}
+          <select
+            id="segments_creation_event"
+            v-model="userForm.segments_creation_event"
+            :disabled="authUserLoading"
+          >
+            <option
+              v-for="event in segmentsCreationEvents"
+              :value="event"
+              :key="event"
+            >
+              {{ $t(`user.PROFILE.SEGMENTS_CREATION_EVENT.${event}`) }}
+            </option>
+          </select>
+        </label>
         <div class="form-buttons">
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
@@ -430,6 +446,7 @@
       value: false,
     },
   ]
+  const segmentsCreationEvents = ['all', 'only_manual', 'none']
 
   const userForm: Reactive<IUserPreferencesPayload> = reactive({
     analysis_visibility: 'private',
@@ -441,6 +458,7 @@
     language: 'en',
     manually_approves_followers: true,
     map_visibility: 'private',
+    segments_creation_event: 'only_manual',
     start_elevation_at_zero: false,
     timezone: 'Europe/Paris',
     use_dark_mode: false,
@@ -468,36 +486,28 @@
   )
 
   function updateUserForm(user: IAuthUserProfile) {
-    userForm.analysis_visibility = user.analysis_visibility
-      ? user.analysis_visibility
-      : 'private'
+    userForm.analysis_visibility = user.analysis_visibility ?? 'private'
     userForm.display_ascent = user.display_ascent
-    userForm.start_elevation_at_zero = user.start_elevation_at_zero
-      ? user.start_elevation_at_zero
-      : false
-    userForm.use_raw_gpx_speed = user.use_raw_gpx_speed
-      ? user.use_raw_gpx_speed
-      : false
-    userForm.imperial_units = user.imperial_units ? user.imperial_units : false
+    userForm.start_elevation_at_zero = user.start_elevation_at_zero ?? false
+    userForm.use_raw_gpx_speed = user.use_raw_gpx_speed ?? false
+    userForm.imperial_units = user.imperial_units ?? false
     userForm.language =
       user.language && user.language in languageLabels ? user.language : 'en'
     userForm.manually_approves_followers =
       'manually_approves_followers' in user
         ? user.manually_approves_followers
         : true
-    userForm.map_visibility = user.map_visibility
-      ? user.map_visibility
-      : 'private'
-    userForm.timezone = user.timezone ? user.timezone : 'Europe/Paris'
-    userForm.date_format = user.date_format ? user.date_format : 'dd/MM/yyyy'
-    userForm.weekm = user.weekm ? user.weekm : false
+    userForm.map_visibility = user.map_visibility ?? 'private'
+    userForm.timezone = user.timezone ?? 'Europe/Paris'
+    userForm.date_format = user.date_format ?? 'dd/MM/yyyy'
+    userForm.weekm = user.weekm ?? false
     userForm.use_dark_mode = user.use_dark_mode
-    userForm.workouts_visibility = user.workouts_visibility
-      ? user.workouts_visibility
-      : 'private'
+    userForm.workouts_visibility = user.workouts_visibility ?? 'private'
     userForm.hide_profile_in_users_directory =
       user.hide_profile_in_users_directory
-    userForm.hr_visibility = user.hr_visibility ? user.hr_visibility : 'private'
+    userForm.hr_visibility = user.hr_visibility ?? 'private'
+    userForm.segments_creation_event =
+      user.segments_creation_event ?? 'only_manual'
   }
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES, userForm)
@@ -569,7 +579,8 @@
     #map_visibility,
     #analysis_visibility,
     #workouts_visibility,
-    #hr_visibility {
+    #hr_visibility,
+    #segments_creation_event {
       padding: $default-padding * 0.5;
     }
   }

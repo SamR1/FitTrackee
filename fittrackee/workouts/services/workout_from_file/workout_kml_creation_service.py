@@ -10,7 +10,11 @@ from .workout_gpx_creation_service import WorkoutGpxCreationService
 
 class WorkoutKmlCreationService(WorkoutGpxCreationService):
     @classmethod
-    def parse_file(cls, workout_file: IO[bytes]) -> "gpxpy.gpx.GPX":
+    def parse_file(
+        cls,
+        workout_file: IO[bytes],
+        segments_creation_event: str,
+    ) -> "gpxpy.gpx.GPX":
         """
         Only kml files with Placemark/MultiTrack/Tracks are supported.
         Files with folders or multiple Placemark are no supported.
@@ -20,6 +24,9 @@ class WorkoutKmlCreationService(WorkoutGpxCreationService):
         (<trkseg>) per kml track (<Track>).
 
         Tested with files generated with OpenTracks.
+
+        Note:
+        - segments_creation_event is not used (only for .fit files)
         """
         try:
             kml_dict = xmltodict.parse(workout_file)

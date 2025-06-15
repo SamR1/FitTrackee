@@ -39,14 +39,16 @@ class TestWorkoutKmzCreationServiceParseFile(
             ),
         ):
             WorkoutKmzCreationService.parse_file(
-                self.get_kmz_content(app, file_name="gpx_test.zip")
+                self.get_kmz_content(app, file_name="gpx_test.zip"),
+                segments_creation_event="none",
             )
 
     def test_it_return_gpx_with_kml_content(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
     ) -> None:
         gpx = WorkoutKmzCreationService.parse_file(
-            self.get_kmz_content(app, file_name="example.kmz")
+            self.get_kmz_content(app, file_name="example.kmz"),
+            segments_creation_event="none",
         )
 
         assert len(gpx.tracks) == 1
