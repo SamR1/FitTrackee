@@ -10,10 +10,16 @@ if TYPE_CHECKING:
 
 class WorkoutKmzCreationService(WorkoutKmlCreationService):
     @classmethod
-    def parse_file(cls, workout_file: IO[bytes]) -> "gpxpy.gpx.GPX":
+    def parse_file(
+        cls,
+        workout_file: IO[bytes],
+        segments_creation_event: str,
+    ) -> "gpxpy.gpx.GPX":
         """
         Only kmz files with Tracks are supported.
-        Note: for now kmz with photos are not supported.
+        Notes:
+        - for now kmz with photos are not supported
+        - segments_creation_event is not used (only for .fit files)
 
         Tested with files generated with OpenTracks.
         """
@@ -24,4 +30,4 @@ class WorkoutKmzCreationService(WorkoutKmlCreationService):
                 raise WorkoutFileException(
                     "error", "error when parsing kmz file"
                 ) from e
-        return super().parse_file(kml_content)
+        return super().parse_file(kml_content, segments_creation_event)

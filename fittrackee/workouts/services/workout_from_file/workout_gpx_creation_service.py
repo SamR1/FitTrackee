@@ -54,7 +54,9 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
             stopped_speed_threshold,
             get_weather,
         )
-        self.gpx: "gpxpy.gpx.GPX" = self.parse_file(workout_file)
+        self.gpx: "gpxpy.gpx.GPX" = self.parse_file(
+            workout_file, auth_user.segments_creation_event
+        )
         self.cadences: List[int] = []
         self.heart_rates: List[int] = []
 
@@ -76,7 +78,15 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
         return track_point_extension
 
     @classmethod
-    def parse_file(cls, workout_file: IO[bytes]) -> "gpxpy.gpx.GPX":
+    def parse_file(
+        cls,
+        workout_file: IO[bytes],
+        segments_creation_event: str,
+    ) -> "gpxpy.gpx.GPX":
+        """
+        Note:
+        - segments_creation_event is not used (only for .fit files)
+        """
         try:
             gpx = gpxpy.parse(workout_file)  # type: ignore
         except Exception as e:

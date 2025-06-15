@@ -17,7 +17,11 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
         return round(value * (180.0 / 2**31), 5)
 
     @classmethod
-    def parse_file(cls, workout_file: IO[bytes]) -> "gpxpy.gpx.GPX":
+    def parse_file(
+        cls,
+        workout_file: IO[bytes],
+        segments_creation_event: str,
+    ) -> "gpxpy.gpx.GPX":
         """
         For now only Activity Files are supported.
         see:
@@ -61,10 +65,16 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                     continue
                 # create a new segment after 'stop_all' event
                 if (
-                    frame.name == "event"
+                    segments_creation_event in ["only_manual", "all"]
+                    and frame.name == "event"
                     and frame.get_value("event") == "timer"
                     and frame.get_value("event_type") == "stop_all"
                 ):
+                    if (
+                        segments_creation_event == "only_manual"
+                        and frame.get_value("timer_trigger") != "manual"
+                    ):
+                        continue
                     has_stop = True
                     gpx_track.segments.append(gpx_segment)
                     gpx_segment = gpxpy.gpx.GPXTrackSegment()
