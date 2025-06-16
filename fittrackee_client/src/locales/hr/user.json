@@ -161,6 +161,12 @@
       "IN_PROGRESS": "vaša žalba je u obradi",
       "REJECTED": "vaša žalba je odbijena"
     },
+    "SEGMENTS_CREATION_EVENT": {
+      "LABEL": "Pauzirajte događaje koji pokreću stvaranje segmenta (samo .fit datoteke)",
+      "all": "Svi pauzirani događaji",
+      "none": "NIšta",
+      "only_manual": "Samo ručno pauzirano"
+    },
     "SPORT": {
       "ACTION": "radnja",
       "COLOR": "boja",
