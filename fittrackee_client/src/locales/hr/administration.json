@@ -152,7 +152,7 @@
   },
   "USERS_QUEUED_TASKS": {
     "DESCRIPTION": "Prikaži raspoređene zadatke",
-    "LABEL": "Zadatci u redu čekanja",
+    "LABEL": "Raspoređeni zadatci",
     "LIST_DESCRIPTION": "Ako nijedan worker nije pokrenut koristite CLI za njihovo obrađivanje.",
     "NO_USERS_QUEUED_TASKS": "Nema raspoređenih zadataka",
     "TASK_TYPES": {

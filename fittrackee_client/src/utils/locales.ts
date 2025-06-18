@@ -17,6 +17,7 @@ import {
   pl,
   pt,
   ru,
+  tr,
   zhCN,
 } from 'date-fns/locale'
 
@@ -43,6 +44,7 @@ export const isLanguageSupported = (
     'pl',
     'pt',
     'ru',
+    'tr',
     'zh_Hans',
   ].includes(language)
 }
@@ -65,6 +67,7 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
   pl: pl,
   pt: pt,
   ru: ru,
+  tr: tr,
   zh_Hans: zhCN,
 }
 
@@ -72,20 +75,21 @@ export const languageLabels: Record<TLanguage, string> = {
   bg: 'български (57%)', // Bulgarian
   // bn: 'বাংলা',  // Bengali
   ca: 'Català (25%)', // Catalan
-  cs: 'Česky (44%)', // Czech
-  de: 'Deutsch (91%)', // German
+  cs: 'Česky (45%)', // Czech
+  de: 'Deutsch (90%)', // German
   en: 'English',
   es: 'Español (59%)', // Spanish
-  eu: 'Euskara (92%)', // Basque
+  eu: 'Euskara (91%)', // Basque
   fr: 'Français', // French
-  gl: 'Galego (99%)', // Galician
+  gl: 'Galego', // Galician
   hr: 'Hrvatski', // Croatian
   it: 'Italiano (47%)', // Italian
-  nl: 'Nederlands', // Dutch
+  nl: 'Nederlands (99%)', // Dutch
   nb: 'Norsk bokmål (30%)', // Norwegian Bokmål
-  pl: 'Polski (92%)', // Polish
+  pl: 'Polski (91%)', // Polish
   pt: 'Português (56%)', // Portuguese
-  ru: 'Русский (91%)', // Russian
+  ru: 'Русский (93%)', // Russian
+  tr: 'Türkçe (1%)', // Turkish
   zh_Hans: '中文（简体）(99%)', // Chinese (Simplified Han script)
 }
 

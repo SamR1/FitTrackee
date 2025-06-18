@@ -39,14 +39,16 @@ class TestWorkoutFitCreationServiceParseFile(
             ),
         ):
             WorkoutFitCreationService.parse_file(
-                self.get_fit_content(app, file_name="example.kmz")
+                self.get_fit_content(app, file_name="example.kmz"),
+                segments_creation_event="none",
             )
 
     def test_it_returns_gpx_with_fit_content(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
     ) -> None:
         gpx = WorkoutFitCreationService.parse_file(
-            self.get_fit_content(app, file_name="example.fit")
+            self.get_fit_content(app, file_name="example.fit"),
+            segments_creation_event="none",
         )
 
         assert len(gpx.tracks) == 1

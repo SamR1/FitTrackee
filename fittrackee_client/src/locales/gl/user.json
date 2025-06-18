@@ -161,6 +161,12 @@
       "IN_PROGRESS": "estase revisando a túa apelación",
       "REJECTED": "rexeitouse a túa apelación"
     },
+    "SEGMENTS_CREATION_EVENT": {
+      "LABEL": "Eventos de pausa que activan a creación de segmentos (só ficheiros .fit)",
+      "all": "Todos os eventos de pausa",
+      "none": "Ningún",
+      "only_manual": "Só a pausa manual"
+    },
     "SPORT": {
       "ACTION": "acción",
       "COLOR": "cor",

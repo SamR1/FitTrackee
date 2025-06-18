@@ -73,9 +73,9 @@
     "ACCOUNT_EDITION": "Mise à jour du compte",
     "ARCHIVE_UPLOADS": {
       "ARCHIVE": "Archive zip",
-      "CREATED_WORKOUTS": "Séances créées",
       "CONFIRM_TASK_ABORT": "Êtes-vous sûr de vouloir interrompre cette tâche de chargement d'archive ?",
       "CONFIRM_TASK_DELETION": "Êtes-vous sûr de vouloir supprimer cette tâche de chargement d'archive ?",
+      "CREATED_WORKOUTS": "Séances créées",
       "ERRORED_FILES": "Fichier en erreur | Fichiers en erreur",
       "FILES_COUNT": "{count} fichiers",
       "NOT_FOUND": "Pas de chargement d'archive trouvé.",
@@ -160,6 +160,12 @@
       "APPROVED": "votre appel a été approuvé",
       "IN_PROGRESS": "votre appel est en cours de traitement",
       "REJECTED": "votre appel a été rejeté"
+    },
+    "SEGMENTS_CREATION_EVENT": {
+      "LABEL": "Types de pause déclenchant la création d'un segment (fichiers .fit) uniuement",
+      "all": "Tous les évènements de pause",
+      "none": "Aucun",
+      "only_manual": "Seulement les pauses de type manuel"
     },
     "SPORT": {
       "ACTION": "action",

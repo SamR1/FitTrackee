@@ -13,6 +13,7 @@ export const loadLanguagePackage = async (language: string) => {
   // - Norwegian bokmål
   // - Portuguese (pt-PT)
   // - Russian
+  // - Turkish
   // fallback to english
   switch (language) {
     case 'fr':

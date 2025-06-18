@@ -48,7 +48,8 @@ class TestWorkoutGpxCreationServiceParseFile(RandomMixin, WorkoutFileMixin):
             ),
         ):
             WorkoutGpxCreationService.parse_file(
-                self.get_file_content(gpx_file_invalid_xml)
+                self.get_file_content(gpx_file_invalid_xml),
+                segments_creation_event="none",
             )
 
     def test_it_raises_error_when_gpx_file_has_no_tracks(
@@ -62,7 +63,8 @@ class TestWorkoutGpxCreationServiceParseFile(RandomMixin, WorkoutFileMixin):
             pytest.raises(WorkoutFileException, match="no tracks in gpx file"),
         ):
             WorkoutGpxCreationService.parse_file(
-                self.get_file_content(gpx_file_wo_track)
+                self.get_file_content(gpx_file_wo_track),
+                segments_creation_event="none",
             )
 
 
