@@ -1022,7 +1022,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json string map_visibility: workout map visibility
                   (``public``, ``followers_only``, ``private``)
     :<json string segments_creation_event: event triggering a segment creation
-                  for .fit files (``manual``, ``auto``, ``disabled``)
+                  for .fit files (``all``, ``only_manual``, ``none``)
     :<json boolean start_elevation_at_zero: do elevation plots start at zero?
     :<json string timezone: user time zone
     :<json boolean use_dark_mode: Display interface with dark mode if ``true``.

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Command line interface" href="cli.html" /><link rel="prev" title="OAuth 2.0" href="oauth.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Installation - FitTrackee 0.10.2 documentation</title>
+        <title>Installation - FitTrackee 0.10.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.10.2
+      <a href="index.html"><div class="brand">FitTrackee 0.10.3
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.10.2
+  <span class="sidebar-brand-text">FitTrackee 0.10.3
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -317,6 +317,7 @@
 <dt>API:</dt><dd><ul>
 <li><p>Flask</p></li>
 <li><p><a class="reference external" href="https://github.com/tkrajina/gpxpy">gpxpy</a> to parse gpx files</p></li>
+<li><p><a class="reference external" href="https://github.com/polyvertex/fitdecode">fitdecode</a> to parse fit files</p></li>
 <li><p><a class="reference external" href="https://github.com/SamR1/staticmap">Static Map 3</a>, a fork of <a class="reference external" href="https://github.com/komoot/staticmap">Static Map</a> to generate a static map image from file coordinates</p></li>
 <li><p><a class="reference external" href="https://dramatiq.io/">Dramatiq</a> and <a class="reference external" href="https://flask-dramatiq.readthedocs.io">Flask-Dramatiq</a> for task queue</p></li>
 <li><p><a class="reference external" href="https://docs.authlib.org/en/latest/">Authlib</a> for OAuth 2.0 Authorization support</p></li>
@@ -1170,11 +1171,11 @@ $<span class="w"> </span>make<span class="w"> </span>install-db
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v0.10.2):</p></li>
+<li><p>Download the last release (for now, it is the release v0.10.3):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/0.10.2.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.10.2.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.10.2<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/0.10.3.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.10.3.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-0.10.3<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1310,11 +1311,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v0.10.2) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v0.10.3) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.10.2.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.10.2.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.10.2/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v0.10.3.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v0.10.3.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-0.10.3/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1719,7 +1720,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=11e62b30"></script>
+</div><script src="_static/documentation_options.js?v=b59eaf29"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

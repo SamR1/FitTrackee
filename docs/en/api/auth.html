@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Configuration" href="configuration.html" /><link rel="prev" title="API documentation" href="index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Authentication and account - FitTrackee 0.10.2 documentation</title>
+        <title>Authentication and account - FitTrackee 0.10.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">FitTrackee 0.10.2
+      <a href="../index.html"><div class="brand">FitTrackee 0.10.3
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.10.2
+  <span class="sidebar-brand-text">FitTrackee 0.10.3
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -582,6 +582,7 @@ fallback to ‘Europe/Paris’)</p></li>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">],</span>
 <span class="w">    </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;segments_creation_event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;manual&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;sports_list&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">        </span><span class="mi">4</span><span class="p">,</span>
@@ -719,6 +720,7 @@ fallback to ‘Europe/Paris’)</p></li>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">],</span>
 <span class="w">    </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;segments_creation_event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;manual&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;sports_list&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">        </span><span class="mi">4</span><span class="p">,</span>
@@ -881,6 +883,7 @@ fallback to ‘Europe/Paris’)</p></li>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">],</span>
 <span class="w">    </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;segments_creation_event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;manual&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;sports_list&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">        </span><span class="mi">4</span><span class="p">,</span>
@@ -911,12 +914,16 @@ fallback to ‘Europe/Paris’)</p></li>
 <li><p><strong>display_ascent</strong> (<em>boolean</em>) – display highest ascent records and total</p></li>
 <li><p><strong>hide_profile_in_users_directory</strong> (<em>boolean</em>) – if <code class="docutils literal notranslate"><span class="pre">true</span></code>, user does not
 appear in users directory</p></li>
+<li><p><strong>hr_visibility</strong> (<em>boolean</em>) – heart rate visibility
+(<code class="docutils literal notranslate"><span class="pre">public</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code>, <code class="docutils literal notranslate"><span class="pre">private</span></code>)</p></li>
 <li><p><strong>imperial_units</strong> (<em>boolean</em>) – display distance in imperial units</p></li>
 <li><p><strong>language</strong> (<em>string</em>) – language preferences</p></li>
-<li><p><strong>map_visibility</strong> (<em>string</em>) – workout map visibility
-(<code class="docutils literal notranslate"><span class="pre">public</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code>, <code class="docutils literal notranslate"><span class="pre">private</span></code>)</p></li>
 <li><p><strong>manually_approves_followers</strong> (<em>boolean</em>) – if <code class="docutils literal notranslate"><span class="pre">false</span></code>, follow requests
 are automatically approved</p></li>
+<li><p><strong>map_visibility</strong> (<em>string</em>) – workout map visibility
+(<code class="docutils literal notranslate"><span class="pre">public</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code>, <code class="docutils literal notranslate"><span class="pre">private</span></code>)</p></li>
+<li><p><strong>segments_creation_event</strong> (<em>string</em>) – event triggering a segment creation
+for .fit files (<code class="docutils literal notranslate"><span class="pre">all</span></code>, <code class="docutils literal notranslate"><span class="pre">only_manual</span></code>, <code class="docutils literal notranslate"><span class="pre">none</span></code>)</p></li>
 <li><p><strong>start_elevation_at_zero</strong> (<em>boolean</em>) – do elevation plots start at zero?</p></li>
 <li><p><strong>timezone</strong> (<em>string</em>) – user time zone</p></li>
 <li><p><strong>use_dark_mode</strong> (<em>boolean</em>) – Display interface with dark mode if <code class="docutils literal notranslate"><span class="pre">true</span></code>.
@@ -1170,6 +1177,7 @@ to use for this sport.
 <span class="w">        </span><span class="nt">&quot;workout_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hvYBqYBRa7wwXpaStWR4V2&quot;</span>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="nt">&quot;segments_creation_event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;manual&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;sports_list&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">        </span><span class="mi">4</span><span class="p">,</span>
@@ -1466,6 +1474,7 @@ approval</p></li>
 <span class="w">      </span><span class="p">}</span>
 <span class="w">    </span><span class="p">],</span>
 <span class="w">    </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;segments_creation_event&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;manual&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;sports_list&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">        </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">        </span><span class="mi">4</span><span class="p">,</span>
@@ -2289,7 +2298,7 @@ If a valid token is provided, it will be blacklisted.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=11e62b30"></script>
+</div><script src="../_static/documentation_options.js?v=b59eaf29"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>

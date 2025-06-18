@@ -1,5 +1,55 @@
 # Change log
 
+## Version 0.10.3 (2025/06/18)
+
+
+### Features and enhancements
+
+* [PR#837](https://github.com/SamR1/FitTrackee/pull/837) - Update Garmin products mapping
+* [#838](https://github.com/SamR1/FitTrackee/issues/838) - New sport: Standup paddleboarding 
+* [#839](https://github.com/SamR1/FitTrackee/issues/839) - Segments creation depending on pause events
+
+
+### Translations
+
+* [PR#828](https://github.com/SamR1/FitTrackee/pull/828) - Translations update from Hosted Weblate (Croatian)
+* [PR#831](https://github.com/SamR1/FitTrackee/pull/831) - Translations update from Hosted Weblate (Czech)
+* [PR#832](https://github.com/SamR1/FitTrackee/pull/832) - Translations update from Hosted Weblate (Russian)
+* [#833](https://github.com/SamR1/FitTrackee/issues/833) - [translations request] Turkish 
+* [PR#836](https://github.com/SamR1/FitTrackee/pull/836) - Translations update from Hosted Weblate (Galician and Turkish)
+* [PR#842](https://github.com/SamR1/FitTrackee/pull/842) - Translations update from Hosted Weblate (Croatian and Galician)
+
+
+Translation status:
+- Basque: 91%
+- Bulgarian: 57%
+- Catalan: 25%
+- Chinese (Simplified): 99%
+- Croatian: 100%
+- Czech: 45%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 90%
+- Italian: 47%
+- Norwegian Bokmål: 30%
+- Polish: 91%
+- Portuguese: 56%
+- Russian: 93%
+- Spanish: 59%
+- Turkish: 1%
+
+Thanks to the contributors:
+- @BorATICI
+- @iggydev
+- @jmlich
+- @sikmir
+- @xmgz
+
+**Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
+
+
 ## Version 0.10.2 (2025/05/31)
 
 ### Bugs Fixed
