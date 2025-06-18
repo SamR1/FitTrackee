@@ -16,5 +16,5 @@ export type TLanguage =
   | 'pl'
   | 'pt'
   | 'ru'
-  // | 'tr'  //disabled for now
+  | 'tr'
   | 'zh_Hans'
