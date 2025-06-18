@@ -17,7 +17,7 @@ Workouts
 Sports
 ------
 
-- 22 sports are supported:
+- 23 sports are supported:
 
   - Canoeing  (*new in 0.9.3*)
   - Cycling (Sport)
@@ -37,6 +37,7 @@ Sports
   - Skiing (Alpine) (*new in 0.5.0*)
   - Skiing (Cross Country)  (*new in 0.5.0*)
   - Snowshoes (*new in 0.5.2*)
+  - Standup paddleboarding (*new in 0.10.3*)
   - Swimrun (*new in 0.8.7*)
   - Trail (*new in 0.5.0*)
   - Walking
@@ -109,14 +110,16 @@ Workouts
 .. note::
   For extensions other than .gpx, files are converted to .gpx:
 
-  - .fit: generated .gpx file contains one track (``<trk>``). A new segment (``<trkseg>``) is created on after ``stop_all`` event.
+  - .fit: generated .gpx file contains one track (``<trk>``). Depending on user preferences, a new segment (``<trkseg>``) can be created after pause events (*changed in 0.10.3*):
+     - all pause events,
+     - only manual pause event.
   - .kml: generated .gpx file contains one track (``<trk>``) corresponding to ``<MultiTrack>``, containing one segment (``<trkseg>``) per kml track (``<Track>``)
   - .tcx: generated .gpx file contains one track (``<trk>``) containing one segment (``<trkseg>``) per activity (``<Activity>``)
 
 - If present in .gpx, .tcx and .fit files, the source (application or device) is displayed.
 
 .. note::
-   .fit files from Garmin devices may contain product id instead of product name. The mapping between the product id and the product name allows the product name to be displayed instead, if available.
+   .fit files from Garmin devices may contain product id instead of product name. The mapping between the product id and the product name allows the product name to be displayed instead, if available (*mapping updated in 0.10.3*).
 
 - | If the name is present in the file, it is used as the workout title. Otherwise, a title is generated from the sport and workout date.
   | User can provide title while uploading file (*new in 0.8.10*).
@@ -429,6 +432,11 @@ Account & preferences
 - A user can view follow requests to approve or reject (*new in 0.9.0*).
 - A user can view received sanctions and appeal (*new in 0.9.0*).
 - A user can view, interrupt and delete tasks for asynchronous uploads (*new in 0.10.0*).
+- A user can set the types of events that generate segment when uploading .fit files (*new in 0.10.3*):
+
+  - all pause events,
+  - only manual pause,
+  - none.
 
 Equipments
 ==========
@@ -440,7 +448,7 @@ Equipments
 
   - Bike: Cycling (Sport, Transport, Trekking), Halfbike, Mountain Biking and Mountain Biking (Electric) (*changed in 0.9.7*),
   - Bike Trainer: Cycling (Virtual),
-  - Board: Windsurfing (*new in 0.9.10*),
+  - Board: Standup paddleboarding (*new in 0.10.3*) and Windsurfing (*new in 0.9.10*),
   - Kayak/Boat: Canoeing, Rowing and Kayaking (*changed in 0.9.3*),
   - Shoes: Hiking, Mountaineering, Running, Trail and Walking,
   - Skis: Skiing (Alpine and Cross Country),
@@ -654,6 +662,7 @@ FitTrackee is available in the following languages (which can be saved in the us
 - Chinese (Simplified Han script) (*new in 0.9.0*)
 - Croatian (*new in 0.9.8*)
 - Catalan (*new in 0.10.0*)
+- Turkish (*new in 0.10.3*)
 
 Application translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__ (development branch, may differ from the released version):
 

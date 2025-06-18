@@ -28,6 +28,7 @@ This application is written in Python (API) and Typescript (client):
 - API:
     - Flask
     - `gpxpy <https://github.com/tkrajina/gpxpy>`_ to parse gpx files
+    - `fitdecode <https://github.com/polyvertex/fitdecode>`_ to parse fit files
     - `Static Map 3 <https://github.com/SamR1/staticmap>`_, a fork of `Static Map <https://github.com/komoot/staticmap>`_ to generate a static map image from file coordinates
     - `Dramatiq <https://dramatiq.io/>`_ and `Flask-Dramatiq <https://flask-dramatiq.readthedocs.io>`_ for task queue
     - `Authlib <https://docs.authlib.org/en/latest/>`_ for OAuth 2.0 Authorization support
@@ -684,13 +685,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.10.2):
+-  Download the last release (for now, it is the release v0.10.3):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/0.10.2.tar.gz
-   $ tar -xzf v0.10.2.tar.gz
-   $ mv FitTrackee-0.10.2 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/0.10.3.tar.gz
+   $ tar -xzf v0.10.3.tar.gz
+   $ mv FitTrackee-0.10.3 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -822,13 +823,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.10.2) and overwrite existing files:
+- Download the last release (for now, it is the release v0.10.3) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.10.2.tar.gz
-   $ tar -xzf v0.10.2.tar.gz
-   $ cp -R FitTrackee-0.10.2/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.10.3.tar.gz
+   $ tar -xzf v0.10.3.tar.gz
+   $ cp -R FitTrackee-0.10.3/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
