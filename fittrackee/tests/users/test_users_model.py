@@ -209,6 +209,10 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             == user_1.notification_preferences
         )
         assert serialized_user["hr_visibility"] == user_1.hr_visibility
+        assert (
+            serialized_user["segments_creation_event"]
+            == user_1.segments_creation_event
+        )
 
     def test_it_returns_empty_dict_when_notification_preferences_are_none(
         self, app: Flask, user_1: User
@@ -340,6 +344,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
         assert "manually_approves_followers" not in serialized_user
         assert "hide_profile_in_users_directory" not in serialized_user
         assert "notification_preferences" not in serialized_user
+        assert "segments_creation_event" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -427,6 +432,7 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
         assert "manually_approves_followers" not in serialized_user
         assert "hide_profile_in_users_directory" not in serialized_user
         assert "notification_preferences" not in serialized_user
+        assert "segments_creation_event" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_moderator: User, user_2: User
@@ -507,6 +513,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert "manually_approves_followers" not in serialized_user
         assert "hide_profile_in_users_directory" not in serialized_user
         assert "notification_preferences" not in serialized_user
+        assert "segments_creation_event" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1: User, user_2: User

@@ -25,7 +25,9 @@ class WorkoutTcxCreationService(WorkoutGpxCreationService):
         return None
 
     @classmethod
-    def parse_file(cls, workout_file: IO[bytes]) -> "gpxpy.gpx.GPX":
+    def parse_file(
+        cls, workout_file: IO[bytes], segments_creation_event: str
+    ) -> "gpxpy.gpx.GPX":
         """
         Tcx files contain activities that contain laps containing tracks.
         A gpx file generated from tcx file contains one track containing one
@@ -33,6 +35,9 @@ class WorkoutTcxCreationService(WorkoutGpxCreationService):
 
         TODO:
         - handle multiple sports activities like Swimrun
+
+        Note:
+        - segments_creation_event is not used (only for .fit files)
         """
         try:
             tcx_dict = xmltodict.parse(workout_file)

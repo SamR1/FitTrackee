@@ -106,6 +106,14 @@
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.hr_visibility}`) }}
       </dd>
+      <dt>{{ $t('user.PROFILE.SEGMENTS_CREATION_EVENT.LABEL') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.SEGMENTS_CREATION_EVENT.${user.segments_creation_event}`
+          )
+        }}
+      </dd>
     </dl>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">

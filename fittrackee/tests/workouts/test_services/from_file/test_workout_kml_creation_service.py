@@ -26,7 +26,8 @@ class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
             ),
         ):
             WorkoutKmlCreationService.parse_file(
-                self.get_file_content(invalid_kml_file)
+                self.get_file_content(invalid_kml_file),
+                segments_creation_event="none",
             )
 
     def test_it_raises_error_when_kml_file_has_no_tracks(
@@ -40,7 +41,8 @@ class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
             pytest.raises(WorkoutFileException, match="no tracks in kml file"),
         ):
             WorkoutKmlCreationService.parse_file(
-                self.get_file_content(kml_file_wo_tracks)
+                self.get_file_content(kml_file_wo_tracks),
+                segments_creation_event="none",
             )
 
     def test_it_raises_error_when_kml_file_has_folders(
@@ -54,7 +56,8 @@ class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
             pytest.raises(WorkoutFileException, match="unsupported kml file"),
         ):
             WorkoutKmlCreationService.parse_file(
-                self.get_file_content(kml_file_with_folders)
+                self.get_file_content(kml_file_with_folders),
+                segments_creation_event="none",
             )
 
     def test_it_returns_gpx_with_kml_2_2_with_one_track(
@@ -65,7 +68,8 @@ class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
         kml_2_2_with_one_track: str,
     ) -> None:
         gpx = WorkoutKmlCreationService.parse_file(
-            self.get_file_content(kml_2_2_with_one_track)
+            self.get_file_content(kml_2_2_with_one_track),
+            segments_creation_event="none",
         )
 
         assert isinstance(gpx, gpxpy.gpx.GPX)
@@ -85,7 +89,8 @@ class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
         kml_2_2_with_two_tracks: str,
     ) -> None:
         gpx = WorkoutKmlCreationService.parse_file(
-            self.get_file_content(kml_2_2_with_two_tracks)
+            self.get_file_content(kml_2_2_with_two_tracks),
+            segments_creation_event="none",
         )
 
         assert len(gpx.tracks) == 1
@@ -102,7 +107,8 @@ class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
         kml_2_3_with_one_track: str,
     ) -> None:
         gpx = WorkoutKmlCreationService.parse_file(
-            self.get_file_content(kml_2_3_with_one_track)
+            self.get_file_content(kml_2_3_with_one_track),
+            segments_creation_event="none",
         )
 
         assert len(gpx.tracks) == 1
@@ -119,7 +125,8 @@ class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
         kml_2_3_with_two_tracks: str,
     ) -> None:
         gpx = WorkoutKmlCreationService.parse_file(
-            self.get_file_content(kml_2_3_with_two_tracks)
+            self.get_file_content(kml_2_3_with_two_tracks),
+            segments_creation_event="none",
         )
 
         assert len(gpx.tracks) == 1
@@ -136,7 +143,8 @@ class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
         kml_2_3_wo_name_and_description: str,
     ) -> None:
         gpx = WorkoutKmlCreationService.parse_file(
-            self.get_file_content(kml_2_3_wo_name_and_description)
+            self.get_file_content(kml_2_3_wo_name_and_description),
+            segments_creation_event="none",
         )
 
         assert gpx.name is None
@@ -150,7 +158,8 @@ class TestWorkoutKmlCreationServiceParseFile(WorkoutFileMixin):
         kml_2_2_with_extended_data: str,
     ) -> None:
         gpx = WorkoutKmlCreationService.parse_file(
-            self.get_file_content(kml_2_2_with_extended_data)
+            self.get_file_content(kml_2_2_with_extended_data),
+            segments_creation_event="none",
         )
 
         assert isinstance(gpx, gpxpy.gpx.GPX)

@@ -66,6 +66,12 @@ TASK_TYPES = [
     "workouts_archive_upload",
 ]
 
+SEGMENTS_CREATION_EVENTS = [
+    "all",
+    "none",
+    "only_manual",
+]
+
 
 class FollowRequest(BaseModel):
     """Follow request between two users"""
@@ -390,6 +396,10 @@ class User(BaseModel):
         Enum(VisibilityLevel, name="visibility_levels"),
         server_default="PRIVATE",
         nullable=False,
+    )
+    segments_creation_event: Mapped[str] = mapped_column(
+        Enum(*SEGMENTS_CREATION_EVENTS, name="segments_creation_events"),
+        server_default="only_manual",
     )
     is_remote: Mapped[bool] = mapped_column(
         db.Boolean, default=False, nullable=False
@@ -1035,6 +1045,7 @@ class User(BaseModel):
                     "analysis_visibility": self.analysis_visibility.value,
                     "workouts_visibility": self.workouts_visibility.value,
                     "hr_visibility": self.hr_visibility.value,
+                    "segments_creation_event": self.segments_creation_event,
                     "manually_approves_followers": (
                         self.manually_approves_followers
                     ),

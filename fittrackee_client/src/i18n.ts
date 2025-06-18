@@ -17,6 +17,7 @@ import nlMessages from '@/locales/nl/nl'
 import plMessages from '@/locales/pl/pl'
 import ptMessages from '@/locales/pt/pt'
 import ruMessages from '@/locales/ru/ru'
+import trMessages from '@/locales/tr/tr'
 import zhHansMessages from '@/locales/zh_Hans/zh_Hans'
 
 export default createI18n({
@@ -42,6 +43,7 @@ export default createI18n({
     pl: plMessages,
     pt: ptMessages,
     ru: ruMessages,
+    tr: trMessages,
     zh_Hans: zhHansMessages,
   },
 })

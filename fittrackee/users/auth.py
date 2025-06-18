@@ -408,6 +408,7 @@ def get_authenticated_user_profile(
             }
           ],
           "role": "user",
+          "segments_creation_event": "manual",
           "sports_list": [
               1,
               4,
@@ -548,6 +549,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
             }
           ],
           "role": "user",
+          "segments_creation_event": "manual",
           "sports_list": [
               1,
               4,
@@ -735,6 +737,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
             }
           ],
           "role": "user",
+          "segments_creation_event": "manual",
           "sports_list": [
               1,
               4,
@@ -989,6 +992,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
             }
           ],
           "role": "user",
+          "segments_creation_event": "manual",
           "sports_list": [
               1,
               4,
@@ -1014,13 +1018,17 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json string date_format: the format used to display dates in the app
     :<json boolean display_ascent: display highest ascent records and total
     :<json boolean hide_profile_in_users_directory: if ``true``, user does not
-                                                    appear in users directory
+                  appear in users directory
+    :<json boolean hr_visibility: heart rate visibility
+                  (``public``, ``followers_only``, ``private``)
     :<json boolean imperial_units: display distance in imperial units
     :<json string language: language preferences
-    :<json string map_visibility: workout map visibility
-                  (``public``, ``followers_only``, ``private``)
     :<json boolean manually_approves_followers: if ``false``, follow requests
                   are automatically approved
+    :<json string map_visibility: workout map visibility
+                  (``public``, ``followers_only``, ``private``)
+    :<json string segments_creation_event: event triggering a segment creation
+                  for .fit files (``all``, ``only_manual``, ``none``)
     :<json boolean start_elevation_at_zero: do elevation plots start at zero?
     :<json string timezone: user time zone
     :<json boolean use_dark_mode: Display interface with dark mode if ``true``.
@@ -1054,6 +1062,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "language",
         "manually_approves_followers",
         "map_visibility",
+        "segments_creation_event",
         "start_elevation_at_zero",
         "timezone",
         "use_dark_mode",
@@ -1081,6 +1090,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "hide_profile_in_users_directory"
     )
     hr_visibility = post_data.get("hr_visibility")
+    segments_creation_event = post_data.get("segments_creation_event")
 
     if not current_app.config["FEDERATION_ENABLED"] and (
         map_visibility == VisibilityLevel.FOLLOWERS_AND_REMOTE.value
@@ -1112,6 +1122,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
             hide_profile_in_users_directory
         )
         auth_user.hr_visibility = VisibilityLevel(hr_visibility)
+        auth_user.segments_creation_event = segments_creation_event
         db.session.commit()
 
         return {
@@ -1400,6 +1411,7 @@ def edit_user_notifications_preferences(
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             }
           ],
+          "segments_creation_event": "manual",
           "sports_list": [
               1,
               4,

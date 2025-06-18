@@ -14,6 +14,7 @@ export type TVisibilityLevels =
   | 'followers_only'
   | 'followers_and_remote_only'
   | 'public'
+export type TSegmentsCreationEvent = 'all' | 'none' | 'only_manual'
 
 export interface IUserLightProfile {
   blocked: boolean
@@ -56,26 +57,27 @@ export interface IUserProfile extends IUserLightProfile {
 export interface IAuthUserProfile extends IUserProfile {
   analysis_visibility: TVisibilityLevels
   accepted_privacy_policy: boolean | null
+  date_format: string
   display_ascent: boolean
   email: string
   hide_profile_in_users_directory: boolean
   hr_visibility: TVisibilityLevels
   imperial_units: boolean
-  start_elevation_at_zero: boolean
-  use_raw_gpx_speed: boolean
   language: TLanguage | null
   manually_approves_followers: boolean
   map_visibility: TVisibilityLevels
-  notification_preferences: TNotificationPreferences
   nb_sports: number
+  notification_preferences: TNotificationPreferences
   records: IRecord[]
   sports_list: number[]
+  start_elevation_at_zero: boolean
+  segments_creation_event: TSegmentsCreationEvent
   timezone: string
-  date_format: string
   total_distance: number
   total_duration: string
-  weekm: boolean
   use_dark_mode: boolean | null
+  use_raw_gpx_speed: boolean
+  weekm: boolean
   workouts_visibility: TVisibilityLevels
 }
 
@@ -126,6 +128,7 @@ export interface IUserPreferencesPayload {
   language: TLanguage
   manually_approves_followers: boolean
   map_visibility: TVisibilityLevels
+  segments_creation_event: TSegmentsCreationEvent
   start_elevation_at_zero: boolean
   timezone: string
   use_raw_gpx_speed: boolean

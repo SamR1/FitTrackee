@@ -5,6 +5,16 @@
   "AVERAGE_SPEED": "průměrná rychlost",
   "AVE_SPEED": "prům. rychl.",
   "BACK_TO_WORKOUT": "zpět ke cvičení",
+  "COMMENTS": {
+    "ADD": "přidat komentář",
+    "COMMENT": "komentář | komentáře",
+    "DELETE": "smazat komentář",
+    "DELETION_CONFIRMATION": "Jste si jistý, že chcete smazat tento komentář?",
+    "EDIT": "upravit komentář",
+    "LABEL": "komentář | komentáře",
+    "NO_COMMENTS": "Bez komentáře",
+    "REPORT": "nahlásit komentář"
+  },
   "DATE": "datum",
   "DELETE_WORKOUT": "Smazat cvičení",
   "DESCENT": "sestupně",

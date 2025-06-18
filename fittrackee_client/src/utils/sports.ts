@@ -20,6 +20,7 @@ export const sportColors: Record<string, string> = {
   'Skiing (Alpine)': '#67a4bd',
   'Skiing (Cross Country)': '#9498d0',
   Snowshoes: '#5780a8',
+  'Standup Paddleboarding': '#564ed3',
   Swimrun: '#3d9fc9',
   Trail: '#09a98a',
   Walking: '#838383',
@@ -29,8 +30,7 @@ export const sportColors: Record<string, string> = {
 export const sportIdColors = (sports: ISport[]): Record<number, string> => {
   const colors: Record<number, string> = {}
   sports.forEach(
-    (sport) =>
-      (colors[sport.id] = sport.color ? sport.color : sportColors[sport.label])
+    (sport) => (colors[sport.id] = sport.color ?? sportColors[sport.label])
   )
   return colors
 }
