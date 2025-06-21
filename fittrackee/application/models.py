@@ -45,7 +45,9 @@ class AppConfig(BaseModel):
 
     @property
     def is_registration_enabled(self) -> bool:
-        result = db.session.execute(text("SELECT COUNT(*) FROM users;"))
+        result = db.session.execute(
+            text("SELECT COUNT(*) FROM users WHERE users.is_remote IS FALSE;")
+        )
         nb_users = result.one()[0]
         return self.max_users == 0 or nb_users < self.max_users
 
@@ -58,6 +60,7 @@ class AppConfig(BaseModel):
         return {
             "about": self.about,
             "admin_contact": self.admin_contact,
+            "federation_enabled": current_app.config["FEDERATION_ENABLED"],
             "file_limit_import": self.file_limit_import,
             "file_sync_limit_import": self.file_sync_limit_import,
             "is_email_sending_enabled": current_app.config["CAN_SEND_EMAILS"],
