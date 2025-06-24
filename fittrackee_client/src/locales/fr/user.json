@@ -162,7 +162,7 @@
       "REJECTED": "votre appel a été rejeté"
     },
     "SEGMENTS_CREATION_EVENT": {
-      "LABEL": "Types de pause déclenchant la création d'un segment (fichiers .fit) uniuement",
+      "LABEL": "Types de pause déclenchant la création d'un segment (fichiers .fit uniquement)",
       "all": "Tous les évènements de pause",
       "none": "Aucun",
       "only_manual": "Seulement les pauses de type manuel"
