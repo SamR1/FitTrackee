@@ -32,6 +32,7 @@ class TestGetChartData:
     def test_it_returns_chart_data_for_gpx(
         self, app: "Flask", gpx_file: str, sport_1_cycling: "Sport"
     ) -> None:
+        # one one segment in gpx file
         workout_ave_cadence = None
         with patch(
             "builtins.open", new_callable=mock_open, read_data=gpx_file
@@ -53,6 +54,24 @@ class TestGetChartData:
             "speed": 3.21,
             "time": datetime(2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc),
         }
+        assert chart_data[8] == {
+            "distance": 0.11,
+            "duration": 90,
+            "elevation": 987.0,
+            "latitude": 44.67995,
+            "longitude": 6.07358,
+            "speed": 5.09,
+            "time": datetime(2018, 3, 13, 12, 46, 15, tzinfo=timezone.utc),
+        }
+        assert chart_data[9] == {
+            "distance": 0.13,
+            "duration": 105,
+            "elevation": 987.0,
+            "latitude": 44.67977,
+            "longitude": 6.07364,
+            "speed": 4.65,
+            "time": datetime(2018, 3, 13, 12, 46, 30, tzinfo=timezone.utc),
+        }
         assert chart_data[-1] == {
             "distance": 0.32,
             "duration": 250.0,
@@ -63,20 +82,80 @@ class TestGetChartData:
             "time": datetime(2018, 3, 13, 12, 48, 55, tzinfo=timezone.utc),
         }
 
-    def test_it_returns_chart_data_for_segment(
+    def test_it_returns_chart_data_when_gpx_has_several_segments(
         self,
         app: "Flask",
-        gpx_file_with_3_segments: str,
+        gpx_file_with_segments: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        # 2 segments in gpx file
+        workout_ave_cadence = None
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=gpx_file_with_segments,
+        ):
+            chart_data = get_chart_data(
+                gpx_file_with_segments,
+                sport_1_cycling.label,
+                workout_ave_cadence,
+                can_see_heart_rate=True,
+            )
+
+        assert chart_data is not None
+        # first segment
+        assert chart_data[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "speed": 3.21,
+            "time": datetime(2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc),
+        }
+        assert chart_data[8] == {
+            "distance": 0.11,
+            "duration": 90,
+            "elevation": 987.0,
+            "latitude": 44.67995,
+            "longitude": 6.07358,
+            "speed": 5.25,
+            "time": datetime(2018, 3, 13, 12, 46, 15, tzinfo=timezone.utc),
+        }
+        # second segment
+        assert chart_data[9] == {
+            "distance": 0.13,
+            "duration": 105,
+            "elevation": 987.0,
+            "latitude": 44.67977,
+            "longitude": 6.07364,
+            "speed": 4.36,
+            "time": datetime(2018, 3, 13, 12, 46, 30, tzinfo=timezone.utc),
+        }
+        assert chart_data[-1] == {
+            "distance": 0.32,
+            "duration": 250.0,
+            "elevation": 975.0,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "speed": 4.33,
+            "time": datetime(2018, 3, 13, 12, 48, 55, tzinfo=timezone.utc),
+        }
+
+    def test_it_returns_chart_data_for_first_segment(
+        self,
+        app: "Flask",
+        gpx_file_with_segments: str,
         sport_1_cycling: "Sport",
     ) -> None:
         workout_ave_cadence = None
         with patch(
             "builtins.open",
             new_callable=mock_open,
-            read_data=gpx_file_with_3_segments,
+            read_data=gpx_file_with_segments,
         ):
             chart_data = get_chart_data(
-                gpx_file_with_3_segments,
+                gpx_file_with_segments,
                 sport_1_cycling.label,
                 workout_ave_cadence,
                 can_see_heart_rate=True,
@@ -91,16 +170,74 @@ class TestGetChartData:
             "latitude": 44.68095,
             "longitude": 6.07367,
             "speed": 3.21,
-            "time": datetime(2018, 3, 13, 12, 44, 50, tzinfo=timezone.utc),
+            "time": datetime(2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc),
         }
-        assert chart_data[-1] == {
+        assert chart_data[2] == {
             "distance": 0.02,
-            "duration": 10.0,
+            "duration": 15,
             "elevation": 994.0,
             "latitude": 44.6808,
             "longitude": 6.07364,
-            "speed": 9.43,
-            "time": datetime(2018, 3, 13, 12, 45, 0, tzinfo=timezone.utc),
+            "speed": 4.36,
+            "time": datetime(2018, 3, 13, 12, 45, tzinfo=timezone.utc),
+        }
+        assert chart_data[-1] == {
+            "distance": 0.11,
+            "duration": 90,
+            "elevation": 987.0,
+            "latitude": 44.67995,
+            "longitude": 6.07358,
+            "speed": 5.25,
+            "time": datetime(2018, 3, 13, 12, 46, 15, tzinfo=timezone.utc),
+        }
+
+    def test_it_returns_chart_data_for_second_segment(
+        self,
+        app: "Flask",
+        gpx_file_with_segments: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        workout_ave_cadence = None
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=gpx_file_with_segments,
+        ):
+            chart_data = get_chart_data(
+                gpx_file_with_segments,
+                sport_1_cycling.label,
+                workout_ave_cadence,
+                can_see_heart_rate=True,
+                segment_id=2,
+            )
+
+        assert chart_data is not None
+        assert chart_data[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 987.0,
+            "latitude": 44.67977,
+            "longitude": 6.07364,
+            "speed": 4.36,
+            "time": datetime(2018, 3, 13, 12, 46, 30, tzinfo=timezone.utc),
+        }
+        assert chart_data[2] == {
+            "distance": 0.01,
+            "duration": 10,
+            "elevation": 987.0,
+            "latitude": 44.67966,
+            "longitude": 6.07368,
+            "speed": 4.54,
+            "time": datetime(2018, 3, 13, 12, 46, 40, tzinfo=timezone.utc),
+        }
+        assert chart_data[-1] == {
+            "distance": 0.19,
+            "duration": 145,
+            "elevation": 975.0,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "speed": 4.33,
+            "time": datetime(2018, 3, 13, 12, 48, 55, tzinfo=timezone.utc),
         }
 
     def test_it_returns_chart_data_when_gpx_file_contains_microseconds(
@@ -134,9 +271,20 @@ class TestGetChartData:
                 2018, 3, 13, 13, 44, 45, 787000, tzinfo=timezone.utc
             ),
         }
+        assert chart_data[2] == {
+            "distance": 0.02,
+            "duration": 15,
+            "elevation": 994.0,
+            "latitude": 44.6808,
+            "longitude": 6.07364,
+            "speed": 4.37,
+            "time": datetime(
+                2018, 3, 13, 13, 45, 00, 895000, tzinfo=timezone.utc
+            ),
+        }
         assert chart_data[-1] == {
             "distance": 0.32,
-            "duration": 250.0,
+            "duration": 250,
             "elevation": 975.0,
             "latitude": 44.67822,
             "longitude": 6.07442,
@@ -160,10 +308,21 @@ class TestGetChartData:
             "speed": 3.21,
             "time": datetime(2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc),
         }
+        assert chart_data[2] == {
+            "cadence": 51,
+            "distance": 0.02,
+            "duration": 15,
+            "elevation": 994.0,
+            "hr": 88,
+            "latitude": 44.6808,
+            "longitude": 6.07364,
+            "speed": 4.36,
+            "time": datetime(2018, 3, 13, 12, 45, 00, tzinfo=timezone.utc),
+        }
         assert chart_data[-1] == {
             "cadence": 50,
             "distance": 0.32,
-            "duration": 250.0,
+            "duration": 250,
             "elevation": 975.0,
             "hr": 81,
             "latitude": 44.67822,
@@ -244,9 +403,19 @@ class TestGetChartData:
             "speed": 3.21,
             "time": datetime(2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc),
         }
+        assert chart_data[2] == {
+            "distance": 0.02,
+            "duration": 15,
+            "elevation": 994.0,
+            "hr": 88,
+            "latitude": 44.6808,
+            "longitude": 6.07364,
+            "speed": 4.36,
+            "time": datetime(2018, 3, 13, 12, 45, 00, tzinfo=timezone.utc),
+        }
         assert chart_data[-1] == {
             "distance": 0.32,
-            "duration": 250.0,
+            "duration": 250,
             "elevation": 975.0,
             "hr": 81,
             "latitude": 44.67822,
@@ -349,10 +518,21 @@ class TestGetChartData:
             "speed": 3.21,
             "time": datetime(2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc),
         }
+        assert chart_data[2] == {
+            "cadence": 102,
+            "distance": 0.02,
+            "duration": 15,
+            "elevation": 994.0,
+            "hr": 88,
+            "latitude": 44.6808,
+            "longitude": 6.07364,
+            "speed": 4.36,
+            "time": datetime(2018, 3, 13, 12, 45, 00, tzinfo=timezone.utc),
+        }
         assert chart_data[-1] == {
             "cadence": 100,
             "distance": 0.32,
-            "duration": 250.0,
+            "duration": 250,
             "elevation": 975.0,
             "hr": 81,
             "latitude": 44.67822,
@@ -391,9 +571,19 @@ class TestGetChartData:
             "speed": 3.21,
             "time": datetime(2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc),
         }
+        assert chart_data[2] == {
+            "distance": 0.02,
+            "duration": 15,
+            "elevation": 994.0,
+            "hr": 88,
+            "latitude": 44.6808,
+            "longitude": 6.07364,
+            "speed": 4.36,
+            "time": datetime(2018, 3, 13, 12, 45, 00, tzinfo=timezone.utc),
+        }
         assert chart_data[-1] == {
             "distance": 0.32,
-            "duration": 250.0,
+            "duration": 250,
             "elevation": 975.0,
             "hr": 81,
             "latitude": 44.67822,
@@ -432,10 +622,20 @@ class TestGetChartData:
             "speed": 3.21,
             "time": datetime(2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc),
         }
+        assert chart_data[2] == {
+            "cadence": 51,
+            "distance": 0.02,
+            "duration": 15,
+            "elevation": 994.0,
+            "latitude": 44.6808,
+            "longitude": 6.07364,
+            "speed": 4.36,
+            "time": datetime(2018, 3, 13, 12, 45, 00, tzinfo=timezone.utc),
+        }
         assert chart_data[-1] == {
             "cadence": 50,
             "distance": 0.32,
-            "duration": 250.0,
+            "duration": 250,
             "elevation": 975.0,
             "latitude": 44.67822,
             "longitude": 6.07442,
