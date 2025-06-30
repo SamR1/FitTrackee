@@ -7,6 +7,7 @@ import type { IQueuedTask, TQueuedTasksCounts } from '@/types/application.ts'
 import type { IReportAction } from '@/types/reports'
 import type { IUserProfile } from '@/types/user'
 import type { IWorkout } from '@/types/workouts.ts'
+import { getUserName } from '@/utils/user'
 
 export const mutations: MutationTree<IUsersState> & TUsersMutations = {
   [USERS_STORE.MUTATIONS.UPDATE_USER](state: IUsersState, user: IUserProfile) {
@@ -17,7 +18,7 @@ export const mutations: MutationTree<IUsersState> & TUsersMutations = {
     updatedUser: IUserProfile
   ) {
     state.users = state.users.map((user) => {
-      if (user.username === updatedUser.username) {
+      if (getUserName(user) === getUserName(updatedUser)) {
         return updatedUser
       }
       return user
@@ -28,7 +29,7 @@ export const mutations: MutationTree<IUsersState> & TUsersMutations = {
     updatedUser: IUserProfile
   ) {
     state.user_relationships = state.user_relationships.map((user) => {
-      if (user.username === updatedUser.username) {
+      if (getUserName(user) === getUserName(updatedUser)) {
         return updatedUser
       }
       return user

@@ -244,7 +244,14 @@
               :value="level"
               :key="level"
             >
-              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+              {{
+                $t(
+                  `visibility_levels.LEVELS.${getVisibilityLevelForLabel(
+                    level,
+                    appConfig.federation_enabled
+                  )}`
+                )
+              }}
             </option>
           </select>
         </label>
@@ -277,7 +284,14 @@
               :value="level"
               :key="level"
             >
-              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+              {{
+                $t(
+                  `visibility_levels.LEVELS.${getVisibilityLevelForLabel(
+                    level,
+                    appConfig.federation_enabled
+                  )}`
+                )
+              }}
             </option>
           </select>
         </label>
@@ -348,6 +362,7 @@
   import {
     getAllVisibilityLevels,
     getVisibilityLevels,
+    getVisibilityLevelForLabel,
     getUpdatedVisibility,
   } from '@/utils/visibility_levels'
 
@@ -359,7 +374,7 @@
 
   const store = useStore()
 
-  const { errorMessages } = useApp()
+  const { appConfig, errorMessages } = useApp()
   const { authUserLoading } = useAuthUser()
 
   const weekStart = [
@@ -476,7 +491,7 @@
       )
   )
   const visibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
-    getAllVisibilityLevels()
+    getAllVisibilityLevels(appConfig.value.federation_enabled)
   )
   const analysisVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(
     () => getVisibilityLevels(userForm.workouts_visibility)
