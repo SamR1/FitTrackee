@@ -14,15 +14,19 @@ def get_or_init_config() -> AppConfig:
     """
     Init application configuration.
     """
-    existing_config = AppConfig.query.one_or_none()
-    if existing_config:
-        return existing_config
-    config = AppConfig()
-    config.max_users = 0  # no limitation
-    config.max_single_file_size = MAX_FILE_SIZE
-    config.max_zip_file_size = MAX_FILE_SIZE * 10
-    db.session.add(config)
-    db.session.commit()
+    with db.session.begin():
+        db.session.connection(
+            execution_options={"isolation_level": "SERIALIZABLE"}
+        )
+        existing_config = AppConfig.query.one_or_none()
+        if existing_config:
+            return existing_config
+        config = AppConfig()
+        config.max_users = 0  # no limitation
+        config.max_single_file_size = MAX_FILE_SIZE
+        config.max_zip_file_size = MAX_FILE_SIZE * 10
+        db.session.add(config)
+        db.session.commit()
     return config
 
 
