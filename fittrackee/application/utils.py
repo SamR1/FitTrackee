@@ -1,3 +1,4 @@
+import time
 from typing import Dict, List
 
 from flask import Flask
@@ -40,6 +41,7 @@ def get_or_init_config() -> AppConfig:
             except OperationalError:
                 db.session.rollback()
                 retries += 1
+                time.sleep(0.1)
     raise AppConfigException()
 
 
