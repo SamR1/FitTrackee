@@ -12,7 +12,7 @@ from .models import Comment
 if TYPE_CHECKING:
     from fittrackee.users.models import User
 
-MENTION_REGEX = r"(@(<span\s*.*>)?([\w_\-\.]+))(<\/span>)?"
+MENTION_REGEX = r"(?<!\/)(@(<span\s*.*>)?([\w_\-\.]+))(<\/span>)?"
 LINK_TEMPLATE = (
     '<a href="{url}" target="_blank" rel="noopener noreferrer">'
     "@<span>{username}</span></a>"
