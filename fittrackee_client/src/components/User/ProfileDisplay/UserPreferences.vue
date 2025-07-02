@@ -78,7 +78,14 @@
     <dl>
       <dt>{{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}:</dt>
       <dd>
-        {{ $t(`visibility_levels.LEVELS.${user.workouts_visibility}`) }}
+        {{
+          $t(
+            `visibility_levels.LEVELS.${getVisibilityLevelForLabel(
+              user.workouts_visibility,
+              appConfig.federation_enabled
+            )}`
+          )
+        }}
       </dd>
       <dt>{{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}:</dt>
       <dd>
@@ -86,7 +93,14 @@
       </dd>
       <dt>{{ $t('visibility_levels.MAP_VISIBILITY') }}:</dt>
       <dd>
-        {{ $t(`visibility_levels.LEVELS.${user.map_visibility}`) }}
+        {{
+          $t(
+            `visibility_levels.LEVELS.${getVisibilityLevelForLabel(
+              user.map_visibility,
+              appConfig.federation_enabled
+            )}`
+          )
+        }}
       </dd>
       <dt>{{ $t('visibility_levels.HR_VISIBILITY') }}:</dt>
       <dd>
@@ -114,9 +128,11 @@
   import { computed, toRefs } from 'vue'
   import type { ComputedRef } from 'vue'
 
+  import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser'
   import type { IAuthUserProfile } from '@/types/user'
   import { languageLabels } from '@/utils/locales'
+  import { getVisibilityLevelForLabel } from '@/utils/visibility_levels'
 
   interface Props {
     user: IAuthUserProfile
@@ -124,6 +140,7 @@
   const props = defineProps<Props>()
   const { user } = toRefs(props)
 
+  const { appConfig } = useApp()
   const { dateFormat, timezone } = useAuthUser()
 
   const userLanguage: ComputedRef<string> = computed(() =>
