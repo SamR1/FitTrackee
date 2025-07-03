@@ -1,4 +1,25 @@
 {
+  "ACCEPTED_FOLLOW_REQUEST": "aceptó su solicitud de seguimiento",
   "ALL": "Todo",
-  "MARK_ALL_AS_READ": "Marcar todo como leído"
+  "APPEALED_SUSPENSION": "ha recurrido la suspensión",
+  "APPEALED_USER_WARNING": "recurrió la advertencia",
+  "COMMENTED_YOUR_WORKOUT": "comentó tu entrenamiento",
+  "LIKED_YOUR_COMMENT": "le ha gustado tu comentario",
+  "LIKED_YOUR_WORKOUT": "le ha gustado tu entrenamiento",
+  "MARK_ALL_AS_READ": "Marcar todo como leído",
+  "MARK_AS_READ": "marcar como leido",
+  "MARK_AS_UNREAD": "marcar como no leído",
+  "MENTIONED_YOU": "te ha mencionado",
+  "NOTIFICATIONS": "notificación | notificaciones",
+  "NO_NOTIFICATIONS": "No hay notificaciones.",
+  "REPLIED_YOUR_COMMENT": "respondido a tu comentario",
+  "REPORTED_USER_COMMENT": "informó de este comentario:",
+  "REPORTED_USER_USER": "informó de:",
+  "REPORTED_USER_WORKOUT": "informó de este entrenamiento:",
+  "SEND_FOLLOW_REQUEST_TO_YOU": "enviarle una solicitud de seguimiento",
+  "SIGN_UP": "inscrito",
+  "STATUS": "Estado",
+  "TYPES": {
+    "LABEL": "Tipo"
+  }
 }
