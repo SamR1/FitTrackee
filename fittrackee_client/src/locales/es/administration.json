@@ -3,7 +3,7 @@
     "DESCRIPTION": "Cualquier tipo de información adicional que pueda ser útil para tus usuarios. Puedes usar Markdown.",
     "TEXT": "Información detallada sobre la instancia"
   },
-  "ACTION": "Acción",
+  "ACTION": "Acción | Acciones",
   "ACTIVATE_USER_ACCOUNT": "Activar cuenta",
   "ACTIVE": "Activa",
   "ADMIN": "Admin",
@@ -12,7 +12,9 @@
   "APPLICATION": "Aplicación",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Contacto por email con la administración",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "La carga asíncrona de archivos zip está desactivada.",
     "MAX_FILES_IN_ZIP_LABEL": "Núm. máximo de ficheros en el zip",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Ficheros máx. para procesamiento síncrono",
     "MAX_USERS_HELP": "Si 0, no hay límite para los registros.",
     "MAX_USERS_LABEL": "Núm. máximo de usuarios activos",
     "NO_CONTACT_EMAIL": "sin email de contacto",
