@@ -444,6 +444,7 @@ GARMIN_DEVICES = {
     4118: "Venu SQ",
     4119: "Venu SQ Music",
     4120: "Forerunner 55/158 / ForeAthlete 55",
+    4169: "Edge Explore 2",
     4257: "Forerunner 265",
     4258: "Forerunner 265S",
     4315: "Forerunner 965",
