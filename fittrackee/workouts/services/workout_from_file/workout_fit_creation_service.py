@@ -76,7 +76,8 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                     ):
                         continue
                     has_stop = True
-                    gpx_track.segments.append(gpx_segment)
+                    if gpx_segment.points:
+                        gpx_track.segments.append(gpx_segment)
                     gpx_segment = gpxpy.gpx.GPXTrackSegment()
                     has_stop = False
                     continue
@@ -136,8 +137,13 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                 "error", "error when parsing fit file"
             ) from e
 
-        if not has_stop:
+        if not has_stop and gpx_segment.points:
             gpx_track.segments.append(gpx_segment)
+
+        if not gpx_track.segments:
+            raise WorkoutFileException(
+                "error", "no valid segments with GPS found in fit file"
+            ) from None
 
         gpx = gpxpy.gpx.GPX()
         gpx.creator = creator
