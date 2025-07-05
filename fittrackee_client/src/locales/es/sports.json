@@ -1,4 +1,7 @@
 {
+  "Canoeing": {
+    "LABEL": "Piragüismo"
+  },
   "Cycling (Sport)": {
     "LABEL": "Ciclismo (Deportivo)"
   },
@@ -13,6 +16,9 @@
   },
   "Hiking": {
     "LABEL": "Senderismo"
+  },
+  "Kayaking": {
+    "LABEL": "Kayak"
   },
   "Mountain Biking": {
     "LABEL": "Bicicleta por Montaña"
@@ -43,6 +49,9 @@
   },
   "Snowshoes": {
     "LABEL": "Raquetas de nieve"
+  },
+  "Standup Paddleboarding": {
+    "LABEL": "Paddle Surf"
   },
   "Swimrun": {
     "LABEL": "Swimrun"
