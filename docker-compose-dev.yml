@@ -1,6 +1,12 @@
 # docker compose for evaluation and development only
 # not suitable for production
 
+# To change fittrackee container port, create a .env file with APP_PORT
+# to be exported by Makefile
+#
+# Example:
+# export APP_PORT=5001
+
 services:
   fittrackee-db:
     container_name: fittrackee-db
@@ -25,9 +31,11 @@ services:
       context: .
       dockerfile: Dockerfile-dev
     ports:
-      - "5000:5000"
+      - "${APP_PORT:-5000}:5000"
     env_file:
       - .env.docker.dev
+    environment:
+      - APP_PORT=${APP_PORT:-5000}
     depends_on:
       fittrackee-db:
         condition: service_healthy
@@ -45,7 +53,7 @@ services:
     container_name: fittrackee_client
     environment:
       - NODE_ENV=development
-      - VITE_APP_API_URL=http://localhost:5000
+      - VITE_APP_API_URL=http://localhost:${APP_PORT:-5000}
     build:
       context: ./fittrackee_client
     volumes:
