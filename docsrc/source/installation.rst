@@ -1055,6 +1055,16 @@ Development
 
 - Open http://localhost:5000 and register.
 
+.. note::
+
+  | To change ``fittrackee`` container port when running containers with Makefile commands, create a ``.env`` file with `APP_PORT <installation.html#envvar-APP_PORT>`__.
+  | For example:
+
+  .. code-block::
+
+    export APP_PORT=5001
+
+
 Open http://localhost:8025 to access `MailHog interface <https://github.com/mailhog/MailHog>`_ (email testing tool)
 
 - To set owner role to the newly created account, use the following command line:
