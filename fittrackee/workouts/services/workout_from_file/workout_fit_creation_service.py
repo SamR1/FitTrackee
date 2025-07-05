@@ -78,6 +78,7 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                     has_stop = True
                     gpx_track.segments.append(gpx_segment)
                     gpx_segment = gpxpy.gpx.GPXTrackSegment()
+                    has_stop = False
                     continue
 
                 if frame.name != "record":
