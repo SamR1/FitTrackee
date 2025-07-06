@@ -61,7 +61,10 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                 creator = frame.get_value("manufacturer")
                 if frame.has_field("product") and frame.get_value("product"):
                     product = frame.get_value("product")
-                    if product in GARMIN_DEVICES.keys():
+                    if (
+                        creator.lower() == "garmin"
+                        and product in GARMIN_DEVICES.keys()
+                    ):
                         product = GARMIN_DEVICES[product]
                     creator = f"{creator} {product}"
 
