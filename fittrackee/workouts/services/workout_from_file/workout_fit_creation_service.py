@@ -45,7 +45,6 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
 
         gpx_track = gpxpy.gpx.GPXTrack()
         gpx_segment = gpxpy.gpx.GPXTrackSegment()
-        has_stop = False
         creator: Optional[str] = None
         try:
             data_frames = filter(
@@ -75,7 +74,8 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                 ),
                 key=lambda f: (
                     f.get_value("timestamp")
-                    if f.has_field("timestamp") else -1
+                    if f.has_field("timestamp")
+                    else -1
                 ),
             )
 
@@ -92,11 +92,9 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                         and frame.get_value("timer_trigger") != "manual"
                     ):
                         continue
-                    has_stop = True
                     if gpx_segment.points:
                         gpx_track.segments.append(gpx_segment)
                     gpx_segment = gpxpy.gpx.GPXTrackSegment()
-                    has_stop = False
                     continue
 
                 if frame.name != "record":
@@ -154,7 +152,7 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                 "error", "error when parsing fit file"
             ) from e
 
-        if not has_stop and gpx_segment.points:
+        if gpx_segment.points:
             gpx_track.segments.append(gpx_segment)
 
         if not gpx_track.segments:
