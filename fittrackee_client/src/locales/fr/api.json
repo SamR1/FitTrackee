@@ -42,6 +42,7 @@
     "no selected file": "Pas de fichier sélectionné.",
     "no tracks in gpx file": "Pas de trace (<trk>) dans le fichier .gpx.",
     "no tracks in kml file": "Pas de trace (<Track>) dans le fichier .kml.",
+    "no valid segments with GPS found in fit file": "aucun segment valide avec des données GPS n'a été trouvé dans le fichier .fit.",
     "one or more values, entered or calculated, exceed the limits": "Une ou plusieurs valeurs, saisies ou calculées, dépassent les limites.",
     "ongoing request exists": "Une demande d'exportation de données existe déjà.",
     "ongoing upload task exists": "Un chargement de fichier est déjà en cours.",
