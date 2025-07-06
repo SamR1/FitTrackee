@@ -45,24 +45,41 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
 
         gpx_track = gpxpy.gpx.GPXTrack()
         gpx_segment = gpxpy.gpx.GPXTrackSegment()
-        has_stop = False
         creator: Optional[str] = None
         try:
-            for frame in fit_file:
-                if frame.frame_type != fitdecode.FIT_FRAME_DATA:
-                    continue
-                if frame.name == "file_id":
-                    if not frame.has_field("manufacturer"):
-                        continue
-                    creator = frame.get_value("manufacturer")
-                    if frame.has_field("product") and frame.get_value(
-                        "product"
-                    ):
-                        product = frame.get_value("product")
-                        if product in GARMIN_DEVICES.keys():
-                            product = GARMIN_DEVICES[product]
-                        creator = f"{creator} {product}"
-                    continue
+            data_frames = filter(
+                lambda frame: frame.frame_type == fitdecode.FIT_FRAME_DATA,
+                fit_file,
+            )
+
+            # Handle device metadata from file_id
+            file_id_frames = filter(
+                lambda frame: frame.name == "file_id", data_frames
+            )
+            frame = next(file_id_frames, None)
+            if frame and frame.has_field("manufacturer"):
+                creator = frame.get_value("manufacturer")
+                if frame.has_field("product") and frame.get_value("product"):
+                    product = frame.get_value("product")
+                    if product in GARMIN_DEVICES.keys():
+                        product = GARMIN_DEVICES[product]
+                    creator = f"{creator} {product}"
+
+            # Handle the actual data frames. We sort them by timestamp
+            # to handle devices that list events and records separately.
+            event_and_record_frames = sorted(
+                filter(
+                    lambda frame: frame.name in ["event", "record"],
+                    data_frames,
+                ),
+                key=lambda f: (
+                    f.get_value("timestamp")
+                    if f.has_field("timestamp")
+                    else -1
+                ),
+            )
+
+            for frame in event_and_record_frames:
                 # create a new segment after 'stop_all' event
                 if (
                     segments_creation_event in ["only_manual", "all"]
@@ -75,8 +92,8 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                         and frame.get_value("timer_trigger") != "manual"
                     ):
                         continue
-                    has_stop = True
-                    gpx_track.segments.append(gpx_segment)
+                    if gpx_segment.points:
+                        gpx_track.segments.append(gpx_segment)
                     gpx_segment = gpxpy.gpx.GPXTrackSegment()
                     continue
 
@@ -135,8 +152,13 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                 "error", "error when parsing fit file"
             ) from e
 
-        if not has_stop:
+        if gpx_segment.points:
             gpx_track.segments.append(gpx_segment)
+
+        if not gpx_track.segments:
+            raise WorkoutFileException(
+                "error", "no valid segments with GPS found in fit file"
+            ) from None
 
         gpx = gpxpy.gpx.GPX()
         gpx.creator = creator

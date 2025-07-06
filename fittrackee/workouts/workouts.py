@@ -1413,6 +1413,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``no tracks in kml file``
         - ``<time> is missing in gpx file``
         - ``unsupported kml file``
+        - ``no valid segments with GPS found in fit file``
         - ``equipment_ids must be an array of strings``
         - ``only one equipment can be added``
         - ``equipment with id <equipment_id> does not exist``
