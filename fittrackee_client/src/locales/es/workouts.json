@@ -20,7 +20,10 @@
     "DELETION_CONFIRMATION": "¿Seguro que quieres borrar este comentario?",
     "EDIT": "editar comentario",
     "LABEL": "comentario | comentarios",
-    "LIKE_COMMENT": "Me gusta el comentario"
+    "LIKE_COMMENT": "Me gusta el comentario",
+    "NO_COMMENTS": "Sin comentarios",
+    "REPORT": "reportar comentario",
+    "SUSPENDED_COMMENT_BY_ADMIN": "El comentario ha sido suspendido por el administrador"
   },
   "DATE": "fecha",
   "DELETE_WORKOUT": "Eliminar el entrenamiento",
