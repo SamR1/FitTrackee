@@ -23,7 +23,7 @@
       "users:read_DESCRIPTION": "concede permiso de lectura a los puntos de acceso <code>users</code>.",
       "users:write_DESCRIPTION": "concede permiso de escritura a los puntos de acceso <code>users</code>.",
       "workouts:read_DESCRIPTION": "concede acceso de lectura a los endpoints de entrenamientos y comentarios.",
-      "workouts:write_DESCRIPTION": "concede permiso de escritura a los puntos de acceso <code>workouts</code>."
+      "workouts:write_DESCRIPTION": "concede permiso de escritura a los endpoints de entrenamientos y comentarios."
     },
     "URL": "URL de la aplicación"
   },
