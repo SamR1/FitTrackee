@@ -31,6 +31,7 @@
     "mention": "menciones",
     "report": "reportes",
     "suspension_appeal": "apelaciones de suspensión",
-    "user_data_export": "exportar datos de usurio"
+    "user_data_export": "exportar datos de usuario",
+    "user_warning": "advertencias"
   }
 }
