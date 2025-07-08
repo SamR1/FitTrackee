@@ -23,8 +23,9 @@
     "LIKE_COMMENT": "Me gusta el comentario",
     "NO_COMMENTS": "Sin comentarios",
     "REPORT": "reportar comentario",
-    "SUSPENDED_COMMENT_BY_ADMIN": "El comentario ha sido suspendido por el administrador"
+    "SUSPENDED_COMMENT_BY_ADMIN": "El comentario ha sido suspendido por el administrador."
   },
+  "CREATED_WORKOUTS": "Entrenamiento creado | Entrenamientos creados",
   "DATE": "fecha",
   "DELETE_WORKOUT": "Eliminar el entrenamiento",
   "DESCENT": "descenso",
