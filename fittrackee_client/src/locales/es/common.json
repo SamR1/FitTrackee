@@ -32,6 +32,7 @@
   "SCROLL_DOWN": "Desplácese hacia abajo",
   "SCROLL_UP": "Desplácese hacia arriba",
   "SECONDS": "segundo|segundos",
+  "SEE_REPORT": "Ver reporte {0}.",
   "SELECTS": {
     "ORDER": {
       "ASC": "ascenso",
