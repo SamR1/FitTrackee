@@ -20,6 +20,18 @@
   "SIGN_UP": "inscrito",
   "STATUS": "Estado",
   "TYPES": {
-    "LABEL": "Tipo"
+    "ALL": "todo",
+    "LABEL": "Tipo",
+    "comment_like": "me gusta en los comentarios",
+    "comment_suspension": "suspensiones de comentarios",
+    "comment_unsuspension": "volver a activar comentarios",
+    "follow": "seguir",
+    "follow_request": "solicitudes de seguimiento",
+    "follow_request_approved": "solicitudes de seguimiento aceptadas",
+    "mention": "menciones",
+    "report": "reportes",
+    "suspension_appeal": "apelaciones de suspensión",
+    "user_data_export": "exportar datos de usuario",
+    "user_warning": "advertencias"
   }
 }

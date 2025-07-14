@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2024-11-01 19:45+0100\n"
-"PO-Revision-Date: 2025-07-04 19:01+0000\n"
+"PO-Revision-Date: 2025-07-09 21:02+0000\n"
 "Last-Translator: Juanro49 <juanrobertogarciasanchez@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/fittrackee/"
 "fittrackee-api-emails/es/>\n"
@@ -170,13 +170,13 @@ msgstr "Recurso desestimado"
 #: fittrackee/emails/templates/comment_suspension/body.html:2
 #: fittrackee/emails/templates/comment_suspension/subject.txt:1
 msgid "Your comment has been suspended"
-msgstr ""
+msgstr "Su comentario ha sido suspendido"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:3
 #: fittrackee/emails/templates/comment_suspension/body.html:4
 #: fittrackee/emails/templates/comment_suspension/body.txt:1
 msgid "Your comment has been suspended, it is no longer visible"
-msgstr ""
+msgstr "Su comentario ha sido suspendido, no será visible"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:5
 #: fittrackee/emails/templates/comment_suspension/body.txt:3
@@ -193,7 +193,7 @@ msgstr ""
 #: fittrackee/emails/templates/workout_unsuspension/body.html:5
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:3
 msgid "Reason:"
-msgstr ""
+msgstr "Razón:"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:20
 #: fittrackee/emails/templates/comment_suspension/body.txt:7
@@ -204,25 +204,25 @@ msgstr ""
 #: fittrackee/emails/templates/workout_suspension/body.html:23
 #: fittrackee/emails/templates/workout_suspension/body.txt:7
 msgid "If you think this is an error, you can appeal:"
-msgstr ""
+msgstr "si cree que se trata de un error, puede recurrir:"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:27
 #: fittrackee/emails/templates/user_suspension/body.html:14
 #: fittrackee/emails/templates/user_warning/body.html:48
 #: fittrackee/emails/templates/workout_suspension/body.html:30
 msgid "Appeal"
-msgstr ""
+msgstr "Apelar"
 
 #: fittrackee/emails/templates/comment_unsuspension/body.html:2
 #: fittrackee/emails/templates/comment_unsuspension/subject.txt:1
 msgid "The suspension on your comment has been lifted"
-msgstr ""
+msgstr "La suspensión de su comentario ha sido levantada"
 
 #: fittrackee/emails/templates/comment_unsuspension/body.html:3
 #: fittrackee/emails/templates/comment_unsuspension/body.html:4
 #: fittrackee/emails/templates/comment_unsuspension/body.txt:1
 msgid "The suspension on your comment has been lifted, it is visible again"
-msgstr ""
+msgstr "La suspensión de su comentario ha sido levantada, es visible de nuevo"
 
 #: fittrackee/emails/templates/data_export_ready/body.html:2
 #: fittrackee/emails/templates/data_export_ready/subject.txt:1

@@ -24,6 +24,25 @@
     "TITLE": "Configuración de la aplicación",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Tamaño máx. del fichero zip (en Mb)"
   },
+  "APP_MODERATION": {
+    "ACTIONS": {
+      "ADD_COMMENT": "Añadir comentario",
+      "MARK_AS_RESOLVED": "Marcar como resuelto",
+      "MARK_AS_UNRESOLVED": "Marcar como no resuelto",
+      "SEND_WARNING_EMAIL": "Enviar advertencia",
+      "SUSPEND_ACCOUNT": "Suspender la cuenta de usuario",
+      "SUSPEND_CONTENT": "Suspender contenido",
+      "UNSUSPEND_ACCOUNT": "Reactivar cuenta de usuario",
+      "UNSUSPEND_CONTENT": "Reactivar contenido"
+    },
+    "APPEAL": {
+      "APPROVED": "Este recurso ha sido aprobado {0}.",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "Esta apelación fue aprobada levantando la suspensión.",
+      "HIDE": "Ocultar apelación",
+      "REASON_IS": "La razón es:",
+      "REJECTED": "Esta apelación ha sido rechazada {0}."
+    }
+  },
   "BACK_TO_ADMIN": "Volver a admin",
   "CONFIRM_USER_ACCOUNT_DELETION": "¿Seguro que quieres eliminar la cuenta {0}? Se borrarán todos los datos y no será reversible.",
   "CONFIRM_USER_PASSWORD_RESET": "¿Seguro que quieres restablecer la contraseña de {0}?",

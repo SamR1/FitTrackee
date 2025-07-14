@@ -20,10 +20,16 @@
   "LOGIN": "Acceder",
   "NO": "No",
   "READ_MORE": "Leer más",
+  "REFRESH": "Refrescar",
   "REFRESH_TOTALS": "Actualizar totales",
   "REGISTER": "Crear cuenta",
+  "REJECT": "Rechazar",
   "REQUEST_DATA_EXPORT": "Solicitar exportación de datos",
   "RESET": "Restablecer",
+  "SEARCH": "Buscar",
+  "SEE_DETAIL": "Ver detalle",
   "SUBMIT": "Enviar",
+  "UNBLOCK": "Desbloquear",
+  "UNFOLLOW": "Dejar de seguir",
   "YES": "Si"
 }

@@ -21,12 +21,18 @@
   "INACTIVE": "inactivo",
   "LABEL": "etiqueta",
   "LAST_UPDATE": "Última actualización",
+  "LAST_UPDATED_ON": "Última actualización",
   "MINUTES": "minuto|minutos",
   "NEXT": "siguiente",
   "NO_DESCRIPTION": "Sin descripción",
   "NO_NOTES": "Sin notas",
   "PREVIOUS": "anterior",
+  "REPORT_PLACEHOLDER": "especifique el motivo del reporte",
+  "REPORT_SUBMITTED": "Reporte enviado.",
+  "SCROLL_DOWN": "Desplácese hacia abajo",
+  "SCROLL_UP": "Desplácese hacia arriba",
   "SECONDS": "segundo|segundos",
+  "SEE_REPORT": "Ver reporte {0}.",
   "SELECTS": {
     "ORDER": {
       "ASC": "ascenso",
