@@ -50,6 +50,7 @@
               :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png`"
               :attribution="appConfig.map_attribution"
               :bounds="bounds"
+              :maxZoom="19"
             />
             <LGeoJson :geojson="geoJson.jsonData" />
             <LMarker
