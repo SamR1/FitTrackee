@@ -152,3 +152,7 @@ export function getCadenceUnit(sportLabel: string | undefined) {
       return ''
   }
 }
+
+export function isSportWithHeatmap(sportLabel: string | undefined) {
+  return sportLabel === 'Tennis (Outdoor)'
+}

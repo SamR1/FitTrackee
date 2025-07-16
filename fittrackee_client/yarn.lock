@@ -2437,6 +2437,10 @@ he@^1.2.0:
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
 
+heatmap.js@*, "heatmap.js@https://github.com/SamR1/heatmap.js.git":
+  version "2.0.5"
+  resolved "https://github.com/SamR1/heatmap.js.git#1452fc74fb3442f5f74b43394fddd06057fc387b"
+
 html-encoding-sniffer@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/html-encoding-sniffer/-/html-encoding-sniffer-4.0.0.tgz#696df529a7cfd82446369dc5193e590a3735b448"
@@ -2864,7 +2868,15 @@ keyv@^4.5.3:
   dependencies:
     json-buffer "3.0.1"
 
-leaflet@^1.9.4:
+leaflet-heatmap@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/leaflet-heatmap/-/leaflet-heatmap-1.0.0.tgz#83cc04249d39ed91526aeaa7d7669bdaa86d6b1f"
+  integrity sha512-WP/emZYwjWaEnWMcE2dftuJvtjp53zmJcHtVTHUqPN7AQEowHxDTLH5j1BJjE4uL1K5dJclBLX4oLpnOGS/qTw==
+  dependencies:
+    heatmap.js "*"
+    leaflet "*"
+
+leaflet@*, leaflet@^1.9.4:
   version "1.9.4"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.9.4.tgz#23fae724e282fa25745aff82ca4d394748db7d8d"
   integrity sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==

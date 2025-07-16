@@ -195,7 +195,7 @@
         },
       },
       yLeft: {
-        beginAtZero: beginElevationAtZero.value,
+        beginAtZero: false,
         display: true,
         grid: {
           drawOnChartArea: false,
@@ -230,7 +230,7 @@
         },
       },
       yRight: {
-        beginAtZero: beginElevationAtZero.value,
+        beginAtZero: hasElevation.value && beginElevationAtZero.value,
         grid: {
           drawOnChartArea: false,
           ...lineColors.value,
@@ -324,7 +324,7 @@
       case 'elevation':
         return ` (${fromMUnit})`
       case 'hr':
-        return ` (${t('workouts.UNITS.bpm.UNIT')}})`
+        return ` (${t('workouts.UNITS.bpm.UNIT')})`
       case 'speed':
         return ` (${fromKmUnit}/h)`
       default:

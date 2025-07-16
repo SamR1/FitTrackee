@@ -18,6 +18,7 @@ from fittrackee.responses import (
 from fittrackee.users.models import User
 from fittrackee.users.roles import UserRole
 
+from .constants import SPORTS_WITHOUT_ELEVATION_DATA
 from .models import Sport, Workout
 from .utils.uploads import get_upload_dir_size
 from .utils.workouts import get_average_speed, get_datetime_from_request_args
@@ -25,16 +26,22 @@ from .utils.workouts import get_average_speed, get_datetime_from_request_args
 stats_blueprint = Blueprint("stats", __name__)
 
 
-def get_stats_from_row(row: List, stats_type: str) -> Dict:
+def get_stats_from_row(
+    row: List, stats_type: str, with_elevation_data: bool
+) -> Dict:
     row_stats = {
         "total_workouts": row[2],
         f"{stats_type}_distance": round(float(row[3]), 2),
         f"{stats_type}_duration": int(row[4].total_seconds()),
         f"{stats_type}_ascent": (
-            None if row[5] is None else round(float(row[5]), 2)
+            None
+            if row[5] is None or not with_elevation_data
+            else round(float(row[5]), 2)
         ),
         f"{stats_type}_descent": (
-            None if row[6] is None else round(float(row[6]), 2)
+            None
+            if row[6] is None or not with_elevation_data
+            else round(float(row[6]), 2)
         ),
     }
     if stats_type == "average":
@@ -265,9 +272,11 @@ def get_workouts_by_time(
                 calculation_method(Workout.ascent),
                 calculation_method(Workout.descent),
                 stats_key,
+                Sport.label,
             )
+            .join(Sport, Sport.id == Workout.sport_id)
             .filter(*filters)
-            .group_by(stats_key, Workout.sport_id)
+            .group_by(stats_key, Workout.sport_id, Sport.label)
         )
 
         if current_app.config["stats_workouts_limit"]:
@@ -292,13 +301,16 @@ def get_workouts_by_time(
                     get_datetime_in_utc(date_key + "-1", "%G-%V-%u") - delta
                 ).strftime("%Y-%m-%d")
             sport_key = row[0]
+            with_elevation_data = row[8] not in SPORTS_WITHOUT_ELEVATION_DATA
             if date_key not in statistics:
                 statistics[date_key] = {
-                    sport_key: get_stats_from_row(list(row), stats_type)
+                    sport_key: get_stats_from_row(
+                        list(row), stats_type, with_elevation_data
+                    )
                 }
             elif sport_key not in statistics[date_key]:
                 statistics[date_key][sport_key] = get_stats_from_row(
-                    list(row), stats_type
+                    list(row), stats_type, with_elevation_data
                 )
             else:
                 statistics[date_key][sport_key]["total_workouts"] += row[2]
@@ -316,11 +328,11 @@ def get_workouts_by_time(
                 statistics[date_key][sport_key][f"{stats_type}_duration"] += (
                     int(row[4].total_seconds())
                 )
-                if row[5]:
+                if row[5] and with_elevation_data:
                     statistics[date_key][sport_key][
                         f"{stats_type}_ascent"
                     ] += round(float(row[5]), 2)
-                if row[6]:
+                if row[6] and with_elevation_data:
                     statistics[date_key][sport_key][
                         f"{stats_type}_ascent"
                     ] += round(float(row[6]), 2)
@@ -482,14 +494,24 @@ def get_workouts_by_sport(
 
         params = request.args.copy()
         sport_id = params.get("sport_id")
+        sport_ids_without_elevation_data = []
+        filters = [Workout.user_id == user.id]
+
         if sport_id:
             sport = Sport.query.filter_by(id=sport_id).first()
             if not sport:
                 return NotFoundErrorResponse("sport does not exist")
-
-        filters = [Workout.user_id == user.id]
-        if sport_id:
             filters.append(Workout.sport_id == sport_id)
+            if sport.label in SPORTS_WITHOUT_ELEVATION_DATA:
+                sport_ids_without_elevation_data = [sport.id]
+        else:
+            sports_without_elevation_data = Sport.query.filter(
+                Sport.label.in_(SPORTS_WITHOUT_ELEVATION_DATA)
+            ).all()
+            sport_ids_without_elevation_data = [
+                sport.id for sport in sports_without_elevation_data
+            ]
+
         workouts_query = Workout.query.filter(*filters)
         total_workouts = workouts_query.count()
 
@@ -519,21 +541,32 @@ def get_workouts_by_sport(
 
         statistics = {}
         for row in results:
+            return_elevation_data = (
+                row[0] not in sport_ids_without_elevation_data
+            )
             statistics[row[0]] = {
                 "average_speed": round(float(row[1]), 2),
                 "average_ascent": (
-                    None if row[2] is None else round(float(row[2]), 2)
+                    None
+                    if row[2] is None or not return_elevation_data
+                    else round(float(row[2]), 2)
                 ),
                 "average_descent": (
-                    None if row[3] is None else round(float(row[3]), 2)
+                    None
+                    if row[3] is None or not return_elevation_data
+                    else round(float(row[3]), 2)
                 ),
                 "average_distance": round(float(row[4]), 2),
                 "average_duration": str(row[5]).split(".")[0],
                 "total_ascent": (
-                    None if row[6] is None else round(float(row[6]), 2)
+                    None
+                    if row[6] is None or not return_elevation_data
+                    else round(float(row[6]), 2)
                 ),
                 "total_descent": (
-                    None if row[7] is None else round(float(row[7]), 2)
+                    None
+                    if row[7] is None or not return_elevation_data
+                    else round(float(row[7]), 2)
                 ),
                 "total_distance": round(float(row[8]), 2),
                 "total_duration": str(row[9]).split(".")[0],

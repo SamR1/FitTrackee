@@ -13,6 +13,7 @@ SPORT_EQUIPMENT_TYPES = {
         "Mountaineering",
         "Running",
         "Swimrun",
+        "Tennis (Outdoor)",
         "Trail",
         "Walking",
     ],

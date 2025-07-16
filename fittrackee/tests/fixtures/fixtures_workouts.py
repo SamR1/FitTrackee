@@ -100,6 +100,14 @@ def sport_4_paragliding() -> Sport:
     return sport
 
 
+@pytest.fixture()
+def sport_5_outdoor_tennis() -> Sport:
+    sport = Sport(label="Tennis (Outdoor)")
+    db.session.add(sport)
+    db.session.commit()
+    return sport
+
+
 def update_workout(workout: Workout) -> None:
     distance = workout.distance if workout.distance else 0
     workout.ave_speed = float(distance) / (workout.duration.seconds / 3600)
@@ -183,6 +191,48 @@ def workout_paragliding_user_1(sport_4_paragliding: "Sport") -> Workout:
         duration=timedelta(seconds=6000),
     )
     update_workout(workout)
+    db.session.add(workout)
+    db.session.commit()
+    return workout
+
+
+@pytest.fixture()
+def workout_outdoor_tennis_user_1(sport_5_outdoor_tennis: "Sport") -> Workout:
+    workout = Workout(
+        user_id=1,
+        sport_id=sport_5_outdoor_tennis.id,
+        # workout_date: 'Mon, 02 Apr 2018 00:00:00 GMT'
+        workout_date=datetime(2018, 4, 2, tzinfo=timezone.utc),
+        distance=2.5,
+        duration=timedelta(seconds=3600),
+    )
+    update_workout(workout)
+    db.session.add(workout)
+    db.session.commit()
+    return workout
+
+
+@pytest.fixture()
+def workout_outdoor_tennis_user_1_with_elevation_data(
+    sport_5_outdoor_tennis: "Sport",
+) -> Workout:
+    workout = Workout(
+        user_id=1,
+        sport_id=sport_5_outdoor_tennis.id,
+        # workout_date: 'Mon, 02 Apr 2018 00:00:00 GMT'
+        workout_date=datetime(2018, 4, 2, tzinfo=timezone.utc),
+        distance=2.5,
+        duration=timedelta(seconds=3600),
+    )
+    update_workout(workout)
+    workout.ascent = 2
+    workout.descent = -2
+    workout.max_alt = 260
+    workout.min_alt = 260
+    workout.map = random_string()
+    workout.gpx = random_string()
+    workout.bounds = [1.0, 2.0, 3.0, 4.0]
+    workout.pauses = timedelta(minutes=15)
     db.session.add(workout)
     db.session.commit()
     return workout

@@ -3,7 +3,11 @@ from typing import List, Optional
 
 import gpxpy.gpx
 
-from ..constants import RPM_CADENCE_SPORTS, SPM_CADENCE_SPORTS
+from ..constants import (
+    RPM_CADENCE_SPORTS,
+    SPM_CADENCE_SPORTS,
+    SPORTS_WITHOUT_ELEVATION_DATA,
+)
 from ..exceptions import WorkoutGPXException
 
 
@@ -66,6 +70,7 @@ def get_chart_data(
         workout_ave_cadence
         and sport_label in RPM_CADENCE_SPORTS + SPM_CADENCE_SPORTS
     )
+    return_elevation_data = sport_label not in SPORTS_WITHOUT_ELEVATION_DATA
     cadence_in_spm = sport_label in SPM_CADENCE_SPORTS
 
     track_segments = gpx.tracks[0].segments
@@ -105,7 +110,7 @@ def get_chart_data(
                     tzinfo=timezone(point.time.utcoffset())
                 ),
             }
-            if point.elevation:
+            if point.elevation and return_elevation_data:
                 data["elevation"] = round(point.elevation, 1)
             if point.extensions:
                 extensions = []
