@@ -21,7 +21,8 @@
     "DATA_EXPORT": "Экспорт данных",
     "DOWNLOAD_ARCHIVE": "Скачать архив",
     "GENERATING_LINK": "Генерируется ссылка…",
-    "ONLY_ONE_EXPORT_PER_DAY": "Вы можете запросить архив в течение 24 часов"
+    "ONLY_ONE_EXPORT_PER_DAY": "Вы можете запросить архив в течение 24 часов",
+    "REQUEST_ANOTHER_EXPORT": "пожалуйста, запросите новый экспорт"
   },
   "FILTER_ON_USERNAME": "Фильтровать по имени пользователя",
   "HIDE_PASSWORD": "скрыть пароль",
@@ -71,6 +72,13 @@
   "PROFILE": {
     "ACCOUNT_EDITION": "Версия аккаунта",
     "ARCHIVE_UPLOADS": {
+      "ARCHIVE": "Zip-архив",
+      "CONFIRM_TASK_ABORT": "Вы уверены, что хотите прервать эту задачу загрузки архива?",
+      "CONFIRM_TASK_DELETION": "Вы уверены, что хотите удалить эту задачу загрузки архива?",
+      "CREATED_WORKOUTS": "Созданные тренировки",
+      "ERRORED_FILES": "Ошибочный файл | Ошибочные файлы",
+      "FILES_COUNT": "{count} файлов",
+      "NOT_FOUND": "Архив для загрузки не найден.",
       "PROGRESS": "Прогресс"
     },
     "ASCENT_DATA": "Данные, связанные с восхождениями (записи, всего)",
@@ -125,6 +133,7 @@
     },
     "NOTIFICATIONS_EDITION": "Редактирование настроек уведомлений",
     "NOTIFICATION_PREFERENCES": "Настройки уведомлений",
+    "NO_ARCHIVE_UPLOADS": "Нет загрузок архивов",
     "NO_SANCTIONS": "Без санкций",
     "PICTURE": "Изображение",
     "PICTURE_EDITION": "Редактирование изображения",
@@ -152,6 +161,12 @@
       "IN_PROGRESS": "ваша апелляция находится на рассмотрении",
       "REJECTED": "ваша апелляция была отклонена"
     },
+    "SEGMENTS_CREATION_EVENT": {
+      "LABEL": "Приостановить события, вызывающие создание сегментов (только .fit файлы)",
+      "all": "Все события паузы",
+      "none": "Нет",
+      "only_manual": "Только ручная пауза"
+    },
     "SPORT": {
       "ACTION": "действие",
       "COLOR": "цвет",
@@ -172,6 +187,7 @@
     "TABS": {
       "ACCOUNT": "аккаунт",
       "APPS": "приложения",
+      "ARCHIVE-UPLOADS": "загрузка архивов",
       "BLOCKED-USERS": "заблокированные пользователи",
       "EQUIPMENTS": "снаряжение",
       "FOLLOW-REQUESTS": "запросы на подписку",
@@ -235,7 +251,11 @@
   "TASKS": {
     "STATUS": {
       "LABEL": "Статус",
-      "in_progress": "в процессе"
+      "aborted": "прервано",
+      "errored": "с ошибкой",
+      "in_progress": "в процессе",
+      "queued": "в очереди",
+      "successful": "успешно"
     }
   },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Эта учетная запись пользователя неактивна.",
