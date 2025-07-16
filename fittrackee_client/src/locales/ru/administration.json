@@ -12,7 +12,9 @@
   "APPLICATION": "Приложение",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Электронная почта администратора для связи",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "Асинхронная загрузка zip-архива отключена.",
     "MAX_FILES_IN_ZIP_LABEL": "Максимальное количество файлов в ZIP-архиве",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Макс. количество файлов для синхронной обработки",
     "MAX_USERS_HELP": "Если 0, нет ограничений на регистрацию.",
     "MAX_USERS_LABEL": "Макс. количество активных пользователей",
     "NO_CONTACT_EMAIL": "Email для связи не указан",
@@ -86,6 +88,7 @@
     },
     "TITLE": "Модерация",
     "UNRESOLVED_REPORTS_EXIST": "Есть нерешённые жалобы.",
+    "USERS_QUEUED_TASKS_EXIST": "Есть задачи в очереди",
     "VIEW_REPORT": "Просмотреть жалобу"
   },
   "BACK_TO_ADMIN": "Вернуться в админку",
@@ -146,6 +149,18 @@
       "CHANGE_TO_USER": "Сменить на пользователя"
     },
     "TITLE": "Управление - Пользователи"
+  },
+  "USERS_QUEUED_TASKS": {
+    "DESCRIPTION": "Показывает задачи в очереди",
+    "LABEL": "Задачи в очереди",
+    "LIST_DESCRIPTION": "Если ни одна тренировка не запущена, используйте CLI для их обработки.",
+    "NO_USERS_QUEUED_TASKS": "Нет задач в очереди",
+    "TASK_TYPES": {
+      "LABEL": "Тип задач",
+      "user_data_export": "Экспорт пользовательских данных",
+      "workouts_archive_upload": "Загрузки архива тренировок"
+    },
+    "VIEW_OTHER_TASKS": "Просмотреть другие задачи в очереди"
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "Адрес электронной почты был обновлен."
 }

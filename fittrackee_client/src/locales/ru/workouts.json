@@ -3,6 +3,7 @@
   "ANALYSIS": "анализ",
   "ASCENT": "набор",
   "AVERAGE_CADENCE": "средний каденс",
+  "AVERAGE_HR": "средний пульс",
   "AVERAGE_SPEED": "средняя скорость",
   "AVE_ASCENT": "Средний подъём",
   "AVE_DESCENT": "Средний спуск",
@@ -24,6 +25,7 @@
     "REPORT": "пожаловаться на комментарий",
     "SUSPENDED_COMMENT_BY_ADMIN": "Комментарий заблокирован администратором."
   },
+  "CREATED_WORKOUTS": "Созданная тренировка | Созданные тренировки",
   "DATE": "дата",
   "DELETE_WORKOUT": "Удалить тренировку",
   "DESCENT": "спуск",
@@ -37,7 +39,9 @@
   "ELEVATION": "высота",
   "END": "конец",
   "EXIT_FULLSCREEN": "Выйти из полноэкранного режима",
+  "EXIT_HEATMAP": "Выйти из тепловой карты",
   "FROM": "от",
+  "HEART_RATE": "пульс",
   "HIDE_FILTERS": "скрыть фильтры",
   "HIDE_WORKOUTS": "скрыть тренировки",
   "INVALID_ASCENT_OR_DESCENT": "Оба значения высоты должны быть указаны и быть больше или равны 0.",
@@ -50,9 +54,12 @@
   "MAP": "карта",
   "MARKDOWN_SYNTAX": "Возможен следующий синтаксис Markdown: _italic_, **bold**, [link](https://example.com), ![image](https://example.com/image.png)",
   "MAX_ALTITUDE": "макс. высота",
-  "MAX_FILES": "максимум файлов",
+  "MAX_CADENCE": "макс. каденс",
+  "MAX_FILES": "макс. файлов",
+  "MAX_HR": "макс. пульс",
   "MAX_SIZE": "макс. размер",
   "MAX_SPEED": "макс. скорость",
+  "MAX_SYNC_FILES_IN_ZIP": "макс. файлов для синхронной загрузки",
   "MIN_ALTITUDE": "мин. высота",
   "MULTISELECT": {
     "deselectLabel": "Нажмите Enter, чтобы удалить",
@@ -73,6 +80,7 @@
   "NO_PREVIOUS_SEGMENT": "Нет предыдущего сегмента",
   "NO_PREVIOUS_WORKOUT": "Нет предыдущей тренировки",
   "NO_RECORDS": "Нет записей.",
+  "NO_WEATHER_WITH_ASYNCHRONOUS_UPLOAD": "В случае асинхронной загрузки данные о погоде не собираются.",
   "NO_WORKOUTS": "Нет тренировки. | Нет тренировок.",
   "NO_WORKOUT_AVAILABLE": "Тренировка была удалена или недоступна для просмотра.",
   "PAUSES": "Паузы",
@@ -92,11 +100,13 @@
   "RESET_ZOOM": "Сбросить масштаб",
   "SEGMENT": "сегмент | сегменты",
   "SHOW_WORKOUTS": "показать тренировки",
+  "SOURCE": "источник",
   "SPEED": "скорость",
   "SPORT": "спорт | виды спорта",
   "START": "начать",
   "START_AND_FINISH": "Начало и конец",
   "START_ELEVATION_AT_ZERO": "начать ось высоты с нуля",
+  "SUPPORTED_FILE_EXTENSIONS": "поддерживаемые расширения",
   "SUSPENDED_BY_ADMIN": "Тренировка была приостановлена администратором.",
   "TITLE": "название",
   "TITLE_FIELD_HELP": "Если указано, название заменяет название файла.",
@@ -105,8 +115,23 @@
   "TOTAL_DESCENT": "общий спуск",
   "TOTAL_DISTANCE": "общее расстояние",
   "TOTAL_DURATION": "общая продолжительность",
+  "UNITS": {
+    "bpm": {
+      "LABEL": "ударов в минуту",
+      "UNIT": "уд./мин"
+    },
+    "rpm": {
+      "LABEL": "оборотов в минуту",
+      "UNIT": "об./мин"
+    },
+    "spm": {
+      "LABEL": "шагов в минуту",
+      "UNIT": "шаг./мин"
+    }
+  },
   "UPLOAD_FIRST_WORKOUT": "Загрузите один!",
   "VIEW_FULLSCREEN": "Открыть на весь экран",
+  "VIEW_HEATMAP": "Открыть тепловую карту",
   "WEATHER": {
     "DARK_SKY": {
       "clear-day": "ясный день",
@@ -153,6 +178,7 @@
   "WORKOUT_CHART": "График скорости и набора высоты",
   "WORKOUT_DATE": "дата тренировки",
   "WORKOUT_DELETION_CONFIRMATION": "Вы уверены, что хотите удалить эту тренировку?",
+  "WORKOUT_FILE": "файл тренировки",
   "WORKOUT_MAP": "карта тренировки",
   "ZIP_ARCHIVE": ".zip файл",
   "ZIP_ARCHIVE_DESCRIPTION": "или .zip файл, содержащий файлы"
