@@ -39,6 +39,7 @@
   "ELEVATION": "altitude",
   "END": "fin",
   "EXIT_FULLSCREEN": "Sortir du plein-écran",
+  "EXIT_HEATMAP": "Quitter la carte de thermique (heatmap)",
   "FROM": "à partir de",
   "HEART_RATE": "fréquence cardiaque",
   "HIDE_FILTERS": "masquer les filtres",
@@ -130,6 +131,7 @@
   },
   "UPLOAD_FIRST_WORKOUT": "Ajoutez votre première séance !",
   "VIEW_FULLSCREEN": "Afficher en plein-écran",
+  "VIEW_HEATMAP": "Afficher la carte thermique (heatmap)",
   "WEATHER": {
     "DARK_SKY": {
       "clear-day": "ensoleillé",

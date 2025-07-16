@@ -51,6 +51,7 @@
           <WorkoutMap
             :workoutData="workoutData"
             :markerCoordinates="markerCoordinates"
+            :with-heatmap="isSportWithHeatmap(sport?.label)"
           />
           <WorkoutVisibilityEquipment
             class="desktop"
@@ -98,6 +99,7 @@
   } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatDate, formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
+  import { isSportWithHeatmap } from '@/utils/workouts.ts'
 
   interface Props {
     authUser?: IAuthUserProfile
