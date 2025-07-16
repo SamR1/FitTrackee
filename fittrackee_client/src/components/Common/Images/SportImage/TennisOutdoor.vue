@@ -114,6 +114,6 @@
 
 <script lang="ts">
   export default {
-    name: 'Windsurfing',
+    name: 'TennisOutdoor',
   }
 </script>
