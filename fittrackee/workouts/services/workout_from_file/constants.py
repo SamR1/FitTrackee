@@ -512,7 +512,7 @@ GARMIN_DEVICES = {
     4647: "Approach S44",
     4656: "Approach S50",
     4666: "Fenix E",
-    4759: "Instinct 3 Solar - 50mm",
+    4759: "Instinct 3 Solar - 50 mm",
     4775: "Tactix 8 AMOLED",
     4776: "Tactix 8 Solar",
 }
