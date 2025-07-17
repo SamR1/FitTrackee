@@ -5,10 +5,10 @@
   "AVERAGE_CADENCE": "средний каденс",
   "AVERAGE_HR": "средний пульс",
   "AVERAGE_SPEED": "средняя скорость",
-  "AVE_ASCENT": "Средний подъём",
-  "AVE_DESCENT": "Средний спуск",
-  "AVE_DISTANCE": "Среднее расстояние",
-  "AVE_DURATION": "Средняя продолжительность",
+  "AVE_ASCENT": "ср. подъём",
+  "AVE_DESCENT": "ср. спуск",
+  "AVE_DISTANCE": "ср. расстояние",
+  "AVE_DURATION": "ср. продолжительность",
   "AVE_SPEED": "ср. скорость",
   "BACK_TO_COMMENT": "вернуться к комментарию",
   "BACK_TO_WORKOUT": "назад в тренировку",
@@ -54,7 +54,7 @@
   "MAP": "карта",
   "MARKDOWN_SYNTAX": "Возможен следующий синтаксис Markdown: _italic_, **bold**, [link](https://example.com), ![image](https://example.com/image.png)",
   "MAX_ALTITUDE": "макс. высота",
-  "MAX_CADENCE": "макс. каденс",
+  "MAX_CADENCE": "максимальный каденс",
   "MAX_FILES": "макс. файлов",
   "MAX_HR": "макс. пульс",
   "MAX_SIZE": "макс. размер",
@@ -129,7 +129,7 @@
       "UNIT": "шаг./мин"
     }
   },
-  "UPLOAD_FIRST_WORKOUT": "Загрузите один!",
+  "UPLOAD_FIRST_WORKOUT": "Загрузите одну!",
   "VIEW_FULLSCREEN": "Открыть на весь экран",
   "VIEW_HEATMAP": "Открыть тепловую карту",
   "WEATHER": {
