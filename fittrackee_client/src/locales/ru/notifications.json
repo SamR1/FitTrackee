@@ -14,7 +14,7 @@
   "NO_NOTIFICATIONS": "Нет уведомлений.",
   "REPLIED_YOUR_COMMENT": "ответил на твой комментарий",
   "REPORTED_USER_COMMENT": "пожаловался на комментарий:",
-  "REPORTED_USER_USER": "сообщил о аккаунте:",
+  "REPORTED_USER_USER": "пожаловался на аккаунт:",
   "REPORTED_USER_WORKOUT": "пожаловался на тренировку:",
   "SEND_FOLLOW_REQUEST_TO_YOU": "отправил вам запрос на подписку",
   "SIGN_UP": "зарегистрировался",
@@ -22,7 +22,7 @@
   "TYPES": {
     "ALL": "все",
     "LABEL": "Тип",
-    "comment_like": "лайки на комментариях",
+    "comment_like": "оценки комментариев",
     "comment_suspension": "блокировка комментариев",
     "comment_unsuspension": "повторная активация комментариев",
     "follow": "подписка",
