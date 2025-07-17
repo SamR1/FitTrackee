@@ -37,7 +37,7 @@
     },
     "APPEAL": {
       "APPROVED": "Эта апелляция была одобрена {0}.",
-      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "Это обращение было одобрено с отменой блокировки.",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "Эта апелляция была одобрена с отменой блокировки.",
       "HIDE": "Скрыть апелляцию",
       "REASON_IS": "Причина:",
       "REJECTED": "Эта апелляция была отклонена {0}.",
@@ -70,8 +70,8 @@
     },
     "REPORT_NOTE": "Заметка от",
     "RESOLVED": {
-      "FALSE": "Нерешённый",
-      "TRUE": "Решённый"
+      "FALSE": "Нерешённая",
+      "TRUE": "Решённая"
     },
     "RESOLVED_AT": "Решено в",
     "RESOLVED_BY": "Решено",
@@ -131,7 +131,7 @@
   },
   "UPDATE_APPLICATION_DESCRIPTION": "Обновить конфигурацию приложения.",
   "UPDATE_USER_EMAIL": "Обновить электронную почту",
-  "USER": "пользователь | пользователи",
+  "USER": "пользователь | пользователей",
   "USERS": {
     "SELECTS": {
       "ORDER_BY": {
