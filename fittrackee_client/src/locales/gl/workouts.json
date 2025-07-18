@@ -39,6 +39,7 @@
   "ELEVATION": "altitude",
   "END": "fin",
   "EXIT_FULLSCREEN": "Saír da pantalla completa",
+  "EXIT_HEATMAP": "Saír do Mapa por zonas",
   "FROM": "desde",
   "HEART_RATE": "pulso cardíaco",
   "HIDE_FILTERS": "agochar filtros",
@@ -130,6 +131,7 @@
   },
   "UPLOAD_FIRST_WORKOUT": "Sube un!",
   "VIEW_FULLSCREEN": "Ver en pantalla completa",
+  "VIEW_HEATMAP": "Ver Mapa por zonas",
   "WEATHER": {
     "DARK_SKY": {
       "clear-day": "día despexado",
