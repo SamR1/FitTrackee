@@ -23,7 +23,8 @@ export const getDatasets = (
   chartData: IWorkoutApiChartData[],
   t: CallableFunction,
   useImperialUnits: boolean,
-  useDarkMode: boolean = false
+  useDarkMode: boolean = false,
+  splitCharts: boolean = false
 ): IWorkoutChartData => {
   const datasets: TWorkoutDatasets = {
     speed: {
@@ -43,7 +44,7 @@ export const getDatasets = (
       borderWidth: 1,
       fill: true,
       data: [],
-      yAxisID: 'yRight',
+      yAxisID: splitCharts ? 'yLeft' : 'yRight',
     },
     hr: {
       id: 'hr',
@@ -90,7 +91,7 @@ export const getDatasets = (
     coordinates.push({ latitude: data.latitude, longitude: data.longitude })
   })
 
-  if (datasets.elevation.data.length == 0) {
+  if (!splitCharts && datasets.elevation.data.length == 0) {
     if (datasets.hr.data.length > 0) {
       datasets.hr.yAxisID = 'yRight'
     } else if (datasets.cadence.data.length > 0) {
