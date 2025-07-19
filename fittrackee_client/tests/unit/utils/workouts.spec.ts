@@ -541,6 +541,133 @@ describe('getDatasets with dark mode', () => {
   })
 })
 
+describe('getDatasets with splitChart', () => {
+  const testparams = [
+    {
+      description: 'it returns datasets when splitChart is false',
+      inputParams: {
+        charData: [],
+        locale: 'en',
+        useImperialUnits: false,
+        useDarkMode: false,
+        splitChart: false,
+      },
+      expected: {
+        distance_labels: [],
+        duration_labels: [],
+        datasets: {
+          speed: {
+            id: 'speed',
+            label: 'speed',
+            backgroundColor: ['transparent'],
+            borderColor: ['#8884d8'],
+            borderWidth: 2,
+            data: [],
+            yAxisID: 'yLeft',
+          },
+          elevation: {
+            id: 'elevation',
+            label: 'elevation',
+            backgroundColor: ['#e5e5e5'],
+            borderColor: ['#cccccc'],
+            borderWidth: 1,
+            fill: true,
+            data: [],
+            yAxisID: 'yRight',
+          },
+          hr: {
+            id: 'hr',
+            label: 'heart rate',
+            backgroundColor: ['transparent'],
+            borderColor: ['#ec1f5e'],
+            borderWidth: 1,
+            data: [],
+            yAxisID: 'yLeft',
+          },
+          cadence: {
+            id: 'cadence',
+            label: 'cadence',
+            backgroundColor: ['transparent'],
+            borderColor: ['#494949'],
+            borderWidth: 1,
+            data: [],
+            yAxisID: 'yLeft',
+          },
+        },
+        coordinates: [],
+      },
+    },
+    {
+      description: 'it returns datasets when splitChart is true',
+      inputParams: {
+        charData: [],
+        locale: 'en',
+        useImperialUnits: false,
+        useDarkMode: false,
+        splitChart: true,
+      },
+      expected: {
+        distance_labels: [],
+        duration_labels: [],
+        datasets: {
+          speed: {
+            id: 'speed',
+            label: 'speed',
+            backgroundColor: ['transparent'],
+            borderColor: ['#8884d8'],
+            borderWidth: 2,
+            data: [],
+            yAxisID: 'yLeft',
+          },
+          elevation: {
+            id: 'elevation',
+            label: 'elevation',
+            backgroundColor: ['#e5e5e5'],
+            borderColor: ['#cccccc'],
+            borderWidth: 1,
+            fill: true,
+            data: [],
+            yAxisID: 'yLeft',
+          },
+          hr: {
+            id: 'hr',
+            label: 'heart rate',
+            backgroundColor: ['transparent'],
+            borderColor: ['#ec1f5e'],
+            borderWidth: 1,
+            data: [],
+            yAxisID: 'yLeft',
+          },
+          cadence: {
+            id: 'cadence',
+            label: 'cadence',
+            backgroundColor: ['transparent'],
+            borderColor: ['#494949'],
+            borderWidth: 1,
+            data: [],
+            yAxisID: 'yLeft',
+          },
+        },
+        coordinates: [],
+      },
+    },
+  ]
+  testparams.map((testParams) => {
+    it(testParams.description, () => {
+      locale.value = testParams.inputParams.locale
+      expect(
+        getDatasets(
+          testParams.inputParams.charData,
+          t,
+          testParams.inputParams.useImperialUnits,
+          testParams.inputParams.useDarkMode,
+          testParams.inputParams.splitChart
+        )
+      ).toStrictEqual(testParams.expected)
+    })
+  })
+})
+
 describe('getDonutDatasets', () => {
   const testparams = [
     {

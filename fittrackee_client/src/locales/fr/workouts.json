@@ -32,6 +32,7 @@
   "DESCRIPTION": "description",
   "DESCRIPTION_FIELD_HELP": "si fournie, la description remplace celle du fichier.",
   "DISPLAY_FILTERS": "afficher les filtres",
+  "DISPLAY_MULTIPLE_CHARTS": "afficher plusieurs graphiques",
   "DISTANCE": "distance",
   "DOWNLOAD_WORKOUT": "Télécharger la séance (gpx)",
   "DURATION": "durée",
