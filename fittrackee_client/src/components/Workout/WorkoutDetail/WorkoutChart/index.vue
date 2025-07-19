@@ -477,8 +477,11 @@
       ? label + ` ${t('workouts.UNITS.bpm.UNIT')}`
       : label + ` ${fromKmUnit}/h`
   }
-  function setChartsActivePoints(chart: Chart, activePoint?: IHoverPoint) {
-    if (chart.canvas.id === activePoint?.datasetLabel) {
+  function setChartsActivePoints(
+    chart: Chart | undefined,
+    activePoint?: IHoverPoint
+  ) {
+    if (!chart || chart.canvas.id === activePoint?.datasetLabel) {
       return
     }
     if (activePoint) {
@@ -509,7 +512,7 @@
     }
     displayedCharts.value.forEach((element: HTMLElement) => {
       if (element && 'chart' in element) {
-        setChartsActivePoints(element.chart as Chart, hoveredPoint)
+        setChartsActivePoints(element.chart as Chart | undefined, hoveredPoint)
       }
     })
   }
