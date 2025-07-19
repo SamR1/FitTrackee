@@ -4,6 +4,7 @@ from typing import List, Optional
 import gpxpy.gpx
 
 from ..constants import (
+    POWER_SPORTS,
     RPM_CADENCE_SPORTS,
     SPM_CADENCE_SPORTS,
     SPORTS_WITHOUT_ELEVATION_DATA,
@@ -72,6 +73,7 @@ def get_chart_data(
     )
     return_elevation_data = sport_label not in SPORTS_WITHOUT_ELEVATION_DATA
     cadence_in_spm = sport_label in SPM_CADENCE_SPORTS
+    return_power = sport_label in POWER_SPORTS
 
     track_segments = gpx.tracks[0].segments
     segments = get_gpx_segments(track_segments, segment_id)
@@ -139,6 +141,15 @@ def get_chart_data(
                             if cadence_in_spm
                             else int(float(element.text))
                         )
+                    if (
+                        return_power
+                        and (
+                            element.tag.endswith("power")
+                            or element.tag.endswith("pow")
+                        )
+                        and element.text
+                    ):
+                        data["power"] = int(element.text)
             chart_data.append(data)
             previous_point = point
             previous_distance = distance

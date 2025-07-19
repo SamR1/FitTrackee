@@ -39,7 +39,7 @@ export const getDatasets = (
     elevation: {
       id: 'elevation',
       label: t('workouts.ELEVATION'),
-      backgroundColor: [useDarkMode ? '#303030' : '#e5e5e5'],
+      backgroundColor: [useDarkMode ? '#464646' : '#e5e5e5'],
       borderColor: [useDarkMode ? '#222222' : '#cccccc'],
       borderWidth: 1,
       fill: true,
@@ -61,6 +61,15 @@ export const getDatasets = (
       backgroundColor: ['transparent'],
       borderColor: [useDarkMode ? '#989898' : '#494949'],
       borderWidth: 1,
+      data: [],
+      yAxisID: 'yLeft',
+    },
+    power: {
+      id: 'power',
+      label: t('workouts.POWER'),
+      backgroundColor: ['transparent'],
+      borderColor: [useDarkMode ? '#2dadd7' : '#198cbd'],
+      borderWidth: 0.5,
       data: [],
       yAxisID: 'yLeft',
     },
@@ -87,6 +96,9 @@ export const getDatasets = (
     }
     if (data.cadence !== undefined) {
       datasets.cadence.data.push(data.cadence)
+    }
+    if (data.power !== undefined) {
+      datasets.power.data.push(data.power)
     }
     coordinates.push({ latitude: data.latitude, longitude: data.longitude })
   })

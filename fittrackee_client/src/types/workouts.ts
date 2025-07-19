@@ -208,6 +208,7 @@ export interface IWorkoutApiChartData {
   hr?: number
   latitude: number
   longitude: number
+  power?: number
   speed: number
   time: string
 }
@@ -229,7 +230,12 @@ export interface IWorkoutData {
   currentReporting: boolean
 }
 
-export type TWorkoutDatasetKeys = 'speed' | 'elevation' | 'hr' | 'cadence'
+export type TWorkoutDatasetKeys =
+  | 'speed'
+  | 'elevation'
+  | 'hr'
+  | 'cadence'
+  | 'power'
 
 export type TWorkoutDatasets = {
   [key in TWorkoutDatasetKeys]: IChartDataset
