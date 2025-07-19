@@ -55,6 +55,7 @@ def get_chart_data(
     - elevation (if available)
     - heart rate (if available)
     - cadence (if available)
+    - power (if available)
 
     Note: some files contains only zero cadence values. In this case,
     workout average cadence is None and cadence is not displayed.
@@ -67,12 +68,16 @@ def get_chart_data(
     first_point = None
     previous_point = None
     previous_distance = 0
+
+    # elevation
+    return_elevation_data = sport_label not in SPORTS_WITHOUT_ELEVATION_DATA
+    # from extension: cadence
     return_cadence = (
         workout_ave_cadence
         and sport_label in RPM_CADENCE_SPORTS + SPM_CADENCE_SPORTS
     )
-    return_elevation_data = sport_label not in SPORTS_WITHOUT_ELEVATION_DATA
     cadence_in_spm = sport_label in SPM_CADENCE_SPORTS
+    # from extension: power
     return_power = sport_label in POWER_SPORTS
 
     track_segments = gpx.tracks[0].segments
@@ -122,32 +127,22 @@ def get_chart_data(
                     else:
                         extensions.append(extension)
                 for element in extensions:
-                    if (
-                        can_see_heart_rate
-                        and element.tag.endswith("hr")
-                        and element.text
-                    ):
+                    if not element.text:
+                        continue
+                    if can_see_heart_rate and element.tag.endswith("hr"):
                         data["hr"] = int(element.text)
-                    if (
-                        return_cadence
-                        and (
-                            element.tag.endswith("cad")
-                            or element.tag.endswith("cadence")
-                        )
-                        and element.text
+                    if return_cadence and (
+                        element.tag.endswith("cad")
+                        or element.tag.endswith("cadence")
                     ):
                         data["cadence"] = (
                             int(float(element.text)) * 2
                             if cadence_in_spm
                             else int(float(element.text))
                         )
-                    if (
-                        return_power
-                        and (
-                            element.tag.endswith("power")
-                            or element.tag.endswith("pow")
-                        )
-                        and element.text
+                    if return_power and (
+                        element.tag.endswith("power")
+                        or element.tag.endswith("pow")
                     ):
                         data["power"] = int(element.text)
             chart_data.append(data)
