@@ -102,6 +102,7 @@
   import { useStore } from 'vuex'
 
   import Loader from '@/components/Common/Loader.vue'
+  import { verticalHoverLine } from '@/components/Workout/WorkoutDetail/WorkoutChart/hoverLine.ts'
   import { htmlLegendPlugin } from '@/components/Workout/WorkoutDetail/WorkoutChart/legend'
   import useApp from '@/composables/useApp'
   import { WORKOUTS_STORE } from '@/store/constants.ts'
@@ -130,7 +131,7 @@
 
   const { darkTheme } = useApp()
 
-  const plugins = [htmlLegendPlugin]
+  const plugins = [htmlLegendPlugin, verticalHoverLine]
   const fromKmUnit = getUnitTo('km')
   const fromMUnit = getUnitTo('m')
 
@@ -243,6 +244,10 @@
         padding: {
           top: 22,
         },
+      },
+      interaction: {
+        intersect: false,
+        mode: 'index',
       },
       scales: {
         x: {
