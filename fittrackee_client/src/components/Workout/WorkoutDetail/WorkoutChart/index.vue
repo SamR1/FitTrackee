@@ -3,7 +3,7 @@
     <Card>
       <template #title>{{ $t('workouts.ANALYSIS') }} </template>
       <template #content>
-        <div class="split-charts" v-if="datasetsCount > 1">
+        <div class="split-charts" v-if="displayedDatasets.length > 1">
           <label for="split-chart">
             {{ $t('workouts.DISPLAY_MULTIPLE_CHARTS') }}:
           </label>
@@ -180,13 +180,7 @@
       splitCharts.value
     )
   )
-  const chartData: ComputedRef<
-    {
-      label: string
-      chartData: ChartData<'line'>
-      config: ChartOptions<'line'>
-    }[]
-  > = computed(() => {
+  const displayedDatasets = computed(() => {
     const displayedDatasets = [datasets.value.datasets.speed]
     if (datasets.value.datasets.hr.data.length > 0) {
       displayedDatasets.push(datasets.value.datasets.hr)
@@ -197,9 +191,17 @@
     if (datasets.value.datasets.elevation.data.length > 0) {
       displayedDatasets.push(datasets.value.datasets.elevation)
     }
-
+    return displayedDatasets
+  })
+  const chartData: ComputedRef<
+    {
+      label: string
+      chartData: ChartData<'line'>
+      config: ChartOptions<'line'>
+    }[]
+  > = computed(() => {
     if (splitCharts.value) {
-      return displayedDatasets.map((displayedDataset) => {
+      return displayedDatasets.value.map((displayedDataset) => {
         return {
           label: displayedDataset.label,
           chartData: {
@@ -222,15 +224,12 @@
           labels: displayDistance.value
             ? datasets.value.distance_labels
             : datasets.value.duration_labels,
-          datasets: JSON.parse(JSON.stringify(displayedDatasets)),
+          datasets: JSON.parse(JSON.stringify(displayedDatasets.value)),
         },
         config: getChartOptions('all', beginElevationAtZero.value),
       },
     ]
   })
-  const datasetsCount: ComputedRef<number> = computed(
-    () => Object.keys(datasets.value.datasets).length
-  )
 
   function getChartOptions(
     label: string,
@@ -494,7 +493,7 @@
     chart.update()
   }
   function handleTooltipOnAllCharts(hoveredPoint?: IHoverPoint) {
-    if (!splitCharts.value || datasetsCount.value === 1) {
+    if (!splitCharts.value || displayedDatasets.value.length === 1) {
       return
     }
     displayedCharts.value.forEach((element: HTMLElement) => {
@@ -529,6 +528,14 @@
     () => splitCharts.value,
     () => {
       handleTooltipOnAllCharts()
+    }
+  )
+  watch(
+    () => displayedDatasets.value.length,
+    (datasetCount) => {
+      if (datasetCount === 1 && splitCharts.value) {
+        splitCharts.value = false
+      }
     }
   )
 
