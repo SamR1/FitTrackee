@@ -1567,6 +1567,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     hide_profile_in_users_directory=False,
                     hr_visibility="followers_only",
                     segments_creation_event="none",
+                    split_workout_charts=True,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1589,6 +1590,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data["data"]["hide_profile_in_users_directory"] is False
         assert data["data"]["hr_visibility"] == VisibilityLevel.FOLLOWERS
         assert data["data"]["segments_creation_event"] == "none"
+        assert data["data"]["split_workout_charts"] is True
 
     @pytest.mark.parametrize(
         "input_map_visibility,input_analysis_visibility,input_workout_visibility,expected_map_visibility,expected_analysis_visibility",
@@ -1658,6 +1660,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     workouts_visibility=input_workout_visibility.value,
                     hr_visibility=input_workout_visibility.value,
                     segments_creation_event="none",
+                    split_workout_charts=False,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1705,6 +1708,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     use_dark_mode=None,
                     hr_visibility=VisibilityLevel.PUBLIC.value,
                     segments_creation_event="none",
+                    split_workout_charts=False,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),

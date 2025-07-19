@@ -219,6 +219,11 @@
       "HELP": "Si filtré, les valeurs extrêmes (qui peuvent être des erreurs GPS) sont exclues lors du calcul de la vitesse maximale.",
       "LABEL": "Calcul de la vitesse maximale",
       "RAW_SPEED": "Brut"
+    },
+    "WORKOUT_CHARTS_DISPLAY": {
+      "LABEL": "Affichage des graphiques d'analyse de la séance",
+      "MULTIPLE": "Chaque donnée est affichée sur un graphique différent",
+      "ONE": "Toutes les données sur un seul graphique"
     }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "J'ai lu et accepte la {0}.",

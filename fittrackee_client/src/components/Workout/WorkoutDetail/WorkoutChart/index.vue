@@ -142,7 +142,9 @@
   const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
   const loading: Ref<boolean> = ref(false)
   const displayedCharts: Ref<HTMLElement[]> = ref([])
-  const splitCharts: Ref<boolean> = ref(false)
+  const splitCharts: Ref<boolean> = ref(
+    authUser.value.username ? authUser.value.split_workout_charts : false
+  )
 
   const currentDataPoint: Reactive<IHoverPoint> = reactive({
     dataIndex: 0,

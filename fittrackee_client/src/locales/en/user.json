@@ -219,6 +219,11 @@
       "HELP": "If filtered, it excludes extreme values (which may be GPS errors) when calculating the maximum speed.",
       "LABEL": "GPX max speed strategy",
       "RAW_SPEED": "Raw"
+    },
+    "WORKOUT_CHARTS_DISPLAY": {
+      "LABEL": "Workout analysis chart display",
+      "MULTIPLE": "Each data displayed on a different chart",
+      "ONE": "All data on a single chart"
     }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "I have read and agree to the {0}.",

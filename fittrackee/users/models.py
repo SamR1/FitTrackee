@@ -369,6 +369,9 @@ class User(BaseModel):
         Enum(*SEGMENTS_CREATION_EVENTS, name="segments_creation_events"),
         server_default="only_manual",
     )
+    split_workout_charts: Mapped[bool] = mapped_column(
+        server_default="false", nullable=False
+    )
 
     workouts: Mapped[List["Workout"]] = relationship(
         "Workout", lazy=True, back_populates="user"
@@ -915,6 +918,7 @@ class User(BaseModel):
                         if self.notification_preferences
                         else {}
                     ),
+                    "split_workout_charts": self.split_workout_charts,
                 },
             }
 
