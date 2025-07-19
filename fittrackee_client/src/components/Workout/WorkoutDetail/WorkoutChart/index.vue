@@ -64,8 +64,8 @@
     LayoutItem,
     TooltipItem,
   } from 'chart.js'
-  import { type ComputedRef, onUnmounted, type Ref, watch } from 'vue'
-  import { computed, ref, toRefs } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
+  import { computed, onUnmounted, ref, toRefs, watch } from 'vue'
   import { Line } from 'vue-chartjs'
   import { useI18n } from 'vue-i18n'
   import { useStore } from 'vuex'
@@ -99,15 +99,17 @@
 
   const { darkTheme } = useApp()
 
-  const displayDistance: Ref<boolean> = ref(true)
-
   const plugins = [htmlLegendPlugin]
   const fromKmUnit = getUnitTo('km')
   const fromMUnit = getUnitTo('m')
 
+  const displayDistance: Ref<boolean> = ref(true)
   const beginElevationAtZero: Ref<boolean> = ref(
     authUser.value.username ? authUser.value.start_elevation_at_zero : false
   )
+  const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
+  const loading: Ref<boolean> = ref(false)
+
   const hasElevation: ComputedRef<boolean> = computed(
     () => datasets.value && datasets.value.datasets.elevation.data.length > 0
   )
@@ -119,11 +121,9 @@
       darkTheme.value
     )
   )
-  const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
   const chartLoading: ComputedRef<boolean> = computed(
     () => workoutData.value.chartDataLoading
   )
-  const loading: Ref<boolean> = ref(false)
   const chartData: ComputedRef<ChartData<'line'>> = computed(() => {
     const displayedDatasets = [datasets.value.datasets.speed]
     if (datasets.value.datasets.hr.data.length > 0) {
