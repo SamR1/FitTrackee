@@ -129,6 +129,10 @@
     "spm": {
       "LABEL": "pas par minute",
       "UNIT": "ppm"
+    },
+    "watt": {
+      "LABEL": "watts",
+      "UNIT": "W"
     }
   },
   "UPLOAD_FIRST_WORKOUT": "Ajoutez votre première séance !",

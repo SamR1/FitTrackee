@@ -13,6 +13,7 @@ export interface IWorkoutSegment {
   ascent: number
   ave_cadence: number | null
   ave_hr: number | null
+  ave_power: number | null
   ave_speed: number
   descent: number
   distance: number
@@ -20,6 +21,7 @@ export interface IWorkoutSegment {
   max_alt: number
   max_cadence: number | null
   max_hr: number | null
+  max_power: number | null
   max_speed: number
   min_alt: number
   moving: string
@@ -70,6 +72,7 @@ export interface IWorkout {
   ascent: number | null
   ave_cadence: number | null
   ave_hr: number | null
+  ave_power: number | null
   ave_speed: number | null
   bounds: number[]
   creation_date: string | null
@@ -86,6 +89,7 @@ export interface IWorkout {
   max_alt: number | null
   max_cadence: number | null
   max_hr: number | null
+  max_power: number | null
   max_speed: number | null
   min_alt: number | null
   modification_date: string | null
@@ -116,6 +120,7 @@ export interface IWorkoutObject {
   ascent: number | null
   aveCadence: number | null
   aveHr: number | null
+  avePower: number | null
   aveSpeed: number | null
   descent: number | null
   distance: number | null
@@ -126,6 +131,7 @@ export interface IWorkoutObject {
   maxAlt: number | null
   maxCadence: number | null
   maxHr: number | null
+  maxPower: number | null
   maxSpeed: number | null
   mapVisibility: TVisibilityLevels | null | undefined
   minAlt: number | null
