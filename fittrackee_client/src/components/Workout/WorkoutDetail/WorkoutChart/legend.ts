@@ -34,7 +34,7 @@ export const htmlLegendPlugin = {
       const li = document.createElement('li')
       li.onclick = (e) => {
         e.preventDefault()
-        if (item.datasetIndex !== undefined) {
+        if (legendItems?.length > 1 && item.datasetIndex !== undefined) {
           chart.setDatasetVisibility(
             item.datasetIndex,
             !chart.isDatasetVisible(item.datasetIndex)
@@ -43,15 +43,18 @@ export const htmlLegendPlugin = {
         }
       }
 
-      const checkBox = document.createElement('input')
-      if (checkBox) {
-        checkBox.type = 'checkbox'
-        checkBox.id = item.text
-        checkBox.checked = !item.hidden
+      const label = document.createElement('label')
+      if (legendItems?.length > 1) {
+        const checkBox = document.createElement('input')
+        if (checkBox) {
+          checkBox.type = 'checkbox'
+          checkBox.id = item.text
+          checkBox.checked = !item.hidden
+          label.htmlFor = checkBox.id
+          li.appendChild(checkBox)
+        }
       }
 
-      const label = document.createElement('label')
-      label.htmlFor = checkBox.id
       const labeltext = document.createTextNode(item.text)
       label.appendChild(labeltext)
 
@@ -62,7 +65,6 @@ export const htmlLegendPlugin = {
       }
 
       label.appendChild(boxSpan)
-      li.appendChild(checkBox)
       li.appendChild(label)
       ul.appendChild(li)
     })

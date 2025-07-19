@@ -39,17 +39,22 @@
         <Loader
           v-if="loading"
           class="chart-loader"
-          :class="{ multiple: splitCharts }"
+          :class="{ multiple: multipleCharts }"
         />
         <div v-for="(data, index) in chartData" :key="data.label">
           <div
             :id="`chart-legend-${data.label}`"
             class="chart-legend"
-            :class="{ loading, hide: splitCharts }"
+            :class="{
+              loading,
+            }"
           />
           <div
             class="line-chart"
-            :class="{ loading, multiple: splitCharts }"
+            :class="{
+              loading,
+              multiple: multipleCharts,
+            }"
             :ref="`line-chart-${data.label}`"
           >
             <Line
@@ -195,6 +200,9 @@
     }
     return displayedDatasets
   })
+  const multipleCharts: ComputedRef<boolean> = computed(
+    () => displayedDatasets.value.length > 1 && splitCharts.value
+  )
   const chartData: ComputedRef<
     {
       label: string
@@ -314,10 +322,11 @@
             ...textColors.value,
           },
           afterFit: function (scale: LayoutItem) {
-            scale.width = 65
+            scale.width = multipleCharts.value ? 50 : 65
           },
         },
         yRight: {
+          display: !multipleCharts.value && displayedDatasets.value.length > 1,
           beginAtZero: hasElevation.value && elevationStartAtZero,
           grid: {
             drawOnChartArea: false,
@@ -353,7 +362,7 @@
             ...textColors.value,
           },
           afterFit: function (scale: LayoutItem) {
-            scale.width = 65
+            scale.width = multipleCharts.value ? 50 : 65
           },
         },
       },
@@ -532,14 +541,6 @@
       handleTooltipOnAllCharts()
     }
   )
-  watch(
-    () => displayedDatasets.value.length,
-    (datasetCount) => {
-      if (datasetCount === 1 && splitCharts.value) {
-        splitCharts.value = false
-      }
-    }
-  )
 
   onUnmounted(() => {
     if (timer.value) {
@@ -577,9 +578,6 @@
           display: flex;
           justify-content: center;
 
-          &.hide {
-            display: none;
-          }
           &.loading {
             opacity: 0.3;
             pointer-events: none;
@@ -643,7 +641,7 @@
 
       @media screen and (max-width: $small-limit) {
         .card-content {
-          padding: $default-padding 0;
+          padding: $default-padding $default-padding * 0.5;
           .chart-info {
             display: flex;
             flex-direction: column-reverse;
@@ -653,6 +651,10 @@
             .no-data-cleaning {
               padding: 0 $default-padding * 2;
             }
+          }
+          .split-charts {
+            padding-bottom: $default-padding;
+            padding-left: $default-padding * 2;
           }
           .line-chart {
             height: 338px;
