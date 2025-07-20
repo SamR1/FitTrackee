@@ -2,9 +2,27 @@ name: Python CI
 
 on:
   push:
-    paths-ignore: ['docs/**', 'docsrc/**', 'docker/**', 'fittrackee_client/**', '*.md']
+    paths-ignore: [
+      'docs/**',
+      'docsrc/**',
+      'docker/**',
+      'fittrackee_client/**',
+      '*.md',
+      'docker-compose*.yml',
+      'Dockerfile',
+      'Dockerfile-dev'
+    ]
   pull_request:
-    paths-ignore: ['docs/**', 'docsrc/**', 'docker/**', 'fittrackee_client/**', '*.md']
+    paths-ignore: [
+      'docs/**',
+      'docsrc/**',
+      'docker/**',
+      'fittrackee_client/**',
+      '*.md',
+      'docker-compose*.yml',
+      'Dockerfile',
+      'Dockerfile-dev'
+    ]
     types: [opened, synchronize, reopened]
 
 env:
