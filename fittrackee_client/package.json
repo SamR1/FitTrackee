@@ -38,7 +38,7 @@
     "leaflet-heatmap": "^1.0.0",
     "linkify-html": "^4.3.1",
     "linkifyjs": "^4.3.1",
-    "marked": "^15.0.12",
+    "marked": "^16.1.1",
     "sanitize-html": "^2.17.0",
     "vue": "^3.5.17",
     "vue-chartjs": "^5.3.2",
@@ -53,7 +53,7 @@
     "@rushstack/eslint-patch": "^1.11.0",
     "@tsconfig/node18": "^18.2.4",
     "@types/jsdom": "^21.1.7",
-    "@types/node": "^22.15.29",
+    "@types/node": "^24.0.15",
     "@types/sanitize-html": "^2.16.0",
     "@vitejs/plugin-vue": "^5.2.4",
     "@vue/eslint-config-prettier": "^10.2.0",
@@ -65,13 +65,13 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-vue": "^9.32.0",
     "jsdom": "^26.1.0",
-    "npm-run-all2": "^7.0.1",
+    "npm-run-all2": "^8.0.4",
     "prettier": "^3.5.3",
     "sass": "^1.89.2",
     "typescript": "~5.5.4",
     "vite": "^6.3.5",
     "vitest": "^3.2.4",
-    "vue-tsc": "^2.2.10"
+    "vue-tsc": "^3.0.3"
   },
   "resolutions": {
     "strip-ansi": "6.0.1"
