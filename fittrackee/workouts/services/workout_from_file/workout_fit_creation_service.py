@@ -136,6 +136,11 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                     if frame.has_field("cadence")
                     else None
                 )
+                power = (
+                    frame.get_value("power")
+                    if frame.has_field("power")
+                    else None
+                )
 
                 point = gpxpy.gpx.GPXTrackPoint(
                     longitude=cls._get_coordinate(longitude),
@@ -144,9 +149,11 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                     time=time,
                 )
 
-                if heart_rate is not None or cadence is not None:
+                if any(
+                    value is not None for value in [heart_rate, cadence, power]
+                ):
                     point.extensions.append(
-                        cls._get_extensions(heart_rate, cadence)
+                        cls._get_extensions(heart_rate, cadence, power)
                     )
                 gpx_segment.points.append(point)
 

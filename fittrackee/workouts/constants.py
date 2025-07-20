@@ -21,6 +21,15 @@ SPM_CADENCE_SPORTS = [
     "Trail",
     "Walking",
 ]
+POWER_SPORTS = [
+    "Cycling (Sport)",
+    "Cycling (Trekking)",
+    "Cycling (Transport)",
+    "Cycling (Virtual)",
+    "Halfbike",
+    "Mountain Biking",
+    "Mountain Biking (Electric)",
+]
 # elevation data (ascent, descent, min and max alt), if present, are not
 # displayed
 SPORTS_WITHOUT_ELEVATION_DATA = [

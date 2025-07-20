@@ -199,18 +199,47 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         assert last_point_cad.tag == "{gpxtpx}cad"
         assert last_point_cad.text == "53"
 
-    def test_it_returns_gpx_with_tcx_with_heart_rate_and_cadence(
+    def test_it_returns_gpx_with_tcx_with_heart_rate_cadence_and_power(
         self,
         app: "Flask",
         sport_1_cycling: "Sport",
-        tcx_with_heart_rate_and_cadence: str,
+        tcx_with_heart_rate_cadence_and_power: str,
     ) -> None:
         gpx = WorkoutTcxCreationService.parse_file(
-            self.get_file_content(tcx_with_heart_rate_and_cadence),
+            self.get_file_content(tcx_with_heart_rate_cadence_and_power),
             segments_creation_event="none",
         )
 
         self.assert_gpx(gpx)
+        first_point = gpx.tracks[0].segments[0].points[0]
+        first_point_cad = first_point.extensions[0][2]
+        assert first_point_cad.tag == "{gpxtpx}power"
+        assert first_point_cad.text == "0"
+        last_point = gpx.tracks[0].segments[0].points[-1]
+        last_point_cad = last_point.extensions[0][2]
+        assert last_point_cad.tag == "{gpxtpx}power"
+        assert last_point_cad.text == "100"
+
+    def test_it_returns_gpx_with_tcx_with_heart_rate_cadence_and_ns3_power(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        tcx_with_heart_rate_cadence_and_ns3_power: str,
+    ) -> None:
+        gpx = WorkoutTcxCreationService.parse_file(
+            self.get_file_content(tcx_with_heart_rate_cadence_and_ns3_power),
+            segments_creation_event="none",
+        )
+
+        self.assert_gpx(gpx)
+        first_point = gpx.tracks[0].segments[0].points[0]
+        first_point_cad = first_point.extensions[0][2]
+        assert first_point_cad.tag == "{gpxtpx}power"
+        assert first_point_cad.text == "0"
+        last_point = gpx.tracks[0].segments[0].points[-1]
+        last_point_cad = last_point.extensions[0][2]
+        assert last_point_cad.tag == "{gpxtpx}power"
+        assert last_point_cad.text == "100"
 
     def test_it_returns_gpx_with_tcx_with_heart_rate_and_run_cadence(
         self,

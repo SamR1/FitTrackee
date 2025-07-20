@@ -85,6 +85,7 @@
   "NO_WORKOUTS": "Pas de séance. | Pas de séances.",
   "NO_WORKOUT_AVAILABLE": "La séance a été supprimée ou n'est pas visible.",
   "PAUSES": "pauses",
+  "POWER": "puissance",
   "PREVIOUS_SEGMENT": "Segment précédent",
   "PREVIOUS_WORKOUT": "Séance précédente",
   "PRIVATE_NOTES": "Notes personnelles",
@@ -128,6 +129,10 @@
     "spm": {
       "LABEL": "pas par minute",
       "UNIT": "ppm"
+    },
+    "watt": {
+      "LABEL": "watts",
+      "UNIT": "W"
     }
   },
   "UPLOAD_FIRST_WORKOUT": "Ajoutez votre première séance !",

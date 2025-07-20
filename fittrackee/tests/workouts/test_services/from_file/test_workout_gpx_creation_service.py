@@ -646,6 +646,7 @@ class TestWorkoutGpxCreationServiceProcessFile(
             "ascent": 0.0,
             "ave_cadence": None,
             "ave_hr": None,
+            "ave_power": None,
             "ave_speed": 0.0,
             "descent": 0.0,
             "distance": 0.0,
@@ -653,6 +654,7 @@ class TestWorkoutGpxCreationServiceProcessFile(
             "max_alt": 987.0,
             "max_cadence": None,
             "max_hr": None,
+            "max_power": None,
             "max_speed": 0.0,
             "min_alt": 987.0,
             "moving": "0:00:00",
@@ -696,9 +698,11 @@ class TestWorkoutGpxCreationServiceProcessFile(
         self.assert_workout_segment(workout)
         self.assert_workout_records(workout)
         assert workout.ave_cadence == 52
+        assert workout.ave_power == 248
         assert workout.ave_hr == 85
         assert workout.max_cadence == 57
         assert workout.max_hr == 92
+        assert workout.max_power == 326
         assert workout.source == "Garmin Connect"
 
     def test_it_creates_workout_when_gpx_file_has_gpxtpx_extensions_and_power(
@@ -723,8 +727,10 @@ class TestWorkoutGpxCreationServiceProcessFile(
         self.assert_workout_records(workout)
         assert workout.ave_cadence == 52
         assert workout.ave_hr == 85
+        assert workout.ave_power == 248
         assert workout.max_cadence == 57
         assert workout.max_hr == 92
+        assert workout.max_power == 326
         assert workout.source == "Garmin Connect"
 
     def test_it_creates_workout_when_gpx_file_has_cadence_float_value(
@@ -749,8 +755,10 @@ class TestWorkoutGpxCreationServiceProcessFile(
         self.assert_workout_records(workout)
         assert workout.ave_cadence == 52
         assert workout.ave_hr == 85
+        assert workout.ave_power == 248
         assert workout.max_cadence == 57
         assert workout.max_hr == 92
+        assert workout.max_power == 326
         assert workout.source == "Garmin Connect"
 
     def test_it_creates_workout_when_gpx_file_has_cadence_zero_values(
@@ -806,8 +814,10 @@ class TestWorkoutGpxCreationServiceProcessFile(
         self.assert_workout_records(workout)
         assert workout.ave_cadence == 52
         assert workout.ave_hr == 85
+        assert workout.ave_power == 248
         assert workout.max_cadence == 57
         assert workout.max_hr == 92
+        assert workout.max_power == 326
         assert workout.source == "Garmin Connect"
 
     @pytest.mark.parametrize("input_get_weather", [{}, {"get_weather": True}])

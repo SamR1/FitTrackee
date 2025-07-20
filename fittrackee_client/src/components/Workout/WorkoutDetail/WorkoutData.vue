@@ -134,6 +134,23 @@
     </div>
     <div
       class="workout-data"
+      v-if="workoutObject.avePower !== null && workoutObject.maxPower !== null"
+    >
+      <i class="fa fa-bolt" aria-hidden="true" />
+      <span class="label">{{ $t('workouts.AVERAGE_POWER') }}</span
+      >:
+      <span class="value" :title="t('workouts.UNITS.watt.LABEL')">
+        {{ workoutObject.avePower }} {{ t('workouts.UNITS.watt.UNIT') }}
+      </span>
+      <br />
+      <span class="label"> {{ $t('workouts.MAX_POWER') }}</span
+      >:
+      <span class="value" :title="t('workouts.UNITS.watt.LABEL')">
+        {{ workoutObject.maxPower }} {{ t('workouts.UNITS.watt.UNIT') }}
+      </span>
+    </div>
+    <div
+      class="workout-data"
       v-if="workoutObject.aveHr !== null && workoutObject.maxHr !== null"
     >
       <i class="fa fa-heartbeat" aria-hidden="true" />
@@ -195,7 +212,11 @@
     .fa,
     .mountains,
     .cadence {
-      padding-right: $default-padding * 0.5;
+      min-width: 22px;
+    }
+    .fa-bolt {
+      padding-left: $default-padding * 0.65;
+      min-width: 15px;
     }
 
     .workout-data {
@@ -205,7 +226,6 @@
       }
       .value {
         font-weight: bold;
-        text-transform: lowercase;
       }
     }
 

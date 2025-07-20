@@ -195,6 +195,9 @@
     if (datasets.value.datasets.cadence.data.length > 0) {
       displayedDatasets.push(datasets.value.datasets.cadence)
     }
+    if (datasets.value.datasets.power.data.length > 0) {
+      displayedDatasets.push(datasets.value.datasets.power)
+    }
     if (datasets.value.datasets.elevation.data.length > 0) {
       displayedDatasets.push(datasets.value.datasets.elevation)
     }
@@ -433,6 +436,8 @@
         return ` (${t('workouts.UNITS.bpm.UNIT')})`
       case 'speed':
         return ` (${fromKmUnit}/h)`
+      case 'power':
+        return ` (W)`
       default:
         return ''
     }
@@ -472,6 +477,9 @@
     if (context.dataset.id === 'cadence') {
       const unit = getCadenceUnit(sport.value?.label)
       return label + ' ' + t(`workouts.UNITS.${unit}.UNIT`)
+    }
+    if (context.dataset.id === 'power') {
+      return `${label} W`
     }
     return context.dataset.id === 'hr'
       ? label + ` ${t('workouts.UNITS.bpm.UNIT')}`

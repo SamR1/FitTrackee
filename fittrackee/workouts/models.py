@@ -33,6 +33,7 @@ from .utils.convert import (
     convert_in_duration,
     convert_value_to_integer,
     get_cadence,
+    get_power,
 )
 
 if TYPE_CHECKING:
@@ -336,6 +337,8 @@ class Workout(BaseModel):
     source: Mapped[Optional[str]] = mapped_column(
         db.String(100), nullable=True
     )
+    max_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
+    ave_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
 
     user: Mapped["User"] = relationship(
         "User", lazy="select", single_parent=True
@@ -557,6 +560,8 @@ class Workout(BaseModel):
             "max_cadence": get_cadence(sport_label, self.max_cadence),
             "ave_hr": self.ave_hr if can_see_heart_rate else None,
             "max_hr": self.max_hr if can_see_heart_rate else None,
+            "ave_power": get_power(sport_label, self.ave_power),
+            "max_power": get_power(sport_label, self.max_power),
         }
 
         if not light or with_equipments:
@@ -922,6 +927,8 @@ class WorkoutSegment(BaseModel):
     ave_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
     max_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # rpm
     ave_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # rpm
+    max_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
+    ave_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
 
     workout: Mapped["Workout"] = relationship(
         "Workout", lazy="joined", single_parent=True
@@ -969,6 +976,8 @@ class WorkoutSegment(BaseModel):
             "max_cadence": get_cadence(sport_label, self.max_cadence),
             "ave_hr": self.ave_hr if can_see_heart_rate else None,
             "max_hr": self.max_hr if can_see_heart_rate else None,
+            "ave_power": get_power(sport_label, self.ave_power),
+            "max_power": get_power(sport_label, self.max_power),
         }
 
 
