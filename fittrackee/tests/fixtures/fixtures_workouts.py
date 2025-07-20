@@ -3412,7 +3412,7 @@ def tcx_with_invalid_elevation() -> str:
 
 
 @pytest.fixture()
-def tcx_with_heart_rate_cadence_and_power() -> str:
+def tcx_with_heart_rate_cadence_and_ns3_power() -> str:
     return """<?xml version="1.0" encoding="UTF-8"?>
 <TrainingCenterDatabase
   xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd"
@@ -3441,9 +3441,9 @@ def tcx_with_heart_rate_cadence_and_power() -> str:
                       </HeartRateBpm>
                       <Cadence>0</Cadence>
                       <Extensions>
-                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
-                          <Watts>0</Watts>
-                        </TPX>
+                        <ns3:TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <ns3:Watts>0</ns3:Watts>
+                        </ns3:TPX>
                       </Extensions>
                     </Trackpoint>
                     <Trackpoint>
@@ -3459,9 +3459,9 @@ def tcx_with_heart_rate_cadence_and_power() -> str:
                       </HeartRateBpm>
                       <Cadence>50</Cadence>
                       <Extensions>
-                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
-                          <Watts>101</Watts>
-                        </TPX>
+                        <ns3:TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <ns3:Watts>101</ns3:Watts>
+                        </ns3:TPX>
                       </Extensions>
                     </Trackpoint>
                     <Trackpoint>
@@ -3477,9 +3477,9 @@ def tcx_with_heart_rate_cadence_and_power() -> str:
                       </HeartRateBpm>
                       <Cadence>51</Cadence>
                       <Extensions>
-                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
-                          <Watts>90</Watts>
-                        </TPX>
+                        <ns3:TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <ns3:Watts>90</ns3:Watts>
+                        </ns3:TPX>
                       </Extensions>
                     </Trackpoint>
                     <Trackpoint>
@@ -3495,9 +3495,9 @@ def tcx_with_heart_rate_cadence_and_power() -> str:
                       </HeartRateBpm>
                       <Cadence>54</Cadence>
                       <Extensions>
-                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
-                          <Watts>120</Watts>
-                        </TPX>
+                        <ns3:TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <ns3:Watts>120</ns3:Watts>
+                        </ns3:TPX>
                       </Extensions>
                     </Trackpoint>
                     <Trackpoint>
@@ -3513,9 +3513,9 @@ def tcx_with_heart_rate_cadence_and_power() -> str:
                       </HeartRateBpm>
                       <Cadence>53</Cadence>
                       <Extensions>
-                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
-                          <Watts>130</Watts>
-                        </TPX>
+                        <ns3:TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <ns3:Watts>130</ns3:Watts>
+                        </ns3:TPX>
                       </Extensions>
                     </Trackpoint>
                     <Trackpoint>
@@ -3531,9 +3531,9 @@ def tcx_with_heart_rate_cadence_and_power() -> str:
                       </HeartRateBpm>
                       <Cadence>54</Cadence>
                       <Extensions>
-                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
-                          <Watts>100</Watts>
-                        </TPX>
+                        <ns3:TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <ns3:Watts>100</ns3:Watts>
+                        </ns3:TPX>
                       </Extensions>
                     </Trackpoint>
                     <Trackpoint>
@@ -3549,9 +3549,9 @@ def tcx_with_heart_rate_cadence_and_power() -> str:
                       </HeartRateBpm>
                       <Cadence>54</Cadence>
                       <Extensions>
-                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
-                          <Watts>90</Watts>
-                        </TPX>
+                        <ns3:TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <ns3:Watts>90</ns3:Watts>
+                        </ns3:TPX>
                       </Extensions>
                     </Trackpoint>
                     <Trackpoint>
@@ -3567,9 +3567,9 @@ def tcx_with_heart_rate_cadence_and_power() -> str:
                       </HeartRateBpm>
                       <Cadence>55</Cadence>
                       <Extensions>
-                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
-                          <Watts>102</Watts>
-                        </TPX>
+                        <ns3:TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <ns3:Watts>102</ns3:Watts>
+                        </ns3:TPX>
                       </Extensions>
                     </Trackpoint>
                     <Trackpoint>
@@ -3585,9 +3585,9 @@ def tcx_with_heart_rate_cadence_and_power() -> str:
                       </HeartRateBpm>
                       <Cadence>53</Cadence>
                       <Extensions>
-                        <TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
-                          <Watts>100</Watts>
-                        </TPX>
+                        <ns3:TPX xmlns="http://www.garmin.com/xmlschemas/ActivityExtension/v2">
+                          <ns3:Watts>100</ns3:Watts>
+                        </ns3:TPX>
                       </Extensions>
                     </Trackpoint>
                 </Track>
@@ -3596,6 +3596,13 @@ def tcx_with_heart_rate_cadence_and_power() -> str:
     </Activities>
 </TrainingCenterDatabase>
 """
+
+
+@pytest.fixture()
+def tcx_with_heart_rate_cadence_and_power(
+    tcx_with_heart_rate_cadence_and_ns3_power: str,
+) -> str:
+    return tcx_with_heart_rate_cadence_and_ns3_power.replace("ns3:", "")
 
 
 @pytest.fixture()
