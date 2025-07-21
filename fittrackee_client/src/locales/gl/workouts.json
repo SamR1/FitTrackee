@@ -4,6 +4,7 @@
   "ASCENT": "ascenso",
   "AVERAGE_CADENCE": "cadencia promedio",
   "AVERAGE_HR": "ritmo cardíaco promedio",
+  "AVERAGE_POWER": "potencia promedio",
   "AVERAGE_SPEED": "velocidade media",
   "AVE_ASCENT": "ascenso medio",
   "AVE_DESCENT": "descenso medio",
@@ -32,6 +33,7 @@
   "DESCRIPTION": "descrición",
   "DESCRIPTION_FIELD_HELP": "Se a escribes, a descrición substituirá a que conteña o ficheiro.",
   "DISPLAY_FILTERS": "mostrar filtros",
+  "DISPLAY_MULTIPLE_CHARTS": "mostrar múltiples gráficos",
   "DISTANCE": "distancia",
   "DOWNLOAD_WORKOUT": "Descargar a actividade (gpx)",
   "DURATION": "duración",
@@ -57,6 +59,7 @@
   "MAX_CADENCE": "cadencia máx.",
   "MAX_FILES": "Número máx. de ficheiros",
   "MAX_HR": "Máx. ritmo cardíaco",
+  "MAX_POWER": "potencia máx.",
   "MAX_SIZE": "tamaño máx.",
   "MAX_SPEED": "Vel. máxima",
   "MAX_SYNC_FILES_IN_ZIP": "máx. número de ficheiros para a subida síncrona",
@@ -84,6 +87,7 @@
   "NO_WORKOUTS": "Sen actividade. | Sen actividades.",
   "NO_WORKOUT_AVAILABLE": "Borrouse a actividade ou non é visible.",
   "PAUSES": "pausas",
+  "POWER": "potencia",
   "PREVIOUS_SEGMENT": "Tramo anterior",
   "PREVIOUS_WORKOUT": "Actividade anterior",
   "PRIVATE_NOTES": "Notas privadas",
@@ -127,6 +131,10 @@
     "spm": {
       "LABEL": "pasos por minuto",
       "UNIT": "spm"
+    },
+    "watt": {
+      "LABEL": "watios",
+      "UNIT": "W"
     }
   },
   "UPLOAD_FIRST_WORKOUT": "Sube un!",
