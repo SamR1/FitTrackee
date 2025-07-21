@@ -2,9 +2,21 @@ name: Docker CI
 
 on:
   push:
-    paths-ignore: ['docs/**', 'docsrc/**', '*.md']
+    paths-ignore: [
+      'docs/**',
+      'docsrc/**',
+      '*.md',
+      'fittrackee_client/src/locales/*',
+      'fittrackee/emails/translations/*'
+    ]
   pull_request:
-    paths-ignore: ['docs/**', 'docsrc/**', '*.md']
+    paths-ignore: [
+      'docs/**',
+      'docsrc/**',
+      '*.md',
+      'fittrackee_client/src/locales/*',
+      'fittrackee/emails/translations/*'
+    ]
     types: [opened, synchronize, reopened]
 
 jobs:
@@ -17,6 +29,9 @@ jobs:
       packages: write
       attestations: write
       id-token: write
+    strategy:
+      matrix:
+        platforms: [ "linux/amd64", "linux/arm64" ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,5 +47,5 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ matrix.platforms }}
           push: false
