@@ -219,6 +219,11 @@
       "HELP": "Se filtras, excluirá os valores extremos (que poderían deberse a erros do GPS) ao calcular a velocidade máxima.",
       "LABEL": "Estratexia para velocidade máx. GPX",
       "RAW_SPEED": "En bruto"
+    },
+    "WORKOUT_CHARTS_DISPLAY": {
+      "LABEL": "Gráfico de análise da actividade",
+      "MULTIPLE": "Cada dato mostrado nun gráfico diferente",
+      "ONE": "Todos os datos no mesmo gráfico"
     }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "Lin e acepto a {0}.",
