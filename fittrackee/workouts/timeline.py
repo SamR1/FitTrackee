@@ -51,6 +51,9 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
             "workouts": [
               {
                 "ascent": null,
+                "ave_cadence": null,
+                "ave_hr": null,
+                "ave_power": null,
                 "ave_speed": 10.0,
                 "bounds": [],
                 "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
@@ -62,6 +65,9 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
                 "id": "kjxavSTUrJvoAh2wvCeGEF",
                 "map": null,
                 "max_alt": null,
+                "max_cadence": null,
+                "max_hr": null,
+                "max_power": null,
                 "max_speed": 10.0,
                 "min_alt": null,
                 "modification_date": null,

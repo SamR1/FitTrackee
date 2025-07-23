@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Change log" href="../changelog.html" /><link rel="prev" title="Troubleshooting" href="index.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Contribute" href="../contributing.html" /><link rel="prev" title="Troubleshooting" href="index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Administrator - FitTrackee 0.10.3 documentation</title>
+        <title>Administrator - FitTrackee 0.11.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">FitTrackee 0.10.3
+      <a href="../index.html"><div class="brand">FitTrackee 0.11.0
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.10.3
+  <span class="sidebar-brand-text">FitTrackee 0.11.0
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -235,6 +235,7 @@
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Administrator</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change log</a></li>
 </ul>
 
@@ -326,7 +327,26 @@
 <div class="line">This error appears in task queue workers logs with <a class="reference external" href="https://flask-dramatiq.readthedocs.io">Flask-dramatiq</a> CLI on Python 3.13+.</div>
 <div class="line">The workaround is to use <a class="reference external" href="https://dramatiq.io">Dramatiq</a> CLI directly, for instance:</div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ dramatiq fittrackee.tasks:broker --processes=2 --log-file=dramatiq.log
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>dramatiq<span class="w"> </span>fittrackee.tasks:broker<span class="w"> </span>--processes<span class="o">=</span><span class="m">2</span><span class="w"> </span>--log-file<span class="o">=</span>dramatiq.log
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="staticmap3-staticmap-error-request-failed-none">
+<h2><code class="docutils literal notranslate"><span class="pre">staticmap3.staticmap</span> <span class="pre">-</span> <span class="pre">ERROR</span> <span class="pre">-</span> <span class="pre">request</span> <span class="pre">failed</span> <span class="pre">[None]</span></code><a class="headerlink" href="#staticmap3-staticmap-error-request-failed-none" title="Link to this heading">¶</a></h2>
+<ul>
+<li><div class="line-block">
+<div class="line">FitTrackee v0.10+ introduces a new environnement variable <code class="docutils literal notranslate"><span class="pre">STATICMAP_CACHE_DIR</span></code>, for <strong>Static Map 3</strong> cache directory.</div>
+<div class="line">For docker installation, the directory must be writable for <code class="docutils literal notranslate"><span class="pre">fittrackee</span></code> user, see in <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> example in the <a class="reference external" href="https://github.com/SamR1/FitTrackee/blob/master/docker-compose.yml">repository</a>:</div>
+</div>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${UPLOAD_DIR:-./data/uploads}:/usr/src/app/uploads</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${LOG_DIR:-./data/logs}:/usr/src/app/logs</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${STATICMAP_CACHE_DIR:-./data/staticmap_cache}:/usr/src/app/.staticmap_cache</span>
+<span class="nt">post_start</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/logs /usr/src/app/.staticmap_cache</span>
+<span class="w">    </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span>
 </pre></div>
 </div>
 </li>
@@ -339,12 +359,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../changelog.html">
+          <a class="next-page" href="../contributing.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Change log</div>
+                <div class="title">Contribute</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -398,6 +418,7 @@
 <li><a class="reference internal" href="#map-images-are-not-displayed-but-map-is-shown-in-workout-detail"><cite>Map images are not displayed but map is shown in Workout detail</cite></a></li>
 <li><a class="reference internal" href="#failed-to-upload-or-download-files"><cite>Failed to upload or download files</cite></a></li>
 <li><a class="reference internal" href="#runtimeerror-thread-already-started"><code class="docutils literal notranslate"><span class="pre">RuntimeError:</span> <span class="pre">thread</span> <span class="pre">already</span> <span class="pre">started</span></code></a></li>
+<li><a class="reference internal" href="#staticmap3-staticmap-error-request-failed-none"><code class="docutils literal notranslate"><span class="pre">staticmap3.staticmap</span> <span class="pre">-</span> <span class="pre">ERROR</span> <span class="pre">-</span> <span class="pre">request</span> <span class="pre">failed</span> <span class="pre">[None]</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -409,7 +430,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=b59eaf29"></script>
+</div><script src="../_static/documentation_options.js?v=f3b36f1a"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
