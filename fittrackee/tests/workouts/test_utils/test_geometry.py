@@ -1,6 +1,9 @@
 from typing import TYPE_CHECKING
 
-from fittrackee.workouts.utils.geometry import get_geojson_from_segments
+from fittrackee.workouts.utils.geometry import (
+    get_chart_data_from_segment_points,
+    get_geojson_from_segments,
+)
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -126,3 +129,347 @@ class TestGetGeojsonFromSegments:
         )
 
         assert geojson is None
+
+
+class TestGetChartDataFromSegmentPoints:
+    def test_it_returns_empty_list_when_no_segments(
+        self, app: "Flask", sport_1_cycling: "Sport"
+    ) -> None:
+        chart_data = get_chart_data_from_segment_points(
+            [],
+            sport_1_cycling.label,
+            workout_ave_cadence=None,
+            can_see_heart_rate=True,
+        )
+
+        assert chart_data == []
+
+    def test_it_returns_empty_list_when_no_segment_points(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+    ) -> None:
+        chart_data = get_chart_data_from_segment_points(
+            [workout_cycling_user_1_segment],
+            sport_1_cycling.label,
+            workout_ave_cadence=70,
+            can_see_heart_rate=True,
+        )
+
+        assert chart_data == []
+
+    def test_it_returns_chart_data_for_one_segment(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        chart_data = get_chart_data_from_segment_points(
+            [workout_cycling_user_1_segment_0_with_coordinates],
+            sport_1_cycling.label,
+            workout_ave_cadence=70,
+            can_see_heart_rate=True,
+        )
+
+        assert len(chart_data) == len(
+            workout_cycling_user_1_segment_0_with_coordinates.points
+        )
+        first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
+            0
+        ]
+        assert chart_data[0] == {
+            "cadence": first_point["cadence"],
+            "distance": first_point["distance"],
+            "duration": 0,
+            "elevation": first_point["elevation"],
+            "hr": first_point["heart_rate"],
+            "latitude": first_point["latitude"],
+            "longitude": first_point["longitude"],
+            "power": first_point["power"],
+            "speed": first_point["speed"],
+            "time": first_point["time"],
+        }
+        last_point = workout_cycling_user_1_segment_0_with_coordinates.points[
+            -1
+        ]
+        assert chart_data[-1] == {
+            "cadence": last_point["cadence"],
+            "distance": 0.11,
+            "duration": last_point["duration"],
+            "elevation": last_point["elevation"],
+            "hr": last_point["heart_rate"],
+            "latitude": last_point["latitude"],
+            "longitude": last_point["longitude"],
+            "power": last_point["power"],
+            "speed": last_point["speed"],
+            "time": last_point["time"],
+        }
+
+    def test_it_returns_chart_data_for_segments(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        chart_data = get_chart_data_from_segment_points(
+            [
+                workout_cycling_user_1_segment_0_with_coordinates,
+                workout_cycling_user_1_segment_1_with_coordinates,
+            ],
+            sport_1_cycling.label,
+            workout_ave_cadence=70,
+            can_see_heart_rate=True,
+        )
+
+        assert len(chart_data) == len(
+            workout_cycling_user_1_segment_0_with_coordinates.points
+            + workout_cycling_user_1_segment_1_with_coordinates.points
+        )
+        first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
+            0
+        ]
+        assert chart_data[0] == {
+            "cadence": first_point["cadence"],
+            "distance": first_point["distance"],
+            "duration": 0,
+            "elevation": first_point["elevation"],
+            "hr": first_point["heart_rate"],
+            "latitude": first_point["latitude"],
+            "longitude": first_point["longitude"],
+            "power": first_point["power"],
+            "speed": first_point["speed"],
+            "time": first_point["time"],
+        }
+        last_point = workout_cycling_user_1_segment_1_with_coordinates.points[
+            -1
+        ]
+        assert chart_data[-1] == {
+            "cadence": last_point["cadence"],
+            "distance": 0.41,
+            "duration": last_point["duration"],
+            "elevation": last_point["elevation"],
+            "hr": last_point["heart_rate"],
+            "latitude": last_point["latitude"],
+            "longitude": last_point["longitude"],
+            "power": last_point["power"],
+            "speed": last_point["speed"],
+            "time": last_point["time"],
+        }
+
+    def test_it_does_not_return_heart_rate_when_flag_is_false(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        chart_data = get_chart_data_from_segment_points(
+            [workout_cycling_user_1_segment_0_with_coordinates],
+            sport_1_cycling.label,
+            workout_ave_cadence=70,
+            can_see_heart_rate=False,
+        )
+
+        first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
+            0
+        ]
+        assert chart_data[0] == {
+            "cadence": first_point["cadence"],
+            "distance": first_point["distance"],
+            "duration": 0,
+            "elevation": first_point["elevation"],
+            "latitude": first_point["latitude"],
+            "longitude": first_point["longitude"],
+            "power": first_point["power"],
+            "speed": first_point["speed"],
+            "time": first_point["time"],
+        }
+        last_point = workout_cycling_user_1_segment_0_with_coordinates.points[
+            -1
+        ]
+        assert chart_data[-1] == {
+            "cadence": last_point["cadence"],
+            "distance": 0.11,
+            "duration": last_point["duration"],
+            "elevation": last_point["elevation"],
+            "latitude": last_point["latitude"],
+            "longitude": last_point["longitude"],
+            "power": last_point["power"],
+            "speed": last_point["speed"],
+            "time": last_point["time"],
+        }
+
+    def test_it_does_not_return_cadence_when_sport_is_not_associated_with_cadence(  # noqa
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        sport_4_paragliding: "Sport",
+        user_1: "User",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        chart_data = get_chart_data_from_segment_points(
+            [workout_cycling_user_1_segment_0_with_coordinates],
+            sport_4_paragliding.label,
+            workout_ave_cadence=70,
+            can_see_heart_rate=True,
+        )
+
+        first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
+            0
+        ]
+        assert chart_data[0] == {
+            "distance": first_point["distance"],
+            "duration": 0,
+            "elevation": first_point["elevation"],
+            "hr": first_point["heart_rate"],
+            "latitude": first_point["latitude"],
+            "longitude": first_point["longitude"],
+            "speed": first_point["speed"],
+            "time": first_point["time"],
+        }
+        last_point = workout_cycling_user_1_segment_0_with_coordinates.points[
+            -1
+        ]
+        assert chart_data[-1] == {
+            "distance": 0.11,
+            "duration": last_point["duration"],
+            "elevation": last_point["elevation"],
+            "hr": last_point["heart_rate"],
+            "latitude": last_point["latitude"],
+            "longitude": last_point["longitude"],
+            "speed": last_point["speed"],
+            "time": last_point["time"],
+        }
+
+    def test_it_does_not_return_cadence_when_ave_cadence_equals_0(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        sport_4_paragliding: "Sport",
+        user_1: "User",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        chart_data = get_chart_data_from_segment_points(
+            [workout_cycling_user_1_segment_0_with_coordinates],
+            sport_4_paragliding.label,
+            workout_ave_cadence=0,
+            can_see_heart_rate=True,
+        )
+
+        first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
+            0
+        ]
+        assert chart_data[0] == {
+            "distance": first_point["distance"],
+            "duration": 0,
+            "elevation": first_point["elevation"],
+            "hr": first_point["heart_rate"],
+            "latitude": first_point["latitude"],
+            "longitude": first_point["longitude"],
+            "speed": first_point["speed"],
+            "time": first_point["time"],
+        }
+        last_point = workout_cycling_user_1_segment_0_with_coordinates.points[
+            -1
+        ]
+        assert chart_data[-1] == {
+            "distance": 0.11,
+            "duration": last_point["duration"],
+            "elevation": last_point["elevation"],
+            "hr": last_point["heart_rate"],
+            "latitude": last_point["latitude"],
+            "longitude": last_point["longitude"],
+            "speed": last_point["speed"],
+            "time": last_point["time"],
+        }
+
+    def test_it_does_not_return_elevation_when_sport_is_outdoor_tennis(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        sport_5_outdoor_tennis: "Sport",
+        user_1: "User",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        chart_data = get_chart_data_from_segment_points(
+            [workout_cycling_user_1_segment_0_with_coordinates],
+            sport_5_outdoor_tennis.label,
+            workout_ave_cadence=70,
+            can_see_heart_rate=True,
+        )
+
+        first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
+            0
+        ]
+        assert chart_data[0] == {
+            "distance": first_point["distance"],
+            "duration": 0,
+            "hr": first_point["heart_rate"],
+            "latitude": first_point["latitude"],
+            "longitude": first_point["longitude"],
+            "speed": first_point["speed"],
+            "time": first_point["time"],
+        }
+        last_point = workout_cycling_user_1_segment_0_with_coordinates.points[
+            -1
+        ]
+        assert chart_data[-1] == {
+            "distance": 0.11,
+            "duration": last_point["duration"],
+            "hr": last_point["heart_rate"],
+            "latitude": last_point["latitude"],
+            "longitude": last_point["longitude"],
+            "speed": last_point["speed"],
+            "time": last_point["time"],
+        }
+
+    def test_it_does_not_return_power_when_sport_is_not_associated_with_power(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        user_1: "User",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        chart_data = get_chart_data_from_segment_points(
+            [workout_cycling_user_1_segment_0_with_coordinates],
+            sport_2_running.label,
+            workout_ave_cadence=140,
+            can_see_heart_rate=True,
+        )
+
+        first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
+            0
+        ]
+        assert chart_data[0] == {
+            "cadence": 0,
+            "distance": first_point["distance"],
+            "duration": 0,
+            "elevation": first_point["elevation"],
+            "hr": first_point["heart_rate"],
+            "latitude": first_point["latitude"],
+            "longitude": first_point["longitude"],
+            "speed": first_point["speed"],
+            "time": first_point["time"],
+        }
+        last_point = workout_cycling_user_1_segment_0_with_coordinates.points[
+            -1
+        ]
+        assert chart_data[-1] == {
+            "cadence": 106,
+            "distance": 0.11,
+            "duration": last_point["duration"],
+            "elevation": last_point["elevation"],
+            "hr": last_point["heart_rate"],
+            "latitude": last_point["latitude"],
+            "longitude": last_point["longitude"],
+            "speed": last_point["speed"],
+            "time": last_point["time"],
+        }

@@ -65,12 +65,12 @@ from .services import (
 from .services.workouts_from_file_refresh_service import (
     WorkoutFromFileRefreshService,
 )
+from .utils.chart import get_chart_data
 from .utils.convert import convert_in_duration
 from .utils.geometry import get_geojson_from_segments
 from .utils.gpx import (
     WorkoutGPXException,
     extract_segment_from_gpx_file,
-    get_chart_data_from_gpx,
     get_file_extension,
 )
 from .utils.workouts import get_datetime_from_request_args
@@ -830,14 +830,11 @@ def get_workout_data(
         )
 
     try:
-        absolute_gpx_filepath = get_absolute_file_path(workout.gpx)
         can_see_heart_rate = can_view_heart_rate(workout.user, auth_user)
         if data_type == "chart_data":
             data: "Dict" = {
-                "chart_data": get_chart_data_from_gpx(
-                    absolute_gpx_filepath,
-                    workout.sport.label,
-                    workout.ave_cadence,
+                "chart_data": get_chart_data(
+                    workout,
                     can_see_heart_rate=can_see_heart_rate,
                     segment_id=segment_id,
                 )
@@ -849,6 +846,7 @@ def get_workout_data(
                 )
             }
         else:  # data_type == 'gpx'
+            absolute_gpx_filepath = get_absolute_file_path(workout.gpx)
             with open(absolute_gpx_filepath, encoding="utf-8") as f:
                 gpx_content = f.read()
                 if segment_id is not None:

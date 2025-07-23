@@ -57,7 +57,9 @@ def get_chart_data_from_gpx(
     - cadence (if available)
     - power (if available)
 
-    Note: some files contains only zero cadence values. In this case,
+    Notes:
+    - this function is deprecated and will be removed in a future version.
+    - some files contains only zero cadence values. In this case,
     workout average cadence is None and cadence is not displayed.
     """
     gpx = open_gpx_file(gpx_file)
