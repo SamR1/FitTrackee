@@ -151,6 +151,47 @@ def workout_cycling_user_1_segment(
 
 
 @pytest.fixture()
+def workout_cycling_user_1_segment_with_coordinates(
+    workout_cycling_user_1: Workout,
+) -> WorkoutSegment:
+    workout_segment = WorkoutSegment(
+        workout_id=workout_cycling_user_1.id,
+        workout_uuid=workout_cycling_user_1.uuid,
+        segment_id=0,
+    )
+    workout_segment.duration = timedelta(seconds=6000)
+    workout_segment.moving = workout_segment.duration
+    workout_segment.distance = 5
+    db.session.add(workout_segment)
+    coordinates = [
+        [6.07367, 44.68095],
+        [6.07367, 44.68091],
+        [6.07364, 44.6808],
+        [6.07361, 44.68049],
+    ]
+    workout_segment.store_geometry(coordinates)
+    db.session.commit()
+    return workout_segment
+
+
+@pytest.fixture()
+def workout_cycling_user_1_segment_2(
+    workout_cycling_user_1: Workout,
+) -> WorkoutSegment:
+    workout_segment = WorkoutSegment(
+        workout_id=workout_cycling_user_1.id,
+        workout_uuid=workout_cycling_user_1.uuid,
+        segment_id=1,
+    )
+    workout_segment.duration = timedelta(seconds=3000)
+    workout_segment.moving = workout_segment.duration
+    workout_segment.distance = 2
+    db.session.add(workout_segment)
+    db.session.commit()
+    return workout_segment
+
+
+@pytest.fixture()
 def another_workout_cycling_user_1() -> Workout:
     workout = Workout(
         user_id=1,
