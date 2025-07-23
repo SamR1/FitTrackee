@@ -38,7 +38,7 @@ def get_geojson_from_segments(
 
 
 def get_chart_data_from_segment_points(
-    segments: List["WorkoutSegment"],
+    segments_points: List[List[Dict]],
     sport_label: str,
     *,
     workout_ave_cadence: Optional[int],
@@ -65,18 +65,17 @@ def get_chart_data_from_segment_points(
     return_power = sport_label in POWER_SPORTS
     total_distance = 0
 
-    for segment in segments:
-        if not segment.points:
+    for segment_points in segments_points:
+        if not segment_points:
             continue
 
-        points_count = len(segment.points)
-
-        first_point = segment.points[0]
+        points_count = len(segment_points)
+        first_point = segment_points[0]
         first_point_duration = (
-            first_point["duration"] if len(segments) == 1 else 0
+            first_point["duration"] if len(segments_points) == 1 else 0
         )
 
-        for index, point in enumerate(segment.points, start=1):
+        for index, point in enumerate(segment_points, start=1):
             distance = round((point["distance"]) / 1000 + total_distance, 2)
             data = {
                 "distance": distance,
