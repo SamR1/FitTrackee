@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="OAuth 2.0" href="oauth.html" /><link rel="prev" title="FitTrackee" href="index.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Features - FitTrackee 0.10.3 documentation</title>
+        <title>Features - FitTrackee 0.11.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.10.3
+      <a href="index.html"><div class="brand">FitTrackee 0.11.0
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.10.3
+  <span class="sidebar-brand-text">FitTrackee 0.11.0
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -235,6 +235,7 @@
 <li class="toctree-l2"><a class="reference internal" href="troubleshooting/administrator.html">Administrator</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Change log</a></li>
 </ul>
 
@@ -301,7 +302,7 @@
 <section id="sports">
 <h3>Sports<a class="headerlink" href="#sports" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>23 sports are supported:</p>
+<li><p>24 sports are supported:</p>
 <ul>
 <li><p>Canoeing  (<em>new in 0.9.3</em>)</p></li>
 <li><p>Cycling (Sport)</p></li>
@@ -323,6 +324,7 @@
 <li><p>Snowshoes (<em>new in 0.5.2</em>)</p></li>
 <li><p>Standup paddleboarding (<em>new in 0.10.3</em>)</p></li>
 <li><p>Swimrun (<em>new in 0.8.7</em>)</p></li>
+<li><p>Tennis (Outdoor) (<em>new in 0.11.0</em>)</p></li>
 <li><p>Trail (<em>new in 0.5.0</em>)</p></li>
 <li><p>Walking</p></li>
 <li><p>Windsurfing  (<em>new in 0.9.10</em>)</p></li>
@@ -337,6 +339,7 @@
 <li><p>Skiing (Cross Country)</p></li>
 <li><p>Snowshoes</p></li>
 <li><p>Swimrun</p></li>
+<li><p>Tennis (Outdoor)</p></li>
 <li><p>Trail</p></li>
 <li><p>Walking</p></li>
 </ul>
@@ -351,6 +354,7 @@
 <div class="line-block">
 <div class="line">Except the stopped speed threshold, all sports are analyzed in the same way (no specificity taken into account for the moment).</div>
 <div class="line">Swimrun is displayed as a single activity with no difference between segments for now.</div>
+<div class="line">Elevation-related data for Outdoor Tennis are not displayed if the file contains elevation (they are still stored in database).</div>
 </div>
 </div>
 </section>
@@ -449,7 +453,7 @@
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>.fit files from Garmin devices may contain product id instead of product name. The mapping between the product id and the product name allows the product name to be displayed instead, if available (<em>mapping updated in 0.10.3</em>).</p>
+<p>.fit files from Garmin devices may contain product id instead of product name. The mapping between the product id and the product name allows the product name to be displayed instead, if available (<em>mapping updated in 0.11.0</em>).</p>
 </div>
 <ul>
 <li><div class="line-block">
@@ -466,6 +470,7 @@
 <li><div class="line-block">
 <div class="line">A map is displayed for workout with a file.</div>
 <div class="line">Controls allow full screen view and position reset (<em>new in 0.5.5</em>).</div>
+<div class="line">If the sport is Outdoor Tennis, a heat map is also available (<em>new in 0.11.0</em>).</div>
 </div>
 </li>
 <li><div class="line-block">
@@ -493,14 +498,29 @@
 <li><p>Open Water Swimming</p></li>
 </ul>
 </li>
+<li><p>power if available (<em>new in 0.11.0</em>), for the following sports:</p>
+<ul>
+<li><p>Cycling (Sport)</p></li>
+<li><p>Cycling (Trekking)</p></li>
+<li><p>Cycling (Transport)</p></li>
+<li><p>Cycling (Virtual)</p></li>
+<li><p>Halfbike</p></li>
+<li><p>Mountain Biking</p></li>
+<li><p>Mountain Biking (Electric)</p></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>For now, source and average and max values for heart rate and cadence are not displayed for workouts created before v0.10.0 (see <a class="reference external" href="https://github.com/SamR1/FitTrackee/issues/816">issue #816</a>).</p>
+<div class="line-block">
+<div class="line">For now, source and average and max values for heart rate and cadence are not displayed for workouts created before v0.10.0 (see <a class="reference external" href="https://github.com/SamR1/FitTrackee/issues/816">issue #816</a>).</div>
+<div class="line">Average and max values for power are not displayed for workouts created before v0.11.0.</div>
+</div>
 </div>
 <ul>
+<li><p>These data (speed, elevation, heart rate, cadence and power) can be displayed on one chart or split on multiple charts. The preferred display can be stored in a user preference (<em>new in 0.11.0</em>).</p></li>
 <li><div class="line-block">
 <div class="line">If <strong>Visual Crossing</strong> (<em>new in 0.7.11</em>) API key is provided, weather is displayed in workout detail. Data source is displayed in <strong>About</strong> page.</div>
 <div class="line">Wind is displayed, with an arrow indicating the direction (a tooltip can be displayed with the direction that the wind is coming <strong>from</strong>) (<em>new in 0.5.5</em>).</div>
@@ -885,6 +905,12 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><p>none.</p></li>
 </ul>
 </li>
+<li><p>A user can set the preferred display for workout chart (<em>new in 0.11.0</em>):</p>
+<ul>
+<li><p>all data on a single chart</p></li>
+<li><p>each data displayed on a different chart</p></li>
+</ul>
+</li>
 </ul>
 </section>
 <section id="equipments">
@@ -900,7 +926,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><p>Bike Trainer: Cycling (Virtual),</p></li>
 <li><p>Board: Standup paddleboarding (<em>new in 0.10.3</em>) and Windsurfing (<em>new in 0.9.10</em>),</p></li>
 <li><p>Kayak/Boat: Canoeing, Rowing and Kayaking (<em>changed in 0.9.3</em>),</p></li>
-<li><p>Shoes: Hiking, Mountaineering, Running, Trail and Walking,</p></li>
+<li><p>Shoes: Hiking, Mountaineering, Running, Tennis (Outdoor), Trail and Walking (<em>changed in 0.11.0</em>),</p></li>
 <li><p>Skis: Skiing (Alpine and Cross Country),</p></li>
 <li><p>Snowshoes: Snowshoes.</p></li>
 </ul>
@@ -1379,7 +1405,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=b59eaf29"></script>
+</div><script src="_static/documentation_options.js?v=f3b36f1a"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

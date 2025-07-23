@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Documentation de l&#39;API" href="api/index.html" /><link rel="prev" title="Interface de ligne de commande" href="cli.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Recherche" href="search.html" /><link rel="next" title="Historique des modifications" href="changelog.html" /><link rel="prev" title="Administrateur" href="troubleshooting/administrator.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Outils tiers - Documentation FitTrackee 0.11.0</title>
+        <title>Contribuer - Documentation FitTrackee 0.11.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -211,7 +211,7 @@
 <li class="toctree-l1"><a class="reference internal" href="oauth.html">OAuth 2.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli.html">Interface de ligne de commande</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Outils tiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="third_party_tools.html">Outils tiers</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/index.html">Documentation de l'API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l'API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/auth.html">Authentification et compte</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/configuration.html">Configuration</a></li>
@@ -235,7 +235,7 @@
 <li class="toctree-l2"><a class="reference internal" href="troubleshooting/administrator.html">Administrateur</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contribuer</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Contribuer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Historique des modifications</a></li>
 </ul>
 
@@ -245,10 +245,10 @@
     <i class="fa fa-language"></i>
   </span>
   <div class="languages-list">
-    <a href="../en/third_party_tools.html" hreflang=en lang=en>
+    <a href="../en/contributing.html" hreflang=en lang=en>
       English
     </a>
-    <a href="../fr/third_party_tools.html" hreflang=fr lang=fr>
+    <a href="../fr/contributing.html" hreflang=fr lang=fr>
       Français
     </a>
   </div>
@@ -268,7 +268,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="_sources/third_party_tools.rst.txt" title="View this page">
+  <a class="muted-link" href="_sources/contributing.md.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -288,22 +288,115 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="third-party-tools">
-<h1>Outils tiers<a class="headerlink" href="#third-party-tools" title="Lien vers cette rubrique">¶</a></h1>
-<p>Grâce aux contributeurs, les outils suivants sont disponibles :</p>
-<section id="import-tools">
-<h2>Outils d'importation<a class="headerlink" href="#import-tools" title="Lien vers cette rubrique">¶</a></h2>
+          <section id="contribute">
+<h1>Contribuer<a class="headerlink" href="#contribute" title="Lien vers cette rubrique">¶</a></h1>
+<p>Tout d'abord, merci de votre intérêt pour contribuer !</p>
+<section id="report-issues-ask-for-features">
+<h2>Signaler des problèmes, demander des fonctionnalités<a class="headerlink" href="#report-issues-ask-for-features" title="Lien vers cette rubrique">¶</a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/jat255/strava-to-fittrackee">strava-to-fittrackee</a> (import des séances à partir d'un compte Strava)</p></li>
-<li><p><a class="reference external" href="https://github.com/ebrithiljonas/fittrackee-uploader">FitTrackee Uploader</a> (ajout de fichiers .gpx et .fit)</p></li>
-<li><p><a class="reference external" href="https://git.dryusdan.fr/Dryusdan/garmin-to-fittrackee">garmin-to-fittrackee</a> (script pour synchroniser fittrackee à partir de garmin)</p></li>
+<li><p>Si le bug concerne une <strong>faille de sécurité</strong>, veuillez vous référer à la <a class="reference external" href="https://github.com/SamR1/FitTrackee/blob/master/SECURITY.md">politique de sécurité</a>.</p></li>
+<li><p>Assurez-vous qu'un ticket n'a pas <strong>déjà été ouvert</strong> en effectuant une recherche dans le <a class="reference external" href="https://github.com/SamR1/FitTrackee/issues">tickets</a> dans <strong>GitHub</strong>.</p></li>
+<li><p>Si ce n'est pas le cas, ouvrez un <a class="reference external" href="https://github.com/SamR1/FitTrackee/issues/new">nouveau ticket</a> avec un titre descriptif et une description.</p></li>
 </ul>
 </section>
-<section id="installation-scripts">
-<h2>Scripts d'installation<a class="headerlink" href="#installation-scripts" title="Lien vers cette rubrique">¶</a></h2>
+<section id="contributing-code">
+<h2>Contribuer au code<a class="headerlink" href="#contributing-code" title="Lien vers cette rubrique">¶</a></h2>
+<section id="project-repository">
+<h3>Dépôt du projet<a class="headerlink" href="#project-repository" title="Lien vers cette rubrique">¶</a></h3>
+<p>Le dépôt <strong>GitHub</strong> contient :</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/speefak/fittrackee_installer.sh">fittrackee_installer.sh</a> (installe FitTrackee sur debian 12 netinstall)</p></li>
+<li><p>le code source (à noter que le dépôt contient également les fichiers compilés client),</p></li>
+<li><p>traductions,</p></li>
+<li><p>tests,</p></li>
+<li><p>documentation (source, traductions et fichiers compilés).</p></li>
 </ul>
+<p>Les workflows d'intégration continue s'exécutent sur la plateforme <strong>Github Actions</strong> (lors de <strong>push</strong> et <strong>pull requests</strong>).</p>
+<p>Pour le moment, les versions publiées ne suivent pas la <a class="reference external" href="https://semver.org/lang/fr/">gestion sémantique de version</a>. Toute version peut contenir des changements non rétro-compatibles.</p>
+</section>
+<section id="translations">
+<h3>Traductions<a class="headerlink" href="#translations" title="Lien vers cette rubrique">¶</a></h3>
+<p>Les fichiers de traduction de l'application se trouvent :</p>
+<ul class="simple">
+<li><p>côté API (pour les courriels) : <code class="docutils literal notranslate"><span class="pre">fittrackee/emails/translations/</span></code> (implémenté avec <a class="reference external" href="https://babel.pocoo.org/en/latest/">Babel</a>)</p></li>
+<li><p>côté client : <code class="docutils literal notranslate"><span class="pre">fittrackee/emails/translations/</span></code> (implémenté via <a class="reference external" href="https://vue-i18n.intlify.dev/">Vue I18n</a>)</p></li>
+</ul>
+<p>Les traductions peuvent être mises à jour via <a class="reference external" href="https://hosted.weblate.org/engage/fittrackee/">Weblate</a>.<br />Pour toute demande de nouvelle langue, veuillez ouvrir un ticket afin d'initialiser les fichiers de traduction et de rendre la langue disponible sur Weblate.</p>
+<p>La traduction de la documentation se trouvent dans le répertoire suivant : <code class="docutils literal notranslate"><span class="pre">docsrc/locales</span></code>. Pour l'instant, seuls l'anglais et le français sont disponibles et les fichiers de traduction ne sont pas encore disponibles sur Weblate.</p>
+</section>
+<section id="how-to-install-fittrackee">
+<h3>Comment installer FitTrackee<a class="headerlink" href="#how-to-install-fittrackee" title="Lien vers cette rubrique">¶</a></h3>
+<p>voir les <a class="reference external" href="https://docs.fittrackee.org/en/installation.html">instructions d'installation</a></p>
+</section>
+<section id="pull-requests">
+<h3>Pull Requests<a class="headerlink" href="#pull-requests" title="Lien vers cette rubrique">¶</a></h3>
+<p>Remarque : Avant de commencer, veuillez ouvrir un ticket pour discuter de la mise en œuvre si la fonctionnalité nécessite des modifications majeures ou implique l'ajout d'un nouveau sport ou d'une nouvelle langue. Pour les demandes de nouveaux sports, <strong>FitTrackee</strong> étant basée sur des fichiers (.gpx ou autre format supporté) pour des activités de plein air, seuls les sports associés à un fichier peuvent être ajoutés pour le moment.</p>
+<p>Veuillez effectuer vos modifications à partir de la branche de développement (<code class="docutils literal notranslate"><span class="pre">dev</span></code>)</p>
+<ul>
+<li><p>Dupliquer le dépôt (voir les <a class="reference external" href="https://docs.github.com/fr/get-started/exploring-projects-on-github/contributing-to-a-project">instructions sur GitHub</a>)</p></li>
+<li><p>Implémentez votre fonctionnalité</p></li>
+<li><p>Si vos modifications nécessitent une migration de base de données :</p>
+<ul>
+<li><p>Vous pouvez en générer un après avoir mis à jour les modèles avec la commande suivante :</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>migrate-db
+</pre></div>
+</div>
+</li>
+<li><p>Pour la migration des données, un fichier de migration vide peut être créé avec la commande suivante :</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>revision<span class="w"> </span><span class="nv">MIGRATION_MESSAGE</span><span class="o">=</span><span class="s2">&quot;&lt;MIGRATION_MESSAGE&gt;&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Renommez la migration en la préfixant avec le numéro suivant.</p></li>
+<li><p>Pour appliquer les modifications de la base de données :</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>upgrade-db
+</pre></div>
+</div>
+</li>
+<li><p>Vérifiez la migration vers une version inférieure.</p></li>
+</ul>
+</li>
+<li><p>Exécutez des vérifications (<em>lint</em>, vérification de type et tests unitaires).</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>check-all
+</pre></div>
+</div>
+<p>Il existe des tests de bout en bout. Pour les exécuter (une application doit être en cours d'exécution) :</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>test-e2e
+</pre></div>
+</div>
+</li>
+<li><p>Si nécessaire, mettez à jour les traductions (ajoutez au moins les chaînes en anglais).</p>
+<ul>
+<li><p>Côté client, mettre à jour les fichiers dans le répertoire <code class="docutils literal notranslate"><span class="pre">fittrackee_client/src/locales</span></code>.</p></li>
+<li><p>Côté API (courriels), pour extraire les nouvelles chaînes dans <code class="docutils literal notranslate"><span class="pre">messages.pot</span></code> :</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>babel-extract
+</pre></div>
+</div>
+<p>Pour ajouter les nouvelles chaînes dans les fichiers de traductions (<code class="docutils literal notranslate"><span class="pre">fittrackee/emails/translations/&lt;LANG&gt;/LC_MESSAGES/messages.po</span></code>) :</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>babel-update
+</pre></div>
+</div>
+<p>Après avoir mis à jour les chaînes dans <code class="docutils literal notranslate"><span class="pre">messages.po</span></code>, compilez les traductions :</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>babel-compile
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>Si nécessaire, ajoutez ou mettez à jour des tests.</p></li>
+<li><p>Si nécessaire, mettez à jour la documentation (inutile de compiler la documentation, elle sera effectuée lors de la publication de la version).</p></li>
+<li><p>Si le code mis à jour contient des modifications côté client, vous pouvez générer les ressources JavaScript pour vérifier <strong>FitTrackee</strong> sans démarrer le serveur de développement client :</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>build-client
+</pre></div>
+</div>
+<p>Il n'est pas nécessaire d'ajouter ces fichiers, les fichiers seront compilés avant la fusion de la <em>pull request</em> ou lors de la publication de la version.</p>
+</li>
+<li><p>Créez votre <em>pull request</em> avec comme branche cible la branche <code class="docutils literal notranslate"><span class="pre">dev</span></code>.</p></li>
+<li><p>Assurez-vous que la description de la <em>pull request</em> décrit clairement le problème et sa solution. Indiquez le numéro du ticket concerné, le cas échéant.</p></li>
+<li><p>Vérifiez que tous les tests se sont exécutés avec succès.</p></li>
+<li><p>Si nécessaire, mettez à jour votre branche.</p></li>
+</ul>
+<p>Merci.</p>
+</section>
 </section>
 </section>
 
@@ -312,23 +405,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="api/index.html">
+          <a class="next-page" href="changelog.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Documentation de l'API</div>
+                <div class="title">Historique des modifications</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="cli.html">
+          <a class="prev-page" href="troubleshooting/administrator.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Interface de ligne de commande</div>
+                <div class="title">Administrateur</div>
                 
               </div>
             </a>
@@ -366,9 +459,15 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Outils tiers</a><ul>
-<li><a class="reference internal" href="#import-tools">Outils d'importation</a></li>
-<li><a class="reference internal" href="#installation-scripts">Scripts d'installation</a></li>
+<li><a class="reference internal" href="#">Contribuer</a><ul>
+<li><a class="reference internal" href="#report-issues-ask-for-features">Signaler des problèmes, demander des fonctionnalités</a></li>
+<li><a class="reference internal" href="#contributing-code">Contribuer au code</a><ul>
+<li><a class="reference internal" href="#project-repository">Dépôt du projet</a></li>
+<li><a class="reference internal" href="#translations">Traductions</a></li>
+<li><a class="reference internal" href="#how-to-install-fittrackee">Comment installer FitTrackee</a></li>
+<li><a class="reference internal" href="#pull-requests">Pull Requests</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

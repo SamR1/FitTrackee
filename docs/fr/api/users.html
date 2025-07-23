@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Recherche" href="../search.html" /><link rel="next" title="Séances" href="workouts.html" /><link rel="prev" title="Flux de séances" href="timeline.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Utilisateurs - Documentation FitTrackee 0.10.3</title>
+        <title>Utilisateurs - Documentation FitTrackee 0.11.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.10.3
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.11.0
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.10.3
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.11.0
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -212,12 +212,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cli.html">Interface de ligne de commande</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../third_party_tools.html">Outils tiers</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Documentation de l’API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l’API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Documentation de l'API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l'API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="auth.html">Authentification et compte</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="comments.html">Commentaires</a></li>
 <li class="toctree-l2"><a class="reference internal" href="equipments.html">Équipements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="equipment_types.html">Types d’équipement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="equipment_types.html">Types d'équipement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="follow_requests.html">Demandes de suivi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oauth2.html">OAuth2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notifications.html">Notifications</a></li>
@@ -235,6 +235,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../troubleshooting/administrator.html">Administrateur</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contribuer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Historique des modifications</a></li>
 </ul>
 
@@ -292,8 +293,8 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-users">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/users</span></span><a class="headerlink" href="#get--api-users" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Obtenir tous les utilisateurs (quel que soit le statut de leur compte), si l’utilisateur authentifié a des droits d’administration le courriel est renvoyé.</p>
-<p>Ne renvoie les préférences de l’utilisateur que pour l’utilisateur authentifié.</p>
+<dd><p>Obtenir tous les utilisateurs (quel que soit le statut de leur compte), si l'utilisateur authentifié a des droits d'administration le courriel est renvoyé.</p>
+<p>Ne renvoie les préférences de l'utilisateur que pour l'utilisateur authentifié.</p>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">users:read</span></code></p>
 <p><strong>Exemple de requête</strong> :</p>
 <ul class="simple">
@@ -424,32 +425,32 @@
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres de requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>page</strong> (<em>integer</em>) – page si pagination (par défaut : 1)</p></li>
-<li><p><strong>per_page</strong> (<em>integer</em>) – nombre d’utilisateurs par page (par défaut : 10, max : 50)</p></li>
-<li><p><strong>q</strong> (<em>string</em>) – requête sur le nom de l’utilisateur</p></li>
-<li><p><strong>order</strong> (<em>string</em>) – ordre de tri : <code class="docutils literal notranslate"><span class="pre">asc</span></code>, <code class="docutils literal notranslate"><span class="pre">desc</span></code> (par défaut : <code class="docutils literal notranslate"><span class="pre">asc</span></code>)</p></li>
-<li><p><strong>order_by</strong> (<em>string</em>) – critères de tri : <code class="docutils literal notranslate"><span class="pre">username</span></code>, <code class="docutils literal notranslate"><span class="pre">created_at</span></code>, <code class="docutils literal notranslate"><span class="pre">workouts_count</span></code>, <code class="docutils literal notranslate"><span class="pre">role</span></code>, <code class="docutils literal notranslate"><span class="pre">is_active</span></code> (par défaut : <code class="docutils literal notranslate"><span class="pre">username</span></code>)</p></li>
-<li><p><strong>with_following</strong> (<em>boolean</em>) – renvoie les utilisateurs dont le profil est masqué si <code class="docutils literal notranslate"><span class="pre">true</span></code></p></li>
-<li><p><strong>with_hidden_users</strong> (<em>boolean</em>) – renvoie les utilisateurs dont le profil est masqué si <code class="docutils literal notranslate"><span class="pre">true</span></code> (seulement si l’utilisateur a les droits d’administration - pour l’administration des utilisateurs</p></li>
-<li><p><strong>with_inactive</strong> (<em>boolean</em>) – renvoie les utilisateurs inactifs si <code class="docutils literal notranslate"><span class="pre">true</span></code> (seulement si l’utilisateur a les droits d’administration - pour l’administration des utilisateurs</p></li>
-<li><p><strong>with_suspended</strong> (<em>boolean</em>) – renvoie les utilisateurs suspendus si <code class="docutils literal notranslate"><span class="pre">true</span></code> (seulement si l’utilisateur a les droits d’administration - pour l’administration des utilisateurs</p></li>
+<li><p><strong>page</strong> (<em>integer</em>) -- page si pagination (par défaut : 1)</p></li>
+<li><p><strong>per_page</strong> (<em>integer</em>) -- nombre d'utilisateurs par page (par défaut : 10, max : 50)</p></li>
+<li><p><strong>q</strong> (<em>string</em>) -- requête sur le nom de l'utilisateur</p></li>
+<li><p><strong>order</strong> (<em>string</em>) -- ordre de tri : <code class="docutils literal notranslate"><span class="pre">asc</span></code>, <code class="docutils literal notranslate"><span class="pre">desc</span></code> (par défaut : <code class="docutils literal notranslate"><span class="pre">asc</span></code>)</p></li>
+<li><p><strong>order_by</strong> (<em>string</em>) -- critères de tri : <code class="docutils literal notranslate"><span class="pre">username</span></code>, <code class="docutils literal notranslate"><span class="pre">created_at</span></code>, <code class="docutils literal notranslate"><span class="pre">workouts_count</span></code>, <code class="docutils literal notranslate"><span class="pre">role</span></code>, <code class="docutils literal notranslate"><span class="pre">is_active</span></code> (par défaut : <code class="docutils literal notranslate"><span class="pre">username</span></code>)</p></li>
+<li><p><strong>with_following</strong> (<em>boolean</em>) -- renvoie les utilisateurs dont le profil est masqué si <code class="docutils literal notranslate"><span class="pre">true</span></code></p></li>
+<li><p><strong>with_hidden_users</strong> (<em>boolean</em>) -- renvoie les utilisateurs dont le profil est masqué si <code class="docutils literal notranslate"><span class="pre">true</span></code> (seulement si l'utilisateur a les droits d'administration - pour l'administration des utilisateurs</p></li>
+<li><p><strong>with_inactive</strong> (<em>boolean</em>) -- renvoie les utilisateurs inactifs si <code class="docutils literal notranslate"><span class="pre">true</span></code> (seulement si l'utilisateur a les droits d'administration - pour l'administration des utilisateurs</p></li>
+<li><p><strong>with_suspended</strong> (<em>boolean</em>) -- renvoie les utilisateurs suspendus si <code class="docutils literal notranslate"><span class="pre">true</span></code> (seulement si l'utilisateur a les droits d'administration - pour l'administration des utilisateurs</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
@@ -461,8 +462,8 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-users-(user_name)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/users/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-users-(user_name)" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Obtenir les informations de l’utilisateur. Si l’utilisateur est authentifié, ce point d’entrée renvoie les relations. Si l’utilisateur a des droits  d’administrations, l’email est renvoyé.</p>
-<p>Ne renvoie les préférences de l’utilisateur que pour l’utilisateur authentifié.</p>
+<dd><p>Obtenir les informations de l'utilisateur. Si l'utilisateur est authentifié, ce point d'entrée renvoie les relations. Si l'utilisateur a des droits  d'administrations, l'email est renvoyé.</p>
+<p>Ne renvoie les préférences de l'utilisateur que pour l'utilisateur authentifié.</p>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">users:read</span></code> pour le client OAuth 2.0</p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/users/admin</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -471,7 +472,7 @@
 </div>
 <p><strong>Exemple de réponse</strong> :</p>
 <ul class="simple">
-<li><p>quand l’utilisateur est authentifié</p></li>
+<li><p>quand l'utilisateur est authentifié</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -592,28 +593,28 @@
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user_name</strong> (<em>integer</em>) – nom de l’utilisateur</p></li>
+<li><p><strong>user_name</strong> (<em>integer</em>) -- nom de l'utilisateur</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer” si l’utilisateur est authentifié</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer' si l'utilisateur est authentifié</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></p></li>
 </ul>
 </p></li>
@@ -625,7 +626,7 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-users-(user_name)-picture">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/users/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/picture</span></span><a class="headerlink" href="#get--api-users-(user_name)-picture" title="Lien vers cette définition">¶</a></dt>
-<dd><p>obtenir l’image de l’utilisateur</p>
+<dd><p>obtenir l'image de l'utilisateur</p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/users/admin/picture</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -639,13 +640,13 @@
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user_name</strong> (<em>integer</em>) – nom de l’utilisateur</p></li>
+<li><p><strong>user_name</strong> (<em>integer</em>) -- nom de l'utilisateur</p></li>
 </ul>
 </dd>
-<dt class="field-even">Codes d’état<span class="colon">:</span></dt>
+<dt class="field-even">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">No</span> <span class="pre">picture.</span></code></p></li>
 </ul>
@@ -660,10 +661,10 @@
 <span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/api/users/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#patch--api-users-(user_name)" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Mise à jour du compte utilisateur.</p>
 <ul class="simple">
-<li><p>ajouter/supprimer des droits d’administration (quel que soit le statut du compte d’utilisateur)</p></li>
-<li><p>réinitialiser le mot de passe (et envoyer un courriel pour mettre à jour le mot de passe de l’utilisateur, si l’envoi activé)</p></li>
-<li><p>mettre à jour l’adresse électronique de l’utilisateur (et envoyer un message à la nouvelle adresse électronique de l’utilisateur, si l’envoi est activé)</p></li>
-<li><p>activer le compte d’un utilisateur inactif</p></li>
+<li><p>ajouter/supprimer des droits d'administration (quel que soit le statut du compte d'utilisateur)</p></li>
+<li><p>réinitialiser le mot de passe (et envoyer un courriel pour mettre à jour le mot de passe de l'utilisateur, si l'envoi activé)</p></li>
+<li><p>mettre à jour l'adresse électronique de l'utilisateur (et envoyer un message à la nouvelle adresse électronique de l'utilisateur, si l'envoi est activé)</p></li>
+<li><p>activer le compte d'un utilisateur inactif</p></li>
 <li><p>désactiver le compte utilisateur après signalement.</p></li>
 </ul>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">users:write</span></code></p>
@@ -761,48 +762,48 @@
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user_name</strong> (<em>string</em>) – nom de l’utilisateur</p></li>
+<li><p><strong>user_name</strong> (<em>string</em>) -- nom de l'utilisateur</p></li>
 </ul>
 </dd>
 <dt class="field-even">Objet JSON de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>activate</strong> (<em>boolean</em>) – (dés-)activer le compte utilisateur</p></li>
-<li><p><strong>role</strong> (<em>boolean</em>) – rôle de l’utilisateur (<code class="docutils literal notranslate"><span class="pre">user</span></code>, <code class="docutils literal notranslate"><span class="pre">admin</span></code>, <code class="docutils literal notranslate"><span class="pre">moderator</span></code>). Le rôle``owner`` ne peut être donné que via la <strong>CLI</strong>.</p></li>
-<li><p><strong>new_email</strong> (<em>boolean</em>) – nouvelle adresse électronique de l’utilisateur</p></li>
-<li><p><strong>reset_password</strong> (<em>boolean</em>) – réinitialiser le mot de passe de l’utilisateur</p></li>
+<li><p><strong>activate</strong> (<em>boolean</em>) -- (dés-)activer le compte utilisateur</p></li>
+<li><p><strong>role</strong> (<em>boolean</em>) -- rôle de l'utilisateur (<code class="docutils literal notranslate"><span class="pre">user</span></code>, <code class="docutils literal notranslate"><span class="pre">admin</span></code>, <code class="docutils literal notranslate"><span class="pre">moderator</span></code>). Le rôle``owner`` ne peut être donné que via la <strong>CLI</strong>.</p></li>
+<li><p><strong>new_email</strong> (<em>boolean</em>) -- nouvelle adresse électronique de l'utilisateur</p></li>
+<li><p><strong>reset_password</strong> (<em>boolean</em>) -- réinitialiser le mot de passe de l'utilisateur</p></li>
 </ul>
 </dd>
 <dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
-<dt class="field-even">Codes d’état<span class="colon">:</span></dt>
+<dt class="field-even">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">role</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">valid</span> <span class="pre">email</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">provided</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">new</span> <span class="pre">email</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">different</span> <span class="pre">than</span> <span class="pre">current</span> <span class="pre">email</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> -- <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -813,8 +814,8 @@
 <span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/users/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete--api-users-(user_name)" title="Lien vers cette définition">¶</a></dt>
 <dd><p>Supprimer un compte utilisateur.</p>
 <p>Un utilisateur ne peut supprimer que son propre compte.</p>
-<p>Un utilisateur avec des droits d’administration peut supprimer tous les comptes sauf le sien s’il est le seul utilisateur avec des droits d’administration.</p>
-<p>Un utilisateur suspendu peut accéder à ce point d’accès.</p>
+<p>Un utilisateur avec des droits d'administration peut supprimer tous les comptes sauf le sien s'il est le seul utilisateur avec des droits d'administration.</p>
+<p>Un utilisateur suspendu peut accéder à ce point d'accès.</p>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">users:write</span></code></p>
 <p><strong>Exemple de requête</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">DELETE</span> <span class="nn">/api/users/john_doe</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -829,33 +830,33 @@
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user_name</strong> (<em>string</em>) – nom de l’utilisateur</p></li>
+<li><p><strong>user_name</strong> (<em>string</em>) -- nom de l'utilisateur</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a></span> – compte de l’utilisateur supprimé</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a></span> -- compte de l'utilisateur supprimé</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">can</span> <span class="pre">not</span> <span class="pre">delete</span> <span class="pre">your</span> <span class="pre">account,</span> <span class="pre">no</span> <span class="pre">other</span> <span class="pre">user</span> <span class="pre">has</span> <span class="pre">admin</span> <span class="pre">rights</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> -- <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -884,18 +885,18 @@
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user_name</strong> (<em>string</em>) – nom de l’utilisateur</p></li>
+<li><p><strong>user_name</strong> (<em>string</em>) -- nom de l'utilisateur</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – succès</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- succès</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
@@ -903,11 +904,11 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> -- <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -936,33 +937,33 @@
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user_name</strong> (<em>string</em>) – nom de l’utilisateur</p></li>
+<li><p><strong>user_name</strong> (<em>string</em>) -- nom de l'utilisateur</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – succès</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- succès</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> -- <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -971,7 +972,7 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-users-(user_name)-followers">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/users/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/followers</span></span><a class="headerlink" href="#get--api-users-(user_name)-followers" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Obtenir les utilisateurs suivants l’utilisateur authentifié. Si l’utilisateur a des droits d’administration, l’email est également renvoyé.</p>
+<dd><p>Obtenir les utilisateurs suivants l'utilisateur authentifié. Si l'utilisateur a des droits d'administration, l'email est également renvoyé.</p>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">follow:read</span></code></p>
 <p><strong>Exemple de requête</strong> :</p>
 <ul class="simple">
@@ -982,7 +983,7 @@
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>avec le paramètre “page” :</p></li>
+<li><p>avec le paramètre 'page' :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/users/sam/followers?page=1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -1034,34 +1035,34 @@
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user_name</strong> (<em>string</em>) – nom de l’utilisateur</p></li>
+<li><p><strong>user_name</strong> (<em>string</em>) -- nom de l'utilisateur</p></li>
 </ul>
 </dd>
 <dt class="field-even">Paramètres de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>page</strong> (<em>integer</em>) – page si pagination (par défaut : 1)</p></li>
+<li><p><strong>page</strong> (<em>integer</em>) -- page si pagination (par défaut : 1)</p></li>
 </ul>
 </dd>
 <dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
-<dt class="field-even">Codes d’état<span class="colon">:</span></dt>
+<dt class="field-even">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – succès</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- succès</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></p></li>
 </ul>
 </p></li>
@@ -1073,7 +1074,7 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-users-(user_name)-following">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/users/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/following</span></span><a class="headerlink" href="#get--api-users-(user_name)-following" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Obtenir les utilisateurs suivis par l’utilisateur authentifié. Si l’utilisateur a des droits d’administration, l’email est également renvoyé.</p>
+<dd><p>Obtenir les utilisateurs suivis par l'utilisateur authentifié. Si l'utilisateur a des droits d'administration, l'email est également renvoyé.</p>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">follow:read</span></code></p>
 <p><strong>Exemple de requête</strong> :</p>
 <ul class="simple">
@@ -1084,7 +1085,7 @@
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>avec le paramètre “page” :</p></li>
+<li><p>avec le paramètre 'page' :</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/users/sam/following?page=1</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -1136,34 +1137,34 @@
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user_name</strong> (<em>string</em>) – nom de l’utilisateur</p></li>
+<li><p><strong>user_name</strong> (<em>string</em>) -- nom de l'utilisateur</p></li>
 </ul>
 </dd>
 <dt class="field-even">Paramètres de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>page</strong> (<em>integer</em>) – page si pagination (par défaut : 1)</p></li>
+<li><p><strong>page</strong> (<em>integer</em>) -- page si pagination (par défaut : 1)</p></li>
 </ul>
 </dd>
 <dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
-<dt class="field-even">Codes d’état<span class="colon">:</span></dt>
+<dt class="field-even">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – succès</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- succès</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></p></li>
 </ul>
 </p></li>
@@ -1194,33 +1195,33 @@
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user_name</strong> (<em>string</em>) – nom de l’utilisateur</p></li>
+<li><p><strong>user_name</strong> (<em>string</em>) -- nom de l'utilisateur</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – succès</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- succès</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 </ul>
 </p></li>
@@ -1251,29 +1252,29 @@
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user_name</strong> (<em>string</em>) – nom de l’utilisateur</p></li>
+<li><p><strong>user_name</strong> (<em>string</em>) -- nom de l'utilisateur</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – succès</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- succès</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 </ul>
 </p></li>
@@ -1285,9 +1286,9 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-users-(user_name)-sanctions">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/users/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/sanctions</span></span><a class="headerlink" href="#get--api-users-(user_name)-sanctions" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Obtenir les sanctions de l’utilisateur.</p>
-<p>Les sanctions sont renvoyées uniquement si: - l’utilisateur est l’utilisateur authentifié - l’utilisateur a des droits de modération.</p>
-<p>Un utilisateur suspendu peut accéder à ce point d’accès.</p>
+<dd><p>Obtenir les sanctions de l'utilisateur.</p>
+<p>Les sanctions sont renvoyées uniquement si: - l'utilisateur est l'utilisateur authentifié - l'utilisateur a des droits de modération.</p>
+<p>Un utilisateur suspendu peut accéder à ce point d'accès.</p>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">users:read</span></code></p>
 <p><strong>Exemple de requêtes</strong> :</p>
 <ul class="simple">
@@ -1387,7 +1388,7 @@
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>si des sanctions existent (réponse pour l’utilisateur authentifié)</p></li>
+<li><p>si des sanctions existent (réponse pour l'utilisateur authentifié)</p></li>
 </ul>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -1446,33 +1447,33 @@
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user_name</strong> (<em>string</em>) – nom de l’utilisateur</p></li>
+<li><p><strong>user_name</strong> (<em>string</em>) -- nom de l'utilisateur</p></li>
 </ul>
 </dd>
 <dt class="field-even">Paramètres de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>page</strong> (<em>integer</em>) – page si pagination (par défaut : 1)</p></li>
+<li><p><strong>page</strong> (<em>integer</em>) -- page si pagination (par défaut : 1)</p></li>
 </ul>
 </dd>
 <dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
-<dt class="field-even">Codes d’état<span class="colon">:</span></dt>
+<dt class="field-even">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – succès</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- succès</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 </ul>
 </p></li>
@@ -1484,7 +1485,7 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-users-(user_name)-workouts">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/users/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/workouts</span></span><a class="headerlink" href="#get--api-users-(user_name)-workouts" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Obtenir les 5 dernières séances de l’utilisateur.</p>
+<dd><p>Obtenir les 5 dernières séances de l'utilisateur.</p>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">workouts:read</span></code></p>
 <p><strong>Exemple de requête</strong> :</p>
 <blockquote>
@@ -1598,28 +1599,28 @@
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user_name</strong> (<em>string</em>) – nom de l’utilisateur</p></li>
+<li><p><strong>user_name</strong> (<em>string</em>) -- nom de l'utilisateur</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer” si l’utilisateur est authentifié</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer' si l'utilisateur est authentifié</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – succès</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- succès</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 </ul>
 </p></li>
@@ -1683,7 +1684,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=3d12432b"></script>
+</div><script src="../_static/documentation_options.js?v=7b3f8318"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>

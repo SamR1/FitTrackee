@@ -107,3 +107,5 @@ languages = [
     ("Français", "fr"),  # French
 ]
 html_context = {"langs": languages}
+
+smartquotes_excludes = {'languages': ['fr']}

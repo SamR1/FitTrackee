@@ -1,5 +1,90 @@
 # Change log
 
+## Version 0.11.0 (2025/07/23)
+
+This release brings a new sport (Outdoor Tennis), power support for bike-related workouts, new display for workout chart, Garmin device mapping update and several fixes and translation updates.
+
+**Warning:** 
+- This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
+- The minimum Node version (for development) is now Node 20.
+
+### Features and enhancements
+
+* [#792](https://github.com/SamR1/FitTrackee/issues/792) - add support for power
+* [#859](https://github.com/SamR1/FitTrackee/issues/859) - New sport: Tennis (Outdoor) Tennis activity 
+* [PR#861](https://github.com/SamR1/FitTrackee/pull/861) - Add Garmin Edge Explore 2 device
+* [PR#872](https://github.com/SamR1/FitTrackee/pull/872) - Update Garmin products mapping
+* [PR#874](https://github.com/SamR1/FitTrackee/pull/874) - Add ability to display multiple charts in workout detail
+
+
+### Bugs Fixed
+
+* [#853](https://github.com/SamR1/FitTrackee/issues/853) - docker-compose-dev doesn't work in MacOS because of port issue 
+* [#856](https://github.com/SamR1/FitTrackee/issues/856) - URL link malformed in comments section 
+* [PR#857](https://github.com/SamR1/FitTrackee/pull/857) - fix app config init to prevent multiple rows creation
+* [#864](https://github.com/SamR1/FitTrackee/issues/864) - Improve handling of out-of-order frames in .fit file (and stop_all bugfix)
+* [#868](https://github.com/SamR1/FitTrackee/issues/868) - No tiles displayed at max zoom
+* [PR#876](https://github.com/SamR1/FitTrackee/pull/876) - Fix statistics chart for ascent/descent when last sport's value is null
+* [7cc3606](https://github.com/SamR1/FitTrackee/commit/7cc3606213833f4595b57757c1660f0c46b190aa) - get product name only when manufacturer is Garmin
+* [fbdad3f](https://github.com/SamR1/FitTrackee/commit/fbdad3f51b4af37c4a7dc4d2c19e7f65b8c5bff6) - fix y-axis when workout has no elevation
+* [1d6f48c](https://github.com/SamR1/FitTrackee/commit/1d6f48cfa1673f69abd7e4dcad6726d9f0f7e38c) - fix heart rate label on chart
+* [7f7a225](https://github.com/SamR1/FitTrackee/commit/7f7a225fcc280f7e1b5c7c6929347f4ea1e04b1e) - fix a11y issues on map control buttons
+
+
+### Translations
+
+* [PR#845](https://github.com/SamR1/FitTrackee/pull/845) - Translations update from Hosted Weblate (Galician)
+* [PR#849](https://github.com/SamR1/FitTrackee/pull/849) - Translations update from Hosted Weblate (French)
+* [PR#851](https://github.com/SamR1/FitTrackee/pull/851) - Translations update from Hosted Weblate (German)
+* [PR#858](https://github.com/SamR1/FitTrackee/pull/858) - Translations update from Hosted Weblate (German and Turkish)
+* [PR#862](https://github.com/SamR1/FitTrackee/pull/862) - Translations update from Hosted Weblate (Spanish)
+* [PR#865](https://github.com/SamR1/FitTrackee/pull/865) - Translations update from Hosted Weblate (Galician)
+* [PR#866](https://github.com/SamR1/FitTrackee/pull/866) - Translations update from Hosted Weblate (Spanish)
+* [PR#870](https://github.com/SamR1/FitTrackee/pull/870) - Translations update from Hosted Weblate (Russian)
+* [PR#873](https://github.com/SamR1/FitTrackee/pull/873) - Translations update from Hosted Weblate (Galician and Russian)
+* [PR#878](https://github.com/SamR1/FitTrackee/pull/878) - Translations update from Hosted Weblate (Galician)
+
+
+Translation status:
+- Basque: 90%
+- Bulgarian: 56%
+- Catalan: 25%
+- Chinese (Simplified): 97%
+- Croatian: 98%
+- Czech: 44%
+- Dutch: 98%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 93%
+- Italian: 46%
+- Norwegian Bokmål: 30%
+- Polish: 90%
+- Portuguese: 55%
+- Russian: 99%
+- Spanish: 74%
+- Turkish: 1%
+
+
+### Misc
+
+* [PR#863](https://github.com/SamR1/FitTrackee/pull/863) - Update docker-compose-dev.yml
+* [ff38d0c](https://github.com/SamR1/FitTrackee/commit/ff38d0c4ae70cada709dd05939eba75f7c1253a0) - CI - update node version to 20.x
+* [d81afd5](https://github.com/SamR1/FitTrackee/commit/d81afd585f8a77cc24eb45a463fd941bd7aa6ba2) - CI - add workflow to check docker images build
+
+
+Thanks to the contributors:
+- @BorATICI
+- @juanro49
+- @leafcompost
+- @Thovi98
+- @Unargent
+- @Vertux
+- @xmgz
+- mrab
+- Nikita Epifanov
+
+
 ## Version 0.10.3 (2025/06/18)
 
 
