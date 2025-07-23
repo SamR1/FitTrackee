@@ -28,6 +28,7 @@
               role="button"
               :title="$t('workouts.RESET_ZOOM')"
               @click="resetZoom"
+              @keydown.enter="resetZoom"
             >
               <i class="fa fa-refresh" aria-hidden="true" />
             </LControl>
@@ -40,6 +41,7 @@
                 $t(`workouts.${isFullscreen ? 'EXIT' : 'VIEW'}_FULLSCREEN`)
               "
               @click="toggleFullscreen"
+              @keydown.enter="toggleFullscreen"
             >
               <i
                 :class="`fa fa-${isFullscreen ? 'compress' : 'arrows-alt'}`"
@@ -56,6 +58,7 @@
                 $t(`workouts.${displayHeatmap ? 'EXIT' : 'VIEW'}_HEATMAP`)
               "
               @click="toggleHeatmap"
+              @keydown.enter="toggleHeatmap"
             >
               <i
                 :class="`fa fa-${displayHeatmap ? 'map-pin' : 'dot-circle-o'}`"
