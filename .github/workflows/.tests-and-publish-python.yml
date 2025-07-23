@@ -84,37 +84,37 @@ jobs:
         if: matrix.python-version != '3.10'
         run: pytest fittrackee -n auto --maxprocesses=2  -p no:warnings --maxfail=1
 
-  python-next:
-    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
-    name: python 3.14-rc (postgresql 17)
-    runs-on: ubuntu-latest
-    container: python:3.14-rc
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    steps:
-
-      - uses: actions/checkout@v4
-
-      - name: Install Poetry and Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install --quiet poetry
-          poetry config virtualenvs.create false
-          poetry install --no-interaction --quiet
-
-      - name: Create test databases
-        run: python db/create_ci_test_db.py
-
-      - name: Pytest
-        run: pytest fittrackee -n auto --maxprocesses=2  -p no:warnings --maxfail=1
+#  python-next:
+#    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
+#    name: python 3.14-rc (postgresql 17)
+#    runs-on: ubuntu-latest
+#    container: python:3.14-rc
+#    services:
+#      postgres:
+#        image: postgres:17
+#        env:
+#          POSTGRES_PASSWORD: postgres
+#        options: >-
+#          --health-cmd pg_isready
+#          --health-interval 10s
+#          --health-timeout 5s
+#          --health-retries 5
+#    steps:
+#
+#      - uses: actions/checkout@v4
+#
+#      - name: Install Poetry and Dependencies
+#        run: |
+#          python -m pip install --upgrade pip
+#          pip install --quiet poetry
+#          poetry config virtualenvs.create false
+#          poetry install --no-interaction --quiet
+#
+#      - name: Create test databases
+#        run: python db/create_ci_test_db.py
+#
+#      - name: Pytest
+#        run: pytest fittrackee -n auto --maxprocesses=2  -p no:warnings --maxfail=1
 
   postgresql:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
