@@ -8,7 +8,6 @@ import pytest
 from flask import Flask
 
 from fittrackee import db
-from fittrackee.files import get_absolute_file_path
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.visibility_levels import VisibilityLevel
@@ -1156,16 +1155,18 @@ class TestGetWorkoutGeoJsonAsWorkoutOwner(GetWorkoutGeoJSONTestCase):
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        workout_cycling_user_1_segment_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
     ) -> None:
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1_with_coordinates.gpx = "file.gpx"
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
 
         response = client.get(
-            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id
+            ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -1174,7 +1175,7 @@ class TestGetWorkoutGeoJsonAsWorkoutOwner(GetWorkoutGeoJSONTestCase):
         assert "success" in data["status"]
 
         assert data["data"]["geojson"] == self.get_geojson_from_geom(
-            workout_cycling_user_1_segment_with_coordinates.geom
+            workout_cycling_user_1_segment_0_with_coordinates.geom
         )
 
     def test_it_returns_none_when_no_coordinates(
@@ -1212,7 +1213,7 @@ class TestGetWorkoutGeoJsonAsFollower(
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        workout_cycling_user_1_segment_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         self.init_test_data_for_follower(
@@ -1250,12 +1251,12 @@ class TestGetWorkoutGeoJsonAsFollower(
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        workout_cycling_user_1_segment_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         self.init_test_data_for_follower(
-            workout_cycling_user_1,
+            workout_cycling_user_1_with_coordinates,
             map_visibility=input_map_visibility,
             follower=user_2,
             followed=user_1,
@@ -1265,7 +1266,9 @@ class TestGetWorkoutGeoJsonAsFollower(
         )
 
         response = client.get(
-            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id
+            ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -1273,7 +1276,7 @@ class TestGetWorkoutGeoJsonAsFollower(
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
         assert data["data"]["geojson"] == self.get_geojson_from_geom(
-            workout_cycling_user_1_segment_with_coordinates.geom
+            workout_cycling_user_1_segment_0_with_coordinates.geom
         )
 
     def test_it_returns_error_when_user_is_suspended(
@@ -1283,7 +1286,7 @@ class TestGetWorkoutGeoJsonAsFollower(
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        workout_cycling_user_1_segment_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         self.init_test_data_for_follower(
@@ -1344,7 +1347,7 @@ class TestGetWorkoutGeoJsonAsUser(
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        workout_cycling_user_1_segment_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
     ) -> None:
         self.init_test_data_for_public_workout(
             workout_cycling_user_1, map_visibility=input_map_visibility
@@ -1369,18 +1372,21 @@ class TestGetWorkoutGeoJsonAsUser(
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        workout_cycling_user_1_segment_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
     ) -> None:
         self.init_test_data_for_public_workout(
-            workout_cycling_user_1, map_visibility=VisibilityLevel.PUBLIC
+            workout_cycling_user_1_with_coordinates,
+            map_visibility=VisibilityLevel.PUBLIC,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
 
         response = client.get(
-            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id
+            ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -1388,7 +1394,7 @@ class TestGetWorkoutGeoJsonAsUser(
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
         assert data["data"]["geojson"] == self.get_geojson_from_geom(
-            workout_cycling_user_1_segment_with_coordinates.geom
+            workout_cycling_user_1_segment_0_with_coordinates.geom
         )
 
     def test_it_returns_error_when_user_is_suspended(
@@ -1398,7 +1404,7 @@ class TestGetWorkoutGeoJsonAsUser(
         user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        workout_cycling_user_1_segment_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
     ) -> None:
         self.init_test_data_for_public_workout(
             workout_cycling_user_1, map_visibility=VisibilityLevel.PUBLIC
@@ -1450,7 +1456,7 @@ class TestGetWorkoutGeoJsonAsUnauthenticatedUser(
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
-        workout_cycling_user_1_segment_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
     ) -> None:
         self.init_test_data_for_public_workout(
             workout_cycling_user_1, map_visibility=input_map_visibility
@@ -1471,23 +1477,26 @@ class TestGetWorkoutGeoJsonAsUnauthenticatedUser(
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        workout_cycling_user_1_segment_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
     ) -> None:
         self.init_test_data_for_public_workout(
-            workout_cycling_user_1, map_visibility=VisibilityLevel.PUBLIC
+            workout_cycling_user_1_with_coordinates,
+            map_visibility=VisibilityLevel.PUBLIC,
         )
         client = app.test_client()
 
         response = client.get(
-            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id
+            ),
         )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
         assert data["data"]["geojson"] == self.get_geojson_from_geom(
-            workout_cycling_user_1_segment_with_coordinates.geom
+            workout_cycling_user_1_segment_0_with_coordinates.geom
         )
 
 
@@ -1527,6 +1536,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: Workout,
     ) -> None:
         workout_cycling_user_1.gpx = "some path"
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1546,6 +1556,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1554,9 +1565,9 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=[],
-            ) as get_chart_data_from_gpx_mock,
+            ) as get_chart_data_mock,
         ):
             client.get(
                 self.route.format(
@@ -1565,10 +1576,8 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
-        get_chart_data_from_gpx_mock.assert_called_once_with(
-            get_absolute_file_path(workout_cycling_user_1.gpx),
-            sport_1_cycling.label,
-            workout_cycling_user_1.ave_cadence,
+        get_chart_data_mock.assert_called_once_with(
+            workout_cycling_user_1,
             can_see_heart_rate=True,
             segment_id=None,
         )
@@ -1588,7 +1597,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -1634,7 +1643,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
             "longitude": 6.07367,
             "power": 0,
             "speed": 3.21,
-            "time": "Tue, 13 Mar 2018 12:44:45 GMT",
+            "time": "2018-03-13 12:44:45+00:00",
         }
 
     def test_it_returns_error_when_user_is_suspended(
@@ -1724,7 +1733,7 @@ class TestGetWorkoutChartDataAsFollower(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -1773,9 +1782,9 @@ class TestGetWorkoutChartDataAsFollower(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=[],
-            ) as get_chart_data_from_gpx_mock,
+            ) as get_chart_data_mock,
         ):
             client.get(
                 self.route.format(
@@ -1784,10 +1793,8 @@ class TestGetWorkoutChartDataAsFollower(
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
-        get_chart_data_from_gpx_mock.assert_called_once_with(
-            get_absolute_file_path(workout_cycling_user_2.gpx),
-            sport_1_cycling.label,
-            workout_cycling_user_2.ave_cadence,
+        get_chart_data_mock.assert_called_once_with(
+            workout_cycling_user_2,
             can_see_heart_rate=expected_can_see_heart_rate,
             segment_id=None,
         )
@@ -1906,9 +1913,9 @@ class TestGetWorkoutChartDataAsUser(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=[],
-            ) as get_chart_data_from_gpx_mock,
+            ) as get_chart_data_mock,
         ):
             client.get(
                 self.route.format(
@@ -1917,10 +1924,8 @@ class TestGetWorkoutChartDataAsUser(
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
-        get_chart_data_from_gpx_mock.assert_called_once_with(
-            get_absolute_file_path(workout_cycling_user_2.gpx),
-            sport_1_cycling.label,
-            workout_cycling_user_2.ave_cadence,
+        get_chart_data_mock.assert_called_once_with(
+            workout_cycling_user_2,
             can_see_heart_rate=expected_can_see_heart_rate,
             segment_id=None,
         )
@@ -1946,7 +1951,7 @@ class TestGetWorkoutChartDataAsUser(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -2064,18 +2069,16 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=[],
-            ) as get_chart_data_from_gpx_mock,
+            ) as get_chart_data_mock,
         ):
             client.get(
                 self.route.format(workout_uuid=workout_cycling_user_1.short_id)
             )
 
-        get_chart_data_from_gpx_mock.assert_called_once_with(
-            get_absolute_file_path(workout_cycling_user_1.gpx),
-            sport_1_cycling.label,
-            workout_cycling_user_1.ave_cadence,
+        get_chart_data_mock.assert_called_once_with(
+            workout_cycling_user_1,
             can_see_heart_rate=expected_can_see_heart_rate,
             segment_id=None,
         )
@@ -2097,7 +2100,7 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -2596,6 +2599,7 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: Workout,
     ) -> None:
         workout_cycling_user_1.gpx = "some path"
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2627,7 +2631,7 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -2737,7 +2741,7 @@ class TestGetWorkoutSegmentChartDataAsFollower(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -2781,7 +2785,7 @@ class TestGetWorkoutSegmentChartDataAsFollower(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -2877,7 +2881,7 @@ class TestGetWorkoutSegmentChartDataAsUser(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -2917,7 +2921,7 @@ class TestGetWorkoutSegmentChartDataAsUser(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
@@ -3002,7 +3006,7 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
+                "fittrackee.workouts.workouts.get_chart_data",
                 return_value=chart_data,
             ),
         ):
