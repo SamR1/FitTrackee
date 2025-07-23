@@ -16,3 +16,7 @@ export interface ILeafletObject {
     removeLayer: (layer: IHeatmapOverlay) => void
   }
 }
+
+export interface IGeoJsonOptions {
+  weight?: number
+}
