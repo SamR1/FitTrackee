@@ -2,20 +2,22 @@ name: Docker CI
 
 on:
   push:
-    paths-ignore: [
-      'docs/**',
-      'docsrc/**',
-      '*.md',
-      'fittrackee_client/src/locales/*',
-      'fittrackee/emails/translations/*'
+    paths: [
+      'fittrackee/**',
+      'pyproject.toml',
+      'poetry.lock',
+      'Dockerfile',
+      'docker-entrypoint.sh',
+      '.github/workflows/.tests-docker.yml'
     ]
   pull_request:
-    paths-ignore: [
-      'docs/**',
-      'docsrc/**',
-      '*.md',
-      'fittrackee_client/src/locales/*',
-      'fittrackee/emails/translations/*'
+    paths: [
+      'fittrackee/**',
+      'pyproject.toml',
+      'poetry.lock',
+      'Dockerfile',
+      'docker-entrypoint.sh',
+      '.github/workflows/.tests-docker.yml'
     ]
     types: [opened, synchronize, reopened]
 
