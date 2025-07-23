@@ -41,7 +41,7 @@ def get_gpx_segments(
     return segments
 
 
-def get_chart_data(
+def get_chart_data_from_gpx(
     gpx_file: str,
     sport_label: str,
     workout_ave_cadence: Optional[int],

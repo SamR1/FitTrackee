@@ -1540,7 +1540,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
 
         self.assert_500(response)
 
-    def test_it_calls_get_chart_data(
+    def test_it_calls_get_chart_data_from_gpx(
         self,
         app: Flask,
         user_1: User,
@@ -1554,9 +1554,9 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data",
+                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
                 return_value=[],
-            ) as get_chart_data_mock,
+            ) as get_chart_data_from_gpx_mock,
         ):
             client.get(
                 self.route.format(
@@ -1565,7 +1565,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
-        get_chart_data_mock.assert_called_once_with(
+        get_chart_data_from_gpx_mock.assert_called_once_with(
             get_absolute_file_path(workout_cycling_user_1.gpx),
             sport_1_cycling.label,
             workout_cycling_user_1.ave_cadence,
@@ -1588,7 +1588,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data",
+                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
                 return_value=chart_data,
             ),
         ):
@@ -1724,7 +1724,7 @@ class TestGetWorkoutChartDataAsFollower(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data",
+                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
                 return_value=chart_data,
             ),
         ):
@@ -1747,7 +1747,7 @@ class TestGetWorkoutChartDataAsFollower(
             (VisibilityLevel.PRIVATE, False),
         ],
     )
-    def test_it_calls_get_chart_data_when_user_can_not_see_heart_rate(
+    def test_it_calls_get_chart_data_from_gpx_when_user_can_not_see_heart_rate(
         self,
         app: Flask,
         user_1: User,
@@ -1773,9 +1773,9 @@ class TestGetWorkoutChartDataAsFollower(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data",
+                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
                 return_value=[],
-            ) as get_chart_data_mock,
+            ) as get_chart_data_from_gpx_mock,
         ):
             client.get(
                 self.route.format(
@@ -1784,7 +1784,7 @@ class TestGetWorkoutChartDataAsFollower(
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
-        get_chart_data_mock.assert_called_once_with(
+        get_chart_data_from_gpx_mock.assert_called_once_with(
             get_absolute_file_path(workout_cycling_user_2.gpx),
             sport_1_cycling.label,
             workout_cycling_user_2.ave_cadence,
@@ -1886,7 +1886,7 @@ class TestGetWorkoutChartDataAsUser(
             (VisibilityLevel.FOLLOWERS, False),
         ],
     )
-    def test_it_calls_get_chart_data_when_user_can_not_see_heart_rate(
+    def test_it_calls_get_chart_data_from_gpx_when_user_can_not_see_heart_rate(
         self,
         app: Flask,
         user_1: User,
@@ -1906,9 +1906,9 @@ class TestGetWorkoutChartDataAsUser(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data",
+                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
                 return_value=[],
-            ) as get_chart_data_mock,
+            ) as get_chart_data_from_gpx_mock,
         ):
             client.get(
                 self.route.format(
@@ -1917,7 +1917,7 @@ class TestGetWorkoutChartDataAsUser(
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
-        get_chart_data_mock.assert_called_once_with(
+        get_chart_data_from_gpx_mock.assert_called_once_with(
             get_absolute_file_path(workout_cycling_user_2.gpx),
             sport_1_cycling.label,
             workout_cycling_user_2.ave_cadence,
@@ -1946,7 +1946,7 @@ class TestGetWorkoutChartDataAsUser(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data",
+                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
                 return_value=chart_data,
             ),
         ):
@@ -2047,7 +2047,7 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
             (VisibilityLevel.FOLLOWERS, False),
         ],
     )
-    def test_it_calls_get_chart_data_when_user_can_not_see_heart_rate(
+    def test_it_calls_get_chart_data_from_gpx_when_user_can_not_see_heart_rate(
         self,
         app: Flask,
         user_1: User,
@@ -2064,15 +2064,15 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data",
+                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
                 return_value=[],
-            ) as get_chart_data_mock,
+            ) as get_chart_data_from_gpx_mock,
         ):
             client.get(
                 self.route.format(workout_uuid=workout_cycling_user_1.short_id)
             )
 
-        get_chart_data_mock.assert_called_once_with(
+        get_chart_data_from_gpx_mock.assert_called_once_with(
             get_absolute_file_path(workout_cycling_user_1.gpx),
             sport_1_cycling.label,
             workout_cycling_user_1.ave_cadence,
@@ -2097,7 +2097,7 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data",
+                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
                 return_value=chart_data,
             ),
         ):
@@ -2627,7 +2627,7 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data",
+                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
                 return_value=chart_data,
             ),
         ):
@@ -2737,7 +2737,7 @@ class TestGetWorkoutSegmentChartDataAsFollower(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data",
+                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
                 return_value=chart_data,
             ),
         ):
@@ -2781,7 +2781,7 @@ class TestGetWorkoutSegmentChartDataAsFollower(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data",
+                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
                 return_value=chart_data,
             ),
         ):
@@ -2877,7 +2877,7 @@ class TestGetWorkoutSegmentChartDataAsUser(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data",
+                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
                 return_value=chart_data,
             ),
         ):
@@ -2917,7 +2917,7 @@ class TestGetWorkoutSegmentChartDataAsUser(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data",
+                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
                 return_value=chart_data,
             ),
         ):
@@ -3002,7 +3002,7 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
-                "fittrackee.workouts.workouts.get_chart_data",
+                "fittrackee.workouts.workouts.get_chart_data_from_gpx",
                 return_value=chart_data,
             ),
         ):
