@@ -102,3 +102,16 @@ class TestGetMentionedUsers:
         _, mentioned_users = handle_mentions(text)
 
         assert mentioned_users == {"local": {user_1}, "remote": set()}
+
+    def test_it_returns_text_unchanged_when_mentioned_user_is_in_URL(
+        self, app: Flask, user_1: User
+    ) -> None:
+        text = (
+            f"{random_string()} "
+            f"http://social.example.com/@{user_1.username}/{random_string()} "
+            f"{random_string()}"
+        )
+
+        linkified_text, _ = handle_mentions(text)
+
+        assert linkified_text == text

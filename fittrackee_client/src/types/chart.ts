@@ -10,3 +10,11 @@ export interface IChartDataset {
   type?: string
   yAxisID?: string
 }
+
+export interface IHoverPoint {
+  dataIndex: number
+  datasetIndex: number
+  datasetLabel: string
+  x: number
+  y: number
+}

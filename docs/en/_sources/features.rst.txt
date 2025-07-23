@@ -17,7 +17,7 @@ Workouts
 Sports
 ------
 
-- 23 sports are supported:
+- 24 sports are supported:
 
   - Canoeing  (*new in 0.9.3*)
   - Cycling (Sport)
@@ -39,6 +39,7 @@ Sports
   - Snowshoes (*new in 0.5.2*)
   - Standup paddleboarding (*new in 0.10.3*)
   - Swimrun (*new in 0.8.7*)
+  - Tennis (Outdoor) (*new in 0.11.0*)
   - Trail (*new in 0.5.0*)
   - Walking
   - Windsurfing  (*new in 0.9.10*)
@@ -52,6 +53,7 @@ Sports
   - Skiing (Cross Country)
   - Snowshoes
   - Swimrun
+  - Tennis (Outdoor)
   - Trail
   - Walking
 
@@ -61,6 +63,7 @@ Sports
 .. note::
   | Except the stopped speed threshold, all sports are analyzed in the same way (no specificity taken into account for the moment).
   | Swimrun is displayed as a single activity with no difference between segments for now.
+  | Elevation-related data for Outdoor Tennis are not displayed if the file contains elevation (they are still stored in database).
 
 Workouts
 --------
@@ -119,7 +122,7 @@ Workouts
 - If present in .gpx, .tcx and .fit files, the source (application or device) is displayed.
 
 .. note::
-   .fit files from Garmin devices may contain product id instead of product name. The mapping between the product id and the product name allows the product name to be displayed instead, if available (*mapping updated in 0.10.3*).
+   .fit files from Garmin devices may contain product id instead of product name. The mapping between the product id and the product name allows the product name to be displayed instead, if available (*mapping updated in 0.11.0*).
 
 - | If the name is present in the file, it is used as the workout title. Otherwise, a title is generated from the sport and workout date.
   | User can provide title while uploading file (*new in 0.8.10*).
@@ -128,6 +131,7 @@ Workouts
 - If present and no description is provided by the user, the description from the file is used as the workout description (*new in 0.8.10*).
 - | A map is displayed for workout with a file.
   | Controls allow full screen view and position reset (*new in 0.5.5*).
+  | If the sport is Outdoor Tennis, a heat map is also available (*new in 0.11.0*).
 - | A chart is displayed for workout with a file, with:
 
   - speed
@@ -150,9 +154,21 @@ Workouts
     - Walking
     - Open Water Swimming
 
-.. note::
-  For now, source and average and max values for heart rate and cadence are not displayed for workouts created before v0.10.0 (see `issue #816 <https://github.com/SamR1/FitTrackee/issues/816>`__).
+  - power if available (*new in 0.11.0*), for the following sports:
 
+    - Cycling (Sport)
+    - Cycling (Trekking)
+    - Cycling (Transport)
+    - Cycling (Virtual)
+    - Halfbike
+    - Mountain Biking
+    - Mountain Biking (Electric)
+
+.. note::
+   | For now, source and average and max values for heart rate and cadence are not displayed for workouts created before v0.10.0 (see `issue #816 <https://github.com/SamR1/FitTrackee/issues/816>`__).
+   | Average and max values for power are not displayed for workouts created before v0.11.0.
+
+- These data (speed, elevation, heart rate, cadence and power) can be displayed on one chart or split on multiple charts. The preferred display can be stored in a user preference (*new in 0.11.0*).
 - | If **Visual Crossing** (*new in 0.7.11*) API key is provided, weather is displayed in workout detail. Data source is displayed in **About** page.
   | Wind is displayed, with an arrow indicating the direction (a tooltip can be displayed with the direction that the wind is coming **from**) (*new in 0.5.5*).
 - | An `equipment <features.html#equipments>`__ can be associated with a workout (*new in 0.8.0*). For now, only one equipment can be associated.
@@ -438,6 +454,11 @@ Account & preferences
   - only manual pause,
   - none.
 
+- A user can set the preferred display for workout chart (*new in 0.11.0*):
+
+  - all data on a single chart
+  - each data displayed on a different chart
+
 Equipments
 ==========
 
@@ -450,7 +471,7 @@ Equipments
   - Bike Trainer: Cycling (Virtual),
   - Board: Standup paddleboarding (*new in 0.10.3*) and Windsurfing (*new in 0.9.10*),
   - Kayak/Boat: Canoeing, Rowing and Kayaking (*changed in 0.9.3*),
-  - Shoes: Hiking, Mountaineering, Running, Trail and Walking,
+  - Shoes: Hiking, Mountaineering, Running, Tennis (Outdoor), Trail and Walking (*changed in 0.11.0*),
   - Skis: Skiing (Alpine and Cross Country),
   - Snowshoes: Snowshoes.
 

@@ -2,9 +2,9 @@ name: Javascript CI
 
 on:
   push:
-    paths: ['fittrackee_client/**']
+    paths: ['fittrackee_client/**', '.github/workflows/.tests-javascript.yml']
   pull_request:
-    paths: ['fittrackee_client/**']
+    paths: ['fittrackee_client/**', '.github/workflows/.tests-javascript.yml']
     types: [opened, synchronize, reopened]
 
 env:
@@ -16,10 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 18.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: "18.x"
+          node-version: "20.x"
       - name: Install yarn and dependencies
         working-directory: ${{env.working-directory}}
         run: |

@@ -38,7 +38,7 @@ from fittrackee.users.models import (
 from fittrackee.users.roles import UserRole
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import RandomMixin, ReportMixin, UserTaskMixin
+from ..mixins import RandomMixin, ReportMixin, UserTaskMixin, WorkoutMixin
 
 NOTIFICATION_TYPES_FOR_PREFERENCES = [
     "account_creation",
@@ -213,6 +213,10 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             serialized_user["segments_creation_event"]
             == user_1.segments_creation_event
         )
+        assert (
+            serialized_user["split_workout_charts"]
+            == user_1.split_workout_charts
+        )
 
     def test_it_returns_empty_dict_when_notification_preferences_are_none(
         self, app: Flask, user_1: User
@@ -345,6 +349,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
         assert "hide_profile_in_users_directory" not in serialized_user
         assert "notification_preferences" not in serialized_user
         assert "segments_creation_event" not in serialized_user
+        assert "split_workout_charts" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -433,6 +438,7 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
         assert "hide_profile_in_users_directory" not in serialized_user
         assert "notification_preferences" not in serialized_user
         assert "segments_creation_event" not in serialized_user
+        assert "split_workout_charts" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_moderator: User, user_2: User
@@ -514,6 +520,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert "hide_profile_in_users_directory" not in serialized_user
         assert "notification_preferences" not in serialized_user
         assert "segments_creation_event" not in serialized_user
+        assert "split_workout_charts" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1: User, user_2: User
@@ -572,7 +579,7 @@ class TestInactiveUserSerialize(UserModelAssertMixin):
 
 
 @pytest.mark.disable_autouse_update_records_patch
-class TestUserRecords(UserModelAssertMixin):
+class TestUserRecords(UserModelAssertMixin, WorkoutMixin):
     def test_it_returns_empty_list_when_no_workouts(
         self,
         app: Flask,
@@ -591,6 +598,7 @@ class TestUserRecords(UserModelAssertMixin):
         workout_cycling_user_1: Workout,
     ) -> None:
         serialized_user = user_1.serialize(current_user=user_1, light=False)
+
         assert len(serialized_user["records"]) == 4
         records = sorted(
             serialized_user["records"], key=lambda r: r["record_type"]
@@ -601,6 +609,38 @@ class TestUserRecords(UserModelAssertMixin):
         assert records[0]["value"] > 0
         assert records[0]["workout_id"] == workout_cycling_user_1.short_id
         assert records[0]["workout_date"]
+
+    def test_it_returns_user_records_when_workout_has_elevation_data(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        self.update_workout_with_gpx_data(workout_cycling_user_1)
+
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
+
+        assert len(serialized_user["records"]) == 5
+        records = sorted(
+            serialized_user["records"], key=lambda r: r["record_type"]
+        )
+        assert records[2]["record_type"] == "HA"
+
+    def test_it_does_not_return_HA_records_when_sport_is_outdoor_tennis(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        workout_outdoor_tennis_user_1_with_elevation_data: Workout,
+    ) -> None:
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
+
+        assert len(serialized_user["records"]) == 4
+        assert "HA" not in [
+            record["record_type"] for record in serialized_user["records"]
+        ]
 
     def test_it_returns_totals_when_workout_has_pauses(
         self,

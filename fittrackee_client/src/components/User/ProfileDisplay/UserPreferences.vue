@@ -48,6 +48,16 @@
       </dd>
       <dt>{{ $t('user.PROFILE.ASCENT_DATA') }}:</dt>
       <dd>{{ $t(`common.${display_ascent}`) }}</dd>
+      <dt>{{ $t('user.PROFILE.WORKOUT_CHARTS_DISPLAY.LABEL') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.WORKOUT_CHARTS_DISPLAY.${
+              user.split_workout_charts ? 'MULTIPLE' : 'ONE'
+            }`
+          )
+        }}
+      </dd>
       <dt>{{ $t('user.PROFILE.ELEVATION_CHART_START.LABEL') }}:</dt>
       <dd>
         {{

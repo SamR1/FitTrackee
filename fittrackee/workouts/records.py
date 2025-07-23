@@ -1,11 +1,13 @@
 from typing import Dict
 
 from flask import Blueprint
+from sqlalchemy import and_, or_
 
 from fittrackee.oauth2.server import require_auth
 from fittrackee.users.models import User
 
-from .models import Record
+from .constants import SPORTS_WITHOUT_ELEVATION_DATA
+from .models import Record, Sport
 
 records_blueprint = Blueprint("records", __name__)
 
@@ -120,7 +122,17 @@ def get_records(auth_user: User) -> Dict:
 
     """
     records = (
-        Record.query.filter_by(user_id=auth_user.id)
+        Record.query.join(Sport)
+        .filter(
+            Record.user_id == auth_user.id,
+            or_(
+                Sport.label.not_in(SPORTS_WITHOUT_ELEVATION_DATA),
+                and_(
+                    Sport.label.in_(SPORTS_WITHOUT_ELEVATION_DATA),
+                    Record.record_type != "HA",
+                ),
+            ),
+        )
         .order_by(Record.sport_id.asc(), Record.record_type.asc())
         .all()
     )

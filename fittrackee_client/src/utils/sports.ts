@@ -22,6 +22,7 @@ export const sportColors: Record<string, string> = {
   Snowshoes: '#5780a8',
   'Standup Paddleboarding': '#564ed3',
   Swimrun: '#3d9fc9',
+  'Tennis (Outdoor)': '#f5665f',
   Trail: '#09a98a',
   Walking: '#838383',
   Windsurfing: '#856ece',

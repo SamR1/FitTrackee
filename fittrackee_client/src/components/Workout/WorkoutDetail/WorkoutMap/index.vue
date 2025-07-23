@@ -9,7 +9,7 @@
         >
           <LMap
             v-if="geoJson.jsonData && center && bounds.length === 2"
-            :zoom="13"
+            v-model:zoom="zoom"
             :maxZoom="19"
             :center="center"
             :bounds="bounds"
@@ -26,8 +26,9 @@
               class="map-control"
               tabindex="0"
               role="button"
-              :aria-label="$t('workouts.RESET_ZOOM')"
+              :title="$t('workouts.RESET_ZOOM')"
               @click="resetZoom"
+              @keydown.enter="resetZoom"
             >
               <i class="fa fa-refresh" aria-hidden="true" />
             </LControl>
@@ -36,13 +37,31 @@
               class="map-control"
               tabindex="0"
               role="button"
-              :aria-label="
+              :title="
                 $t(`workouts.${isFullscreen ? 'EXIT' : 'VIEW'}_FULLSCREEN`)
               "
               @click="toggleFullscreen"
+              @keydown.enter="toggleFullscreen"
             >
               <i
                 :class="`fa fa-${isFullscreen ? 'compress' : 'arrows-alt'}`"
+                aria-hidden="true"
+              />
+            </LControl>
+            <LControl
+              v-if="withHeatmap"
+              position="topleft"
+              class="map-control"
+              tabindex="0"
+              role="button"
+              :title="
+                $t(`workouts.${displayHeatmap ? 'EXIT' : 'VIEW'}_HEATMAP`)
+              "
+              @click="toggleHeatmap"
+              @keydown.enter="toggleHeatmap"
+            >
+              <i
+                :class="`fa fa-${displayHeatmap ? 'map-pin' : 'dot-circle-o'}`"
                 aria-hidden="true"
               />
             </LControl>
@@ -50,10 +69,15 @@
               :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png`"
               :attribution="appConfig.map_attribution"
               :bounds="bounds"
+              :maxZoom="19"
             />
-            <LGeoJson :geojson="geoJson.jsonData" />
+            <LGeoJson
+              :geojson="geoJson.jsonData"
+              :options="geoJsonOptions"
+              v-if="!displayHeatmap"
+            />
             <LMarker
-              v-if="markerCoordinates.latitude"
+              v-if="markerCoordinates.latitude && markerCoordinates.longitude"
               :lat-lng="[
                 markerCoordinates.latitude,
                 markerCoordinates.longitude,
@@ -64,12 +88,18 @@
               layer-type="overlay"
             >
               <CustomMarker
-                v-if="startMarkerCoordinates.latitude"
+                v-if="
+                  startMarkerCoordinates.latitude &&
+                  startMarkerCoordinates.longitude
+                "
                 :markerCoordinates="startMarkerCoordinates"
                 :isStart="true"
               />
               <CustomMarker
-                v-if="endMarkerCoordinates.latitude"
+                v-if="
+                  endMarkerCoordinates.latitude &&
+                  endMarkerCoordinates.longitude
+                "
                 :markerCoordinates="endMarkerCoordinates"
                 :isStart="false"
               />
@@ -93,14 +123,17 @@
     LMarker,
     LTileLayer,
   } from '@vue-leaflet/vue-leaflet'
-  import { computed, ref, toRefs } from 'vue'
+  import HeatmapOverlay from 'heatmap.js/plugins/leaflet-heatmap/leaflet-heatmap.js'
+  import { computed, onUnmounted, ref, toRefs, watch } from 'vue'
   import type { Ref, ComputedRef } from 'vue'
   import 'leaflet/dist/leaflet.css'
 
   import CustomMarker from '@/components/Workout/WorkoutDetail/WorkoutMap/CustomMarker.vue'
   import useApp from '@/composables/useApp'
   import type { GeoJSONData } from '@/types/geojson'
+  import type { IHeatmapData, IHeatmapOverlay } from '@/types/heatmap.ts'
   import type {
+    IGeoJsonOptions,
     ILeafletObject,
     TBounds,
     TCenter,
@@ -112,16 +145,24 @@
   interface Props {
     workoutData: IWorkoutData
     markerCoordinates?: TCoordinates
+    withHeatmap?: boolean
+    geoJsonOptions?: IGeoJsonOptions
   }
   const props = withDefaults(defineProps<Props>(), {
     markerCoordinates: () => ({}) as TCoordinates,
+    withHeatmap: false,
+    geoJsonOptions: () => ({}) as IGeoJsonOptions,
   })
-  const { workoutData, markerCoordinates } = toRefs(props)
+  const { geoJsonOptions, workoutData, markerCoordinates, withHeatmap } =
+    toRefs(props)
 
   const { appConfig } = useApp()
 
   const isFullscreen: Ref<boolean> = ref(false)
   const workoutMap: Ref<ILeafletObject | null> = ref(null)
+  const zoom: Ref<number> = ref(13)
+  const heatmapLayer: Ref<IHeatmapOverlay | null> = ref(null)
+  const displayHeatmap: Ref<boolean> = ref(false)
 
   const bounds: ComputedRef<TBounds> = computed(() => getBounds())
   const center: ComputedRef<TCenter> = computed(() => getCenter(bounds))
@@ -136,6 +177,9 @@
   const endMarkerCoordinates: ComputedRef<TCoordinates> = computed(() =>
     getCoordinates('last')
   )
+  const heatmapData: ComputedRef<IHeatmapData> = computed(() =>
+    getHeatmapData()
+  )
 
   function getGeoJson(gpxContent: string): GeoJSONData {
     if (!gpxContent || gpxContent !== '') {
@@ -144,7 +188,7 @@
           new DOMParser().parseFromString(gpxContent, 'text/xml')
         )
         return { jsonData }
-      } catch (e) {
+      } catch {
         console.error('Invalid gpx content')
         return {}
       }
@@ -167,9 +211,61 @@
       (bounds.value[0][1] + bounds.value[1][1]) / 2,
     ]
   }
+  function getHeatmapConfig() {
+    let radius = 5
+    if (zoom.value > 18) {
+      radius = zoom.value === 19 ? 10 : 15
+    }
+    return {
+      radius,
+      maxOpacity: 0.8,
+      scaleRadius: false,
+      useLocalExtrema: false,
+      latField: 'latitude',
+      lngField: 'longitude',
+      gradient: {
+        '.1': '#c81ec8',
+        '.3': '#0000ff',
+        '.5': '#00ff00',
+        '.7': '#ffff1a',
+        '.99': '#f02b2b',
+      },
+    }
+  }
+  function getHeatmapData(): IHeatmapData {
+    if (
+      !displayHeatmap.value ||
+      !workoutData.value ||
+      workoutData.value.chartData.length === 0
+    ) {
+      return {
+        max: 12,
+        data: [],
+      }
+    }
+    return {
+      max: 12,
+      data: workoutData.value.chartData,
+    }
+  }
+  function addHeatMapLayer() {
+    if (!withHeatmap.value) {
+      return
+    }
+    if (workoutMap.value?.leafletObject) {
+      if (heatmapLayer.value) {
+        workoutMap.value.leafletObject.removeLayer(heatmapLayer.value)
+      }
+      heatmapLayer.value = new HeatmapOverlay(
+        getHeatmapConfig()
+      ) as IHeatmapOverlay
+      workoutMap.value.leafletObject.addLayer(heatmapLayer.value)
+      heatmapLayer.value.setData(heatmapData.value)
+    }
+  }
   function fitBounds(bounds: TBounds): void {
     if (workoutMap.value?.leafletObject) {
-      workoutMap.value?.leafletObject.fitBounds(bounds)
+      workoutMap.value.leafletObject.fitBounds(bounds)
     }
   }
   function getBounds(): TBounds {
@@ -197,6 +293,51 @@
       }, 100)
     }
   }
+  function toggleHeatmap(): void {
+    displayHeatmap.value = !displayHeatmap.value
+    if (displayHeatmap.value) {
+      addHeatMapLayer()
+    } else if (heatmapLayer.value) {
+      workoutMap.value?.leafletObject.removeLayer(heatmapLayer.value)
+    }
+  }
+
+  watch(
+    () => workoutData.value,
+    () => {
+      if (displayHeatmap.value) {
+        addHeatMapLayer()
+      }
+    },
+    { deep: true }
+  )
+  watch(
+    () => withHeatmap.value,
+    (newWithHeatmap: boolean) => {
+      if (!newWithHeatmap) {
+        displayHeatmap.value = false
+        if (heatmapLayer.value) {
+          workoutMap.value?.leafletObject.removeLayer(heatmapLayer.value)
+          heatmapLayer.value = null
+        }
+      }
+    }
+  )
+  watch(
+    () => zoom.value,
+    () => {
+      if (withHeatmap.value && displayHeatmap.value) {
+        addHeatMapLayer()
+      }
+    }
+  )
+
+  onUnmounted(() => {
+    if (workoutMap.value?.leafletObject && heatmapLayer.value) {
+      workoutMap.value.leafletObject.removeLayer(heatmapLayer.value)
+      heatmapLayer.value = null
+    }
+  })
 </script>
 
 <style lang="scss" scoped>
@@ -225,6 +366,11 @@
 
         &:hover {
           background-color: var(--map-control-hover-bg-color);
+        }
+
+        .fa {
+          text-align: center;
+          min-width: 10px;
         }
       }
     }

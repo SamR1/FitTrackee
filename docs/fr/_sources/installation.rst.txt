@@ -38,6 +38,7 @@ This application is written in Python (API) and Typescript (client):
     - Vue3/Vuex
     - `Leaflet <https://leafletjs.com/>`__ to display map
     - `Chart.js <https://www.chartjs.org/>`__ to display charts with elevation and speed
+    - `heatmap.js <https://www.patrick-wied.at/static/heatmapjs/>`__ (`fork <https://github.com/SamR1/heatmap.js>`__) and `leaflet-heatmap <https://github.com/Leaflet/Leaflet.heat>`__ to display heatmap on Outdoor Tennis map
 
 | Logo, some sports and weather icons are made by `Freepik <https://www.freepik.com/>`__ from `www.flaticon.com <https://www.flaticon.com/>`__.
 | Sports icons for Canoeing, Kayaking and Rowing are made by `@Von-Birne <https://github.com/Von-Birne>`__.
@@ -65,7 +66,7 @@ Prerequisites
   - SMTP provider (if email sending is enabled)
   - API key from a `weather data provider <installation.html#weather-data>`__
   - `Poetry <https://python-poetry.org>`__ 1.2+ (for installation from sources only)
-  - `Node <https://nodejs.org>`__ 18+ and `Yarn <https://yarnpkg.com>`__ (for development only)
+  - `Node <https://nodejs.org>`__ 20+ and `Yarn <https://yarnpkg.com>`__ (for development only)
 
 .. note::
     | If registration is enabled, it is recommended to set Redis and a SMTP provider for email sending and data export requests.
@@ -685,13 +686,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.10.3):
+-  Download the last release (for now, it is the release v0.11.0):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/0.10.3.tar.gz
-   $ tar -xzf v0.10.3.tar.gz
-   $ mv FitTrackee-0.10.3 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/0.11.0.tar.gz
+   $ tar -xzf v0.11.0.tar.gz
+   $ mv FitTrackee-0.11.0 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -823,13 +824,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.10.3) and overwrite existing files:
+- Download the last release (for now, it is the release v0.11.0) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.10.3.tar.gz
-   $ tar -xzf v0.10.3.tar.gz
-   $ cp -R FitTrackee-0.10.3/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.11.0.tar.gz
+   $ tar -xzf v0.11.0.tar.gz
+   $ cp -R FitTrackee-0.11.0/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -1023,6 +1024,13 @@ Images are available on `DockerHub <https://hub.docker.com/r/fittrackee/fittrack
 .. note::
     The same image is used by the web application and workers.
 
+.. warning::
+    Following directory must be writable for ``fittrackee`` user (see `docker-compose.yml example <https://github.com/SamR1/FitTrackee/blob/master/docker-compose.yml>`__):
+
+    - ``/usr/src/app/uploads``
+    - ``/usr/src/app/logs``
+    - ``/usr/src/app/.staticmap_cache``
+
 - create ``.env`` from example (``.env.docker.example``) and update it (see `Environment variables <installation.html#environment-variables>`__).
 
 - to start the application:
@@ -1054,6 +1062,16 @@ Development
     $ make docker-run
 
 - Open http://localhost:5000 and register.
+
+.. note::
+
+  | To change ``fittrackee`` container port when running containers with Makefile commands, create a ``.env`` file with `APP_PORT <installation.html#envvar-APP_PORT>`__.
+  | For example:
+
+  .. code-block::
+
+    export APP_PORT=5001
+
 
 Open http://localhost:8025 to access `MailHog interface <https://github.com/mailhog/MailHog>`_ (email testing tool)
 

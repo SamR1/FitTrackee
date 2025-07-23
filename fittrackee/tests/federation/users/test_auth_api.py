@@ -122,6 +122,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     workouts_visibility=input_workout_visibility.value,
                     hr_visibility="followers_only",
                     segments_creation_event="none",
+                    split_workout_charts=False,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),

@@ -38,4 +38,5 @@ Table of contents
    third_party_tools
    api/index
    troubleshooting/index
+   contributing
    changelog

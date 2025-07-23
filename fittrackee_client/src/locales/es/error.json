@@ -1,8 +1,11 @@
 {
   "APP_ERROR": "Parece que hay algún problema con la aplicación.<br />Por favor inténtalo de nuevo más tarde o contacta con la administración.",
+  "ERRORS_ENCOUNTERED": "Se han detectado errores",
   "NOT_FOUND": {
     "COMMENT": "Comentario no encontrado",
     "PAGE": "No se encuentra la página",
+    "REPORT": "Informe no encontrado",
+    "SEGMENT": "Segmento no encontrado",
     "USER": "Usuario no encontrado",
     "WORKOUT": "No se encuentra el entrenamiento"
   },

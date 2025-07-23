@@ -152,10 +152,11 @@ export const convertStatsValue = (
   useImperialUnits: boolean
 ): number => {
   switch (datasetKey) {
-    case 'average_speed':
-    case 'total_distance':
     case 'total_ascent':
     case 'total_descent':
+      return convertStatsDistance('m', value ?? 0, useImperialUnits)
+    case 'average_speed':
+    case 'total_distance':
     case 'average_distance':
     case 'average_ascent':
     case 'average_descent':

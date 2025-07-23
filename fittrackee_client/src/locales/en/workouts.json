@@ -4,6 +4,7 @@
   "ASCENT": "ascent",
   "AVERAGE_CADENCE": "average cadence",
   "AVERAGE_HR": "average heart rate",
+  "AVERAGE_POWER": "average power",
   "AVERAGE_SPEED": "average speed",
   "AVE_ASCENT": "ave. ascent",
   "AVE_DESCENT": "ave. descent",
@@ -32,6 +33,7 @@
   "DESCRIPTION": "description",
   "DESCRIPTION_FIELD_HELP": "if provided, the description replaces that of the file.",
   "DISPLAY_FILTERS": "display filters",
+  "DISPLAY_MULTIPLE_CHARTS": "display multiple charts",
   "DISTANCE": "distance",
   "DOWNLOAD_WORKOUT": "Download the workout (gpx)",
   "DURATION": "duration",
@@ -39,6 +41,7 @@
   "ELEVATION": "elevation",
   "END": "end",
   "EXIT_FULLSCREEN": "Exit Fullscreen",
+  "EXIT_HEATMAP": "Exit Heatmap",
   "FROM": "from",
   "HEART_RATE": "heart rate",
   "HIDE_FILTERS": "hide filters",
@@ -56,6 +59,7 @@
   "MAX_CADENCE": "max. cadence",
   "MAX_FILES": "max. number of files",
   "MAX_HR": "max. heart rate",
+  "MAX_POWER": "max. power",
   "MAX_SIZE": "max. size",
   "MAX_SPEED": "max. speed",
   "MAX_SYNC_FILES_IN_ZIP": "max. number of files for synchronous upload",
@@ -83,6 +87,7 @@
   "NO_WORKOUTS": "No workout. | No workouts.",
   "NO_WORKOUT_AVAILABLE": "The workout has been deleted or is not visible.",
   "PAUSES": "pauses",
+  "POWER": "power",
   "PREVIOUS_SEGMENT": "Previous segment",
   "PREVIOUS_WORKOUT": "Previous workout",
   "PRIVATE_NOTES": "Private notes",
@@ -126,10 +131,15 @@
     "spm": {
       "LABEL": "steps per minute",
       "UNIT": "spm"
+    },
+    "watt": {
+      "LABEL": "watts",
+      "UNIT": "W"
     }
   },
   "UPLOAD_FIRST_WORKOUT": "Upload one!",
   "VIEW_FULLSCREEN": "View Fullscreen",
+  "VIEW_HEATMAP": "View Heatmap",
   "WEATHER": {
     "DARK_SKY": {
       "clear-day": "clear day",

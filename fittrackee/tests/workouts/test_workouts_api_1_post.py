@@ -854,7 +854,7 @@ class TestPostWorkoutWithTcx(WorkoutApiTestCaseMixin):
 
 
 class TestPostWorkoutWithFit(WorkoutApiTestCaseMixin):
-    def test_it_adds_a_workout_with_kmz_file(
+    def test_it_adds_a_workout_with_fit_file(
         self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         file_path = os.path.join(app.root_path, "tests/files/example.fit")
@@ -897,6 +897,36 @@ class TestPostWorkoutWithFit(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["weather_end"] is None
         assert data["data"]["workouts"][0]["notes"] is None
         assert len(data["data"]["workouts"][0]["segments"]) == 1
+
+    def test_it_adds_a_workout_with_apple_watch_fit_file(
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
+    ) -> None:
+        file_path = os.path.join(app.root_path, "tests/files/apple_watch.fit")
+        with open(file_path, "rb") as fit_file:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app, user_1.email
+            )
+
+            response = client.post(
+                "/api/workouts",
+                data=dict(
+                    file=(fit_file, "apple_watch.fit"), data='{"sport_id": 1}'
+                ),
+                headers=dict(
+                    content_type="multipart/form-data",
+                    Authorization=f"Bearer {auth_token}",
+                ),
+            )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert "created" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["title"] is not None
+        assert data["data"]["workouts"][0]["sport_id"] == 1
+        assert data["data"]["workouts"][0]["duration"] == "0:05:35"
+        assert data["data"]["workouts"][0]["with_gpx"] is True
+        assert data["data"]["workouts"][0]["map"] is not None
 
 
 class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):

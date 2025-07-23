@@ -69,9 +69,10 @@ export interface IAuthUserProfile extends IUserProfile {
   nb_sports: number
   notification_preferences: TNotificationPreferences
   records: IRecord[]
-  sports_list: number[]
-  start_elevation_at_zero: boolean
   segments_creation_event: TSegmentsCreationEvent
+  sports_list: number[]
+  split_workout_charts: boolean
+  start_elevation_at_zero: boolean
   timezone: string
   total_distance: number
   total_duration: string
@@ -129,6 +130,7 @@ export interface IUserPreferencesPayload {
   manually_approves_followers: boolean
   map_visibility: TVisibilityLevels
   segments_creation_event: TSegmentsCreationEvent
+  split_workout_charts: boolean
   start_elevation_at_zero: boolean
   timezone: string
   use_raw_gpx_speed: boolean

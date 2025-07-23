@@ -38,7 +38,15 @@ export const sortEquipments = (a: IEquipment, b: IEquipment): number => {
 }
 
 export const SPORT_EQUIPMENT_TYPES: Record<string, string[]> = {
-  Shoes: ['Hiking', 'Mountaineering', 'Running', 'Swimrun', 'Trail', 'Walking'],
+  Shoes: [
+    'Hiking',
+    'Mountaineering',
+    'Running',
+    'Swimrun',
+    'Tennis (Outdoor)',
+    'Trail',
+    'Walking',
+  ],
   Bike: [
     'Cycling (Sport)',
     'Cycling (Transport)',

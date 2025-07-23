@@ -3,7 +3,7 @@
     "DESCRIPTION": "Cualquier tipo de información adicional que pueda ser útil para tus usuarios. Puedes usar Markdown.",
     "TEXT": "Información detallada sobre la instancia"
   },
-  "ACTION": "Acción",
+  "ACTION": "Acción | Acciones",
   "ACTIVATE_USER_ACCOUNT": "Activar cuenta",
   "ACTIVE": "Activa",
   "ADMIN": "Admin",
@@ -12,7 +12,9 @@
   "APPLICATION": "Aplicación",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Contacto por email con la administración",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "La carga asíncrona de archivos zip está desactivada.",
     "MAX_FILES_IN_ZIP_LABEL": "Núm. máximo de ficheros en el zip",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Ficheros máx. para procesamiento síncrono",
     "MAX_USERS_HELP": "Si 0, no hay límite para los registros.",
     "MAX_USERS_LABEL": "Núm. máximo de usuarios activos",
     "NO_CONTACT_EMAIL": "sin email de contacto",
@@ -21,6 +23,25 @@
     "STATS_WORKOUTS_LIMIT_LABEL": "Número máximo de sesiones. para estadísticas",
     "TITLE": "Configuración de la aplicación",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Tamaño máx. del fichero zip (en Mb)"
+  },
+  "APP_MODERATION": {
+    "ACTIONS": {
+      "ADD_COMMENT": "Añadir comentario",
+      "MARK_AS_RESOLVED": "Marcar como resuelto",
+      "MARK_AS_UNRESOLVED": "Marcar como no resuelto",
+      "SEND_WARNING_EMAIL": "Enviar advertencia",
+      "SUSPEND_ACCOUNT": "Suspender la cuenta de usuario",
+      "SUSPEND_CONTENT": "Suspender contenido",
+      "UNSUSPEND_ACCOUNT": "Reactivar cuenta de usuario",
+      "UNSUSPEND_CONTENT": "Reactivar contenido"
+    },
+    "APPEAL": {
+      "APPROVED": "Este recurso ha sido aprobado {0}.",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "Esta apelación fue aprobada levantando la suspensión.",
+      "HIDE": "Ocultar apelación",
+      "REASON_IS": "La razón es:",
+      "REJECTED": "Esta apelación ha sido rechazada {0}."
+    }
   },
   "BACK_TO_ADMIN": "Volver a admin",
   "CONFIRM_USER_ACCOUNT_DELETION": "¿Seguro que quieres eliminar la cuenta {0}? Se borrarán todos los datos y no será reversible.",

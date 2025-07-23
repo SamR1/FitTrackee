@@ -1,5 +1,6 @@
 WORKOUT_ALLOWED_EXTENSIONS = {"gpx", "fit", "kml", "kmz", "tcx"}
 WORKOUT_DATE_FORMAT = "%Y-%m-%d %H:%M"
+
 # sports with cadence displayed in revolutions per minute
 RPM_CADENCE_SPORTS = [
     "Cycling (Sport)",
@@ -19,4 +20,18 @@ SPM_CADENCE_SPORTS = [
     "Running",
     "Trail",
     "Walking",
+]
+POWER_SPORTS = [
+    "Cycling (Sport)",
+    "Cycling (Trekking)",
+    "Cycling (Transport)",
+    "Cycling (Virtual)",
+    "Halfbike",
+    "Mountain Biking",
+    "Mountain Biking (Electric)",
+]
+# elevation data (ascent, descent, min and max alt), if present, are not
+# displayed
+SPORTS_WITHOUT_ELEVATION_DATA = [
+    "Tennis (Outdoor)",
 ]

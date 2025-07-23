@@ -12,6 +12,7 @@ from fittrackee.users.models import User
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
+from ..mixins import WorkoutMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin
 
@@ -1527,7 +1528,7 @@ class TestGetWorkoutsWithEquipments(WorkoutApiTestCaseMixin):
         ]
 
 
-class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
+class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
     def test_it_gets_workouts_with_stats_when_no_workouts_for_user(
         self,
         app: Flask,
@@ -1601,6 +1602,102 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin):
             "total_distance": workout_cycling_user_1.distance,
             "total_duration": str(workout_cycling_user_1.moving),
             "total_sports": 1,
+        }
+        assert (
+            data["data"]["statistics"]["all"]
+            == data["data"]["statistics"]["current_page"]
+        )
+
+    def test_it_gets_workouts_with_stats_with_outdoor_tennis_workout(
+        self,
+        app: Flask,
+        user_1: User,
+        workout_outdoor_tennis_user_1_with_elevation_data: Workout,
+    ) -> None:
+        tennis_workout = workout_outdoor_tennis_user_1_with_elevation_data
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?with_statistics=true",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["statistics"]["current_page"] == {
+            "average_ascent": None,
+            "average_descent": None,
+            "average_distance": tennis_workout.distance,
+            "average_duration": str(tennis_workout.moving),
+            "average_speed": tennis_workout.ave_speed,
+            "count": 1,
+            "max_speed": tennis_workout.max_speed,
+            "total_ascent": None,
+            "total_descent": None,
+            "total_distance": tennis_workout.distance,
+            "total_duration": str(tennis_workout.moving),
+            "total_sports": 1,
+        }
+        assert (
+            data["data"]["statistics"]["all"]
+            == data["data"]["statistics"]["current_page"]
+        )
+
+    def test_it_gets_workouts_with_stats_with_outdoor_tennis_and_cycling_workouts(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_5_outdoor_tennis: Sport,
+        workout_cycling_user_1: Workout,
+        workout_outdoor_tennis_user_1_with_elevation_data: Workout,
+    ) -> None:
+        workout_cycling_user_1 = self.update_workout_with_gpx_data(
+            workout_cycling_user_1,
+            ascent=50,
+            descent=60,
+            max_alt=300,
+            min_alt=250,
+        )
+        tennis_workout = workout_outdoor_tennis_user_1_with_elevation_data
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?with_statistics=true",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 2
+        assert data["data"]["statistics"]["current_page"] == {
+            "average_ascent": workout_cycling_user_1.ascent,
+            "average_descent": workout_cycling_user_1.descent,
+            "average_distance": (
+                (workout_cycling_user_1.distance + tennis_workout.distance) / 2  # type: ignore[operator]
+            ),
+            "average_duration": str(
+                (workout_cycling_user_1.duration + tennis_workout.duration) / 2
+            ),
+            "average_speed": None,
+            "count": 2,
+            "max_speed": None,
+            "total_ascent": workout_cycling_user_1.ascent,
+            "total_descent": workout_cycling_user_1.descent,
+            "total_distance": (
+                workout_cycling_user_1.distance + tennis_workout.distance  # type: ignore[operator]
+            ),
+            "total_duration": str(
+                workout_cycling_user_1.duration + tennis_workout.duration
+            ),
+            "total_sports": 2,
         }
         assert (
             data["data"]["statistics"]["all"]

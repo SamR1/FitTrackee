@@ -6,6 +6,7 @@ WORKDIR /usr/src/app/fittrackee_client
 ENV PATH=/usr/src/app/fittrackee_client/node_modules/.bin:$PATH
 COPY fittrackee_client/package.json /usr/src/app/fittrackee_client/package.json
 COPY fittrackee_client/yarn.lock /usr/src/app/fittrackee_client/yarn.lock
+RUN apk add --no-cache git
 RUN yarn install --silent --network-timeout 300000
 
 COPY fittrackee_client/. /usr/src/app/fittrackee_client
@@ -26,7 +27,7 @@ COPY fittrackee/. /usr/src/app/fittrackee/
 RUN rm -rf /usr/src/app/fittrackee/tests
 
 RUN python3 -m venv "$VIRTUAL_ENV" && pip install --upgrade pip
-RUN pip install poetry==2.1.1 && . "$VIRTUAL_ENV/bin/activate" && poetry install --only main --no-interaction --quiet
+RUN pip install poetry==2.1.3 && . "$VIRTUAL_ENV/bin/activate" && poetry install --only main --no-interaction --quiet
 
 FROM python:3.13-alpine AS runtime
 

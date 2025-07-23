@@ -184,6 +184,26 @@
         </div>
         <div class="form-items form-checkboxes">
           <span class="checkboxes-label">
+            {{ $t('user.PROFILE.WORKOUT_CHARTS_DISPLAY.LABEL') }}
+          </span>
+          <div class="checkboxes">
+            <label v-for="data in workoutChartDisplayData" :key="data.label">
+              <input
+                type="radio"
+                :id="data.label"
+                :name="data.label"
+                :checked="data.value === userForm.split_workout_charts"
+                :disabled="authUserLoading"
+                @input="updateValue('split_workout_charts', data.value)"
+              />
+              <span class="checkbox-label">
+                {{ $t(`user.PROFILE.WORKOUT_CHARTS_DISPLAY.${data.label}`) }}
+              </span>
+            </label>
+          </div>
+        </div>
+        <div class="form-items form-checkboxes">
+          <span class="checkboxes-label">
             {{ $t('user.PROFILE.ELEVATION_CHART_START.LABEL') }}
           </span>
           <div class="checkboxes">
@@ -417,6 +437,16 @@
       value: false,
     },
   ]
+  const workoutChartDisplayData = [
+    {
+      label: 'ONE',
+      value: false,
+    },
+    {
+      label: 'MULTIPLE',
+      value: true,
+    },
+  ]
   const useRawGpxSpeed = [
     {
       label: 'FILTERED_SPEED',
@@ -473,6 +503,7 @@
     language: 'en',
     manually_approves_followers: true,
     map_visibility: 'private',
+    split_workout_charts: false,
     segments_creation_event: 'only_manual',
     start_elevation_at_zero: false,
     timezone: 'Europe/Paris',
@@ -523,6 +554,7 @@
     userForm.hr_visibility = user.hr_visibility ?? 'private'
     userForm.segments_creation_event =
       user.segments_creation_event ?? 'only_manual'
+    userForm.split_workout_charts = user.split_workout_charts
   }
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES, userForm)
@@ -567,7 +599,7 @@
       }
       .checkboxes {
         display: flex;
-        gap: $default-padding;
+        gap: 0 $default-padding;
         flex-wrap: wrap;
         .checkbox-label {
           padding-left: $default-padding * 0.5;

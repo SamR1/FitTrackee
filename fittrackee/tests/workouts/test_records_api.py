@@ -4,14 +4,14 @@ import pytest
 from flask import Flask
 
 from fittrackee.users.models import User
-from fittrackee.workouts.models import Sport, Workout
+from fittrackee.workouts.models import Sport, Workout, record_types
 
-from ..mixins import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin, WorkoutMixin
 from ..utils import OAUTH_SCOPES
 
 
 @pytest.mark.disable_autouse_update_records_patch
-class TestGetRecords(ApiTestCaseMixin):
+class TestGetRecords(ApiTestCaseMixin, WorkoutMixin):
     def test_it_returns_error_when_user_is_suspended(
         self,
         app: Flask,
@@ -103,6 +103,56 @@ class TestGetRecords(ApiTestCaseMixin):
         )
         assert "MS" == data["data"]["records"][3]["record_type"]
         assert "value" in data["data"]["records"][3]
+
+    def test_it_returns_all_records_type_when_workout_has_elevation_data(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        self.update_workout_with_gpx_data(workout_cycling_user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/records",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["records"]) == 5
+        assert {
+            record["record_type"] for record in data["data"]["records"]
+        } == set(record_types)
+
+    def test_it_does_not_return_HA_record_when_sport_is_outdoor_tennis(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        workout_outdoor_tennis_user_1_with_elevation_data: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/records",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["records"]) == 4
+        assert "HA" not in [
+            record["record_type"] for record in data["data"]["records"]
+        ]
 
     def test_it_gets_no_records_if_user_has_no_workout(
         self,

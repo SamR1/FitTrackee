@@ -178,8 +178,10 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
+        sport_5_outdoor_tennis: Sport,
         seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
+        workout_outdoor_tennis_user_1_with_elevation_data: Workout,
         input_type: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -196,7 +198,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert "success" in data["status"]
         assert data["data"]["statistics"] == {
             "2017": {
-                "1": {
+                f"{sport_1_cycling.id}": {
                     "total_ascent": 220.0,
                     "total_descent": 280.0,
                     "total_distance": 15.0,
@@ -205,18 +207,25 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 }
             },
             "2018": {
-                "1": {
+                f"{sport_1_cycling.id}": {
                     "total_ascent": 340.0,
                     "total_descent": 500.0,
                     "total_distance": 39.0,
                     "total_duration": 11624,
                     "total_workouts": 5,
                 },
-                "2": {
+                f"{sport_2_running.id}": {
                     "total_ascent": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
+                    "total_workouts": 1,
+                },
+                f"{sport_5_outdoor_tennis.id}": {
+                    "total_ascent": None,
+                    "total_descent": None,
+                    "total_distance": 2.5,
+                    "total_duration": 3600,
                     "total_workouts": 1,
                 },
             },
@@ -2076,6 +2085,41 @@ class TestGetStatsBySport(ApiTestCaseMixin):
             }
         }
         assert data["data"]["total_workouts"] == 7
+
+    def test_it_get_stats_for_outdoor_tennis(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_5_outdoor_tennis: Sport,
+        workout_outdoor_tennis_user_1_with_elevation_data: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/stats/{user_1.username}/by_sport?sport_id={sport_5_outdoor_tennis.id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            f"{sport_5_outdoor_tennis.id}": {
+                "average_ascent": None,
+                "average_descent": None,
+                "average_distance": 2.5,
+                "average_duration": "1:00:00",
+                "average_speed": 2.5,
+                "total_ascent": None,
+                "total_descent": None,
+                "total_distance": 2.5,
+                "total_duration": "1:00:00",
+                "total_workouts": 1,
+            }
+        }
+        assert data["data"]["total_workouts"] == 1
 
     def test_it_get_stats_for_sport_1_when_no_workouts(
         self,

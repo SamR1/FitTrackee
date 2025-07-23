@@ -1,10 +1,13 @@
+import time
 from typing import Dict, List
 
 from flask import Flask
+from sqlalchemy.exc import OperationalError
 
 from fittrackee import db
 
 from ..dates import get_datetime_in_utc
+from .exceptions import AppConfigException
 from .models import AppConfig
 
 MAX_FILE_SIZE = 1 * 1024 * 1024  # 1MB
@@ -14,16 +17,32 @@ def get_or_init_config() -> AppConfig:
     """
     Init application configuration.
     """
-    existing_config = AppConfig.query.one_or_none()
-    if existing_config:
-        return existing_config
-    config = AppConfig()
-    config.max_users = 0  # no limitation
-    config.max_single_file_size = MAX_FILE_SIZE
-    config.max_zip_file_size = MAX_FILE_SIZE * 10
-    db.session.add(config)
-    db.session.commit()
-    return config
+    retries = 0
+    while retries < 2:
+        with db.session.begin():
+            # Set isolation level to SERIALIZABLE to ensure that no other rows
+            # are created in 'app_config' table during transaction when
+            # several workers are started
+            db.session.connection(
+                execution_options={"isolation_level": "SERIALIZABLE"}
+            )
+            try:
+                existing_config = AppConfig.query.one_or_none()
+                if existing_config:
+                    return existing_config
+
+                config = AppConfig()
+                config.max_users = 0  # no limitation
+                config.max_single_file_size = MAX_FILE_SIZE
+                config.max_zip_file_size = MAX_FILE_SIZE * 10
+                db.session.add(config)
+                db.session.commit()
+                return config
+            except OperationalError:
+                db.session.rollback()
+                retries += 1
+                time.sleep(0.1)
+    raise AppConfigException()
 
 
 def update_app_config_from_database(
