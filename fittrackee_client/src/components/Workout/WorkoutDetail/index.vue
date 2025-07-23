@@ -52,6 +52,7 @@
             :workoutData="workoutData"
             :markerCoordinates="markerCoordinates"
             :with-heatmap="isSportWithHeatmap(sport?.label)"
+            :geo-json-options="geoJsonOptions"
           />
           <WorkoutVisibilityEquipment
             class="desktop"
@@ -88,7 +89,7 @@
   import WorkoutVisibilityEquipment from '@/components/Workout/WorkoutDetail/WorkoutVisibilityEquipment.vue'
   import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { IDisplayOptions } from '@/types/application'
-  import type { TCoordinates } from '@/types/map'
+  import type { IGeoJsonOptions, TCoordinates } from '@/types/map'
   import type { ISport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import type {
@@ -117,7 +118,8 @@
   const route = useRoute()
   const store = useStore()
 
-  const { isWorkoutOwner, markerCoordinates, workoutData } = toRefs(props)
+  const { isWorkoutOwner, markerCoordinates, sport, workoutData } =
+    toRefs(props)
   const workout: ComputedRef<IWorkout> = computed(
     () => props.workoutData.workout
   )
@@ -138,6 +140,9 @@
   )
   const workoutObject = computed(() =>
     getWorkoutObject(workout.value, segment.value)
+  )
+  const geoJsonOptions: ComputedRef<IGeoJsonOptions> = computed(() =>
+    sport.value?.label === 'Tennis (Outdoor)' ? { weight: 1 } : {}
   )
   const displayMakeAppeal: ComputedRef<boolean> = computed(
     () => workout.value.suspended_at !== null && isWorkoutOwner.value

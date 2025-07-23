@@ -68,9 +68,13 @@
               :bounds="bounds"
               :maxZoom="19"
             />
-            <LGeoJson :geojson="geoJson.jsonData" v-if="!displayHeatmap" />
+            <LGeoJson
+              :geojson="geoJson.jsonData"
+              :options="geoJsonOptions"
+              v-if="!displayHeatmap"
+            />
             <LMarker
-              v-if="markerCoordinates.latitude"
+              v-if="markerCoordinates.latitude && markerCoordinates.longitude"
               :lat-lng="[
                 markerCoordinates.latitude,
                 markerCoordinates.longitude,
@@ -81,12 +85,18 @@
               layer-type="overlay"
             >
               <CustomMarker
-                v-if="startMarkerCoordinates.latitude"
+                v-if="
+                  startMarkerCoordinates.latitude &&
+                  startMarkerCoordinates.longitude
+                "
                 :markerCoordinates="startMarkerCoordinates"
                 :isStart="true"
               />
               <CustomMarker
-                v-if="endMarkerCoordinates.latitude"
+                v-if="
+                  endMarkerCoordinates.latitude &&
+                  endMarkerCoordinates.longitude
+                "
                 :markerCoordinates="endMarkerCoordinates"
                 :isStart="false"
               />
@@ -120,6 +130,7 @@
   import type { GeoJSONData } from '@/types/geojson'
   import type { IHeatmapData, IHeatmapOverlay } from '@/types/heatmap.ts'
   import type {
+    IGeoJsonOptions,
     ILeafletObject,
     TBounds,
     TCenter,
@@ -132,12 +143,15 @@
     workoutData: IWorkoutData
     markerCoordinates?: TCoordinates
     withHeatmap?: boolean
+    geoJsonOptions?: IGeoJsonOptions
   }
   const props = withDefaults(defineProps<Props>(), {
     markerCoordinates: () => ({}) as TCoordinates,
     withHeatmap: false,
+    geoJsonOptions: () => ({}) as IGeoJsonOptions,
   })
-  const { workoutData, markerCoordinates, withHeatmap } = toRefs(props)
+  const { geoJsonOptions, workoutData, markerCoordinates, withHeatmap } =
+    toRefs(props)
 
   const { appConfig } = useApp()
 
@@ -222,12 +236,12 @@
       workoutData.value.chartData.length === 0
     ) {
       return {
-        max: 5,
+        max: 12,
         data: [],
       }
     }
     return {
-      max: 5,
+      max: 12,
       data: workoutData.value.chartData,
     }
   }
