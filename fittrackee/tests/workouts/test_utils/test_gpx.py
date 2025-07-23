@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Dict, List, Optional
 from unittest.mock import mock_open, patch
 
 from fittrackee.workouts.utils.gpx import (
-    get_chart_data,
+    get_chart_data_from_gpx,
     get_geojson_from_segments,
 )
 
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 
 
-class TestGetChartData:
+class TestGetChartDataFromGpx:
     def test_it_returns_none_when_gpx_has_no_tracks(
         self, app: "Flask", gpx_file_wo_track: str, sport_1_cycling: "Sport"
     ) -> None:
@@ -24,7 +24,7 @@ class TestGetChartData:
             new_callable=mock_open,
             read_data=gpx_file_wo_track,
         ):
-            chart_data = get_chart_data(
+            chart_data = get_chart_data_from_gpx(
                 gpx_file_wo_track,
                 sport_1_cycling.label,
                 workout_ave_cadence,
@@ -40,7 +40,7 @@ class TestGetChartData:
         with patch(
             "builtins.open", new_callable=mock_open, read_data=gpx_file
         ):
-            chart_data = get_chart_data(
+            chart_data = get_chart_data_from_gpx(
                 gpx_file,
                 sport_1_cycling.label,
                 workout_ave_cadence,
@@ -79,7 +79,7 @@ class TestGetChartData:
             new_callable=mock_open,
             read_data=gpx_file_with_3_segments,
         ):
-            chart_data = get_chart_data(
+            chart_data = get_chart_data_from_gpx(
                 gpx_file_with_3_segments,
                 sport_1_cycling.label,
                 workout_ave_cadence,
@@ -119,7 +119,7 @@ class TestGetChartData:
             new_callable=mock_open,
             read_data=gpx_file_with_microseconds,
         ):
-            chart_data = get_chart_data(
+            chart_data = get_chart_data_from_gpx(
                 gpx_file_with_microseconds,
                 sport_1_cycling.label,
                 workout_ave_cadence,
@@ -190,7 +190,7 @@ class TestGetChartData:
             new_callable=mock_open,
             read_data=gpx_file_with_gpxtpx_extensions,
         ):
-            chart_data = get_chart_data(
+            chart_data = get_chart_data_from_gpx(
                 gpx_file_with_gpxtpx_extensions,
                 sport_1_cycling.label,
                 workout_ave_cadence,
@@ -211,7 +211,7 @@ class TestGetChartData:
             new_callable=mock_open,
             read_data=gpx_file_with_cadence_float_value,
         ):
-            chart_data = get_chart_data(
+            chart_data = get_chart_data_from_gpx(
                 gpx_file_with_cadence_float_value,
                 sport_1_cycling.label,
                 workout_ave_cadence,
@@ -232,7 +232,7 @@ class TestGetChartData:
             new_callable=mock_open,
             read_data=gpx_file_with_cadence_zero_values,
         ):
-            chart_data = get_chart_data(
+            chart_data = get_chart_data_from_gpx(
                 gpx_file_with_cadence_zero_values,
                 sport_1_cycling.label,
                 workout_ave_cadence,
@@ -275,7 +275,7 @@ class TestGetChartData:
             new_callable=mock_open,
             read_data=gpx_file_with_ns3_extensions,
         ):
-            chart_data = get_chart_data(
+            chart_data = get_chart_data_from_gpx(
                 gpx_file_with_ns3_extensions,
                 sport_1_cycling.label,
                 workout_ave_cadence,
@@ -296,7 +296,7 @@ class TestGetChartData:
             new_callable=mock_open,
             read_data=gpx_file_without_track_point_extension,
         ):
-            chart_data = get_chart_data(
+            chart_data = get_chart_data_from_gpx(
                 gpx_file_without_track_point_extension,
                 sport_1_cycling.label,
                 workout_ave_cadence,
@@ -339,7 +339,7 @@ class TestGetChartData:
             new_callable=mock_open,
             read_data=gpx_file_with_gpxtpx_extensions_and_power,
         ):
-            chart_data = get_chart_data(
+            chart_data = get_chart_data_from_gpx(
                 gpx_file_with_gpxtpx_extensions_and_power,
                 sport_1_cycling.label,
                 workout_ave_cadence,
@@ -360,7 +360,7 @@ class TestGetChartData:
             new_callable=mock_open,
             read_data=gpx_file_with_gpxtpx_extensions,
         ):
-            chart_data = get_chart_data(
+            chart_data = get_chart_data_from_gpx(
                 gpx_file_with_gpxtpx_extensions,
                 sport_2_running.label,
                 workout_ave_cadence,
@@ -403,7 +403,7 @@ class TestGetChartData:
             new_callable=mock_open,
             read_data=gpx_file_with_gpxtpx_extensions,
         ):
-            chart_data = get_chart_data(
+            chart_data = get_chart_data_from_gpx(
                 gpx_file_with_gpxtpx_extensions,
                 sport_5_outdoor_tennis.label,
                 workout_ave_cadence,
@@ -442,7 +442,7 @@ class TestGetChartData:
             new_callable=mock_open,
             read_data=gpx_file_with_gpxtpx_extensions,
         ):
-            chart_data = get_chart_data(
+            chart_data = get_chart_data_from_gpx(
                 gpx_file_with_gpxtpx_extensions,
                 sport_4_paragliding.label,
                 workout_ave_cadence,
@@ -483,7 +483,7 @@ class TestGetChartData:
             new_callable=mock_open,
             read_data=gpx_file_with_gpxtpx_extensions,
         ):
-            chart_data = get_chart_data(
+            chart_data = get_chart_data_from_gpx(
                 gpx_file_with_gpxtpx_extensions,
                 sport_1_cycling.label,
                 workout_ave_cadence,
