@@ -1957,7 +1957,7 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
             "latitude": 44.68095,
             "longitude": 6.07367,
             "speed": 3.21,
-            "time": "Tue, 13 Mar 2018 12:44:45 GMT",
+            "time": "2018-03-13 12:44:45+00:00",
         }
 
     def test_it_gets_chart_data_for_a_workout_created_with_gpx_without_elevation(  # noqa
@@ -2006,7 +2006,7 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
             "latitude": 44.68095,
             "longitude": 6.07367,
             "speed": 3.21,
-            "time": "Tue, 13 Mar 2018 12:44:45 GMT",
+            "time": "2018-03-13 12:44:45+00:00",
         }
 
     def test_it_gets_segment_chart_data_for_a_workout_created_with_gpx(
@@ -2051,7 +2051,7 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
             "latitude": 44.68095,
             "longitude": 6.07367,
             "speed": 3.21,
-            "time": "Tue, 13 Mar 2018 12:44:45 GMT",
+            "time": "2018-03-13 12:44:45+00:00",
         }
 
     def test_it_returns_404_on_getting_chart_data_if_workout_belongs_to_another_user(  # noqa
