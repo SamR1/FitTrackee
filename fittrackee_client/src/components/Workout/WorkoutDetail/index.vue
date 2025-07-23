@@ -51,6 +51,8 @@
           <WorkoutMap
             :workoutData="workoutData"
             :markerCoordinates="markerCoordinates"
+            :with-heatmap="isSportWithHeatmap(sport?.label)"
+            :geo-json-options="geoJsonOptions"
           />
           <WorkoutVisibilityEquipment
             class="desktop"
@@ -87,7 +89,7 @@
   import WorkoutVisibilityEquipment from '@/components/Workout/WorkoutDetail/WorkoutVisibilityEquipment.vue'
   import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { IDisplayOptions } from '@/types/application'
-  import type { TCoordinates } from '@/types/map'
+  import type { IGeoJsonOptions, TCoordinates } from '@/types/map'
   import type { ISport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import type {
@@ -98,6 +100,7 @@
   } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatDate, formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
+  import { isSportWithHeatmap } from '@/utils/workouts.ts'
 
   interface Props {
     authUser?: IAuthUserProfile
@@ -115,7 +118,8 @@
   const route = useRoute()
   const store = useStore()
 
-  const { isWorkoutOwner, markerCoordinates, workoutData } = toRefs(props)
+  const { isWorkoutOwner, markerCoordinates, sport, workoutData } =
+    toRefs(props)
   const workout: ComputedRef<IWorkout> = computed(
     () => props.workoutData.workout
   )
@@ -136,6 +140,9 @@
   )
   const workoutObject = computed(() =>
     getWorkoutObject(workout.value, segment.value)
+  )
+  const geoJsonOptions: ComputedRef<IGeoJsonOptions> = computed(() =>
+    sport.value?.label === 'Tennis (Outdoor)' ? { weight: 1 } : {}
   )
   const displayMakeAppeal: ComputedRef<boolean> = computed(
     () => workout.value.suspended_at !== null && isWorkoutOwner.value
@@ -187,6 +194,7 @@
       ascent: segment ? segment.ascent : workout.ascent,
       aveCadence: segment ? segment.ave_cadence : workout.ave_cadence,
       aveHr: segment ? segment.ave_hr : workout.ave_hr,
+      avePower: segment ? segment.ave_power : workout.ave_power,
       aveSpeed: segment ? segment.ave_speed : workout.ave_speed,
       source: segment ? null : workout.source || null,
       distance: segment ? segment.distance : workout.distance,
@@ -199,6 +207,7 @@
       maxAlt: segment ? segment.max_alt : workout.max_alt,
       maxCadence: segment ? segment.max_cadence : workout.max_cadence,
       maxHr: segment ? segment.max_hr : workout.max_hr,
+      maxPower: segment ? segment.max_power : workout.max_power,
       maxSpeed: segment ? segment.max_speed : workout.max_speed,
       minAlt: segment ? segment.min_alt : workout.min_alt,
       moving: segment ? segment.moving : workout.moving,

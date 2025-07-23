@@ -1,0 +1,53 @@
+name: Docker CI
+
+on:
+  push:
+    paths: [
+      'fittrackee/**',
+      'pyproject.toml',
+      'poetry.lock',
+      'Dockerfile',
+      'docker-entrypoint.sh',
+      '.github/workflows/.tests-docker.yml'
+    ]
+  pull_request:
+    paths: [
+      'fittrackee/**',
+      'pyproject.toml',
+      'poetry.lock',
+      'Dockerfile',
+      'docker-entrypoint.sh',
+      '.github/workflows/.tests-docker.yml'
+    ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build_image:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
+    name: Build docker images (for check only)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    strategy:
+      matrix:
+        platforms: [ "linux/amd64", "linux/arm64" ]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker images
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: ${{ matrix.platforms }}
+          push: false

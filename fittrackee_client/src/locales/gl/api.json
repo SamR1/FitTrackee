@@ -42,6 +42,7 @@
     "no selected file": "Sen ficheiro seleccionado.",
     "no tracks in gpx file": "Non hai ruta (<trk>) no ficheiro .gpx.",
     "no tracks in kml file": "Sen ruta (<Track>) no ficheiro .kml.",
+    "no valid segments with GPS found in fit file": "non se atopan segmentos válidos nos datos GPS do ficheiro .fit.",
     "one or more values, entered or calculated, exceed the limits": "Un ou varios valores, escritos ou calculados, excenden os límites.",
     "ongoing request exists": "Xa existe unha solicitude de exportación de datos.",
     "ongoing upload task exists": "Xa se está a subir un ficheiro.",

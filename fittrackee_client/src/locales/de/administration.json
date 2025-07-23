@@ -12,6 +12,7 @@
   "APPLICATION": "Anwendung",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Kontakt-E-Mail des Administrators",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "Das asynchrone hochladen von ZIP Archiven ist ausgeschaltet.",
     "MAX_FILES_IN_ZIP_LABEL": "Max. Dateianzahl im zip Archiv",
     "MAX_USERS_HELP": "Wenn 0, gibt es keine Registrierungslimitierung..",
     "MAX_USERS_LABEL": "Max. Anzahl aktiver Nutzer",

@@ -1,3 +1,5 @@
+import type { IHeatmapOverlay } from '@/types/heatmap.ts'
+
 export type TCenter = number[]
 
 export type TBounds = number[][]
@@ -8,5 +10,13 @@ export type TCoordinates = {
 }
 
 export interface ILeafletObject {
-  leafletObject: { fitBounds: (bounds: TBounds) => void }
+  leafletObject: {
+    fitBounds: (bounds: TBounds) => void
+    addLayer: (layer: IHeatmapOverlay) => void
+    removeLayer: (layer: IHeatmapOverlay) => void
+  }
+}
+
+export interface IGeoJsonOptions {
+  weight?: number
 }

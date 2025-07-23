@@ -10,7 +10,7 @@
     "SCOPE": {
       "LABEL": "Область",
       "application:write_DESCRIPTION": "предоставить доступ к конфигурации приложения.",
-      "equipments:read_DESCRIPTION": "предоставляет доступ только для чтения к конечным точкам (endpoint) <code>equipments</code>.",
+      "equipments:read_DESCRIPTION": "предоставляет доступ только для чтения к эндпоинтам <code>equipments</code>.",
       "equipments:write_DESCRIPTION": "Предоставляет права на запись к эндпоинтам <code>equipments</code>.",
       "follow:read_DESCRIPTION": "Предоставляет права на чтение к эндпоинтам, связанным с запросами на подписку и подписчиками.",
       "follow:write_DESCRIPTION": "Предоставляет права на запись к эндпоинтам, связанным с запросами на подписку и подписчиками.",
@@ -22,8 +22,8 @@
       "reports:write_DESCRIPTION": "Предоставляет права на запись к эндпоинтам <code>reports</code>.",
       "users:read_DESCRIPTION": "Предоставляет права на чтение к эндпоинтам <code>users</code>.",
       "users:write_DESCRIPTION": "Предоставляет права на запись к эндпоинтам <code>users</code>.",
-      "workouts:read_DESCRIPTION": "Предоставляет права на чтение к эндпоинтам workouts и comments.",
-      "workouts:write_DESCRIPTION": "предоставляет права на запись к эндпоинтам workouts и comments."
+      "workouts:read_DESCRIPTION": "Предоставляет права на чтение к эндпоинтам тренировок и комментариев.",
+      "workouts:write_DESCRIPTION": "Предоставляет права на запись к эндпоинтам тренировок и комментариев."
     },
     "URL": "URL приложения"
   },

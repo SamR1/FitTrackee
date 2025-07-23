@@ -27,11 +27,13 @@ from fittrackee.visibility_levels import (
     get_calculated_visibility,
 )
 
+from .constants import SPORTS_WITHOUT_ELEVATION_DATA
 from .exceptions import WorkoutForbiddenException
 from .utils.convert import (
     convert_in_duration,
     convert_value_to_integer,
     get_cadence,
+    get_power,
 )
 
 if TYPE_CHECKING:
@@ -335,6 +337,8 @@ class Workout(BaseModel):
     source: Mapped[Optional[str]] = mapped_column(
         db.String(100), nullable=True
     )
+    max_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
+    ave_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
 
     user: Mapped["User"] = relationship(
         "User", lazy="select", single_parent=True
@@ -496,6 +500,10 @@ class Workout(BaseModel):
 
         can_see_heart_rate = can_view_heart_rate(self.user, user)
         sport_label = self.sport.label
+        return_elevation_data = (
+            sport_label not in SPORTS_WITHOUT_ELEVATION_DATA
+        )
+
         workout_data = {
             **workout_data,
             **EMPTY_WORKOUT_VALUES,
@@ -516,16 +524,28 @@ class Workout(BaseModel):
             ),
             "min_alt": (
                 float(self.min_alt)
-                if self.min_alt is not None and can_see_analysis_data
+                if self.min_alt is not None
+                and can_see_analysis_data
+                and return_elevation_data
                 else None
             ),
             "max_alt": (
                 float(self.max_alt)
-                if self.max_alt is not None and can_see_analysis_data
+                if self.max_alt is not None
+                and can_see_analysis_data
+                and return_elevation_data
                 else None
             ),
-            "descent": None if self.descent is None else float(self.descent),
-            "ascent": None if self.ascent is None else float(self.ascent),
+            "descent": (
+                float(self.descent)
+                if self.descent is not None and return_elevation_data
+                else None
+            ),
+            "ascent": (
+                float(self.ascent)
+                if self.ascent is not None and return_elevation_data
+                else None
+            ),
             "analysis_visibility": (
                 self.calculated_analysis_visibility.value
                 if can_see_analysis_data
@@ -540,6 +560,8 @@ class Workout(BaseModel):
             "max_cadence": get_cadence(sport_label, self.max_cadence),
             "ave_hr": self.ave_hr if can_see_heart_rate else None,
             "max_hr": self.max_hr if can_see_heart_rate else None,
+            "ave_power": get_power(sport_label, self.ave_power),
+            "max_power": get_power(sport_label, self.max_power),
         }
 
         if not light or with_equipments:
@@ -560,7 +582,11 @@ class Workout(BaseModel):
             "records": (
                 []
                 if for_report
-                else [record.serialize() for record in self.records]
+                else [
+                    record.serialize()
+                    for record in self.records
+                    if return_elevation_data or record.record_type != "HA"
+                ]
             ),
             "segments": (
                 [
@@ -901,6 +927,8 @@ class WorkoutSegment(BaseModel):
     ave_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
     max_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # rpm
     ave_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # rpm
+    max_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
+    ave_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
 
     workout: Mapped["Workout"] = relationship(
         "Workout", lazy="joined", single_parent=True
@@ -948,6 +976,8 @@ class WorkoutSegment(BaseModel):
             "max_cadence": get_cadence(sport_label, self.max_cadence),
             "ave_hr": self.ave_hr if can_see_heart_rate else None,
             "max_hr": self.max_hr if can_see_heart_rate else None,
+            "ave_power": get_power(sport_label, self.ave_power),
+            "max_power": get_power(sport_label, self.max_power),
         }
 
 

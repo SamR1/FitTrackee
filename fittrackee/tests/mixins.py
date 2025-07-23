@@ -3,7 +3,7 @@ import os
 import shutil
 import tempfile
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 from unittest.mock import Mock
@@ -621,3 +621,27 @@ class UserTaskMixin:
             os.path.join(current_app.root_path, zip_archive), file_path
         )
         return file_path
+
+
+class WorkoutMixin:
+    @staticmethod
+    def update_workout_with_gpx_data(
+        workout: Workout,
+        map_id: Optional[str] = None,
+        gpx_path: Optional[str] = None,
+        bounds: Optional[List[float]] = None,
+        ascent: Optional[int] = 26,
+        descent: Optional[int] = 12,
+        max_alt: Optional[int] = 260,
+        min_alt: Optional[int] = 236,
+    ) -> Workout:
+        workout.map_id = map_id
+        workout.map = random_string() if map_id is None else map_id
+        workout.gpx = random_string() if gpx_path is None else gpx_path
+        workout.bounds = [1.0, 2.0, 3.0, 4.0] if bounds is None else bounds
+        workout.pauses = timedelta(minutes=15)
+        workout.ascent = ascent
+        workout.descent = descent
+        workout.max_alt = max_alt
+        workout.min_alt = min_alt
+        return workout

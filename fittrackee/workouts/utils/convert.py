@@ -2,7 +2,7 @@ import re
 from datetime import timedelta
 from typing import Optional, Union
 
-from ..constants import RPM_CADENCE_SPORTS, SPM_CADENCE_SPORTS
+from ..constants import POWER_SPORTS, RPM_CADENCE_SPORTS, SPM_CADENCE_SPORTS
 from ..exceptions import InvalidDurationException
 
 
@@ -38,5 +38,15 @@ def get_cadence(sport_label: str, cadence: Optional[int]) -> Optional[int]:
 
     if sport_label in SPM_CADENCE_SPORTS:
         return cadence * 2
+
+    return None
+
+
+def get_power(sport_label: str, power: Optional[int]) -> Optional[int]:
+    if power is None:
+        return None
+
+    if sport_label in POWER_SPORTS:
+        return power
 
     return None

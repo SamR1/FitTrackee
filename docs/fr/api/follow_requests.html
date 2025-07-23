@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Recherche" href="../search.html" /><link rel="next" title="OAuth2" href="oauth2.html" /><link rel="prev" title="Types d’équipement" href="equipment_types.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Recherche" href="../search.html" /><link rel="next" title="OAuth2" href="oauth2.html" /><link rel="prev" title="Types d&#39;équipement" href="equipment_types.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Demandes de suivi - Documentation FitTrackee 0.10.3</title>
+        <title>Demandes de suivi - Documentation FitTrackee 0.11.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -169,7 +169,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.10.3
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.11.0
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.10.3
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.11.0
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -212,12 +212,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cli.html">Interface de ligne de commande</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../third_party_tools.html">Outils tiers</a></li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Documentation de l’API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l’API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Documentation de l'API</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l'API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="auth.html">Authentification et compte</a></li>
 <li class="toctree-l2"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="comments.html">Commentaires</a></li>
 <li class="toctree-l2"><a class="reference internal" href="equipments.html">Équipements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="equipment_types.html">Types d’équipement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="equipment_types.html">Types d'équipement</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Demandes de suivi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="oauth2.html">OAuth2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notifications.html">Notifications</a></li>
@@ -235,6 +235,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../troubleshooting/administrator.html">Administrateur</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contribuer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changelog.html">Historique des modifications</a></li>
 </ul>
 
@@ -292,7 +293,7 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-follow-requests">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/follow-requests</span></span><a class="headerlink" href="#get--api-follow-requests" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Obtenir les demandes de suivi à valider, reçues par l’utilisateur authentifié.</p>
+<dd><p>Obtenir les demandes de suivi à valider, reçues par l'utilisateur authentifié.</p>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">follow:read</span></code></p>
 <p><strong>Exemple de requêtes</strong> :</p>
 <ul class="simple">
@@ -349,30 +350,30 @@
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres de requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>page</strong> (<em>integer</em>) – page si pagination (par défaut : 1)</p></li>
-<li><p><strong>per_page</strong> (<em>integer</em>) – nombre de demande de suivi par page (par défaut : 10, max : 50)</p></li>
-<li><p><strong>order</strong> (<em>string</em>) – ordre de tri (par défaut : <code class="docutils literal notranslate"><span class="pre">asc</span></code>)</p></li>
+<li><p><strong>page</strong> (<em>integer</em>) -- page si pagination (par défaut : 1)</p></li>
+<li><p><strong>per_page</strong> (<em>integer</em>) -- nombre de demande de suivi par page (par défaut : 10, max : 50)</p></li>
+<li><p><strong>order</strong> (<em>string</em>) -- ordre de tri (par défaut : <code class="docutils literal notranslate"><span class="pre">asc</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – succès</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- succès</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> – </p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> -- </p></li>
 </ul>
 </dd>
 </dl>
@@ -381,7 +382,7 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-follow-requests-(user_name)-accept">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/follow-requests/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/accept</span></span><a class="headerlink" href="#post--api-follow-requests-(user_name)-accept" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Accepter la demande de suivi d’un utilisateur</p>
+<dd><p>Accepter la demande de suivi d'un utilisateur</p>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">follow:write</span></code></p>
 <p><strong>Exemple de requêtes</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/follow-requests/Sam/accept</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -400,32 +401,32 @@
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user_name</strong> (<em>string</em>) – nom de l’utilisateur</p></li>
+<li><p><strong>user_name</strong> (<em>string</em>) -- nom de l'utilisateur</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – succès</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- succès</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">Follow</span> <span class="pre">request</span> <span class="pre">from</span> <span class="pre">user</span> <span class="pre">'user_name'</span> <span class="pre">already</span> <span class="pre">accepted.</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Follow</span> <span class="pre">request</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist.</span></code></p></li>
 </ul>
@@ -438,7 +439,7 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-follow-requests-(user_name)-reject">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/follow-requests/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">user_name</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/reject</span></span><a class="headerlink" href="#post--api-follow-requests-(user_name)-reject" title="Lien vers cette définition">¶</a></dt>
-<dd><p>Rejeter la demande de suivi d’un utilisateur.</p>
+<dd><p>Rejeter la demande de suivi d'un utilisateur.</p>
 <p><strong>Scope</strong> : <code class="docutils literal notranslate"><span class="pre">follow:write</span></code></p>
 <p><strong>Exemple de requêtes</strong> :</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/follow-requests/Sam/reject</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
@@ -457,32 +458,32 @@
 <dl class="field-list simple">
 <dt class="field-odd">Paramètres<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>user_name</strong> (<em>string</em>) – nom de l’utilisateur</p></li>
+<li><p><strong>user_name</strong> (<em>string</em>) -- nom de l'utilisateur</p></li>
 </ul>
 </dd>
 <dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> – Jeton “OAuth 2.0 Bearer”</p></li>
+<li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Codes d’état<span class="colon">:</span></dt>
+<dt class="field-odd">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – succès</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- succès</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">Follow</span> <span class="pre">request</span> <span class="pre">from</span> <span class="pre">user</span> <span class="pre">'user_name'</span> <span class="pre">already</span> <span class="pre">rejected.</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> – <ul>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Follow</span> <span class="pre">request</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist.</span></code></p></li>
 </ul>
@@ -515,7 +516,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Types d’équipement</div>
+                <div class="title">Types d'équipement</div>
                 
               </div>
             </a>
@@ -547,7 +548,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=3d12432b"></script>
+</div><script src="../_static/documentation_options.js?v=7b3f8318"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>

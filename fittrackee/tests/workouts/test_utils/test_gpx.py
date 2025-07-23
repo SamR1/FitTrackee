@@ -157,6 +157,7 @@ class TestGetChartData:
             "hr": 92,
             "latitude": 44.68095,
             "longitude": 6.07367,
+            "power": 0,
             "speed": 3.21,
             "time": datetime(2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc),
         }
@@ -168,6 +169,7 @@ class TestGetChartData:
             "hr": 81,
             "latitude": 44.67822,
             "longitude": 6.07442,
+            "power": 218,
             "speed": 4.33,
             "time": datetime(2018, 3, 13, 12, 48, 55, tzinfo=timezone.utc),
         }
@@ -241,6 +243,7 @@ class TestGetChartData:
             "hr": 92,
             "latitude": 44.68095,
             "longitude": 6.07367,
+            "power": 0,
             "speed": 3.21,
             "time": datetime(2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc),
         }
@@ -251,6 +254,7 @@ class TestGetChartData:
             "hr": 81,
             "latitude": 44.67822,
             "longitude": 6.07442,
+            "power": 218,
             "speed": 4.33,
             "time": datetime(2018, 3, 13, 12, 48, 55, tzinfo=timezone.utc),
         }
@@ -295,7 +299,29 @@ class TestGetChartData:
                 can_see_heart_rate=True,
             )
 
-        self.assert_chart_data(chart_data)
+        assert chart_data is not None
+        assert chart_data[0] == {
+            "cadence": 0,
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "hr": 92,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "speed": 3.21,
+            "time": datetime(2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc),
+        }
+        assert chart_data[-1] == {
+            "cadence": 50,
+            "distance": 0.32,
+            "duration": 250.0,
+            "elevation": 975.0,
+            "hr": 81,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "speed": 4.33,
+            "time": datetime(2018, 3, 13, 12, 48, 55, tzinfo=timezone.utc),
+        }
 
     def test_it_returns_chart_data_for_gpx_file_with_power_before_track_point_extension(  # noqa
         self,
@@ -354,6 +380,45 @@ class TestGetChartData:
             "distance": 0.32,
             "duration": 250.0,
             "elevation": 975.0,
+            "hr": 81,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "speed": 4.33,
+            "time": datetime(2018, 3, 13, 12, 48, 55, tzinfo=timezone.utc),
+        }
+
+    def test_it_does_not_return_elevation_when_sport_is_outdoor_tennis(
+        self,
+        app: "Flask",
+        gpx_file_with_gpxtpx_extensions: str,
+        sport_5_outdoor_tennis: "Sport",
+    ) -> None:
+        workout_ave_cadence = 70
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=gpx_file_with_gpxtpx_extensions,
+        ):
+            chart_data = get_chart_data(
+                gpx_file_with_gpxtpx_extensions,
+                sport_5_outdoor_tennis.label,
+                workout_ave_cadence,
+                can_see_heart_rate=True,
+            )
+
+        assert chart_data is not None
+        assert chart_data[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "hr": 92,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "speed": 3.21,
+            "time": datetime(2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc),
+        }
+        assert chart_data[-1] == {
+            "distance": 0.32,
+            "duration": 250.0,
             "hr": 81,
             "latitude": 44.67822,
             "longitude": 6.07442,
@@ -429,6 +494,7 @@ class TestGetChartData:
             "elevation": 998.0,
             "latitude": 44.68095,
             "longitude": 6.07367,
+            "power": 0,
             "speed": 3.21,
             "time": datetime(2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc),
         }
@@ -439,6 +505,7 @@ class TestGetChartData:
             "elevation": 975.0,
             "latitude": 44.67822,
             "longitude": 6.07442,
+            "power": 218,
             "speed": 4.33,
             "time": datetime(2018, 3, 13, 12, 48, 55, tzinfo=timezone.utc),
         }

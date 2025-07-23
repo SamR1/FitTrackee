@@ -2,10 +2,17 @@
   "ADD_WORKOUT": "Training hinzufügen",
   "ANALYSIS": "Analyse",
   "ASCENT": "Aufstieg",
+  "AVERAGE_CADENCE": "Durchschn. Trittfrequenz",
+  "AVERAGE_HR": "Durchschn. Puls",
   "AVERAGE_SPEED": "Durchschnittsgeschwindigkeit",
+  "AVE_ASCENT": "Durchschn. Anstieg",
+  "AVE_DESCENT": "Durschn. Abstieg",
+  "AVE_DISTANCE": "Durchschn. Entfernung",
+  "AVE_DURATION": "Durchschn. Dauer",
   "AVE_SPEED": "Durchschn. Geschwindigkeit",
   "BACK_TO_COMMENT": "zurück zum Kommentar",
   "BACK_TO_WORKOUT": "zurück zum Training",
+  "CADENCE": "Trittfrequenz",
   "COMMENTS": {
     "ADD": "einen Kommentar hinzufügen",
     "COMMENT": "Kommentar | Kommentare",
@@ -18,6 +25,7 @@
     "REPORT": "Kommentar melden",
     "SUSPENDED_COMMENT_BY_ADMIN": "Dieser Kommentar wurde von einem Administrator gesperrt."
   },
+  "CREATED_WORKOUTS": "Workout angelegt | Workouts angelegt",
   "DATE": "Datum",
   "DELETE_WORKOUT": "Workout löschen",
   "DESCENT": "Abstieg",
@@ -32,7 +40,9 @@
   "END": "Ende",
   "EXIT_FULLSCREEN": "Vollbild verlassen",
   "FROM": "Von",
+  "HEART_RATE": "Puls",
   "HIDE_FILTERS": "verberge Filter",
+  "HIDE_WORKOUTS": "Workouts ausblenden",
   "INVALID_ASCENT_OR_DESCENT": "Beide Höhenwerte müssen angegeben werden und größer oder gleich 0 sein.",
   "INVALID_DISTANCE": "Die Distanz muss größer als 0 sein",
   "INVALID_DURATION": "Die Dauer muss größer als 0 Sekunden sein",
@@ -43,9 +53,12 @@
   "MAP": "Karte",
   "MARKDOWN_SYNTAX": "Folgende Markdown-Syntax kann verwendet werden: _kursiv_, **fett**, [Link](https://example.com), ![Bild](https://example.com/image.png)",
   "MAX_ALTITUDE": "maximale Höhe",
+  "MAX_CADENCE": "Max. Trittfrequenz",
   "MAX_FILES": "Maximale Dateianzahl",
+  "MAX_HR": "Max. Puls",
   "MAX_SIZE": "Maximalgröße",
   "MAX_SPEED": "Max. Geschwindigkeit",
+  "MAX_SYNC_FILES_IN_ZIP": "Max. Anzahl synchron hochladbarer Dateien",
   "MIN_ALTITUDE": "minimale Höhe",
   "MULTISELECT": {
     "deselectLabel": "Enger zum Entfernen drücken",
@@ -66,6 +79,7 @@
   "NO_PREVIOUS_SEGMENT": "Kein vorheriges Segment",
   "NO_PREVIOUS_WORKOUT": "Kein vorheriges Training",
   "NO_RECORDS": "Keine Aufzeichnungen.",
+  "NO_WEATHER_WITH_ASYNCHRONOUS_UPLOAD": "Beim asynchronen hochladen werden keine Wetterdaten abgefragt.",
   "NO_WORKOUTS": "Kein Training. | Keine Trainings.",
   "NO_WORKOUT_AVAILABLE": "Das Workout wurde gelöscht oder ist nicht sichtbar.",
   "PAUSES": "Pausen",
@@ -84,11 +98,14 @@
   "REPORT_WORKOUT": "Workout melden",
   "RESET_ZOOM": "Zoom zurücksetzen",
   "SEGMENT": "Segment | Segmente",
+  "SHOW_WORKOUTS": "Workouts anzeigen",
+  "SOURCE": "Quelle",
   "SPEED": "Geschwindigkeit",
   "SPORT": "Sportart | Sportarten",
   "START": "Start",
   "START_AND_FINISH": "Start und Ziel",
   "START_ELEVATION_AT_ZERO": "Höhenachse bei Null starten",
+  "SUPPORTED_FILE_EXTENSIONS": "Unterstützte Erweiterungen",
   "SUSPENDED_BY_ADMIN": "Das Workout wurde von einem Administrator gesperrt.",
   "TITLE": "Titel",
   "TITLE_FIELD_HELP": "Wenn gegeben, ersetzt der Titel den der Datei.",
@@ -97,6 +114,20 @@
   "TOTAL_DESCENT": "Gesamtabstieg",
   "TOTAL_DISTANCE": "Gesamtentfernung",
   "TOTAL_DURATION": "Gesamtdauer",
+  "UNITS": {
+    "bpm": {
+      "LABEL": "Schläge pro Minute",
+      "UNIT": "BPM"
+    },
+    "rpm": {
+      "LABEL": "Umdrehungen pro Minute",
+      "UNIT": "U/min"
+    },
+    "spm": {
+      "LABEL": "Schritte pro Minute",
+      "UNIT": "S/min"
+    }
+  },
   "UPLOAD_FIRST_WORKOUT": "Füge erstes Training hinzu!",
   "VIEW_FULLSCREEN": "Vollbild anzeigen",
   "WEATHER": {
@@ -138,13 +169,14 @@
   "WITH_FILE": "mit Datei",
   "WORKOUT": "Training | Trainings",
   "WORKOUTS_STATISTICS": {
-    "all": "Statistiken für alle Seiten",
-    "current_page": "Statistiken für die aktuelle Seite",
+    "all": "Statistiken für alle Seiten ({count} workouts)",
+    "current_page": "Statistiken für die aktuelle Seite ({count} workouts)",
     "limited": "Statistiken für {count} Workouts"
   },
   "WORKOUT_CHART": "Geschwindigkeit und -Höhen-Diagramm des Workouts",
   "WORKOUT_DATE": "Trainingsdatum",
   "WORKOUT_DELETION_CONFIRMATION": "Bist du sicher, dass du dieses Training löschen möchtest?",
+  "WORKOUT_FILE": "Workout Datei",
   "WORKOUT_MAP": "Workout-Karte",
   "ZIP_ARCHIVE": ".zip Datei",
   "ZIP_ARCHIVE_DESCRIPTION": "oder .zip Datei mit Dateien"

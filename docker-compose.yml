@@ -4,7 +4,7 @@
 # minimal application (for single user) only needs fittrackee and fittrackee-db containers.
 #
 # for multi-users application, uncomment the following containers:
-# - fittrackee-workers for email sending and user data export (EMAIL_URL must be set in .env to enable emails)
+# - fittrackee-workers for user data export, archive uploads and email sending (EMAIL_URL must be set in .env to enable emails)
 # - fittrackee-redis container for API rate limits, user data export, archive uploads and email sending
 
 services:
@@ -29,7 +29,7 @@ services:
     env_file:
       - .env
 # Image from Docker Hub
-    image: fittrackee/fittrackee:v0.10.3
+    image: fittrackee/fittrackee:v0.11.0
 # Uncomment following line to build image instead of using pre-built image
 #    build: .
     volumes:
@@ -64,7 +64,7 @@ services:
 #    env_file:
 #      - .env
 ## Image from Docker Hub
-#    image: fittrackee/fittrackee:v0.10.3
+#    image: fittrackee/fittrackee:v0.11.0
 ## Uncomment following line to build image instead of using pre-built image
 ##    build: .
 #    volumes:

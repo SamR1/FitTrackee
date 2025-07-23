@@ -26,6 +26,7 @@ from fittrackee.dates import aware_utc_now
 from fittrackee.files import get_absolute_file_path
 from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import VisibilityLevel
+from fittrackee.workouts.constants import SPORTS_WITHOUT_ELEVATION_DATA
 from fittrackee.workouts.models import Workout
 
 from .constants import (
@@ -367,6 +368,9 @@ class User(BaseModel):
     segments_creation_event: Mapped[str] = mapped_column(
         Enum(*SEGMENTS_CREATION_EVENTS, name="segments_creation_events"),
         server_default="only_manual",
+    )
+    split_workout_charts: Mapped[bool] = mapped_column(
+        server_default="false", nullable=False
     )
 
     workouts: Mapped[List["Workout"]] = relationship(
@@ -782,7 +786,7 @@ class User(BaseModel):
                 else UserRole(current_user.role)
             )
 
-        serialized_user = {
+        serialized_user: Dict = {
             "created_at": self.created_at,
             "followers": self.followers.count(),
             "following": self.following.count(),
@@ -848,7 +852,12 @@ class User(BaseModel):
 
             serialized_user["nb_sports"] = len(sports)
             serialized_user["records"] = [
-                record.serialize() for record in self.records
+                record.serialize()
+                for record in self.records
+                if (
+                    record.sport.label not in SPORTS_WITHOUT_ELEVATION_DATA
+                    or record.record_type != "HA"
+                )
             ]
             serialized_user["sports_list"] = [
                 sport for sportslist in sports for sport in sportslist
@@ -909,6 +918,7 @@ class User(BaseModel):
                         if self.notification_preferences
                         else {}
                     ),
+                    "split_workout_charts": self.split_workout_charts,
                 },
             }
 

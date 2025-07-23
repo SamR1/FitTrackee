@@ -42,7 +42,23 @@ Administrator
 - | This error appears in task queue workers logs with `Flask-dramatiq <https://flask-dramatiq.readthedocs.io>`__ CLI on Python 3.13+.
   | The workaround is to use `Dramatiq <https://dramatiq.io>`__ CLI directly, for instance:
 
-  .. code::
+  .. code:: bash
 
     $ dramatiq fittrackee.tasks:broker --processes=2 --log-file=dramatiq.log
 
+
+``staticmap3.staticmap - ERROR - request failed [None]``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- | FitTrackee v0.10+ introduces a new environnement variable ``STATICMAP_CACHE_DIR``, for **Static Map 3** cache directory.
+  | For docker installation, the directory must be writable for ``fittrackee`` user, see in ``docker-compose.yml`` example in the `repository <https://github.com/SamR1/FitTrackee/blob/master/docker-compose.yml>`__:
+
+  .. code:: yaml
+
+    volumes:
+      - ${UPLOAD_DIR:-./data/uploads}:/usr/src/app/uploads
+      - ${LOG_DIR:-./data/logs}:/usr/src/app/logs
+      - ${STATICMAP_CACHE_DIR:-./data/staticmap_cache}:/usr/src/app/.staticmap_cache
+    post_start:
+      - command: chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/logs /usr/src/app/.staticmap_cache
+        user: root

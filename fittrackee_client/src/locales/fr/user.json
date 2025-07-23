@@ -162,7 +162,7 @@
       "REJECTED": "votre appel a été rejeté"
     },
     "SEGMENTS_CREATION_EVENT": {
-      "LABEL": "Types de pause déclenchant la création d'un segment (fichiers .fit) uniuement",
+      "LABEL": "Types de pause déclenchant la création d'un segment (fichiers .fit uniquement)",
       "all": "Tous les évènements de pause",
       "none": "Aucun",
       "only_manual": "Seulement les pauses de type manuel"
@@ -219,6 +219,11 @@
       "HELP": "Si filtré, les valeurs extrêmes (qui peuvent être des erreurs GPS) sont exclues lors du calcul de la vitesse maximale.",
       "LABEL": "Calcul de la vitesse maximale",
       "RAW_SPEED": "Brut"
+    },
+    "WORKOUT_CHARTS_DISPLAY": {
+      "LABEL": "Affichage des graphiques d'analyse de la séance",
+      "MULTIPLE": "Chaque donnée est affichée sur un graphique différent",
+      "ONE": "Toutes les données sur un seul graphique"
     }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "J'ai lu et accepte la {0}.",

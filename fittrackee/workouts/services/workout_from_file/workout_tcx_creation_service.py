@@ -61,7 +61,7 @@ class WorkoutTcxCreationService(WorkoutGpxCreationService):
 
         gpx_track = gpxpy.gpx.GPXTrack()
         has_tracks = False
-        cadence_prefix_tag = ""
+        tag_prefix = None
         creator = ""
 
         for activity in activities:
@@ -109,28 +109,40 @@ class WorkoutTcxCreationService(WorkoutGpxCreationService):
                         )
 
                         heart_rate = point.get("HeartRateBpm", {}).get("Value")
-                        cadence = point.get("Cadence", {})
-                        if not cadence:
-                            extensions = point.get("Extensions", {})
-                            if not cadence_prefix_tag:
-                                tpx_tag = [
-                                    key
-                                    for key in extensions.keys()
-                                    if re.search("TPX$", key)
-                                ]
-                                if tpx_tag:
-                                    tpx_tag_prefix = tpx_tag[0].split(":")[0]
-                                    if tpx_tag_prefix != "TPX":
-                                        cadence_prefix_tag = (
-                                            f"{tpx_tag_prefix}:"
-                                        )
-                            cadence = extensions.get(
-                                f"{cadence_prefix_tag}TPX", {}
-                            ).get(f"{cadence_prefix_tag}RunCadence")
+                        cadence = point.get("Cadence")
+                        power = None
 
-                        if heart_rate is not None or cadence is not None:
+                        extensions = point.get("Extensions", {})
+                        tpx_tags = [
+                            key
+                            for key in extensions.keys()
+                            if re.search("TPX$", key)
+                        ]
+                        if tpx_tags:
+                            tpx_tag = tpx_tags[0]
+                            if tag_prefix is None:
+                                tag_prefix = (
+                                    f"{tpx_tag.split(':')[0]}:"
+                                    if ":" in tpx_tag
+                                    else ""
+                                )
+
+                            power = extensions.get(tpx_tag, {}).get(
+                                f"{tag_prefix}Watts"
+                            )
+
+                            if not cadence:
+                                cadence = extensions.get(
+                                    f"{tag_prefix}TPX", {}
+                                ).get(f"{tag_prefix}RunCadence")
+
+                        if (
+                            heart_rate is not None
+                            or cadence is not None
+                            or power is not None
+                        ):
                             gpx_track_point.extensions.append(
-                                cls._get_extensions(heart_rate, cadence)
+                                cls._get_extensions(heart_rate, cadence, power)
                             )
 
                         gpx_segment.points.append(gpx_track_point)

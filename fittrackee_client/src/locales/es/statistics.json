@@ -10,11 +10,13 @@
   },
   "STATISTICS_ON_ALL_WORKOUTS": "Estadísticas de todos los entrenamientos:",
   "STATISTICS_ON_LAST_WORKOUTS": "Estadísticas de los últimos {count} entrenamientos:",
+  "STATISTICS_TYPE": "Tipo de estadísticas",
   "STATISTICS_TYPES": {
     "by_sport": "por deporte",
     "by_time": "por periodo de tiempo"
   },
   "TIME_FRAMES": {
+    "day": "día",
     "month": "mes",
     "week": "semana",
     "year": "año"

@@ -5,6 +5,7 @@
     "private": "Privat (nur erwähnte Nutzer)",
     "public": "Öffentlich (Jeder)"
   },
+  "HR_VISIBILITY": "Sichtbarkeit der Herzfrequenz",
   "LEVELS": {
     "followers_only": "Nur Follower",
     "private": "Privat (nur ich)",

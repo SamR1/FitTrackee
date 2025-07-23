@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict
 
 import pytest
 from flask import Flask
@@ -21,34 +21,14 @@ from fittrackee.workouts.models import (
     WorkoutSegment,
 )
 
-from ..mixins import ReportMixin
+from ..mixins import ReportMixin, WorkoutMixin
 from ..utils import random_string
 from .utils import add_follower
 
 
 @pytest.mark.disable_autouse_update_records_patch
-class WorkoutModelTestCase(ReportMixin):
-    @staticmethod
-    def update_workout_with_gpx_data(
-        workout: Workout,
-        map_id: Optional[str] = None,
-        gpx_path: Optional[str] = None,
-        bounds: Optional[List[float]] = None,
-        ascent: Optional[int] = 26,
-        descent: Optional[int] = 12,
-        max_alt: Optional[int] = 260,
-        min_alt: Optional[int] = 236,
-    ) -> Workout:
-        workout.map_id = map_id
-        workout.map = random_string() if map_id is None else map_id
-        workout.gpx = random_string() if gpx_path is None else gpx_path
-        workout.bounds = [1.0, 2.0, 3.0, 4.0] if bounds is None else bounds
-        workout.pauses = timedelta(minutes=15)
-        workout.ascent = ascent
-        workout.descent = descent
-        workout.max_alt = max_alt
-        workout.min_alt = min_alt
-        return workout
+class WorkoutModelTestCase(WorkoutMixin, ReportMixin):
+    pass
 
 
 class TestWorkoutModelForOwner(WorkoutModelTestCase):
@@ -134,6 +114,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ascent": None,
             "ave_cadence": None,
             "ave_hr": None,
+            "ave_power": None,
             "ave_speed": workout.ave_speed,
             "bounds": [],
             "creation_date": workout.creation_date,
@@ -150,6 +131,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
+            "max_power": None,
             "max_speed": workout.max_speed,
             "min_alt": None,
             "modification_date": None,
@@ -192,6 +174,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ascent": workout.ascent,
             "ave_cadence": None,
             "ave_hr": None,
+            "ave_power": None,
             "ave_speed": workout.ave_speed,
             "bounds": [],
             "creation_date": workout.creation_date,
@@ -208,6 +191,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
+            "max_power": None,
             "max_speed": workout.max_speed,
             "min_alt": None,
             "modification_date": workout.modification_date,
@@ -243,8 +227,10 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
         workout.ave_cadence = 55
         workout.ave_hr = 90
+        workout.ave_power = 125
         workout.max_cadence = 62
         workout.max_hr = 110
+        workout.max_power = 250
 
         serialized_workout = workout.serialize(user=user_1, light=False)
 
@@ -253,6 +239,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ascent": workout.ascent,
             "ave_cadence": workout.ave_cadence,
             "ave_hr": workout.ave_hr,
+            "ave_power": workout.ave_power,
             "ave_speed": workout.ave_speed,
             "bounds": workout.bounds,
             "creation_date": workout.creation_date,
@@ -269,6 +256,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": workout.max_alt,
             "max_cadence": workout.max_cadence,
             "max_hr": workout.max_hr,
+            "max_power": workout.max_power,
             "max_speed": workout.max_speed,
             "min_alt": workout.min_alt,
             "modification_date": workout.modification_date,
@@ -278,6 +266,77 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "pauses": str(workout.pauses),
             "previous_workout": None,
             "records": [record.serialize() for record in workout.records],
+            "segments": [
+                segment.serialize(can_see_heart_rate=True)
+                for segment in workout.segments
+            ],
+            "source": workout.source,
+            "sport_id": workout.sport_id,
+            "suspended": False,
+            "suspended_at": None,
+            "title": None,
+            "user": user_1.serialize(),
+            "weather_end": None,
+            "weather_start": None,
+            "workout_date": workout.workout_date,
+            "workout_visibility": workout.workout_visibility.value,
+            "with_analysis": True,
+            "with_gpx": True,
+        }
+
+    def test_it_serializes_workout_with_gpx_for_outdoor_tennis(
+        self,
+        app: Flask,
+        user_1: User,
+        workout_outdoor_tennis_user_1_with_elevation_data: Workout,
+    ) -> None:
+        # it does not return elevation data
+        workout = workout_outdoor_tennis_user_1_with_elevation_data
+        workout.ave_cadence = 55
+        workout.ave_hr = 90
+        workout.ave_power = 125
+        workout.max_cadence = 62
+        workout.max_hr = 110
+        workout.max_power = 250
+
+        serialized_workout = workout.serialize(user=user_1, light=False)
+
+        assert serialized_workout == {
+            "analysis_visibility": workout.analysis_visibility.value,
+            "ascent": None,
+            "ave_cadence": None,
+            "ave_hr": workout.ave_hr,
+            "ave_power": None,
+            "ave_speed": float(workout.ave_speed),  # type: ignore
+            "bounds": workout.bounds,
+            "creation_date": workout.creation_date,
+            "descent": None,
+            "description": None,
+            "distance": float(workout.distance),  # type: ignore
+            "duration": str(workout.duration),
+            "equipments": [],
+            "id": workout.short_id,
+            "liked": False,
+            "likes_count": 0,
+            "map": None,
+            "map_visibility": workout.map_visibility.value,
+            "max_alt": None,
+            "max_cadence": None,
+            "max_hr": workout.max_hr,
+            "max_power": None,
+            "max_speed": float(workout.max_speed),  # type: ignore
+            "min_alt": None,
+            "modification_date": workout.modification_date,
+            "moving": str(workout.moving),
+            "next_workout": None,
+            "notes": None,
+            "pauses": str(workout.pauses),
+            "previous_workout": None,
+            "records": [
+                record.serialize()
+                for record in workout.records
+                if record.record_type != "HA"
+            ],
             "segments": [
                 segment.serialize(can_see_heart_rate=True)
                 for segment in workout.segments
@@ -307,8 +366,10 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout = self.update_workout_with_gpx_data(workout_running_user_1)
         workout.ave_cadence = 55
         workout.ave_hr = 90
+        workout.ave_power = 125
         workout.max_cadence = 62
         workout.max_hr = 110
+        workout.max_power = 250
 
         serialized_workout = workout.serialize(user=user_1, light=False)
 
@@ -317,6 +378,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ascent": workout.ascent,
             "ave_cadence": workout.ave_cadence * 2,
             "ave_hr": workout.ave_hr,
+            "ave_power": None,
             "ave_speed": float(workout.ave_speed),  # type: ignore [arg-type]
             "bounds": workout.bounds,
             "creation_date": workout.creation_date,
@@ -333,6 +395,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": workout.max_alt,
             "max_cadence": workout.max_cadence * 2,
             "max_hr": workout.max_hr,
+            "max_power": None,
             "max_speed": float(workout.max_speed),  # type: ignore [arg-type]
             "min_alt": workout.min_alt,
             "modification_date": workout.modification_date,
@@ -369,8 +432,10 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout = self.update_workout_with_gpx_data(workout_paragliding_user_1)
         workout.ave_cadence = 55
         workout.ave_hr = 90
+        workout.ave_power = 125
         workout.max_cadence = 62
         workout.max_hr = 110
+        workout.max_power = 250
 
         serialized_workout = workout.serialize(user=user_1, light=False)
 
@@ -379,6 +444,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ascent": workout.ascent,
             "ave_cadence": None,
             "ave_hr": workout.ave_hr,
+            "ave_power": None,
             "ave_speed": float(workout.ave_speed),  # type: ignore [arg-type]
             "bounds": workout.bounds,
             "creation_date": workout.creation_date,
@@ -395,6 +461,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": workout.max_alt,
             "max_cadence": None,
             "max_hr": workout.max_hr,
+            "max_power": None,
             "max_speed": float(workout.max_speed),  # type: ignore [arg-type]
             "min_alt": workout.min_alt,
             "modification_date": workout.modification_date,
@@ -534,6 +601,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ascent": None,
             "ave_cadence": None,
             "ave_hr": None,
+            "ave_power": None,
             "ave_speed": workout_cycling_user_1.ave_speed,
             "bounds": [],
             "creation_date": workout_cycling_user_1.creation_date,
@@ -550,6 +618,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
+            "max_power": None,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
             "modification_date": workout_cycling_user_1.modification_date,
@@ -597,6 +666,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ascent": None,
             "ave_cadence": None,
             "ave_hr": None,
+            "ave_power": None,
             "ave_speed": workout_cycling_user_1.ave_speed,
             "bounds": [],
             "creation_date": None,
@@ -612,6 +682,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
+            "max_power": None,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
             "modification_date": workout_cycling_user_1.modification_date,
@@ -660,6 +731,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ascent": workout_cycling_user_1.ascent,
             "ave_cadence": workout_cycling_user_1.ave_cadence,
             "ave_hr": workout_cycling_user_1.ave_hr,
+            "ave_power": None,
             "ave_speed": workout_cycling_user_1.ave_speed,
             "bounds": [],
             "creation_date": None,
@@ -675,6 +747,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": workout_cycling_user_1.max_alt,
             "max_cadence": workout_cycling_user_1.max_cadence,
             "max_hr": workout_cycling_user_1.max_hr,
+            "max_power": None,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": workout_cycling_user_1.min_alt,
             "modification_date": None,
@@ -725,6 +798,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ascent": None,
             "ave_cadence": None,
             "ave_hr": None,
+            "ave_power": None,
             "ave_speed": workout_cycling_user_1.ave_speed,
             "bounds": [],
             "creation_date": None,
@@ -740,6 +814,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
+            "max_power": None,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
             "modification_date": None,
@@ -1584,6 +1659,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             "ascent": None,
             "ave_cadence": workout_cycling_user_1.ave_cadence,
             "ave_hr": workout_cycling_user_1.ave_hr,
+            "ave_power": workout_cycling_user_1.ave_power,
             "ave_speed": workout_cycling_user_1.ave_speed,
             "bounds": [],
             "creation_date": None,
@@ -1599,6 +1675,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": workout_cycling_user_1.max_cadence,
             "max_hr": workout_cycling_user_1.max_hr,
+            "max_power": workout_cycling_user_1.max_power,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
             "modification_date": None,
@@ -2096,6 +2173,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             ),
             "ave_cadence": workout_cycling_user_1.ave_cadence,
             "ave_hr": workout_cycling_user_1.ave_hr,
+            "ave_power": workout_cycling_user_1.ave_power,
             "ascent": None,
             "ave_speed": workout_cycling_user_1.ave_speed,
             "bounds": [],
@@ -2112,6 +2190,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": workout_cycling_user_1.max_cadence,
             "max_hr": workout_cycling_user_1.max_hr,
+            "max_power": workout_cycling_user_1.max_power,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
             "modification_date": None,
@@ -2553,6 +2632,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
             "ascent": None,
             "ave_cadence": None,
             "ave_hr": None,
+            "ave_power": None,
             "ave_speed": workout_cycling_user_1.ave_speed,
             "bounds": [],
             "creation_date": None,
@@ -2568,6 +2648,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
+            "max_power": None,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
             "modification_date": None,
@@ -2649,6 +2730,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "ascent": None,
             "ave_cadence": None,
             "ave_hr": None,
+            "ave_power": None,
             "ave_speed": workout_cycling_user_2.ave_speed,
             "bounds": [],
             "creation_date": workout_cycling_user_2.creation_date,
@@ -2665,6 +2747,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
+            "max_power": None,
             "max_speed": workout_cycling_user_2.max_speed,
             "min_alt": None,
             "modification_date": workout_cycling_user_2.modification_date,
@@ -2727,6 +2810,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "ascent": workout_cycling_user_2.ascent,
             "ave_cadence": None,
             "ave_hr": None,
+            "ave_power": None,
             "ave_speed": workout_cycling_user_2.ave_speed,
             "bounds": workout_cycling_user_2.bounds,
             "creation_date": workout_cycling_user_2.creation_date,
@@ -2743,6 +2827,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "max_alt": workout_cycling_user_2.max_alt,
             "max_cadence": None,
             "max_hr": None,
+            "max_power": None,
             "max_speed": workout_cycling_user_2.max_speed,
             "min_alt": workout_cycling_user_2.min_alt,
             "modification_date": workout_cycling_user_2.modification_date,
@@ -2851,6 +2936,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "ascent": None,
             "ave_cadence": None,
             "ave_hr": None,
+            "ave_power": None,
             "ave_speed": workout_cycling_user_2.ave_speed,
             "bounds": [],
             "creation_date": None,
@@ -2866,6 +2952,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
+            "max_power": None,
             "max_speed": workout_cycling_user_2.max_speed,
             "min_alt": None,
             "modification_date": None,
@@ -2928,6 +3015,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "ascent": None,
             "ave_cadence": None,
             "ave_hr": None,
+            "ave_power": None,
             "ave_speed": workout_cycling_user_2.ave_speed,
             "bounds": [],
             "creation_date": workout_cycling_user_2.creation_date,
@@ -2944,6 +3032,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
+            "max_power": None,
             "max_speed": workout_cycling_user_2.max_speed,
             "min_alt": None,
             "modification_date": workout_cycling_user_2.modification_date,
@@ -2996,6 +3085,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             ),
             "ave_cadence": None,
             "ave_hr": None,
+            "ave_power": None,
             "ascent": workout_cycling_user_2.ascent,
             "ave_speed": workout_cycling_user_2.ave_speed,
             "bounds": workout_cycling_user_2.bounds,
@@ -3013,6 +3103,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "max_alt": workout_cycling_user_2.max_alt,
             "max_cadence": None,
             "max_hr": None,
+            "max_power": None,
             "max_speed": workout_cycling_user_2.max_speed,
             "min_alt": workout_cycling_user_2.min_alt,
             "modification_date": workout_cycling_user_2.modification_date,
@@ -3074,6 +3165,7 @@ class TestWorkoutSegmentModel:
             "ascent": workout_cycling_user_1_segment.ascent,
             "ave_cadence": workout_cycling_user_1_segment.ave_cadence,
             "ave_hr": None,
+            "ave_power": workout_cycling_user_1_segment.ave_power,
             "ave_speed": workout_cycling_user_1_segment.ave_speed,
             "descent": workout_cycling_user_1_segment.descent,
             "distance": workout_cycling_user_1_segment.distance,
@@ -3081,6 +3173,7 @@ class TestWorkoutSegmentModel:
             "max_alt": workout_cycling_user_1_segment.max_alt,
             "max_cadence": workout_cycling_user_1_segment.max_cadence,
             "max_hr": None,
+            "max_power": workout_cycling_user_1_segment.max_power,
             "max_speed": workout_cycling_user_1_segment.max_speed,
             "min_alt": workout_cycling_user_1_segment.min_alt,
             "moving": str(workout_cycling_user_1_segment.moving),
@@ -3110,6 +3203,7 @@ class TestWorkoutSegmentModel:
             "ascent": workout_cycling_user_1_segment.ascent,
             "ave_cadence": workout_cycling_user_1_segment.ave_cadence,
             "ave_hr": workout_cycling_user_1_segment.ave_hr,
+            "ave_power": workout_cycling_user_1_segment.ave_power,
             "ave_speed": workout_cycling_user_1_segment.ave_speed,
             "descent": workout_cycling_user_1_segment.descent,
             "distance": workout_cycling_user_1_segment.distance,
@@ -3117,6 +3211,7 @@ class TestWorkoutSegmentModel:
             "max_alt": workout_cycling_user_1_segment.max_alt,
             "max_cadence": workout_cycling_user_1_segment.max_cadence,
             "max_hr": workout_cycling_user_1_segment.max_hr,
+            "max_power": workout_cycling_user_1_segment.max_power,
             "max_speed": workout_cycling_user_1_segment.max_speed,
             "min_alt": workout_cycling_user_1_segment.min_alt,
             "moving": str(workout_cycling_user_1_segment.moving),

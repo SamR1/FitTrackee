@@ -1,5 +1,6 @@
 {
   "APP_ERROR": "Bei der Anwendung scheinen einige Probleme aufgetreten zu sein.<br />Bitte versuche es später noch einmal oder kontaktiere den Administrator.",
+  "ERRORS_ENCOUNTERED": "Es sind Fehler aufgetreten",
   "NOT_FOUND": {
     "COMMENT": "Kommentar nicht gefunden",
     "PAGE": "Seite nicht gefunden",

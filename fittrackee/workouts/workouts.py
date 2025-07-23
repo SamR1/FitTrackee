@@ -1,6 +1,7 @@
 import json
 import re
 from datetime import timedelta
+from decimal import Decimal
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 import requests
@@ -12,7 +13,7 @@ from flask import (
     request,
     send_from_directory,
 )
-from sqlalchemy import asc, desc, distinct, exc, func
+from sqlalchemy import asc, case, desc, distinct, exc, func
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
@@ -46,6 +47,7 @@ from fittrackee.visibility_levels import (
     can_view_heart_rate,
 )
 
+from .constants import SPORTS_WITHOUT_ELEVATION_DATA
 from .decorators import check_workout
 from .exceptions import (
     InvalidDurationException,
@@ -53,7 +55,7 @@ from .exceptions import (
     WorkoutException,
     WorkoutFileException,
 )
-from .models import Workout, WorkoutLike
+from .models import Sport, Workout, WorkoutLike
 from .services import (
     WorkoutCreationService,
     WorkoutsFromFileCreationService,
@@ -93,16 +95,60 @@ NO_STATISTICS = {
 DEFAULT_TASKS_PER_PAGE = 5
 
 
+def get_rounded_float_value(row_value: Optional[Decimal]) -> Optional[float]:
+    if row_value is None:
+        return None
+    return round(float(row_value), 2)
+
+
+def get_string_duration_value(row_value: Optional[timedelta]) -> Optional[str]:
+    if row_value is None:
+        return None
+    return str(row_value).split(".")[0]
+
+
 def get_statistics(
     workouts_subquery: "Subquery", *, get_speeds: bool = True
 ) -> Dict:
     columns: List = [
-        func.sum(workouts_subquery.c.ascent),
-        func.sum(workouts_subquery.c.descent),
+        func.sum(
+            case(
+                (
+                    Sport.label.not_in(SPORTS_WITHOUT_ELEVATION_DATA),
+                    workouts_subquery.c.ascent,
+                ),
+                else_=None,
+            )
+        ),
+        func.sum(
+            case(
+                (
+                    Sport.label.not_in(SPORTS_WITHOUT_ELEVATION_DATA),
+                    workouts_subquery.c.descent,
+                ),
+                else_=None,
+            )
+        ),
         func.sum(workouts_subquery.c.distance),
         func.sum(workouts_subquery.c.moving),
-        func.avg(workouts_subquery.c.ascent),
-        func.avg(workouts_subquery.c.descent),
+        func.avg(
+            case(
+                (
+                    Sport.label.not_in(SPORTS_WITHOUT_ELEVATION_DATA),
+                    workouts_subquery.c.ascent,
+                ),
+                else_=None,
+            )
+        ),
+        func.avg(
+            case(
+                (
+                    Sport.label.not_in(SPORTS_WITHOUT_ELEVATION_DATA),
+                    workouts_subquery.c.descent,
+                ),
+                else_=None,
+            )
+        ),
         func.avg(workouts_subquery.c.distance),
         func.avg(workouts_subquery.c.moving),
         func.count(workouts_subquery.c.id),
@@ -114,51 +160,32 @@ def get_statistics(
             func.avg(workouts_subquery.c.ave_speed),
             func.max(workouts_subquery.c.max_speed),
         ]
-    stats_query = db.session.query(*columns).first()
+    stats_query = (
+        db.session.query(*columns)
+        .join(Sport, Sport.id == workouts_subquery.c.sport_id)
+        .first()
+    )
     if not stats_query:
         return NO_STATISTICS
-    total_sports = None if stats_query[9] is None else stats_query[9]
+
+    total_sports = stats_query[9]
     return_speeds = total_sports == 1 and get_speeds
     return {
-        "average_ascent": (
-            None if stats_query[4] is None else round(float(stats_query[4]), 2)
-        ),
-        "average_descent": (
-            None if stats_query[5] is None else round(float(stats_query[5]), 2)
-        ),
-        "average_distance": (
-            None if stats_query[6] is None else round(float(stats_query[6]), 2)
-        ),
-        "average_duration": (
-            None
-            if stats_query[7] is None
-            else str(stats_query[7]).split(".")[0]
-        ),
+        "average_ascent": get_rounded_float_value(stats_query[4]),
+        "average_descent": get_rounded_float_value(stats_query[5]),
+        "average_distance": get_rounded_float_value(stats_query[6]),
+        "average_duration": get_string_duration_value(stats_query[7]),
         "average_speed": (
-            None
-            if not return_speeds or stats_query[10] is None
-            else round(float(stats_query[10]), 2)
+            get_rounded_float_value(stats_query[10]) if return_speeds else None
         ),
-        "count": None if stats_query[8] is None else stats_query[8],
+        "count": stats_query[8],
         "max_speed": (
-            None
-            if not return_speeds or stats_query[11] is None
-            else round(float(stats_query[11]), 2)
+            get_rounded_float_value(stats_query[11]) if return_speeds else None
         ),
-        "total_ascent": (
-            None if stats_query[0] is None else round(float(stats_query[0]), 2)
-        ),
-        "total_descent": (
-            None if stats_query[1] is None else round(float(stats_query[1]), 2)
-        ),
-        "total_distance": (
-            None if stats_query[2] is None else round(float(stats_query[2]), 2)
-        ),
-        "total_duration": (
-            None
-            if stats_query[3] is None
-            else str(stats_query[3]).split(".")[0]
-        ),
+        "total_ascent": get_rounded_float_value(stats_query[0]),
+        "total_descent": get_rounded_float_value(stats_query[1]),
+        "total_distance": get_rounded_float_value(stats_query[2]),
+        "total_duration": get_string_duration_value(stats_query[3]),
         "total_sports": total_sports,
     }
 
@@ -200,6 +227,9 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
               {
                 "analysis_visibility": "private",
                 "ascent": null,
+                "ave_cadence": null,
+                "ave_hr": null,
+                "ave_power": null,
                 "ave_speed": 18.0,
                 "bounds": [],
                 "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
@@ -213,6 +243,9 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "map": null,
                 "map_visibility": "private",
                 "max_alt": null,
+                "max_cadence": null,
+                "max_hr": null,
+                "max_power": null,
                 "max_speed": 18.0,
                 "min_alt": null,
                 "modification_date": null,
@@ -488,11 +521,18 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 }
             elif workouts_pagination.total == 1:
                 workout = workouts[0]
+                return_elevation_data = (
+                    workout.sport.label not in SPORTS_WITHOUT_ELEVATION_DATA
+                )
                 ascent = (
-                    None if workout.ascent is None else float(workout.ascent)
+                    None
+                    if workout.ascent is None or not return_elevation_data
+                    else float(workout.ascent)
                 )
                 descent = (
-                    None if workout.descent is None else float(workout.descent)
+                    None
+                    if workout.descent is None or not return_elevation_data
+                    else float(workout.descent)
                 )
                 distance = (
                     None
@@ -543,7 +583,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                     # are fetched
                     get_speeds = len(sport_ids) == 1
                 current_page_stats = get_statistics(
-                    workouts_subquery, get_speeds=get_speeds
+                    workouts_subquery,
+                    get_speeds=get_speeds,
                 )
                 statistics = {
                     "statistics": {"current_page": current_page_stats}
@@ -562,7 +603,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                         )
                     workouts_subquery = all_workouts_subquery.subquery()
                     statistics["statistics"]["all"] = get_statistics(
-                        workouts_subquery
+                        workouts_subquery,
                     )
 
         return {
@@ -624,6 +665,9 @@ def get_workout(
               {
                 "analysis_visibility": "private",
                 "ascent": null,
+                "ave_cadence": null,
+                "ave_hr": null,
+                "ave_power": null,
                 "ave_speed": 16,
                 "bounds": [],
                 "creation_date": "Sun, 14 Jul 2019 18:57:14 GMT",
@@ -638,6 +682,9 @@ def get_workout(
                 "map": null,
                 "map_visibility": "private",
                 "max_alt": null,
+                "max_cadence": null,
+                "max_hr": null,
+                "max_power": null,
                 "max_speed": 16,
                 "min_alt": null,
                 "modification_date": "Sun, 14 Jul 2019 18:57:22 GMT",
@@ -1236,6 +1283,9 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
               {
                 "analysis_visibility": "private",
                 "ascent": 435.621,
+                "ave_cadence": null,
+                "ave_hr": null,
+                "ave_power": null,
                 "ave_speed": 13.14,
                 "bounds": [
                   43.93706,
@@ -1255,6 +1305,9 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 "map": "ac075ec36dc25dcc20c270d2005f0398",
                 "map_visibility": "private",
                 "max_alt": 158.41,
+                "max_cadence": null,
+                "max_hr": null,
+                "max_power": null,
                 "max_speed": 25.59,
                 "min_alt": 55.03,
                 "modification_date": null,
@@ -1313,11 +1366,17 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 "segments": [
                   {
                     "ascent": 435.621,
+                    "ave_cadence": null,
+                    "ave_hr": null,
+                    "ave_power": null,
                     "ave_speed": 13.14,
                     "descent": 427.499,
                     "distance": 23.478,
                     "duration": "2:08:35",
                     "max_alt": 158.41,
+                    "max_cadence": null,
+                    "max_hr": null,
+                    "max_power": null,
                     "max_speed": 25.59,
                     "min_alt": 55.03,
                     "moving": "1:47:11",
@@ -1413,6 +1472,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``no tracks in kml file``
         - ``<time> is missing in gpx file``
         - ``unsupported kml file``
+        - ``no valid segments with GPS found in fit file``
         - ``equipment_ids must be an array of strings``
         - ``only one equipment can be added``
         - ``equipment with id <equipment_id> does not exist``
@@ -1528,6 +1588,9 @@ def post_workout_no_gpx(
               {
                 "analysis_visibility": "private",
                 "ascent": null,
+                "ave_cadence": null,
+                "ave_hr": null,
+                "ave_power": null,
                 "ave_speed": 10.0,
                 "bounds": [],
                 "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
@@ -1542,6 +1605,9 @@ def post_workout_no_gpx(
                 "map": null,
                 "map_visibility": "private",
                 "max_alt": null,
+                "max_cadence": null,
+                "max_hr": null,
+                "max_power": null,
                 "max_speed": 10.0,
                 "min_alt": null,
                 "modification_date": null,
@@ -1744,6 +1810,9 @@ def update_workout(
               {
                 "analysis_visibility": "private",
                 "ascent": null,
+                "ave_cadence": null,
+                "ave_hr": null,
+                "ave_power": null,
                 "ave_speed": 10.0,
                 "bounds": [],
                 "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
@@ -1758,6 +1827,9 @@ def update_workout(
                 "map": null,
                 "map_visibility": "private",
                 "max_alt": null,
+                "max_cadence": null,
+                "max_hr": null,
+                "max_power": null,
                 "max_speed": 10.0,
                 "min_alt": null,
                 "modification_date": null,
@@ -2012,6 +2084,9 @@ def like_workout(
               {
                 "analysis_visibility": "private",
                 "ascent": 231.208,
+                "ave_cadence": null,
+                "ave_hr": null,
+                "ave_power": null,
                 "ave_speed": 13.12,
                 "bounds": [],
                 "creation_date": "Wed, 04 Dec 2024 09:18:26 GMT",
@@ -2026,6 +2101,9 @@ def like_workout(
                 "map": null,
                 "map_visibility": "private",
                 "max_alt": 104.44,
+                "max_cadence": null,
+                "max_hr": null,
+                "max_power": null,
                 "max_speed": 25.59,
                 "min_alt": 19.0,
                 "modification_date": "Wed, 04 Dec 2024 16:45:14 GMT",
@@ -2121,6 +2199,9 @@ def undo_workout_like(
               {
                 "analysis_visibility": "private",
                 "ascent": 231.208,
+                "ave_cadence": null,
+                "ave_hr": null,
+                "ave_power": null,
                 "ave_speed": 13.12,
                 "bounds": [],
                 "creation_date": "Wed, 04 Dec 2024 09:18:26 GMT",
@@ -2135,6 +2216,9 @@ def undo_workout_like(
                 "map": null,
                 "map_visibility": "private",
                 "max_alt": 104.44,
+                "max_cadence": null,
+                "max_hr": null,
+                "max_power": null,
                 "max_speed": 25.59,
                 "min_alt": 19.0,
                 "modification_date": "Wed, 04 Dec 2024 16:45:14 GMT",

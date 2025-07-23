@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2024-11-01 19:45+0100\n"
-"PO-Revision-Date: 2025-05-22 14:01+0000\n"
-"Last-Translator: Maksim Maksimov <Lemetist@gmail.com>\n"
+"PO-Revision-Date: 2025-07-17 17:03+0000\n"
+"Last-Translator: Nikita Epifanov <nikgreens@protonmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/fittrackee/"
 "fittrackee-api-emails/ru/>\n"
 "Language: ru\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.13-dev\n"
 "Generated-By: Babel 2.17.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
@@ -74,7 +74,7 @@ msgstr "Используйте кнопку ниже, чтобы подтвер�
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:11
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:4
 msgid "Verify your email"
-msgstr "Подтвердите свой email"
+msgstr "Подтвердите свою электронную почту"
 
 #: fittrackee/emails/templates/account_confirmation/body.html:18
 #: fittrackee/emails/templates/account_confirmation/body.txt:7
@@ -260,11 +260,11 @@ msgstr ""
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_current_email/subject.txt:1
 msgid "Email changed"
-msgstr "Email изменён"
+msgstr "Электронная почта изменена"
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:3
 msgid "Your email is being updated."
-msgstr "Ваш электронный адрес обновляется."
+msgstr "Ваша электронная почта обновлена."
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:4
 #: fittrackee/emails/templates/email_update_to_current_email/body.txt:1
@@ -450,13 +450,13 @@ msgstr "Ваше предупреждение снято"
 #: fittrackee/emails/templates/workout_suspension/body.html:2
 #: fittrackee/emails/templates/workout_suspension/subject.txt:1
 msgid "Your workout has been suspended"
-msgstr "Ваша тренировка была приостановлена"
+msgstr "Ваша тренировка была заблокирована"
 
 #: fittrackee/emails/templates/workout_suspension/body.html:3
 #: fittrackee/emails/templates/workout_suspension/body.html:4
 #: fittrackee/emails/templates/workout_suspension/body.txt:1
 msgid "Your workout has been suspended, it is no longer visible"
-msgstr "Ваша тренировка была приостановлена и больше не отображается"
+msgstr "Ваша тренировка была заблокирована и больше не отображается"
 
 #: fittrackee/emails/templates/workout_unsuspension/body.html:2
 #: fittrackee/emails/templates/workout_unsuspension/subject.txt:1
