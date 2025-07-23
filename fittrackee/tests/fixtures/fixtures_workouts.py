@@ -2376,6 +2376,23 @@ def gpx_file_with_segments() -> str:
     )
 
 
+segment_0_coordinates = [
+    (6.07367, 44.68095),
+    (6.07367, 44.68091),
+    (6.07364, 44.6808),
+]
+segment_1_coordinates = [
+    (6.07367, 44.67972),
+    (6.07368, 44.67966),
+    (6.0737, 44.67961),
+]
+segment_2_coordinates = [
+    (6.07425, 44.67858),
+    (6.07434, 44.67842),
+    (6.07435, 44.67837),
+]
+
+
 @pytest.fixture()
 def gpx_file_with_3_segments() -> str:
     """60 seconds between each segment"""

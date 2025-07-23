@@ -4,9 +4,14 @@ from unittest.mock import MagicMock, call, patch
 
 import gpxpy
 import pytest
+from geoalchemy2.shape import to_shape
+from shapely import LineString
 
 from fittrackee import db
 from fittrackee.tests.fixtures.fixtures_workouts import (
+    segment_0_coordinates,
+    segment_1_coordinates,
+    segment_2_coordinates,
     track_points_part_1_coordinates,
     track_points_part_2_coordinates,
 )
@@ -277,6 +282,30 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout.max_cadence is None
         assert workout.max_hr is None
         assert workout.source is None
+        workout_segment = workout.segments[0]
+        coordinates = (
+            track_points_part_1_coordinates + track_points_part_2_coordinates
+        )
+        assert to_shape(workout_segment.geom) == LineString(coordinates)
+        assert len(workout_segment.points) == len(coordinates)
+        assert workout_segment.points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "speed": 3.21,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert workout_segment.points[-1] == {
+            "distance": 320.12787035769946,
+            "duration": 250,
+            "elevation": 975.0,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "speed": 4.33,
+            "time": "2018-03-13 12:48:55+00:00",
+        }
 
     def test_it_creates_workout_and_segment_when_gpx_file_has_offset(
         self,
@@ -303,6 +332,30 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout.max_cadence is None
         assert workout.max_hr is None
         assert workout.source is None
+        workout_segment = workout.segments[0]
+        coordinates = (
+            track_points_part_1_coordinates + track_points_part_2_coordinates
+        )
+        assert to_shape(workout_segment.geom) == LineString(coordinates)
+        assert len(workout_segment.points) == len(coordinates)
+        assert workout_segment.points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "speed": 3.21,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert workout_segment.points[-1] == {
+            "distance": 320.12787035769946,
+            "duration": 250,
+            "elevation": 975.0,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "speed": 4.33,
+            "time": "2018-03-13 12:48:55+00:00",
+        }
 
     def test_it_creates_workout_and_segment_when_raw_speed_is_true(
         self,
@@ -329,6 +382,30 @@ class TestWorkoutGpxServiceProcessFile(
         assert float(workout_segment.ave_speed) == 4.61
         assert float(workout_segment.max_speed) == 5.25
         assert workout.source is None
+        workout_segment = workout.segments[0]
+        coordinates = (
+            track_points_part_1_coordinates + track_points_part_2_coordinates
+        )
+        assert to_shape(workout_segment.geom) == LineString(coordinates)
+        assert len(workout_segment.points) == len(coordinates)
+        assert workout_segment.points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "speed": 3.21,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert workout_segment.points[-1] == {
+            "distance": 320.12787035769946,
+            "duration": 250,
+            "elevation": 975.0,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "speed": 4.33,
+            "time": "2018-03-13 12:48:55+00:00",
+        }
 
     def test_it_creates_workout_and_segment_when_gpx_file_has_no_elevation(
         self,
@@ -379,6 +456,29 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout_segment.ave_hr is None
         assert workout_segment.max_cadence is None
         assert workout_segment.max_hr is None
+        coordinates = (
+            track_points_part_1_coordinates + track_points_part_2_coordinates
+        )
+        assert to_shape(workout_segment.geom) == LineString(coordinates)
+        assert len(workout_segment.points) == len(coordinates)
+        assert workout_segment.points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": None,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "speed": 3.21,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert workout_segment.points[-1] == {
+            "distance": 317.15294405358054,
+            "duration": 250,
+            "elevation": None,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "speed": 4.22,
+            "time": "2018-03-13 12:48:55+00:00",
+        }
 
     def test_it_creates_workout_and_segments_when_gpx_file_contains_3_segments(
         self,
@@ -441,6 +541,28 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout_segments[0].ave_hr is None
         assert workout_segments[0].max_cadence is None
         assert workout_segments[0].max_hr is None
+        assert to_shape(workout_segments[0].geom) == LineString(
+            segment_0_coordinates
+        )
+        assert len(workout_segments[0].points) == len(segment_0_coordinates)
+        assert workout_segments[0].points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "speed": 3.21,
+            "time": "2018-03-13 12:44:50+00:00",
+        }
+        assert workout_segments[0].points[-1] == {
+            "distance": 17.551714568218248,
+            "duration": 10,
+            "elevation": 994.0,
+            "latitude": 44.6808,
+            "longitude": 6.07364,
+            "speed": 9.43,
+            "time": "2018-03-13 12:45:00+00:00",
+        }
         # second workout segment
         assert workout_segments[1].workout_id == workout.id
         assert workout_segments[1].workout_uuid == workout.uuid
@@ -459,6 +581,28 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout_segments[1].ave_hr is None
         assert workout_segments[1].max_cadence is None
         assert workout_segments[1].max_hr is None
+        assert to_shape(workout_segments[1].geom) == LineString(
+            segment_1_coordinates
+        )
+        assert len(workout_segments[1].points) == len(segment_1_coordinates)
+        assert workout_segments[1].points[0] == {
+            "distance": 0.0,
+            "duration": 70,
+            "elevation": 987.0,
+            "latitude": 44.67972,
+            "longitude": 6.07367,
+            "speed": 4.84,
+            "time": "2018-03-13 12:46:00+00:00",
+        }
+        assert workout_segments[1].points[-1] == {
+            "distance": 12.598402521897194,
+            "duration": 80,
+            "elevation": 986.0,
+            "latitude": 44.67961,
+            "longitude": 6.0737,
+            "speed": 4.23,
+            "time": "2018-03-13 12:46:10+00:00",
+        }
         # third workout segment
         assert workout_segments[2].workout_id == workout.id
         assert workout_segments[2].workout_uuid == workout.uuid
@@ -477,6 +621,28 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout_segments[2].ave_hr is None
         assert workout_segments[2].max_cadence is None
         assert workout_segments[2].max_hr is None
+        assert to_shape(workout_segments[2].geom) == LineString(
+            segment_2_coordinates
+        )
+        assert len(workout_segments[2].points) == len(segment_2_coordinates)
+        assert workout_segments[2].points[0] == {
+            "distance": 0.0,
+            "duration": 140,
+            "elevation": 980.0,
+            "latitude": 44.67858,
+            "longitude": 6.07425,
+            "speed": 13.83,
+            "time": "2018-03-13 12:47:10+00:00",
+        }
+        assert workout_segments[2].points[-1] == {
+            "distance": 24.83101225255615,
+            "duration": 150,
+            "elevation": 979.0,
+            "latitude": 44.67837,
+            "longitude": 6.07435,
+            "speed": 4.05,
+            "time": "2018-03-13 12:47:20+00:00",
+        }
 
     def test_it_creates_workout_when_gpx_file_contains_microseconds(
         self,
@@ -565,6 +731,28 @@ class TestWorkoutGpxServiceProcessFile(
         assert float(workout_segments[0].min_alt) == 994.0
         assert workout_segments[0].moving == timedelta(seconds=10)
         assert workout_segments[0].pauses == timedelta(seconds=0)
+        assert to_shape(workout_segments[0].geom) == LineString(
+            segment_0_coordinates
+        )
+        assert len(workout_segments[0].points) == len(segment_0_coordinates)
+        assert workout_segments[0].points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "speed": 3.21,
+            "time": "2018-03-13 12:44:50+00:00",
+        }
+        assert workout_segments[0].points[-1] == {
+            "distance": 17.551714568218248,
+            "duration": 10,
+            "elevation": 994.0,
+            "latitude": 44.6808,
+            "longitude": 6.07364,
+            "speed": 9.43,
+            "time": "2018-03-13 12:45:00+00:00",
+        }
         # second workout segment
         assert workout_segments[1].workout_id == workout.id
         assert workout_segments[1].workout_uuid == workout.uuid
@@ -579,6 +767,28 @@ class TestWorkoutGpxServiceProcessFile(
         assert float(workout_segments[1].min_alt) == 979.0
         assert workout_segments[1].moving == timedelta(seconds=10)
         assert workout_segments[1].pauses == timedelta(seconds=0)
+        assert to_shape(workout_segments[1].geom) == LineString(
+            segment_2_coordinates
+        )
+        assert len(workout_segments[1].points) == len(segment_2_coordinates)
+        assert workout_segments[1].points[0] == {
+            "distance": 0.0,
+            "duration": 140,
+            "elevation": 980.0,
+            "latitude": 44.67858,
+            "longitude": 6.07425,
+            "speed": 13.83,
+            "time": "2018-03-13 12:47:10+00:00",
+        }
+        assert workout_segments[1].points[-1] == {
+            "distance": 24.83101225255615,
+            "duration": 150,
+            "elevation": 979.0,
+            "latitude": 44.67837,
+            "longitude": 6.07435,
+            "speed": 4.05,
+            "time": "2018-03-13 12:47:20+00:00",
+        }
 
         serialized_segment = workout_segments[1].serialize()
         assert serialized_segment == {
@@ -651,6 +861,25 @@ class TestWorkoutGpxServiceProcessFile(
         self.assert_workout_with_with_gpxtpx_extensions_and_power(workout)
         self.assert_workout_segment(workout)
         self.assert_workout_records(workout)
+        assert workout.ave_cadence == 52
+        assert workout.ave_hr == 85
+        assert workout.ave_power == 248
+        assert workout.max_cadence == 57
+        assert workout.max_hr == 92
+        assert workout.max_power == 326
+        assert workout.source == "Garmin Connect"
+        assert workout.segments[0].points[0] == {
+            "cadence": 0,
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "heart_rate": 92,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "power": 0,
+            "speed": 3.21,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
 
     def test_it_creates_workout_when_gpx_file_has_cadence_float_value(
         self,
@@ -679,6 +908,18 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout.max_hr == 92
         assert workout.max_power == 326
         assert workout.source == "Garmin Connect"
+        assert workout.segments[0].points[0] == {
+            "cadence": 0,
+            "distance": 0.0,
+            "duration": 0,
+            "heart_rate": 92,
+            "elevation": 998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "power": 0,
+            "speed": 3.21,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
 
     def test_it_creates_workout_when_gpx_file_has_cadence_zero_values(
         self,
@@ -710,6 +951,18 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout_segment.ave_hr == 85
         assert workout_segment.max_cadence is None
         assert workout_segment.max_hr == 92
+        assert workout.segments[0].points[0] == {
+            "cadence": 0,
+            "distance": 0.0,
+            "duration": 0,
+            "heart_rate": 92,
+            "elevation": 998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "power": 0,
+            "speed": 3.21,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
 
     def test_it_creates_workout_when_gpx_file_has_ns3_extensions(
         self,
@@ -738,6 +991,18 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout.max_hr == 92
         assert workout.max_power == 326
         assert workout.source == "Garmin Connect"
+        assert workout.segments[0].points[0] == {
+            "cadence": 0,
+            "distance": 0.0,
+            "duration": 0,
+            "heart_rate": 92,
+            "elevation": 998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "power": 0,
+            "speed": 3.21,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
 
     @pytest.mark.parametrize("input_get_weather", [{}, {"get_weather": True}])
     def test_it_calls_weather_service_for_start_and_endpoint(
