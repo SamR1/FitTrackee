@@ -4,6 +4,7 @@ from statistics import mean
 from typing import IO, TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 import gpxpy.gpx
+import pytz
 from lxml import etree as ET
 
 from fittrackee import db
@@ -232,15 +233,24 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
 
     def _process_segment_points(
         self,
-        points: List["gpxpy.gpx.GPXTrackPoint"],
+        track_segment: "gpxpy.gpx.GPXTrackSegment",
         stopped_time_between_segments: timedelta,
         previous_segment_last_point_time: Optional[datetime],
+        previous_segment_last_point_distance: float,
         is_last_segment: bool,
-    ) -> Tuple[timedelta, Optional[datetime], Dict]:
+        new_workout_segment: "WorkoutSegment",
+        first_point: "gpxpy.gpx.GPXTrackPoint",
+    ) -> Tuple[timedelta, Optional[datetime], float, Dict]:
+        points = track_segment.points
         last_point_index = len(points) - 1
         cadences = []
         heart_rates = []
         powers = []
+        previous_point = None
+        previous_distance = previous_segment_last_point_distance
+        segment_points: List[Dict] = []
+        coordinates = []
+
         for point_idx, point in enumerate(points):
             if point_idx == 0:
                 # if a previous segment exists, calculate stopped time
@@ -250,6 +260,43 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                         point.time - previous_segment_last_point_time
                     )
 
+            if not previous_point:
+                distance = None
+            else:
+                distance = (
+                    point.distance_3d(previous_point)
+                    if (
+                        point.elevation
+                        and previous_point
+                        and previous_point.elevation
+                    )
+                    else point.distance_2d(previous_point)
+                )
+            distance = 0.0 if distance is None else distance
+            distance += previous_distance
+
+            calculated_speed = track_segment.get_speed(point_idx)
+            speed = (
+                0.0
+                if calculated_speed is None
+                else round((calculated_speed / 1000) * 3600, 2)
+            )
+
+            time_difference = point.time_difference(first_point)
+            segment_point: Dict = {
+                "distance": distance,
+                "duration": int(time_difference) if time_difference else 0,
+                "elevation": point.elevation,
+                "latitude": point.latitude,
+                "longitude": point.longitude,
+                "speed": speed,
+                "time": (
+                    str(point.time.astimezone(pytz.utc))
+                    if point.time
+                    else None
+                ),
+            }
+
             if point.extensions:
                 extensions = []
                 for extension in point.extensions:
@@ -258,19 +305,29 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                     else:
                         extensions.append(extension)
                 for extension in extensions:
-                    if extension.tag == "power":
-                        powers.append(int(extension.text))
                     if not extension.text:
                         continue
+                    if extension.tag == "power":
+                        power = int(extension.text)
+                        powers.append(power)
+                        segment_point["power"] = power
                     if extension.tag.endswith("}hr"):
-                        heart_rates.append(int(extension.text))
+                        hr = int(extension.text)
+                        heart_rates.append(hr)
+                        segment_point["heart_rate"] = hr
                     if extension.tag.endswith("}cad"):
-                        cadences.append(int(float(extension.text)))
+                        cadence = int(float(extension.text))
+                        cadences.append(cadence)
+                        segment_point["cadence"] = cadence
                     if extension.tag.endswith("}power"):
-                        powers.append(int(extension.text))
+                        power = int(extension.text)
+                        powers.append(power)
+                        segment_point["power"] = power
+
             # last segment point
             if point_idx == last_point_index:
                 previous_segment_last_point_time = point.time
+                previous_segment_last_point_distance = distance
 
                 # last gpx point
                 if is_last_segment and point.time:
@@ -279,7 +336,11 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                         point.latitude,
                         point.time,
                     )
-            self.coordinates.append([point.longitude, point.latitude])
+            coordinates.append([point.longitude, point.latitude])
+            segment_points.append(segment_point)
+
+            previous_point = point
+            previous_distance = distance
 
         hr_cadence_stats = self._get_hr_cadence_power_data(
             heart_rates, cadences, powers
@@ -287,9 +348,14 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         self.cadences.extend(cadences)
         self.heart_rates.extend(heart_rates)
         self.powers.extend(powers)
+        self.coordinates.extend(coordinates)
+        new_workout_segment.points = segment_points
+        new_workout_segment.store_geometry(coordinates)
+
         return (
             stopped_time_between_segments,
             previous_segment_last_point_time,
+            previous_segment_last_point_distance,
             hr_cadence_stats,
         )
 
@@ -301,14 +367,20 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
     ) -> Tuple[timedelta, float]:
         last_segment_index = len(segments) - 1
         max_speed = 0.0
-        previous_segment_last_point_time: Optional[datetime] = None
+        previous_segment_last_point_time: Optional["datetime"] = None
+        previous_segment_last_point_distance = 0.0
         stopped_time_between_segments = timedelta(seconds=0)
+        first_point = segments[0].points[0]
 
         # remove existing segments if not creation
         if not self.is_creation and self.workout:
             WorkoutSegment.query.filter_by(workout_id=self.workout.id).delete()
 
         for segment_idx, segment in enumerate(segments):
+            # ignore segments with no distance
+            if len(segment.points) < 2:
+                continue
+
             new_workout_segment = WorkoutSegment(
                 segment_id=segment_idx,
                 workout_id=new_workout_id,
@@ -320,12 +392,16 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             (
                 stopped_time_between_segments,
                 previous_segment_last_point_time,
+                previous_segment_last_point_distance,
                 hr_cadence_power_stats,
             ) = self._process_segment_points(
-                segment.points,
+                segment,
                 stopped_time_between_segments,
                 previous_segment_last_point_time,
+                previous_segment_last_point_distance,
                 is_last_segment,
+                new_workout_segment,
+                first_point,
             )
 
             self.set_calculated_data(
@@ -342,6 +418,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 and new_workout_segment.max_speed > max_speed
             ):
                 max_speed = new_workout_segment.max_speed
+
         return stopped_time_between_segments, max_speed
 
     def _process_file(self) -> "Workout":

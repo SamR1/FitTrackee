@@ -514,6 +514,7 @@ class TestWorkoutGpxServiceProcessFile(
         user_1: "User",
         gpx_file_with_zero_distance_segment: str,
     ) -> None:
+        # gpx with 3 segments
         service = self.init_service_with_gpx(
             user_1, sport_1_cycling, gpx_file_with_zero_distance_segment
         )
@@ -549,7 +550,7 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout.source is None
         # workout segments
         workout_segments = WorkoutSegment.query.all()
-        assert len(workout_segments) == 3
+        assert len(workout_segments) == 2
         # first workout segment
         assert workout_segments[0].workout_id == workout.id
         assert workout_segments[0].workout_uuid == workout.uuid
@@ -564,20 +565,20 @@ class TestWorkoutGpxServiceProcessFile(
         assert float(workout_segments[0].min_alt) == 994.0
         assert workout_segments[0].moving == timedelta(seconds=10)
         assert workout_segments[0].pauses == timedelta(seconds=0)
-        # second workout segment (no distance)
+        # second workout segment
         assert workout_segments[1].workout_id == workout.id
         assert workout_segments[1].workout_uuid == workout.uuid
-        assert workout_segments[1].segment_id == 1
-        assert float(workout_segments[1].ascent) == 0
-        assert float(workout_segments[1].ave_speed) == 0
-        assert float(workout_segments[1].descent) == 0
-        assert float(workout_segments[1].distance) == 0
-        assert workout_segments[1].duration == timedelta()
-        assert float(workout_segments[1].max_alt) == 987.0
-        assert float(workout_segments[1].max_speed) == 0
-        assert float(workout_segments[1].min_alt) == 987.0
-        assert workout_segments[1].moving == timedelta()
-        assert workout_segments[1].pauses == timedelta()
+        assert workout_segments[1].segment_id == 2
+        assert float(workout_segments[1].ascent) == 0.0
+        assert float(workout_segments[1].ave_speed) == 8.94
+        assert float(workout_segments[1].descent) == 1.0
+        assert float(workout_segments[1].distance) == 0.025
+        assert workout_segments[1].duration == timedelta(seconds=10)
+        assert float(workout_segments[1].max_alt) == 980.0
+        assert float(workout_segments[1].max_speed) == 13.83
+        assert float(workout_segments[1].min_alt) == 979.0
+        assert workout_segments[1].moving == timedelta(seconds=10)
+        assert workout_segments[1].pauses == timedelta(seconds=0)
 
         serialized_segment = workout_segments[1].serialize()
         assert serialized_segment == {
@@ -585,35 +586,21 @@ class TestWorkoutGpxServiceProcessFile(
             "ave_cadence": None,
             "ave_hr": None,
             "ave_power": None,
-            "ave_speed": 0.0,
-            "descent": 0.0,
-            "distance": 0.0,
-            "duration": "0:00:00",
-            "max_alt": 987.0,
+            "ave_speed": 8.94,
+            "descent": 1.0,
+            "distance": 0.025,
+            "duration": "0:00:10",
+            "max_alt": 980.0,
             "max_cadence": None,
             "max_hr": None,
             "max_power": None,
-            "max_speed": 0.0,
-            "min_alt": 987.0,
-            "moving": "0:00:00",
+            "max_speed": 13.83,
+            "min_alt": 979.0,
+            "moving": "0:00:10",
             "pauses": None,
-            "segment_id": 1,
+            "segment_id": 2,
             "workout_id": workout.short_id,
         }
-        # third workout segment
-        assert workout_segments[2].workout_id == workout.id
-        assert workout_segments[2].workout_uuid == workout.uuid
-        assert workout_segments[2].segment_id == 2
-        assert float(workout_segments[2].ascent) == 0.0
-        assert float(workout_segments[2].ave_speed) == 8.94
-        assert float(workout_segments[2].descent) == 1.0
-        assert float(workout_segments[2].distance) == 0.025
-        assert workout_segments[2].duration == timedelta(seconds=10)
-        assert float(workout_segments[2].max_alt) == 980.0
-        assert float(workout_segments[2].max_speed) == 13.83
-        assert float(workout_segments[2].min_alt) == 979.0
-        assert workout_segments[2].moving == timedelta(seconds=10)
-        assert workout_segments[2].pauses == timedelta(seconds=0)
 
     def test_it_creates_workout_when_gpx_file_has_gpxtpx_extensions(
         self,

@@ -4,6 +4,8 @@ from decimal import Decimal
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 from uuid import UUID, uuid4
 
+from geoalchemy2 import Geometry, WKBElement
+from shapely import LineString
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
@@ -937,6 +939,13 @@ class WorkoutSegment(BaseModel):
     ave_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # rpm
     max_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
     ave_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
+    geom: Mapped["WKBElement"] = mapped_column(
+        Geometry(geometry_type="LINESTRING", srid=4326),
+        nullable=True,  # to handle pre-existing segments for now
+    )
+    points: Mapped[List[Dict]] = mapped_column(
+        JSON, nullable=False, server_default="[]"
+    )
 
     workout: Mapped["Workout"] = relationship(
         "Workout", lazy="joined", single_parent=True
@@ -954,6 +963,9 @@ class WorkoutSegment(BaseModel):
         self.segment_id = segment_id
         self.workout_id = workout_id
         self.workout_uuid = workout_uuid
+
+    def store_geometry(self, coordinates: List[List[float]]) -> None:
+        self.geom = str(LineString(coordinates))  # type: ignore
 
     def serialize(self, *, can_see_heart_rate: bool = False) -> Dict:
         sport_label = self.workout.sport.label

@@ -5,6 +5,8 @@ from typing import Dict
 
 import pytest
 from flask import Flask
+from geoalchemy2.shape import to_shape
+from shapely import LineString
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
@@ -3172,8 +3174,8 @@ class TestWorkoutSegmentModel:
     def test_workout_segment_model(
         self,
         app: Flask,
-        sport_1_cycling: Sport,
         user_1: User,
+        sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
         workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
@@ -3256,3 +3258,25 @@ class TestWorkoutSegmentModel:
             "segment_id": 0,
             "workout_id": workout_cycling_user_1_segment.workout.short_id,
         }
+
+    def test_it_stores_geometry_as_linestring(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        segments_coordinates = [
+            [6.07367, 44.68095],
+            [6.07367, 44.68091],
+            [6.07364, 44.6808],
+            [6.07361, 44.68049],
+        ]
+
+        workout_cycling_user_1_segment.store_geometry(segments_coordinates)
+        db.session.commit()
+
+        assert to_shape(workout_cycling_user_1_segment.geom) == LineString(
+            segments_coordinates
+        )
