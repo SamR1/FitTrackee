@@ -546,6 +546,15 @@ class Workout(BaseModel):
                 if self.ascent is not None and return_elevation_data
                 else None
             ),
+            "records": (
+                []
+                if for_report
+                else [
+                    record.serialize()
+                    for record in self.records
+                    if return_elevation_data or record.record_type != "HA"
+                ]
+            ),
             "analysis_visibility": (
                 self.calculated_analysis_visibility.value
                 if can_see_analysis_data
@@ -579,15 +588,6 @@ class Workout(BaseModel):
             "creation_date": self.creation_date,
             "modification_date": self.modification_date,
             "pauses": str(self.pauses) if self.pauses else None,
-            "records": (
-                []
-                if for_report
-                else [
-                    record.serialize()
-                    for record in self.records
-                    if return_elevation_data or record.record_type != "HA"
-                ]
-            ),
             "segments": (
                 [
                     segment.serialize(can_see_heart_rate=can_see_heart_rate)

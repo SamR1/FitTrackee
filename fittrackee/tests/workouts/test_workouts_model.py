@@ -691,7 +691,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "notes": "",
             "pauses": None,
             "previous_workout": None,
-            "records": [],
+            "records": [
+                record.serialize() for record in workout_cycling_user_1.records
+            ],
             "segments": [],
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
@@ -756,7 +758,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "notes": "",
             "pauses": None,
             "previous_workout": None,
-            "records": [],
+            "records": [
+                record.serialize() for record in workout_cycling_user_1.records
+            ],
             "segments": [],
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
@@ -823,7 +827,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "notes": "",
             "pauses": None,
             "previous_workout": None,
-            "records": [],
+            "records": [
+                record.serialize() for record in workout_cycling_user_1.records
+            ],
             "segments": [],
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
@@ -1684,7 +1690,9 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             "notes": "",
             "pauses": None,
             "previous_workout": None,
-            "records": [],
+            "records": [
+                record.serialize() for record in workout_cycling_user_1.records
+            ],
             "segments": [],
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
@@ -2199,7 +2207,9 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             "notes": "",
             "pauses": None,
             "previous_workout": None,
-            "records": [],
+            "records": [
+                record.serialize() for record in workout_cycling_user_1.records
+            ],
             "segments": [],
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
@@ -2657,7 +2667,9 @@ class TestWorkoutModelAsUnauthenticatedUser(
             "notes": "",
             "pauses": None,
             "previous_workout": None,
-            "records": [],
+            "records": [
+                record.serialize() for record in workout_cycling_user_1.records
+            ],
             "segments": [],
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
