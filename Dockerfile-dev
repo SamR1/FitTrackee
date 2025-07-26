@@ -11,9 +11,9 @@ COPY . /usr/src/app
 ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-RUN pip install --upgrade pip
+RUN pip install --upgrade pip wheel
 RUN pip install poetry
-RUN . $VIRTUAL_ENV/bin/activate && poetry install --no-interaction --quiet
+RUN . $VIRTUAL_ENV/bin/activate && poetry install --no-interaction
 
 # run fittrackee server and workers
 COPY ./docker-entrypoint-dev.sh /docker-entrypoint.sh

@@ -44,6 +44,7 @@ flask-dramatiq = "^0.6.0"
 flask-limiter = {version = "^3.11.0", extras = ["redis"]}  # flask-limiter 3.12+ requires python 3.10+
 flask-migrate = "4.1.0"
 flask-sqlalchemy = "3.1.1"
+geoalchemy2 = {extras = ["shapely"], version = "^0.18.0"}
 gpxpy = "=1.6.2"
 gunicorn = "^23.0.0"
 humanize = "^4.13.0"
