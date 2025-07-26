@@ -18,9 +18,8 @@
             .filter((record) =>
               displayHARecord ? true : record.record_type !== 'HA'
             )
-            .map(
-              (record) => ` ${$t(`workouts.RECORD_${record.record_type}`)}`
-            )[0]
+            .map((record) => ` ${$t(`workouts.RECORD_${record.record_type}`)}`)
+            .join(', ')
         "
       />
     </sup>
