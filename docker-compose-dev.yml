@@ -10,7 +10,7 @@
 services:
   fittrackee-db:
     container_name: fittrackee-db
-    image: postgres:17-alpine
+    image: postgis/postgis:17-3.5-alpine
     ports:
       - "5435:5432"
     environment:
@@ -18,7 +18,7 @@ services:
       - POSTGRES_PASSWORD=postgres
     volumes:
       - ./data/db:/var/lib/postgresql/data
-      - ./db/create.sql:/docker-entrypoint-initdb.d/create.sql
+      - ./db/create-databases.sh:/docker-entrypoint-initdb.d/create-databases.sh
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 20s
