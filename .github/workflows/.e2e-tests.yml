@@ -7,6 +7,9 @@ on:
       postgres-version:
         type: string
         default: 17
+      postgis-version:
+        type: string
+        default: 3.5
       previous-version:
         type: boolean
         default: false
@@ -17,7 +20,7 @@ jobs:
     container: python:${{ inputs.python-version }}
     services:
       postgres:
-        image: postgres:${{ inputs.postgres-version }}
+        image: postgis/postgis:${{ inputs.postgres-version }}-${{ inputs.postgis-version }}
         env:
           POSTGRES_DB: fittrackee_test
           POSTGRES_USER: fittrackee
@@ -49,6 +52,16 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Create and source virtual environment
+        run: | 
+          python3 -m venv .venv 
+          . .venv/bin/activate
+
+      - name: Create Postgis extension
+        run: |
+          python3 -m pip install psycopg2
+          python db/install_postgis_for_ci_e2e_package_tests.py
+
       - name: Install previous version of FitTrackee from PyPI
         if: inputs.python-version.previous-version
         run: python3 -m pip install fittrackee
@@ -62,11 +75,6 @@ jobs:
         with:
           name: python-package-distributions
           path: dist/
-
-      - name: Create and source virtual environment
-        run: | 
-          python3 -m venv .venv 
-          . .venv/bin/activate
 
       - name: Install fittrackee package
         run: python3 -m pip install dist/fittrackee-$(cat VERSION).tar.gz
