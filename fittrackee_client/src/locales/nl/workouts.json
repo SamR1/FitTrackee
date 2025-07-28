@@ -4,6 +4,7 @@
   "ASCENT": "geklommen",
   "AVERAGE_CADENCE": "Gemiddelde cadans",
   "AVERAGE_HR": "Gemiddelde hartslag",
+  "AVERAGE_POWER": "gemiddeld vermogen",
   "AVERAGE_SPEED": "gemiddelde snelheid",
   "AVE_ASCENT": "Gem. stijging",
   "AVE_DESCENT": "Gem. afdaling",
@@ -32,6 +33,7 @@
   "DESCRIPTION": "beschrijving",
   "DESCRIPTION_FIELD_HELP": "Indien toegevoegd zal dit de omschrijving uit het bestand vervangen.",
   "DISPLAY_FILTERS": "toon filters",
+  "DISPLAY_MULTIPLE_CHARTS": "meerdere grafieken weergeven",
   "DISTANCE": "afstand",
   "DOWNLOAD_WORKOUT": "Download de training (gpx)",
   "DURATION": "duur",
@@ -39,6 +41,7 @@
   "ELEVATION": "hoogte",
   "END": "einde",
   "EXIT_FULLSCREEN": "Verlaat volledig scherm",
+  "EXIT_HEATMAP": "Overzichtskaart sluiten",
   "FROM": "van",
   "HEART_RATE": "Hartslag",
   "HIDE_FILTERS": "verberg filters",
@@ -56,6 +59,7 @@
   "MAX_CADENCE": "Maximale cadans",
   "MAX_FILES": "max. aantal bestanden",
   "MAX_HR": "Maximale hartslag",
+  "MAX_POWER": "max. vermogen",
   "MAX_SIZE": "max. grootte",
   "MAX_SPEED": "max. snelheid",
   "MAX_SYNC_FILES_IN_ZIP": "Maximaal aantal bestanden voor synchrone upload",
@@ -83,6 +87,7 @@
   "NO_WORKOUTS": "Geen training. | Geen trainingen.",
   "NO_WORKOUT_AVAILABLE": "De training werd verwijderd of is niet zichtbaar.",
   "PAUSES": "pauzes",
+  "POWER": "vermogen",
   "PREVIOUS_SEGMENT": "Vorig segment",
   "PREVIOUS_WORKOUT": "Vorige training",
   "PRIVATE_NOTES": "Privé notities",
@@ -126,10 +131,15 @@
     "spm": {
       "LABEL": "Stappen per minuut",
       "UNIT": "spm"
+    },
+    "watt": {
+      "LABEL": "watt",
+      "UNIT": "W"
     }
   },
   "UPLOAD_FIRST_WORKOUT": "Eén uploaden!",
   "VIEW_FULLSCREEN": "Volledig scherm",
+  "VIEW_HEATMAP": "Overzichtskaart weergeven",
   "WEATHER": {
     "DARK_SKY": {
       "clear-day": "heldere dag",
