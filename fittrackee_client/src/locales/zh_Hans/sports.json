@@ -14,6 +14,9 @@
   "Cycling (Virtual)": {
     "LABEL": "骑行（虚拟）"
   },
+  "Halfbike": {
+    "LABEL": "Halfbike"
+  },
   "Hiking": {
     "LABEL": "徒步"
   },
@@ -50,8 +53,14 @@
   "Snowshoes": {
     "LABEL": "雪鞋"
   },
+  "Standup Paddleboarding": {
+    "LABEL": "立式划桨运动"
+  },
   "Swimrun": {
     "LABEL": "游泳跑步"
+  },
+  "Tennis (Outdoor)": {
+    "LABEL": "网球（户外）"
   },
   "Trail": {
     "LABEL": "越野"

@@ -30,6 +30,11 @@
             <button
               class="transparent icon-button likes"
               @click="updateLike(workoutObject)"
+              :title="
+                $t(
+                  `workouts.${workoutObject.liked ? 'REMOVE_LIKE' : 'LIKE_WORKOUT'}`
+                )
+              "
               :aria-label="`${$t(`workouts.${workoutObject.liked ? 'REMOVE_LIKE' : 'LIKE_WORKOUT'}`)} (${workoutObject.likes_count} ${$t(
                 'workouts.LIKES',
                 workoutObject.likes_count
@@ -61,7 +66,7 @@
                   params: { workoutId: workoutObject.workoutId },
                 })
               "
-              :aria-label="$t(`workouts.EDIT_WORKOUT`)"
+              :title="$t(`workouts.EDIT_WORKOUT`)"
             >
               <i class="fa fa-edit" aria-hidden="true" />
             </button>
@@ -69,7 +74,7 @@
               v-if="workoutObject.with_gpx && isWorkoutOwner"
               class="transparent icon-button"
               @click.prevent="downloadGpx(workoutObject.workoutId)"
-              :aria-label="$t(`workouts.DOWNLOAD_WORKOUT`)"
+              :title="$t(`workouts.DOWNLOAD_WORKOUT`)"
             >
               <i class="fa fa-download" aria-hidden="true" />
             </button>
@@ -78,7 +83,7 @@
               id="delete-workout-button"
               class="transparent icon-button"
               @click.prevent="displayDeleteModal"
-              :aria-label="$t(`workouts.DELETE_WORKOUT`)"
+              :title="$t(`workouts.DELETE_WORKOUT`)"
             >
               <i class="fa fa-trash" aria-hidden="true" />
             </button>

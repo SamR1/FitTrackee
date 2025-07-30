@@ -12,7 +12,7 @@
         <button
           v-if="allowEdition"
           class="transparent icon-button"
-          :aria-label="$t(`buttons.EDIT`)"
+          :title="$t(`buttons.EDIT`)"
           @click="editContent"
         >
           <i v-if="!isEdition" class="fa fa-edit" aria-hidden="true" />

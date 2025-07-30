@@ -492,27 +492,32 @@
     if (!chart || chart.canvas.id === activePoint?.datasetLabel) {
       return
     }
-    if (activePoint) {
-      chart.setActiveElements([
-        {
-          datasetIndex: activePoint.datasetIndex,
-          index: activePoint.dataIndex,
-        },
-      ])
-      chart.tooltip?.setActiveElements(
-        [
+    try {
+      if (activePoint) {
+        chart.setActiveElements([
           {
             datasetIndex: activePoint.datasetIndex,
             index: activePoint.dataIndex,
           },
-        ],
-        { x: activePoint.x, y: activePoint.y }
-      )
-    } else {
-      chart.setActiveElements([])
-      chart.tooltip?.setActiveElements([], { x: 0, y: 0 })
+        ])
+        chart.tooltip?.setActiveElements(
+          [
+            {
+              datasetIndex: activePoint.datasetIndex,
+              index: activePoint.dataIndex,
+            },
+          ],
+          { x: activePoint.x, y: activePoint.y }
+        )
+      } else {
+        chart.setActiveElements([])
+        chart.tooltip?.setActiveElements([], { x: 0, y: 0 })
+      }
+
+      chart.update()
+    } catch {
+      return
     }
-    chart.update()
   }
   function handleTooltipOnAllCharts(hoveredPoint?: IHoverPoint) {
     if (!splitCharts.value || displayedDatasets.value.length === 1) {

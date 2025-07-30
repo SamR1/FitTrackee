@@ -53,8 +53,14 @@
   "Snowshoes": {
     "LABEL": "Sneeuwschoenen"
   },
+  "Standup Paddleboarding": {
+    "LABEL": "Standup Paddleboarding (SUP)"
+  },
   "Swimrun": {
     "LABEL": "Zwemloop"
+  },
+  "Tennis (Outdoor)": {
+    "LABEL": "Tennis (Buiten)"
   },
   "Trail": {
     "LABEL": "Traillopen"

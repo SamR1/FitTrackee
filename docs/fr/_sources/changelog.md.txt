@@ -1,5 +1,50 @@
 # Change log
 
+## Version 0.11.1 (2025/07/30)
+
+### Bugs Fixed
+
+* [#882](https://github.com/SamR1/FitTrackee/issues/882) - 'record' icon no longer appears in the calendar
+* [#885](https://github.com/SamR1/FitTrackee/issues/885) - Data discrepancy between file formats
+  * **Note**: The fix only applies to next .fit file uploads
+* [PR#888](https://github.com/SamR1/FitTrackee/pull/888) - fix heart rate label display in French
+* [38ef7a2](https://github.com/SamR1/FitTrackee/commit/dd7c8c207fb1089a3973e89c69fd48b0f426f31a) - minor UI fixes
+  * add title to buttons on workout detail
+  * fix vertical hoverline display when no point
+
+### Translations
+
+* [PR#886](https://github.com/SamR1/FitTrackee/pull/886) - Translations update from Hosted Weblate (Chinese (Simplified Han script) and Dutch)
+* [PR#887](https://github.com/SamR1/FitTrackee/pull/887) - Translations update from Hosted Weblate (Croatian)
+
+
+Translation status:
+- Basque: 90%
+- Bulgarian: 56%
+- Catalan: 25%
+- Chinese (Simplified): 99%
+- Croatian: 100%
+- Czech: 44%
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 93%
+- Italian: 46%
+- Norwegian Bokmål: 30%
+- Polish: 90%
+- Portuguese: 55%
+- Russian: 99%
+- Spanish: 74%
+- Turkish: 1%
+
+
+Thanks to the contributors:
+- @iggydev
+- @Stephan-P
+- Poesty Li
+
+
 ## Version 0.11.0 (2025/07/23)
 
 This release brings a new sport (Outdoor Tennis), power support for bike-related workouts, new display for workout chart, Garmin device mapping update and several fixes and translation updates.

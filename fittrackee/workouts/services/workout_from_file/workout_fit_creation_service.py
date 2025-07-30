@@ -10,11 +10,11 @@ from .workout_gpx_creation_service import WorkoutGpxCreationService
 
 class WorkoutFitCreationService(WorkoutGpxCreationService):
     @staticmethod
-    def _get_coordinate(value: int) -> float:
+    def get_coordinate(value: int) -> float:
         """
         converts coordinates from semicircles
         """
-        return round(value * (180.0 / 2**31), 5)
+        return value * (180.0 / 2**31)
 
     @classmethod
     def parse_file(
@@ -143,8 +143,8 @@ class WorkoutFitCreationService(WorkoutGpxCreationService):
                 )
 
                 point = gpxpy.gpx.GPXTrackPoint(
-                    longitude=cls._get_coordinate(longitude),
-                    latitude=cls._get_coordinate(latitude),
+                    longitude=cls.get_coordinate(longitude),
+                    latitude=cls.get_coordinate(latitude),
                     elevation=float(elevation) if elevation else None,
                     time=time,
                 )
