@@ -40,7 +40,7 @@ describe('getDatasets', () => {
           },
           hr: {
             id: 'hr',
-            label: 'fréquence cardiaque',
+            label: 'fréq. cardiaque',
             backgroundColor: ['transparent'],
             borderColor: ['#ec1f5e'],
             borderWidth: 1,
@@ -593,7 +593,7 @@ describe('getDatasets with dark mode', () => {
           },
           hr: {
             id: 'hr',
-            label: 'fréquence cardiaque',
+            label: 'fréq. cardiaque',
             backgroundColor: ['transparent'],
             borderColor: ['#b41e4a'],
             borderWidth: 1,
@@ -655,7 +655,7 @@ describe('getDatasets with dark mode', () => {
           },
           hr: {
             id: 'hr',
-            label: 'fréquence cardiaque',
+            label: 'fréq. cardiaque',
             backgroundColor: ['transparent'],
             borderColor: ['#ec1f5e'],
             borderWidth: 1,
