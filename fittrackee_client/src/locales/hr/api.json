@@ -42,6 +42,7 @@
     "no selected file": "Nema odabrane datoteke.",
     "no tracks in gpx file": "Nema zapisa (<trk>) u .gpx datoteci.",
     "no tracks in kml file": "Nema traga (<Track>) u .kml datoteci.",
+    "no valid segments with GPS found in fit file": "u .fit datoteci nisu pronađeni valjani segmenti s GPS podatcima.",
     "one or more values, entered or calculated, exceed the limits": "Jedna ili više vrijednosti, unesenih ili izračunatih, premašuju ograničenja.",
     "ongoing request exists": "Zahtjev za izvoz podataka već postoji.",
     "ongoing upload task exists": "Prijenos datoteke je već u tijeku.",

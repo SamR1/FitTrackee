@@ -42,6 +42,7 @@
     "no selected file": "Geen bestand geselecteerd.",
     "no tracks in gpx file": "Geen route (<trk>) aanwezig in het .gpx bestand.",
     "no tracks in kml file": "Geen pad (<Track>) in .kml bestand.",
+    "no valid segments with GPS found in fit file": "geen geldige segmenten met GPS-gegevens gevonden in.fit-bestand.",
     "one or more values, entered or calculated, exceed the limits": "Een of meer waardes, ingevoerde of berekende, overschreiden de limieten.",
     "ongoing request exists": "Er bestaat al een export aanvraag.",
     "ongoing upload task exists": "Er is reeds een bestandsupload bezig.",

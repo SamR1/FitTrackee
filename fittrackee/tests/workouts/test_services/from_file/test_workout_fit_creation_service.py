@@ -27,6 +27,24 @@ class WorkoutFitCreationServiceTestCase:
         return content.stream
 
 
+class TestWorkoutFitCreationServiceGetCoordinate(
+    WorkoutFitCreationServiceTestCase
+):
+    @pytest.mark.parametrize(
+        "input_value,expected_coordinate",
+        [
+            (512175953, 42.93009244836867),
+            (-103307332, -8.659120537340641),
+        ],
+    )
+    def test_it_calculates_coordinate_from_semicircle(
+        self, app: "Flask", input_value: int, expected_coordinate: float
+    ) -> None:
+        coordinate = WorkoutFitCreationService.get_coordinate(input_value)
+
+        assert coordinate == expected_coordinate
+
+
 class TestWorkoutFitCreationServiceParseFile(
     WorkoutFitCreationServiceTestCase
 ):

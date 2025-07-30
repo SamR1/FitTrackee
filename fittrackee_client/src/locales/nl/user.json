@@ -161,6 +161,12 @@
       "IN_PROGRESS": "Uw beroep word verwerkt",
       "REJECTED": "Uw beroep werd onontvankelijk verklaard"
     },
+    "SEGMENTS_CREATION_EVENT": {
+      "LABEL": "Pauzeer gebeurtenissen die het maken van segmenten activeren (alleen .fit-bestanden)",
+      "all": "Alle gebeurtenissen pauzeren",
+      "none": "Geen",
+      "only_manual": "Alleen handmatige pauze"
+    },
     "SPORT": {
       "ACTION": "actie",
       "COLOR": "kleur",
@@ -213,6 +219,11 @@
       "HELP": "Bij filteren worden extreme waarden (dewelke mogelijk GPS fouten zijn) niet gebruikt om de maximum snelheid te berekenen.",
       "LABEL": "Strategie voor maximale snelheid",
       "RAW_SPEED": "Rauw"
+    },
+    "WORKOUT_CHARTS_DISPLAY": {
+      "LABEL": "Weergave van trainingsanalysegrafiek",
+      "MULTIPLE": "Alle gegevens weergegeven op een ander diagram",
+      "ONE": "Alle gegevens op één kaart"
     }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "Ik heb het {0} gelezen en goedgekeurd.",

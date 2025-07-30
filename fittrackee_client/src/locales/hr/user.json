@@ -219,6 +219,11 @@
       "HELP": "Ako se filtrira, uklanja ekstremne vrijednosti (koje mogu biti GPS pogreške) prilikom izračuna maksimalne brzine.",
       "LABEL": "GPX strategija maksimalne brzine",
       "RAW_SPEED": "Originalno"
+    },
+    "WORKOUT_CHARTS_DISPLAY": {
+      "LABEL": "Prikaz grafikona analize aktivnosti",
+      "MULTIPLE": "Svaki podatak na zasebnom grafikonu",
+      "ONE": "Svi podatci na jednom grafikonu"
     }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "Pročitao sam i slažem se s {0}.",

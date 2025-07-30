@@ -161,6 +161,12 @@
       "IN_PROGRESS": "您的上诉正在处理中",
       "REJECTED": "您的上诉已被拒绝"
     },
+    "SEGMENTS_CREATION_EVENT": {
+      "LABEL": "暂停触发分段创建的事件（仅 .fit 文件）",
+      "all": "所有暂停事件",
+      "none": "无",
+      "only_manual": "仅手动暂停"
+    },
     "SPORT": {
       "ACTION": "操作",
       "COLOR": "颜色",
@@ -213,6 +219,11 @@
       "HELP": "如果过滤，在计算最大速度时将排除极端值（可能是 GPS 错误）。",
       "LABEL": "GPX 最大速度策略",
       "RAW_SPEED": "原始"
+    },
+    "WORKOUT_CHARTS_DISPLAY": {
+      "LABEL": "锻炼分析图表显示",
+      "MULTIPLE": "每种数据显示在不同图表上",
+      "ONE": "所有数据显示在单一图表上"
     }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "我已阅读并同意{0}。",

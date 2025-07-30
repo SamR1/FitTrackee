@@ -57,7 +57,10 @@
     "LABEL": "Uspravno veslanje na dasci"
   },
   "Swimrun": {
-    "LABEL": "Swimrun"
+    "LABEL": "Plivanje i trčanje (swimrun)"
+  },
+  "Tennis (Outdoor)": {
+    "LABEL": "Tenis (na otvorenom)"
   },
   "Trail": {
     "LABEL": "Trail trčanje"

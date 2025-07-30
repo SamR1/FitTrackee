@@ -4,6 +4,7 @@
   "ASCENT": "爬升",
   "AVERAGE_CADENCE": "平均步频",
   "AVERAGE_HR": "平均心率",
+  "AVERAGE_POWER": "平均功率",
   "AVERAGE_SPEED": "平均速度",
   "AVE_ASCENT": "平均爬升",
   "AVE_DESCENT": "平均下降",
@@ -32,6 +33,7 @@
   "DESCRIPTION": "描述",
   "DESCRIPTION_FIELD_HELP": "如果提供，此描述将替换文件中的描述。",
   "DISPLAY_FILTERS": "显示过滤器",
+  "DISPLAY_MULTIPLE_CHARTS": "显示多个图表",
   "DISTANCE": "距离",
   "DOWNLOAD_WORKOUT": "下载锻炼 (gpx)",
   "DURATION": "持续时间",
@@ -39,6 +41,7 @@
   "ELEVATION": "海拔",
   "END": "结束",
   "EXIT_FULLSCREEN": "退出全屏",
+  "EXIT_HEATMAP": "退出热力图",
   "FROM": "从",
   "HEART_RATE": "心率",
   "HIDE_FILTERS": "隐藏过滤器",
@@ -56,6 +59,7 @@
   "MAX_CADENCE": "最大步频",
   "MAX_FILES": "最大文件数",
   "MAX_HR": "最大心率",
+  "MAX_POWER": "最大功率",
   "MAX_SIZE": "最大大小",
   "MAX_SPEED": "最大速度",
   "MAX_SYNC_FILES_IN_ZIP": "同步上传的最大文件数",
@@ -83,6 +87,7 @@
   "NO_WORKOUTS": "没有锻炼。",
   "NO_WORKOUT_AVAILABLE": "该锻炼已被删除或不可见。",
   "PAUSES": "暂停",
+  "POWER": "功率",
   "PREVIOUS_SEGMENT": "上一个路段",
   "PREVIOUS_WORKOUT": "上一个锻炼",
   "PRIVATE_NOTES": "私人备注",
@@ -126,10 +131,15 @@
     "spm": {
       "LABEL": "每分钟步数",
       "UNIT": "spm"
+    },
+    "watt": {
+      "LABEL": "瓦特",
+      "UNIT": "瓦"
     }
   },
   "UPLOAD_FIRST_WORKOUT": "上传一个！",
   "VIEW_FULLSCREEN": "全屏查看",
+  "VIEW_HEATMAP": "查看热力图",
   "WEATHER": {
     "DARK_SKY": {
       "clear-day": "晴天",
