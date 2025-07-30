@@ -1012,10 +1012,10 @@
     "@typescript-eslint/parser" "^7.1.1"
     vue-eslint-parser "^9.3.1"
 
-"@vue/language-core@3.0.3":
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/@vue/language-core/-/language-core-3.0.3.tgz#f5a24407681693dc352901d6241b370251d7eab1"
-  integrity sha512-I9wY0ULMN9tMSua+2C7g+ez1cIziVMUzIHlDYGSl2rtru3Eh4sXj95vZ+4GBuXwwPnEmYfzSApVbXiVbI8V5Gg==
+"@vue/language-core@3.0.4":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@vue/language-core/-/language-core-3.0.4.tgz#aa080a96d385ad8e23a801265cf80225ac4be414"
+  integrity sha512-BvueED4LfBCSNH66eeUQk37MQCb7hjdezzGgxniM0LbriW53AJIyLorgshAtStmjfsAuOCcTl/c1b+nz/ye8xQ==
   dependencies:
     "@volar/language-core" "2.4.20"
     "@vue/compiler-dom" "^3.5.0"
@@ -2803,15 +2803,15 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-linkify-html@^4.3.1:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/linkify-html/-/linkify-html-4.3.1.tgz#6226a2205d96eb6a3b0c59571a2b02936c6386f3"
-  integrity sha512-6ZNyucw7fH9Ncu17s+hvHFB2sU6fLWowqH6MqkXxtVL2kKkhnrho/DMCE3fWovmzVPgWSFGvg6zLkW+VWrVr4w==
+linkify-html@^4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/linkify-html/-/linkify-html-4.3.2.tgz#ef84b39828c66170221af1a49a042c7993bd4543"
+  integrity sha512-RozNgrfSFrNQlprJSZIN7lF+ZVPj5Pz8POQcu1PYGAUhL9tKtvtWcOXOmlXjuGGEWHtC6gt6Q2U4+VUq9ELmng==
 
-linkifyjs@^4.3.1:
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/linkifyjs/-/linkifyjs-4.3.1.tgz#1f246ebf4be040002accd1f4535b6af7c7e37898"
-  integrity sha512-DRSlB9DKVW04c4SUdGvKK5FR6be45lTU9M76JnngqPeeGDqPwYc0zdUErtsNVMtxPXgUWV4HbXbnC4sNyBxkYg==
+linkifyjs@^4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/linkifyjs/-/linkifyjs-4.3.2.tgz#d97eb45419aabf97ceb4b05a7adeb7b8c8ade2b1"
+  integrity sha512-NT1CJtq3hHIreOianA8aSXn6Cw0JzYOuDQbOrSPe7gqFnCpKP++MQe3ODgO3oh2GJFORkAAdqredOa60z63GbA==
 
 loader-utils@^2.0.0:
   version "2.0.4"
@@ -3997,10 +3997,10 @@ vue-i18n@^11.1.11:
     "@intlify/shared" "11.1.11"
     "@vue/devtools-api" "^6.5.0"
 
-vue-multiselect@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/vue-multiselect/-/vue-multiselect-3.2.0.tgz#810077710ee7bf98e86534c31eebf22a0ab054d7"
-  integrity sha512-ExI+IPvSbILbtaHrU0CgbBmfbD6yBpIWJKsGLPmuQMC7VWK8Nj1XSAI9eIt3n9/e+LSFYdt8VgfHxeS1O1OeVA==
+vue-multiselect@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/vue-multiselect/-/vue-multiselect-3.3.1.tgz#25a04d2e5e6caeba4fd2eec949300d5aa6b81bcf"
+  integrity sha512-QZPxG60HK4HCeBNq4rkpzHSzh3ow8blipZbKmYdRvN65If/aFWO/Bzz6eUCED4LQNYlvXG7UJuiFlbqFkAeKXg==
 
 vue-router@^4.5.1:
   version "4.5.1"
@@ -4009,13 +4009,13 @@ vue-router@^4.5.1:
   dependencies:
     "@vue/devtools-api" "^6.6.4"
 
-vue-tsc@^3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/vue-tsc/-/vue-tsc-3.0.3.tgz#5886b5030b4bbc832b039c36e3e259a620187a00"
-  integrity sha512-uU1OMSzWE8/y0+kDTc0iEIu9v82bmFkGyJpAO/x3wQqBkkHkButKgtygREyOkxL4E/xtcf/ExvgNhhjdzonldw==
+vue-tsc@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/vue-tsc/-/vue-tsc-3.0.4.tgz#f04f07a84046c923133ec588ef89ae1300e64e1a"
+  integrity sha512-kZmSEjGtROApVBuaIcoprrXZsFNGon5ggkTJokmhQ/H1hMzCFRPQ0Ed8IHYFsmYJYvHBcdmEQVGVcRuxzPzNbw==
   dependencies:
     "@volar/typescript" "2.4.20"
-    "@vue/language-core" "3.0.3"
+    "@vue/language-core" "3.0.4"
 
 vue@^3.2.25, vue@^3.5.18:
   version "3.5.18"
