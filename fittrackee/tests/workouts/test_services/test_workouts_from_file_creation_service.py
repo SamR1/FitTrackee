@@ -1020,7 +1020,12 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
         assert new_workout.analysis_visibility == VisibilityLevel.PRIVATE
         assert float(new_workout.ascent) == 0.0  # type: ignore
         assert float(new_workout.ave_speed) == 4.58  # type: ignore
-        assert new_workout.bounds == [44.67822, 6.07355, 44.68095, 6.07442]
+        assert new_workout.bounds == [
+            44.67821999453008,
+            6.073550004512072,
+            44.68094998039305,
+            6.074419962242246,
+        ]
         assert new_workout.source == "garmin 1001"
         assert float(new_workout.descent) == 21.0  # type: ignore
         assert new_workout.description is None
