@@ -8,6 +8,7 @@ export const getNotificationTypes = (role: TUserRole) => {
     'follow_request_approved',
     'workout_like',
     'workout_comment',
+    'comment_reply',
     'comment_like',
     'mention',
   ]

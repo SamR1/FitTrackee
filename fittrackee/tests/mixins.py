@@ -5,7 +5,7 @@ import tempfile
 import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 from unittest.mock import Mock
 from urllib.parse import parse_qs
 from uuid import uuid4
@@ -17,6 +17,7 @@ from werkzeug.test import TestResponse
 
 from fittrackee import db
 from fittrackee.comments.models import Comment
+from fittrackee.federation.models import Actor
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.client import create_oauth2_client
 from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
@@ -145,8 +146,10 @@ class OAuth2Mixin(RandomMixin):
 class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
     @staticmethod
     def get_test_client_and_auth_token(
-        app: Flask, user_email: str
+        app: Flask, user_email: Optional[str]
     ) -> Tuple[FlaskClient, str]:
+        if not user_email:
+            raise Exception("Invalid user email")
         client = app.test_client()
         resp_login = client.post(
             "/api/auth/login",
@@ -645,3 +648,27 @@ class WorkoutMixin:
         workout.max_alt = max_alt
         workout.min_alt = min_alt
         return workout
+
+
+class UserInboxTestMixin(BaseTestMixin):
+    def assert_send_to_remote_inbox_called_once(
+        self,
+        send_to_remote_inbox_mock: Mock,
+        local_actor: Actor,
+        remote_actor: Actor,
+        base_object: Any,
+        activity_args: Optional[Dict] = None,
+    ) -> None:
+        send_to_remote_inbox_mock.send.assert_called_once()
+        self.assert_call_args_keys_equal(
+            send_to_remote_inbox_mock.send,
+            ["sender_id", "activity", "recipients"],
+        )
+        call_args = self.get_kwargs(send_to_remote_inbox_mock.send.call_args)
+        assert call_args["sender_id"] == local_actor.id
+        assert call_args["recipients"] == [remote_actor.inbox_url]
+        activity = base_object.get_activity(
+            {} if activity_args is None else activity_args
+        )
+        del activity["id"]
+        self.assert_dict_contains_subset(call_args["activity"], activity)
