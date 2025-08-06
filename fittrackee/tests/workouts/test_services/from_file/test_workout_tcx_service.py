@@ -7,7 +7,7 @@ from fittrackee.tests.workouts.mixins import (
     WorkoutFileMixin,
 )
 from fittrackee.workouts.exceptions import WorkoutFileException
-from fittrackee.workouts.services import WorkoutTcxCreationService
+from fittrackee.workouts.services import WorkoutTcxService
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from fittrackee.workouts.models import Sport
 
 
-class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
+class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
     def test_it_raises_error_when_cx_file_is_invalid(
         self, app: "Flask", invalid_tcx_file: str
     ) -> None:
@@ -25,7 +25,7 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
                 WorkoutFileException, match="error when parsing tcx file"
             ),
         ):
-            WorkoutTcxCreationService.parse_file(
+            WorkoutTcxService.parse_file(
                 self.get_file_content(invalid_tcx_file),
                 segments_creation_event="none",
             )
@@ -41,7 +41,7 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
                 WorkoutFileException, match="no activities in tcx file"
             ),
         ):
-            WorkoutTcxCreationService.parse_file(
+            WorkoutTcxService.parse_file(
                 self.get_file_content(tcx_file_wo_activities),
                 segments_creation_event="none",
             )
@@ -54,7 +54,7 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
                 WorkoutFileException, match="no laps or no tracks in tcx file"
             ),
         ):
-            WorkoutTcxCreationService.parse_file(
+            WorkoutTcxService.parse_file(
                 self.get_file_content(tcx_file_wo_laps),
                 segments_creation_event="none",
             )
@@ -67,7 +67,7 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
                 WorkoutFileException, match="no laps or no tracks in tcx file"
             ),
         ):
-            WorkoutTcxCreationService.parse_file(
+            WorkoutTcxService.parse_file(
                 self.get_file_content(tcx_file_wo_tracks),
                 segments_creation_event="none",
             )
@@ -83,7 +83,7 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
                 WorkoutFileException, match="no coordinates in tcx file"
             ),
         ):
-            WorkoutTcxCreationService.parse_file(
+            WorkoutTcxService.parse_file(
                 self.get_file_content(tcx_without_coordinates),
                 segments_creation_event="none",
             )
@@ -94,7 +94,7 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         sport_1_cycling: "Sport",
         tcx_with_one_lap_and_one_track: str,
     ) -> None:
-        gpx = WorkoutTcxCreationService.parse_file(
+        gpx = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_one_lap_and_one_track),
             segments_creation_event="none",
         )
@@ -115,7 +115,7 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         user_1: "User",
         tcx_with_one_lap_and_two_tracks: str,
     ) -> None:
-        gpx = WorkoutTcxCreationService.parse_file(
+        gpx = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_one_lap_and_two_tracks),
             segments_creation_event="none",
         )
@@ -132,7 +132,7 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         sport_1_cycling: "Sport",
         tcx_with_two_laps: str,
     ) -> None:
-        gpx = WorkoutTcxCreationService.parse_file(
+        gpx = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_two_laps),
             segments_creation_event="none",
         )
@@ -149,7 +149,7 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         sport_1_cycling: "Sport",
         tcx_with_two_activities: str,
     ) -> None:
-        gpx = WorkoutTcxCreationService.parse_file(
+        gpx = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_two_activities),
             segments_creation_event="none",
         )
@@ -166,7 +166,7 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         sport_1_cycling: "Sport",
         tcx_with_invalid_elevation: str,
     ) -> None:
-        gpx = WorkoutTcxCreationService.parse_file(
+        gpx = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_invalid_elevation),
             segments_creation_event="none",
         )
@@ -205,7 +205,7 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         sport_1_cycling: "Sport",
         tcx_with_heart_rate_cadence_and_power: str,
     ) -> None:
-        gpx = WorkoutTcxCreationService.parse_file(
+        gpx = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_heart_rate_cadence_and_power),
             segments_creation_event="none",
         )
@@ -226,7 +226,7 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         sport_1_cycling: "Sport",
         tcx_with_heart_rate_cadence_and_ns3_power: str,
     ) -> None:
-        gpx = WorkoutTcxCreationService.parse_file(
+        gpx = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_heart_rate_cadence_and_ns3_power),
             segments_creation_event="none",
         )
@@ -247,7 +247,7 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         sport_1_cycling: "Sport",
         tcx_with_heart_rate_and_run_cadence: str,
     ) -> None:
-        gpx = WorkoutTcxCreationService.parse_file(
+        gpx = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_heart_rate_and_run_cadence),
             segments_creation_event="none",
         )
@@ -260,7 +260,7 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         sport_1_cycling: "Sport",
         tcx_with_heart_rate_and_ns3_run_cadence: str,
     ) -> None:
-        gpx = WorkoutTcxCreationService.parse_file(
+        gpx = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_heart_rate_and_ns3_run_cadence),
             segments_creation_event="none",
         )
@@ -268,7 +268,7 @@ class TestWorkoutTcxCreationServiceParseFile(WorkoutFileMixin):
         self.assert_gpx(gpx)
 
 
-class TestWorkoutTcxCreationServiceInstantiation(WorkoutFileMixin):
+class TestWorkoutTcxServiceInstantiation(WorkoutFileMixin):
     def test_it_instantiates_service(
         self,
         app: "Flask",
@@ -276,7 +276,7 @@ class TestWorkoutTcxCreationServiceInstantiation(WorkoutFileMixin):
         user_1: "User",
         tcx_with_one_lap_and_one_track: str,
     ) -> None:
-        service = WorkoutTcxCreationService(
+        service = WorkoutTcxService(
             user_1,
             self.get_file_content(tcx_with_one_lap_and_one_track),
             sport_1_cycling.id,
@@ -296,5 +296,5 @@ class TestWorkoutTcxCreationServiceInstantiation(WorkoutFileMixin):
         assert service.workout_description is None
         assert service.start_point is None
         assert service.end_point is None
-        # from WorkoutGPXCreationService
+        # from WorkoutGpxService
         assert isinstance(service.gpx, gpxpy.gpx.GPX)

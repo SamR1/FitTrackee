@@ -7,7 +7,7 @@ import pytest
 from werkzeug.datastructures import FileStorage
 
 from fittrackee.workouts.exceptions import WorkoutFileException
-from fittrackee.workouts.services import WorkoutKmzCreationService
+from fittrackee.workouts.services import WorkoutKmzService
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from fittrackee.workouts.models import Sport
 
 
-class WorkoutKmzCreationServiceTestCase:
+class WorkoutKmzServiceTestCase:
     @staticmethod
     def get_kmz_content(app: "Flask", file_name: str) -> IO[bytes]:
         file_path = os.path.join(app.root_path, "tests/files", file_name)
@@ -27,9 +27,7 @@ class WorkoutKmzCreationServiceTestCase:
         return content.stream
 
 
-class TestWorkoutKmzCreationServiceParseFile(
-    WorkoutKmzCreationServiceTestCase
-):
+class TestWorkoutKmzServiceParseFile(WorkoutKmzServiceTestCase):
     def test_it_raises_error_when_file_is_not_kmz(
         self, app: "Flask", invalid_kml_file: str
     ) -> None:
@@ -38,7 +36,7 @@ class TestWorkoutKmzCreationServiceParseFile(
                 WorkoutFileException, match="error when parsing kmz file"
             ),
         ):
-            WorkoutKmzCreationService.parse_file(
+            WorkoutKmzService.parse_file(
                 self.get_kmz_content(app, file_name="gpx_test.zip"),
                 segments_creation_event="none",
             )
@@ -46,7 +44,7 @@ class TestWorkoutKmzCreationServiceParseFile(
     def test_it_return_gpx_with_kml_content(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
     ) -> None:
-        gpx = WorkoutKmzCreationService.parse_file(
+        gpx = WorkoutKmzService.parse_file(
             self.get_kmz_content(app, file_name="example.kmz"),
             segments_creation_event="none",
         )
@@ -58,13 +56,11 @@ class TestWorkoutKmzCreationServiceParseFile(
         assert round(moving_data.moving_distance, 1) == 299.5
 
 
-class TestWorkoutKmzCreationServiceInstantiation(
-    WorkoutKmzCreationServiceTestCase
-):
+class TestWorkoutKmzServiceInstantiation(WorkoutKmzServiceTestCase):
     def test_it_instantiates_service(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
     ) -> None:
-        service = WorkoutKmzCreationService(
+        service = WorkoutKmzService(
             user_1,
             self.get_kmz_content(app, file_name="example.kmz"),
             sport_1_cycling.id,
@@ -84,5 +80,5 @@ class TestWorkoutKmzCreationServiceInstantiation(
         assert service.workout_description is None
         assert service.start_point is None
         assert service.end_point is None
-        # from WorkoutGPXCreationService
+        # from WorkoutGpxService
         assert isinstance(service.gpx, gpxpy.gpx.GPX)

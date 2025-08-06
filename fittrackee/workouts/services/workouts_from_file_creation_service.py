@@ -6,7 +6,7 @@ from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from io import BytesIO
 from logging import getLogger
-from typing import IO, TYPE_CHECKING, Dict, List, Optional, Tuple, Type, Union
+from typing import IO, TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 from flask import current_app
 
@@ -25,34 +25,19 @@ from ..exceptions import (
     WorkoutExceedingValueException,
     WorkoutException,
     WorkoutFileException,
+    WorkoutNoFileException,
 )
-from .base_workout_service import BaseWorkoutService
-from .workout_from_file import (
-    WorkoutFitCreationService,
-    WorkoutGpxCreationService,
-    WorkoutKmlCreationService,
-    WorkoutKmzCreationService,
-    WorkoutTcxCreationService,
+from .base_workout_service import (
+    BaseWorkoutService,
 )
+from .mixins import WorkoutFileMixin
+from .workout_from_file.services import WORKOUT_FROM_FILE_SERVICES
 
 if TYPE_CHECKING:
     from werkzeug.datastructures import FileStorage
 
     from fittrackee.visibility_levels import VisibilityLevel
     from fittrackee.workouts.models import Workout
-
-    from .workout_from_file import BaseWorkoutWithSegmentsCreationService
-
-WORKOUT_FROM_FILE_SERVICES: Dict[
-    str, Type["BaseWorkoutWithSegmentsCreationService"]
-] = {
-    "gpx": WorkoutGpxCreationService,
-    "fit": WorkoutFitCreationService,
-    "kml": WorkoutKmlCreationService,
-    "kmz": WorkoutKmzCreationService,
-    "tcx": WorkoutTcxCreationService,
-}
-NO_FILE_ERROR_MESSAGE = "no workout file provided"
 
 appLog = getLogger("fittrackee_workouts_upload")
 
@@ -69,7 +54,7 @@ class WorkoutsData:
     workout_visibility: Optional["VisibilityLevel"] = None
 
 
-class AbstractWorkoutsCreationService(BaseWorkoutService):
+class AbstractWorkoutsCreationService(BaseWorkoutService, WorkoutFileMixin):
     def __init__(
         self,
         auth_user: "User",
@@ -181,7 +166,7 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
 
     def _get_archive_content(self) -> Union[BytesIO, IO[bytes]]:
         if not self.file:
-            raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
+            raise WorkoutNoFileException()
 
         # handle Python < 3.11, see:
         # - https://github.com/python/cpython/issues/70363
@@ -201,7 +186,7 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
         Return map absolute file path in order to delete file on error
         """
         if workout_file is None and self.file is None:
-            raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
+            raise WorkoutNoFileException()
 
         if extension == "kmz" and workout_file is None:
             workout_file = self._get_archive_content()
@@ -216,6 +201,7 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
             sport_id=self.workouts_data.sport_id,
             stopped_speed_threshold=self.stopped_speed_threshold,
             get_weather=get_weather,
+            workout=None,
         )
 
         # extract and calculate data from provided file
@@ -318,10 +304,6 @@ class AbstractWorkoutsCreationService(BaseWorkoutService):
         db.session.commit()
         return new_workout
 
-    @staticmethod
-    def _get_extension(filename: str) -> str:
-        return filename.rsplit(".", 1)[-1].lower()
-
     def process_archive_content(
         self,
         archive_content: Union[BytesIO, IO[bytes]],
@@ -380,16 +362,9 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
     ):
         super().__init__(auth_user, workouts_data, file)
 
-    def _is_workout_file(self, filename: str) -> bool:
-        extension = self._get_extension(filename)
-        return (
-            extension in current_app.config["WORKOUT_ALLOWED_EXTENSIONS"]
-            and extension != "zip"
-        )
-
     def get_files_from_archive(self) -> List[str]:
         if not self.file:
-            raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
+            raise WorkoutNoFileException()
         files_to_process = []
         max_file_size = current_app.config["max_single_file_size"]
         try:
@@ -437,7 +412,7 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
         from fittrackee.workouts.tasks import upload_workouts_archive
 
         if self.file is None:
-            raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
+            raise WorkoutNoFileException()
         if not files_to_process:
             raise WorkoutFileException(
                 "error", "No files from archive to process"
@@ -493,7 +468,7 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
         self, equipments: Union[List["Equipment"], None]
     ) -> Tuple[List["Workout"], Dict]:
         if not self.file:
-            raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
+            raise WorkoutNoFileException()
         files_to_process = self.get_files_from_archive()
         if (
             len(files_to_process)
@@ -516,7 +491,7 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
 
     def process(self) -> Tuple[List["Workout"], Dict]:
         if self.file is None:
-            raise WorkoutException("error", NO_FILE_ERROR_MESSAGE)
+            raise WorkoutNoFileException()
         if self.file.filename is None:
             raise WorkoutFileException("error", "workout file has no filename")
 
