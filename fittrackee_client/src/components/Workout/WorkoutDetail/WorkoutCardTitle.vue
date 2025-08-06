@@ -4,7 +4,7 @@
       v-if="isWorkoutOwner || workoutObject.segmentId !== null"
       class="workout-previous workout-arrow transparent"
       :class="{ inactive: !workoutObject.previousUrl }"
-      :disabled="!workoutObject.previousUrl"
+      :disabled="!workoutObject.previousUrl || refreshLoading"
       :title="
         workoutObject.previousUrl
           ? $t(`workouts.PREVIOUS_${workoutObject.type}`)
@@ -29,6 +29,7 @@
           <div v-if="isAuthenticated">
             <button
               class="transparent icon-button likes"
+              :disabled="refreshLoading"
               @click="updateLike(workoutObject)"
               :title="
                 $t(
@@ -59,6 +60,7 @@
             </router-link>
             <button
               class="transparent icon-button"
+              :disabled="refreshLoading"
               v-if="isWorkoutOwner"
               @click="
                 $router.push({
@@ -73,15 +75,30 @@
             <button
               v-if="workoutObject.with_gpx && isWorkoutOwner"
               class="transparent icon-button"
+              :disabled="refreshLoading"
               @click.prevent="downloadGpx(workoutObject.workoutId)"
               :title="$t(`workouts.DOWNLOAD_WORKOUT`)"
             >
               <i class="fa fa-download" aria-hidden="true" />
             </button>
             <button
+              v-if="workoutObject.with_gpx && isWorkoutOwner"
+              class="transparent icon-button"
+              :disabled="refreshLoading"
+              @click.prevent="refreshGpx(workoutObject.workoutId)"
+              :title="$t(`workouts.REFRESH_WORKOUT`)"
+            >
+              <i
+                class="fa fa-refresh"
+                :class="{ 'fa-spin': refreshLoading }"
+                aria-hidden="true"
+              />
+            </button>
+            <button
               v-if="isWorkoutOwner"
               id="delete-workout-button"
               class="transparent icon-button"
+              :disabled="refreshLoading"
               @click.prevent="displayDeleteModal"
               :title="$t(`workouts.DELETE_WORKOUT`)"
             >
@@ -94,6 +111,7 @@
                 reportStatus !== `workout-${workoutObject.workoutId}-created`
               "
               class="transparent icon-button"
+              :disabled="refreshLoading"
               @click.prevent="displayReportForm"
               :title="$t('workouts.REPORT_WORKOUT')"
             >
@@ -122,6 +140,9 @@
             >
               {{ workoutObject.likes_count }}
             </router-link>
+          </div>
+          <div v-if="refreshLoading" class="refresh-message">
+            {{ $t('workouts.REFRESHING_WORKOUT') }}
           </div>
         </div>
         <div class="workout-title" v-else-if="workoutObject.segmentId !== null">
@@ -155,7 +176,7 @@
       v-if="isWorkoutOwner || workoutObject.segmentId !== null"
       class="workout-next workout-arrow transparent"
       :class="{ inactive: !workoutObject.nextUrl }"
-      :disabled="!workoutObject.nextUrl"
+      :disabled="!workoutObject.nextUrl || refreshLoading"
       :title="
         workoutObject.nextUrl
           ? $t(`workouts.NEXT_${workoutObject.type}`)
@@ -185,9 +206,10 @@
     sport: ISport
     workoutObject: IWorkoutObject
     isWorkoutOwner: boolean
+    refreshLoading: boolean
   }
   const props = defineProps<Props>()
-  const { isWorkoutOwner, sport, workoutObject } = toRefs(props)
+  const { isWorkoutOwner, refreshLoading, sport, workoutObject } = toRefs(props)
 
   const emit = defineEmits(['displayModal'])
 
@@ -218,6 +240,10 @@
         gpxLink.click()
       })
   }
+  async function refreshGpx(workoutId: string) {
+    store.dispatch(WORKOUTS_STORE.ACTIONS.REFRESH_WORKOUT, workoutId)
+  }
+
   function displayDeleteModal() {
     emit('displayModal', true)
   }
@@ -283,6 +309,12 @@
       }
       .workout-link {
         padding-left: $default-padding;
+      }
+
+      .refresh-message {
+        font-size: 0.85em;
+        font-style: italic;
+        font-weight: normal;
       }
 
       .fa {

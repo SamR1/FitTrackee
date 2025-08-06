@@ -35,6 +35,7 @@
             content-type="DESCRIPTION"
             :content="workoutData.workout.description"
             :loading="workoutData.loading"
+            :disabled="workoutData.refreshLoading"
             :allow-edition="isWorkoutOwner"
           />
           <WorkoutSegments
@@ -47,11 +48,13 @@
             :workout-id="workoutData.workout.id"
             content-type="NOTES"
             :content="workoutData.workout.notes"
+            :disabled="workoutData.refreshLoading"
             :loading="workoutData.loading"
           />
           <Comments
             v-if="!displaySegment"
             :workoutData="workoutData"
+            :disabled="workoutData.refreshLoading"
             :auth-user="authUser"
           />
           <div id="bottom" />

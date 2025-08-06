@@ -234,6 +234,7 @@ export interface IWorkoutData {
   commentsLoading: string | null
   currentCommentEdition: ICurrentCommentEdition
   currentReporting: boolean
+  refreshLoading: boolean
 }
 
 export type TWorkoutDatasetKeys =

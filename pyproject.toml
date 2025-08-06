@@ -126,6 +126,7 @@ quote-style = "double"
 [tool.pytest.ini_options]
 markers = [
     "disable_autouse_update_records_patch: disable records update",
+    "disable_autouse_default_weather_service: disable weather service",
 ]
 
 [tool.bandit]

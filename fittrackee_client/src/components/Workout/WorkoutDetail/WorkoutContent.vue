@@ -13,6 +13,7 @@
           v-if="allowEdition"
           class="transparent icon-button"
           :title="$t(`buttons.EDIT`)"
+          :disabled="disabled"
           @click="editContent"
         >
           <i v-if="!isEdition" class="fa fa-edit" aria-hidden="true" />
@@ -37,7 +38,11 @@
               {{ $t('workouts.MARKDOWN_SYNTAX') }}
             </div>
             <div class="form-buttons">
-              <button class="confirm" type="submit" :disabled="loading">
+              <button
+                class="confirm"
+                type="submit"
+                :disabled="loading || disabled"
+              >
                 {{ $t('buttons.SUBMIT') }}
               </button>
               <button class="cancel" @click.prevent="onCancel">
@@ -99,10 +104,12 @@
     contentType: 'DESCRIPTION' | 'NOTES'
     workoutId: string
     allowEdition?: boolean
+    disabled?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     content: () => '',
     allowEdition: true,
+    disabled: false,
   })
 
   const store = useStore()

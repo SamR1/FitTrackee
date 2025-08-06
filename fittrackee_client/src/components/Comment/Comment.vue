@@ -58,6 +58,7 @@
           :comments-loading="commentsLoading"
           :name="`text-${comment.id}`"
           :authUser="authUser"
+          :disabled="disabled"
         />
       </template>
       <div
@@ -78,7 +79,7 @@
           v-if="!comment.suspended && !forNotification"
           class="transparent icon-button likes"
           @click="forNotification ? null : updateLike(comment)"
-          :disabled="forNotification"
+          :disabled="forNotification || disabled"
           :title="`${$t(`workouts.${comment.liked ? 'REMOVE_LIKE' : 'COMMENTS.LIKE_COMMENT'}`)} (${comment.likes_count} ${$t(
             'workouts.LIKES',
             comment.likes_count
@@ -106,6 +107,7 @@
         <button
           v-if="displayReportButton"
           class="transparent icon-button"
+          :disabled="disabled"
           @click="reportComment(comment)"
           :title="$t('workouts.COMMENTS.REPORT')"
         >
@@ -114,6 +116,7 @@
         <button
           v-if="isCommentOwner(authUser, comment.user) && !forNotification"
           class="transparent icon-button"
+          :disabled="disabled"
           @click="() => displayCommentEdition('edit')"
           :title="$t('workouts.COMMENTS.EDIT')"
         >
@@ -122,6 +125,7 @@
         <button
           v-if="isCommentOwner(authUser, comment.user) && !forNotification"
           class="transparent icon-button"
+          :disabled="disabled"
           @click="deleteComment(comment)"
           :title="$t('workouts.COMMENTS.DELETE')"
         >
@@ -212,6 +216,7 @@
     displayAppeal?: boolean
     hideSuspensionAppeal?: boolean
     action?: IUserReportAction | null
+    disabled?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     displayAppeal: false,
@@ -221,6 +226,7 @@
     workout: null,
     hideSuspensionAppeal: false,
     action: null,
+    disabled: false,
   })
   const {
     action,

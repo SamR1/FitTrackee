@@ -98,6 +98,8 @@
   "RECORD_HA": "Dénivelé positif le + élevé",
   "RECORD_LD": "Durée la + longue",
   "RECORD_MS": "Vitesse max.",
+  "REFRESHING_WORKOUT": "Actualisation de la séance en cours…",
+  "REFRESH_WORKOUT": "Actualiser la séance",
   "REMAINING_CHARS": "nombre de caractères restants ",
   "REMOVE_LIKE": "Supprimer le like",
   "REPORT_WORKOUT": "signaler la séance",
