@@ -126,6 +126,10 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: ILikesPayload
   ): void
+  [WORKOUTS_STORE.ACTIONS.REFRESH_WORKOUT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    workoutId: string
+  ): void
 }
 
 export interface IWorkoutsGetters {
@@ -226,6 +230,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     currentReporting: boolean
   ): void
   [WORKOUTS_STORE.MUTATIONS.SET_SUCCESS](state: S, success: null | string): void
+  [WORKOUTS_STORE.MUTATIONS.SET_REFRESH_LOADING](
+    state: S,
+    refreshLoading: boolean
+  ): void
 }
 
 export type TWorkoutsStoreModule<S = IWorkoutsState> = Omit<

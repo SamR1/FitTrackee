@@ -11,6 +11,7 @@
             id="split-chart"
             type="checkbox"
             :checked="splitCharts"
+            :disabled="workoutData.refreshLoading"
             @click="splitCharts = !splitCharts"
           />
         </div>
@@ -20,7 +21,7 @@
               type="radio"
               name="distance"
               :checked="displayDistance"
-              :disabled="loading"
+              :disabled="loading || workoutData.refreshLoading"
               @click="updateDisplayDistance"
             />
             {{ $t('workouts.DISTANCE') }}
@@ -29,7 +30,7 @@
             <input
               type="radio"
               name="duration"
-              :disabled="loading"
+              :disabled="loading || workoutData.refreshLoading"
               :checked="!displayDistance"
               @click="updateDisplayDistance"
             />
@@ -81,6 +82,7 @@
               <input
                 type="checkbox"
                 :checked="beginElevationAtZero"
+                :disabled="workoutData.refreshLoading"
                 @click="beginElevationAtZero = !beginElevationAtZero"
               />
               {{ $t('workouts.START_ELEVATION_AT_ZERO') }}
