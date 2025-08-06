@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from flask import current_app
+
 from ..exceptions import WorkoutExceedingValueException
 from ..models import PSQL_INTEGER_LIMIT, WORKOUT_VALUES_LIMIT
 
@@ -26,3 +28,20 @@ class CheckWorkoutMixin:
                 raise WorkoutExceedingValueException(
                     f"'{key}' exceeds max value ({max_value})"
                 )
+
+
+class WorkoutFileMixin:
+    @staticmethod
+    def _get_extension(filename: str) -> str:
+        return filename.rsplit(".", 1)[-1].lower()
+
+    @staticmethod
+    def _is_valid_workout_file_extension(extension: str) -> bool:
+        return (
+            extension in current_app.config["WORKOUT_ALLOWED_EXTENSIONS"]
+            and extension != "zip"
+        )
+
+    def _is_workout_file(self, filename: str) -> bool:
+        extension = self._get_extension(filename)
+        return self._is_valid_workout_file_extension(extension)

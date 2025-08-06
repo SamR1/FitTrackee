@@ -3207,6 +3207,117 @@ def tcx_with_one_lap_and_one_track() -> str:
 
 
 @pytest.fixture()
+def gpx_file_from_tcx_with_one_lap_and_one_track() -> str:
+    return """<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="vívoactive">
+  <trk>
+    <trkseg>
+      <trkpt lat="44.68095" lon="6.07367">
+        <ele>997.0</ele>
+        <time>2018-03-13T12:44:45Z</time>
+      </trkpt>
+      <trkpt lat="44.68091" lon="6.07367">
+        <ele>996.0</ele>
+        <time>2018-03-13T12:44:50Z</time>
+      </trkpt>
+      <trkpt lat="44.6808" lon="6.07364">
+        <ele>996.0</ele>
+        <time>2018-03-13T12:45:00Z</time>
+      </trkpt>
+      <trkpt lat="44.68075" lon="6.07364">
+        <ele>996.0</ele>
+        <time>2018-03-13T12:45:05Z</time>
+      </trkpt>
+      <trkpt lat="44.68071" lon="6.07364">
+        <ele>996.0</ele>
+        <time>2018-03-13T12:45:10Z</time>
+      </trkpt>
+      <trkpt lat="44.68049" lon="6.07361">
+        <ele>995.0</ele>
+        <time>2018-03-13T12:45:30Z</time>
+      </trkpt>
+      <trkpt lat="44.68019" lon="6.07356">
+        <ele>993.0</ele>
+        <time>2018-03-13T12:45:55Z</time>
+      </trkpt>
+      <trkpt lat="44.68014" lon="6.07355">
+        <ele>992.0</ele>
+        <time>2018-03-13T12:46:00Z</time>
+      </trkpt>
+      <trkpt lat="44.67995" lon="6.07358">
+        <ele>991.0</ele>
+        <time>2018-03-13T12:46:15Z</time>
+      </trkpt>
+      <trkpt lat="44.67977" lon="6.07364">
+        <ele>989.0</ele>
+        <time>2018-03-13T12:46:30Z</time>
+      </trkpt>
+      <trkpt lat="44.67972" lon="6.07367">
+        <ele>988.0</ele>
+        <time>2018-03-13T12:46:35Z</time>
+      </trkpt>
+      <trkpt lat="44.67966" lon="6.07368">
+        <ele>988.0</ele>
+        <time>2018-03-13T12:46:40Z</time>
+      </trkpt>
+      <trkpt lat="44.67961" lon="6.0737">
+        <ele>987.0</ele>
+        <time>2018-03-13T12:46:45Z</time>
+      </trkpt>
+      <trkpt lat="44.67938" lon="6.07377">
+        <ele>985.0</ele>
+        <time>2018-03-13T12:47:05Z</time>
+      </trkpt>
+      <trkpt lat="44.67933" lon="6.07381">
+        <ele>985.0</ele>
+        <time>2018-03-13T12:47:10Z</time>
+      </trkpt>
+      <trkpt lat="44.67922" lon="6.07385">
+        <ele>985.0</ele>
+        <time>2018-03-13T12:47:20Z</time>
+      </trkpt>
+      <trkpt lat="44.67911" lon="6.0739">
+        <ele>984.0</ele>
+        <time>2018-03-13T12:47:30Z</time>
+      </trkpt>
+      <trkpt lat="44.679" lon="6.07399">
+        <ele>983.0</ele>
+        <time>2018-03-13T12:47:40Z</time>
+      </trkpt>
+      <trkpt lat="44.67896" lon="6.07402">
+        <ele>983.0</ele>
+        <time>2018-03-13T12:47:45Z</time>
+      </trkpt>
+      <trkpt lat="44.67884" lon="6.07408">
+        <ele>982.0</ele>
+        <time>2018-03-13T12:47:55Z</time>
+      </trkpt>
+      <trkpt lat="44.67863" lon="6.07423">
+        <ele>979.0</ele>
+        <time>2018-03-13T12:48:15Z</time>
+      </trkpt>
+      <trkpt lat="44.67858" lon="6.07425">
+        <ele>979.0</ele>
+        <time>2018-03-13T12:48:20Z</time>
+      </trkpt>
+      <trkpt lat="44.67842" lon="6.07434">
+        <ele>978.0</ele>
+        <time>2018-03-13T12:48:35Z</time>
+      </trkpt>
+      <trkpt lat="44.67837" lon="6.07435">
+        <ele>978.0</ele>
+        <time>2018-03-13T12:48:40Z</time>
+      </trkpt>
+      <trkpt lat="44.67822" lon="6.07442">
+        <ele>976.0</ele>
+        <time>2018-03-13T12:48:55Z</time>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>"""
+
+
+@pytest.fixture()
 def tcx_with_one_lap_and_two_tracks() -> str:
     return (
         """<?xml version="1.0" encoding="UTF-8"?>

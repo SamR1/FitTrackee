@@ -7,7 +7,7 @@ import pytest
 from werkzeug.datastructures import FileStorage
 
 from fittrackee.workouts.exceptions import WorkoutFileException
-from fittrackee.workouts.services import WorkoutFitCreationService
+from fittrackee.workouts.services import WorkoutFitService
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from fittrackee.workouts.models import Sport
 
 
-class WorkoutFitCreationServiceTestCase:
+class WorkoutFitServiceTestCase:
     @staticmethod
     def get_fit_content(app: "Flask", file_name: str) -> IO[bytes]:
         file_path = os.path.join(app.root_path, "tests/files", file_name)
@@ -27,9 +27,7 @@ class WorkoutFitCreationServiceTestCase:
         return content.stream
 
 
-class TestWorkoutFitCreationServiceGetCoordinate(
-    WorkoutFitCreationServiceTestCase
-):
+class TestWorkoutFitServiceGetCoordinate(WorkoutFitServiceTestCase):
     @pytest.mark.parametrize(
         "input_value,expected_coordinate",
         [
@@ -40,14 +38,12 @@ class TestWorkoutFitCreationServiceGetCoordinate(
     def test_it_calculates_coordinate_from_semicircle(
         self, app: "Flask", input_value: int, expected_coordinate: float
     ) -> None:
-        coordinate = WorkoutFitCreationService.get_coordinate(input_value)
+        coordinate = WorkoutFitService.get_coordinate(input_value)
 
         assert coordinate == expected_coordinate
 
 
-class TestWorkoutFitCreationServiceParseFile(
-    WorkoutFitCreationServiceTestCase
-):
+class TestWorkoutFitServiceParseFile(WorkoutFitServiceTestCase):
     def test_it_raises_error_when_file_is_not_fit(
         self, app: "Flask", invalid_kml_file: str
     ) -> None:
@@ -56,7 +52,7 @@ class TestWorkoutFitCreationServiceParseFile(
                 WorkoutFileException, match="error when parsing fit file"
             ),
         ):
-            WorkoutFitCreationService.parse_file(
+            WorkoutFitService.parse_file(
                 self.get_fit_content(app, file_name="example.kmz"),
                 segments_creation_event="none",
             )
@@ -64,7 +60,7 @@ class TestWorkoutFitCreationServiceParseFile(
     def test_it_returns_gpx_with_fit_content(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
     ) -> None:
-        gpx = WorkoutFitCreationService.parse_file(
+        gpx = WorkoutFitService.parse_file(
             self.get_fit_content(app, file_name="example.fit"),
             segments_creation_event="none",
         )
@@ -77,13 +73,11 @@ class TestWorkoutFitCreationServiceParseFile(
 
 
 #
-class TestWorkoutFitCreationServiceInstantiation(
-    WorkoutFitCreationServiceTestCase
-):
+class TestWorkoutFitServiceInstantiation(WorkoutFitServiceTestCase):
     def test_it_instantiates_service(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
     ) -> None:
-        service = WorkoutFitCreationService(
+        service = WorkoutFitService(
             user_1,
             self.get_fit_content(app, file_name="example.fit"),
             sport_1_cycling.id,
@@ -103,5 +97,5 @@ class TestWorkoutFitCreationServiceInstantiation(
         assert service.workout_description is None
         assert service.start_point is None
         assert service.end_point is None
-        # from WorkoutGPXCreationService
+        # from WorkoutGpxService
         assert isinstance(service.gpx, gpxpy.gpx.GPX)

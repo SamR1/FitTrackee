@@ -5,10 +5,10 @@ import xmltodict
 from gpxpy.gpxfield import parse_time
 
 from ...exceptions import WorkoutFileException
-from .workout_gpx_creation_service import WorkoutGpxCreationService
+from .workout_gpx_service import WorkoutGpxService
 
 
-class WorkoutKmlCreationService(WorkoutGpxCreationService):
+class WorkoutKmlService(WorkoutGpxService):
     @classmethod
     def parse_file(
         cls,

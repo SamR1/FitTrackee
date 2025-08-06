@@ -7,10 +7,10 @@ from gpxpy.gpxfield import parse_time
 
 from ...exceptions import WorkoutFileException
 from .constants import NSMAP
-from .workout_gpx_creation_service import WorkoutGpxCreationService
+from .workout_gpx_service import WorkoutGpxService
 
 
-class WorkoutTcxCreationService(WorkoutGpxCreationService):
+class WorkoutTcxService(WorkoutGpxService):
     @staticmethod
     def _get_elevation(point: Dict) -> Optional[float]:
         altitude_meters = point.get("AltitudeMeters")
