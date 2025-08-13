@@ -14,7 +14,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ${DATABASE_DIR:-./data/db}:/var/lib/postgresql/data
+      - ${HOST_DATABASE_DIR:-./data/db}:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
@@ -29,18 +29,18 @@ services:
     env_file:
       - .env
 # Image from Docker Hub
-    image: fittrackee/fittrackee:v0.11.1
+    image: fittrackee/fittrackee:v0.11.2
 # Uncomment following line to build image instead of using pre-built image
 #    build: .
     volumes:
-      - ${UPLOAD_DIR:-./data/uploads}:/usr/src/app/uploads
-      - ${LOG_DIR:-./data/logs}:/usr/src/app/logs
-      - ${STATICMAP_CACHE_DIR:-./data/staticmap_cache}:/usr/src/app/.staticmap_cache
+      - ${HOST_UPLOAD_DIR:-./data/uploads}:/usr/src/app/uploads
+      - ${HOST_LOG_DIR:-./data/logs}:/usr/src/app/logs
+      - ${HOST_STATICMAP_CACHE_DIR:-./data/staticmap_cache}:/usr/src/app/.staticmap_cache
     post_start:
       - command: chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/logs /usr/src/app/.staticmap_cache
         user: root
     ports:
-      - "${APP_PORT:-5000}:5000"
+      - "${HOST_APP_PORT:-5000}:5000"
     command: 'sh docker-entrypoint.sh'
     depends_on:
       fittrackee-db:
@@ -64,13 +64,13 @@ services:
 #    env_file:
 #      - .env
 ## Image from Docker Hub
-#    image: fittrackee/fittrackee:v0.11.1
+#    image: fittrackee/fittrackee:v0.11.2
 ## Uncomment following line to build image instead of using pre-built image
 ##    build: .
 #    volumes:
-#      - ${UPLOAD_DIR:-./data/uploads}:/usr/src/app/uploads
-#      - ${LOG_DIR:-./data/logs}:/usr/src/app/logs
-#      - ${STATICMAP_CACHE_DIR:-./data/staticmap_cache}:/usr/src/app/.staticmap_cache
+#      - ${HOST_UPLOAD_DIR:-./data/uploads}:/usr/src/app/uploads
+#      - ${HOST_LOG_DIR:-./data/logs}:/usr/src/app/logs
+#      - ${HOST_STATICMAP_CACHE_DIR:-./data/staticmap_cache}:/usr/src/app/.staticmap_cache
 #    post_start:
 #      - command: chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/logs /usr/src/app/.staticmap_cache
 #        user: root
@@ -90,7 +90,7 @@ services:
 #    container_name: fittrackee-redis
 #    hostname: redis
 #    volumes:
-#      - ${REDIS_DIR:-./data/redis}:/data
+#      - ${HOST_REDIS_DIR:-./data/redis}:/data
 #    healthcheck:
 #      test: ['CMD', 'redis-cli', 'ping']
 #    networks:

@@ -326,13 +326,14 @@ Docker Compose
 ^^^^^^^^^^^^^^
 
 .. versionadded:: 0.8.13
+.. versionchanged:: 0.11.2 Rename variables and add ``HOST_STATICMAP_CACHE_DIR``
 
-.. envvar:: APP_PORT
+.. envvar:: HOST_APP_PORT
 
     Application container port
 
 
-.. envvar:: DATABASE_DIR
+.. envvar:: HOST_DATABASE_DIR
 
     Host directory for PostgreSQL data volume
 
@@ -352,19 +353,24 @@ Docker Compose
     Database name for FitTrackee application
 
 
-.. envvar:: REDIS_DIR
+.. envvar:: HOST_REDIS_DIR
 
     Host directory for redis data volume
 
 
-.. envvar:: LOG_DIR
+.. envvar:: HOST_LOG_DIR
 
     Host directory for logs volume
 
 
-.. envvar:: UPLOAD_DIR
+.. envvar:: HOST_UPLOAD_DIR
 
     Host directory for uploaded files volume
+
+
+.. envvar:: HOST_STATICMAP_CACHE_DIR
+
+    Host directory for Static Map 3 cache volume
 
 
 Emails
@@ -686,13 +692,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.11.1):
+-  Download the last release (for now, it is the release v0.11.2):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/0.11.1.tar.gz
-   $ tar -xzf v0.11.1.tar.gz
-   $ mv FitTrackee-0.11.1 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/0.11.2.tar.gz
+   $ tar -xzf v0.11.2.tar.gz
+   $ mv FitTrackee-0.11.2 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -824,13 +830,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.11.1) and overwrite existing files:
+- Download the last release (for now, it is the release v0.11.2) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.11.1.tar.gz
-   $ tar -xzf v0.11.1.tar.gz
-   $ cp -R FitTrackee-0.11.1/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v0.11.2.tar.gz
+   $ tar -xzf v0.11.2.tar.gz
+   $ cp -R FitTrackee-0.11.2/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).

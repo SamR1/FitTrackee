@@ -325,7 +325,7 @@
             ...textColors.value,
           },
           afterFit: function (scale: LayoutItem) {
-            scale.width = multipleCharts.value ? 50 : 65
+            scale.width = 65
           },
         },
         yRight: {
