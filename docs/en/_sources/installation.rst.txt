@@ -327,12 +327,12 @@ Docker Compose
 
 .. versionadded:: 0.8.13
 
-.. envvar:: APP_PORT
+.. envvar:: HOST_APP_PORT
 
     Application container port
 
 
-.. envvar:: DATABASE_DIR
+.. envvar:: HOST_DATABASE_DIR
 
     Host directory for PostgreSQL data volume
 
@@ -352,19 +352,24 @@ Docker Compose
     Database name for FitTrackee application
 
 
-.. envvar:: REDIS_DIR
+.. envvar:: HOST_REDIS_DIR
 
     Host directory for redis data volume
 
 
-.. envvar:: LOG_DIR
+.. envvar:: HOST_LOG_DIR
 
     Host directory for logs volume
 
 
-.. envvar:: UPLOAD_DIR
+.. envvar:: HOST_UPLOAD_DIR
 
     Host directory for uploaded files volume
+
+
+.. envvar:: HOST_STATICMAP_CACHE_DIR
+
+    Host directory for Static Map 3 cache volume
 
 
 Emails
