@@ -35,7 +35,7 @@ services:
     volumes:
       - ${UPLOAD_DIR:-./data/uploads}:/usr/src/app/uploads
       - ${LOG_DIR:-./data/logs}:/usr/src/app/logs
-      - ${STATICMAP_CACHE_DIR:-./data/staticmap_cache}:/usr/src/app/.staticmap_cache
+      - ${CACHE_DIR:-./data/staticmap_cache}:/usr/src/app/.staticmap_cache
     post_start:
       - command: chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/logs /usr/src/app/.staticmap_cache
         user: root
@@ -70,7 +70,7 @@ services:
 #    volumes:
 #      - ${UPLOAD_DIR:-./data/uploads}:/usr/src/app/uploads
 #      - ${LOG_DIR:-./data/logs}:/usr/src/app/logs
-#      - ${STATICMAP_CACHE_DIR:-./data/staticmap_cache}:/usr/src/app/.staticmap_cache
+#      - ${CACHE_DIR:-./data/staticmap_cache}:/usr/src/app/.staticmap_cache
 #    post_start:
 #      - command: chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/logs /usr/src/app/.staticmap_cache
 #        user: root
