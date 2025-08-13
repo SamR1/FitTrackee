@@ -1,5 +1,49 @@
 # Change log
 
+## Version 0.11.2 (2025/08/13)
+
+**Note (for docker-compose.yml only):** 
+
+A new environment variable has been added: `HOST_STATICMAP_CACHE_DIR`.  
+The other variables have been prefixed to avoid confusion.  
+There is no impact if the default values are used (no overriding by environment variables).
+
+More information in the [documentation](https://docs.fittrackee.org/en/installation.html#docker-compose).
+
+### Bugs Fixed
+
+* [PR#894](https://github.com/SamR1/FitTrackee/pull/894) - fix margin on left Y-axis to display high elevations
+* [PR#897](https://github.com/SamR1/FitTrackee/pull/897) - docker compose - fix directory for StaticMap 3 cache + rename variables
+
+### Translations
+
+* [PR#893](https://github.com/SamR1/FitTrackee/pull/893) - Translations update from Hosted Weblate (Galician)
+
+Translation status:
+- Basque: 90%
+- Bulgarian: 56%
+- Catalan: 25%
+- Chinese (Simplified): 99%
+- Croatian: 100%
+- Czech: 44%
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 93%
+- Italian: 46%
+- Norwegian Bokmål: 30%
+- Polish: 90%
+- Portuguese: 55%
+- Russian: 99%
+- Spanish: 74%
+- Turkish: 1%
+
+
+Thanks to the contributors:
+- @xmgz
+
+
 ## Version 0.11.1 (2025/07/30)
 
 ### Bugs Fixed
