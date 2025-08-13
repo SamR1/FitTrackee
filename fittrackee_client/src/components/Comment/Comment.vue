@@ -4,6 +4,9 @@
     <div class="comment-detail">
       <div class="comment-info">
         <Username :user="comment.user" />
+        <div v-if="comment.user.is_remote" class="user-remote-fullname">
+          {{ comment.user.fullname }}
+        </div>
         <div class="spacer" />
         <router-link
           class="comment-date"
@@ -104,6 +107,14 @@
           {{ comment.likes_count }}
         </router-link>
         <button
+          v-if="displayCommentIcon()"
+          class="transparent icon-button"
+          @click="() => displayCommentEdition('add')"
+          :title="$t('workouts.COMMENTS.ADD')"
+        >
+          <i class="fa fa-comment-o" aria-hidden="true" />
+        </button>
+        <button
           v-if="displayReportButton"
           class="transparent icon-button"
           @click="reportComment(comment)"
@@ -168,6 +179,18 @@
           </span>
         </div>
       </div>
+      <template v-if="!forNotification">
+        <CommentEdition
+          v-if="isNewReply()"
+          class="add-comment-reply"
+          :workout="workout"
+          :reply-to="comment"
+          :comments-loading="commentsLoading"
+          :name="`text-${comment.id}`"
+          :authUser="authUser"
+          :mentions="comment.mentions"
+        />
+      </template>
     </div>
   </div>
 </template>
@@ -200,6 +223,7 @@
   import { useStore } from '@/use/useStore'
   import { formatDate } from '@/utils/dates'
   import { linkifyAndClean } from '@/utils/inputs'
+  import { getUserName } from '@/utils/user'
 
   interface Props {
     comment: IComment
@@ -278,7 +302,7 @@
     authUser: IAuthUserProfile | null,
     commentUser: IUserProfile | IUserLightProfile
   ) {
-    return authUser && authUser.username === commentUser.username
+    return authUser && getUserName(authUser) === getUserName(commentUser)
   }
   function isCommentEdited() {
     return (
@@ -290,6 +314,20 @@
     return (
       currentCommentEdition.value?.type === 'report' &&
       currentCommentEdition.value?.comment?.id === comment.value.id
+    )
+  }
+  function isNewReply() {
+    return (
+      currentCommentEdition.value?.type === 'add' &&
+      currentCommentEdition.value?.comment?.id === comment.value.id
+    )
+  }
+  function displayCommentIcon() {
+    return (
+      authUser.value.username &&
+      !comment.value.suspended &&
+      comment.value.workout_id &&
+      !forNotification.value
     )
   }
   function deleteComment(commentToDelete: IComment) {
@@ -391,6 +429,7 @@
           flex-grow: 3;
         }
         .comment-date,
+        .user-remote-fullname,
         .comment-edited {
           font-size: 0.85em;
           font-style: italic;
@@ -445,6 +484,9 @@
         margin-top: $default-padding;
       }
 
+      .add-comment-reply {
+        margin: 0 0 40px;
+      }
       .likes-count {
         margin-left: $default-padding * -0.5;
         font-size: 0.8em;

@@ -27,78 +27,90 @@
         <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
           <span>{{ workoutObject.title }}</span>
           <div v-if="isAuthenticated">
-            <button
-              class="transparent icon-button likes"
-              @click="updateLike(workoutObject)"
-              :title="
-                $t(
-                  `workouts.${workoutObject.liked ? 'REMOVE_LIKE' : 'LIKE_WORKOUT'}`
-                )
-              "
-              :aria-label="`${$t(`workouts.${workoutObject.liked ? 'REMOVE_LIKE' : 'LIKE_WORKOUT'}`)} (${workoutObject.likes_count} ${$t(
-                'workouts.LIKES',
-                workoutObject.likes_count
-              )})`"
+            <a
+              class="remote-link"
+              v-if="workoutObject.remoteUrl"
+              :href="workoutObject.remoteUrl"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <i
-                class="fa"
-                :class="{
-                  'fa-heart': workoutObject.likes_count > 0,
-                  'fa-heart-o': workoutObject.likes_count === 0,
-                  liked: workoutObject.liked,
-                }"
-                aria-hidden="true"
-              />
-            </button>
-            <router-link
-              :to="`/workouts/${workoutObject.workoutId}/likes`"
-              v-if="workoutObject.likes_count > 0"
-              class="likes-count"
-            >
-              {{ workoutObject.likes_count }}
-            </router-link>
-            <button
-              class="transparent icon-button"
-              v-if="isWorkoutOwner"
-              @click="
-                $router.push({
-                  name: 'EditWorkout',
-                  params: { workoutId: workoutObject.workoutId },
-                })
-              "
-              :title="$t(`workouts.EDIT_WORKOUT`)"
-            >
-              <i class="fa fa-edit" aria-hidden="true" />
-            </button>
-            <button
-              v-if="workoutObject.with_gpx && isWorkoutOwner"
-              class="transparent icon-button"
-              @click.prevent="downloadGpx(workoutObject.workoutId)"
-              :title="$t(`workouts.DOWNLOAD_WORKOUT`)"
-            >
-              <i class="fa fa-download" aria-hidden="true" />
-            </button>
-            <button
-              v-if="isWorkoutOwner"
-              id="delete-workout-button"
-              class="transparent icon-button"
-              @click.prevent="displayDeleteModal"
-              :title="$t(`workouts.DELETE_WORKOUT`)"
-            >
-              <i class="fa fa-trash" aria-hidden="true" />
-            </button>
-            <button
-              v-if="
-                !isWorkoutOwner &&
-                !currentlyReporting &&
-                reportStatus !== `workout-${workoutObject.workoutId}-created`
-              "
-              class="transparent icon-button"
-              @click.prevent="displayReportForm"
-              :title="$t('workouts.REPORT_WORKOUT')"
-            >
-              <i class="fa fa-flag" aria-hidden="true" />
-            </button>
+              {{ $t('workouts.VIEW_ON_REMOTE_INSTANCE') }}
+              <i class="fa fa-external-link-square" aria-hidden="true"></i>
+            </a>
+            <div>
+              <button
+                class="transparent icon-button likes"
+                @click="updateLike(workoutObject)"
+                :title="
+                  $t(
+                    `workouts.${workoutObject.liked ? 'REMOVE_LIKE' : 'LIKE_WORKOUT'}`
+                  )
+                "
+                :aria-label="`${$t(`workouts.${workoutObject.liked ? 'REMOVE_LIKE' : 'LIKE_WORKOUT'}`)} (${workoutObject.likes_count} ${$t(
+                  'workouts.LIKES',
+                  workoutObject.likes_count
+                )})`"
+              >
+                <i
+                  class="fa"
+                  :class="{
+                    'fa-heart': workoutObject.likes_count > 0,
+                    'fa-heart-o': workoutObject.likes_count === 0,
+                    liked: workoutObject.liked,
+                  }"
+                  aria-hidden="true"
+                />
+              </button>
+              <router-link
+                :to="`/workouts/${workoutObject.workoutId}/likes`"
+                v-if="workoutObject.likes_count > 0"
+                class="likes-count"
+              >
+                {{ workoutObject.likes_count }}
+              </router-link>
+              <button
+                class="transparent icon-button"
+                v-if="isWorkoutOwner"
+                @click="
+                  $router.push({
+                    name: 'EditWorkout',
+                    params: { workoutId: workoutObject.workoutId },
+                  })
+                "
+                :title="$t(`workouts.EDIT_WORKOUT`)"
+              >
+                <i class="fa fa-edit" aria-hidden="true" />
+              </button>
+              <button
+                v-if="workoutObject.with_gpx && isWorkoutOwner"
+                class="transparent icon-button"
+                @click.prevent="downloadGpx(workoutObject.workoutId)"
+                :title="$t(`workouts.DOWNLOAD_WORKOUT`)"
+              >
+                <i class="fa fa-download" aria-hidden="true" />
+              </button>
+              <button
+                v-if="isWorkoutOwner"
+                id="delete-workout-button"
+                class="transparent icon-button"
+                @click.prevent="displayDeleteModal"
+                :title="$t(`workouts.DELETE_WORKOUT`)"
+              >
+                <i class="fa fa-trash" aria-hidden="true" />
+              </button>
+              <button
+                v-if="
+                  !isWorkoutOwner &&
+                  !currentlyReporting &&
+                  reportStatus !== `workout-${workoutObject.workoutId}-created`
+                "
+                class="transparent icon-button"
+                @click.prevent="displayReportForm"
+                :title="$t('workouts.REPORT_WORKOUT')"
+              >
+                <i class="fa fa-flag" aria-hidden="true" />
+              </button>
+            </div>
           </div>
           <div
             v-else
@@ -268,6 +280,16 @@
         align-items: baseline;
         span {
           margin-right: $default-margin * 0.5;
+        }
+        .remote-link {
+          font-size: 0.85em;
+          font-style: italic;
+          font-weight: normal;
+
+          .fa-external-link-square {
+            font-size: 0.85em;
+            padding: 0;
+          }
         }
       }
       .likes-count {
