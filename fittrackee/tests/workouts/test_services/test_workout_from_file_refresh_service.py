@@ -48,10 +48,8 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         user_1: "User",
         sport_1_cycling: "Sport",
         workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
     ) -> None:
-        workout_cycling_user_1.gpx = "some_file.gpx"
-        workout_cycling_user_1.original_file = "some_file.tcx"
-
         service = WorkoutFromFileRefreshService(workout=workout_cycling_user_1)
 
         assert service.original_file == workout_cycling_user_1.original_file
@@ -71,9 +69,9 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         user_1: "User",
         sport_1_cycling: "Sport",
         workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
     ) -> None:
         # for workouts uploaded before FitTrackee v0.10.0
-        workout_cycling_user_1.gpx = "some_file.gpx"
         workout_cycling_user_1.original_file = None
 
         service = WorkoutFromFileRefreshService(workout=workout_cycling_user_1)
@@ -99,10 +97,9 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         user_1: "User",
         sport_1_cycling: "Sport",
         workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
         user_1_sport_1_preference: "UserSportPreference",
     ) -> None:
-        workout_cycling_user_1.original_file = "some_file.gpx"
-
         service = WorkoutFromFileRefreshService(workout=workout_cycling_user_1)
 
         assert service.workout == workout_cycling_user_1
@@ -121,9 +118,8 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         user_1: "User",
         sport_1_cycling: "Sport",
         workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
     ) -> None:
-        workout_cycling_user_1.original_file = "some_file.gpx"
-
         service = WorkoutFromFileRefreshService(
             workout=workout_cycling_user_1, update_weather=True
         )
@@ -146,6 +142,7 @@ class TestWorkoutFromFileRefreshServiceGetFileContent:
         user_1: "User",
         sport_1_cycling: "Sport",
         workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
     ) -> None:
         workout_cycling_user_1.original_file = "invalid_file_path.gpx"
         service = WorkoutFromFileRefreshService(workout=workout_cycling_user_1)
@@ -161,8 +158,8 @@ class TestWorkoutFromFileRefreshServiceGetFileContent:
         user_1: "User",
         sport_1_cycling: "Sport",
         workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
     ) -> None:
-        workout_cycling_user_1.original_file = "workouts/1/example.gpx"
         service = WorkoutFromFileRefreshService(workout=workout_cycling_user_1)
 
         with patch(
@@ -171,7 +168,8 @@ class TestWorkoutFromFileRefreshServiceGetFileContent:
             service.get_file_content()
 
         open_mock.assert_called_once_with(
-            get_absolute_file_path(workout_cycling_user_1.original_file), "rb"
+            get_absolute_file_path(workout_cycling_user_1.original_file),  # type: ignore[arg-type]
+            "rb",
         )
 
     def test_it_returns_original_file_content(
@@ -180,6 +178,7 @@ class TestWorkoutFromFileRefreshServiceGetFileContent:
         user_1: "User",
         sport_1_cycling: "Sport",
         workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
         gpx_file: str,
     ) -> None:
         workout_cycling_user_1.original_file = "workouts/1/example.gpx"

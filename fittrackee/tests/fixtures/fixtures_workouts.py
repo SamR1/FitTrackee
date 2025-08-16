@@ -2,7 +2,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
-from typing import Generator, Iterator, List
+from typing import Generator, Iterator, List, Union
 from unittest.mock import MagicMock, Mock, patch
 from uuid import uuid4
 
@@ -108,11 +108,11 @@ def sport_5_outdoor_tennis() -> Sport:
     return sport
 
 
-def update_workout(workout: Workout) -> None:
-    distance = workout.distance if workout.distance else 0
-    workout.ave_speed = float(distance) / (workout.duration.seconds / 3600)
-    workout.max_speed = workout.ave_speed
-    workout.moving = workout.duration
+def update_workout(target: Union[Workout, WorkoutSegment]) -> None:
+    distance = target.distance if target.distance else 0
+    target.ave_speed = float(distance) / (target.duration.seconds / 3600)
+    target.max_speed = target.ave_speed
+    target.moving = target.duration
 
 
 @pytest.fixture()
@@ -132,6 +132,25 @@ def workout_cycling_user_1() -> Workout:
 
 
 @pytest.fixture()
+def workout_cycling_user_1_segment(
+    workout_cycling_user_1: Workout,
+) -> WorkoutSegment:
+    workout_segment = WorkoutSegment(
+        workout_id=workout_cycling_user_1.id,
+        workout_uuid=workout_cycling_user_1.uuid,
+        segment_id=0,
+    )
+    workout_segment.duration = workout_cycling_user_1.duration
+    workout_segment.distance = workout_cycling_user_1.distance
+    update_workout(workout_segment)
+    db.session.add(workout_segment)
+    workout_cycling_user_1.gpx = "workouts/1/example.gpx"
+    workout_cycling_user_1.original_file = "workouts/1/example.tcx"
+    db.session.commit()
+    return workout_segment
+
+
+@pytest.fixture()
 def another_workout_cycling_user_1() -> Workout:
     workout = Workout(
         user_id=1,
@@ -148,23 +167,6 @@ def another_workout_cycling_user_1() -> Workout:
 
 
 @pytest.fixture()
-def workout_cycling_user_1_segment(
-    workout_cycling_user_1: Workout,
-) -> WorkoutSegment:
-    workout_segment = WorkoutSegment(
-        workout_id=workout_cycling_user_1.id,
-        workout_uuid=workout_cycling_user_1.uuid,
-        segment_id=0,
-    )
-    workout_segment.duration = timedelta(seconds=6000)
-    workout_segment.moving = workout_segment.duration
-    workout_segment.distance = 5
-    db.session.add(workout_segment)
-    db.session.commit()
-    return workout_segment
-
-
-@pytest.fixture()
 def workout_running_user_1() -> Workout:
     workout = Workout(
         user_id=1,
@@ -178,6 +180,25 @@ def workout_running_user_1() -> Workout:
     db.session.add(workout)
     db.session.commit()
     return workout
+
+
+@pytest.fixture()
+def workout_running_user_1_segment(
+    workout_running_user_1: Workout,
+) -> WorkoutSegment:
+    workout_segment = WorkoutSegment(
+        workout_id=workout_running_user_1.id,
+        workout_uuid=workout_running_user_1.uuid,
+        segment_id=0,
+    )
+    workout_segment.duration = workout_running_user_1.duration
+    workout_segment.distance = workout_running_user_1.distance
+    update_workout(workout_segment)
+    db.session.add(workout_segment)
+    workout_running_user_1.gpx = "workouts/1/example.gpx"
+    workout_running_user_1.original_file = "workouts/1/example.tcx"
+    db.session.commit()
+    return workout_segment
 
 
 @pytest.fixture()
@@ -394,6 +415,25 @@ def workout_cycling_user_2() -> Workout:
     db.session.add(workout)
     db.session.commit()
     return workout
+
+
+@pytest.fixture()
+def workout_cycling_user_2_segment(
+    workout_cycling_user_2: Workout,
+) -> WorkoutSegment:
+    workout_segment = WorkoutSegment(
+        workout_id=workout_cycling_user_2.id,
+        workout_uuid=workout_cycling_user_2.uuid,
+        segment_id=0,
+    )
+    workout_segment.duration = workout_cycling_user_2.duration
+    workout_segment.distance = workout_cycling_user_2.distance
+    update_workout(workout_segment)
+    db.session.add(workout_segment)
+    workout_cycling_user_2.gpx = "workouts/1/example.gpx"
+    workout_cycling_user_2.original_file = "workouts/1/example.tcx"
+    db.session.commit()
+    return workout_segment
 
 
 track_points_part_1_coordinates = [
