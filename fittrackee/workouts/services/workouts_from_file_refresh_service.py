@@ -1,9 +1,12 @@
 from logging import getLogger
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+
+from sqlalchemy import asc, desc
 
 from fittrackee import db
 from fittrackee.files import get_absolute_file_path
-from fittrackee.users.models import UserSportPreference
+from fittrackee.users.models import User, UserSportPreference
+from fittrackee.workouts.models import Workout
 
 from ..exceptions import (
     WorkoutExceedingValueException,
@@ -11,12 +14,14 @@ from ..exceptions import (
     WorkoutFileException,
     WorkoutRefreshException,
 )
+from ..utils.workouts import get_workout_datetime
 from .mixins import WorkoutFileMixin
 from .workout_from_file.services import WORKOUT_FROM_FILE_SERVICES
 
 if TYPE_CHECKING:
-    from fittrackee.users.models import User
-    from fittrackee.workouts.models import Sport, Workout
+    from datetime import datetime
+
+    from fittrackee.workouts.models import Sport
 
 
 appLog = getLogger("fittrackee_workout_refresh")
@@ -106,3 +111,76 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
         db.session.commit()
         db.session.refresh(self.workout)
         return self.workout
+
+
+class WorkoutsFromFileRefreshService:
+    def __init__(
+        self,
+        per_page: Optional[int] = 10,
+        page: Optional[int] = 1,
+        order: Optional[str] = "asc",
+        user: Optional[str] = None,
+        sport_id: Optional[int] = None,
+        from_: Optional[str] = None,
+        to: Optional[str] = None,
+        with_weather: bool = False,
+    ) -> None:
+        self.per_page: Optional[int] = per_page
+        self.page: Optional[int] = page
+        self.order: Optional[str] = order
+        self.username: Optional[str] = user
+        self.sport_id: Optional[int] = sport_id
+        self.from_: Optional["datetime"] = (
+            get_workout_datetime(
+                workout_date=from_,
+                user_timezone=None,
+                date_str_format="%Y-%m-%d",
+            )[0]
+            if from_
+            else None
+        )
+        self.to: Optional["datetime"] = (
+            get_workout_datetime(
+                workout_date=to,
+                user_timezone=None,
+                date_str_format="%Y-%m-%d",
+            )[0]
+            if to
+            else None
+        )
+        self.with_weather: bool = with_weather
+
+    def refresh(self) -> int:
+        workouts_to_refresh_query = Workout.query
+        filters = [Workout.gpx != None]  # noqa
+        if self.username:
+            workouts_to_refresh_query = workouts_to_refresh_query.join(
+                User, User.id == Workout.user_id
+            )
+            filters.extend([User.username == self.username])
+        if self.sport_id:
+            filters.extend([Workout.sport_id == self.sport_id])
+        if self.from_:
+            filters.extend([Workout.workout_date >= self.from_])
+        if self.to:
+            filters.extend([Workout.workout_date <= self.to])
+
+        updated_workouts = 0
+        workouts_to_refresh = (
+            workouts_to_refresh_query.filter(*filters)
+            .order_by(
+                asc(Workout.workout_date)
+                if self.order == "asc"
+                else desc(Workout.workout_date)
+            )
+            .paginate(page=self.page, per_page=self.per_page, error_out=False)
+            .items
+        )
+
+        for workout in workouts_to_refresh:
+            service = WorkoutFromFileRefreshService(
+                workout, update_weather=self.with_weather
+            )
+            service.refresh()
+            updated_workouts += 1
+        return updated_workouts

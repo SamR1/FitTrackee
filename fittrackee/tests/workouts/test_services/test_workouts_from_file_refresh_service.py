@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING
+from datetime import datetime, timezone
+from typing import TYPE_CHECKING, Dict
 from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
@@ -14,8 +15,9 @@ from fittrackee.workouts.exceptions import (
 )
 from fittrackee.workouts.models import Record, Workout
 from fittrackee.workouts.services.weather.base_weather import BaseWeather
-from fittrackee.workouts.services.workout_from_file_refresh_service import (
+from fittrackee.workouts.services.workouts_from_file_refresh_service import (
     WorkoutFromFileRefreshService,
+    WorkoutsFromFileRefreshService,
 )
 
 if TYPE_CHECKING:
@@ -491,3 +493,253 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
             equipment_bike_user_1.total_moving == workout_cycling_user_1.moving
         )
         assert equipment_bike_user_1.total_workouts == 1
+
+
+class TestWorkoutsFromFileRefreshServiceInstantiation:
+    def test_it_instantiates_service_when_no_values_provided(
+        self, app: "Flask"
+    ) -> None:
+        service = WorkoutsFromFileRefreshService()
+
+        assert service.per_page == 10
+        assert service.page == 1
+        assert service.order == "asc"
+        assert service.username is None
+        assert service.sport_id is None
+        assert service.from_ is None
+        assert service.to is None
+        assert service.with_weather is False
+
+    def test_it_instantiates_service_with_given_values(
+        self, app: "Flask"
+    ) -> None:
+        service = WorkoutsFromFileRefreshService(
+            per_page=50,
+            page=2,
+            order="desc",
+            user="Test",
+            sport_id=1,
+            from_="2025-08-01",
+            to="2025-08-12",
+            with_weather=True,
+        )
+
+        assert service.per_page == 50
+        assert service.page == 2
+        assert service.order == "desc"
+        assert service.username == "Test"
+        assert service.sport_id == 1
+        assert service.from_ == datetime(2025, 8, 1, 0, 0, tzinfo=timezone.utc)
+        assert service.to == datetime(2025, 8, 12, 0, 0, tzinfo=timezone.utc)
+        assert service.with_weather is True
+
+
+class TestWorkoutsFromFileRefreshServiceRefresh:
+    def test_it_returns_0_when_no_workouts_with_file(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        service = WorkoutsFromFileRefreshService()
+
+        count = service.refresh()
+
+        assert count == 0
+
+    def test_it_calls_workout_from_file_refresh_service_for_each_file(
+        self,
+        app: "Flask",
+        user_1: "User",
+        user_2: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        workout_running_user_1: "Workout",
+        workout_running_user_1_segment: "WorkoutSegment",
+        workout_cycling_user_2: "Workout",
+        workout_cycling_user_2_segment: "WorkoutSegment",
+    ) -> None:
+        service = WorkoutsFromFileRefreshService()
+
+        with patch.object(
+            WorkoutFromFileRefreshService, "refresh"
+        ) as refresh_mock:
+            service.refresh()
+
+        assert refresh_mock.call_count == 2
+
+    def test_it_refresh_only_user_1_workout(
+        self,
+        app: "Flask",
+        user_1: "User",
+        user_2: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        workout_cycling_user_2: "Workout",
+        workout_cycling_user_2_segment: "WorkoutSegment",
+        tcx_with_heart_rate_cadence_and_power: str,
+    ) -> None:
+        service = WorkoutsFromFileRefreshService(user=user_1.username)
+
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=tcx_with_heart_rate_cadence_and_power,
+        ):
+            count = service.refresh()
+
+        assert count == 1
+        db.session.refresh(workout_cycling_user_1)
+        assert float(workout_cycling_user_1.distance) == 0.112  # type: ignore[arg-type]
+
+    def test_it_refresh_workout_associated_to_given_sport(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        workout_running_user_1: "Workout",
+        workout_running_user_1_segment: "WorkoutSegment",
+        tcx_with_one_lap_and_one_track: str,
+    ) -> None:
+        service = WorkoutsFromFileRefreshService(sport_id=sport_2_running.id)
+
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=tcx_with_one_lap_and_one_track,
+        ):
+            count = service.refresh()
+
+        assert count == 1
+        db.session.refresh(workout_running_user_1)
+        assert float(workout_running_user_1.distance) == 0.318  # type: ignore[arg-type]
+
+    def test_it_refresh_workout_from_given_date(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        workout_running_user_1: "Workout",
+        workout_running_user_1_segment: "WorkoutSegment",
+        tcx_with_one_lap_and_one_track: str,
+    ) -> None:
+        service = WorkoutsFromFileRefreshService(from_="2018-04-02")
+
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=tcx_with_one_lap_and_one_track,
+        ):
+            count = service.refresh()
+
+        assert count == 1
+        db.session.refresh(workout_running_user_1)
+        assert float(workout_running_user_1.distance) == 0.318  # type: ignore[arg-type]
+
+    def test_it_refresh_workout_to_given_date(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        workout_running_user_1: "Workout",
+        workout_running_user_1_segment: "WorkoutSegment",
+        tcx_with_one_lap_and_one_track: str,
+    ) -> None:
+        service = WorkoutsFromFileRefreshService(to="2018-01-01")
+
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=tcx_with_one_lap_and_one_track,
+        ):
+            count = service.refresh()
+
+        assert count == 1
+        db.session.refresh(workout_cycling_user_1)
+        assert float(workout_cycling_user_1.distance) == 0.318  # type: ignore[arg-type]
+
+    @pytest.mark.parametrize(
+        "input_params",
+        [
+            {"page": 1, "per_page": 1, "order": "asc"},
+            {"page": 2, "per_page": 1, "order": "desc"},
+        ],
+    )
+    def test_it_refresh_workout_depending_on_given_pagination_parameters(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        workout_running_user_1: "Workout",
+        workout_running_user_1_segment: "WorkoutSegment",
+        tcx_with_one_lap_and_one_track: str,
+        input_params: Dict,
+    ) -> None:
+        service = WorkoutsFromFileRefreshService(**input_params)
+
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=tcx_with_one_lap_and_one_track,
+        ):
+            count = service.refresh()
+
+        assert count == 1
+        db.session.refresh(workout_cycling_user_1)
+        assert float(workout_cycling_user_1.distance) == 0.318  # type: ignore[arg-type]
+
+    def test_it_does_not_call_weather_service_when_with_weather_is_false(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        tcx_with_one_lap_and_one_track: str,
+        default_weather_service: MagicMock,
+    ) -> None:
+        service = WorkoutsFromFileRefreshService(with_weather=False)
+
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=tcx_with_one_lap_and_one_track,
+        ):
+            service.refresh()
+
+        default_weather_service.assert_not_called()
+
+    def test_it_calls_weather_service_when_with_weather_is_true(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        tcx_with_one_lap_and_one_track: str,
+        default_weather_service: MagicMock,
+    ) -> None:
+        service = WorkoutsFromFileRefreshService(with_weather=True)
+
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=tcx_with_one_lap_and_one_track,
+        ):
+            service.refresh()
+
+        default_weather_service.assert_called()

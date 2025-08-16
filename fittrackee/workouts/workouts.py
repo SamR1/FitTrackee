@@ -62,7 +62,7 @@ from .services import (
     WorkoutsFromFileCreationService,
     WorkoutUpdateService,
 )
-from .services.workout_from_file_refresh_service import (
+from .services.workouts_from_file_refresh_service import (
     WorkoutFromFileRefreshService,
 )
 from .utils.convert import convert_in_duration
