@@ -123,13 +123,14 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 "error", "gpx file is invalid"
             ) from None
         elevation = parsed_gpx.get_elevation_extremes()
+        duration = parsed_gpx.get_duration()
         gpx_info = GpxInfo(
-            duration=parsed_gpx.get_duration(),
+            duration=duration,
             distance=(
                 moving_data.moving_distance + moving_data.stopped_distance
             ),
             moving_time=moving_data.moving_time,
-            stopped_time=moving_data.stopped_time,
+            stopped_time=duration - moving_data.moving_time if duration else 0,
             max_speed=moving_data.max_speed,
             max_alt=elevation.maximum,
             min_alt=elevation.minimum,
