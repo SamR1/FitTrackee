@@ -31,6 +31,8 @@ if TYPE_CHECKING:
 # files from gpx_test.zip
 TEST_FILES_LIST = ["test_1.gpx", "test_2.gpx", "test_3.gpx"]
 
+test_logger = getLogger("test logger")
+
 
 class TestWorkoutFromFileRefreshServiceInstantiation:
     def test_it_raises_exception_when_workout_has_no_file(
@@ -472,7 +474,7 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
     def test_it_instantiates_service_when_no_values_provided(
         self, app: "Flask"
     ) -> None:
-        service = WorkoutsFromFileRefreshService()
+        service = WorkoutsFromFileRefreshService(logger=test_logger)
 
         assert service.per_page == 10
         assert service.page == 1
@@ -480,25 +482,26 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
         assert service.username is None
         assert service.extension is None
         assert service.sport_id is None
-        assert service.from_ is None
-        assert service.to is None
-        assert service.logger is None
+        assert service.date_from is None
+        assert service.date_to is None
+        assert service.logger == test_logger
         assert service.with_weather is False
 
     def test_it_instantiates_service_with_given_values(
         self, app: "Flask"
     ) -> None:
-        logger = getLogger("test")
+        date_from = datetime(2018, 8, 1, 0, 0, tzinfo=timezone.utc)
+        date_to = datetime(2018, 8, 12, 0, 0, tzinfo=timezone.utc)
         service = WorkoutsFromFileRefreshService(
+            logger=test_logger,
             per_page=50,
             page=2,
             order="desc",
             user="Test",
             extension=".fit",
             sport_id=1,
-            from_="2025-08-01",
-            to="2025-08-12",
-            logger=logger,
+            date_from=date_from,
+            date_to=date_to,
             with_weather=True,
         )
 
@@ -508,10 +511,9 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
         assert service.username == "Test"
         assert service.extension == ".fit"
         assert service.sport_id == 1
-        assert service.from_ == datetime(2025, 8, 1, 0, 0, tzinfo=timezone.utc)
-        assert service.to == datetime(2025, 8, 12, 0, 0, tzinfo=timezone.utc)
-
-        assert service.logger == logger
+        assert service.date_from == date_from
+        assert service.date_to == date_to
+        assert service.logger == test_logger
         assert service.with_weather is True
 
 
@@ -523,13 +525,13 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         sport_1_cycling: "Sport",
         workout_cycling_user_1: "Workout",
     ) -> None:
-        service = WorkoutsFromFileRefreshService()
+        service = WorkoutsFromFileRefreshService(logger=test_logger)
 
         count = service.refresh()
 
         assert count == 0
 
-    def test_it_calls_workout_from_file_refresh_service_for_each_file(
+    def test_it_calls_workout_date_fromfile_refresh_service_for_each_file(
         self,
         app: "Flask",
         user_1: "User",
@@ -541,7 +543,7 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         workout_cycling_user_2: "Workout",
         workout_cycling_user_2_segment: "WorkoutSegment",
     ) -> None:
-        service = WorkoutsFromFileRefreshService()
+        service = WorkoutsFromFileRefreshService(logger=test_logger)
 
         with patch.object(
             WorkoutFromFileRefreshService, "refresh"
@@ -562,7 +564,9 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         workout_cycling_user_2_segment: "WorkoutSegment",
         tcx_with_heart_rate_cadence_and_power: str,
     ) -> None:
-        service = WorkoutsFromFileRefreshService(user=user_1.username)
+        service = WorkoutsFromFileRefreshService(
+            logger=test_logger, user=user_1.username
+        )
 
         with patch(
             "builtins.open",
@@ -589,7 +593,9 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         tcx_with_one_lap_and_one_track: str,
     ) -> None:
         workout_cycling_user_1.original_file = workout_cycling_user_1.gpx
-        service = WorkoutsFromFileRefreshService(extension=".tcx")
+        service = WorkoutsFromFileRefreshService(
+            logger=test_logger, extension=".tcx"
+        )
 
         with patch(
             "builtins.open",
@@ -614,7 +620,9 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         workout_running_user_1_segment: "WorkoutSegment",
         tcx_with_one_lap_and_one_track: str,
     ) -> None:
-        service = WorkoutsFromFileRefreshService(sport_id=sport_2_running.id)
+        service = WorkoutsFromFileRefreshService(
+            logger=test_logger, sport_id=sport_2_running.id
+        )
 
         with patch(
             "builtins.open",
@@ -627,7 +635,7 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         db.session.refresh(workout_running_user_1)
         assert float(workout_running_user_1.distance) == 0.318  # type: ignore[arg-type]
 
-    def test_it_refreshes_workout_from_given_date(
+    def test_it_refreshes_workout_date_fromgiven_date(
         self,
         app: "Flask",
         user_1: "User",
@@ -639,7 +647,10 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         workout_running_user_1_segment: "WorkoutSegment",
         tcx_with_one_lap_and_one_track: str,
     ) -> None:
-        service = WorkoutsFromFileRefreshService(from_="2018-04-02")
+        service = WorkoutsFromFileRefreshService(
+            logger=test_logger,
+            date_from=datetime(2018, 4, 2, 0, 0, tzinfo=timezone.utc),
+        )
 
         with patch(
             "builtins.open",
@@ -664,7 +675,10 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         workout_running_user_1_segment: "WorkoutSegment",
         tcx_with_one_lap_and_one_track: str,
     ) -> None:
-        service = WorkoutsFromFileRefreshService(to="2018-01-01")
+        service = WorkoutsFromFileRefreshService(
+            logger=test_logger,
+            date_to=datetime(2018, 1, 1, 0, 0, tzinfo=timezone.utc),
+        )
 
         with patch(
             "builtins.open",
@@ -697,7 +711,9 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         tcx_with_one_lap_and_one_track: str,
         input_params: Dict,
     ) -> None:
-        service = WorkoutsFromFileRefreshService(**input_params)
+        service = WorkoutsFromFileRefreshService(
+            logger=test_logger, **input_params
+        )
 
         with patch(
             "builtins.open",
@@ -720,7 +736,9 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         tcx_with_one_lap_and_one_track: str,
         default_weather_service: MagicMock,
     ) -> None:
-        service = WorkoutsFromFileRefreshService(with_weather=False)
+        service = WorkoutsFromFileRefreshService(
+            logger=test_logger, with_weather=False
+        )
 
         with patch(
             "builtins.open",
@@ -741,7 +759,9 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         tcx_with_one_lap_and_one_track: str,
         default_weather_service: MagicMock,
     ) -> None:
-        service = WorkoutsFromFileRefreshService(with_weather=True)
+        service = WorkoutsFromFileRefreshService(
+            logger=test_logger, with_weather=True
+        )
 
         with patch(
             "builtins.open",
@@ -752,7 +772,7 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
 
         default_weather_service.assert_called()
 
-    def test_it_displays_logs_when_when_logger_is_provided(
+    def test_it_displays_logs_when_verbose_is_true(
         self,
         app: "Flask",
         user_1: "User",
@@ -765,7 +785,9 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         tcx_with_one_lap_and_one_track: str,
     ) -> None:
         logger_mock = MagicMock()
-        service = WorkoutsFromFileRefreshService(logger=logger_mock)
+        service = WorkoutsFromFileRefreshService(
+            logger=logger_mock, verbose=True
+        )
 
         with patch(
             "builtins.open",
@@ -774,15 +796,17 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         ):
             service.refresh()
 
-        assert logger_mock.info.call_count == 6
+        assert logger_mock.info.call_count == 4
         logger_mock.info.assert_has_calls(
             [
                 call("Number of workouts to refresh: 2"),
                 call("Refreshing workout 1/2..."),
                 call("Refreshing workout 2/2..."),
-                call("Refresh done:"),
-                call("- updated workouts: 2"),
-                call("- errored workouts: 0"),
+                call(
+                    "\nRefresh done:\n"
+                    "- updated workouts: 2\n"
+                    "- errored workouts: 0"
+                ),
             ]
         )
 
@@ -820,7 +844,9 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
                 read_data=gpx_file_from_tcx_with_one_lap_and_one_track
             ).return_value,
         ]
-        service = WorkoutsFromFileRefreshService(logger=logger_mock)
+        service = WorkoutsFromFileRefreshService(
+            logger=logger_mock, verbose=True
+        )
 
         with patch(
             "builtins.open", return_value=open_mock, side_effect=mock_files
@@ -828,15 +854,17 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
             count = service.refresh()
 
         assert count == 1
-        assert logger_mock.info.call_count == 6
+        assert logger_mock.info.call_count == 4
         logger_mock.info.assert_has_calls(
             [
                 call("Number of workouts to refresh: 2"),
                 call("Refreshing workout 1/2..."),
                 call("Refreshing workout 2/2..."),
-                call("Refresh done:"),
-                call("- updated workouts: 1"),
-                call("- errored workouts: 1"),
+                call(
+                    "\nRefresh done:\n"
+                    "- updated workouts: 1\n"
+                    "- errored workouts: 1"
+                ),
             ]
         )
         logger_mock.error.assert_has_calls(

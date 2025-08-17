@@ -1,8 +1,10 @@
 import os
 import tempfile
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 from unittest.mock import patch
 
+import pytest
 from click.testing import CliRunner
 
 from fittrackee import db
@@ -526,3 +528,216 @@ class TestCliWorkoutsArchiveUploadTask(RandomMixin, UserTaskMixin):
         assert caplog.records[5].message == "    > upload done"
         assert caplog.records[6].message == " > errored files: 1"
         assert caplog.records[7].message == "\nDone."
+
+
+class TestCliWorkoutsRefresh(UserTaskMixin):
+    def test_it_displays_message_when_no_workouts_to_refresh(
+        self, app: "Flask", caplog: "LogCaptureFixture"
+    ) -> None:
+        runner = CliRunner()
+
+        result = runner.invoke(cli, ["workouts", "refresh"])
+
+        assert result.exit_code == 0
+        assert caplog.messages == ["No workouts to refresh.", "\nDone."]
+
+    def test_it_displays_message_when_no_workouts_to_refresh_and_verbose_is_true(  # noqa
+        self, app: "Flask", caplog: "LogCaptureFixture"
+    ) -> None:
+        runner = CliRunner()
+
+        result = runner.invoke(cli, ["workouts", "refresh", "--verbose"])
+
+        assert result.exit_code == 0
+        assert caplog.messages == ["No workouts to refresh.", "\nDone."]
+
+    def test_it_raises_error_when_sport_does_not_exist(
+        self, app: "Flask"
+    ) -> None:
+        runner = CliRunner()
+
+        result = runner.invoke(
+            cli,
+            [
+                "workouts",
+                "refresh",
+                "--sport-id",
+                "0",
+            ],
+        )
+
+        assert result.exit_code == 2
+        assert (
+            "Invalid value for '--sport-id': invalid sport id '0'"
+            in result.output
+        )
+
+    def test_it_raises_error_when_user_does_not_exist(
+        self, app: "Flask"
+    ) -> None:
+        runner = CliRunner()
+
+        result = runner.invoke(
+            cli,
+            [
+                "workouts",
+                "refresh",
+                "--user",
+                "Sam",
+            ],
+        )
+
+        assert result.exit_code == 2
+        assert (
+            "Invalid value for '--user': user 'Sam' does not exist"
+            in result.output
+        )
+
+    @pytest.mark.parametrize("input_option", ["--from", "--to"])
+    def test_it_raises_error_when_date_format_is_invalid(
+        self, app: "Flask", input_option: str
+    ) -> None:
+        runner = CliRunner()
+
+        result = runner.invoke(
+            cli,
+            [
+                "workouts",
+                "refresh",
+                input_option,
+                "01-01-2025",
+            ],
+        )
+
+        assert result.exit_code == 2
+        assert "'01-01-2025' does not match format '%Y-%m-%d'" in result.output
+
+    def test_it_raises_error_when_order_is_invalid(self, app: "Flask") -> None:
+        runner = CliRunner()
+
+        result = runner.invoke(
+            cli,
+            [
+                "workouts",
+                "refresh",
+                "--order",
+                "invalid",
+            ],
+        )
+
+        assert result.exit_code == 2
+        assert "Invalid value for '--order'" in result.output
+
+    def test_it_raises_error_when_extension_is_invalid(
+        self, app: "Flask"
+    ) -> None:
+        runner = CliRunner()
+
+        result = runner.invoke(
+            cli,
+            [
+                "workouts",
+                "refresh",
+                "--extension",
+                ".txt",
+            ],
+        )
+
+        assert result.exit_code == 2
+        assert "Invalid value for '--extension'" in result.output
+
+    def test_it_calls_workouts_refresh_service_whit_default_values(
+        self, app: "Flask"
+    ) -> None:
+        runner = CliRunner()
+
+        with patch(
+            "fittrackee.workouts.commands.WorkoutsFromFileRefreshService"
+        ) as service_mock:
+            runner.invoke(cli, ["workouts", "refresh"])
+
+        service_mock.assert_called_once_with(
+            sport_id=None,
+            date_from=None,
+            date_to=None,
+            per_page=10,
+            page=1,
+            order="asc",
+            user=None,
+            extension=None,
+            with_weather=False,
+            logger=logger,
+            verbose=False,
+        )
+        service_mock.return_value.refresh.assert_called_once()
+
+    def test_it_calls_workouts_refresh_service_with_all_values(
+        self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
+    ) -> None:
+        runner = CliRunner()
+
+        with (
+            patch(
+                "fittrackee.workouts.commands.WorkoutsFromFileRefreshService"
+            ) as service_mock,
+        ):
+            runner.invoke(
+                cli,
+                [
+                    "workouts",
+                    "refresh",
+                    "--sport-id",
+                    f"{sport_1_cycling.id}",
+                    "--user",
+                    user_1.username,
+                    "--from",
+                    "2025-01-01",
+                    "--to",
+                    "2025-06-01",
+                    "--per-page",
+                    "100",
+                    "--page",
+                    "2",
+                    "--order",
+                    "desc",
+                    "--extension",
+                    "fit",
+                    "--with-weather",
+                    "--verbose",
+                ],
+            )
+
+        service_mock.assert_called_once_with(
+            sport_id=1,
+            date_from=datetime(2025, 1, 1, 0, 0, tzinfo=timezone.utc),
+            date_to=datetime(2025, 6, 1, 0, 0, tzinfo=timezone.utc),
+            per_page=100,
+            page=2,
+            order="desc",
+            user=user_1.username,
+            extension="fit",
+            with_weather=True,
+            logger=logger,
+            verbose=True,
+        )
+        service_mock.return_value.refresh.assert_called_once()
+
+    def test_it_displays_error_when_service_raises_error(
+        self, app: "Flask", caplog: "LogCaptureFixture"
+    ) -> None:
+        error_message = "some error"
+        runner = CliRunner()
+
+        with (
+            patch(
+                "fittrackee.workouts.commands.WorkoutsFromFileRefreshService"
+            ) as service_mock,
+        ):
+            service_mock.return_value.refresh.side_effect = Exception(
+                error_message
+            )
+
+            result = runner.invoke(cli, ["workouts", "refresh"])
+
+        assert result.exit_code == 1
+        assert caplog.messages == [error_message]

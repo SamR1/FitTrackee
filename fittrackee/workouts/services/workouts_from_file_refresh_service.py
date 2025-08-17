@@ -1,3 +1,4 @@
+from datetime import datetime
 from logging import Logger, getLogger
 from typing import TYPE_CHECKING, Optional
 
@@ -14,13 +15,10 @@ from ..exceptions import (
     WorkoutFileException,
     WorkoutRefreshException,
 )
-from ..utils.workouts import get_workout_datetime
 from .mixins import WorkoutFileMixin
 from .workout_from_file.services import WORKOUT_FROM_FILE_SERVICES
 
 if TYPE_CHECKING:
-    from datetime import datetime
-
     from fittrackee.workouts.models import Sport
 
 
@@ -110,54 +108,39 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
 
 
 class WorkoutsFromFileRefreshService:
+    """
+    All checks on parameters are made by the CLI command.
+    """
+
     def __init__(
         self,
+        logger: "Logger",
         per_page: Optional[int] = 10,
         page: Optional[int] = 1,
         order: Optional[str] = "asc",
         user: Optional[str] = None,
         extension: Optional[str] = None,
         sport_id: Optional[int] = None,
-        from_: Optional[str] = None,
-        to: Optional[str] = None,
+        date_from: Optional[datetime] = None,
+        date_to: Optional[datetime] = None,
         with_weather: bool = False,
-        logger: Optional["Logger"] = None,
+        verbose: bool = False,
     ) -> None:
         self.per_page: Optional[int] = per_page
         self.page: Optional[int] = page
         self.order: Optional[str] = order
         self.username: Optional[str] = user
-        self.extension: Optional[str] = extension
+        self.extension: Optional[str] = extension if extension else None
         self.sport_id: Optional[int] = sport_id
-        self.from_: Optional["datetime"] = (
-            get_workout_datetime(
-                workout_date=from_,
-                user_timezone=None,
-                date_str_format="%Y-%m-%d",
-            )[0]
-            if from_
-            else None
-        )
-        self.to: Optional["datetime"] = (
-            get_workout_datetime(
-                workout_date=to,
-                user_timezone=None,
-                date_str_format="%Y-%m-%d",
-            )[0]
-            if to
-            else None
-        )
+        self.date_from: Optional["datetime"] = date_from
+        self.date_to: Optional["datetime"] = date_to
         self.with_weather: bool = with_weather
-        self.logger: Optional["Logger"] = logger
+        self.logger: "Logger" = logger
+        self.verbose: bool = verbose
 
-    def _log_message(self, message: str, *, is_error: bool = False) -> None:
-        if not self.logger:
+    def _log_if_verbose(self, message: str) -> None:
+        if not self.verbose:
             return
-
-        if is_error:
-            self.logger.error(message)
-            return
-
         self.logger.info(message)
 
     def refresh(self) -> int:
@@ -172,10 +155,10 @@ class WorkoutsFromFileRefreshService:
             filters.extend([Workout.original_file.like(f"%{self.extension}")])
         if self.sport_id:
             filters.extend([Workout.sport_id == self.sport_id])
-        if self.from_:
-            filters.extend([Workout.workout_date >= self.from_])
-        if self.to:
-            filters.extend([Workout.workout_date <= self.to])
+        if self.date_from:
+            filters.extend([Workout.workout_date >= self.date_from])
+        if self.date_to:
+            filters.extend([Workout.workout_date <= self.date_to])
 
         updated_workouts = 0
         workouts_to_refresh = (
@@ -191,12 +174,12 @@ class WorkoutsFromFileRefreshService:
 
         total = len(workouts_to_refresh)
         if not total:
-            self._log_message("No workouts to refresh.")
+            self.logger.info("No workouts to refresh.")
             return 0
 
-        self._log_message(f"Number of workouts to refresh: {total}")
+        self.logger.info(f"Number of workouts to refresh: {total}")
         for index, workout in enumerate(workouts_to_refresh, start=1):
-            self._log_message(f"Refreshing workout {index}/{total}...")
+            self._log_if_verbose(f"Refreshing workout {index}/{total}...")
 
             try:
                 service = WorkoutFromFileRefreshService(
@@ -205,18 +188,19 @@ class WorkoutsFromFileRefreshService:
                 service.refresh()
                 updated_workouts += 1
             except Exception as e:
-                self._log_message(
+                self.logger.error(
                     (
                         f"Error when refreshing workout '{workout.short_id}' "
                         f"(user: {workout.user.username}): {e}"
-                    ),
-                    is_error=True,
+                    )
                 )
                 continue
 
-        if total and self.logger:
-            self.logger.info("Refresh done:")
-            self.logger.info(f"- updated workouts: {updated_workouts}")
-            self.logger.info(f"- errored workouts: {total - updated_workouts}")
+        if total:
+            self._log_if_verbose(
+                "\nRefresh done:\n"
+                f"- updated workouts: {updated_workouts}\n"
+                f"- errored workouts: {total - updated_workouts}"
+            )
 
         return updated_workouts
