@@ -116,6 +116,7 @@ class WorkoutsFromFileRefreshService:
         page: Optional[int] = 1,
         order: Optional[str] = "asc",
         user: Optional[str] = None,
+        extension: Optional[str] = None,
         sport_id: Optional[int] = None,
         from_: Optional[str] = None,
         to: Optional[str] = None,
@@ -125,6 +126,7 @@ class WorkoutsFromFileRefreshService:
         self.page: Optional[int] = page
         self.order: Optional[str] = order
         self.username: Optional[str] = user
+        self.extension: Optional[str] = extension
         self.sport_id: Optional[int] = sport_id
         self.from_: Optional["datetime"] = (
             get_workout_datetime(
@@ -154,6 +156,8 @@ class WorkoutsFromFileRefreshService:
                 User, User.id == Workout.user_id
             )
             filters.extend([User.username == self.username])
+        if self.extension:
+            filters.extend([Workout.original_file.like(f"%{self.extension}")])
         if self.sport_id:
             filters.extend([Workout.sport_id == self.sport_id])
         if self.from_:

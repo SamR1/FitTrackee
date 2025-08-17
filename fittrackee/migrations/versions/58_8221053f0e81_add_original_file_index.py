@@ -1,4 +1,4 @@
-"""add index on original file and update data
+"""add index on original file and update value
 
 Revision ID: 8221053f0e81
 Revises: 45fd75e5f16f

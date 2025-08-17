@@ -477,6 +477,7 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
         assert service.page == 1
         assert service.order == "asc"
         assert service.username is None
+        assert service.extension is None
         assert service.sport_id is None
         assert service.from_ is None
         assert service.to is None
@@ -490,6 +491,7 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
             page=2,
             order="desc",
             user="Test",
+            extension=".fit",
             sport_id=1,
             from_="2025-08-01",
             to="2025-08-12",
@@ -500,6 +502,7 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
         assert service.page == 2
         assert service.order == "desc"
         assert service.username == "Test"
+        assert service.extension == ".fit"
         assert service.sport_id == 1
         assert service.from_ == datetime(2025, 8, 1, 0, 0, tzinfo=timezone.utc)
         assert service.to == datetime(2025, 8, 12, 0, 0, tzinfo=timezone.utc)
@@ -541,7 +544,7 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
 
         assert refresh_mock.call_count == 2
 
-    def test_it_refresh_only_user_1_workout(
+    def test_it_refreshes_only_user_1_workout(
         self,
         app: "Flask",
         user_1: "User",
@@ -566,7 +569,34 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         db.session.refresh(workout_cycling_user_1)
         assert float(workout_cycling_user_1.distance) == 0.112  # type: ignore[arg-type]
 
-    def test_it_refresh_workout_associated_to_given_sport(
+    def test_it_refreshes_only_workout_with_given_extension(
+        self,
+        app: "Flask",
+        user_1: "User",
+        user_2: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        workout_running_user_1: "Workout",
+        workout_running_user_1_segment: "WorkoutSegment",
+        tcx_with_one_lap_and_one_track: str,
+    ) -> None:
+        workout_cycling_user_1.original_file = workout_cycling_user_1.gpx
+        service = WorkoutsFromFileRefreshService(extension=".tcx")
+
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=tcx_with_one_lap_and_one_track,
+        ):
+            count = service.refresh()
+
+        assert count == 1
+        db.session.refresh(workout_running_user_1)
+        assert float(workout_running_user_1.distance) == 0.318  # type: ignore[arg-type]
+
+    def test_it_refreshes_workout_associated_to_given_sport(
         self,
         app: "Flask",
         user_1: "User",
@@ -591,7 +621,7 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         db.session.refresh(workout_running_user_1)
         assert float(workout_running_user_1.distance) == 0.318  # type: ignore[arg-type]
 
-    def test_it_refresh_workout_from_given_date(
+    def test_it_refreshes_workout_from_given_date(
         self,
         app: "Flask",
         user_1: "User",
@@ -616,7 +646,7 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         db.session.refresh(workout_running_user_1)
         assert float(workout_running_user_1.distance) == 0.318  # type: ignore[arg-type]
 
-    def test_it_refresh_workout_to_given_date(
+    def test_it_refreshes_workout_to_given_date(
         self,
         app: "Flask",
         user_1: "User",
@@ -648,7 +678,7 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
             {"page": 2, "per_page": 1, "order": "desc"},
         ],
     )
-    def test_it_refresh_workout_depending_on_given_pagination_parameters(
+    def test_it_refreshes_workout_depending_on_given_pagination_parameters(
         self,
         app: "Flask",
         user_1: "User",
