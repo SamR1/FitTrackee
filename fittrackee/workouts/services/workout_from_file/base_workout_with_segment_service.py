@@ -110,7 +110,14 @@ class BaseWorkoutWithSegmentsCreationService:
     def process_workout(self) -> "Workout":
         workout = self._process_file()
 
-        if self.get_weather and self.start_point and self.end_point:
+        if (
+            self.get_weather
+            and self.start_point
+            and self.end_point
+            # in case of refresh, update only workouts without weather data
+            and not workout.weather_start
+            and not workout.weather_end
+        ):
             weather_start, weather_end = self.get_weather_data(
                 self.start_point,
                 self.end_point,

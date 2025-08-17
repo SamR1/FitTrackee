@@ -314,6 +314,42 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
 
         default_weather_service.assert_called()
 
+    def test_it_does_not_call_weather_service_when_workout_has_already_weather_data(  # noqa
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        gpx_file: str,
+        default_weather_service: MagicMock,
+    ) -> None:
+        workout_cycling_user_1.original_file = "workouts/1/example.gpx"
+        workout_cycling_user_1.weather_start = {
+            "icon": "partly-cloudy-day",
+            "temperature": 18.9,
+            "humidity": 0.47,
+            "wind": 2.9166666666666665,
+            "windBearing": 17.0,
+        }
+        workout_cycling_user_1.weather_end = {
+            "icon": "partly-cloudy-day",
+            "temperature": 19.1,
+            "humidity": 0.48,
+            "wind": 2.50,
+            "windBearing": 14.0,
+        }
+        service = WorkoutFromFileRefreshService(
+            workout=workout_cycling_user_1, update_weather=True
+        )
+
+        with patch(
+            "builtins.open", new_callable=mock_open, read_data=gpx_file
+        ):
+            service.refresh()
+
+        default_weather_service.assert_not_called()
+
     @pytest.mark.disable_autouse_default_weather_service
     def test_it_does_not_remove_weather_when_weather_service_returns_none(
         self,
