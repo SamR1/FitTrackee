@@ -1,4 +1,4 @@
-from logging import getLogger
+from logging import Logger, getLogger
 from typing import TYPE_CHECKING, Optional
 
 from sqlalchemy import asc, desc
@@ -121,6 +121,7 @@ class WorkoutsFromFileRefreshService:
         from_: Optional[str] = None,
         to: Optional[str] = None,
         with_weather: bool = False,
+        logger: Optional["Logger"] = None,
     ) -> None:
         self.per_page: Optional[int] = per_page
         self.page: Optional[int] = page
@@ -147,6 +148,17 @@ class WorkoutsFromFileRefreshService:
             else None
         )
         self.with_weather: bool = with_weather
+        self.logger: Optional["Logger"] = logger
+
+    def _log_message(self, message: str, *, is_error: bool = False) -> None:
+        if not self.logger:
+            return
+
+        if is_error:
+            self.logger.error(message)
+            return
+
+        self.logger.info(message)
 
     def refresh(self) -> int:
         workouts_to_refresh_query = Workout.query
@@ -177,10 +189,34 @@ class WorkoutsFromFileRefreshService:
             .items
         )
 
-        for workout in workouts_to_refresh:
-            service = WorkoutFromFileRefreshService(
-                workout, update_weather=self.with_weather
-            )
-            service.refresh()
-            updated_workouts += 1
+        total = len(workouts_to_refresh)
+        if not total:
+            self._log_message("No workouts to refresh.")
+            return 0
+
+        self._log_message(f"Number of workouts to refresh: {total}")
+        for index, workout in enumerate(workouts_to_refresh, start=1):
+            self._log_message(f"Refreshing workout {index}/{total}...")
+
+            try:
+                service = WorkoutFromFileRefreshService(
+                    workout, update_weather=self.with_weather
+                )
+                service.refresh()
+                updated_workouts += 1
+            except Exception as e:
+                self._log_message(
+                    (
+                        f"Error when refreshing workout '{workout.short_id}' "
+                        f"(user: {workout.user.username}): {e}"
+                    ),
+                    is_error=True,
+                )
+                continue
+
+        if total and self.logger:
+            self.logger.info("Refresh done:")
+            self.logger.info(f"- updated workouts: {updated_workouts}")
+            self.logger.info(f"- errored workouts: {total - updated_workouts}")
+
         return updated_workouts

@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
+from logging import getLogger
 from typing import TYPE_CHECKING, Dict
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import MagicMock, call, mock_open, patch
 
 import pytest
 
@@ -481,11 +482,13 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
         assert service.sport_id is None
         assert service.from_ is None
         assert service.to is None
+        assert service.logger is None
         assert service.with_weather is False
 
     def test_it_instantiates_service_with_given_values(
         self, app: "Flask"
     ) -> None:
+        logger = getLogger("test")
         service = WorkoutsFromFileRefreshService(
             per_page=50,
             page=2,
@@ -495,6 +498,7 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
             sport_id=1,
             from_="2025-08-01",
             to="2025-08-12",
+            logger=logger,
             with_weather=True,
         )
 
@@ -506,6 +510,8 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
         assert service.sport_id == 1
         assert service.from_ == datetime(2025, 8, 1, 0, 0, tzinfo=timezone.utc)
         assert service.to == datetime(2025, 8, 12, 0, 0, tzinfo=timezone.utc)
+
+        assert service.logger == logger
         assert service.with_weather is True
 
 
@@ -745,3 +751,101 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
             service.refresh()
 
         default_weather_service.assert_called()
+
+    def test_it_displays_logs_when_when_logger_is_provided(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        workout_running_user_1: "Workout",
+        workout_running_user_1_segment: "WorkoutSegment",
+        tcx_with_one_lap_and_one_track: str,
+    ) -> None:
+        logger_mock = MagicMock()
+        service = WorkoutsFromFileRefreshService(logger=logger_mock)
+
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=tcx_with_one_lap_and_one_track,
+        ):
+            service.refresh()
+
+        assert logger_mock.info.call_count == 6
+        logger_mock.info.assert_has_calls(
+            [
+                call("Number of workouts to refresh: 2"),
+                call("Refreshing workout 1/2..."),
+                call("Refreshing workout 2/2..."),
+                call("Refresh done:"),
+                call("- updated workouts: 2"),
+                call("- errored workouts: 0"),
+            ]
+        )
+
+    def test_it_displays_message_when_logger_is_provided_and_no_workouts_to_refresh(  # noqa
+        self, app: "Flask"
+    ) -> None:
+        """A message will be displayed by CLI"""
+        logger_mock = MagicMock()
+        service = WorkoutsFromFileRefreshService(logger=logger_mock)
+
+        service.refresh()
+
+        assert logger_mock.info.call_count == 1
+        logger_mock.info.assert_has_calls([call("No workouts to refresh.")])
+
+    def test_it_continues_on_error(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        workout_running_user_1: "Workout",
+        workout_running_user_1_segment: "WorkoutSegment",
+        tcx_with_one_lap_and_one_track: str,
+        gpx_file_from_tcx_with_one_lap_and_one_track: str,
+    ) -> None:
+        logger_mock = MagicMock()
+        open_mock = MagicMock()
+        mock_files = [
+            Exception(),
+            mock_open(read_data=tcx_with_one_lap_and_one_track).return_value,
+            mock_open(
+                read_data=gpx_file_from_tcx_with_one_lap_and_one_track
+            ).return_value,
+        ]
+        service = WorkoutsFromFileRefreshService(logger=logger_mock)
+
+        with patch(
+            "builtins.open", return_value=open_mock, side_effect=mock_files
+        ):
+            count = service.refresh()
+
+        assert count == 1
+        assert logger_mock.info.call_count == 6
+        logger_mock.info.assert_has_calls(
+            [
+                call("Number of workouts to refresh: 2"),
+                call("Refreshing workout 1/2..."),
+                call("Refreshing workout 2/2..."),
+                call("Refresh done:"),
+                call("- updated workouts: 1"),
+                call("- errored workouts: 1"),
+            ]
+        )
+        logger_mock.error.assert_has_calls(
+            [
+                call(
+                    "Error when refreshing workout "
+                    f"'{workout_cycling_user_1.short_id}' "
+                    f"(user: {user_1.username}): "
+                    "error when opening original file"
+                )
+            ]
+        )
