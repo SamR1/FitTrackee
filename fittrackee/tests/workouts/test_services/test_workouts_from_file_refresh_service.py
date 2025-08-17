@@ -65,34 +65,6 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         )
         assert service.update_weather is False
 
-    def test_it_instantiates_service_when_workout_has_only_gpx(
-        self,
-        app: "Flask",
-        user_1: "User",
-        sport_1_cycling: "Sport",
-        workout_cycling_user_1: "Workout",
-        workout_cycling_user_1_segment: "WorkoutSegment",
-    ) -> None:
-        # for workouts uploaded before FitTrackee v0.10.0
-        workout_cycling_user_1.original_file = None
-
-        service = WorkoutFromFileRefreshService(workout=workout_cycling_user_1)
-
-        db.session.refresh(workout_cycling_user_1)
-        assert (
-            workout_cycling_user_1.original_file == workout_cycling_user_1.gpx
-        )
-        assert service.original_file == workout_cycling_user_1.gpx
-        assert service.workout == workout_cycling_user_1
-        assert service.user == user_1
-        assert service.sport == sport_1_cycling
-        assert service.sport_preferences is None
-        assert (
-            service.stopped_speed_threshold
-            == sport_1_cycling.stopped_speed_threshold
-        )
-        assert service.update_weather is False
-
     def test_it_instantiates_service_when_user_has_sport_preferences(
         self,
         app: "Flask",

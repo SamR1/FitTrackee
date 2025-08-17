@@ -34,13 +34,9 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
 
     def __init__(self, workout: "Workout", update_weather: bool = False):
         if not workout.original_file:
-            # for workouts uploaded before FitTrackee v0.10.0
-            if workout.gpx:
-                workout.original_file = workout.gpx
-            else:
-                raise WorkoutRefreshException(
-                    "error", "workout without original file"
-                )
+            raise WorkoutRefreshException(
+                "error", "workout without original file"
+            )
 
         self.original_file: str = workout.original_file
         self.workout: "Workout" = workout
