@@ -2925,3 +2925,223 @@ class TestDownloadWorkoutGpxAsUnauthenticatedUser(
         )
 
         self.assert_401(response)
+
+
+class DownloadWorkoutOriginalFileTestCase(WorkoutApiTestCaseMixin):
+    route = "/api/workouts/{workout_uuid}/original/download"
+
+
+class TestDownloadWorkoutOriginalFileAsWorkoutOwner(
+    DownloadWorkoutOriginalFileTestCase
+):
+    def test_it_returns_404_if_workout_does_not_have_original_file(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_404_with_message(response, "no original file for workout")
+
+    @pytest.mark.parametrize(
+        "input_extension,expected_mimetype",
+        [
+            ("gpx", "application/gpx+xml"),
+            ("kml", "application/vnd.google-earth.kml+xml"),
+            ("tcx", "application/vnd.garmin.tcx+xml"),
+            ("fit", "application/vnd.ant.fit"),
+        ],
+    )
+    def test_it_calls_send_from_directory_if_workout_has_original_file(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        input_extension: str,
+        expected_mimetype: str,
+    ) -> None:
+        workout_cycling_user_1.original_file = f"file.{input_extension}"
+        with patch(
+            "fittrackee.workouts.workouts.send_from_directory",
+            return_value="file",
+        ) as mock:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app, user_1.email
+            )
+
+            client.get(
+                self.route.format(
+                    workout_uuid=workout_cycling_user_1.short_id
+                ),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        mock.assert_called_once_with(
+            app.config["UPLOAD_FOLDER"],
+            workout_cycling_user_1.original_file,
+            mimetype=expected_mimetype,
+            as_attachment=True,
+        )
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.original_file = "file.tcx"
+        user_1.suspended_at = datetime.now(timezone.utc)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_403(response)
+
+    @pytest.mark.parametrize(
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:read": True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
+        )
+
+        self.assert_response_scope(response, can_access)
+
+
+class TestDownloadWorkoutOriginalFileAsFollower(
+    DownloadWorkoutOriginalFileTestCase
+):
+    def test_it_returns_404_for_followed_user_workout(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.gpx = "file.tcx"
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_2.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_2.map_visibility = VisibilityLevel.PUBLIC
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_2.short_id),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_404_with_message(
+            response,
+            f"workout not found (id: {workout_cycling_user_2.short_id})",
+        )
+
+
+class TestDownloadWorkoutOriginalFileAsUser(
+    DownloadWorkoutGpxTestCase, GetWorkoutGpxPublicVisibilityMixin
+):
+    def test_it_returns_404_if_workout_does_not_exist(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        random_short_id = self.random_short_id()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=random_short_id),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_404_with_message(
+            response, f"workout not found (id: {random_short_id})"
+        )
+
+    def test_it_returns_404_for_another_user_workout(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_2, map_visibility=VisibilityLevel.PUBLIC
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_2.short_id),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_404_with_message(
+            response,
+            f"workout not found (id: {workout_cycling_user_2.short_id})",
+        )
+
+
+class TestDownloadWorkoutOriginalFileAsUnauthenticatedUser(
+    DownloadWorkoutGpxTestCase, GetWorkoutGpxPublicVisibilityMixin
+):
+    def test_it_returns_404(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1, map_visibility=VisibilityLevel.PUBLIC
+        )
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+        )
+
+        self.assert_401(response)
