@@ -531,7 +531,7 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
 
         assert count == 0
 
-    def test_it_calls_workout_date_fromfile_refresh_service_for_each_file(
+    def test_it_calls_workout_from_file_refresh_service_for_each_file(
         self,
         app: "Flask",
         user_1: "User",
