@@ -199,8 +199,8 @@ Modify a user account (role, active status, email and password).
 Workouts
 ~~~~~~~~
 
-``ftcli users archive_upload``
-""""""""""""""""""""""""""""""
+``ftcli workouts archive_upload``
+"""""""""""""""""""""""""""""""""
 .. versionadded:: 0.10.0
 
 Process a given queued workouts archive upload.
@@ -218,8 +218,8 @@ Can be used if redis is not set (no dramatiq workers running).
      - Id of task to process.
 
 
-``ftcli users archive_uploads``
-"""""""""""""""""""""""""""""""
+``ftcli workouts archive_uploads``
+""""""""""""""""""""""""""""""""""
 .. versionadded:: 0.10.0
 
 Process workouts archive uploads if queued tasks exist (progress = 0 and not aborted/errored).
@@ -235,3 +235,41 @@ Can be used if redis is not set (no dramatiq workers running).
      - Description
    * - ``--max INTEGER``
      - Maximum number of workouts archive to process.
+
+
+``ftcli workouts refresh``
+""""""""""""""""""""""""""
+.. versionadded:: 0.x.x
+
+Refresh workouts by recalculating data and fetching weather data if provider is set and workout does not have weather data.
+
+.. warning::
+   If a weather data provider is defined and the ``--with-weather`` option is provided, the rate limit may be reached, resulting in API rate limit errors when a large number of workouts is refreshed.
+
+.. cssclass:: table-bordered
+.. list-table::
+   :widths: 25 50
+   :header-rows: 1
+
+   * - Options
+     - Description
+   * - ``--sport-id INTEGER``
+     - sport id
+   * - ``--from TEXT``
+     - start date (format: ``%Y-%m-%d``)
+   * - ``--to TEXT``
+     - end date (format: ``%Y-%m-%d``)
+   * - ``--per-page INTEGER``
+     - number of workouts per page (default: 10)
+   * - ``--page INTEGER``
+     - page number (default: 1)
+   * - ``--order TEXT``
+     - workout date order: 'asc' or 'desc' (default: 'asc')
+   * - ``--user TEXT``
+     - username of workouts owner
+   * - ``--extension TEXT``
+     - workout file extension (valid values are: tcx, kmz, gpx, kml, fit)
+   * - ``--with-weather``
+     - enable weather data collection if weather provider is set and workout has no weather data. WARNING: depending on subscription, the rate limit can be reached, leading to errors and preventing weather data being collected during next uploads until the limit is reset (default: disabled)
+   * - ``-v, --verbose``
+     - Enable verbose output log (default: disabled)

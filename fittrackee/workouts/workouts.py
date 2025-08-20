@@ -2772,9 +2772,11 @@ def refresh_workout(
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Refresh a workout with a file:
+
     - recalculate workout data
-    - regenerate geometry and points
-    - update weather if weater provided is set
+    - regenerate gpx file if original file is not a gpx
+    - update weather if weather provided is set and workout does not have
+      weather data
 
     **Scope**: ``workouts:write``
 
@@ -2927,7 +2929,6 @@ def refresh_workout(
           },
           "status": "success"
         }
-
 
     :param string workout_short_id: workout short id
 
