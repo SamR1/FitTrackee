@@ -2,13 +2,13 @@ import zipfile
 from typing import IO, TYPE_CHECKING
 
 from ...exceptions import WorkoutFileException
-from .workout_kml_creation_service import WorkoutKmlCreationService
+from .workout_kml_service import WorkoutKmlService
 
 if TYPE_CHECKING:
     import gpxpy.gpx
 
 
-class WorkoutKmzCreationService(WorkoutKmlCreationService):
+class WorkoutKmzService(WorkoutKmlService):
     @classmethod
     def parse_file(
         cls,

@@ -20,7 +20,7 @@ from fittrackee.workouts.exceptions import (
 )
 from fittrackee.workouts.models import Sport, Workout
 from fittrackee.workouts.services.workout_from_file import (
-    WorkoutGpxCreationService,
+    WorkoutGpxService,
 )
 
 from ..mixins import BaseTestMixin, ReportMixin, UserTaskMixin
@@ -314,7 +314,7 @@ class TestPostWorkoutWithGpx(
         )
 
         with patch.object(
-            WorkoutGpxCreationService, "get_gpx_info"
+            WorkoutGpxService, "get_gpx_info"
         ) as get_gpx_info_mock:
             get_gpx_info_mock.return_value = (
                 self.generate_get_gpx_info_return_value(
@@ -1580,7 +1580,7 @@ class TestPostWorkoutWithZipArchive(UserTaskMixin, WorkoutApiTestCaseMixin):
             )
 
             with patch.object(
-                WorkoutGpxCreationService,
+                WorkoutGpxService,
                 "check_gpx_info",
                 side_effect=[
                     # 1st gpx files

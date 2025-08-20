@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from typing import TYPE_CHECKING, Dict, Optional
+from typing import TYPE_CHECKING, Dict
 from unittest.mock import MagicMock, call, patch
 
 import gpxpy
@@ -12,10 +12,10 @@ from fittrackee.tests.fixtures.fixtures_workouts import (
 )
 from fittrackee.tests.mixins import RandomMixin
 from fittrackee.tests.workouts.mixins import (
+    WorkoutAssertMixin,
     WorkoutFileMixin,
     WorkoutGpxInfoMixin,
 )
-from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import (
     WorkoutExceedingValueException,
     WorkoutFileException,
@@ -27,7 +27,7 @@ from fittrackee.workouts.models import (
     Workout,
     WorkoutSegment,
 )
-from fittrackee.workouts.services import WorkoutGpxCreationService
+from fittrackee.workouts.services import WorkoutGpxService
 from fittrackee.workouts.services.workout_from_file.workout_point import (
     WorkoutPoint,
 )
@@ -38,7 +38,7 @@ if TYPE_CHECKING:
     from fittrackee.users.models import User
 
 
-class TestWorkoutGpxCreationServiceParseFile(RandomMixin, WorkoutFileMixin):
+class TestWorkoutGpxServiceParseFile(RandomMixin, WorkoutFileMixin):
     def test_it_raises_error_when_gpx_file_is_invalid(
         self, app: "Flask", gpx_file_invalid_xml: str
     ) -> None:
@@ -47,7 +47,7 @@ class TestWorkoutGpxCreationServiceParseFile(RandomMixin, WorkoutFileMixin):
                 WorkoutFileException, match="error when parsing gpx file"
             ),
         ):
-            WorkoutGpxCreationService.parse_file(
+            WorkoutGpxService.parse_file(
                 self.get_file_content(gpx_file_invalid_xml),
                 segments_creation_event="none",
             )
@@ -62,13 +62,13 @@ class TestWorkoutGpxCreationServiceParseFile(RandomMixin, WorkoutFileMixin):
         with (
             pytest.raises(WorkoutFileException, match="no tracks in gpx file"),
         ):
-            WorkoutGpxCreationService.parse_file(
+            WorkoutGpxService.parse_file(
                 self.get_file_content(gpx_file_wo_track),
                 segments_creation_event="none",
             )
 
 
-class TestWorkoutGpxCreationServiceInstantiation(WorkoutFileMixin):
+class TestWorkoutGpxServiceInstantiation(WorkoutFileMixin):
     def test_it_instantiates_service(
         self,
         app: "Flask",
@@ -76,7 +76,7 @@ class TestWorkoutGpxCreationServiceInstantiation(WorkoutFileMixin):
         user_1: "User",
         gpx_file: str,
     ) -> None:
-        service = WorkoutGpxCreationService(
+        service = WorkoutGpxService(
             user_1,
             self.get_file_content(gpx_file),
             sport_1_cycling.id,
@@ -96,11 +96,11 @@ class TestWorkoutGpxCreationServiceInstantiation(WorkoutFileMixin):
         assert service.workout_description is None
         assert service.start_point is None
         assert service.end_point is None
-        # from WorkoutGpxCreationService
+        # from WorkoutGpxService
         assert isinstance(service.gpx, gpxpy.gpx.GPX)
 
 
-class TestWorkoutGpxCreationServiceGetWeatherData:
+class TestWorkoutGpxServiceGetWeatherData:
     def test_it_calls_weather_service(
         self, default_weather_service: MagicMock
     ) -> None:
@@ -115,7 +115,7 @@ class TestWorkoutGpxCreationServiceGetWeatherData:
             datetime(2018, 3, 13, 12, 48, 55, tzinfo=timezone.utc),
         )
 
-        WorkoutGpxCreationService.get_weather_data(start_point, end_point)
+        WorkoutGpxService.get_weather_data(start_point, end_point)
 
         default_weather_service.assert_has_calls(
             [
@@ -126,71 +126,9 @@ class TestWorkoutGpxCreationServiceGetWeatherData:
 
 
 @pytest.mark.disable_autouse_update_records_patch
-class TestWorkoutGpxCreationServiceProcessFile(
-    WorkoutGpxInfoMixin, WorkoutFileMixin
+class TestWorkoutGpxServiceProcessFile(
+    WorkoutGpxInfoMixin, WorkoutFileMixin, WorkoutAssertMixin
 ):
-    @staticmethod
-    def assert_workout(
-        user: "User", sport: "Sport", workout: "Workout"
-    ) -> None:
-        """
-        assert workout data from 'gpx_file' fixture
-        """
-        assert workout.analysis_visibility == VisibilityLevel.PRIVATE
-        assert float(workout.ascent) == 0.4  # type: ignore
-        assert float(workout.ave_speed) == 4.61  # type: ignore
-        assert workout.bounds == [44.67822, 6.07355, 44.68095, 6.07442]
-        assert workout.creation_date is not None
-        assert float(workout.descent) == 23.4  # type: ignore
-        assert workout.description is None
-        assert float(workout.distance) == 0.32  # type: ignore
-        assert workout.duration == timedelta(minutes=4, seconds=10)
-        assert workout.gpx is None
-        assert workout.map is None
-        assert workout.map_id is None
-        assert workout.map_visibility == VisibilityLevel.PRIVATE
-        assert float(workout.max_alt) == 998.0  # type: ignore
-        assert float(workout.max_speed) == 5.12  # type: ignore
-        assert float(workout.min_alt) == 975.0  # type: ignore
-        assert workout.modification_date is not None
-        assert workout.moving == timedelta(minutes=4, seconds=10)
-        assert workout.notes is None
-        assert workout.pauses == timedelta(seconds=0)
-        assert workout.sport_id == sport.id
-        assert workout.suspended_at is None
-        assert workout.title is None
-        assert workout.user_id == user.id
-        assert workout.weather_start is None
-        assert workout.weather_end is None
-        assert workout.workout_date == datetime(
-            2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc
-        )
-        assert workout.workout_visibility == VisibilityLevel.PRIVATE
-
-    @staticmethod
-    def assert_workout_segment(
-        workout: "Workout", workout_segment: Optional["WorkoutSegment"] = None
-    ) -> None:
-        """
-        assert workout segment data from 'gpx_file' fixture
-        """
-        assert WorkoutSegment.query.count() == 1
-        if workout_segment is None:
-            workout_segment = WorkoutSegment.query.one()
-        assert workout_segment.workout_id == workout.id
-        assert workout_segment.workout_uuid == workout.uuid
-        assert workout_segment.segment_id == 0
-        assert float(workout_segment.ascent) == 0.4  # type: ignore[arg-type]
-        assert float(workout_segment.ave_speed) == 4.61  # type: ignore[arg-type]
-        assert float(workout_segment.descent) == 23.4  # type: ignore[arg-type]
-        assert float(workout_segment.distance) == 0.32  # type: ignore[arg-type]
-        assert workout_segment.duration == timedelta(minutes=4, seconds=10)
-        assert float(workout_segment.max_alt) == 998.0  # type: ignore[arg-type]
-        assert float(workout_segment.max_speed) == 5.12  # type: ignore[arg-type]
-        assert float(workout_segment.min_alt) == 975.0  # type: ignore[arg-type]
-        assert workout_segment.moving == timedelta(minutes=4, seconds=10)
-        assert workout_segment.pauses == timedelta(seconds=0)
-
     @staticmethod
     def assert_workout_records(workout: "Workout") -> None:
         """
@@ -250,8 +188,8 @@ class TestWorkoutGpxCreationServiceProcessFile(
         sport: "Sport",
         gpx_content: str,
         get_weather: bool = True,
-    ) -> "WorkoutGpxCreationService":
-        return WorkoutGpxCreationService(
+    ) -> "WorkoutGpxService":
+        return WorkoutGpxService(
             user,
             self.get_file_content(gpx_content),
             sport.id,
@@ -300,7 +238,7 @@ class TestWorkoutGpxCreationServiceProcessFile(
 
         with (
             patch.object(
-                WorkoutGpxCreationService,
+                WorkoutGpxService,
                 "get_gpx_info",
                 return_value=self.generate_get_gpx_info_return_value(
                     {input_key: max_value + 0.001}
@@ -723,15 +661,9 @@ class TestWorkoutGpxCreationServiceProcessFile(
         assert service.workout_name is None
         workout = Workout.query.one()
         self.assert_workout(user_1, sport_1_cycling, workout)
+        self.assert_workout_with_with_gpxtpx_extensions_and_power(workout)
         self.assert_workout_segment(workout)
         self.assert_workout_records(workout)
-        assert workout.ave_cadence == 52
-        assert workout.ave_hr == 85
-        assert workout.ave_power == 248
-        assert workout.max_cadence == 57
-        assert workout.max_hr == 92
-        assert workout.max_power == 326
-        assert workout.source == "Garmin Connect"
 
     def test_it_creates_workout_when_gpx_file_has_cadence_float_value(
         self,

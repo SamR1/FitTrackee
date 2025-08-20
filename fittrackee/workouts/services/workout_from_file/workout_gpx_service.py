@@ -38,7 +38,7 @@ def remove_microseconds(delta: "timedelta") -> "timedelta":
     return delta - timedelta(microseconds=delta.microseconds)
 
 
-class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
+class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
     def __init__(
         self,
         auth_user: "User",
@@ -46,12 +46,14 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
         sport_id: int,
         stopped_speed_threshold: float,
         get_weather: bool = True,
+        workout: Optional["Workout"] = None,
     ):
         super().__init__(
             auth_user,
             workout_file,
             sport_id,
             stopped_speed_threshold,
+            workout,
             get_weather,
         )
         self.gpx: "gpxpy.gpx.GPX" = self.parse_file(
@@ -121,13 +123,14 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
                 "error", "gpx file is invalid"
             ) from None
         elevation = parsed_gpx.get_elevation_extremes()
+        duration = parsed_gpx.get_duration()
         gpx_info = GpxInfo(
-            duration=parsed_gpx.get_duration(),
+            duration=duration,
             distance=(
                 moving_data.moving_distance + moving_data.stopped_distance
             ),
             moving_time=moving_data.moving_time,
-            stopped_time=moving_data.stopped_time,
+            stopped_time=duration - moving_data.moving_time if duration else 0,
             max_speed=moving_data.max_speed,
             max_alt=elevation.maximum,
             min_alt=elevation.minimum,
@@ -300,6 +303,11 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
         max_speed = 0.0
         previous_segment_last_point_time: Optional[datetime] = None
         stopped_time_between_segments = timedelta(seconds=0)
+
+        # remove existing segments if not creation
+        if not self.is_creation and self.workout:
+            WorkoutSegment.query.filter_by(workout_id=self.workout.id).delete()
+
         for segment_idx, segment in enumerate(segments):
             new_workout_segment = WorkoutSegment(
                 segment_id=segment_idx,
@@ -353,17 +361,18 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
         self.workout_name = track.name
         self.workout_description = track.description
 
-        new_workout = Workout(
-            user_id=self.auth_user.id,
-            sport_id=self.sport_id,
-            workout_date=self.get_workout_date(),
-        )
-        db.session.add(new_workout)
-        db.session.flush()
-        new_workout.source = self.gpx.creator
+        if not self.workout:
+            self.workout = Workout(
+                user_id=self.auth_user.id,
+                sport_id=self.sport_id,
+                workout_date=self.get_workout_date(),
+            )
+            db.session.add(self.workout)
+            db.session.flush()
+        self.workout.source = self.gpx.creator
 
         stopped_time_between_segments, max_speed = self._process_segments(
-            track.segments, new_workout.id, new_workout.uuid
+            track.segments, self.workout.id, self.workout.uuid
         )
 
         hr_cadence_power_stats = self._get_hr_cadence_power_data(
@@ -371,15 +380,15 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
         )
         self.set_calculated_data(
             parsed_gpx=track,
-            object_to_update=new_workout,
+            object_to_update=self.workout,
             stopped_time_between_segments=stopped_time_between_segments,
             stopped_speed_threshold=self.stopped_speed_threshold,
             use_raw_gpx_speed=self.auth_user.use_raw_gpx_speed,
             hr_cadence_power_stats=hr_cadence_power_stats,
         )
-        new_workout.max_speed = max_speed
+        self.workout.max_speed = max_speed
         bounds = track.get_bounds()
-        new_workout.bounds = (
+        self.workout.bounds = (
             [
                 bounds.min_latitude,
                 bounds.min_longitude,
@@ -396,4 +405,4 @@ class WorkoutGpxCreationService(BaseWorkoutWithSegmentsCreationService):
             else []
         )
 
-        return new_workout
+        return self.workout

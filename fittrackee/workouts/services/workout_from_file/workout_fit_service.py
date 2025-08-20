@@ -5,10 +5,10 @@ import gpxpy.gpx
 
 from ...exceptions import WorkoutFileException
 from .constants import GARMIN_DEVICES, NSMAP
-from .workout_gpx_creation_service import WorkoutGpxCreationService
+from .workout_gpx_service import WorkoutGpxService
 
 
-class WorkoutFitCreationService(WorkoutGpxCreationService):
+class WorkoutFitService(WorkoutGpxService):
     @staticmethod
     def get_coordinate(value: int) -> float:
         """

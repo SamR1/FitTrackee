@@ -54,12 +54,16 @@ from .exceptions import (
     WorkoutExceedingValueException,
     WorkoutException,
     WorkoutFileException,
+    WorkoutRefreshException,
 )
 from .models import Sport, Workout, WorkoutLike
 from .services import (
     WorkoutCreationService,
     WorkoutsFromFileCreationService,
     WorkoutUpdateService,
+)
+from .services.workouts_from_file_refresh_service import (
+    WorkoutFromFileRefreshService,
 )
 from .utils.convert import convert_in_duration
 from .utils.gpx import (
@@ -1256,7 +1260,7 @@ def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
 @require_auth(scopes=["workouts:write"])
 def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Post a workout with a gpx file.
+    Post a workout with a file.
 
     **Scope**: ``workouts:write``
 
@@ -2756,3 +2760,220 @@ def delete_workouts_upload_task(
         return {"status": "no content"}, 204
     except Exception as e:
         return handle_error_and_return_response(e, db=db)
+
+
+@workouts_blueprint.route(
+    "/workouts/<string:workout_short_id>/refresh", methods=["POST"]
+)
+@require_auth(scopes=["workouts:write"])
+@check_workout(only_owner=True)
+def refresh_workout(
+    auth_user: User, workout: Workout, workout_short_id: str
+) -> Union[Tuple[Dict, int], HttpResponse]:
+    """
+    Refresh a workout with a file:
+
+    - recalculate workout data
+    - regenerate gpx file if original file is not a gpx
+    - update weather if weather provided is set and workout does not have
+      weather data
+
+    **Scope**: ``workouts:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/workouts/kjxavSTUrJvoAh2wvCeGEF/refresh HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 SUCCESS
+      Content-Type: application/json
+
+        {
+          "data": {
+            "errored_workouts": [],
+            "workouts": [
+              {
+                "analysis_visibility": "private",
+                "ascent": 435.621,
+                "ave_cadence": null,
+                "ave_hr": null,
+                "ave_power": null,
+                "ave_speed": 13.14,
+                "bounds": [
+                  43.93706,
+                  4.517587,
+                  43.981933,
+                  4.560627
+                ],
+                "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
+                "descent": 427.499,
+                "description": null,
+                "distance": 23.478,
+                "duration": "2:08:35",
+                "equipments": [],
+                "id": "PsjeeXbJZ2JJNQcTCPxVvF",
+                "liked": false,
+                "likes_count": 0,
+                "map": "ac075ec36dc25dcc20c270d2005f0398",
+                "map_visibility": "private",
+                "max_alt": 158.41,
+                "max_cadence": null,
+                "max_hr": null,
+                "max_power": null,
+                "max_speed": 25.59,
+                "min_alt": 55.03,
+                "modification_date": null,
+                "moving": "1:47:11",
+                "next_workout": "Kd5wyhwLtVozw6o3AU5M4J",
+                "notes": "",
+                "pauses": "0:20:32",
+                "previous_workout": "HgzYFXgvWKCEpdq3vYk67q",
+                "records": [
+                  {
+                    "id": 6,
+                    "record_type": "AS",
+                    "sport_id": 4,
+                    "user": "Sam",
+                    "value": 13.14,
+                    "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
+                  },
+                  {
+                    "id": 7,
+                    "record_type": "FD",
+                    "sport_id": 4,
+                    "user": "Sam",
+                    "value": 23.478,
+                    "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
+                  },
+                  {
+                    "id": 9,
+                    "record_type": "LD",
+                    "sport_id": 4,
+                    "user": "Sam",
+                    "value": "1:47:11",
+                    "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
+                  },
+                  {
+                    "id": 10,
+                    "record_type": "MS",
+                    "sport_id": 4,
+                    "user": "Sam",
+                    "value": 25.59,
+                    "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
+                  },
+                  {
+                    "id": 8,
+                    "record_type": "HA",
+                    "sport_id": 4,
+                    "user": "Sam",
+                    "value": 435.621,
+                    "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
+                  }
+                ],
+                "segments": [
+                  {
+                    "ascent": 435.621,
+                    "ave_cadence": null,
+                    "ave_hr": null,
+                    "ave_power": null,
+                    "ave_speed": 13.14,
+                    "descent": 427.499,
+                    "distance": 23.478,
+                    "duration": "2:08:35",
+                    "max_alt": 158.41,
+                    "max_cadence": null,
+                    "max_hr": null,
+                    "max_power": null,
+                    "max_speed": 25.59,
+                    "min_alt": 55.03,
+                    "moving": "1:47:11",
+                    "pauses": "0:20:32",
+                    "segment_id": 0,
+                    "workout_id": "PsjeeXbJZ2JJNQcTCPxVvF"
+                  }
+                ],
+                "sport_id": 4,
+                "suspended": false,
+                "suspended_at": null,
+                "title": "VTT dans le Gard",
+                "user": {
+                  "created_at": "Sun, 31 Dec 2017 09:00:00 GMT",
+                  "followers": 0,
+                  "following": 0,
+                  "nb_workouts": 3,
+                  "picture": false,
+                  "role": "user",
+                  "suspended_at": null,
+                  "username": "Sam"
+                },
+                "weather_end": null,
+                "weather_start": null,
+                "with_analysis": false,
+                "with_gpx": true,
+                "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
+                "workout_visibility": "private"
+              }
+            ]
+          },
+          "status": "success"
+        }
+
+    :param string workout_short_id: workout short id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: workout updated
+    :statuscode 400:
+        - ``error when parsing fit file``
+        - ``error when parsing gpx file``
+        - ``error when parsing kml file``
+        - ``error when parsing kmz file``
+        - ``error when parsing tcx file``
+        - ``one or more values, entered or calculated, exceed the limits``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 404: ``workout not found``
+    :statuscode 500: ``error, please try again or contact the administrator``
+
+    """
+    try:
+        service = WorkoutFromFileRefreshService(workout, update_weather=True)
+        updated_workout = service.refresh()
+    except WorkoutExceedingValueException as e:
+        appLog.error(e.detail)
+        return ExceedingValueErrorResponse()
+    except (
+        WorkoutException,
+        WorkoutFileException,
+        WorkoutRefreshException,
+    ) as e:
+        db.session.rollback()
+        if e.e:
+            appLog.error(e.e)
+        if e.status == "error":
+            return InternalServerErrorResponse(e.message)
+        return InvalidPayloadErrorResponse(e.message, e.status)
+    return {
+        "status": "success",
+        "data": {
+            "workouts": [
+                updated_workout.serialize(user=auth_user, light=False)
+            ]
+        },
+    }, 200

@@ -16,6 +16,7 @@
           :sport="sport"
           :workoutObject="workoutObject"
           :isWorkoutOwner="isWorkoutOwner"
+          :refreshLoading="workoutData.refreshLoading"
           @displayModal="updateDisplayModal(true)"
         />
         <ReportForm

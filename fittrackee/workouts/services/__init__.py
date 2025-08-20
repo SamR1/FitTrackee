@@ -1,10 +1,10 @@
 from .workout_creation_service import WorkoutCreationService
 from .workout_from_file import (
-    WorkoutFitCreationService,
-    WorkoutGpxCreationService,
-    WorkoutKmlCreationService,
-    WorkoutKmzCreationService,
-    WorkoutTcxCreationService,
+    WorkoutFitService,
+    WorkoutGpxService,
+    WorkoutKmlService,
+    WorkoutKmzService,
+    WorkoutTcxService,
 )
 from .workout_update_service import WorkoutUpdateService
 from .workouts_from_file_creation_service import (
@@ -14,11 +14,11 @@ from .workouts_from_file_creation_service import (
 
 __all__ = [
     "WorkoutCreationService",
-    "WorkoutFitCreationService",
-    "WorkoutGpxCreationService",
-    "WorkoutKmlCreationService",
-    "WorkoutKmzCreationService",
-    "WorkoutTcxCreationService",
+    "WorkoutFitService",
+    "WorkoutGpxService",
+    "WorkoutKmlService",
+    "WorkoutKmzService",
+    "WorkoutTcxService",
     "WorkoutUpdateService",
     "WorkoutsFromArchiveCreationAsyncService",
     "WorkoutsFromFileCreationService",

@@ -328,7 +328,7 @@ class Workout(BaseModel):
         nullable=False,
     )
     original_file: Mapped[Optional[str]] = mapped_column(
-        db.String(255), nullable=True
+        db.String(255), nullable=True, index=True
     )
     max_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
     ave_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm

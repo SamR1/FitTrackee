@@ -21,6 +21,7 @@ from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import (
     WorkoutException,
     WorkoutFileException,
+    WorkoutNoFileException,
 )
 from fittrackee.workouts.models import (
     DESCRIPTION_MAX_CHARACTERS,
@@ -30,7 +31,7 @@ from fittrackee.workouts.models import (
     WorkoutSegment,
 )
 from fittrackee.workouts.services import (
-    WorkoutGpxCreationService,
+    WorkoutGpxService,
     WorkoutsFromFileCreationService,
 )
 from fittrackee.workouts.services.workouts_from_file_creation_service import (
@@ -301,7 +302,9 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
             workouts_data={"sport_id": sport_1_cycling.id},
         )
 
-        with pytest.raises(WorkoutException, match="no workout file provided"):
+        with pytest.raises(
+            WorkoutNoFileException, match="no workout file provided"
+        ):
             service.create_workout_from_file(extension="gpx", equipments=None)
 
     def test_it_creates_workout_when_extension_is_gpx_and_with_minimal_data(
@@ -1097,7 +1100,9 @@ class TestWorkoutsFromFileCreationServiceGetFilesFromArchive(
             workouts_data={"sport_id": sport_1_cycling.id},
         )
 
-        with pytest.raises(WorkoutException, match="no workout file provided"):
+        with pytest.raises(
+            WorkoutNoFileException, match="no workout file provided"
+        ):
             service.get_files_from_archive()
 
     def test_it_raises_error_when_archive_is_invalid(
@@ -1385,7 +1390,9 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
             workouts_data={"sport_id": sport_1_cycling.id},
         )
 
-        with pytest.raises(WorkoutException, match="no workout file provided"):
+        with pytest.raises(
+            WorkoutNoFileException, match="no workout file provided"
+        ):
             service.add_workouts_upload_task(
                 files_to_process=TEST_FILES_LIST,
                 equipments=None,
@@ -1720,7 +1727,9 @@ class TestWorkoutsFromFileCreationServiceProcessZipArchive(
             workouts_data={"sport_id": sport_1_cycling.id},
         )
 
-        with pytest.raises(WorkoutException, match="no workout file provided"):
+        with pytest.raises(
+            WorkoutNoFileException, match="no workout file provided"
+        ):
             service.process_zip_archive(equipments=None)
 
     def test_it_creates_one_workout_and_returns_errored_workout_when_archive_contains_invalid_file(  # noqa
@@ -1848,7 +1857,9 @@ class TestWorkoutsFromFileCreationServiceProcessForOneFile(
             workouts_data={"sport_id": sport_1_cycling.id},
         )
 
-        with pytest.raises(WorkoutException, match="no workout file provided"):
+        with pytest.raises(
+            WorkoutNoFileException, match="no workout file provided"
+        ):
             service.process()
 
     def test_it_raises_error_when_file_has_no_filename(
@@ -2043,7 +2054,7 @@ class TestWorkoutsFromFileCreationServiceProcessForOneFile(
 
         with (
             patch.object(
-                WorkoutGpxCreationService,
+                WorkoutGpxService,
                 "get_map_hash",
                 side_effect=[Exception("error")],
             ),
@@ -2075,7 +2086,7 @@ class TestWorkoutsFromFileCreationServiceProcessForOneFile(
 
         with (
             patch.object(
-                WorkoutGpxCreationService,
+                WorkoutGpxService,
                 "get_map_hash",
                 side_effect=[Exception("error")],
             ),
@@ -2120,7 +2131,7 @@ class TestWorkoutsFromFileCreationServiceProcessForOneFile(
 
         with (
             patch.object(
-                WorkoutGpxCreationService,
+                WorkoutGpxService,
                 "get_map_hash",
                 side_effect=[Exception("error")],
             ),
@@ -2294,7 +2305,7 @@ class TestWorkoutsFromFileCreationServiceProcessForSyncArchiveUpload(
 
         with (
             patch.object(
-                WorkoutGpxCreationService,
+                WorkoutGpxService,
                 "get_map_hash",
                 side_effect=[
                     None,  # processing first file w/o error

@@ -219,6 +219,11 @@ Workouts
   - distance (only workouts without gpx)
   - ascent and descent (only workouts without gpx) (*new in 0.7.10*)
 
+- The calculated data of a workout can be refreshed and weather data fetched if provider is set and the workout does not have weather data (*new in 0.x.x*).
+
+.. note::
+  | A CLI command is available to refresh several workouts depending on options.
+
 - File in gpx format (original or generated) can be downloaded (*new in 0.5.1*).
 - Workout can be deleted.
 - Workouts list.
