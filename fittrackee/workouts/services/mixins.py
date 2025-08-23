@@ -4,6 +4,7 @@ from flask import current_app
 
 from ..exceptions import WorkoutExceedingValueException
 from ..models import PSQL_INTEGER_LIMIT, WORKOUT_VALUES_LIMIT
+from ..utils.gpx import get_file_extension
 
 if TYPE_CHECKING:
     from fittrackee.workouts.models import Workout
@@ -33,7 +34,7 @@ class CheckWorkoutMixin:
 class WorkoutFileMixin:
     @staticmethod
     def _get_extension(filename: str) -> str:
-        return filename.rsplit(".", 1)[-1].lower()
+        return get_file_extension(filename)
 
     @staticmethod
     def _is_valid_workout_file_extension(extension: str) -> bool:

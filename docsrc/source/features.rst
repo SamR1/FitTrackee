@@ -224,7 +224,7 @@ Workouts
 .. note::
   | A CLI command is available to refresh several workouts depending on options.
 
-- File in gpx format (original or generated) can be downloaded (*new in 0.5.1*).
+- The original file or the generated gpx file can be downloaded (*modified in 0.x.x*).
 - Workout can be deleted.
 - Workouts list.
 

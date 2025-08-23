@@ -35,6 +35,7 @@ from .utils.convert import (
     get_cadence,
     get_power,
 )
+from .utils.gpx import get_file_extension
 
 if TYPE_CHECKING:
     from sqlalchemy.orm.attributes import AttributeEvent
@@ -604,6 +605,11 @@ class Workout(BaseModel):
             "description": self.description,
             "likes_count": self.likes.count(),
             "liked": self.liked_by(user) if user else False,
+            "original_file": (
+                get_file_extension(self.original_file)
+                if self.original_file and user and user.id == self.user_id
+                else None
+            ),
         }
 
     def serialize(

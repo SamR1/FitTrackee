@@ -12,6 +12,7 @@ Workouts
     workouts.get_map,
     workouts.get_map_tile,
     workouts.download_workout_gpx,
+    workouts.download_workout_original_file,
     workouts.post_workout,
     workouts.post_workout_no_gpx,
     workouts.update_workout,

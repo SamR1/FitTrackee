@@ -213,6 +213,7 @@
       minAlt: segment ? segment.min_alt : workout.min_alt,
       moving: segment ? segment.moving : workout.moving,
       nextUrl: urls.nextUrl,
+      originalFile: segment ? null : workout.original_file,
       pauses: segment ? segment.pauses : workout.pauses,
       previousUrl: urls.previousUrl,
       records: segment ? [] : workout.records,

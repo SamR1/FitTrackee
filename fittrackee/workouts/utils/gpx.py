@@ -180,3 +180,7 @@ def extract_segment_from_gpx_file(
         )
 
     return gpx.to_xml()
+
+
+def get_file_extension(filename: str) -> str:
+    return filename.rsplit(".", 1)[-1].lower()
