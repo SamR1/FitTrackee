@@ -1616,9 +1616,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         )
     except (WorkoutException, WorkoutFileException) as e:
         db.session.rollback()
-        if e.e:
-            appLog.error(e.e)
         if e.status == "error":
+            appLog.exception("Error when creating workout")
             return InternalServerErrorResponse(e.message)
         return InvalidPayloadErrorResponse(e.message, e.status)
     return response_object, 201
