@@ -35,8 +35,10 @@ babel = "^2.11.0"
 click = "^8.1.8"
 dramatiq = {version = "^1.15.0", extras = ["redis"]}
 dramatiq-abort = {extras = ["redis"], version = "^1.2.1"}
+feedgenerator = "^2.2.1"
 fitdecode = "=0.11.0"
 flask = "^3.1.2"
+flask-babel = "^4.0.0"
 flask-bcrypt = "^1.0.1"
 flask-dramatiq = "^0.6.0"
 flask-limiter = {version = "^3.11.0", extras = ["redis"]}  # flask-limiter 3.12+ requires python 3.10+

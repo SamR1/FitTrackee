@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-08-24 11:37+0200\n"
+"POT-Creation-Date: 2025-08-24 19:41+0200\n"
 "PO-Revision-Date: 2025-01-17 07:00+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language: gl\n"
@@ -458,4 +458,122 @@ msgstr "Retirouse a suspensión da túa actividade"
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:1
 msgid "The suspension on your workout has been lifted, it is visible again"
 msgstr "Retirouse a suspensión da túa actividade, volve a ser visible"
+
+#: fittrackee/feeds/feeds/constants.py:5
+msgid "Canoeing"
+msgstr "Piragüismo (canoa)"
+
+#: fittrackee/feeds/feeds/constants.py:6
+msgid "Cycling (Sport)"
+msgstr "Ciclismo (Deportivo)"
+
+#: fittrackee/feeds/feeds/constants.py:7
+msgid "Cycling (Transport)"
+msgstr "Ciclismo (Transporte)"
+
+#: fittrackee/feeds/feeds/constants.py:8
+msgid "Cycling (Trekking)"
+msgstr "Ciclismo (Trekking)"
+
+#: fittrackee/feeds/feeds/constants.py:9
+msgid "Cycling (Virtual)"
+msgstr "Ciclismo (Virtual)"
+
+#: fittrackee/feeds/feeds/constants.py:10
+msgid "Halfbike"
+msgstr "Halfbike"
+
+#: fittrackee/feeds/feeds/constants.py:11
+msgid "Hiking"
+msgstr "Sendeirismo"
+
+#: fittrackee/feeds/feeds/constants.py:12
+msgid "Kayaking"
+msgstr "Piragüismo (caiac)"
+
+#: fittrackee/feeds/feeds/constants.py:13
+msgid "Mountain Biking"
+msgstr "Ciclismo por Montaña"
+
+#: fittrackee/feeds/feeds/constants.py:14
+msgid "Mountain Biking (Electric)"
+msgstr "Ciclismo por Montaña (Eléctrica)"
+
+#: fittrackee/feeds/feeds/constants.py:15
+msgid "Mountaineering"
+msgstr "Montañismo"
+
+#: fittrackee/feeds/feeds/constants.py:16
+msgid "Open Water Swimming"
+msgstr "Natación Auga Aberta"
+
+#: fittrackee/feeds/feeds/constants.py:17
+msgid "Paragliding"
+msgstr "Paracaidismo"
+
+#: fittrackee/feeds/feeds/constants.py:18
+msgid "Rowing"
+msgstr "Remo"
+
+#: fittrackee/feeds/feeds/constants.py:19
+msgid "Running"
+msgstr "Correr"
+
+#: fittrackee/feeds/feeds/constants.py:20
+msgid "Skiing (Alpine)"
+msgstr "Esquí (Alpino)"
+
+#: fittrackee/feeds/feeds/constants.py:21
+msgid "Skiing (Cross Country)"
+msgstr "Esquí (de travesía)"
+
+#: fittrackee/feeds/feeds/constants.py:22
+msgid "Snowshoes"
+msgstr "Raquetas de neve"
+
+#: fittrackee/feeds/feeds/constants.py:23
+msgid "Standup Paddleboarding"
+msgstr "Padexar de pé na táboa"
+
+#: fittrackee/feeds/feeds/constants.py:24
+msgid "Swimrun"
+msgstr "Swimrun"
+
+#: fittrackee/feeds/feeds/constants.py:25
+msgid "Tennis (Outdoor)"
+msgstr "Tenis (Exterior)"
+
+#: fittrackee/feeds/feeds/constants.py:26
+msgid "Trail"
+msgstr "Trail"
+
+#: fittrackee/feeds/feeds/constants.py:27
+msgid "Walking"
+msgstr "Camiñar"
+
+#: fittrackee/feeds/feeds/constants.py:28
+msgid "Windsurfing"
+msgstr "Windsurf"
+
+#: fittrackee/feeds/feeds/workouts_feed_service.py:48
+#, python-format
+msgid "Latest public workouts on FitTrackee from %(username)s"
+msgstr ""
+
+#: fittrackee/feeds/feeds/workouts_feed_service.py:57
+#, python-format
+msgid "%(username)s's workouts feed"
+msgstr ""
+
+#: fittrackee/feeds/templates/workout/body.html:1
+msgid "Workout map"
+msgstr "actividade no mapa"
+
+#: fittrackee/feeds/templates/workout/body.html:2
+msgid "Duration"
+msgstr "Duración"
+
+#: fittrackee/feeds/templates/workout/body.html:3
+msgid "Distance"
+msgstr "Distancia"
 

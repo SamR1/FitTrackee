@@ -55,6 +55,7 @@ class BaseConfig:
     DRAMATIQ_BROKER = broker
 
     LANGUAGES = SUPPORTED_LANGUAGES
+    BABEL_DEFAULT_LOCALE = "en"
     TRANSLATIONS_FOLDER = os.path.join(current_app.root_path, "translations")
 
     EMAIL_URL = os.environ.get("EMAIL_URL")
@@ -62,6 +63,10 @@ class BaseConfig:
     CAN_SEND_EMAILS = False
     EMAILS_TEMPLATES_FOLDER = os.path.join(
         current_app.root_path, "emails/templates"
+    )
+
+    FEEDS_TEMPLATES_FOLDER = os.path.join(
+        current_app.root_path, "feeds/templates"
     )
 
     UI_URL = os.environ["UI_URL"]

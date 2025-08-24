@@ -1,0 +1,3 @@
+<p>{% if workout_map %}<img src="{{ workout_map }}" alt="{{ _('Workout map')}}"><br />{% endif %}
+<strong>{{ _('Duration')}}</strong>: {{ workout_duration }}<br />
+{% if workout_distance %}<strong>{{ _('Distance')}}</strong>: {{ workout_distance}} {{ workout_unit }}<br />{% endif %}
