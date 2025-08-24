@@ -10,13 +10,13 @@ babel-extract:
 	$(PYBABEL) extract -F babel.cfg -k lazy_gettext -o messages.pot .
 
 babel-init:
-	$(PYBABEL) init -i messages.pot -d fittrackee/emails/translations -l $(LANG)
+	$(PYBABEL) init -i messages.pot -d fittrackee/translations -l $(LANG)
 
 babel-compile:
-	$(PYBABEL) compile -d fittrackee/emails/translations
+	$(PYBABEL) compile -d fittrackee/translations
 
 babel-update:
-	$(PYBABEL) update -i messages.pot -d fittrackee/emails/translations
+	$(PYBABEL) update -i messages.pot -d fittrackee/translations
 
 bandit:
 	$(BANDIT) -r fittrackee -c pyproject.toml

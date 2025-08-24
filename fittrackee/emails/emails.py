@@ -3,13 +3,13 @@ import smtplib
 import ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import Dict, List, Optional, Type, Union
+from typing import Dict, Optional, Type, Union
 from urllib.parse import unquote
 
-from babel.support import Translations
 from flask import Flask
-from jinja2 import Environment, FileSystemLoader, select_autoescape
 from urllib3.util import parse_url
+
+from fittrackee.templates import I18nTemplate
 
 from .exceptions import InvalidEmailUrlScheme
 
@@ -39,56 +39,12 @@ class EmailMessage:
         return message
 
 
-class EmailTemplate:
-    def __init__(
-        self,
-        template_directory: str,
-        translations_directory: str,
-        languages: List[str],
-    ) -> None:
-        self._translations = self._get_translations(
-            translations_directory, languages
-        )
-        self._env = Environment(
-            autoescape=select_autoescape(["html", "htm", "xml"]),
-            loader=FileSystemLoader(template_directory),
-            extensions=["jinja2.ext.i18n"],
-        )
-
-    @staticmethod
-    def _get_translations(
-        translations_directory: str, languages: List[str]
-    ) -> Dict:
-        translations = {}
-        for language in languages:
-            translations[language] = Translations.load(
-                dirname=translations_directory, locales=[language]
-            )
-        return translations
-
-    def _load_translation(self, lang: str) -> None:
-        self._env.install_gettext_translations(  # type: ignore
-            self._translations[lang],
-            newstyle=True,
-        )
-
-    def get_content(
-        self, template_name: str, lang: str, part: str, data: Dict
-    ) -> str:
-        self._load_translation(lang)
-        template = self._env.get_template(f"{template_name}/{part}")
-        return template.render(data)
-
-    def get_all_contents(self, template: str, lang: str, data: Dict) -> Dict:
-        output = {}
-        for part in ["subject.txt", "body.txt", "body.html"]:
-            output[part] = self.get_content(template, lang, part, data)
-        return output
-
+class EmailTemplate(I18nTemplate):
     def get_message(
         self, template: str, lang: str, sender: str, recipient: str, data: Dict
     ) -> MIMEMultipart:
-        output = self.get_all_contents(template, lang, data)
+        parts = ["subject.txt", "body.txt", "body.html"]
+        output = self.get_all_contents(template, lang, parts, data)
         message = EmailMessage(
             sender,
             recipient,
@@ -122,7 +78,7 @@ class EmailService:
         self.password = parsed_url["password"]
         self.sender_email = app.config["SENDER_EMAIL"]
         self.email_template = EmailTemplate(
-            app.config["TEMPLATES_FOLDER"],
+            app.config["EMAILS_TEMPLATES_FOLDER"],
             app.config["TRANSLATIONS_FOLDER"],
             app.config["LANGUAGES"],
         )
