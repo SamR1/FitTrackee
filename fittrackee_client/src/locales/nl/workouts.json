@@ -35,6 +35,8 @@
   "DISPLAY_FILTERS": "toon filters",
   "DISPLAY_MULTIPLE_CHARTS": "meerdere grafieken weergeven",
   "DISTANCE": "afstand",
+  "DOWNLOAD_GPX_FILE": "Download het .gpx-bestand",
+  "DOWNLOAD_ORIGINAL_FILE": "Download het originele bestand (.{fileExtension})",
   "DOWNLOAD_WORKOUT": "Download de training",
   "DURATION": "duur",
   "EDIT_WORKOUT": "Training aanpassen",
