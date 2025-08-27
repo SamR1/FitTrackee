@@ -268,6 +268,13 @@ Workouts
   | There is a limit on the number of workouts used to calculate statistics to avoid performance issues. The value can be set in administration.
   | If the limit is reached, the number of workouts used is displayed.
 
+- | A RSS feed is available in the user profile with the 5 last public workouts (displayed by default in English and using the metric system) (*new in x.x.x*).
+  | It's possible to specify language and/or imperial units display, for instance: ``https://<FITTRACKEE_DOMAIN>/users/<USERNAME>/workouts.rss?lang=fr`` or ``https://<FITTRACKEE_DOMAIN>/users/<USERNAME>/workouts.rss?imperial_unit=true``
+  | No workouts are displayed when the user is suspended.
+
+.. note::
+  The RSS feed is not autodiscoverable due to application architecture (client-side rendering).
+
 - A user can report a workout that violates instance rules. This will send a notification to moderators and administrators.
 
 Interactions

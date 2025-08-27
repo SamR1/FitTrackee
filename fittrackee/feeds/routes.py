@@ -23,7 +23,7 @@ def get_user_public_workouts_rss_feed(
     user_name: str,
 ) -> Union[Response, HttpResponse]:
     """
-    RSS feed with latest public workouts from user.
+    RSS feed with user's last 5 public workouts.
 
     Note: it does not display workouts when user is suspended.
 
@@ -41,12 +41,10 @@ def get_user_public_workouts_rss_feed(
 
       GET /user/Sam/workouts.rss?lang=fr&imperial_units=true  HTTP/1.1
 
-    :query string lang: RSS feed language. If provided language is not
-           supported, it falls back to English ('en').
+    :query string lang: RSS feed language (default: 'en'). If provided language
+           is not supported, it falls back to English.
     :query boolean imperial_units: display values with imperial units.
            If false, metric system is used instead.
-
-    :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: ``success``
     :statuscode 404: ``"user does not exist"``
