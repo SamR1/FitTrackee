@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-08-24 19:41+0200\n"
+"POT-Creation-Date: 2025-08-27 15:52+0200\n"
 "PO-Revision-Date: 2022-12-12 19:48+0000\n"
 "Last-Translator: Donato Perruso <dperruso@protonmail.com>\n"
 "Language: it\n"
@@ -557,12 +557,12 @@ msgstr "Camminata"
 msgid "Windsurfing"
 msgstr ""
 
-#: fittrackee/feeds/feeds/workouts_feed_service.py:48
+#: fittrackee/feeds/feeds/workouts_feed_service.py:57
 #, python-format
 msgid "Latest public workouts on FitTrackee from %(username)s"
 msgstr ""
 
-#: fittrackee/feeds/feeds/workouts_feed_service.py:57
+#: fittrackee/feeds/feeds/workouts_feed_service.py:66
 #, python-format
 msgid "%(username)s's workouts feed"
 msgstr ""
@@ -578,4 +578,20 @@ msgstr "Durata"
 #: fittrackee/feeds/templates/workout/body.html:3
 msgid "Distance"
 msgstr "Distanza"
+
+#: fittrackee/feeds/templates/workout/body.html:3
+msgid "Min. altitude"
+msgstr "Altitudine minima"
+
+#: fittrackee/feeds/templates/workout/body.html:3
+msgid "Max. altitude"
+msgstr "Altitudine massima"
+
+#: fittrackee/feeds/templates/workout/body.html:3
+msgid "Ascent"
+msgstr "Salita"
+
+#: fittrackee/feeds/templates/workout/body.html:3
+msgid "Descent"
+msgstr "Discesa"
 

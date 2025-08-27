@@ -12,7 +12,7 @@ from .template_results.workouts import (
     expected_en_empty_feed,
     expected_en_feed_user_1_workouts,
     expected_en_feed_workout_cycling_user_1,
-    expected_en_feed_workout_cycling_user_1_in_imperials_units,
+    expected_en_feed_workout_cycling_user_1_in_imperial_units,
     expected_fr_feed_workout_cycling_user_1_with_map,
 )
 
@@ -109,7 +109,7 @@ class TestGetUserPublicWorkoutsFeed(ApiTestCaseMixin):
             )
         )
 
-    def test_it_returns_feed_with_imperial_unit(
+    def test_it_returns_feed_with_imperial_units(
         self,
         app: "Flask",
         user_1: "User",
@@ -124,13 +124,13 @@ class TestGetUserPublicWorkoutsFeed(ApiTestCaseMixin):
         with travel(now, tick=False):
             response = client.get(
                 f"{self.route.format(username=user_1.username)}?"
-                "imperial_unit=true"
+                "imperial_units=true"
             )
 
         assert response.status_code == 200
         assert response.mimetype == "text/xml"
         assert response.data.decode() == (
-            expected_en_feed_workout_cycling_user_1_in_imperials_units.format(
+            expected_en_feed_workout_cycling_user_1_in_imperial_units.format(
                 workout_short_id=workout_cycling_user_1.short_id,
                 workout_title=workout_cycling_user_1.title,
             )

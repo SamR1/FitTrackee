@@ -66,7 +66,7 @@
   "MAX_SIZE": "taille max.",
   "MAX_SPEED": "vitesse max.",
   "MAX_SYNC_FILES_IN_ZIP": "nombre max. de fichiers pour un chargement synchrone ",
-  "MIN_ALTITUDE": "altitude min",
+  "MIN_ALTITUDE": "altitude min.",
   "MULTISELECT": {
     "deselectLabel": "Appuyer sur Entrée pour supprimer",
     "selectLabel": "Appuyer sur Entrée pour sélectionner",

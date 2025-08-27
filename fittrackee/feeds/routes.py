@@ -39,12 +39,12 @@ def get_user_public_workouts_rss_feed(
 
     .. sourcecode:: http
 
-      GET /user/Sam/workouts.rss?lang=fr&imperial_unit=true  HTTP/1.1
+      GET /user/Sam/workouts.rss?lang=fr&imperial_units=true  HTTP/1.1
 
     :query string lang: RSS feed language. If provided language is not
-           supported, it falls back to English ('en')
-    :query boolean imperial_unit: display value with imperial unit. If false,
-           metrc system is used instead
+           supported, it falls back to English ('en').
+    :query boolean imperial_units: display values with imperial units.
+           If false, metric system is used instead.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -74,10 +74,12 @@ def get_user_public_workouts_rss_feed(
 
     params = request.args.copy()
     lang = params.get("lang", "en")
-    use_imperial_unit = params.get("imperial_unit", "false").lower() == "true"
+    use_imperial_units = (
+        params.get("imperial_units", "false").lower() == "true"
+    )
 
     feed_service = UserWorkoutsFeedService(
-        user, latest_public_workouts, lang, use_imperial_unit
+        user, latest_public_workouts, lang, use_imperial_units
     )
     feed = feed_service.generate_user_workouts_feed()
     return Response(feed, mimetype="text/xml")

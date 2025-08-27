@@ -112,10 +112,10 @@
     const apiUrl = getApiUrl().replace('/api/', '')
     let feedUrl = `${apiUrl}/users/${user.value.username}/workouts.rss`
     const lang = appLanguage.value === 'en' ? '' : `?lang=${appLanguage.value}`
-    const imperialUnit = displayOptions.value.useImperialUnits
-      ? `${lang ? '&' : '?'}imperial_unit=true`
+    const imperialUnits = displayOptions.value.useImperialUnits
+      ? `${lang ? '&' : '?'}imperial_units=true`
       : ''
-    return `${feedUrl}${lang}${imperialUnit}`
+    return `${feedUrl}${lang}${imperialUnits}`
   }
 </script>
 
