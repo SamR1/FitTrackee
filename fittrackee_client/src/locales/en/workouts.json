@@ -51,6 +51,7 @@
   "INVALID_ASCENT_OR_DESCENT": "Both elevation values must be provided and be greater than or equal to 0.",
   "INVALID_DISTANCE": "The distance must be greater than 0",
   "INVALID_DURATION": "The duration must be greater than 0 seconds",
+  "LATEST_PUBLIC_WORKOUTS": "Latest public workouts",
   "LATEST_WORKOUTS": "Latest workouts",
   "LIKES": "like | likes",
   "LIKE_WORKOUT": "Like workout",

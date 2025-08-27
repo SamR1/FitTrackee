@@ -3,7 +3,11 @@
     <Loader v-if="userWorkoutsLoading" />
     <template v-else>
       <div v-if="userWorkouts.length > 0">
-        <div class="section-title">{{ $t('workouts.LATEST_WORKOUTS') }}</div>
+        <div class="section-title">
+          {{
+            $t(`workouts.LATEST_${authUser?.username ? '' : 'PUBLIC_'}WORKOUTS`)
+          }}
+        </div>
         <WorkoutCard
           v-for="workout in userWorkouts"
           :workout="workout"
@@ -27,11 +31,12 @@
   import useApp from '@/composables/useApp.ts'
   import useSports from '@/composables/useSports.ts'
   import { SPORTS_STORE, USERS_STORE } from '@/store/constants'
-  import type { IUserLightProfile } from '@/types/user.ts'
+  import type { IAuthUserProfile, IUserLightProfile } from '@/types/user.ts'
   import type { IWorkout } from '@/types/workouts.ts'
   import { useStore } from '@/use/useStore'
 
   interface Props {
+    authUser: IAuthUserProfile | null
     user: IUserLightProfile
   }
   const props = defineProps<Props>()
