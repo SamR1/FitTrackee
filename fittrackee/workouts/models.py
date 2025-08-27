@@ -537,6 +537,8 @@ class Workout(BaseModel):
                 and return_elevation_data
                 else None
             ),
+            # ascent and descent are always visible since they can be entered
+            # manually (without a file)
             "descent": (
                 float(self.descent)
                 if self.descent is not None and return_elevation_data

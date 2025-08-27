@@ -3,15 +3,19 @@
     <Loader v-if="userWorkoutsLoading" />
     <template v-else>
       <div v-if="userWorkouts.length > 0">
-        <div class="section-title">{{ $t('workouts.LATEST_WORKOUTS') }}</div>
+        <div class="section-title">
+          {{
+            $t(`workouts.LATEST_${authUser?.username ? '' : 'PUBLIC_'}WORKOUTS`)
+          }}
+        </div>
         <WorkoutCard
           v-for="workout in userWorkouts"
           :workout="workout"
           :sport="sports.filter((s) => s.id === workout.sport_id)[0]"
           :user="workout.user"
-          :useImperialUnits="imperialUnits"
-          :dateFormat="dateFormat"
-          :timezone="timezone"
+          :useImperialUnits="displayOptions.useImperialUnits"
+          :dateFormat="displayOptions.dateFormat"
+          :timezone="displayOptions.timezone"
           :key="workout.id"
         />
       </div>
@@ -24,20 +28,21 @@
   import type { ComputedRef } from 'vue'
 
   import WorkoutCard from '@/components/Workout/WorkoutCard.vue'
-  import useAuthUser from '@/composables/useAuthUser.ts'
+  import useApp from '@/composables/useApp.ts'
   import useSports from '@/composables/useSports.ts'
   import { SPORTS_STORE, USERS_STORE } from '@/store/constants'
-  import type { IUserLightProfile } from '@/types/user.ts'
+  import type { IAuthUserProfile, IUserLightProfile } from '@/types/user.ts'
   import type { IWorkout } from '@/types/workouts.ts'
   import { useStore } from '@/use/useStore'
 
   interface Props {
+    authUser: IAuthUserProfile | null
     user: IUserLightProfile
   }
   const props = defineProps<Props>()
   const { user } = toRefs(props)
 
-  const { dateFormat, imperialUnits, timezone } = useAuthUser()
+  const { displayOptions } = useApp()
   const { sports } = useSports()
 
   const store = useStore()

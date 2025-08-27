@@ -13,6 +13,7 @@ from flask import (
     send_file,
     send_from_directory,
 )
+from flask_babel import Babel
 from flask_bcrypt import Bcrypt
 from flask_dramatiq import Dramatiq
 from flask_limiter import Limiter
@@ -61,6 +62,7 @@ if TYPE_CHECKING:
 else:
     BaseModel = db.Model
 
+babel = Babel()
 bcrypt = Bcrypt()
 migrate = Migrate()
 email_service = EmailService()
@@ -109,6 +111,7 @@ def create_app(init_email: bool = True) -> Flask:
         app.config.from_object(app_settings)
 
     # set up extensions
+    babel.init_app(app)
     db.init_app(app)
     bcrypt.init_app(app)
     migrate.init_app(app, db)
@@ -157,6 +160,7 @@ def create_app(init_email: bool = True) -> Flask:
     from .comments.comments import comments_blueprint
     from .equipments.equipment_types import equipment_types_blueprint
     from .equipments.equipments import equipments_blueprint
+    from .feeds.routes import feeds_blueprint
     from .oauth2.routes import oauth2_blueprint
     from .reports.reports import reports_blueprint
     from .users.auth import auth_blueprint
@@ -186,6 +190,7 @@ def create_app(init_email: bool = True) -> Flask:
     app.register_blueprint(timeline_blueprint, url_prefix="/api")
     app.register_blueprint(notifications_blueprint, url_prefix="/api")
     app.register_blueprint(reports_blueprint, url_prefix="/api")
+    app.register_blueprint(feeds_blueprint, url_prefix="")
 
     if app.debug:
         logging.getLogger("sqlalchemy").setLevel(logging.WARNING)
