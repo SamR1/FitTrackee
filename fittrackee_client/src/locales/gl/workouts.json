@@ -35,6 +35,8 @@
   "DISPLAY_FILTERS": "mostrar filtros",
   "DISPLAY_MULTIPLE_CHARTS": "ver gráficos individuais",
   "DISTANCE": "distancia",
+  "DOWNLOAD_GPX_FILE": "Descargar o ficheiro .gpx",
+  "DOWNLOAD_ORIGINAL_FILE": "Descargar o ficheiro orixinal (.{fileExtension})",
   "DOWNLOAD_WORKOUT": "Descargar a actividade",
   "DURATION": "duración",
   "EDIT_WORKOUT": "Editar a actividade",
