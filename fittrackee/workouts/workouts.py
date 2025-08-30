@@ -3025,9 +3025,8 @@ def refresh_workout(
         WorkoutRefreshException,
     ) as e:
         db.session.rollback()
-        if e.e:
-            appLog.error(e.e)
         if e.status == "error":
+            appLog.exception("Error when refreshing workout")
             return InternalServerErrorResponse(e.message)
         return InvalidPayloadErrorResponse(e.message, e.status)
     return {

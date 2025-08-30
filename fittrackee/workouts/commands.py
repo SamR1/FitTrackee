@@ -46,16 +46,21 @@ def validate_extension(
 def validate_sport_id(
     ctx: click.core.Context, param: click.core.Option, value: Optional[int]
 ) -> Optional[int]:
-    if value is not None and not Sport.query.filter_by(id=value).first():
-        raise click.BadParameter(f"invalid sport id '{value}'")
+    with app.app_context():
+        if value is not None and not Sport.query.filter_by(id=value).first():
+            raise click.BadParameter(f"invalid sport id '{value}'")
     return value
 
 
 def validate_user(
     ctx: click.core.Context, param: click.core.Option, value: Optional[str]
 ) -> Optional[str]:
-    if value is not None and not User.query.filter_by(username=value).first():
-        raise click.BadParameter(f"user '{value}' does not exist")
+    with app.app_context():
+        if (
+            value is not None
+            and not User.query.filter_by(username=value).first()
+        ):
+            raise click.BadParameter(f"user '{value}' does not exist")
     return value
 
 
