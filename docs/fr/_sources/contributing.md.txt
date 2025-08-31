@@ -28,7 +28,7 @@ For now, releases do not follow [semantic versioning](https://semver.org). Any v
 ### Translations
 
 Application translations files are located:
-- on API side (emails): `fittrackee/emails/translations/` (implemented with [Babel](https://babel.pocoo.org/en/latest/))
+- on API side (emails and RSS Feeds): `fittrackee/translations/` (implemented with [Babel](https://babel.pocoo.org/en/latest/))
 - on client side: `fittrackee_client/src/locales` (implemented with [Vue I18n](https://vue-i18n.intlify.dev/))
 
 Translations can be updated through [Weblate](https://hosted.weblate.org/engage/fittrackee/).  

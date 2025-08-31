@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.11.2"
+version = "0.12.0"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0-only"
@@ -35,8 +35,10 @@ babel = "^2.11.0"
 click = "^8.1.8"
 dramatiq = {version = "^1.15.0", extras = ["redis"]}
 dramatiq-abort = {extras = ["redis"], version = "^1.2.1"}
-fitdecode = "^0.10.0"
-flask = "^3.1.1"
+feedgenerator = "^2.2.1"
+fitdecode = "=0.11.0"
+flask = "^3.1.2"
+flask-babel = "^4.0.0"
 flask-bcrypt = "^1.0.1"
 flask-dramatiq = "^0.6.0"
 flask-limiter = {version = "^3.11.0", extras = ["redis"]}  # flask-limiter 3.12+ requires python 3.10+
@@ -44,9 +46,9 @@ flask-migrate = "4.1.0"
 flask-sqlalchemy = "3.1.1"
 gpxpy = "=1.6.2"
 gunicorn = "^23.0.0"
-humanize = "^4.12.2"
-jsonschema = "^4.23.0"
-lxml = "^5.4.0"
+humanize = "^4.13.0"
+jsonschema = "^4.25.1"
+lxml = "^6.0.1"
 nh3 = "^0.3.0"
 psycopg2-binary = "^2.9.10"
 pycryptodome = "^3.15"
@@ -54,7 +56,7 @@ pyjwt = "^2.10.1"
 pyopenssl = "^25.1.0"
 pytz = "^2025.2"
 shortuuid = "^1.0.13"
-sqlalchemy = "=2.0.42"
+sqlalchemy = "=2.0.43"
 staticmap3 = {extras = ["filecache"], version = "^0.1.0"}
 ua-parser = "^1.0.0"
 xmltodict = "^0.14.2"
@@ -62,7 +64,7 @@ xmltodict = "^0.14.2"
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.8.6"
 furo = "^2025.7.19"
-mypy = "^1.17.0"
+mypy = "^1.17.1"
 pytest = "^8.4.1"
 pytest-cov = "^6.1.0"
 pytest-html = "^4.1.1"
@@ -70,13 +72,13 @@ pytest-runner = "^6.0.1"
 pytest-selenium = "^4.1.0"
 pytest-xdist = {extras = ["psutil"], version = "^3.8.0"}
 recommonmark = "^0.7.1"
-ruff = "^0.12.7"
-selenium = "^4.34.2"
+ruff = "^0.12.11"
+selenium = "^4.35.0"
 sphinx = "^7.4.7" # sphinx 8+ requires python 3.10+
 sphinx-copybutton = "^0.5.2"
-sphinx-intl = "^2.3.1"
+sphinx-intl = "^2.3.2"
 sphinxcontrib-httpdomain = "^1.8.1"
-time-machine = "^2.16.0"
+time-machine = "^2.19.0"
 types-freezegun = "^1.1"
 types-pytz = "^2025.2"
 types-redis = "^4.6"
@@ -130,6 +132,7 @@ quote-style = "double"
 markers = [
     "disable_autouse_generate_keys: disable patch for keys generation",
     "disable_autouse_update_records_patch: disable records update",
+    "disable_autouse_default_weather_service: disable weather service",
 ]
 
 [tool.bandit]

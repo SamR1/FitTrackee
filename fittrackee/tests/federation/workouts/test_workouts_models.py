@@ -81,7 +81,7 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
         add_follower(user_1, remote_user)
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         workout_cycling_user_1.analysis_visibility = input_analysis_visibility
-        workout = self.update_workout_with_gpx_data(
+        workout = self.update_workout_with_file_data(
             workout_cycling_user_1, map_id=random_string()
         )
 
@@ -130,7 +130,7 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
         add_follower(user_1, remote_user)
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         workout_cycling_user_1.analysis_visibility = input_analysis_visibility
-        workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
+        workout = self.update_workout_with_file_data(workout_cycling_user_1)
 
         serialized_workout = workout.serialize(user=remote_user)
 

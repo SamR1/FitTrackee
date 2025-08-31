@@ -99,7 +99,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
 
         assert workout_cycling_user_2.suspension_action is None
 
-    def test_it_serializes_workout_without_gpx(
+    def test_it_serializes_workout_without_file(
         self,
         app: Flask,
         sport_1_cycling: Sport,
@@ -139,6 +139,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "moving": str(workout.moving),
             "next_workout": None,
             "notes": None,
+            "original_file": None,
             "pauses": None,
             "previous_workout": None,
             "records": [record.serialize() for record in workout.records],
@@ -157,7 +158,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "with_gpx": False,
         }
 
-    def test_it_serializes_workout_without_gpx_and_with_ascent_and_descent(
+    def test_it_serializes_workout_without_file_and_with_ascent_and_descent(
         self,
         app: Flask,
         sport_1_cycling: Sport,
@@ -199,6 +200,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "moving": str(workout.moving),
             "next_workout": None,
             "notes": None,
+            "original_file": None,
             "pauses": None,
             "previous_workout": None,
             "records": [record.serialize() for record in workout.records],
@@ -217,7 +219,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "with_gpx": False,
         }
 
-    def test_it_serializes_workout_with_gpx_for_cycling(
+    def test_it_serializes_workout_with_file_for_cycling(
         self,
         app: Flask,
         sport_1_cycling: Sport,
@@ -225,7 +227,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
         workout_cycling_user_1_segment: Workout,
     ) -> None:
-        workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
+        workout = self.update_workout_with_file_data(workout_cycling_user_1)
+        workout.gpx = "file.gpx"
+        workout.original_file = "file.tcx"
         workout.ave_cadence = 55
         workout.ave_hr = 90
         workout.ave_power = 125
@@ -264,6 +268,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "moving": str(workout.moving),
             "next_workout": None,
             "notes": None,
+            "original_file": "tcx",
             "pauses": str(workout.pauses),
             "previous_workout": None,
             "records": [record.serialize() for record in workout.records],
@@ -285,7 +290,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "with_gpx": True,
         }
 
-    def test_it_serializes_workout_with_gpx_for_outdoor_tennis(
+    def test_it_serializes_workout_with_file_for_outdoor_tennis(
         self,
         app: Flask,
         user_1: User,
@@ -293,6 +298,8 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
     ) -> None:
         # it does not return elevation data
         workout = workout_outdoor_tennis_user_1_with_elevation_data
+        workout.gpx = "file.gpx"
+        workout.original_file = "file.gpx"
         workout.ave_cadence = 55
         workout.ave_hr = 90
         workout.ave_power = 125
@@ -331,6 +338,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "moving": str(workout.moving),
             "next_workout": None,
             "notes": None,
+            "original_file": "gpx",
             "pauses": str(workout.pauses),
             "previous_workout": None,
             "records": [
@@ -356,7 +364,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "with_gpx": True,
         }
 
-    def test_it_serializes_workout_with_gpx_for_running(
+    def test_it_serializes_workout_with_file_for_running(
         self,
         app: Flask,
         sport_1_cycling: Sport,
@@ -364,7 +372,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         user_1: User,
         workout_running_user_1: Workout,
     ) -> None:
-        workout = self.update_workout_with_gpx_data(workout_running_user_1)
+        workout = self.update_workout_with_file_data(workout_running_user_1)
+        workout.gpx = "file.gpx"
+        workout.original_file = "file.gpx"
         workout.ave_cadence = 55
         workout.ave_hr = 90
         workout.ave_power = 125
@@ -403,6 +413,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "moving": str(workout.moving),
             "next_workout": None,
             "notes": None,
+            "original_file": "gpx",
             "pauses": str(workout.pauses),
             "previous_workout": None,
             "records": [record.serialize() for record in workout.records],
@@ -424,13 +435,17 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "with_gpx": True,
         }
 
-    def test_it_serializes_workout_with_gpx_for_paragliding(
+    def test_it_serializes_workout_with_file_for_paragliding(
         self,
         app: Flask,
         user_1: User,
         workout_paragliding_user_1: Workout,
     ) -> None:
-        workout = self.update_workout_with_gpx_data(workout_paragliding_user_1)
+        workout = self.update_workout_with_file_data(
+            workout_paragliding_user_1
+        )
+        workout.gpx = "file.gpx"
+        workout.original_file = "file.gpx"
         workout.ave_cadence = 55
         workout.ave_hr = 90
         workout.ave_power = 125
@@ -469,6 +484,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "moving": str(workout.moving),
             "next_workout": None,
             "notes": None,
+            "original_file": "gpx",
             "pauses": str(workout.pauses),
             "previous_workout": None,
             "records": [record.serialize() for record in workout.records],
@@ -626,6 +642,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "moving": str(workout_cycling_user_1.moving),
             "next_workout": None,
             "notes": None,
+            "original_file": None,
             "pauses": None,
             "previous_workout": None,
             "records": [
@@ -719,7 +736,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         user_1: User,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1 = self.update_workout_with_gpx_data(
+        workout_cycling_user_1 = self.update_workout_with_file_data(
             workout_cycling_user_1
         )
 
@@ -1222,7 +1239,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         workout_cycling_user_1.analysis_visibility = input_analysis_visibility
         add_follower(user_1, user_2)
-        workout = self.update_workout_with_gpx_data(
+        workout = self.update_workout_with_file_data(
             workout_cycling_user_1, map_id=random_string()
         )
 
@@ -1276,7 +1293,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         workout_cycling_user_1.analysis_visibility = input_analysis_visibility
         add_follower(user_1, user_2)
-        workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
+        workout = self.update_workout_with_file_data(workout_cycling_user_1)
 
         serialized_workout = workout.serialize(user=user_2, light=False)
 
@@ -1331,7 +1348,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.analysis_visibility = input_analysis_visibility
         workout_cycling_user_1.map_visibility = input_map_visibility
         add_follower(user_1, user_2)
-        workout = self.update_workout_with_gpx_data(
+        workout = self.update_workout_with_file_data(
             workout_cycling_user_1, map_id=random_string()
         )
 
@@ -1385,7 +1402,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.analysis_visibility = input_analysis_visibility
         workout_cycling_user_1.map_visibility = input_map_visibility
         add_follower(user_1, user_2)
-        workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
+        workout = self.update_workout_with_file_data(workout_cycling_user_1)
 
         serialized_workout = workout.serialize(user=user_2, light=False)
 
@@ -1429,7 +1446,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.ave_hr = 90
         workout_cycling_user_1.max_hr = 110
         add_follower(user_1, user_2)
-        workout = self.update_workout_with_gpx_data(
+        workout = self.update_workout_with_file_data(
             workout_cycling_user_1, map_id=random_string()
         )
 
@@ -1456,7 +1473,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.ave_hr = 90
         workout_cycling_user_1.max_hr = 110
         add_follower(user_1, user_2)
-        workout = self.update_workout_with_gpx_data(
+        workout = self.update_workout_with_file_data(
             workout_cycling_user_1, map_id=random_string()
         )
 
@@ -1787,7 +1804,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.map_visibility = VisibilityLevel.PRIVATE
-        workout = self.update_workout_with_gpx_data(
+        workout = self.update_workout_with_file_data(
             workout_cycling_user_1, map_id=random_string()
         )
 
@@ -1841,7 +1858,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         workout_cycling_user_1.analysis_visibility = input_analysis_visibility
-        workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
+        workout = self.update_workout_with_file_data(workout_cycling_user_1)
 
         serialized_workout = workout.serialize(user=user_2, light=False)
 
@@ -1875,7 +1892,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.map_visibility = VisibilityLevel.PUBLIC
-        workout = self.update_workout_with_gpx_data(
+        workout = self.update_workout_with_file_data(
             workout_cycling_user_1, map_id=random_string()
         )
 
@@ -1921,7 +1938,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.analysis_visibility = input_analysis_visibility
         workout_cycling_user_1.map_visibility = input_map_visibility
-        workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
+        workout = self.update_workout_with_file_data(workout_cycling_user_1)
 
         serialized_workout = workout.serialize(user=user_2, light=False)
 
@@ -1957,7 +1974,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ave_hr = 90
         workout_cycling_user_1.max_hr = 110
-        workout = self.update_workout_with_gpx_data(
+        workout = self.update_workout_with_file_data(
             workout_cycling_user_1, map_id=random_string()
         )
 
@@ -1988,7 +2005,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ave_hr = 90
         workout_cycling_user_1.max_hr = 110
-        workout = self.update_workout_with_gpx_data(
+        workout = self.update_workout_with_file_data(
             workout_cycling_user_1, map_id=random_string()
         )
 
@@ -2300,7 +2317,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
-        workout = self.update_workout_with_gpx_data(
+        workout = self.update_workout_with_file_data(
             workout_cycling_user_1, map_id=random_string()
         )
 
@@ -2350,7 +2367,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
     ) -> None:
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         workout_cycling_user_1.analysis_visibility = input_analysis_visibility
-        workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
+        workout = self.update_workout_with_file_data(workout_cycling_user_1)
 
         serialized_workout = workout.serialize(light=False)
 
@@ -2384,7 +2401,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.map_visibility = VisibilityLevel.PUBLIC
-        workout = self.update_workout_with_gpx_data(
+        workout = self.update_workout_with_file_data(
             workout_cycling_user_1, map_id=random_string()
         )
 
@@ -2435,7 +2452,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.analysis_visibility = input_analysis_visibility
         workout_cycling_user_1.map_visibility = input_map_visibility
-        workout = self.update_workout_with_gpx_data(workout_cycling_user_1)
+        workout = self.update_workout_with_file_data(workout_cycling_user_1)
 
         serialized_workout = workout.serialize(light=False)
 
@@ -2472,7 +2489,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
         workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.ave_hr = 90
         workout_cycling_user_1.max_hr = 110
-        workout = self.update_workout_with_gpx_data(
+        workout = self.update_workout_with_file_data(
             workout_cycling_user_1, map_id=random_string()
         )
 
@@ -2502,7 +2519,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
         user_1.hr_visibility = input_hr_visibility
         workout_cycling_user_1.ave_hr = 90
         workout_cycling_user_1.max_hr = 110
-        workout = self.update_workout_with_gpx_data(
+        workout = self.update_workout_with_file_data(
             workout_cycling_user_1, map_id=random_string()
         )
 
@@ -2791,6 +2808,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "moving": str(workout_cycling_user_2.moving),
             "next_workout": None,
             "notes": None,
+            "original_file": None,
             "pauses": None,
             "previous_workout": None,
             "records": [],
@@ -2831,8 +2849,10 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
         workout_cycling_user_2.map_visibility = input_workout_visibility
         workout_cycling_user_2.analysis_visibility = input_workout_visibility
         workout_cycling_user_2.workout_visibility = input_workout_visibility
+        workout_cycling_user_2.gpx = "file.gpx"
+        workout_cycling_user_2.original_file = "file.tcx"
         map_id = random_string()
-        workout_cycling_user_2 = self.update_workout_with_gpx_data(
+        workout_cycling_user_2 = self.update_workout_with_file_data(
             workout_cycling_user_2, map_id=map_id
         )
 
@@ -2871,6 +2891,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "moving": str(workout_cycling_user_2.moving),
             "next_workout": None,
             "notes": None,
+            "original_file": None,
             "pauses": str(workout_cycling_user_2.pauses),
             "previous_workout": None,
             "records": [],
@@ -3076,6 +3097,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "moving": str(workout_cycling_user_2.moving),
             "next_workout": None,
             "notes": None,
+            "original_file": None,
             "pauses": None,
             "previous_workout": None,
             "records": [],
@@ -3107,8 +3129,10 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         workout_cycling_user_2.map_visibility = VisibilityLevel.FOLLOWERS
         workout_cycling_user_2.analysis_visibility = VisibilityLevel.FOLLOWERS
         workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
+        workout_cycling_user_2.gpx = "file.gpx"
+        workout_cycling_user_2.original_file = "file.tcx"
         map_id = random_string()
-        workout_cycling_user_2 = self.update_workout_with_gpx_data(
+        workout_cycling_user_2 = self.update_workout_with_file_data(
             workout_cycling_user_2, map_id=map_id
         )
 
@@ -3147,6 +3171,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "moving": str(workout_cycling_user_2.moving),
             "next_workout": None,
             "notes": None,
+            "original_file": None,
             "pauses": str(workout_cycling_user_2.pauses),
             "previous_workout": None,
             "records": [],

@@ -4,7 +4,7 @@
       v-if="isWorkoutOwner || workoutObject.segmentId !== null"
       class="workout-previous workout-arrow transparent"
       :class="{ inactive: !workoutObject.previousUrl }"
-      :disabled="!workoutObject.previousUrl"
+      :disabled="!workoutObject.previousUrl || refreshLoading"
       :title="
         workoutObject.previousUrl
           ? $t(`workouts.PREVIOUS_${workoutObject.type}`)
@@ -37,9 +37,10 @@
               {{ $t('workouts.VIEW_ON_REMOTE_INSTANCE') }}
               <i class="fa fa-external-link-square" aria-hidden="true"></i>
             </a>
-            <div>
+            <div class="workout-buttons">
               <button
                 class="transparent icon-button likes"
+                :disabled="refreshLoading"
                 @click="updateLike(workoutObject)"
                 :title="
                   $t(
@@ -70,6 +71,7 @@
               </router-link>
               <button
                 class="transparent icon-button"
+                :disabled="refreshLoading"
                 v-if="isWorkoutOwner"
                 @click="
                   $router.push({
@@ -81,18 +83,84 @@
               >
                 <i class="fa fa-edit" aria-hidden="true" />
               </button>
+              <div class="download-files">
+                <button
+                  id="download-workout"
+                  v-if="isWorkoutOwner && workoutObject.with_gpx"
+                  class="transparent icon-button"
+                  :disabled="refreshLoading"
+                  @click.prevent="toggleDownloadButtons()"
+                  :title="$t(`workouts.DOWNLOAD_WORKOUT`)"
+                >
+                  <i
+                    class="fa fa-download"
+                    aria-hidden="true"
+                    id="download-workout-icon"
+                  />
+                </button>
+                <div
+                  class="download-files-buttons"
+                  v-if="displayDownloadButtons && isWorkoutOwner"
+                  v-click-outside="hideDownloadButtons"
+                >
+                  <button
+                    class="transparent icon-button"
+                    :disabled="refreshLoading"
+                    @click.prevent="
+                      downloadWorkoutFile(workoutObject.workoutId)
+                    "
+                    :title="
+                      workoutObject.originalFile === 'gpx'
+                        ? $t(`workouts.DOWNLOAD_ORIGINAL_FILE`, {
+                            fileExtension: workoutObject.originalFile,
+                          })
+                        : $t(`workouts.DOWNLOAD_GPX_FILE`)
+                    "
+                  >
+                    <i class="fa fa-download" aria-hidden="true" />
+                    .gpx
+                  </button>
+                  <button
+                    class="transparent icon-button"
+                    :disabled="refreshLoading"
+                    @click.prevent="
+                      downloadWorkoutFile(workoutObject.workoutId, {
+                        original: true,
+                      })
+                    "
+                    :title="
+                      $t(`workouts.DOWNLOAD_ORIGINAL_FILE`, {
+                        fileExtension: workoutObject.originalFile,
+                      })
+                    "
+                    v-if="
+                      workoutObject.originalFile &&
+                      ['fit', 'kml', 'tcx'].includes(workoutObject.originalFile)
+                    "
+                  >
+                    <i class="fa fa-download" aria-hidden="true" />
+                    .{{ workoutObject.originalFile }}
+                  </button>
+                </div>
+              </div>
               <button
                 v-if="workoutObject.with_gpx && isWorkoutOwner"
                 class="transparent icon-button"
-                @click.prevent="downloadGpx(workoutObject.workoutId)"
-                :title="$t(`workouts.DOWNLOAD_WORKOUT`)"
+                :disabled="refreshLoading"
+                @click.prevent="refreshGpx(workoutObject.workoutId)"
+                :title="$t(`workouts.REFRESH_WORKOUT`)"
               >
-                <i class="fa fa-download" aria-hidden="true" />
+                <i
+                  class="fa fa-refresh"
+                  :class="{ 'fa-spin': refreshLoading }"
+                  aria-hidden="true"
+                />
               </button>
               <button
                 v-if="isWorkoutOwner"
                 id="delete-workout-button"
                 class="transparent icon-button"
+                :disabled="refreshLoading"
                 @click.prevent="displayDeleteModal"
                 :title="$t(`workouts.DELETE_WORKOUT`)"
               >
@@ -105,6 +173,7 @@
                   reportStatus !== `workout-${workoutObject.workoutId}-created`
                 "
                 class="transparent icon-button"
+                :disabled="refreshLoading"
                 @click.prevent="displayReportForm"
                 :title="$t('workouts.REPORT_WORKOUT')"
               >
@@ -134,6 +203,9 @@
             >
               {{ workoutObject.likes_count }}
             </router-link>
+          </div>
+          <div v-if="refreshLoading" class="refresh-message">
+            {{ $t('workouts.REFRESHING_WORKOUT') }}
           </div>
         </div>
         <div class="workout-title" v-else-if="workoutObject.segmentId !== null">
@@ -167,7 +239,7 @@
       v-if="isWorkoutOwner || workoutObject.segmentId !== null"
       class="workout-next workout-arrow transparent"
       :class="{ inactive: !workoutObject.nextUrl }"
-      :disabled="!workoutObject.nextUrl"
+      :disabled="!workoutObject.nextUrl || refreshLoading"
       :title="
         workoutObject.nextUrl
           ? $t(`workouts.NEXT_${workoutObject.type}`)
@@ -183,8 +255,8 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, toRefs } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import { computed, ref, toRefs, watch } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
   import authApi from '@/api/authApi'
   import useAuthUser from '@/composables/useAuthUser'
@@ -197,9 +269,10 @@
     sport: ISport
     workoutObject: IWorkoutObject
     isWorkoutOwner: boolean
+    refreshLoading: boolean
   }
   const props = defineProps<Props>()
-  const { isWorkoutOwner, sport, workoutObject } = toRefs(props)
+  const { isWorkoutOwner, refreshLoading, sport, workoutObject } = toRefs(props)
 
   const emit = defineEmits(['displayModal'])
 
@@ -207,29 +280,52 @@
 
   const { isAuthenticated } = useAuthUser()
 
+  const workoutFileMimetypes = {
+    fit: 'application/vnd.ant.fit',
+    gpx: 'application/gpx+xml',
+    kml: 'application/vnd.google-earth.kml+xml',
+    tcx: 'application/vnd.garmin.tcx+xml',
+  }
   const currentlyReporting: ComputedRef<boolean> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.CURRENT_REPORTING]
   )
   const reportStatus: ComputedRef<string | null> = computed(
     () => store.getters[REPORTS_STORE.GETTERS.REPORT_STATUS]
   )
+  const displayDownloadButtons: Ref<boolean> = ref(false)
 
-  async function downloadGpx(workoutId: string) {
+  async function downloadWorkoutFile(
+    workoutId: string,
+    options: { original?: boolean } = {}
+  ) {
+    const fileExtension =
+      options.original && workoutObject.value.originalFile
+        ? workoutObject.value.originalFile
+        : 'gpx'
+    const mimeType = workoutFileMimetypes[fileExtension]
     await authApi
-      .get(`workouts/${workoutId}/gpx/download`, {
-        responseType: 'blob',
-      })
+      .get(
+        `workouts/${workoutId}/${options.original ? 'original' : 'gpx'}/download`,
+        {
+          responseType: 'blob',
+        }
+      )
       .then((response) => {
         const gpxFileUrl = window.URL.createObjectURL(
-          new Blob([response.data], { type: 'application/gpx+xml' })
+          new Blob([response.data], { type: mimeType })
         )
         const gpxLink = document.createElement('a')
         gpxLink.href = gpxFileUrl
-        gpxLink.setAttribute('download', `${workoutId}.gpx`)
+        gpxLink.setAttribute('download', `${workoutId}.${fileExtension}`)
         document.body.appendChild(gpxLink)
         gpxLink.click()
+        displayDownloadButtons.value = false
       })
   }
+  async function refreshGpx(workoutId: string) {
+    store.dispatch(WORKOUTS_STORE.ACTIONS.REFRESH_WORKOUT, workoutId)
+  }
+
   function displayDeleteModal() {
     emit('displayModal', true)
   }
@@ -244,6 +340,28 @@
   function displayReportForm() {
     store.commit(WORKOUTS_STORE.MUTATIONS.SET_CURRENT_REPORTING, true)
   }
+  function toggleDownloadButtons() {
+    displayDownloadButtons.value = !displayDownloadButtons.value
+  }
+  function hideDownloadButtons(event: Event) {
+    event.stopPropagation()
+    if (
+      (event.target as Element).id !== null &&
+      ['download-workout', 'download-workout-icon'].includes(
+        (event.target as Element).id
+      )
+    ) {
+      return
+    }
+    displayDownloadButtons.value = false
+  }
+
+  watch(
+    () => workoutObject.value.workoutId,
+    () => {
+      displayDownloadButtons.value = false
+    }
+  )
 </script>
 
 <style lang="scss" scoped>
@@ -305,6 +423,46 @@
       }
       .workout-link {
         padding-left: $default-padding;
+      }
+
+      .workout-buttons {
+        display: flex;
+        .download-files {
+          display: flex;
+          .download-files-buttons {
+            position: absolute;
+            z-index: 1010;
+
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-top: $default-margin;
+            margin-left: -8px;
+
+            background-color: var(--dropdown-background-color);
+            box-shadow: 2px 2px 5px var(--app-shadow-color);
+            border-radius: $border-radius;
+
+            button {
+              margin: 0;
+              padding: $default-padding;
+              width: 100%;
+              border: none;
+              text-align: left;
+
+              &:hover,
+              &:focus {
+                background-color: var(--dropdown-hover-color);
+              }
+            }
+          }
+        }
+      }
+
+      .refresh-message {
+        font-size: 0.85em;
+        font-style: italic;
+        font-weight: normal;
       }
 
       .fa {

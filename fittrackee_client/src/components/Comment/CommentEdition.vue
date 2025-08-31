@@ -66,7 +66,7 @@
           <Loader />
         </div>
         <div class="comment-buttons" v-else>
-          <button class="confirm" type="submit">
+          <button class="confirm" type="submit" :disabled="disabled">
             {{ $t('buttons.SUBMIT') }}
           </button>
           <button class="cancel" @click.prevent="onCancel">
@@ -114,12 +114,14 @@
     replyTo?: IComment | null
     name?: string | null
     mentions?: IUserLightProfile[]
+    disabled?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     comment: null,
     replyTo: null,
     name: 'text',
     mentions: () => [],
+    disabled: false,
   })
   const {
     authUser,

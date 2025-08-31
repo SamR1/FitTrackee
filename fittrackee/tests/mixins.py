@@ -628,7 +628,7 @@ class UserTaskMixin:
 
 class WorkoutMixin:
     @staticmethod
-    def update_workout_with_gpx_data(
+    def update_workout_with_file_data(
         workout: Workout,
         map_id: Optional[str] = None,
         gpx_path: Optional[str] = None,

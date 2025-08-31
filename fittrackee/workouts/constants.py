@@ -35,3 +35,10 @@ POWER_SPORTS = [
 SPORTS_WITHOUT_ELEVATION_DATA = [
     "Tennis (Outdoor)",
 ]
+
+WORKOUT_FILE_MIMETYPES = {
+    "fit": "application/vnd.ant.fit",
+    "gpx": "application/gpx+xml",
+    "kml": "application/vnd.google-earth.kml+xml",
+    "tcx": "application/vnd.garmin.tcx+xml",
+}

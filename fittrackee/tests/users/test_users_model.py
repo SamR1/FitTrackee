@@ -618,7 +618,7 @@ class TestUserRecords(UserModelAssertMixin, WorkoutMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        self.update_workout_with_gpx_data(workout_cycling_user_1)
+        self.update_workout_with_file_data(workout_cycling_user_1)
 
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 

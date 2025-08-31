@@ -3,11 +3,11 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Recherche" href="../search.html" /><link rel="next" title="Contribuer" href="../contributing.html" /><link rel="prev" title="Dépannage" href="index.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Recherche" href="../search.html" /><link rel="next" title="Utilisateur" href="user.html" /><link rel="prev" title="Dépannage" href="index.html" />
         <link rel="prefetch" href="../_static/ft-logo.png" as="image" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2025.07.19 -->
-        <title>Administrateur - Documentation FitTrackee 0.11.2</title>
+        <title>Administrateur - Documentation FitTrackee 0.12.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -170,7 +170,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.11.2
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.12.0
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.11.2
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.12.0
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -224,6 +224,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/queued_tasks.html">Tâches en attente</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/records.html">Records</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/reports.html">Signalements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/rss_feeds.html">Flux RSS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/sports.html">Sports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/stats.html">Statistiques</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/timeline.html">Flux de séances</a></li>
@@ -233,6 +234,7 @@
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Dépannage</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Dépannage</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Administrateur</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user.html">Utilisateur</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contribuer</a></li>
@@ -291,7 +293,7 @@
           <section id="administrator">
 <h1>Administrateur<a class="headerlink" href="#administrator" title="Lien vers cette rubrique">¶</a></h1>
 <section id="fittrackee-fails-to-start">
-<h2><cite>FitTrackee ne démarre pas</cite><a class="headerlink" href="#fittrackee-fails-to-start" title="Lien vers cette rubrique">¶</a></h2>
+<h2>FitTrackee ne démarre pas<a class="headerlink" href="#fittrackee-fails-to-start" title="Lien vers cette rubrique">¶</a></h2>
 <ul>
 <li><p>Vérifiez l'URL de la base de données dans les <a class="reference external" href="../installation.html#envvar-DATABASE_URL">variables d'environnement</a> si l'erreur suivante est affichée dans les logs de <strong>gunicorn</strong> :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sqlalchemy</span><span class="o">.</span><span class="n">exc</span><span class="o">.</span><span class="n">NoSuchModuleError</span><span class="p">:</span> <span class="n">Can</span><span class="s1">&#39;t load plugin: sqlalchemy.dialects:postgres</span>
@@ -308,13 +310,13 @@
 </ul>
 </section>
 <section id="map-images-are-not-displayed-but-map-is-shown-in-workout-detail">
-<h2><cite>Les images de la carte ne sont pas affichées mais la carte est affichée dans le détail de la séance</cite><a class="headerlink" href="#map-images-are-not-displayed-but-map-is-shown-in-workout-detail" title="Lien vers cette rubrique">¶</a></h2>
+<h2>Les images de la carte ne sont pas affichées mais la carte est affichée dans le détail de la séance<a class="headerlink" href="#map-images-are-not-displayed-but-map-is-shown-in-workout-detail" title="Lien vers cette rubrique">¶</a></h2>
 <ul class="simple">
 <li><p>Vérifier le chemin dans les <a class="reference external" href="../installation.html#envvar-UPLOAD_FOLDER">variables d'environnement</a>. <code class="docutils literal notranslate"><span class="pre">UPLOAD_FOLDER</span></code> doit être défini avec un chemin absolu.</p></li>
 </ul>
 </section>
 <section id="failed-to-upload-or-download-files">
-<h2><cite>Échec du chargement ou du téléchargement de fichiers</cite><a class="headerlink" href="#failed-to-upload-or-download-files" title="Lien vers cette rubrique">¶</a></h2>
+<h2>Échec du chargement ou du téléchargement de fichiers<a class="headerlink" href="#failed-to-upload-or-download-files" title="Lien vers cette rubrique">¶</a></h2>
 <ul class="simple">
 <li><p>Vérifiez <code class="docutils literal notranslate"><span class="pre">client_max_body_size</span></code> dans la configuration <strong>nginx</strong>. Augmentez la valeur pour gérer des fichiers plus volumineux (voir la <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">documentation</a> de <strong>nginx</strong>).</p></li>
 <li><p>Augmenter le <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#timeout">délai d'attente</a> (timeout) <strong>gunicorn</strong> si l'erreur suivante est affichée dans le journal de gunicorn : <code class="docutils literal notranslate"><span class="pre">[CRITICAL]</span> <span class="pre">WORKER</span> <span class="pre">TIMEOUT</span></code>.</p></li>
@@ -359,12 +361,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../contributing.html">
+          <a class="next-page" href="user.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Contribuer</div>
+                <div class="title">Utilisateur</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -414,9 +416,9 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Administrateur</a><ul>
-<li><a class="reference internal" href="#fittrackee-fails-to-start"><cite>FitTrackee ne démarre pas</cite></a></li>
-<li><a class="reference internal" href="#map-images-are-not-displayed-but-map-is-shown-in-workout-detail"><cite>Les images de la carte ne sont pas affichées mais la carte est affichée dans le détail de la séance</cite></a></li>
-<li><a class="reference internal" href="#failed-to-upload-or-download-files"><cite>Échec du chargement ou du téléchargement de fichiers</cite></a></li>
+<li><a class="reference internal" href="#fittrackee-fails-to-start">FitTrackee ne démarre pas</a></li>
+<li><a class="reference internal" href="#map-images-are-not-displayed-but-map-is-shown-in-workout-detail">Les images de la carte ne sont pas affichées mais la carte est affichée dans le détail de la séance</a></li>
+<li><a class="reference internal" href="#failed-to-upload-or-download-files">Échec du chargement ou du téléchargement de fichiers</a></li>
 <li><a class="reference internal" href="#runtimeerror-thread-already-started"><code class="docutils literal notranslate"><span class="pre">RuntimeError:</span> <span class="pre">thread</span> <span class="pre">already</span> <span class="pre">started</span></code></a></li>
 <li><a class="reference internal" href="#staticmap3-staticmap-error-request-failed-none"><code class="docutils literal notranslate"><span class="pre">staticmap3.staticmap</span> <span class="pre">-</span> <span class="pre">ERROR</span> <span class="pre">-</span> <span class="pre">request</span> <span class="pre">failed</span> <span class="pre">[None]</span></code></a></li>
 </ul>
@@ -430,7 +432,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e8bf8d6b"></script>
+</div><script src="../_static/documentation_options.js?v=e9405df3"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

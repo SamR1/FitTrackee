@@ -25,6 +25,7 @@
           :authUser="authUser"
           comments-loading="workoutData.commentsLoading"
           :action="comment.suspension"
+          :disabled="disabled"
         />
         <div class="no-comments" v-if="workoutData.comments.length === 0">
           {{ $t('workouts.COMMENTS.NO_COMMENTS') }}
@@ -35,13 +36,14 @@
             :workout="workoutData.workout"
             comments-loading="workoutData.commentsLoading"
             :auth-user="authUser"
+            :disabled="disabled"
           />
         </div>
         <div
           class="add-comment-button"
           v-else-if="authUser.username && workoutData.workout.id"
         >
-          <button @click.prevent="displayCommentTextArea">
+          <button @click.prevent="displayCommentTextArea" :disabled="disabled">
             {{ $t('workouts.COMMENTS.ADD') }}
           </button>
         </div>
@@ -73,9 +75,11 @@
   interface Props {
     workoutData: IWorkoutData
     authUser: IAuthUserProfile
+    disabled?: boolean
     withParent?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
+    disabled: false,
     withParent: false,
   })
   const { workoutData, withParent } = toRefs(props)

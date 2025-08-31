@@ -9,7 +9,7 @@ from fittrackee.users.models import UserSportPreference
 from fittrackee.workouts.models import Sport
 
 from ..exceptions import WorkoutException
-from ..models import TITLE_MAX_CHARACTERS, Workout
+from ..models import TITLE_MAX_CHARACTERS
 
 if TYPE_CHECKING:
     from fittrackee.equipments.models import Equipment

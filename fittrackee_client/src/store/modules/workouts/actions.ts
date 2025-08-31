@@ -162,11 +162,8 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
           ) {
             throw new Error('WORKOUT_NOT_FOUND')
           }
-          context.commit(
-            WORKOUTS_STORE.MUTATIONS.SET_WORKOUT,
-            res.data.data.workouts[0]
-          )
-          if (res.data.data.workouts[0].with_analysis) {
+          context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT, workout)
+          if (workout.with_analysis) {
             context.commit(
               WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA_LOADING,
               true
@@ -194,7 +191,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                 )
               })
           }
-          if (res.data.data.workouts[0].with_gpx) {
+          if (workout.with_gpx) {
             authApi
               .get(`workouts/${payload.workoutId}/gpx${segmentUrl}`)
               .then((res) => {
@@ -209,7 +206,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
           if (!payload.segmentId) {
             context.dispatch(
               WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
-              res.data.data.workouts[0].id
+              workout.id
             )
           }
         } else {
@@ -581,5 +578,72 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .catch((error) => {
         handleError(context, error)
       })
+  },
+  [WORKOUTS_STORE.ACTIONS.REFRESH_WORKOUT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    workoutId: string
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_REFRESH_LOADING, true)
+    authApi
+      .post(`workouts/${workoutId}/refresh`)
+      .then((res) => {
+        const workout: IWorkout = res.data.data.workouts[0]
+        if (res.data.status === 'success') {
+          context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT, workout)
+          if (workout.with_analysis) {
+            context.commit(
+              WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA_LOADING,
+              true
+            )
+            authApi
+              .get(`workouts/${workoutId}/chart_data`)
+              .then((res) => {
+                if (res.data.status === 'success') {
+                  context.commit(
+                    WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA,
+                    res.data.data.chart_data
+                  )
+                }
+              })
+              .catch(() => {
+                context.commit(
+                  WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA,
+                  []
+                )
+              })
+              .finally(() => {
+                context.commit(
+                  WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA_LOADING,
+                  false
+                )
+              })
+          }
+          if (workout.with_gpx) {
+            authApi.get(`workouts/${workoutId}/gpx`).then((res) => {
+              if (res.data.status === 'success') {
+                context.commit(
+                  WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX,
+                  res.data.data.gpx
+                )
+              }
+            })
+          }
+          context.dispatch(
+            WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
+            workout.id
+          )
+        } else {
+          context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
+        handleError(context, error)
+      })
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_REFRESH_LOADING, false)
+      )
   },
 }

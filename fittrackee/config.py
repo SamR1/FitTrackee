@@ -36,12 +36,6 @@ class BaseConfig:
     )
     PICTURE_ALLOWED_EXTENSIONS = {"jpg", "png", "gif"}
     WORKOUT_ALLOWED_EXTENSIONS = {"zip"}.union(WORKOUT_ALLOWED_EXTENSIONS)
-    TEMPLATES_FOLDER = os.path.join(current_app.root_path, "emails/templates")
-    UI_URL = os.environ["UI_URL"]
-    EMAIL_URL = os.environ.get("EMAIL_URL")
-    SENDER_EMAIL = os.environ.get("SENDER_EMAIL")
-    CAN_SEND_EMAILS = False
-    DRAMATIQ_BROKER = broker
     TILE_SERVER = {
         "URL": os.environ.get(
             "TILE_SERVER_URL",
@@ -58,10 +52,25 @@ class BaseConfig:
         ),
         "STATICMAP_SUBDOMAINS": os.environ.get("STATICMAP_SUBDOMAINS", ""),
     }
-    TRANSLATIONS_FOLDER = os.path.join(
-        current_app.root_path, "emails/translations"
-    )
+
+    DRAMATIQ_BROKER = broker
+
     LANGUAGES = SUPPORTED_LANGUAGES
+    BABEL_DEFAULT_LOCALE = "en"
+    TRANSLATIONS_FOLDER = os.path.join(current_app.root_path, "translations")
+
+    EMAIL_URL = os.environ.get("EMAIL_URL")
+    SENDER_EMAIL = os.environ.get("SENDER_EMAIL")
+    CAN_SEND_EMAILS = False
+    EMAILS_TEMPLATES_FOLDER = os.path.join(
+        current_app.root_path, "emails/templates"
+    )
+
+    FEEDS_TEMPLATES_FOLDER = os.path.join(
+        current_app.root_path, "feeds/templates"
+    )
+
+    UI_URL = os.environ["UI_URL"]
     OAUTH2_TOKEN_EXPIRES_IN = {
         "authorization_code": 864000,  # 10 days
         "refresh_token": 864000,  # 10 days
