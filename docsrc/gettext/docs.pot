@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FitTrackee 0.12.0\n"
 "\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-31 16:18+0200\n"
+"POT-Creation-Date: 2025-08-31 17:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -496,7 +496,7 @@ msgstr ""
 msgid "Parameters"
 msgstr ""
 
-#: ../source/cli.rst:257
+#: ../source/cli.rst:259
 #: ../../<autoflask>:1
 msgid "sport id"
 msgstr ""
@@ -2080,12 +2080,12 @@ msgstr ""
 msgid "username"
 msgstr ""
 
-#: ../source/cli.rst:259
+#: ../source/cli.rst:261
 #: ../../<autoflask>:1
 msgid "start date (format: ``%Y-%m-%d``)"
 msgstr ""
 
-#: ../source/cli.rst:261
+#: ../source/cli.rst:263
 #: ../../<autoflask>:1
 msgid "end date (format: ``%Y-%m-%d``)"
 msgstr ""
@@ -7938,7 +7938,7 @@ msgstr ""
 #: ../source/cli.rst:165
 #: ../source/cli.rst:215
 #: ../source/cli.rst:234
-#: ../source/cli.rst:254
+#: ../source/cli.rst:256
 msgid "Options"
 msgstr ""
 
@@ -7951,7 +7951,7 @@ msgstr ""
 #: ../source/cli.rst:184
 #: ../source/cli.rst:216
 #: ../source/cli.rst:235
-#: ../source/cli.rst:255
+#: ../source/cli.rst:257
 msgid "Description"
 msgstr ""
 
@@ -8191,76 +8191,80 @@ msgstr ""
 msgid "Refresh workouts by recalculating data and fetching weather data if provider is set and workout does not have weather data."
 msgstr ""
 
-#: ../source/cli.rst:247
+#: ../source/cli.rst:246
+msgid "Before executing the command, it is recommended to back up of all data (database and upload directory) in case a large number of workouts are refreshed."
+msgstr ""
+
+#: ../source/cli.rst:249
 #: ../source/features.rst:146
 msgid "If a weather data provider is defined and the ``--with-weather`` option is provided, the rate limit may be reached, resulting in API rate limit errors when a large number of workouts is refreshed."
 msgstr ""
 
-#: ../source/cli.rst:256
+#: ../source/cli.rst:258
 msgid "``--sport-id INTEGER``"
 msgstr ""
 
-#: ../source/cli.rst:258
+#: ../source/cli.rst:260
 msgid "``--from TEXT``"
 msgstr ""
 
-#: ../source/cli.rst:260
+#: ../source/cli.rst:262
 msgid "``--to TEXT``"
 msgstr ""
 
-#: ../source/cli.rst:262
+#: ../source/cli.rst:264
 msgid "``--per-page INTEGER``"
 msgstr ""
 
-#: ../source/cli.rst:263
+#: ../source/cli.rst:265
 msgid "number of workouts per page (default: 10)"
 msgstr ""
 
-#: ../source/cli.rst:264
+#: ../source/cli.rst:266
 msgid "``--page INTEGER``"
 msgstr ""
 
-#: ../source/cli.rst:265
+#: ../source/cli.rst:267
 msgid "page number (default: 1)"
 msgstr ""
 
-#: ../source/cli.rst:266
+#: ../source/cli.rst:268
 msgid "``--order TEXT``"
 msgstr ""
 
-#: ../source/cli.rst:267
+#: ../source/cli.rst:269
 msgid "workout date order: 'asc' or 'desc' (default: 'asc')"
 msgstr ""
 
-#: ../source/cli.rst:268
+#: ../source/cli.rst:270
 msgid "``--user TEXT``"
 msgstr ""
 
-#: ../source/cli.rst:269
+#: ../source/cli.rst:271
 msgid "username of workouts owner"
 msgstr ""
 
-#: ../source/cli.rst:270
+#: ../source/cli.rst:272
 msgid "``--extension TEXT``"
 msgstr ""
 
-#: ../source/cli.rst:271
+#: ../source/cli.rst:273
 msgid "workout file extension (valid values are: tcx, kmz, gpx, kml, fit)"
 msgstr ""
 
-#: ../source/cli.rst:272
+#: ../source/cli.rst:274
 msgid "``--with-weather``"
 msgstr ""
 
-#: ../source/cli.rst:273
+#: ../source/cli.rst:275
 msgid "enable weather data collection if weather provider is set and workout has no weather data. WARNING: depending on subscription, the rate limit can be reached, leading to errors and preventing weather data being collected during next uploads until the limit is reset (default: disabled)"
 msgstr ""
 
-#: ../source/cli.rst:274
+#: ../source/cli.rst:276
 msgid "``-v, --verbose``"
 msgstr ""
 
-#: ../source/cli.rst:275
+#: ../source/cli.rst:277
 msgid "Enable verbose output log (default: disabled)"
 msgstr ""
 
