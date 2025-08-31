@@ -22,6 +22,7 @@ export const workoutsState: IWorkoutsState = {
     commentsLoading: null,
     currentCommentEdition: <ICurrentCommentEdition>{},
     currentReporting: false,
+    refreshLoading: false,
   },
   workoutContent: {
     loading: false,

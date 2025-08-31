@@ -15,7 +15,11 @@
           :from-admin="fromAdmin"
         />
       </div>
-      <UserWorkoutsList :user="user" v-if="displayUserWorkouts" />
+      <UserWorkoutsList
+        v-if="displayUserWorkouts"
+        :authUser="authUser"
+        :user="user"
+      />
     </template>
     <div v-else>
       <NotFound target="USER" />

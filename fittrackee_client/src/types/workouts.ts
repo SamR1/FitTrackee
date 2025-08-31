@@ -9,6 +9,8 @@ import type {
   TVisibilityLevels,
 } from '@/types/user'
 
+export type TFileExtension = 'fit' | 'gpx' | 'kml' | 'tcx'
+
 export interface IWorkoutSegment {
   ascent: number
   ave_cadence: number | null
@@ -96,6 +98,7 @@ export interface IWorkout {
   moving: string | null
   next_workout: string | null
   notes: string
+  original_file: TFileExtension | null
   pauses: string | null
   previous_workout: string | null
   records: IRecord[]
@@ -137,6 +140,7 @@ export interface IWorkoutObject {
   minAlt: number | null
   moving: string | null
   nextUrl: string | null
+  originalFile: TFileExtension | null
   pauses: string | null
   previousUrl: string | null
   records: IRecord[]
@@ -234,6 +238,7 @@ export interface IWorkoutData {
   commentsLoading: string | null
   currentCommentEdition: ICurrentCommentEdition
   currentReporting: boolean
+  refreshLoading: boolean
 }
 
 export type TWorkoutDatasetKeys =

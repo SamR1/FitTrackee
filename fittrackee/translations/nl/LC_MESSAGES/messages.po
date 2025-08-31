@@ -1,0 +1,604 @@
+# Dutch translations for PROJECT.
+# Copyright (C) 2022 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-08-27 15:52+0200\n"
+"PO-Revision-Date: 2025-08-29 04:01+0000\n"
+"Last-Translator: Stephan Paternotte <stephan@paternottes.net>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/fittrackee/"
+"fittrackee-api-emails/nl/>\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.13.1-dev\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: fittrackee/emails/templates/layout.html:232
+#: fittrackee/emails/templates/layout.txt:1
+#, python-format
+msgid "Hi %(username)s,"
+msgstr "Dag %(username)s,"
+
+#: fittrackee/emails/templates/account_confirmation/body.txt:6
+#: fittrackee/emails/templates/email_update_to_current_email/body.txt:3
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:6
+#: fittrackee/emails/templates/layout.html:235
+#: fittrackee/emails/templates/password_change/body.txt:3
+#: fittrackee/emails/templates/password_reset_request/body.txt:6
+#, python-format
+msgid ""
+"For security, this request was received from a %(operating_system)s "
+"device using %(browser_name)s."
+msgstr ""
+"Voor beveiliging, werd deze aanvraag ontvangen van een "
+"%(operating_system)s apparaat via %(browser_name)s."
+
+#: fittrackee/emails/templates/layout.html:238
+#: fittrackee/emails/templates/layout.txt:5
+msgid "Thanks,"
+msgstr "Bedankt,"
+
+#: fittrackee/emails/templates/layout.html:239
+#: fittrackee/emails/templates/layout.txt:6
+msgid "The FitTrackee Team"
+msgstr "Het FitTrackee Team"
+
+#: fittrackee/emails/templates/account_confirmation/body.html:2
+#: fittrackee/emails/templates/account_confirmation/subject.txt:1
+msgid "Confirm your account"
+msgstr "Bevestig uw account"
+
+#: fittrackee/emails/templates/account_confirmation/body.html:3
+msgid "Use this link to confirm your account."
+msgstr "Gebruik deze link om uw account te bevestigen."
+
+#: fittrackee/emails/templates/account_confirmation/body.html:4
+#: fittrackee/emails/templates/account_confirmation/body.txt:1
+msgid "You have created an account on FitTrackee."
+msgstr "U hebt een account aangemaakt op FitTrackee."
+
+#: fittrackee/emails/templates/account_confirmation/body.html:4
+msgid "Use the button below to confirm your address email."
+msgstr "Gebruik de onderstaande knop om uw email adres te bevestigen."
+
+#: fittrackee/emails/templates/account_confirmation/body.html:11
+#: fittrackee/emails/templates/account_confirmation/body.txt:4
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:11
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:4
+msgid "Verify your email"
+msgstr "Verifieer uw email"
+
+#: fittrackee/emails/templates/account_confirmation/body.html:18
+#: fittrackee/emails/templates/account_confirmation/body.txt:7
+msgid ""
+"If this account creation wasn't initiated by you, please ignore this "
+"email."
+msgstr "Indien u deze account niet hebt aangemaakt, gelieve deze email te negeren."
+
+#: fittrackee/emails/templates/account_confirmation/body.html:22
+#: fittrackee/emails/templates/comment_suspension/body.html:37
+#: fittrackee/emails/templates/data_export_ready/body.html:22
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:22
+#: fittrackee/emails/templates/password_reset_request/body.html:24
+#: fittrackee/emails/templates/user_suspension/body.html:24
+#: fittrackee/emails/templates/user_warning/body.html:58
+#: fittrackee/emails/templates/workout_suspension/body.html:40
+msgid ""
+"If you're having trouble with the button above, copy and paste the URL "
+"below into your web browser."
+msgstr ""
+"Als u problemen hebt met bovenstaande knop, kopieer en plak de "
+"onderstaande URL in uw web browser."
+
+#: fittrackee/emails/templates/account_confirmation/body.txt:2
+msgid "Use the link below to confirm your address email."
+msgstr "Gebruik de onderstaande link om uw email adres te bevestigen."
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:2
+#: fittrackee/emails/templates/user_warning_lifting/body.html:2
+#: fittrackee/emails/templates/user_warning_lifting/subject.txt:1
+#, python-format
+msgid "Warning for %(username)s lifted"
+msgstr "Waarschuwing voor %(username)s is verwijderd"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:3
+msgid "Your appeal has been rejected"
+msgstr "Uw beroep is niet onontvankelijk verklaard"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:4
+#: fittrackee/emails/templates/appeal_rejected/body.txt:1
+msgid "Your appeal on your account suspension has been rejected"
+msgstr "Uw beroep tegen het verwijderen van uw account is onontvankelijk verklaard"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:4
+#: fittrackee/emails/templates/appeal_rejected/body.txt:1
+msgid "Your appeal on your warning has been rejected"
+msgstr "Uw beroep tegen uw waarschuwing is onontvankelijk verklaard"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:4
+#: fittrackee/emails/templates/appeal_rejected/body.txt:1
+msgid "Your appeal on the following content suspension has been rejected"
+msgstr "Uw beroep tegen volgende inhoudsblokkering is onontvankelijk verklaard"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:6
+#: fittrackee/emails/templates/appeal_rejected/body.txt:3
+#: fittrackee/emails/templates/comment_suspension/body.txt:5
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:5
+#: fittrackee/emails/templates/user_warning/body.html:7
+#: fittrackee/emails/templates/user_warning/body.txt:5
+#: fittrackee/emails/templates/user_warning_lifting/body.html:6
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:3
+msgid "Comment:"
+msgstr "Reageer:"
+
+#: fittrackee/emails/templates/appeal_rejected/body.html:22
+#: fittrackee/emails/templates/appeal_rejected/body.txt:7
+#: fittrackee/emails/templates/user_warning/body.html:23
+#: fittrackee/emails/templates/user_warning/body.txt:9
+#: fittrackee/emails/templates/user_warning_lifting/body.html:22
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:7
+#: fittrackee/emails/templates/workout_suspension/body.txt:5
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:5
+msgid "Workout:"
+msgstr "Training:"
+
+#: fittrackee/emails/templates/appeal_rejected/body.txt:5
+#: fittrackee/emails/templates/appeal_rejected/body.txt:9
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:7
+#: fittrackee/emails/templates/user_warning/body.txt:7
+#: fittrackee/emails/templates/user_warning/body.txt:11
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:5
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:9
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:7
+msgid "Link:"
+msgstr "Link:"
+
+#: fittrackee/emails/templates/appeal_rejected/subject.txt:1
+msgid "Appeal rejected"
+msgstr "Beroep onontvankelijk verklaard"
+
+#: fittrackee/emails/templates/comment_suspension/body.html:2
+#: fittrackee/emails/templates/comment_suspension/subject.txt:1
+msgid "Your comment has been suspended"
+msgstr "Uw commentaar is geblokeerd"
+
+#: fittrackee/emails/templates/comment_suspension/body.html:3
+#: fittrackee/emails/templates/comment_suspension/body.html:4
+#: fittrackee/emails/templates/comment_suspension/body.txt:1
+msgid "Your comment has been suspended, it is no longer visible"
+msgstr "Uw commentaar is geblokkeerd, het is niet langer zichtbaar"
+
+#: fittrackee/emails/templates/comment_suspension/body.html:5
+#: fittrackee/emails/templates/comment_suspension/body.txt:3
+#: fittrackee/emails/templates/comment_unsuspension/body.html:5
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:3
+#: fittrackee/emails/templates/user_suspension/body.html:6
+#: fittrackee/emails/templates/user_suspension/body.txt:4
+#: fittrackee/emails/templates/user_unsuspension/body.html:5
+#: fittrackee/emails/templates/user_unsuspension/body.txt:4
+#: fittrackee/emails/templates/user_warning/body.html:5
+#: fittrackee/emails/templates/user_warning/body.txt:3
+#: fittrackee/emails/templates/workout_suspension/body.html:5
+#: fittrackee/emails/templates/workout_suspension/body.txt:3
+#: fittrackee/emails/templates/workout_unsuspension/body.html:5
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:3
+msgid "Reason:"
+msgstr "Reden:"
+
+#: fittrackee/emails/templates/comment_suspension/body.html:20
+#: fittrackee/emails/templates/comment_suspension/body.txt:7
+#: fittrackee/emails/templates/user_suspension/body.html:7
+#: fittrackee/emails/templates/user_suspension/body.txt:6
+#: fittrackee/emails/templates/user_warning/body.html:41
+#: fittrackee/emails/templates/user_warning/body.txt:13
+#: fittrackee/emails/templates/workout_suspension/body.html:23
+#: fittrackee/emails/templates/workout_suspension/body.txt:7
+msgid "If you think this is an error, you can appeal:"
+msgstr "Als je denkt dat dit foutief is, kun je beroep aantekenen:"
+
+#: fittrackee/emails/templates/comment_suspension/body.html:27
+#: fittrackee/emails/templates/user_suspension/body.html:14
+#: fittrackee/emails/templates/user_warning/body.html:48
+#: fittrackee/emails/templates/workout_suspension/body.html:30
+msgid "Appeal"
+msgstr "Beroep aantekenen"
+
+#: fittrackee/emails/templates/comment_unsuspension/body.html:2
+#: fittrackee/emails/templates/comment_unsuspension/subject.txt:1
+msgid "The suspension on your comment has been lifted"
+msgstr "De blokkering van jouw commentaar is weggehaald"
+
+#: fittrackee/emails/templates/comment_unsuspension/body.html:3
+#: fittrackee/emails/templates/comment_unsuspension/body.html:4
+#: fittrackee/emails/templates/comment_unsuspension/body.txt:1
+msgid "The suspension on your comment has been lifted, it is visible again"
+msgstr "De blokkering van uw commentaar is weggehaald, het is terug zichtbaar"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:2
+#: fittrackee/emails/templates/data_export_ready/subject.txt:1
+msgid "Your archive is ready to be downloaded"
+msgstr "Uw archief is klaar om te downloaden"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:3
+msgid "A download link is available in your account."
+msgstr "Een download link is beschikbaar in uw account."
+
+#: fittrackee/emails/templates/data_export_ready/body.html:4
+#: fittrackee/emails/templates/data_export_ready/body.txt:1
+msgid "You have requested an export of your account on FitTrackee."
+msgstr "U hebt een export van uw account aangevraagd op FitTrackee."
+
+#: fittrackee/emails/templates/data_export_ready/body.html:4
+#: fittrackee/emails/templates/data_export_ready/body.txt:2
+msgid "The archive is now ready to be downloaded from your account."
+msgstr "Het archief kan nu gedownload worden van uw account."
+
+#: fittrackee/emails/templates/data_export_ready/body.html:11
+#: fittrackee/emails/templates/data_export_ready/body.txt:4
+msgid "Download your archive"
+msgstr "Download uw archief"
+
+#: fittrackee/emails/templates/data_export_ready/body.html:18
+#: fittrackee/emails/templates/data_export_ready/body.txt:5
+msgid ""
+"If you did not request the export, please change your password "
+"immediately or contact your administrator if your account is locked."
+msgstr ""
+"Als u deze export niet hebt aangevraagd, gelieve uw wachtwoord "
+"onmiddelijk te veranderen of neem contact op met uw administrator als uw "
+"account is vergrendeld."
+
+#: fittrackee/emails/templates/email_update_to_current_email/body.html:2
+#: fittrackee/emails/templates/email_update_to_current_email/subject.txt:1
+msgid "Email changed"
+msgstr "Email aangepast"
+
+#: fittrackee/emails/templates/email_update_to_current_email/body.html:3
+msgid "Your email is being updated."
+msgstr "Uw email wordt aangepast."
+
+#: fittrackee/emails/templates/email_update_to_current_email/body.html:4
+#: fittrackee/emails/templates/email_update_to_current_email/body.txt:1
+msgid ""
+"You recently requested to change your email address for your FitTrackee "
+"account to:"
+msgstr ""
+"U hebt een aanvraag ingediend om uw email adres voor uw FitTrackee "
+"account te veranderen naar:"
+
+#: fittrackee/emails/templates/email_update_to_current_email/body.html:18
+#: fittrackee/emails/templates/email_update_to_current_email/body.txt:4
+msgid ""
+"If this email change wasn't initiated by you, please change your password"
+" immediately or contact your administrator if your account is locked."
+msgstr ""
+"Indien deze verandering niet door u werd aangevraagd, gelieve uw "
+"wachtwoord dan onmiddellijk te veranderen of contacteer uw administrator "
+"als uw account is vergrendeld."
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:2
+#: fittrackee/emails/templates/email_update_to_new_email/subject.txt:1
+msgid "Confirm email change"
+msgstr "Bevestig email verandering"
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:3
+msgid "Use this link to confirm email change."
+msgstr "Gebruik deze link om uw email verandering te bevestigen."
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:4
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:1
+msgid ""
+"You recently requested to change your email address for your FitTrackee "
+"account."
+msgstr ""
+"U hebt aangevraagd om uw email adres voor uw FitTrackee account te "
+"veranderen."
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:4
+msgid "Use the button below to confirm this address."
+msgstr "Gebruik de onderstaande knop om dit adres te bevestigen."
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.html:18
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:7
+msgid "If this email change wasn't initiated by you, please ignore this email."
+msgstr ""
+"Indien u deze email aanpassing niet hebt aangevraagd, gelieve deze email "
+"te negeren."
+
+#: fittrackee/emails/templates/email_update_to_new_email/body.txt:2
+msgid "Use the link below to confirm this address."
+msgstr "Gebruik onderstaande link om dit adres te bevestigen."
+
+#: fittrackee/emails/templates/password_change/body.html:2
+#: fittrackee/emails/templates/password_change/subject.txt:1
+msgid "Password changed"
+msgstr "Wachtwoord aangepast"
+
+#: fittrackee/emails/templates/password_change/body.html:3
+msgid "Your password has been changed."
+msgstr "Uw wachtwoord werd aangepast."
+
+#: fittrackee/emails/templates/password_change/body.html:4
+#: fittrackee/emails/templates/password_change/body.txt:1
+msgid "The password for your FitTrackee account has been changed."
+msgstr "Het wachtwoord voor uw FitTrackee account werd aangepast."
+
+#: fittrackee/emails/templates/password_change/body.html:5
+#: fittrackee/emails/templates/password_change/body.txt:4
+msgid ""
+"If this password change wasn't initiated by you, please change your "
+"password immediately or contact your administrator if your account is "
+"locked."
+msgstr ""
+"Indien de aanpassing van uw wachtwoord niet door u werd aangevraagd, "
+"gelieve uw wachtwoord dan onmiddellijk te veranderen of contacteer uw "
+"administrator als uw account is vergrendeld."
+
+#: fittrackee/emails/templates/password_reset_request/body.html:2
+#: fittrackee/emails/templates/password_reset_request/subject.txt:1
+msgid "Password reset request"
+msgstr "Aanvraag voor wachtwoord reset"
+
+#: fittrackee/emails/templates/password_reset_request/body.html:3
+#, python-format
+msgid ""
+"Use this link to reset your password. The link is only valid for "
+"%(expiration_delay)s."
+msgstr ""
+"Gebruik deze link om uw wachtwoord te resetten. De link is enkel geldig "
+"voor %(expiration_delay)s."
+
+#: fittrackee/emails/templates/password_reset_request/body.html:4
+#: fittrackee/emails/templates/password_reset_request/body.txt:1
+msgid "You recently requested to reset your password for your FitTrackee account."
+msgstr ""
+"U hebt een aanvraag ingediend om uw wachtwoord te resetten voor uw "
+"FitTrackee account."
+
+#: fittrackee/emails/templates/password_reset_request/body.html:4
+msgid "Use the button below to reset it."
+msgstr "Gebruik de onderstaande knop om het te resetten."
+
+#: fittrackee/emails/templates/password_reset_request/body.html:5
+#: fittrackee/emails/templates/password_reset_request/body.txt:2
+#, python-format
+msgid "This password reset link is only valid for %(expiration_delay)s."
+msgstr ""
+"Deze link om uw wachtwoord te resetten is enkel geldig voor "
+"%(expiration_delay)s."
+
+#: fittrackee/emails/templates/password_reset_request/body.html:13
+#: fittrackee/emails/templates/password_reset_request/body.txt:4
+msgid "Reset your password"
+msgstr "Reset uw wachtwoord"
+
+#: fittrackee/emails/templates/password_reset_request/body.html:20
+#: fittrackee/emails/templates/password_reset_request/body.txt:7
+msgid "If you did not request a password reset, please ignore this email."
+msgstr ""
+"Als u geen aanvraag hebt ingediend om uw wachtwoord aan te passen, "
+"gelieve dan deze mail te negeren."
+
+#: fittrackee/emails/templates/password_reset_request/body.txt:1
+msgid "Use the link below to reset it."
+msgstr "Gebruik onderstaande link om het te resetten."
+
+#: fittrackee/emails/templates/user_suspension/body.html:2
+#: fittrackee/emails/templates/user_suspension/body.html:3
+#: fittrackee/emails/templates/user_suspension/body.html:4
+#: fittrackee/emails/templates/user_suspension/body.txt:1
+#: fittrackee/emails/templates/user_suspension/subject.txt:1
+msgid "Your account has been suspended"
+msgstr "Uw account is geblokkeerd"
+
+#: fittrackee/emails/templates/user_suspension/body.html:3
+#: fittrackee/emails/templates/user_suspension/body.html:5
+#: fittrackee/emails/templates/user_suspension/body.txt:2
+msgid ""
+"You can no longer use your account and your profile is no longer "
+"accessible"
+msgstr "Uw account is geblokkeerd is uw profiel is niet langer zichtbaar"
+
+#: fittrackee/emails/templates/user_suspension/body.html:5
+#: fittrackee/emails/templates/user_suspension/body.txt:2
+msgid ""
+"You can still log in to request an export of your data or delete your "
+"account"
+msgstr ""
+"Je kan nog steeds aanmelden en een export van je data aanvragen of je "
+"account verwijderen"
+
+#: fittrackee/emails/templates/user_unsuspension/body.html:2
+#: fittrackee/emails/templates/user_unsuspension/body.html:3
+#: fittrackee/emails/templates/user_unsuspension/body.html:4
+#: fittrackee/emails/templates/user_unsuspension/body.txt:1
+#: fittrackee/emails/templates/user_unsuspension/subject.txt:1
+msgid "Your account has been reactivated"
+msgstr "Uw account is geheractiveerd"
+
+#: fittrackee/emails/templates/user_unsuspension/body.html:3
+#: fittrackee/emails/templates/user_unsuspension/body.html:4
+#: fittrackee/emails/templates/user_unsuspension/body.txt:2
+msgid "You can now use all the features on FitTrackee"
+msgstr "Je kan nu alle functies van FitTrackee gebruiken"
+
+#: fittrackee/emails/templates/user_warning/body.html:2
+#: fittrackee/emails/templates/user_warning/subject.txt:1
+#, python-format
+msgid "Warning for %(username)s"
+msgstr "Waarschuwing voor %(username)s"
+
+#: fittrackee/emails/templates/user_warning/body.html:3
+#: fittrackee/emails/templates/user_warning/body.html:4
+#: fittrackee/emails/templates/user_warning/body.txt:1
+msgid "You received a warning"
+msgstr "Je hebt een waarschuwing ontvangen"
+
+#: fittrackee/emails/templates/user_warning_lifting/body.html:3
+#: fittrackee/emails/templates/user_warning_lifting/body.html:4
+#: fittrackee/emails/templates/user_warning_lifting/body.txt:1
+msgid "Your warning has been lifted"
+msgstr "Uw waarschuwing is weggehaald"
+
+#: fittrackee/emails/templates/workout_suspension/body.html:2
+#: fittrackee/emails/templates/workout_suspension/subject.txt:1
+msgid "Your workout has been suspended"
+msgstr "Je training is opgeschort"
+
+#: fittrackee/emails/templates/workout_suspension/body.html:3
+#: fittrackee/emails/templates/workout_suspension/body.html:4
+#: fittrackee/emails/templates/workout_suspension/body.txt:1
+msgid "Your workout has been suspended, it is no longer visible"
+msgstr "Je training is opgeschort, en is niet langer zichtbaar"
+
+#: fittrackee/emails/templates/workout_unsuspension/body.html:2
+#: fittrackee/emails/templates/workout_unsuspension/subject.txt:1
+msgid "The suspension on your workout has been lifted"
+msgstr "De schorsing van je training is opgeheven"
+
+#: fittrackee/emails/templates/workout_unsuspension/body.html:3
+#: fittrackee/emails/templates/workout_unsuspension/body.html:4
+#: fittrackee/emails/templates/workout_unsuspension/body.txt:1
+msgid "The suspension on your workout has been lifted, it is visible again"
+msgstr "De vering op je workout is opgeheven, het is weer zichtbaar"
+
+#: fittrackee/feeds/feeds/constants.py:5
+msgid "Canoeing"
+msgstr "Kanoing"
+
+#: fittrackee/feeds/feeds/constants.py:6
+msgid "Cycling (Sport)"
+msgstr "Fietsen (Sport)"
+
+#: fittrackee/feeds/feeds/constants.py:7
+msgid "Cycling (Transport)"
+msgstr "Fietsen (Transport)"
+
+#: fittrackee/feeds/feeds/constants.py:8
+msgid "Cycling (Trekking)"
+msgstr "Fietsen (Trekking)"
+
+#: fittrackee/feeds/feeds/constants.py:9
+msgid "Cycling (Virtual)"
+msgstr "Fietsen (Virtueel)"
+
+#: fittrackee/feeds/feeds/constants.py:10
+msgid "Halfbike"
+msgstr "Halfbike"
+
+#: fittrackee/feeds/feeds/constants.py:11
+msgid "Hiking"
+msgstr "Trektocht"
+
+#: fittrackee/feeds/feeds/constants.py:12
+msgid "Kayaking"
+msgstr "Kayakken"
+
+#: fittrackee/feeds/feeds/constants.py:13
+msgid "Mountain Biking"
+msgstr "Mountainbiken"
+
+#: fittrackee/feeds/feeds/constants.py:14
+msgid "Mountain Biking (Electric)"
+msgstr "Mountainbiken (Elektrisch)"
+
+#: fittrackee/feeds/feeds/constants.py:15
+msgid "Mountaineering"
+msgstr "Bergbeklimmen"
+
+#: fittrackee/feeds/feeds/constants.py:16
+msgid "Open Water Swimming"
+msgstr "Zwemmen (open water)"
+
+#: fittrackee/feeds/feeds/constants.py:17
+msgid "Paragliding"
+msgstr "Paragliden"
+
+#: fittrackee/feeds/feeds/constants.py:18
+msgid "Rowing"
+msgstr "Roeien"
+
+#: fittrackee/feeds/feeds/constants.py:19
+msgid "Running"
+msgstr "Lopen"
+
+#: fittrackee/feeds/feeds/constants.py:20
+msgid "Skiing (Alpine)"
+msgstr "Skiën (Alpine)"
+
+#: fittrackee/feeds/feeds/constants.py:21
+msgid "Skiing (Cross Country)"
+msgstr "Skiën (Cross Country)"
+
+#: fittrackee/feeds/feeds/constants.py:22
+msgid "Snowshoes"
+msgstr "Sneeuwschoenen"
+
+#: fittrackee/feeds/feeds/constants.py:23
+msgid "Standup Paddleboarding"
+msgstr "Standup Paddleboarding (SUP)"
+
+#: fittrackee/feeds/feeds/constants.py:24
+msgid "Swimrun"
+msgstr "Zwemloop"
+
+#: fittrackee/feeds/feeds/constants.py:25
+msgid "Tennis (Outdoor)"
+msgstr "Tennis (Buiten)"
+
+#: fittrackee/feeds/feeds/constants.py:26
+msgid "Trail"
+msgstr "Traillopen"
+
+#: fittrackee/feeds/feeds/constants.py:27
+msgid "Walking"
+msgstr "Wandelen"
+
+#: fittrackee/feeds/feeds/constants.py:28
+msgid "Windsurfing"
+msgstr "Windsurfen"
+
+#: fittrackee/feeds/feeds/workouts_feed_service.py:57
+#, python-format
+msgid "Latest public workouts on FitTrackee from %(username)s"
+msgstr "Laatste publieke trainingen op FitTrackee van %(username)s"
+
+#: fittrackee/feeds/feeds/workouts_feed_service.py:66
+#, python-format
+msgid "%(username)s's workouts feed"
+msgstr "%(username)s's trainingen"
+
+#: fittrackee/feeds/templates/workout/body.html:1
+msgid "Workout map"
+msgstr "Kaart training"
+
+#: fittrackee/feeds/templates/workout/body.html:2
+msgid "Duration"
+msgstr "Duur"
+
+#: fittrackee/feeds/templates/workout/body.html:3
+msgid "Distance"
+msgstr "Afstand"
+
+#: fittrackee/feeds/templates/workout/body.html:3
+msgid "Min. altitude"
+msgstr "Min. hoogte"
+
+#: fittrackee/feeds/templates/workout/body.html:3
+msgid "Max. altitude"
+msgstr "Max. hoogte"
+
+#: fittrackee/feeds/templates/workout/body.html:3
+msgid "Ascent"
+msgstr "Geklommen"
+
+#: fittrackee/feeds/templates/workout/body.html:3
+msgid "Descent"
+msgstr "Gedaald"

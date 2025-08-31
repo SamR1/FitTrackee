@@ -112,7 +112,7 @@ class TestGetRecords(ApiTestCaseMixin, WorkoutMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        self.update_workout_with_gpx_data(workout_cycling_user_1)
+        self.update_workout_with_file_data(workout_cycling_user_1)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )

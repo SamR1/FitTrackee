@@ -36,7 +36,8 @@ Map data from [OpenStreetMap](https://www.openstreetmap.org).
 - [Features](https://docs.fittrackee.org/en/features.html)
 - [Installation instructions](https://docs.fittrackee.org/en/installation.html)
 - [Changelog](https://docs.fittrackee.org/en/changelog.html)
-- [Contributing](CONTRIBUTING.md)
+- [Troubleshooting](https://docs.fittrackee.org/en/troubleshooting/index.html)
+- [Contributing](https://docs.fittrackee.org/en/contributing.html)
 
 **Under heavy development (some features may be unstable).**  
 (see [issues](https://github.com/SamR1/FitTrackee/issues) and [documentation](https://docs.fittrackee.org) for more info.)  

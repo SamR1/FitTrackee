@@ -35,7 +35,7 @@ class TestEmailTemplateForUserSuspension:
         self, app: Flask, lang: str, expected_subject: str
     ) -> None:
         email_template = EmailTemplate(
-            app.config["TEMPLATES_FOLDER"],
+            app.config["EMAILS_TEMPLATES_FOLDER"],
             app.config["TRANSLATIONS_FOLDER"],
             app.config["LANGUAGES"],
         )
@@ -57,7 +57,7 @@ class TestEmailTemplateForUserSuspension:
         self, app: Flask, lang: str, expected_text_body: str
     ) -> None:
         email_template = EmailTemplate(
-            app.config["TEMPLATES_FOLDER"],
+            app.config["EMAILS_TEMPLATES_FOLDER"],
             app.config["TRANSLATIONS_FOLDER"],
             app.config["LANGUAGES"],
         )
@@ -70,7 +70,7 @@ class TestEmailTemplateForUserSuspension:
 
     def test_it_gets_en_html_body(self, app: Flask) -> None:
         email_template = EmailTemplate(
-            app.config["TEMPLATES_FOLDER"],
+            app.config["EMAILS_TEMPLATES_FOLDER"],
             app.config["TRANSLATIONS_FOLDER"],
             app.config["LANGUAGES"],
         )
@@ -83,7 +83,7 @@ class TestEmailTemplateForUserSuspension:
 
     def test_it_gets_fr_html_body(self, app: Flask) -> None:
         email_template = EmailTemplate(
-            app.config["TEMPLATES_FOLDER"],
+            app.config["EMAILS_TEMPLATES_FOLDER"],
             app.config["TRANSLATIONS_FOLDER"],
             app.config["LANGUAGES"],
         )
@@ -103,7 +103,7 @@ class TestEmailTemplateForUserSuspension:
             "reason": None,
         }
         email_template = EmailTemplate(
-            app.config["TEMPLATES_FOLDER"],
+            app.config["EMAILS_TEMPLATES_FOLDER"],
             app.config["TRANSLATIONS_FOLDER"],
             app.config["LANGUAGES"],
         )
@@ -120,7 +120,7 @@ class TestEmailTemplateForUserSuspension:
             "reason": None,
         }
         email_template = EmailTemplate(
-            app.config["TEMPLATES_FOLDER"],
+            app.config["EMAILS_TEMPLATES_FOLDER"],
             app.config["TRANSLATIONS_FOLDER"],
             app.config["LANGUAGES"],
         )

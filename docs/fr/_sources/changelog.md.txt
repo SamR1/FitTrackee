@@ -1,5 +1,59 @@
 # Change log
 
+## Version 0.12.0 (2025/08/31)
+
+This version provides workout data refresh, original file download and a RSS feed for users public workouts.
+
+**Warning:** 
+- This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
+
+### Features and enhancements
+
+* [#818](https://github.com/SamR1/FitTrackee/issues/818) - Being able to download the original track alongside the gpx one
+* [#835](https://github.com/SamR1/FitTrackee/issues/835) - RSS source for public workouts
+* [PR#900](https://github.com/SamR1/FitTrackee/pull/900) - Refresh workout data
+
+### Bugs Fixed
+
+- [e8e7d1f](https://github.com/SamR1/FitTrackee/commit/e8e7d1f267301e110bd03f84e21bb14bca59576e) - fix logging on workout creation error
+
+### Translations
+
+* [PR#901](https://github.com/SamR1/FitTrackee/pull/901) - Translations update from Hosted Weblate (Dutch and Galician)
+* [PR#903](https://github.com/SamR1/FitTrackee/pull/903) - Translations update from Hosted Weblate (Dutch)
+* [PR#904](https://github.com/SamR1/FitTrackee/pull/904) - Translations update from Hosted Weblate (Chinese (Simplified Han script) and Galician)
+* [PR#908](https://github.com/SamR1/FitTrackee/pull/908) - Translations update from Hosted Weblate (Dutch and Galician)
+
+Translation status:
+- Basque: 89%
+- Bulgarian: 56%
+- Catalan: 27%
+- Chinese (Simplified): 99%
+- Croatian: 99%
+- Czech: 45%
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 92%
+- Italian: 46%
+- Norwegian Bokmål: 30%
+- Polish: 89%
+- Portuguese: 55%
+- Russian: 98%
+- Spanish: 74%
+- Turkish: 1%
+
+### Misc
+
+- [0c5e44b](https://github.com/SamR1/FitTrackee/commit/0c5e44bc785566e2d5ca92e2bfa18d32576ccb98) - update fitdecode to 0.11.0
+
+Thanks to the contributors:
+- @Stephan-P
+- @xmgz
+- Poesty Li
+
+
 ## Version 0.11.2 (2025/08/13)
 
 **Note (for docker-compose.yml only):** 

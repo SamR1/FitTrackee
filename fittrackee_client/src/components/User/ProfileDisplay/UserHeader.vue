@@ -21,6 +21,16 @@
       <div class="user-role" v-if="role">
         {{ $t(role) }}
       </div>
+      <div class="rss-feed" v-if="route.name === 'User'">
+        <a
+          :href="userWorkoutRSSFeedURL"
+          target="_blank"
+          rel="noopener noreferrer"
+          :title="$t('workouts.PUBLIC_WORKOUTS_RSS_FEED')"
+        >
+          <i class="fa fa-rss" aria-hidden="true"></i>
+        </a>
+      </div>
     </div>
     <AlertMessage
       message="user.ACCOUNT_SUSPENDED_AT"
@@ -57,6 +67,7 @@
   import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser'
   import type { IUserProfile } from '@/types/user'
+  import { getApiUrl } from '@/utils'
   import { formatDate } from '@/utils/dates'
 
   interface Props {
@@ -67,7 +78,7 @@
 
   const route = useRoute()
 
-  const { displayOptions } = useApp()
+  const { appLanguage, displayOptions } = useApp()
   const { authUser, authUserHasModeratorRights } = useAuthUser()
 
   const suspensionDate: ComputedRef<string | null> = computed(() =>
@@ -93,6 +104,19 @@
   const role: ComputedRef<string> = computed(() =>
     user.value.role !== 'user' ? `user.ROLES.${user.value.role}` : ''
   )
+  const userWorkoutRSSFeedURL: ComputedRef<string> = computed(() =>
+    getUserWorkoutRSSFeedURL()
+  )
+
+  function getUserWorkoutRSSFeedURL() {
+    const apiUrl = getApiUrl().replace('/api/', '')
+    let feedUrl = `${apiUrl}/users/${user.value.username}/workouts.rss`
+    const lang = appLanguage.value === 'en' ? '' : `?lang=${appLanguage.value}`
+    const imperialUnits = displayOptions.value.useImperialUnits
+      ? `${lang ? '&' : '?'}imperial_units=true`
+      : ''
+    return `${feedUrl}${lang}${imperialUnits}`
+  }
 </script>
 
 <style lang="scss" scoped>

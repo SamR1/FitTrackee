@@ -15,11 +15,16 @@ from fittrackee.workouts.services.workout_from_file.base_workout_with_segment_se
 
 
 @pytest.fixture(autouse=True)
-def default_weather_service() -> Iterator[MagicMock]:
-    with patch.object(
-        weather_service, "get_weather", return_value=None
-    ) as mock:
-        yield mock
+def default_weather_service(
+    request: pytest.FixtureRequest,
+) -> Iterator[Optional[MagicMock]]:
+    if "disable_autouse_default_weather_service" in request.keywords:
+        yield None
+    else:
+        with patch.object(
+            weather_service, "get_weather", return_value=None
+        ) as mock:
+            yield mock
 
 
 def get_app_config(

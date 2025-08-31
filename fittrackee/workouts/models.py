@@ -35,6 +35,7 @@ from .utils.convert import (
     get_cadence,
     get_power,
 )
+from .utils.gpx import get_file_extension
 
 if TYPE_CHECKING:
     from sqlalchemy.orm.attributes import AttributeEvent
@@ -328,7 +329,7 @@ class Workout(BaseModel):
         nullable=False,
     )
     original_file: Mapped[Optional[str]] = mapped_column(
-        db.String(255), nullable=True
+        db.String(255), nullable=True, index=True
     )
     max_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
     ave_hr: Mapped[Optional[int]] = mapped_column(nullable=True)  # bpm
@@ -536,6 +537,8 @@ class Workout(BaseModel):
                 and return_elevation_data
                 else None
             ),
+            # ascent and descent are always visible since they can be entered
+            # manually (without a file)
             "descent": (
                 float(self.descent)
                 if self.descent is not None and return_elevation_data
@@ -604,6 +607,11 @@ class Workout(BaseModel):
             "description": self.description,
             "likes_count": self.likes.count(),
             "liked": self.liked_by(user) if user else False,
+            "original_file": (
+                get_file_extension(self.original_file)
+                if self.original_file and user and user.id == self.user_id
+                else None
+            ),
         }
 
     def serialize(

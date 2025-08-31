@@ -1656,7 +1656,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
         workout_cycling_user_1: Workout,
         workout_outdoor_tennis_user_1_with_elevation_data: Workout,
     ) -> None:
-        workout_cycling_user_1 = self.update_workout_with_gpx_data(
+        workout_cycling_user_1 = self.update_workout_with_file_data(
             workout_cycling_user_1,
             ascent=50,
             descent=60,
