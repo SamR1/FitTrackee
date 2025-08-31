@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/ft-logo.png" as="image" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2025.07.19 -->
-        <title>Features - FitTrackee 0.11.2 documentation</title>
+        <title>Features - FitTrackee 0.12.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -170,7 +170,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 0.11.2
+      <a href="index.html"><div class="brand">FitTrackee 0.12.0
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 0.11.2
+  <span class="sidebar-brand-text">FitTrackee 0.12.0
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -224,6 +224,7 @@
 <li class="toctree-l2"><a class="reference internal" href="api/queued_tasks.html">Queued Tasks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/reports.html">Reports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/rss_feeds.html">RSS Feeds</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/stats.html">Statistics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/timeline.html">Timeline</a></li>
@@ -233,6 +234,7 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="troubleshooting/index.html">Troubleshooting</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Troubleshooting</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="troubleshooting/administrator.html">Administrator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting/user.html">User</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contribute</a></li>
@@ -347,7 +349,7 @@
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>It can be overridden in user preferences.</p>
+<p>Stopped speed threshold can be overridden in user preferences (see <a class="reference external" href="features.html#account-preferences">Account &amp; preferences</a>).</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -381,7 +383,9 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Calculated values may differ from values calculated by the application or device that originally generated the files, in particular the maximum speed.</div>
+<div class="line">Calculated values may differ from values calculated by the application or device that originally generated the files, in particular the maximum speed or the duration of pauses.</div>
+<div class="line">By default, extreme speed values (which may be related to GPS errors) are excluded, which also affects the maximum speed.</div>
+<div class="line">A user preference allows this behavior to be disabled (see <a class="reference external" href="features.html#account-preferences">Account &amp; preferences</a>).</div>
 </div>
 </div>
 <div class="admonition note">
@@ -398,7 +402,7 @@
 </div>
 <ul>
 <li><div class="line-block">
-<div class="line">Archive file upload can be asynchronous if a <a class="reference external" href="features.html#configuration">limit for synchronous uploads</a> is set (<em>new in 0.10.0</em>).</div>
+<div class="line">Archive file upload can be asynchronous if a limit for synchronous uploads is set in the <a class="reference external" href="features.html#configuration">application configuration</a> (<em>new in 0.10.0</em>).</div>
 <div class="line">Asynchronous uploads can be displayed in user account and can be interrupted by the user.</div>
 <div class="line">In case errors are encountered, the list of error files is displayed at the end of the upload.</div>
 <div class="line">A notification is displayed after task completion.</div>
@@ -449,11 +453,38 @@
 </ul>
 </div>
 <ul class="simple">
+<li><p>The original file or the generated gpx file can be downloaded (<em>modified in 0.12.0</em>).</p></li>
 <li><p>If present in .gpx, .tcx and .fit files, the source (application or device) is displayed.</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>.fit files from Garmin devices may contain product id instead of product name. The mapping between the product id and the product name allows the product name to be displayed instead, if available (<em>mapping updated in 0.11.0</em>).</p>
+</div>
+<ul>
+<li><div class="line-block">
+<div class="line">Some values are only calculated on workout creation.</div>
+<div class="line">The previously uploaded workouts are not updated in the following cases:</div>
+</div>
+<ul class="simple">
+<li><p>updating some preferences (“GPX max speed strategy” and “pause events triggering segment creation”),</p></li>
+<li><p>updating stopped speed threshold in sport preferences (used to calculate pauses),</p></li>
+<li><p>configuring a weather data provider,</p></li>
+<li><p>some new features,</p></li>
+<li><p>Garmin device mappings update,</p></li>
+<li><p>bug fixes on file processing.</p></li>
+</ul>
+</li>
+<li><p>The calculated data can be refreshed and weather data fetched (if provider is set and the workout does not have weather data) (<em>new in 0.12.0</em>).</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">A <a class="reference external" href="cli.html#ftcli-workouts-refresh">CLI command</a> is available to refresh several workouts depending on options.</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If a weather data provider is defined and the <code class="docutils literal notranslate"><span class="pre">--with-weather</span></code> option is provided, the rate limit may be reached, resulting in API rate limit errors when a large number of workouts is refreshed.</p>
+</div>
 </div>
 <ul>
 <li><div class="line-block">
@@ -517,6 +548,7 @@
 <div class="line-block">
 <div class="line">For now, source and average and max values for heart rate and cadence are not displayed for workouts created before v0.10.0 (see <a class="reference external" href="https://github.com/SamR1/FitTrackee/issues/816">issue #816</a>).</div>
 <div class="line">Average and max values for power are not displayed for workouts created before v0.11.0.</div>
+<div class="line">Refreshing the workout allows these values to be calculated (<em>new in 0.12.0</em>).</div>
 </div>
 </div>
 <ul>
@@ -561,7 +593,7 @@
 <p class="admonition-title">Note</p>
 <div class="line-block">
 <div class="line">A workout with a file whose visibility for map and analysis data does not allow them to be viewed appears as a workout without a file.</div>
-<div class="line">Max speed is returned regardless analysis visibility.</div>
+<div class="line">Max. speed and ascent/descent are returned regardless analysis visibility.</div>
 </div>
 </div>
 <div class="admonition note">
@@ -593,7 +625,6 @@
 <li><p>ascent and descent (only workouts without gpx) (<em>new in 0.7.10</em>)</p></li>
 </ul>
 </li>
-<li><p>File in gpx format (original or generated) can be downloaded (<em>new in 0.5.1</em>).</p></li>
 <li><p>Workout can be deleted.</p></li>
 <li><p>Workouts list.</p>
 <ul>
@@ -644,6 +675,25 @@
 <div class="line">There is a limit on the number of workouts used to calculate statistics to avoid performance issues. The value can be set in administration.</div>
 <div class="line">If the limit is reached, the number of workouts used is displayed.</div>
 </div>
+</div>
+<ul>
+<li><div class="line-block">
+<div class="line">A RSS feed is available in the user profile with the 5 last public workouts (displayed by default in English and using the metric system) (<em>new in 0.12.0</em>).</div>
+<div class="line">It’s possible to specify language and/or imperial units display, for instance:</div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">https://&lt;FITTRACKEE_DOMAIN&gt;/users/&lt;USERNAME&gt;/workouts.rss?lang=fr</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">https://&lt;FITTRACKEE_DOMAIN&gt;/users/&lt;USERNAME&gt;/workouts.rss?imperial_units=true</span></code></p></li>
+</ul>
+<div class="line-block">
+<div class="line">The language and imperial units are taken into account according to the user’s preferences if logged in.</div>
+<div class="line">No workouts are displayed when the user is suspended.</div>
+</div>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The RSS feed is not autodiscoverable due to application architecture (client-side rendering).</p>
 </div>
 <ul class="simple">
 <li><p>A user can report a workout that violates instance rules. This will send a notification to moderators and administrators.</p></li>
@@ -1405,7 +1455,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=60336169"></script>
+</div><script src="_static/documentation_options.js?v=61ccb1f1"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

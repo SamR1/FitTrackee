@@ -16,6 +16,7 @@ API documentation
    queued_tasks
    records
    reports
+   rss_feeds
    sports
    stats
    timeline

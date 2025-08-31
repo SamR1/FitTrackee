@@ -58,7 +58,7 @@ Sports
   - Walking
 
 .. note::
-  It can be overridden in user preferences.
+  Stopped speed threshold can be overridden in user preferences (see `Account & preferences <features.html#account-preferences>`__).
 
 .. note::
   | Except the stopped speed threshold, all sports are analyzed in the same way (no specificity taken into account for the moment).
@@ -78,7 +78,9 @@ Workouts
   | Only files containing at least time and coordinates are supported (otherwise, errors may occur on upload).
 
 .. note::
-  | Calculated values may differ from values calculated by the application or device that originally generated the files, in particular the maximum speed.
+  | Calculated values may differ from values calculated by the application or device that originally generated the files, in particular the maximum speed or the duration of pauses.
+  | By default, extreme speed values (which may be related to GPS errors) are excluded, which also affects the maximum speed.
+  | A user preference allows this behavior to be disabled (see `Account & preferences <features.html#account-preferences>`__).
 
 .. note::
   | Related data are stored in database in metric system.
@@ -86,7 +88,7 @@ Workouts
 .. note::
   | For now, **FitTrackee** has no importer, but some `third-party tools <third_party_tools.html#importers>`__ allow you to import workouts.
 
-- | Archive file upload can be asynchronous if a `limit for synchronous uploads <features.html#configuration>`__ is set (*new in 0.10.0*).
+- | Archive file upload can be asynchronous if a limit for synchronous uploads is set in the `application configuration <features.html#configuration>`__ (*new in 0.10.0*).
   | Asynchronous uploads can be displayed in user account and can be interrupted by the user.
   | In case errors are encountered, the list of error files is displayed at the end of the upload.
   | A notification is displayed after task completion.
@@ -119,10 +121,29 @@ Workouts
   - .kml: generated .gpx file contains one track (``<trk>``) corresponding to ``<MultiTrack>``, containing one segment (``<trkseg>``) per kml track (``<Track>``)
   - .tcx: generated .gpx file contains one track (``<trk>``) containing one segment (``<trkseg>``) per activity (``<Activity>``)
 
+- The original file or the generated gpx file can be downloaded (*modified in 0.12.0*).
 - If present in .gpx, .tcx and .fit files, the source (application or device) is displayed.
 
 .. note::
    .fit files from Garmin devices may contain product id instead of product name. The mapping between the product id and the product name allows the product name to be displayed instead, if available (*mapping updated in 0.11.0*).
+
+- | Some values are only calculated on workout creation.
+  | The previously uploaded workouts are not updated in the following cases:
+
+  - updating some preferences ("GPX max speed strategy" and "pause events triggering segment creation"),
+  - updating stopped speed threshold in sport preferences (used to calculate pauses),
+  - configuring a weather data provider,
+  - some new features,
+  - Garmin device mappings update,
+  - bug fixes on file processing.
+
+- The calculated data can be refreshed and weather data fetched (if provider is set and the workout does not have weather data) (*new in 0.12.0*).
+
+.. note::
+  | A `CLI command <cli.html#ftcli-workouts-refresh>`__ is available to refresh several workouts depending on options.
+
+  .. warning::
+     If a weather data provider is defined and the ``--with-weather`` option is provided, the rate limit may be reached, resulting in API rate limit errors when a large number of workouts is refreshed.
 
 - | If the name is present in the file, it is used as the workout title. Otherwise, a title is generated from the sport and workout date.
   | User can provide title while uploading file (*new in 0.8.10*).
@@ -167,6 +188,7 @@ Workouts
 .. note::
    | For now, source and average and max values for heart rate and cadence are not displayed for workouts created before v0.10.0 (see `issue #816 <https://github.com/SamR1/FitTrackee/issues/816>`__).
    | Average and max values for power are not displayed for workouts created before v0.11.0.
+   | Refreshing the workout allows these values to be calculated (*new in 0.12.0*).
 
 - These data (speed, elevation, heart rate, cadence and power) can be displayed on one chart or split on multiple charts. The preferred display can be stored in a user preference (*new in 0.11.0*).
 - | If **Visual Crossing** (*new in 0.7.11*) API key is provided, weather is displayed in workout detail. Data source is displayed in **About** page.
@@ -196,7 +218,7 @@ Workouts
 
 .. note::
   | A workout with a file whose visibility for map and analysis data does not allow them to be viewed appears as a workout without a file.
-  | Max speed is returned regardless analysis visibility.
+  | Max. speed and ascent/descent are returned regardless analysis visibility.
 
 .. note::
   | Default visibility is private. All workouts created before **FitTrackee** 0.9.0 are private.
@@ -219,7 +241,6 @@ Workouts
   - distance (only workouts without gpx)
   - ascent and descent (only workouts without gpx) (*new in 0.7.10*)
 
-- File in gpx format (original or generated) can be downloaded (*new in 0.5.1*).
 - Workout can be deleted.
 - Workouts list.
 
@@ -262,6 +283,18 @@ Workouts
 .. note::
   | There is a limit on the number of workouts used to calculate statistics to avoid performance issues. The value can be set in administration.
   | If the limit is reached, the number of workouts used is displayed.
+
+- | A RSS feed is available in the user profile with the 5 last public workouts (displayed by default in English and using the metric system) (*new in 0.12.0*).
+  | It's possible to specify language and/or imperial units display, for instance:
+
+  - ``https://<FITTRACKEE_DOMAIN>/users/<USERNAME>/workouts.rss?lang=fr``
+  - ``https://<FITTRACKEE_DOMAIN>/users/<USERNAME>/workouts.rss?imperial_units=true``
+
+  | The language and imperial units are taken into account according to the user's preferences if logged in.
+  | No workouts are displayed when the user is suspended.
+
+.. note::
+  The RSS feed is not autodiscoverable due to application architecture (client-side rendering).
 
 - A user can report a workout that violates instance rules. This will send a notification to moderators and administrators.
 

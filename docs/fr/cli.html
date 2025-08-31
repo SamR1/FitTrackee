@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/ft-logo.png" as="image" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2025.07.19 -->
-        <title>Interface de ligne de commande - Documentation FitTrackee 0.11.2</title>
+        <title>Interface de ligne de commande - Documentation FitTrackee 0.12.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -170,7 +170,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.11.2
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.12.0
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.11.2
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.12.0
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -224,6 +224,7 @@
 <li class="toctree-l2"><a class="reference internal" href="api/queued_tasks.html">Tâches en attente</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/reports.html">Signalements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/rss_feeds.html">Flux RSS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/stats.html">Statistiques</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/timeline.html">Flux de séances</a></li>
@@ -233,6 +234,7 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="troubleshooting/index.html">Dépannage</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Dépannage</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="troubleshooting/administrator.html">Administrateur</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting/user.html">Utilisateur</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contribuer</a></li>
@@ -557,8 +559,8 @@ Commands:
 </section>
 <section id="workouts">
 <h2>Séances<a class="headerlink" href="#workouts" title="Lien vers cette rubrique">¶</a></h2>
-<section id="ftcli-users-archive-upload">
-<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">archive_upload</span></code><a class="headerlink" href="#ftcli-users-archive-upload" title="Lien vers cette rubrique">¶</a></h3>
+<section id="ftcli-workouts-archive-upload">
+<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">workouts</span> <span class="pre">archive_upload</span></code><a class="headerlink" href="#ftcli-workouts-archive-upload" title="Lien vers cette rubrique">¶</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">Ajouté dans la version 0.10.0.</span></p>
 </div>
@@ -583,8 +585,8 @@ Commands:
 </table>
 </div>
 </section>
-<section id="ftcli-users-archive-uploads">
-<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">archive_uploads</span></code><a class="headerlink" href="#ftcli-users-archive-uploads" title="Lien vers cette rubrique">¶</a></h3>
+<section id="ftcli-workouts-archive-uploads">
+<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">workouts</span> <span class="pre">archive_uploads</span></code><a class="headerlink" href="#ftcli-workouts-archive-uploads" title="Lien vers cette rubrique">¶</a></h3>
 <div class="versionadded">
 <p><span class="versionmodified added">Ajouté dans la version 0.10.0.</span></p>
 </div>
@@ -604,6 +606,62 @@ Commands:
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--max</span> <span class="pre">INTEGER</span></code></p></td>
 <td><p>Nombre maximal de chargement d'archives de séances à traiter.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="ftcli-workouts-refresh">
+<h3><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">workouts</span> <span class="pre">refresh</span></code><a class="headerlink" href="#ftcli-workouts-refresh" title="Lien vers cette rubrique">¶</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 0.12.0.</span></p>
+</div>
+<p>Actualiser les séances en recalculant les données de la séance et en récupérant les données météo si un fournisseur est configuré et que la séance n'a pas de données météo</p>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Si un fournisseur de données météo est défini et que l'option <code class="docutils literal notranslate"><span class="pre">--with-weather</span></code> est fournie, la limite d'accès peut être atteinte, résultant en des erreurs de limite dépassée quand un nombre important de séances est actualisé.</p>
+</div>
+<div class="table-wrapper colwidths-given table-bordered docutils container">
+<table class="table-bordered docutils align-default">
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 66.7%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Options</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--sport-id</span> <span class="pre">INTEGER</span></code></p></td>
+<td><p>identifiant du sport</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--from</span> <span class="pre">TEXT</span></code></p></td>
+<td><p>date de début (format : <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--to</span> <span class="pre">TEXT</span></code></p></td>
+<td><p>date de fin (format : <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--per-page</span> <span class="pre">INTEGER</span></code></p></td>
+<td><p>nombre de séances par page (par défaut : 10)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--page</span> <span class="pre">INTEGER</span></code></p></td>
+<td><p>page pour la pagination (par défaut : 1)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--order</span> <span class="pre">TEXT</span></code></p></td>
+<td><p>ordre de tri des séances : 'asc' ou 'desc' (par défaut : 'asc')</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--user</span> <span class="pre">TEXT</span></code></p></td>
+<td><p>nom de l'utilisateur des séances à mettre à jour</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--extension</span> <span class="pre">TEXT</span></code></p></td>
+<td><p>extension du fichier de la séance (valeurs possibles: tcx, kmz, gpx, kml, fit)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--with-weather</span></code></p></td>
+<td><p>active la récupération des données météo si un fournisseur de données est configuré et que la séance n'a pas données météo. ATTENTION: selon la souscription, la limite d'accès peut être atteinte, résultant en des erreurs et empêchant les données météo d'être récupérées pour les prochains chargements de fichiers, le temps que la limite soit réinitialisée (défaut: désactivé)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></p></td>
+<td><p>Active les logs verbeux (défaut: désactivé)</p></td>
 </tr>
 </tbody>
 </table>
@@ -691,8 +749,9 @@ Commands:
 </ul>
 </li>
 <li><a class="reference internal" href="#workouts">Séances</a><ul>
-<li><a class="reference internal" href="#ftcli-users-archive-upload"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">archive_upload</span></code></a></li>
-<li><a class="reference internal" href="#ftcli-users-archive-uploads"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">users</span> <span class="pre">archive_uploads</span></code></a></li>
+<li><a class="reference internal" href="#ftcli-workouts-archive-upload"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">workouts</span> <span class="pre">archive_upload</span></code></a></li>
+<li><a class="reference internal" href="#ftcli-workouts-archive-uploads"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">workouts</span> <span class="pre">archive_uploads</span></code></a></li>
+<li><a class="reference internal" href="#ftcli-workouts-refresh"><code class="docutils literal notranslate"><span class="pre">ftcli</span> <span class="pre">workouts</span> <span class="pre">refresh</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -706,7 +765,7 @@ Commands:
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=e8bf8d6b"></script>
+</div><script src="_static/documentation_options.js?v=e9405df3"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
