@@ -617,6 +617,7 @@ Commands:
 <p><span class="versionmodified added">Added in version 0.12.0.</span></p>
 </div>
 <p>Refresh workouts by recalculating data and fetching weather data if provider is set and workout does not have weather data.</p>
+<p>Before executing the command, it is recommended to back up of all data (database and upload directory) in case a large number of workouts are refreshed.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>If a weather data provider is defined and the <code class="docutils literal notranslate"><span class="pre">--with-weather</span></code> option is provided, the rate limit may be reached, resulting in API rate limit errors when a large number of workouts is refreshed.</p>
