@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/ft-logo.png" as="image" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2025.07.19 -->
-        <title>Fonctionnalités - Documentation FitTrackee 0.11.2</title>
+        <title>Fonctionnalités - Documentation FitTrackee 0.12.0</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -170,7 +170,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 0.11.2
+      <a href="index.html"><div class="brand">Documentation FitTrackee 0.12.0
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.11.2
+  <span class="sidebar-brand-text">Documentation FitTrackee 0.12.0
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -224,6 +224,7 @@
 <li class="toctree-l2"><a class="reference internal" href="api/queued_tasks.html">Tâches en attente</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/records.html">Records</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/reports.html">Signalements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/rss_feeds.html">Flux RSS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/sports.html">Sports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/stats.html">Statistiques</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/timeline.html">Flux de séances</a></li>
@@ -233,6 +234,7 @@
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="troubleshooting/index.html">Dépannage</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Dépannage</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="troubleshooting/administrator.html">Administrateur</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting/user.html">Utilisateur</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contribuer</a></li>
@@ -347,7 +349,7 @@
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>La valeur peut être remplacée dans les préférences de l'utilisateur.</p>
+<p>Une préférence utilisateur permet de désactiver ce comportement (voir <a class="reference external" href="features.html#account-preferences">Compte &amp; préférences</a>).</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -381,7 +383,9 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Les valeurs calculées peuvent différer de celles calculées par l'application ou l'appareil qui a généré les fichiers à l'origine, en particulier la vitesse maximale.</div>
+<div class="line">Les valeurs calculées peuvent différer de celles calculées par l'application ou l'appareil qui a généré les fichiers à l'origine, en particulier la vitesse maximale et la durée des pauses.</div>
+<div class="line">Par défaut les valeurs extrêmes (pouvant être liées à des erreurs de GPS) sont exclues, ce qui affecte le calcul de la vitesse maximale.</div>
+<div class="line">Une préférence utilisateur permet de désactiver ce comportement (voir <a class="reference external" href="features.html#account-preferences">Compte &amp; préférences</a>).</div>
 </div>
 </div>
 <div class="admonition note">
@@ -398,7 +402,7 @@
 </div>
 <ul>
 <li><div class="line-block">
-<div class="line">Le chargement des archives de séances peut être asynchrone quand une <a class="reference external" href="features.html#configuration">limite pour le traitement synchrone</a> est définie (<em>nouveau dans la version 0.10.0</em>).</div>
+<div class="line">Le chargement des archives de séances peut être asynchrone quand une limite pour le traitement synchrone est définie dans la <a class="reference external" href="features.html#configuration">configuration de l'application</a> (<em>nouveau dans la version 0.10.0</em>).</div>
 <div class="line">Les tâches de chargement asynchrone peuvent être affichées dans le compte de l'utilisateur et peuvent être interrompues par l'utilisateur.</div>
 <div class="line">En cas d'erreur, la liste des erreurs rencontrées est affichée à la fin du chargement</div>
 <div class="line">Une notification est affichée après le traitement de la tâche.</div>
@@ -449,11 +453,38 @@
 </ul>
 </div>
 <ul class="simple">
+<li><p>Les fichiers (originaux or générés) peuvent être téléchargés (<em>modifié dans la version 0.12.0</em>).</p></li>
 <li><p>Si présent dans les fichiers .gpx, .tcx et .fit, la source (application ou appareil) est affichée.</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Les fichiers .fit provenant des appareils Garmin peuvent contenir l'identifiant du produit au lieu du nom du produit. Une correspondance entre l'identifiant et le nom permet d'afficher le nom du produit à la place, si disponible (<em>correspondance mise à jour dans la version 0.11.0</em>).</p>
+</div>
+<ul>
+<li><div class="line-block">
+<div class="line">Certains valeurs sont calculées uniquement à la création de la séance.</div>
+<div class="line">Les séances précédemment créées sont pas mises à jour dans les cas suivants :</div>
+</div>
+<ul class="simple">
+<li><p>mise à jour de certaines préférences (&quot;Calcul de la vitesse maximale&quot; et &quot;Types de pause déclenchant la création d'un segment&quot;),</p></li>
+<li><p>mise à jour du seuil de vitesse d'arrêt dans les préférences des sports (utilisé pour calculer les pauses),</p></li>
+<li><p>configuration d'un fournisseur de données météo.</p></li>
+<li><p>ajout de certaines nouvelles fonctionnalités</p></li>
+<li><p>mise à jour de la correspondance des produits Garmin,</p></li>
+<li><p>correction de bugs sur le traitement des fichiers.</p></li>
+</ul>
+</li>
+<li><p>Les données calculées peuvent être rafraichies et les données météo mises à jour (si un fournisseur de données est configuré et que la séance n'est pas de données météo) (<em>nouveau dans la version 0.12.0</em>)</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Une <a class="reference external" href="cli.html#ftcli-workouts-refresh">commande de l'interface de ligne de commandes (CLI)</a> est disponible pour actualiser plusieurs séances selon des options.</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Si un fournisseur de données météo est défini et que l'option <code class="docutils literal notranslate"><span class="pre">--with-weather</span></code> est fournie, la limite d'accès peut être atteinte, résultant en des erreurs de limite dépassée quand un nombre important de séances est actualisé.</p>
+</div>
 </div>
 <ul>
 <li><div class="line-block">
@@ -517,6 +548,7 @@
 <div class="line-block">
 <div class="line">Pour le moment, la source et les valeurs moyennes et maximales pour la fréquence cardiaque et la cadence ne sont pas affichées pour les séances créées avant la version v0.10.0 (cf. <a class="reference external" href="https://github.com/SamR1/FitTrackee/issues/816">ticket #816</a>).</div>
 <div class="line">Les valeurs moyennes et maximales pour la puissance ne sont pas affichées pour les séances créées avant la version v0.11.0.</div>
+<div class="line">Refreshing the workout allows these values to be calculated (<em>new in 0.12.0</em>).</div>
 </div>
 </div>
 <ul>
@@ -561,7 +593,7 @@
 <p class="admonition-title">Note</p>
 <div class="line-block">
 <div class="line">Une séance avec un fichier dont la visibilité pour la carte et l'analyse est privée apparait comme une séance sans fichier.</div>
-<div class="line">La vitesse maximale est renvoyée quelque soit la visibilité de l'analyse.</div>
+<div class="line">La vitesse maximale et les dénivelée sont renvoyée quelque soit la visibilité de l'analyse.</div>
 </div>
 </div>
 <div class="admonition note">
@@ -593,7 +625,6 @@
 <li><p>dénivelés positif et négatif (seulement pour les séances sans gpx) (<em>nouveau dans la version 0.7.10</em>).</p></li>
 </ul>
 </li>
-<li><p>Le fichier gpx (original or généré) peut être téléchargé (<em>nouveau dans la version 0.5.1</em>).</p></li>
 <li><p>Une séance peut être supprimée.</p></li>
 <li><p>Liste des séances.</p>
 <ul>
@@ -644,6 +675,25 @@
 <div class="line">Il existe une limite au nombre de séances utilisées pour calculer les statistiques afin d'éviter les problèmes de performances. La valeur peut être modifiée dans l'administration.</div>
 <div class="line">Si la limite est atteinte, le nombre des séances utilisées est affiché.</div>
 </div>
+</div>
+<ul>
+<li><div class="line-block">
+<div class="line">Un flux RSS est disponible dans le profil de l'utilisateur avec les 5 dernières séances publiques (affiché par défault en anglais et le système métrique) (<em>nouveau dans la version 0.12.0</em>)</div>
+<div class="line">Il est possible de spécifier la langue et/ou l'affichage en unités impériales, par exemple :</div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">https://&lt;FITTRACKEE_DOMAIN&gt;/users/&lt;USERNAME&gt;/workouts.rss?lang=fr</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">https://&lt;FITTRACKEE_DOMAIN&gt;/users/&lt;USERNAME&gt;/workouts.rss?imperial_units=true</span></code></p></li>
+</ul>
+<div class="line-block">
+<div class="line">La langue et les unités impériales sont prises en compte en fonction des préférences de l'utilisateur si celui-ci est connecté.</div>
+<div class="line">Aucune séance n'est affichée si l'utilisateur est suspendu.</div>
+</div>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Le flux RSS ne peut pas découvert automatiquement du fait de l'architecture de l'application (rendu côté client).</p>
 </div>
 <ul class="simple">
 <li><p>Un utilisateur peut signaler une séance qui enfreint les règles de l'instance. Une notification sera envoyée aux modérateurs et administrateurs.</p></li>
@@ -1404,7 +1454,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=e8bf8d6b"></script>
+</div><script src="_static/documentation_options.js?v=e9405df3"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

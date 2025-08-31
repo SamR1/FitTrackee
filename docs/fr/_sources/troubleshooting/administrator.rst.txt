@@ -2,8 +2,8 @@ Administrator
 #############
 
 
-`FitTrackee fails to start`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+FitTrackee fails to start
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Check the database URL in `environment variables <../installation.html#envvar-DATABASE_URL>`__ if the following error is displayed in **gunicorn** logs:
 
@@ -22,14 +22,14 @@ Administrator
   A valid ``EMAIL_URL`` must be provided (see `emails <../installation.html#emails>`__).
 
 
-`Map images are not displayed but map is shown in Workout detail`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Map images are not displayed but map is shown in Workout detail
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Check the path in `environment variables <../installation.html#envvar-UPLOAD_FOLDER>`__. ``UPLOAD_FOLDER`` must be set with an absolute path.
 
 
-`Failed to upload or download files`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Failed to upload or download files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Check ``client_max_body_size`` in **nginx** config. Increase the value to handle larger files (see **nginx** `documentation <https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_).
 

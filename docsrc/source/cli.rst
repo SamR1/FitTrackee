@@ -239,7 +239,7 @@ Can be used if redis is not set (no dramatiq workers running).
 
 ``ftcli workouts refresh``
 """"""""""""""""""""""""""
-.. versionadded:: 0.x.x
+.. versionadded:: 0.12.0
 
 Refresh workouts by recalculating data and fetching weather data if provider is set and workout does not have weather data.
 

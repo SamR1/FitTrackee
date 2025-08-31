@@ -2832,9 +2832,9 @@ def refresh_workout(
     auth_user: User, workout: Workout, workout_short_id: str
 ) -> Union[Tuple[Dict, int], HttpResponse]:
     """
-    Refresh a workout with a file:
+    Refresh a workout (created by uploading a file):
 
-    - recalculate workout data
+    - recalculate workout data like max. speed, pauses...
     - regenerate gpx file if original file is not a gpx
     - update weather if weather provided is set and workout does not have
       weather data

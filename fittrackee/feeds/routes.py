@@ -41,13 +41,15 @@ def get_user_public_workouts_rss_feed(
 
       GET /user/Sam/workouts.rss?lang=fr&imperial_units=true  HTTP/1.1
 
-    :query string lang: RSS feed language (default: 'en'). If provided language
-           is not supported, it falls back to English.
+    :query string lang: RSS feed language (two-letter code, ISO 639-1,
+           default: 'en'). If provided language is not supported, it falls
+           back to English.
     :query boolean imperial_units: display values with imperial units.
-           If false, metric system is used instead.
+           If false, metric system is used instead (default: false).
 
     :statuscode 200: ``success``
-    :statuscode 404: ``"user does not exist"``
+    :statuscode 404: ``user does not exist``
+
     """
     try:
         user = User.query.filter(
