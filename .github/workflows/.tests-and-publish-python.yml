@@ -133,7 +133,7 @@ jobs:
           --health-retries 5
     strategy:
       matrix:
-        psql-version:  [ "12", "13", "14", "15", "16" ]
+        psql-version:  [ "13", "14", "15", "16" ]
     steps:
 
       - uses: actions/checkout@v4
