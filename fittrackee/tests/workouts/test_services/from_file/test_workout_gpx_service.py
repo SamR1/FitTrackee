@@ -544,6 +544,9 @@ class TestWorkoutGpxServiceProcessFile(
         assert to_shape(workout_segments[0].geom) == LineString(
             segment_0_coordinates
         )
+        assert workout_segments[0].start_date == datetime(
+            2018, 3, 13, 12, 44, 50, tzinfo=timezone.utc
+        )
         assert len(workout_segments[0].points) == len(segment_0_coordinates)
         assert workout_segments[0].points[0] == {
             "distance": 0.0,
@@ -584,6 +587,9 @@ class TestWorkoutGpxServiceProcessFile(
         assert to_shape(workout_segments[1].geom) == LineString(
             segment_1_coordinates
         )
+        assert workout_segments[1].start_date == datetime(
+            2018, 3, 13, 12, 46, 0, tzinfo=timezone.utc
+        )
         assert len(workout_segments[1].points) == len(segment_1_coordinates)
         assert workout_segments[1].points[0] == {
             "distance": 0.0,
@@ -623,6 +629,9 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout_segments[2].max_hr is None
         assert to_shape(workout_segments[2].geom) == LineString(
             segment_2_coordinates
+        )
+        assert workout_segments[2].start_date == datetime(
+            2018, 3, 13, 12, 47, 10, tzinfo=timezone.utc
         )
         assert len(workout_segments[2].points) == len(segment_2_coordinates)
         assert workout_segments[2].points[0] == {

@@ -252,6 +252,11 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
 
         for point_idx, point in enumerate(points):
             if point_idx == 0:
+                if not point.time:
+                    raise WorkoutFileException(
+                        "error", "<time> is missing in segment"
+                    )
+                new_workout_segment.start_date = point.time
                 # if a previous segment exists, calculate stopped time
                 # between the two segments
                 if previous_segment_last_point_time and point.time:

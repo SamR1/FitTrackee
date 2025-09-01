@@ -13,7 +13,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.session import Session, object_session
-from sqlalchemy.sql.expression import nulls_last
+from sqlalchemy.sql.expression import nulls_last, text
 from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, appLog, db
@@ -908,6 +908,7 @@ class WorkoutSegment(BaseModel):
     workout_uuid: Mapped[UUID] = mapped_column(
         postgresql.UUID(as_uuid=True), nullable=False
     )
+    # to remove in a next version to allow segment deletion
     segment_id: Mapped[int] = mapped_column(primary_key=True)
     duration: Mapped[timedelta] = mapped_column(nullable=False)
     pauses: Mapped[Optional[timedelta]] = mapped_column(nullable=True)
@@ -940,11 +941,23 @@ class WorkoutSegment(BaseModel):
     max_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
     ave_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
     geom: Mapped["WKBElement"] = mapped_column(
-        Geometry(geometry_type="LINESTRING", srid=4326),
+        Geometry(geometry_type="LINESTRING", srid=4326, spatial_index=True),
         nullable=True,  # to handle pre-existing segments for now
     )
     points: Mapped[List[Dict]] = mapped_column(
         JSON, nullable=False, server_default="[]"
+    )
+    # to use as primary index in a next version
+    uuid: Mapped[UUID] = mapped_column(
+        postgresql.UUID(as_uuid=True),
+        server_default=text("gen_random_uuid ()"),
+        unique=True,
+        nullable=False,
+    )
+    # change nullable=False in a next version
+    # (allow to order segments after segment_id removal)
+    start_date: Mapped[datetime] = mapped_column(
+        TZDateTime, index=True, nullable=True
     )
 
     workout: Mapped["Workout"] = relationship(
