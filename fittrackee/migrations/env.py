@@ -5,6 +5,8 @@ from alembic import context
 from flask import current_app
 from geoalchemy2 import alembic_helpers
 
+from fittrackee.database import TZDateTime
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -54,6 +56,21 @@ def get_metadata():
     return target_db.metadata
 
 
+def render_item(obj_type, obj, autogen_context):
+    """Apply custom rendering for selected items."""
+    spatial_type = alembic_helpers.render_item(obj_type, obj, autogen_context)
+    if spatial_type:
+        return spatial_type
+
+    # For the custom type
+    if obj_type == 'type' and isinstance(obj, TZDateTime):
+        import_name = obj.__class__.__name__
+        autogen_context.imports.add(f"from fittrackee.database import {import_name}")
+        return "%r" % obj
+
+    # default rendering for other objects
+    return False
+
 def run_migrations_offline():
     """Run migrations in 'offline' mode.
 
@@ -73,7 +90,7 @@ def run_migrations_offline():
         literal_binds=True,
         include_object=alembic_helpers.include_object,
         process_revision_directives=alembic_helpers.writer,
-        render_item=alembic_helpers.render_item,
+        render_item=render_item,
     )
 
     with context.begin_transaction():
@@ -109,7 +126,7 @@ def run_migrations_online():
             connection=connection,
             target_metadata=get_metadata(),
             include_object=alembic_helpers.include_object,
-            render_item=alembic_helpers.render_item,
+            render_item=render_item,
             **conf_args,
         )
 
