@@ -71,6 +71,16 @@
   "PRIVACY_POLICY_TO_VALIDATE": "Proszę {0} politykę prywatności przed kontunuacją.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Edycja konta",
+    "ARCHIVE_UPLOADS": {
+      "ARCHIVE": "Archiwum Zip",
+      "CONFIRM_TASK_ABORT": "Czy na pewno chcesz przerwać to zadanie przesyłania archiwum?",
+      "CONFIRM_TASK_DELETION": "Czy na pewno chcesz usunąć to zadanie przesyłania archiwum?",
+      "CREATED_WORKOUTS": "Utworzone treningi",
+      "ERRORED_FILES": "Błędny plik | Błędne pliki",
+      "FILES_COUNT": "{count} plików",
+      "NOT_FOUND": "Nie znaleziono przesłanych archiwów.",
+      "PROGRESS": "Postęp"
+    },
     "ASCENT_DATA": "Dane o wzniesieniach (rekordy, podsumowanie)",
     "BACK_TO_PROFILE": "Wróć do profilu",
     "BIO": "O sobie",
@@ -123,6 +133,7 @@
     },
     "NOTIFICATIONS_EDITION": "Zmiana ustawień powiadomień",
     "NOTIFICATION_PREFERENCES": "Ustawienia powiadomień",
+    "NO_ARCHIVE_UPLOADS": "Brak przesłanych archiwów",
     "NO_SANCTIONS": "Brak blokad",
     "PICTURE": "Zdjęcie",
     "PICTURE_EDITION": "Zmiana zdjęcia",
@@ -150,6 +161,12 @@
       "IN_PROGRESS": "twoje odwołanie jest w trakcie weryfikacji",
       "REJECTED": "twoje odwołanie zostało odrzucone"
     },
+    "SEGMENTS_CREATION_EVENT": {
+      "LABEL": "Wstrzymaj zdarzenia wyzwalające tworzenie segmentu (tylko pliki .fit)",
+      "all": "Wszystkie zdarzenia pauzy",
+      "none": "Żaden",
+      "only_manual": "Tylko ręczna pauza"
+    },
     "SPORT": {
       "ACTION": "akcja",
       "COLOR": "kolor",
@@ -170,6 +187,7 @@
     "TABS": {
       "ACCOUNT": "konto",
       "APPS": "aplikacje",
+      "ARCHIVE-UPLOADS": "przesłane archiwa",
       "BLOCKED-USERS": "zablokowani użytkownicy",
       "EQUIPMENTS": "sprzęty",
       "FOLLOW-REQUESTS": "prośby o śledzenie",
@@ -201,6 +219,11 @@
       "HELP": "Przy filtrowaniu wartości odstające (które mogą sugerować błąd GPS) nie są brane pod uwagę przy wyliczaniu maksymalnej prędkości.",
       "LABEL": "Ustalanie prędkości maksymalnej przy GPX",
       "RAW_SPEED": "Oryginalna"
+    },
+    "WORKOUT_CHARTS_DISPLAY": {
+      "LABEL": "Wyświetlanie wykresu analizy treningu",
+      "MULTIPLE": "Każde dane wyświetlane na innym wykresie",
+      "ONE": "Wszystkie dane na pojedynczym wykresie"
     }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "Przeczytałem(-am) i zaakceptowałem(-am) {0}.",
@@ -232,8 +255,12 @@
   "SUSPENSION_REASON": "Powód zawieszenia",
   "TASKS": {
     "STATUS": {
+      "LABEL": "Status",
+      "aborted": "przerwany",
       "errored": "niepowodzenie",
-      "in_progress": "w trakcie"
+      "in_progress": "w trakcie",
+      "queued": "w kolejce",
+      "successful": "udany"
     }
   },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "To konto użytkownika jest nieaktywne.",
