@@ -19,6 +19,7 @@ from ..template_results.workouts import (
     expected_en_feed_workout_cycling_user_1_with_elevation,
     expected_en_feed_workout_cycling_user_1_with_elevation_in_imperial_units,
     expected_en_feed_workout_cycling_user_1_with_map,
+    expected_en_feed_workout_cycling_user_1_with_markdown_description,
     expected_en_feed_workout_cycling_user_1_without_elevation,
     expected_fr_feed_workout_cycling_user_1_with_map,
 )
@@ -31,7 +32,7 @@ WORKOUT_MAP_ID = "c2e9a2b48e7eb934d7ec39f4a6641c57"
 WORKOUT_TITLE = "Some title"
 
 
-class TestUserWorkoutsFeedServiceInitialisation:
+class TestUserWorkoutsFeedServiceInstantiation:
     def test_it_initialises_service_with_default_values(
         self,
         app: Flask,
@@ -51,6 +52,7 @@ class TestUserWorkoutsFeedServiceInitialisation:
         assert service.lang == "en"
         assert service.user == user_1
         assert service.workouts == [workout_cycling_user_1]
+        assert service.with_description is False
         assert isinstance(service.feed, feedgenerator.Rss201rev2Feed)
         assert isinstance(service.feed_template, FeedItemTemplate)
 
@@ -66,6 +68,7 @@ class TestUserWorkoutsFeedServiceInitialisation:
             workouts=[workout_cycling_user_1],
             lang="fr",
             use_imperial_units=True,
+            with_description=True,
         )
 
         assert service.distance_multiplier == 0.621371
@@ -76,6 +79,7 @@ class TestUserWorkoutsFeedServiceInitialisation:
         assert service.lang == "fr"
         assert service.user == user_1
         assert service.workouts == [workout_cycling_user_1]
+        assert service.with_description is True
         assert isinstance(service.feed, feedgenerator.Rss201rev2Feed)
         assert isinstance(service.feed_template, FeedItemTemplate)
 
@@ -173,7 +177,7 @@ class TestUserWorkoutsFeedServiceGenerateUserWorkoutsFeed(WorkoutMixin):
             )
         )
 
-    def test_it_returns_feed_for_without_elevation_when_visibility_does_not_allow_it(  # noqa
+    def test_it_returns_feed_without_elevation_when_visibility_does_not_allow_it(  # noqa
         self,
         app: Flask,
         user_1: "User",
@@ -193,6 +197,34 @@ class TestUserWorkoutsFeedServiceGenerateUserWorkoutsFeed(WorkoutMixin):
 
         assert feed == (
             expected_en_feed_workout_cycling_user_1_without_elevation.format(
+                workout_short_id=workout_cycling_user_1.short_id,
+                workout_title=WORKOUT_TITLE,
+            )
+        )
+
+    def test_it_returns_feed_with_workout_description(
+        self,
+        app: Flask,
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        workout_cycling_user_1.title = WORKOUT_TITLE
+        workout_cycling_user_1.description = """some **description** 
+
+with a [link](https://example.com) and 
+an ![image](https://example.com/image.png)"""
+        service = UserWorkoutsFeedService(
+            user=user_1,
+            workouts=[workout_cycling_user_1],
+            with_description=True,
+        )
+
+        feed = service.generate_user_workouts_feed()
+
+        assert (
+            feed
+            == expected_en_feed_workout_cycling_user_1_with_markdown_description.format(  # noqa
                 workout_short_id=workout_cycling_user_1.short_id,
                 workout_title=WORKOUT_TITLE,
             )

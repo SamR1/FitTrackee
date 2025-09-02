@@ -29,10 +29,15 @@ def decode_short_id(short_id: str) -> UUID:
     return shortuuid.decode(short_id)
 
 
-def clean_input(input_text: str) -> str:
+def clean_input(input_text: str, allow_images: bool = False) -> str:
     # HTML sanitization
+    tags = {"a", "br", "p", "span"}
+    attributes = {"a": {"href", "target"}}
+    if allow_images:
+        tags.add("img")
+        attributes["img"] = {"src", "alt"}
     return nh3.clean(
         input_text,
-        tags={"a", "br", "p", "span"},
-        attributes={"a": {"href", "target"}},
+        tags=tags,
+        attributes=attributes,
     )

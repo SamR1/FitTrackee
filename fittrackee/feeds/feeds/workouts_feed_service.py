@@ -1,10 +1,12 @@
 from typing import TYPE_CHECKING, List, Optional
 
 import feedgenerator
+import mistune
 from flask import current_app
 from flask_babel import force_locale, lazy_gettext
 
 from fittrackee.feeds.feeds.feed_item_template import FeedItemTemplate
+from fittrackee.utils import clean_input
 from fittrackee.visibility_levels import (
     can_view,
 )
@@ -24,11 +26,13 @@ class UserWorkoutsFeedService:
         workouts: List["Workout"],
         lang: str = "en",
         use_imperial_units: bool = False,
+        with_description: bool = False,
     ):
         self.fittrackee_url = current_app.config["UI_URL"]
         self.user = user
         self.workouts = workouts
         self.lang = lang if lang in current_app.config["LANGUAGES"] else "en"
+        self.with_description = with_description
 
         # to display distance and speed
         self.distance_multiplier = (
@@ -101,7 +105,10 @@ class UserWorkoutsFeedService:
                 if can_view_map
                 else None
             ),
-            "workout_title": workout.title,
+            "workout_title": (
+                clean_input(workout.title) if workout.title else ""
+            ),
+            "with_description": self.with_description and workout.description,
             "workout_distance": self._get_distance(workout.distance),
             "workout_distance_unit": self.distance_unit,
             "workout_min_altitude": self._get_elevation(
@@ -121,10 +128,18 @@ class UserWorkoutsFeedService:
     def generate_user_workouts_feed(self) -> str:
         for workout in self.workouts:
             item_data = self._get_workout_item(self.fittrackee_url, workout)
+            workout_description = (
+                clean_input(
+                    mistune.html(workout.description),  # type: ignore[arg-type]
+                    allow_images=True,
+                )
+                if self.with_description and workout.description
+                else ""
+            )
             self.feed.add_item(
                 title=item_data["title.txt"],
                 link=f"{self.fittrackee_url}/workouts/{workout.short_id}",
                 pubdate=workout.workout_date,
-                description=item_data["body.html"],
+                description=item_data["body.html"] + workout_description,
             )
         return self.feed.writeString("UTF-8")
