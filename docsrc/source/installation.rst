@@ -53,7 +53,7 @@ Prerequisites
 
   - installation from sources or package:
 
-    - `Python <https://www.python.org/>`__ 3.9+
+    - `Python <https://www.python.org/>`__ 3.10+
     - `PostgreSQL <https://www.postgresql.org/>`__ 12+
 
   - installation with Docker:
