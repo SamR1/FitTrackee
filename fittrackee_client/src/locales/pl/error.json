@@ -1,5 +1,6 @@
 {
   "APP_ERROR": "Wygląda na to, że aplikacja napotkała pewne problemy.<br />Spróbuj ponownie później lub skontaktuj się z administratorem.",
+  "ERRORS_ENCOUNTERED": "Wykryto błędy",
   "NOT_FOUND": {
     "COMMENT": "Nie odnaleziono komentarza",
     "PAGE": "Nie znaleziono strony",
