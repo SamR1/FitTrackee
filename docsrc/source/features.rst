@@ -292,6 +292,11 @@ Workouts
 
   | The language and imperial units are taken into account according to the user's preferences if logged in.
   | No workouts are displayed when the user is suspended.
+  | Workout description can be displayed by adding `description` parameter (not displayed by default) (*new in x.x.x*):
+
+  - ``https://<FITTRACKEE_DOMAIN>/users/<USERNAME>/workouts.rss?description=tree``
+
+  | The rendering of the description may differ from that on FitTrackee, as additional styles are applied on the UI.
 
 .. note::
   The RSS feed is not autodiscoverable due to application architecture (client-side rendering).
