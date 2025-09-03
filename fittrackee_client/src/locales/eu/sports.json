@@ -53,8 +53,14 @@
   "Snowshoes": {
     "LABEL": "Erraketak"
   },
+  "Standup Paddleboarding": {
+    "LABEL": "Paddle Surf"
+  },
   "Swimrun": {
     "LABEL": "Igerikorrika"
+  },
+  "Tennis (Outdoor)": {
+    "LABEL": "Tenisa (kanpokoa)"
   },
   "Trail": {
     "LABEL": "Mendiko lasterketa"
