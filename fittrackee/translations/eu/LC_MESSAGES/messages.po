@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-08-27 15:52+0200\n"
+"POT-Creation-Date: 2025-09-03 08:12+0200\n"
 "PO-Revision-Date: 2025-02-19 01:47+0000\n"
 "Last-Translator: Mikel Larreategi <mlarreategi@codesyntax.com>\n"
 "Language: eu\n"
@@ -556,12 +556,12 @@ msgstr "Oinez ibiltzea"
 msgid "Windsurfing"
 msgstr "Windsurf"
 
-#: fittrackee/feeds/feeds/workouts_feed_service.py:57
+#: fittrackee/feeds/feeds/workouts_feed_service.py:61
 #, python-format
 msgid "Latest public workouts on FitTrackee from %(username)s"
 msgstr ""
 
-#: fittrackee/feeds/feeds/workouts_feed_service.py:66
+#: fittrackee/feeds/feeds/workouts_feed_service.py:70
 #, python-format
 msgid "%(username)s's workouts feed"
 msgstr ""
@@ -593,4 +593,8 @@ msgstr "Igoera"
 #: fittrackee/feeds/templates/workout/body.html:3
 msgid "Descent"
 msgstr "Jaitsiera"
+
+#: fittrackee/feeds/templates/workout/body.html:4
+msgid "Description"
+msgstr "Deskribapena"
 

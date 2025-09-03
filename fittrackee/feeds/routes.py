@@ -46,6 +46,8 @@ def get_user_public_workouts_rss_feed(
            back to English.
     :query boolean imperial_units: display values with imperial units.
            If false, metric system is used instead (default: false).
+    :query boolean with_description: display workout description if true
+           (default: false).
 
     :statuscode 200: ``success``
     :statuscode 404: ``user does not exist``
@@ -77,9 +79,14 @@ def get_user_public_workouts_rss_feed(
     use_imperial_units = (
         params.get("imperial_units", "false").lower() == "true"
     )
+    with_description = params.get("description", "false").lower() == "true"
 
     feed_service = UserWorkoutsFeedService(
-        user, latest_public_workouts, lang, use_imperial_units
+        user,
+        latest_public_workouts,
+        lang,
+        use_imperial_units,
+        with_description,
     )
     feed = feed_service.generate_user_workouts_feed()
     return Response(feed, mimetype="text/xml")
