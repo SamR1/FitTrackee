@@ -14,6 +14,9 @@
   "Cycling (Virtual)": {
     "LABEL": "Kolarstwo (Wirtualne)"
   },
+  "Halfbike": {
+    "LABEL": "Półrower"
+  },
   "Hiking": {
     "LABEL": "Piesza wycieczka"
   },
@@ -50,13 +53,22 @@
   "Snowshoes": {
     "LABEL": "Rakiety śnieżne"
   },
+  "Standup Paddleboarding": {
+    "LABEL": "Pływanie na desce z wiosłem"
+  },
   "Swimrun": {
     "LABEL": "Swimrun"
+  },
+  "Tennis (Outdoor)": {
+    "LABEL": "Tenis"
   },
   "Trail": {
     "LABEL": "Szlak"
   },
   "Walking": {
     "LABEL": "Chód"
+  },
+  "Windsurfing": {
+    "LABEL": "Windsurfing"
   }
 }
