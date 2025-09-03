@@ -12,7 +12,9 @@
   "APPLICATION": "Aplikacja",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Kontaktowy e-mail administratora",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "Asynchroniczne przesyłanie archiwów zip jest wyłączone.",
     "MAX_FILES_IN_ZIP_LABEL": "Maks. plików archiwum zip",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Maks. liczba plików do przetwarzania synchronicznego",
     "MAX_USERS_HELP": "Jeśli 0, to nie ma limitu rejestracji.",
     "MAX_USERS_LABEL": "Maks. liczba aktywnych użytkowników",
     "NO_CONTACT_EMAIL": "brak adresu e-mail do kontaktu",
@@ -86,6 +88,7 @@
     },
     "TITLE": "Moderacja",
     "UNRESOLVED_REPORTS_EXIST": "Nadal są nierozwiązane raporty.",
+    "USERS_QUEUED_TASKS_EXIST": "Są zadania w kolejce",
     "VIEW_REPORT": "Zobacz raport"
   },
   "BACK_TO_ADMIN": "Wróć do administratora",
@@ -146,6 +149,18 @@
       "CHANGE_TO_USER": "Zmień na rolę użytkownik"
     },
     "TITLE": "Administracja - Użytkownicy"
+  },
+  "USERS_QUEUED_TASKS": {
+    "DESCRIPTION": "Wyświetl zadania w kolejce",
+    "LABEL": "Zadania w kolejce",
+    "LIST_DESCRIPTION": "Jeśli nie są uruchomione żadne procesy robocze, użyj interfejsu CLI do ich przetworzenia.",
+    "NO_USERS_QUEUED_TASKS": "Brak zadań w kolejce",
+    "TASK_TYPES": {
+      "LABEL": "Typ zadań",
+      "user_data_export": "Eksport danych użytkownika",
+      "workouts_archive_upload": "Przesyłanie archiwum treningów"
+    },
+    "VIEW_OTHER_TASKS": "Pokaż inne zadania w kolejce"
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "Adres e-mail został zaktualizowany."
 }

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.12.0"
+version = "0.12.1"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0-only"
@@ -49,6 +49,7 @@ gunicorn = "^23.0.0"
 humanize = "^4.13.0"
 jsonschema = "^4.25.1"
 lxml = "^6.0.1"
+mistune = "^3.1.4"
 nh3 = "^0.3.0"
 psycopg2-binary = "^2.9.10"
 pycryptodome = "^3.15"

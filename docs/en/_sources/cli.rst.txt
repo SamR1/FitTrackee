@@ -243,6 +243,8 @@ Can be used if redis is not set (no dramatiq workers running).
 
 Refresh workouts by recalculating data and fetching weather data if provider is set and workout does not have weather data.
 
+Before executing the command, it is recommended to back up of all data (database and upload directory) in case a large number of workouts are refreshed.
+
 .. warning::
    If a weather data provider is defined and the ``--with-weather`` option is provided, the rate limit may be reached, resulting in API rate limit errors when a large number of workouts is refreshed.
 
