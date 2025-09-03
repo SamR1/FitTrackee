@@ -126,12 +126,15 @@ class UserWorkoutsFeedService:
         return self.feed_template.get_item_data("workout", self.lang, data)
 
     def generate_user_workouts_feed(self) -> str:
+        markdown = mistune.create_markdown(
+            escape=False, plugins=["url", "speedup"]
+        )
         for workout in self.workouts:
             item_data = self._get_workout_item(self.fittrackee_url, workout)
             workout_description = (
                 clean_input(
-                    mistune.html(workout.description),  # type: ignore[arg-type]
-                    allow_images=True,
+                    markdown(workout.description),  # type: ignore[arg-type]
+                    for_markdown_renderer=True,
                 )
                 if self.with_description and workout.description
                 else ""

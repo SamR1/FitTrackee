@@ -212,8 +212,10 @@ class TestUserWorkoutsFeedServiceGenerateUserWorkoutsFeed(WorkoutMixin):
         workout_cycling_user_1.title = WORKOUT_TITLE
         workout_cycling_user_1.description = """some **description** 
 
-with a [link](https://example.com) and 
-an ![image](https://example.com/image.png)"""
+_with_ a [link](https://example.com) and 
+an ![image](https://example.com/image.png)
+
+https://example.com"""
         service = UserWorkoutsFeedService(
             user=user_1,
             workouts=[workout_cycling_user_1],

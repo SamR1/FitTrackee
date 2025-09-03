@@ -33,9 +33,10 @@ expected_en_feed_workout_cycling_user_1_with_markdown_description = """<?xml ver
 &lt;strong&gt;Duration&lt;/strong&gt;: 1:00:00&lt;br /&gt;
 &lt;strong&gt;Distance&lt;/strong&gt;: 10.0 km&lt;br /&gt;
 &lt;strong&gt;Description:&lt;/strong&gt;
-&lt;p&gt;some description&lt;/p&gt;
-&lt;p&gt;with a &lt;a href="https://example.com" rel="noopener noreferrer"&gt;link&lt;/a&gt; and
+&lt;p&gt;some &lt;strong&gt;description&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;with&lt;/em&gt; a &lt;a href="https://example.com" rel="noopener noreferrer"&gt;link&lt;/a&gt; and
 an &lt;img src="https://example.com/image.png" alt="image"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://example.com" rel="noopener noreferrer"&gt;https://example.com&lt;/a&gt;&lt;/p&gt;
 </description><pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate></item></channel></rss>"""
 
 expected_fr_feed_workout_cycling_user_1_with_map = """<?xml version="1.0" encoding="UTF-8"?>
