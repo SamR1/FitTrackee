@@ -13,6 +13,7 @@ from .template_results.workouts import (
     expected_en_feed_user_1_workouts,
     expected_en_feed_workout_cycling_user_1,
     expected_en_feed_workout_cycling_user_1_in_imperial_units,
+    expected_en_feed_workout_cycling_user_1_with_text_description,
     expected_fr_feed_workout_cycling_user_1_with_map,
 )
 
@@ -164,7 +165,32 @@ class TestGetUserPublicWorkoutsFeed(ApiTestCaseMixin):
             )
         )
 
-    def ttest_it_returns_feed_with_fr_language(
+    def test_it_returns_feed_with_description(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        workout_cycling_user_1.title = "some title"
+        workout_cycling_user_1.description = "some description"
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        client = app.test_client()
+
+        response = client.get(
+            f"{self.route.format(username=user_1.username)}?description=true"
+        )
+
+        assert response.status_code == 200
+        assert response.mimetype == "text/xml"
+        assert response.data.decode() == (
+            expected_en_feed_workout_cycling_user_1_with_text_description.format(
+                workout_short_id=workout_cycling_user_1.short_id,
+                workout_title=workout_cycling_user_1.title,
+            )
+        )
+
+    def test_it_returns_feed_with_fr_language(
         self,
         app: "Flask",
         user_1: "User",
