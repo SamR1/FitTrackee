@@ -46,7 +46,7 @@ def get_user_public_workouts_rss_feed(
            back to English.
     :query boolean imperial_units: display values with imperial units.
            If false, metric system is used instead (default: false).
-    :query boolean with_description: display workout description if true
+    :query boolean description: display workout description if true
            (default: false).
 
     :statuscode 200: ``success``
