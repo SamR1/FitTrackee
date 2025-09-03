@@ -7,10 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-08-27 15:52+0200\n"
-"PO-Revision-Date: 2025-02-06 22:02+0000\n"
-"Last-Translator: Wiktor Jędrzejczak "
-"<wikiyu@users.noreply.hosted.weblate.org>\n"
+"POT-Creation-Date: 2025-09-03 08:12+0200\n"
+"PO-Revision-Date: 2025-09-03 04:02+0000\n"
+"Last-Translator: easytiger <999178+easytigrrr@users.noreply.github.com>\n"
 "Language: pl\n"
 "Language-Team: Polish <https://hosted.weblate.org/projects/fittrackee"
 "/fittrackee-api-emails/pl/>\n"
@@ -482,7 +481,7 @@ msgstr "Kolarstwo (Wirtualne)"
 
 #: fittrackee/feeds/feeds/constants.py:10
 msgid "Halfbike"
-msgstr ""
+msgstr "Półrower"
 
 #: fittrackee/feeds/feeds/constants.py:11
 msgid "Hiking"
@@ -534,7 +533,7 @@ msgstr "Rakiety śnieżne"
 
 #: fittrackee/feeds/feeds/constants.py:23
 msgid "Standup Paddleboarding"
-msgstr ""
+msgstr "Pływanie na desce z wiosłem"
 
 #: fittrackee/feeds/feeds/constants.py:24
 msgid "Swimrun"
@@ -542,7 +541,7 @@ msgstr "Swimrun"
 
 #: fittrackee/feeds/feeds/constants.py:25
 msgid "Tennis (Outdoor)"
-msgstr ""
+msgstr "Tenis"
 
 #: fittrackee/feeds/feeds/constants.py:26
 msgid "Trail"
@@ -554,17 +553,17 @@ msgstr "Chód"
 
 #: fittrackee/feeds/feeds/constants.py:28
 msgid "Windsurfing"
-msgstr ""
+msgstr "Windsurfing"
 
-#: fittrackee/feeds/feeds/workouts_feed_service.py:57
+#: fittrackee/feeds/feeds/workouts_feed_service.py:61
 #, python-format
 msgid "Latest public workouts on FitTrackee from %(username)s"
-msgstr ""
+msgstr "Ostanie publiczne treningi %(username)s na FitTrackee"
 
-#: fittrackee/feeds/feeds/workouts_feed_service.py:66
+#: fittrackee/feeds/feeds/workouts_feed_service.py:70
 #, python-format
 msgid "%(username)s's workouts feed"
-msgstr ""
+msgstr "kanał z treningami %(username)s"
 
 #: fittrackee/feeds/templates/workout/body.html:1
 msgid "Workout map"
@@ -593,4 +592,8 @@ msgstr "Wzniesienie"
 #: fittrackee/feeds/templates/workout/body.html:3
 msgid "Descent"
 msgstr "Zejście"
+
+#: fittrackee/feeds/templates/workout/body.html:4
+msgid "Description"
+msgstr "Opis"
 

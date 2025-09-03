@@ -20,6 +20,24 @@ expected_en_feed_workout_cycling_user_1_without_elevation = """<?xml version="1.
 &lt;strong&gt;Duration&lt;/strong&gt;: 1:00:00&lt;br /&gt;
 &lt;strong&gt;Distance&lt;/strong&gt;: 10.0 km&lt;br /&gt;&lt;strong&gt;Ascent&lt;/strong&gt;: 26.0 m&lt;strong&gt;&lt;br /&gt;Descent&lt;/strong&gt;: 12.0 m&lt;br /&gt;</description><pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate></item></channel></rss>"""
 
+expected_en_feed_workout_cycling_user_1_with_text_description = """<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>test's workouts feed</title><link>https://example.com/users/test</link><description>Latest public workouts on FitTrackee from test</description><atom:link href="https://example.com/users/test/workouts.rss" rel="self"/><language>en</language><lastBuildDate>Mon, 01 Jan 2018 00:00:00 +0000</lastBuildDate><item><title>Cycling (Sport) - {workout_title}</title><link>https://example.com/workouts/{workout_short_id}</link><description>&lt;p&gt;
+&lt;strong&gt;Duration&lt;/strong&gt;: 1:00:00&lt;br /&gt;
+&lt;strong&gt;Distance&lt;/strong&gt;: 10.0 km&lt;br /&gt;
+&lt;strong&gt;Description:&lt;/strong&gt;
+&lt;p&gt;some description&lt;/p&gt;
+</description><pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate></item></channel></rss>"""
+
+expected_en_feed_workout_cycling_user_1_with_markdown_description = """<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>test's workouts feed</title><link>https://example.com/users/test</link><description>Latest public workouts on FitTrackee from test</description><atom:link href="https://example.com/users/test/workouts.rss" rel="self"/><language>en</language><lastBuildDate>Mon, 01 Jan 2018 00:00:00 +0000</lastBuildDate><item><title>Cycling (Sport) - {workout_title}</title><link>https://example.com/workouts/{workout_short_id}</link><description>&lt;p&gt;
+&lt;strong&gt;Duration&lt;/strong&gt;: 1:00:00&lt;br /&gt;
+&lt;strong&gt;Distance&lt;/strong&gt;: 10.0 km&lt;br /&gt;
+&lt;strong&gt;Description:&lt;/strong&gt;
+&lt;p&gt;some &lt;strong&gt;description&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;with&lt;/em&gt; a &lt;a href="https://example.com" rel="noopener noreferrer"&gt;link&lt;/a&gt; and
+an &lt;img src="https://example.com/image.png" alt="image"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://example.com" rel="noopener noreferrer"&gt;https://example.com&lt;/a&gt;&lt;/p&gt;
+</description><pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate></item></channel></rss>"""
 
 expected_fr_feed_workout_cycling_user_1_with_map = """<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Flux de séances de test</title><link>https://example.com/users/test</link><description>Dernières séances publiques de test sur FitTrackee</description><atom:link href="https://example.com/users/test/workouts.rss" rel="self"/><language>fr</language><lastBuildDate>Mon, 01 Jan 2018 00:00:00 +0000</lastBuildDate><item><title>Vélo (Sport) - {workout_title}</title><link>https://example.com/workouts/{workout_short_id}</link><description>&lt;p&gt;&lt;img src="https://example.com/api/workouts/map/{workout_map_id}" alt="Carte de la séance"&gt;&lt;br /&gt;

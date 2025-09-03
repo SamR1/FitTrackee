@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-08-27 15:52+0200\n"
+"POT-Creation-Date: 2025-09-03 08:12+0200\n"
 "PO-Revision-Date: 2022-07-04 21:17+0000\n"
 "Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language: fr\n"
@@ -568,12 +568,12 @@ msgstr "Marche"
 msgid "Windsurfing"
 msgstr "Planche à voile"
 
-#: fittrackee/feeds/feeds/workouts_feed_service.py:57
+#: fittrackee/feeds/feeds/workouts_feed_service.py:61
 #, python-format
 msgid "Latest public workouts on FitTrackee from %(username)s"
 msgstr "Dernières séances publiques de %(username)s sur FitTrackee"
 
-#: fittrackee/feeds/feeds/workouts_feed_service.py:66
+#: fittrackee/feeds/feeds/workouts_feed_service.py:70
 #, python-format
 msgid "%(username)s's workouts feed"
 msgstr "Flux de séances de %(username)s"
@@ -605,4 +605,8 @@ msgstr "Dénivelé positif"
 #: fittrackee/feeds/templates/workout/body.html:3
 msgid "Descent"
 msgstr "Dénivelé négatif"
+
+#: fittrackee/feeds/templates/workout/body.html:4
+msgid "Description"
+msgstr "Description"
 
