@@ -71,6 +71,9 @@
   "PRIVACY_POLICY_TO_VALIDATE": "Mesedez {0} pribatutasun politika aurrera jarraitu aurretik.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Kontua editatzea",
+    "ARCHIVE_UPLOADS": {
+      "ARCHIVE": "Zip fitxategia"
+    },
     "ASCENT_DATA": "Igoerarekin lotutako datuak (errekorrak, guztizkoa)",
     "BACK_TO_PROFILE": "Itzuli profilera",
     "BIO": "Biografia",
