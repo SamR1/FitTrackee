@@ -4,6 +4,8 @@ from typing import IO, TYPE_CHECKING, Dict, Optional
 from uuid import UUID
 
 import pytest
+from geoalchemy2.shape import to_shape
+from shapely.geometry.linestring import LineString
 from werkzeug.datastructures import FileStorage
 
 from fittrackee.visibility_levels import VisibilityLevel
@@ -129,6 +131,8 @@ class WorkoutAssertMixin:
         assert workout_segment.start_date == datetime(
             2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc
         )
+        assert isinstance(to_shape(workout_segment.geom), LineString)
+        assert len(workout_segment.points) == 25
 
     @staticmethod
     def assert_workout_with_with_gpxtpx_extensions_and_power(

@@ -232,6 +232,18 @@ def process_queued_archive_upload(task_short_id: str, verbose: bool) -> None:
     default=False,
 )
 @click.option(
+    "--add-missing-geometry",
+    help=(
+        "if provided, it refreshes only workouts without geometry in database "
+        " to add geometry and points. This option is provided to update "
+        "workouts created before v1.x and will be removed in a future version "
+        "when all workouts must have geometry."
+    ),
+    is_flag=True,
+    show_default=True,
+    default=False,
+)
+@click.option(
     "--verbose",
     "-v",
     "verbose",
@@ -249,6 +261,7 @@ def refresh_workouts(
     user: Optional[str] = None,
     extension: Optional[str] = None,
     with_weather: bool = False,
+    add_missing_geometry: bool = False,
     verbose: bool = False,
 ) -> None:
     """
@@ -272,6 +285,7 @@ def refresh_workouts(
                 extension=extension,
                 with_weather=with_weather,
                 verbose=verbose,
+                add_geometry=add_missing_geometry,
                 logger=logger,
             )
             service.refresh()
