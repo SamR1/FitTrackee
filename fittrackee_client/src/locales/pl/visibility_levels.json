@@ -5,6 +5,7 @@
     "private": "Prywatne (tylko oznaczeni użytkownicy)",
     "public": "Publiczne (każdy)"
   },
+  "HR_VISIBILITY": "Widoczność tętna",
   "LEVELS": {
     "followers_only": "Tylko śledzący",
     "private": "Prywatne (tylko ja)",

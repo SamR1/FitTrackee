@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-08-27 15:52+0200\n"
+"POT-Creation-Date: 2025-09-03 08:12+0200\n"
 "PO-Revision-Date: 2025-07-17 17:03+0000\n"
 "Last-Translator: Nikita Epifanov <nikgreens@protonmail.com>\n"
 "Language: ru\n"
@@ -563,12 +563,12 @@ msgstr "Ходьба"
 msgid "Windsurfing"
 msgstr "Виндсёрфинг"
 
-#: fittrackee/feeds/feeds/workouts_feed_service.py:57
+#: fittrackee/feeds/feeds/workouts_feed_service.py:61
 #, python-format
 msgid "Latest public workouts on FitTrackee from %(username)s"
 msgstr ""
 
-#: fittrackee/feeds/feeds/workouts_feed_service.py:66
+#: fittrackee/feeds/feeds/workouts_feed_service.py:70
 #, python-format
 msgid "%(username)s's workouts feed"
 msgstr ""
@@ -600,4 +600,8 @@ msgstr "набор"
 #: fittrackee/feeds/templates/workout/body.html:3
 msgid "Descent"
 msgstr "спуск"
+
+#: fittrackee/feeds/templates/workout/body.html:4
+msgid "Description"
+msgstr "Описание"
 

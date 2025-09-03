@@ -1,5 +1,41 @@
 # Change log
 
+## Version 0.12.1 (2025/09/03)
+
+### Features and enhancements
+
+* [PR#915](https://github.com/SamR1/FitTrackee/pull/915) - add description to public workouts RSS feed
+
+### Translations
+
+* [PR#914](https://github.com/SamR1/FitTrackee/pull/914) - Translations update from Hosted Weblate (Croatian and Polish)
+
+Translation status:
+- Basque: 89%
+- Bulgarian: 56%
+- Catalan: 27%
+- Chinese (Simplified): 99%
+- Croatian: 100%
+- Czech: 45%
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 92%
+- Italian: 46%
+- Norwegian Bokmål: 30%
+- Polish: 100%
+- Portuguese: 55%
+- Russian: 98%
+- Spanish: 74%
+- Turkish: 1%
+
+
+Thanks to the contributors:
+- @easytigrrr
+- @iggydev
+
+
 ## Version 0.12.0 (2025/08/31)
 
 This version provides workout data refresh, original file download and a RSS feed for users public workouts.
@@ -10,7 +46,7 @@ This version provides workout data refresh, original file download and a RSS fee
 ### Features and enhancements
 
 * [#818](https://github.com/SamR1/FitTrackee/issues/818) - Being able to download the original track alongside the gpx one
-* [#835](https://github.com/SamR1/FitTrackee/issues/835) - RSS source for public workouts
+* [#835](https://github.com/SamR1/FitTrackee/issues/835) - RSS feed for public workouts
 * [PR#900](https://github.com/SamR1/FitTrackee/pull/900) - Refresh workout data
 
 ### Bugs Fixed

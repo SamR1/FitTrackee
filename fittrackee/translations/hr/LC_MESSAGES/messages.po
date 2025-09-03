@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-08-27 15:52+0200\n"
-"PO-Revision-Date: 2025-04-26 15:22+0000\n"
+"POT-Creation-Date: 2025-09-03 08:12+0200\n"
+"PO-Revision-Date: 2025-09-03 04:02+0000\n"
 "Last-Translator: iggydev <igor@kraljic.info>\n"
 "Language: hr\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/fittrackee"
@@ -556,15 +556,15 @@ msgstr "Šetnja"
 msgid "Windsurfing"
 msgstr "Jedrenje na dasci"
 
-#: fittrackee/feeds/feeds/workouts_feed_service.py:57
+#: fittrackee/feeds/feeds/workouts_feed_service.py:61
 #, python-format
 msgid "Latest public workouts on FitTrackee from %(username)s"
-msgstr ""
+msgstr "Posljednje javne aktivnosti na FitTrackee od %(username)s"
 
-#: fittrackee/feeds/feeds/workouts_feed_service.py:66
+#: fittrackee/feeds/feeds/workouts_feed_service.py:70
 #, python-format
 msgid "%(username)s's workouts feed"
-msgstr ""
+msgstr "Kanal aktivnosti od %(username)s"
 
 #: fittrackee/feeds/templates/workout/body.html:1
 msgid "Workout map"
@@ -593,4 +593,8 @@ msgstr "Uspon"
 #: fittrackee/feeds/templates/workout/body.html:3
 msgid "Descent"
 msgstr "Silazak"
+
+#: fittrackee/feeds/templates/workout/body.html:4
+msgid "Description"
+msgstr "Opis"
 
