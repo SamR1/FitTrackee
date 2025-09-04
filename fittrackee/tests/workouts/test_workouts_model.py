@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Dict
@@ -7,6 +8,7 @@ import pytest
 from flask import Flask
 from geoalchemy2.shape import to_shape
 from shapely import LineString
+from sqlalchemy.exc import IntegrityError
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
@@ -3198,6 +3200,34 @@ class TestWorkoutSegmentModel:
             f"for workout '{workout_cycling_user_1.short_id}'>"
             == str(workout_cycling_user_1_segment)
         )
+
+    def test_it_raises_error_when_segment_have_same_start_date(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        start_date = datetime.now(tz=timezone.utc)
+        workout_cycling_user_1_segment.start_date = start_date
+        new_segment = WorkoutSegment(
+            segment_id=1,
+            workout_id=workout_cycling_user_1.id,
+            workout_uuid=workout_cycling_user_1.uuid,
+        )
+        new_segment.duration = workout_cycling_user_1_segment.duration
+        db.session.add(new_segment)
+
+        new_segment.start_date = start_date
+        with pytest.raises(
+            IntegrityError,
+            match=re.escape(
+                r"(psycopg2.errors.UniqueViolation) duplicate key value "
+                r'violates unique constraint "workout_id_start_date_unique"'
+            ),
+        ):
+            db.session.commit()
 
     def test_it_returns_serialized_segment_without_heart_rate(
         self,

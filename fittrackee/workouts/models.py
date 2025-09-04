@@ -905,6 +905,12 @@ def on_workout_equipments_remove(
 
 class WorkoutSegment(BaseModel):
     __tablename__ = "workout_segments"
+    __table_args__ = (
+        db.UniqueConstraint(
+            "workout_id", "start_date", name="workout_id_start_date_unique"
+        ),
+    )
+
     workout_id: Mapped[int] = mapped_column(
         db.ForeignKey("workouts.id"), primary_key=True
     )

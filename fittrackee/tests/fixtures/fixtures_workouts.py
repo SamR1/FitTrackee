@@ -2737,6 +2737,35 @@ def gpx_file_with_segments() -> str:
     )
 
 
+@pytest.fixture()
+def gpx_file_with_duplicated_segments() -> str:
+    return (
+        """<?xml version='1.0' encoding='UTF-8'?>
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
+  <metadata/>
+  <trk>
+    <name>just a workout</name>
+    <trkseg>
+"""
+        + track_points_part_1
+        + """
+    </trkseg>
+    <trkseg>
+"""
+        + track_points_part_1
+        + """
+    </trkseg>
+  </trk>
+</gpx>
+"""
+    )
+
+
 segment_0_coordinates = [
     (6.07367, 44.68095),
     (6.07367, 44.68091),
