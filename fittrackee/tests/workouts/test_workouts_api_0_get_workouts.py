@@ -10,7 +10,7 @@ from fittrackee import db
 from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import User
 from fittrackee.visibility_levels import VisibilityLevel
-from fittrackee.workouts.models import Sport, Workout
+from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 
 from ..mixins import WorkoutMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
@@ -1370,6 +1370,59 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         )
 
         self.assert_400(response, "invalid value for visibility")
+
+
+class TestGetWorkoutsWithLocationFilters(WorkoutApiTestCaseMixin):
+    def test_it_does_not_return_workouts_when_to_far_from_given_coordinates(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?coordinates=44.564511,6.08716&radius=12",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert data["data"]["workouts"] == []
+
+    def test_it_get_workout_matching_given_location_and_distance(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?coordinates=44.564511,6.087168&radius=20",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        workouts = data["data"]["workouts"]
+        assert len(workouts) == 1
+        assert (
+            workouts[0]["id"]
+            == workout_cycling_user_1_with_coordinates.short_id
+        )
 
 
 class TestGetWorkoutsWithFiltersAndPagination(WorkoutApiTestCaseMixin):

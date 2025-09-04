@@ -42,3 +42,6 @@ WORKOUT_FILE_MIMETYPES = {
     "kml": "application/vnd.google-earth.kml+xml",
     "tcx": "application/vnd.garmin.tcx+xml",
 }
+
+
+WGS84_CRS = 4326  # World Geodetic System 1984, in degrees
