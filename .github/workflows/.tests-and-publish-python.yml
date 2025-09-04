@@ -84,6 +84,7 @@ jobs:
         if: matrix.python-version != '3.10'
         run: pytest fittrackee -n auto --maxprocesses=2  -p no:warnings --maxfail=1
 
+# needs cffi 2+ for Python 3.14 support
 #  python-next:
 #    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
 #    name: python 3.14-rc (postgresql 17)
