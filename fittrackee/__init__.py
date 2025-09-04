@@ -168,6 +168,7 @@ def create_app(init_email: bool = True) -> Flask:
     from .users.notifications import notifications_blueprint
     from .users.queued_tasks import queued_tasks_blueprint
     from .users.users import users_blueprint
+    from .workouts.geocode import geocode_blueprint
     from .workouts.records import records_blueprint
     from .workouts.sports import sports_blueprint
     from .workouts.stats import stats_blueprint
@@ -191,6 +192,7 @@ def create_app(init_email: bool = True) -> Flask:
     app.register_blueprint(notifications_blueprint, url_prefix="/api")
     app.register_blueprint(reports_blueprint, url_prefix="/api")
     app.register_blueprint(feeds_blueprint, url_prefix="")
+    app.register_blueprint(geocode_blueprint, url_prefix="/api")
 
     if app.debug:
         logging.getLogger("sqlalchemy").setLevel(logging.WARNING)

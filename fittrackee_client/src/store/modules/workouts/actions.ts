@@ -653,4 +653,21 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
         context.commit(WORKOUTS_STORE.MUTATIONS.SET_REFRESH_LOADING, false)
       )
   },
+  [WORKOUTS_STORE.ACTIONS.GET_LOCATION_FROM_QUERY](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    query: string
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get('/geocode/search', { params: { query } })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          return res.data.locations
+        }
+        return []
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+  },
 }

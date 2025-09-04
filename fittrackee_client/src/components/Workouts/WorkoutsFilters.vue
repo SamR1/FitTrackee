@@ -138,6 +138,10 @@
               </div>
             </div>
             <div class="form-item form-item-text">
+              <label for="location"> {{ $t('workouts.LOCATION') }}:</label>
+              <LocationsDropdown @updateCoordinates="handleLocationChange" />
+            </div>
+            <div class="form-item form-item-text">
               <label for="workout_visibility">
                 {{ $t('visibility_levels.WORKOUT_VISIBILITY').toLowerCase() }}:
               </label>
@@ -293,6 +297,7 @@
   import type { LocationQuery } from 'vue-router'
   import { useStore } from 'vuex'
 
+  import LocationsDropdown from '@/components/Workouts/LocationsDropdown.vue'
   import { EQUIPMENTS_STORE } from '@/store/constants'
   import type { IEquipment } from '@/types/equipments'
   import type { ITranslatedSport } from '@/types/sports'
@@ -335,6 +340,13 @@
       delete params[name]
     } else {
       params[name] = value
+    }
+  }
+  function handleLocationChange(coordinates: string) {
+    if (coordinates === '') {
+      delete params.coordinates
+    } else {
+      params.coordinates = coordinates
     }
   }
   function onFilter() {

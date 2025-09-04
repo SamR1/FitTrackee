@@ -15,6 +15,8 @@ from fittrackee.workouts.services.workout_from_file.workout_point import (
     WorkoutPoint,
 )
 
+from ...mixins import ResponseMockMixin
+
 VISUAL_CROSSING_RESPONSE = {
     "queryCost": 1,
     "latitude": 48.866667,
@@ -90,15 +92,7 @@ class TestVisualCrossingGetTimestamp(WeatherTestCase):
         )
 
 
-class TestVisualCrossingGetWeather(WeatherTestCase):
-    @staticmethod
-    def get_response() -> Mock:
-        response_mock = Mock()
-        response_mock.raise_for_status = Mock()
-        response_mock.json = Mock()
-        response_mock.json.return_value = VISUAL_CROSSING_RESPONSE
-        return response_mock
-
+class TestVisualCrossingGetWeather(WeatherTestCase, ResponseMockMixin):
     def test_it_calls_api_with_time_and_point_location(self) -> None:
         time = datetime(
             year=2022,
@@ -154,7 +148,11 @@ class TestVisualCrossingGetWeather(WeatherTestCase):
             ).astimezone(pytz.timezone("Europe/Paris"))
         )
         visual_crossing = VisualCrossing(api_key=self.api_key)
-        with patch.object(requests, "get", return_value=self.get_response()):
+        with patch.object(
+            requests,
+            "get",
+            return_value=self.get_response(VISUAL_CROSSING_RESPONSE),
+        ):
             weather_data = visual_crossing.get_weather(point)
 
         current_conditions: Dict = VISUAL_CROSSING_RESPONSE[  # type: ignore

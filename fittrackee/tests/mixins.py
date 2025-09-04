@@ -656,3 +656,13 @@ class GeometryMixin:
     @staticmethod
     def get_geojson_from_geom(geometry: "WKBElement") -> Dict:
         return json.loads(to_geojson(to_shape(geometry)))
+
+
+class ResponseMockMixin:
+    @staticmethod
+    def get_response(response: Union[List, Dict]) -> "Mock":
+        response_mock = Mock()
+        response_mock.raise_for_status = Mock()
+        response_mock.json = Mock()
+        response_mock.json.return_value = response
+        return response_mock
