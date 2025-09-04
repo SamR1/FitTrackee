@@ -156,6 +156,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "workout_date": workout.workout_date,
             "workout_visibility": workout.workout_visibility.value,
             "with_analysis": False,
+            "with_geometry": False,
             "with_gpx": False,
         }
 
@@ -217,18 +218,21 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "workout_date": workout.workout_date,
             "workout_visibility": workout.workout_visibility.value,
             "with_analysis": False,
+            "with_geometry": False,
             "with_gpx": False,
         }
 
-    def test_it_serializes_workout_with_file_for_cycling(
+    def test_it_serializes_workout_with_file_for_cycling_and_geometry(
         self,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
-        workout_cycling_user_1: Workout,
-        workout_cycling_user_1_segment: Workout,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: Workout,
     ) -> None:
-        workout = self.update_workout_with_file_data(workout_cycling_user_1)
+        workout = self.update_workout_with_file_data(
+            workout_cycling_user_1_with_coordinates
+        )
         workout.gpx = "file.gpx"
         workout.original_file = "file.tcx"
         workout.ave_cadence = 55
@@ -242,16 +246,16 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
 
         assert serialized_workout == {
             "analysis_visibility": workout.analysis_visibility.value,
-            "ascent": workout.ascent,
+            "ascent": float(workout.ascent),  # type: ignore[arg-type]
             "ave_cadence": workout.ave_cadence,
             "ave_hr": workout.ave_hr,
             "ave_power": workout.ave_power,
-            "ave_speed": workout.ave_speed,
+            "ave_speed": float(workout.ave_speed),  # type: ignore[arg-type]
             "bounds": workout.bounds,
             "creation_date": workout.creation_date,
-            "descent": workout.descent,
+            "descent": float(workout.descent),  # type: ignore[arg-type]
             "description": None,
-            "distance": workout.distance,
+            "distance": float(workout.distance),  # type: ignore[arg-type]
             "duration": str(workout.duration),
             "equipments": [],
             "id": workout.short_id,
@@ -259,12 +263,12 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "likes_count": 0,
             "map": None,
             "map_visibility": workout.map_visibility.value,
-            "max_alt": workout.max_alt,
+            "max_alt": float(workout.max_alt),  # type: ignore[arg-type]
             "max_cadence": workout.max_cadence,
             "max_hr": workout.max_hr,
             "max_power": workout.max_power,
-            "max_speed": workout.max_speed,
-            "min_alt": workout.min_alt,
+            "max_speed": float(workout.max_speed),  # type: ignore[arg-type]
+            "min_alt": float(workout.min_alt),  # type: ignore[arg-type]
             "modification_date": workout.modification_date,
             "moving": str(workout.moving),
             "next_workout": None,
@@ -288,6 +292,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "workout_date": workout.workout_date,
             "workout_visibility": workout.workout_visibility.value,
             "with_analysis": True,
+            "with_geometry": True,
             "with_gpx": True,
         }
 
@@ -362,6 +367,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "workout_date": workout.workout_date,
             "workout_visibility": workout.workout_visibility.value,
             "with_analysis": True,
+            "with_geometry": False,
             "with_gpx": True,
         }
 
@@ -433,6 +439,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "workout_date": workout.workout_date,
             "workout_visibility": workout.workout_visibility.value,
             "with_analysis": True,
+            "with_geometry": False,
             "with_gpx": True,
         }
 
@@ -504,6 +511,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "workout_date": workout.workout_date,
             "workout_visibility": workout.workout_visibility.value,
             "with_analysis": True,
+            "with_geometry": False,
             "with_gpx": True,
         }
 
@@ -664,6 +672,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 workout_cycling_user_1.workout_visibility.value
             ),
             "with_analysis": False,
+            "with_geometry": False,
             "with_gpx": False,
         }
 
@@ -735,10 +744,11 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
-        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
     ) -> None:
         workout_cycling_user_1 = self.update_workout_with_file_data(
-            workout_cycling_user_1
+            workout_cycling_user_1_with_coordinates
         )
 
         serialized_workout = workout_cycling_user_1.serialize(
@@ -749,15 +759,15 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "analysis_visibility": (
                 workout_cycling_user_1.analysis_visibility.value
             ),
-            "ascent": workout_cycling_user_1.ascent,
+            "ascent": float(workout_cycling_user_1.ascent),  # type: ignore[arg-type]
             "ave_cadence": workout_cycling_user_1.ave_cadence,
             "ave_hr": workout_cycling_user_1.ave_hr,
             "ave_power": None,
-            "ave_speed": workout_cycling_user_1.ave_speed,
+            "ave_speed": float(workout_cycling_user_1.ave_speed),  # type: ignore[arg-type]
             "bounds": [],
             "creation_date": None,
-            "descent": workout_cycling_user_1.descent,
-            "distance": workout_cycling_user_1.distance,
+            "descent": float(workout_cycling_user_1.descent),  # type: ignore[arg-type]
+            "distance": float(workout_cycling_user_1.distance),  # type: ignore[arg-type]
             "duration": str(workout_cycling_user_1.duration),
             "equipments": [],
             "id": workout_cycling_user_1.short_id,
@@ -765,12 +775,12 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "likes_count": 0,
             "map": None,
             "map_visibility": workout_cycling_user_1.map_visibility.value,
-            "max_alt": workout_cycling_user_1.max_alt,
+            "max_alt": float(workout_cycling_user_1.max_alt),  # type: ignore[arg-type]
             "max_cadence": workout_cycling_user_1.max_cadence,
             "max_hr": workout_cycling_user_1.max_hr,
             "max_power": None,
-            "max_speed": workout_cycling_user_1.max_speed,
-            "min_alt": workout_cycling_user_1.min_alt,
+            "max_speed": float(workout_cycling_user_1.max_speed),  # type: ignore[arg-type]
+            "min_alt": float(workout_cycling_user_1.min_alt),  # type: ignore[arg-type]
             "modification_date": None,
             "moving": str(workout_cycling_user_1.moving),
             "next_workout": None,
@@ -2803,6 +2813,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
                 workout_cycling_user_2.workout_visibility.value
             ),
             "with_analysis": False,
+            "with_geometry": False,
             "with_gpx": False,
         }
 
@@ -2886,6 +2897,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
                 workout_cycling_user_2.workout_visibility.value
             ),
             "with_analysis": True,
+            "with_geometry": False,
             "with_gpx": True,
         }
 
@@ -3092,6 +3104,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
                 workout_cycling_user_2.workout_visibility.value
             ),
             "with_analysis": False,
+            "with_geometry": False,
             "with_gpx": False,
         }
 
@@ -3166,6 +3179,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
                 workout_cycling_user_2.workout_visibility.value
             ),
             "with_analysis": True,
+            "with_geometry": False,
             "with_gpx": True,
         }
 

@@ -10,6 +10,7 @@ from fittrackee.workouts.constants import (
     SPM_CADENCE_SPORTS,
     SPORTS_WITHOUT_ELEVATION_DATA,
 )
+from fittrackee.workouts.exceptions import WorkoutException
 from fittrackee.workouts.models import WorkoutSegment
 
 if TYPE_CHECKING:
@@ -21,10 +22,16 @@ def get_geojson_from_segments(
     *,
     segment_id: Optional[int] = None,
 ) -> Optional[Dict]:
+    """
+    To refactor when using segment uuid
+    """
     segments_count = len(workout.segments) if segment_id is None else 1
     filters = [WorkoutSegment.workout_id == workout.id]
-    if segment_id:
-        filters.append(WorkoutSegment.segment_id == segment_id)
+    if segment_id is not None:
+        segment_index = segment_id - 1
+        if segment_index < 0:
+            raise WorkoutException("error", "Incorrect segment id", None)
+        filters.append(WorkoutSegment.segment_id == segment_id - 1)
     geom_subquery = select(WorkoutSegment.geom).filter(*filters).subquery()
     subquery = (
         func.ST_Collect(geom_subquery.c.geom)

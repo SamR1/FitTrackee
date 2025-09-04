@@ -840,11 +840,11 @@ def get_workout_data(
                 )
             }
         elif data_type == "geojson":
-            data = {
-                "geojson": get_geojson_from_segments(
-                    workout, segment_id=segment_id
-                )
-            }
+            geojson = get_geojson_from_segments(workout, segment_id=segment_id)
+            # Handle error differently when using workout segment uuid
+            if not geojson:
+                return NotFoundErrorResponse("geojson not found")
+            data = {"geojson": geojson}
         else:  # data_type == 'gpx'
             absolute_gpx_filepath = get_absolute_file_path(workout.gpx)
             with open(absolute_gpx_filepath, encoding="utf-8") as f:
@@ -864,7 +864,7 @@ def get_workout_data(
                 )
 
             data = {"gpx": file_content}
-    except WorkoutGPXException as e:
+    except (WorkoutException, WorkoutGPXException) as e:
         appLog.error(e.message)
         if e.status == "not found":
             return NotFoundErrorResponse(e.message)
@@ -1145,7 +1145,7 @@ def get_workout_geojson(
     auth_user: Optional[User], workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get workout GeoJSON.
+    Get workout GeoJSON when segments have geometry.
 
     **Example request**:
 
@@ -1200,7 +1200,7 @@ def get_workout_geojson(
         - ``you do not have permissions, your account is suspended``
     :statuscode 404:
         - ``workout not found``
-        - ``no gpx file for this workout``
+        - ``geojson not found``
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """
@@ -1216,7 +1216,7 @@ def get_segment_geojson(
     auth_user: Optional[User], workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
-    Get workout segment GeoJSON.
+    Get workout segment GeoJSON, when segment has geometry
 
     **Example request**:
 
@@ -1263,7 +1263,9 @@ def get_segment_geojson(
     :statuscode 403:
         - ``you do not have permissions``
         - ``you do not have permissions, your account is suspended``
-    :statuscode 404: ``workout not found``
+    :statuscode 404:
+        - ``workout not found``
+        - ``geojson not found``
     :statuscode 500: ``error, please try again or contact the administrator``
     """
     return get_workout_data(auth_user, workout_short_id, "geojson", segment_id)

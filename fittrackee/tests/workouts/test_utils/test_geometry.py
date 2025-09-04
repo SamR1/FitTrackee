@@ -1,5 +1,8 @@
 from typing import TYPE_CHECKING
 
+import pytest
+
+from fittrackee.workouts.exceptions import WorkoutException
 from fittrackee.workouts.utils.geometry import (
     get_chart_data_from_segment_points,
     get_geojson_from_segments,
@@ -108,7 +111,7 @@ class TestGetGeojsonFromSegments:
 
         geojson = get_geojson_from_segments(
             workout_cycling_user_1,
-            segment_id=workout_cycling_user_1_segment_2.segment_id,
+            segment_id=workout_cycling_user_1_segment_2.segment_id + 1,
         )
 
         assert geojson == {
@@ -129,6 +132,17 @@ class TestGetGeojsonFromSegments:
         )
 
         assert geojson is None
+
+    def test_it_raises_exception_when_segment_id_is_invalid(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+    ) -> None:
+        with pytest.raises(WorkoutException, match="Incorrect segment id"):
+            get_geojson_from_segments(workout_cycling_user_1, segment_id=-1)
 
 
 class TestGetChartDataFromSegmentPoints:

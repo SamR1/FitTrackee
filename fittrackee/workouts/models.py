@@ -601,6 +601,9 @@ class Workout(BaseModel):
                 if can_see_analysis_data
                 else []
             ),
+            "with_geometry": (
+                len(self.segments) > 0 and self.segments[0].geom is not None
+            ),
             "weather_start": self.weather_start,
             "weather_end": self.weather_end,
             "notes": (

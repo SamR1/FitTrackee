@@ -13,6 +13,7 @@ export const workoutsState: IWorkoutsState = {
   user_workouts: [],
   user_workouts_statistics: <TWorkoutsStatistics>{},
   workoutData: {
+    geojson: null,
     gpx: '',
     loading: false,
     workout: <IWorkout>{},
