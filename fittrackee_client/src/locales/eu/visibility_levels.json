@@ -5,6 +5,7 @@
     "private": "Pribatu (izendatutako erabiltzaileek bakarrik)",
     "public": "Publikoa (edonork)"
   },
+  "HR_VISIBILITY": "Bihotz-maiztasuna erakustea",
   "LEVELS": {
     "followers_only": "Jarraitzaileek bakarrik",
     "private": "Pribatua (nik bakarrik)",
