@@ -235,7 +235,7 @@ def process_queued_archive_upload(task_short_id: str, verbose: bool) -> None:
     "--add-missing-geometry",
     help=(
         "if provided, it refreshes only workouts without geometry in database "
-        " to add geometry and points. This option is provided to update "
+        "to add geometry and points. This option is provided to update "
         "workouts created before v1.x and will be removed in a future version "
         "when all workouts must have geometry."
     ),

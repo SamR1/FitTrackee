@@ -1,7 +1,6 @@
 export interface TPoint {
   longitude: number
   latitude: number
-  elevation?: number
 }
 
 export interface ILineString {
