@@ -1,9 +1,10 @@
 import json
 from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
+import geopandas as gpd
 import shapely.wkt
 from geoalchemy2.shape import to_shape
-from shapely import to_geojson
+from shapely import Point, to_geojson
 from shapely.geometry import LineString, MultiLineString
 
 from fittrackee.workouts.constants import (
@@ -11,8 +12,13 @@ from fittrackee.workouts.constants import (
     RPM_CADENCE_SPORTS,
     SPM_CADENCE_SPORTS,
     SPORTS_WITHOUT_ELEVATION_DATA,
+    WGS84_CRS,
 )
-from fittrackee.workouts.exceptions import WorkoutException
+from fittrackee.workouts.exceptions import (
+    InvalidCoordinatesException,
+    InvalidRadiusException,
+    WorkoutException,
+)
 
 if TYPE_CHECKING:
     from geoalchemy2 import WKBElement
@@ -126,3 +132,28 @@ def get_chart_data_from_segment_points(
             chart_data.append(data)
 
     return chart_data
+
+
+def get_buffered_location(coordinates: str, radius_str: str) -> str:
+    """
+    coordinates: latitude,longitude
+    radius: distance in kilometers
+    """
+    try:
+        radius = int(radius_str)
+    except ValueError as e:
+        raise InvalidRadiusException() from e
+    if radius <= 0:
+        raise InvalidRadiusException()
+
+    try:
+        latitude, longitude = coordinates.split(",")
+        point = Point(float(longitude), float(latitude))
+    except ValueError as e:
+        raise InvalidCoordinatesException() from e
+
+    gdf = gpd.GeoDataFrame(geometry=[point], crs=WGS84_CRS)
+    gdf_in_meters = gdf.to_crs(gdf.estimate_utm_crs())
+    buffered_gdf_in_meters = gdf_in_meters.buffer(radius * 1000)
+    buffered_gdf = buffered_gdf_in_meters.to_crs(WGS84_CRS)
+    return f"SRID={WGS84_CRS};{buffered_gdf.loc[0]}"

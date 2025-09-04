@@ -29,7 +29,7 @@ from fittrackee.visibility_levels import (
     get_calculated_visibility,
 )
 
-from .constants import SPORTS_WITHOUT_ELEVATION_DATA
+from .constants import SPORTS_WITHOUT_ELEVATION_DATA, WGS84_CRS
 from .exceptions import WorkoutForbiddenException
 from .utils.convert import (
     convert_in_duration,
@@ -950,7 +950,9 @@ class WorkoutSegment(BaseModel):
     max_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
     ave_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
     geom: Mapped["WKBElement"] = mapped_column(
-        Geometry(geometry_type="LINESTRING", srid=4326, spatial_index=True),
+        Geometry(
+            geometry_type="LINESTRING", srid=WGS84_CRS, spatial_index=True
+        ),
         nullable=True,  # to handle pre-existing segments for now
     )
     points: Mapped[List[Dict]] = mapped_column(

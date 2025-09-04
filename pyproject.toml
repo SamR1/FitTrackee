@@ -45,6 +45,7 @@ flask-limiter = {version = "^3.11.0", extras = ["redis"]}  # flask-limiter 3.12+
 flask-migrate = "4.1.0"
 flask-sqlalchemy = "3.1.1"
 geoalchemy2 = {extras = ["shapely"], version = "^0.18.0"}
+geopandas = "=1.1.1"
 gpxpy = "=1.6.2"
 gunicorn = "^23.0.0"
 humanize = "^4.13.0"
@@ -53,6 +54,7 @@ lxml = "^6.0.1"
 mistune = "^3.1.4"
 nh3 = "^0.3.0"
 numpy = "=2.2.6" # numpy 2.3+ requires python 3.11+. geoalchemy2 dependency.
+pandas = "=2.3.2"
 psycopg2-binary = "^2.9.10"
 pyjwt = "^2.10.1"
 pyopenssl = "^25.1.0"
