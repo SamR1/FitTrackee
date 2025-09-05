@@ -7,6 +7,11 @@ from fittrackee import VERSION, appLog
 
 
 class NomatimService:
+    """
+    documentation:
+    https://nominatim.org/release-docs/develop/api/Overview/
+    """
+
     def __init__(self) -> None:
         self.base_url = os.environ.get(
             "NOMATIM_URL", "https://nominatim.openstreetmap.org"
@@ -14,12 +19,12 @@ class NomatimService:
         self.params = {"format": "jsonv2"}
         self.headers = {"User-Agent": f"FitTrackee v{VERSION}"}
 
-    def get_locations_from_query(self, query: str) -> List[Dict]:
+    def get_locations_from_city(self, city: str) -> List[Dict]:
         url = f"{self.base_url}/search"
-        appLog.debug(f"Nomatim: getting location for query: '{query}'")
+        appLog.debug(f"Nomatim: getting location for city: '{city}'")
         r = requests.get(
             url,
-            params={**self.params, "q": query},
+            params={**self.params, "city": city},
             timeout=30,
             headers=self.headers,
         )

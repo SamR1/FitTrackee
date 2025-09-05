@@ -91,9 +91,6 @@
                 </optgroup>
               </select>
             </div>
-          </div>
-
-          <div class="form-items-group">
             <div class="form-item form-item-text">
               <label for="title"> {{ $t('workouts.TITLE', 1) }}:</label>
               <div class="form-inputs-group">
@@ -110,6 +107,8 @@
                 />
               </div>
             </div>
+          </div>
+          <div class="form-items-group">
             <div class="form-item form-item-text">
               <label for="description">
                 {{ $t('workouts.DESCRIPTION') }}:
@@ -145,7 +144,7 @@
               </div>
             </div>
             <div class="form-item form-item-text">
-              <label for="location"> {{ $t('workouts.LOCATION') }}:</label>
+              <label for="location">{{ $t('workouts.LOCATION') }}:</label>
               <LocationsDropdown
                 :location="location"
                 @updateCoordinates="handleLocationChange"
@@ -167,7 +166,7 @@
                       !params.coordinates) ||
                     geocodeLoading
                   "
-                  :value="radius"
+                  v-model="radius"
                   placeholder=""
                   type="number"
                   @change="handleFilterChange"
@@ -400,21 +399,25 @@
       params[name] = value
     }
   }
-  function handleLocationChange(location: {
+  function handleLocationChange(newLocation: {
     coordinates: string
+    display_name: string
     osm_id: string
   }) {
-    if (location.coordinates === '') {
+    if (newLocation.coordinates === '') {
       delete params.coordinates
       delete params.osm_id
       delete params.radius
       radius.value = ''
     } else {
-      params.coordinates = location.coordinates
-      params.osm_id = location.osm_id
-      params.radius = '10'
-      radius.value = '10'
+      params.coordinates = newLocation.coordinates
+      params.osm_id = newLocation.osm_id
+      if (!radius.value) {
+        params.radius = '10'
+        radius.value = '10'
+      }
     }
+    location.value = newLocation.display_name
   }
   function onFilter() {
     emit('filter')
@@ -424,6 +427,8 @@
     router.push({ path: '/workouts', query: params })
   }
   function onClearFilter() {
+    location.value = ''
+    radius.value = ''
     emit('filter')
     router.push({ path: '/workouts', query: {} })
   }
