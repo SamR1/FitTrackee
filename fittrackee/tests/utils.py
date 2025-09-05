@@ -96,6 +96,7 @@ OAUTH_SCOPES = {
     "equipments:write": False,
     "follow:read": False,
     "follow:write": False,
+    "geocode:read": False,
     "notifications:read": False,
     "notifications:write": False,
     "profile:read": False,

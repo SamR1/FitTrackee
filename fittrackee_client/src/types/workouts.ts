@@ -339,4 +339,5 @@ export interface ILocation {
   coordinates: string
   display_name: string
   name: string
+  osm_id: string
 }

@@ -161,6 +161,7 @@ def create_app(init_email: bool = True) -> Flask:
     from .equipments.equipment_types import equipment_types_blueprint
     from .equipments.equipments import equipments_blueprint
     from .feeds.routes import feeds_blueprint
+    from .geocode.routes import geocode_blueprint
     from .oauth2.routes import oauth2_blueprint
     from .reports.reports import reports_blueprint
     from .users.auth import auth_blueprint
@@ -168,7 +169,6 @@ def create_app(init_email: bool = True) -> Flask:
     from .users.notifications import notifications_blueprint
     from .users.queued_tasks import queued_tasks_blueprint
     from .users.users import users_blueprint
-    from .workouts.geocode import geocode_blueprint
     from .workouts.records import records_blueprint
     from .workouts.sports import sports_blueprint
     from .workouts.stats import stats_blueprint
