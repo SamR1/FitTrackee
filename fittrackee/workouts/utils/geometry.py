@@ -140,7 +140,7 @@ def get_buffered_location(coordinates: str, radius_str: str) -> str:
     radius: distance in kilometers
     """
     try:
-        radius = int(radius_str)
+        radius = float(radius_str)
     except ValueError as e:
         raise InvalidRadiusException() from e
     if radius <= 0:

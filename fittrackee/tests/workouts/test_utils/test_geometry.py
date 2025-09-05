@@ -490,7 +490,7 @@ class TestGetBufferedLocation(GeometryMixin):
     ) -> None:
         with pytest.raises(
             InvalidRadiusException,
-            match="invalid radius, must be an integer greater than zero",
+            match="invalid radius, must be an float greater than zero",
         ):
             get_buffered_location(
                 coordinates="48.85341,2.3488", radius_str=input_radius
@@ -511,13 +511,13 @@ class TestGetBufferedLocation(GeometryMixin):
         ):
             get_buffered_location(input_coordinates, radius_str="10")
 
+    @pytest.mark.parametrize("input_radius", ["1", "1.0"])
     def test_it_returns_buffered_polygon_with_4326_srid(
-        self, app: "Flask", paris_with_10km_buffer: str
+        self, app: "Flask", paris_with_10km_buffer: str, input_radius: str
     ) -> None:
         paris_coordinates = "48.85341,2.3488"
-        radius = "1"
 
-        buffer = get_buffered_location(paris_coordinates, radius)
+        buffer = get_buffered_location(paris_coordinates, input_radius)
 
         srid, geometry = buffer.split(";")
         assert srid == "SRID=4326"
