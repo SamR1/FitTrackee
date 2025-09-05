@@ -79,8 +79,8 @@
   "NOMATIM_ADDRESS_TYPE": {
     "borough": "borough",
     "city": "city",
-    "city_block": "city_block",
-    "city_district": "city_district",
+    "city_block": "city block",
+    "city_district": "city district",
     "district": "district",
     "hamlet": "hamlet",
     "municipality": "municipality",
