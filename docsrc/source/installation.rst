@@ -27,6 +27,7 @@ This application is written in Python (API) and Typescript (client):
 
 - API:
     - Flask
+    - `SQLAlchemy <https://www.sqlalchemy.org/>`_ and `geoalchemy2 <https://geoalchemy-2.readthedocs.io>`_ to interact with the database
     - `gpxpy <https://github.com/tkrajina/gpxpy>`_ to parse gpx files
     - `fitdecode <https://github.com/polyvertex/fitdecode>`_ to parse fit files
     - `Static Map 3 <https://github.com/SamR1/staticmap>`_, a fork of `Static Map <https://github.com/komoot/staticmap>`_ to generate a static map image from file coordinates
@@ -55,6 +56,7 @@ Prerequisites
 
     - `Python <https://www.python.org/>`__ 3.10+
     - `PostgreSQL <https://www.postgresql.org/>`__ 13+
+    - `PostGIS <https://postgis.net/>`__ 3.5+
 
   - installation with Docker:
 
@@ -567,7 +569,7 @@ From PyPI
 
 - Create ``fittrackee`` database
 
-Example :
+Example:
 
 .. code-block:: sql
 
@@ -577,6 +579,18 @@ Example :
 
 .. note::
     | see PostgreSQL `documentation <https://www.postgresql.org/docs/15/ddl-schemas.html>`_ for schema and privileges.
+
+- Install PostGIS extension
+
+Example for `fittrackee` database:
+
+.. code-block:: bash
+
+    $ psql -U <SUPER_USER> -d fittrackee -c 'CREATE EXTENSION IF NOT EXISTS postgis;'
+
+.. note::
+    | **PostGIS** must be installed on OS, see `installation documentation <https://postgis.net/documentation/getting_started>`_.
+    | Many OS includes pre-built packages for PostGIS, see `wiki <https://trac.osgeo.org/postgis/wiki/UsersWikiPackages>`_.
 
 - Initialize environment variables, see `Environment variables <installation.html#environment-variables>`__
 
@@ -740,10 +754,13 @@ Production environment
 Upgrade
 ~~~~~~~
 
+.. danger::
+    If you are upgrading to version 1.0, additional steps are required, see `Upgrading to 1.x <upgrading-to-1.0.html>`__.
+
 .. warning::
     Before upgrading, make a backup of all data:
 
-    - database (with `pg_dump <https://www.postgresql.org/docs/11/app-pgdump.html>`__ for instance)
+    - database (with `pg_dump <https://www.postgresql.org/docs/current/app-pgdump.html>`__ for instance)
     - upload directory (see `Environment variables <installation.html#environment-variables>`__)
 
 .. warning::
