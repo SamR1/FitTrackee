@@ -538,7 +538,7 @@
       ...payload,
     }
     Object.entries(convertedPayload).map((entry) => {
-      if (entry[0].match('speed|distance') && entry[1]) {
+      if (entry[0].match('speed|distance|radius') && entry[1]) {
         convertedPayload[entry[0]] = convertDistance(+entry[1], 'mi', 'km')
       }
     })

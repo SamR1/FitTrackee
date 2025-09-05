@@ -90,18 +90,22 @@ export const getQuery = (
 }
 
 export const workoutsPayloadKeys = [
-  'equipment_id',
-  'from',
-  'to',
   'ave_speed_from',
   'ave_speed_to',
-  'max_speed_from',
-  'max_speed_to',
   'distance_from',
   'distance_to',
   'duration_from',
   'duration_to',
+  'equipment_id',
+  'from',
+  'location',
+  'max_speed_from',
+  'max_speed_to',
+  'notes',
+  'osm_id',
+  'radius',
   'sport_id',
+  'to',
   'title',
 ]
 

@@ -16,9 +16,7 @@ class InvalidDurationException(Exception):
 
 class InvalidRadiusException(Exception):
     def __init__(self) -> None:
-        super().__init__(
-            "invalid radius, must be an integer greater than zero"
-        )
+        super().__init__("invalid radius, must be an float greater than zero")
 
 
 class InvalidGPXException(GenericException):

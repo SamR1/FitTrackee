@@ -429,7 +429,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     :query boolean with_statistics: return statistics when ``true``
                         (by default, statistics are not returned)
     :query string coordinates: location coordinates (latitude, longitude)
-    :query integer radius: radius in km, only used when location is provided
+    :query float radius: radius in km, only used when location is provided
                          (default: 10)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token

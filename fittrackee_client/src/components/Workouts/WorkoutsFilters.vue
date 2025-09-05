@@ -153,6 +153,29 @@
               />
             </div>
             <div class="form-item form-item-text">
+              <label for="radius">
+                {{ $t('workouts.RADIUS') }} ({{ toUnit }}):</label
+              >
+              <div class="form-inputs-group">
+                <input
+                  id="radius"
+                  class="text"
+                  name="radius"
+                  :disabled="
+                    (!location &&
+                      !$route.query.coordinates &&
+                      !params.coordinates) ||
+                    geocodeLoading
+                  "
+                  :value="radius"
+                  placeholder=""
+                  type="number"
+                  @change="handleFilterChange"
+                  @keyup.enter="onFilter"
+                />
+              </div>
+            </div>
+            <div class="form-item form-item-text">
               <label for="workout_visibility">
                 {{ $t('visibility_levels.WORKOUT_VISIBILITY').toLowerCase() }}:
               </label>
@@ -363,6 +386,7 @@
     getAllVisibilityLevels()
   )
   const location: Ref<string> = ref('')
+  const radius: Ref<string> = ref('')
   const geocodeLoading: ComputedRef<boolean> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.GEOCODE_LOADING]
   )
@@ -383,9 +407,13 @@
     if (location.coordinates === '') {
       delete params.coordinates
       delete params.osm_id
+      delete params.radius
+      radius.value = ''
     } else {
       params.coordinates = location.coordinates
       params.osm_id = location.osm_id
+      params.radius = '10'
+      radius.value = '10'
     }
   }
   function onFilter() {
@@ -428,10 +456,12 @@
       const result = await getLocationFromOsmId(route.query.osm_id as string)
       if (result.display_name) {
         location.value = result.display_name
+        radius.value = (route.query.radius as string) || ''
         return
       }
     }
     location.value = ''
+    radius.value = ''
   })
   onMounted(() => {
     const filter = document.getElementById('from')
