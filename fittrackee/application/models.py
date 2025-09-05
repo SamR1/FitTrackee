@@ -58,6 +58,9 @@ class AppConfig(BaseModel):
         return {
             "about": self.about,
             "admin_contact": self.admin_contact,
+            "enable_geospatial_features": current_app.config[
+                "ENABLE_GEOSPATIAL_FEATURES"
+            ],
             "file_limit_import": self.file_limit_import,
             "file_sync_limit_import": self.file_sync_limit_import,
             "is_email_sending_enabled": current_app.config["CAN_SEND_EMAILS"],
