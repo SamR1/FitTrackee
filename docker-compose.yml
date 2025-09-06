@@ -10,7 +10,7 @@
 services:
   fittrackee-db:
     container_name: fittrackee-db
-    image: postgres:17-alpine
+    image: postgis/postgis:17-3.5-alpine
     env_file:
       - .env
     volumes:

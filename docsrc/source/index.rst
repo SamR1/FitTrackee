@@ -34,6 +34,7 @@ Table of contents
    features
    oauth
    installation
+   upgrading-to-1.0
    cli
    third_party_tools
    api/index

@@ -108,6 +108,7 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "max_hr": None,
                 "ave_power": None,
                 "max_power": None,
+                "with_geometry": False,
             }
         ]
 
@@ -168,6 +169,7 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "max_hr": None,
                 "ave_power": None,
                 "max_power": None,
+                "with_geometry": True,
             }
         ]
 

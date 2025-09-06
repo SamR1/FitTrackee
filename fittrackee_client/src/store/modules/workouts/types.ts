@@ -8,6 +8,7 @@ import type {
 import { WORKOUTS_STORE } from '@/store/constants'
 import type { IRootState } from '@/store/modules/root/types'
 import type { IPagination } from '@/types/api'
+import type { ILineString, IMultiLineString } from '@/types/geojson.ts'
 import type { IUserLightProfile } from '@/types/user.ts'
 import type {
   ICommentForm,
@@ -194,6 +195,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     contentType: IWorkoutContentType | ''
   ): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX](state: S, gpx: string): void
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON](
+    state: S,
+    geojson: ILineString | IMultiLineString
+  ): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING](
     state: S,
     loading: boolean

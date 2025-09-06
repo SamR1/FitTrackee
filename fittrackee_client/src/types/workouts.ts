@@ -1,6 +1,7 @@
 import type { TPaginationPayload } from '@/types/api'
 import type { IChartDataset } from '@/types/chart'
 import type { IEquipment, ILightEquipment } from '@/types/equipments'
+import type { ILineString, IMultiLineString } from '@/types/geojson.ts'
 import type { TCoordinates } from '@/types/map'
 import type {
   IUserReportAction,
@@ -114,6 +115,7 @@ export interface IWorkout {
   weather_start: IWeather | null
   with_analysis: boolean
   with_gpx: boolean
+  with_geometry?: boolean
   workout_date: string
   workout_visibility?: TVisibilityLevels
 }
@@ -229,6 +231,7 @@ export interface ICurrentCommentEdition {
 }
 
 export interface IWorkoutData {
+  geojson: ILineString | IMultiLineString | null
   gpx: string
   loading: boolean
   workout: IWorkout

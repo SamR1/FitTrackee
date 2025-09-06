@@ -6,6 +6,7 @@ import type {
   TWorkoutsMutations,
 } from '@/store/modules/workouts/types'
 import type { IPagination } from '@/types/api'
+import type { ILineString, IMultiLineString } from '@/types/geojson.ts'
 import type {
   IComment,
   ICurrentCommentEdition,
@@ -88,6 +89,12 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   ) {
     state.workoutData.gpx = gpx
   },
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON](
+    state: IWorkoutsState,
+    geojson: ILineString | IMultiLineString
+  ) {
+    state.workoutData.geojson = geojson
+  },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING](
     state: IWorkoutsState,
     loading: boolean
@@ -122,6 +129,7 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   },
   [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT](state: IWorkoutsState) {
     state.workoutData = {
+      geojson: null,
       gpx: '',
       loading: false,
       workout: <IWorkout>{},

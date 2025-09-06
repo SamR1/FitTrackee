@@ -1,8 +1,11 @@
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from typing import IO, TYPE_CHECKING, Dict, Optional
+from uuid import UUID
 
 import pytest
+from geoalchemy2.shape import to_shape
+from shapely.geometry.linestring import LineString
 from werkzeug.datastructures import FileStorage
 
 from fittrackee.visibility_levels import VisibilityLevel
@@ -114,6 +117,7 @@ class WorkoutAssertMixin:
         assert workout_segment.workout_id == workout.id
         assert workout_segment.workout_uuid == workout.uuid
         assert workout_segment.segment_id == 0
+        assert isinstance(workout_segment.uuid, UUID)
         assert float(workout_segment.ascent) == 0.4  # type: ignore[arg-type]
         assert float(workout_segment.ave_speed) == 4.61  # type: ignore[arg-type]
         assert float(workout_segment.descent) == 23.4  # type: ignore[arg-type]
@@ -124,6 +128,11 @@ class WorkoutAssertMixin:
         assert float(workout_segment.min_alt) == 975.0  # type: ignore[arg-type]
         assert workout_segment.moving == timedelta(minutes=4, seconds=10)
         assert workout_segment.pauses == timedelta(seconds=0)
+        assert workout_segment.start_date == datetime(
+            2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc
+        )
+        assert isinstance(to_shape(workout_segment.geom), LineString)
+        assert len(workout_segment.points) == 25
 
     @staticmethod
     def assert_workout_with_with_gpxtpx_extensions_and_power(

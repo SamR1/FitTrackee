@@ -666,6 +666,7 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
             user=None,
             extension=None,
             with_weather=False,
+            add_geometry=False,
             logger=logger,
             verbose=False,
         )
@@ -703,6 +704,7 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
                     "--extension",
                     "fit",
                     "--with-weather",
+                    "--add-missing-geometry",
                     "--verbose",
                 ],
             )
@@ -717,6 +719,7 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
             user=user_1.username,
             extension="fit",
             with_weather=True,
+            add_geometry=True,
             logger=logger,
             verbose=True,
         )

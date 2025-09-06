@@ -8,7 +8,7 @@
           :class="{ 'fullscreen-map': isFullscreen }"
         >
           <LMap
-            v-if="geoJson.jsonData && center && bounds.length === 2"
+            v-if="geoJson && center && bounds.length === 2"
             v-model:zoom="zoom"
             :maxZoom="19"
             :center="center"
@@ -72,7 +72,7 @@
               :maxZoom="19"
             />
             <LGeoJson
-              :geojson="geoJson.jsonData"
+              :geojson="geoJson"
               :options="geoJsonOptions"
               v-if="!displayHeatmap"
             />
@@ -130,7 +130,7 @@
 
   import CustomMarker from '@/components/Workout/WorkoutDetail/WorkoutMap/CustomMarker.vue'
   import useApp from '@/composables/useApp'
-  import type { GeoJSONData } from '@/types/geojson'
+  import type { ILineString, IMultiLineString } from '@/types/geojson.ts'
   import type { IHeatmapData, IHeatmapOverlay } from '@/types/heatmap.ts'
   import type {
     IGeoJsonOptions,
@@ -166,10 +166,11 @@
 
   const bounds: ComputedRef<TBounds> = computed(() => getBounds())
   const center: ComputedRef<TCenter> = computed(() => getCenter(bounds))
-  const geoJson: ComputedRef<GeoJSONData> = computed(() =>
-    workoutData.value && workoutData.value.gpx
-      ? getGeoJson(workoutData.value.gpx)
-      : {}
+  const geoJson: ComputedRef<ILineString | IMultiLineString | null> = computed(
+    () =>
+      workoutData.value.geojson
+        ? workoutData.value.geojson
+        : getGeoJson(workoutData.value.gpx)
   )
   const startMarkerCoordinates: ComputedRef<TCoordinates> = computed(() =>
     getCoordinates('first')
@@ -181,19 +182,18 @@
     getHeatmapData()
   )
 
-  function getGeoJson(gpxContent: string): GeoJSONData {
-    if (!gpxContent || gpxContent !== '') {
+  function getGeoJson(
+    gpxContent: string
+  ): ILineString | IMultiLineString | null {
+    if (gpxContent !== '') {
       try {
-        const jsonData = gpx(
-          new DOMParser().parseFromString(gpxContent, 'text/xml')
-        )
-        return { jsonData }
+        return gpx(new DOMParser().parseFromString(gpxContent, 'text/xml'))
       } catch {
         console.error('Invalid gpx content')
-        return {}
+        return null
       }
     }
-    return {}
+    return null
   }
   function getCoordinates(position: 'first' | 'last'): TCoordinates {
     const index =
