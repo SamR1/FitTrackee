@@ -3,6 +3,7 @@ import type {
   IWorkout,
   IWorkoutApiChartData,
   IWorkoutChartData,
+  TWorkoutDatasetKeys,
   TWorkoutDatasets,
 } from '@/types/workouts'
 import { convertStatsDistance } from '@/utils/units'
@@ -18,6 +19,8 @@ export const chartsColors = {
     line: '#3f3f3f',
   },
 }
+
+export const extensionsData: TWorkoutDatasetKeys[] = ['hr', 'cadence', 'power']
 
 export const getDatasets = (
   chartData: IWorkoutApiChartData[],
@@ -91,16 +94,19 @@ export const getDatasets = (
         convertStatsDistance('m', data.elevation, useImperialUnits)
       )
     }
-    if (data.hr !== undefined) {
-      datasets.hr.data.push(data.hr)
-    }
-    if (data.cadence !== undefined) {
-      datasets.cadence.data.push(data.cadence)
-    }
-    if (data.power !== undefined) {
-      datasets.power.data.push(data.power)
-    }
+
+    extensionsData.forEach((extension: TWorkoutDatasetKeys) => {
+      datasets[extension].data.push(
+        data[extension] === undefined ? null : data[extension]
+      )
+    })
     coordinates.push({ latitude: data.latitude, longitude: data.longitude })
+  })
+
+  extensionsData.forEach((extension: TWorkoutDatasetKeys) => {
+    if (datasets[extension].data.every((element) => element === null)) {
+      datasets[extension].data = []
+    }
   })
 
   if (!splitCharts && datasets.elevation.data.length == 0) {
