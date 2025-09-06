@@ -10,6 +10,10 @@ class InvalidGPXException(GenericException):
     pass
 
 
+class SportNotFoundException(Exception):
+    pass
+
+
 class WorkoutExceedingValueException(GenericException):
     def __init__(self, detail: str) -> None:
         super().__init__(
