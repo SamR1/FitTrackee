@@ -56,7 +56,7 @@ Prerequisites
 
     - `Python <https://www.python.org/>`__ 3.10+
     - `PostgreSQL <https://www.postgresql.org/>`__ 13+
-    - `PostGIS <https://postgis.net/>`__ 3.5+
+    - `PostGIS <https://postgis.net/>`__ 3.4+
 
   - installation with Docker:
 
