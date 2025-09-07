@@ -18,12 +18,7 @@ logger = logging.getLogger("alembic.env")
 
 
 def get_engine():
-    try:
-        # this works with Flask-SQLAlchemy<3 and Alchemical
-        return current_app.extensions["migrate"].db.get_engine()
-    except (TypeError, AttributeError):
-        # this works with Flask-SQLAlchemy>=3
-        return current_app.extensions["migrate"].db.engine
+    return current_app.extensions["migrate"].db.get_engine()
 
 
 def get_engine_url():
@@ -63,13 +58,16 @@ def render_item(obj_type, obj, autogen_context):
         return spatial_type
 
     # For the custom type
-    if obj_type == 'type' and isinstance(obj, TZDateTime):
+    if obj_type == "type" and isinstance(obj, TZDateTime):
         import_name = obj.__class__.__name__
-        autogen_context.imports.add(f"from fittrackee.database import {import_name}")
+        autogen_context.imports.add(
+            f"from fittrackee.database import {import_name}"
+        )
         return "%r" % obj
 
     # default rendering for other objects
     return False
+
 
 def run_migrations_offline():
     """Run migrations in 'offline' mode.

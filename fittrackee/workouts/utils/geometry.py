@@ -1,9 +1,11 @@
 import json
-from typing import TYPE_CHECKING, Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
-from sqlalchemy import func, select
+import shapely.wkt
+from geoalchemy2.shape import to_shape
+from shapely import to_geojson
+from shapely.geometry import LineString, MultiLineString
 
-from fittrackee import db
 from fittrackee.workouts.constants import (
     POWER_SPORTS,
     RPM_CADENCE_SPORTS,
@@ -11,37 +13,51 @@ from fittrackee.workouts.constants import (
     SPORTS_WITHOUT_ELEVATION_DATA,
 )
 from fittrackee.workouts.exceptions import WorkoutException
-from fittrackee.workouts.models import WorkoutSegment
 
 if TYPE_CHECKING:
+    from geoalchemy2 import WKBElement
+    from shapely.geometry.base import BaseGeometry
+
     from fittrackee.workouts.models import Workout
 
 
-def get_geojson_from_segments(
-    workout: "Workout",
-    *,
-    segment_id: Optional[int] = None,
-) -> Optional[Dict]:
-    """
-    To refactor when using segment uuid
-    """
-    segments_count = len(workout.segments) if segment_id is None else 1
-    filters = [WorkoutSegment.workout_id == workout.id]
-    if segment_id is not None:
-        segment_index = segment_id - 1
-        if segment_index < 0:
-            raise WorkoutException("error", "Incorrect segment id", None)
-        filters.append(WorkoutSegment.segment_id == segment_id - 1)
-    geom_subquery = select(WorkoutSegment.geom).filter(*filters).subquery()
-    subquery = (
-        func.ST_Collect(geom_subquery.c.geom)
-        if segment_id is None and (segments_count > 1)
-        else geom_subquery.c.geom
+def get_geometry(
+    geometry: Union[str, "WKBElement"],
+) -> "BaseGeometry":
+    if isinstance(geometry, str):
+        return shapely.wkt.loads(geometry)
+    return to_shape(geometry)
+
+
+def get_geojson_from_geometry(geometry: "BaseGeometry") -> Dict:
+    return json.loads(to_geojson(geometry))
+
+
+def get_geojson_from_segments(workout: "Workout") -> Optional[Dict]:
+    lines = [get_geometry(s.geom) for s in workout.segments if s.geom]
+    if not lines:
+        return None
+    geometry = (
+        LineString(lines[0]) if len(lines) == 1 else MultiLineString(lines)
     )
-    geojson = db.session.scalar(func.ST_AsGeoJSON(subquery))
-    if geojson:
-        return json.loads(geojson)
-    return None
+    return get_geojson_from_geometry(geometry)
+
+
+def get_geojson_from_segment(
+    workout: "Workout", *, segment_id: int
+) -> Optional[Dict]:
+    segment_index = segment_id - 1
+    if segment_index < 0:
+        raise WorkoutException("error", "Incorrect segment id", None)
+
+    segment = next(
+        (s for s in workout.segments if s.segment_id == segment_index),
+        None,
+    )
+    if not segment or not segment.geom:
+        return None
+
+    return get_geojson_from_geometry(get_geometry(segment.geom))
 
 
 def get_chart_data_from_segment_points(
