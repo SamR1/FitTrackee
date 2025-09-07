@@ -1,5 +1,5 @@
-Upgrading to 1.0
-################
+Upgrading to 1.0.0
+##################
 
 The v1.0.0 introduces major changes on workout file processing to improve performances and ease the implementation of the next features:
 
@@ -23,7 +23,7 @@ From PyPI or sources
 ^^^^^^^^^^^^^^^^^^^^
 
 **PostGIS** must be installed on your operating system.
-You can find intructions for your OS on `PostGIS documentation <https://postgis.net/documentation/getting_started/>`_
+You can find intructions for your OS on `PostGIS documentation <https://postgis.net/documentation/getting_started/>`_.
 
 Here are the instructions for installation on ArchLinux (database and application on the same server):
 
@@ -53,7 +53,7 @@ With Docker
 
       $ docker compose stop
 
-- change the database image in ``docker-compose.yml`` (keep the same PostgreSQL version), for instance
+- change the database ``postgres`` image in ``docker-compose.yml`` to ``postgis/postgis`` (keep the same PostgreSQL version), for instance:
 
   .. code-block:: diff
 
