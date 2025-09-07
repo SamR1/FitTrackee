@@ -1,11 +1,11 @@
 import authApi from '@/api/authApi.ts'
 import type { ILocation } from '@/types/workouts.ts'
 
-export const getLocationFromQuery = async (
-  query: string
+export const getLocationFromCity = async (
+  city: string
 ): Promise<ILocation[]> => {
   return await authApi
-    .get('/geocode/search', { params: { query } })
+    .get('/geocode/search', { params: { city } })
     .then((res) => {
       if (res.data.status === 'success') {
         return res.data.locations

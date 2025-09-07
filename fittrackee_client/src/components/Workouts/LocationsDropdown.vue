@@ -24,7 +24,7 @@
       v-if="isOpen"
       role="listbox"
       tabindex="-1"
-      :aria-label="$t('workouts.LOCATIONS')"
+      :aria-label="$t('workouts.LOCATION', 0)"
     >
       <li
         v-for="(location, index) in locations"
@@ -37,7 +37,9 @@
         :autofocus="index === focusItemIndex"
         role="option"
       >
-        {{ location.display_name }}
+        {{ location.display_name }} ({{
+          t(`workouts.NOMINATIM_ADDRESS_TYPE.${location.addresstype}`)
+        }})
       </li>
     </ul>
   </div>
@@ -46,17 +48,20 @@
 <script setup lang="ts">
   import { computed, onUnmounted, ref, toRefs, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
+  import { useI18n } from 'vue-i18n'
 
   import store from '@/store'
   import { WORKOUTS_STORE } from '@/store/constants.ts'
   import type { ILocation } from '@/types/workouts.ts'
-  import { getLocationFromQuery } from '@/utils/geocode.ts'
+  import { getLocationFromCity } from '@/utils/geocode.ts'
 
   interface Props {
     location: string
   }
   const props = defineProps<Props>()
   const { location } = toRefs(props)
+
+  const { t } = useI18n()
 
   const emit = defineEmits(['updateCoordinates'])
 
@@ -74,15 +79,17 @@
   function onUpdateLocation(index: number) {
     isOpen.value = false
     if (locations.value.length > index) {
-      locationDisplayName.value = locations.value[index].display_name
+      locationDisplayName.value = `${locations.value[index].display_name} (${t(`workouts.NOMINATIM_ADDRESS_TYPE.${locations.value[index].addresstype}`)})`
       emit('updateCoordinates', {
         coordinates: locations.value[index].coordinates,
+        display_name: locationDisplayName.value,
         osm_id: locations.value[index].osm_id,
       })
     } else {
       locationDisplayName.value = ''
       emit('updateCoordinates', {
         coordinates: '',
+        display_name: '',
         osm_id: '',
       })
     }
@@ -148,13 +155,16 @@
         locations.value = []
       } else if (
         location.value !== newValue &&
-        locations.value.filter(({ display_name }) => display_name === newValue)
-          .length === 0
+        locations.value.filter(
+          ({ display_name, addresstype }) =>
+            `${display_name} (${t(`workouts.NOMINATIM_ADDRESS_TYPE.${addresstype}`)})` ===
+            newValue
+        ).length === 0
       ) {
         clearTimeout(timer.value)
         timer.value = setTimeout(async () => {
           store.commit(WORKOUTS_STORE.MUTATIONS.SET_GEOCODE_LOADING, true)
-          locations.value = await getLocationFromQuery(newValue)
+          locations.value = await getLocationFromCity(newValue)
           store.commit(WORKOUTS_STORE.MUTATIONS.SET_GEOCODE_LOADING, false)
         }, 1000)
       }

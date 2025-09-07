@@ -21,11 +21,11 @@ nominatim_service = NominatimService()
 
 @geocode_blueprint.route("/geocode/search", methods=["GET"])
 @require_auth(scopes=["geocode:read"])
-def get_coordinates_from_location(
+def get_coordinates_from_city(
     auth_user: "User",
 ) -> Union[Dict, "HttpResponse"]:
     """
-    Return coordinates based on location using Nominatim API.
+    Return coordinates based on location (city) using Nominatim API.
 
     **Scope**: ``geocode:read``
 
@@ -33,7 +33,7 @@ def get_coordinates_from_location(
 
     .. sourcecode:: http
 
-      GET /api/geocode/search?query=Paris HTTP/1.1
+      GET /api/geocode/search?city=Paris HTTP/1.1
 
     **Example responses**:
 
@@ -73,7 +73,7 @@ def get_coordinates_from_location(
             "status": "success"
         }
 
-    :query string query: location
+    :query string city: location
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -90,12 +90,12 @@ def get_coordinates_from_location(
 
     """
     params = request.args.copy()
-    query = params.get("query")
+    city = params.get("city")
 
     locations = []
-    if query:
+    if city:
         try:
-            locations = nominatim_service.get_locations_from_query(query)
+            locations = nominatim_service.get_locations_from_city(city)
         except Exception:
             message = "error when getting coordinates from location"
             appLog.exception(message)

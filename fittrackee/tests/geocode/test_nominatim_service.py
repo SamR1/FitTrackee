@@ -32,21 +32,21 @@ class TestNominatimServiceInstantiation:
         assert service.headers == {"User-Agent": f"FitTrackee v{VERSION}"}
 
 
-class TestNominatimServiceGetLocationsFromQuery(ResponseMockMixin):
-    def test_it_calls_nominatim_api_with_given_query(
+class TestNominatimServiceGetLocationsFromCity(ResponseMockMixin):
+    def test_it_calls_nominatim_api_with_given_city(
         self, app: "Flask"
     ) -> None:
         service = NominatimService()
-        query = "Paris"
+        city = "Paris"
 
         with patch.object(
             requests, "get", return_value=self.get_response([])
         ) as get_mock:
-            service.get_locations_from_query(query)
+            service.get_locations_from_city(city)
 
         get_mock.assert_called_once_with(
             f"{service.base_url}/search",
-            params={**service.params, "q": query},
+            params={**service.params, "city": city},
             timeout=30,
             headers=service.headers,
         )
@@ -55,12 +55,12 @@ class TestNominatimServiceGetLocationsFromQuery(ResponseMockMixin):
         self, app: "Flask", nominatim_response: List
     ) -> None:
         service = NominatimService()
-        query = "Paris"
+        city = "Paris"
 
         with patch.object(
             requests, "get", return_value=self.get_response(nominatim_response)
         ):
-            locations = service.get_locations_from_query(query)
+            locations = service.get_locations_from_city(city)
 
         assert locations == [
             {

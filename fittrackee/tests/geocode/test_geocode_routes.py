@@ -80,7 +80,7 @@ class GeocodeTestCase(ApiTestCaseMixin, ResponseMockMixin):
 class TestGeocodeGetCoordinatesFromLocation(GeocodeTestCase):
     route = "/api/geocode/search"
 
-    def test_it_returns_empty_list_when_no_query_provided(
+    def test_it_returns_empty_list_when_no_city_provided(
         self,
         app: "Flask",
         user_1: "User",
@@ -90,7 +90,7 @@ class TestGeocodeGetCoordinatesFromLocation(GeocodeTestCase):
         )
 
         with patch(
-            "fittrackee.geocode.routes.nominatim_service.get_locations_from_query",
+            "fittrackee.geocode.routes.nominatim_service.get_locations_from_city",
             return_value=[],
         ) as nominatim_service_mock:
             response = client.get(
@@ -117,7 +117,7 @@ class TestGeocodeGetCoordinatesFromLocation(GeocodeTestCase):
 
         with patch.object(requests, "get", side_effect=HTTPError()):
             response = client.get(
-                f"{self.route}?query=Paris",
+                f"{self.route}?city=Paris",
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
@@ -130,7 +130,7 @@ class TestGeocodeGetCoordinatesFromLocation(GeocodeTestCase):
         app: "Flask",
         user_1: "User",
     ) -> None:
-        query = "Paris"
+        city = "Paris"
         nominatim_service_response = [
             {
                 "addresstype": "suburb",
@@ -147,15 +147,15 @@ class TestGeocodeGetCoordinatesFromLocation(GeocodeTestCase):
         )
 
         with patch(
-            "fittrackee.geocode.routes.nominatim_service.get_locations_from_query",
+            "fittrackee.geocode.routes.nominatim_service.get_locations_from_city",
             return_value=nominatim_service_response,
         ) as nominatim_service_mock:
             response = client.get(
-                f"{self.route}?query={query}",
+                f"{self.route}?city={city}",
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
-        nominatim_service_mock.assert_called_once_with(query)
+        nominatim_service_mock.assert_called_once_with(city)
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
