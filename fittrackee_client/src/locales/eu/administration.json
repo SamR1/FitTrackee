@@ -12,7 +12,9 @@
   "APPLICATION": "Aplikazioa",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Kontakturako kudeatzailearen eposta helbidea",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "Zip fitxategiak era asinkronoan kargatzea desaktibatuta dago.",
     "MAX_FILES_IN_ZIP_LABEL": "zip fitxategiaren gehienezko fitxategi kopurua",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Era sinkronoan prozesatzeko fitxategi kopuru maximoa",
     "MAX_USERS_HELP": "0 bada, ez dago izena emateko mugarik.",
     "MAX_USERS_LABEL": "Gehieneko erabiltzaile kopurua",
     "NO_CONTACT_EMAIL": "ez dago kontakturako eposta helbiderik",
@@ -86,6 +88,7 @@
     },
     "TITLE": "Moderazioa",
     "UNRESOLVED_REPORTS_EXIST": "Ebatzi gabeko salaketak daude.",
+    "USERS_QUEUED_TASKS_EXIST": "Lana dago itxaron-zerrendan",
     "VIEW_REPORT": "Ikusi salaketa"
   },
   "BACK_TO_ADMIN": "Kudeaketara itzuli",
