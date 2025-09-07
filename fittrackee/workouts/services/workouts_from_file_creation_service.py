@@ -214,6 +214,13 @@ class AbstractWorkoutsCreationService(BaseWorkoutService, WorkoutFileMixin):
         except Exception as e:
             appLog.exception(f"exception: {e!s}")
             db.session.rollback()
+            if (
+                "duplicate key value violates unique constraint "
+                '"workout_id_start_date_unique"' in str(e)
+            ):
+                raise WorkoutFileException(
+                    "error", "some segments have same start date"
+                ) from e
             raise WorkoutException(
                 "error", "error when processing workout"
             ) from e

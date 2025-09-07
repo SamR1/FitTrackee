@@ -191,7 +191,18 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                 )
               })
           }
-          if (workout.with_gpx) {
+          if (workout.with_geometry) {
+            authApi
+              .get(`workouts/${payload.workoutId}/geojson${segmentUrl}`)
+              .then((res) => {
+                if (res.data.status === 'success') {
+                  context.commit(
+                    WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON,
+                    res.data.data.geojson
+                  )
+                }
+              })
+          } else if (workout.with_gpx) {
             authApi
               .get(`workouts/${payload.workoutId}/gpx${segmentUrl}`)
               .then((res) => {

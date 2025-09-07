@@ -65,11 +65,12 @@ from .services import (
 from .services.workouts_from_file_refresh_service import (
     WorkoutFromFileRefreshService,
 )
+from .utils.chart import get_chart_data
 from .utils.convert import convert_in_duration
+from .utils.geometry import get_geojson_from_segment, get_geojson_from_segments
 from .utils.gpx import (
     WorkoutGPXException,
     extract_segment_from_gpx_file,
-    get_chart_data,
     get_file_extension,
 )
 from .utils.workouts import get_datetime_from_request_args
@@ -829,19 +830,27 @@ def get_workout_data(
         )
 
     try:
-        absolute_gpx_filepath = get_absolute_file_path(workout.gpx)
-        chart_data_content: Optional[List] = []
-        file_content: Optional[str] = None
         can_see_heart_rate = can_view_heart_rate(workout.user, auth_user)
         if data_type == "chart_data":
-            chart_data_content = get_chart_data(
-                absolute_gpx_filepath,
-                workout.sport.label,
-                workout.ave_cadence,
-                can_see_heart_rate=can_see_heart_rate,
-                segment_id=segment_id,
+            data: "Dict" = {
+                "chart_data": get_chart_data(
+                    workout,
+                    can_see_heart_rate=can_see_heart_rate,
+                    segment_id=segment_id,
+                )
+            }
+        elif data_type == "geojson":
+            geojson = (
+                get_geojson_from_segments(workout)
+                if segment_id is None
+                else get_geojson_from_segment(workout, segment_id=segment_id)
             )
+            # Handle error differently when using workout segment uuid
+            if not geojson:
+                return NotFoundErrorResponse("geojson not found")
+            data = {"geojson": geojson}
         else:  # data_type == 'gpx'
+            absolute_gpx_filepath = get_absolute_file_path(workout.gpx)
             with open(absolute_gpx_filepath, encoding="utf-8") as f:
                 gpx_content = f.read()
                 if segment_id is not None:
@@ -857,7 +866,9 @@ def get_workout_data(
                     "",
                     file_content,
                 )
-    except WorkoutGPXException as e:
+
+            data = {"gpx": file_content}
+    except (WorkoutException, WorkoutGPXException) as e:
         appLog.error(e.message)
         if e.status == "not found":
             return NotFoundErrorResponse(e.message)
@@ -868,15 +879,7 @@ def get_workout_data(
     return {
         "status": "success",
         "message": "",
-        "data": (
-            {
-                data_type: (
-                    chart_data_content
-                    if data_type == "chart_data"
-                    else file_content
-                )
-            }
-        ),
+        "data": data,
     }
 
 
@@ -1136,6 +1139,140 @@ def get_segment_chart_data(
     return get_workout_data(
         auth_user, workout_short_id, "chart_data", segment_id
     )
+
+
+@workouts_blueprint.route(
+    "/workouts/<string:workout_short_id>/geojson", methods=["GET"]
+)
+@require_auth(scopes=["workouts:read"], optional_auth_user=True)
+def get_workout_geojson(
+    auth_user: Optional[User], workout_short_id: str
+) -> Union[Dict, HttpResponse]:
+    """
+    Get workout GeoJSON when segments have geometry.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/geojson HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "geojson": {
+            "type": "MultiLineString",
+            "coordinates": [
+              [
+                [6.07367, 44.68095],
+                [6.07367, 44.68091],
+                [6.07364, 44.6808],
+                [6.07361, 44.68049]
+              ],
+              [
+                [6.07361, 44.68049],
+                [6.07364, 44.6808],
+                [6.07367, 44.68091],
+                [6.07367, 44.68095]
+              ]
+            ]
+          }
+        },
+        "message": "",
+        "status": "success"
+      }
+
+    :param string workout_short_id: workout short id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
+               ``private`` or ``followers_only`` map visibility
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 404:
+        - ``workout not found``
+        - ``geojson not found``
+    :statuscode 500: ``error, please try again or contact the administrator``
+
+    """
+    return get_workout_data(auth_user, workout_short_id, "geojson")
+
+
+@workouts_blueprint.route(
+    "/workouts/<string:workout_short_id>/geojson/segment/<int:segment_id>",
+    methods=["GET"],
+)
+@require_auth(scopes=["workouts:read"], optional_auth_user=True)
+def get_segment_geojson(
+    auth_user: Optional[User], workout_short_id: str, segment_id: int
+) -> Union[Dict, HttpResponse]:
+    """
+    Get workout segment GeoJSON, when segment has geometry
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/segment/1 HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "geojson": {
+            "type": "LineString",
+            "coordinates": [
+              [6.07367, 44.68095],
+              [6.07367, 44.68091],
+              [6.07364, 44.6808],
+              [6.07361, 44.68049]
+            ]
+          }
+        },
+        "message": "",
+        "status": "success"
+      }
+
+    :param string workout_short_id: workout short id
+    :param integer segment_id: segment id
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
+               ``private`` or ``followers_only`` map visibility
+
+    :statuscode 200: ``success``
+    :statuscode 400: ``no gpx file for this workout``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 404:
+        - ``workout not found``
+        - ``geojson not found``
+    :statuscode 500: ``error, please try again or contact the administrator``
+    """
+    return get_workout_data(auth_user, workout_short_id, "geojson", segment_id)
 
 
 @workouts_blueprint.route(

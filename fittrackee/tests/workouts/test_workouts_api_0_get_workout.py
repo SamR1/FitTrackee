@@ -8,12 +8,12 @@ import pytest
 from flask import Flask
 
 from fittrackee import db
-from fittrackee.files import get_absolute_file_path
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 
+from ..mixins import GeometryMixin
 from ..utils import OAUTH_SCOPES, jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin
 from .utils import post_a_workout
@@ -1095,6 +1095,828 @@ class TestGetWorkoutGpxAsUnauthenticatedUser(
         )
 
 
+class GetWorkoutGeoJSONTestCase(WorkoutApiTestCaseMixin, GeometryMixin):
+    route = "/api/workouts/{workout_uuid}/geojson"
+
+
+class TestGetWorkoutGeoJsonAsWorkoutOwner(GetWorkoutGeoJSONTestCase):
+    def test_it_returns_404_if_workout_have_no_gpx(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert "not found" in data["status"]
+        assert (
+            "no gpx file for this workout (id: "
+            f"{workout_cycling_user_1.short_id})"
+        ) in data["message"]
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        gpx_content = self.random_string()
+        workout_cycling_user_1.gpx = "file.gpx"
+        user_1.suspended_at = datetime.now(timezone.utc)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        with patch(
+            "builtins.open", new_callable=mock_open, read_data=gpx_content
+        ):
+            response = client.get(
+                self.route.format(
+                    workout_uuid=workout_cycling_user_1.short_id
+                ),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        self.assert_403(response)
+
+    def test_it_returns_owner_workout_geojson(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1_with_coordinates.gpx = "file.gpx"
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+
+        assert data["data"]["geojson"] == self.get_geojson_from_geom(
+            workout_cycling_user_1_segment_0_with_coordinates.geom
+        )
+
+    def test_it_returns_404_when_no_coordinates(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1.gpx = "file.gpx"
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_404_with_message(response, "geojson not found")
+
+
+class TestGetWorkoutGeoJsonAsFollower(
+    GetWorkoutGeoJSONTestCase, GetWorkoutGpxAsFollowerMixin
+):
+    def test_it_returns_404_when_map_visibility_is_private(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        self.init_test_data_for_follower(
+            workout_cycling_user_1,
+            map_visibility=VisibilityLevel.PRIVATE,
+            follower=user_2,
+            followed=user_1,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_404_with_message(
+            response,
+            f"workout not found (id: {workout_cycling_user_1.short_id})",
+        )
+
+    @pytest.mark.parametrize(
+        "input_desc,input_map_visibility",
+        [
+            ("map visibility: followers_only", VisibilityLevel.FOLLOWERS),
+            ("map visibility: public", VisibilityLevel.PUBLIC),
+        ],
+    )
+    def test_it_returns_followed_user_workout_gpx(
+        self,
+        input_desc: str,
+        input_map_visibility: VisibilityLevel,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        self.init_test_data_for_follower(
+            workout_cycling_user_1_with_coordinates,
+            map_visibility=input_map_visibility,
+            follower=user_2,
+            followed=user_1,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"]["geojson"] == self.get_geojson_from_geom(
+            workout_cycling_user_1_segment_0_with_coordinates.geom
+        )
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        self.init_test_data_for_follower(
+            workout_cycling_user_1,
+            map_visibility=VisibilityLevel.FOLLOWERS,
+            follower=user_2,
+            followed=user_1,
+        )
+        user_2.suspended_at = datetime.now(timezone.utc)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_403(response)
+
+
+class TestGetWorkoutGeoJsonAsUser(
+    GetWorkoutGeoJSONTestCase, GetWorkoutGpxPublicVisibilityMixin
+):
+    def test_it_returns_404_if_workout_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        random_short_id = self.random_short_id()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=random_short_id),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert "not found" in data["status"]
+        assert f"workout not found (id: {random_short_id})" in data["message"]
+        assert data["data"]["geojson"] is None
+
+    @pytest.mark.parametrize(
+        "input_desc,input_map_visibility",
+        [
+            ("map visibility: private", VisibilityLevel.PRIVATE),
+            ("map visibility: followers_only", VisibilityLevel.FOLLOWERS),
+        ],
+    )
+    def test_it_returns_404_when_map_visibility_is_not_public(
+        self,
+        input_desc: str,
+        input_map_visibility: VisibilityLevel,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1, map_visibility=input_map_visibility
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_404_with_message(
+            response,
+            f"workout not found (id: {workout_cycling_user_1.short_id})",
+        )
+
+    def test_it_returns_geojson_when_map_visibility_is_public(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1_with_coordinates,
+            map_visibility=VisibilityLevel.PUBLIC,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"]["geojson"] == self.get_geojson_from_geom(
+            workout_cycling_user_1_segment_0_with_coordinates.geom
+        )
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1, map_visibility=VisibilityLevel.PUBLIC
+        )
+        user_2.suspended_at = datetime.now(timezone.utc)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_403(response)
+
+
+class TestGetWorkoutGeoJsonAsUnauthenticatedUser(
+    GetWorkoutGeoJSONTestCase, GetWorkoutGpxPublicVisibilityMixin
+):
+    def test_it_returns_404_if_workout_does_not_exist(
+        self, app: Flask
+    ) -> None:
+        random_short_id = self.random_short_id()
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(workout_uuid=random_short_id),
+        )
+
+        data = self.assert_404_with_message(
+            response, f"workout not found (id: {random_short_id})"
+        )
+        assert data["data"]["geojson"] is None
+
+    @pytest.mark.parametrize(
+        "input_desc,input_map_visibility",
+        [
+            ("map visibility: private", VisibilityLevel.PRIVATE),
+            ("map visibility: followers_only", VisibilityLevel.FOLLOWERS),
+        ],
+    )
+    def test_it_returns_404_when_map_visibility_is_not_public(
+        self,
+        input_desc: str,
+        input_map_visibility: VisibilityLevel,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1, map_visibility=input_map_visibility
+        )
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+        )
+
+        self.assert_404_with_message(
+            response,
+            f"workout not found (id: {workout_cycling_user_1.short_id})",
+        )
+
+    def test_it_returns_gpx_when_map_visibility_is_public(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1_with_coordinates,
+            map_visibility=VisibilityLevel.PUBLIC,
+        )
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id
+            ),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"]["geojson"] == self.get_geojson_from_geom(
+            workout_cycling_user_1_segment_0_with_coordinates.geom
+        )
+
+
+class GetWorkoutSegmentGeoJSONTestCase(WorkoutApiTestCaseMixin, GeometryMixin):
+    route = "/api/workouts/{workout_uuid}/geojson/segment/{segment_id}"
+
+
+class TestGetWorkoutSegmentGeoJsonAsWorkoutOwner(
+    GetWorkoutSegmentGeoJSONTestCase
+):
+    def test_it_returns_404_if_workout_have_no_gpx(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert "not found" in data["status"]
+        assert (
+            "no gpx file for this workout (id: "
+            f"{workout_cycling_user_1.short_id})"
+        ) in data["message"]
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        gpx_content = self.random_string()
+        workout_cycling_user_1.gpx = "file.gpx"
+        user_1.suspended_at = datetime.now(timezone.utc)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        with patch(
+            "builtins.open", new_callable=mock_open, read_data=gpx_content
+        ):
+            response = client.get(
+                self.route.format(
+                    workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+                ),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        self.assert_403(response)
+
+    def test_it_returns_owner_workout_geojson(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1_with_coordinates.gpx = "file.gpx"
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
+                segment_id=1,
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+
+        assert data["data"]["geojson"] == self.get_geojson_from_geom(
+            workout_cycling_user_1_segment_0_with_coordinates.geom
+        )
+
+    def test_it_returns_error_when_no_coordinates(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1.gpx = "file.gpx"
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_404_with_message(response, "geojson not found")
+
+
+class TestGetWorkoutSegmentGeoJsonAsFollower(
+    GetWorkoutSegmentGeoJSONTestCase, GetWorkoutGpxAsFollowerMixin
+):
+    def test_it_returns_404_when_map_visibility_is_private(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        self.init_test_data_for_follower(
+            workout_cycling_user_1,
+            map_visibility=VisibilityLevel.PRIVATE,
+            follower=user_2,
+            followed=user_1,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_404_with_message(
+            response,
+            f"workout not found (id: {workout_cycling_user_1.short_id})",
+        )
+
+    @pytest.mark.parametrize(
+        "input_desc,input_map_visibility",
+        [
+            ("map visibility: followers_only", VisibilityLevel.FOLLOWERS),
+            ("map visibility: public", VisibilityLevel.PUBLIC),
+        ],
+    )
+    def test_it_returns_followed_user_workout_gpx(
+        self,
+        input_desc: str,
+        input_map_visibility: VisibilityLevel,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        self.init_test_data_for_follower(
+            workout_cycling_user_1_with_coordinates,
+            map_visibility=input_map_visibility,
+            follower=user_2,
+            followed=user_1,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
+                segment_id=1,
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"]["geojson"] == self.get_geojson_from_geom(
+            workout_cycling_user_1_segment_0_with_coordinates.geom
+        )
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        self.init_test_data_for_follower(
+            workout_cycling_user_1,
+            map_visibility=VisibilityLevel.FOLLOWERS,
+            follower=user_2,
+            followed=user_1,
+        )
+        user_2.suspended_at = datetime.now(timezone.utc)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_403(response)
+
+
+class TestGetWorkoutSegmentGeoJsonAsUser(
+    GetWorkoutSegmentGeoJSONTestCase, GetWorkoutGpxPublicVisibilityMixin
+):
+    def test_it_returns_404_if_workout_does_not_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        random_short_id = self.random_short_id()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=random_short_id, segment_id=1),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 404
+        data = json.loads(response.data.decode())
+        assert "not found" in data["status"]
+        assert f"workout not found (id: {random_short_id})" in data["message"]
+        assert data["data"]["geojson"] is None
+
+    @pytest.mark.parametrize(
+        "input_desc,input_map_visibility",
+        [
+            ("map visibility: private", VisibilityLevel.PRIVATE),
+            ("map visibility: followers_only", VisibilityLevel.FOLLOWERS),
+        ],
+    )
+    def test_it_returns_404_when_map_visibility_is_not_public(
+        self,
+        input_desc: str,
+        input_map_visibility: VisibilityLevel,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1, map_visibility=input_map_visibility
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_404_with_message(
+            response,
+            f"workout not found (id: {workout_cycling_user_1.short_id})",
+        )
+
+    def test_it_returns_geojson_when_map_visibility_is_public(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1_with_coordinates,
+            map_visibility=VisibilityLevel.PUBLIC,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
+                segment_id=1,
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"]["geojson"] == self.get_geojson_from_geom(
+            workout_cycling_user_1_segment_0_with_coordinates.geom
+        )
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1, map_visibility=VisibilityLevel.PUBLIC
+        )
+        user_2.suspended_at = datetime.now(timezone.utc)
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_403(response)
+
+
+class TestGetWorkoutSegmentGeoJsonAsUnauthenticatedUser(
+    GetWorkoutSegmentGeoJSONTestCase, GetWorkoutGpxPublicVisibilityMixin
+):
+    def test_it_returns_404_if_workout_does_not_exist(
+        self, app: Flask
+    ) -> None:
+        random_short_id = self.random_short_id()
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(workout_uuid=random_short_id, segment_id=1),
+        )
+
+        data = self.assert_404_with_message(
+            response, f"workout not found (id: {random_short_id})"
+        )
+        assert data["data"]["geojson"] is None
+
+    @pytest.mark.parametrize(
+        "input_desc,input_map_visibility",
+        [
+            ("map visibility: private", VisibilityLevel.PRIVATE),
+            ("map visibility: followers_only", VisibilityLevel.FOLLOWERS),
+        ],
+    )
+    def test_it_returns_404_when_map_visibility_is_not_public(
+        self,
+        input_desc: str,
+        input_map_visibility: VisibilityLevel,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1, map_visibility=input_map_visibility
+        )
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+            ),
+        )
+
+        self.assert_404_with_message(
+            response,
+            f"workout not found (id: {workout_cycling_user_1.short_id})",
+        )
+
+    def test_it_returns_gpx_when_map_visibility_is_public(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1_with_coordinates,
+            map_visibility=VisibilityLevel.PUBLIC,
+        )
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
+                segment_id=1,
+            ),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"]["geojson"] == self.get_geojson_from_geom(
+            workout_cycling_user_1_segment_0_with_coordinates.geom
+        )
+
+
 class GetWorkoutChartDataTestCase(WorkoutApiTestCaseMixin):
     route = "/api/workouts/{workout_uuid}/chart_data"
 
@@ -1131,6 +1953,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: Workout,
     ) -> None:
         workout_cycling_user_1.gpx = "some path"
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1144,12 +1967,13 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
 
         self.assert_500(response)
 
-    def test_it_calls_get_chart_data(
+    def test_it_calls_get_chart_data_from_gpx(
         self,
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: Workout,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1170,9 +1994,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
             )
 
         get_chart_data_mock.assert_called_once_with(
-            get_absolute_file_path(workout_cycling_user_1.gpx),
-            sport_1_cycling.label,
-            workout_cycling_user_1.ave_cadence,
+            workout_cycling_user_1,
             can_see_heart_rate=True,
             segment_id=None,
         )
@@ -1238,7 +2060,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
             "longitude": 6.07367,
             "power": 0,
             "speed": 3.21,
-            "time": "Tue, 13 Mar 2018 12:44:45 GMT",
+            "time": "2018-03-13 12:44:45+00:00",
         }
 
     def test_it_returns_error_when_user_is_suspended(
@@ -1351,7 +2173,7 @@ class TestGetWorkoutChartDataAsFollower(
             (VisibilityLevel.PRIVATE, False),
         ],
     )
-    def test_it_calls_get_chart_data_when_user_can_not_see_heart_rate(
+    def test_it_calls_get_chart_data_from_gpx_when_user_can_not_see_heart_rate(
         self,
         app: Flask,
         user_1: User,
@@ -1389,9 +2211,7 @@ class TestGetWorkoutChartDataAsFollower(
             )
 
         get_chart_data_mock.assert_called_once_with(
-            get_absolute_file_path(workout_cycling_user_2.gpx),
-            sport_1_cycling.label,
-            workout_cycling_user_2.ave_cadence,
+            workout_cycling_user_2,
             can_see_heart_rate=expected_can_see_heart_rate,
             segment_id=None,
         )
@@ -1490,7 +2310,7 @@ class TestGetWorkoutChartDataAsUser(
             (VisibilityLevel.FOLLOWERS, False),
         ],
     )
-    def test_it_calls_get_chart_data_when_user_can_not_see_heart_rate(
+    def test_it_calls_get_chart_data_from_gpx_when_user_can_not_see_heart_rate(
         self,
         app: Flask,
         user_1: User,
@@ -1522,9 +2342,7 @@ class TestGetWorkoutChartDataAsUser(
             )
 
         get_chart_data_mock.assert_called_once_with(
-            get_absolute_file_path(workout_cycling_user_2.gpx),
-            sport_1_cycling.label,
-            workout_cycling_user_2.ave_cadence,
+            workout_cycling_user_2,
             can_see_heart_rate=expected_can_see_heart_rate,
             segment_id=None,
         )
@@ -1651,7 +2469,7 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
             (VisibilityLevel.FOLLOWERS, False),
         ],
     )
-    def test_it_calls_get_chart_data_when_user_can_not_see_heart_rate(
+    def test_it_calls_get_chart_data_from_gpx_when_user_can_not_see_heart_rate(
         self,
         app: Flask,
         user_1: User,
@@ -1677,9 +2495,7 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
             )
 
         get_chart_data_mock.assert_called_once_with(
-            get_absolute_file_path(workout_cycling_user_1.gpx),
-            sport_1_cycling.label,
-            workout_cycling_user_1.ave_cadence,
+            workout_cycling_user_1,
             can_see_heart_rate=expected_can_see_heart_rate,
             segment_id=None,
         )
@@ -2200,6 +3016,7 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
         user_1: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: Workout,
     ) -> None:
         workout_cycling_user_1.gpx = "some path"
         client, auth_token = self.get_test_client_and_auth_token(
