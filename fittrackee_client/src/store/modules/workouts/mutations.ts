@@ -178,4 +178,10 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   ) {
     state.workoutData.refreshLoading = refreshLoading
   },
+  [WORKOUTS_STORE.MUTATIONS.SET_GEOCODE_LOADING](
+    state: IWorkoutsState,
+    geocodeLoading: boolean
+  ) {
+    state.geocodeLoading = geocodeLoading
+  },
 }

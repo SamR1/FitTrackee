@@ -3,17 +3,21 @@
     <input
       id="location"
       name="location"
-      v-model="location"
+      v-model="locationDisplayName"
       role="combobox"
       aria-autocomplete="list"
       aria-controls="location-dropdown-list"
       :aria-expanded="isOpen"
+      :title="locationDisplayName || undefined"
       @keydown.esc="cancelUpdate()"
       @keydown.enter="onEnter"
       @blur="closeDropdown()"
       @keydown.down="onKeyDown()"
       @keydown.up="onKeyUp()"
     />
+    <span v-if="geocodeLoading" class="geocode-loader">
+      <i class="fa fa-spinner fa-pulse" aria-hidden="true" />
+    </span>
     <ul
       class="location-dropdown-list"
       id="location-dropdown-list"
@@ -40,35 +44,58 @@
 </template>
 
 <script setup lang="ts">
-  import { onUnmounted, ref, watch } from 'vue'
-  import type { Ref } from 'vue'
+  import { computed, onUnmounted, ref, toRefs, watch } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
+  import store from '@/store'
+  import { WORKOUTS_STORE } from '@/store/constants.ts'
   import type { ILocation } from '@/types/workouts.ts'
   import { getLocationFromQuery } from '@/utils/geocode.ts'
 
+  interface Props {
+    location: string
+  }
+  const props = defineProps<Props>()
+  const { location } = toRefs(props)
+
   const emit = defineEmits(['updateCoordinates'])
 
-  const location: Ref<string> = ref('')
+  const locationDisplayName: Ref<string> = ref(location.value)
   const isOpen: Ref<boolean> = ref(false)
   const focusItemIndex: Ref<number> = ref(0)
   const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
   const locations: Ref<ILocation[]> = ref([])
-
+  const geocodeLoading: ComputedRef<boolean> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.GEOCODE_LOADING]
+  )
   function onMouseOver(index: number) {
     focusItemIndex.value = index
   }
   function onUpdateLocation(index: number) {
     isOpen.value = false
     if (locations.value.length > index) {
-      location.value = locations.value[index].display_name
-      emit('updateCoordinates', locations.value[index].coordinates)
-      isOpen.value = false
+      locationDisplayName.value = locations.value[index].display_name
+      emit('updateCoordinates', {
+        coordinates: locations.value[index].coordinates,
+        osm_id: locations.value[index].osm_id,
+      })
+    } else {
+      locationDisplayName.value = ''
+      emit('updateCoordinates', {
+        coordinates: '',
+        osm_id: '',
+      })
     }
   }
   function onEnter(event: Event) {
     event.preventDefault()
     if (locations.value.length > 0) {
       onUpdateLocation(focusItemIndex.value)
+    } else {
+      emit('updateCoordinates', {
+        coordinates: '',
+        osm_id: '',
+      })
     }
   }
   function closeDropdown() {
@@ -104,22 +131,31 @@
   function cancelUpdate() {
     if (isOpen.value) {
       isOpen.value = false
-      location.value = ''
+      locationDisplayName.value = ''
     }
   }
 
   watch(
     () => location.value,
+    (newValue) => {
+      locationDisplayName.value = newValue
+    }
+  )
+  watch(
+    () => locationDisplayName.value,
     async (newValue) => {
       if (!newValue) {
         locations.value = []
       } else if (
+        location.value !== newValue &&
         locations.value.filter(({ display_name }) => display_name === newValue)
           .length === 0
       ) {
         clearTimeout(timer.value)
         timer.value = setTimeout(async () => {
+          store.commit(WORKOUTS_STORE.MUTATIONS.SET_GEOCODE_LOADING, true)
           locations.value = await getLocationFromQuery(newValue)
+          store.commit(WORKOUTS_STORE.MUTATIONS.SET_GEOCODE_LOADING, false)
         }, 1000)
       }
     },
@@ -172,6 +208,12 @@
       &.focus {
         background-color: var(--dropdown-hover-color);
       }
+    }
+
+    .geocode-loader {
+      position: absolute;
+      right: 10px;
+      top: 10px;
     }
   }
 </style>

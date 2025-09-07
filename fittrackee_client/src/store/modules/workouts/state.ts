@@ -31,5 +31,6 @@ export const workoutsState: IWorkoutsState = {
   },
   success: null,
   appealLoading: null,
+  geocodeLoading: false,
   likes: [],
 }

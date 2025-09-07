@@ -17,3 +17,20 @@ export const getLocationFromQuery = async (
       return []
     })
 }
+
+export const getLocationFromOsmId = async (
+  osmId: string
+): Promise<ILocation> => {
+  return await authApi
+    .get('/geocode/lookup', { params: { osm_id: osmId } })
+    .then((res) => {
+      if (res.data.status === 'success') {
+        return res.data.location
+      }
+      return {}
+    })
+    .catch((error) => {
+      console.error(error)
+      return {}
+    })
+}

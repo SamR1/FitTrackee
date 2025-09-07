@@ -1,4 +1,5 @@
 import os
+from typing import Dict, List
 
 import requests
 
@@ -13,7 +14,7 @@ class NominatimService:
         self.params = {"format": "jsonv2"}
         self.headers = {"User-Agent": f"FitTrackee v{VERSION}"}
 
-    def get_locations_from_query(self, query: str) -> list[dict]:
+    def get_locations_from_query(self, query: str) -> List[Dict]:
         url = f"{self.base_url}/search"
         appLog.debug(f"Nominatim: getting location for query: '{query}'")
         r = requests.get(
@@ -31,6 +32,31 @@ class NominatimService:
                 "display_name": location["display_name"],
                 "name": location["name"],
                 "addresstype": location["addresstype"],
+                "osm_id": f"{location['osm_type'][0]}{location['osm_id']}",
             }
             for location in locations
         ]
+
+    def get_location_from_id(self, osm_id: str) -> Dict:
+        url = f"{self.base_url}/lookup"
+        appLog.debug(f"Nominatim: getting location for id: '{osm_id}'")
+        r = requests.get(
+            url,
+            params={**self.params, "osm_ids": osm_id},
+            timeout=30,
+            headers=self.headers,
+        )
+        r.raise_for_status()
+        locations = r.json()
+
+        if not locations:
+            return {}
+
+        location = locations[0]
+        return {
+            "coordinates": f"{location['lat']},{location['lon']}",
+            "display_name": location["display_name"],
+            "name": location["name"],
+            "addresstype": location["addresstype"],
+            "osm_id": osm_id,
+        }

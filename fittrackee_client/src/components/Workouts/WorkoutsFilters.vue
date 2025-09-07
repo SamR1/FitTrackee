@@ -10,6 +10,7 @@
                 id="from"
                 name="from"
                 type="date"
+                :disabled="geocodeLoading"
                 :value="$route.query.from"
                 @change="handleFilterChange"
               />
@@ -20,6 +21,7 @@
                 id="to"
                 name="to"
                 type="date"
+                :disabled="geocodeLoading"
                 :value="$route.query.to"
                 @change="handleFilterChange"
               />
@@ -29,6 +31,7 @@
               <select
                 id="sport_id"
                 name="sport_id"
+                :disabled="geocodeLoading"
                 :value="$route.query.sport_id"
                 @change="handleFilterChange"
                 @keyup.enter="onFilter"
@@ -49,6 +52,7 @@
               <label> {{ $t('equipments.EQUIPMENT', 1) }}:</label>
               <select
                 name="equipment_id"
+                :disabled="geocodeLoading"
                 :value="$route.query.equipment_id"
                 @change="handleFilterChange"
                 @keyup.enter="onFilter"
@@ -97,6 +101,7 @@
                   id="title"
                   class="text"
                   name="title"
+                  :disabled="geocodeLoading"
                   :value="$route.query.title"
                   @change="handleFilterChange"
                   placeholder=""
@@ -114,6 +119,7 @@
                   id="description"
                   class="text"
                   name="description"
+                  :disabled="geocodeLoading"
                   :value="$route.query.description"
                   @change="handleFilterChange"
                   placeholder=""
@@ -129,6 +135,7 @@
                   id="notes"
                   class="text"
                   name="notes"
+                  :disabled="geocodeLoading"
                   :value="$route.query.notes"
                   @change="handleFilterChange"
                   placeholder=""
@@ -139,7 +146,11 @@
             </div>
             <div class="form-item form-item-text">
               <label for="location"> {{ $t('workouts.LOCATION') }}:</label>
-              <LocationsDropdown @updateCoordinates="handleLocationChange" />
+              <LocationsDropdown
+                :location="location"
+                @updateCoordinates="handleLocationChange"
+                @keyup.enter="onFilter"
+              />
             </div>
             <div class="form-item form-item-text">
               <label for="workout_visibility">
@@ -148,6 +159,7 @@
               <select
                 id="workout_visibility"
                 name="workout_visibility"
+                :disabled="geocodeLoading"
                 :value="$route.query.workout_visibility"
                 @change="handleFilterChange"
                 @keyup.enter="onFilter"
@@ -173,6 +185,7 @@
                   type="number"
                   min="0"
                   step="0.1"
+                  :disabled="geocodeLoading"
                   :value="$route.query.distance_from"
                   @change="handleFilterChange"
                   @keyup.enter="onFilter"
@@ -183,6 +196,7 @@
                   type="number"
                   min="0"
                   step="0.1"
+                  :disabled="geocodeLoading"
                   :value="$route.query.distance_to"
                   @change="handleFilterChange"
                   @keyup.enter="onFilter"
@@ -198,6 +212,7 @@
                 <input
                   id="duration_from"
                   name="duration_from"
+                  :disabled="geocodeLoading"
                   :value="$route.query.duration_from"
                   @change="handleFilterChange"
                   pattern="^([0-9]*[0-9]):([0-5][0-9])$"
@@ -212,6 +227,7 @@
                 <input
                   id="duration_to"
                   name="duration_to"
+                  :disabled="geocodeLoading"
                   :value="$route.query.duration_to"
                   @change="handleFilterChange"
                   pattern="^([0-9]*[0-9]):([0-5][0-9])$"
@@ -230,6 +246,7 @@
                 <input
                   min="0"
                   name="ave_speed_from"
+                  :disabled="geocodeLoading"
                   :value="$route.query.ave_speed_from"
                   @change="handleFilterChange"
                   step="0.1"
@@ -240,6 +257,7 @@
                 <input
                   min="0"
                   name="ave_speed_to"
+                  :disabled="geocodeLoading"
                   :value="$route.query.ave_speed_to"
                   @change="handleFilterChange"
                   step="0.1"
@@ -255,6 +273,7 @@
                 <input
                   min="0"
                   name="max_speed_from"
+                  :disabled="geocodeLoading"
                   :value="$route.query.max_speed_from"
                   @change="handleFilterChange"
                   step="0.1"
@@ -265,6 +284,7 @@
                 <input
                   min="0"
                   name="max_speed_to"
+                  :disabled="geocodeLoading"
                   :value="$route.query.max_speed_to"
                   @change="handleFilterChange"
                   step="0.1"
@@ -277,10 +297,19 @@
         </div>
 
         <div class="form-button">
-          <button type="submit" class="confirm" @click="onFilter">
+          <button
+            type="submit"
+            class="confirm"
+            @click="onFilter"
+            :disabled="geocodeLoading"
+          >
             {{ $t('buttons.FILTER') }}
           </button>
-          <button class="confirm" @click="onClearFilter">
+          <button
+            class="confirm"
+            @click="onClearFilter"
+            :disabled="geocodeLoading"
+          >
             {{ $t('buttons.CLEAR_FILTER') }}
           </button>
         </div>
@@ -290,19 +319,20 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, toRefs, watch, onMounted } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import { computed, toRefs, watch, onMounted, onBeforeMount, ref } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute, useRouter } from 'vue-router'
   import type { LocationQuery } from 'vue-router'
   import { useStore } from 'vuex'
 
   import LocationsDropdown from '@/components/Workouts/LocationsDropdown.vue'
-  import { EQUIPMENTS_STORE } from '@/store/constants'
+  import { EQUIPMENTS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { IEquipment } from '@/types/equipments'
   import type { ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile, TVisibilityLevels } from '@/types/user'
   import { sortEquipments } from '@/utils/equipments'
+  import { getLocationFromOsmId } from '@/utils/geocode.ts'
   import { units } from '@/utils/units'
   import { getAllVisibilityLevels } from '@/utils/visibility_levels.ts'
 
@@ -332,6 +362,10 @@
   const visibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
     getAllVisibilityLevels()
   )
+  const location: Ref<string> = ref('')
+  const geocodeLoading: ComputedRef<boolean> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.GEOCODE_LOADING]
+  )
 
   function handleFilterChange(event: Event) {
     const name = (event.target as HTMLInputElement).name
@@ -342,11 +376,16 @@
       params[name] = value
     }
   }
-  function handleLocationChange(coordinates: string) {
-    if (coordinates === '') {
+  function handleLocationChange(location: {
+    coordinates: string
+    osm_id: string
+  }) {
+    if (location.coordinates === '') {
       delete params.coordinates
+      delete params.osm_id
     } else {
-      params.coordinates = coordinates
+      params.coordinates = location.coordinates
+      params.osm_id = location.osm_id
     }
   }
   function onFilter() {
@@ -384,6 +423,16 @@
     }
   )
 
+  onBeforeMount(async () => {
+    if (route.query.osm_id) {
+      const result = await getLocationFromOsmId(route.query.osm_id as string)
+      if (result.display_name) {
+        location.value = result.display_name
+        return
+      }
+    }
+    location.value = ''
+  })
   onMounted(() => {
     const filter = document.getElementById('from')
     if (filter) {
