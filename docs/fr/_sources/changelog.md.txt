@@ -1,5 +1,42 @@
 # Change log
 
+## Version 0.12.2 (2025/09/07)
+
+### Bugs Fixed
+
+* [#920](https://github.com/SamR1/FitTrackee/issues/920) - workout with gaps in heart rate data is not displayed correctly
+
+### Translations
+
+* [PR#916](https://github.com/SamR1/FitTrackee/pull/916) - Translations update from Hosted Weblate (Basque)
+* [PR#919](https://github.com/SamR1/FitTrackee/pull/919) - Translations update from Hosted Weblate (Galician)
+
+Translation status:
+- Basque: 94%
+- Bulgarian: 56%
+- Catalan: 27%
+- Chinese (Simplified): 99%
+- Croatian: 100%
+- Czech: 45%
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 92%
+- Italian: 46%
+- Norwegian Bokmål: 30%
+- Polish: 100%
+- Portuguese: 55%
+- Russian: 98%
+- Spanish: 74%
+- Turkish: 1%
+
+
+Thanks to the contributors:
+- @erral
+- @xmgz
+
+
 ## Version 0.12.1 (2025/09/03)
 
 ### Features and enhancements
