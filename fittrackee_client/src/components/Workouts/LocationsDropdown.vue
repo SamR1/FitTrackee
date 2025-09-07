@@ -38,7 +38,7 @@
         role="option"
       >
         {{ location.display_name }} ({{
-          t(`workouts.NOMINATIM_ADDRESS_TYPE.${location.addresstype}`)
+          getTranslatedAddressType(location.addresstype)
         }})
       </li>
     </ul>
@@ -61,7 +61,7 @@
   const props = defineProps<Props>()
   const { location } = toRefs(props)
 
-  const { t } = useI18n()
+  const { t, te } = useI18n()
 
   const emit = defineEmits(['updateCoordinates'])
 
@@ -73,13 +73,20 @@
   const geocodeLoading: ComputedRef<boolean> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.GEOCODE_LOADING]
   )
+
   function onMouseOver(index: number) {
     focusItemIndex.value = index
+  }
+  function getTranslatedAddressType(addresstype: string) {
+    if (!te(`workouts.NOMINATIM_ADDRESS_TYPE.${addresstype}`)) {
+      return addresstype
+    }
+    return t(`workouts.NOMINATIM_ADDRESS_TYPE.${addresstype}`)
   }
   function onUpdateLocation(index: number) {
     isOpen.value = false
     if (locations.value.length > index) {
-      locationDisplayName.value = `${locations.value[index].display_name} (${t(`workouts.NOMINATIM_ADDRESS_TYPE.${locations.value[index].addresstype}`)})`
+      locationDisplayName.value = `${locations.value[index].display_name} (${getTranslatedAddressType(locations.value[index].addresstype)})`
       emit('updateCoordinates', {
         coordinates: locations.value[index].coordinates,
         display_name: locationDisplayName.value,
@@ -93,6 +100,7 @@
         osm_id: '',
       })
     }
+    focusItemIndex.value = 0
   }
   function onEnter(event: Event) {
     event.preventDefault()
@@ -106,7 +114,11 @@
     }
   }
   function closeDropdown() {
-    onUpdateLocation(focusItemIndex.value)
+    focusItemIndex.value = 0
+    clearTimeout(timer.value)
+    if (!geocodeLoading.value) {
+      onUpdateLocation(focusItemIndex.value)
+    }
   }
   function scrollIntoOption(index: number) {
     const option = document.getElementById(`tz-dropdown-item-${index}`)
@@ -157,7 +169,7 @@
         location.value !== newValue &&
         locations.value.filter(
           ({ display_name, addresstype }) =>
-            `${display_name} (${t(`workouts.NOMINATIM_ADDRESS_TYPE.${addresstype}`)})` ===
+            `${display_name} (${getTranslatedAddressType(addresstype)})` ===
             newValue
         ).length === 0
       ) {
@@ -166,7 +178,7 @@
           store.commit(WORKOUTS_STORE.MUTATIONS.SET_GEOCODE_LOADING, true)
           locations.value = await getLocationFromCity(newValue)
           store.commit(WORKOUTS_STORE.MUTATIONS.SET_GEOCODE_LOADING, false)
-        }, 1000)
+        }, 500)
       }
     },
     { immediate: true }
