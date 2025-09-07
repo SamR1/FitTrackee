@@ -13,7 +13,7 @@ from flask import (
     request,
     send_from_directory,
 )
-from sqlalchemy import asc, case, desc, distinct, exc, func
+from sqlalchemy import asc, case, desc, distinct, exc, func, select
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
@@ -539,7 +539,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 .filter(func.ST_Intersects(buffer, WorkoutSegment.geom))
                 .subquery()
             )
-            filters.append(Workout.id.in_(subquery))  # type: ignore[arg-type]
+            filters.append(Workout.id.in_(select(subquery)))  # type: ignore[arg-type]
         if workout_visibility:
             if workout_visibility not in {
                 item.value for item in VisibilityLevel

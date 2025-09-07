@@ -75,6 +75,16 @@ export const getQuery = (
   } else {
     delete query.workout_visibility
   }
+  if (typeof locationQuery.coordinates === 'string') {
+    query.coordinates = locationQuery.coordinates
+  } else {
+    delete query.coordinates
+  }
+  if (typeof locationQuery.radius === 'string') {
+    query.radius = locationQuery.radius
+  } else {
+    delete query.radius
+  }
 
   return query
 }

@@ -131,6 +131,10 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     workoutId: string
   ): void
+  [WORKOUTS_STORE.ACTIONS.GET_LOCATION_FROM_QUERY](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    query: string
+  ): void
 }
 
 export interface IWorkoutsGetters {
