@@ -23,6 +23,7 @@ export type TPaginationPayload = {
 export interface IQueryOptions {
   defaultSort?: string
   query?: TPaginationPayload
+  enableGeospatialFeatures?: boolean // temporary
 }
 
 export interface IApiErrorMessage {
