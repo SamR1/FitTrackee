@@ -1174,8 +1174,10 @@ class TestGetWorkoutGeoJsonAsWorkoutOwner(GetWorkoutGeoJSONTestCase):
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
 
-        assert data["data"]["geojson"] == self.get_geojson_from_geom(
-            workout_cycling_user_1_segment_0_with_coordinates.geom
+        assert data["data"][
+            "geojson"
+        ] == self.get_multilinestring_geojson_from_geom(
+            [workout_cycling_user_1_segment_0_with_coordinates.geom]
         )
 
     def test_it_returns_404_when_no_coordinates(
@@ -1271,8 +1273,10 @@ class TestGetWorkoutGeoJsonAsFollower(
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
-        assert data["data"]["geojson"] == self.get_geojson_from_geom(
-            workout_cycling_user_1_segment_0_with_coordinates.geom
+        assert data["data"][
+            "geojson"
+        ] == self.get_multilinestring_geojson_from_geom(
+            [workout_cycling_user_1_segment_0_with_coordinates.geom]
         )
 
     def test_it_returns_error_when_user_is_suspended(
@@ -1389,8 +1393,10 @@ class TestGetWorkoutGeoJsonAsUser(
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
-        assert data["data"]["geojson"] == self.get_geojson_from_geom(
-            workout_cycling_user_1_segment_0_with_coordinates.geom
+        assert data["data"][
+            "geojson"
+        ] == self.get_multilinestring_geojson_from_geom(
+            [workout_cycling_user_1_segment_0_with_coordinates.geom]
         )
 
     def test_it_returns_error_when_user_is_suspended(
@@ -1491,8 +1497,10 @@ class TestGetWorkoutGeoJsonAsUnauthenticatedUser(
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
-        assert data["data"]["geojson"] == self.get_geojson_from_geom(
-            workout_cycling_user_1_segment_0_with_coordinates.geom
+        assert data["data"][
+            "geojson"
+        ] == self.get_multilinestring_geojson_from_geom(
+            [workout_cycling_user_1_segment_0_with_coordinates.geom]
         )
 
 
