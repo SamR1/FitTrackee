@@ -3,12 +3,13 @@
     <input
       id="location"
       name="location"
-      v-model="locationDisplayName"
+      :value="locationDisplayName"
       role="combobox"
       aria-autocomplete="list"
       aria-controls="location-dropdown-list"
       :aria-expanded="isOpen"
       :title="locationDisplayName || undefined"
+      @input="updateLocation"
       @keydown.esc="cancelUpdate()"
       @keydown.enter="onEnter"
       @blur="closeDropdown()"
@@ -83,6 +84,9 @@
     }
     return t(`workouts.NOMINATIM_ADDRESS_TYPE.${addresstype}`)
   }
+  function updateLocation(event: Event) {
+    locationDisplayName.value = (event.target as HTMLInputElement).value
+  }
   function onUpdateLocation(index: number) {
     isOpen.value = false
     if (locations.value.length > index) {
@@ -116,8 +120,17 @@
   function closeDropdown() {
     focusItemIndex.value = 0
     clearTimeout(timer.value)
-    if (!geocodeLoading.value) {
+    if (geocodeLoading.value) {
+      return
+    }
+    if (isOpen.value) {
       onUpdateLocation(focusItemIndex.value)
+    } else if (locationDisplayName.value === '') {
+      emit('updateCoordinates', {
+        coordinates: '',
+        display_name: '',
+        osm_id: '',
+      })
     }
   }
   function scrollIntoOption(index: number) {
@@ -163,6 +176,7 @@
   watch(
     () => locationDisplayName.value,
     async (newValue) => {
+      clearTimeout(timer.value)
       if (!newValue) {
         locations.value = []
       } else if (
@@ -173,7 +187,6 @@
             newValue
         ).length === 0
       ) {
-        clearTimeout(timer.value)
         timer.value = setTimeout(async () => {
           store.commit(WORKOUTS_STORE.MUTATIONS.SET_GEOCODE_LOADING, true)
           locations.value = await getLocationFromCity(newValue)

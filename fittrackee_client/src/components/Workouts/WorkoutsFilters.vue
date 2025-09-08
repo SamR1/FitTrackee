@@ -156,7 +156,6 @@
                   id="notes"
                   class="text"
                   name="notes"
-                  :disabled="geocodeLoading"
                   :value="$route.query.notes"
                   @change="handleFilterChange"
                   placeholder=""
@@ -187,14 +186,12 @@
                 <input
                   id="radius"
                   class="text"
+                  :class="{ disabled: !location }"
                   name="radius"
-                  :disabled="
-                    (!location &&
-                      !$route.query.coordinates &&
-                      !params.coordinates) ||
-                    geocodeLoading
-                  "
-                  v-model="radius"
+                  :disabled="geocodeLoading"
+                  :readonly="!location"
+                  :tabindex="location ? 0 : -1"
+                  :value="radius"
                   placeholder=""
                   type="number"
                   @change="handleFilterChange"
@@ -318,7 +315,6 @@
             </div>
             <div class="form-item">
               <label> {{ $t('workouts.MAX_SPEED') }} ({{ toUnit }}/h): </label>
-
               <div class="form-inputs-group">
                 <input
                   min="0"
@@ -429,6 +425,9 @@
     } else {
       params[name] = value
     }
+    if (name === 'radius') {
+      radius.value = value
+    }
   }
   function handleLocationChange(newLocation: {
     coordinates: string
@@ -448,7 +447,7 @@
         radius.value = '10'
       }
     }
-    location.value = newLocation.display_name
+    location.value = newLocation.display_name || ''
   }
   function onFilter() {
     emit('filter')
@@ -568,6 +567,12 @@
         margin-top: $default-margin;
         width: 100%;
       }
+    }
+
+    .disabled {
+      pointer-events: none;
+      background-color: var(--disabled-radius-input);
+      border-color: var(--disabled-radius-border);
     }
 
     @media screen and (max-width: $medium-limit) {
