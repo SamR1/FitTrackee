@@ -17,8 +17,8 @@ For a single-user instance, registration can be disabled. So all you need is Pyt
 .. note::
   Other installation guides are available thanks to contributors:
 
-  - `Installation on Uberspace Web hosting <https://lab.uberspace.de/guide_fittrackee/>`__
-  - `Installation on Debian 12 net install (guide in German) <https://speefak.spdns.de/oss_lifestyle/fittrackee-installation-unter-debian-12/>`__
+  - `Installation on Uberspace Web hosting <https://lab.uberspace.de/guide_fittrackee/>`__ (Fittrackee 0.7.25)
+  - `Installation on Debian 12 net install (guide in German) <https://speefak.spdns.de/oss_lifestyle/fittrackee-installation-unter-debian-12/>`__ (Fittrackee 0.7.31)
 
 
 Main dependencies
@@ -30,6 +30,7 @@ This application is written in Python (API) and Typescript (client):
     - `SQLAlchemy <https://www.sqlalchemy.org/>`_ and `geoalchemy2 <https://geoalchemy-2.readthedocs.io>`_ to interact with the database
     - `gpxpy <https://github.com/tkrajina/gpxpy>`_ to parse gpx files
     - `fitdecode <https://github.com/polyvertex/fitdecode>`_ to parse fit files
+    - `GeoPandas <https://geopandas.org>`_ to work with geospatial data
     - `Static Map 3 <https://github.com/SamR1/staticmap>`_, a fork of `Static Map <https://github.com/komoot/staticmap>`_ to generate a static map image from file coordinates
     - `Dramatiq <https://dramatiq.io/>`_ and `Flask-Dramatiq <https://flask-dramatiq.readthedocs.io>`_ for task queue
     - `Authlib <https://docs.authlib.org/en/latest/>`_ for OAuth 2.0 Authorization support
@@ -57,6 +58,7 @@ Prerequisites
     - `Python <https://www.python.org/>`__ 3.10+
     - `PostgreSQL <https://www.postgresql.org/>`__ 13+
     - `PostGIS <https://postgis.net/>`__ 3.4+
+    - `GDAL <https://gdal.org/en/stable/>`__ on the server running the application, if different from the server running the database (GDAL is installed with PostGIS)
 
   - installation with Docker:
 
@@ -316,6 +318,27 @@ deployment method.
     .. versionadded:: 0.7.11
 
     Provider for weather data (not mandatory), see `Weather data <installation.html#weather-data>`__.
+
+.. envvar:: NOMINATIM_URL
+
+    .. versionadded:: 1.0.0
+
+    URL of `Nominatim <https://nominatim.org>`__ server, used to get location coordinates from user input
+
+    :default: ``https://nominatim.openstreetmap.org``
+
+
+.. envvar:: ENABLE_GEOSPATIAL_FEATURES
+
+    .. versionadded:: 1.0.0
+
+    | Enables geospatial features on User Interface. Keep the value set to ``False`` until all workouts have been updated to add geometries.
+    | This variable is case-insensitive.
+
+    :default: ``False``
+
+    .. warning::
+        This is a temporary flag. It will be removed in the next version, which will require all workouts to be updated.
 
 
 .. envvar:: VITE_APP_API_URL
@@ -580,7 +603,7 @@ Example:
 .. note::
     | see PostgreSQL `documentation <https://www.postgresql.org/docs/15/ddl-schemas.html>`_ for schema and privileges.
 
-- Install PostGIS extension
+- Install **PostGIS** extension
 
 Example for `fittrackee` database:
 
@@ -589,7 +612,7 @@ Example for `fittrackee` database:
     $ psql -U <SUPER_USER> -d fittrackee -c 'CREATE EXTENSION IF NOT EXISTS postgis;'
 
 .. note::
-    | **PostGIS** must be installed on OS, see `installation documentation <https://postgis.net/documentation/getting_started>`_.
+    | **PostGIS** must be installed on OS, see `installation documentation <https://postgis.net/documentation/getting_started/#installing-postgis>`_.
     | Many OS includes pre-built packages for PostGIS, see `wiki <https://trac.osgeo.org/postgis/wiki/UsersWikiPackages>`_.
 
 - Initialize environment variables, see `Environment variables <installation.html#environment-variables>`__
@@ -1155,4 +1178,4 @@ Thanks to contributors, a package is available, see https://github.com/YunoHost-
 NixOS
 ~~~~~
 
-Thanks to contributors, a package is available on NixOS, see https://mynixos.com/nixpkgs/package/fit-trackee.
+Thanks to contributors, a package is available on NixOS, see https://search.nixos.org/packages?query=fittrackee.

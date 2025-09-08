@@ -252,6 +252,7 @@ Workouts
     - title (*new in 0.7.15*)
     - description (*new in 0.8.9*)
     - notes (*new in 0.8.0*)
+    - location and radius (*new in 1.0.0*)
     - workout visibility (*new in 0.9.3*)
     - distance
     - duration
