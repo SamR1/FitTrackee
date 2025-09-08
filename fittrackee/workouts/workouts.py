@@ -67,7 +67,7 @@ from .services.workouts_from_file_refresh_service import (
 )
 from .utils.chart import get_chart_data
 from .utils.convert import convert_in_duration
-from .utils.geometry import get_geojson_from_segment, get_geojson_from_segments
+from .utils.geometry import get_geojson_from_segments
 from .utils.gpx import (
     WorkoutGPXException,
     extract_segment_from_gpx_file,
@@ -840,11 +840,7 @@ def get_workout_data(
                 )
             }
         elif data_type == "geojson":
-            geojson = (
-                get_geojson_from_segments(workout)
-                if segment_id is None
-                else get_geojson_from_segment(workout, segment_id=segment_id)
-            )
+            geojson = get_geojson_from_segments(workout, segment_id=segment_id)
             # Handle error differently when using workout segment uuid
             if not geojson:
                 return NotFoundErrorResponse("geojson not found")

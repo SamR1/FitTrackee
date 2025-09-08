@@ -5,7 +5,6 @@ import pytest
 from fittrackee.workouts.exceptions import WorkoutException
 from fittrackee.workouts.utils.geometry import (
     get_chart_data_from_segment_points,
-    get_geojson_from_segment,
     get_geojson_from_segments,
 )
 
@@ -44,11 +43,12 @@ class TestGetGeojsonFromSegments:
             [6.07361, 44.68049],
         ]
         workout_cycling_user_1_segment.store_geometry(segment_1_coordinates)
+
         geojson = get_geojson_from_segments(workout_cycling_user_1)
 
         assert geojson == {
-            "type": "LineString",
-            "coordinates": segment_1_coordinates,
+            "type": "MultiLineString",
+            "coordinates": [segment_1_coordinates],
         }
 
     def test_it_returns_geojson_for_workout_when_workout_has_more_than_one_segment(  # noqa
@@ -84,8 +84,6 @@ class TestGetGeojsonFromSegments:
             "coordinates": [segment_1_coordinates, segment_2_coordinates],
         }
 
-
-class TestGetGeojsonFromSegment:
     def test_it_returns_geojson_for_a_given_segment(
         self,
         app: "Flask",
@@ -103,7 +101,7 @@ class TestGetGeojsonFromSegment:
         ]
         workout_cycling_user_1_segment_2.store_geometry(segments_coordinates)
 
-        geojson = get_geojson_from_segment(
+        geojson = get_geojson_from_segments(
             workout_cycling_user_1,
             segment_id=workout_cycling_user_1_segment_2.segment_id + 1,
         )
@@ -121,7 +119,7 @@ class TestGetGeojsonFromSegment:
         workout_cycling_user_1: "Workout",
         workout_cycling_user_1_segment: "WorkoutSegment",
     ) -> None:
-        geojson = get_geojson_from_segment(
+        geojson = get_geojson_from_segments(
             workout_cycling_user_1, segment_id=2
         )
 
@@ -136,7 +134,7 @@ class TestGetGeojsonFromSegment:
         workout_cycling_user_1_segment: "WorkoutSegment",
     ) -> None:
         with pytest.raises(WorkoutException, match="Incorrect segment id"):
-            get_geojson_from_segment(workout_cycling_user_1, segment_id=-1)
+            get_geojson_from_segments(workout_cycling_user_1, segment_id=-1)
 
 
 class TestGetChartDataFromSegmentPoints:
