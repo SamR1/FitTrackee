@@ -46,6 +46,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
         "data": {
           "about": null,
           "admin_contact": "admin@example.com",
+          "enable_geospatial_features": false,
           "file_sync_limit_import": 10,
           "file_limit_import": 10,
           "is_email_sending_enabled": true,
@@ -104,6 +105,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         "data": {
           "about": null,
           "admin_contact": "admin@example.com",
+          "enable_geospatial_features": false,
           "file_sync_limit_import": 10,
           "file_limit_import": 10,
           "is_email_sending_enabled": true,

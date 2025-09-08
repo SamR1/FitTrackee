@@ -161,6 +161,7 @@ def create_app(init_email: bool = True) -> Flask:
     from .equipments.equipment_types import equipment_types_blueprint
     from .equipments.equipments import equipments_blueprint
     from .feeds.routes import feeds_blueprint
+    from .geocode.routes import geocode_blueprint
     from .oauth2.routes import oauth2_blueprint
     from .reports.reports import reports_blueprint
     from .users.auth import auth_blueprint
@@ -191,6 +192,7 @@ def create_app(init_email: bool = True) -> Flask:
     app.register_blueprint(notifications_blueprint, url_prefix="/api")
     app.register_blueprint(reports_blueprint, url_prefix="/api")
     app.register_blueprint(feeds_blueprint, url_prefix="")
+    app.register_blueprint(geocode_blueprint, url_prefix="/api")
 
     if app.debug:
         logging.getLogger("sqlalchemy").setLevel(logging.WARNING)

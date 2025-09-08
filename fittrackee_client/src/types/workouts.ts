@@ -333,3 +333,11 @@ export interface IWorkoutFilesError {
   createdWorkouts: number
   erroredWorkouts: Record<string, string>
 }
+
+export interface ILocation {
+  addresstype: string
+  coordinates: string
+  display_name: string
+  name: string
+  osm_id: string
+}

@@ -2,11 +2,18 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from fittrackee.workouts.exceptions import WorkoutException
+from fittrackee.workouts.exceptions import (
+    InvalidCoordinatesException,
+    InvalidRadiusException,
+    WorkoutException,
+)
 from fittrackee.workouts.utils.geometry import (
+    get_buffered_location,
     get_chart_data_from_segment_points,
     get_geojson_from_segments,
 )
+
+from ...mixins import GeometryMixin
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -472,3 +479,44 @@ class TestGetChartDataFromSegmentPoints:
             "speed": last_point["speed"],
             "time": last_point["time"],
         }
+
+
+class TestGetBufferedLocation(GeometryMixin):
+    @pytest.mark.parametrize("input_radius", ["invalid", "", "0", "-1"])
+    def test_it_raises_exception_when_radius_is_invalid(
+        self, app: "Flask", input_radius: str
+    ) -> None:
+        with pytest.raises(
+            InvalidRadiusException,
+            match="invalid radius, must be an float greater than zero",
+        ):
+            get_buffered_location(
+                coordinates="48.85341,2.3488", radius_str=input_radius
+            )
+
+    @pytest.mark.parametrize("input_coordinates", ["", "invalid,coordinates"])
+    def test_it_raises_exception_when_coordinates_are_invalid(
+        self,
+        app: "Flask",
+        input_coordinates: str,
+    ) -> None:
+        with pytest.raises(
+            InvalidCoordinatesException,
+            match=(
+                "invalid coordinates, must be a string with latitude and "
+                "longitude, separated by a comma"
+            ),
+        ):
+            get_buffered_location(input_coordinates, radius_str="10")
+
+    @pytest.mark.parametrize("input_radius", ["1", "1.0"])
+    def test_it_returns_buffered_polygon_with_4326_srid(
+        self, app: "Flask", paris_with_10km_buffer: str, input_radius: str
+    ) -> None:
+        paris_coordinates = "48.85341,2.3488"
+
+        buffer = get_buffered_location(paris_coordinates, input_radius)
+
+        srid, geometry = buffer.split(";")
+        assert srid == "SRID=4326"
+        assert geometry == paris_with_10km_buffer

@@ -108,6 +108,10 @@ def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
         monkeypatch.delenv("MAP_ATTRIBUTION")
     if os.getenv("DEFAULT_STATICMAP"):
         monkeypatch.delenv("DEFAULT_STATICMAP")
+    if os.getenv("NOMINATIM_URL"):
+        monkeypatch.delenv("NOMINATIM_URL")
+    if os.getenv("ENABLE_GEOSPATIAL_FEATURES"):
+        monkeypatch.delenv("ENABLE_GEOSPATIAL_FEATURES")
     yield from get_app(with_config=True)
 
 
@@ -182,6 +186,20 @@ def app_wo_email_auth(monkeypatch: pytest.MonkeyPatch) -> Generator:
 @pytest.fixture
 def app_wo_email_activation(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv("EMAIL_URL", "")
+    yield from get_app(with_config=True)
+
+
+@pytest.fixture
+def app_with_nominatim_url(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv("NOMINATIM_URL", "https://nominatim.example.com")
+    yield from get_app(with_config=True)
+
+
+@pytest.fixture
+def app_with_enabled_geospatial_features(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Generator:
+    monkeypatch.setenv("ENABLE_GEOSPATIAL_FEATURES", "true")
     yield from get_app(with_config=True)
 
 

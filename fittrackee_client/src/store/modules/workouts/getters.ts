@@ -39,4 +39,7 @@ export const getters: GetterTree<IWorkoutsState, IRootState> &
   [WORKOUTS_STORE.GETTERS.WORKOUTS_STATISTICS]: (state: IWorkoutsState) => {
     return state.user_workouts_statistics
   },
+  [WORKOUTS_STORE.GETTERS.GEOCODE_LOADING]: (state: IWorkoutsState) => {
+    return state.geocodeLoading
+  },
 }

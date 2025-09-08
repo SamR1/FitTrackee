@@ -4,7 +4,7 @@ Upgrading to 1.0.0
 The v1.0.0 introduces major changes on workout file processing to improve performances and ease the implementation of the next features:
 
 - data displayed in the workout chart are stored in the database,
-- and segments are stored as geometry.
+- and segments geometry is also stored.
 
 This last change requires `PostGIS <https://postgis.net/>`__ extension, which adds geospatial capabilities to the `PostgreSQL <https://www.postgresql.org/>`__ database.
 
@@ -25,10 +25,10 @@ From PyPI or sources
 **PostGIS** must be installed on your operating system.
 You can find intructions for your OS on `PostGIS documentation <https://postgis.net/documentation/getting_started/>`_.
 
-Here are the instructions for installation on ArchLinux (database and application on the same server):
+Here are the instructions for installation on ArchLinux (to adapt depending on your operating system):
 
 - stop the application and workers
-- install **PostGIS**
+- install **PostGIS** on the server running the database
 
   .. code-block:: bash
 
@@ -39,6 +39,12 @@ Here are the instructions for installation on ArchLinux (database and applicatio
   .. code-block:: bash
 
       $ psql -U <SUPER_USER> -d <FITTRACKEE_DATABASE_NAME> -c 'CREATE EXTENSION IF NOT EXISTS postgis;'
+
+- if the server running the application is different from the server running the database, install `gdal <https://gdal.org/en/stable/download.html#binaries>`__ library (GDAL is installed with PostGIS)
+
+  .. code-block:: bash
+
+      $ yay gdal
 
 - update **fittrackee** (see `instructions for upgrade <https://docs.fittrackee.org/fr/installation.html#upgrade>`__)
 - run database migrations
@@ -80,9 +86,9 @@ With Docker
 Workouts data update
 ~~~~~~~~~~~~~~~~~~~~
 
-An new CLI option (``--add-missing-geometry``) allows to recalculate workouts without geometry and chart data.
+An new CLI option (``--add-missing-geometry``) allows to refresh workouts without geometry and chart data.
 
-After upgrading **fittrackee**, run this command with other options depending on the number of workouts to update and the server capability.
+After upgrading **fittrackee**, run this command with other options depending on the number of workouts to update and the server capability, before enabling geospatial features on UI.
 
 For instance to update the first 1,000 workouts created with a file:
 
@@ -90,7 +96,8 @@ For instance to update the first 1,000 workouts created with a file:
 
     $ ftcli workouts refresh --add-missing-geometry --per-page 1000 -v
 
-This command can be re-executed until there are no more workouts to update.
+| This command can be re-executed until there are no more workouts to update.
+| Once all workous have been updated, enable geospatial features by setting the environment variable `ENABLE_GEOSPATIAL_FEATURES <installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES>`_  to ``True`` in `.env`.
 
 .. important::
     The next version will require all workouts to be updated.

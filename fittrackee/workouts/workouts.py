@@ -13,7 +13,7 @@ from flask import (
     request,
     send_from_directory,
 )
-from sqlalchemy import asc, case, desc, distinct, exc, func
+from sqlalchemy import asc, case, desc, distinct, exc, func, select
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
@@ -56,7 +56,7 @@ from .exceptions import (
     WorkoutFileException,
     WorkoutRefreshException,
 )
-from .models import Sport, Workout, WorkoutLike
+from .models import Sport, Workout, WorkoutLike, WorkoutSegment
 from .services import (
     WorkoutCreationService,
     WorkoutsFromFileCreationService,
@@ -67,7 +67,10 @@ from .services.workouts_from_file_refresh_service import (
 )
 from .utils.chart import get_chart_data
 from .utils.convert import convert_in_duration
-from .utils.geometry import get_geojson_from_segments
+from .utils.geometry import (
+    get_buffered_location,
+    get_geojson_from_segments,
+)
 from .utils.gpx import (
     WorkoutGPXException,
     extract_segment_from_gpx_file,
@@ -428,6 +431,10 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                          ``followers_only`` or ``public``)
     :query boolean with_statistics: return statistics when ``true``
                         (by default, statistics are not returned)
+    :query string coordinates: location coordinates separated with a comma
+                        (latitude, longitude)
+    :query integer radius: radius in km, only used when location is provided
+                        (default: 10)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -462,6 +469,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         title = params.get("title")
         notes = params.get("notes")
         description = params.get("description")
+        coordinates = params.get("coordinates")
+        radius = params.get("radius", "10")
         if "equipment_id" in params:
             if params["equipment_id"] == "none":
                 equipment_id: Union[str, int, None] = "none"
@@ -478,10 +487,12 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         if per_page > MAX_WORKOUTS_PER_PAGE:
             per_page = MAX_WORKOUTS_PER_PAGE
 
+        workouts_query = Workout.query
         filters = [
             Workout.user_id == auth_user.id,
             Workout.suspended_at == None,  # noqa
         ]
+
         if sport_id:
             filters.append(Workout.sport_id == sport_id)
         if title:
@@ -515,15 +526,23 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
         if max_speed_to:
             filters.append(Workout.max_speed <= float(max_speed_to))
         if equipment_id == "none":
-            filters.append(WorkoutEquipment.c.equipment_id == None)  # noqa
-        if equipment_id == "none":
+            workouts_query = workouts_query.outerjoin(WorkoutEquipment)
             filters.append(WorkoutEquipment.c.equipment_id == None)  # noqa
         elif equipment_id is not None:
+            workouts_query = workouts_query.outerjoin(WorkoutEquipment)
             filters.append(WorkoutEquipment.c.equipment_id == equipment_id)
+        if coordinates:
+            buffer = get_buffered_location(coordinates, radius)
+            subquery = (
+                db.session.query(WorkoutSegment.workout_id)
+                .filter(func.ST_Intersects(buffer, WorkoutSegment.geom))
+                .subquery()
+            )
+            filters.append(Workout.id.in_(select(subquery)))  # type: ignore[arg-type]
         if workout_visibility:
-            if workout_visibility not in set(
+            if workout_visibility not in {
                 item.value for item in VisibilityLevel
-            ):
+            }:
                 return InvalidPayloadErrorResponse(
                     "invalid value for visibility"
                 )
@@ -532,16 +551,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 == VisibilityLevel(workout_visibility).value
             )
 
-        workouts_query = (
-            Workout.query.outerjoin(WorkoutEquipment)
-            .filter(*filters)
-            .order_by(
-                (
-                    asc(workout_column)
-                    if order == "asc"
-                    else desc(workout_column)
-                ),
-            )
+        workouts_query = workouts_query.filter(*filters).order_by(
+            (asc(workout_column) if order == "asc" else desc(workout_column)),
         )
 
         workouts_pagination = workouts_query.paginate(

@@ -40,6 +40,7 @@ export interface IWorkoutsState {
   success: null | string
   appealLoading: null | string
   likes: IUserLightProfile[]
+  geocodeLoading: boolean
 }
 
 export interface IWorkoutsActions {
@@ -131,6 +132,10 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     workoutId: string
   ): void
+  [WORKOUTS_STORE.ACTIONS.GET_LOCATION_FROM_QUERY](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    query: string
+  ): void
 }
 
 export interface IWorkoutsGetters {
@@ -150,6 +155,7 @@ export interface IWorkoutsGetters {
   [WORKOUTS_STORE.GETTERS.WORKOUTS_STATISTICS](
     state: IWorkoutsState
   ): TWorkoutsStatistics
+  [WORKOUTS_STORE.GETTERS.GEOCODE_LOADING](state: IWorkoutsState): boolean
 }
 
 export type TWorkoutsMutations<S = IWorkoutsState> = {
@@ -238,6 +244,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.SET_REFRESH_LOADING](
     state: S,
     refreshLoading: boolean
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_GEOCODE_LOADING](
+    state: S,
+    geocodeLoading: boolean
   ): void
 }
 

@@ -4398,3 +4398,51 @@ def tcx_without_coordinates(
         "",
         tcx_with_one_lap_and_one_track,
     )
+
+
+@pytest.fixture()
+def nominatim_response() -> List:
+    return [
+        {
+            "place_id": 89081766,
+            "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+            "osm_type": "relation",
+            "osm_id": 7444,
+            "lat": "48.8588897",
+            "lon": "2.3200410",
+            "category": "boundary",
+            "type": "administrative",
+            "place_rank": 15,
+            "importance": 0.8845663630228834,
+            "addresstype": "suburb",
+            "name": "Paris",
+            "display_name": "Paris, Île-de-France, France métropolitaine, France",
+            "boundingbox": [
+                "48.8155755",
+                "48.9021560",
+                "2.2241220",
+                "2.4697602",
+            ],
+        },
+        {
+            "place_id": 309913673,
+            "licence": "Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+            "osm_type": "relation",
+            "osm_id": 115357,
+            "lat": "33.6617962",
+            "lon": "-95.5555130",
+            "category": "boundary",
+            "type": "administrative",
+            "place_rank": 16,
+            "importance": 0.5299938695221221,
+            "addresstype": "town",
+            "name": "Paris",
+            "display_name": "Paris, Lamar County, Texas, United States",
+            "boundingbox": [
+                "33.6206345",
+                "33.7383866",
+                "-95.6279396",
+                "-95.4354115",
+            ],
+        },
+    ]
