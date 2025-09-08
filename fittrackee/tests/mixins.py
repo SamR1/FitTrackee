@@ -14,6 +14,7 @@ from flask import Flask, current_app
 from flask.testing import FlaskClient
 from geoalchemy2.shape import to_shape
 from shapely import to_geojson
+from shapely.geometry.multilinestring import MultiLineString
 from urllib3.util import parse_url
 from werkzeug.test import TestResponse
 
@@ -656,6 +657,13 @@ class GeometryMixin:
     @staticmethod
     def get_geojson_from_geom(geometry: "WKBElement") -> Dict:
         return json.loads(to_geojson(to_shape(geometry)))
+
+    @staticmethod
+    def get_multilinestring_geojson_from_geom(
+        geometries: List["WKBElement"],
+    ) -> Dict:
+        line_strings = [to_shape(geometry) for geometry in geometries]
+        return json.loads(to_geojson(MultiLineString(line_strings)))
 
 
 class ResponseMockMixin:
