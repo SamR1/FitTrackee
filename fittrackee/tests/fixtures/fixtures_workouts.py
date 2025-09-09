@@ -167,19 +167,8 @@ def workout_cycling_user_1_with_coordinates() -> Workout:
 
 
 @pytest.fixture()
-def workout_cycling_user_1_segment_0_with_coordinates(
-    workout_cycling_user_1_with_coordinates: Workout,
-) -> WorkoutSegment:
-    workout_segment = WorkoutSegment(
-        workout_id=workout_cycling_user_1_with_coordinates.id,
-        workout_uuid=workout_cycling_user_1_with_coordinates.uuid,
-        segment_id=0,
-    )
-    workout_segment.duration = timedelta(minutes=1, seconds=30)
-    workout_segment.moving = workout_segment.duration
-    workout_segment.distance = 0.113
-    db.session.add(workout_segment)
-    coordinates = [
+def workout_cycling_user_1_segment_0_coordinates() -> List[List]:
+    return [
         [6.07367, 44.68095],
         [6.07367, 44.68091],
         [6.07364, 44.6808],
@@ -190,7 +179,25 @@ def workout_cycling_user_1_segment_0_with_coordinates(
         [6.07355, 44.68014],
         [6.07358, 44.67995],
     ]
-    workout_segment.store_geometry(coordinates)
+
+
+@pytest.fixture()
+def workout_cycling_user_1_segment_0_with_coordinates(
+    workout_cycling_user_1_with_coordinates: Workout,
+    workout_cycling_user_1_segment_0_coordinates: List[List],
+) -> WorkoutSegment:
+    workout_segment = WorkoutSegment(
+        workout_id=workout_cycling_user_1_with_coordinates.id,
+        workout_uuid=workout_cycling_user_1_with_coordinates.uuid,
+        segment_id=0,
+    )
+    workout_segment.duration = timedelta(minutes=1, seconds=30)
+    workout_segment.moving = workout_segment.duration
+    workout_segment.distance = 0.113
+    db.session.add(workout_segment)
+    workout_segment.store_geometry(
+        workout_cycling_user_1_segment_0_coordinates
+    )
     workout_segment.points = [
         {
             "cadence": 0,
@@ -306,19 +313,8 @@ def workout_cycling_user_1_segment_0_with_coordinates(
 
 
 @pytest.fixture()
-def workout_cycling_user_1_segment_1_with_coordinates(
-    workout_cycling_user_1_with_coordinates: Workout,
-) -> WorkoutSegment:
-    workout_segment = WorkoutSegment(
-        workout_id=workout_cycling_user_1_with_coordinates.id,
-        workout_uuid=workout_cycling_user_1_with_coordinates.uuid,
-        segment_id=1,
-    )
-    workout_segment.duration = timedelta(minutes=2, seconds=25)
-    workout_segment.moving = workout_segment.duration
-    workout_segment.distance = 0.186
-    db.session.add(workout_segment)
-    coordinates = [
+def workout_cycling_user_1_segment_1_coordinates() -> List[List]:
+    return [
         [6.07364, 44.67977],
         [6.07367, 44.67972],
         [6.07368, 44.67966],
@@ -336,7 +332,25 @@ def workout_cycling_user_1_segment_1_with_coordinates(
         [6.07435, 44.67837],
         [6.07442, 44.67822],
     ]
-    workout_segment.store_geometry(coordinates)
+
+
+@pytest.fixture()
+def workout_cycling_user_1_segment_1_with_coordinates(
+    workout_cycling_user_1_with_coordinates: Workout,
+    workout_cycling_user_1_segment_1_coordinates: List[List],
+) -> WorkoutSegment:
+    workout_segment = WorkoutSegment(
+        workout_id=workout_cycling_user_1_with_coordinates.id,
+        workout_uuid=workout_cycling_user_1_with_coordinates.uuid,
+        segment_id=1,
+    )
+    workout_segment.duration = timedelta(minutes=2, seconds=25)
+    workout_segment.moving = workout_segment.duration
+    workout_segment.distance = 0.186
+    db.session.add(workout_segment)
+    workout_segment.store_geometry(
+        workout_cycling_user_1_segment_1_coordinates
+    )
     workout_segment.points = [
         {
             "cadence": 56,

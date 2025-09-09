@@ -5,6 +5,8 @@ from unittest.mock import patch
 
 import pytest
 from flask import Flask
+from shapely import to_geojson
+from shapely.geometry.multilinestring import MultiLineString
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
@@ -2547,4 +2549,174 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "total_distance": 66.0,
             "total_duration": "6:08:24",
             "total_sports": 2,
+        }
+
+
+class TestGetWorkoutsFeatureCollection(WorkoutApiTestCaseMixin):
+    """
+    Since query generation is shared with `/workouts` endpoints, no need to
+    test all filters
+    """
+
+    def test_it_returns_empty_collection_when_no_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts/collection",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"] == {
+            "bbox": [],
+            "features": [],
+            "type": "FeatureCollection",
+        }
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 0,
+            "total": 0,
+        }
+
+    def test_it_returns_empty_collection_when_only_workouts_without_files(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        another_workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts/collection",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"] == {
+            "bbox": [],
+            "features": [],
+            "type": "FeatureCollection",
+        }
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 2,
+        }
+
+    def test_it_returns_only_workouts_with_geometry_in_feature_collection(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+        workout_cycling_user_1_segment_1_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_1_coordinates: List[List],
+        another_workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts/collection",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"] == {
+            "bbox": [
+                6.07355,
+                44.67822,
+                6.07442,
+                44.68095,
+            ],
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": json.loads(
+                        to_geojson(
+                            MultiLineString(
+                                [
+                                    workout_cycling_user_1_segment_0_coordinates,
+                                    workout_cycling_user_1_segment_1_coordinates,
+                                ]
+                            )
+                        )
+                    ),
+                    "properties": jsonify_dict(
+                        workout_cycling_user_1_with_coordinates.serialize(
+                            user=user_1
+                        )
+                    ),
+                },
+            ],
+            "type": "FeatureCollection",
+        }
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 2,
+        }
+
+    def test_it_filters_on_sport(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+        workout_cycling_user_1_segment_1_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_1_coordinates: List[List],
+        another_workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/workouts/collection?sport_id={sport_2_running.id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"] == {
+            "bbox": [],
+            "features": [],
+            "type": "FeatureCollection",
+        }
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
         }

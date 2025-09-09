@@ -4,6 +4,7 @@ from datetime import timedelta
 from decimal import Decimal
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
+import geopandas as gpd
 import requests
 from dramatiq_abort import abort
 from flask import (
@@ -51,6 +52,7 @@ from .constants import SPORTS_WITHOUT_ELEVATION_DATA, WORKOUT_FILE_MIMETYPES
 from .decorators import check_workout
 from .exceptions import (
     InvalidDurationException,
+    InvalidVisibilityException,
     WorkoutExceedingValueException,
     WorkoutException,
     WorkoutFileException,
@@ -79,6 +81,7 @@ from .utils.gpx import (
 from .utils.workouts import get_datetime_from_request_args
 
 if TYPE_CHECKING:
+    from flask_sqlalchemy.query import Query
     from sqlalchemy.sql.selectable import Subquery
 
 workouts_blueprint = Blueprint("workouts", __name__)
@@ -233,6 +236,122 @@ def download_workout_file(
         ],
         as_attachment=True,
     )
+
+
+def get_user_workouts_query(
+    auth_user: "User", params: Dict, *, as_feature_collection: bool = False
+) -> Tuple["Query", int, int]:
+    page = int(params.get("page", 1))
+    date_from, date_to = get_datetime_from_request_args(params, auth_user)
+    distance_from = params.get("distance_from")
+    distance_to = params.get("distance_to")
+    duration_from = params.get("duration_from")
+    duration_to = params.get("duration_to")
+    ave_speed_from = params.get("ave_speed_from")
+    ave_speed_to = params.get("ave_speed_to")
+    max_speed_from = params.get("max_speed_from")
+    max_speed_to = params.get("max_speed_to")
+    order_by = params.get("order_by", "workout_date")
+    workout_column = getattr(
+        Workout, "moving" if order_by == "duration" else order_by
+    )
+    order = params.get("order", "desc")
+    sport_id = params.get("sport_id")
+    title = params.get("title")
+    notes = params.get("notes")
+    description = params.get("description")
+    coordinates = params.get("coordinates")
+    radius = params.get("radius", "10")
+    if "equipment_id" in params:
+        if params["equipment_id"] == "none":
+            equipment_id: Union[str, int, None] = "none"
+        else:
+            equipment_uuid = decode_short_id(params["equipment_id"])
+            equipment = Equipment.query.filter_by(uuid=equipment_uuid).first()
+            equipment_id = equipment.id if equipment else 0
+    else:
+        equipment_id = None
+    workout_visibility = params.get("workout_visibility")
+    per_page = int(params.get("per_page", DEFAULT_WORKOUTS_PER_PAGE))
+    if per_page > MAX_WORKOUTS_PER_PAGE:
+        per_page = MAX_WORKOUTS_PER_PAGE
+
+    if as_feature_collection:
+        geom_subquery = (
+            select(
+                func.ST_AsGeoJSON(func.ST_Collect(WorkoutSegment.geom)).label(
+                    "workout_geojson"
+                ),
+                WorkoutSegment.workout_id,
+            )
+            .filter(WorkoutSegment.workout_id == Workout.id)
+            .group_by(WorkoutSegment.workout_id)
+        ).subquery()
+        workouts_query = db.session.query(
+            Workout, geom_subquery.c.workout_geojson
+        ).outerjoin(geom_subquery, geom_subquery.c.workout_id == Workout.id)
+    else:
+        workouts_query = Workout.query
+
+    filters = [
+        Workout.user_id == auth_user.id,
+        Workout.suspended_at == None,  # noqa
+    ]
+
+    if sport_id:
+        filters.append(Workout.sport_id == sport_id)
+    if title:
+        filters.append(Workout.title.ilike(f"%{title}%"))
+    if notes:
+        filters.append(Workout.notes.ilike(f"%{notes}%"))
+    if description:
+        filters.append(Workout.description.ilike(f"%{description}%"))
+    if date_from:
+        filters.append(Workout.workout_date >= date_from)
+    if date_to:
+        filters.append(Workout.workout_date < date_to + timedelta(seconds=1))
+    if distance_from:
+        filters.append(Workout.distance >= float(distance_from))
+    if distance_to:
+        filters.append(Workout.distance <= float(distance_to))
+    if duration_from:
+        filters.append(Workout.moving >= convert_in_duration(duration_from))
+    if duration_to:
+        filters.append(Workout.moving <= convert_in_duration(duration_to))
+    if ave_speed_from:
+        filters.append(Workout.ave_speed >= float(ave_speed_from))
+    if ave_speed_to:
+        filters.append(Workout.ave_speed <= float(ave_speed_to))
+    if max_speed_from:
+        filters.append(Workout.max_speed >= float(max_speed_from))
+    if max_speed_to:
+        filters.append(Workout.max_speed <= float(max_speed_to))
+    if equipment_id == "none":
+        workouts_query = workouts_query.outerjoin(WorkoutEquipment)
+        filters.append(WorkoutEquipment.c.equipment_id == None)  # noqa
+    elif equipment_id is not None:
+        workouts_query = workouts_query.outerjoin(WorkoutEquipment)
+        filters.append(WorkoutEquipment.c.equipment_id == equipment_id)
+    if coordinates:
+        buffer = get_buffered_location(coordinates, radius)
+        subquery = (
+            db.session.query(WorkoutSegment.workout_id)
+            .filter(func.ST_Intersects(buffer, WorkoutSegment.geom))
+            .subquery()
+        )
+        filters.append(Workout.id.in_(select(subquery)))  # type: ignore[arg-type]
+    if workout_visibility:
+        if workout_visibility not in {item.value for item in VisibilityLevel}:
+            raise InvalidVisibilityException()
+        filters.append(
+            Workout.workout_visibility
+            == VisibilityLevel(workout_visibility).value
+        )
+
+    workouts_query = workouts_query.filter(*filters).order_by(
+        (asc(workout_column) if order == "asc" else desc(workout_column)),
+    )
+    return workouts_query, page, per_page
 
 
 @workouts_blueprint.route("/workouts", methods=["GET"])
@@ -448,113 +567,11 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """
+    params = request.args.copy()
     try:
-        params = request.args.copy()
-        page = int(params.get("page", 1))
-        date_from, date_to = get_datetime_from_request_args(params, auth_user)
-        distance_from = params.get("distance_from")
-        distance_to = params.get("distance_to")
-        duration_from = params.get("duration_from")
-        duration_to = params.get("duration_to")
-        ave_speed_from = params.get("ave_speed_from")
-        ave_speed_to = params.get("ave_speed_to")
-        max_speed_from = params.get("max_speed_from")
-        max_speed_to = params.get("max_speed_to")
-        order_by = params.get("order_by", "workout_date")
-        workout_column = getattr(
-            Workout, "moving" if order_by == "duration" else order_by
+        workouts_query, page, per_page = get_user_workouts_query(
+            auth_user, params
         )
-        order = params.get("order", "desc")
-        sport_id = params.get("sport_id")
-        title = params.get("title")
-        notes = params.get("notes")
-        description = params.get("description")
-        coordinates = params.get("coordinates")
-        radius = params.get("radius", "10")
-        if "equipment_id" in params:
-            if params["equipment_id"] == "none":
-                equipment_id: Union[str, int, None] = "none"
-            else:
-                equipment_uuid = decode_short_id(params["equipment_id"])
-                equipment = Equipment.query.filter_by(
-                    uuid=equipment_uuid
-                ).first()
-                equipment_id = equipment.id if equipment else 0
-        else:
-            equipment_id = None
-        workout_visibility = params.get("workout_visibility")
-        per_page = int(params.get("per_page", DEFAULT_WORKOUTS_PER_PAGE))
-        if per_page > MAX_WORKOUTS_PER_PAGE:
-            per_page = MAX_WORKOUTS_PER_PAGE
-
-        workouts_query = Workout.query
-        filters = [
-            Workout.user_id == auth_user.id,
-            Workout.suspended_at == None,  # noqa
-        ]
-
-        if sport_id:
-            filters.append(Workout.sport_id == sport_id)
-        if title:
-            filters.append(Workout.title.ilike(f"%{title}%"))
-        if notes:
-            filters.append(Workout.notes.ilike(f"%{notes}%"))
-        if description:
-            filters.append(Workout.description.ilike(f"%{description}%"))
-        if date_from:
-            filters.append(Workout.workout_date >= date_from)
-        if date_to:
-            filters.append(
-                Workout.workout_date < date_to + timedelta(seconds=1)
-            )
-        if distance_from:
-            filters.append(Workout.distance >= float(distance_from))
-        if distance_to:
-            filters.append(Workout.distance <= float(distance_to))
-        if duration_from:
-            filters.append(
-                Workout.moving >= convert_in_duration(duration_from)
-            )
-        if duration_to:
-            filters.append(Workout.moving <= convert_in_duration(duration_to))
-        if ave_speed_from:
-            filters.append(Workout.ave_speed >= float(ave_speed_from))
-        if ave_speed_to:
-            filters.append(Workout.ave_speed <= float(ave_speed_to))
-        if max_speed_from:
-            filters.append(Workout.max_speed >= float(max_speed_from))
-        if max_speed_to:
-            filters.append(Workout.max_speed <= float(max_speed_to))
-        if equipment_id == "none":
-            workouts_query = workouts_query.outerjoin(WorkoutEquipment)
-            filters.append(WorkoutEquipment.c.equipment_id == None)  # noqa
-        elif equipment_id is not None:
-            workouts_query = workouts_query.outerjoin(WorkoutEquipment)
-            filters.append(WorkoutEquipment.c.equipment_id == equipment_id)
-        if coordinates:
-            buffer = get_buffered_location(coordinates, radius)
-            subquery = (
-                db.session.query(WorkoutSegment.workout_id)
-                .filter(func.ST_Intersects(buffer, WorkoutSegment.geom))
-                .subquery()
-            )
-            filters.append(Workout.id.in_(select(subquery)))  # type: ignore[arg-type]
-        if workout_visibility:
-            if workout_visibility not in {
-                item.value for item in VisibilityLevel
-            }:
-                return InvalidPayloadErrorResponse(
-                    "invalid value for visibility"
-                )
-            filters.append(
-                Workout.workout_visibility
-                == VisibilityLevel(workout_visibility).value
-            )
-
-        workouts_query = workouts_query.filter(*filters).order_by(
-            (asc(workout_column) if order == "asc" else desc(workout_column)),
-        )
-
         workouts_pagination = workouts_query.paginate(
             page=page, per_page=per_page, error_out=False
         )
@@ -671,6 +688,402 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                     for workout in workouts
                 ],
                 **statistics,
+            },
+            "pagination": {
+                "has_next": workouts_pagination.has_next,
+                "has_prev": workouts_pagination.has_prev,
+                "page": workouts_pagination.page,
+                "pages": workouts_pagination.pages,
+                "total": workouts_pagination.total,
+            },
+        }
+    except (InvalidDurationException, InvalidVisibilityException) as e:
+        return InvalidPayloadErrorResponse(str(e))
+    except Exception as e:
+        return handle_error_and_return_response(e)
+
+
+@workouts_blueprint.route("/workouts/collection", methods=["GET"])
+@require_auth(scopes=["workouts:read"])
+def get_workouts_feature_collection(
+    auth_user: User,
+) -> Union[Dict, HttpResponse]:
+    """
+    Get workouts for the authenticated user as a feature collection, in order
+    to display the workouts listed in the workout list on the map.
+
+    Note: the pagination returns counts for all workouts (with or without
+    geometries) to match `/workouts` pagination on the user interface.
+
+    **Scope**: ``workouts:read``
+
+    **Example requests**:
+
+    - without parameters:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/ HTTP/1.1
+
+    - with some query parameters:
+
+    .. sourcecode:: http
+
+      GET /api/workouts?from=2019-07-02&to=2019-07-31&sport_id=1  HTTP/1.1
+
+    **Example responses**:
+
+    - returning at least one workout:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "bbox": [
+              6.07355,
+              44.67822,
+              6.07442,
+              44.68095
+            ],
+            "features": [
+              {
+                "geometry": {
+                  "coordinates": [
+                    [
+                      [
+                        6.07367,
+                        44.68095
+                      ],
+                      [
+                        6.07367,
+                        44.68091
+                      ],
+                      [
+                        6.07364,
+                        44.6808
+                      ],
+                      [
+                        6.07364,
+                        44.68075
+                      ],
+                      [
+                        6.07364,
+                        44.68071
+                      ],
+                      [
+                        6.07361,
+                        44.68049
+                      ],
+                      [
+                        6.07356,
+                        44.68019
+                      ],
+                      [
+                        6.07355,
+                        44.68014
+                      ],
+                      [
+                        6.07358,
+                        44.67995
+                      ]
+                    ],
+                    [
+                      [
+                        6.07364,
+                        44.67977
+                      ],
+                      [
+                        6.07367,
+                        44.67972
+                      ],
+                      [
+                        6.07368,
+                        44.67966
+                      ],
+                      [
+                        6.0737,
+                        44.67961
+                      ],
+                      [
+                        6.07377,
+                        44.67938
+                      ],
+                      [
+                        6.07381,
+                        44.67933
+                      ],
+                      [
+                        6.07385,
+                        44.67922
+                      ],
+                      [
+                        6.0739,
+                        44.67911
+                      ],
+                      [
+                        6.07399,
+                        44.679
+                      ],
+                      [
+                        6.07402,
+                        44.67896
+                      ],
+                      [
+                        6.07408,
+                        44.67884
+                      ],
+                      [
+                        6.07423,
+                        44.67863
+                      ],
+                      [
+                        6.07425,
+                        44.67858
+                      ],
+                      [
+                        6.07434,
+                        44.67842
+                      ],
+                      [
+                        6.07435,
+                        44.67837
+                      ],
+                      [
+                        6.07442,
+                        44.67822
+                      ]
+                    ]
+                  ],
+                  "type": "MultiLineString"
+                },
+                "properties": {
+                  "analysis_visibility": "private",
+                  "ascent": null,
+                  "ave_cadence": null,
+                  "ave_hr": null,
+                  "ave_power": null,
+                  "ave_speed": 0.3,
+                  "bounds": [],
+                  "creation_date": null,
+                  "descent": null,
+                  "distance": 0.3,
+                  "duration": "1:00:00",
+                  "equipments": [],
+                  "id": "XZyLvgWdUcxmQYzxZhquqt",
+                  "liked": false,
+                  "likes_count": 0,
+                  "map": null,
+                  "map_visibility": "private",
+                  "max_alt": null,
+                  "max_cadence": null,
+                  "max_hr": null,
+                  "max_power": null,
+                  "max_speed": 0.3,
+                  "min_alt": null,
+                  "modification_date": null,
+                  "moving": "1:00:00",
+                  "next_workout": null,
+                  "notes": "",
+                  "pauses": null,
+                  "previous_workout": null,
+                  "records": [
+                    {
+                      "id": 3,
+                      "record_type": "LD",
+                      "sport_id": 1,
+                      "user": "Sam",
+                      "value": "1:00:00",
+                      "workout_date": "Tue, 13 Mar 2018 00:00:00 GMT",
+                      "workout_id": "XZyLvgWdUcxmQYzxZhquqt"
+                    }
+                  ],
+                  "segments": [],
+                  "source": null,
+                  "sport_id": 1,
+                  "suspended": false,
+                  "suspended_at": null,
+                  "title": null,
+                  "user": {
+                    "created_at": "Tue, 09 Sep 2025 06:05:07 GMT",
+                    "followers": 0,
+                    "following": 0,
+                    "nb_workouts": 2,
+                    "picture": false,
+                    "role": "user",
+                    "suspended_at": null,
+                    "username": "test"
+                  },
+                  "weather_end": null,
+                  "weather_start": null,
+                  "with_analysis": false,
+                  "with_gpx": false,
+                  "workout_date": "Tue, 13 Mar 2018 00:00:00 GMT",
+                  "workout_visibility": "private"
+                },
+                "type": "Feature"
+              }
+              ],
+            "type": "FeatureCollection"
+          }
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 1,
+            "total": 1
+          },
+          "status": "success"
+        }
+
+    - returning no workouts
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "workouts": []
+          },
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 0,
+            "total": 0
+          },
+          "status": "success"
+        }
+
+    - with statistics
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "statistics": {
+              "all": {
+                "ave_speed": null,
+                "count": 0,
+                "max_speed": null,
+                "total_ascent": null,
+                "total_descent": null,
+                "total_distance": null,
+                "total_duration": null
+              },
+              "current_page": {
+                "ave_speed": null,
+                "count": 0,
+                "max_speed": null,
+                "total_ascent": null,
+                "total_descent": null,
+                "total_distance": null,
+                "total_duration": null
+              }
+            },
+            "workouts": []
+          },
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 0,
+            "total": 0
+          },
+          "status": "success"
+        }
+
+    :query integer page: page if using pagination (default: 1)
+    :query integer per_page: number of workouts per page
+                             (default: 5, max: 100)
+    :query integer sport_id: sport id
+    :query string title: any part (or all) of the workout title;
+                         title matching is case-insensitive
+    :query string from: start date (format: ``%Y-%m-%d``)
+    :query string to: end date (format: ``%Y-%m-%d``)
+    :query float distance_from: minimal distance
+    :query float distance_to: maximal distance
+    :query string duration_from: minimal duration (format: ``%H:%M``)
+    :query string duration_to: maximal distance (format: ``%H:%M``)
+    :query float ave_speed_from: minimal average speed
+    :query float ave_speed_to: maximal average speed
+    :query float max_speed_from: minimal max. speed
+    :query float max_speed_to: maximal max. speed
+    :query string order: sorting order: ``asc``, ``desc`` (default: ``desc``)
+    :query string order_by: sorting criteria: ``ave_speed``, ``distance``,
+                            ``duration``, ``workout_date`` (default:
+                            ``workout_date``)
+    :query string equipment_id: equipment id (if ``none``, only workouts
+                            without equipments will be returned)
+    :query string notes: any part (or all) of the workout notes,
+                         notes matching is case-insensitive
+    :query string description: any part of the workout description;
+                         description matching is case-insensitive
+    :query boolean return_equipments: return workouts with equipment
+                         (by default, equipment is not returned).
+                         **Note**: It's not a filter.
+                         **Warning**: Needed for 3rd-party applications
+                         updating equipments.
+    :query string workout_visibility: workout visibility (``private``,
+                         ``followers_only`` or ``public``)
+    :query string coordinates: location coordinates separated with a comma
+                        (latitude, longitude)
+    :query integer radius: radius in km, only used when location is provided
+                        (default: 10)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 500: ``error, please try again or contact the administrator``
+
+    """
+    params = request.args.copy()
+    try:
+        workouts_query, page, per_page = get_user_workouts_query(
+            auth_user, params, as_feature_collection=True
+        )
+        workouts_pagination = workouts_query.paginate(
+            page=page, per_page=per_page, error_out=False
+        )
+        workouts = workouts_pagination.items
+
+        features = [
+            {
+                "type": "Feature",
+                "properties": workout.serialize(
+                    user=auth_user,
+                    params=params,
+                ),
+                "geometry": json.loads(geojson),
+            }
+            for workout, geojson in workouts
+            if geojson is not None
+        ]
+        if features:
+            df = gpd.GeoDataFrame.from_features(features)
+            bbox = list(df.total_bounds)
+        else:
+            bbox = []
+
+        return {
+            "status": "success",
+            "data": {
+                "bbox": bbox,
+                "features": features,
+                "type": "FeatureCollection",
             },
             "pagination": {
                 "has_next": workouts_pagination.has_next,
