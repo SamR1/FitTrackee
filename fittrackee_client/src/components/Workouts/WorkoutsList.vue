@@ -32,6 +32,7 @@
           <button
             v-if="appConfig.enable_geospatial_features"
             class="hide-workouts-btn transparent"
+            :disabled="noGeometries"
             @click="toggleWorkoutsMap"
           >
             {{ $t(`workouts.${displayMap ? 'HIDE' : 'SHOW'}_MAP`) }}
@@ -503,6 +504,9 @@
   const workouts: ComputedRef<IWorkout[]> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS]
   )
+  const noGeometries: ComputedRef<boolean> = computed(() =>
+    workouts.value.every((workout) => !workout.with_gpx)
+  )
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION]
   )
@@ -599,10 +603,8 @@
   )
   watch(
     () => displayMap.value,
-    async (newValue) => {
-      if (newValue) {
-        loadWorkouts(query)
-      }
+    async () => {
+      loadWorkouts(query)
     }
   )
 

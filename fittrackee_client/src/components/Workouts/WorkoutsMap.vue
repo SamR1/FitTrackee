@@ -91,7 +91,7 @@
         </LMap>
       </div>
     </VFullscreen>
-    <div v-else class="no-map">{{ $t('workouts.NO_MAP') }}</div>
+    <div v-else class="no-map">{{ $t('workouts.NO_WORKOUTS_TO_DISPLAY') }}</div>
   </div>
 </template>
 
@@ -218,7 +218,7 @@
       width: 100%;
     }
     .no-map {
-      line-height: 400px;
+      line-height: 550px;
       filter: var(--no-map-filter);
     }
     .map-loading {
@@ -261,11 +261,13 @@
 
     @media screen and (max-width: $small-limit) {
       padding: 0;
+      .no-map,
       .leaflet-container {
         height: 300px;
+        margin-bottom: $default-margin * 2;
       }
       .no-map {
-        display: none;
+        line-height: 300px;
       }
     }
   }
