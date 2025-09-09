@@ -1,5 +1,11 @@
 <template>
   <div id="workouts-map">
+    <div class="map-loading">
+      <div v-if="mapLoading">
+        {{ $t('workouts.MAP_IS_LOADING') }}
+        <i class="fa fa-refresh fa-spin fa-fw"></i>
+      </div>
+    </div>
     <VFullscreen
       v-if="workoutsCollection.features.length > 0"
       v-model="isFullscreen"
@@ -129,23 +135,26 @@
   const isFullscreen: Ref<boolean> = ref(false)
   const workoutsMap: Ref<ILeafletObject | null> = ref(null)
   const zoom: Ref<number> = ref(13)
+  const displayedWorkoutId: Ref<string | null> = ref(null)
 
+  const mapLoading: ComputedRef<boolean> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.MAP_LOADING]
+  )
   const workoutsCollection: ComputedRef<IWorkoutsFeatureCollection> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS_COLLECTION]
   )
   const bounds: ComputedRef<TBounds> = computed(() => getBounds())
   const center: ComputedRef<TCenter> = computed(() => getCenter(bounds))
-  const displayedWorkoutId: Ref<string | null> = ref(null)
   const displayedWorkout: ComputedRef<IWorkoutFeature | undefined> = computed(
     () =>
       workoutsCollection.value.features.find(
         (workout) => workout.properties.id === displayedWorkoutId.value
       )
   )
+
   function displayWorkoutGeoJSON(workoutId: string) {
     displayedWorkoutId.value = workoutId
   }
-
   function getBounds(): TBounds {
     return workoutsCollection.value.bbox
       ? [
@@ -189,15 +198,12 @@
     }
   )
 
-  onUnmounted(
-    () => store.commit(WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION),
-    {
+  onUnmounted(() =>
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION, {
       bbox: [],
       features: [],
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       type: 'FeatureCollection',
-    }
+    })
   )
 </script>
 
@@ -214,6 +220,9 @@
     .no-map {
       line-height: 400px;
       filter: var(--no-map-filter);
+    }
+    .map-loading {
+      height: 25px;
     }
     .leaflet-container {
       .map,

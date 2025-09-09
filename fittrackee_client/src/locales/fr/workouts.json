@@ -59,6 +59,7 @@
   "LOAD_MORE_WORKOUT": "Charger les séances suivantes",
   "LOCATION": "localisation | localisations",
   "MAP": "carte",
+  "MAP_IS_LOADING": "la carte est en cours de chargement…",
   "MARKDOWN_SYNTAX": "La syntaxe Markdown suivante peut être utilisée : _italique_, **gras**, [lien](https://example.com), ![image](https://example.com/image.png)",
   "MAX_ALTITUDE": "altitude max.",
   "MAX_CADENCE": "cadence max.",

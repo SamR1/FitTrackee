@@ -46,6 +46,7 @@ export interface IWorkoutsState {
   appealLoading: null | string
   likes: IUserLightProfile[]
   geocodeLoading: boolean
+  mapLoading: boolean
 }
 
 export interface IWorkoutsActions {
@@ -168,6 +169,7 @@ export interface IWorkoutsGetters {
     state: IWorkoutsState
   ): TWorkoutsStatistics
   [WORKOUTS_STORE.GETTERS.GEOCODE_LOADING](state: IWorkoutsState): boolean
+  [WORKOUTS_STORE.GETTERS.MAP_LOADING](state: IWorkoutsState): boolean
 }
 
 export type TWorkoutsMutations<S = IWorkoutsState> = {
@@ -264,6 +266,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.SET_GEOCODE_LOADING](
     state: S,
     geocodeLoading: boolean
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_MAP_LOADING](
+    state: S,
+    mapLoading: boolean
   ): void
 }
 

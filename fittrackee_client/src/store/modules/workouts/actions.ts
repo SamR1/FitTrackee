@@ -136,6 +136,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     payload: TWorkoutsPayload
   ): void {
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_MAP_LOADING, true)
     authApi
       .get('workouts/collection', {
         params: payload,
@@ -155,6 +156,9 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
         }
       })
       .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_MAP_LOADING, false)
+      )
   },
   [WORKOUTS_STORE.ACTIONS.GET_TIMELINE_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,

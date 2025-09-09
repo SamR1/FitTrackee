@@ -59,6 +59,7 @@
   "LOAD_MORE_WORKOUT": "Load more workouts",
   "LOCATION": "location | locations",
   "MAP": "map",
+  "MAP_IS_LOADING": "map is loading…",
   "MARKDOWN_SYNTAX": "Following Markdown syntax can be used: _italic_, **bold**, [link](https://example.com), ![image](https://example.com/image.png)",
   "MAX_ALTITUDE": "max. altitude",
   "MAX_CADENCE": "max. cadence",
