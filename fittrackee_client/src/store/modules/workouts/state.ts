@@ -11,6 +11,11 @@ export const workoutsState: IWorkoutsState = {
   timeline_workouts: [],
   pagination: <IPagination>{},
   user_workouts: [],
+  user_workouts_collection: {
+    bbox: [],
+    features: [],
+    type: 'FeatureCollection',
+  },
   user_workouts_statistics: <TWorkoutsStatistics>{},
   workoutData: {
     geojson: null,

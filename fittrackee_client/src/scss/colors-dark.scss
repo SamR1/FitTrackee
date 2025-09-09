@@ -114,6 +114,7 @@
   --map-display-hover-attribution-text: #444444;
   --map-attribution-bg-color: none;
   --map-filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.85);
+  --map-filter-cluster: invert(1) hue-rotate(180deg) brightness(1) contrast(1);
   --map-display-hover-filter: invert(1) hue-rotate(180deg) brightness(1.5)
     contrast(0.6);
   --map-layers-overlays: var(--app-color);

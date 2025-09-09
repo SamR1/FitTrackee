@@ -6,7 +6,11 @@ import type {
   TWorkoutsMutations,
 } from '@/store/modules/workouts/types'
 import type { IPagination } from '@/types/api'
-import type { ILineString, IMultiLineString } from '@/types/geojson.ts'
+import type {
+  IWorkoutsFeatureCollection,
+  ILineString,
+  IMultiLineString,
+} from '@/types/geojson.ts'
 import type {
   IComment,
   ICurrentCommentEdition,
@@ -52,6 +56,12 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     workouts: IWorkout[]
   ) {
     state.user_workouts = workouts
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION](
+    state: IWorkoutsState,
+    featureCollection: IWorkoutsFeatureCollection
+  ) {
+    state.user_workouts_collection = featureCollection
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_PAGINATION](
     state: IWorkoutsState,

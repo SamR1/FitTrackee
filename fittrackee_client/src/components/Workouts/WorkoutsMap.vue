@@ -1,0 +1,251 @@
+<template>
+  <div id="workouts-map">
+    <VFullscreen
+      v-if="workoutsCollection.features.length > 0"
+      v-model="isFullscreen"
+    >
+      <div
+        class="leaflet-container"
+        :class="{ 'fullscreen-map': isFullscreen }"
+      >
+        <LMap
+          v-if="center && bounds.length === 2"
+          v-model:zoom="zoom"
+          :maxZoom="19"
+          :center="center"
+          :bounds="bounds"
+          :zoomAnimation="false"
+          @ready="fitBounds(bounds)"
+          ref="workoutsMap"
+          :use-global-leaflet="true"
+          class="map"
+          :aria-label="$t('workouts.WORKOUTS_MAP')"
+        >
+          <LControl
+            position="topleft"
+            class="map-control"
+            tabindex="0"
+            role="button"
+            :title="$t('workouts.RESET_ZOOM')"
+            @click="resetZoom"
+            @keydown.enter="resetZoom"
+          >
+            <i class="fa fa-refresh" aria-hidden="true" />
+          </LControl>
+          <LControl
+            position="topleft"
+            class="map-control"
+            tabindex="0"
+            role="button"
+            :title="$t(`workouts.${isFullscreen ? 'EXIT' : 'VIEW'}_FULLSCREEN`)"
+            @click="toggleFullscreen"
+            @keydown.enter="toggleFullscreen"
+          >
+            <i
+              :class="`fa fa-${isFullscreen ? 'compress' : 'arrows-alt'}`"
+              aria-hidden="true"
+            />
+          </LControl>
+          <LTileLayer
+            :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png`"
+            :attribution="appConfig.map_attribution"
+            :bounds="bounds"
+            :maxZoom="19"
+          />
+          <LGeoJson v-if="displayedWorkout" :geojson="displayedWorkout">
+            <WorkoutPopup
+              :workout="displayedWorkout.properties"
+              :sport="
+                getSportLabel(displayedWorkout.properties, translatedSports)
+              "
+              :color="
+                getSportColor(displayedWorkout.properties, translatedSports)
+              "
+            />
+          </LGeoJson>
+          <LMarkerClusterGroup>
+            <CustomWorkoutMarker
+              v-for="workout in workoutsCollection.features"
+              :sport="getSportLabel(workout.properties, translatedSports)"
+              :color="getSportColor(workout.properties, translatedSports)"
+              :markerCoordinates="{
+                latitude: workout.geometry.coordinates[0][0][1],
+                longitude: workout.geometry.coordinates[0][0][0],
+              }"
+              :key="workout.properties.id"
+              @click="displayWorkoutGeoJSON(workout.properties.id)"
+            >
+              <WorkoutPopup
+                :workout="workout.properties"
+                :sport="getSportLabel(workout.properties, translatedSports)"
+                :color="getSportColor(workout.properties, translatedSports)"
+              />
+            </CustomWorkoutMarker>
+          </LMarkerClusterGroup>
+        </LMap>
+      </div>
+    </VFullscreen>
+    <div v-else class="no-map">{{ $t('workouts.NO_MAP') }}</div>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import {
+    LMap,
+    LTileLayer,
+    LGeoJson,
+    LControl,
+  } from '@vue-leaflet/vue-leaflet'
+  import { computed, ref, onUnmounted, toRefs } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
+  import { LMarkerClusterGroup } from 'vue-leaflet-markercluster'
+
+  import 'leaflet/dist/leaflet.css'
+  import 'vue-leaflet-markercluster/dist/style.css'
+  import CustomWorkoutMarker from '@/components/Workouts/CustomWorkoutMarker.vue'
+  import WorkoutPopup from '@/components/Workouts/WorkoutPopup.vue'
+  import useApp from '@/composables/useApp'
+  import { WORKOUTS_STORE } from '@/store/constants.ts'
+  import type {
+    IWorkoutFeature,
+    IWorkoutsFeatureCollection,
+  } from '@/types/geojson.ts'
+  import type { ILeafletObject, TBounds, TCenter } from '@/types/map'
+  import type { ITranslatedSport } from '@/types/sports.ts'
+  import { useStore } from '@/use/useStore.ts'
+  import { getApiUrl } from '@/utils'
+  import { getSportColor, getSportLabel } from '@/utils/sports.ts'
+
+  interface Props {
+    translatedSports: ITranslatedSport[]
+  }
+  const props = defineProps<Props>()
+  const { translatedSports } = toRefs(props)
+
+  const store = useStore()
+
+  const { appConfig } = useApp()
+
+  const isFullscreen: Ref<boolean> = ref(false)
+  const workoutsMap: Ref<ILeafletObject | null> = ref(null)
+  const zoom: Ref<number> = ref(13)
+
+  const workoutsCollection: ComputedRef<IWorkoutsFeatureCollection> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS_COLLECTION]
+  )
+  const bounds: ComputedRef<TBounds> = computed(() => getBounds())
+  const center: ComputedRef<TCenter> = computed(() => getCenter(bounds))
+  const displayedWorkoutId: Ref<string | null> = ref(null)
+  const displayedWorkout: ComputedRef<IWorkoutFeature | undefined> = computed(
+    () =>
+      workoutsCollection.value.features.find(
+        (workout) => workout.properties.id === displayedWorkoutId.value
+      )
+  )
+  function displayWorkoutGeoJSON(workoutId: string) {
+    displayedWorkoutId.value = workoutId
+  }
+
+  function getBounds(): TBounds {
+    return workoutsCollection.value.bbox
+      ? [
+          [workoutsCollection.value.bbox[1], workoutsCollection.value.bbox[0]],
+          [workoutsCollection.value.bbox[3], workoutsCollection.value.bbox[2]],
+        ]
+      : []
+  }
+  function getCenter(bounds: ComputedRef<TBounds>): TCenter {
+    return [
+      (bounds.value[0][0] + bounds.value[1][0]) / 2,
+      (bounds.value[0][1] + bounds.value[1][1]) / 2,
+    ]
+  }
+  function fitBounds(bounds: TBounds): void {
+    if (workoutsMap.value?.leafletObject) {
+      workoutsMap.value.leafletObject.fitBounds(bounds)
+    }
+  }
+  function resetZoom(): void {
+    workoutsMap.value?.leafletObject.fitBounds(getBounds())
+  }
+  function toggleFullscreen(): void {
+    isFullscreen.value = !isFullscreen.value
+    if (!isFullscreen.value) {
+      setTimeout(() => {
+        resetZoom()
+      }, 100)
+    }
+  }
+
+  onUnmounted(
+    () => store.commit(WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION),
+    {
+      bbox: [],
+      features: [],
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      type: 'FeatureCollection',
+    }
+  )
+</script>
+
+<style lang="scss" scoped>
+  @use '~@/scss/vars.scss' as *;
+  #workouts-map {
+    padding: $default-padding 0;
+
+    .leaflet-container,
+    .no-map {
+      height: 550px;
+      width: 100%;
+    }
+    .no-map {
+      line-height: 400px;
+      filter: var(--no-map-filter);
+    }
+    .leaflet-container {
+      .map,
+      ::v-deep(.sport-img) {
+        filter: var(--map-filter);
+      }
+      ::v-deep(.marker-cluster div) {
+        filter: var(--map-filter-cluster);
+      }
+      .map-control {
+        background: var(--map-control-bg-color);
+        padding: 5px 10px;
+        border: 2px solid var(--map-control-border-color);
+        border-radius: 3px;
+        color: var(--map-control-color);
+
+        &:hover {
+          background-color: var(--map-control-hover-bg-color);
+        }
+
+        .fa {
+          text-align: center;
+          min-width: 10px;
+        }
+      }
+    }
+    ::v-deep(.fullscreen) {
+      display: flex;
+      align-items: center;
+      z-index: 1000; // partial fix on iOS
+      .fullscreen-map {
+        height: 100%;
+        width: 100%;
+      }
+    }
+
+    @media screen and (max-width: $small-limit) {
+      padding: 0;
+      .leaflet-container {
+        height: 300px;
+      }
+      .no-map {
+        display: none;
+      }
+    }
+  }
+</style>

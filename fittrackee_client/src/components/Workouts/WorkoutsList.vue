@@ -29,6 +29,13 @@
           >
             {{ $t(`workouts.${showWorkouts ? 'HIDE' : 'SHOW'}_WORKOUTS`) }}
           </button>
+          <button
+            v-if="appConfig.enable_geospatial_features"
+            class="hide-workouts-btn transparent"
+            @click="toggleWorkoutsMap"
+          >
+            {{ $t(`workouts.${displayMap ? 'HIDE' : 'SHOW'}_WORKOUTS_MAP`) }}
+          </button>
         </div>
       </div>
       <FilterSelects
@@ -45,7 +52,12 @@
           path="/workouts"
           :query="query"
         />
-        <table>
+        <WorkoutsMap
+          v-if="displayMap"
+          :workouts="workouts"
+          :translatedSports="translatedSports"
+        />
+        <table v-else>
           <thead :class="{ smaller: appLanguage === 'de' }">
             <tr v-if="showWorkouts">
               <th class="sport-col">
@@ -435,6 +447,7 @@
   import Pagination from '@/components/Common/Pagination.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
+  import WorkoutsMap from '@/components/Workouts/WorkoutsMap.vue'
   import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser'
   import { EQUIPMENTS_STORE, WORKOUTS_STORE } from '@/store/constants'
@@ -485,6 +498,7 @@
   const hoverWorkoutId: Ref<string | null> = ref(null)
   const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
   const showWorkouts: Ref<boolean> = ref(true)
+  const displayMap: Ref<boolean> = ref(false)
 
   const workouts: ComputedRef<IWorkout[]> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS]
@@ -504,7 +518,9 @@
   function loadWorkouts(payload: TWorkoutsPayload) {
     if (!isAuthUserSuspended.value) {
       store.dispatch(
-        WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS,
+        displayMap.value
+          ? WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_COLLECTION
+          : WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS,
         user.value.imperial_units ? getConvertedPayload(payload) : payload
       )
     }
@@ -570,12 +586,23 @@
   function toggleWorkouts() {
     showWorkouts.value = !showWorkouts.value
   }
+  function toggleWorkoutsMap() {
+    displayMap.value = !displayMap.value
+  }
 
   watch(
     () => route.query,
     async (newQuery) => {
       query = getWorkoutsQuery(newQuery)
-      loadWorkouts(query)
+      loadWorkouts({ ...query })
+    }
+  )
+  watch(
+    () => displayMap.value,
+    async (newValue) => {
+      if (newValue) {
+        loadWorkouts(query)
+      }
     }
   )
 

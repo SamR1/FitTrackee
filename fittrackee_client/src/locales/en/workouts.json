@@ -48,6 +48,7 @@
   "HEART_RATE": "heart rate",
   "HIDE_FILTERS": "hide filters",
   "HIDE_WORKOUTS": "hide workouts",
+  "HIDE_WORKOUTS_MAP": "hide workouts map",
   "INVALID_ASCENT_OR_DESCENT": "Both elevation values must be provided and be greater than or equal to 0.",
   "INVALID_DISTANCE": "The distance must be greater than 0",
   "INVALID_DURATION": "The duration must be greater than 0 seconds",
@@ -128,6 +129,7 @@
   "RESET_ZOOM": "Reset zoom",
   "SEGMENT": "segment | segments",
   "SHOW_WORKOUTS": "show workouts",
+  "SHOW_WORKOUTS_MAP": "show workouts map",
   "SOURCE": "source",
   "SPEED": "speed",
   "SPORT": "sport | sports",
@@ -202,6 +204,7 @@
   "WITHOUT_FILE": "without file",
   "WITH_FILE": "with file",
   "WORKOUT": "workout | workouts",
+  "WORKOUTS_MAP": "workouts map",
   "WORKOUTS_STATISTICS": {
     "all": "statistics for all pages ({count} workouts)",
     "current_page": "statistics for current page ({count} workouts)",

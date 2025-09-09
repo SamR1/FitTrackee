@@ -8,7 +8,11 @@ import type {
 import { WORKOUTS_STORE } from '@/store/constants'
 import type { IRootState } from '@/store/modules/root/types'
 import type { IPagination } from '@/types/api'
-import type { ILineString, IMultiLineString } from '@/types/geojson.ts'
+import type {
+  IWorkoutsFeatureCollection,
+  ILineString,
+  IMultiLineString,
+} from '@/types/geojson.ts'
 import type { IUserLightProfile } from '@/types/user.ts'
 import type {
   ICommentForm,
@@ -31,6 +35,7 @@ import type {
 
 export interface IWorkoutsState {
   user_workouts: IWorkout[]
+  user_workouts_collection: IWorkoutsFeatureCollection
   user_workouts_statistics: TWorkoutsStatistics
   calendar_workouts: IWorkout[]
   timeline_workouts: IWorkout[]
@@ -49,6 +54,10 @@ export interface IWorkoutsActions {
     payload: TWorkoutsPayload
   ): void
   [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: TWorkoutsPayload
+  ): void
+  [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_COLLECTION](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: TWorkoutsPayload
   ): void
@@ -145,6 +154,9 @@ export interface IWorkoutsGetters {
   [WORKOUTS_STORE.GETTERS.SUCCESS](state: IWorkoutsState): null | string
   [WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS](state: IWorkoutsState): IWorkout[]
+  [WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS_COLLECTION](
+    state: IWorkoutsState
+  ): IWorkoutsFeatureCollection
   [WORKOUTS_STORE.GETTERS.WORKOUT_CONTENT_EDITION](
     state: IWorkoutsState
   ): IWorkoutContentEdition
@@ -178,6 +190,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS](
     state: S,
     workouts: IWorkout[]
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION](
+    state: S,
+    featureCollection: IWorkoutsFeatureCollection
   ): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT](state: S, workout: IWorkout): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA](

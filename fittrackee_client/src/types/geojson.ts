@@ -1,14 +1,23 @@
-export interface TPoint {
-  longitude: number
-  latitude: number
-}
+import type { IWorkout } from '@/types/workouts.ts'
 
 export interface ILineString {
-  coordinates: TPoint[]
+  coordinates: number[][]
   type: 'LineString'
 }
 
 export interface IMultiLineString {
   coordinates: ILineString['coordinates'][]
   type: 'MultiLineString'
+}
+
+export interface IWorkoutFeature {
+  properties: IWorkout
+  geometry: IMultiLineString
+  type: 'Feature'
+}
+
+export interface IWorkoutsFeatureCollection {
+  bbox: number[]
+  features: IWorkoutFeature[]
+  type: 'FeatureCollection'
 }

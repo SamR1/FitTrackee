@@ -131,6 +131,31 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
   ): void {
     getWorkouts(context, payload, WorkoutsMutations['SET_USER_WORKOUTS'])
   },
+  [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_COLLECTION](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: TWorkoutsPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get('workouts/collection', {
+        params: payload,
+      })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION,
+            res.data.data
+          )
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_PAGINATION,
+            res.data.pagination
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+  },
   [WORKOUTS_STORE.ACTIONS.GET_TIMELINE_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: TWorkoutsPayload
