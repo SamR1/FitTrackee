@@ -96,7 +96,7 @@
     LGeoJson,
     LControl,
   } from '@vue-leaflet/vue-leaflet'
-  import { computed, ref, onUnmounted, toRefs } from 'vue'
+  import { computed, ref, onUnmounted, toRefs, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { LMarkerClusterGroup } from 'vue-leaflet-markercluster'
 
@@ -176,6 +176,18 @@
       }, 100)
     }
   }
+
+  watch(
+    () => displayedWorkout.value,
+    (newWorkout: IWorkoutFeature | undefined) => {
+      if (newWorkout?.properties.bounds) {
+        workoutsMap.value?.leafletObject.fitBounds([
+          [newWorkout.properties.bounds[0], newWorkout.properties.bounds[1]],
+          [newWorkout.properties.bounds[2], newWorkout.properties.bounds[3]],
+        ])
+      }
+    }
+  )
 
   onUnmounted(
     () => store.commit(WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION),

@@ -44,6 +44,12 @@ def assert_workout_data_with_gpx(data: Dict, user: User) -> None:
     assert "0:04:10" == data["data"]["workouts"][0]["duration"]
     assert data["data"]["workouts"][0]["ascent"] == 0.4
     assert data["data"]["workouts"][0]["ave_speed"] == 4.61
+    assert data["data"]["workouts"][0]["bounds"] == [
+        44.67822,
+        6.07355,
+        44.68095,
+        6.07442,
+    ]
     assert data["data"]["workouts"][0]["descent"] == 23.4
     assert data["data"]["workouts"][0]["description"] is None
     assert data["data"]["workouts"][0]["distance"] == 0.32

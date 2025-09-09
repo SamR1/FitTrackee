@@ -161,6 +161,7 @@ def workout_cycling_user_1_with_coordinates() -> Workout:
         duration=timedelta(seconds=3600),
     )
     update_workout(workout)
+    workout.bounds = [44.67822, 6.07355, 44.68095, 6.07442]
     db.session.add(workout)
     db.session.commit()
     return workout

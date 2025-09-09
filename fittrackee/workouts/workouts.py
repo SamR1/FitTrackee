@@ -866,7 +866,12 @@ def get_workouts_feature_collection(
                   "ave_hr": null,
                   "ave_power": null,
                   "ave_speed": 0.3,
-                  "bounds": [],
+                  "bounds": [
+                      44.67822,
+                      6.07355,
+                      44.68095,
+                      6.07442
+                  ],
                   "creation_date": null,
                   "descent": null,
                   "distance": 0.3,
@@ -959,47 +964,6 @@ def get_workouts_feature_collection(
           "status": "success"
         }
 
-    - with statistics
-
-    .. sourcecode:: http
-
-      HTTP/1.1 200 OK
-      Content-Type: application/json
-
-        {
-          "data": {
-            "statistics": {
-              "all": {
-                "ave_speed": null,
-                "count": 0,
-                "max_speed": null,
-                "total_ascent": null,
-                "total_descent": null,
-                "total_distance": null,
-                "total_duration": null
-              },
-              "current_page": {
-                "ave_speed": null,
-                "count": 0,
-                "max_speed": null,
-                "total_ascent": null,
-                "total_descent": null,
-                "total_distance": null,
-                "total_duration": null
-              }
-            },
-            "workouts": []
-          },
-          "pagination": {
-            "has_next": false,
-            "has_prev": false,
-            "page": 1,
-            "pages": 0,
-            "total": 0
-          },
-          "status": "success"
-        }
-
     :query integer page: page if using pagination (default: 1)
     :query integer per_page: number of workouts per page
                              (default: 5, max: 100)
@@ -1064,8 +1028,7 @@ def get_workouts_feature_collection(
             {
                 "type": "Feature",
                 "properties": workout.serialize(
-                    user=auth_user,
-                    params=params,
+                    user=auth_user, params=params, with_bounds=True
                 ),
                 "geometry": json.loads(geojson),
             }

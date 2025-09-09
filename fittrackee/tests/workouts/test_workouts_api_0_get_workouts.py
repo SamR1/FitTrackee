@@ -2667,7 +2667,7 @@ class TestGetWorkoutsFeatureCollection(WorkoutApiTestCaseMixin):
                     ),
                     "properties": jsonify_dict(
                         workout_cycling_user_1_with_coordinates.serialize(
-                            user=user_1
+                            user=user_1, with_bounds=True
                         )
                     ),
                 },
