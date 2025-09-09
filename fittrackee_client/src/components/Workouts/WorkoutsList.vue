@@ -34,7 +34,7 @@
             class="hide-workouts-btn transparent"
             @click="toggleWorkoutsMap"
           >
-            {{ $t(`workouts.${displayMap ? 'HIDE' : 'SHOW'}_WORKOUTS_MAP`) }}
+            {{ $t(`workouts.${displayMap ? 'HIDE' : 'SHOW'}_MAP`) }}
           </button>
         </div>
       </div>
@@ -654,6 +654,7 @@
         .buttons {
           display: flex;
           gap: $default-padding;
+          flex-wrap: wrap;
           .scroll-button {
             display: block;
           }
@@ -666,7 +667,7 @@
           }
         }
 
-        @media screen and (max-width: $x-small-limit) {
+        @media screen and (max-width: $small-limit) {
           flex-wrap: wrap;
           flex-direction: column-reverse;
 
@@ -675,9 +676,9 @@
             width: 100%;
           }
           .buttons {
+            justify-content: right;
             .spacer {
-              display: block;
-              flex-grow: 3;
+              display: none;
             }
           }
         }
