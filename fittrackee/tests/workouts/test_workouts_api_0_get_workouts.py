@@ -1426,6 +1426,30 @@ class TestGetWorkoutsWithLocationFilters(WorkoutApiTestCaseMixin):
             == workout_cycling_user_1_with_coordinates.short_id
         )
 
+    def test_it_returns_400_when_radius_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?coordinates=44.564511,6.087168&radius=-1",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            error_message="invalid radius, must be an float greater than zero",
+        )
+
 
 class TestGetWorkoutsWithFiltersAndPagination(WorkoutApiTestCaseMixin):
     def test_it_gets_page_2_with_date_filter(
@@ -2558,6 +2582,39 @@ class TestGetWorkoutsFeatureCollection(WorkoutApiTestCaseMixin):
     test all filters
     """
 
+    def test_it_returns_401_if_user_is_not_authenticated(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get("/api/workouts/collection")
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 401
+        assert "error" in data["status"]
+        assert "provide a valid auth token" in data["message"]
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        suspended_user: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            "/api/workouts/collection",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_403(response)
+
     def test_it_returns_empty_collection_when_no_workouts(
         self,
         app: Flask,
@@ -2720,3 +2777,92 @@ class TestGetWorkoutsFeatureCollection(WorkoutApiTestCaseMixin):
             "pages": 1,
             "total": 1,
         }
+
+    def test_it_returns_400_when_duration_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts/collection?duration_from=00h52&duration_to=01:20",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, error_message="invalid duration")
+
+    def test_it_returns_400_when_radius_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts/collection?coordinates=44.564511,6.087168&radius=-1",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            error_message="invalid radius, must be an float greater than zero",
+        )
+
+    def test_it_returns_400_when_workout_visibility_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts/collection?workout_visibility=invalid",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, error_message="invalid value for visibility")
+
+    @pytest.mark.parametrize(
+        "client_scope, can_access",
+        {**OAUTH_SCOPES, "workouts:read": True}.items(),
+    )
+    def test_expected_scopes_are_defined(
+        self,
+        app: Flask,
+        user_1: User,
+        client_scope: str,
+        can_access: bool,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1, scope=client_scope
+        )
+
+        response = client.get(
+            "/api/workouts/collection",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {access_token}"),
+        )
+
+        self.assert_response_scope(response, can_access)

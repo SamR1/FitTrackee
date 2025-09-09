@@ -52,6 +52,7 @@ from .constants import SPORTS_WITHOUT_ELEVATION_DATA, WORKOUT_FILE_MIMETYPES
 from .decorators import check_workout
 from .exceptions import (
     InvalidDurationException,
+    InvalidRadiusException,
     InvalidVisibilityException,
     WorkoutExceedingValueException,
     WorkoutException,
@@ -558,6 +559,10 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: ``success``
+    :statuscode 400:
+        - ``invalid duration``
+        - ``invalid value for visibility``
+        - ``invalid radius, must be an float greater than zero``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -697,7 +702,11 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "total": workouts_pagination.total,
             },
         }
-    except (InvalidDurationException, InvalidVisibilityException) as e:
+    except (
+        InvalidDurationException,
+        InvalidRadiusException,
+        InvalidVisibilityException,
+    ) as e:
         return InvalidPayloadErrorResponse(str(e))
     except Exception as e:
         return handle_error_and_return_response(e)
@@ -713,7 +722,7 @@ def get_workouts_feature_collection(
     to display the workouts listed in the workout list on the map.
 
     Note: the pagination returns counts for all workouts (with or without
-    geometries) to match `/workouts` pagination on the user interface.
+    geometries) to match `/api/workouts` pagination on the user interface.
 
     **Scope**: ``workouts:read``
 
@@ -1005,6 +1014,10 @@ def get_workouts_feature_collection(
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: ``success``
+    :statuscode 400:
+        - ``invalid duration``
+        - ``invalid value for visibility``
+        - ``invalid radius, must be an float greater than zero``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -1056,7 +1069,11 @@ def get_workouts_feature_collection(
                 "total": workouts_pagination.total,
             },
         }
-    except InvalidDurationException as e:
+    except (
+        InvalidDurationException,
+        InvalidRadiusException,
+        InvalidVisibilityException,
+    ) as e:
         return InvalidPayloadErrorResponse(str(e))
     except Exception as e:
         return handle_error_and_return_response(e)
