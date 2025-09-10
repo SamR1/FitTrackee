@@ -240,6 +240,7 @@ Can be used if redis is not set (no dramatiq workers running).
 ``ftcli workouts refresh``
 """"""""""""""""""""""""""
 .. versionadded:: 0.12.0
+.. versionchanged:: 1.0.0  Add ``--add-missing-geometry`` option.
 
 Refresh workouts by recalculating data and fetching weather data if provider is set and workout does not have weather data.
 

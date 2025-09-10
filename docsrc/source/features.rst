@@ -283,9 +283,8 @@ Workouts
 
   - Filtered workouts can be displayed on a map (*new in 1.0.0*)
 
-.. note::
+.. warning::
   | Map and filters on location and radius require the environment variable `ENABLE_GEOSPATIAL_FEATURES <installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES>`_ to be set to ``True``. Otherwise these features are not enabled.
-
 
 .. note::
   | There is a limit on the number of workouts used to calculate statistics to avoid performance issues. The value can be set in administration.

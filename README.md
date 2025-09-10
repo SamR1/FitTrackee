@@ -9,7 +9,7 @@
 [![Vue Version](https://img.shields.io/badge/vue-3.5-brightgreen.svg)](https://v3.vuejs.org/) 
 [![code formatter: prettier](https://img.shields.io/badge/code%20formatter-prettier-ff69b4.svg)](https://github.com/prettier/prettier) 
 [![Typescript Version](https://img.shields.io/npm/types/typescript)](https://www.typescriptlang.org/)  
-[![PosgreSQL version](https://img.shields.io/badge/PostgreSQL-12_|_13_|_14_|_15_|_16_|_17-336791)](https://www.postgresql.org/)  
+[![PostgreSQL version](https://img.shields.io/badge/PostgreSQL-13_|_14_|_15_|_16_|_17-336791)](https://www.postgresql.org/)  
 [![PyPI version](https://img.shields.io/pypi/v/fittrackee?logo=pypi)](https://pypi.org/project/fittrackee/) [![docker image version](https://img.shields.io/docker/v/fittrackee/fittrackee?logo=docker)](https://hub.docker.com/r/fittrackee/fittrackee)  
 [![Coverage Status](https://coveralls.io/repos/github/SamR1/FitTrackee/badge.svg?branch=add-api-tests-coverage)](https://coveralls.io/github/SamR1/FitTrackee?branch=add-api-tests-coverage)[^1] [![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-and-publish-python.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-and-publish-python.yml)
 [![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml)  

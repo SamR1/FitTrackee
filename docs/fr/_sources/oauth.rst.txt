@@ -31,6 +31,7 @@ The following scopes are available:
 - ``equipments:write``: grants write access to equipments endpoints (*new in 0.8.0*),
 - ``follow:read``: grants read access to follow requests and followers endpoints (*new in 0.9.0*),
 - ``follow:write``: grants write access to requests and followers endpoints (*new in 0.9.0*),
+- ``geocode:read``: grants read access to geocoding endpoints (*new in 1.0.0*),
 - ``notifications:read``: grants read access to notifications endpoints (*new in 0.9.0*),
 - ``notifications:write``: grants write access to notifications endpoints (*new in 0.9.0*),
 - ``profile:read``: grants read access to auth endpoints,
