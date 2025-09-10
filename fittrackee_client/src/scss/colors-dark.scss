@@ -125,6 +125,8 @@
 
   --icon-svg-filter: invert(90%) sepia(19%) saturate(0%) hue-rotate(39deg)
     brightness(86%) contrast(102%);
+  --icon-svg-shadow-filter: drop-shadow(2px 2px 2px rgb(255 255 255 / 0.5));
+  --icon-svg-shadow-stroke: var(--app-color);
 
   --cell-heading-bg-color: #383838;
   --cell-heading-color: #eeeeee;

@@ -81,8 +81,10 @@
 <style lang="scss" scoped>
   @use '~@/scss/vars.scss' as *;
   .shadow {
-    filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
-    stroke: #3a4e69;
-    stroke-width: 10;
+    svg {
+      filter: var(--icon-svg-shadow-filter);
+      stroke: var(--icon-svg-shadow-stroke);
+      stroke-width: 3;
+    }
   }
 </style>
