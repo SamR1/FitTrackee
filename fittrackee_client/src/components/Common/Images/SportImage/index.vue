@@ -1,6 +1,7 @@
 <template>
   <div
     class="sport-img"
+    :class="{ shadow }"
     :style="{ fill: color ? color : sportColors[sportLabel] }"
     :title="title ? title : $t(`sports.${sportLabel}.LABEL`)"
   >
@@ -66,11 +67,24 @@
     sportLabel: string
     color: string | null
     title?: string
+    shadow?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     title: '',
+    shadow: false,
   })
-  const { color, sportLabel, title } = toRefs(props)
+  const { color, shadow, sportLabel, title } = toRefs(props)
 
   const { sportColors } = useSports()
 </script>
+
+<style lang="scss" scoped>
+  @use '~@/scss/vars.scss' as *;
+  .shadow {
+    svg {
+      filter: var(--icon-svg-shadow-filter);
+      stroke: var(--icon-svg-shadow-stroke);
+      stroke-width: 3;
+    }
+  }
+</style>

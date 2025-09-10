@@ -44,6 +44,7 @@
     "vue-chartjs": "^5.3.2",
     "vue-fullscreen": "^3.1.2",
     "vue-i18n": "^11.1.11",
+    "vue-leaflet-markercluster": "^0.6.1",
     "vue-multiselect": "^3.3.1",
     "vue-router": "^4.5.1",
     "vuex": "^4.1.0"

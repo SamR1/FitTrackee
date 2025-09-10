@@ -27,6 +27,11 @@ export const getters: GetterTree<IWorkoutsState, IRootState> &
   [WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS]: (state: IWorkoutsState) => {
     return state.user_workouts
   },
+  [WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS_COLLECTION]: (
+    state: IWorkoutsState
+  ) => {
+    return state.user_workouts_collection
+  },
   [WORKOUTS_STORE.GETTERS.WORKOUT_CONTENT_EDITION]: (state: IWorkoutsState) => {
     return state.workoutContent
   },
@@ -41,5 +46,8 @@ export const getters: GetterTree<IWorkoutsState, IRootState> &
   },
   [WORKOUTS_STORE.GETTERS.GEOCODE_LOADING]: (state: IWorkoutsState) => {
     return state.geocodeLoading
+  },
+  [WORKOUTS_STORE.GETTERS.MAP_LOADING]: (state: IWorkoutsState) => {
+    return state.mapLoading
   },
 }

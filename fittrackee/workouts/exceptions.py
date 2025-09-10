@@ -19,6 +19,11 @@ class InvalidRadiusException(Exception):
         super().__init__("invalid radius, must be an float greater than zero")
 
 
+class InvalidVisibilityException(Exception):
+    def __init__(self) -> None:
+        super().__init__("invalid value for visibility")
+
+
 class InvalidGPXException(GenericException):
     pass
 

@@ -281,6 +281,12 @@ Workouts
 
     When multiple pages are fetched, statistics for all pages are also displayed.
 
+  - Filtered workouts can be displayed on a map (*new in 1.0.0*)
+
+.. note::
+  | Map and filters on location and radius require the environment variable `ENABLE_GEOSPATIAL_FEATURES <installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES>`_ to be set to ``True``. Otherwise these features are not enabled.
+
+
 .. note::
   | There is a limit on the number of workouts used to calculate statistics to avoid performance issues. The value can be set in administration.
   | If the limit is reached, the number of workouts used is displayed.
@@ -297,7 +303,7 @@ Workouts
   |
   | Workout description can be displayed by adding ``description`` parameter (not displayed by default) (*new in 0.12.1*):
 
-  - ``https://<FITTRACKEE_DOMAIN>/users/<USERNAME>/workouts.rss?description=tree``
+  - ``https://<FITTRACKEE_DOMAIN>/users/<USERNAME>/workouts.rss?description=true``
 
 .. note::
   The rendering of the description may differ from that on FitTrackee, as different libraries are used and additional styles are applied on the UI.
@@ -774,8 +780,10 @@ Workouts list
 -------------
 
 .. figure:: _images/workouts-list.png
-   :alt: FitTrackee Workouts
+   :alt: FitTrackee Workouts List
 
+.. figure:: _images/workouts-map.png
+   :alt: FitTrackee Workouts Map
 
 Statistics
 ----------
