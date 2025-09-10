@@ -3,6 +3,7 @@ export const oauth2_scopes = [
   'equipments:write',
   'follow:read',
   'follow:write',
+  'geocode:read',
   'notifications:read',
   'notifications:write',
   'profile:read',
