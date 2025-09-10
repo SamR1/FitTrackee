@@ -62,3 +62,17 @@ Failed to upload or download files
     post_start:
       - command: chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/logs /usr/src/app/.staticmap_cache
         user: root
+
+``psycopg2.errors.UndefinedObject: ERROR:  type "geometry" does not exist``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- | This error occurs when **PostGIS** extension is not installed, required with **FitTrackee** v1+.
+  | To install it, see `installation instructions <../installation.html#upgrade>`__ or `Upgrading to 1.x <../upgrading-to-1.0.0.html>`__
+
+
+Workouts created with a file are not displayed on the workouts map
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- | If a workout has be created before **FitTrackee** 1.0.0, it needs to be refreshed to generate the geometry used to display the map.
+  | See `Upgrading to 1.x <../upgrading-to-1.0.0.html>`__ for instructions to recalculate all workouts with a CLI command.
+
