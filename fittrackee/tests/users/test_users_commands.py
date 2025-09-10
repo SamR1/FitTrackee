@@ -513,7 +513,7 @@ class TestCliUserUpdate(RandomMixin):
             assert result.exit_code == 1
             assert (
                 "--set-admin and --set-role can not be used together."
-                in result.stdout
+                in result.stderr
             )
 
     def test_it_activates_user(
