@@ -2,7 +2,7 @@
   <div id="workouts-map">
     <div class="map-loading">
       <div v-if="mapLoading">
-        {{ $t('workouts.MAP_IS_LOADING') }}
+        {{ $t('common.DATA_IS_LOADING') }}
         <i class="fa fa-refresh fa-spin fa-fw"></i>
       </div>
     </div>
@@ -91,7 +91,9 @@
         </LMap>
       </div>
     </VFullscreen>
-    <div v-else class="no-map">{{ $t('workouts.NO_WORKOUTS_TO_DISPLAY') }}</div>
+    <div v-else class="no-map">
+      <div v-if="!mapLoading">{{ $t('workouts.NO_WORKOUTS_TO_DISPLAY') }}</div>
+    </div>
   </div>
 </template>
 
