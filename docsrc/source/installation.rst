@@ -779,13 +779,13 @@ Upgrade
 ~~~~~~~
 
 .. danger::
-    If you are upgrading to version 1.0, additional steps are required, see `Upgrading to 1.x <upgrading-to-1.0.0.html>`__.
+    If you are upgrading to version 1.0, additional steps are required, see `Upgrading to 1.0.0 <upgrading-to-1.0.0.html>`__.
 
 .. warning::
     Before upgrading, make a backup of all data:
 
     - database (with `pg_dump <https://www.postgresql.org/docs/current/app-pgdump.html>`__ for instance)
-    - upload directory (see `Environment variables <installation.html#environment-variables>`__)
+    - upload directory (see `Environment variables <installation.html#envvar-UPLOAD_FOLDER>`__)
 
 .. warning::
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-09-10 21:36+0200\n"
+"POT-Creation-Date: 2025-09-11 09:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -11782,7 +11782,7 @@ msgstr ""
 #: ../source/installation.rst:782
 msgid ""
 "If you are upgrading to version 1.0, additional steps are required, see "
-"`Upgrading to 1.x <upgrading-to-1.0.0.html>`__."
+"`Upgrading to 1.0.0 <upgrading-to-1.0.0.html>`__."
 msgstr ""
 
 #: ../source/installation.rst:785 ../source/upgrading-to-1.0.0.rst:16
@@ -11797,8 +11797,8 @@ msgstr ""
 
 #: ../source/installation.rst:788 ../source/upgrading-to-1.0.0.rst:19
 msgid ""
-"upload directory (see `Environment variables <installation.html"
-"#environment-variables>`__)"
+"upload directory (see `Environment variables <installation.html#envvar-"
+"UPLOAD_FOLDER>`__)"
 msgstr ""
 
 #: ../source/installation.rst:792

@@ -16,7 +16,7 @@ Instructions for upgrade
     Before upgrading, make a backup of all data:
 
     - database (with `pg_dump <https://www.postgresql.org/docs/current/app-pgdump.html>`__ for instance)
-    - upload directory (see `Environment variables <installation.html#environment-variables>`__)
+    - upload directory (see `Environment variables <installation.html#envvar-UPLOAD_FOLDER>`__)
 
 
 From PyPI or sources
