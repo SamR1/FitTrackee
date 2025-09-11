@@ -139,7 +139,7 @@
     }
   }
   function scrollIntoOption(index: number) {
-    const option = document.getElementById(`tz-dropdown-item-${index}`)
+    const option = document.getElementById(`location-dropdown-item-${index}`)
     if (option) {
       option.focus()
       option.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
