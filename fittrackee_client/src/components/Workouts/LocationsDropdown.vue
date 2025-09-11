@@ -27,6 +27,10 @@
       tabindex="-1"
       :aria-label="$t('workouts.LOCATION', 0)"
     >
+      <li tabindex="-1" class="filter-help" v-if="locations.length > 0">
+        <i class="fa fa-info-circle" aria-hidden="true" />
+        {{ $t('workouts.LOCATION_FILTER_INFO') }}
+      </li>
       <li
         v-for="(location, index) in locations"
         :key="index"
@@ -36,6 +40,7 @@
         @click="onUpdateLocation(index)"
         @mouseover="onMouseOver(index)"
         :autofocus="index === focusItemIndex"
+        :aria-selected="index === focusItemIndex"
         role="option"
       >
         {{ location.display_name }} ({{
@@ -249,6 +254,12 @@
       position: absolute;
       right: 10px;
       top: 10px;
+    }
+    .filter-help {
+      color: var(--dropdown-info-color);
+      font-size: 0.85em;
+      font-style: italic;
+      padding: 0 $default-padding * 0.5;
     }
   }
 </style>

@@ -58,6 +58,7 @@
   "LIKE_WORKOUT": "Liker la séance",
   "LOAD_MORE_WORKOUT": "Charger les séances suivantes",
   "LOCATION": "localisation | localisations",
+  "LOCATION_FILTER_INFO": "Après sélection, appuyer sur Entrée ou cliquer sur Filtrer pour lancer la recherche",
   "MAP": "carte",
   "MARKDOWN_SYNTAX": "La syntaxe Markdown suivante peut être utilisée : _italique_, **gras**, [lien](https://example.com), ![image](https://example.com/image.png)",
   "MAX_ALTITUDE": "altitude max.",
