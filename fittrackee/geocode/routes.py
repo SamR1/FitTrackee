@@ -95,7 +95,8 @@ def get_coordinates_from_city(
     locations = []
     if city:
         try:
-            locations = nominatim_service.get_locations_from_city(city)
+            # search is case-insensitive
+            locations = nominatim_service.get_locations_from_city(city.lower())
         except Exception:
             message = "error when getting coordinates from location"
             appLog.exception(message)
@@ -176,7 +177,8 @@ def get_location_from_id(auth_user: "User") -> Union[Dict, "HttpResponse"]:
     location = {}
     if osm_id:
         try:
-            location = nominatim_service.get_location_from_id(osm_id)
+            # lookup is case-insensitive
+            location = nominatim_service.get_location_from_id(osm_id.lower())
         except Exception:
             message = "error when getting location from OSM id"
             appLog.exception(message)
