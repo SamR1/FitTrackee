@@ -11,7 +11,7 @@
 [![Typescript Version](https://img.shields.io/npm/types/typescript)](https://www.typescriptlang.org/)  
 [![PostgreSQL version](https://img.shields.io/badge/PostgreSQL-13_|_14_|_15_|_16_|_17-336791)](https://www.postgresql.org/)  
 [![PyPI version](https://img.shields.io/pypi/v/fittrackee?logo=pypi)](https://pypi.org/project/fittrackee/) [![docker image version](https://img.shields.io/docker/v/fittrackee/fittrackee?logo=docker)](https://hub.docker.com/r/fittrackee/fittrackee)  
-[![Coverage Status](https://coveralls.io/repos/github/SamR1/FitTrackee/badge.svg?branch=add-api-tests-coverage)](https://coveralls.io/github/SamR1/FitTrackee?branch=add-api-tests-coverage)[^1] [![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-and-publish-python.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-and-publish-python.yml)
+[![Coverage Status](https://coveralls.io/repos/github/SamR1/FitTrackee/badge.svg?branch=master)](https://coveralls.io/github/SamR1/FitTrackee?branch=master)<sup><sup>1</sup></sup> [![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-and-publish-python.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-and-publish-python.yml)
 [![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml)  
 [![translation status](https://hosted.weblate.org/widgets/fittrackee/-/svg-badge.svg)](https://hosted.weblate.org/engage/fittrackee/)
 [![translation languages](https://hosted.weblate.org/widget/fittrackee/language-badge.svg)](https://hosted.weblate.org/engage/fittrackee/)   
@@ -53,5 +53,6 @@ Status (on development branch, may differ from the released version):
 
 [![Translation status](https://hosted.weblate.org/widget/fittrackee/multi-auto.svg)](https://hosted.weblate.org/engage/fittrackee/)
 
- 
-[^1]: _test coverage: only for Python_ 
+---
+
+1: _test coverage: only for Python API and CLI_ 
