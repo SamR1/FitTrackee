@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 from uuid import UUID, uuid4
 
 from sqlalchemy.dialects import postgresql
@@ -18,6 +18,10 @@ from fittrackee import BaseModel, appLog, db
 from fittrackee.database import PSQL_INTEGER_LIMIT, TZDateTime
 from fittrackee.dates import aware_utc_now
 from fittrackee.equipments.models import WorkoutEquipment
+from fittrackee.federation.decorators import federation_required
+from fittrackee.federation.objects.like import LikeObject
+from fittrackee.federation.objects.tombstone import TombstoneObject
+from fittrackee.federation.objects.workout import WorkoutObject
 from fittrackee.files import get_absolute_file_path
 from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import (
@@ -340,6 +344,8 @@ class Workout(BaseModel):
     )
     max_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
     ave_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
+    ap_id: Mapped[Optional[str]] = mapped_column(db.Text(), nullable=True)
+    remote_url: Mapped[Optional[str]] = mapped_column(db.Text(), nullable=True)
 
     user: Mapped["User"] = relationship(
         "User", lazy="select", single_parent=True
@@ -399,6 +405,14 @@ class Workout(BaseModel):
     @property
     def short_id(self) -> str:
         return encode_uuid(self.uuid)
+
+    def get_ap_id(self) -> str:
+        return f"{self.user.actor.activitypub_id}/workouts/{self.short_id}"
+
+    def get_remote_url(self) -> str:
+        return (
+            f"https://{self.user.actor.domain.name}/workouts/{self.short_id}"
+        )
 
     @property
     def calculated_analysis_visibility(self) -> VisibilityLevel:
@@ -766,6 +780,8 @@ class Workout(BaseModel):
             if self.bounds and can_see_map_data and additional_data
             else []
         )
+        if self.user.is_remote:
+            workout["remote_url"] = self.remote_url
         return workout
 
     @classmethod
@@ -799,6 +815,19 @@ class Workout(BaseModel):
             )
         return records
 
+    @federation_required
+    def get_activities(self, activity_type: str) -> Tuple[Dict, Dict]:
+        if activity_type in ["Create", "Update"]:
+            workout_object = WorkoutObject(self, activity_type=activity_type)
+            return workout_object.get_activity(), workout_object.get_activity(
+                is_note=True
+            )
+        # Delete activity
+        tombstone_object = TombstoneObject(self)
+        delete_activity = tombstone_object.get_activity()
+        # delete activities for workout and note are the same
+        return delete_activity, delete_activity
+
 
 @listens_for(Workout, "after_insert")
 def on_workout_insert(
@@ -806,7 +835,11 @@ def on_workout_insert(
 ) -> None:
     @listens_for(db.Session, "after_flush", once=True)
     def receive_after_flush(session: Session, context: Any) -> None:
-        update_records(workout.user_id, workout.sport_id, connection, session)
+        # For now only create records for local workouts
+        if not workout.remote_url:
+            update_records(
+                workout.user_id, workout.sport_id, connection, session
+            )
 
 
 @listens_for(Workout, "after_update")
@@ -1130,6 +1163,14 @@ class WorkoutLike(BaseModel):
         self.created_at = (
             datetime.now(timezone.utc) if created_at is None else created_at
         )
+
+    def get_activity(self, is_undo: bool = False) -> Dict:
+        return LikeObject(
+            actor_ap_id=self.user.actor.activitypub_id,
+            target_object_ap_id=self.workout.ap_id,
+            like_id=self.id,
+            is_undo=is_undo,
+        ).get_activity()
 
 
 @listens_for(WorkoutLike, "after_insert")

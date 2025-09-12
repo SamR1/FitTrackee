@@ -102,6 +102,7 @@ export interface IWorkout {
   pauses: string | null
   previous_workout: string | null
   records: IRecord[]
+  remote_url?: string
   segments: IWorkoutSegment[]
   source?: string | null
   sport_id: number
@@ -144,6 +145,7 @@ export interface IWorkoutObject {
   pauses: string | null
   previousUrl: string | null
   records: IRecord[]
+  remoteUrl: string | undefined
   segmentId: number | null
   source: string | null
   suspended: boolean
@@ -271,6 +273,8 @@ export interface IComment {
   likes_count: number
   mentions: IUserProfile[]
   modification_date: string | null
+  replies: IComment[]
+  reply_to: string | null
   suspended?: boolean
   suspended_at?: string | null
   suspension?: IUserReportAction
@@ -283,6 +287,7 @@ export interface IComment {
 
 export interface ICommentForm {
   id?: string
+  reply_to?: string
   text: string
   text_visibility?: TVisibilityLevels
   workout_id: string
