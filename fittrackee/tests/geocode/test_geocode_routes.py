@@ -155,7 +155,7 @@ class TestGeocodeGetCoordinatesFromLocation(GeocodeTestCase):
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
-        nominatim_service_mock.assert_called_once_with(city)
+        nominatim_service_mock.assert_called_once_with(city.lower())
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
@@ -213,33 +213,31 @@ class TestGeocodeGetLocationFromId(GeocodeTestCase):
         app: "Flask",
         user_1: "User",
     ) -> None:
-        osm_id = "r71525"
-        nominatim_service_response = [
-            {
-                "addresstype": "suburb",
-                "coordinates": "48.8588897,2.3200410",
-                "display_name": (
-                    "Paris, Île-de-France, France métropolitaine, France"
-                ),
-                "name": "Paris",
-                "osm_id": "r71525",
-            },
-        ]
+        osm_id = "R71525"
+        nominatim_service_response = {
+            "addresstype": "suburb",
+            "coordinates": "48.8588897,2.3200410",
+            "display_name": (
+                "Paris, Île-de-France, France métropolitaine, France"
+            ),
+            "name": "Paris",
+            "osm_id": "r71525",
+        }
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
 
         with patch(
             "fittrackee.geocode.routes.nominatim_service.get_location_from_id",
-            return_value=nominatim_service_response[0],
+            return_value=nominatim_service_response,
         ) as nominatim_service_mock:
             response = client.get(
                 f"{self.route}?osm_id={osm_id}",
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
-        nominatim_service_mock.assert_called_once_with(osm_id)
+        nominatim_service_mock.assert_called_once_with(osm_id.lower())
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
-        assert data["location"] == nominatim_service_response[0]
+        assert data["location"] == nominatim_service_response

@@ -4,6 +4,7 @@ from typing import Dict, List
 import requests
 
 from fittrackee import VERSION, appLog
+from fittrackee.utils import TimedLRUCache
 
 
 class NominatimService:
@@ -19,6 +20,7 @@ class NominatimService:
         self.params = {"format": "jsonv2"}
         self.headers = {"User-Agent": f"FitTrackee v{VERSION}"}
 
+    @TimedLRUCache(seconds=1800)  # 30 minutes
     def get_locations_from_city(self, city: str) -> List[Dict]:
         url = f"{self.base_url}/search"
         appLog.debug(f"Nominatim: getting location for query: '{city}'")
@@ -42,6 +44,7 @@ class NominatimService:
             for location in locations
         ]
 
+    @TimedLRUCache(seconds=1800)  # 30 minutes
     def get_location_from_id(self, osm_id: str) -> Dict:
         url = f"{self.base_url}/lookup"
         appLog.debug(f"Nominatim: getting location for id: '{osm_id}'")

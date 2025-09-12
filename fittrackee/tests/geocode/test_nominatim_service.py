@@ -51,6 +51,18 @@ class TestNominatimServiceGetLocationsFromCity(ResponseMockMixin):
             headers=service.headers,
         )
 
+    def test_it_caches_nominatim_response(self, app: "Flask") -> None:
+        service = NominatimService()
+
+        with patch.object(
+            requests, "get", return_value=self.get_response([])
+        ) as get_mock:
+            service.get_locations_from_city("Paris")
+            service.get_locations_from_city("Lyon")
+            service.get_locations_from_city("Paris")
+
+        assert get_mock.call_count == 2
+
     def test_it_returns_location_data(
         self, app: "Flask", nominatim_response: List
     ) -> None:
@@ -100,6 +112,18 @@ class TestNominatimServiceGetLocationFromId(ResponseMockMixin):
             timeout=30,
             headers=service.headers,
         )
+
+    def test_it_caches_nominatim_response(self, app: "Flask") -> None:
+        service = NominatimService()
+
+        with patch.object(
+            requests, "get", return_value=self.get_response([])
+        ) as get_mock:
+            service.get_locations_from_city("r71525")
+            service.get_locations_from_city("r71526")
+            service.get_locations_from_city("r71525")
+
+        assert get_mock.call_count == 2
 
     def test_it_returns_location_data(
         self, app: "Flask", nominatim_response: List
