@@ -41,7 +41,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.models import User, UserTask
-from fittrackee.utils import decode_short_id
+from fittrackee.utils import decode_short_id, encode_uuid
 from fittrackee.visibility_levels import (
     VisibilityLevel,
     can_view,
@@ -279,18 +279,22 @@ def get_user_workouts_query(
 
     if as_feature_collection:
         geom_subquery = (
-            select(
-                func.ST_AsGeoJSON(func.ST_Collect(WorkoutSegment.geom)).label(
-                    "workout_geojson"
-                ),
-                WorkoutSegment.workout_id,
-            )
+            select(WorkoutSegment.geom)
             .filter(WorkoutSegment.workout_id == Workout.id)
-            .group_by(WorkoutSegment.workout_id)
-        ).subquery()
+            .order_by(WorkoutSegment.start_date)
+            .scalar_subquery()
+        )
+
         workouts_query = db.session.query(
-            Workout, geom_subquery.c.workout_geojson
-        ).outerjoin(geom_subquery, geom_subquery.c.workout_id == Workout.id)
+            Workout.bounds,
+            Workout.uuid,
+            Workout.sport_id,
+            Workout.title,
+            Workout.workout_visibility,
+            (
+                func.ST_AsGeoJSON(func.ST_Collect(func.array(geom_subquery)))
+            ).label("workout_geojson"),
+        )
     else:
         workouts_query = Workout.query
 
@@ -349,7 +353,13 @@ def get_user_workouts_query(
             == VisibilityLevel(workout_visibility).value
         )
 
-    workouts_query = workouts_query.filter(*filters).order_by(
+    workouts_query = workouts_query.filter(*filters)
+    if as_feature_collection:
+        workouts_query = workouts_query.group_by(
+            Workout.workout_date, Workout.id
+        )
+
+    workouts_query = workouts_query.order_by(
         (asc(workout_column) if order == "asc" else desc(workout_column)),
     )
     return workouts_query, page, per_page
@@ -984,17 +994,18 @@ def get_workouts_feature_collection(
             {
                 "type": "Feature",
                 "properties": {
-                    "bounds": workout.bounds,
-                    "id": workout.short_id,
-                    "sport_id": workout.sport_id,
-                    "title": workout.title,
-                    "workout_visibility": workout.workout_visibility,
+                    "bounds": workout[0],
+                    "id": encode_uuid(workout[1]),
+                    "sport_id": workout[2],
+                    "title": workout[3],
+                    "workout_visibility": workout[4],
                 },
-                "geometry": json.loads(geojson),
+                "geometry": json.loads(workout[5]),
             }
-            for workout, geojson in workouts
-            if geojson is not None
+            for workout in workouts
+            if workout[5] is not None
         ]
+
         if features:
             df = gpd.GeoDataFrame.from_features(features)
             bbox = list(df.total_bounds)
