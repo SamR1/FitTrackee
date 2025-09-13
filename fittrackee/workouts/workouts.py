@@ -869,72 +869,15 @@ def get_workouts_feature_collection(
                   "type": "MultiLineString"
                 },
                 "properties": {
-                  "analysis_visibility": "private",
-                  "ascent": null,
-                  "ave_cadence": null,
-                  "ave_hr": null,
-                  "ave_power": null,
-                  "ave_speed": 0.3,
                   "bounds": [
                       44.67822,
                       6.07355,
                       44.68095,
                       6.07442
                   ],
-                  "creation_date": null,
-                  "descent": null,
-                  "distance": 0.3,
-                  "duration": "1:00:00",
-                  "equipments": [],
                   "id": "XZyLvgWdUcxmQYzxZhquqt",
-                  "liked": false,
-                  "likes_count": 0,
-                  "map": null,
-                  "map_visibility": "private",
-                  "max_alt": null,
-                  "max_cadence": null,
-                  "max_hr": null,
-                  "max_power": null,
-                  "max_speed": 0.3,
-                  "min_alt": null,
-                  "modification_date": null,
-                  "moving": "1:00:00",
-                  "next_workout": null,
-                  "notes": "",
-                  "pauses": null,
-                  "previous_workout": null,
-                  "records": [
-                    {
-                      "id": 3,
-                      "record_type": "LD",
-                      "sport_id": 1,
-                      "user": "Sam",
-                      "value": "1:00:00",
-                      "workout_date": "Tue, 13 Mar 2018 00:00:00 GMT",
-                      "workout_id": "XZyLvgWdUcxmQYzxZhquqt"
-                    }
-                  ],
-                  "segments": [],
-                  "source": null,
                   "sport_id": 1,
-                  "suspended": false,
-                  "suspended_at": null,
                   "title": null,
-                  "user": {
-                    "created_at": "Tue, 09 Sep 2025 06:05:07 GMT",
-                    "followers": 0,
-                    "following": 0,
-                    "nb_workouts": 2,
-                    "picture": false,
-                    "role": "user",
-                    "suspended_at": null,
-                    "username": "test"
-                  },
-                  "weather_end": null,
-                  "weather_start": null,
-                  "with_analysis": false,
-                  "with_gpx": false,
-                  "workout_date": "Tue, 13 Mar 2018 00:00:00 GMT",
                   "workout_visibility": "private"
                 },
                 "type": "Feature"
@@ -1040,9 +983,13 @@ def get_workouts_feature_collection(
         features = [
             {
                 "type": "Feature",
-                "properties": workout.serialize(
-                    user=auth_user, params=params, with_bounds=True
-                ),
+                "properties": {
+                    "bounds": workout.bounds,
+                    "id": workout.short_id,
+                    "sport_id": workout.sport_id,
+                    "title": workout.title,
+                    "workout_visibility": workout.workout_visibility,
+                },
                 "geometry": json.loads(geojson),
             }
             for workout, geojson in workouts

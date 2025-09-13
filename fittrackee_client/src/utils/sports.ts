@@ -1,5 +1,5 @@
 import type { ISport, ITranslatedSport, TActiveStatus } from '@/types/sports'
-import type { IWorkout } from '@/types/workouts'
+import type { IWorkout, IMapWorkout } from '@/types/workouts'
 
 export const sportColors: Record<string, string> = {
   Canoeing: '#75b3be',
@@ -63,14 +63,17 @@ export const translateSports = (
     }))
     .sort(sortSports)
 
-export const getSportLabel = (workout: IWorkout, sports: ISport[]): string => {
+export const getSportLabel = (
+  workout: IWorkout | IMapWorkout,
+  sports: ISport[]
+): string => {
   return sports
     .filter((sport) => sport.id === workout.sport_id)
     .map((sport) => sport.label)[0]
 }
 
 export const getSportColor = (
-  workout: IWorkout,
+  workout: IWorkout | IMapWorkout,
   sports: ISport[]
 ): string | null => {
   return sports
