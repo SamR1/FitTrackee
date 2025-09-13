@@ -627,12 +627,9 @@ class Workout(BaseModel):
         for_report: bool = False,
         light: bool = True,  # for workouts list and timeline
         with_equipments: bool = False,  # for workouts list
-        with_bounds: bool = False,  # for workouts list
     ) -> Dict:
         """
         If 'light' is False, 'with_equipments' is ignored.
-        'with_bounds' allows to return bounds when `light` is true (used for
-        feature collection)
         """
 
         for_report = (
@@ -690,11 +687,7 @@ class Workout(BaseModel):
         if light:
             workout["next_workout"] = None
             workout["previous_workout"] = None
-            workout["bounds"] = (
-                [float(bound) for bound in self.bounds]
-                if with_bounds and self.bounds
-                else []
-            )
+            workout["bounds"] = []
             return workout
 
         if is_owner:
