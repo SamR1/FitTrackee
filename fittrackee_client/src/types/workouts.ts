@@ -70,6 +70,15 @@ export interface IWeather {
   windBearing?: number
 }
 
+export interface IMapWorkout {
+  bounds: number[]
+  id: string
+  sport_id: number
+  title: string
+  workout_date: string
+  workout_visibility: TVisibilityLevels
+}
+
 export interface IWorkout {
   analysis_visibility?: TVisibilityLevels
   ascent: number | null

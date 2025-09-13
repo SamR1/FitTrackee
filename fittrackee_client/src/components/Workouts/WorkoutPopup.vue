@@ -18,10 +18,10 @@
   import { LPopup } from '@vue-leaflet/vue-leaflet'
   import { toRefs } from 'vue'
 
-  import type { IWorkout } from '@/types/workouts.ts'
+  import type { IMapWorkout } from '@/types/workouts.ts'
 
   interface Props {
-    workout: IWorkout
+    workout: IMapWorkout
     sport: string
     color: string | null
   }

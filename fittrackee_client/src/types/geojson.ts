@@ -1,4 +1,4 @@
-import type { IWorkout } from '@/types/workouts.ts'
+import type { IMapWorkout } from '@/types/workouts.ts'
 
 export interface ILineString {
   coordinates: number[][]
@@ -11,7 +11,7 @@ export interface IMultiLineString {
 }
 
 export interface IWorkoutFeature {
-  properties: IWorkout
+  properties: IMapWorkout
   geometry: IMultiLineString
   type: 'Feature'
 }

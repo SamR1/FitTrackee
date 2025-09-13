@@ -2722,11 +2722,19 @@ class TestGetWorkoutsFeatureCollection(WorkoutApiTestCaseMixin):
                             )
                         )
                     ),
-                    "properties": jsonify_dict(
-                        workout_cycling_user_1_with_coordinates.serialize(
-                            user=user_1, with_bounds=True
-                        )
-                    ),
+                    "properties": {
+                        "bounds": (
+                            workout_cycling_user_1_with_coordinates.bounds
+                        ),
+                        "id": workout_cycling_user_1_with_coordinates.short_id,
+                        "sport_id": (
+                            workout_cycling_user_1_with_coordinates.sport_id
+                        ),
+                        "title": workout_cycling_user_1_with_coordinates.title,
+                        "workout_visibility": (
+                            workout_cycling_user_1_with_coordinates.workout_visibility
+                        ),
+                    },
                 },
             ],
             "type": "FeatureCollection",

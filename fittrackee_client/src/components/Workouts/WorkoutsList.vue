@@ -53,11 +53,7 @@
           path="/workouts"
           :query="query"
         />
-        <WorkoutsMap
-          v-if="displayMap"
-          :workouts="workouts"
-          :translatedSports="translatedSports"
-        />
+        <WorkoutsMap v-if="displayMap" :translatedSports="translatedSports" />
         <table v-else>
           <thead :class="{ smaller: appLanguage === 'de' }">
             <tr v-if="showWorkouts">
