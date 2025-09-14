@@ -48,7 +48,10 @@ from fittrackee.visibility_levels import (
     can_view_heart_rate,
 )
 
-from .constants import SPORTS_WITHOUT_ELEVATION_DATA, WORKOUT_FILE_MIMETYPES
+from .constants import (
+    SPORTS_WITHOUT_ELEVATION_DATA,
+    WORKOUT_FILE_MIMETYPES,
+)
 from .decorators import check_workout
 from .exceptions import (
     InvalidDurationException,
@@ -1033,6 +1036,314 @@ def get_workouts_feature_collection(
         InvalidVisibilityException,
     ) as e:
         return InvalidPayloadErrorResponse(str(e))
+    except Exception as e:
+        return handle_error_and_return_response(e)
+
+
+@workouts_blueprint.route("/workouts/global-map", methods=["GET"])
+@require_auth(scopes=["workouts:read"])
+def get_workouts_for_global_map(auth_user: User) -> Union[Dict, HttpResponse]:
+    """
+    Get all workouts with geometries for the authenticated user
+    as a feature collection, in order to display the workouts on
+    the global map.
+
+    **Scope**: ``workouts:read``
+
+    **Example requests**:
+
+    - without parameters:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/ HTTP/1.1
+
+    - with some query parameters:
+
+    .. sourcecode:: http
+
+      GET /api/workouts?from=2019-07-02&to=2019-07-31&sport_ids=1,2  HTTP/1.1
+
+    **Example responses**:
+
+    - returning at least one workout:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "bbox": [
+              6.07355,
+              44.67822,
+              6.07442,
+              44.68095
+            ],
+            "features": [
+              {
+                "geometry": {
+                  "coordinates": [
+                    [
+                      [
+                        6.07367,
+                        44.68095
+                      ],
+                      [
+                        6.07367,
+                        44.68091
+                      ],
+                      [
+                        6.07364,
+                        44.6808
+                      ],
+                      [
+                        6.07364,
+                        44.68075
+                      ],
+                      [
+                        6.07364,
+                        44.68071
+                      ],
+                      [
+                        6.07361,
+                        44.68049
+                      ],
+                      [
+                        6.07356,
+                        44.68019
+                      ],
+                      [
+                        6.07355,
+                        44.68014
+                      ],
+                      [
+                        6.07358,
+                        44.67995
+                      ]
+                    ],
+                    [
+                      [
+                        6.07364,
+                        44.67977
+                      ],
+                      [
+                        6.07367,
+                        44.67972
+                      ],
+                      [
+                        6.07368,
+                        44.67966
+                      ],
+                      [
+                        6.0737,
+                        44.67961
+                      ],
+                      [
+                        6.07377,
+                        44.67938
+                      ],
+                      [
+                        6.07381,
+                        44.67933
+                      ],
+                      [
+                        6.07385,
+                        44.67922
+                      ],
+                      [
+                        6.0739,
+                        44.67911
+                      ],
+                      [
+                        6.07399,
+                        44.679
+                      ],
+                      [
+                        6.07402,
+                        44.67896
+                      ],
+                      [
+                        6.07408,
+                        44.67884
+                      ],
+                      [
+                        6.07423,
+                        44.67863
+                      ],
+                      [
+                        6.07425,
+                        44.67858
+                      ],
+                      [
+                        6.07434,
+                        44.67842
+                      ],
+                      [
+                        6.07435,
+                        44.67837
+                      ],
+                      [
+                        6.07442,
+                        44.67822
+                      ]
+                    ]
+                  ],
+                  "type": "MultiLineString"
+                },
+                "properties": {
+                  "bounds": [
+                      44.67822,
+                      6.07355,
+                      44.68095,
+                      6.07442
+                  ],
+                  "id": "XZyLvgWdUcxmQYzxZhquqt",
+                  "sport_id": 1,
+                  "title": null,
+                  "workout_visibility": "private"
+                },
+                "type": "Feature"
+              }
+              ],
+            "type": "FeatureCollection"
+          }
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 1,
+            "total": 1
+          },
+          "status": "success"
+        }
+
+    - returning no workouts
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "workouts": []
+          },
+          "pagination": {
+            "has_next": false,
+            "has_prev": false,
+            "page": 1,
+            "pages": 0,
+            "total": 0
+          },
+          "status": "success"
+        }
+
+    :query string from: start date (format: ``%Y-%m-%d``)
+    :query string to: end date (format: ``%Y-%m-%d``)
+    :query string sport_ids: ids of sports, separated by a comma
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 400:
+        - ``invalid duration``
+        - ``invalid value for visibility``
+        - ``invalid radius, must be an float greater than zero``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 500: ``error, please try again or contact the administrator``
+
+    """
+    params = request.args.copy()
+
+    try:
+        date_from, date_to = get_datetime_from_request_args(params, auth_user)
+    except ValueError:
+        return InvalidPayloadErrorResponse(
+            "invalid date format, expecting '%Y-%m-%d'"
+        )
+
+    try:
+        sport_ids_str = params.get("sport_ids", "")
+        sport_ids = (
+            [int(sport_id) for sport_id in sport_ids_str.split(",")]
+            if sport_ids_str
+            else []
+        )
+    except ValueError:
+        return InvalidPayloadErrorResponse("invalid sport_ids")
+
+    try:
+        filters = [
+            Workout.user_id == auth_user.id,
+            Workout.suspended_at == None,  # noqa
+            Workout.original_file != None,  # noqa
+        ]
+
+        if date_from:
+            filters.append(Workout.workout_date >= date_from)
+        if date_to:
+            filters.append(
+                Workout.workout_date < date_to + timedelta(seconds=1)
+            )
+        if sport_ids:
+            filters.append(Workout.sport_id.in_(sport_ids))
+
+        geom_subquery = (
+            select(WorkoutSegment.geom)
+            .filter(WorkoutSegment.workout_id == Workout.id)
+            .order_by(WorkoutSegment.start_date)
+            .scalar_subquery()
+        )
+        workouts = (
+            db.session.query(
+                Workout.bounds,
+                Workout.uuid,
+                Workout.sport_id,
+                Workout.title,
+                Workout.workout_visibility,
+                func.ST_AsGeoJSON(func.ST_Collect(func.array(geom_subquery))),
+            )
+            .filter(*filters)
+            .all()
+        )
+
+        features = []
+        for workout in workouts:
+            features.append(
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "bounds": workout[0],
+                        "id": encode_uuid(workout[1]),
+                        "sport_id": workout[2],
+                        "title": workout[3],
+                        "workout_visibility": workout[4],
+                    },
+                    "geometry": json.loads(workout[5]),
+                }
+            )
+
+        if features:
+            df = gpd.GeoDataFrame.from_features(features)
+            bbox = list(df.total_bounds)
+        else:
+            bbox = []
+
+        return {
+            "status": "success",
+            "data": {
+                "bbox": bbox,
+                "features": features,
+                "type": "FeatureCollection",
+            },
+        }
     except Exception as e:
         return handle_error_and_return_response(e)
 
