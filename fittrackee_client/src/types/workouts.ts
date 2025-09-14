@@ -1,7 +1,8 @@
+import type { GeoJSON } from 'geojson'
+
 import type { TPaginationPayload } from '@/types/api'
 import type { IChartDataset } from '@/types/chart'
 import type { IEquipment, ILightEquipment } from '@/types/equipments'
-import type { ILineString, IMultiLineString } from '@/types/geojson.ts'
 import type { TCoordinates } from '@/types/map'
 import type {
   IUserReportAction,
@@ -240,7 +241,7 @@ export interface ICurrentCommentEdition {
 }
 
 export interface IWorkoutData {
-  geojson: ILineString | IMultiLineString | null
+  geojson: GeoJSON | null
   gpx: string
   loading: boolean
   workout: IWorkout

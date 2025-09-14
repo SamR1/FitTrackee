@@ -123,20 +123,19 @@
     LMarker,
     LTileLayer,
   } from '@vue-leaflet/vue-leaflet'
+  import type { GeoJSON } from 'geojson'
   import HeatmapOverlay from 'heatmap.js/plugins/leaflet-heatmap/leaflet-heatmap.js'
+  import { type PointExpression, type LatLngBoundsLiteral } from 'leaflet'
   import { computed, onUnmounted, ref, toRefs, watch } from 'vue'
   import type { Ref, ComputedRef } from 'vue'
   import 'leaflet/dist/leaflet.css'
 
   import CustomMarker from '@/components/Workout/WorkoutDetail/WorkoutMap/CustomMarker.vue'
   import useApp from '@/composables/useApp'
-  import type { ILineString, IMultiLineString } from '@/types/geojson.ts'
   import type { IHeatmapData, IHeatmapOverlay } from '@/types/heatmap.ts'
   import type {
     IGeoJsonOptions,
     ILeafletObject,
-    TBounds,
-    TCenter,
     TCoordinates,
   } from '@/types/map'
   import type { IWorkoutData } from '@/types/workouts'
@@ -164,13 +163,12 @@
   const heatmapLayer: Ref<IHeatmapOverlay | null> = ref(null)
   const displayHeatmap: Ref<boolean> = ref(false)
 
-  const bounds: ComputedRef<TBounds> = computed(() => getBounds())
-  const center: ComputedRef<TCenter> = computed(() => getCenter(bounds))
-  const geoJson: ComputedRef<ILineString | IMultiLineString | null> = computed(
-    () =>
-      workoutData.value.geojson
-        ? workoutData.value.geojson
-        : getGeoJson(workoutData.value.gpx)
+  const bounds: ComputedRef<LatLngBoundsLiteral> = computed(() => getBounds())
+  const center: ComputedRef<PointExpression> = computed(() => getCenter(bounds))
+  const geoJson: ComputedRef<GeoJSON | null> = computed(() =>
+    workoutData.value.geojson
+      ? workoutData.value.geojson
+      : getGeoJson(workoutData.value.gpx)
   )
   const startMarkerCoordinates: ComputedRef<TCoordinates> = computed(() =>
     getCoordinates('first')
@@ -182,9 +180,7 @@
     getHeatmapData()
   )
 
-  function getGeoJson(
-    gpxContent: string
-  ): ILineString | IMultiLineString | null {
+  function getGeoJson(gpxContent: string): GeoJSON | null {
     if (gpxContent !== '') {
       try {
         return gpx(new DOMParser().parseFromString(gpxContent, 'text/xml'))
@@ -205,7 +201,9 @@
         }
       : { latitude: null, longitude: null }
   }
-  function getCenter(bounds: ComputedRef<TBounds>): TCenter {
+  function getCenter(
+    bounds: ComputedRef<LatLngBoundsLiteral>
+  ): PointExpression {
     return [
       (bounds.value[0][0] + bounds.value[1][0]) / 2,
       (bounds.value[0][1] + bounds.value[1][1]) / 2,
@@ -256,19 +254,19 @@
       if (heatmapLayer.value) {
         workoutMap.value.leafletObject.removeLayer(heatmapLayer.value)
       }
-      heatmapLayer.value = new HeatmapOverlay(
-        getHeatmapConfig()
-      ) as IHeatmapOverlay
-      workoutMap.value.leafletObject.addLayer(heatmapLayer.value)
-      heatmapLayer.value.setData(heatmapData.value)
+      heatmapLayer.value = new HeatmapOverlay(getHeatmapConfig())
+      workoutMap.value.leafletObject.addLayer(
+        heatmapLayer.value as IHeatmapOverlay
+      )
+      heatmapLayer.value?.setData(heatmapData.value)
     }
   }
-  function fitBounds(bounds: TBounds): void {
+  function fitBounds(bounds: LatLngBoundsLiteral): void {
     if (workoutMap.value?.leafletObject) {
       workoutMap.value.leafletObject.fitBounds(bounds)
     }
   }
-  function getBounds(): TBounds {
+  function getBounds(): LatLngBoundsLiteral {
     return workoutData.value
       ? [
           [

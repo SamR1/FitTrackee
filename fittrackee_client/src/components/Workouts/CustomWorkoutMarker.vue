@@ -1,6 +1,6 @@
 <template>
   <LMarker
-    v-if="markerCoordinates.latitude"
+    v-if="markerCoordinates.latitude && markerCoordinates.longitude"
     :lat-lng="[markerCoordinates.latitude, markerCoordinates.longitude]"
   >
     <LIcon :iconSize="[30, 30]" className="sport-icon">

@@ -104,6 +104,7 @@
     LGeoJson,
     LControl,
   } from '@vue-leaflet/vue-leaflet'
+  import type { PointExpression, LatLngBoundsLiteral } from 'leaflet'
   import { computed, ref, onUnmounted, toRefs, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { LMarkerClusterGroup } from 'vue-leaflet-markercluster'
@@ -118,7 +119,7 @@
     IWorkoutFeature,
     IWorkoutsFeatureCollection,
   } from '@/types/geojson.ts'
-  import type { ILeafletObject, TBounds, TCenter } from '@/types/map'
+  import type { ILeafletObject } from '@/types/map'
   import type { ITranslatedSport } from '@/types/sports.ts'
   import { useStore } from '@/use/useStore.ts'
   import { getApiUrl } from '@/utils'
@@ -145,8 +146,8 @@
   const workoutsCollection: ComputedRef<IWorkoutsFeatureCollection> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS_COLLECTION]
   )
-  const bounds: ComputedRef<TBounds> = computed(() => getBounds())
-  const center: ComputedRef<TCenter> = computed(() => getCenter(bounds))
+  const bounds: ComputedRef<LatLngBoundsLiteral> = computed(() => getBounds())
+  const center: ComputedRef<PointExpression> = computed(() => getCenter(bounds))
   const displayedWorkout: ComputedRef<IWorkoutFeature | undefined> = computed(
     () =>
       workoutsCollection.value.features.find(
@@ -157,7 +158,7 @@
   function displayWorkoutGeoJSON(workoutId: string) {
     displayedWorkoutId.value = workoutId
   }
-  function getBounds(): TBounds {
+  function getBounds(): LatLngBoundsLiteral {
     return workoutsCollection.value.bbox
       ? [
           [workoutsCollection.value.bbox[1], workoutsCollection.value.bbox[0]],
@@ -165,13 +166,15 @@
         ]
       : []
   }
-  function getCenter(bounds: ComputedRef<TBounds>): TCenter {
+  function getCenter(
+    bounds: ComputedRef<LatLngBoundsLiteral>
+  ): PointExpression {
     return [
       (bounds.value[0][0] + bounds.value[1][0]) / 2,
       (bounds.value[0][1] + bounds.value[1][1]) / 2,
     ]
   }
-  function fitBounds(bounds: TBounds): void {
+  function fitBounds(bounds: LatLngBoundsLiteral): void {
     if (workoutsMap.value?.leafletObject) {
       workoutsMap.value.leafletObject.fitBounds(bounds)
     }

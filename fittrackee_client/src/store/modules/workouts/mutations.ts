@@ -1,3 +1,4 @@
+import type { GeoJSON } from 'geojson'
 import type { MutationTree } from 'vuex'
 
 import { WORKOUTS_STORE } from '@/store/constants'
@@ -6,11 +7,7 @@ import type {
   TWorkoutsMutations,
 } from '@/store/modules/workouts/types'
 import type { IPagination } from '@/types/api'
-import type {
-  IWorkoutsFeatureCollection,
-  ILineString,
-  IMultiLineString,
-} from '@/types/geojson.ts'
+import type { IWorkoutsFeatureCollection } from '@/types/geojson.ts'
 import type {
   IComment,
   ICurrentCommentEdition,
@@ -101,7 +98,7 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON](
     state: IWorkoutsState,
-    geojson: ILineString | IMultiLineString
+    geojson: GeoJSON
   ) {
     state.workoutData.geojson = geojson
   },
