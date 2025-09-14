@@ -1,18 +1,10 @@
+import type { MultiLineString } from 'geojson'
+
 import type { IMapWorkout } from '@/types/workouts.ts'
-
-export interface ILineString {
-  coordinates: number[][]
-  type: 'LineString'
-}
-
-export interface IMultiLineString {
-  coordinates: ILineString['coordinates'][]
-  type: 'MultiLineString'
-}
 
 export interface IWorkoutFeature {
   properties: IMapWorkout
-  geometry: IMultiLineString
+  geometry: MultiLineString
   type: 'Feature'
 }
 
