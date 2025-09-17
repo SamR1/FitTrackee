@@ -28,6 +28,7 @@ import type {
   IWorkoutContentEdition,
   ILikesPayload,
   TWorkoutsStatistics,
+  TWorkoutsMapPayload,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
@@ -58,6 +59,10 @@ export interface IWorkoutsActions {
   [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_COLLECTION](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: TWorkoutsPayload
+  ): void
+  [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_FOR_GLOBAl_MAP](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: TWorkoutsMapPayload
   ): void
   [WORKOUTS_STORE.ACTIONS.GET_TIMELINE_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,

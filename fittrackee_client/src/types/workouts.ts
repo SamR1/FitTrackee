@@ -222,6 +222,11 @@ export type TWorkoutsPayload = TPaginationPayload & {
   sport_id?: string
 }
 
+export type TMapParamsKeys = 'to' | 'from' | 'sport_ids'
+export type TWorkoutsMapPayload = {
+  [key in TMapParamsKeys]?: string
+}
+
 export interface IWorkoutApiChartData {
   cadence?: number
   distance: number

@@ -6,8 +6,20 @@
         <i class="fa fa-refresh fa-spin fa-fw"></i>
       </div>
     </div>
+    <div id="progress" v-if="globalMap">
+      <div id="progress-bar"></div>
+    </div>
+    <div>
+      <span class="total-workouts">
+        {{ $t('workouts.TOTAL_WORKOUTS_WITH_LOCATION') }}:
+      </span>
+      {{ ' ' }}
+      <span v-if="workoutsCollection.features.length > 0">
+        {{ workoutsCollection.features.length }}
+      </span>
+    </div>
     <VFullscreen
-      v-if="workoutsCollection.features.length > 0"
+      v-if="globalMap || workoutsCollection.features.length > 0"
       v-model="isFullscreen"
     >
       <div
@@ -15,12 +27,13 @@
         :class="{ 'fullscreen-map': isFullscreen }"
       >
         <LMap
-          v-if="center && bounds.length === 2"
+          v-if="center"
           v-model:zoom="zoom"
           :maxZoom="19"
           :center="center"
           :bounds="bounds"
           :zoomAnimation="false"
+          :preferCanvas="globalMap"
           @ready="fitBounds(bounds)"
           ref="workoutsMap"
           :use-global-leaflet="true"
@@ -55,7 +68,6 @@
           <LTileLayer
             :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png`"
             :attribution="appConfig.map_attribution"
-            :bounds="bounds"
             :maxZoom="19"
           />
           <LGeoJson v-if="displayedWorkout" :geojson="displayedWorkout">
@@ -69,7 +81,11 @@
               "
             />
           </LGeoJson>
-          <LMarkerClusterGroup>
+          <LMarkerClusterGroup
+            :chunked-loading="globalMap"
+            :chunk-interval="1"
+            :chunk-progress="updateProgressBar"
+          >
             <CustomWorkoutMarker
               v-for="workout in workoutsCollection.features"
               :sport="getSportLabel(workout.properties, translatedSports)"
@@ -104,8 +120,8 @@
     LGeoJson,
     LControl,
   } from '@vue-leaflet/vue-leaflet'
-  import type { PointExpression, LatLngBoundsLiteral } from 'leaflet'
-  import { computed, ref, onUnmounted, toRefs, watch } from 'vue'
+  import { type PointExpression, type LatLngBoundsLiteral } from 'leaflet'
+  import { computed, ref, onUnmounted, toRefs, watch, onMounted } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { LMarkerClusterGroup } from 'vue-leaflet-markercluster'
 
@@ -127,17 +143,21 @@
 
   interface Props {
     translatedSports: ITranslatedSport[]
+    globalMap?: boolean
   }
-  const props = defineProps<Props>()
-  const { translatedSports } = toRefs(props)
+  const props = withDefaults(defineProps<Props>(), { globalMap: false })
+  const { globalMap, translatedSports } = toRefs(props)
 
   const store = useStore()
 
   const { appConfig } = useApp()
 
+  let progress: HTMLElement | null = null
+  let progressBar: HTMLElement | null = null
+  const isMapReady: Ref<boolean> = ref(false)
   const isFullscreen: Ref<boolean> = ref(false)
   const workoutsMap: Ref<ILeafletObject | null> = ref(null)
-  const zoom: Ref<number> = ref(13)
+  const zoom: Ref<number> = ref(1)
   const displayedWorkoutId: Ref<string | null> = ref(null)
 
   const mapLoading: ComputedRef<boolean> = computed(
@@ -159,7 +179,7 @@
     displayedWorkoutId.value = workoutId
   }
   function getBounds(): LatLngBoundsLiteral {
-    return workoutsCollection.value.bbox
+    return workoutsCollection.value.bbox.length > 0
       ? [
           [workoutsCollection.value.bbox[1], workoutsCollection.value.bbox[0]],
           [workoutsCollection.value.bbox[3], workoutsCollection.value.bbox[2]],
@@ -169,18 +189,25 @@
   function getCenter(
     bounds: ComputedRef<LatLngBoundsLiteral>
   ): PointExpression {
-    return [
-      (bounds.value[0][0] + bounds.value[1][0]) / 2,
-      (bounds.value[0][1] + bounds.value[1][1]) / 2,
-    ]
+    if (bounds.value.length > 0) {
+      return [
+        (bounds.value[0][0] + bounds.value[1][0]) / 2,
+        (bounds.value[0][1] + bounds.value[1][1]) / 2,
+      ]
+    }
+    return [0, 0]
   }
   function fitBounds(bounds: LatLngBoundsLiteral): void {
-    if (workoutsMap.value?.leafletObject) {
-      workoutsMap.value.leafletObject.fitBounds(bounds)
+    isMapReady.value = true
+    if (bounds.length > 0) {
+      workoutsMap.value?.leafletObject.fitBounds(bounds)
     }
   }
   function resetZoom(): void {
-    workoutsMap.value?.leafletObject.fitBounds(getBounds())
+    const newBounds = getBounds()
+    if (newBounds.length > 0) {
+      workoutsMap.value?.leafletObject.fitBounds(getBounds())
+    }
   }
   function toggleFullscreen(): void {
     isFullscreen.value = !isFullscreen.value
@@ -188,6 +215,22 @@
       setTimeout(() => {
         resetZoom()
       }, 100)
+    }
+  }
+  // From https://github.com/Leaflet/Leaflet.markercluster/blob/master/example/marker-clustering-realworld.50000.html
+  function updateProgressBar(
+    processed: number,
+    total: number,
+    elapsed: number
+  ) {
+    if (progress && progressBar) {
+      if (elapsed > 0) {
+        progress.style.display = 'block'
+        progressBar.style.width = Math.round((processed / total) * 100) + '%'
+      }
+      if (!mapLoading.value && processed === total) {
+        progress.style.display = 'none'
+      }
     }
   }
 
@@ -203,6 +246,10 @@
     }
   )
 
+  onMounted(() => {
+    progress = document.getElementById('progress')
+    progressBar = document.getElementById('progress-bar')
+  })
   onUnmounted(() =>
     store.commit(WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION, {
       bbox: [],
@@ -216,10 +263,37 @@
   @use '~@/scss/vars.scss' as *;
   #workouts-map {
     padding: $default-padding 0;
+    position: relative;
+
+    #progress {
+      position: absolute;
+      z-index: 2000;
+      left: 50%;
+      top: 250px;
+      width: 200px;
+      height: 20px;
+      margin-top: -20px;
+      margin-left: -100px;
+      background-color: #fff;
+      background-color: rgba(255, 255, 255);
+      border-radius: 4px;
+      padding: 2px;
+    }
+
+    #progress-bar {
+      width: 0;
+      height: 100%;
+      background-color: #76a6fc;
+      border-radius: 4px;
+    }
+
+    .total-workouts {
+      font-weight: bold;
+    }
 
     .leaflet-container,
     .no-map {
-      height: 550px;
+      height: 500px;
       width: 100%;
     }
     .no-map {

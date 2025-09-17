@@ -59,6 +59,14 @@
             <router-link class="nav-item" to="/statistics" @click="closeMenu()">
               {{ $t('statistics.STATISTICS') }}
             </router-link>
+            <router-link
+              v-if="appConfig.enable_geospatial_features"
+              class="nav-item"
+              to="/workouts/map"
+              @click="closeMenu()"
+            >
+              {{ capitalize($t('workouts.MAP')) }}
+            </router-link>
             <router-link class="nav-item" to="/users" @click="closeMenu()">
               {{ capitalize($t('user.USER', 0)) }}
             </router-link>
@@ -186,7 +194,7 @@
 
   const store = useStore()
 
-  const { appLanguage, darkTheme } = useApp()
+  const { appConfig, appLanguage, darkTheme } = useApp()
   const {
     authUser,
     isAuthenticated,

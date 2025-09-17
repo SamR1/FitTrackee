@@ -25,6 +25,7 @@ import type {
   IComment,
   IAppealPayload,
   ILikesPayload,
+  TWorkoutsMapPayload,
 } from '@/types/workouts'
 import { handleError } from '@/utils'
 
@@ -150,6 +151,31 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
           context.commit(
             WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_PAGINATION,
             res.data.pagination
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_MAP_LOADING, false)
+      )
+  },
+  [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_FOR_GLOBAl_MAP](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: TWorkoutsMapPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_MAP_LOADING, true)
+    authApi
+      .get(`workouts/global-map`, {
+        params: payload,
+      })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION,
+            res.data.data
           )
         } else {
           handleError(context, null)
