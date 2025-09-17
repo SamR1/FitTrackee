@@ -1311,11 +1311,14 @@ def get_workouts_for_global_map(auth_user: User) -> Union[Dict, HttpResponse]:
                 func.ST_AsGeoJSON(func.ST_Collect(func.array(geom_subquery))),
             )
             .filter(*filters)
-            .all()
+            .order_by(Workout.workout_date.desc())
         )
+        total_workouts_count = workouts.count()
 
         features = []
-        for workout in workouts:
+        for workout in workouts.limit(
+            current_app.config["global_map_workouts_limit"]
+        ).all():
             features.append(
                 {
                     "type": "Feature",
@@ -1341,6 +1344,7 @@ def get_workouts_for_global_map(auth_user: User) -> Union[Dict, HttpResponse]:
             "data": {
                 "bbox": bbox,
                 "features": features,
+                "limit_exceeded": total_workouts_count > len(features),
                 "type": "FeatureCollection",
             },
         }

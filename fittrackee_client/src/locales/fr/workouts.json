@@ -148,6 +148,7 @@
   "TOTAL_DESCENT": "dénivelé négatif total",
   "TOTAL_DISTANCE": "distance totale",
   "TOTAL_DURATION": "durée totale",
+  "TOTAL_WORKOUTS_LIMIT_EXCEEDED": "limite sur le nombre de séances dépassée",
   "TOTAL_WORKOUTS_WITH_LOCATION": "nombre total d'entraînements avec une localisation",
   "UNITS": {
     "bpm": {

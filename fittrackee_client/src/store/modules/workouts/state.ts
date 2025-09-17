@@ -14,6 +14,7 @@ export const workoutsState: IWorkoutsState = {
   user_workouts_collection: {
     bbox: [],
     features: [],
+    limit_exceeded: false,
     type: 'FeatureCollection',
   },
   user_workouts_statistics: <TWorkoutsStatistics>{},

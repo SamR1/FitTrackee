@@ -2890,6 +2890,7 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
             "data": {
                 "bbox": [],
                 "features": [],
+                "limit_exceeded": False,
                 "type": "FeatureCollection",
             },
             "status": "success",
@@ -3023,6 +3024,7 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
                     },
                 },
             ],
+            "limit_exceeded": False,
             "type": "FeatureCollection",
         }
 
@@ -3115,6 +3117,7 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
                     },
                 },
             ],
+            "limit_exceeded": False,
             "type": "FeatureCollection",
         }
 
@@ -3231,6 +3234,37 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
 
         self.assert_400(
             response, error_message="invalid date format, expecting '%Y-%m-%d'"
+        )
+
+    def test_it_returns_most_recent_workouts_when_total_workouts_exceed_limit(
+        self,
+        app_with_global_map_workouts_limit_equal_to_1: Flask,
+        user_1: User,
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+        workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_1_coordinates: List[List],
+        workout_running_user_1_with_coordinates: "Workout",
+        workout_running_user_1_segment_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_global_map_workouts_limit_equal_to_1, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["data"]["limit_exceeded"] is True
+        assert len(data["data"]["features"]) == 1
+        assert data["data"]["features"][0]["properties"]["id"] == (
+            workout_running_user_1_with_coordinates.short_id
         )
 
     @pytest.mark.parametrize(

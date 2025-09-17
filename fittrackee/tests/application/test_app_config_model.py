@@ -153,3 +153,15 @@ class TestConfigModel:
             serialized_app_config["stats_workouts_limit"]
             == stats_workouts_limit
         )
+
+    def test_it_returns_global_map_workouts_limit(self, app: Flask) -> None:
+        config = AppConfig.query.one()
+        global_map_workouts_limit = random_int()
+        config.global_map_workouts_limit = global_map_workouts_limit
+
+        serialized_app_config = config.serialize()
+
+        assert (
+            serialized_app_config["global_map_workouts_limit"]
+            == global_map_workouts_limit
+        )

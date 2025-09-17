@@ -11,5 +11,6 @@ export interface IWorkoutFeature {
 export interface IWorkoutsFeatureCollection {
   bbox: number[]
   features: IWorkoutFeature[]
+  limit_exceeded?: boolean
   type: 'FeatureCollection'
 }

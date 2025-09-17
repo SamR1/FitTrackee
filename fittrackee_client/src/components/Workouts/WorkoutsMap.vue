@@ -23,6 +23,12 @@
         >
           {{ workoutsCollection.features.length }}
         </span>
+        <template v-if="workoutsCollection.limit_exceeded">
+          (<span class="limit-exceeded">
+            <i class="fa fa-info-circle" aria-hidden="true" />
+            {{ $t('workouts.TOTAL_WORKOUTS_LIMIT_EXCEEDED') }} </span
+          >)
+        </template>
       </div>
     </template>
     <VFullscreen
@@ -301,6 +307,9 @@
 
     .total-workouts {
       font-weight: bold;
+    }
+    .limit-exceeded {
+      font-style: italic;
     }
 
     .leaflet-container,

@@ -147,6 +147,7 @@
   "TOTAL_DESCENT": "total descent",
   "TOTAL_DISTANCE": "total distance",
   "TOTAL_DURATION": "total duration",
+  "TOTAL_WORKOUTS_LIMIT_EXCEEDED": "workouts limit exceeded",
   "TOTAL_WORKOUTS_WITH_LOCATION": "total number of workouts with location",
   "UNITS": {
     "bpm": {
