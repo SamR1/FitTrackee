@@ -17,7 +17,7 @@
                 id="from"
                 name="from"
                 type="date"
-                :disabled="mapLoading"
+                :disabled="disableMap"
                 :value="$route.query.from"
                 @change="handleFilterChange"
               />
@@ -29,15 +29,23 @@
                 name="to"
                 type="date"
                 :value="$route.query.to"
-                :disabled="mapLoading"
+                :disabled="disableMap"
                 @change="handleFilterChange"
               />
             </div>
           </div>
           <WorkoutsMap
+            v-if="userSports.length > 0"
             :translatedSports="translatedSports"
             :global-map="true"
+            :user-has-workouts="userHasWorkouts"
           />
+          <div v-else class="no-map">
+            {{ $t('workouts.NO_WORKOUTS_TO_DISPLAY') }}.
+            <router-link to="/workouts/add">
+              {{ $t('workouts.UPLOAD_FIRST_WORKOUT') }}
+            </router-link>
+          </div>
           <SportsMenu
             :selected-sport-ids="selectedSportIds"
             :user-sports="userSports"
@@ -56,7 +64,7 @@
             <button
               class="confirm"
               @click="onClearFilter"
-              :disabled="mapLoading"
+              :disabled="disableMap"
             >
               {{ $t('buttons.CLEAR_FILTER') }}
             </button>
@@ -109,6 +117,12 @@
   const selectedSportIds: Ref<number[]> = ref(getSports(userSports.value))
   const mapLoading: ComputedRef<boolean> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.MAP_LOADING]
+  )
+  const userHasWorkouts: ComputedRef<boolean> = computed(
+    () => userSports.value.length > 0
+  )
+  const disableMap: ComputedRef<boolean> = computed(
+    () => mapLoading.value || !userHasWorkouts.value
   )
 
   function handleFilterChange(event: Event) {
@@ -197,6 +211,16 @@
 
         #workouts-map {
           padding: 0;
+        }
+        .no-map {
+          margin: $default-margin * 4 0 $default-margin;
+          height: 500px;
+          width: 100%;
+          line-height: 500px;
+          filter: var(--no-map-filter);
+          a {
+            color: var(--app-color-light);
+          }
         }
 
         .sports-menu {

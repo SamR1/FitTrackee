@@ -106,7 +106,7 @@ button {
       background: transparent;
     }
 
-    &:hover {
+    &:enabled:hover {
       color: var(--app-color);
     }
 
@@ -143,12 +143,13 @@ button {
   &.confirm:disabled {
     background: var(--disabled-background-color);
     color: var(--disabled-color);
+    cursor: default;
   }
 
   &.cancel {
     background: var(--button-cancel-bg-color);
     color: var(--button-cancel-color);
-    &:hover {
+    &:enabled:hover {
       background: var(--button-transparent-hover-color);
       color: var(--button-hover-color);
     }
@@ -157,7 +158,7 @@ button {
   &.confirm {
     background: var(--button-confirm-bg-color);
     color: var(--button-confirm-color);
-    &:hover {
+    &:enabled:hover {
       background: var(--button-transparent-hover-color);
       color: var(--button-hover-color);
     }

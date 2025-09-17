@@ -6,18 +6,25 @@
         <i class="fa fa-refresh fa-spin fa-fw"></i>
       </div>
     </div>
-    <div id="progress" v-if="globalMap">
-      <div id="progress-bar"></div>
-    </div>
-    <div>
-      <span class="total-workouts">
-        {{ $t('workouts.TOTAL_WORKOUTS_WITH_LOCATION') }}:
-      </span>
-      {{ ' ' }}
-      <span v-if="workoutsCollection.features.length > 0">
-        {{ workoutsCollection.features.length }}
-      </span>
-    </div>
+    <template v-if="globalMap">
+      <div id="progress">
+        <div id="progress-bar"></div>
+      </div>
+      <div>
+        <span class="total-workouts">
+          {{ $t('workouts.TOTAL_WORKOUTS_WITH_LOCATION') }}:
+        </span>
+        {{ ' ' }}
+        <span
+          v-if="
+            workoutsCollection.features.length > 0 ||
+            (userHasWorkouts && !mapLoading)
+          "
+        >
+          {{ workoutsCollection.features.length }}
+        </span>
+      </div>
+    </template>
     <VFullscreen
       v-if="globalMap || workoutsCollection.features.length > 0"
       v-model="isFullscreen"
@@ -144,9 +151,13 @@
   interface Props {
     translatedSports: ITranslatedSport[]
     globalMap?: boolean
+    userHasWorkouts?: boolean
   }
-  const props = withDefaults(defineProps<Props>(), { globalMap: false })
-  const { globalMap, translatedSports } = toRefs(props)
+  const props = withDefaults(defineProps<Props>(), {
+    globalMap: false,
+    userHasWorkouts: false,
+  })
+  const { globalMap, translatedSports, userHasWorkouts } = toRefs(props)
 
   const store = useStore()
 
@@ -224,7 +235,7 @@
     elapsed: number
   ) {
     if (progress && progressBar) {
-      if (elapsed > 0) {
+      if (elapsed > 0 && total > 0) {
         progress.style.display = 'block'
         progressBar.style.width = Math.round((processed / total) * 100) + '%'
       }
@@ -267,6 +278,7 @@
 
     #progress {
       position: absolute;
+      display: none;
       z-index: 2000;
       left: 50%;
       top: 250px;
