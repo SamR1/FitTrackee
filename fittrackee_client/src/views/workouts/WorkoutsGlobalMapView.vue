@@ -47,6 +47,7 @@
             </router-link>
           </div>
           <SportsMenu
+            v-if="userSports.length > 0"
             :selected-sport-ids="selectedSportIds"
             :user-sports="userSports"
             :disabled="mapLoading"
@@ -181,6 +182,12 @@
     () => route.query,
     async (newQuery) => {
       loadWorkouts(getWorkoutsMapQuery(newQuery))
+    }
+  )
+  watch(
+    () => userSports.value,
+    async () => {
+      selectedSportIds.value = getSports(userSports.value)
     }
   )
 
