@@ -7,7 +7,7 @@
     <div class="container">
       <Card>
         <template #title>
-          {{ capitalize($t('workouts.MAP')) }}
+          {{ capitalize($t('workouts.GLOBAL_MAP')) }}
         </template>
         <template #content>
           <div class="form-items-group">
