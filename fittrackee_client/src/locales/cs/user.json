@@ -1,8 +1,16 @@
 {
   "ACCOUNT_CONFIRMATION": "Potvrzení účtu",
+  "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Nedorazily Vám instrukce?",
   "ACCOUNT_CONFIRMATION_SENT": "Zkontrolujte Váš e-mail. Byl odeslán nový e-mail pro potvrzení zadané adresy.",
   "ACCOUNT_SUSPENDED_AT": "Účet byl pozastaven v {0}.",
+  "ACTIVE_ACCOUNT": "Účet je aktivní",
+  "ACTIVE_USER": "aktivní uživatel | aktivní uživatelé",
   "ALREADY_HAVE_ACCOUNT": "Máte již účet?",
+  "APPEAL": "Odvolání",
+  "APPEAL_APPROVED": "Odvolání schváleno.",
+  "APPEAL_IN_PROGRESS": "Právě probíhá zpracování odvolání.",
+  "APPEAL_REJECTED": "Odvolání zamítnuto.",
+  "APPEAL_SUBMITTED": "Odvolání podáno.",
   "CONFIRM_ACCOUNT_DELETION": "Jste si jistý, že chcete smazat Váš účet? Všechna data budou smazána, toto nejde vrátit.",
   "CURRENT_PASSWORD": "Současné heslo",
   "EMAIL": "Email",
@@ -21,6 +29,7 @@
   "INVALID_TOKEN": "Neplatný token, prosím vyžádejte si nové obnovení hesla.",
   "I_WANT_TO_DELETE_MY_ACCOUNT": "Chci smazat svůj účet",
   "LANGUAGE": "Jazyk | Jazyky",
+  "LAST_PRIVACY_POLICY_TO_VALIDATE": "Zásady ochrany osobních údajů byly aktualizovány, prosím {0} je před pokračováním.",
   "LOGIN": "Přihlášení",
   "LOGOUT": "Odhlášení",
   "LOGOUT_CONFIRMATION": "Jste si jistý, že se chcete odhlásit?",
@@ -28,6 +37,8 @@
   "NEW_PASSWORD": "Nové heslo",
   "NO_SPORT_FOUND": "Nebyl nalezen sport.",
   "NO_USERS_FOUND": "Nebyli nalezeni uživatelé.",
+  "NO_WARNING_FOUND": "Žádná varování nenalezena.",
+  "ONLY_USERS_FROM_THIS_INSTANCE_ARE_DISPLAYED": ", pouze {0} z této instance je zobrazených",
   "PASSWORD": "Heslo",
   "PASSWORD_FORGOTTEN": "Zapoměl jste heslo?",
   "PASSWORD_INFO": "Je požadováno alespoň 8 znaků.",
@@ -57,7 +68,16 @@
     "WEAK": "týden"
   },
   "PASSWORD_UPDATED": "Vaše heslo bylo změněno. Klikněte {0} pro přihlášení.",
+  "PRIVACY_POLICY_TO_VALIDATE": "Prosím {0} zásady ochrany osobních údajů než budete pokračovat.",
   "PROFILE": {
+    "ACCOUNT_EDITION": "Typ účtu",
+    "ARCHIVE_UPLOADS": {
+      "ARCHIVE": "Zip archiv",
+      "CONFIRM_TASK_ABORT": "Opravdu chcete ukončit úkon nahrávání archivu?",
+      "CONFIRM_TASK_DELETION": "Opravdu chcete odstranit úkon nahrávání archivu?",
+      "FILES_COUNT": "{count} souborů",
+      "PROGRESS": "Postup"
+    },
     "BACK_TO_PROFILE": "Zpět na profil",
     "BIRTH_DATE": "Datum narození",
     "DATE_FORMAT": "Formát zobrazení datumu",
@@ -68,11 +88,34 @@
     },
     "EQUIPMENTS": {
       "ACTION": "akce",
+      "CONFIRM_EQUIPMENT_DELETION": "Opravdu chcete odstranit toto vybavení {0}?",
       "DESCRIPTION": "popis",
       "DISABLED_BY_ADMIN": "zakázáno správcem",
       "EQUIPMENT_ASSOCIATED_WITH_WORKOUTS": "Vybavení spojené s cvičením.",
-      "IS_ACTIVE": "aktivní"
-    }
+      "IS_ACTIVE": "aktivní",
+      "LABEL": "označení",
+      "YOUR_EQUIPMENTS": "Vaše vybavení"
+    },
+    "ERRORED_EMAIL_UPDATE": "Prosím {0} změňte znovu svou e-mailovou adresu nebo kontaktujte administrátora",
+    "FIRST_DAY_OF_WEEK": "První den týdne",
+    "FIRST_NAME": "Křestní jméno",
+    "FOLLOW_REQUESTS_APPROVAL": {
+      "AUTOMATICALLY": "Automaticky",
+      "LABEL": "Schválení žádosti o sledování",
+      "MANUALLY": "Ručně"
+    },
+    "INTERFACE": "Rozhraní",
+    "LANGUAGE": "Jazyk",
+    "LAST_NAME": "Příjmení",
+    "LOCATION": "Místo",
+    "MONDAY": "Pondělí",
+    "NOTIFICATIONS": {
+      "follow_request_approved": "Vaše žádost o sledování byla schválena"
+    },
+    "PICTURE": "Profilová fotka",
+    "PICTURE_EDITION": "Upravit profilovou fotku",
+    "PICTURE_REMOVE": "Smazat profilovou fotku",
+    "PICTURE_UPDATE": "Aktualizovat profilovou fotku"
   },
   "ROLES": {
     "admin": "Správce"
