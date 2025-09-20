@@ -100,20 +100,17 @@
             :chunk-progress="updateProgressBar"
           >
             <CustomWorkoutMarker
-              v-for="workout in workoutsCollection.features"
-              :sport="getSportLabel(workout.properties, translatedSports)"
-              :color="getSportColor(workout.properties, translatedSports)"
-              :markerCoordinates="{
-                latitude: workout.geometry.coordinates[0][0][1],
-                longitude: workout.geometry.coordinates[0][0][0],
-              }"
-              :key="workout.properties.id"
-              @click="displayWorkoutGeoJSON(workout.properties.id)"
+              v-for="feature in workoutsCollection.features"
+              :sport="getSportLabel(feature.properties, translatedSports)"
+              :color="getSportColor(feature.properties, translatedSports)"
+              :markerCoordinates="getMarkerCoordinates(feature.geometry)"
+              :key="feature.properties.id"
+              @click="displayWorkoutGeoJSON(feature.properties.id)"
             >
               <WorkoutPopup
-                :workout="workout.properties"
-                :sport="getSportLabel(workout.properties, translatedSports)"
-                :color="getSportColor(workout.properties, translatedSports)"
+                :workout="feature.properties"
+                :sport="getSportLabel(feature.properties, translatedSports)"
+                :color="getSportColor(feature.properties, translatedSports)"
               />
             </CustomWorkoutMarker>
           </LMarkerClusterGroup>
@@ -133,6 +130,7 @@
     LGeoJson,
     LControl,
   } from '@vue-leaflet/vue-leaflet'
+  import type { MultiLineString, Point } from 'geojson'
   import { type PointExpression, type LatLngBoundsLiteral } from 'leaflet'
   import { computed, ref, onUnmounted, toRefs, watch, onMounted } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
@@ -186,14 +184,48 @@
   const bounds: ComputedRef<LatLngBoundsLiteral> = computed(() => getBounds())
   const center: ComputedRef<PointExpression> = computed(() => getCenter(bounds))
   const displayedWorkout: ComputedRef<IWorkoutFeature | undefined> = computed(
-    () =>
-      workoutsCollection.value.features.find(
-        (workout) => workout.properties.id === displayedWorkoutId.value
-      )
+    () => getWorkoutToDisplay()
   )
 
+  function getWorkoutGeoJSON(workoutId: string) {
+    store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_GEOJSON, workoutId)
+  }
+  function getWorkoutToDisplay() {
+    const workoutFeature = workoutsCollection.value.features.find(
+      (workout) => workout.properties.id === displayedWorkoutId.value
+    )
+    if (!workoutFeature) {
+      return undefined
+    }
+    if (!globalMap.value) {
+      return workoutFeature
+    }
+    const geojson = store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_GEOJSON]
+    if (geojson) {
+      return {
+        ...workoutFeature,
+        geometry: geojson as MultiLineString,
+      }
+    }
+    return undefined
+  }
   function displayWorkoutGeoJSON(workoutId: string) {
     displayedWorkoutId.value = workoutId
+    if (globalMap.value) {
+      getWorkoutGeoJSON(workoutId)
+    }
+  }
+  function getMarkerCoordinates(geometry: MultiLineString | Point) {
+    if (geometry.type === 'Point') {
+      return {
+        latitude: geometry.coordinates[1],
+        longitude: geometry.coordinates[0],
+      }
+    }
+    return {
+      latitude: geometry.coordinates[0][0][1],
+      longitude: geometry.coordinates[0][0][0],
+    }
   }
   function getBounds(): LatLngBoundsLiteral {
     return workoutsCollection.value.bbox.length > 0
@@ -267,13 +299,14 @@
     progress = document.getElementById('progress')
     progressBar = document.getElementById('progress-bar')
   })
-  onUnmounted(() =>
+  onUnmounted(() => {
     store.commit(WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION, {
       bbox: [],
       features: [],
       type: 'FeatureCollection',
     })
-  )
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON, null)
+  })
 </script>
 
 <style lang="scss" scoped>

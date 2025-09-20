@@ -1,10 +1,10 @@
-import type { MultiLineString } from 'geojson'
+import type { MultiLineString, Point } from 'geojson'
 
 import type { IMapWorkout } from '@/types/workouts.ts'
 
 export interface IWorkoutFeature {
   properties: IMapWorkout
-  geometry: MultiLineString
+  geometry: MultiLineString | Point
   type: 'Feature'
 }
 

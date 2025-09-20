@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 from uuid import UUID, uuid4
 
 from geoalchemy2 import Geometry, WKBElement
-from shapely import LineString
+from shapely import LineString, Point
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
@@ -342,6 +342,10 @@ class Workout(BaseModel):
     )
     max_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
     ave_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
+    start_point_geom: Mapped[Optional["WKBElement"]] = mapped_column(
+        Geometry(geometry_type="POINT", srid=WGS84_CRS, spatial_index=True),
+        nullable=True,
+    )
 
     user: Mapped["User"] = relationship(
         "User", lazy="select", single_parent=True
@@ -401,6 +405,9 @@ class Workout(BaseModel):
     @property
     def short_id(self) -> str:
         return encode_uuid(self.uuid)
+
+    def store_start_point_geometry(self, coordinates: List[float]) -> None:
+        self.start_point_geom = str(Point(coordinates))  # type: ignore
 
     @property
     def calculated_analysis_visibility(self) -> VisibilityLevel:

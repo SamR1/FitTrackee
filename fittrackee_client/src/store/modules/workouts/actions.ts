@@ -725,4 +725,30 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
         handleError(context, error)
       })
   },
+  [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_GEOJSON](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    workoutId: string
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get(`workouts/${workoutId}/geojson`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON,
+            res.data.data.geojson
+          )
+        } else {
+          context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
+        handleError(context, error)
+      })
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, false)
+      )
+  },
 }

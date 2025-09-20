@@ -2,7 +2,7 @@ from datetime import datetime
 from logging import Logger, getLogger
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import asc, desc
+from sqlalchemy import asc, desc, or_
 
 from fittrackee import db
 from fittrackee.files import get_absolute_file_path
@@ -165,7 +165,14 @@ class WorkoutsFromFileRefreshService:
             workouts_to_refresh_query = workouts_to_refresh_query.join(
                 WorkoutSegment
             )
-            filters.extend([WorkoutSegment.geom == None])  # noqa
+            filters.extend(
+                [
+                    or_(
+                        Workout.start_point_geom == None,  # noqa
+                        WorkoutSegment.geom == None,  # noqa
+                    )
+                ]
+            )
 
         updated_workouts = 0
         workouts_to_refresh = (

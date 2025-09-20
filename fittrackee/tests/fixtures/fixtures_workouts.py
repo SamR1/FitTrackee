@@ -165,6 +165,7 @@ def workout_cycling_user_1_with_coordinates() -> Workout:
     db.session.add(workout)
     workout.gpx = "workouts/1/example.gpx"
     workout.original_file = "workouts/1/example.tcx"
+    workout.store_start_point_geometry([6.07367, 44.68095])
     db.session.commit()
     return workout
 
@@ -634,6 +635,7 @@ def workout_running_user_1_with_coordinates() -> Workout:
     db.session.add(workout)
     workout.gpx = "workouts/2/example.gpx"
     workout.original_file = "workouts/2/example.tcx"
+    workout.store_start_point_geometry([6.07364, 44.67977])
     db.session.commit()
     return workout
 

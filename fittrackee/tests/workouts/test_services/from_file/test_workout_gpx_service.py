@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, call, patch
 import gpxpy
 import pytest
 from geoalchemy2.shape import to_shape
-from shapely import LineString
+from shapely import LineString, Point
 
 from fittrackee import db
 from fittrackee.tests.fixtures.fixtures_workouts import (
@@ -274,6 +274,9 @@ class TestWorkoutGpxServiceProcessFile(
         assert service.workout_description is None
         assert service.workout_name == "just a workout"
         workout = Workout.query.one()
+        assert to_shape(workout.start_point_geom) == Point(
+            track_points_part_1_coordinates[0]
+        )
         self.assert_workout(user_1, sport_1_cycling, workout)
         self.assert_workout_segment(workout)
         self.assert_workout_records(workout)
@@ -324,6 +327,9 @@ class TestWorkoutGpxServiceProcessFile(
         assert service.workout_description is None
         assert service.workout_name is None
         workout = Workout.query.one()
+        assert to_shape(workout.start_point_geom) == Point(
+            track_points_part_1_coordinates[0]
+        )
         self.assert_workout(user_1, sport_1_cycling, workout)
         self.assert_workout_segment(workout)
         self.assert_workout_records(workout)
@@ -375,6 +381,9 @@ class TestWorkoutGpxServiceProcessFile(
         assert service.workout_name == "just a workout"
         # workout
         workout = Workout.query.one()
+        assert to_shape(workout.start_point_geom) == Point(
+            track_points_part_1_coordinates[0]
+        )
         assert float(workout.ave_speed) == 4.61
         assert float(workout.max_speed) == 5.25
         # workout segment
@@ -425,6 +434,9 @@ class TestWorkoutGpxServiceProcessFile(
         assert service.workout_name == "just a workout"
         # workout
         workout = Workout.query.one()
+        assert to_shape(workout.start_point_geom) == Point(
+            track_points_part_1_coordinates[0]
+        )
         assert workout.duration == timedelta(minutes=4, seconds=10)
         assert workout.ascent is None
         assert float(workout.ave_speed) == 4.57
@@ -499,6 +511,9 @@ class TestWorkoutGpxServiceProcessFile(
         assert service.workout_name == "just a workout"
         # workout
         workout = Workout.query.one()
+        assert to_shape(workout.start_point_geom) == Point(
+            segment_0_coordinates[0]
+        )
         assert workout.user_id == user_1.id
         assert workout.sport_id == sport_1_cycling.id
         assert workout.workout_date == datetime(
@@ -702,6 +717,9 @@ class TestWorkoutGpxServiceProcessFile(
         assert service.workout_name == "just a workout"
         # workout
         workout = Workout.query.one()
+        assert to_shape(workout.start_point_geom) == Point(
+            segment_0_coordinates[0]
+        )
         assert workout.user_id == user_1.id
         assert workout.sport_id == sport_1_cycling.id
         assert workout.workout_date == datetime(

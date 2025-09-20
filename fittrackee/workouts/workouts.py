@@ -1044,9 +1044,8 @@ def get_workouts_feature_collection(
 @require_auth(scopes=["workouts:read"])
 def get_workouts_for_global_map(auth_user: User) -> Union[Dict, HttpResponse]:
     """
-    Get all workouts with geometries for the authenticated user
-    as a feature collection, in order to display the workouts on
-    the global map.
+    Get all workouts with start point geometry for the authenticated user
+    as a feature collection, in order to display workouts on the global map.
 
     **Scope**: ``workouts:read``
 
@@ -1076,121 +1075,19 @@ def get_workouts_for_global_map(auth_user: User) -> Union[Dict, HttpResponse]:
         {
           "data": {
             "bbox": [
-              6.07355,
-              44.67822,
-              6.07442,
-              44.68095
+              6.07367,
+              44.68095,
+              6.07367,
+              44.68095,
             ],
             "features": [
               {
                 "geometry": {
                   "coordinates": [
-                    [
-                      [
-                        6.07367,
-                        44.68095
-                      ],
-                      [
-                        6.07367,
-                        44.68091
-                      ],
-                      [
-                        6.07364,
-                        44.6808
-                      ],
-                      [
-                        6.07364,
-                        44.68075
-                      ],
-                      [
-                        6.07364,
-                        44.68071
-                      ],
-                      [
-                        6.07361,
-                        44.68049
-                      ],
-                      [
-                        6.07356,
-                        44.68019
-                      ],
-                      [
-                        6.07355,
-                        44.68014
-                      ],
-                      [
-                        6.07358,
-                        44.67995
-                      ]
-                    ],
-                    [
-                      [
-                        6.07364,
-                        44.67977
-                      ],
-                      [
-                        6.07367,
-                        44.67972
-                      ],
-                      [
-                        6.07368,
-                        44.67966
-                      ],
-                      [
-                        6.0737,
-                        44.67961
-                      ],
-                      [
-                        6.07377,
-                        44.67938
-                      ],
-                      [
-                        6.07381,
-                        44.67933
-                      ],
-                      [
-                        6.07385,
-                        44.67922
-                      ],
-                      [
-                        6.0739,
-                        44.67911
-                      ],
-                      [
-                        6.07399,
-                        44.679
-                      ],
-                      [
-                        6.07402,
-                        44.67896
-                      ],
-                      [
-                        6.07408,
-                        44.67884
-                      ],
-                      [
-                        6.07423,
-                        44.67863
-                      ],
-                      [
-                        6.07425,
-                        44.67858
-                      ],
-                      [
-                        6.07434,
-                        44.67842
-                      ],
-                      [
-                        6.07435,
-                        44.67837
-                      ],
-                      [
-                        6.07442,
-                        44.67822
-                      ]
-                    ]
+                    6.07367,
+                    44.68095
                   ],
-                  "type": "MultiLineString"
+                  "type": "Point"
                 },
                 "properties": {
                   "bounds": [
@@ -1207,15 +1104,9 @@ def get_workouts_for_global_map(auth_user: User) -> Union[Dict, HttpResponse]:
                 "type": "Feature"
               }
               ],
-            "type": "FeatureCollection"
+            "limit_exceeded": False,
+            "type": "FeatureCollection",
           }
-          "pagination": {
-            "has_next": false,
-            "has_prev": false,
-            "page": 1,
-            "pages": 1,
-            "total": 1
-          },
           "status": "success"
         }
 
@@ -1228,16 +1119,12 @@ def get_workouts_for_global_map(auth_user: User) -> Union[Dict, HttpResponse]:
 
         {
           "data": {
-            "workouts": []
+            "bbox": [],
+            "features": [],
+            "limit_exceeded": False,
+            "type": "FeatureCollection",
           },
-          "pagination": {
-            "has_next": false,
-            "has_prev": false,
-            "page": 1,
-            "pages": 0,
-            "total": 0
-          },
-          "status": "success"
+          "status": "success",
         }
 
     :query string from: start date (format: ``%Y-%m-%d``)
@@ -1248,9 +1135,8 @@ def get_workouts_for_global_map(auth_user: User) -> Union[Dict, HttpResponse]:
 
     :statuscode 200: ``success``
     :statuscode 400:
-        - ``invalid duration``
-        - ``invalid value for visibility``
-        - ``invalid radius, must be an float greater than zero``
+        - ``invalid date format, expecting '%Y-%m-%d'``
+        - ``invalid sport_ids``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -1283,7 +1169,7 @@ def get_workouts_for_global_map(auth_user: User) -> Union[Dict, HttpResponse]:
         filters = [
             Workout.user_id == auth_user.id,
             Workout.suspended_at == None,  # noqa
-            Workout.original_file != None,  # noqa
+            Workout.start_point_geom != None,  # noqa
         ]
 
         if date_from:
@@ -1295,12 +1181,6 @@ def get_workouts_for_global_map(auth_user: User) -> Union[Dict, HttpResponse]:
         if sport_ids:
             filters.append(Workout.sport_id.in_(sport_ids))
 
-        geom_subquery = (
-            select(WorkoutSegment.geom)
-            .filter(WorkoutSegment.workout_id == Workout.id)
-            .order_by(WorkoutSegment.start_date)
-            .scalar_subquery()
-        )
         workouts = (
             db.session.query(
                 Workout.bounds,
@@ -1308,7 +1188,7 @@ def get_workouts_for_global_map(auth_user: User) -> Union[Dict, HttpResponse]:
                 Workout.sport_id,
                 Workout.title,
                 Workout.workout_visibility,
-                func.ST_AsGeoJSON(func.ST_Collect(func.array(geom_subquery))),
+                func.ST_AsGeoJSON(Workout.start_point_geom),
             )
             .filter(*filters)
             .order_by(Workout.workout_date.desc())

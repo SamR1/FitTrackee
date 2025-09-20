@@ -443,6 +443,10 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             db.session.add(self.workout)
             db.session.flush()
         self.workout.source = self.gpx.creator
+        if self.start_point:
+            self.workout.store_start_point_geometry(
+                [self.start_point.longitude, self.start_point.latitude]
+            )
 
         stopped_time_between_segments, max_speed = self._process_segments(
             track.segments, self.workout.id, self.workout.uuid

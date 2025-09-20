@@ -2966,7 +2966,7 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
 
         self.assert_no_features(response)
 
-    def test_it_returns_workouts_with_geometry_as_feature_collection(
+    def test_it_returns_workouts_with_start_point_as_feature_collection(
         self,
         app: "Flask",
         user_1: "User",
@@ -2991,24 +2991,18 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
         assert "success" in data["status"]
         assert data["data"] == {
             "bbox": [
-                6.07355,
-                44.67822,
-                6.07442,
+                6.07367,
+                44.68095,
+                6.07367,
                 44.68095,
             ],
             "features": [
                 {
                     "type": "Feature",
-                    "geometry": json.loads(
-                        to_geojson(
-                            MultiLineString(
-                                [
-                                    workout_cycling_user_1_segment_0_coordinates,
-                                    workout_cycling_user_1_segment_1_coordinates,
-                                ]
-                            )
-                        )
-                    ),
+                    "geometry": {
+                        "coordinates": [6.07367, 44.68095],
+                        "type": "Point",
+                    },
                     "properties": {
                         "bounds": (
                             workout_cycling_user_1_with_coordinates.bounds
@@ -3084,24 +3078,18 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
         assert "success" in data["status"]
         assert data["data"] == {
             "bbox": [
-                6.07355,
-                44.67822,
-                6.07442,
+                6.07367,
+                44.68095,
+                6.07367,
                 44.68095,
             ],
             "features": [
                 {
                     "type": "Feature",
-                    "geometry": json.loads(
-                        to_geojson(
-                            MultiLineString(
-                                [
-                                    workout_cycling_user_1_segment_0_coordinates,
-                                    workout_cycling_user_1_segment_1_coordinates,
-                                ]
-                            )
-                        )
-                    ),
+                    "geometry": {
+                        "coordinates": [6.07367, 44.68095],
+                        "type": "Point",
+                    },
                     "properties": {
                         "bounds": (
                             workout_cycling_user_1_with_coordinates.bounds
@@ -3136,27 +3124,6 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
         )
 
         self.assert_400(response, error_message="invalid sport_ids")
-
-    def test_it_returns_500_when_workout_is_invalid(
-        self,
-        app: "Flask",
-        user_1: "User",
-        sport_1_cycling: "Sport",
-        workout_cycling_user_1: "Workout",
-        workout_cycling_user_1_segment: "WorkoutSegment",
-    ) -> None:
-        # should not happen
-        workout_cycling_user_1.original_file = "some.file.gpx"
-        db.session.commit()
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.get(
-            self.route, headers=dict(Authorization=f"Bearer {auth_token}")
-        )
-
-        self.assert_500(response)
 
     def test_it_returns_workouts_created_after_from_date(
         self,

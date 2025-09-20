@@ -724,6 +724,34 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         db.session.refresh(workout_running_user_1)
         assert float(workout_running_user_1.distance) == 0.318  # type: ignore[arg-type]
 
+    def test_it_refreshes_only_workout_without_start_point_geometry(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_running_user_1_with_coordinates: "Workout",
+        workout_running_user_1_segment_with_coordinates: "WorkoutSegment",
+        tcx_with_one_lap_and_one_track: str,
+    ) -> None:
+        workout_running_user_1_with_coordinates.start_point_geom = None
+        service = WorkoutsFromFileRefreshService(
+            logger=test_logger, add_geometry=True
+        )
+
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=tcx_with_one_lap_and_one_track,
+        ):
+            count = service.refresh()
+
+        assert count == 1
+        db.session.refresh(workout_running_user_1_with_coordinates)
+        assert float(workout_running_user_1_with_coordinates.distance) == 0.318  # type: ignore[arg-type]
+
     @pytest.mark.parametrize(
         "input_params",
         [
