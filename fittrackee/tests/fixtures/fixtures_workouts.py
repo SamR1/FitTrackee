@@ -163,6 +163,9 @@ def workout_cycling_user_1_with_coordinates() -> Workout:
     update_workout(workout)
     workout.bounds = [44.67822, 6.07355, 44.68095, 6.07442]
     db.session.add(workout)
+    workout.gpx = "workouts/1/example.gpx"
+    workout.original_file = "workouts/1/example.tcx"
+    workout.store_start_point_geometry([6.07367, 44.68095])
     db.session.commit()
     return workout
 
@@ -614,6 +617,50 @@ def workout_running_user_1_segment(
     db.session.add(workout_segment)
     workout_running_user_1.gpx = "workouts/1/example.gpx"
     workout_running_user_1.original_file = "workouts/1/example.tcx"
+    db.session.commit()
+    return workout_segment
+
+
+@pytest.fixture()
+def workout_running_user_1_with_coordinates() -> Workout:
+    workout = Workout(
+        user_id=1,
+        sport_id=2,
+        # workout_date: 'Mon, 02 Apr 2018 00:00:00 GMT'
+        workout_date=datetime(2018, 4, 2, tzinfo=timezone.utc),
+        distance=12,
+        duration=timedelta(seconds=6000),
+    )
+    update_workout(workout)
+    db.session.add(workout)
+    workout.gpx = "workouts/2/example.gpx"
+    workout.original_file = "workouts/2/example.tcx"
+    workout.store_start_point_geometry([6.07364, 44.67977])
+    db.session.commit()
+    return workout
+
+
+@pytest.fixture()
+def workout_running_user_1_segment_with_coordinates(
+    workout_running_user_1_with_coordinates: Workout,
+) -> WorkoutSegment:
+    workout_segment = WorkoutSegment(
+        workout_id=workout_running_user_1_with_coordinates.id,
+        workout_uuid=workout_running_user_1_with_coordinates.uuid,
+        segment_id=0,
+    )
+    workout_segment.duration = workout_running_user_1_with_coordinates.duration
+    workout_segment.distance = workout_running_user_1_with_coordinates.distance
+    update_workout(workout_segment)
+    db.session.add(workout_segment)
+    workout_segment.store_geometry(
+        [
+            [6.07364, 44.67977],
+            [6.07367, 44.67972],
+            [6.07368, 44.67966],
+            [6.0737, 44.67961],
+        ]
+    )
     db.session.commit()
     return workout_segment
 

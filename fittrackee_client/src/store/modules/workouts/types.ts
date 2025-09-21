@@ -28,6 +28,7 @@ import type {
   IWorkoutContentEdition,
   ILikesPayload,
   TWorkoutsStatistics,
+  TWorkoutsMapPayload,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
@@ -58,6 +59,10 @@ export interface IWorkoutsActions {
   [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_COLLECTION](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: TWorkoutsPayload
+  ): void
+  [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_FOR_GLOBAl_MAP](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: TWorkoutsMapPayload
   ): void
   [WORKOUTS_STORE.ACTIONS.GET_TIMELINE_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
@@ -143,6 +148,10 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     query: string
   ): void
+  [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_GEOJSON](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    workoutId: string
+  ): void
 }
 
 export interface IWorkoutsGetters {
@@ -159,6 +168,9 @@ export interface IWorkoutsGetters {
     state: IWorkoutsState
   ): IWorkoutContentEdition
   [WORKOUTS_STORE.GETTERS.WORKOUT_DATA](state: IWorkoutsState): IWorkoutData
+  [WORKOUTS_STORE.GETTERS.WORKOUT_GEOJSON](
+    state: IWorkoutsState
+  ): GeoJSON | null
   [WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION](
     state: IWorkoutsState
   ): IPagination
@@ -218,7 +230,7 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX](state: S, gpx: string): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON](
     state: S,
-    geojson: GeoJSON
+    geojson: GeoJSON | null
   ): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING](
     state: S,

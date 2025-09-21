@@ -65,6 +65,7 @@ def update_app_config_from_database(
                 )
             ),
             "stats_workouts_limit": db_config.stats_workouts_limit,
+            "global_map_workouts_limit": db_config.global_map_workouts_limit,
         }
     )
 
@@ -85,6 +86,10 @@ def verify_app_config(config_data: Dict) -> List:
         ("file_limit_import", "max files in a zip archive"),
         ("max_single_file_size", "max size of uploaded files"),
         ("max_zip_file_size", "max size of zip archive"),
+        (
+            "global_map_workouts_limit",
+            "max number of workouts display on global map",
+        ),
     ]
     for param, label in params:
         if param in config_data and config_data[param] <= 0:

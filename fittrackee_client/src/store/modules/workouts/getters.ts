@@ -50,4 +50,7 @@ export const getters: GetterTree<IWorkoutsState, IRootState> &
   [WORKOUTS_STORE.GETTERS.MAP_LOADING]: (state: IWorkoutsState) => {
     return state.mapLoading
   },
+  [WORKOUTS_STORE.GETTERS.WORKOUT_GEOJSON]: (state: IWorkoutsState) => {
+    return state.workoutData.geojson
+  },
 }

@@ -7,7 +7,7 @@ from typing import Dict
 import pytest
 from flask import Flask
 from geoalchemy2.shape import to_shape
-from shapely import LineString
+from shapely import LineString, Point
 from sqlalchemy.exc import IntegrityError
 
 from fittrackee import db
@@ -3184,6 +3184,26 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "with_geometry": False,
             "with_gpx": True,
         }
+
+
+class TestWorkoutModel(WorkoutModelTestCase):
+    def test_it_stores_start_point_as_point_geometry(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        first_point_coordinates = [6.07367, 44.68095]
+
+        workout_cycling_user_1.store_start_point_geometry(
+            first_point_coordinates
+        )
+        db.session.commit()
+
+        assert to_shape(
+            workout_cycling_user_1.start_point_geom  # type: ignore[arg-type]
+        ) == Point(first_point_coordinates)
 
 
 class TestWorkoutSegmentModel:

@@ -71,6 +71,7 @@ import CommentView from '@/views/workouts/CommentView.vue'
 import EditWorkout from '@/views/workouts/EditWorkout.vue'
 import Likes from '@/views/workouts/Likes.vue'
 import Workout from '@/views/workouts/Workout.vue'
+import WorkoutsGlobalMapView from '@/views/workouts/WorkoutsGlobalMapView.vue'
 import WorkoutsView from '@/views/workouts/WorkoutsView.vue'
 
 const { t } = createI18n.global
@@ -596,6 +597,16 @@ const routes: RouteRecordRaw[] = [
     component: WorkoutsView,
     meta: {
       title: 'workouts.WORKOUT',
+      count: 0,
+      allowedToSuspendedUser: false,
+    },
+  },
+  {
+    path: '/workouts/map',
+    name: 'WorkoutsMap',
+    component: WorkoutsGlobalMapView,
+    meta: {
+      title: 'workouts.WORKOUTS_MAP',
       count: 0,
       allowedToSuspendedUser: false,
     },

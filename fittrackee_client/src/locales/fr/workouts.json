@@ -45,6 +45,7 @@
   "EXIT_FULLSCREEN": "Sortir du plein-écran",
   "EXIT_HEATMAP": "Quitter la carte de thermique (heatmap)",
   "FROM": "à partir de",
+  "GLOBAL_MAP": "Carte globale",
   "HEART_RATE": "fréq. cardiaque",
   "HIDE_FILTERS": "masquer les filtres",
   "HIDE_MAP": "masquer la carte",
@@ -110,6 +111,7 @@
   "NO_WORKOUTS": "Pas de séance. | Pas de séances.",
   "NO_WORKOUTS_TO_DISPLAY": "Aucune séance à afficher",
   "NO_WORKOUT_AVAILABLE": "La séance a été supprimée ou n'est pas visible.",
+  "ON_MAP": "sur la carte",
   "PAUSES": "pauses",
   "POWER": "puissance",
   "PREVIOUS_SEGMENT": "Segment précédent",
@@ -148,6 +150,8 @@
   "TOTAL_DESCENT": "dénivelé négatif total",
   "TOTAL_DISTANCE": "distance totale",
   "TOTAL_DURATION": "durée totale",
+  "TOTAL_WORKOUTS_LIMIT_EXCEEDED": "limite sur le nombre de séances dépassée, les entraînements les plus récents sont affichés",
+  "TOTAL_WORKOUTS_WITH_LOCATION": "nombre total d'entraînements avec une localisation",
   "UNITS": {
     "bpm": {
       "LABEL": "battements par minute",
@@ -207,6 +211,7 @@
   "WITHOUT_FILE": "sans fichier",
   "WITH_FILE": "avec un fichier",
   "WORKOUT": "séance | séances",
+  "WORKOUTS_FEATURES_DISPLAY_CONFIRMATION": "Afficher un grand nombre de séances peut résulter en des lenteurs du navigateur ou des erreurs. Vous pouvez réduire le nombres en utilisant les filtres. Souhaitez-vous quand même afficher toutes les séances ?",
   "WORKOUTS_MAP": "carte des séances",
   "WORKOUTS_STATISTICS": {
     "all": "statistiques pour toutes les pages ({count} séances)",
