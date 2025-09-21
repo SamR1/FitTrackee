@@ -4,8 +4,8 @@
       v-if="displayModal"
       :title="$t('common.CONFIRMATION')"
       :message="$t('workouts.WORKOUTS_FEATURES_DISPLAY_CONFIRMATION')"
-      @confirmAction="displayAllWorkouts"
-      @cancelAction="displayModal = false"
+      @confirmAction="displayAllWorkouts()"
+      @cancelAction="cancelAllWorkoutsDisplay()"
       @keydown.esc="displayModal = false"
     />
     <div class="map-loading">
@@ -229,6 +229,11 @@
       displayedWorkoutsCollection.features = workoutsCollection.value.features
     }, 100)
   }
+  function cancelAllWorkoutsDisplay() {
+    displayModal.value = false
+    displayedWorkoutsCollection.bbox = []
+    displayedWorkoutsCollection.features = []
+  }
   function getWorkoutToDisplay() {
     const workoutFeature = workoutsCollection.value.features.find(
       (workout) => workout.properties.id === displayedWorkoutId.value
@@ -327,15 +332,17 @@
   watch(
     () => workoutsCollection.value.features,
     (newFeatures: IWorkoutFeature[]) => {
+      if (workoutsCollection.value.bbox.length === 0) {
+        zoom.value = 1
+      }
+      fitBounds(bounds.value)
       if (newFeatures.length <= limitForModal) {
         displayedWorkoutsCollection.features = newFeatures
         return
       }
       displayModal.value = true
     },
-    {
-      deep: true,
-    }
+    { immediate: true }
   )
   watch(
     () => displayedWorkout.value,

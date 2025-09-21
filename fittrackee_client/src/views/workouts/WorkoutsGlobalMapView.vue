@@ -15,10 +15,10 @@
               <label for="from"> {{ $t('workouts.FROM') }}: </label>
               <input
                 id="from"
+                :disabled="disableMap"
                 name="from"
                 type="date"
-                :disabled="disableMap"
-                :value="$route.query.from"
+                v-model="params.from"
                 @change="handleFilterChange"
               />
             </div>
@@ -26,10 +26,10 @@
               <label for="to"> {{ $t('workouts.TO') }}: </label>
               <input
                 id="to"
+                :disabled="disableMap"
                 name="to"
                 type="date"
-                :value="$route.query.to"
-                :disabled="disableMap"
+                v-model="params.to"
                 @change="handleFilterChange"
               />
             </div>
@@ -58,14 +58,16 @@
               type="submit"
               class="confirm"
               @click="onFilter"
-              :disabled="mapLoading || selectedSportIds.length === 0"
+              :disabled="
+                mapLoading || selectedSportIds.length === 0 || disableButtons
+              "
             >
               {{ $t('buttons.FILTER') }}
             </button>
             <button
               class="confirm"
               @click="onClearFilter"
-              :disabled="disableMap"
+              :disabled="disableMap || JSON.stringify(params) === '{}'"
             >
               {{ $t('buttons.CLEAR_FILTER') }}
             </button>
@@ -80,7 +82,8 @@
   import { capitalize, computed, onBeforeMount, ref, watch } from 'vue'
   import type { Ref, ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { type LocationQuery, useRoute, useRouter } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
+  import type { LocationQuery } from 'vue-router'
 
   import SportsMenu from '@/components/Statistics/StatsSportsMenu.vue'
   import WorkoutsMap from '@/components/Workouts/WorkoutsMap.vue'
@@ -103,7 +106,9 @@
 
   const paramsKeys: TMapParamsKeys[] = ['to', 'from', 'sport_ids']
 
-  let params: TWorkoutsMapPayload = getWorkoutsMapQuery(route.query)
+  const mapLoading: ComputedRef<boolean> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.MAP_LOADING]
+  )
   const authUser: ComputedRef<IAuthUserProfile> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE]
   )
@@ -115,24 +120,23 @@
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     translateSports(sports.value, t)
   )
-  const selectedSportIds: Ref<number[]> = ref(getSports(userSports.value))
-  const mapLoading: ComputedRef<boolean> = computed(
-    () => store.getters[WORKOUTS_STORE.GETTERS.MAP_LOADING]
-  )
   const userHasWorkouts: ComputedRef<boolean> = computed(
     () => userSports.value.length > 0
   )
   const disableMap: ComputedRef<boolean> = computed(
     () => mapLoading.value || !userHasWorkouts.value
   )
+  const params: Ref<TWorkoutsMapPayload> = ref(getWorkoutsMapQuery(route.query))
+  const selectedSportIds: Ref<number[]> = ref(getSports(userSports.value))
+  const disableButtons: Ref<boolean> = ref(true)
 
   function handleFilterChange(event: Event) {
     const name = (event.target as HTMLInputElement).name as TMapParamsKeys
     const value = (event.target as HTMLInputElement).value
     if (value === '') {
-      delete params[name]
+      delete params.value[name]
     } else {
-      params[name] = value
+      params.value[name] = value
     }
   }
   function loadWorkouts(payload: TWorkoutsMapPayload) {
@@ -153,9 +157,9 @@
       selectedSportIds.value.push(sportId)
     }
     if (selectedSportIds.value.length === 0) {
-      delete params.sport_ids
+      delete params.value.sport_ids
     } else {
-      params.sport_ids = selectedSportIds.value.join(',')
+      params.value.sport_ids = selectedSportIds.value.join(',')
     }
   }
   function getWorkoutsMapQuery(
@@ -171,17 +175,33 @@
     })
     return newQuery
   }
+  function push(query: TWorkoutsMapPayload) {
+    disableButtons.value = true
+    router.push({ path: '/workouts/map', query })
+  }
   function onClearFilter() {
-    router.push({ path: '/workouts/map', query: {} })
+    selectedSportIds.value = getSports(userSports.value)
+    delete params.value.sport_ids
+    push({})
   }
   function onFilter() {
-    router.push({ path: '/workouts/map', query: params })
+    push(params.value)
   }
 
   watch(
     () => route.query,
     async (newQuery) => {
-      loadWorkouts(getWorkoutsMapQuery(newQuery))
+      params.value = getWorkoutsMapQuery(newQuery)
+      loadWorkouts(params.value)
+    }
+  )
+  watch(
+    () => params,
+    async () => {
+      disableButtons.value = false
+    },
+    {
+      deep: true,
     }
   )
   watch(
@@ -196,7 +216,7 @@
     if (!appConfig.value.enable_geospatial_features) {
       router.push('/')
     }
-    loadWorkouts(params)
+    loadWorkouts(params.value)
   })
 </script>
 
