@@ -184,8 +184,11 @@
   const { appConfig } = useApp()
 
   // on some browsers or low-resource devices, displaying a large number of
-  // features may result in crashes
-  const limitForModal = 5000
+  // features may cause slowness or errors.
+  // when features count exceed following limit, a modal appears to
+  // confirm the display of markers.
+  const limitForModalDisplay = 3000
+
   let progress: HTMLElement | null = null
   let progressBar: HTMLElement | null = null
 
@@ -336,7 +339,7 @@
         zoom.value = 1
       }
       fitBounds(bounds.value)
-      if (newFeatures.length <= limitForModal) {
+      if (newFeatures.length <= limitForModalDisplay) {
         displayedWorkoutsCollection.features = newFeatures
         return
       }
