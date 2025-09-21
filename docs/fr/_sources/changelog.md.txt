@@ -1,5 +1,26 @@
 # Change log
 
+## Version 1.0.0b2 (2025/09/21)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+**Warning:**  
+- if upgrading from v1.0.b1, the refresh command (Workout CLI) must be re-executed.
+- This release contains database migrations (see upgrade instructions in [documentation](https://next.docs.fittrackee.org/en/installation.html#upgrade))
+
+### Features and enhancements
+
+* [PR#930](https://github.com/SamR1/FitTrackee/pull/930) - Client - Add message on location filter
+* [PR#932](https://github.com/SamR1/FitTrackee/pull/932) - API - add cache on Nominatim API calls
+* [PR#937](https://github.com/SamR1/FitTrackee/pull/937) - Display workouts on a global map
+
+### Misc
+
+* [PR#933](https://github.com/SamR1/FitTrackee/pull/933) - API - `/api/workouts/collection` endpoint improvement
+* [PR#934](https://github.com/SamR1/FitTrackee/pull/934) - Client - update type annotations
+
+
 ## Version 1.0.0b1 (2025/09/10)
 
 **This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  

@@ -444,6 +444,26 @@ Statistics
   | If the limit is reached, the number of workouts used is displayed.
   | The total number of workouts for a given sport is not affected by this limit.
 
+
+Global map
+==========
+
+.. versionadded:: 1.0.0
+
+- User workouts can be displayed on a global map and filtered by:
+
+  - date
+  - sports
+
+.. note::
+  | If the number of workouts exceeds 3000, a modal appears to confirm the display.
+  | Depending on the browser and device used, displaying a large number of workouts may cause browser slowness or errors.
+
+
+.. warning::
+  Global map require the environment variable `ENABLE_GEOSPATIAL_FEATURES <installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES>`_ to be set to ``True``. Otherwise it is not available.
+
+
 Account & preferences
 =====================
 
@@ -581,7 +601,13 @@ The following parameters can be set:
 .. note::
   When upgrading to v0.10.0, asynchronous download is disabled, since both values are equal.
 
-- maximum number of workouts for sport statistics (default: 10.000). If 0, all workouts are fetched to calculate statistics (*new in 0.8.5*)
+- maximum number of workouts for sport statistics (default: 10,000). If 0, all workouts are fetched to calculate statistics (*new in 0.8.5*)
+- maximum number of workouts displayed on global map (default: 10,000), this value can not exceed 50,000 workouts (*new in 1.0.0*)
+
+.. note::
+  | The maximum number of workouts for statistics or the global map must be defined according to the server capabilities.
+  | In the case of the global map, this value also has an impact on the rendering performance on the client side (depending on the browser and the capabilities of the device displaying the map).
+
 - administrator email for contact (*new in 0.6.0*)
 
 .. warning::

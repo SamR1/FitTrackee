@@ -456,7 +456,8 @@ Global map
   - sports
 
 .. note::
-  If the number of workouts exceeds 3000, a modal appears to confirm the display.
+  | If the number of workouts exceeds 3000, a modal appears to confirm the display.
+  | Depending on the browser and device used, displaying a large number of workouts may cause browser slowness or errors.
 
 
 .. warning::
@@ -601,7 +602,7 @@ The following parameters can be set:
   When upgrading to v0.10.0, asynchronous download is disabled, since both values are equal.
 
 - maximum number of workouts for sport statistics (default: 10,000). If 0, all workouts are fetched to calculate statistics (*new in 0.8.5*)
-- maximum number of workouts displyed on global map (default: 10,000), this value can not exceed 50,000 workouts (*new in 1.0.0*)
+- maximum number of workouts displayed on global map (default: 10,000), this value can not exceed 50,000 workouts (*new in 1.0.0*)
 
 .. note::
   | The maximum number of workouts for statistics or the global map must be defined according to the server capabilities.

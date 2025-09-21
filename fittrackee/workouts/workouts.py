@@ -895,7 +895,7 @@ def get_workouts_feature_collection(
                 },
                 "type": "Feature"
               }
-              ],
+            ],
             "type": "FeatureCollection"
           }
           "pagination": {
@@ -917,7 +917,9 @@ def get_workouts_feature_collection(
 
         {
           "data": {
-            "workouts": []
+            "bbox": [],
+            "features": [],
+            "type": "FeatureCollection"
           },
           "pagination": {
             "has_next": false,
@@ -1078,7 +1080,7 @@ def get_workouts_for_global_map(auth_user: User) -> Union[Dict, HttpResponse]:
               6.07367,
               44.68095,
               6.07367,
-              44.68095,
+              44.68095
             ],
             "features": [
               {
@@ -1103,9 +1105,9 @@ def get_workouts_for_global_map(auth_user: User) -> Union[Dict, HttpResponse]:
                 },
                 "type": "Feature"
               }
-              ],
-            "limit_exceeded": False,
-            "type": "FeatureCollection",
+            ],
+            "limit_exceeded": false,
+            "type": "FeatureCollection"
           }
           "status": "success"
         }
@@ -1121,10 +1123,10 @@ def get_workouts_for_global_map(auth_user: User) -> Union[Dict, HttpResponse]:
           "data": {
             "bbox": [],
             "features": [],
-            "limit_exceeded": False,
-            "type": "FeatureCollection",
+            "limit_exceeded": false,
+            "type": "FeatureCollection"
           },
-          "status": "success",
+          "status": "success"
         }
 
     :query string from: start date (format: ``%Y-%m-%d``)

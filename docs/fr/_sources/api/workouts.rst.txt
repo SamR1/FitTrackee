@@ -5,6 +5,7 @@ Workouts
    :endpoints:
     workouts.get_workouts,
     workouts.get_workouts_feature_collection,
+    workouts.get_workouts_for_global_map,
     workouts.get_workout,
     workouts.get_workout_geojson,
     workouts.get_segment_geojson,
