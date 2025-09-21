@@ -10,6 +10,11 @@
             {{ pagination.total || 0 }}
             {{ $t('workouts.WORKOUT', pagination.total || 0) }}
           </span>
+          <span
+            v-if="displayMap && pagination.total !== workoutsDisplayedOnMap"
+          >
+            ({{ $t('workouts.ON_MAP') }}: {{ workoutsDisplayedOnMap }})
+          </span>
         </div>
         <div class="buttons">
           <div class="spacer" />
@@ -499,6 +504,11 @@
 
   const workouts: ComputedRef<IWorkout[]> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS]
+  )
+  const workoutsDisplayedOnMap: ComputedRef<number> = computed(
+    () =>
+      store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS_COLLECTION]
+        .features.length
   )
   const noGeometries: ComputedRef<boolean> = computed(() =>
     workouts.value.every((workout) => !workout.with_gpx)
