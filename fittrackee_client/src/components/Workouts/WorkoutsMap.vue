@@ -1,7 +1,15 @@
 <template>
   <div id="workouts-map">
+    <Modal
+      v-if="displayModal"
+      :title="$t('common.CONFIRMATION')"
+      :message="$t('workouts.WORKOUTS_FEATURES_DISPLAY_CONFIRMATION')"
+      @confirmAction="displayAllWorkouts"
+      @cancelAction="displayModal = false"
+      @keydown.esc="displayModal = false"
+    />
     <div class="map-loading">
-      <div v-if="mapLoading">
+      <div v-if="mapLoading || loadingFeatures">
         {{ $t('common.DATA_IS_LOADING') }}
         <i class="fa fa-refresh fa-spin fa-fw"></i>
       </div>
@@ -100,7 +108,7 @@
             :chunk-progress="updateProgressBar"
           >
             <CustomWorkoutMarker
-              v-for="feature in workoutsCollection.features"
+              v-for="feature in displayedWorkoutsCollection.features"
               :sport="getSportLabel(feature.properties, translatedSports)"
               :color="getSportColor(feature.properties, translatedSports)"
               :markerCoordinates="getMarkerCoordinates(feature.geometry)"
@@ -132,8 +140,16 @@
   } from '@vue-leaflet/vue-leaflet'
   import type { MultiLineString, Point } from 'geojson'
   import { type PointExpression, type LatLngBoundsLiteral } from 'leaflet'
-  import { computed, ref, onUnmounted, toRefs, watch, onMounted } from 'vue'
-  import type { ComputedRef, Ref } from 'vue'
+  import {
+    computed,
+    onMounted,
+    onUnmounted,
+    reactive,
+    ref,
+    toRefs,
+    watch,
+  } from 'vue'
+  import type { ComputedRef, Reactive, Ref } from 'vue'
   import { LMarkerClusterGroup } from 'vue-leaflet-markercluster'
 
   import 'leaflet/dist/leaflet.css'
@@ -167,13 +183,27 @@
 
   const { appConfig } = useApp()
 
+  // on some browsers or low-resource devices, displaying a large number of
+  // features may result in crashes
+  const limitForModal = 5000
   let progress: HTMLElement | null = null
   let progressBar: HTMLElement | null = null
+
   const isMapReady: Ref<boolean> = ref(false)
   const isFullscreen: Ref<boolean> = ref(false)
+  const loadingFeatures: Ref<boolean> = ref(false)
+  const displayModal: Ref<boolean> = ref(false)
   const workoutsMap: Ref<ILeafletObject | null> = ref(null)
   const zoom: Ref<number> = ref(1)
   const displayedWorkoutId: Ref<string | null> = ref(null)
+  const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
+
+  const displayedWorkoutsCollection: Reactive<IWorkoutsFeatureCollection> =
+    reactive({
+      type: 'FeatureCollection',
+      features: [],
+      bbox: [],
+    })
 
   const mapLoading: ComputedRef<boolean> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.MAP_LOADING]
@@ -189,6 +219,15 @@
 
   function getWorkoutGeoJSON(workoutId: string) {
     store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_GEOJSON, workoutId)
+  }
+  function displayAllWorkouts() {
+    displayModal.value = false
+    loadingFeatures.value = true
+    progress!.style.display = 'block'
+    timer.value = setTimeout(() => {
+      displayedWorkoutsCollection.bbox = workoutsCollection.value.bbox
+      displayedWorkoutsCollection.features = workoutsCollection.value.features
+    }, 100)
   }
   function getWorkoutToDisplay() {
     const workoutFeature = workoutsCollection.value.features.find(
@@ -266,7 +305,8 @@
       }, 100)
     }
   }
-  // From https://github.com/Leaflet/Leaflet.markercluster/blob/master/example/marker-clustering-realworld.50000.html
+  // adapted from
+  // https://github.com/Leaflet/Leaflet.markercluster/blob/master/example/marker-clustering-realworld.50000.html
   function updateProgressBar(
     processed: number,
     total: number,
@@ -279,10 +319,24 @@
       }
       if (!mapLoading.value && processed === total) {
         progress.style.display = 'none'
+        loadingFeatures.value = false
       }
     }
   }
 
+  watch(
+    () => workoutsCollection.value.features,
+    (newFeatures: IWorkoutFeature[]) => {
+      if (newFeatures.length <= limitForModal) {
+        displayedWorkoutsCollection.features = newFeatures
+        return
+      }
+      displayModal.value = true
+    },
+    {
+      deep: true,
+    }
+  )
   watch(
     () => displayedWorkout.value,
     (newWorkout: IWorkoutFeature | undefined) => {
@@ -300,6 +354,9 @@
     progressBar = document.getElementById('progress-bar')
   })
   onUnmounted(() => {
+    if (timer.value) {
+      clearTimeout(timer.value)
+    }
     store.commit(WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION, {
       bbox: [],
       features: [],

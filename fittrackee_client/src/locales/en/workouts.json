@@ -209,6 +209,7 @@
   "WITHOUT_FILE": "without file",
   "WITH_FILE": "with file",
   "WORKOUT": "workout | workouts",
+  "WORKOUTS_FEATURES_DISPLAY_CONFIRMATION": "Displaying a large number of workouts may result in browser slowness or errors. You can reduce the number by using filters. Do you still want to display all workouts?",
   "WORKOUTS_MAP": "workouts map",
   "WORKOUTS_STATISTICS": {
     "all": "statistics for all pages ({count} workouts)",

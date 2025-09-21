@@ -210,6 +210,7 @@
   "WITHOUT_FILE": "sans fichier",
   "WITH_FILE": "avec un fichier",
   "WORKOUT": "séance | séances",
+  "WORKOUTS_FEATURES_DISPLAY_CONFIRMATION": "Afficher un grand nombre de séances peut résulter en des lenteurs du navigateur ou des erreurs. Vous pouvez réduire le nombres en utilisant les filtres. Souhaitez-vous quand même afficher toutes les séances ?",
   "WORKOUTS_MAP": "carte des séances",
   "WORKOUTS_STATISTICS": {
     "all": "statistiques pour toutes les pages ({count} séances)",
