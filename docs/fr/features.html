@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/ft-logo.png" as="image" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
-        <title>Fonctionnalités - Documentation FitTrackee 1.0.0b1</title>
+        <title>Fonctionnalités - Documentation FitTrackee 1.0.0b2</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -170,7 +170,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 1.0.0b1
+      <a href="index.html"><div class="brand">Documentation FitTrackee 1.0.0b2
 </div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 1.0.0b1
+  <span class="sidebar-brand-text">Documentation FitTrackee 1.0.0b2
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -902,6 +902,31 @@
 </div>
 </div>
 </section>
+<section id="global-map">
+<h2>Carte Globale<a class="headerlink" href="#global-map" title="Lien vers cette rubrique">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 1.0.0.</span></p>
+</div>
+<ul class="simple">
+<li><p>Les séances peuvent être affichées sur une carte globale et filtrées selon :</p>
+<ul>
+<li><p>la date</p></li>
+<li><p>sports</p></li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Si le nombre de séances dépasse les 3000, une modale apparait pour valider l'affichage.</div>
+<div class="line">Selon le navigateur et l'appareil utilisés, l'affichage d'un grand nombre des séances peut entraîner des ralentissements du navigateur ou des erreurs.</div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>La carte globale nécessite que la variable d'environnement <a class="reference external" href="installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES">ENABLE_GEOSPATIAL_FEATURES</a> soit configurée à <code class="docutils literal notranslate"><span class="pre">True</span></code>. Dans le cas contraire elle n'est pas disponible.</p>
+</div>
+</section>
 <section id="account-preferences">
 <h2>Compte et préférences<a class="headerlink" href="#account-preferences" title="Lien vers cette rubrique">¶</a></h2>
 <ul class="simple">
@@ -1078,6 +1103,16 @@
 </div>
 <ul class="simple">
 <li><p>nombre maximum de séances pour les statistiques d'un sport (par défaut : 10 000). S'il est égal à 0, toutes les séances sont récupérées pour calculer les statistiques (<em>nouveau dans la version 0.8.5</em>)</p></li>
+<li><p>nombre maximum de séances affichées sur la carte globale (par défaut : 10000), cette valeur ne peut pas dépasser 50000 (<em>nouveau dans la version 1.0.0</em>)</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Le nombre maximal de séances pour les statistiques ou la carte globale doit être défini en fonction des capacités du serveur.</div>
+<div class="line">Dans le cas de la carte globale, cette valeur a également un impact sur les performances de rendu côté client (en fonction du navigateur et des capacités de l'appareil affichant la carte).</div>
+</div>
+</div>
+<ul class="simple">
 <li><p>adresse électronique pour contacter l'administrateur (<em>nouveau dans la version 0.6.0</em>)</p></li>
 </ul>
 <div class="admonition warning">
@@ -1119,8 +1154,8 @@
 </div>
 </section>
 </section>
-<section id="id2">
-<h3>Utilisateurs<a class="headerlink" href="#id2" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id3">
+<h3>Utilisateurs<a class="headerlink" href="#id3" title="Lien vers cette rubrique">¶</a></h3>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 0.9.0: </span>Ajout des rôles de modérateur et propriétaire</p>
 </div>
@@ -1217,8 +1252,8 @@
 <li><p>activer ou désactiver un type d'équipement afin de correspondre aux sports désactivés (un type d'équipement peut être désactivé même si un équipement pour ce type existe) (<em>nouveau dans la version 0.8.0</em>).</p></li>
 </ul>
 </section>
-<section id="id3">
-<h3>Sports<a class="headerlink" href="#id3" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id4">
+<h3>Sports<a class="headerlink" href="#id4" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Seuls les utilisateurs ayant des droits d'administration peuvent accéder à l'administration des sports.</p></li>
 <li><p>activer ou désactiver un sport (un sport peut être désactivé même si une séance avec ce sport existe).</p></li>
@@ -1268,8 +1303,8 @@
 </section>
 <section id="screenshots">
 <h2>Captures d'écran<a class="headerlink" href="#screenshots" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id4">
-<h3>Tableau de bord<a class="headerlink" href="#id4" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id5">
+<h3>Tableau de bord<a class="headerlink" href="#id5" title="Lien vers cette rubrique">¶</a></h3>
 <figure class="align-default">
 <img alt="Tableau de bord sur FitTrackee" src="_images/dashboard.png" />
 </figure>
@@ -1320,8 +1355,8 @@
 <img alt="carte des séances sur FitTrackee" src="_images/workouts-map.png" />
 </figure>
 </section>
-<section id="id5">
-<h3>Statistiques<a class="headerlink" href="#id5" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id6">
+<h3>Statistiques<a class="headerlink" href="#id6" title="Lien vers cette rubrique">¶</a></h3>
 <figure class="align-default">
 <img alt="Statistics sur FitTrackee" src="_images/statistics-by-time-period.png" />
 </figure>
@@ -1329,8 +1364,8 @@
 <img alt="Statistiques pour un sport sur FitTrackee" src="_images/statistics-by-sport.png" />
 </figure>
 </section>
-<section id="id6">
-<h3>Équipements<a class="headerlink" href="#id6" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id7">
+<h3>Équipements<a class="headerlink" href="#id7" title="Lien vers cette rubrique">¶</a></h3>
 <figure class="align-default">
 <img alt="Équipements sur FitTrackee" src="_images/equipments-list.png" />
 </figure>
@@ -1338,8 +1373,8 @@
 <img alt="Détail d'un équipement sur FitTrackee" src="_images/equipment-detail.png" />
 </figure>
 </section>
-<section id="id7">
-<h3>Notifications<a class="headerlink" href="#id7" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id8">
+<h3>Notifications<a class="headerlink" href="#id8" title="Lien vers cette rubrique">¶</a></h3>
 <figure class="align-default">
 <img alt="Notifications sur FitTrackee" src="_images/notifications.png" />
 </figure>
@@ -1350,8 +1385,8 @@
 <img alt="Répertoire des utilisateurs sur FitTrackee" src="_images/users-directory.png" />
 </figure>
 </section>
-<section id="id8">
-<h3>Administration<a class="headerlink" href="#id8" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id9">
+<h3>Administration<a class="headerlink" href="#id9" title="Lien vers cette rubrique">¶</a></h3>
 <figure class="align-default">
 <img alt="Administration de FitTrackee" src="_images/administration-menu.png" />
 </figure>
@@ -1436,6 +1471,7 @@
 </li>
 <li><a class="reference internal" href="#dashboard">Tableau de bord</a></li>
 <li><a class="reference internal" href="#statistics">Statistiques</a></li>
+<li><a class="reference internal" href="#global-map">Carte Globale</a></li>
 <li><a class="reference internal" href="#account-preferences">Compte et préférences</a></li>
 <li><a class="reference internal" href="#equipments">Équipements</a></li>
 <li><a class="reference internal" href="#oauth-apps">Applications OAuth</a></li>
@@ -1446,24 +1482,24 @@
 <li><a class="reference internal" href="#privacy-policy">Politique de confidentialité</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id2">Utilisateurs</a></li>
+<li><a class="reference internal" href="#id3">Utilisateurs</a></li>
 <li><a class="reference internal" href="#moderation">Modération</a></li>
 <li><a class="reference internal" href="#equipment-types">Types d'équipement</a></li>
-<li><a class="reference internal" href="#id3">Sports</a></li>
+<li><a class="reference internal" href="#id4">Sports</a></li>
 <li><a class="reference internal" href="#queued-tasks">Tâches en attente</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#translations">Traductions</a></li>
 <li><a class="reference internal" href="#screenshots">Captures d'écran</a><ul>
-<li><a class="reference internal" href="#id4">Tableau de bord</a></li>
+<li><a class="reference internal" href="#id5">Tableau de bord</a></li>
 <li><a class="reference internal" href="#dashboard-on-mobile">Tableau de bord sur mobile</a></li>
 <li><a class="reference internal" href="#workout-detail">Page de détail d'une séance</a></li>
 <li><a class="reference internal" href="#workouts-list">Liste des séances</a></li>
-<li><a class="reference internal" href="#id5">Statistiques</a></li>
-<li><a class="reference internal" href="#id6">Équipements</a></li>
-<li><a class="reference internal" href="#id7">Notifications</a></li>
+<li><a class="reference internal" href="#id6">Statistiques</a></li>
+<li><a class="reference internal" href="#id7">Équipements</a></li>
+<li><a class="reference internal" href="#id8">Notifications</a></li>
 <li><a class="reference internal" href="#users-directory">Répertoire des utilisateurs</a></li>
-<li><a class="reference internal" href="#id8">Administration</a></li>
+<li><a class="reference internal" href="#id9">Administration</a></li>
 </ul>
 </li>
 </ul>
@@ -1477,7 +1513,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=815c7cfe"></script>
+</div><script src="_static/documentation_options.js?v=b6a4f694"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

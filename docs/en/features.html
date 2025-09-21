@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/ft-logo.png" as="image" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
-        <title>Features - FitTrackee 1.0.0b1 documentation</title>
+        <title>Features - FitTrackee 1.0.0b2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -170,7 +170,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 1.0.0b1
+      <a href="index.html"><div class="brand">FitTrackee 1.0.0b2
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -197,7 +197,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 1.0.0b1
+  <span class="sidebar-brand-text">FitTrackee 1.0.0b2
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -902,6 +902,31 @@
 </div>
 </div>
 </section>
+<section id="global-map">
+<h2>Global map<a class="headerlink" href="#global-map" title="Link to this heading">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.0.0.</span></p>
+</div>
+<ul class="simple">
+<li><p>User workouts can be displayed on a global map and filtered by:</p>
+<ul>
+<li><p>date</p></li>
+<li><p>sports</p></li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">If the number of workouts exceeds 3000, a modal appears to confirm the display.</div>
+<div class="line">Depending on the browser and device used, displaying a large number of workouts may cause browser slowness or errors.</div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Global map require the environment variable <a class="reference external" href="installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES">ENABLE_GEOSPATIAL_FEATURES</a> to be set to <code class="docutils literal notranslate"><span class="pre">True</span></code>. Otherwise it is not available.</p>
+</div>
+</section>
 <section id="account-preferences">
 <h2>Account &amp; preferences<a class="headerlink" href="#account-preferences" title="Link to this heading">¶</a></h2>
 <ul class="simple">
@@ -1078,7 +1103,17 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <p>When upgrading to v0.10.0, asynchronous download is disabled, since both values are equal.</p>
 </div>
 <ul class="simple">
-<li><p>maximum number of workouts for sport statistics (default: 10.000). If 0, all workouts are fetched to calculate statistics (<em>new in 0.8.5</em>)</p></li>
+<li><p>maximum number of workouts for sport statistics (default: 10,000). If 0, all workouts are fetched to calculate statistics (<em>new in 0.8.5</em>)</p></li>
+<li><p>maximum number of workouts displayed on global map (default: 10,000), this value can not exceed 50,000 workouts (<em>new in 1.0.0</em>)</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">The maximum number of workouts for statistics or the global map must be defined according to the server capabilities.</div>
+<div class="line">In the case of the global map, this value also has an impact on the rendering performance on the client side (depending on the browser and the capabilities of the device displaying the map).</div>
+</div>
+</div>
+<ul class="simple">
 <li><p>administrator email for contact (<em>new in 0.6.0</em>)</p></li>
 </ul>
 <div class="admonition warning">
@@ -1120,8 +1155,8 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 </div>
 </section>
 </section>
-<section id="id2">
-<h3>Users<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<section id="id3">
+<h3>Users<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.9.0: </span>Add moderator and owner role</p>
 </div>
@@ -1218,8 +1253,8 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><p>enable or disable an equipment type in order to match disabled sports (a equipment type can be disabled even if equipment with this type exists)  (<em>new in 0.8.0</em>).</p></li>
 </ul>
 </section>
-<section id="id3">
-<h3>Sports<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<section id="id4">
+<h3>Sports<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Only users with administration rights can access sports administration.</p></li>
 <li><p>Enable or disable a sport (a sport can be disabled even if workout with this sport exists).</p></li>
@@ -1269,8 +1304,8 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 </section>
 <section id="screenshots">
 <h2>Screenshots<a class="headerlink" href="#screenshots" title="Link to this heading">¶</a></h2>
-<section id="id4">
-<h3>Dashboard<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<section id="id5">
+<h3>Dashboard<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
 <figure class="align-default">
 <img alt="FitTrackee Dashboard" src="_images/dashboard.png" />
 </figure>
@@ -1321,8 +1356,8 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <img alt="FitTrackee Workouts Map" src="_images/workouts-map.png" />
 </figure>
 </section>
-<section id="id5">
-<h3>Statistics<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<section id="id6">
+<h3>Statistics<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
 <figure class="align-default">
 <img alt="FitTrackee Statistics" src="_images/statistics-by-time-period.png" />
 </figure>
@@ -1330,8 +1365,8 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <img alt="FitTrackee Sport Statistics" src="_images/statistics-by-sport.png" />
 </figure>
 </section>
-<section id="id6">
-<h3>Equipments<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<section id="id7">
+<h3>Equipments<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
 <figure class="align-default">
 <img alt="FitTrackee Equipments" src="_images/equipments-list.png" />
 </figure>
@@ -1339,8 +1374,8 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <img alt="FitTrackee Equipment Detail" src="_images/equipment-detail.png" />
 </figure>
 </section>
-<section id="id7">
-<h3>Notifications<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<section id="id8">
+<h3>Notifications<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
 <figure class="align-default">
 <img alt="FitTrackee Notifications" src="_images/notifications.png" />
 </figure>
@@ -1351,8 +1386,8 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <img alt="FitTrackee Users Directory" src="_images/users-directory.png" />
 </figure>
 </section>
-<section id="id8">
-<h3>Administration<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
+<section id="id9">
+<h3>Administration<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h3>
 <figure class="align-default">
 <img alt="FitTrackee Administration" src="_images/administration-menu.png" />
 </figure>
@@ -1437,6 +1472,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 </li>
 <li><a class="reference internal" href="#dashboard">Dashboard</a></li>
 <li><a class="reference internal" href="#statistics">Statistics</a></li>
+<li><a class="reference internal" href="#global-map">Global map</a></li>
 <li><a class="reference internal" href="#account-preferences">Account &amp; preferences</a></li>
 <li><a class="reference internal" href="#equipments">Equipments</a></li>
 <li><a class="reference internal" href="#oauth-apps">OAuth Apps</a></li>
@@ -1447,24 +1483,24 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><a class="reference internal" href="#privacy-policy">Privacy policy</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id2">Users</a></li>
+<li><a class="reference internal" href="#id3">Users</a></li>
 <li><a class="reference internal" href="#moderation">Moderation</a></li>
 <li><a class="reference internal" href="#equipment-types">Equipment Types</a></li>
-<li><a class="reference internal" href="#id3">Sports</a></li>
+<li><a class="reference internal" href="#id4">Sports</a></li>
 <li><a class="reference internal" href="#queued-tasks">Queued tasks</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#translations">Translations</a></li>
 <li><a class="reference internal" href="#screenshots">Screenshots</a><ul>
-<li><a class="reference internal" href="#id4">Dashboard</a></li>
+<li><a class="reference internal" href="#id5">Dashboard</a></li>
 <li><a class="reference internal" href="#dashboard-on-mobile">Dashboard on Mobile</a></li>
 <li><a class="reference internal" href="#workout-detail">Workout detail</a></li>
 <li><a class="reference internal" href="#workouts-list">Workouts list</a></li>
-<li><a class="reference internal" href="#id5">Statistics</a></li>
-<li><a class="reference internal" href="#id6">Equipments</a></li>
-<li><a class="reference internal" href="#id7">Notifications</a></li>
+<li><a class="reference internal" href="#id6">Statistics</a></li>
+<li><a class="reference internal" href="#id7">Equipments</a></li>
+<li><a class="reference internal" href="#id8">Notifications</a></li>
 <li><a class="reference internal" href="#users-directory">Users directory</a></li>
-<li><a class="reference internal" href="#id8">Administration</a></li>
+<li><a class="reference internal" href="#id9">Administration</a></li>
 </ul>
 </li>
 </ul>
@@ -1478,7 +1514,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=09d090fc"></script>
+</div><script src="_static/documentation_options.js?v=3e281a96"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
