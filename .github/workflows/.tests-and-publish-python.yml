@@ -7,8 +7,10 @@ on:
       'e2e/**',
       'pyproject.toml',
       'poetry.lock',
+      'VERSION',
       '.github/workflows/.tests-and-publish-python.yml',
-      '.github/workflows/.e2e-tests.yml'
+      '.github/workflows/.e2e-tests.yml',
+      '!fittrackee/dist/**'
     ]
   pull_request:
     paths: [
@@ -16,8 +18,10 @@ on:
       'e2e/**',
       'pyproject.toml',
       'poetry.lock',
+      'VERSION',
       '.github/workflows/.tests-and-publish-python.yml',
-      '.github/workflows/.e2e-tests.yml'
+      '.github/workflows/.e2e-tests.yml',
+      '!fittrackee/dist/**'
     ]
     types: [opened, synchronize, reopened]
 
