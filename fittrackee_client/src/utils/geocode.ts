@@ -2,10 +2,11 @@ import authApi from '@/api/authApi.ts'
 import type { ILocation } from '@/types/workouts.ts'
 
 export const getLocationFromCity = async (
-  city: string
+  city: string,
+  language: string
 ): Promise<ILocation[]> => {
   return await authApi
-    .get('/geocode/search', { params: { city } })
+    .get('/geocode/search', { params: { city, language } })
     .then((res) => {
       if (res.data.status === 'success') {
         return res.data.locations
@@ -19,10 +20,11 @@ export const getLocationFromCity = async (
 }
 
 export const getLocationFromOsmId = async (
-  osmId: string
+  osmId: string,
+  language: string
 ): Promise<ILocation> => {
   return await authApi
-    .get('/geocode/lookup', { params: { osm_id: osmId } })
+    .get('/geocode/lookup', { params: { osm_id: osmId, language } })
     .then((res) => {
       if (res.data.status === 'success') {
         return res.data.location

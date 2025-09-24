@@ -125,6 +125,28 @@ class TestGeocodeGetCoordinatesFromLocation(GeocodeTestCase):
             response, "error when getting coordinates from location"
         )
 
+    def test_it_calls_nominatim_api_with_language_when_provided(
+        self,
+        app: "Flask",
+        user_1: "User",
+    ) -> None:
+        city = "Paris"
+        language = "en"
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        with patch(
+            "fittrackee.geocode.routes.nominatim_service.get_locations_from_city",
+            return_value=[],
+        ) as nominatim_service_mock:
+            client.get(
+                f"{self.route}?city={city}&language={language}",
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        nominatim_service_mock.assert_called_once_with(city.lower(), language)
+
     def test_it_returns_nominatim_api_response(
         self,
         app: "Flask",
@@ -155,7 +177,7 @@ class TestGeocodeGetCoordinatesFromLocation(GeocodeTestCase):
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
-        nominatim_service_mock.assert_called_once_with(city.lower())
+        nominatim_service_mock.assert_called_once_with(city.lower(), None)
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
@@ -208,6 +230,31 @@ class TestGeocodeGetLocationFromId(GeocodeTestCase):
 
         self.assert_500(response, "error when getting location from OSM id")
 
+    def test_it_calls_nominatim_api_with_provided_language(
+        self,
+        app: "Flask",
+        user_1: "User",
+    ) -> None:
+        osm_id = "R71525"
+        language = "fr"
+
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        with patch(
+            "fittrackee.geocode.routes.nominatim_service.get_location_from_id",
+            return_value=[],
+        ) as nominatim_service_mock:
+            client.get(
+                f"{self.route}?osm_id={osm_id}&language={language}",
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        nominatim_service_mock.assert_called_once_with(
+            osm_id.lower(), language
+        )
+
     def test_it_returns_nominatim_api_response(
         self,
         app: "Flask",
@@ -236,7 +283,7 @@ class TestGeocodeGetLocationFromId(GeocodeTestCase):
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
-        nominatim_service_mock.assert_called_once_with(osm_id.lower())
+        nominatim_service_mock.assert_called_once_with(osm_id.lower(), None)
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert data["status"] == "success"

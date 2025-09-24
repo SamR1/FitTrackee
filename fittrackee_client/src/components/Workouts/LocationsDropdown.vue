@@ -56,6 +56,7 @@
   import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
 
+  import useApp from '@/composables/useApp.ts'
   import store from '@/store'
   import { WORKOUTS_STORE } from '@/store/constants.ts'
   import type { ILocation } from '@/types/workouts.ts'
@@ -68,6 +69,8 @@
   const { location } = toRefs(props)
 
   const { t, te } = useI18n()
+
+  const { appLanguage } = useApp()
 
   const emit = defineEmits(['updateCoordinates'])
 
@@ -196,7 +199,10 @@
       ) {
         timer.value = setTimeout(async () => {
           store.commit(WORKOUTS_STORE.MUTATIONS.SET_GEOCODE_LOADING, true)
-          locations.value = await getLocationFromCity(newValue)
+          locations.value = await getLocationFromCity(
+            newValue,
+            appLanguage.value
+          )
           store.commit(WORKOUTS_STORE.MUTATIONS.SET_GEOCODE_LOADING, false)
         }, 500)
       }

@@ -1,10 +1,20 @@
 import os
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import requests
 
 from fittrackee import VERSION, appLog
 from fittrackee.utils import TimedLRUCache
+
+
+def get_preferred_languages(language: Optional[str]) -> Dict:
+    if language:
+        return {
+            "accept-language": (
+                language if language == "en" else f"{language},en"
+            )
+        }
+    return {}
 
 
 class NominatimService:
@@ -21,12 +31,18 @@ class NominatimService:
         self.headers = {"User-Agent": f"FitTrackee v{VERSION}"}
 
     @TimedLRUCache(seconds=1800)  # 30 minutes
-    def get_locations_from_city(self, city: str) -> List[Dict]:
+    def get_locations_from_city(
+        self, city: str, language: Optional[str] = None
+    ) -> List[Dict]:
         url = f"{self.base_url}/search"
         appLog.debug(f"Nominatim: getting location for query: '{city}'")
         r = requests.get(
             url,
-            params={**self.params, "city": city},
+            params={
+                **self.params,
+                "city": city,
+                **get_preferred_languages(language),
+            },
             timeout=30,
             headers=self.headers,
         )
@@ -45,12 +61,18 @@ class NominatimService:
         ]
 
     @TimedLRUCache(seconds=1800)  # 30 minutes
-    def get_location_from_id(self, osm_id: str) -> Dict:
+    def get_location_from_id(
+        self, osm_id: str, language: Optional[str] = None
+    ) -> Dict:
         url = f"{self.base_url}/lookup"
         appLog.debug(f"Nominatim: getting location for id: '{osm_id}'")
         r = requests.get(
             url,
-            params={**self.params, "osm_ids": osm_id},
+            params={
+                **self.params,
+                "osm_ids": osm_id,
+                **get_preferred_languages(language),
+            },
             timeout=30,
             headers=self.headers,
         )

@@ -4499,7 +4499,7 @@ def nominatim_response() -> List:
             "importance": 0.5299938695221221,
             "addresstype": "town",
             "name": "Paris",
-            "display_name": "Paris, Lamar County, Texas, United States",
+            "display_name": "Paris, Lamar County, Texas, Etas-Unis d'Amérique",
             "boundingbox": [
                 "33.6206345",
                 "33.7383866",

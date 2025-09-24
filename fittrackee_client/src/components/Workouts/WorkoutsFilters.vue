@@ -399,6 +399,8 @@
   const store = useStore()
   const { t } = useI18n()
 
+  const { appLanguage } = useApp()
+
   let params: LocationQuery = Object.assign({}, route.query)
 
   const toUnit: ComputedRef<string> = computed(() =>
@@ -488,7 +490,10 @@
 
   onBeforeMount(async () => {
     if (route.query.osm_id) {
-      const result = await getLocationFromOsmId(route.query.osm_id as string)
+      const result = await getLocationFromOsmId(
+        route.query.osm_id as string,
+        appLanguage.value
+      )
       if (result.display_name) {
         location.value = result.display_name
         radius.value = (route.query.radius as string) || ''
