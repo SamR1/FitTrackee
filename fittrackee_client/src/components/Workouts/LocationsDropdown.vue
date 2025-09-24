@@ -123,20 +123,22 @@
     }
   }
   function closeDropdown() {
-    focusItemIndex.value = 0
     clearTimeout(timer.value)
-    if (geocodeLoading.value) {
-      return
-    }
-    if (isOpen.value) {
-      onUpdateLocation(focusItemIndex.value)
-    } else if (locationDisplayName.value === '') {
-      emit('updateCoordinates', {
-        coordinates: '',
-        display_name: '',
-        osm_id: '',
-      })
-    }
+    timer.value = setTimeout(async () => {
+      if (geocodeLoading.value) {
+        return
+      }
+      if (isOpen.value) {
+        onUpdateLocation(focusItemIndex.value)
+      } else if (locationDisplayName.value === '') {
+        emit('updateCoordinates', {
+          coordinates: '',
+          display_name: '',
+          osm_id: '',
+        })
+      }
+      focusItemIndex.value = 0
+    }, 300)
   }
   function scrollIntoOption(index: number) {
     const option = document.getElementById(`location-dropdown-item-${index}`)
