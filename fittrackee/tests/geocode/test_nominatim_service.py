@@ -51,15 +51,38 @@ class TestNominatimServiceGetLocationsFromCity(ResponseMockMixin):
             headers=service.headers,
         )
 
+    def test_it_calls_nominatim_api_with_given_city_and_language(
+        self, app: "Flask"
+    ) -> None:
+        service = NominatimService()
+        city = "Paris"
+        language = "fr"
+
+        with patch.object(
+            requests, "get", return_value=self.get_response([])
+        ) as get_mock:
+            service.get_locations_from_city(city, language)
+
+        get_mock.assert_called_once_with(
+            f"{service.base_url}/search",
+            params={
+                **service.params,
+                "city": city,
+                "accept-language": language,
+            },
+            timeout=30,
+            headers=service.headers,
+        )
+
     def test_it_caches_nominatim_response(self, app: "Flask") -> None:
         service = NominatimService()
 
         with patch.object(
             requests, "get", return_value=self.get_response([])
         ) as get_mock:
-            service.get_locations_from_city("Paris")
-            service.get_locations_from_city("Lyon")
-            service.get_locations_from_city("Paris")
+            service.get_locations_from_city("Paris", "fr")
+            service.get_locations_from_city("Lyon", "fr")
+            service.get_locations_from_city("Paris", "fr")
 
         assert get_mock.call_count == 2
 
@@ -68,11 +91,12 @@ class TestNominatimServiceGetLocationsFromCity(ResponseMockMixin):
     ) -> None:
         service = NominatimService()
         city = "Paris"
+        language = "fr"
 
         with patch.object(
             requests, "get", return_value=self.get_response(nominatim_response)
         ):
-            locations = service.get_locations_from_city(city)
+            locations = service.get_locations_from_city(city, language)
 
         assert locations == [
             {
@@ -87,7 +111,9 @@ class TestNominatimServiceGetLocationsFromCity(ResponseMockMixin):
             {
                 "addresstype": "town",
                 "coordinates": "33.6617962,-95.5555130",
-                "display_name": "Paris, Lamar County, Texas, United States",
+                "display_name": (
+                    "Paris, Lamar County, Texas, Etas-Unis d'Amérique"
+                ),
                 "name": "Paris",
                 "osm_id": "r115357",
             },
@@ -113,15 +139,38 @@ class TestNominatimServiceGetLocationFromId(ResponseMockMixin):
             headers=service.headers,
         )
 
+    def test_it_calls_nominatim_api_with_given_oms_id_and_language(
+        self, app: "Flask"
+    ) -> None:
+        service = NominatimService()
+        osm_id = "r71525"
+        language = "en"
+
+        with patch.object(
+            requests, "get", return_value=self.get_response([])
+        ) as get_mock:
+            service.get_location_from_id(osm_id, language)
+
+        get_mock.assert_called_once_with(
+            f"{service.base_url}/lookup",
+            params={
+                **service.params,
+                "osm_ids": osm_id,
+                "accept-language": language,
+            },
+            timeout=30,
+            headers=service.headers,
+        )
+
     def test_it_caches_nominatim_response(self, app: "Flask") -> None:
         service = NominatimService()
 
         with patch.object(
             requests, "get", return_value=self.get_response([])
         ) as get_mock:
-            service.get_locations_from_city("r71525")
-            service.get_locations_from_city("r71526")
-            service.get_locations_from_city("r71525")
+            service.get_location_from_id("r71525")
+            service.get_location_from_id("r71526")
+            service.get_location_from_id("r71525")
 
         assert get_mock.call_count == 2
 

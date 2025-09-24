@@ -74,6 +74,7 @@ def get_coordinates_from_city(
         }
 
     :query string city: location
+    :query string language: preferred language for Nominatim results
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -91,12 +92,15 @@ def get_coordinates_from_city(
     """
     params = request.args.copy()
     city = params.get("city")
+    language = params.get("language")
 
     locations = []
     if city:
         try:
             # search is case-insensitive
-            locations = nominatim_service.get_locations_from_city(city.lower())
+            locations = nominatim_service.get_locations_from_city(
+                city.lower(), language
+            )
         except Exception:
             message = "error when getting coordinates from location"
             appLog.exception(message)
@@ -156,6 +160,7 @@ def get_location_from_id(auth_user: "User") -> Union[Dict, "HttpResponse"]:
         }
 
     :query string osm_id: OSM id, prefixed by location type
+    :query string language: preferred language for Nominatim results
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -173,12 +178,15 @@ def get_location_from_id(auth_user: "User") -> Union[Dict, "HttpResponse"]:
     """
     params = request.args.copy()
     osm_id = params.get("osm_id")
+    language = params.get("language")
 
     location = {}
     if osm_id:
         try:
             # lookup is case-insensitive
-            location = nominatim_service.get_location_from_id(osm_id.lower())
+            location = nominatim_service.get_location_from_id(
+                osm_id.lower(), language
+            )
         except Exception:
             message = "error when getting location from OSM id"
             appLog.exception(message)
