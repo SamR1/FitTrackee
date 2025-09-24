@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-09-03 08:12+0200\n"
+"POT-Creation-Date: 2025-09-24 15:05+0200\n"
 "PO-Revision-Date: 2022-07-04 21:17+0000\n"
 "Last-Translator: J. Lavoie <j.lavoie@net-c.ca>\n"
 "Language: fr\n"
@@ -521,50 +521,54 @@ msgid "Open Water Swimming"
 msgstr "Nage en eau libre"
 
 #: fittrackee/feeds/feeds/constants.py:17
+msgid "Padel (Outdoor)"
+msgstr "Padel (Extérieur)"
+
+#: fittrackee/feeds/feeds/constants.py:18
 msgid "Paragliding"
 msgstr "Parapente"
 
-#: fittrackee/feeds/feeds/constants.py:18
+#: fittrackee/feeds/feeds/constants.py:19
 msgid "Rowing"
 msgstr "Aviron"
 
-#: fittrackee/feeds/feeds/constants.py:19
+#: fittrackee/feeds/feeds/constants.py:20
 msgid "Running"
 msgstr "Course"
 
-#: fittrackee/feeds/feeds/constants.py:20
+#: fittrackee/feeds/feeds/constants.py:21
 msgid "Skiing (Alpine)"
 msgstr "Ski (Alpin)"
 
-#: fittrackee/feeds/feeds/constants.py:21
+#: fittrackee/feeds/feeds/constants.py:22
 msgid "Skiing (Cross Country)"
 msgstr "Ski (Randonnée)"
 
-#: fittrackee/feeds/feeds/constants.py:22
+#: fittrackee/feeds/feeds/constants.py:23
 msgid "Snowshoes"
 msgstr "Raquettes"
 
-#: fittrackee/feeds/feeds/constants.py:23
+#: fittrackee/feeds/feeds/constants.py:24
 msgid "Standup Paddleboarding"
 msgstr "Stand up paddle"
 
-#: fittrackee/feeds/feeds/constants.py:24
+#: fittrackee/feeds/feeds/constants.py:25
 msgid "Swimrun"
 msgstr "Swimrun"
 
-#: fittrackee/feeds/feeds/constants.py:25
+#: fittrackee/feeds/feeds/constants.py:26
 msgid "Tennis (Outdoor)"
 msgstr "Tennis (Extérieur)"
 
-#: fittrackee/feeds/feeds/constants.py:26
+#: fittrackee/feeds/feeds/constants.py:27
 msgid "Trail"
 msgstr "Trail"
 
-#: fittrackee/feeds/feeds/constants.py:27
+#: fittrackee/feeds/feeds/constants.py:28
 msgid "Walking"
 msgstr "Marche"
 
-#: fittrackee/feeds/feeds/constants.py:28
+#: fittrackee/feeds/feeds/constants.py:29
 msgid "Windsurfing"
 msgstr "Planche à voile"
 

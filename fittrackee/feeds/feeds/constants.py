@@ -14,6 +14,7 @@ AVAILABLE_SPORTS = [
     _("Mountain Biking (Electric)"),
     _("Mountaineering"),
     _("Open Water Swimming"),
+    _("Padel (Outdoor)"),
     _("Paragliding"),
     _("Rowing"),
     _("Running"),

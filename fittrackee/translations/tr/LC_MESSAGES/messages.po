@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-09-03 08:12+0200\n"
+"POT-Creation-Date: 2025-09-24 15:05+0200\n"
 "PO-Revision-Date: 2025-06-08 22:01+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: tr\n"
@@ -487,50 +487,54 @@ msgid "Open Water Swimming"
 msgstr ""
 
 #: fittrackee/feeds/feeds/constants.py:17
-msgid "Paragliding"
+msgid "Padel (Outdoor)"
 msgstr ""
 
 #: fittrackee/feeds/feeds/constants.py:18
-msgid "Rowing"
+msgid "Paragliding"
 msgstr ""
 
 #: fittrackee/feeds/feeds/constants.py:19
-msgid "Running"
+msgid "Rowing"
 msgstr ""
 
 #: fittrackee/feeds/feeds/constants.py:20
-msgid "Skiing (Alpine)"
+msgid "Running"
 msgstr ""
 
 #: fittrackee/feeds/feeds/constants.py:21
-msgid "Skiing (Cross Country)"
+msgid "Skiing (Alpine)"
 msgstr ""
 
 #: fittrackee/feeds/feeds/constants.py:22
-msgid "Snowshoes"
+msgid "Skiing (Cross Country)"
 msgstr ""
 
 #: fittrackee/feeds/feeds/constants.py:23
-msgid "Standup Paddleboarding"
+msgid "Snowshoes"
 msgstr ""
 
 #: fittrackee/feeds/feeds/constants.py:24
-msgid "Swimrun"
+msgid "Standup Paddleboarding"
 msgstr ""
 
 #: fittrackee/feeds/feeds/constants.py:25
-msgid "Tennis (Outdoor)"
+msgid "Swimrun"
 msgstr ""
 
 #: fittrackee/feeds/feeds/constants.py:26
-msgid "Trail"
+msgid "Tennis (Outdoor)"
 msgstr ""
 
 #: fittrackee/feeds/feeds/constants.py:27
-msgid "Walking"
+msgid "Trail"
 msgstr ""
 
 #: fittrackee/feeds/feeds/constants.py:28
+msgid "Walking"
+msgstr ""
+
+#: fittrackee/feeds/feeds/constants.py:29
 msgid "Windsurfing"
 msgstr ""
 
