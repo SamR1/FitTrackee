@@ -51,7 +51,30 @@ class TestNominatimServiceGetLocationsFromCity(ResponseMockMixin):
             headers=service.headers,
         )
 
-    def test_it_calls_nominatim_api_with_given_city_and_language(
+    def test_it_calls_nominatim_api_when_provided_language_is_en(
+        self, app: "Flask"
+    ) -> None:
+        service = NominatimService()
+        city = "Paris"
+        language = "en"
+
+        with patch.object(
+            requests, "get", return_value=self.get_response([])
+        ) as get_mock:
+            service.get_locations_from_city(city, language)
+
+        get_mock.assert_called_once_with(
+            f"{service.base_url}/search",
+            params={
+                **service.params,
+                "city": city,
+                "accept-language": language,
+            },
+            timeout=30,
+            headers=service.headers,
+        )
+
+    def test_it_calls_nominatim_api_when_provided_language_is_not_en(
         self, app: "Flask"
     ) -> None:
         service = NominatimService()
@@ -68,7 +91,7 @@ class TestNominatimServiceGetLocationsFromCity(ResponseMockMixin):
             params={
                 **service.params,
                 "city": city,
-                "accept-language": language,
+                "accept-language": f"{language},en",
             },
             timeout=30,
             headers=service.headers,
@@ -139,7 +162,7 @@ class TestNominatimServiceGetLocationFromId(ResponseMockMixin):
             headers=service.headers,
         )
 
-    def test_it_calls_nominatim_api_with_given_oms_id_and_language(
+    def test_it_calls_nominatim_api_when_provided_language_is_en(
         self, app: "Flask"
     ) -> None:
         service = NominatimService()
@@ -157,6 +180,29 @@ class TestNominatimServiceGetLocationFromId(ResponseMockMixin):
                 **service.params,
                 "osm_ids": osm_id,
                 "accept-language": language,
+            },
+            timeout=30,
+            headers=service.headers,
+        )
+
+    def test_it_calls_nominatim_api_when_provided_language_is_not_en(
+        self, app: "Flask"
+    ) -> None:
+        service = NominatimService()
+        osm_id = "r71525"
+        language = "fr"
+
+        with patch.object(
+            requests, "get", return_value=self.get_response([])
+        ) as get_mock:
+            service.get_location_from_id(osm_id, language)
+
+        get_mock.assert_called_once_with(
+            f"{service.base_url}/lookup",
+            params={
+                **service.params,
+                "osm_ids": osm_id,
+                "accept-language": f"{language},en",
             },
             timeout=30,
             headers=service.headers,

@@ -7,6 +7,16 @@ from fittrackee import VERSION, appLog
 from fittrackee.utils import TimedLRUCache
 
 
+def get_preferred_languages(language: Optional[str]) -> Dict:
+    if language:
+        return {
+            "accept-language": (
+                language if language == "en" else f"{language},en"
+            )
+        }
+    return {}
+
+
 class NominatimService:
     """
     documentation:
@@ -25,13 +35,14 @@ class NominatimService:
         self, city: str, language: Optional[str] = None
     ) -> List[Dict]:
         url = f"{self.base_url}/search"
-        search_params = {"city": city}
-        if language:
-            search_params["accept-language"] = language
         appLog.debug(f"Nominatim: getting location for query: '{city}'")
         r = requests.get(
             url,
-            params={**self.params, **search_params},
+            params={
+                **self.params,
+                "city": city,
+                **get_preferred_languages(language),
+            },
             timeout=30,
             headers=self.headers,
         )
@@ -54,13 +65,14 @@ class NominatimService:
         self, osm_id: str, language: Optional[str] = None
     ) -> Dict:
         url = f"{self.base_url}/lookup"
-        search_params = {"osm_ids": osm_id}
-        if language:
-            search_params["accept-language"] = language
         appLog.debug(f"Nominatim: getting location for id: '{osm_id}'")
         r = requests.get(
             url,
-            params={**self.params, **search_params},
+            params={
+                **self.params,
+                "osm_ids": osm_id,
+                **get_preferred_languages(language),
+            },
             timeout=30,
             headers=self.headers,
         )
