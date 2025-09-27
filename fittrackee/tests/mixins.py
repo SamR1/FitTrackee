@@ -351,7 +351,7 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
     ) -> None:
         (
             client,
-            oauth_client,
+            _,
             access_token,
             _,
         ) = self.create_oauth2_client_and_issue_token(

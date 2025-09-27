@@ -294,7 +294,7 @@ class ReportService:
                     username=appeal.user.username,
                     moderator_id=moderator.id,
                 )
-                user, _, _, new_report_action = user_manager_service.update(
+                _, _, _, new_report_action = user_manager_service.update(
                     suspended=False, report_id=appeal.action.report_id
                 )
             if action.action_type == "user_warning":

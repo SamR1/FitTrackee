@@ -42,7 +42,7 @@ class TestOAuth2Scopes(ApiTestCaseMixin):
     ) -> None:
         (
             client,
-            oauth_client,
+            _,
             access_token,
             _,
         ) = self.create_oauth2_client_and_issue_token(
@@ -70,7 +70,7 @@ class TestOAuth2Scopes(ApiTestCaseMixin):
     ) -> None:
         (
             client,
-            oauth_client,
+            _,
             access_token,
             _,
         ) = self.create_oauth2_client_and_issue_token(

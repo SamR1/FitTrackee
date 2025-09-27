@@ -344,9 +344,7 @@ class TestGetUserAsUnauthenticatedUser(ApiTestCaseMixin):
     def test_it_does_not_get_inactive_user(
         self, app: Flask, user_1_admin: User, inactive_user: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
+        client = app.test_client()
 
         response = client.get(
             f"/api/users/{inactive_user.username}",

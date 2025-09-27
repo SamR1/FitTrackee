@@ -119,7 +119,7 @@ class TestUserDataExporterGetUserWorkoutsData:
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        _, workout_short_id = post_a_workout(app, gpx_file)
+        post_a_workout(app, gpx_file)
         workout = Workout.query.one()
         exporter = UserDataExporter(user_1)
 
@@ -428,7 +428,7 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        _, workout_short_id = post_a_workout(app, gpx_file)
+        post_a_workout(app, gpx_file)
         workout = Workout.query.one()
         expected_path = os.path.join(
             app.config["UPLOAD_FOLDER"],
@@ -464,9 +464,7 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
         sport_1_cycling: Sport,
         kml_2_3_with_two_tracks: str,
     ) -> None:
-        _, workout_short_id = post_a_workout(
-            app, kml_2_3_with_two_tracks, extension="kml"
-        )
+        post_a_workout(app, kml_2_3_with_two_tracks, extension="kml")
         workout = Workout.query.one()
         kml_expected_path = os.path.join(
             app.config["UPLOAD_FOLDER"],
@@ -510,7 +508,7 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        _, workout_short_id = post_a_workout(app, gpx_file)
+        post_a_workout(app, gpx_file)
         workout = Workout.query.one()
         expected_path = os.path.join(
             app.config["UPLOAD_FOLDER"],
@@ -846,8 +844,8 @@ class TestCleanUserDataExport(UserDataExportTestCase):
     def test_it_returns_counts(
         self, app: Flask, user_1: User, user_2: User, user_3: User
     ) -> None:
-        user_1_data_export, archive_path = self.generate_archive(user_1)
-        user_2_data_export, archive_path = self.generate_archive(user_2)
+        user_1_data_export, _ = self.generate_archive(user_1)
+        user_2_data_export, _ = self.generate_archive(user_2)
         self.create_user_request(user_3, days=7)
 
         counts = clean_user_data_export(days=7)

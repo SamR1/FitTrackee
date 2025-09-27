@@ -273,7 +273,7 @@ class TestDecodeUserToken:
         self, app: Flask
     ) -> None:
         token = self.generate_token(user_id=1, now=datetime.now(timezone.utc))
-        header, body, signature = token.split(".")
+        header, _, signature = token.split(".")
         modified_token = f"{header}.{random_string()}.{signature}"
         with pytest.raises(
             jwt.exceptions.InvalidSignatureError,

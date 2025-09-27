@@ -205,7 +205,7 @@ class Comment(BaseModel):
             .join(Mention, User.id == Mention.user_id)
             .all()
         )
-        linkified_text, updated_mentioned_users = self.handle_mentions()
+        _, updated_mentioned_users = self.handle_mentions()
         unchanged_mentions = updated_mentioned_users.intersection(
             existing_mentioned_users
         )
