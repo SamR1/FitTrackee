@@ -1,5 +1,28 @@
 # Change log
 
+## Version 1.0.0b3 (2025/09/27)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+**Warning:**  
+- This release contains database migrations (see upgrade instructions in [documentation](https://next.docs.fittrackee.org/en/installation.html#upgrade))
+
+### Features and enhancements
+
+* [#931](https://github.com/SamR1/FitTrackee/issues/931) - New sport: Padel (Outdoor)
+* [PR#939](https://github.com/SamR1/FitTrackee/pull/939) - Display location results in the user interface language
+
+### Bugs Fixed
+
+* [PR#938](https://github.com/SamR1/FitTrackee/pull/938) - Fix location selection when clicking on the dropdown
+
+### Misc
+
+* [#929](https://github.com/SamR1/FitTrackee/issues/929) - Remove deprecated option --set-admin (Users CLI)
+* [PR#943](https://github.com/SamR1/FitTrackee/pull/943) - update Authlib + test refactoring
+
+
 ## Version 1.0.0b2 (2025/09/21)
 
 **This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  

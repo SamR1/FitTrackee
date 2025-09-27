@@ -278,7 +278,7 @@ jobs:
   publish-to-pypi:
     if: github.repository == 'SamR1/FitTrackee' && startsWith(github.ref, 'refs/tags/v')
     name: Publish Python distribution to PyPI
-    needs: ["end2end", "end2end_package", "end2end_package_update"]
+    needs: ["postgresql", "end2end", "end2end_package", "end2end_package_update"]
     runs-on: ubuntu-latest
     environment:
       name: pypi
@@ -341,7 +341,7 @@ jobs:
   push_to_registries:
     if: github.repository == 'SamR1/FitTrackee' && startsWith(github.ref, 'refs/tags/v')
     name: Push Docker image to multiple registries
-    needs: ["end2end", "end2end_package", "end2end_package_update"]
+    needs: ["postgresql", "end2end", "end2end_package", "end2end_package_update"]
     runs-on: ubuntu-latest
     permissions:
       contents: read

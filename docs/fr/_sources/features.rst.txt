@@ -31,6 +31,7 @@ Sports
   - Mountain Biking (Electric)  (*new in 0.5.0*)
   - Mountaineering  (*new in 0.7.9*)
   - Open Water Swimming  (*new in 0.7.20*)
+  - Padel (Outdoor) (*new in 1.0.0*)
   - Paragliding  (*new in 0.7.19*)
   - Rowing  (*new in 0.5.0, image changed in 0.9.3*)
   - Running
@@ -44,11 +45,15 @@ Sports
   - Walking
   - Windsurfing  (*new in 0.9.10*)
 
+.. note::
+  The color of the sport can be changed in user preferences (see `Account & preferences <features.html#account-preferences>`__).
+
 - (*new in 0.5.0*) Stopped speed threshold used by `gpxpy <https://github.com/tkrajina/gpxpy>`_ is not the default one for the following sports (0.1 km/h instead of 1 km/h):
 
   - Hiking
   - Mountaineering
   - Open Water Swimming
+  - Padel (Outdoor)
   - Paragliding
   - Skiing (Cross Country)
   - Snowshoes
@@ -63,7 +68,7 @@ Sports
 .. note::
   | Except the stopped speed threshold, all sports are analyzed in the same way (no specificity taken into account for the moment).
   | Swimrun is displayed as a single activity with no difference between segments for now.
-  | Elevation-related data for Outdoor Tennis are not displayed if the file contains elevation (they are still stored in database).
+  | Elevation-related data for Outdoor Tennis and Padel are not displayed if the file contains elevation (they are still stored in database).
 
 Workouts
 --------
@@ -152,7 +157,7 @@ Workouts
 - If present and no description is provided by the user, the description from the file is used as the workout description (*new in 0.8.10*).
 - | A map is displayed for workout with a file.
   | Controls allow full screen view and position reset (*new in 0.5.5*).
-  | If the sport is Outdoor Tennis, a heat map is also available (*new in 0.11.0*).
+  | If the sport is Outdoor Tennis or Padel, a heat map is also available (*changed in 1.0.0*).
 - | A chart is displayed for workout with a file, with:
 
   - speed
@@ -538,7 +543,7 @@ Equipments
   - Bike Trainer: Cycling (Virtual),
   - Board: Standup paddleboarding (*new in 0.10.3*) and Windsurfing (*new in 0.9.10*),
   - Kayak/Boat: Canoeing, Rowing and Kayaking (*changed in 0.9.3*),
-  - Shoes: Hiking, Mountaineering, Running, Tennis (Outdoor), Trail and Walking (*changed in 0.11.0*),
+  - Shoes: Hiking, Mountaineering, Padel (Outdoor), Running, Tennis (Outdoor), Trail and Walking (*changed in 1.0.0*),
   - Skis: Skiing (Alpine and Cross Country),
   - Snowshoes: Snowshoes.
 

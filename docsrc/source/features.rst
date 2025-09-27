@@ -157,7 +157,7 @@ Workouts
 - If present and no description is provided by the user, the description from the file is used as the workout description (*new in 0.8.10*).
 - | A map is displayed for workout with a file.
   | Controls allow full screen view and position reset (*new in 0.5.5*).
-  | If the sport is Outdoor Tennis or Padel, a heat map is also available (*new in 0.11.0*).
+  | If the sport is Outdoor Tennis or Padel, a heat map is also available (*changed in 1.0.0*).
 - | A chart is displayed for workout with a file, with:
 
   - speed
