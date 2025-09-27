@@ -1,58 +1,86 @@
+from typing import TYPE_CHECKING
+
 import pytest
-from flask import Flask
 
-from fittrackee.users.models import User
-
+from ..custom_asserts import (
+    assert_oauth_errored_response,
+)
 from ..mixins import ApiTestCaseMixin
+
+if TYPE_CHECKING:
+    from flask import Flask
+
+    from fittrackee.users.models import User
 
 
 class TestOAuth2Scopes(ApiTestCaseMixin):
+    endpoint = "/api/config"
+    valid_scope = "application:write"
+
     @pytest.mark.parametrize(
-        "endpoint_url,scope",
+        "input_scope",
         [
-            ("/api/auth/profile", "profile:read"),
-            ("/api/workouts", "workouts:read"),
+            "equipments:read",
+            "equipments:write",
+            "follow:read",
+            "follow:write",
+            "geocode:read",
+            "notifications:read",
+            "notifications:write",
+            "profile:read",
+            "profile:write",
+            "reports:read",
+            "reports:write",
+            "users:read",
+            "users:write",
+            "workouts:read",
+            "workouts:write",
         ],
     )
-    def test_oauth_client_can_access_authorized_endpoints(
-        self, app: Flask, user_1: User, endpoint_url: str, scope: str
+    def test_it_returns_403_with_insufficient_scope_when_scope_is_invalid(
+        self, app: "Flask", user_1_admin: "User", input_scope: str
     ) -> None:
         (
             client,
             oauth_client,
             access_token,
             _,
-        ) = self.create_oauth2_client_and_issue_token(app, user_1, scope=scope)
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1_admin, scope=input_scope
+        )
 
-        response = client.get(
-            endpoint_url,
+        response = client.patch(
+            self.endpoint,
             content_type="application/json",
             headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
-        self.assert_not_insufficient_scope_error(response)
+        assert_oauth_errored_response(
+            response,
+            403,
+            error="insufficient_scope",
+            error_description=(
+                "The request requires higher privileges than provided by "
+                "the access token."
+            ),
+        )
 
-    @pytest.mark.parametrize(
-        "endpoint_url,scope",
-        [
-            ("/api/auth/profile", "workouts:read"),
-            ("/api/workouts", "profile:read"),
-        ],
-    )
-    def test_oauth_client_can_not_access_unauthorized_endpoints(
-        self, app: Flask, user_1: User, endpoint_url: str, scope: str
+    def test_it_does_not_return_403_when_scope_is_invalid(
+        self, app: "Flask", user_1_admin: "User"
     ) -> None:
         (
             client,
             oauth_client,
             access_token,
             _,
-        ) = self.create_oauth2_client_and_issue_token(app, user_1, scope=scope)
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user_1_admin, scope=self.valid_scope
+        )
 
-        response = client.get(
-            endpoint_url,
+        response = client.patch(
+            self.endpoint,
             content_type="application/json",
             headers=dict(Authorization=f"Bearer {access_token}"),
         )
 
-        self.assert_insufficient_scope(response)
+        assert response.status_code != 403

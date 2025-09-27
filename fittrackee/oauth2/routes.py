@@ -1,6 +1,7 @@
 from typing import Dict, Optional, Tuple, Union
 from urllib.parse import parse_qsl
 
+from authlib.oauth2 import OAuth2Error
 from flask import Blueprint, Response, request
 from urllib3.util import parse_url
 
@@ -567,8 +568,16 @@ def authorize(auth_user: User) -> Union[HttpResponse, Dict]:
 
     confirm = data.get("confirm", "false")
     grant_user = auth_user if confirm.lower() == "true" else None
+
+    try:
+        grant = authorization_server.get_consent_grant(
+            request=request, end_user=grant_user
+        )
+    except OAuth2Error as error:
+        return InvalidPayloadErrorResponse(error.description)
+
     response = authorization_server.create_authorization_response(
-        grant_user=grant_user
+        grant_user=grant_user, grant=grant
     )
     error_message = is_errored(url=response.location)
     if error_message:

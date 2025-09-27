@@ -1,13 +1,12 @@
 import json
 from datetime import datetime, timezone
 
-import pytest
 from flask import Flask
 
 from fittrackee.users.models import FollowRequest, User
 
 from ..mixins import ApiTestCaseMixin
-from ..utils import OAUTH_SCOPES, random_string
+from ..utils import random_string
 
 
 class TestFollow(ApiTestCaseMixin):
@@ -149,34 +148,17 @@ class TestFollow(ApiTestCaseMixin):
             == f"Follow request to user '{user_2.username}' is sent."
         )
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "follow:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_follow_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint=f"/api/users/{self.random_string()}/follow",
+            invalid_scope="follow:read",
+            expected_endpoint_scope="follow:write",
         )
-
-        response = client.post(
-            f"/api/users/{user_2.username}/follow",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestUnfollow(ApiTestCaseMixin):
@@ -287,31 +269,14 @@ class TestUnfollow(ApiTestCaseMixin):
 
         self.assert_404_with_message(response, "relationship does not exist")
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "follow:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_follow_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint=f"/api/users/{self.random_string()}/unfollow",
+            invalid_scope="follow:read",
+            expected_endpoint_scope="follow:write",
         )
-
-        response = client.post(
-            f"/api/users/{user_2.username}/unfollow",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)

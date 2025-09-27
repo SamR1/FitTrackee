@@ -2,12 +2,10 @@ import json
 from typing import TYPE_CHECKING
 from unittest.mock import patch
 
-import pytest
 import requests
 from requests import HTTPError
 
 from ..mixins import ApiTestCaseMixin, ResponseMockMixin
-from ..utils import OAUTH_SCOPES
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -49,32 +47,17 @@ class GeocodeTestCase(ApiTestCaseMixin, ResponseMockMixin):
 
         self.assert_403(response)
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "geocode:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: "Flask",
-        user_1: "User",
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_geocode_read(
+        self, app: "Flask", user_1: "User"
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint=self.route,
+            invalid_scope="workouts:read",
+            expected_endpoint_scope="geocode:read",
         )
-
-        response = client.get(
-            self.route,
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestGeocodeGetCoordinatesFromLocation(GeocodeTestCase):

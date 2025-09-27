@@ -11,7 +11,7 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
-from ..utils import OAUTH_SCOPES, jsonify_dict
+from ..utils import jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin
 
 
@@ -94,29 +94,17 @@ class TestGetUserTimeline(GetUserTimelineTestCase):
             workout_cycling_user_1.serialize(user=user_1)
         )
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "workouts:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    def test_expected_scope_is_workouts_read(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint="/api/timeline",
+            invalid_scope="workouts:write",
+            expected_endpoint_scope="workouts:read",
         )
-
-        response = client.get(
-            "/api/timeline",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestGetUserTimelineForAuthUserWorkouts(GetUserTimelineTestCase):

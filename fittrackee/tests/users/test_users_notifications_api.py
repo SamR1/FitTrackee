@@ -13,7 +13,7 @@ from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
 from ..comments.mixins import CommentMixin
 from ..mixins import ApiTestCaseMixin, ReportMixin
-from ..utils import OAUTH_SCOPES, jsonify_dict
+from ..utils import jsonify_dict
 
 
 class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
@@ -1041,33 +1041,17 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
             "total": 2,
         }
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "notifications:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_notifications_read(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint=self.route,
+            invalid_scope="notifications:write",
+            expected_endpoint_scope="notifications:read",
         )
-
-        response = client.get(
-            self.route,
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestUserNotificationPatch(ApiTestCaseMixin):
@@ -1205,33 +1189,17 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
 
         self.assert_500(response)
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "notifications:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_notifications_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="patch",
+            endpoint=self.route.format(notification_id=self.random_short_id()),
+            invalid_scope="notifications:read",
+            expected_endpoint_scope="notifications:write",
         )
-
-        response = client.patch(
-            self.route.format(notification_id=self.random_short_id()),
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
@@ -1501,33 +1469,17 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         assert data["status"] == "success"
         assert data["unread"] is False
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "notifications:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_notifications_read(
+        self, app: Flask, user_1_admin: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1_admin, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1_admin,
+            client_method="get",
+            endpoint=self.route,
+            invalid_scope="notifications:write",
+            expected_endpoint_scope="notifications:read",
         )
-
-        response = client.get(
-            self.route,
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
@@ -1712,33 +1664,17 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
         )
         self.assert_workout_like_notification_status(like, status=False)
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "notifications:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_notifications_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint=self.route,
+            invalid_scope="notifications:read",
+            expected_endpoint_scope="notifications:write",
         )
-
-        response = client.post(
-            self.route,
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):

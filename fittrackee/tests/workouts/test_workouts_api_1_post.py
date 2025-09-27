@@ -24,7 +24,7 @@ from fittrackee.workouts.services.workout_from_file import (
 )
 
 from ..mixins import BaseTestMixin, ReportMixin, UserTaskMixin
-from ..utils import OAUTH_SCOPES, jsonify_dict
+from ..utils import jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin, WorkoutGpxInfoMixin
 
 if TYPE_CHECKING:
@@ -634,36 +634,17 @@ class TestPostWorkoutWithGpx(
         )
         assert "data" not in data
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "workouts:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: "Flask",
-        user_1: "User",
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_workouts_write(
+        self, app: "Flask", user_1: "User"
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint="/api/workouts",
+            invalid_scope="workouts:read",
+            expected_endpoint_scope="workouts:write",
         )
-
-        response = client.post(
-            "/api/workouts",
-            data=dict(),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {access_token}",
-            ),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestPostWorkoutWithKml(WorkoutApiTestCaseMixin):
@@ -1411,36 +1392,17 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
 
         self.assert_400(response, "only one equipment can be added")
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "workouts:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: "Flask",
-        user_1: "User",
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_workouts_write(
+        self, app: "Flask", user_1: "User"
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint="/api/workouts/no_gpx",
+            invalid_scope="workouts:read",
+            expected_endpoint_scope="workouts:write",
         )
-
-        response = client.post(
-            "/api/workouts/no_gpx",
-            data=dict(),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {access_token}",
-            ),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestPostWorkoutWithZipArchive(UserTaskMixin, WorkoutApiTestCaseMixin):
@@ -2593,31 +2555,16 @@ class TestPostWorkoutSuspensionAppeal(
 
         self.assert_400(response, error_message="you can appeal only once")
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "workouts:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: "Flask",
-        user_1: "User",
-        sport_1_cycling: "Sport",
-        workout_cycling_user_1: "Workout",
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_workouts_write(
+        self, app: "Flask", user_1: "User"
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint=(
+                f"/api/workouts/{self.random_short_id()}/suspension/appeal"
+            ),
+            invalid_scope="workouts:read",
+            expected_endpoint_scope="workouts:write",
         )
-
-        response = client.post(
-            f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
