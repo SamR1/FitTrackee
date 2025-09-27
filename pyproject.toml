@@ -29,7 +29,7 @@ Changelog = "https://docs.fittrackee.org/en/changelog.html"
 
 [tool.poetry.dependencies]
 python = ">= 3.10, < 3.14"
-authlib = "=1.5.2"
+authlib = "=1.6.4"
 babel = "^2.11.0"
 click = "^8.2.1"
 dramatiq = {version = "^1.15.0", extras = ["redis"]}
