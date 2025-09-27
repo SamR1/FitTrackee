@@ -15,7 +15,7 @@ from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, BaseTestMixin, ReportMixin
-from ..utils import OAUTH_SCOPES, jsonify_dict
+from ..utils import jsonify_dict
 from .mixins import CommentMixin
 
 
@@ -402,48 +402,17 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
             is not None
         )
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "workouts:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-        follow_request_from_user_1_to_user_2: FollowRequest,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_workouts_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint=f"/api/workouts/{self.random_short_id()}/comments",
+            invalid_scope="workouts:read",
+            expected_endpoint_scope="workouts:write",
         )
-
-        response = client.post(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
-            content_type="application/json",
-            data=json.dumps(
-                dict(
-                    text=self.random_string(),
-                    text_visibility=VisibilityLevel.FOLLOWERS,
-                    workout_id=workout_cycling_user_2.short_id,
-                )
-            ),
-            headers=dict(
-                Authorization=f"Bearer {access_token}",
-            ),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestGetWorkoutCommentAsUser(
@@ -1098,46 +1067,17 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
         assert data["status"] == "success"
         assert data["comment"] == jsonify_dict(comment.serialize())
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "workouts:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-        follow_request_from_user_1_to_user_2: FollowRequest,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_workouts_read(
+        self, app: Flask, user_1: User
     ) -> None:
-        user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint=f"/api/comments/{self.random_short_id()}",
+            invalid_scope="workouts:write",
+            expected_endpoint_scope="workouts:read",
         )
-        comment = self.create_comment(
-            user_1,
-            workout_cycling_user_2,
-            text_visibility=VisibilityLevel.PUBLIC,
-        )
-
-        response = client.get(
-            f"/api/comments/{comment.short_id}",
-            content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {access_token}",
-            ),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class GetWorkoutCommentsTestCase(
@@ -1337,41 +1277,17 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
 
         self.assert_403(response)
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "workouts:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-        follow_request_from_user_1_to_user_2: FollowRequest,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_workouts_read(
+        self, app: Flask, user_1: User
     ) -> None:
-        user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint=f"/api/workouts/{self.random_short_id()}/comments",
+            invalid_scope="workouts:write",
+            expected_endpoint_scope="workouts:read",
         )
-
-        response = client.get(
-            f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
-            content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {access_token}",
-            ),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
@@ -1960,39 +1876,17 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
         assert Mention.query.filter_by(comment_id=comment_id).all() == []
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "workouts:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_workouts_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        comment = self.create_comment(
-            user_1,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PRIVATE,
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="delete",
+            endpoint=f"/api/comments/{self.random_short_id()}",
+            invalid_scope="workouts:read",
+            expected_endpoint_scope="workouts:write",
         )
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
-        )
-
-        response = client.delete(
-            f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
@@ -2308,39 +2202,17 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
             is not None
         )
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "workouts:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_workouts_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        comment = self.create_comment(
-            user_1,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PRIVATE,
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="patch",
+            endpoint=f"/api/comments/{self.random_short_id()}",
+            invalid_scope="workouts:read",
+            expected_endpoint_scope="workouts:write",
         )
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
-        )
-
-        response = client.patch(
-            f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestPostWorkoutCommentSuspensionAppeal(
@@ -2592,36 +2464,16 @@ class TestPostWorkoutCommentSuspensionAppeal(
 
         self.assert_400(response, error_message="you can appeal only once")
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "workouts:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_workouts_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        comment = self.create_comment(
-            user_1,
-            workout_cycling_user_1,
-            text_visibility=VisibilityLevel.PRIVATE,
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint=(
+                f"/api/comments/{self.random_short_id()}/suspension/appeal"
+            ),
+            invalid_scope="workouts:read",
+            expected_endpoint_scope="workouts:write",
         )
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
-        )
-
-        response = client.post(
-            f"/api/comments/{comment.short_id}/suspension/appeal",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)

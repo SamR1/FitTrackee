@@ -6,7 +6,7 @@ import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 from urllib.parse import parse_qs
 from uuid import uuid4
 
@@ -23,6 +23,7 @@ from fittrackee.comments.models import Comment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.client import create_oauth2_client
 from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
+from fittrackee.oauth2.server import CustomResourceProtector
 from fittrackee.reports.models import Report, ReportAction, ReportActionAppeal
 from fittrackee.users.models import User, UserTask
 from fittrackee.utils import encode_uuid
@@ -338,29 +339,36 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
             ),
         )
 
-    @staticmethod
-    def assert_insufficient_scope(response: TestResponse) -> Dict:
-        return assert_oauth_errored_response(
-            response,
-            403,
-            error="insufficient_scope",
-            error_description=(
-                "The request requires higher privileges than provided by "
-                "the access token."
-            ),
+    def assert_response_scope(
+        self,
+        *,
+        app: "Flask",
+        user: "User",
+        client_method: str,
+        endpoint: str,
+        invalid_scope: str,
+        expected_endpoint_scope: str,
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            access_token,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(
+            app, user, scope=invalid_scope
         )
 
-    @staticmethod
-    def assert_not_insufficient_scope_error(response: TestResponse) -> None:
-        assert response.status_code != 403
+        with patch.object(
+            CustomResourceProtector,
+            "acquire_token",
+            return_value=OAuth2Token(),
+        ) as acquire_token_mock:
+            getattr(client, client_method)(
+                endpoint,
+                headers=dict(Authorization=f"Bearer {access_token}"),
+            )
 
-    def assert_response_scope(
-        self, response: TestResponse, can_access: bool
-    ) -> None:
-        if can_access:
-            self.assert_not_insufficient_scope_error(response)
-        else:
-            self.assert_insufficient_scope(response)
+        acquire_token_mock.assert_called_once_with([expected_endpoint_scope])
 
     @staticmethod
     def assert_return_not_found(

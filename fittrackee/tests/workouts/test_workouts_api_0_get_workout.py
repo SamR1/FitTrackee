@@ -14,7 +14,7 @@ from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 
 from ..mixins import GeometryMixin
-from ..utils import OAUTH_SCOPES, jsonify_dict
+from ..utils import jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin
 from .utils import post_a_workout
 
@@ -3505,10 +3505,6 @@ class TestGetWorkoutMap(WorkoutApiTestCaseMixin):
 
 class TestWorkoutScope(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "workouts:read": True}.items(),
-    )
-    @pytest.mark.parametrize(
         "endpoint",
         [
             "/api/workouts/{workout_short_id}",
@@ -3518,32 +3514,17 @@ class TestWorkoutScope(WorkoutApiTestCaseMixin):
             "/api/workouts/{workout_short_id}/chart_data/segment/1",
         ],
     )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        client_scope: str,
-        can_access: bool,
-        endpoint: str,
+    def test_expected_scope_is_workouts_read(
+        self, app: Flask, user_1: User, endpoint: str
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint=endpoint.format(workout_short_id=self.random_short_id()),
+            invalid_scope="workouts:write",
+            expected_endpoint_scope="workouts:read",
         )
-
-        response = client.get(
-            endpoint.format(workout_short_id=workout_cycling_user_1.short_id),
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class DownloadWorkoutGpxTestCase(WorkoutApiTestCaseMixin):
@@ -3621,35 +3602,17 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
 
         self.assert_403(response)
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "workouts:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_workouts_read(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint=self.route.format(workout_uuid=self.random_short_id()),
+            invalid_scope="workouts:write",
+            expected_endpoint_scope="workouts:read",
         )
-
-        response = client.get(
-            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestDownloadWorkoutGpxAsFollower(DownloadWorkoutGpxTestCase):
@@ -3839,35 +3802,17 @@ class TestDownloadWorkoutOriginalFileAsWorkoutOwner(
 
         self.assert_403(response)
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "workouts:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_workouts_read(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint=self.route.format(workout_uuid=self.random_short_id()),
+            invalid_scope="workouts:write",
+            expected_endpoint_scope="workouts:read",
         )
-
-        response = client.get(
-            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestDownloadWorkoutOriginalFileAsFollower(

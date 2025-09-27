@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 from ..mixins import ApiTestCaseMixin, UserTaskMixin
-from ..utils import OAUTH_SCOPES, jsonify_dict
+from ..utils import jsonify_dict
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -87,33 +87,17 @@ class TestGetQueuedTasksCount(UserTaskMixin, ApiTestCaseMixin):
             "workouts_archive_upload": 2,
         }
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "users:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: "Flask",
-        user_1_admin: "User",
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_users_read(
+        self, app: "Flask", user_1_admin: "User"
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1_admin, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1_admin,
+            client_method="get",
+            endpoint=self.route,
+            invalid_scope="users:write",
+            expected_endpoint_scope="users:read",
         )
-
-        response = client.get(
-            self.route,
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestGetQueuedTasksForTaskType(UserTaskMixin, ApiTestCaseMixin):
@@ -305,30 +289,14 @@ class TestGetQueuedTasksForTaskType(UserTaskMixin, ApiTestCaseMixin):
             "total": 6,
         }
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "users:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: "Flask",
-        user_1_admin: "User",
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_users_read(
+        self, app: "Flask", user_1_admin: "User"
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1_admin, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1_admin,
+            client_method="get",
+            endpoint=self.route.format(task_type="workouts_archive_upload"),
+            invalid_scope="users:write",
+            expected_endpoint_scope="users:read",
         )
-
-        response = client.get(
-            self.route.format(task_type="workouts_archive_upload"),
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
