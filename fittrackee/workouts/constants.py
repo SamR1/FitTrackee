@@ -33,6 +33,7 @@ POWER_SPORTS = [
 # elevation data (ascent, descent, min and max alt), if present, are not
 # displayed
 SPORTS_WITHOUT_ELEVATION_DATA = [
+    "Padel (Outdoor)",
     "Tennis (Outdoor)",
 ]
 
