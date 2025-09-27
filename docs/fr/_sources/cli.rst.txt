@@ -172,6 +172,7 @@ Can be used if redis is not set (no dramatiq workers running).
 """"""""""""""""""""""
 .. versionadded:: 0.6.5
 .. versionchanged:: 0.9.0  Add ``--set-role`` option. ``--set-admin`` is now deprecated.
+.. versionchanged:: 1.0.0  Remove ``--set-admin`` option.
 
 Modify a user account (role, active status, email and password).
 
@@ -184,8 +185,6 @@ Modify a user account (role, active status, email and password).
      - Description
    * - ``USERNAME``
      - Username.
-   * - ``--set-admin BOOLEAN``
-     - [DEPRECATED] Add/remove admin rights (when adding admin rights, it also activates user account if not active).
    * - ``--set-role [owner|admin|moderator|user]``
      - Set user role (when setting 'moderator', 'admin' and 'owner' role, it also activates user account if not active).
    * - ``--activate``
