@@ -72,7 +72,14 @@
   "PROFILE": {
     "ACCOUNT_EDITION": "Kontua editatzea",
     "ARCHIVE_UPLOADS": {
-      "ARCHIVE": "Zip fitxategia"
+      "ARCHIVE": "Zip fitxategia",
+      "CONFIRM_TASK_ABORT": "Ziur zaude fitxategia kargatzea bertan behera utzi nahi duzula?",
+      "CONFIRM_TASK_DELETION": "Ziur zaude fitxategia kargatzea ezabatu nahi duzula?",
+      "CREATED_WORKOUTS": "Sortutako ekintzak",
+      "ERRORED_FILES": "Erroredun fitxategia | Erroredun fitxategiak",
+      "FILES_COUNT": "{count} fitxategi",
+      "NOT_FOUND": "Ez da kargatzeko fitxategia aurkitu.",
+      "PROGRESS": "Aurrerapena"
     },
     "ASCENT_DATA": "Igoerarekin lotutako datuak (errekorrak, guztizkoa)",
     "BACK_TO_PROFILE": "Itzuli profilera",
@@ -126,6 +133,7 @@
     },
     "NOTIFICATIONS_EDITION": "Jakinarazpenen hobespenak",
     "NOTIFICATION_PREFERENCES": "Jakinarazpenen hobespenak",
+    "NO_ARCHIVE_UPLOADS": "Ez dago kargatzeko fitxategirik",
     "NO_SANCTIONS": "Zigorrik ez",
     "PICTURE": "Argazkia",
     "PICTURE_EDITION": "Editatu argazkia",
@@ -153,6 +161,12 @@
       "IN_PROGRESS": "zure apleazioa prozesatzen ari da",
       "REJECTED": "zure apelazioa baztertu egin da"
     },
+    "SEGMENTS_CREATION_EVENT": {
+      "LABEL": "Geldialdiek segmentuak sortzen dituzte (.fit fitxategietan bakarrik)",
+      "all": "Geldialdi guztiak",
+      "none": "Bat ere ez",
+      "only_manual": "Eskuzko geldialdia bakarrik"
+    },
     "SPORT": {
       "ACTION": "akzioa",
       "COLOR": "kolorea",
@@ -173,6 +187,7 @@
     "TABS": {
       "ACCOUNT": "kontua",
       "APPS": "aplikazioak",
+      "ARCHIVE-UPLOADS": "kargatzeko fitxategiak",
       "BLOCKED-USERS": "blokeatutako erabiltzaileak",
       "EQUIPMENTS": "ekipamenduak",
       "FOLLOW-REQUESTS": "jarraipen eskaerak",
@@ -204,6 +219,11 @@
       "HELP": "Filtratuta badago, ertzetako balioak ez dira erabiltzen abiadura maximoa kalkulatzean (GPSaren erroreak izan daitezke).",
       "LABEL": "Abiadura maximoa kalkulatzeko estrategia",
       "RAW_SPEED": "Gordina"
+    },
+    "WORKOUT_CHARTS_DISPLAY": {
+      "LABEL": "Ekintzaren analisiaren grafikoa",
+      "MULTIPLE": "Datu bakoitza grafiko desberdinetan erakusten da",
+      "ONE": "Datu guztiak grafiko bakarrean"
     }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "{0} irakurri eta onartzen dut.",
@@ -235,8 +255,12 @@
   "SUSPENSION_REASON": "Bertan behera uztearen arrazoia",
   "TASKS": {
     "STATUS": {
+      "LABEL": "Egoera",
+      "aborted": "bertan behera utzita",
       "errored": "huts egin du",
-      "in_progress": "jardunean"
+      "in_progress": "jardunean",
+      "queued": "zain",
+      "successful": "ongi"
     }
   },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Erabiltzaile honen kontua desaktibatuta dago.",
