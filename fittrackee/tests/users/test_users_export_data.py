@@ -24,7 +24,7 @@ from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import RandomMixin, UserTaskMixin
-from ..workouts.utils import post_a_workout
+from ..workouts.utils import create_a_workout_with_file
 
 
 class TestUserDataExporterGetUserInfos:
@@ -119,8 +119,7 @@ class TestUserDataExporterGetUserWorkoutsData:
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        post_a_workout(app, gpx_file)
-        workout = Workout.query.one()
+        workout = create_a_workout_with_file(user_1, gpx_file)
         exporter = UserDataExporter(user_1)
 
         workouts_data = exporter.get_user_workouts_data()
@@ -137,15 +136,15 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "duration": str(workout.duration),
                 "pauses": None,
                 "moving": str(workout.moving),
-                "distance": float(workout.distance),
-                "min_alt": float(workout.min_alt),
-                "max_alt": float(workout.max_alt),
-                "descent": float(workout.descent),
-                "ascent": float(workout.ascent),
-                "max_speed": float(workout.max_speed),
-                "ave_speed": float(workout.ave_speed),
-                "gpx": workout.gpx.split("/")[-1],
-                "original_file": workout.original_file.split("/")[-1],
+                "distance": float(workout.distance),  # type: ignore[arg-type]
+                "min_alt": float(workout.min_alt),  # type: ignore[arg-type]
+                "max_alt": float(workout.max_alt),  # type: ignore[arg-type]
+                "descent": float(workout.descent),  # type: ignore[arg-type]
+                "ascent": float(workout.ascent),  # type: ignore[arg-type]
+                "max_speed": float(workout.max_speed),  # type: ignore[arg-type]
+                "ave_speed": float(workout.ave_speed),  # type: ignore[arg-type]
+                "gpx": workout.gpx.split("/")[-1],  # type: ignore[union-attr]
+                "original_file": workout.original_file.split("/")[-1],  # type: ignore[union-attr]
                 "records": [record.serialize() for record in workout.records],
                 "segments": [
                     segment.serialize() for segment in workout.segments
@@ -428,11 +427,10 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        post_a_workout(app, gpx_file)
-        workout = Workout.query.one()
+        workout = create_a_workout_with_file(user_1, gpx_file)
         expected_path = os.path.join(
             app.config["UPLOAD_FOLDER"],
-            workout.original_file,
+            workout.original_file,  # type: ignore[arg-type]
         )
         exporter = UserDataExporter(user_1)
 
@@ -444,7 +442,7 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
                 [
                     call(
                         expected_path,
-                        f"workout_files/{workout.original_file.split('/')[-1]}"
+                        f"workout_files/{workout.original_file.split('/')[-1]}" # type: ignore[union-attr]
                     ),
                 ]
             )
@@ -464,15 +462,16 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
         sport_1_cycling: Sport,
         kml_2_3_with_two_tracks: str,
     ) -> None:
-        post_a_workout(app, kml_2_3_with_two_tracks, extension="kml")
-        workout = Workout.query.one()
+        workout = create_a_workout_with_file(
+            user_1, kml_2_3_with_two_tracks, extension="kml"
+        )
         kml_expected_path = os.path.join(
             app.config["UPLOAD_FOLDER"],
-            workout.original_file,
+            workout.original_file,  # type: ignore[arg-type]
         )
         gpx_expected_path = os.path.join(
             app.config["UPLOAD_FOLDER"],
-            workout.gpx,
+            workout.gpx,  # type: ignore[arg-type]
         )
         exporter = UserDataExporter(user_1)
 
@@ -484,11 +483,11 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
                 [
                     call(
                         kml_expected_path,
-                        f"workout_files/{workout.original_file.split('/')[-1]}"
+                        f"workout_files/{workout.original_file.split('/')[-1]}"  # type: ignore[union-attr]
                     ),
                     call(
                         gpx_expected_path,
-                        f"workout_files/{workout.gpx.split('/')[-1]}"
+                        f"workout_files/{workout.gpx.split('/')[-1]}"  # type: ignore[union-attr]
                     ),
                 ], any_order=True
             )
@@ -508,11 +507,10 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        post_a_workout(app, gpx_file)
-        workout = Workout.query.one()
+        workout = create_a_workout_with_file(user_1, gpx_file)
         expected_path = os.path.join(
             app.config["UPLOAD_FOLDER"],
-            workout.gpx,
+            workout.gpx,  # type: ignore[arg-type]
         )
         exporter = UserDataExporter(user_2)
 
@@ -520,7 +518,7 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
 
         # fmt: off
         assert (
-            call(expected_path, f"gpx/{workout.gpx.split('/')[-1]}")
+            call(expected_path, f"gpx/{workout.gpx.split('/')[-1]}")# type: ignore[union-attr]
             not in zipfile_mock.return_value.__enter__.
             return_value.write.call_args_list
         )

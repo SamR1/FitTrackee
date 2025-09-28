@@ -1,11 +1,16 @@
-import json
 from io import BytesIO
-from typing import Optional, Tuple
+from typing import TYPE_CHECKING, Dict, List, Optional
 
-from flask import Flask
+from werkzeug.datastructures import FileStorage
 
-from fittrackee.users.models import User
-from fittrackee.visibility_levels import VisibilityLevel
+from fittrackee import db
+from fittrackee.workouts.services import WorkoutsFromFileCreationService
+
+if TYPE_CHECKING:
+    from fittrackee.equipments.models import Equipment
+    from fittrackee.users.models import User
+    from fittrackee.visibility_levels import VisibilityLevel
+    from fittrackee.workouts.models import Workout
 
 MAX_WORKOUT_VALUES = {
     "drop": 99999.999,
@@ -15,43 +20,32 @@ MAX_WORKOUT_VALUES = {
 }
 
 
-def post_a_workout(
-    app: Flask,
+def create_a_workout_with_file(
+    user: "User",
     workout_file: str,
-    notes: Optional[str] = None,
-    description: Optional[str] = None,
-    workout_visibility: Optional[VisibilityLevel] = None,
+    *,
+    sport_id: int = 1,
     extension: str = "gpx",
-) -> Tuple[str, str]:
-    client = app.test_client()
-    resp_login = client.post(
-        "/api/auth/login",
-        data=json.dumps(dict(email="test@test.com", password="12345678")),
-        content_type="application/json",
+    workout_visibility: Optional["VisibilityLevel"] = None,
+    equipments: Optional[List["Equipment"]] = None,
+) -> "Workout":
+    file_storage = FileStorage(
+        filename=f"file.{extension}",
+        stream=BytesIO(str.encode(workout_file)),
     )
-    token = json.loads(resp_login.data.decode())["auth_token"]
-    workout_data = '{"sport_id": 1'
-    if notes is not None:
-        workout_data += f', "notes": "{notes}"'
-    if description is not None:
-        workout_data += f', "description": "{description}"'
-    if workout_visibility is not None:
-        workout_data += f', "workout_visibility": "{workout_visibility.value}"'
-    workout_data += "}"
-    response = client.post(
-        "/api/workouts",
-        data=dict(
-            file=(BytesIO(str.encode(workout_file)), f"example.{extension}"),
-            data=workout_data,
-        ),
-        headers=dict(
-            content_type="multipart/form-data", Authorization=f"Bearer {token}"
-        ),
+    workouts_data: Dict = {"sport_id": sport_id}
+    if workout_visibility:
+        workouts_data["workout_visibility"] = workout_visibility.value
+    service = WorkoutsFromFileCreationService(
+        auth_user=user, file=file_storage, workouts_data=workouts_data
     )
-    data = json.loads(response.data.decode())
-    return token, data["data"]["workouts"][0]["id"]
+    new_workout = service.create_workout_from_file(
+        extension=extension, equipments=equipments
+    )
+    db.session.commit()
+    return new_workout
 
 
-def add_follower(user: User, follower: User) -> None:
+def add_follower(user: "User", follower: "User") -> None:
     follower.send_follow_request_to(user)
     user.approves_follow_request_from(follower)

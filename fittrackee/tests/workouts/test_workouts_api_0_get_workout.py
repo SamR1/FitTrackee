@@ -16,7 +16,7 @@ from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 from ..mixins import GeometryMixin
 from ..utils import jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin
-from .utils import post_a_workout
+from .utils import create_a_workout_with_file
 
 
 class GetWorkoutGpxAsFollowerMixin:
@@ -2045,13 +2045,15 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         sport_1_cycling: Sport,
         gpx_file_with_cadence_zero_values: str,
     ) -> None:
-        auth_token, workout_short_id = post_a_workout(
-            app, gpx_file_with_cadence_zero_values
+        workout = create_a_workout_with_file(
+            user_1, gpx_file_with_cadence_zero_values
         )
-        client = app.test_client()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.get(
-            self.route.format(workout_uuid=workout_short_id),
+            self.route.format(workout_uuid=workout.short_id),
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
