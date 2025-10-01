@@ -30,6 +30,7 @@ from fittrackee.workouts.constants import SPORTS_WITHOUT_ELEVATION_DATA
 from fittrackee.workouts.models import Workout
 
 from .constants import (
+    MESSAGE_PREFERENCES_SCHEMA,
     NOTIFICATION_TYPES,
     NOTIFICATIONS_PREFERENCES_SCHEMA,
     USER_LINK_TEMPLATE,
@@ -371,6 +372,9 @@ class User(BaseModel):
     )
     split_workout_charts: Mapped[bool] = mapped_column(
         server_default="false", nullable=False
+    )
+    messages_preferences: Mapped[Optional[Dict]] = mapped_column(
+        postgresql.JSONB, nullable=True
     )
 
     workouts: Mapped[List["Workout"]] = relationship(
@@ -750,7 +754,9 @@ class User(BaseModel):
             "sanctions_count": result[2],
         }
 
-    def update_preferences(self, updated_preferences: Dict) -> None:
+    def update_notification_preferences(
+        self, updated_preferences: Dict
+    ) -> None:
         notification_preferences = {
             **(
                 self.notification_preferences
@@ -764,6 +770,18 @@ class User(BaseModel):
             schema=NOTIFICATIONS_PREFERENCES_SCHEMA,
         )
         self.notification_preferences = notification_preferences
+        db.session.commit()
+
+    def update_message_preferences(self, updated_preferences: Dict) -> None:
+        messages_preferences = {
+            **(self.messages_preferences if self.messages_preferences else {}),
+            **updated_preferences,
+        }
+        validate(
+            instance=messages_preferences,
+            schema=MESSAGE_PREFERENCES_SCHEMA,
+        )
+        self.messages_preferences = messages_preferences
         db.session.commit()
 
     def is_notification_enabled(self, notification_type: str) -> bool:
@@ -890,36 +908,39 @@ class User(BaseModel):
                 )
             serialized_user = {
                 **serialized_user,
-                **{
-                    "accepted_privacy_policy": accepted_privacy_policy,
-                    "date_format": self.date_format,
-                    "display_ascent": self.display_ascent,
-                    "imperial_units": self.imperial_units,
-                    "language": self.language,
-                    "start_elevation_at_zero": self.start_elevation_at_zero,
-                    "timezone": self.timezone,
-                    "use_dark_mode": self.use_dark_mode,
-                    "use_raw_gpx_speed": self.use_raw_gpx_speed,
-                    "weekm": self.weekm,
-                    "map_visibility": self.map_visibility.value,
-                    "analysis_visibility": self.analysis_visibility.value,
-                    "workouts_visibility": self.workouts_visibility.value,
-                    "hr_visibility": self.hr_visibility.value,
-                    "segments_creation_event": self.segments_creation_event,
-                    "manually_approves_followers": (
-                        self.manually_approves_followers
-                    ),
-                    "hide_profile_in_users_directory": (
-                        self.hide_profile_in_users_directory
-                    ),
-                    "sanctions_count": self.sanctions_count,
-                    "notification_preferences": (
-                        self.notification_preferences
-                        if self.notification_preferences
-                        else {}
-                    ),
-                    "split_workout_charts": self.split_workout_charts,
-                },
+                "accepted_privacy_policy": accepted_privacy_policy,
+                "date_format": self.date_format,
+                "display_ascent": self.display_ascent,
+                "imperial_units": self.imperial_units,
+                "language": self.language,
+                "start_elevation_at_zero": self.start_elevation_at_zero,
+                "timezone": self.timezone,
+                "use_dark_mode": self.use_dark_mode,
+                "use_raw_gpx_speed": self.use_raw_gpx_speed,
+                "weekm": self.weekm,
+                "map_visibility": self.map_visibility.value,
+                "analysis_visibility": self.analysis_visibility.value,
+                "workouts_visibility": self.workouts_visibility.value,
+                "hr_visibility": self.hr_visibility.value,
+                "segments_creation_event": self.segments_creation_event,
+                "manually_approves_followers": (
+                    self.manually_approves_followers
+                ),
+                "hide_profile_in_users_directory": (
+                    self.hide_profile_in_users_directory
+                ),
+                "sanctions_count": self.sanctions_count,
+                "notification_preferences": (
+                    self.notification_preferences
+                    if self.notification_preferences
+                    else {}
+                ),
+                "split_workout_charts": self.split_workout_charts,
+                "messages_preferences": (
+                    self.messages_preferences
+                    if self.messages_preferences
+                    else {}
+                ),
             }
 
         return serialized_user

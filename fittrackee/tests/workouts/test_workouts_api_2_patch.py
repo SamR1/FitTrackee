@@ -9,9 +9,9 @@ from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.visibility_levels import VisibilityLevel
 
-from ..utils import OAUTH_SCOPES, jsonify_dict
+from ..utils import jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin
-from .utils import MAX_WORKOUT_VALUES, post_a_workout
+from .utils import MAX_WORKOUT_VALUES, create_a_workout_with_file
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -312,14 +312,16 @@ class TestEditWorkout(WorkoutApiTestCaseMixin):
         gpx_file: str,
         equipment_bike_user_1: "Equipment",
     ) -> None:
-        token, workout_short_id = post_a_workout(app, gpx_file)
-        client = app.test_client()
+        workout = create_a_workout_with_file(user_1, gpx_file)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.patch(
-            f"/api/workouts/{workout_short_id}",
+            f"/api/workouts/{workout.short_id}",
             content_type="application/json",
             json={"equipment_ids": equipment_bike_user_1.short_id},
-            headers=dict(Authorization=f"Bearer {token}"),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(
@@ -336,11 +338,13 @@ class TestEditWorkout(WorkoutApiTestCaseMixin):
         equipment_shoes_user_1: "Equipment",
         equipment_another_shoes_user_1: "Equipment",
     ) -> None:
-        token, workout_short_id = post_a_workout(app, gpx_file)
+        workout = create_a_workout_with_file(user_1, gpx_file)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
-        client = app.test_client()
         response = client.patch(
-            f"/api/workouts/{workout_short_id}",
+            f"/api/workouts/{workout.short_id}",
             content_type="application/json",
             json={
                 "equipment_ids": [
@@ -348,41 +352,22 @@ class TestEditWorkout(WorkoutApiTestCaseMixin):
                     equipment_another_shoes_user_1.short_id,
                 ]
             },
-            headers=dict(Authorization=f"Bearer {token}"),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(response, "only one equipment can be added")
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "workouts:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: "Flask",
-        user_1: "User",
-        sport_1_cycling: "Sport",
-        workout_cycling_user_1: "Workout",
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_workouts_write(
+        self, app: "Flask", user_1: "User"
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="patch",
+            endpoint=f"/api/workouts/{self.random_short_id()}",
+            invalid_scope="workouts:read",
+            expected_endpoint_scope="workouts:write",
         )
-
-        response = client.patch(
-            f"/api/workouts/{workout_cycling_user_1.short_id}",
-            json={"title": "some title"},
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
@@ -393,14 +378,16 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         sport_1_cycling: "Sport",
         gpx_file: str,
     ) -> None:
-        token, workout_short_id = post_a_workout(app, gpx_file)
-        client = app.test_client()
+        workout = create_a_workout_with_file(user_1, gpx_file)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.patch(
-            f"/api/workouts/{workout_short_id}",
+            f"/api/workouts/{workout.short_id}",
             content_type="application/json",
             json={"distance": 10},
-            headers=dict(Authorization=f"Bearer {token}"),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(
@@ -417,14 +404,16 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         sport_2_running: "Sport",
         gpx_file: str,
     ) -> None:
-        token, workout_short_id = post_a_workout(app, gpx_file)
-        client = app.test_client()
+        workout = create_a_workout_with_file(user_1, gpx_file)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.patch(
-            f"/api/workouts/{workout_short_id}",
+            f"/api/workouts/{workout.short_id}",
             content_type="application/json",
             json={"sport_id": 2, "title": "Workout test"},
-            headers=dict(Authorization=f"Bearer {token}"),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200

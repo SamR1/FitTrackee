@@ -1,20 +1,25 @@
 import json
 from datetime import datetime, timedelta, timezone
-from typing import List
+from typing import TYPE_CHECKING, List
 from unittest.mock import patch
 
 import pytest
 from flask import Flask
+from shapely import to_geojson
+from shapely.geometry.multilinestring import MultiLineString
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import User
 from fittrackee.visibility_levels import VisibilityLevel
-from fittrackee.workouts.models import Sport, Workout
+from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 
 from ..mixins import WorkoutMixin
-from ..utils import OAUTH_SCOPES, jsonify_dict
+from ..utils import jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin
+
+if TYPE_CHECKING:
+    from werkzeug.test import TestResponse
 
 
 class TestGetWorkouts(WorkoutApiTestCaseMixin):
@@ -198,33 +203,17 @@ class TestGetWorkouts(WorkoutApiTestCaseMixin):
             "total": 1,
         }
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "workouts:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_workouts_read(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint="/api/workouts",
+            invalid_scope="workouts:write",
+            expected_endpoint_scope="workouts:read",
         )
-
-        response = client.get(
-            "/api/workouts",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
@@ -1372,6 +1361,83 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
         self.assert_400(response, "invalid value for visibility")
 
 
+class TestGetWorkoutsWithLocationFilters(WorkoutApiTestCaseMixin):
+    def test_it_does_not_return_workouts_when_to_far_from_given_coordinates(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?coordinates=44.564511,6.08716&radius=12",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert data["data"]["workouts"] == []
+
+    def test_it_get_workout_matching_given_location_and_distance(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?coordinates=44.564511,6.087168&radius=20",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        workouts = data["data"]["workouts"]
+        assert len(workouts) == 1
+        assert (
+            workouts[0]["id"]
+            == workout_cycling_user_1_with_coordinates.short_id
+        )
+
+    def test_it_returns_400_when_radius_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?coordinates=44.564511,6.087168&radius=-1",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            error_message="invalid radius, must be an float greater than zero",
+        )
+
+
 class TestGetWorkoutsWithFiltersAndPagination(WorkoutApiTestCaseMixin):
     def test_it_gets_page_2_with_date_filter(
         self,
@@ -2495,3 +2561,655 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "total_duration": "6:08:24",
             "total_sports": 2,
         }
+
+
+class TestGetWorkoutsFeatureCollection(WorkoutApiTestCaseMixin):
+    """
+    Since query generation is shared with `/workouts` endpoints, no need to
+    test all filters
+    """
+
+    def test_it_returns_401_if_user_is_not_authenticated(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get("/api/workouts/collection")
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 401
+        assert "error" in data["status"]
+        assert "provide a valid auth token" in data["message"]
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: Flask,
+        user_1: User,
+        suspended_user: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            "/api/workouts/collection",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_403(response)
+
+    def test_it_returns_empty_collection_when_no_workouts(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts/collection",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"] == {
+            "bbox": [],
+            "features": [],
+            "type": "FeatureCollection",
+        }
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 0,
+            "total": 0,
+        }
+
+    def test_it_returns_empty_collection_when_only_workouts_without_files(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        another_workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts/collection",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"] == {
+            "bbox": [],
+            "features": [],
+            "type": "FeatureCollection",
+        }
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 2,
+        }
+
+    def test_it_returns_only_workouts_with_geometry_in_feature_collection(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+        workout_cycling_user_1_segment_1_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_1_coordinates: List[List],
+        another_workout_cycling_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts/collection",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"] == {
+            "bbox": [
+                6.07355,
+                44.67822,
+                6.07442,
+                44.68095,
+            ],
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": json.loads(
+                        to_geojson(
+                            MultiLineString(
+                                [
+                                    workout_cycling_user_1_segment_0_coordinates,
+                                    workout_cycling_user_1_segment_1_coordinates,
+                                ]
+                            )
+                        )
+                    ),
+                    "properties": {
+                        "bounds": (
+                            workout_cycling_user_1_with_coordinates.bounds
+                        ),
+                        "id": workout_cycling_user_1_with_coordinates.short_id,
+                        "sport_id": (
+                            workout_cycling_user_1_with_coordinates.sport_id
+                        ),
+                        "title": workout_cycling_user_1_with_coordinates.title,
+                        "workout_visibility": (
+                            workout_cycling_user_1_with_coordinates.workout_visibility
+                        ),
+                    },
+                },
+            ],
+            "type": "FeatureCollection",
+        }
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 2,
+        }
+
+    def test_it_filters_on_sport(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+        workout_cycling_user_1_segment_1_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_1_coordinates: List[List],
+        another_workout_cycling_user_1: Workout,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/workouts/collection?sport_id={sport_2_running.id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"] == {
+            "bbox": [],
+            "features": [],
+            "type": "FeatureCollection",
+        }
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
+        }
+
+    def test_it_returns_400_when_duration_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts/collection?duration_from=00h52&duration_to=01:20",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, error_message="invalid duration")
+
+    def test_it_returns_400_when_radius_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts/collection?coordinates=44.564511,6.087168&radius=-1",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            error_message="invalid radius, must be an float greater than zero",
+        )
+
+    def test_it_returns_400_when_workout_visibility_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_running_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts/collection?workout_visibility=invalid",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, error_message="invalid value for visibility")
+
+    def test_expected_scope_is_workouts_read(
+        self, app: Flask, user_1: User
+    ) -> None:
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint="/api/workouts/collection",
+            invalid_scope="workouts:write",
+            expected_endpoint_scope="workouts:read",
+        )
+
+
+class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
+    route = "/api/workouts/global-map"
+
+    @staticmethod
+    def assert_no_features(response: "TestResponse") -> None:
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data == {
+            "data": {
+                "bbox": [],
+                "features": [],
+                "limit_exceeded": False,
+                "type": "FeatureCollection",
+            },
+            "status": "success",
+        }
+
+    def test_it_returns_401_if_user_is_not_authenticated(
+        self, app: "Flask"
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(self.route)
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 401
+        assert "error" in data["status"]
+        assert "provide a valid auth token" in data["message"]
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: "Flask",
+        user_1: "User",
+        suspended_user: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_running_user_1: "Workout",
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            self.route, headers=dict(Authorization=f"Bearer {auth_token}")
+        )
+
+        self.assert_403(response)
+
+    def test_it_returns_empty_collection_when_no_workouts_for_auth_user(
+        self,
+        app: "Flask",
+        user_1: "User",
+        user_2: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route, headers=dict(Authorization=f"Bearer {auth_token}")
+        )
+
+        self.assert_no_features(response)
+
+    def test_it_returns_empty_collection_when_only_workouts_without_files(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        another_workout_cycling_user_1: "Workout",
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route, headers=dict(Authorization=f"Bearer {auth_token}")
+        )
+
+        self.assert_no_features(response)
+
+    def test_it_returns_workouts_with_start_point_as_feature_collection(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+        workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_1_coordinates: List[List],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts/global-map",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"] == {
+            "bbox": [
+                6.07367,
+                44.68095,
+                6.07367,
+                44.68095,
+            ],
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "coordinates": [6.07367, 44.68095],
+                        "type": "Point",
+                    },
+                    "properties": {
+                        "bounds": (
+                            workout_cycling_user_1_with_coordinates.bounds
+                        ),
+                        "id": workout_cycling_user_1_with_coordinates.short_id,
+                        "sport_id": (
+                            workout_cycling_user_1_with_coordinates.sport_id
+                        ),
+                        "title": workout_cycling_user_1_with_coordinates.title,
+                        "workout_visibility": (
+                            workout_cycling_user_1_with_coordinates.workout_visibility
+                        ),
+                    },
+                },
+            ],
+            "limit_exceeded": False,
+            "type": "FeatureCollection",
+        }
+
+    def test_it_does_return_suspended_workout(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+    ) -> None:
+        workout_cycling_user_1_with_coordinates.suspended_at = datetime.now(
+            tz=timezone.utc
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts/global-map",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_no_features(response)
+
+    def test_it_filters_workouts_on_sport_ids(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        sport_3_cycling_transport: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+        workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_1_coordinates: List[List],
+        workout_running_user_1_with_coordinates: "Workout",
+        workout_running_user_1_segment_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            (
+                f"{self.route}?sport_ids="
+                f"{sport_1_cycling.id},{sport_3_cycling_transport.id}"
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"] == {
+            "bbox": [
+                6.07367,
+                44.68095,
+                6.07367,
+                44.68095,
+            ],
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "coordinates": [6.07367, 44.68095],
+                        "type": "Point",
+                    },
+                    "properties": {
+                        "bounds": (
+                            workout_cycling_user_1_with_coordinates.bounds
+                        ),
+                        "id": workout_cycling_user_1_with_coordinates.short_id,
+                        "sport_id": (
+                            workout_cycling_user_1_with_coordinates.sport_id
+                        ),
+                        "title": workout_cycling_user_1_with_coordinates.title,
+                        "workout_visibility": (
+                            workout_cycling_user_1_with_coordinates.workout_visibility
+                        ),
+                    },
+                },
+            ],
+            "limit_exceeded": False,
+            "type": "FeatureCollection",
+        }
+
+    def test_it_returns_400_when_sport_ids_are_invalid(
+        self,
+        app: "Flask",
+        user_1: "User",
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"{self.route}?sport_ids=1,invalid",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, error_message="invalid sport_ids")
+
+    def test_it_returns_workouts_created_after_from_date(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        sport_3_cycling_transport: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+        workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_1_coordinates: List[List],
+        workout_running_user_1_with_coordinates: "Workout",
+        workout_running_user_1_segment_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"{self.route}?from=2018-04-01",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["data"]["features"][0]["properties"]["id"] == (
+            workout_running_user_1_with_coordinates.short_id
+        )
+
+    def test_it_returns_workouts_created_after_to_date(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        sport_3_cycling_transport: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+        workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_1_coordinates: List[List],
+        workout_running_user_1_with_coordinates: "Workout",
+        workout_running_user_1_segment_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"{self.route}?to=2018-04-01",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["data"]["features"][0]["properties"]["id"] == (
+            workout_cycling_user_1_with_coordinates.short_id
+        )
+
+    def test_it_returns_400_when_date_format_is_invalid(
+        self,
+        app: "Flask",
+        user_1: "User",
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"{self.route}?to=2018-04",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response, error_message="invalid date format, expecting '%Y-%m-%d'"
+        )
+
+    def test_it_returns_most_recent_workouts_when_total_workouts_exceed_limit(
+        self,
+        app_with_global_map_workouts_limit_equal_to_1: Flask,
+        user_1: User,
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+        workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_1_coordinates: List[List],
+        workout_running_user_1_with_coordinates: "Workout",
+        workout_running_user_1_segment_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_global_map_workouts_limit_equal_to_1, user_1.email
+        )
+
+        response = client.get(
+            self.route,
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["data"]["limit_exceeded"] is True
+        assert len(data["data"]["features"]) == 1
+        assert data["data"]["features"][0]["properties"]["id"] == (
+            workout_running_user_1_with_coordinates.short_id
+        )
+
+    def test_expected_scope_is_workouts_read(
+        self, app: Flask, user_1: User
+    ) -> None:
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint=self.route,
+            invalid_scope="workouts:write",
+            expected_endpoint_scope="workouts:read",
+        )

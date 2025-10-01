@@ -42,6 +42,7 @@
           'FOLLOW-REQUESTS',
           'BLOCKED-USERS',
           'NOTIFICATIONS',
+          'MESSAGES',
           'MODERATION',
           'ARCHIVE-UPLOADS',
         ]

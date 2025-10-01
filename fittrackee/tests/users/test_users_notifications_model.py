@@ -99,7 +99,7 @@ class TestNotificationForFollowRequest:
     def test_it_does_not_create_notification_when_disabled_in_preferences(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        user_2.update_preferences({"follow_request": False})
+        user_2.update_notification_preferences({"follow_request": False})
 
         user_1.send_follow_request_to(user_2)
 
@@ -131,7 +131,7 @@ class TestNotificationForFollowRequest:
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         user_2.manually_approves_followers = False
-        user_2.update_preferences({"follow": False})
+        user_2.update_notification_preferences({"follow": False})
 
         user_1.send_follow_request_to(user_2)
 
@@ -176,7 +176,9 @@ class TestNotificationForFollowRequest:
     def test_it_does_not_update_follow_request_notification_when_disabled_in_preferences(  # noqa
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        user_2.update_preferences({"follow_request": True, "follow": False})
+        user_2.update_notification_preferences(
+            {"follow_request": True, "follow": False}
+        )
         user_1.send_follow_request_to(user_2)
 
         user_2.approves_follow_request_from(user_1)
@@ -201,7 +203,7 @@ class TestNotificationForFollowRequest:
     def test_it_creates_follow_notification_when_user_approves_follow_request(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        user_2.update_preferences({"follow_request": False})
+        user_2.update_notification_preferences({"follow_request": False})
         user_1.send_follow_request_to(user_2)
         now = datetime.now(timezone.utc)
 
@@ -238,7 +240,9 @@ class TestNotificationForFollowRequest:
     def test_it_does_not_create_notification_for_follower_when_disabled_in_preferences(  # noqa
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
-        user_1.update_preferences({"follow_request_approved": False})
+        user_1.update_notification_preferences(
+            {"follow_request_approved": False}
+        )
         user_1.send_follow_request_to(user_2)
 
         user_2.approves_follow_request_from(user_1)
@@ -331,7 +335,7 @@ class TestNotificationForFollowRequest:
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         follow_request = user_1.send_follow_request_to(user_2)
-        user_2.update_preferences({"follow": False})
+        user_2.update_notification_preferences({"follow": False})
         notification = Notification.query.filter_by(
             from_user_id=user_1.id,
             to_user_id=user_2.id,
@@ -481,7 +485,7 @@ class TestNotificationForWorkoutLike(NotificationTestCase):
         workout_cycling_user_2: Workout,
         workout_cycling_user_1: Workout,
     ) -> None:
-        user_1.update_preferences({"workout_like": False})
+        user_1.update_notification_preferences({"workout_like": False})
 
         like = self.like_workout(user_2, workout_cycling_user_1)
 
@@ -616,7 +620,7 @@ class TestNotificationForWorkoutComment(ReportMixin, NotificationTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        user_1.update_preferences({"workout_comment": False})
+        user_1.update_notification_preferences({"workout_comment": False})
 
         comment = self.comment_workout(
             user_2,
@@ -963,7 +967,7 @@ class TestNotificationForCommentLike(NotificationTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         comment = self.comment_workout(user_2, workout_cycling_user_1)
-        user_2.update_preferences({"comment_like": False})
+        user_2.update_notification_preferences({"comment_like": False})
 
         like = self.like_comment(user_3, comment)
 
@@ -1212,7 +1216,7 @@ class TestNotificationForMention(NotificationTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        user_3.update_preferences({"mention": False})
+        user_3.update_notification_preferences({"mention": False})
         comment = self.comment_workout(
             user_2, workout_cycling_user_1, text=f"@{user_3.username}"
         )
@@ -1294,7 +1298,9 @@ class TestNotificationForMention(NotificationTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        user_1.update_preferences({"mention": False, "workout_comment": False})
+        user_1.update_notification_preferences(
+            {"mention": False, "workout_comment": False}
+        )
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
 
         comment = self.comment_workout(
@@ -1319,7 +1325,9 @@ class TestNotificationForMention(NotificationTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        user_1.update_preferences({"mention": False, "workout_comment": True})
+        user_1.update_notification_preferences(
+            {"mention": False, "workout_comment": True}
+        )
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.comment_workout(
             user_2,

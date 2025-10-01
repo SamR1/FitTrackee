@@ -22,7 +22,7 @@ from fittrackee.workouts.models import Sport, Workout
 
 from ..comments.mixins import CommentMixin
 from ..mixins import ApiTestCaseMixin, BaseTestMixin, ReportMixin
-from ..utils import OAUTH_SCOPES, jsonify_dict
+from ..utils import jsonify_dict
 
 
 class ReportTestCase(
@@ -160,38 +160,17 @@ class TestPostReport(ReportTestCase):
 
         self.assert_400(response)
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "reports:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    def test_expected_scope_is_reports_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint=self.route,
+            invalid_scope="reports:read",
+            expected_endpoint_scope="reports:write",
         )
-
-        response = client.post(
-            self.route,
-            content_type="application/json",
-            data=json.dumps(
-                dict(
-                    note=self.random_string(),
-                    object_id=self.random_short_id(),
-                    object_type="comment",
-                )
-            ),
-            headers=dict(
-                Authorization=f"Bearer {access_token}",
-            ),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestPostCommentReport(ReportTestCase):
@@ -1662,35 +1641,17 @@ class TestGetReportsAsUnauthenticatedUser(ReportTestCase):
 
 
 class TestGetReportsOAuth2Scopes(ReportTestCase):
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "reports:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1_moderator: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_reports_read(
+        self, app: Flask, user_1_moderator: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1_moderator, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1_moderator,
+            client_method="get",
+            endpoint=self.route,
+            invalid_scope="reports:write",
+            expected_endpoint_scope="reports:read",
         )
-
-        response = client.get(
-            self.route,
-            content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {access_token}",
-            ),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class GetReportTestCase(ReportTestCase):
@@ -1818,39 +1779,17 @@ class TestGetReportAsUnauthenticatedUser(GetReportTestCase):
 
 
 class TestGetReportOAuth2Scopes(GetReportTestCase):
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "reports:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_reports_read(
+        self, app: Flask, user_1_admin: User
     ) -> None:
-        report = self.create_report(
-            reporter=user_1_admin, reported_object=user_2
+        self.assert_response_scope(
+            app=app,
+            user=user_1_admin,
+            client_method="get",
+            endpoint=self.route.format(report_id=self.random_int()),
+            invalid_scope="reports:write",
+            expected_endpoint_scope="reports:read",
         )
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1_admin, scope=client_scope
-        )
-
-        response = client.get(
-            self.route.format(report_id=report.id),
-            content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {access_token}",
-            ),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestPatchReport(ReportTestCase):
@@ -3929,36 +3868,17 @@ class TestProcessReportActionAppeal(
 
         self.assert_400(response, "workout already reactivated")
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "users:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1_moderator: User,
-        user_2: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_users_write(
+        self, app: Flask, user_1_moderator: User
     ) -> None:
-        appeal_id = self.random_short_id()
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1_moderator, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1_moderator,
+            client_method="patch",
+            endpoint=self.route.format(appeal_id=self.random_int()),
+            invalid_scope="users:read",
+            expected_endpoint_scope="users:write",
         )
-
-        response = client.patch(
-            self.route.format(appeal_id=appeal_id),
-            data=json.dumps(dict(approved=False, reason="OK")),
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestGetReportsUnresolved(ReportTestCase):
@@ -4063,30 +3983,14 @@ class TestGetReportsUnresolved(ReportTestCase):
         assert data["status"] == "success"
         assert data["unresolved"] is True
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "reports:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1_moderator: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_reports_read(
+        self, app: Flask, user_1_moderator: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1_moderator, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1_moderator,
+            client_method="get",
+            endpoint=self.route,
+            invalid_scope="reports:write",
+            expected_endpoint_scope="reports:read",
         )
-
-        response = client.get(
-            self.route,
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)

@@ -4,11 +4,15 @@ Workouts
 .. autoflask:: fittrackee:create_app()
    :endpoints:
     workouts.get_workouts,
+    workouts.get_workouts_feature_collection,
+    workouts.get_workouts_for_global_map,
     workouts.get_workout,
+    workouts.get_workout_geojson,
+    workouts.get_segment_geojson,
     workouts.get_workout_gpx,
+    workouts.get_segment_gpx,
     workouts.get_workout_chart_data,
     workouts.get_segment_chart_data,
-    workouts.get_segment_gpx,
     workouts.get_map,
     workouts.get_map_tile,
     workouts.download_workout_gpx,

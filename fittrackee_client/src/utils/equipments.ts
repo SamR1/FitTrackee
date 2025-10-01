@@ -41,6 +41,7 @@ export const SPORT_EQUIPMENT_TYPES: Record<string, string[]> = {
   Shoes: [
     'Hiking',
     'Mountaineering',
+    'Padel (Outdoor)',
     'Running',
     'Swimrun',
     'Tennis (Outdoor)',

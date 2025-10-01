@@ -11,6 +11,7 @@ SPORT_EQUIPMENT_TYPES = {
     "Shoes": [
         "Hiking",
         "Mountaineering",
+        "Padel (Outdoor)",
         "Running",
         "Swimrun",
         "Tennis (Outdoor)",

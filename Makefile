@@ -163,6 +163,11 @@ html-update-po-all:
 
 install-db:
 	psql -U postgres -f db/create.sql
+	psql -U postgres -d fittrackee -c 'CREATE EXTENSION IF NOT EXISTS postgis;'
+	$(FTCLI) db upgrade
+
+install-db-dev:
+	sh db/create-databases.sh
 	$(FTCLI) db upgrade
 
 init-db:

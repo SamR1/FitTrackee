@@ -75,24 +75,49 @@ export const getQuery = (
   } else {
     delete query.workout_visibility
   }
+  if (
+    options?.enableGeospatialFeatures &&
+    typeof locationQuery.coordinates === 'string'
+  ) {
+    query.coordinates = locationQuery.coordinates
+  } else {
+    delete query.coordinates
+  }
+  if (
+    options?.enableGeospatialFeatures &&
+    typeof locationQuery.radius === 'string'
+  ) {
+    query.radius = locationQuery.radius
+  } else {
+    delete query.radius
+  }
 
   return query
 }
 
 export const workoutsPayloadKeys = [
-  'equipment_id',
-  'from',
-  'to',
   'ave_speed_from',
   'ave_speed_to',
-  'max_speed_from',
-  'max_speed_to',
+  'description',
   'distance_from',
   'distance_to',
   'duration_from',
   'duration_to',
+  'equipment_id',
+  'from',
+  'max_speed_from',
+  'max_speed_to',
+  'notes',
   'sport_id',
+  'to',
   'title',
+  'workout_visibility',
+]
+export const workoutsPayloadKeysWithGeospatial = [
+  ...workoutsPayloadKeys,
+  'coordinates',
+  'osm_id',
+  'radius',
 ]
 
 const getRange = (stop: number, start = 1): number[] => {

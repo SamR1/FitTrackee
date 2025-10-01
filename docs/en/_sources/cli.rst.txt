@@ -172,6 +172,7 @@ Can be used if redis is not set (no dramatiq workers running).
 """"""""""""""""""""""
 .. versionadded:: 0.6.5
 .. versionchanged:: 0.9.0  Add ``--set-role`` option. ``--set-admin`` is now deprecated.
+.. versionchanged:: 1.0.0  Remove ``--set-admin`` option.
 
 Modify a user account (role, active status, email and password).
 
@@ -184,8 +185,6 @@ Modify a user account (role, active status, email and password).
      - Description
    * - ``USERNAME``
      - Username.
-   * - ``--set-admin BOOLEAN``
-     - [DEPRECATED] Add/remove admin rights (when adding admin rights, it also activates user account if not active).
    * - ``--set-role [owner|admin|moderator|user]``
      - Set user role (when setting 'moderator', 'admin' and 'owner' role, it also activates user account if not active).
    * - ``--activate``
@@ -240,6 +239,7 @@ Can be used if redis is not set (no dramatiq workers running).
 ``ftcli workouts refresh``
 """"""""""""""""""""""""""
 .. versionadded:: 0.12.0
+.. versionchanged:: 1.0.0  Add ``--add-missing-geometry`` option.
 
 Refresh workouts by recalculating data and fetching weather data if provider is set and workout does not have weather data.
 
@@ -273,5 +273,7 @@ Before executing the command, it is recommended to back up of all data (database
      - workout file extension (valid values are: tcx, kmz, gpx, kml, fit)
    * - ``--with-weather``
      - enable weather data collection if weather provider is set and workout has no weather data. WARNING: depending on subscription, the rate limit can be reached, leading to errors and preventing weather data being collected during next uploads until the limit is reset (default: disabled)
+   * - ``--add-missing-geometry``
+     - if provided, it refreshes only workouts without geometry in database to add geometry and points. This option is provided to update workouts created before v1.x and will be removed in a future version when all workouts must have geometry.
    * - ``-v, --verbose``
      - Enable verbose output log (default: disabled)

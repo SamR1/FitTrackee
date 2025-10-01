@@ -22,6 +22,8 @@ from .utils import update_app_config_from_database, verify_app_config
 
 config_blueprint = Blueprint("config", __name__)
 
+MAX_GLOBAL_MAP_WORKOUTS = 50000  # limitation on browser side
+
 
 @config_blueprint.route("/config", methods=["GET"])
 def get_application_config() -> Union[Dict, HttpResponse]:
@@ -46,8 +48,10 @@ def get_application_config() -> Union[Dict, HttpResponse]:
         "data": {
           "about": null,
           "admin_contact": "admin@example.com",
+          "enable_geospatial_features": false,
           "file_sync_limit_import": 10,
           "file_limit_import": 10,
+          "global_map_workouts_limit": 10000,
           "is_email_sending_enabled": true,
           "is_registration_enabled": false,
           "max_single_file_size": 1048576,
@@ -57,7 +61,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "privacy_policy": null,
           "privacy_policy_date": null,
           "stats_workouts_limit": 10000,
-          "version": "0.12.2",
+          "version": "1.0.0b3",
           "weather_provider": null
         },
         "status": "success"
@@ -104,8 +108,10 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         "data": {
           "about": null,
           "admin_contact": "admin@example.com",
+          "enable_geospatial_features": false,
           "file_sync_limit_import": 10,
           "file_limit_import": 10,
+          "global_map_workouts_limit": 10000,
           "is_email_sending_enabled": true,
           "is_registration_enabled": false,
           "max_single_file_size": 1048576,
@@ -115,7 +121,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
           "privacy_policy": null,
           "privacy_policy_date": null,
           "stats_workouts_limit": 10000,
-          "version": "0.12.2",
+          "version": "1.0.0b3",
           "weather_provider": null
         },
         "status": "success"
@@ -127,6 +133,8 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
                    processed synchronously (it must not exceed
                    ``file_limit_import``)
     :<json integer file_limit_import: max number of files in zip archive
+    :<json integer global_map_workouts_limit: max number of workouts displayed
+                   on global map
     :<json boolean is_registration_enabled: is registration enabled?
     :<json integer max_single_file_size: max size of a single file
     :<json integer max_users: max users allowed to register on instance
@@ -208,6 +216,18 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
             config.privacy_policy_date = (
                 datetime.now(timezone.utc) if privacy_policy else None
             )
+        if "global_map_workouts_limit" in config_data:
+            if (
+                config_data["global_map_workouts_limit"]
+                > MAX_GLOBAL_MAP_WORKOUTS
+            ):
+                return InvalidPayloadErrorResponse(
+                    f"'global_map_workouts_limit' must be less "
+                    f"than {MAX_GLOBAL_MAP_WORKOUTS}"
+                )
+            config.global_map_workouts_limit = config_data[
+                "global_map_workouts_limit"
+            ]
 
         if config.max_zip_file_size < config.max_single_file_size:
             return InvalidPayloadErrorResponse(

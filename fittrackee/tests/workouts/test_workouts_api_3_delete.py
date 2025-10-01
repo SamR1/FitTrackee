@@ -6,14 +6,12 @@ from flask import Flask
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import FollowRequest, User
-from fittrackee.utils import decode_short_id
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..comments.mixins import CommentMixin
-from ..utils import OAUTH_SCOPES
 from .mixins import WorkoutApiTestCaseMixin
-from .utils import post_a_workout
+from .utils import create_a_workout_with_file
 
 
 def get_gpx_filepath(workout_id: int) -> str:
@@ -25,12 +23,14 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
     def test_it_deletes_a_workout_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
-        token, workout_short_id = post_a_workout(app, gpx_file)
-        client = app.test_client()
+        workout = create_a_workout_with_file(user_1, gpx_file)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.delete(
-            f"/api/workouts/{workout_short_id}",
-            headers=dict(Authorization=f"Bearer {token}"),
+            f"/api/workouts/{workout.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 204
@@ -44,17 +44,16 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         gpx_file: str,
         equipment_bike_user_1: Equipment,
     ) -> None:
-        token, workout_short_id = post_a_workout(app, gpx_file)
-        workout = Workout.query.filter_by(
-            uuid=decode_short_id(workout_short_id)
-        ).one()
-        workout.equipments = [equipment_bike_user_1]
-        db.session.commit()
-        client = app.test_client()
+        workout = create_a_workout_with_file(
+            user_1, gpx_file, equipments=[equipment_bike_user_1]
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.delete(
-            f"/api/workouts/{workout_short_id}",
-            headers=dict(Authorization=f"Bearer {token}"),
+            f"/api/workouts/{workout.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 204
@@ -74,17 +73,18 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         equipment_bike_user_1: Equipment,
         equipment_shoes_user_1: Equipment,
     ) -> None:
-        token, workout_short_id = post_a_workout(app, gpx_file)
-        workout = Workout.query.filter_by(
-            uuid=decode_short_id(workout_short_id)
-        ).one()
-        workout.equipments = [equipment_bike_user_1, equipment_shoes_user_1]
-        db.session.commit()
-        client = app.test_client()
+        workout = create_a_workout_with_file(
+            user_1,
+            gpx_file,
+            equipments=[equipment_bike_user_1, equipment_shoes_user_1],
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
         response = client.delete(
-            f"/api/workouts/{workout_short_id}",
-            headers=dict(Authorization=f"Bearer {token}"),
+            f"/api/workouts/{workout.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 204
@@ -129,15 +129,15 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         user_1.approves_follow_request_from(user_2)
-        _, workout_short_id = post_a_workout(
-            app, gpx_file, workout_visibility=input_workout_visibility
+        workout = create_a_workout_with_file(
+            user_1, gpx_file, workout_visibility=input_workout_visibility
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
 
         response = client.delete(
-            f"/api/workouts/{workout_short_id}",
+            f"/api/workouts/{workout.short_id}",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -166,15 +166,15 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        _, workout_short_id = post_a_workout(
-            app, gpx_file, workout_visibility=input_workout_visibility
+        workout = create_a_workout_with_file(
+            user_1, gpx_file, workout_visibility=input_workout_visibility
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
 
         response = client.delete(
-            f"/api/workouts/{workout_short_id}",
+            f"/api/workouts/{workout.short_id}",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -200,13 +200,11 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        _, workout_short_id = post_a_workout(
-            app, gpx_file, workout_visibility=input_workout_visibility
-        )
+        workout = create_a_workout_with_file(user_1, gpx_file)
         client = app.test_client()
 
         response = client.delete(
-            f"/api/workouts/{workout_short_id}",
+            f"/api/workouts/{workout.short_id}",
         )
 
         assert response.status_code == 401
@@ -218,15 +216,15 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        auth_token, workout_short_id = post_a_workout(
-            app, gpx_file, workout_visibility=VisibilityLevel.PRIVATE
+        workout = create_a_workout_with_file(user_1, gpx_file)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
         )
         user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
-        client = app.test_client()
 
         response = client.delete(
-            f"/api/workouts/{workout_short_id}",
+            f"/api/workouts/{workout.short_id}",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -274,19 +272,18 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        token, workout_short_id = post_a_workout(app, gpx_file)
-        workout = Workout.query.filter_by(
-            uuid=decode_short_id(workout_short_id)
-        ).one()
+        workout = create_a_workout_with_file(user_1, gpx_file)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
         workout.workout_visibility = VisibilityLevel.PUBLIC
         comment = self.create_comment(
             user_2, workout, text_visibility=VisibilityLevel.PUBLIC
         )
-        client = app.test_client()
 
         response = client.delete(
-            f"/api/workouts/{workout_short_id}",
-            headers=dict(Authorization=f"Bearer {token}"),
+            f"/api/workouts/{workout.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
         assert response.status_code == 204
         assert Workout.query.first() is None
@@ -313,36 +310,17 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
 
         assert response.status_code == 204
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "workouts:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_workouts_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="delete",
+            endpoint=f"/api/workouts/{self.random_short_id()}",
+            invalid_scope="workouts:read",
+            expected_endpoint_scope="workouts:write",
         )
-
-        response = client.delete(
-            f"/api/workouts/{workout_cycling_user_1.short_id}",
-            data=dict(),
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestDeleteWorkoutWithoutGpx(CommentMixin, WorkoutApiTestCaseMixin):

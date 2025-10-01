@@ -26,7 +26,7 @@ from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, ReportMixin
-from ..utils import OAUTH_SCOPES, jsonify_dict
+from ..utils import jsonify_dict
 
 
 class TestGetUserAsAdmin(ApiTestCaseMixin):
@@ -164,33 +164,17 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
             user_2.serialize(current_user=user_1_admin, light=False)
         )
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "users:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_users_read(
+        self, app: Flask, user_1_admin: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1_admin, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1_admin,
+            client_method="get",
+            endpoint="/api/users/not_existing",
+            invalid_scope="users:write",
+            expected_endpoint_scope="users:read",
         )
-
-        response = client.get(
-            "/api/users/not_existing",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestGetUserAsUser(ApiTestCaseMixin):
@@ -360,9 +344,7 @@ class TestGetUserAsUnauthenticatedUser(ApiTestCaseMixin):
     def test_it_does_not_get_inactive_user(
         self, app: Flask, user_1_admin: User, inactive_user: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1_admin.email
-        )
+        client = app.test_client()
 
         response = client.get(
             f"/api/users/{inactive_user.username}",
@@ -1532,33 +1514,17 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
             "total": 3,
         }
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "users:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_users_read(
+        self, app: Flask, user_1_admin: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1_admin, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1_admin,
+            client_method="get",
+            endpoint="/api/users",
+            invalid_scope="users:write",
+            expected_endpoint_scope="users:read",
         )
-
-        response = client.get(
-            "/api/users",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestGetUsersAsModerator(ApiTestCaseMixin):
@@ -2363,34 +2329,17 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
 
         self.assert_403(response)
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "users:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_users_write(
+        self, app: Flask, user_1_admin: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1_admin, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1_admin,
+            client_method="patch",
+            endpoint=f"/api/users/{user_1_admin.username}",
+            invalid_scope="users:read",
+            expected_endpoint_scope="users:write",
         )
-
-        response = client.patch(
-            f"/api/users/{user_2.username}",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestDeleteUser(ReportMixin, ApiTestCaseMixin):
@@ -2851,34 +2800,17 @@ class TestDeleteUser(ReportMixin, ApiTestCaseMixin):
 
         self.assert_403(response, "error, registration is disabled")
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "users:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_users_write(
+        self, app: Flask, user_1_admin: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1_admin, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1_admin,
+            client_method="delete",
+            endpoint=f"/api/users/{self.random_string()}",
+            invalid_scope="users:read",
+            expected_endpoint_scope="users:write",
         )
-
-        response = client.delete(
-            f"/api/users/{user_2.username}",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestBlockUser(ApiTestCaseMixin):
@@ -2975,34 +2907,17 @@ class TestBlockUser(ApiTestCaseMixin):
 
         self.assert_400(response)
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "users:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_users_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1_admin, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint=self.route.format(username=self.random_string()),
+            invalid_scope="users:read",
+            expected_endpoint_scope="users:write",
         )
-
-        response = client.delete(
-            f"/api/users/{user_2.username}",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestUnBlockUser(ApiTestCaseMixin):
@@ -3083,34 +2998,17 @@ class TestUnBlockUser(ApiTestCaseMixin):
         assert data["status"] == "success"
         assert user_2.is_blocked_by(user_1) is False
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "users:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_users_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1_admin, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint=self.route.format(username=self.random_string()),
+            invalid_scope="users:read",
+            expected_endpoint_scope="users:write",
         )
-
-        response = client.delete(
-            f"/api/users/{user_2.username}",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
@@ -3648,30 +3546,14 @@ class TestGetUserLatestWorkouts(ApiTestCaseMixin, ReportMixin, CommentMixin):
         assert "success" in data["status"]
         assert data["data"]["workouts"] == []
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "workouts:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_workouts_read(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint=self.route.format(username=user_1.username),
+            invalid_scope="workouts:write",
+            expected_endpoint_scope="workouts:read",
         )
-
-        response = client.get(
-            self.route.format(username=user_1.username),
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)

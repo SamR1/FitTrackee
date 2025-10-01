@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-09-03 08:12+0200\n"
+"POT-Creation-Date: 2025-10-01 18:53+0200\n"
 "PO-Revision-Date: 2025-01-18 08:51+0000\n"
 "Last-Translator: Poesty Li <poesty7450@gmail.com>\n"
 "Language: zh_Hans\n"
@@ -489,50 +489,54 @@ msgid "Open Water Swimming"
 msgstr "开放水域游泳"
 
 #: fittrackee/feeds/feeds/constants.py:17
+msgid "Padel (Outdoor)"
+msgstr ""
+
+#: fittrackee/feeds/feeds/constants.py:18
 msgid "Paragliding"
 msgstr "滑翔伞"
 
-#: fittrackee/feeds/feeds/constants.py:18
+#: fittrackee/feeds/feeds/constants.py:19
 msgid "Rowing"
 msgstr "划船"
 
-#: fittrackee/feeds/feeds/constants.py:19
+#: fittrackee/feeds/feeds/constants.py:20
 msgid "Running"
 msgstr "跑步"
 
-#: fittrackee/feeds/feeds/constants.py:20
+#: fittrackee/feeds/feeds/constants.py:21
 msgid "Skiing (Alpine)"
 msgstr "滑雪（高山）"
 
-#: fittrackee/feeds/feeds/constants.py:21
+#: fittrackee/feeds/feeds/constants.py:22
 msgid "Skiing (Cross Country)"
 msgstr "滑雪（越野）"
 
-#: fittrackee/feeds/feeds/constants.py:22
+#: fittrackee/feeds/feeds/constants.py:23
 msgid "Snowshoes"
 msgstr "雪鞋"
 
-#: fittrackee/feeds/feeds/constants.py:23
+#: fittrackee/feeds/feeds/constants.py:24
 msgid "Standup Paddleboarding"
 msgstr "立式划桨运动"
 
-#: fittrackee/feeds/feeds/constants.py:24
+#: fittrackee/feeds/feeds/constants.py:25
 msgid "Swimrun"
 msgstr "游泳跑步"
 
-#: fittrackee/feeds/feeds/constants.py:25
+#: fittrackee/feeds/feeds/constants.py:26
 msgid "Tennis (Outdoor)"
 msgstr "网球（户外）"
 
-#: fittrackee/feeds/feeds/constants.py:26
+#: fittrackee/feeds/feeds/constants.py:27
 msgid "Trail"
 msgstr "越野"
 
-#: fittrackee/feeds/feeds/constants.py:27
+#: fittrackee/feeds/feeds/constants.py:28
 msgid "Walking"
 msgstr "步行"
 
-#: fittrackee/feeds/feeds/constants.py:28
+#: fittrackee/feeds/feeds/constants.py:29
 msgid "Windsurfing"
 msgstr "帆板"
 

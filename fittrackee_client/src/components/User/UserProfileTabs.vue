@@ -44,6 +44,7 @@
       case 'BLOCKED-USERS':
       case 'EQUIPMENTS':
       case 'FOLLOW-REQUESTS':
+      case 'MESSAGES':
       case 'MODERATION':
       case 'NOTIFICATIONS':
       case 'PREFERENCES':

@@ -1,5 +1,76 @@
 # Change log
 
+## Version 1.0.0b3 (2025/09/27)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+**Warning:**  
+- This release contains database migrations (see upgrade instructions in [documentation](https://next.docs.fittrackee.org/en/installation.html#upgrade))
+
+### Features and enhancements
+
+* [#931](https://github.com/SamR1/FitTrackee/issues/931) - New sport: Padel (Outdoor)
+* [PR#939](https://github.com/SamR1/FitTrackee/pull/939) - Display location results in the user interface language
+
+### Bugs Fixed
+
+* [PR#938](https://github.com/SamR1/FitTrackee/pull/938) - Fix location selection when clicking on the dropdown
+
+### Misc
+
+* [#929](https://github.com/SamR1/FitTrackee/issues/929) - Remove deprecated option --set-admin (Users CLI)
+* [PR#943](https://github.com/SamR1/FitTrackee/pull/943) - update Authlib + test refactoring
+
+
+## Version 1.0.0b2 (2025/09/21)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+**Warning:**  
+- if upgrading from v1.0.b1, the refresh command (Workout CLI) must be re-executed.
+- This release contains database migrations (see upgrade instructions in [documentation](https://next.docs.fittrackee.org/en/installation.html#upgrade))
+
+### Features and enhancements
+
+* [PR#930](https://github.com/SamR1/FitTrackee/pull/930) - Client - Add message on location filter
+* [PR#932](https://github.com/SamR1/FitTrackee/pull/932) - API - add cache on Nominatim API calls
+* [PR#937](https://github.com/SamR1/FitTrackee/pull/937) - Display workouts on a global map
+
+### Misc
+
+* [PR#933](https://github.com/SamR1/FitTrackee/pull/933) - API - `/api/workouts/collection` endpoint improvement
+* [PR#934](https://github.com/SamR1/FitTrackee/pull/934) - Client - update type annotations
+
+
+## Version 1.0.0b1 (2025/09/10)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+**Warning:**  
+This version introduces major changes:
+- **FitTrackee** v1+ now requires **PostGIS** extension and additional dependencies, see the upgrade instructions in [documentation](https://next.docs.fittrackee.org/en/upgrading-to-1.0.0.html)).
+- Two new environment variables have been added: [ENABLE_GEOSPATIAL_FEATURES](https://next.docs.fittrackee.org/en/installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES) and [NOMINATIM_URL](https://next.docs.fittrackee.org/en/installation.html#envvar-NOMINATIM_URL).
+- This release contains database migrations (see upgrade instructions in [documentation](https://next.docs.fittrackee.org/en/installation.html#upgrade))
+
+**Notes:** 
+- This version drops support **Python** 3.9 and **PostgreSQL** 12
+ 
+### Features and enhancements
+
+* [#812](https://github.com/SamR1/FitTrackee/issues/812) - Remove segments with zero distance
+* [#918](https://github.com/SamR1/FitTrackee/issues/918) - Add filters on location in Workouts List
+* [PR#924](https://github.com/SamR1/FitTrackee/pull/924) - Display filtered workouts on map
+
+### Misc
+
+* [#810](https://github.com/SamR1/FitTrackee/issues/810) - Store file data in database
+* [#881](https://github.com/SamR1/FitTrackee/issues/881) - Drop support for Python 3.9
+* [#911](https://github.com/SamR1/FitTrackee/issues/911) - Drop PostgreSQL12 support
+
+
 ## Version 0.12.2 (2025/09/07)
 
 ### Bugs Fixed

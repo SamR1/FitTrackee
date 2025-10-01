@@ -11,6 +11,7 @@
         :id="`${sport.id}`"
         :name="sport.label"
         :checked="selectedSportIds.includes(sport.id)"
+        :disabled="disabled"
         @input="updateSelectedSportIds(sport.id)"
         @keyup.prevent.space="updateSelectedSportIds(sport.id)"
       />
@@ -32,11 +33,13 @@
   interface Props {
     userSports: ISport[]
     selectedSportIds?: number[]
+    disabled?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     selectedSportIds: () => [],
+    disabled: false,
   })
-  const { selectedSportIds, userSports } = toRefs(props)
+  const { disabled, selectedSportIds, userSports } = toRefs(props)
 
   const emit = defineEmits(['selectedSportIdsUpdate'])
 

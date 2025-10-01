@@ -31,6 +31,7 @@ Sports
   - Mountain Biking (Electric)  (*new in 0.5.0*)
   - Mountaineering  (*new in 0.7.9*)
   - Open Water Swimming  (*new in 0.7.20*)
+  - Padel (Outdoor) (*new in 1.0.0*)
   - Paragliding  (*new in 0.7.19*)
   - Rowing  (*new in 0.5.0, image changed in 0.9.3*)
   - Running
@@ -44,11 +45,15 @@ Sports
   - Walking
   - Windsurfing  (*new in 0.9.10*)
 
+.. note::
+  The color of the sport can be changed in user preferences (see `Account & preferences <features.html#account-preferences>`__).
+
 - (*new in 0.5.0*) Stopped speed threshold used by `gpxpy <https://github.com/tkrajina/gpxpy>`_ is not the default one for the following sports (0.1 km/h instead of 1 km/h):
 
   - Hiking
   - Mountaineering
   - Open Water Swimming
+  - Padel (Outdoor)
   - Paragliding
   - Skiing (Cross Country)
   - Snowshoes
@@ -63,7 +68,7 @@ Sports
 .. note::
   | Except the stopped speed threshold, all sports are analyzed in the same way (no specificity taken into account for the moment).
   | Swimrun is displayed as a single activity with no difference between segments for now.
-  | Elevation-related data for Outdoor Tennis are not displayed if the file contains elevation (they are still stored in database).
+  | Elevation-related data for Outdoor Tennis and Padel are not displayed if the file contains elevation (they are still stored in database).
 
 Workouts
 --------
@@ -152,7 +157,7 @@ Workouts
 - If present and no description is provided by the user, the description from the file is used as the workout description (*new in 0.8.10*).
 - | A map is displayed for workout with a file.
   | Controls allow full screen view and position reset (*new in 0.5.5*).
-  | If the sport is Outdoor Tennis, a heat map is also available (*new in 0.11.0*).
+  | If the sport is Outdoor Tennis or Padel, a heat map is also available (*changed in 1.0.0*).
 - | A chart is displayed for workout with a file, with:
 
   - speed
@@ -252,6 +257,7 @@ Workouts
     - title (*new in 0.7.15*)
     - description (*new in 0.8.9*)
     - notes (*new in 0.8.0*)
+    - location and radius (*new in 1.0.0*)
     - workout visibility (*new in 0.9.3*)
     - distance
     - duration
@@ -280,6 +286,11 @@ Workouts
 
     When multiple pages are fetched, statistics for all pages are also displayed.
 
+  - Filtered workouts can be displayed on a map (*new in 1.0.0*)
+
+.. warning::
+  | Map and filters on location and radius require the environment variable `ENABLE_GEOSPATIAL_FEATURES <installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES>`_ to be set to ``True``. Otherwise these features are not enabled.
+
 .. note::
   | There is a limit on the number of workouts used to calculate statistics to avoid performance issues. The value can be set in administration.
   | If the limit is reached, the number of workouts used is displayed.
@@ -296,7 +307,7 @@ Workouts
   |
   | Workout description can be displayed by adding ``description`` parameter (not displayed by default) (*new in 0.12.1*):
 
-  - ``https://<FITTRACKEE_DOMAIN>/users/<USERNAME>/workouts.rss?description=tree``
+  - ``https://<FITTRACKEE_DOMAIN>/users/<USERNAME>/workouts.rss?description=true``
 
 .. note::
   The rendering of the description may differ from that on FitTrackee, as different libraries are used and additional styles are applied on the UI.
@@ -438,6 +449,26 @@ Statistics
   | If the limit is reached, the number of workouts used is displayed.
   | The total number of workouts for a given sport is not affected by this limit.
 
+
+Global map
+==========
+
+.. versionadded:: 1.0.0
+
+- User workouts can be displayed on a global map and filtered by:
+
+  - date
+  - sports
+
+.. note::
+  | If the number of workouts exceeds 3000, a modal appears to confirm the display.
+  | Depending on the browser and device used, displaying a large number of workouts may cause browser slowness or errors.
+
+
+.. warning::
+  Global map require the environment variable `ENABLE_GEOSPATIAL_FEATURES <installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES>`_ to be set to ``True``. Otherwise it is not available.
+
+
 Account & preferences
 =====================
 
@@ -512,7 +543,7 @@ Equipments
   - Bike Trainer: Cycling (Virtual),
   - Board: Standup paddleboarding (*new in 0.10.3*) and Windsurfing (*new in 0.9.10*),
   - Kayak/Boat: Canoeing, Rowing and Kayaking (*changed in 0.9.3*),
-  - Shoes: Hiking, Mountaineering, Running, Tennis (Outdoor), Trail and Walking (*changed in 0.11.0*),
+  - Shoes: Hiking, Mountaineering, Padel (Outdoor), Running, Tennis (Outdoor), Trail and Walking (*changed in 1.0.0*),
   - Skis: Skiing (Alpine and Cross Country),
   - Snowshoes: Snowshoes.
 
@@ -575,7 +606,13 @@ The following parameters can be set:
 .. note::
   When upgrading to v0.10.0, asynchronous download is disabled, since both values are equal.
 
-- maximum number of workouts for sport statistics (default: 10.000). If 0, all workouts are fetched to calculate statistics (*new in 0.8.5*)
+- maximum number of workouts for sport statistics (default: 10,000). If 0, all workouts are fetched to calculate statistics (*new in 0.8.5*)
+- maximum number of workouts displayed on global map (default: 10,000), this value can not exceed 50,000 workouts (*new in 1.0.0*)
+
+.. note::
+  | The maximum number of workouts for statistics or the global map must be defined according to the server capabilities.
+  | In the case of the global map, this value also has an impact on the rendering performance on the client side (depending on the browser and the capabilities of the device displaying the map).
+
 - administrator email for contact (*new in 0.6.0*)
 
 .. warning::
@@ -773,8 +810,10 @@ Workouts list
 -------------
 
 .. figure:: _images/workouts-list.png
-   :alt: FitTrackee Workouts
+   :alt: FitTrackee Workouts List
 
+.. figure:: _images/workouts-map.png
+   :alt: FitTrackee Workouts Map
 
 Statistics
 ----------

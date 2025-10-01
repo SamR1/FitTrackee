@@ -16,13 +16,15 @@ class AuthorizationCodeGrant(grants.AuthorizationCodeGrant):
     def save_authorization_code(
         self, code: str, request: OAuth2Request
     ) -> OAuth2AuthorizationCode:
-        code_challenge = request.data.get("code_challenge")
-        code_challenge_method = request.data.get("code_challenge_method")
+        code_challenge = request.payload.data.get("code_challenge")
+        code_challenge_method = request.payload.data.get(
+            "code_challenge_method"
+        )
         auth_code = OAuth2AuthorizationCode(
             code=code,
             client_id=request.client.client_id,
-            redirect_uri=request.redirect_uri,
-            scope=request.scope,
+            redirect_uri=request.payload.redirect_uri,
+            scope=request.payload.scope,
             user_id=request.user.id,
             code_challenge=code_challenge,
             code_challenge_method=code_challenge_method,

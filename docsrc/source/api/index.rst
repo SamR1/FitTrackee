@@ -11,6 +11,7 @@ API documentation
    equipments
    equipment_types
    follow_requests
+   geocode
    oauth2
    notifications
    queued_tasks

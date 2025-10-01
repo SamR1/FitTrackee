@@ -9,7 +9,7 @@ Installation
 
 Thanks to contributors, packages are also available on `Yunohost <installation.html#yunohost>`__ and `NixOS <installation.html#nixos>`__.
 
-For a single-user instance, registration can be disabled. So all you need is Python and PostgreSQL. A `CLI <cli.html#users>`__ is available to manage user account.
+For a single-user instance, registration can be disabled. So all you need is Python and PostgreSQL/PostGIS. A `CLI <cli.html#users>`__ is available to manage user account.
 
 | The following steps describe an installation on Linux systems (tested with ArchLinux-based OS and Ubuntu on CI).
 | On other operating systems, some issues can be encountered and adaptations may be necessary.
@@ -17,8 +17,8 @@ For a single-user instance, registration can be disabled. So all you need is Pyt
 .. note::
   Other installation guides are available thanks to contributors:
 
-  - `Installation on Uberspace Web hosting <https://lab.uberspace.de/guide_fittrackee/>`__
-  - `Installation on Debian 12 net install (guide in German) <https://speefak.spdns.de/oss_lifestyle/fittrackee-installation-unter-debian-12/>`__
+  - `Installation on Uberspace Web hosting <https://lab.uberspace.de/guide_fittrackee/>`__ (Fittrackee 0.7.25)
+  - `Installation on Debian 12 net install (guide in German) <https://speefak.spdns.de/oss_lifestyle/fittrackee-installation-unter-debian-12/>`__ (Fittrackee 0.7.31)
 
 
 Main dependencies
@@ -27,8 +27,10 @@ This application is written in Python (API) and Typescript (client):
 
 - API:
     - Flask
+    - `SQLAlchemy <https://www.sqlalchemy.org/>`_ and `geoalchemy2 <https://geoalchemy-2.readthedocs.io>`_ to interact with the database
     - `gpxpy <https://github.com/tkrajina/gpxpy>`_ to parse gpx files
     - `fitdecode <https://github.com/polyvertex/fitdecode>`_ to parse fit files
+    - `GeoPandas <https://geopandas.org>`_ to work with geospatial data
     - `Static Map 3 <https://github.com/SamR1/staticmap>`_, a fork of `Static Map <https://github.com/komoot/staticmap>`_ to generate a static map image from file coordinates
     - `Dramatiq <https://dramatiq.io/>`_ and `Flask-Dramatiq <https://flask-dramatiq.readthedocs.io>`_ for task queue
     - `Authlib <https://docs.authlib.org/en/latest/>`_ for OAuth 2.0 Authorization support
@@ -53,8 +55,10 @@ Prerequisites
 
   - installation from sources or package:
 
-    - `Python <https://www.python.org/>`__ 3.9+
-    - `PostgreSQL <https://www.postgresql.org/>`__ 12+
+    - `Python <https://www.python.org/>`__ 3.10+
+    - `PostgreSQL <https://www.postgresql.org/>`__ 13+
+    - `PostGIS <https://postgis.net/>`__ 3.4+
+    - `GDAL <https://gdal.org/en/stable/>`__ on the server running the application, if different from the server running the database (GDAL is installed with PostGIS)
 
   - installation with Docker:
 
@@ -82,31 +86,20 @@ The following environment variables are used by **FitTrackee** web application
 or the task processing library. They are not all mandatory depending on
 deployment method.
 
-.. envvar:: FLASK_APP
+.. envvar:: API_RATE_LIMITS
 
-    | Name of the module to import at flask run.
-    | ``FLASK_APP`` should contain ``$(PWD)/fittrackee/__main__.py`` with installation from sources, else ``fittrackee``.
+    .. versionadded:: 0.7.0
 
+    API rate limits, see `API rate limits <installation.html#api-rate-limits>`__.
 
-.. envvar:: HOST
-
-    **FitTrackee** host.
-
-    :default: ``127.0.0.1``
+    :default: ``300 per 5 minutes``
 
 
-.. envvar:: PORT
+.. envvar:: APP_LOG
 
-    **FitTrackee** port.
+    .. versionadded:: 0.4.0
 
-    :default: 5000
-
-
-.. envvar:: APP_SETTINGS
-
-    **FitTrackee** configuration.
-
-    :default: ``fittrackee.config.ProductionConfig``
+    Path to log file
 
 
 .. envvar:: APP_SECRET_KEY
@@ -116,13 +109,12 @@ deployment method.
     .. warning::
         Use a strong secret key. This key is used in JWT generation.
 
-.. envvar:: APP_WORKERS
+.. envvar:: APP_SETTINGS
 
-    .. versionchanged:: 0.9.3 used by the Docker image entry point script
+    **FitTrackee** configuration.
 
-    Number of workers spawned by **Gunicorn** (when starting application with **FitTrackee** entry point or with Docker image), see `Gunicorn documentation <https://docs.gunicorn.org/en/stable/settings.html#workers>`__.
+    :default: ``fittrackee.config.ProductionConfig``
 
-    :default: 1
 
 .. envvar:: APP_TIMEOUT
 
@@ -132,33 +124,13 @@ deployment method.
 
     :default: 30
 
-.. envvar:: APP_LOG
+.. envvar:: APP_WORKERS
 
-    .. versionadded:: 0.4.0
+    .. versionchanged:: 0.9.3 used by the Docker image entry point script
 
-    Path to log file
+    Number of workers spawned by **Gunicorn** (when starting application with **FitTrackee** entry point or with Docker image), see `Gunicorn documentation <https://docs.gunicorn.org/en/stable/settings.html#workers>`__.
 
-
-.. envvar:: UPLOAD_FOLDER
-
-    .. versionadded:: 0.4.0
-
-    **Absolute path** to the directory where ``uploads`` folder will be created.
-
-    :default: ``<application_directory>/fittrackee``
-
-    .. danger::
-        | With installation from PyPI, the directory will be located in
-          **virtualenv** directory if the variable is not initialized.
-
-.. envvar:: DATABASE_URL
-
-    | Database URL with username and password, must be initialized in production environment.
-    | For example in dev environment : ``postgresql://fittrackee:fittrackee@localhost:5432/fittrackee``
-
-    .. warning::
-        | Since `SQLAlchemy update (1.4+) <https://docs.sqlalchemy.org/en/14/changelog/changelog_14.html#change-3687655465c25a39b968b4f5f6e9170b>`__,
-          engine URL should begin with ``postgresql://``.
+    :default: 1
 
 .. envvar:: DATABASE_DISABLE_POOLING
 
@@ -170,12 +142,35 @@ deployment method.
 
     :default: ``false``
 
-.. envvar:: UI_URL
+.. envvar:: DATABASE_URL
 
-    **FitTrackee** URL, needed for links in emails and mentions on interface.
+    | Database URL with username and password, must be initialized in production environment.
+    | For example in dev environment : ``postgresql://fittrackee:fittrackee@localhost:5432/fittrackee``
 
     .. warning::
-        UI_URL must contains url scheme (``https://``).
+        | Since `SQLAlchemy update (1.4+) <https://docs.sqlalchemy.org/en/14/changelog/changelog_14.html#change-3687655465c25a39b968b4f5f6e9170b>`__,
+          engine URL should begin with ``postgresql://``.
+
+.. envvar:: DEFAULT_STATICMAP
+
+    .. versionadded:: 0.4.9
+
+    | If ``True``, it keeps using **Static Map 3** default tile server to generate static maps (OSM tile server).
+    | Otherwise, it uses the tile server set in `TILE_SERVER_URL <installation.html#envvar-TILE_SERVER_URL>`__.
+
+    .. versionchanged:: 0.6.10
+
+    | This variable is now case-insensitive.
+    | If ``False``, depending on tile server, `subdomains <installation.html#envvar-STATICMAP_SUBDOMAINS>`__ may be mandatory.
+
+    :default: ``False``
+
+
+.. envvar:: DRAMATIQ_LOG
+
+    .. versionadded:: 0.9.5
+
+    Path to **Dramatiq** log file.
 
 
 .. envvar:: EMAIL_URL
@@ -194,11 +189,56 @@ deployment method.
     .. warning::
         If the email URL is invalid, the application may not start.
 
-.. envvar:: SENDER_EMAIL
+.. envvar:: ENABLE_GEOSPATIAL_FEATURES
 
-    .. versionadded:: 0.3.0
+    .. versionadded:: 1.0.0
 
-    **FitTrackee** sender email address.
+    | Enables geospatial features on User Interface.
+    | **Keep the value set to** ``False`` **until all workouts have been updated to add geometries** (see `Workouts CLI command <cli.html#ftcli-workouts-refresh>`__).
+    | This variable is case-insensitive.
+
+    :default: ``False``
+
+    .. warning::
+        This is a temporary flag. It will be removed in the next version, which will require all workouts to be updated.
+
+
+.. envvar:: FLASK_APP
+
+    | Name of the module to import at flask run.
+    | ``FLASK_APP`` should contain ``$(PWD)/fittrackee/__main__.py`` with installation from sources, else ``fittrackee``.
+
+
+.. envvar:: HOST
+
+    **FitTrackee** host.
+
+    :default: ``127.0.0.1``
+
+
+.. envvar:: MAP_ATTRIBUTION
+
+    .. versionadded:: 0.4.0
+
+    Map attribution (if using another tile server), see `Map tile server <installation.html#map-tile-server>`__.
+
+    :default: ``&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors``
+
+
+.. envvar:: NOMINATIM_URL
+
+    .. versionadded:: 1.0.0
+
+    URL of `Nominatim <https://nominatim.org>`__ server, used to get location coordinates from user input
+
+    :default: ``https://nominatim.openstreetmap.org``
+
+
+.. envvar:: PORT
+
+    **FitTrackee** port.
+
+    :default: 5000
 
 
 .. envvar:: REDIS_URL
@@ -210,18 +250,33 @@ deployment method.
     :default: local Redis instance (``redis://``)
 
 
-.. envvar:: WORKERS_PROCESSES
+.. envvar:: SENDER_EMAIL
 
     .. versionadded:: 0.3.0
 
-    Number of processes used by **Dramatiq**.
+    **FitTrackee** sender email address.
 
 
-.. envvar:: DRAMATIQ_LOG
+.. envvar:: STATICMAP_CACHE_DIR
 
-    .. versionadded:: 0.9.5
+    .. versionadded:: 0.10.0
 
-    Path to **Dramatiq** log file.
+    Directory for **Static Map 3** cache
+
+    :default: ``.staticmap_cache``
+
+    .. warning::
+        This is the library's default variable, to be modified to set another directory.
+
+
+.. envvar:: STATICMAP_SUBDOMAINS
+
+    .. versionadded:: 0.6.10
+
+    | Some tile servers require a subdomain, see `Map tile server <installation.html#map-tile-server>`__.
+    | For instance: "a,b,c" for OSM France.
+
+    :default: empty string
 
 
 .. envvar:: TASKS_TIME_LIMIT
@@ -231,15 +286,6 @@ deployment method.
     Timeout in seconds for **Dramatiq** task execution to avoid long-running tasks.
 
     :default: 1800
-
-
-.. envvar:: API_RATE_LIMITS
-
-    .. versionadded:: 0.7.0
-
-    API rate limits, see `API rate limits <installation.html#api-rate-limits>`__.
-
-    :default: ``300 per 5 minutes``
 
 
 .. envvar:: TILE_SERVER_URL
@@ -256,51 +302,31 @@ deployment method.
     :default: ``https://tile.openstreetmap.org/{z}/{x}/{y}.png``
 
 
-.. envvar:: STATICMAP_SUBDOMAINS
+.. envvar:: UI_URL
 
-    .. versionadded:: 0.6.10
+    **FitTrackee** URL, needed for links in emails and mentions on interface.
 
-    | Some tile servers require a subdomain, see `Map tile server <installation.html#map-tile-server>`__.
-    | For instance: "a,b,c" for OSM France.
-
-    :default: empty string
+    .. warning::
+        UI_URL must contains url scheme (``https://``).
 
 
-.. envvar:: MAP_ATTRIBUTION
+.. envvar:: UPLOAD_FOLDER
 
     .. versionadded:: 0.4.0
 
-    Map attribution (if using another tile server), see `Map tile server <installation.html#map-tile-server>`__.
+    **Absolute path** to the directory where ``uploads`` folder will be created.
 
-    :default: ``&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors``
+    :default: ``<application_directory>/fittrackee``
 
+    .. danger::
+        | With installation from PyPI, the directory will be located in
+          **virtualenv** directory if the variable is not initialized.
 
-.. envvar:: DEFAULT_STATICMAP
+.. envvar:: VITE_APP_API_URL
 
-    .. versionadded:: 0.4.9
+    .. versionchanged:: 0.7.26 ⚠️ replaces ``VUE_APP_API_URL``
 
-    | If ``True``, it keeps using **Static Map 3** default tile server to generate static maps (OSM tile server).
-    | Otherwise, it uses the tile server set in `TILE_SERVER_URL <installation.html#envvar-TILE_SERVER_URL>`__.
-
-    .. versionchanged:: 0.6.10
-
-    | This variable is now case-insensitive.
-    | If ``False``, depending on tile server, `subdomains <installation.html#envvar-STATICMAP_SUBDOMAINS>`__ may be mandatory.
-
-    :default: ``False``
-
-
-.. envvar:: STATICMAP_CACHE_DIR
-
-    .. versionadded:: 0.10.0
-
-    Directory for **Static Map 3** cache
-
-    :default: ``.staticmap_cache``
-
-    .. warning::
-        This is the library's default variable, to be modified to set another directory.
-
+    **FitTrackee** API URL, only needed in dev environment.
 
 .. envvar:: WEATHER_API_KEY
 
@@ -315,12 +341,12 @@ deployment method.
 
     Provider for weather data (not mandatory), see `Weather data <installation.html#weather-data>`__.
 
+.. envvar:: WORKERS_PROCESSES
 
-.. envvar:: VITE_APP_API_URL
+    .. versionadded:: 0.3.0
 
-    .. versionchanged:: 0.7.26 ⚠️ replaces ``VUE_APP_API_URL``
+    Number of processes used by **Dramatiq**.
 
-    **FitTrackee** API URL, only needed in dev environment.
 
 Docker Compose
 ^^^^^^^^^^^^^^
@@ -567,7 +593,7 @@ From PyPI
 
 - Create ``fittrackee`` database
 
-Example :
+Example:
 
 .. code-block:: sql
 
@@ -577,6 +603,18 @@ Example :
 
 .. note::
     | see PostgreSQL `documentation <https://www.postgresql.org/docs/15/ddl-schemas.html>`_ for schema and privileges.
+
+- Install **PostGIS** extension
+
+Example for `fittrackee` database:
+
+.. code-block:: bash
+
+    $ psql -U <SUPER_USER> -d fittrackee -c 'CREATE EXTENSION IF NOT EXISTS postgis;'
+
+.. note::
+    | **PostGIS** must be installed on OS, see `installation documentation <https://postgis.net/documentation/getting_started/#installing-postgis>`_.
+    | Many OS includes pre-built packages for PostGIS, see `wiki <https://trac.osgeo.org/postgis/wiki/UsersWikiPackages>`_.
 
 - Initialize environment variables, see `Environment variables <installation.html#environment-variables>`__
 
@@ -661,7 +699,7 @@ Dev environment
 .. code:: bash
 
    $ make install-dev
-   $ make install-db
+   $ make install-db-dev
 
 -  Start the server and the client:
 
@@ -692,13 +730,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v0.12.2):
+-  Download the last release (for now, it is the release v1.0.0b3):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/0.12.2.tar.gz
-   $ tar -xzf v0.12.2.tar.gz
-   $ mv FitTrackee-0.12.2 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/1.0.0b3.tar.gz
+   $ tar -xzf v1.0.0b3.tar.gz
+   $ mv FitTrackee-1.0.0b3 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -740,11 +778,14 @@ Production environment
 Upgrade
 ~~~~~~~
 
+.. danger::
+    If you are upgrading to version 1.0, additional steps are required, see `Upgrading to 1.0.0 <upgrading-to-1.0.0.html>`__.
+
 .. warning::
     Before upgrading, make a backup of all data:
 
-    - database (with `pg_dump <https://www.postgresql.org/docs/11/app-pgdump.html>`__ for instance)
-    - upload directory (see `Environment variables <installation.html#environment-variables>`__)
+    - database (with `pg_dump <https://www.postgresql.org/docs/current/app-pgdump.html>`__ for instance)
+    - upload directory (see `Environment variables <installation.html#envvar-UPLOAD_FOLDER>`__)
 
 .. warning::
 
@@ -830,13 +871,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v0.12.2) and overwrite existing files:
+- Download the last release (for now, it is the release v1.0.0b3) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v0.12.2.tar.gz
-   $ tar -xzf v0.12.2.tar.gz
-   $ cp -R FitTrackee-0.12.2/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v1.0.0b3.tar.gz
+   $ tar -xzf v1.0.0b3.tar.gz
+   $ cp -R FitTrackee-1.0.0b3/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -1138,4 +1179,4 @@ Thanks to contributors, a package is available, see https://github.com/YunoHost-
 NixOS
 ~~~~~
 
-Thanks to contributors, a package is available on NixOS, see https://mynixos.com/nixpkgs/package/fit-trackee.
+Thanks to contributors, a package is available on NixOS, see https://search.nixos.org/packages?query=fittrackee.

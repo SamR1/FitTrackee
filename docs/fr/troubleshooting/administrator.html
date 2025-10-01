@@ -1,15 +1,15 @@
 <!doctype html>
 <html class="no-js" lang="fr" data-content_root="../">
-  <head><meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Recherche" href="../search.html" /><link rel="next" title="Utilisateur" href="user.html" /><link rel="prev" title="Dépannage" href="index.html" />
-        <link rel="prefetch" href="../_static/ft-logo.png" as="image" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Recherche" href="../search.html"><link rel="next" title="Utilisateur" href="user.html"><link rel="prev" title="Dépannage" href="index.html">
+        <link rel="prefetch" href="../_static/ft-logo.png" as="image">
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2025.07.19 -->
-        <title>Administrateur - Documentation FitTrackee 0.12.2</title>
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.09.25 -->
+        <title>Administrateur - Documentation FitTrackee 1.0.0b3</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=25af2a20" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=580074bf" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
     <link rel="stylesheet" type="text/css" href="../_static/css/fork-awesome.min.css?v=876feb3b" />
@@ -148,14 +148,10 @@
   </symbol>
 </svg>
 
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
-<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
-<label class="overlay sidebar-overlay" for="__navigation">
-  <div class="visually-hidden">Hide navigation sidebar</div>
-</label>
-<label class="overlay toc-overlay" for="__toc">
-  <div class="visually-hidden">Hide table of contents sidebar</div>
-</label>
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
 
 <a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
 
@@ -165,18 +161,16 @@
   <header class="mobile-header">
     <div class="header-left">
       <label class="nav-overlay-icon" for="__navigation">
-        <div class="visually-hidden">Toggle site navigation sidebar</div>
-        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation FitTrackee 0.12.2
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 1.0.0b3
 </div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
-        <button class="theme-toggle">
-          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
           <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
           <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
           <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
@@ -184,8 +178,7 @@
         </button>
       </div>
       <label class="toc-overlay-icon toc-header-icon" for="__toc">
-        <div class="visually-hidden">Toggle table of contents sidebar</div>
-        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
       </label>
     </div>
   </header>
@@ -197,7 +190,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 0.12.2
+  <span class="sidebar-brand-text">Documentation FitTrackee 1.0.0b3
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -210,15 +203,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../features.html">Fonctionnalités</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../oauth.html">OAuth 2.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrading-to-1.0.0.html">Mettre à jour vers la version 1.0.0</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cli.html">Interface de ligne de commande</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../third_party_tools.html">Outils tiers</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">Documentation de l'API</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Documentation de l'API</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">Documentation de l'API</a><input aria-label="Toggle navigation of Documentation de l'API" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/auth.html">Authentification et compte</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/configuration.html">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/comments.html">Commentaires</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/equipments.html">Équipements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/equipment_types.html">Types d'équipement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/follow_requests.html">Demandes de suivi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/geocode.html">Geocoding</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/oauth2.html">OAuth2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/notifications.html">Notifications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/queued_tasks.html">Tâches en attente</a></li>
@@ -232,7 +227,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/workouts.html">Séances</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Dépannage</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Dépannage</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Dépannage</a><input aria-label="Toggle navigation of Dépannage" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Administrateur</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user.html">Utilisateur</a></li>
 </ul>
@@ -276,8 +271,7 @@
   </a>
 </div>
 <div class="theme-toggle-container theme-toggle-content">
-            <button class="theme-toggle">
-              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
               <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
               <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
               <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
@@ -285,8 +279,7 @@
             </button>
           </div>
           <label class="toc-overlay-icon toc-content-icon" for="__toc">
-            <div class="visually-hidden">Toggle table of contents sidebar</div>
-            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
           </label>
         </div>
         <article role="main" id="furo-main-content">
@@ -350,6 +343,26 @@
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/logs /usr/src/app/.staticmap_cache</span>
 <span class="w">    </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">root</span>
 </pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="psycopg2-errors-undefinedobject-error-type-geometry-does-not-exist">
+<h2><code class="docutils literal notranslate"><span class="pre">psycopg2.errors.UndefinedObject:</span> <span class="pre">ERROR:</span>&#160; <span class="pre">type</span> <span class="pre">&quot;geometry&quot;</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code><a class="headerlink" href="#psycopg2-errors-undefinedobject-error-type-geometry-does-not-exist" title="Lien vers cette rubrique">¶</a></h2>
+<ul>
+<li><div class="line-block">
+<div class="line">Cette erreur survient lorsque l'extension <strong>PostGIS</strong> n'est pas installée, cette extension est requise à partir de la version 1.0.0 de <strong>FitTrackee</strong>.</div>
+<div class="line">Pour l'installer, voir les <a class="reference external" href="../installation.html#upgrade">instructions d'installation</a> ou de <a class="reference external" href="../upgrading-to-1.0.0.html">mise à jour version vers la version 1.x</a></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="workouts-created-with-a-file-are-not-displayed-on-the-workouts-map">
+<h2>Des séances créées à partir de fichiers ne sont pas affichées sur la carte<a class="headerlink" href="#workouts-created-with-a-file-are-not-displayed-on-the-workouts-map" title="Lien vers cette rubrique">¶</a></h2>
+<ul>
+<li><div class="line-block">
+<div class="line">Si une séance a été créée avant la version 1.0.0 de <strong>FitTrackee</strong>, il est nécessaire de l'actualiser pour générer la géométrie utilisée pour afficher la carte</div>
+<div class="line">Voir <a class="reference external" href="../upgrading-to-1.0.0.html">Mettre à jour vers la version 1.x</a> pour les instructions permettant de réactualiser toutes les séances avec l'interface de lignes de commande.</div>
 </div>
 </li>
 </ul>
@@ -421,6 +434,8 @@
 <li><a class="reference internal" href="#failed-to-upload-or-download-files">Échec du chargement ou du téléchargement de fichiers</a></li>
 <li><a class="reference internal" href="#runtimeerror-thread-already-started"><code class="docutils literal notranslate"><span class="pre">RuntimeError:</span> <span class="pre">thread</span> <span class="pre">already</span> <span class="pre">started</span></code></a></li>
 <li><a class="reference internal" href="#staticmap3-staticmap-error-request-failed-none"><code class="docutils literal notranslate"><span class="pre">staticmap3.staticmap</span> <span class="pre">-</span> <span class="pre">ERROR</span> <span class="pre">-</span> <span class="pre">request</span> <span class="pre">failed</span> <span class="pre">[None]</span></code></a></li>
+<li><a class="reference internal" href="#psycopg2-errors-undefinedobject-error-type-geometry-does-not-exist"><code class="docutils literal notranslate"><span class="pre">psycopg2.errors.UndefinedObject:</span> <span class="pre">ERROR:</span>&#160; <span class="pre">type</span> <span class="pre">&quot;geometry&quot;</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></a></li>
+<li><a class="reference internal" href="#workouts-created-with-a-file-are-not-displayed-on-the-workouts-map">Des séances créées à partir de fichiers ne sont pas affichées sur la carte</a></li>
 </ul>
 </li>
 </ul>
@@ -432,12 +447,12 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=7ac05380"></script>
-    <script src="../_static/doctools.js?v=9a2dae69"></script>
+</div><script src="../_static/documentation_options.js?v=12dc728d"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=f281be69"></script>
-    <script src="../_static/translations.js?v=041d0952"></script>
+    <script src="../_static/translations.js?v=e6b791cb"></script>
     </body>
 </html>

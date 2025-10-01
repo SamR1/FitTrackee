@@ -39,6 +39,7 @@
           'PREFERENCES',
           'SPORTS',
           'NOTIFICATIONS',
+          'MESSAGES',
           'EQUIPMENTS',
           'PRIVACY-POLICY',
         ]

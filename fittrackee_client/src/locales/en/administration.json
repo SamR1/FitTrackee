@@ -13,6 +13,8 @@
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Administrator email for contact",
     "ASYNCHRONOUS_UPLOAD_DISABLED": "Asynchronous zip archive upload is disabled.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "This value cannot exceed 50,000 workouts.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Max. workouts displayed on global map",
     "MAX_FILES_IN_ZIP_LABEL": "Max. files of zip archive",
     "MAX_SYNC_FILES_IN_ZIP_LABEL": "Max. files for synchronous processing",
     "MAX_USERS_HELP": "If 0, no limitation on registration.",
@@ -50,7 +52,6 @@
       "CREATED_AT": "creation date",
       "UPDATED_AT": "update date"
     },
-    "USERS_QUEUED_TASKS_EXIST": "There are queued tasks",
     "REASON": "Reason",
     "REPORT": "report | reports",
     "REPORTED_BY": "Reported by",
@@ -89,6 +90,7 @@
     },
     "TITLE": "Moderation",
     "UNRESOLVED_REPORTS_EXIST": "There are unresolved reports.",
+    "USERS_QUEUED_TASKS_EXIST": "There are queued tasks",
     "VIEW_REPORT": "View report"
   },
   "BACK_TO_ADMIN": "Back to admin",
@@ -117,18 +119,6 @@
   "NO_TEXT_ENTERED": "No text entered",
   "PASSWORD_RESET_SUCCESSFUL": "The password has been reset.",
   "PRIVACY_POLICY_DESCRIPTION": "Add your own privacy policy or leave blank to use the default one. Markdown syntax can be used.",
-  "USERS_QUEUED_TASKS": {
-    "DESCRIPTION": "Display queued tasks",
-    "LABEL": "Queued tasks",
-    "LIST_DESCRIPTION": "If no workers are running, please use CLI to process them.",
-    "NO_USERS_QUEUED_TASKS": "No queued tasks",
-    "TASK_TYPES": {
-      "LABEL": "Tasks type",
-      "user_data_export": "User data export",
-      "workouts_archive_upload": "Workouts archive uploads"
-    },
-    "VIEW_OTHER_TASKS": "View other queued tasks"
-  },
   "REGISTRATION_DISABLED": "Registration is currently disabled.",
   "REGISTRATION_ENABLED": "Registration is currently enabled.",
   "RESET_USER_PASSWORD": "Reset password",
@@ -161,6 +151,18 @@
       "CHANGE_TO_USER": "Change to user"
     },
     "TITLE": "Administration - Users"
+  },
+  "USERS_QUEUED_TASKS": {
+    "DESCRIPTION": "Display queued tasks",
+    "LABEL": "Queued tasks",
+    "LIST_DESCRIPTION": "If no workers are running, please use CLI to process them.",
+    "NO_USERS_QUEUED_TASKS": "No queued tasks",
+    "TASK_TYPES": {
+      "LABEL": "Tasks type",
+      "user_data_export": "User data export",
+      "workouts_archive_upload": "Workouts archive uploads"
+    },
+    "VIEW_OTHER_TASKS": "View other queued tasks"
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "The email address has been updated."
 }
