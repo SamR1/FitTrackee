@@ -4,8 +4,9 @@
       v-if="displayModal"
       :title="$t('common.CONFIRMATION')"
       :message="$t('workouts.WORKOUTS_FEATURES_DISPLAY_CONFIRMATION')"
-      @confirmAction="displayAllWorkouts()"
-      @cancelAction="cancelAllWorkoutsDisplay()"
+      :additionalActionText="$t('common.DO_NOT_SHOW_THIS_MESSAGE_AGAIN')"
+      @confirmAction="displayAllWorkouts"
+      @cancelAction="cancelAllWorkoutsDisplay"
       @keydown.esc="displayModal = false"
     />
     <div class="map-loading">
@@ -157,7 +158,8 @@
   import CustomWorkoutMarker from '@/components/Workouts/CustomWorkoutMarker.vue'
   import WorkoutPopup from '@/components/Workouts/WorkoutPopup.vue'
   import useApp from '@/composables/useApp'
-  import { WORKOUTS_STORE } from '@/store/constants.ts'
+  import useAuthUser from '@/composables/useAuthUser.ts'
+  import { AUTH_USER_STORE, WORKOUTS_STORE } from '@/store/constants.ts'
   import type {
     IWorkoutFeature,
     IWorkoutsFeatureCollection,
@@ -182,6 +184,7 @@
   const store = useStore()
 
   const { appConfig } = useApp()
+  const { authUser } = useAuthUser()
 
   // on some browsers or low-resource devices, displaying a large number of
   // features may cause slowness or errors.
@@ -223,7 +226,14 @@
   function getWorkoutGeoJSON(workoutId: string) {
     store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_GEOJSON, workoutId)
   }
-  function displayAllWorkouts() {
+  function displayAllWorkouts(hideMessage: boolean) {
+    if (hideMessage) {
+      store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_MESSAGE_PREFERENCES, {
+        preferences: {
+          warning_about_large_number_of_workouts_on_map: false,
+        },
+      })
+    }
     displayModal.value = false
     loadingFeatures.value = true
     progress!.style.display = 'block'
@@ -232,7 +242,14 @@
       displayedWorkoutsCollection.features = workoutsCollection.value.features
     }, 100)
   }
-  function cancelAllWorkoutsDisplay() {
+  function cancelAllWorkoutsDisplay(hideMessage: boolean) {
+    if (hideMessage) {
+      store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_MESSAGE_PREFERENCES, {
+        preferences: {
+          warning_about_large_number_of_workouts_on_map: false,
+        },
+      })
+    }
     displayModal.value = false
     displayedWorkoutsCollection.bbox = []
     displayedWorkoutsCollection.features = []
@@ -339,7 +356,11 @@
         zoom.value = 1
       }
       fitBounds(bounds.value)
-      if (newFeatures.length <= limitForModalDisplay) {
+      if (
+        newFeatures.length <= limitForModalDisplay ||
+        authUser.value.messages_preferences
+          .warning_about_large_number_of_workouts_on_map === false
+      ) {
         displayedWorkoutsCollection.features = newFeatures
         return
       }

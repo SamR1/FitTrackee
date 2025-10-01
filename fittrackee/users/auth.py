@@ -12,6 +12,7 @@ from flask import (
     request,
     send_from_directory,
 )
+from jsonschema.exceptions import ValidationError
 from sqlalchemy import exc, func
 from sqlalchemy.dialects.postgresql import insert
 from werkzeug.exceptions import RequestEntityTooLarge
@@ -344,6 +345,9 @@ def get_authenticated_user_profile(
           "location": null,
           "manually_approves_followers": false,
           "map_visibility": "private",
+          "messages_preferences": {
+            "warning_about_large_number_of_workouts_on_map": true
+          },
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -354,7 +358,7 @@ def get_authenticated_user_profile(
             "mention": true,
             "workout_comment": true,
             "workout_like": true
-          }
+          },
           "picture": false,
           "records": [
             {
@@ -485,6 +489,9 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "location": null,
           "manually_approves_followers": false,
           "map_visibility": "private",
+          "messages_preferences": {
+            "warning_about_large_number_of_workouts_on_map": true
+          },
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -495,7 +502,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
             "mention": true,
             "workout_comment": true,
             "workout_like": true
-          }
+          },
           "picture": false,
           "records": [
             {
@@ -674,6 +681,9 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "location": null,
           "manually_approves_followers": false,
           "map_visibility": "followers_only",
+          "messages_preferences": {
+            "warning_about_large_number_of_workouts_on_map": true
+          },
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -684,7 +694,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
             "mention": true,
             "workout_comment": true,
             "workout_like": true
-          }
+          },
           "picture": false,
           "records": [
             {
@@ -929,6 +939,9 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "location": null,
           "manually_approves_followers": false,
           "map_visibility": "followers_only",
+          "messages_preferences": {
+            "warning_about_large_number_of_workouts_on_map": true
+          },
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -939,7 +952,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
             "mention": true,
             "workout_comment": true,
             "workout_like": true
-          }
+          },
           "picture": false,
           "records": [
             {
@@ -1316,7 +1329,7 @@ def edit_user_notifications_preferences(
 
     .. sourcecode:: http
 
-      POST /api/auth/profile/edit/preferences HTTP/1.1
+      POST /api/auth/profile/edit/notifications HTTP/1.1
       Content-Type: application/json
 
     **Example responses**:
@@ -1349,6 +1362,9 @@ def edit_user_notifications_preferences(
           "location": null,
           "manually_approves_followers": false,
           "map_visibility": "private",
+          "messages_preferences": {
+            "warning_about_large_number_of_workouts_on_map": true
+          },
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -1359,7 +1375,7 @@ def edit_user_notifications_preferences(
             "mention": false,
             "workout_comment": false,
             "workout_like": false
-          }
+          },
           "picture": false,
           "records": [
             {
@@ -1472,6 +1488,171 @@ def edit_user_notifications_preferences(
 
     auth_user.update_notification_preferences(preferences_data)
     db.session.commit()
+
+    return {
+        "data": auth_user.serialize(current_user=auth_user, light=False),
+        "status": "success",
+    }
+
+
+@auth_blueprint.route("/auth/profile/edit/messages", methods=["POST"])
+@require_auth(scopes=["profile:write"])
+def edit_user_messages_preferences(
+    auth_user: User,
+) -> Union[Dict, HttpResponse]:
+    """
+    Edit authenticated user preferences for messages displayed on UI.
+
+    **Scope**: ``profile:write``
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/auth/profile/edit/messages HTTP/1.1
+      Content-Type: application/json
+
+    **Example responses**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "data": {
+          "accepted_privacy_policy": true,
+          "analysis_visibility": "private",
+          "bio": null,
+          "birth_date": null,
+          "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+          "date_format": "dd/MM/yyyy",
+          "display_ascent": true,
+          "email": "sam@example.com",
+          "email_to_confirm": null,
+          "first_name": null,
+          "followers": 0,
+          "following": 0,
+          "hide_profile_in_users_directory": true,
+          "imperial_units": false,
+          "is_active": true,
+          "language": "en",
+          "last_name": null,
+          "location": null,
+          "manually_approves_followers": false,
+          "map_visibility": "private",
+          "messages_preferences": {
+            "warning_about_large_number_of_workouts_on_map": true
+          },
+          "nb_sports": 3,
+          "nb_workouts": 6,
+          "notification_preferences": {
+            "comment_like": true,
+            "follow": true,
+            "follow_request": true,
+            "follow_request_approved": true,
+            "mention": false,
+            "workout_comment": false,
+            "workout_like": false
+          },
+          "picture": false,
+          "records": [
+            {
+              "id": 9,
+              "record_type": "AS",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 10,
+              "record_type": "FD",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 13,
+              "record_type": "HA",
+              "sport_id": 1,
+              "user": "Sam",
+              "value": 43.97,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 11,
+              "record_type": "LD",
+              "sport_id": 1,
+              "user": "sam",
+              "value": "1:01:00",
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 12,
+              "record_type": "MS",
+              "sport_id": 1,
+              "user": "sam",
+              "value": 18,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            }
+          ],
+          "segments_creation_event": "manual",
+          "sports_list": [
+              1,
+              4,
+              6
+          ],
+          "start_elevation_at_zero": false,
+          "timezone": "Europe/Paris",
+          "total_ascent": 720.35,
+          "total_distance": 67.895,
+          "total_duration": "6:50:27",
+          "use_dark_mode": null,
+          "use_raw_gpx_speed": false,
+          "username": "sam",
+          "weekm": false,
+          "workouts_visibility": "private"
+        },
+        "status": "success"
+      }
+
+    :<json boolean warning_about_large_number_of_workouts_on_map: message
+           displayed before displaying a large number of workouts on a map
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``user preferences updated``
+    :statuscode 400:
+        - ``invalid payload``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 500: ``error, please try again or contact the administrator``
+    """
+    preferences_data = request.get_json()
+    if (
+        not preferences_data
+        or "warning_about_large_number_of_workouts_on_map"
+        not in preferences_data
+    ):
+        return InvalidPayloadErrorResponse()
+
+    try:
+        auth_user.update_message_preferences(preferences_data)
+        db.session.commit()
+    except ValidationError:
+        return InvalidPayloadErrorResponse()
 
     return {
         "data": auth_user.serialize(current_user=auth_user, light=False),

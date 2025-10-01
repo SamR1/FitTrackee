@@ -215,6 +215,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             serialized_user["split_workout_charts"]
             == user_1.split_workout_charts
         )
+        assert serialized_user["messages_preferences"] == {}
 
     def test_it_returns_empty_dict_when_notification_preferences_are_none(
         self, app: Flask, user_1: User
@@ -222,6 +223,13 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user["notification_preferences"] == {}
+
+    def test_it_returns_empty_dict_when_message_preferences_are_none(
+        self, app: Flask, user_1: User
+    ) -> None:
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
+
+        assert serialized_user["messages_preferences"] == {}
 
     def test_it_returns_workouts_infos(self, app: Flask, user_1: User) -> None:
         serialized_user = user_1.serialize(current_user=user_1, light=False)
@@ -348,6 +356,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
         assert "notification_preferences" not in serialized_user
         assert "segments_creation_event" not in serialized_user
         assert "split_workout_charts" not in serialized_user
+        assert "messages_preferences" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -437,6 +446,7 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
         assert "notification_preferences" not in serialized_user
         assert "segments_creation_event" not in serialized_user
         assert "split_workout_charts" not in serialized_user
+        assert "messages_preferences" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_moderator: User, user_2: User
@@ -519,6 +529,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert "notification_preferences" not in serialized_user
         assert "segments_creation_event" not in serialized_user
         assert "split_workout_charts" not in serialized_user
+        assert "messages_preferences" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1: User, user_2: User
@@ -2548,3 +2559,52 @@ class TestUserNotificationsPreferencesIsEnabled:
         }
 
         assert user_1.is_notification_enabled("mention") is False
+
+
+class TestUserMessagePreferencesUpdate:
+    def test_it_raises_error_when_notification_type_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.messages_preferences = {}
+
+        with pytest.raises(ValidationError):
+            user_1.update_message_preferences({"invalid": True})
+
+    def test_it_raises_error_when_value_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.messages_preferences = {}
+
+        with pytest.raises(ValidationError):
+            user_1.update_message_preferences(
+                {"warning_about_large_number_of_workouts_on_map": "invalid"}
+            )
+
+    @pytest.mark.parametrize("input_value", [True, False])
+    def test_it_updates_preference_for_given_type(
+        self, app: Flask, user_1: User, input_value: bool
+    ) -> None:
+        user_1.messages_preferences = {}
+
+        user_1.update_message_preferences(
+            {"warning_about_large_number_of_workouts_on_map": input_value}
+        )
+
+        assert user_1.messages_preferences == {
+            "warning_about_large_number_of_workouts_on_map": input_value
+        }
+
+    def test_it_updates_preferences_when_preferences_exist(
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.messages_preferences = {
+            "warning_about_large_number_of_workouts_on_map": True
+        }
+
+        user_1.update_message_preferences(
+            {"warning_about_large_number_of_workouts_on_map": False}
+        )
+
+        assert user_1.messages_preferences == {
+            "warning_about_large_number_of_workouts_on_map": False
+        }

@@ -4702,6 +4702,18 @@ class TestUserNotificationsPreferencesPost(ApiTestCaseMixin):
             user_1.notification_preferences == updated_notification_preferences
         )
 
+    def test_expected_scope_is_profile_write(
+        self, app: Flask, user_1: User
+    ) -> None:
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint=self.route,
+            invalid_scope="profile:read",
+            expected_endpoint_scope="profile:write",
+        )
+
 
 class TestGetTimezones:
     def test_it_returns_time_zones(self, app: Flask) -> None:
@@ -4713,3 +4725,80 @@ class TestGetTimezones:
         data = json.loads(response.data.decode())
         assert data["timezones"] == TIMEZONES
         assert data["status"] == "success"
+
+
+class TestUserMessagesPreferencesPost(ApiTestCaseMixin):
+    route = "/api/auth/profile/edit/messages"
+
+    def test_it_returns_error_if_payload_is_empty(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            json={},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response)
+
+    def test_it_returns_error_if_a_message_type_is_invalid(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            json={
+                "warning_about_large_number_of_workouts_on_map": False,
+                "invalid": True,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response)
+
+    def test_it_updates_message_preferences(
+        self, app: Flask, user_1: User
+    ) -> None:
+        messages_preferences = {
+            "warning_about_large_number_of_workouts_on_map": False,
+        }
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            json=messages_preferences,
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        db.session.refresh(user_1)
+        assert data["data"] == jsonify_dict(
+            user_1.serialize(current_user=user_1, light=False)
+        )
+        assert user_1.messages_preferences == messages_preferences
+
+    def test_expected_scope_is_profile_write(
+        self, app: Flask, user_1: User
+    ) -> None:
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint=self.route,
+            invalid_scope="profile:read",
+            expected_endpoint_scope="profile:write",
+        )
