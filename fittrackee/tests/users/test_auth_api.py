@@ -577,7 +577,9 @@ class TestUserRegistration(ApiTestCaseMixin):
         user_2_admin: User,
         auth_send_email_mock: MagicMock,
     ) -> None:
-        user_1_admin.update_preferences({"account_creation": False})
+        user_1_admin.update_notification_preferences(
+            {"account_creation": False}
+        )
         email = self.random_email()
         client = app.test_client()
 
@@ -4658,7 +4660,7 @@ class TestUserNotificationsPreferencesPost(ApiTestCaseMixin):
     def test_it_updates_notification_preferences(
         self, app: Flask, user_1: User
     ) -> None:
-        user_1.update_preferences(
+        user_1.update_notification_preferences(
             {
                 "comment_like": True,
                 "follow": True,

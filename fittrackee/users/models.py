@@ -750,7 +750,9 @@ class User(BaseModel):
             "sanctions_count": result[2],
         }
 
-    def update_preferences(self, updated_preferences: Dict) -> None:
+    def update_notification_preferences(
+        self, updated_preferences: Dict
+    ) -> None:
         notification_preferences = {
             **(
                 self.notification_preferences

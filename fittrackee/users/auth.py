@@ -1470,7 +1470,7 @@ def edit_user_notifications_preferences(
     ):
         return InvalidPayloadErrorResponse()
 
-    auth_user.update_preferences(preferences_data)
+    auth_user.update_notification_preferences(preferences_data)
     db.session.commit()
 
     return {

@@ -171,7 +171,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
     def test_it_returns_user_preferences(
         self, app: Flask, user_1: User
     ) -> None:
-        user_1.update_preferences({"mention": True})
+        user_1.update_notification_preferences({"mention": True})
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert serialized_user["imperial_units"] == user_1.imperial_units
@@ -2437,7 +2437,7 @@ class TestUserNotificationsPreferencesUpdate:
         user_1.notification_preferences = {}
 
         with pytest.raises(ValidationError):
-            user_1.update_preferences({"invalid": True})
+            user_1.update_notification_preferences({"invalid": True})
 
     def test_it_raises_error_when_value_is_invalid(
         self, app: Flask, user_1: User
@@ -2445,7 +2445,7 @@ class TestUserNotificationsPreferencesUpdate:
         user_1.notification_preferences = {}
 
         with pytest.raises(ValidationError):
-            user_1.update_preferences({"mention": "invalid"})
+            user_1.update_notification_preferences({"mention": "invalid"})
 
     @pytest.mark.parametrize("input_value", [True, False])
     def test_it_updates_preference_for_given_type(
@@ -2453,7 +2453,7 @@ class TestUserNotificationsPreferencesUpdate:
     ) -> None:
         user_1.notification_preferences = {}
 
-        user_1.update_preferences({"mention": input_value})
+        user_1.update_notification_preferences({"mention": input_value})
 
         assert user_1.notification_preferences == {"mention": input_value}
 
@@ -2465,7 +2465,7 @@ class TestUserNotificationsPreferencesUpdate:
             "follow_request": False,
         }
 
-        user_1.update_preferences(
+        user_1.update_notification_preferences(
             {"mention": False, "workout_like": True, "comment_like": True}
         )
 
@@ -2494,7 +2494,7 @@ class TestUserNotificationsPreferencesUpdate:
             "workout_like": False,
         }
 
-        user_1.update_preferences(updated_preferences)
+        user_1.update_notification_preferences(updated_preferences)
 
         assert user_1.notification_preferences == updated_preferences
 
