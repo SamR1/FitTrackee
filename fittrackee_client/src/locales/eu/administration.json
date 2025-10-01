@@ -150,5 +150,17 @@
     },
     "TITLE": "Kudeaketa - Erabiltzaileak"
   },
+  "USERS_QUEUED_TASKS": {
+    "DESCRIPTION": "Erakutsi zain dauden lanak",
+    "LABEL": "Zain dauden lanak",
+    "LIST_DESCRIPTION": "Lana egiteko prozesurik ez badago, erabili komando-lerroa prozesatzeko.",
+    "NO_USERS_QUEUED_TASKS": "Ez dago lanik zain",
+    "TASK_TYPES": {
+      "LABEL": "Ekintza-mota",
+      "user_data_export": "Erabiltzaile-datuen esportazioa",
+      "workouts_archive_upload": "Ekintzen fitxategiak kargatzea"
+    },
+    "VIEW_OTHER_TASKS": "Ikusi zain dauden beste lan batzuk"
+  },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "Eposta helbidea eguneratu egin da."
 }

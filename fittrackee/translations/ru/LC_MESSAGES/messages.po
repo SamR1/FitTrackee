@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-09-24 15:05+0200\n"
-"PO-Revision-Date: 2025-07-17 17:03+0000\n"
-"Last-Translator: Nikita Epifanov <nikgreens@protonmail.com>\n"
+"POT-Creation-Date: 2025-10-01 18:53+0200\n"
+"PO-Revision-Date: 2025-10-01 08:39+0000\n"
+"Last-Translator: Leo <lsp11@users.noreply.hosted.weblate.org>\n"
 "Language: ru\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/fittrackee"
 "/fittrackee-api-emails/ru/>\n"
@@ -570,12 +570,12 @@ msgstr "Виндсёрфинг"
 #: fittrackee/feeds/feeds/workouts_feed_service.py:61
 #, python-format
 msgid "Latest public workouts on FitTrackee from %(username)s"
-msgstr ""
+msgstr "Последние публичные тренировки на FitTrackee от %(username)s"
 
 #: fittrackee/feeds/feeds/workouts_feed_service.py:70
 #, python-format
 msgid "%(username)s's workouts feed"
-msgstr ""
+msgstr "Лента тренировок %(username)s"
 
 #: fittrackee/feeds/templates/workout/body.html:1
 msgid "Workout map"
