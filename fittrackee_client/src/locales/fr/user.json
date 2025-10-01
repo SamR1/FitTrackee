@@ -88,6 +88,7 @@
     "CREATED_REPORTS": "Signalements créés",
     "DATE_FORMAT": "Format d'affichage de la date",
     "EDIT": "Modifier le profil",
+    "EDIT_MESSAGE_PREFERENCES": "Modifier les préférences des messages",
     "EDIT_NOTIFICATION_PREFERENCES": "Modifier les préférences de notification",
     "EDIT_PREFERENCES": "Modifier les préférences",
     "EDIT_SPORTS_PREFERENCES": "Modifier les préférences des sports",
@@ -120,6 +121,11 @@
     "LAST_NAME": "Nom",
     "LATEST_SANCTIONS_RECEIVED": "Dernières sanctions reçues",
     "LOCATION": "Lieu",
+    "MESSAGES_EDITION": "Edition des préférences des messages",
+    "MESSAGES_PREFERENCES": "Preferences des messages",
+    "MESSAGES": {
+      "warning_about_large_number_of_workouts_on_map": "Afficher un avertissement concernant l'affichage d'un grand nombre d'entraînements sur la carte"
+    },
     "MONDAY": "Lundi",
     "NOTIFICATIONS": {
       "account_creation": "Quelqu'un s'est enregistré",
@@ -191,6 +197,8 @@
       "BLOCKED-USERS": "utilisateurs bloqués",
       "EQUIPMENTS": "équipements",
       "FOLLOW-REQUESTS": "demandes d'abonnement",
+
+      "MESSAGES": "messages",
       "MODERATION": "modération",
       "NOTIFICATIONS": "notifications",
       "PICTURE": "image",

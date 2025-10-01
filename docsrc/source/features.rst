@@ -461,7 +461,7 @@ Global map
   - sports
 
 .. note::
-  | If the number of workouts exceeds 3000, a modal appears to confirm the display.
+  | If the number of workouts exceeds 3000, a modal appears to confirm the display. This message can be hidden (this can be changed in the user preferences).
   | Depending on the browser and device used, displaying a large number of workouts may cause browser slowness or errors.
 
 
@@ -519,6 +519,7 @@ Account & preferences
 - A user can display blocked users (*new in 0.9.0*).
 - A user can view follow requests to approve or reject (*new in 0.9.0*).
 - A user can view received sanctions and appeal (*new in 0.9.0*).
+- A user can update notification preferences (*new in 0.9.0*).
 - A user can view, interrupt and delete tasks for asynchronous uploads (*new in 0.10.0*).
 - A user can set the types of events that generate segment when uploading .fit files (*new in 0.10.3*):
 
@@ -530,6 +531,9 @@ Account & preferences
 
   - all data on a single chart
   - each data displayed on a different chart
+
+- A user can update messages preferences (*new in 1.0.0*).
+
 
 Equipments
 ==========

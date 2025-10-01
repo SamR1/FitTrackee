@@ -16,6 +16,7 @@ import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
 import UserNotifications from '@/components/User/ProfileDisplay/UserNotifications.vue'
 import UserPreferences from '@/components/User/ProfileDisplay/UserPreferences.vue'
 import UsersList from '@/components/User/ProfileDisplay/UsersList.vue'
+import UserUIMessages from '@/components/User/ProfileDisplay/UserUIMessages.vue'
 import ProfileEdition from '@/components/User/ProfileEdition/index.vue'
 import UserAccountEdition from '@/components/User/ProfileEdition/UserAccountEdition.vue'
 import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.vue'
@@ -23,6 +24,7 @@ import UserNotificationsEdition from '@/components/User/ProfileEdition/UserNotif
 import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdition.vue'
 import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
 import UserPrivacyPolicyValidation from '@/components/User/ProfileEdition/UserPrivacyPolicyValidation.vue'
+import UserUIMessageEdition from '@/components/User/ProfileEdition/UserUIMessageEdition.vue'
 import UserAccountSuspension from '@/components/User/UserAccountSuspension.vue'
 import AddUserApp from '@/components/User/UserApps/AddUserApp.vue'
 import AuthorizeUserApp from '@/components/User/UserApps/AuthorizeUserApp.vue'
@@ -225,6 +227,14 @@ const routes: RouteRecordRaw[] = [
             component: UserNotifications,
             meta: {
               title: 'user.PROFILE.TABS.NOTIFICATIONS',
+            },
+          },
+          {
+            path: 'messages',
+            name: 'UserUIMessages',
+            component: UserUIMessages,
+            meta: {
+              title: 'user.PROFILE.TABS.MESSAGES',
             },
           },
           {
@@ -468,6 +478,14 @@ const routes: RouteRecordRaw[] = [
             component: UserNotificationsEdition,
             meta: {
               title: 'user.PROFILE.EDIT_NOTIFICATIONS',
+            },
+          },
+          {
+            path: 'messages',
+            name: 'UserUIMessageEdition',
+            component: UserUIMessageEdition,
+            meta: {
+              title: 'user.PROFILE.EDIT_MESSAGES_PREFERENCES',
             },
           },
           {

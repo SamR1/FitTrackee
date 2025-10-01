@@ -88,6 +88,7 @@
     "CREATED_REPORTS": "Created reports",
     "DATE_FORMAT": "Date display format",
     "EDIT": "Edit profile",
+    "EDIT_MESSAGE_PREFERENCES": "Edit messages preferences",
     "EDIT_NOTIFICATION_PREFERENCES": "Edit notification preferences",
     "EDIT_PREFERENCES": "Edit preferences",
     "EDIT_SPORTS_PREFERENCES": "Edit sports preferences",
@@ -120,6 +121,11 @@
     "LAST_NAME": "Last name",
     "LATEST_SANCTIONS_RECEIVED": "Latest sanctions received",
     "LOCATION": "Location",
+    "MESSAGES_PREFERENCES": "Messages preferences",
+    "MESSAGES_EDITION": "Message preferences edition",
+    "MESSAGES": {
+      "warning_about_large_number_of_workouts_on_map": "Display a warning about displaying a large number of workouts on map"
+    },
     "MONDAY": "Monday",
     "NOTIFICATIONS": {
       "account_creation": "Someone registers",
@@ -192,6 +198,7 @@
       "EQUIPMENTS": "equipments",
       "FOLLOW-REQUESTS": "follow requests",
       "MODERATION": "moderation",
+      "MESSAGES": "messages",
       "NOTIFICATIONS": "notifications",
       "PICTURE": "picture",
       "PREFERENCES": "preferences",
