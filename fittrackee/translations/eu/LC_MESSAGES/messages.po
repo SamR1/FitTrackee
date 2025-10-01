@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2025-09-03 08:12+0200\n"
-"PO-Revision-Date: 2025-02-19 01:47+0000\n"
+"PO-Revision-Date: 2025-09-29 14:02+0000\n"
 "Last-Translator: Mikel Larreategi <mlarreategi@codesyntax.com>\n"
+"Language-Team: Basque <https://hosted.weblate.org/projects/fittrackee/"
+"fittrackee-api-emails/eu/>\n"
 "Language: eu\n"
-"Language-Team: Basque <https://hosted.weblate.org/projects/fittrackee"
-"/fittrackee-api-emails/eu/>\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.14-dev\n"
 "Generated-By: Babel 2.17.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
@@ -534,7 +535,7 @@ msgstr "Erraketak"
 
 #: fittrackee/feeds/feeds/constants.py:23
 msgid "Standup Paddleboarding"
-msgstr ""
+msgstr "Paddle Surf"
 
 #: fittrackee/feeds/feeds/constants.py:24
 msgid "Swimrun"
@@ -542,7 +543,7 @@ msgstr "Igerikorrika"
 
 #: fittrackee/feeds/feeds/constants.py:25
 msgid "Tennis (Outdoor)"
-msgstr ""
+msgstr "Tenisa (kanpokoa)"
 
 #: fittrackee/feeds/feeds/constants.py:26
 msgid "Trail"
@@ -559,12 +560,12 @@ msgstr "Windsurf"
 #: fittrackee/feeds/feeds/workouts_feed_service.py:61
 #, python-format
 msgid "Latest public workouts on FitTrackee from %(username)s"
-msgstr ""
+msgstr "%(username)s erabiltzailearen azken ekintza publikoak"
 
 #: fittrackee/feeds/feeds/workouts_feed_service.py:70
 #, python-format
 msgid "%(username)s's workouts feed"
-msgstr ""
+msgstr "%(username)s erabiltzailearen ekintzen jarioa"
 
 #: fittrackee/feeds/templates/workout/body.html:1
 msgid "Workout map"
@@ -597,4 +598,3 @@ msgstr "Jaitsiera"
 #: fittrackee/feeds/templates/workout/body.html:4
 msgid "Description"
 msgstr "Deskribapena"
-
