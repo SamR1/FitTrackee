@@ -13,6 +13,8 @@
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Enderezo de contacto da administración",
     "ASYNCHRONOUS_UPLOAD_DISABLED": "Está desactivada a subida asíncrona de arquivos zip.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "Este valor non pode superar as 50.000 actividades.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Número máximo de actividades mostradas no mapa",
     "MAX_FILES_IN_ZIP_LABEL": "Num. máximo ficheiros con arquivos zip",
     "MAX_SYNC_FILES_IN_ZIP_LABEL": "Máx. de ficheiros para procesamento síncrono",
     "MAX_USERS_HELP": "Se 0, non hai límite de rexistros.",
