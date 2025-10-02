@@ -88,6 +88,7 @@
     "CREATED_REPORTS": "Denuncias creadas",
     "DATE_FORMAT": "Formato para as datas",
     "EDIT": "Editar perfil",
+    "EDIT_MESSAGE_PREFERENCES": "Editar preferencias das mensaxes",
     "EDIT_NOTIFICATION_PREFERENCES": "Editar preferencias das notificacións",
     "EDIT_PREFERENCES": "Editar preferencias",
     "EDIT_SPORTS_PREFERENCES": "Editar preferencias dos deportes",
@@ -120,6 +121,11 @@
     "LAST_NAME": "Apelido",
     "LATEST_SANCTIONS_RECEIVED": "Últimas sancións recibidas",
     "LOCATION": "Localización",
+    "MESSAGES": {
+      "warning_about_large_number_of_workouts_on_map": "Mostrar un aviso cando se vaian mostrar no mapa un número moi grande de actividades"
+    },
+    "MESSAGES_EDITION": "Edición das preferencias das mensaxes",
+    "MESSAGES_PREFERENCES": "Preferencias das mensaxes",
     "MONDAY": "Luns",
     "NOTIFICATIONS": {
       "account_creation": "Alguén creou unha conta",
@@ -191,6 +197,7 @@
       "BLOCKED-USERS": "usuarias bloqueadas",
       "EQUIPMENTS": "equipamentos",
       "FOLLOW-REQUESTS": "solicitudes de seguimento",
+      "MESSAGES": "mensaxes",
       "MODERATION": "moderación",
       "NOTIFICATIONS": "notificacións",
       "PICTURE": "imaxe",
