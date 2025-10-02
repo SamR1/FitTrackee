@@ -14,6 +14,7 @@
       "equipments:write_DESCRIPTION": "geef schrijftoegang tot <code>uitrustings</code>eindpunten.",
       "follow:read_DESCRIPTION": "geeft leestoegang aan eindpunten die te maken hebben met volgers en volgverzoeken.",
       "follow:write_DESCRIPTION": "geeft schrijftoegang aan eindpunten die te maken hebben met volgers en volgverzoeken.",
+      "geocode:read_DESCRIPTION": "verleent leestoegang tot eindpunten met betrekking tot geocodering.",
       "notifications:read_DESCRIPTION": "geef leestoegnag tot <code>meldings</code>eindpunten.",
       "notifications:write_DESCRIPTION": "geef schrijftoegnag tot <code>meldings</code>eindpunten.",
       "profile:read_DESCRIPTION": "staat leestoegang toe aan <code>auth</code> endpoints.",
