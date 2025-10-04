@@ -13,6 +13,8 @@
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Administrator email voor contact",
     "ASYNCHRONOUS_UPLOAD_DISABLED": "Asyncrone zip upload is uitgeschakeld.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "Deze waarde mag niet groter zijn dan 50.000.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Max. aantal trainingen op wereldkaart",
     "MAX_FILES_IN_ZIP_LABEL": "Max. aantal bestanden in zip archief",
     "MAX_SYNC_FILES_IN_ZIP_LABEL": "Max aantal bestanden voor synchrone upload",
     "MAX_USERS_HELP": "Bij 0, geen limiet op registratie.",

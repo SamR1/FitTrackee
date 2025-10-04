@@ -14,6 +14,7 @@
       "equipments:write_DESCRIPTION": "concede acceso de escritura aos puntos de acceso <code>equipments</code>.",
       "follow:read_DESCRIPTION": "concede permiso de lectura nos puntos de acceso relacionados con solicitudes de seguimento e seguidoras.",
       "follow:write_DESCRIPTION": "concede permiso de escritura nos puntos de acceso para solicitudes de seguimento e seguidoras.",
+      "geocode:read_DESCRIPTION": "concede acceso de lectura aos puntos de acceso relacionados coa xeocodificación.",
       "notifications:read_DESCRIPTION": "concede permiso de lectura para puntos de acceso para <code>notificacións</code>.",
       "notifications:write_DESCRIPTION": "concede permiso de escritura para puntos de acceso de <code>notificacións</code>.",
       "profile:read_DESCRIPTION": "concede acceso de lectura aos puntos de acceso <code>auth</code>.",
