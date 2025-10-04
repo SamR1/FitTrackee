@@ -38,7 +38,7 @@ env:
 jobs:
   python:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
-    name: python ${{ matrix.python-version }} (postgresql 17 - postgis 3.5)
+    name: python ${{ matrix.python-version }} (postgis 17-3.5)
     runs-on: ubuntu-latest
     container: python:${{ matrix.python-version }}
     services:
@@ -100,7 +100,7 @@ jobs:
 # needs cffi 2+ for Python 3.14 support
 #  python-next:
 #    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
-#    name: python 3.14-rc (postgresql 17)
+#    name: python 3.14-rc (postgis 17-3.5)
 #    runs-on: ubuntu-latest
 #    container: python:3.14-rc
 #    services:
@@ -130,9 +130,9 @@ jobs:
 #      - name: Pytest
 #        run: pytest fittrackee -n auto --maxprocesses=2  -p no:warnings --maxfail=1
 
-  postgresql:
+  postgis:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
-    name: postgresql/postgis ${{ matrix.psql-version }} (python 3.10)
+    name: postgis ${{ matrix.psql-version }} (python 3.10)
     runs-on: ubuntu-latest
     container: python:3.10
     services:
@@ -168,7 +168,7 @@ jobs:
 
   arm:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
-    name: postgresql/postgis 17-3.5 on arm platform (python 3.13)
+    name: postgis 17-3.5 on arm platform (python 3.13)
     runs-on: ubuntu-24.04-arm
     container: python:3.13
     services:
@@ -311,7 +311,7 @@ jobs:
   publish-to-pypi:
     if: github.repository == 'SamR1/FitTrackee' && startsWith(github.ref, 'refs/tags/v')
     name: Publish Python distribution to PyPI
-    needs: ["postgresql", "arm", "end2end", "end2end_package", "end2end_package_update"]
+    needs: ["postgis", "arm", "end2end", "end2end_package", "end2end_package_update"]
     runs-on: ubuntu-latest
     environment:
       name: pypi
@@ -374,7 +374,7 @@ jobs:
   push_to_registries:
     if: github.repository == 'SamR1/FitTrackee' && startsWith(github.ref, 'refs/tags/v')
     name: Push Docker image to multiple registries
-    needs: ["postgresql", "arm", "end2end", "end2end_package", "end2end_package_update"]
+    needs: ["postgis", "arm", "end2end", "end2end_package", "end2end_package_update"]
     runs-on: ubuntu-latest
     permissions:
       contents: read
