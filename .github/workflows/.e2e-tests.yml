@@ -20,7 +20,7 @@ jobs:
     container: python:${{ inputs.python-version }}
     services:
       postgres:
-        image: postgis/postgis:${{ inputs.postgres-version }}-${{ inputs.postgis-version }}
+        image: postgis/postgis:${{ inputs.postgres-version }}-${{ inputs.postgis-version }}-alpine
         env:
           POSTGRES_DB: fittrackee_test
           POSTGRES_USER: fittrackee

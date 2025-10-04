@@ -43,7 +43,7 @@ jobs:
     container: python:${{ matrix.python-version }}
     services:
       postgres:
-        image: postgis/postgis:17-3.5
+        image: postgis/postgis:17-3.5-alpine
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
@@ -105,7 +105,7 @@ jobs:
 #    container: python:3.14-rc
 #    services:
 #      postgres:
-#        image: postgres:17
+#        image: postgis/postgis:17-3.5-alpine
 #        env:
 #          POSTGRES_PASSWORD: postgres
 #        options: >-
@@ -137,7 +137,7 @@ jobs:
     container: python:3.10
     services:
       postgres:
-        image: postgis/postgis:${{ matrix.psql-version }}
+        image: postgis/postgis:${{ matrix.psql-version }}-alpine
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
@@ -147,7 +147,7 @@ jobs:
           --health-retries 5
     strategy:
       matrix:
-        psql-version:  [ "13-3.5", "14-3.5", "15-3.5", "16-3.5", "17-3.4", "17-3.6-alpine", "18rc1-3.6-alpine" ]
+        psql-version:  [ "13-3.5", "14-3.5", "15-3.5", "16-3.5", "17-3.4", "17-3.6", "18-3.6" ]
     steps:
 
       - uses: actions/checkout@v4
@@ -173,7 +173,7 @@ jobs:
     container: python:3.13
     services:
       postgres:
-        image: postgis/postgis:17-3.5
+        image: postgis/postgis:17-3.5-alpine
         env:
           POSTGRES_DB: fittrackee_test
           POSTGRES_USER: fittrackee
