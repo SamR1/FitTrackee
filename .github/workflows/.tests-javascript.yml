@@ -62,7 +62,7 @@ jobs:
     container: python:3.13
     services:
       postgres:
-        image: postgis/postgis:17-3.5
+        image: postgis/postgis:17-3.5-alpine
         env:
           POSTGRES_DB: fittrackee_test
           POSTGRES_USER: fittrackee

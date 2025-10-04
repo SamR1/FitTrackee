@@ -1,6 +1,8 @@
 from typing import TYPE_CHECKING
 
 import pytest
+import shapely.wkt
+from shapely import set_precision
 
 from fittrackee.workouts.exceptions import (
     InvalidCoordinatesException,
@@ -17,6 +19,7 @@ from ...mixins import GeometryMixin
 
 if TYPE_CHECKING:
     from flask import Flask
+    from shapely import Polygon
 
     from fittrackee.users.models import User
     from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
@@ -511,7 +514,10 @@ class TestGetBufferedLocation(GeometryMixin):
 
     @pytest.mark.parametrize("input_radius", ["1", "1.0"])
     def test_it_returns_buffered_polygon_with_4326_srid(
-        self, app: "Flask", paris_with_10km_buffer: str, input_radius: str
+        self,
+        app: "Flask",
+        paris_with_10km_buffer: "Polygon",
+        input_radius: str,
     ) -> None:
         paris_coordinates = "48.85341,2.3488"
 
@@ -519,4 +525,8 @@ class TestGetBufferedLocation(GeometryMixin):
 
         srid, geometry = buffer.split(";")
         assert srid == "SRID=4326"
-        assert geometry == paris_with_10km_buffer
+        # to handle rounding differences on different platforms
+        precision = 1e-10
+        assert str(
+            set_precision(shapely.wkt.loads(geometry), precision)
+        ) == str(set_precision(paris_with_10km_buffer, precision))
