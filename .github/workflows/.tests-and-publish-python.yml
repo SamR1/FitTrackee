@@ -165,6 +165,39 @@ jobs:
       - name: Pytest
         run: pytest fittrackee -n auto --maxprocesses=2 -p no:warnings --maxfail=1
 
+
+  arm:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
+    name: postgresql/postgis 17-3.5 on arm platform (python 3.13)
+    runs-on: ubuntu-24.04-arm
+    container: python:3.13
+    services:
+      postgres:
+        image: imresamu/postgis:17-3.5-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Install Poetry and Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --quiet poetry
+          poetry config virtualenvs.create false
+          poetry install --no-interaction --quiet
+
+      - name: Create test databases
+        run: python db/create_ci_test_db.py
+
+      - name: Pytest
+        run: pytest fittrackee -n auto --maxprocesses=2 -p no:warnings --maxfail=1
+
   end2end:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     name: e2e tests with sources
@@ -278,7 +311,7 @@ jobs:
   publish-to-pypi:
     if: github.repository == 'SamR1/FitTrackee' && startsWith(github.ref, 'refs/tags/v')
     name: Publish Python distribution to PyPI
-    needs: ["postgresql", "end2end", "end2end_package", "end2end_package_update"]
+    needs: ["postgresql", "arm", "end2end", "end2end_package", "end2end_package_update"]
     runs-on: ubuntu-latest
     environment:
       name: pypi
@@ -341,7 +374,7 @@ jobs:
   push_to_registries:
     if: github.repository == 'SamR1/FitTrackee' && startsWith(github.ref, 'refs/tags/v')
     name: Push Docker image to multiple registries
-    needs: ["postgresql", "end2end", "end2end_package", "end2end_package_update"]
+    needs: ["postgresql", "arm", "end2end", "end2end_package", "end2end_package_update"]
     runs-on: ubuntu-latest
     permissions:
       contents: read
