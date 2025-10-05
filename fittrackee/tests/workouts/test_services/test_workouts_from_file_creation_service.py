@@ -1622,7 +1622,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
                 **workouts_data,
             },
             "files_to_process": TEST_FILES_LIST,
-            "equipment_ids": [equipment_bike_user_1.short_id],
+            "equipment_ids": [equipment_bike_user_1.id],
             "original_file_name": "workouts.zip",
         }
         assert upload_task.errored is False
