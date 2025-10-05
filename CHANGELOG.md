@@ -1,12 +1,87 @@
 # Change log
 
+## Version 1.0.0 (2025/10/05)
+
+**FitTrackee** now allows you to filter workouts on location and display them on a map.  
+To do so, **FitTrackee** requires the installation of **PostGIS** extension on **PostgreSQL** database and the recalculation of all workouts to generate geospatial data.  
+You can find the upgrade instructions in [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.0.html)).  
+Two new environment variables have been added: [`ENABLE_GEOSPATIAL_FEATURES`](https://docs.fittrackee.org/en/installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES) and [`NOMINATIM_URL`](https://docs.fittrackee.org/en/installation.html#envvar-NOMINATIM_URL).
+
+Among other changes and improvements, this version also brings a new sport (Outdoor Padel).
+
+**Warning:**  
+- The next version will require all workouts to be updated.
+- **Python 3.9** and **PostgreSQL 12** are no longer supported. This version will not yet support **Python 3.14** when it is released.
+- This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade)).
+
+**Note**: This release note includes the changes from the beta versions.
+
+### Features and enhancements
+
+* [#810](https://github.com/SamR1/FitTrackee/issues/810) - Store file data in database
+* [#812](https://github.com/SamR1/FitTrackee/issues/812) - Remove segments with zero distance
+* [#918](https://github.com/SamR1/FitTrackee/issues/918) - Add filters on location in Workouts List
+* [PR#924](https://github.com/SamR1/FitTrackee/pull/924) - Display filtered workouts on map
+* [#931](https://github.com/SamR1/FitTrackee/issues/931) - New sport: Padel (Outdoor)
+* [PR#937](https://github.com/SamR1/FitTrackee/pull/937) - Display workouts on a global map
+
+### Bugs Fixed
+
+* [PR#950](https://github.com/SamR1/FitTrackee/pull/950) - Fix async upload task creation when equipment is provided
+
+### Translations
+
+* [PR#936](https://github.com/SamR1/FitTrackee/pull/936) - Translations update from Hosted Weblate (Czech)
+* [PR#944](https://github.com/SamR1/FitTrackee/pull/944) - Translations update from Hosted Weblate (Basque and Russian)
+* [PR#947](https://github.com/SamR1/FitTrackee/pull/947) - Translations update from Hosted Weblate (French)
+* [PR#948](https://github.com/SamR1/FitTrackee/pull/948) - Translations update from Hosted Weblate (Dutch, Galician and German)
+
+Translation status:
+- Basque: 96%
+- Bulgarian: 54%
+- Catalan: 26%
+- Chinese (Simplified): 95%
+- Croatian: 96%
+- Czech: 48%
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 88%
+- Italian: 44%
+- Norwegian Bokmål: 29%
+- Polish: 96%
+- Portuguese: 53%
+- Russian: 96%
+- Spanish: 71%
+- Turkish: 1%
+
+### Misc
+
+* [#881](https://github.com/SamR1/FitTrackee/issues/881) - Drop support for Python 3.9
+* [#911](https://github.com/SamR1/FitTrackee/issues/911) - Drop PostgreSQL12 support
+* [#929](https://github.com/SamR1/FitTrackee/issues/929) - Remove deprecated option --set-admin (Users CLI)
+* [PR#934](https://github.com/SamR1/FitTrackee/pull/934) - Client - update type annotations
+* [PR#943](https://github.com/SamR1/FitTrackee/pull/943) - update Authlib + test refactoring
+* [PR#949](https://github.com/SamR1/FitTrackee/pull/949) - add support for PostgreSQL 18 
+
+
+Thanks to the contributors:
+- @erral
+- @Fuchs-David
+- @Stephan-P
+- @xmgz
+- Leo
+- Rene Sato
+
+
 ## Version 1.0.0b3 (2025/09/27)
 
 **This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
 If you find bugs, please report them.
 
 **Warning:**  
-- This release contains database migrations (see upgrade instructions in [documentation](https://next.docs.fittrackee.org/en/installation.html#upgrade))
+- This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade)).
 
 ### Features and enhancements
 
@@ -29,8 +104,8 @@ If you find bugs, please report them.
 If you find bugs, please report them.
 
 **Warning:**  
-- if upgrading from v1.0.b1, the refresh command (Workout CLI) must be re-executed.
-- This release contains database migrations (see upgrade instructions in [documentation](https://next.docs.fittrackee.org/en/installation.html#upgrade))
+- if upgrading from v1.0.0b1, the refresh command (Workout CLI) must be re-executed.
+- This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade)).
 
 ### Features and enhancements
 
@@ -51,22 +126,22 @@ If you find bugs, please report them.
 
 **Warning:**  
 This version introduces major changes:
-- **FitTrackee** v1+ now requires **PostGIS** extension and additional dependencies, see the upgrade instructions in [documentation](https://next.docs.fittrackee.org/en/upgrading-to-1.0.0.html)).
-- Two new environment variables have been added: [ENABLE_GEOSPATIAL_FEATURES](https://next.docs.fittrackee.org/en/installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES) and [NOMINATIM_URL](https://next.docs.fittrackee.org/en/installation.html#envvar-NOMINATIM_URL).
-- This release contains database migrations (see upgrade instructions in [documentation](https://next.docs.fittrackee.org/en/installation.html#upgrade))
+- **FitTrackee** v1+ now requires **PostGIS** extension and additional dependencies, see the upgrade instructions in [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.0.html)).
+- Two new environment variables have been added: [`ENABLE_GEOSPATIAL_FEATURES`](https://docs.fittrackee.org/en/installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES) and [`NOMINATIM_URL`](https://docs.fittrackee.org/en/installation.html#envvar-NOMINATIM_URL).
+- This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade)).
 
 **Notes:** 
 - This version drops support **Python** 3.9 and **PostgreSQL** 12
  
 ### Features and enhancements
 
+* [#810](https://github.com/SamR1/FitTrackee/issues/810) - Store file data in database
 * [#812](https://github.com/SamR1/FitTrackee/issues/812) - Remove segments with zero distance
 * [#918](https://github.com/SamR1/FitTrackee/issues/918) - Add filters on location in Workouts List
 * [PR#924](https://github.com/SamR1/FitTrackee/pull/924) - Display filtered workouts on map
 
 ### Misc
 
-* [#810](https://github.com/SamR1/FitTrackee/issues/810) - Store file data in database
 * [#881](https://github.com/SamR1/FitTrackee/issues/881) - Drop support for Python 3.9
 * [#911](https://github.com/SamR1/FitTrackee/issues/911) - Drop PostgreSQL12 support
 
@@ -149,7 +224,7 @@ Thanks to the contributors:
 This version provides workout data refresh, original file download and a RSS feed for users public workouts.
 
 **Warning:** 
-- This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
+- This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade)).
 
 ### Features and enhancements
 
@@ -292,7 +367,7 @@ Thanks to the contributors:
 This release brings a new sport (Outdoor Tennis), power support for bike-related workouts, new display for workout chart, Garmin device mapping update and several fixes and translation updates.
 
 **Warning:** 
-- This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade))
+- This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade)).
 - The minimum Node version (for development) is now Node 20.
 
 ### Features and enhancements

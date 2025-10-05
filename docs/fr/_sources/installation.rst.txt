@@ -730,13 +730,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v1.0.0b3):
+-  Download the last release (for now, it is the release v1.0.0):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/1.0.0b3.tar.gz
-   $ tar -xzf v1.0.0b3.tar.gz
-   $ mv FitTrackee-1.0.0b3 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/1.0.0.tar.gz
+   $ tar -xzf v1.0.0.tar.gz
+   $ mv FitTrackee-1.0.0 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -871,13 +871,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v1.0.0b3) and overwrite existing files:
+- Download the last release (for now, it is the release v1.0.0) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v1.0.0b3.tar.gz
-   $ tar -xzf v1.0.0b3.tar.gz
-   $ cp -R FitTrackee-1.0.0b3/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v1.0.0.tar.gz
+   $ tar -xzf v1.0.0.tar.gz
+   $ cp -R FitTrackee-1.0.0/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -1062,7 +1062,12 @@ Images are available on `DockerHub <https://hub.docker.com/r/fittrackee/fittrack
 
     Images are available for ``linux/amd64`` and ``linux/arm64`` platforms. Only ``linux/amd64`` image has been tested.
 
-- create a ``docker-compose.yml`` file as needed (see the `example <https://github.com/SamR1/FitTrackee/blob/master/docker-compose.yml>`__ in the repository):
+.. warning::
+
+    | There is no official image for PostGIS on ARM platforms yet, see `issue on GitHub <https://github.com/postgis/docker-postgis/issues/216>`__.
+    | The workaround is to build PostGIS image locally.
+
+- create a ``docker-compose.yml`` file as needed (see the `example <https://github.com/SamR1/FitTrackee/blob/main/docker-compose.yml>`__ in the repository):
 
   - the minimal set up requires at least the database and the web application
   - to activate the rate limit, redis is required
@@ -1072,7 +1077,7 @@ Images are available on `DockerHub <https://hub.docker.com/r/fittrackee/fittrack
     The same image is used by the web application and workers.
 
 .. warning::
-    Following directory must be writable for ``fittrackee`` user (see `docker-compose.yml example <https://github.com/SamR1/FitTrackee/blob/master/docker-compose.yml>`__):
+    Following directory must be writable for ``fittrackee`` user (see `docker-compose.yml example <https://github.com/SamR1/FitTrackee/blob/main/docker-compose.yml>`__):
 
     - ``/usr/src/app/uploads``
     - ``/usr/src/app/logs``
