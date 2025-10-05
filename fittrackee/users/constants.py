@@ -77,3 +77,17 @@ NOTIFICATIONS_PREFERENCES_SCHEMA = {
     },
     "additionalProperties": False,
 }
+
+MESSAGE_PREFERENCES_SCHEMA = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Messages",
+    "description": "Preferences for messages displayed on UI",
+    "type": "object",
+    "properties": {
+        "warning_about_large_number_of_workouts_on_map": {
+            "type": "boolean",
+            "default": True,
+        },
+    },
+    "additionalProperties": False,
+}

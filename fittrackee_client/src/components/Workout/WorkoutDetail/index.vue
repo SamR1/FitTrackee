@@ -143,7 +143,11 @@
     getWorkoutObject(workout.value, segment.value)
   )
   const geoJsonOptions: ComputedRef<IGeoJsonOptions> = computed(() =>
-    sport.value?.label === 'Tennis (Outdoor)' ? { weight: 1 } : {}
+    ['Padel (Outdoor)', 'Tennis (Outdoor)'].includes(
+      sport.value?.label as string
+    )
+      ? { weight: 1 }
+      : {}
   )
   const displayMakeAppeal: ComputedRef<boolean> = computed(
     () => workout.value.suspended_at !== null && isWorkoutOwner.value

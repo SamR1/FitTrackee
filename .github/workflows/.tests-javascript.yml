@@ -2,13 +2,27 @@ name: Javascript CI
 
 on:
   push:
-    paths: ['fittrackee_client/**', '.github/workflows/.tests-javascript.yml']
+    paths: [
+      'fittrackee_client/**',
+      'fittrackee/dist/**',
+      '.github/workflows/.tests-javascript.yml'
+    ]
   pull_request:
-    paths: ['fittrackee_client/**', '.github/workflows/.tests-javascript.yml']
+    paths: [
+      'fittrackee_client/**',
+      'fittrackee/dist/**',
+      '.github/workflows/.tests-javascript.yml'
+    ]
     types: [opened, synchronize, reopened]
 
 env:
   working-directory: fittrackee_client
+  APP_SETTINGS: fittrackee.config.TestingConfig
+  DATABASE_TEST_URL: "postgresql://fittrackee:fittrackee@postgres:5432/fittrackee_test"
+  EMAIL_URL: "smtp://none:none@0.0.0.0:1025"
+  FLASK_APP: fittrackee/__main__.py
+  SENDER_EMAIL: fittrackee@example.com
+  UI_URL: https://0.0.0.0:5000
 
 jobs:
   javascript:
@@ -40,3 +54,52 @@ jobs:
       - name: Build
         working-directory: ${{env.working-directory}}
         run: yarn build
+
+  end2end:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
+    name: e2e tests with sources
+    runs-on: ubuntu-latest
+    container: python:3.13
+    services:
+      postgres:
+        image: postgis/postgis:17-3.5-alpine
+        env:
+          POSTGRES_DB: fittrackee_test
+          POSTGRES_USER: fittrackee
+          POSTGRES_PASSWORD: fittrackee
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      selenium:
+        image: selenium/standalone-firefox
+      mailhog:
+        image: mailhog/mailhog:latest
+      redis:
+        image: redis:latest
+    env:
+      APP_SETTINGS: fittrackee.config.End2EndTestingConfig
+      EMAIL_URL: "smtp://mailhog:1025"
+      REDIS_URL: "redis://redis:6379"
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Install Poetry and Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --quiet poetry
+          poetry config virtualenvs.create false
+          poetry install --no-interaction --quiet
+
+      - name: Run migrations
+        run: flask db upgrade --directory fittrackee/migrations
+
+      - name: Start application and run tests with Selenium
+        run: |
+          setsid nohup flask run --with-threads -h 0.0.0.0 -p 5000 >> nohup.out 2>&1 &
+          export TEST_APP_URL=http://$(hostname --ip-address):5000
+          sleep 5
+          nohup dramatiq fittrackee.tasks:broker --processes=1 >> nohup.out 2>&1 &
+          pytest e2e --driver Remote --capability browserName firefox --selenium-host selenium --selenium-port 4444 --maxfail=1

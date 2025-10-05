@@ -9,7 +9,7 @@ from fittrackee.equipments.models import EquipmentType
 from fittrackee.users.models import User
 
 from ..mixins import ApiTestCaseMixin
-from ..utils import OAUTH_SCOPES, jsonify_dict
+from ..utils import jsonify_dict
 
 
 class TestGetEquipmentTypes(ApiTestCaseMixin):
@@ -112,34 +112,17 @@ class TestGetEquipmentTypes(ApiTestCaseMixin):
             equipment_type_2_bike.serialize(is_admin=False)
         )
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "equipments:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        equipment_type_1_shoe: EquipmentType,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_equipments_read(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint="/api/equipment-types",
+            invalid_scope="equipments:write",
+            expected_endpoint_scope="equipments:read",
         )
-
-        response = client.get(
-            "/api/equipment-types",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestGetEquipmentType(ApiTestCaseMixin):
@@ -241,35 +224,17 @@ class TestGetEquipmentType(ApiTestCaseMixin):
             equipment_type_1_shoe_inactive.serialize(is_admin=True)
         )
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "equipments:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        equipment_type_1_shoe: EquipmentType,
-        equipment_type_2_bike: EquipmentType,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_equipments_read(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint=f"/api/equipment-types/{self.random_int()}",
+            invalid_scope="equipments:write",
+            expected_endpoint_scope="equipments:read",
         )
-
-        response = client.get(
-            f"/api/equipment-types/{equipment_type_1_shoe.id}",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestUpdateEquipmentTypes(ApiTestCaseMixin):
@@ -404,32 +369,14 @@ class TestUpdateEquipmentTypes(ApiTestCaseMixin):
             is expected_active_status
         )
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "equipments:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        equipment_type_1_shoe: EquipmentType,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_equipments_write(
+        self, app: Flask, user_1_admin: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1_admin, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1_admin,
+            client_method="patch",
+            endpoint=f"/api/equipment-types/{self.random_int()}",
+            invalid_scope="equipments:read",
+            expected_endpoint_scope="equipments:write",
         )
-
-        response = client.patch(
-            f"/api/equipment-types/{equipment_type_1_shoe.id}",
-            content_type="application/json",
-            json={"is_active": False},
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)

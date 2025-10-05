@@ -16,6 +16,7 @@ import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
 import UserNotifications from '@/components/User/ProfileDisplay/UserNotifications.vue'
 import UserPreferences from '@/components/User/ProfileDisplay/UserPreferences.vue'
 import UsersList from '@/components/User/ProfileDisplay/UsersList.vue'
+import UserUIMessages from '@/components/User/ProfileDisplay/UserUIMessages.vue'
 import ProfileEdition from '@/components/User/ProfileEdition/index.vue'
 import UserAccountEdition from '@/components/User/ProfileEdition/UserAccountEdition.vue'
 import UserInfosEdition from '@/components/User/ProfileEdition/UserInfosEdition.vue'
@@ -23,6 +24,7 @@ import UserNotificationsEdition from '@/components/User/ProfileEdition/UserNotif
 import UserPictureEdition from '@/components/User/ProfileEdition/UserPictureEdition.vue'
 import UserPreferencesEdition from '@/components/User/ProfileEdition/UserPreferencesEdition.vue'
 import UserPrivacyPolicyValidation from '@/components/User/ProfileEdition/UserPrivacyPolicyValidation.vue'
+import UserUIMessageEdition from '@/components/User/ProfileEdition/UserUIMessageEdition.vue'
 import UserAccountSuspension from '@/components/User/UserAccountSuspension.vue'
 import AddUserApp from '@/components/User/UserApps/AddUserApp.vue'
 import AuthorizeUserApp from '@/components/User/UserApps/AuthorizeUserApp.vue'
@@ -71,6 +73,7 @@ import CommentView from '@/views/workouts/CommentView.vue'
 import EditWorkout from '@/views/workouts/EditWorkout.vue'
 import Likes from '@/views/workouts/Likes.vue'
 import Workout from '@/views/workouts/Workout.vue'
+import WorkoutsGlobalMapView from '@/views/workouts/WorkoutsGlobalMapView.vue'
 import WorkoutsView from '@/views/workouts/WorkoutsView.vue'
 
 const { t } = createI18n.global
@@ -224,6 +227,14 @@ const routes: RouteRecordRaw[] = [
             component: UserNotifications,
             meta: {
               title: 'user.PROFILE.TABS.NOTIFICATIONS',
+            },
+          },
+          {
+            path: 'messages',
+            name: 'UserUIMessages',
+            component: UserUIMessages,
+            meta: {
+              title: 'user.PROFILE.TABS.MESSAGES',
             },
           },
           {
@@ -470,6 +481,14 @@ const routes: RouteRecordRaw[] = [
             },
           },
           {
+            path: 'messages',
+            name: 'UserUIMessageEdition',
+            component: UserUIMessageEdition,
+            meta: {
+              title: 'user.PROFILE.EDIT_MESSAGES_PREFERENCES',
+            },
+          },
+          {
             path: 'sports',
             name: 'UserSportsEdition',
             component: UserSports,
@@ -596,6 +615,16 @@ const routes: RouteRecordRaw[] = [
     component: WorkoutsView,
     meta: {
       title: 'workouts.WORKOUT',
+      count: 0,
+      allowedToSuspendedUser: false,
+    },
+  },
+  {
+    path: '/workouts/map',
+    name: 'WorkoutsMap',
+    component: WorkoutsGlobalMapView,
+    meta: {
+      title: 'workouts.WORKOUTS_MAP',
       count: 0,
       allowedToSuspendedUser: false,
     },

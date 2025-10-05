@@ -88,6 +88,7 @@
     "CREATED_REPORTS": "Aangemaakte meldingen",
     "DATE_FORMAT": "Weergaveformaat datum",
     "EDIT": "Profiel aanpassen",
+    "EDIT_MESSAGE_PREFERENCES": "Berichtvoorkeuren bewerken",
     "EDIT_NOTIFICATION_PREFERENCES": "Wijzig meldingen",
     "EDIT_PREFERENCES": "Voorkeuren wijzigen",
     "EDIT_SPORTS_PREFERENCES": "Sport voorkeuren wijzigen",
@@ -120,6 +121,11 @@
     "LAST_NAME": "Achternaam",
     "LATEST_SANCTIONS_RECEIVED": "Laatste ontvangen sancties",
     "LOCATION": "Locatie",
+    "MESSAGES": {
+      "warning_about_large_number_of_workouts_on_map": "Toon een waarschuwing over het weergeven van een groot aantal trainingen op de kaart"
+    },
+    "MESSAGES_EDITION": "Berichtvoorkeuren editie",
+    "MESSAGES_PREFERENCES": "Berichtvoorkeuren",
     "MONDAY": "Maandag",
     "NOTIFICATIONS": {
       "account_creation": "Iemand is geregistreerd",
@@ -191,6 +197,7 @@
       "BLOCKED-USERS": "geblokkeerde gebruikers",
       "EQUIPMENTS": "materialen",
       "FOLLOW-REQUESTS": "volgverzoeken",
+      "MESSAGES": "berichten",
       "MODERATION": "moderatie",
       "NOTIFICATIONS": "meldingen",
       "PICTURE": "afbeelding",

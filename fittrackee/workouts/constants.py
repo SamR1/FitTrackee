@@ -33,6 +33,7 @@ POWER_SPORTS = [
 # elevation data (ascent, descent, min and max alt), if present, are not
 # displayed
 SPORTS_WITHOUT_ELEVATION_DATA = [
+    "Padel (Outdoor)",
     "Tennis (Outdoor)",
 ]
 
@@ -42,3 +43,6 @@ WORKOUT_FILE_MIMETYPES = {
     "kml": "application/vnd.google-earth.kml+xml",
     "tcx": "application/vnd.garmin.tcx+xml",
 }
+
+
+WGS84_CRS = 4326  # World Geodetic System 1984, in degrees

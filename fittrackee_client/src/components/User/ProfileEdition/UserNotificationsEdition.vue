@@ -1,5 +1,8 @@
 <template>
   <div id="user-notifications-edition">
+    <h1>
+      {{ $t('user.PROFILE.NOTIFICATION_PREFERENCES') }}
+    </h1>
     <div class="notifications-form form-box">
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       <form @submit.prevent="updatePreferences">
@@ -118,6 +121,12 @@
   @use '~@/scss/vars.scss' as *;
   #user-notifications-edition {
     padding-top: $default-padding;
+
+    h1 {
+      font-size: 1.05em;
+      font-weight: bold;
+    }
+
     .form-items {
       padding-top: $default-padding * 0.5;
     }

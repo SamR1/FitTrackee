@@ -1,3 +1,4 @@
+import type { GeoJSON } from 'geojson'
 import type {
   ActionContext,
   CommitOptions,
@@ -8,6 +9,7 @@ import type {
 import { WORKOUTS_STORE } from '@/store/constants'
 import type { IRootState } from '@/store/modules/root/types'
 import type { IPagination } from '@/types/api'
+import type { IWorkoutsFeatureCollection } from '@/types/geojson.ts'
 import type { IUserLightProfile } from '@/types/user.ts'
 import type {
   ICommentForm,
@@ -26,10 +28,12 @@ import type {
   IWorkoutContentEdition,
   ILikesPayload,
   TWorkoutsStatistics,
+  TWorkoutsMapPayload,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
   user_workouts: IWorkout[]
+  user_workouts_collection: IWorkoutsFeatureCollection
   user_workouts_statistics: TWorkoutsStatistics
   calendar_workouts: IWorkout[]
   timeline_workouts: IWorkout[]
@@ -39,6 +43,8 @@ export interface IWorkoutsState {
   success: null | string
   appealLoading: null | string
   likes: IUserLightProfile[]
+  geocodeLoading: boolean
+  mapLoading: boolean
 }
 
 export interface IWorkoutsActions {
@@ -49,6 +55,14 @@ export interface IWorkoutsActions {
   [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: TWorkoutsPayload
+  ): void
+  [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_COLLECTION](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: TWorkoutsPayload
+  ): void
+  [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_FOR_GLOBAl_MAP](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: TWorkoutsMapPayload
   ): void
   [WORKOUTS_STORE.ACTIONS.GET_TIMELINE_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
@@ -130,6 +144,14 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     workoutId: string
   ): void
+  [WORKOUTS_STORE.ACTIONS.GET_LOCATION_FROM_QUERY](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    query: string
+  ): void
+  [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_GEOJSON](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    workoutId: string
+  ): void
 }
 
 export interface IWorkoutsGetters {
@@ -139,16 +161,24 @@ export interface IWorkoutsGetters {
   [WORKOUTS_STORE.GETTERS.SUCCESS](state: IWorkoutsState): null | string
   [WORKOUTS_STORE.GETTERS.TIMELINE_WORKOUTS](state: IWorkoutsState): IWorkout[]
   [WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS](state: IWorkoutsState): IWorkout[]
+  [WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS_COLLECTION](
+    state: IWorkoutsState
+  ): IWorkoutsFeatureCollection
   [WORKOUTS_STORE.GETTERS.WORKOUT_CONTENT_EDITION](
     state: IWorkoutsState
   ): IWorkoutContentEdition
   [WORKOUTS_STORE.GETTERS.WORKOUT_DATA](state: IWorkoutsState): IWorkoutData
+  [WORKOUTS_STORE.GETTERS.WORKOUT_GEOJSON](
+    state: IWorkoutsState
+  ): GeoJSON | null
   [WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION](
     state: IWorkoutsState
   ): IPagination
   [WORKOUTS_STORE.GETTERS.WORKOUTS_STATISTICS](
     state: IWorkoutsState
   ): TWorkoutsStatistics
+  [WORKOUTS_STORE.GETTERS.GEOCODE_LOADING](state: IWorkoutsState): boolean
+  [WORKOUTS_STORE.GETTERS.MAP_LOADING](state: IWorkoutsState): boolean
 }
 
 export type TWorkoutsMutations<S = IWorkoutsState> = {
@@ -172,6 +202,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     state: S,
     workouts: IWorkout[]
   ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION](
+    state: S,
+    featureCollection: IWorkoutsFeatureCollection
+  ): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT](state: S, workout: IWorkout): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA](
     state: S,
@@ -194,6 +228,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     contentType: IWorkoutContentType | ''
   ): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX](state: S, gpx: string): void
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON](
+    state: S,
+    geojson: GeoJSON | null
+  ): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING](
     state: S,
     loading: boolean
@@ -233,6 +271,14 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.SET_REFRESH_LOADING](
     state: S,
     refreshLoading: boolean
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_GEOCODE_LOADING](
+    state: S,
+    geocodeLoading: boolean
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_MAP_LOADING](
+    state: S,
+    mapLoading: boolean
   ): void
 }
 

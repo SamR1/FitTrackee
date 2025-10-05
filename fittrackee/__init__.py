@@ -28,7 +28,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from fittrackee.emails.emails import EmailService
 from fittrackee.request import CustomRequest
 
-VERSION = __version__ = "0.12.2"
+VERSION = __version__ = "1.0.0"
 DEFAULT_PRIVACY_POLICY_DATA = "2024-12-23 19:00:00"
 REDIS_URL = os.getenv("REDIS_URL", "redis://")
 API_RATE_LIMITS = os.environ.get("API_RATE_LIMITS", "300 per 5 minutes").split(
@@ -161,6 +161,7 @@ def create_app(init_email: bool = True) -> Flask:
     from .equipments.equipment_types import equipment_types_blueprint
     from .equipments.equipments import equipments_blueprint
     from .feeds.routes import feeds_blueprint
+    from .geocode.routes import geocode_blueprint
     from .oauth2.routes import oauth2_blueprint
     from .reports.reports import reports_blueprint
     from .users.auth import auth_blueprint
@@ -191,6 +192,7 @@ def create_app(init_email: bool = True) -> Flask:
     app.register_blueprint(notifications_blueprint, url_prefix="/api")
     app.register_blueprint(reports_blueprint, url_prefix="/api")
     app.register_blueprint(feeds_blueprint, url_prefix="")
+    app.register_blueprint(geocode_blueprint, url_prefix="/api")
 
     if app.debug:
         logging.getLogger("sqlalchemy").setLevel(logging.WARNING)

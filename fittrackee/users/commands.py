@@ -102,12 +102,6 @@ def create_user(
 @users_cli.command("update")
 @click.argument("username")
 @click.option(
-    "--set-admin",
-    type=bool,
-    help="[DEPRECATED] Add/remove admin rights (when adding admin rights, "
-    "it also activates user account if not active).",
-)
-@click.option(
     "--set-role",
     type=click.Choice(UserRole.db_choices()),
     help="Set user role (when setting 'moderator', 'admin' and 'owner' "
@@ -122,7 +116,6 @@ def create_user(
 @click.option("--update-email", type=str, help="Update user email.")
 def manage_user(
     username: str,
-    set_admin: Optional[bool],
     set_role: Optional[str],
     activate: bool,
     reset_password: bool,
@@ -130,25 +123,10 @@ def manage_user(
 ) -> None:
     """Manage given user account."""
     with app.app_context():
-        role = None
-        if set_admin is not None:
-            click.echo(
-                "WARNING: --set-admin is deprecated. "
-                "Please use --set-role option instead."
-            )
-            role = "admin" if set_admin else "user"
-        if set_admin is not None and set_role is not None:
-            raise click.ClickException(
-                "--set-admin and --set-role can not be used together.",
-            )
-
-        if set_role:
-            role = set_role
-
         try:
             user_manager_service = UserManagerService(username)
             _, is_user_updated, password, _ = user_manager_service.update(
-                role=role,
+                role=set_role,
                 with_confirmation=False,
                 activate=activate if activate else None,
                 reset_password=reset_password,

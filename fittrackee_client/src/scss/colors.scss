@@ -28,6 +28,7 @@
   --dropdown-hover-color: #eff0f5;
   --dropdown-background-color: #ffffff;
   --dropdown-border-color: lightgrey;
+  --dropdown-info-color: #494949;
   --policy-border-color: #ccc;
   --policy-link-color: var(--app-a-color);
   --box-shadow-color: lightgrey;
@@ -93,6 +94,8 @@
   --disabled-border-color: transparent;
   --disabled-color: #727272;
   --disabled-sport-color: #616161;
+  --disabled-radius-input: #e0e0e0;
+  --disabled-radius-border: #727272;
 
   --scroll-button-bg-color: rgba(255, 255, 255, 0.7);
 
@@ -109,6 +112,7 @@
   --map-display-hover-attribution-text: initial;
   --map-attribution-bg-color: rgba(255, 255, 255, 0.7);
   --map-filter: initial;
+  --map-filter-cluster: initial;
   --map-display-hover-filter: initial;
   --map-layers-overlays: initial;
   --map-control-bar: #bfc0ab;
@@ -118,6 +122,8 @@
 
   --icon-svg-filter: invert(19%) sepia(9%) saturate(2921%) hue-rotate(169deg)
     brightness(85%) contrast(80%);
+  --icon-svg-shadow-filter: drop-shadow(2px 2px 2px rgb(0 0 0 / 0.5));
+  --icon-svg-shadow-stroke: var(--app-color);
 
   --cell-heading-bg-color: #eeeeee;
   --cell-heading-color: #696969;

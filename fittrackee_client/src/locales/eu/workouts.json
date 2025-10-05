@@ -86,30 +86,37 @@
   "NO_PREVIOUS_SEGMENT": "Ez dago aurreko segmentorik",
   "NO_PREVIOUS_WORKOUT": "Ez dago aurreko ekintzarik",
   "NO_RECORDS": "Ez dago erregistrorik.",
+  "NO_WEATHER_WITH_ASYNCHRONOUS_UPLOAD": "Karga asinkronoaren kasuan, eguraldiaren datuak ez dira gordetzen.",
   "NO_WORKOUTS": "Ez dago ekintzarik. | Ez dago ekintzarik.",
   "NO_WORKOUT_AVAILABLE": "Ekintza ezabatu egin da edo ezin da ikusi.",
   "PAUSES": "atsedenak",
+  "POWER": "indarra",
   "PREVIOUS_SEGMENT": "Aurreko segmentoa",
   "PREVIOUS_WORKOUT": "Aurreko ekintza",
   "PRIVATE_NOTES": "Ohar pribatuak",
   "PRIVATE_NOTES_FIELD_HELP": "ohar hauek zuk bakarrik ikusi ditzakezu.",
+  "PUBLIC_WORKOUTS_RSS_FEED": "Ekintza pulikoen RSS jarioa",
   "RECORD": "errekor | errekor",
   "RECORD_AS": "Btb. abiadura",
   "RECORD_FD": "Distantzia handiena",
-  "RECORD_HA": "Altuera handiena",
+  "RECORD_HA": "Desnibel handiena",
   "RECORD_LD": "Iraupen luzeena",
   "RECORD_MS": "Abiadura handiena",
+  "REFRESHING_WORKOUT": "Ekintza freskatzen…",
+  "REFRESH_WORKOUT": "Freskatu ekintza",
   "REMAINING_CHARS": "falta den karaktereak",
   "REMOVE_LIKE": "Ezabatu atsegitea",
   "REPORT_WORKOUT": "salatu ariketa",
   "RESET_ZOOM": "Berrezarri zooma",
   "SEGMENT": "segmentu | segmentu",
   "SHOW_WORKOUTS": "erakutsi ariketak",
+  "SOURCE": "jatorria",
   "SPEED": "abiadura",
   "SPORT": "kirola | kirolak",
   "START": "hasiera",
   "START_AND_FINISH": "Hasiera eta amaiera",
   "START_ELEVATION_AT_ZERO": "hasierako altuera zeroan dago",
+  "SUPPORTED_FILE_EXTENSIONS": "erabili daitezkeen luzapenak",
   "SUSPENDED_BY_ADMIN": "Ekintza hau kudeatzaileak ezabatu du.",
   "TITLE": "izenburua",
   "TITLE_FIELD_HELP": "Idatziz gero, izenburuak fitxategikoa ordezkatuko du.",
@@ -118,8 +125,27 @@
   "TOTAL_DESCENT": "guztizko jaitsiera",
   "TOTAL_DISTANCE": "distantzia guztira",
   "TOTAL_DURATION": "iraupen totala",
+  "UNITS": {
+    "bpm": {
+      "LABEL": "taupada minutuko",
+      "UNIT": "bpm"
+    },
+    "rpm": {
+      "LABEL": "erreboluzio minutuko",
+      "UNIT": "rpm"
+    },
+    "spm": {
+      "LABEL": "pauso minutuko",
+      "UNIT": "spm"
+    },
+    "watt": {
+      "LABEL": "watt",
+      "UNIT": "W"
+    }
+  },
   "UPLOAD_FIRST_WORKOUT": "Bat kargatuta!",
   "VIEW_FULLSCREEN": "Ikusi pantaila osoan",
+  "VIEW_HEATMAP": "Ikusi bero-mapa",
   "WEATHER": {
     "DARK_SKY": {
       "clear-day": "egun garbia",
@@ -166,6 +192,7 @@
   "WORKOUT_CHART": "ekintzaren abiadura eta altuera grafikoa",
   "WORKOUT_DATE": "ekintzaren data",
   "WORKOUT_DELETION_CONFIRMATION": "Ziur zaude ekintza hau ezabatu nahi duzula?",
+  "WORKOUT_FILE": "ekintza fitxategia",
   "WORKOUT_MAP": "ekintzaren mapa",
   "ZIP_ARCHIVE": ".zip fitxategia",
   "ZIP_ARCHIVE_DESCRIPTION": "edo fitxategiak dituen .zip fitxategia"

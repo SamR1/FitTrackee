@@ -7,8 +7,10 @@ on:
       'e2e/**',
       'pyproject.toml',
       'poetry.lock',
+      'VERSION',
       '.github/workflows/.tests-and-publish-python.yml',
-      '.github/workflows/.e2e-tests.yml'
+      '.github/workflows/.e2e-tests.yml',
+      '!fittrackee/dist/**'
     ]
   pull_request:
     paths: [
@@ -16,8 +18,10 @@ on:
       'e2e/**',
       'pyproject.toml',
       'poetry.lock',
+      'VERSION',
       '.github/workflows/.tests-and-publish-python.yml',
-      '.github/workflows/.e2e-tests.yml'
+      '.github/workflows/.e2e-tests.yml',
+      '!fittrackee/dist/**'
     ]
     types: [opened, synchronize, reopened]
 
@@ -34,12 +38,12 @@ env:
 jobs:
   python:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
-    name: python ${{ matrix.python-version }} (postgresql 17)
+    name: python ${{ matrix.python-version }} (postgis 17-3.5)
     runs-on: ubuntu-latest
     container: python:${{ matrix.python-version }}
     services:
       postgres:
-        image: postgres:17
+        image: postgis/postgis:17-3.5-alpine
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
@@ -49,7 +53,7 @@ jobs:
           --health-retries 5
     strategy:
       matrix:
-        python-version:  [ "3.9", "3.10", "3.11", "3.12", "3.13" ]
+        python-version:  [ "3.10", "3.11", "3.12", "3.13" ]
     steps:
 
       - uses: actions/checkout@v4
@@ -83,24 +87,57 @@ jobs:
       - name: Coveralls
         if: ${{ matrix.python-version == '3.10' && github.repository == 'SamR1/FitTrackee' }}
         env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pip install coveralls
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          coveralls --service=github-actions
+          coveralls
 
       - name: Pytest
         if: matrix.python-version != '3.10'
         run: pytest fittrackee -n auto --maxprocesses=2  -p no:warnings --maxfail=1
 
-  python-next:
+# needs cffi 2+ for Python 3.14 support
+#  python-next:
+#    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
+#    name: python 3.14-rc (postgis 17-3.5)
+#    runs-on: ubuntu-latest
+#    container: python:3.14-rc
+#    services:
+#      postgres:
+#        image: postgis/postgis:17-3.5-alpine
+#        env:
+#          POSTGRES_PASSWORD: postgres
+#        options: >-
+#          --health-cmd pg_isready
+#          --health-interval 10s
+#          --health-timeout 5s
+#          --health-retries 5
+#    steps:
+#
+#      - uses: actions/checkout@v4
+#
+#      - name: Install Poetry and Dependencies
+#        run: |
+#          python -m pip install --upgrade pip
+#          pip install --quiet poetry
+#          poetry config virtualenvs.create false
+#          poetry install --no-interaction --quiet
+#
+#      - name: Create test databases
+#        run: python db/create_ci_test_db.py
+#
+#      - name: Pytest
+#        run: pytest fittrackee -n auto --maxprocesses=2  -p no:warnings --maxfail=1
+
+  postgis:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
-    name: python 3.14-rc (postgresql 17)
+    name: postgis ${{ matrix.psql-version }} (python 3.10)
     runs-on: ubuntu-latest
-    container: python:3.14-rc
+    container: python:3.10
     services:
       postgres:
-        image: postgres:17
+        image: postgis/postgis:${{ matrix.psql-version }}-alpine
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
@@ -108,6 +145,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+    strategy:
+      matrix:
+        psql-version:  [ "13-3.5", "14-3.5", "15-3.5", "16-3.5", "17-3.4", "17-3.6", "18-3.6" ]
     steps:
 
       - uses: actions/checkout@v4
@@ -123,16 +163,17 @@ jobs:
         run: python db/create_ci_test_db.py
 
       - name: Pytest
-        run: pytest fittrackee -n auto --maxprocesses=2  -p no:warnings --maxfail=1
+        run: pytest fittrackee -n auto --maxprocesses=2 -p no:warnings --maxfail=1
 
-  postgresql:
+
+  arm:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
-    name: postgresql ${{ matrix.psql-version }} (python 3.10)
-    runs-on: ubuntu-latest
-    container: python:3.10
+    name: postgis 17-3.5 on arm platform (python 3.13)
+    runs-on: ubuntu-24.04-arm
+    container: python:3.13
     services:
       postgres:
-        image: postgres:${{ matrix.psql-version }}
+        image: imresamu/postgis:17-3.5-alpine
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
@@ -140,9 +181,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-    strategy:
-      matrix:
-        psql-version:  [ "12", "13", "14", "15", "16" ]
     steps:
 
       - uses: actions/checkout@v4
@@ -168,7 +206,7 @@ jobs:
     container: python:3.13
     services:
       postgres:
-        image: postgres:17
+        image: postgis/postgis:17-3.5-alpine
         env:
           POSTGRES_DB: fittrackee_test
           POSTGRES_USER: fittrackee
@@ -273,7 +311,7 @@ jobs:
   publish-to-pypi:
     if: github.repository == 'SamR1/FitTrackee' && startsWith(github.ref, 'refs/tags/v')
     name: Publish Python distribution to PyPI
-    needs: ["end2end", "end2end_package", "end2end_package_update"]
+    needs: ["postgis", "arm", "end2end", "end2end_package", "end2end_package_update"]
     runs-on: ubuntu-latest
     environment:
       name: pypi
@@ -336,7 +374,7 @@ jobs:
   push_to_registries:
     if: github.repository == 'SamR1/FitTrackee' && startsWith(github.ref, 'refs/tags/v')
     name: Push Docker image to multiple registries
-    needs: ["end2end", "end2end_package", "end2end_package_update"]
+    needs: ["postgis", "arm", "end2end", "end2end_package", "end2end_package_update"]
     runs-on: ubuntu-latest
     permissions:
       contents: read
