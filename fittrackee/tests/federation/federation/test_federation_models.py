@@ -1,3 +1,4 @@
+import re
 from typing import Optional
 from uuid import uuid4
 
@@ -18,7 +19,7 @@ from ...utils import random_actor_url
 
 class TestGetApUrl:
     def test_it_raises_error_if_url_type_is_invalid(self, app: Flask) -> None:
-        with pytest.raises(Exception, match="Invalid 'url_type'."):
+        with pytest.raises(Exception, match=re.escape("Invalid 'url_type'.")):
             get_ap_url(username=uuid4().hex, url_type="url")
 
     def test_it_returns_user_url(self, app: Flask) -> None:

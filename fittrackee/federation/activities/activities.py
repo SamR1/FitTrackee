@@ -257,7 +257,7 @@ class CreateActivity(AbstractActivity):
         service = WorkoutCreationService(
             actor.user, convert_workout_activity(workout_data)
         )
-        new_workout, _ = service.process()
+        service.process()
         db.session.commit()
 
     def create_remote_note(self, actor: Actor) -> None:

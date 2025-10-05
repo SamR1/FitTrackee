@@ -56,3 +56,12 @@ export interface INotificationPayload {
 export type TNotificationPreferences = {
   [key in TNotificationTypeWithPreferences]: boolean | undefined
 }
+
+export type TMessagePreferences = {
+  warning_about_large_number_of_workouts_on_map?: boolean
+}
+
+export type TMessagePreferencesPayload = {
+  preferences: TMessagePreferences
+  redirectToProfile?: boolean
+}

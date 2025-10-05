@@ -29,7 +29,7 @@ from fittrackee.workouts.models import Sport, Workout
 from ..comments.mixins import CommentMixin
 from ..federation.users.test_auth_api import assert_actor_is_created
 from ..mixins import ApiTestCaseMixin, ReportMixin, UserTaskMixin
-from ..utils import OAUTH_SCOPES, jsonify_dict
+from ..utils import jsonify_dict
 
 USER_AGENT = (
     "Mozilla/5.0 (X11; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0"
@@ -582,7 +582,9 @@ class TestUserRegistration(ApiTestCaseMixin):
         user_2_admin: User,
         auth_send_email_mock: MagicMock,
     ) -> None:
-        user_1_admin.update_preferences({"account_creation": False})
+        user_1_admin.update_notification_preferences(
+            {"account_creation": False}
+        )
         email = self.random_email()
         client = app.test_client()
 
@@ -767,29 +769,17 @@ class TestUserProfile(ApiTestCaseMixin):
             suspended_user.serialize(current_user=suspended_user, light=False)
         )
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "profile:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    def test_expected_scope_is_profile_read(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint="/api/auth/profile",
+            invalid_scope="profile:write",
+            expected_endpoint_scope="profile:read",
         )
-
-        response = client.get(
-            "/api/auth/profile",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestUserProfileUpdate(ApiTestCaseMixin):
@@ -893,33 +883,17 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
             suspended_user.serialize(current_user=suspended_user, light=False)
         )
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "profile:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_profile_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint="/api/auth/profile/edit",
+            invalid_scope="profile:read",
+            expected_endpoint_scope="profile:write",
         )
-
-        response = client.post(
-            "/api/auth/profile/edit",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestUserAccountUpdate(ApiTestCaseMixin):
@@ -1474,33 +1448,17 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
 
         auth_send_email_mock.send.assert_not_called()
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "profile:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_profile_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="patch",
+            endpoint="/api/auth/profile/edit/account",
+            invalid_scope="profile:read",
+            expected_endpoint_scope="profile:write",
         )
-
-        response = client.patch(
-            "/api/auth/profile/edit/account",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestUserPreferencesUpdate(ApiTestCaseMixin):
@@ -1767,33 +1725,17 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
 
         self.assert_400(response)
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "profile:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_profile_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint="/api/auth/profile/edit/preferences",
+            invalid_scope="profile:read",
+            expected_endpoint_scope="profile:write",
         )
-
-        response = client.post(
-            "/api/auth/profile/edit/preferences",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
@@ -2238,33 +2180,17 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         assert data["data"]["is_active"]
         assert data["data"]["stopped_speed_threshold"] == 0.5
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "profile:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_profile_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint="/api/auth/profile/edit/sports",
+            invalid_scope="profile:read",
+            expected_endpoint_scope="profile:write",
         )
-
-        response = client.post(
-            "/api/auth/profile/edit/sports",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestUserSportPreferencesReset(ApiTestCaseMixin):
@@ -2338,35 +2264,17 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
 
         assert response.status_code == 204
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "profile:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        client_scope: str,
-        can_access: bool,
-        sport_1_cycling: Sport,
-        user_1_sport_1_preference: UserSportPreference,
+    def test_expected_scope_is_profile_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="delete",
+            endpoint=f"/api/auth/profile/reset/sports/{self.random_int()}",
+            invalid_scope="profile:read",
+            expected_endpoint_scope="profile:write",
         )
-
-        response = client.delete(
-            f"/api/auth/profile/reset/sports/{sport_1_cycling.id}",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestUserPicture(ApiTestCaseMixin):
@@ -2539,33 +2447,17 @@ class TestUserPicture(ApiTestCaseMixin):
         assert "avatar.png" not in suspended_user.picture
         assert "avatar2.png" in suspended_user.picture
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "profile:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_profile_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint="/api/auth/picture",
+            invalid_scope="profile:read",
+            expected_endpoint_scope="profile:write",
         )
-
-        response = client.post(
-            "/api/auth/picture",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestUserDeletePicture(ApiTestCaseMixin):
@@ -4111,29 +4003,17 @@ class TestGetBlockedUsers(ApiTestCaseMixin):
             "total": 2,
         }
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "profile:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    def test_expected_scope_is_profile_read(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint="/api/auth/blocked-users",
+            invalid_scope="profile:write",
+            expected_endpoint_scope="profile:read",
         )
-
-        response = client.get(
-            "/api/auth/blocked-users",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class UserSuspensionTestCase(ReportMixin, ApiTestCaseMixin):
@@ -4195,29 +4075,17 @@ class TestGetUserSuspension(UserSuspensionTestCase):
             "user_suspension": jsonify_dict(action.serialize(user_2)),
         }
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "profile:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    def test_expected_scope_is_profile_read(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint=self.route.format(action_short_id=self.random_short_id()),
+            invalid_scope="profile:write",
+            expected_endpoint_scope="profile:read",
         )
-
-        response = client.get(
-            self.route.format(action_short_id=self.random_short_id()),
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
@@ -4333,30 +4201,17 @@ class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
 
         self.assert_400(response, error_message="you can appeal only once")
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "profile:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    def test_expected_scope_is_profile_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint=self.route.format(action_short_id=self.random_short_id()),
+            invalid_scope="profile:read",
+            expected_endpoint_scope="profile:write",
         )
-
-        response = client.post(
-            self.route.format(action_short_id=self.random_short_id()),
-            content_type="application/json",
-            data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestGetUserSanction(UserSuspensionTestCase, CommentMixin):
@@ -4535,29 +4390,17 @@ class TestGetUserSanction(UserSuspensionTestCase, CommentMixin):
             "sanction": jsonify_dict(action.serialize(user_2, full=True)),
         }
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "profile:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    def test_expected_scope_is_profile_read(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint=self.route.format(action_short_id=self.random_short_id()),
+            invalid_scope="profile:write",
+            expected_endpoint_scope="profile:read",
         )
-
-        response = client.get(
-            self.route.format(action_short_id=self.random_short_id()),
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestPostUserSanctionAppeal(CommentMixin, UserSuspensionTestCase):
@@ -4736,38 +4579,17 @@ class TestPostUserSanctionAppeal(CommentMixin, UserSuspensionTestCase):
 
         self.assert_400(response, error_message="comment has been deleted")
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "profile:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        user_2: User,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_profile_write(
+        self, app: Flask, user_1_admin: User
     ) -> None:
-        action = self.create_report_user_action(
-            user_1_admin, user_2, action_type="user_warning"
+        self.assert_response_scope(
+            app=app,
+            user=user_1_admin,
+            client_method="post",
+            endpoint=self.route.format(action_short_id=self.random_short_id()),
+            invalid_scope="profile:read",
+            expected_endpoint_scope="profile:write",
         )
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_2, scope=client_scope
-        )
-
-        response = client.post(
-            self.route.format(action_short_id=action.short_id),
-            content_type="application/json",
-            data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestUserNotificationsPreferencesPost(ApiTestCaseMixin):
@@ -4881,7 +4703,7 @@ class TestUserNotificationsPreferencesPost(ApiTestCaseMixin):
     def test_it_updates_notification_preferences(
         self, app: Flask, user_1: User
     ) -> None:
-        user_1.update_preferences(
+        user_1.update_notification_preferences(
             {
                 "comment_like": True,
                 "follow": True,
@@ -4923,6 +4745,18 @@ class TestUserNotificationsPreferencesPost(ApiTestCaseMixin):
             user_1.notification_preferences == updated_notification_preferences
         )
 
+    def test_expected_scope_is_profile_write(
+        self, app: Flask, user_1: User
+    ) -> None:
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint=self.route,
+            invalid_scope="profile:read",
+            expected_endpoint_scope="profile:write",
+        )
+
 
 class TestGetTimezones:
     def test_it_returns_time_zones(self, app: Flask) -> None:
@@ -4934,3 +4768,80 @@ class TestGetTimezones:
         data = json.loads(response.data.decode())
         assert data["timezones"] == TIMEZONES
         assert data["status"] == "success"
+
+
+class TestUserMessagesPreferencesPost(ApiTestCaseMixin):
+    route = "/api/auth/profile/edit/messages"
+
+    def test_it_returns_error_if_payload_is_empty(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            json={},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response)
+
+    def test_it_returns_error_if_a_message_type_is_invalid(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            json={
+                "warning_about_large_number_of_workouts_on_map": False,
+                "invalid": True,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response)
+
+    def test_it_updates_message_preferences(
+        self, app: Flask, user_1: User
+    ) -> None:
+        messages_preferences = {
+            "warning_about_large_number_of_workouts_on_map": False,
+        }
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            json=messages_preferences,
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        db.session.refresh(user_1)
+        assert data["data"] == jsonify_dict(
+            user_1.serialize(current_user=user_1, light=False)
+        )
+        assert user_1.messages_preferences == messages_preferences
+
+    def test_expected_scope_is_profile_write(
+        self, app: Flask, user_1: User
+    ) -> None:
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint=self.route,
+            invalid_scope="profile:read",
+            expected_endpoint_scope="profile:write",
+        )

@@ -19,7 +19,7 @@ from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
-from ..utils import OAUTH_SCOPES, jsonify_dict
+from ..utils import jsonify_dict
 
 
 class TestGetEquipments(ApiTestCaseMixin):
@@ -174,29 +174,17 @@ class TestGetEquipments(ApiTestCaseMixin):
         assert "success" in data["status"]
         assert data["data"]["equipments"] == []
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "equipments:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    def test_expected_scope_is_equipments_read(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint="/api/equipments",
+            invalid_scope="workouts:read",
+            expected_endpoint_scope="equipments:read",
         )
-
-        response = client.get(
-            "/api/equipments",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestGetEquipment(ApiTestCaseMixin):
@@ -313,34 +301,17 @@ class TestGetEquipment(ApiTestCaseMixin):
 
         self.assert_404(response)
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "equipments:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        equipment_shoes_user_1: Equipment,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_equipments_read(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint=f"/api/equipments/{self.random_short_id()}",
+            invalid_scope="workouts:read",
+            expected_endpoint_scope="equipments:read",
         )
-
-        response = client.get(
-            f"/api/equipments/{equipment_shoes_user_1.short_id}",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestPostEquipment(ApiTestCaseMixin):
@@ -825,37 +796,17 @@ class TestPostEquipment(ApiTestCaseMixin):
         assert "Test shoes" == equipment["label"]
         assert equipment["visibility"] == VisibilityLevel.PUBLIC.value
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "equipments:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        equipment_type_1_shoe: EquipmentType,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_equipments_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint="/api/equipments",
+            invalid_scope="equipments:read",
+            expected_endpoint_scope="equipments:write",
         )
-
-        response = client.post(
-            "/api/equipments",
-            json={
-                "label": "Test shoes",
-                "equipment_type_id": equipment_type_1_shoe.id,
-            },
-            headers={"Authorization": f"Bearer {access_token}"},
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestPatchEquipment(ApiTestCaseMixin):
@@ -1680,36 +1631,17 @@ class TestPatchEquipment(ApiTestCaseMixin):
             f"equipment type '{equipment_type_2_bike.label}'",
         )
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "equipments:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        equipment_shoes_user_1: Equipment,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_equipments_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="patch",
+            endpoint=f"/api/equipments/{self.random_short_id()}",
+            invalid_scope="equipments:read",
+            expected_endpoint_scope="equipments:write",
         )
-
-        response = client.patch(
-            f"/api/equipments/{equipment_shoes_user_1.short_id}",
-            json={
-                "label": "new label",
-            },
-            headers={"Authorization": f"Bearer {access_token}"},
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestRefreshEquipment(ApiTestCaseMixin):
@@ -2059,30 +1991,14 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         )
         assert up.default_equipments.all() == []
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "equipments:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        equipment_shoes_user_1: Equipment,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_equipments_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="delete",
+            endpoint=f"/api/equipments/{self.random_short_id()}",
+            invalid_scope="equipments:read",
+            expected_endpoint_scope="equipments:write",
         )
-
-        response = client.delete(
-            f"/api/equipments/{equipment_shoes_user_1.short_id}",
-            headers={"Authorization": f"Bearer {access_token}"},
-        )
-
-        self.assert_response_scope(response, can_access)

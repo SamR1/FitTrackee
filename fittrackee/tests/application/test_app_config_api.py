@@ -8,13 +8,14 @@ from flask import Flask
 from time_machine import travel
 
 from fittrackee import db
+from fittrackee.application.app_config import MAX_GLOBAL_MAP_WORKOUTS
 from fittrackee.application.models import AppConfig
 from fittrackee.database import PSQL_INTEGER_LIMIT
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport
 
 from ..mixins import ApiTestCaseMixin
-from ..utils import OAUTH_SCOPES, jsonify_dict
+from ..utils import jsonify_dict
 
 
 class TestGetConfig(ApiTestCaseMixin):
@@ -138,6 +139,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                     admin_contact=admin_email,
                     file_limit_import=200,
                     file_sync_limit_import=20,
+                    global_map_workouts_limit=7000,
                     max_single_file_size=10000,
                     max_zip_file_size=25000,
                     max_users=50,
@@ -153,6 +155,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         assert data["data"]["admin_contact"] == admin_email
         assert data["data"]["file_limit_import"] == 200
         assert data["data"]["file_sync_limit_import"] == 20
+        assert data["data"]["global_map_workouts_limit"] == 7000
         assert data["data"]["is_registration_enabled"] is True
         assert data["data"]["max_single_file_size"] == 10000
         assert data["data"]["max_zip_file_size"] == 25000
@@ -644,30 +647,38 @@ class TestUpdateConfig(ApiTestCaseMixin):
             == app.config["DEFAULT_PRIVACY_POLICY_DATA"]
         )
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "application:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1_admin: User,
-        client_scope: str,
-        can_access: bool,
+    def test_it_raises_error_if_global_map_workouts_limit_exceeds_limit(
+        self, app: Flask, user_1_admin: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1_admin, scope=client_scope
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
         )
 
         response = client.patch(
             "/api/config",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
+            json={
+                "global_map_workouts_limit": MAX_GLOBAL_MAP_WORKOUTS + 1,
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_response_scope(response, can_access)
+        self.assert_400(
+            response,
+            (
+                f"'global_map_workouts_limit' must be less "
+                f"than {MAX_GLOBAL_MAP_WORKOUTS}"
+            ),
+        )
+
+    def test_expected_scope_is_application_write(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        self.assert_response_scope(
+            app=app,
+            user=user_1_admin,
+            client_method="patch",
+            endpoint="/api/config",
+            invalid_scope="workouts:read",
+            expected_endpoint_scope="application:write",
+        )

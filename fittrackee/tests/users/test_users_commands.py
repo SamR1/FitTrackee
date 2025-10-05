@@ -342,99 +342,6 @@ class TestCliUserUpdate(RandomMixin):
         assert user_1.email == previous_email
         assert user_1.password == previous_password
 
-    def test_it_sets_admin_rights(self, app: "Flask", user_1: "User") -> None:
-        runner = CliRunner()
-        previous_email = user_1.email
-        previous_password = user_1.password
-
-        with app.app_context():
-            result = runner.invoke(
-                cli,
-                ["users", "update", user_1.username, "--set-admin", "true"],
-            )
-
-        assert result.exit_code == 0
-        db.session.refresh(user_1)
-        assert f"User '{user_1.username}' updated." in result.output
-        assert user_1.role == UserRole.ADMIN.value
-        # unchanged values
-        assert user_1.is_active is True
-        assert user_1.email == previous_email
-        assert user_1.password == previous_password
-
-    def test_it_displays_warning_when_using_deprecated_set_admin(
-        self, app: "Flask", user_1: "User"
-    ) -> None:
-        runner = CliRunner()
-
-        with app.app_context():
-            result = runner.invoke(
-                cli,
-                ["users", "update", user_1.username, "--set-admin", "true"],
-            )
-
-        assert result.exit_code == 0
-        assert (
-            "WARNING: --set-admin is deprecated. "
-            "Please use --set-role option instead."
-        ) in result.stdout
-
-    def test_it_removes_admin_rights(
-        self, app: "Flask", user_1_admin: "User"
-    ) -> None:
-        runner = CliRunner()
-        previous_email = user_1_admin.email
-        previous_password = user_1_admin.password
-
-        with app.app_context():
-            result = runner.invoke(
-                cli,
-                [
-                    "users",
-                    "update",
-                    user_1_admin.username,
-                    "--set-admin",
-                    "false",
-                ],
-            )
-
-        assert result.exit_code == 0
-        db.session.refresh(user_1_admin)
-        assert f"User '{user_1_admin.username}' updated." in result.output
-        assert user_1_admin.role == UserRole.USER.value
-        # unchanged values
-        assert user_1_admin.is_active is True
-        assert user_1_admin.email == previous_email
-        assert user_1_admin.password == previous_password
-
-    def test_it_activates_user_when_adding_admin_rights(
-        self, app: "Flask", inactive_user: "User"
-    ) -> None:
-        runner = CliRunner()
-        previous_email = inactive_user.email
-        previous_password = inactive_user.password
-
-        with app.app_context():
-            result = runner.invoke(
-                cli,
-                [
-                    "users",
-                    "update",
-                    inactive_user.username,
-                    "--set-admin",
-                    "true",
-                ],
-            )
-
-        assert result.exit_code == 0
-        db.session.refresh(inactive_user)
-        assert f"User '{inactive_user.username}' updated." in result.output
-        assert inactive_user.role == UserRole.ADMIN.value
-        assert inactive_user.is_active is True
-        # unchanged values
-        assert inactive_user.email == previous_email
-        assert inactive_user.password == previous_password
-
     def test_it_sets_role(self, app: "Flask", user_1: "User") -> None:
         runner = CliRunner()
         previous_email = user_1.email
@@ -488,33 +395,6 @@ class TestCliUserUpdate(RandomMixin):
         db.session.refresh(inactive_user)
         assert inactive_user.role == UserRole[input_role.upper()].value
         assert inactive_user.is_active == input_active
-
-    def test_it_displays_error_when_set_admin_and_set_role_are_used_together(
-        self,
-        app: "Flask",
-        user_1: "User",
-    ) -> None:
-        runner = CliRunner()
-
-        with app.app_context():
-            result = runner.invoke(
-                cli,
-                [
-                    "users",
-                    "update",
-                    user_1.username,
-                    "--set-role",
-                    "admin",
-                    "--set-admin",
-                    "true",
-                ],
-            )
-
-            assert result.exit_code == 1
-            assert (
-                "--set-admin and --set-role can not be used together."
-                in result.stdout
-            )
 
     def test_it_activates_user(
         self, app: "Flask", inactive_user: "User"

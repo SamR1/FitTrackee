@@ -1,3 +1,5 @@
+import type { GeoJSON } from 'geojson'
+
 import type { TPaginationPayload } from '@/types/api'
 import type { IChartDataset } from '@/types/chart'
 import type { IEquipment, ILightEquipment } from '@/types/equipments'
@@ -69,6 +71,15 @@ export interface IWeather {
   windBearing?: number
 }
 
+export interface IMapWorkout {
+  bounds: number[]
+  id: string
+  sport_id: number
+  title: string
+  workout_date: string
+  workout_visibility: TVisibilityLevels
+}
+
 export interface IWorkout {
   analysis_visibility?: TVisibilityLevels
   ascent: number | null
@@ -115,6 +126,7 @@ export interface IWorkout {
   weather_start: IWeather | null
   with_analysis: boolean
   with_gpx: boolean
+  with_geometry?: boolean
   workout_date: string
   workout_visibility?: TVisibilityLevels
 }
@@ -212,6 +224,11 @@ export type TWorkoutsPayload = TPaginationPayload & {
   sport_id?: string
 }
 
+export type TMapParamsKeys = 'to' | 'from' | 'sport_ids'
+export type TWorkoutsMapPayload = {
+  [key in TMapParamsKeys]?: string
+}
+
 export interface IWorkoutApiChartData {
   cadence?: number
   distance: number
@@ -231,6 +248,7 @@ export interface ICurrentCommentEdition {
 }
 
 export interface IWorkoutData {
+  geojson: GeoJSON | null
   gpx: string
   loading: boolean
   workout: IWorkout
@@ -334,4 +352,12 @@ export type TWorkoutsStatistics = {
 export interface IWorkoutFilesError {
   createdWorkouts: number
   erroredWorkouts: Record<string, string>
+}
+
+export interface ILocation {
+  addresstype: string
+  coordinates: string
+  display_name: string
+  name: string
+  osm_id: string
 }

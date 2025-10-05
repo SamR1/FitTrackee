@@ -40,6 +40,7 @@ from fittrackee.workouts.services.workouts_from_file_creation_service import (
 
 from ...fixtures.fixtures_workouts import MESSAGE_ID
 from ...mixins import UserTaskMixin
+from ..mixins import WorkoutFileMixin
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -290,7 +291,9 @@ class TestWorkoutsFromFileCreationServiceGetFilePath:
         )
 
 
-class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
+class TestWorkoutsFromFileCreationServiceCreateWorkout(
+    RandomMixin, WorkoutFileMixin
+):
     def test_it_raises_error_when_no_file_provided(
         self,
         app: "Flask",
@@ -304,6 +307,25 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(RandomMixin):
 
         with pytest.raises(
             WorkoutNoFileException, match="no workout file provided"
+        ):
+            service.create_workout_from_file(extension="gpx", equipments=None)
+
+    def test_it_raises_error_when_segments_have_same_start_date(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file_with_duplicated_segments: str,
+    ) -> None:
+        file = self.get_file_storage(gpx_file_with_duplicated_segments)
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            workouts_data={"sport_id": sport_1_cycling.id},
+            file=file,
+        )
+
+        with pytest.raises(
+            WorkoutFileException, match="some segments have same start date"
         ):
             service.create_workout_from_file(extension="gpx", equipments=None)
 
@@ -1600,7 +1622,7 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
                 **workouts_data,
             },
             "files_to_process": TEST_FILES_LIST,
-            "equipment_ids": [equipment_bike_user_1.short_id],
+            "equipment_ids": [equipment_bike_user_1.id],
             "original_file_name": "workouts.zip",
         }
         assert upload_task.errored is False

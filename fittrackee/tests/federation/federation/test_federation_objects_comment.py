@@ -268,7 +268,7 @@ class TestWorkoutCommentWithMentionsCreateObject(CommentMixin):
 
         serialized_comment = comment_object.get_activity()
 
-        text_with_mentions, _ = comment.handle_mentions()
+        comment.handle_mentions()
         assert serialized_comment["to"] == [
             "https://www.w3.org/ns/activitystreams#Public"
         ]
@@ -310,7 +310,7 @@ class TestWorkoutCommentWithMentionsCreateObject(CommentMixin):
 
         serialized_comment = comment_object.get_activity()
 
-        text_with_mentions, _ = comment.handle_mentions()
+        comment.handle_mentions()
         assert serialized_comment["to"] == [user_2.actor.followers_url]
         assert set(serialized_comment["cc"]) == {
             user_3.actor.activitypub_id,
@@ -353,7 +353,7 @@ class TestWorkoutCommentWithMentionsCreateObject(CommentMixin):
 
         serialized_comment = comment_object.get_activity()
 
-        text_with_mentions, _ = comment.handle_mentions()
+        comment.handle_mentions()
         assert set(serialized_comment["to"]) == {
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,
@@ -555,7 +555,7 @@ class TestWorkoutCommentWithMentionsUpdateObject(CommentMixin):
 
         serialized_comment = comment_object.get_activity()
 
-        text_with_mentions, _ = comment.handle_mentions()
+        comment.handle_mentions()
         assert serialized_comment["to"] == [
             "https://www.w3.org/ns/activitystreams#Public"
         ]
@@ -598,7 +598,7 @@ class TestWorkoutCommentWithMentionsUpdateObject(CommentMixin):
 
         serialized_comment = comment_object.get_activity()
 
-        text_with_mentions, _ = comment.handle_mentions()
+        comment.handle_mentions()
         assert serialized_comment["to"] == [user_2.actor.followers_url]
         assert set(serialized_comment["cc"]) == {
             user_3.actor.activitypub_id,
@@ -642,7 +642,7 @@ class TestWorkoutCommentWithMentionsUpdateObject(CommentMixin):
 
         serialized_comment = comment_object.get_activity()
 
-        text_with_mentions, _ = comment.handle_mentions()
+        comment.handle_mentions()
         assert set(serialized_comment["to"]) == {
             user_3.actor.activitypub_id,
             remote_user.actor.activitypub_id,

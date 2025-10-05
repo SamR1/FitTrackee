@@ -1,6 +1,18 @@
 {
+  "ANALYSIS_VISIBILITY": "Viditelnost analýzy",
   "COMMENT_LEVELS": {
     "followers_only": "Pouze sledující",
-    "private": "Soukromé (pouze vyjmenovaní uživatelé)"
-  }
+    "private": "Soukromé (pouze vyjmenovaní uživatelé)",
+    "public": "Veřejné (všichni)"
+  },
+  "HR_VISIBILITY": "Viditelnost tepové frekvence",
+  "LEVELS": {
+    "followers_only": "Pouze sledující",
+    "private": "Soukromé (pouze já)",
+    "public": "Veřejné (všichni)"
+  },
+  "MAP_VISIBILITY": "Viditelnost mapy",
+  "VISIBILITY": "Viditelnost",
+  "WORKOUTS_VISIBILITY": "Viditelnost dat souvisejících s cvičením",
+  "WORKOUT_VISIBILITY": "Viditelnost cvičení"
 }

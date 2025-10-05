@@ -1,3 +1,4 @@
+import re
 from datetime import datetime, timedelta, timezone
 from typing import Dict, Optional, Union
 from unittest.mock import patch
@@ -870,7 +871,7 @@ class TestDeleteActivityForWorkout(WorkoutActivitiesTestCase):
 
         with pytest.raises(
             ActivityException,
-            match=(
+            match=re.escape(
                 "DeleteActivity: activity actor does not match workout actor."
             ),
         ):
@@ -960,7 +961,7 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
         serialize_workout = remote_cycling_workout.serialize(user=remote_user)
         with pytest.raises(
             ActivityException,
-            match=(
+            match=re.escape(
                 "UpdateActivity: activity actor does not match workout actor."
             ),
         ):
@@ -1100,9 +1101,8 @@ class TestUpdateActivityForWorkout(WorkoutActivitiesTestCase):
         )
         with pytest.raises(
             ActivityException,
-            match=(
-                "UpdateActivity: invalid Workout activity"
-                " \\(KeyError: 'title'\\)."
+            match=re.escape(
+                "UpdateActivity: invalid Workout activity (KeyError: 'title')."
             ),
         ):
             activity.process_activity()
@@ -1570,7 +1570,7 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
 
         with pytest.raises(
             ActivityException,
-            match=(
+            match=re.escape(
                 "UpdateActivity: activity actor does not match Note actor."
             ),
         ):
@@ -1739,9 +1739,8 @@ class TestUpdateActivityForComment(CommentMixin, CommentActivitiesTestCase):
         )
         with pytest.raises(
             ActivityException,
-            match=(
-                "UpdateActivity: invalid Note activity"
-                " \\(KeyError: 'content'\\)."
+            match=re.escape(
+                "UpdateActivity: invalid Note activity (KeyError: 'content')."
             ),
         ):
             activity.process_activity()
@@ -1812,7 +1811,7 @@ class TestDeleteActivityForComment(CommentMixin, CommentActivitiesTestCase):
 
         with pytest.raises(
             ActivityException,
-            match=(
+            match=re.escape(
                 "DeleteActivity: activity actor does not match workout actor."
             ),
         ):

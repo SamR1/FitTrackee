@@ -16,6 +16,12 @@
             <i class="fa fa-exclamation-triangle" aria-hidden="true" />
             {{ warning }}
           </div>
+          <div v-if="additionalActionText" class="additional-action">
+            <label>
+              <input type="checkbox" v-model="checked" />
+              {{ additionalActionText }}
+            </label>
+          </div>
           <ErrorMessage
             :message="errorMessages"
             v-if="errorMessages && !hideErrorMessage"
@@ -29,7 +35,7 @@
               :class="{ danger: warning }"
               id="confirm-button"
               v-if="!errorMessages"
-              @click="emit('confirmAction')"
+              @click="confirmAction()"
             >
               {{ $t('buttons.YES') }}
             </button>
@@ -49,7 +55,8 @@
 </template>
 
 <script setup lang="ts">
-  import { onUnmounted, onMounted, toRefs } from 'vue'
+  import { onUnmounted, onMounted, ref, toRefs } from 'vue'
+  import type { Ref } from 'vue'
 
   import useApp from '@/composables/useApp'
 
@@ -60,22 +67,27 @@
     loading?: boolean
     warning?: string
     hideErrorMessage?: boolean
+    additionalActionText?: string
   }
   const props = withDefaults(defineProps<Props>(), {
     loading: false,
-    strongMessage: () => '',
-    warning: () => '',
+    strongMessage: '',
+    warning: '',
     hideErrorMessage: false,
+    additionalActionText: '',
   })
-  const { title, message, strongMessage } = toRefs(props)
+  const { additionalActionText, title, message, strongMessage } = toRefs(props)
 
-  const emit = defineEmits(['cancelAction', 'confirmAction'])
-
+  const emit = defineEmits<{
+    cancelAction: []
+    confirmAction: [additionalAction?: boolean]
+  }>()
   const { errorMessages } = useApp()
 
   let confirmButton: HTMLElement | null = null
   let cancelButton: HTMLElement | null = null
   let previousFocusedElement: HTMLInputElement | null = null
+  const checked: Ref<boolean> = ref(false)
 
   function focusTrap(e: KeyboardEvent) {
     if (e.key === 'Tab' || e.keyCode === 9) {
@@ -85,6 +97,13 @@
       } else {
         cancelButton?.focus()
       }
+    }
+  }
+  function confirmAction() {
+    if (additionalActionText.value) {
+      emit('confirmAction', checked.value)
+    } else {
+      emit('confirmAction')
     }
   }
 
@@ -154,6 +173,14 @@
 
           .info-box {
             margin: 0 $default-margin $default-margin;
+          }
+
+          .additional-action {
+            label {
+              padding-left: $default-padding * 0.5;
+              font-weight: normal;
+              font-style: italic;
+            }
           }
         }
       }

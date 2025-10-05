@@ -1,3 +1,4 @@
+import type { GeoJSON } from 'geojson'
 import type { MutationTree } from 'vuex'
 
 import { WORKOUTS_STORE } from '@/store/constants'
@@ -6,6 +7,7 @@ import type {
   TWorkoutsMutations,
 } from '@/store/modules/workouts/types'
 import type { IPagination } from '@/types/api'
+import type { IWorkoutsFeatureCollection } from '@/types/geojson.ts'
 import type {
   IComment,
   ICurrentCommentEdition,
@@ -52,6 +54,12 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   ) {
     state.user_workouts = workouts
   },
+  [WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION](
+    state: IWorkoutsState,
+    featureCollection: IWorkoutsFeatureCollection
+  ) {
+    state.user_workouts_collection = featureCollection
+  },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_PAGINATION](
     state: IWorkoutsState,
     pagination: IPagination
@@ -88,6 +96,12 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   ) {
     state.workoutData.gpx = gpx
   },
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON](
+    state: IWorkoutsState,
+    geojson: GeoJSON
+  ) {
+    state.workoutData.geojson = geojson
+  },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING](
     state: IWorkoutsState,
     loading: boolean
@@ -122,6 +136,7 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   },
   [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT](state: IWorkoutsState) {
     state.workoutData = {
+      geojson: null,
       gpx: '',
       loading: false,
       workout: <IWorkout>{},
@@ -169,5 +184,17 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     refreshLoading: boolean
   ) {
     state.workoutData.refreshLoading = refreshLoading
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_GEOCODE_LOADING](
+    state: IWorkoutsState,
+    geocodeLoading: boolean
+  ) {
+    state.geocodeLoading = geocodeLoading
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_MAP_LOADING](
+    state: IWorkoutsState,
+    mapLoading: boolean
+  ) {
+    state.mapLoading = mapLoading
   },
 }

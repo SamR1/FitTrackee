@@ -2,14 +2,13 @@ import json
 from datetime import datetime, timezone
 from unittest.mock import patch
 
-import pytest
 from flask import Flask
 from flask.testing import FlaskClient
 
 from fittrackee.users.models import FollowRequest, User
 
 from ..mixins import ApiTestCaseMixin
-from ..utils import OAUTH_SCOPES, random_string
+from ..utils import random_string
 
 
 class TestGetFollowRequestWithoutFederation(ApiTestCaseMixin):
@@ -85,29 +84,17 @@ class TestGetFollowRequestWithoutFederation(ApiTestCaseMixin):
         assert data["data"]["follow_requests"][0]["username"] == "sam"
         assert "@context" not in data["data"]["follow_requests"][0]
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "follow:read": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self, app: Flask, user_1: User, client_scope: str, can_access: bool
+    def test_expected_scope_is_follow_read(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint="/api/follow-requests",
+            invalid_scope="workouts:read",
+            expected_endpoint_scope="follow:read",
         )
-
-        response = client.get(
-            "/api/follow-requests",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestGetFollowRequestPagination(ApiTestCaseMixin):
@@ -434,35 +421,17 @@ class TestAcceptFollowRequestWithoutFederation(FollowRequestTestCase):
             client, auth_token, user_2.username, "accept"
         )
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "follow:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        follow_request_from_user_2_to_user_1: FollowRequest,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_follow_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint=f"/api/follow-requests/{self.random_string()}/accept",
+            invalid_scope="follow:read",
+            expected_endpoint_scope="follow:write",
         )
-
-        response = client.post(
-            f"/api/follow-requests/{user_2.username}/accept",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)
 
 
 class TestRejectFollowRequestWithoutFederation(FollowRequestTestCase):
@@ -556,32 +525,14 @@ class TestRejectFollowRequestWithoutFederation(FollowRequestTestCase):
             client, auth_token, user_2.username, "reject"
         )
 
-    @pytest.mark.parametrize(
-        "client_scope, can_access",
-        {**OAUTH_SCOPES, "follow:write": True}.items(),
-    )
-    def test_expected_scopes_are_defined(
-        self,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        follow_request_from_user_2_to_user_1: FollowRequest,
-        client_scope: str,
-        can_access: bool,
+    def test_expected_scope_is_follow_write(
+        self, app: Flask, user_1: User
     ) -> None:
-        (
-            client,
-            oauth_client,
-            access_token,
-            _,
-        ) = self.create_oauth2_client_and_issue_token(
-            app, user_1, scope=client_scope
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="post",
+            endpoint=f"/api/follow-requests/{self.random_string()}/reject",
+            invalid_scope="follow:read",
+            expected_endpoint_scope="follow:write",
         )
-
-        response = client.post(
-            f"/api/follow-requests/{user_2.username}/reject",
-            content_type="application/json",
-            headers=dict(Authorization=f"Bearer {access_token}"),
-        )
-
-        self.assert_response_scope(response, can_access)

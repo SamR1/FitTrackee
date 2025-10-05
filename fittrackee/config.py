@@ -85,6 +85,12 @@ class BaseConfig:
     )
     AP_DOMAIN = remove_url_scheme(UI_URL)
 
+    # Enable geospatial features on User Interface
+    # (temporary setting)
+    ENABLE_GEOSPATIAL_FEATURES = (
+        os.environ.get("ENABLE_GEOSPATIAL_FEATURES", "false").lower() == "true"
+    )
+
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True

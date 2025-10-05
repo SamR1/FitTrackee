@@ -1,4 +1,7 @@
 import time
+from datetime import datetime, timedelta, timezone
+from functools import lru_cache, wraps
+from typing import Callable, Hashable, Tuple
 from uuid import UUID
 
 import nh3
@@ -41,3 +44,26 @@ def clean_input(input_text: str, for_markdown_renderer: bool = False) -> str:
         tags=tags,
         attributes=attributes,
     )
+
+
+class TimedLRUCache:
+    def __init__(self, seconds: int, maxsize: int = 128) -> None:
+        self.lifetime = timedelta(seconds=seconds)
+        self.maxsize = maxsize
+
+    def __call__(self, f: Callable) -> Callable:
+        cached_func = lru_cache(maxsize=self.maxsize)(f)
+        cached_func.expiration = (  # type: ignore[attr-defined]
+            datetime.now(timezone.utc) + self.lifetime
+        )
+
+        @wraps(f)
+        def wrapper(*args: Tuple, **kwargs: Hashable) -> Callable:
+            if datetime.now(timezone.utc) >= cached_func.expiration:  # type: ignore[attr-defined]
+                cached_func.cache_clear()
+                cached_func.expiration = (  # type: ignore[attr-defined]
+                    datetime.now(timezone.utc) + self.lifetime
+                )
+            return cached_func(*args, **kwargs)
+
+        return wrapper

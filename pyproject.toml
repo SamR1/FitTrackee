@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "0.12.2"
+version = "1.0.0"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0-only"
@@ -8,13 +8,12 @@ readme = "README.md"
 homepage = "https://github.com/SamR1/FitTrackee"
 documentation = "https://docs.fittrackee.org"
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Environment :: Web Environment",
     "Framework :: Flask",
     "License :: OSI Approved :: GNU Affero General Public License v3",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -29,10 +28,10 @@ Changelog = "https://docs.fittrackee.org/en/changelog.html"
 "Release Notes" = "https://github.com/SamR1/FitTrackee/releases"
 
 [tool.poetry.dependencies]
-python = "^3.9.2"
-authlib = "=1.5.2"
+python = ">= 3.10, < 3.14"
+authlib = "=1.6.5"
 babel = "^2.11.0"
-click = "^8.1.8"
+click = "^8.3.0"
 dramatiq = {version = "^1.15.0", extras = ["redis"]}
 dramatiq-abort = {extras = ["redis"], version = "^1.2.1"}
 feedgenerator = "^2.2.1"
@@ -41,41 +40,45 @@ flask = "^3.1.2"
 flask-babel = "^4.0.0"
 flask-bcrypt = "^1.0.1"
 flask-dramatiq = "^0.6.0"
-flask-limiter = {version = "^3.11.0", extras = ["redis"]}  # flask-limiter 3.12+ requires python 3.10+
+flask-limiter = {version = "^4.0.0", extras = ["redis"]}
 flask-migrate = "4.1.0"
 flask-sqlalchemy = "3.1.1"
+geoalchemy2 = {extras = ["shapely"], version = "^0.18.0"}
+geopandas = "=1.1.1"
 gpxpy = "=1.6.2"
 gunicorn = "^23.0.0"
 humanize = "^4.13.0"
 jsonschema = "^4.25.1"
-lxml = "^6.0.1"
+lxml = "^6.0.2"
 mistune = "^3.1.4"
 nh3 = "^0.3.0"
+numpy = "=2.2.6" # numpy 2.3+ requires python 3.11+. geoalchemy2 dependency.
+pandas = "=2.3.3"
 psycopg2-binary = "^2.9.10"
 pycryptodome = "^3.15"
 pyjwt = "^2.10.1"
-pyopenssl = "^25.1.0"
+pyopenssl = "^25.3.0"
 pytz = "^2025.2"
 shortuuid = "^1.0.13"
 sqlalchemy = "=2.0.43"
 staticmap3 = {extras = ["filecache"], version = "^0.1.0"}
 ua-parser = "^1.0.0"
-xmltodict = "^0.14.2"
+xmltodict = "^1.0.2"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.8.6"
-furo = "^2025.7.19"
-mypy = "^1.17.1"
-pytest = "^8.4.1"
-pytest-cov = "^6.1.0"
+furo = "^2025.9.25"
+mypy = "^1.18.2"
+pytest = "^8.4.2"
+pytest-cov = "^7.0.0"
 pytest-html = "^4.1.1"
 pytest-runner = "^6.0.1"
 pytest-selenium = "^4.1.0"
 pytest-xdist = {extras = ["psutil"], version = "^3.8.0"}
 recommonmark = "^0.7.1"
-ruff = "^0.12.11"
-selenium = "^4.35.0"
-sphinx = "^7.4.7" # sphinx 8+ requires python 3.10+
+ruff = "^0.13.3"
+selenium = "^4.36.0"
+sphinx = "^8.1.3" # sphinx 8.2+ requires python 3.11+
 sphinx-copybutton = "^0.5.2"
 sphinx-intl = "^2.3.2"
 sphinxcontrib-httpdomain = "^1.8.1"

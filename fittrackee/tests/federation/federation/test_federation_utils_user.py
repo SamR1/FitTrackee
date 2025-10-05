@@ -1,4 +1,5 @@
 import os
+import re
 from typing import Dict, Union
 from unittest.mock import patch
 from urllib.parse import urlparse
@@ -143,7 +144,7 @@ class TestCreateRemoteUser:
     ) -> None:
         with pytest.raises(
             RemoteActorException,
-            match=(
+            match=re.escape(
                 "Invalid remote actor: "
                 "the provided account is not a remote account."
             ),
@@ -165,7 +166,9 @@ class TestCreateRemoteUser:
             ),
             pytest.raises(
                 RemoteActorException,
-                match="Invalid remote actor: can not fetch remote actor.",
+                match=re.escape(
+                    "Invalid remote actor: can not fetch remote actor."
+                ),
             ),
         ):
             create_remote_user_from_username(
@@ -221,7 +224,7 @@ class TestCreateRemoteUser:
             ),
             pytest.raises(
                 RemoteActorException,
-                match=(
+                match=re.escape(
                     "Invalid remote actor: invalid data fetched "
                     "from webfinger endpoint."
                 ),
@@ -248,7 +251,9 @@ class TestCreateRemoteUser:
             ),
             pytest.raises(
                 RemoteActorException,
-                match="Invalid remote actor: can not fetch remote actor.",
+                match=re.escape(
+                    "Invalid remote actor: can not fetch remote actor."
+                ),
             ),
         ):
             create_remote_user_from_username(
@@ -274,7 +279,9 @@ class TestCreateRemoteUser:
             ),
             pytest.raises(
                 RemoteActorException,
-                match="Invalid remote actor: invalid remote actor object.",
+                match=re.escape(
+                    "Invalid remote actor: invalid remote actor object."
+                ),
             ),
         ):
             create_remote_user_from_username(
@@ -300,7 +307,9 @@ class TestCreateRemoteUser:
             ),
             pytest.raises(
                 RemoteActorException,
-                match="Invalid remote actor: invalid remote actor object.",
+                match=re.escape(
+                    "Invalid remote actor: invalid remote actor object."
+                ),
             ),
         ):
             create_remote_user_from_username(
@@ -459,7 +468,7 @@ class TestCreateRemoteUser:
             ),
             pytest.raises(
                 RemoteActorException,
-                match="Invalid remote actor: actor already exists.",
+                match=re.escape("Invalid remote actor: actor already exists."),
             ),
         ):
             create_remote_user_from_username(
@@ -514,7 +523,9 @@ class TestUpdateRemoteUser:
             ),
             pytest.raises(
                 RemoteActorException,
-                match="Invalid remote actor: can not fetch remote actor.",
+                match=re.escape(
+                    "Invalid remote actor: can not fetch remote actor."
+                ),
             ),
         ):
             update_remote_user(remote_user.actor)

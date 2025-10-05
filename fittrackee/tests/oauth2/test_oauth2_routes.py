@@ -24,11 +24,9 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
     route = "/api/oauth/apps"
 
     def test_it_returns_error_when_no_user_authenticated(
-        self, app: Flask, user_1: User
+        self, app: Flask
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
+        client = app.test_client()
 
         response = client.post(
             self.route,

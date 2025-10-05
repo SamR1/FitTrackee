@@ -10,6 +10,11 @@
             {{ pagination.total || 0 }}
             {{ $t('workouts.WORKOUT', pagination.total || 0) }}
           </span>
+          <span
+            v-if="displayMap && pagination.total !== workoutsDisplayedOnMap"
+          >
+            ({{ $t('workouts.ON_MAP') }}: {{ workoutsDisplayedOnMap }})
+          </span>
         </div>
         <div class="buttons">
           <div class="spacer" />
@@ -29,6 +34,14 @@
           >
             {{ $t(`workouts.${showWorkouts ? 'HIDE' : 'SHOW'}_WORKOUTS`) }}
           </button>
+          <button
+            v-if="appConfig.enable_geospatial_features"
+            class="hide-workouts-btn transparent"
+            :disabled="noGeometries"
+            @click="toggleWorkoutsMap"
+          >
+            {{ $t(`workouts.${displayMap ? 'HIDE' : 'SHOW'}_MAP`) }}
+          </button>
         </div>
       </div>
       <FilterSelects
@@ -45,7 +58,8 @@
           path="/workouts"
           :query="query"
         />
-        <table>
+        <WorkoutsMap v-if="displayMap" :translatedSports="translatedSports" />
+        <table v-else>
           <thead :class="{ smaller: appLanguage === 'de' }">
             <tr v-if="showWorkouts">
               <th class="sport-col">
@@ -435,6 +449,7 @@
   import Pagination from '@/components/Common/Pagination.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
+  import WorkoutsMap from '@/components/Workouts/WorkoutsMap.vue'
   import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser'
   import { EQUIPMENTS_STORE, WORKOUTS_STORE } from '@/store/constants'
@@ -447,7 +462,12 @@
     TWorkoutsStatistics,
   } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
-  import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
+  import {
+    getQuery,
+    sortList,
+    workoutsPayloadKeys,
+    workoutsPayloadKeysWithGeospatial,
+  } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
   import { getTotalDuration } from '@/utils/duration.ts'
   import { getSportColor, getSportLabel } from '@/utils/sports'
@@ -472,7 +492,7 @@
     'workout_date',
   ]
 
-  const { appLanguage } = useApp()
+  const { appConfig, appLanguage } = useApp()
   const { isAuthUserSuspended } = useAuthUser()
 
   let query: TWorkoutsPayload = getWorkoutsQuery(route.query)
@@ -480,9 +500,18 @@
   const hoverWorkoutId: Ref<string | null> = ref(null)
   const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
   const showWorkouts: Ref<boolean> = ref(true)
+  const displayMap: Ref<boolean> = ref(false)
 
   const workouts: ComputedRef<IWorkout[]> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS]
+  )
+  const workoutsDisplayedOnMap: ComputedRef<number> = computed(
+    () =>
+      store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS_COLLECTION]
+        .features.length
+  )
+  const noGeometries: ComputedRef<boolean> = computed(() =>
+    workouts.value.every((workout) => !workout.with_gpx)
   )
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION]
@@ -499,7 +528,9 @@
   function loadWorkouts(payload: TWorkoutsPayload) {
     if (!isAuthUserSuspended.value) {
       store.dispatch(
-        WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS,
+        displayMap.value
+          ? WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_COLLECTION
+          : WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS,
         user.value.imperial_units ? getConvertedPayload(payload) : payload
       )
     }
@@ -520,10 +551,15 @@
       defaultOrder.order_by,
       {
         defaultSort: defaultOrder.order,
+        enableGeospatialFeatures: appConfig.value.enable_geospatial_features,
       }
     )
     Object.keys(newQuery)
-      .filter((k) => workoutsPayloadKeys.includes(k))
+      .filter((k) =>
+        appConfig.value.enable_geospatial_features
+          ? workoutsPayloadKeysWithGeospatial.includes(k)
+          : workoutsPayloadKeys.includes(k)
+      )
       .map((k) => {
         if (typeof newQuery[k] === 'string') {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -538,7 +574,7 @@
       ...payload,
     }
     Object.entries(convertedPayload).map((entry) => {
-      if (entry[0].match('speed|distance') && entry[1]) {
+      if (entry[0].match('speed|distance|radius') && entry[1]) {
         convertedPayload[entry[0]] = convertDistance(+entry[1], 'mi', 'km')
       }
     })
@@ -560,11 +596,20 @@
   function toggleWorkouts() {
     showWorkouts.value = !showWorkouts.value
   }
+  function toggleWorkoutsMap() {
+    displayMap.value = !displayMap.value
+  }
 
   watch(
     () => route.query,
     async (newQuery) => {
       query = getWorkoutsQuery(newQuery)
+      loadWorkouts({ ...query })
+    }
+  )
+  watch(
+    () => displayMap.value,
+    async () => {
       loadWorkouts(query)
     }
   )
@@ -617,6 +662,7 @@
         .buttons {
           display: flex;
           gap: $default-padding;
+          flex-wrap: wrap;
           .scroll-button {
             display: block;
           }
@@ -629,7 +675,7 @@
           }
         }
 
-        @media screen and (max-width: $x-small-limit) {
+        @media screen and (max-width: $small-limit) {
           flex-wrap: wrap;
           flex-direction: column-reverse;
 
@@ -638,9 +684,9 @@
             width: 100%;
           }
           .buttons {
+            justify-content: right;
             .spacer {
-              display: block;
-              flex-grow: 3;
+              display: none;
             }
           }
         }

@@ -116,6 +116,24 @@
               {{ $t('admin.APP_CONFIG.STATS_WORKOUTS_LIMIT_HELP') }}
             </span>
           </div>
+          <label for="global_map_workouts_limit">
+            {{ $t('admin.APP_CONFIG.GLOBAL_MAP_WORKOUTS_LIMIT_LABEL') }}:
+            <input
+              id="global_map_workouts_limit"
+              name="global_map_workouts_limit"
+              type="number"
+              min="1"
+              max="50000"
+              v-model="appData.global_map_workouts_limit"
+              :disabled="!edition"
+            />
+          </label>
+          <div class="admin-help">
+            <span class="info-box">
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('admin.APP_CONFIG.GLOBAL_MAP_WORKOUTS_LIMIT_HELP') }}
+            </span>
+          </div>
           <label class="about-label" for="about">
             {{ $t('admin.ABOUT.TEXT') }}:
           </label>
@@ -222,6 +240,7 @@
     about: '',
     privacy_policy: '',
     stats_workouts_limit: 0,
+    global_map_workouts_limit: 10000,
   })
 
   function updateForm(appConfig: TAppConfig) {

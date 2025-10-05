@@ -1,3 +1,4 @@
+import re
 from datetime import datetime, timezone
 
 import pytest
@@ -724,7 +725,7 @@ class TestUserManagerServiceUserCreation:
         user_manager_service = UserManagerService(username=random_string())
         with pytest.raises(
             UserCreationException,
-            match="This user already exists. No action done.",
+            match=re.escape("This user already exists. No action done."),
         ):
             user_manager_service.create(email=user_1.email)  # type: ignore
 

@@ -1,3 +1,5 @@
+import type { Layer } from 'leaflet'
+
 import type { IWorkoutApiChartData } from '@/types/workouts.ts'
 
 export interface IHeatmapData {
@@ -5,6 +7,6 @@ export interface IHeatmapData {
   data: IWorkoutApiChartData[]
 }
 
-export interface IHeatmapOverlay {
+export interface IHeatmapOverlay extends Layer {
   setData(data: IHeatmapData): void
 }

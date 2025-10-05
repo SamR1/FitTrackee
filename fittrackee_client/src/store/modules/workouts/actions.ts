@@ -25,6 +25,7 @@ import type {
   IComment,
   IAppealPayload,
   ILikesPayload,
+  TWorkoutsMapPayload,
 } from '@/types/workouts'
 import { handleError } from '@/utils'
 
@@ -131,6 +132,60 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
   ): void {
     getWorkouts(context, payload, WorkoutsMutations['SET_USER_WORKOUTS'])
   },
+  [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_COLLECTION](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: TWorkoutsPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_MAP_LOADING, true)
+    authApi
+      .get('workouts/collection', {
+        params: payload,
+      })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION,
+            res.data.data
+          )
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_PAGINATION,
+            res.data.pagination
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_MAP_LOADING, false)
+      )
+  },
+  [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_FOR_GLOBAl_MAP](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: TWorkoutsMapPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_MAP_LOADING, true)
+    authApi
+      .get(`workouts/global-map`, {
+        params: payload,
+      })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION,
+            res.data.data
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_MAP_LOADING, false)
+      )
+  },
   [WORKOUTS_STORE.ACTIONS.GET_TIMELINE_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: TWorkoutsPayload
@@ -191,7 +246,18 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                 )
               })
           }
-          if (workout.with_gpx) {
+          if (workout.with_geometry) {
+            authApi
+              .get(`workouts/${payload.workoutId}/geojson${segmentUrl}`)
+              .then((res) => {
+                if (res.data.status === 'success') {
+                  context.commit(
+                    WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON,
+                    res.data.data.geojson
+                  )
+                }
+              })
+          } else if (workout.with_gpx) {
             authApi
               .get(`workouts/${payload.workoutId}/gpx${segmentUrl}`)
               .then((res) => {
@@ -644,6 +710,49 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       })
       .finally(() =>
         context.commit(WORKOUTS_STORE.MUTATIONS.SET_REFRESH_LOADING, false)
+      )
+  },
+  [WORKOUTS_STORE.ACTIONS.GET_LOCATION_FROM_QUERY](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    query: string
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get('/geocode/search', { params: { query } })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          return res.data.locations
+        }
+        return []
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+  },
+  [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_GEOJSON](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    workoutId: string
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    authApi
+      .get(`workouts/${workoutId}/geojson`)
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON,
+            res.data.data.geojson
+          )
+        } else {
+          context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
+          handleError(context, null)
+        }
+      })
+      .catch((error) => {
+        context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
+        handleError(context, error)
+      })
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, false)
       )
   },
 }

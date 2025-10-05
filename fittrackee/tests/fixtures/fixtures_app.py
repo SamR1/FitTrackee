@@ -34,6 +34,7 @@ def get_app_config(
     max_single_file_size: Optional[Union[int, float]] = None,
     max_zip_file_size: Optional[Union[int, float]] = None,
     max_users: Optional[int] = None,
+    global_map_workouts_limit: Optional[int] = None,
 ) -> AppConfig:
     config = AppConfig.query.one_or_none()
     if not config:
@@ -53,6 +54,8 @@ def get_app_config(
         (10 if max_zip_file_size is None else max_zip_file_size) * 1024 * 1024
     )
     config.max_users = 100 if max_users is None else max_users
+    if global_map_workouts_limit:
+        config.global_map_workouts_limit = global_map_workouts_limit
     db.session.commit()
     return config
 
@@ -65,6 +68,7 @@ def get_app(
     max_single_file_size: Optional[Union[int, float]] = None,
     max_zip_file_size: Optional[Union[int, float]] = None,
     max_users: Optional[int] = None,
+    global_map_workouts_limit: Optional[int] = None,
     with_domain: Optional[bool] = True,
 ) -> Generator:
     app = create_app()
@@ -79,6 +83,7 @@ def get_app(
                     max_single_file_size,
                     max_zip_file_size,
                     max_users,
+                    global_map_workouts_limit,
                 )
                 update_app_config_from_database(app, app_db_config)
             if with_domain:
@@ -119,6 +124,10 @@ def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
         monkeypatch.delenv("MAP_ATTRIBUTION")
     if os.getenv("DEFAULT_STATICMAP"):
         monkeypatch.delenv("DEFAULT_STATICMAP")
+    if os.getenv("NOMINATIM_URL"):
+        monkeypatch.delenv("NOMINATIM_URL")
+    if os.getenv("ENABLE_GEOSPATIAL_FEATURES"):
+        monkeypatch.delenv("ENABLE_GEOSPATIAL_FEATURES")
     yield from get_app(with_config=True)
 
 
@@ -205,6 +214,27 @@ def app_wo_email_activation(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv("FEDERATION_ENABLED", "False")
     monkeypatch.setenv("EMAIL_URL", "")
     yield from get_app(with_config=True)
+
+
+@pytest.fixture
+def app_with_nominatim_url(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv("NOMINATIM_URL", "https://nominatim.example.com")
+    yield from get_app(with_config=True)
+
+
+@pytest.fixture
+def app_with_enabled_geospatial_features(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Generator:
+    monkeypatch.setenv("ENABLE_GEOSPATIAL_FEATURES", "true")
+    yield from get_app(with_config=True)
+
+
+@pytest.fixture
+def app_with_global_map_workouts_limit_equal_to_1(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Generator:
+    yield from get_app(with_config=True, global_map_workouts_limit=1)
 
 
 @pytest.fixture

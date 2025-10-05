@@ -11,8 +11,15 @@ export const workoutsState: IWorkoutsState = {
   timeline_workouts: [],
   pagination: <IPagination>{},
   user_workouts: [],
+  user_workouts_collection: {
+    bbox: [],
+    features: [],
+    limit_exceeded: false,
+    type: 'FeatureCollection',
+  },
   user_workouts_statistics: <TWorkoutsStatistics>{},
   workoutData: {
+    geojson: null,
     gpx: '',
     loading: false,
     workout: <IWorkout>{},
@@ -30,5 +37,7 @@ export const workoutsState: IWorkoutsState = {
   },
   success: null,
   appealLoading: null,
+  geocodeLoading: false,
+  mapLoading: false,
   likes: [],
 }

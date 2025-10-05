@@ -285,7 +285,7 @@ class Comment(BaseModel):
             .join(Mention, User.id == Mention.user_id)
             .all()
         )
-        linkified_text, mentioned_users = self.handle_mentions()
+        _, mentioned_users = self.handle_mentions()
         updated_mentioned_users = mentioned_users["local"].union(
             mentioned_users["remote"]
         )

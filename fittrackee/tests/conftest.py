@@ -22,6 +22,7 @@ pytest_plugins = [
     "fittrackee.tests.fixtures.fixtures_equipments",
     "fittrackee.tests.fixtures.fixtures_federation",
     "fittrackee.tests.fixtures.fixtures_federation_users",
+    "fittrackee.tests.fixtures.fixtures_geometries",
     "fittrackee.tests.fixtures.fixtures_workouts",
     "fittrackee.tests.fixtures.fixtures_users",
 ]
