@@ -10,7 +10,7 @@
 services:
   fittrackee-db:
     container_name: fittrackee-db
-    # Note: there is no official image for PostGIS on ARM CPUs yet.
+    # Note: there is no official image for PostGIS on ARM platforms yet.
     # The workaround is to build PostGIS image locally.
     image: postgis/postgis:17-3.5-alpine
     ports:

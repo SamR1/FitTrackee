@@ -1,7 +1,7 @@
 Upgrading to 1.0.0
 ##################
 
-The v1.0.0 introduces major changes on workout file processing to improve performances and ease the implementation of the next features:
+The version 1.0.0 introduces major changes on workout file processing to improve performances and ease the implementation of the next features:
 
 - data displayed in the workout chart are stored in the database,
 - and segments geometry is also stored.
@@ -40,7 +40,7 @@ Here are the instructions for installation on ArchLinux with `yay <https://githu
 
       $ psql -U <SUPER_USER> -d <FITTRACKEE_DATABASE_NAME> -c 'CREATE EXTENSION IF NOT EXISTS postgis;'
 
-- if the server running the application is different from the server running the database, install `gdal <https://gdal.org/en/stable/download.html#binaries>`__ library (**GDAL** is installed with **PostGIS**)
+- if the server running the application is different from the server running the database, install `gdal <https://gdal.org/en/stable/download.html#binaries>`__ library on the server running the application (**GDAL** is installed with **PostGIS**)
 
   .. code-block:: bash
 
@@ -65,6 +65,11 @@ With Docker
 
       -   image: postgres:17-alpine
       +   image: postgis/postgis:17-3.5-alpine
+
+.. warning::
+
+    | There is no official image for PostGIS on ARM platforms yet, see `issue on GitHub <https://github.com/postgis/docker-postgis/issues/216>`__.
+    | The workaround is to build PostGIS image locally.
 
 - start only the database
 
@@ -97,7 +102,7 @@ For instance to update the first 1,000 workouts created with a file:
     $ ftcli workouts refresh --add-missing-geometry --per-page 1000 -v
 
 | This command can be re-executed until there are no more workouts to update.
-| Once all workouts have been updated, enable geospatial features by setting the environment variable `ENABLE_GEOSPATIAL_FEATURES <installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES>`_  to ``True`` in ``.env``.
+| Once all workouts have been updated, enable geospatial features on the interface by setting the environment variable `ENABLE_GEOSPATIAL_FEATURES <installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES>`_  to ``True`` in ``.env``.
 
 .. important::
     The next version will require all workouts to be updated.

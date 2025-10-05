@@ -13,6 +13,7 @@ Authentication and account
     auth.edit_user_sport_preferences,
     auth.reset_user_sport_preferences,
     auth.edit_user_notifications_preferences,
+    auth.edit_user_messages_preferences,
     auth.edit_picture,
     auth.del_picture,
     auth.request_password_reset,

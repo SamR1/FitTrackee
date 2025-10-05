@@ -16,7 +16,7 @@ services:
     # Please refer to the PostgreSQL and PostGIS documentation before upgrading
     # image version.
     #
-    # Warning: there is no official image for PostGIS on ARM CPUs yet, see:
+    # Warning: there is no official image for PostGIS on ARM platforms yet, see:
     # https://github.com/postgis/docker-postgis/issues/216
     # The workaround is to build PostGIS image locally.
     image: postgis/postgis:17-3.5-alpine
@@ -38,7 +38,7 @@ services:
     env_file:
       - .env
 # Image from Docker Hub
-    image: fittrackee/fittrackee:v1.0.0b3
+    image: fittrackee/fittrackee:v1.0.0
 # Uncomment following line to build image instead of using pre-built image
 #    build: .
     volumes:
@@ -73,7 +73,7 @@ services:
 #    env_file:
 #      - .env
 ## Image from Docker Hub
-#    image: fittrackee/fittrackee:v1.0.0b3
+#    image: fittrackee/fittrackee:v1.0.0
 ## Uncomment following line to build image instead of using pre-built image
 ##    build: .
 #    volumes:

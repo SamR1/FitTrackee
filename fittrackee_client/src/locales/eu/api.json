@@ -33,7 +33,7 @@
     "invalid payload": "Emandako datuak ez dira zuzenak.",
     "invalid token, please log in again": "Tokena ez da zuzena, sartu berriz.",
     "invalid token, please request a new token": "Tokena ez da zuzena, sartu berriz.",
-    "max files in a zip archive must be equal or greater than max files in a zip archive processed synchronously": "ZIp fitxategiko fitxategi kopurua, era sinkronoan prozesatzen den zip fitxategi bateko fitxategi kopurua bezain edo handiagoa izan behar da.",
+    "max files in a zip archive must be equal or greater than max files in a zip archive processed synchronously": "Zip fitxategiko fitxategi kopurua, era sinkronoan prozesatzen den zip fitxategi bateko fitxategi kopurua bezain edo handiagoa izan behar da.",
     "new email must be different than current email": "Eposta helbide berria unekoaren desberdina izan behar da.",
     "no activities in tcx file": "Ez dago <Activities> etiketa .tcx fitxategian",
     "no coordinates in tcx file": "Ez dago koordinaturik .tcx fitxategian",

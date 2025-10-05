@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.09.25 -->
-        <title>Upgrading to 1.0.0 - FitTrackee 1.0.0b3 documentation</title>
+        <title>Upgrading to 1.0.0 - FitTrackee 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=580074bf" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 1.0.0b3
+      <a href="index.html"><div class="brand">FitTrackee 1.0.0
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 1.0.0b3
+  <span class="sidebar-brand-text">FitTrackee 1.0.0
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -285,7 +285,7 @@
         <article role="main" id="furo-main-content">
           <section id="upgrading-to-1-0-0">
 <h1>Upgrading to 1.0.0<a class="headerlink" href="#upgrading-to-1-0-0" title="Link to this heading">¶</a></h1>
-<p>The v1.0.0 introduces major changes on workout file processing to improve performances and ease the implementation of the next features:</p>
+<p>The version 1.0.0 introduces major changes on workout file processing to improve performances and ease the implementation of the next features:</p>
 <ul class="simple">
 <li><p>data displayed in the workout chart are stored in the database,</p></li>
 <li><p>and segments geometry is also stored.</p></li>
@@ -318,7 +318,7 @@ You can find intructions for your OS on <a class="reference external" href="http
 </pre></div>
 </div>
 </li>
-<li><p>if the server running the application is different from the server running the database, install <a class="reference external" href="https://gdal.org/en/stable/download.html#binaries">gdal</a> library (<strong>GDAL</strong> is installed with <strong>PostGIS</strong>)</p>
+<li><p>if the server running the application is different from the server running the database, install <a class="reference external" href="https://gdal.org/en/stable/download.html#binaries">gdal</a> library on the server running the application (<strong>GDAL</strong> is installed with <strong>PostGIS</strong>)</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>yay<span class="w"> </span>gdal
 </pre></div>
 </div>
@@ -342,6 +342,15 @@ You can find intructions for your OS on <a class="reference external" href="http
 </pre></div>
 </div>
 </li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">There is no official image for PostGIS on ARM platforms yet, see <a class="reference external" href="https://github.com/postgis/docker-postgis/issues/216">issue on GitHub</a>.</div>
+<div class="line">The workaround is to build PostGIS image locally.</div>
+</div>
+</div>
+<ul>
 <li><p>start only the database</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>fittrackee-db<span class="w"> </span>-d
 </pre></div>
@@ -368,7 +377,7 @@ CREATE<span class="w"> </span>EXTENSION
 </div>
 <div class="line-block">
 <div class="line">This command can be re-executed until there are no more workouts to update.</div>
-<div class="line">Once all workouts have been updated, enable geospatial features by setting the environment variable <a class="reference external" href="installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES">ENABLE_GEOSPATIAL_FEATURES</a>  to <code class="docutils literal notranslate"><span class="pre">True</span></code> in <code class="docutils literal notranslate"><span class="pre">.env</span></code>.</div>
+<div class="line">Once all workouts have been updated, enable geospatial features on the interface by setting the environment variable <a class="reference external" href="installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES">ENABLE_GEOSPATIAL_FEATURES</a>  to <code class="docutils literal notranslate"><span class="pre">True</span></code> in <code class="docutils literal notranslate"><span class="pre">.env</span></code>.</div>
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
@@ -454,7 +463,7 @@ CREATE<span class="w"> </span>EXTENSION
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=9a509e8f"></script>
+</div><script src="_static/documentation_options.js?v=8d563738"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
