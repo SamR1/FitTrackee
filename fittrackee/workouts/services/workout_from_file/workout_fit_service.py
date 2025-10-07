@@ -1,10 +1,10 @@
+import logging
+import sys
 from typing import IO, Optional
 
 import fitdecode
 import gpxpy.gpx
 import requests
-import logging
-import sys                                                                      
 from flask import current_app
 
 from ...constants import NSMAP
@@ -181,16 +181,24 @@ class WorkoutFitService(WorkoutGpxService):
                 "error", "error when parsing fit file"
             ) from e
 
-        if gpx_segment.points:
+        if gpx_segment.points:  
             gpx_track.segments.append(gpx_segment)
 
         if elevation_needed and current_app.config['OPEN_ELEVATION_API_URL']:
-            url = str(current_app.config['OPEN_ELEVATION_API_URL']) + '/api/v1/lookup'
+            url = str(current_app.config['OPEN_ELEVATION_API_URL']) \
+                + '/api/v1/lookup'
             data = []
             for segment in gpx_track.segments:
                 for point in segment.points:
-                    data.append({'latitude': point.latitude, 'longitude': point.longitude})
-            elevations = requests.post(url, json = { 'locations': data }, timeout=(3.05, 27))
+                    data.append({
+                        'latitude': point.latitude,
+                        'longitude': point.longitude
+                    })
+            elevations = requests.post(
+                url,
+                json = { 'locations': data },
+                timeout=(3.05, 27)
+            )
             results = elevations.json().get('results')
             index = 0
             for segment in gpx_track.segments:
