@@ -197,8 +197,7 @@ class WorkoutFitService(WorkoutGpxService):
                 for point in segment.points:
                     elevation_point = results[index]
                     index += 1
-                    if not point.elevation and 'elevation' in elevation_point:
-                        point.elevation = float(elevation_point.get('elevation'))
+                    point.elevation = float(elevation_point.get('elevation'))
 
 
         if not gpx_track.segments:
