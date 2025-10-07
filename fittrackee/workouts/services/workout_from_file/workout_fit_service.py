@@ -190,7 +190,7 @@ class WorkoutFitService(WorkoutGpxService):
             for segment in gpx_track.segments:
                 for point in segment.points:
                     data.append({'latitude': point.latitude, 'longitude': point.longitude})
-            elevations = requests.post(url, json = { 'locations': data })
+            elevations = requests.post(url, json = { 'locations': data }, timeout=(3.05, 27))
             results = elevations.json().get('results')
             index = 0
             for segment in gpx_track.segments:
