@@ -112,7 +112,7 @@
                     :to="{ name: 'Workout', params: { workoutId: workout.id } }"
                   >
                     <i
-                      v-if="workout.with_gpx"
+                      v-if="workout.with_file"
                       class="fa fa-map-o"
                       aria-hidden="true"
                     />
@@ -120,7 +120,7 @@
                     <VisibilityIcon :visibility="workout.workout_visibility" />
                   </router-link>
                   <StaticMap
-                    v-if="workout.with_gpx && hoverWorkoutId === workout.id"
+                    v-if="workout.with_file && hoverWorkoutId === workout.id"
                     :workout="workout"
                     :display-hover="true"
                   />
@@ -511,7 +511,7 @@
         .features.length
   )
   const noGeometries: ComputedRef<boolean> = computed(() =>
-    workouts.value.every((workout) => !workout.with_gpx)
+    workouts.value.every((workout) => !workout.with_file)
   )
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION]

@@ -75,7 +75,7 @@
             <div class="download-files">
               <button
                 id="download-workout"
-                v-if="isWorkoutOwner && workoutObject.with_gpx"
+                v-if="isWorkoutOwner && workoutObject.with_file"
                 class="transparent icon-button"
                 :disabled="refreshLoading"
                 @click.prevent="toggleDownloadButtons()"
@@ -128,7 +128,7 @@
               </div>
             </div>
             <button
-              v-if="workoutObject.with_gpx && isWorkoutOwner"
+              v-if="workoutObject.with_file && isWorkoutOwner"
               class="transparent icon-button"
               :disabled="refreshLoading"
               @click.prevent="refreshGpx(workoutObject.workoutId)"

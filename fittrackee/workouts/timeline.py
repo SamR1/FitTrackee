@@ -129,7 +129,7 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
                 "user": "admin",
                 "weather_end": null,
                 "weather_start": null,
-                "with_gpx": false,
+                "with_file": false,
                 "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT"
               }
             ]
