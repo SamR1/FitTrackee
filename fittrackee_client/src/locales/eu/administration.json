@@ -13,6 +13,8 @@
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Kontakturako kudeatzailearen eposta helbidea",
     "ASYNCHRONOUS_UPLOAD_DISABLED": "Zip fitxategiak era asinkronoan kargatzea desaktibatuta dago.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "Balio hau ezin da 50.000 ariketa baino handiagoa izan.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Mapa globalean erakusten den ariketa kopuru maximoa",
     "MAX_FILES_IN_ZIP_LABEL": "zip fitxategiaren gehienezko fitxategi kopurua",
     "MAX_SYNC_FILES_IN_ZIP_LABEL": "Era sinkronoan prozesatzeko fitxategi kopuru maximoa",
     "MAX_USERS_HELP": "0 bada, ez dago izena emateko mugarik.",
