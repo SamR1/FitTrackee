@@ -14,6 +14,7 @@
       "equipments:write_DESCRIPTION": "<code>equipments</code> zerbitzuetarako idazketa baimena ematen du.",
       "follow:read_DESCRIPTION": "jarraitzeko eskaera eta jarraitzaileen inguruko zerbitzuei irakurketa baimena ematen die.",
       "follow:write_DESCRIPTION": "jarraitzeko eskaera eta jarraitzaileen inguruko zerbitzuei idazketa baimena ematen die.",
+      "geocode:read_DESCRIPTION": "geocodingaren inguruko endpointetarako irakurketa sarbidea ematen du.",
       "notifications:read_DESCRIPTION": "<code>jakinarazpenen</code> zerbitzuei irakurketa baimena ematen die.",
       "notifications:write_DESCRIPTION": "<code>jakinarazpenen</code> zerbitzuei idazketa baimena ematen die.",
       "profile:read_DESCRIPTION": "<code>auth</code> zerbitzuetarako irakurketa baimena ematen du.",
