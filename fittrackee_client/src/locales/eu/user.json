@@ -88,6 +88,7 @@
     "CREATED_REPORTS": "Sortutako txostenak",
     "DATE_FORMAT": "Data erakusteko formatua",
     "EDIT": "Editatu profila",
+    "EDIT_MESSAGE_PREFERENCES": "Editatu mezuen ezarpenak",
     "EDIT_NOTIFICATION_PREFERENCES": "Aldatu jakinarazpenen hobespenak",
     "EDIT_PREFERENCES": "Editatu ezarpenak",
     "EDIT_SPORTS_PREFERENCES": "Editatu kirolen ezarpenak",
@@ -120,6 +121,11 @@
     "LAST_NAME": "Abizena",
     "LATEST_SANCTIONS_RECEIVED": "Jasotako azken zigorrak",
     "LOCATION": "Herria",
+    "MESSAGES": {
+      "warning_about_large_number_of_workouts_on_map": "Erakutsi mapan ekintza asko erakustearen inguruko oharra erakutsi"
+    },
+    "MESSAGES_EDITION": "Mezuen lehentasunen edizioa",
+    "MESSAGES_PREFERENCES": "Mezuen lehentasunak",
     "MONDAY": "Astelehena",
     "NOTIFICATIONS": {
       "account_creation": "Norbait erregistratzen da",
@@ -191,6 +197,7 @@
       "BLOCKED-USERS": "blokeatutako erabiltzaileak",
       "EQUIPMENTS": "ekipamenduak",
       "FOLLOW-REQUESTS": "jarraipen eskaerak",
+      "MESSAGES": "mezuak",
       "MODERATION": "moderazioa",
       "NOTIFICATIONS": "jakinarazpenak",
       "PICTURE": "argazkia",
