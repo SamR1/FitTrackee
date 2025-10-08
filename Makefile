@@ -93,10 +93,6 @@ docker-serve-client:
 	docker compose -f docker-compose-dev.yml up -d fittrackee_client
 	docker compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) dev
 
-docker-set-admin:
-	# deprecated command
-	docker compose -f docker-compose-dev.yml exec fittrackee ftcli users update $(USERNAME) --set-admin true
-
 docker-set-role:
 	docker compose -f docker-compose-dev.yml exec fittrackee ftcli users update $(USERNAME) --set-role $(ROLE)
 
@@ -292,11 +288,6 @@ user-activate:
 
 user-reset-password:
 	$(FTCLI) users update $(USERNAME) --reset-password
-
-ADMIN := true
-user-set-admin:
-	# deprecated command
-	$(FTCLI) users update $(USERNAME) --set-admin $(ADMIN)
 
 user-set-role:
 	$(FTCLI) users update $(USERNAME) --set-role $(ROLE)
