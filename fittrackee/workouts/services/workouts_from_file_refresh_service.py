@@ -90,18 +90,6 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
                 "error", "error when processing workout"
             ) from e
 
-        db.session.flush()
-
-        # if original file is not a gpx, store the newly generated gpx file
-        if file_extension != "gpx":
-            gpx_file = (
-                self.workout.gpx
-                if self.workout.gpx
-                else self.original_file.replace(file_extension, "gpx")
-            )
-            with open(get_absolute_file_path(gpx_file), "w") as f:
-                f.write(workout_service.gpx.to_xml())
-
         db.session.commit()
         db.session.refresh(self.workout)
         return self.workout
@@ -147,7 +135,7 @@ class WorkoutsFromFileRefreshService:
 
     def refresh(self) -> int:
         workouts_to_refresh_query = Workout.query
-        filters = [Workout.gpx != None]  # noqa
+        filters = [Workout.original_file != None]  # noqa
         if self.username:
             workouts_to_refresh_query = workouts_to_refresh_query.join(
                 User, User.id == Workout.user_id

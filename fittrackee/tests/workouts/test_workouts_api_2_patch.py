@@ -392,7 +392,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
 
         self.assert_400(
             response,
-            "invalid key ('distance') for workout with gpx",
+            "invalid key ('distance') for workout with file",
             "invalid",
         )
 
@@ -488,7 +488,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         input_description: str,
         input_workout_visibility: "VisibilityLevel",
     ) -> None:
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.gpx"
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -527,7 +527,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         input_analysis_visibility: "VisibilityLevel",
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.gpx"
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -571,7 +571,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.gpx"
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -874,7 +874,7 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
             response,
             (
                 "invalid keys ('analysis_visibility', 'map_visibility') "
-                "for workout without gpx"
+                "for workout without file"
             ),
             "invalid",
         )

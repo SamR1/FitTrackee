@@ -126,7 +126,6 @@ class AbstractWorkoutsCreationService(BaseWorkoutService, WorkoutFileMixin):
         new_workout: "Workout",
         workout_file: Optional["IO[bytes]"],
         *,
-        gpx_xml_content: Optional[str],  # for non-gpx files
         extension: str = ".gpx",
         relative_path: Optional[str] = None,
     ) -> str:
@@ -141,15 +140,9 @@ class AbstractWorkoutsCreationService(BaseWorkoutService, WorkoutFileMixin):
                 extension=extension,
             )
 
-        if extension == ".gpx":
-            new_workout.gpx = relative_path
-
         absolute_workout_filepath = get_absolute_file_path(relative_path)
         try:
-            if gpx_xml_content:
-                with open(absolute_workout_filepath, "w") as f:
-                    f.write(gpx_xml_content)
-            elif workout_file:  # when file from archive
+            if workout_file:  # when file from archive
                 with open(absolute_workout_filepath, "wb") as f:
                     workout_file.seek(0)
                     f.write(workout_file.read())
@@ -159,9 +152,11 @@ class AbstractWorkoutsCreationService(BaseWorkoutService, WorkoutFileMixin):
             else:
                 return ""
         except Exception as e:
-            error = "error when storing gpx file"
+            error = "error when storing workout file"
             appLog.exception(error)
             raise WorkoutException("error", error) from e
+
+        new_workout.original_file = relative_path
         return absolute_workout_filepath
 
     def _get_archive_content(self) -> Union[BytesIO, IO[bytes]]:
@@ -262,28 +257,7 @@ class AbstractWorkoutsCreationService(BaseWorkoutService, WorkoutFileMixin):
         )
 
         # store workout file
-        absolute_workout_filepath = self._store_file(
-            new_workout,
-            workout_file,
-            gpx_xml_content=(
-                None if extension == "gpx" else workout_service.gpx.to_xml()
-            ),
-        )
-
-        if extension == "gpx":
-            new_workout.original_file = new_workout.gpx
-        # store original file if extension is not .gpx
-        elif new_workout.gpx:
-            original_extension = f".{extension}"
-            relative_path = new_workout.gpx.replace(".gpx", original_extension)
-            self._store_file(
-                new_workout,
-                workout_file,
-                gpx_xml_content=None,
-                extension=original_extension,
-                relative_path=relative_path,
-            )
-            new_workout.original_file = relative_path
+        absolute_workout_filepath = self._store_file(new_workout, workout_file)
 
         # generate and store map image
         map_filepath = self.get_file_path(

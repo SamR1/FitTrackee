@@ -359,7 +359,6 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert new_workout.description is None
         assert float(new_workout.distance) == 0.32  # type: ignore
         assert new_workout.duration == timedelta(minutes=4, seconds=10)
-        assert new_workout.gpx is not None
         assert new_workout.map is not None
         assert new_workout.map_visibility == VisibilityLevel.PRIVATE
         assert new_workout.map_id is not None
@@ -368,7 +367,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert float(new_workout.min_alt) == 975.0  # type: ignore
         assert new_workout.moving == timedelta(minutes=4, seconds=10)
         assert new_workout.notes is None
-        assert new_workout.original_file == new_workout.gpx
+        assert new_workout.original_file is not None
         assert new_workout.pauses == timedelta(seconds=0)
         assert new_workout.suspended_at is None
         assert new_workout.title == "just a workout"
@@ -506,7 +505,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert new_workout.map_visibility == user_1.map_visibility
         assert new_workout.workout_visibility == user_1.workouts_visibility
 
-    def test_it_creates_gpx_file_in_user_directory(
+    def test_it_creates_workout_file_in_user_directory(
         self,
         app: "Flask",
         user_1: "User",
@@ -527,11 +526,11 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         db.session.commit()
 
         new_workout = Workout.query.one()
-        assert new_workout.gpx == (
+        assert new_workout.original_file == (
             f"workouts/{user_1.id}/2018-03-13_12-44-45_"
             f"{sport_1_cycling.id}_{expected_token}.gpx"
         )
-        with open(get_absolute_file_path(new_workout.gpx)) as f:
+        with open(get_absolute_file_path(new_workout.original_file)) as f:
             assert f.read() == gpx_file
 
     def test_it_creates_map_image_in_user_directory(
@@ -801,11 +800,11 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         db.session.commit()
 
         assert new_workout == Workout.query.one()
-        assert new_workout.gpx == (
+        assert new_workout.original_file == (
             f"workouts/{user_1.id}/2018-03-13_12-44-45_"
             f"{sport_1_cycling.id}_{expected_token}.gpx"
         )
-        with open(get_absolute_file_path(new_workout.gpx)) as f:
+        with open(get_absolute_file_path(new_workout.original_file)) as f:
             assert f.read() == gpx_file
 
     def test_it_creates_workout_when_extension_is_kml(
@@ -843,7 +842,6 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert new_workout.description == "some description"
         assert float(new_workout.distance) == 0.32  # type: ignore
         assert new_workout.duration == timedelta(minutes=4, seconds=10)
-        assert new_workout.gpx is not None
         assert new_workout.map is not None
         assert new_workout.map_visibility == VisibilityLevel.PRIVATE
         assert new_workout.map_id is not None
@@ -851,9 +849,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert float(new_workout.max_speed) == 5.25  # type: ignore
         assert float(new_workout.min_alt) == 975.0  # type: ignore
         assert new_workout.moving == timedelta(minutes=4, seconds=10)
-        assert new_workout.original_file == new_workout.gpx.replace(
-            "gpx", "kml"
-        )
+        assert new_workout.original_file is not None
         assert new_workout.notes is None
         assert new_workout.pauses == timedelta(seconds=0)
         assert new_workout.suspended_at is None
@@ -898,7 +894,6 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert new_workout.description == "some description"
         assert float(new_workout.distance) == 0.299  # type: ignore
         assert new_workout.duration == timedelta(minutes=4, seconds=10)
-        assert new_workout.gpx is not None
         assert new_workout.map is not None
         assert new_workout.map_visibility == VisibilityLevel.PRIVATE
         assert new_workout.map_id is not None
@@ -907,9 +902,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert float(new_workout.min_alt) == 975.0  # type: ignore
         assert new_workout.moving == timedelta(minutes=3, seconds=55)
         assert new_workout.notes is None
-        assert new_workout.original_file == new_workout.gpx.replace(
-            "gpx", "kmz"
-        )
+        assert new_workout.original_file is not None
         assert new_workout.pauses == timedelta(seconds=15)
         assert new_workout.suspended_at is None
         assert new_workout.title == "just a workout"
@@ -953,7 +946,6 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert new_workout.description is None
         assert float(new_workout.distance) == 0.318  # type: ignore
         assert new_workout.duration == timedelta(minutes=4, seconds=10)
-        assert new_workout.gpx is not None
         assert new_workout.map is not None
         assert new_workout.map_visibility == VisibilityLevel.PRIVATE
         assert new_workout.map_id is not None
@@ -962,6 +954,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert float(new_workout.min_alt) == 976.0  # type: ignore
         assert new_workout.moving == timedelta(minutes=4, seconds=10)
         assert new_workout.notes is None
+        assert new_workout.original_file is not None
         assert new_workout.pauses == timedelta(seconds=0)
         assert new_workout.suspended_at is None
         assert new_workout.title is not None
@@ -1056,7 +1049,6 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert new_workout.description is None
         assert float(new_workout.distance) == 0.318  # type: ignore
         assert new_workout.duration == timedelta(minutes=4, seconds=10)
-        assert new_workout.gpx is not None
         assert new_workout.map is not None
         assert new_workout.map_visibility == VisibilityLevel.PRIVATE
         assert new_workout.map_id is not None
@@ -1065,6 +1057,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert float(new_workout.min_alt) == 976.0  # type: ignore
         assert new_workout.moving == timedelta(minutes=4, seconds=10)
         assert new_workout.notes is None
+        assert new_workout.original_file is not None
         assert new_workout.pauses == timedelta(seconds=0)
         assert new_workout.suspended_at is None
         assert new_workout.title is not None

@@ -369,53 +369,6 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
         assert workout_cycling_user_1.weather_start == weather_start
         assert workout_cycling_user_1.weather_end == weather_end
 
-    def test_it_does_not_store_new_gpx_file_when_file_extensions_is_gpx(
-        self,
-        app: "Flask",
-        user_1: "User",
-        sport_1_cycling: "Sport",
-        workout_cycling_user_1: "Workout",
-        workout_cycling_user_1_segment: "WorkoutSegment",
-        gpx_file_with_gpxtpx_extensions_and_power: str,
-    ) -> None:
-        workout_cycling_user_1.original_file = "workouts/1/example.gpx"
-        service = WorkoutFromFileRefreshService(workout=workout_cycling_user_1)
-
-        with patch(
-            "builtins.open",
-            new_callable=mock_open,
-            read_data=gpx_file_with_gpxtpx_extensions_and_power,
-        ) as open_mock:
-            service.refresh()
-
-        open_mock.assert_called_once()
-
-    def test_it_stores_new_gpx_file_when_file_extensions_is_not_gpx(
-        self,
-        app: "Flask",
-        user_1: "User",
-        sport_1_cycling: "Sport",
-        workout_cycling_user_1: "Workout",
-        workout_cycling_user_1_segment: "WorkoutSegment",
-        tcx_with_one_lap_and_one_track: str,
-        gpx_file_from_tcx_with_one_lap_and_one_track: str,
-    ) -> None:
-        workout_cycling_user_1.original_file = "workouts/1/example.tcx"
-        workout_cycling_user_1.gpx = "workouts/1/example.gpx"
-        service = WorkoutFromFileRefreshService(workout=workout_cycling_user_1)
-        open_mock = mock_open(read_data=tcx_with_one_lap_and_one_track)
-
-        with patch("builtins.open", open_mock):
-            service.refresh()
-
-        open_mock.assert_called_with(
-            get_absolute_file_path(workout_cycling_user_1.gpx), "w"
-        )
-        handle = open_mock()
-        handle.write.assert_called_once_with(
-            gpx_file_from_tcx_with_one_lap_and_one_track
-        )
-
     def test_it_returns_workout(
         self,
         app: "Flask",
@@ -427,7 +380,6 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
         gpx_file_from_tcx_with_one_lap_and_one_track: str,
     ) -> None:
         workout_cycling_user_1.original_file = "workouts/1/example.tcx"
-        workout_cycling_user_1.gpx = "workouts/1/example.gpx"
         service = WorkoutFromFileRefreshService(workout=workout_cycling_user_1)
         open_mock = mock_open(read_data=tcx_with_one_lap_and_one_track)
 
@@ -448,7 +400,6 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
         equipment_bike_user_1: "Equipment",
     ) -> None:
         workout_cycling_user_1.original_file = "workouts/1/example.tcx"
-        workout_cycling_user_1.gpx = "workouts/1/example.gpx"
         workout_cycling_user_1.equipments = [equipment_bike_user_1]
         service = WorkoutFromFileRefreshService(workout=workout_cycling_user_1)
         open_mock = mock_open(read_data=tcx_with_one_lap_and_one_track)
@@ -707,7 +658,7 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         workout_running_user_1_segment: "WorkoutSegment",
         tcx_with_one_lap_and_one_track: str,
     ) -> None:
-        workout_cycling_user_1.gpx = "workouts/1/example.gpx"
+        workout_cycling_user_1.original_file = "workouts/1/example.gpx"
         workout_cycling_user_1.original_file = "workouts/1/example.tcx"
         service = WorkoutsFromFileRefreshService(
             logger=test_logger, add_geometry=True
