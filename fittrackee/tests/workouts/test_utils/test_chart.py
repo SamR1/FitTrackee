@@ -72,57 +72,6 @@ class TestGetChartData:
 
         assert chart_data == []
 
-    def test_it_calls_get_chart_data_from_gpx_when_no_points(
-        self,
-        app: "Flask",
-        user_1: "User",
-        sport_1_cycling: "Sport",
-        workout_cycling_user_1: "Workout",
-        workout_cycling_user_1_segment: "WorkoutSegment",
-    ) -> None:
-        workout_cycling_user_1.gpx = "some/file.gpx"
-        with patch(
-            "fittrackee.workouts.utils.chart.get_chart_data_from_gpx"
-        ) as get_chart_data_from_gpx_mock:
-            get_chart_data(
-                workout_cycling_user_1,
-                can_see_heart_rate=True,
-            )
-
-        get_chart_data_from_gpx_mock.assert_called_once_with(
-            f"{app.config['UPLOAD_FOLDER']}/{workout_cycling_user_1.gpx}",
-            workout_cycling_user_1.sport.label,
-            workout_cycling_user_1.ave_cadence,
-            can_see_heart_rate=True,
-            segment_id=None,
-        )
-
-    def test_it_calls_get_chart_data_from_gpx_with_segment_id_and_no_points(
-        self,
-        app: "Flask",
-        user_1: "User",
-        sport_1_cycling: "Sport",
-        workout_cycling_user_1: "Workout",
-        workout_cycling_user_1_segment: "WorkoutSegment",
-    ) -> None:
-        workout_cycling_user_1.gpx = "some/file.gpx"
-        with patch(
-            "fittrackee.workouts.utils.chart.get_chart_data_from_gpx"
-        ) as get_chart_data_from_gpx_mock:
-            get_chart_data(
-                workout_cycling_user_1,
-                can_see_heart_rate=True,
-                segment_id=1,
-            )
-
-        get_chart_data_from_gpx_mock.assert_called_once_with(
-            f"{app.config['UPLOAD_FOLDER']}/{workout_cycling_user_1.gpx}",
-            workout_cycling_user_1.sport.label,
-            workout_cycling_user_1.ave_cadence,
-            can_see_heart_rate=True,
-            segment_id=1,
-        )
-
     def test_it_calls_get_chart_data_from_segment_points_when_segments_have_points(  # noqa
         self,
         app: "Flask",

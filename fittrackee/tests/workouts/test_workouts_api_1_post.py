@@ -1837,7 +1837,7 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
         workout_short_id = data["data"]["workouts"][0]["id"]
 
         response = client.get(
-            f"/api/workouts/{workout_short_id}/gpx",
+            f"/api/workouts/{workout_short_id}/geojson",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -1845,10 +1845,10 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
         assert response.status_code == 200
         assert "success" in data["status"]
         assert "" in data["message"]
-        assert len(data["data"]["gpx"]) != ""
+        assert isinstance(data["data"]["geojson"], dict)
 
         response = client.get(
-            f"/api/workouts/{workout_short_id}/gpx/segment/1",
+            f"/api/workouts/{workout_short_id}/geojson/segment/1",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
         data = json.loads(response.data.decode())
@@ -1856,7 +1856,7 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
         assert response.status_code == 200
         assert "success" in data["status"]
         assert "" in data["message"]
-        assert len(data["data"]["gpx"]) != ""
+        assert isinstance(data["data"]["geojson"], dict)
 
         response = client.get(
             f"/api/workouts/map/{map_id}",

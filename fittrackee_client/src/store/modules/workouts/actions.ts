@@ -257,17 +257,6 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                   )
                 }
               })
-          } else if (workout.with_gpx) {
-            authApi
-              .get(`workouts/${payload.workoutId}/gpx${segmentUrl}`)
-              .then((res) => {
-                if (res.data.status === 'success') {
-                  context.commit(
-                    WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX,
-                    res.data.data.gpx
-                  )
-                }
-              })
           }
           if (!payload.segmentId) {
             context.dispatch(
@@ -681,12 +670,12 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                 )
               })
           }
-          if (workout.with_gpx) {
-            authApi.get(`workouts/${workoutId}/gpx`).then((res) => {
+          if (workout.with_geometry) {
+            authApi.get(`workouts/${workoutId}/geojson`).then((res) => {
               if (res.data.status === 'success') {
                 context.commit(
-                  WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX,
-                  res.data.data.gpx
+                  WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON,
+                  res.data.data.geojson
                 )
               }
             })

@@ -3,12 +3,10 @@ from typing import TYPE_CHECKING, List, Optional
 from sqlalchemy.sql import text
 
 from fittrackee import db
-from fittrackee.files import get_absolute_file_path
 from fittrackee.workouts.exceptions import WorkoutGPXException
 from fittrackee.workouts.utils.geometry import (
     get_chart_data_from_segment_points,
 )
-from fittrackee.workouts.utils.gpx import get_chart_data_from_gpx
 
 if TYPE_CHECKING:
     from fittrackee.workouts.models import Workout
@@ -59,14 +57,4 @@ def get_chart_data(
             can_see_heart_rate=can_see_heart_rate,
         )
 
-    if not workout.gpx:
-        return []
-
-    absolute_gpx_filepath = get_absolute_file_path(workout.gpx)
-    return get_chart_data_from_gpx(
-        absolute_gpx_filepath,
-        workout.sport.label,
-        workout.ave_cadence,
-        can_see_heart_rate=can_see_heart_rate,
-        segment_id=segment_id,
-    )
+    return []
