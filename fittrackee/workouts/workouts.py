@@ -1,5 +1,4 @@
 import json
-import re
 from datetime import timedelta
 from decimal import Decimal
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
@@ -25,13 +24,13 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentsException,
 )
 from fittrackee.equipments.models import Equipment, WorkoutEquipment
-from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.responses import (
     DataNotFoundErrorResponse,
     EquipmentInvalidPayloadErrorResponse,
     ExceedingValueErrorResponse,
+    GoneResponse,
     HttpResponse,
     InternalServerErrorResponse,
     InvalidPayloadErrorResponse,
@@ -60,6 +59,7 @@ from .exceptions import (
     WorkoutExceedingValueException,
     WorkoutException,
     WorkoutFileException,
+    WorkoutGPXException,
     WorkoutRefreshException,
 )
 from .models import Sport, Workout, WorkoutLike, WorkoutSegment
@@ -77,11 +77,7 @@ from .utils.geometry import (
     get_buffered_location,
     get_geojson_from_segments,
 )
-from .utils.gpx import (
-    WorkoutGPXException,
-    extract_segment_from_gpx_file,
-    get_file_extension,
-)
+from .utils.gpx import get_file_extension
 from .utils.workouts import get_datetime_from_request_args
 
 if TYPE_CHECKING:
@@ -1398,31 +1394,12 @@ def get_workout_data(
                     segment_id=segment_id,
                 )
             }
-        elif data_type == "geojson":
+        else:  # data_type == "geojson"
             geojson = get_geojson_from_segments(workout, segment_id=segment_id)
             # Handle error differently when using workout segment uuid
             if not geojson:
                 return NotFoundErrorResponse("geojson not found")
             data = {"geojson": geojson}
-        else:  # data_type == 'gpx'
-            absolute_gpx_filepath = get_absolute_file_path(workout.gpx)
-            with open(absolute_gpx_filepath, encoding="utf-8") as f:
-                gpx_content = f.read()
-                if segment_id is not None:
-                    gpx_segment_content = extract_segment_from_gpx_file(
-                        gpx_content, segment_id
-                    )
-            file_content = (
-                gpx_content if segment_id is None else gpx_segment_content
-            )
-            if file_content and not can_see_heart_rate:
-                file_content = re.sub(
-                    r"<(.*):hr>([\r\n\d]*)</(.*):hr>",
-                    "",
-                    file_content,
-                )
-
-            data = {"gpx": file_content}
     except (WorkoutException, WorkoutGPXException) as e:
         appLog.error(e.message)
         if e.status == "not found":
@@ -1446,7 +1423,7 @@ def get_workout_gpx(
     auth_user: Optional[User], workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get gpx file for a workout displayed on map with Leaflet.
+    [REMOVED] Get gpx file for a workout displayed on map with Leaflet
 
     **Example request**:
 
@@ -1459,37 +1436,17 @@ def get_workout_gpx(
 
     .. sourcecode:: http
 
-      HTTP/1.1 200 OK
+      HTTP/1.1 410 GONE
       Content-Type: application/json
-
-      {
-        "data": {
-          "gpx": "gpx file content"
-        },
-        "message": "",
-        "status": "success"
-      }
 
     :param string workout_short_id: workout short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
                ``private`` or ``followers_only`` map visibility
 
-    :statuscode 200: ``success``
-    :statuscode 401:
-        - ``provide a valid auth token``
-        - ``signature expired, please log in again``
-        - ``invalid token, please log in again``
-    :statuscode 403:
-        - ``you do not have permissions``
-        - ``you do not have permissions, your account is suspended``
-    :statuscode 404:
-        - ``workout not found``
-        - ``no gpx file for this workout``
-    :statuscode 500: ``error, please try again or contact the administrator``
-
+    :statuscode 410: GONE
     """
-    return get_workout_data(auth_user, workout_short_id, "gpx")
+    return GoneResponse()
 
 
 @workouts_blueprint.route(
@@ -1574,7 +1531,7 @@ def get_segment_gpx(
     auth_user: Optional[User], workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
-    Get gpx file for a workout segment displayed on map with Leaflet.
+    [REMOVED] Get gpx file for a workout segment displayed on map with Leaflet.
 
     **Example request**:
 
@@ -1587,16 +1544,8 @@ def get_segment_gpx(
 
     .. sourcecode:: http
 
-      HTTP/1.1 200 OK
+      HTTP/1.1 410 GONE
       Content-Type: application/json
-
-      {
-        "data": {
-          "gpx": "gpx file content"
-        },
-        "message": "",
-        "status": "success"
-      }
 
     :param string workout_short_id: workout short id
     :param integer segment_id: segment id
@@ -1604,20 +1553,9 @@ def get_segment_gpx(
     :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
                ``private`` or ``followers_only`` map visibility
 
-    :statuscode 200: ``success``
-    :statuscode 400: ``no gpx file for this workout``
-    :statuscode 401:
-        - ``provide a valid auth token``
-        - ``signature expired, please log in again``
-        - ``invalid token, please log in again``
-    :statuscode 403:
-        - ``you do not have permissions``
-        - ``you do not have permissions, your account is suspended``
-    :statuscode 404: ``workout not found``
-    :statuscode 500: ``error, please try again or contact the administrator``
-
+    :statuscode 410: GONE
     """
-    return get_workout_data(auth_user, workout_short_id, "gpx", segment_id)
+    return GoneResponse()
 
 
 @workouts_blueprint.route(

@@ -2,7 +2,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
-from typing import Generator, Iterator, List, Union
+from typing import Dict, Generator, Iterator, List, Union
 from unittest.mock import MagicMock, Mock, patch
 from uuid import uuid4
 
@@ -314,6 +314,111 @@ def workout_cycling_user_1_segment_0_with_coordinates(
     ]
     db.session.commit()
     return workout_segment
+
+
+@pytest.fixture()
+def workout_cycling_user_1_segment_0_chart_data() -> List[Dict]:
+    return [
+        {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "hr": 92,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "power": 0,
+            "speed": 3.21,
+            "time": "2018-03-13 12:44:45+00:00",
+        },
+        {
+            "distance": 0.0,
+            "duration": 5,
+            "elevation": 998.0,
+            "hr": 87,
+            "latitude": 44.68091,
+            "longitude": 6.07367,
+            "power": 305,
+            "speed": 3.96,
+            "time": "2018-03-13 12:44:50+00:00",
+        },
+        {
+            "distance": 0.02,
+            "duration": 15,
+            "elevation": 994.0,
+            "hr": 88,
+            "latitude": 44.6808,
+            "longitude": 6.07364,
+            "power": 326,
+            "speed": 4.36,
+            "time": "2018-03-13 12:45:00+00:00",
+        },
+        {
+            "distance": 0.02,
+            "duration": 20,
+            "elevation": 994.0,
+            "hr": 90,
+            "latitude": 44.68075,
+            "longitude": 6.07364,
+            "power": 287,
+            "speed": 3.61,
+            "time": "2018-03-13 12:45:05+00:00",
+        },
+        {
+            "distance": 0.03,
+            "duration": 25,
+            "elevation": 994.0,
+            "hr": 87,
+            "latitude": 44.68071,
+            "longitude": 6.07364,
+            "power": 251,
+            "speed": 3.82,
+            "time": "2018-03-13 12:45:10+00:00",
+        },
+        {
+            "distance": 0.05,
+            "duration": 45,
+            "elevation": 993.0,
+            "hr": 85,
+            "latitude": 44.68049,
+            "longitude": 6.07361,
+            "power": 248,
+            "speed": 4.64,
+            "time": "2018-03-13 12:45:30+00:00",
+        },
+        {
+            "distance": 0.09,
+            "duration": 70,
+            "elevation": 992.0,
+            "hr": 86,
+            "latitude": 44.68019,
+            "longitude": 6.07356,
+            "power": 246,
+            "speed": 4.45,
+            "time": "2018-03-13 12:45:55+00:00",
+        },
+        {
+            "distance": 0.09,
+            "duration": 75,
+            "elevation": 992.0,
+            "hr": 84,
+            "latitude": 44.68014,
+            "longitude": 6.07355,
+            "power": 216,
+            "speed": 4.65,
+            "time": "2018-03-13 12:46:00+00:00",
+        },
+        {
+            "distance": 0.11,
+            "duration": 90,
+            "elevation": 987.0,
+            "hr": 86,
+            "latitude": 44.67995,
+            "longitude": 6.07358,
+            "power": 243,
+            "speed": 5.25,
+            "time": "2018-03-13 12:46:15+00:00",
+        },
+    ]
 
 
 @pytest.fixture()

@@ -90,12 +90,6 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   ) {
     state.workoutData.chartDataLoading = loading
   },
-  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX](
-    state: IWorkoutsState,
-    gpx: string
-  ) {
-    state.workoutData.gpx = gpx
-  },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON](
     state: IWorkoutsState,
     geojson: GeoJSON
