@@ -674,11 +674,15 @@ class Workout(BaseModel):
             if self.map and can_see_map_data and additional_data
             else None
         )
-        workout["with_gpx"] = (
-            self.gpx is not None and can_see_map_data and additional_data
+        workout["with_file"] = (
+            self.original_file is not None
+            and can_see_map_data
+            and additional_data
         )
         workout["with_analysis"] = (
-            self.gpx is not None and can_see_analysis_data and additional_data
+            self.original_file is not None
+            and can_see_analysis_data
+            and additional_data
         )
         workout["suspended"] = is_workout_suspended
         workout["user"] = self.user.serialize()

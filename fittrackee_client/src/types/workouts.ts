@@ -124,7 +124,7 @@ export interface IWorkout {
   weather_end: IWeather | null
   weather_start: IWeather | null
   with_analysis: boolean
-  with_gpx: boolean
+  with_file: boolean
   with_geometry?: boolean
   workout_date: string
   workout_visibility?: TVisibilityLevels
@@ -166,7 +166,7 @@ export interface IWorkoutObject {
   workoutFullDate: string
   weatherStart: IWeather | null
   with_analysis: boolean
-  with_gpx: boolean
+  with_file: boolean
   workoutId: string
   workoutTime: string
   workoutVisibility: TVisibilityLevels | null | undefined

@@ -441,7 +441,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["min_alt"] == 975.0
         assert data["data"]["workouts"][0]["moving"] == "0:04:10"
         assert data["data"]["workouts"][0]["pauses"] is None
-        assert data["data"]["workouts"][0]["with_gpx"] is True
+        assert data["data"]["workouts"][0]["with_file"] is True
 
         records = data["data"]["workouts"][0]["records"]
         assert len(records) == 5
@@ -650,7 +650,7 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["min_alt"] is None
         assert data["data"]["workouts"][0]["moving"] == "1:00:00"
         assert data["data"]["workouts"][0]["pauses"] is None
-        assert data["data"]["workouts"][0]["with_gpx"] is False
+        assert data["data"]["workouts"][0]["with_file"] is False
         assert data["data"]["workouts"][0]["map"] is None
         assert data["data"]["workouts"][0]["weather_start"] is None
         assert data["data"]["workouts"][0]["weather_end"] is None

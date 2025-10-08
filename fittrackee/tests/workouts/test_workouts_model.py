@@ -159,7 +159,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "workout_visibility": workout.workout_visibility.value,
             "with_analysis": False,
             "with_geometry": False,
-            "with_gpx": False,
+            "with_file": False,
         }
 
     def test_it_serializes_workout_without_file_and_with_ascent_and_descent(
@@ -221,7 +221,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "workout_visibility": workout.workout_visibility.value,
             "with_analysis": False,
             "with_geometry": False,
-            "with_gpx": False,
+            "with_file": False,
         }
 
     def test_it_serializes_workout_with_file_for_cycling_and_geometry(
@@ -295,7 +295,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "workout_visibility": workout.workout_visibility.value,
             "with_analysis": True,
             "with_geometry": True,
-            "with_gpx": True,
+            "with_file": True,
         }
 
     def test_it_serializes_workout_with_file_for_outdoor_tennis(
@@ -370,7 +370,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "workout_visibility": workout.workout_visibility.value,
             "with_analysis": True,
             "with_geometry": False,
-            "with_gpx": True,
+            "with_file": True,
         }
 
     def test_it_serializes_workout_with_file_for_running(
@@ -442,7 +442,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "workout_visibility": workout.workout_visibility.value,
             "with_analysis": True,
             "with_geometry": False,
-            "with_gpx": True,
+            "with_file": True,
         }
 
     def test_it_serializes_workout_with_file_for_paragliding(
@@ -514,7 +514,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "workout_visibility": workout.workout_visibility.value,
             "with_analysis": True,
             "with_geometry": False,
-            "with_gpx": True,
+            "with_file": True,
         }
 
     @pytest.mark.parametrize(
@@ -675,7 +675,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             ),
             "with_analysis": False,
             "with_geometry": False,
-            "with_gpx": False,
+            "with_file": False,
         }
 
     def test_it_serializes_minimal_workout(
@@ -738,7 +738,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 workout_cycling_user_1.workout_visibility.value
             ),
             "with_analysis": False,
-            "with_gpx": False,
+            "with_file": False,
         }
 
     def test_it_serializes_minimal_workout_with_gpx(
@@ -806,7 +806,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 workout_cycling_user_1.workout_visibility.value
             ),
             "with_analysis": True,
-            "with_gpx": True,
+            "with_file": True,
         }
 
     def test_it_serializes_minimal_suspended_workout(
@@ -878,7 +878,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 workout_cycling_user_1.workout_visibility.value
             ),
             "with_analysis": False,
-            "with_gpx": False,
+            "with_file": False,
         }
 
     def test_it_returns_previous_workout(
@@ -1249,7 +1249,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             workout_cycling_user_1_segment.serialize()
         ]
         assert serialized_workout["with_analysis"] is True
-        assert serialized_workout["with_gpx"] is False
+        assert serialized_workout["with_file"] is False
         assert (
             serialized_workout["workout_visibility"]
             == input_workout_visibility
@@ -1299,7 +1299,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["min_alt"] is None
         assert serialized_workout["segments"] == []
         assert serialized_workout["with_analysis"] is False
-        assert serialized_workout["with_gpx"] is False
+        assert serialized_workout["with_file"] is False
         assert (
             serialized_workout["workout_visibility"]
             == input_workout_visibility
@@ -1358,7 +1358,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             workout_cycling_user_1_segment.serialize()
         ]
         assert serialized_workout["with_analysis"] is True
-        assert serialized_workout["with_gpx"] is True
+        assert serialized_workout["with_file"] is True
         assert (
             serialized_workout["workout_visibility"] == VisibilityLevel.PUBLIC
         )
@@ -1410,7 +1410,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             workout_cycling_user_1_segment.serialize()
         ]
         assert serialized_workout["with_analysis"] is True
-        assert serialized_workout["with_gpx"] is False
+        assert serialized_workout["with_file"] is False
         assert (
             serialized_workout["workout_visibility"] == VisibilityLevel.PUBLIC
         )
@@ -1614,7 +1614,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             "weather_end": None,
             "weather_start": None,
             "with_analysis": False,
-            "with_gpx": False,
+            "with_file": False,
             "workout_date": workout_cycling_user_1.workout_date,
             "workout_visibility": (
                 workout_cycling_user_1.workout_visibility.value
@@ -1737,7 +1737,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
                 workout_cycling_user_1.workout_visibility.value
             ),
             "with_analysis": False,
-            "with_gpx": False,
+            "with_file": False,
         }
 
 
@@ -1813,7 +1813,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             workout_cycling_user_1_segment.serialize()
         ]
         assert serialized_workout["with_analysis"] is True
-        assert serialized_workout["with_gpx"] is False
+        assert serialized_workout["with_file"] is False
         assert (
             serialized_workout["workout_visibility"] == VisibilityLevel.PUBLIC
         )
@@ -1864,7 +1864,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["min_alt"] is None
         assert serialized_workout["segments"] == []
         assert serialized_workout["with_analysis"] is False
-        assert serialized_workout["with_gpx"] is False
+        assert serialized_workout["with_file"] is False
         assert (
             serialized_workout["workout_visibility"]
             == input_workout_visibility
@@ -1896,7 +1896,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["min_alt"] == workout.min_alt
         assert serialized_workout["segments"] == []
         assert serialized_workout["with_analysis"] is True
-        assert serialized_workout["with_gpx"] is True
+        assert serialized_workout["with_file"] is True
         assert (
             serialized_workout["workout_visibility"] == VisibilityLevel.PUBLIC
         )
@@ -1944,7 +1944,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["min_alt"] == workout.min_alt
         assert serialized_workout["segments"] == []
         assert serialized_workout["with_analysis"] is True
-        assert serialized_workout["with_gpx"] is False
+        assert serialized_workout["with_file"] is False
         assert (
             serialized_workout["workout_visibility"] == VisibilityLevel.PUBLIC
         )
@@ -2136,7 +2136,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             "weather_end": None,
             "weather_start": None,
             "with_analysis": False,
-            "with_gpx": False,
+            "with_file": False,
             "workout_date": workout_cycling_user_1.workout_date,
             "workout_visibility": workout_cycling_user_1.workout_visibility,
         }
@@ -2254,7 +2254,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
                 workout_cycling_user_1.workout_visibility.value
             ),
             "with_analysis": False,
-            "with_gpx": False,
+            "with_file": False,
         }
 
 
@@ -2323,7 +2323,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
             workout_cycling_user_1_segment.serialize()
         ]
         assert serialized_workout["with_analysis"] is True
-        assert serialized_workout["with_gpx"] is False
+        assert serialized_workout["with_file"] is False
         assert (
             serialized_workout["analysis_visibility"] == VisibilityLevel.PUBLIC
         )
@@ -2369,7 +2369,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
         assert serialized_workout["min_alt"] is None
         assert serialized_workout["segments"] == []
         assert serialized_workout["with_analysis"] is False
-        assert serialized_workout["with_gpx"] is False
+        assert serialized_workout["with_file"] is False
         assert (
             serialized_workout["analysis_visibility"]
             == VisibilityLevel.PRIVATE
@@ -2403,7 +2403,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
         assert serialized_workout["min_alt"] == workout.min_alt
         assert serialized_workout["bounds"] == workout.bounds
         assert serialized_workout["with_analysis"] is True
-        assert serialized_workout["with_gpx"] is True
+        assert serialized_workout["with_file"] is True
         assert serialized_workout["map_visibility"] == VisibilityLevel.PUBLIC
         assert (
             serialized_workout["analysis_visibility"] == VisibilityLevel.PUBLIC
@@ -2456,7 +2456,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
             workout_cycling_user_1_segment.serialize()
         ]
         assert serialized_workout["with_analysis"] is True
-        assert serialized_workout["with_gpx"] is False
+        assert serialized_workout["with_file"] is False
         assert (
             serialized_workout["analysis_visibility"]
             == input_analysis_visibility
@@ -2714,7 +2714,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
                 workout_cycling_user_1.workout_visibility.value
             ),
             "with_analysis": False,
-            "with_gpx": False,
+            "with_file": False,
         }
 
 
@@ -2816,7 +2816,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             ),
             "with_analysis": False,
             "with_geometry": False,
-            "with_gpx": False,
+            "with_file": False,
         }
 
     @pytest.mark.parametrize(
@@ -2900,7 +2900,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             ),
             "with_analysis": True,
             "with_geometry": False,
-            "with_gpx": True,
+            "with_file": True,
         }
 
     @pytest.mark.parametrize(
@@ -3025,7 +3025,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
                 workout_cycling_user_2.workout_visibility.value
             ),
             "with_analysis": False,
-            "with_gpx": False,
+            "with_file": False,
         }
 
 
@@ -3107,7 +3107,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             ),
             "with_analysis": False,
             "with_geometry": False,
-            "with_gpx": False,
+            "with_file": False,
         }
 
     def test_it_returns_workout_with_map_when_report_flag_is_true(
@@ -3182,7 +3182,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             ),
             "with_analysis": True,
             "with_geometry": False,
-            "with_gpx": True,
+            "with_file": True,
         }
 
 

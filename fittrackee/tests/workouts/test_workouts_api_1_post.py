@@ -58,7 +58,7 @@ def assert_workout_data_with_gpx(data: Dict, user: User) -> None:
     assert data["data"]["workouts"][0]["min_alt"] == 975.0
     assert data["data"]["workouts"][0]["moving"] == "0:04:10"
     assert data["data"]["workouts"][0]["pauses"] is None
-    assert data["data"]["workouts"][0]["with_gpx"] is True
+    assert data["data"]["workouts"][0]["with_file"] is True
     assert data["data"]["workouts"][0]["map"] is not None
     assert data["data"]["workouts"][0]["weather_start"] is None
     assert data["data"]["workouts"][0]["weather_end"] is None
@@ -129,7 +129,7 @@ def assert_workout_data_with_gpx_segments(data: Dict, user: User) -> None:
     assert data["data"]["workouts"][0]["min_alt"] == 975.0
     assert data["data"]["workouts"][0]["moving"] == "0:03:55"
     assert data["data"]["workouts"][0]["pauses"] == "0:00:15"
-    assert data["data"]["workouts"][0]["with_gpx"] is True
+    assert data["data"]["workouts"][0]["with_file"] is True
     assert data["data"]["workouts"][0]["map"] is not None
     assert data["data"]["workouts"][0]["weather_start"] is None
     assert data["data"]["workouts"][0]["weather_end"] is None
@@ -218,7 +218,7 @@ def assert_workout_data_wo_gpx(data: Dict, user: User) -> None:
     assert data["data"]["workouts"][0]["min_alt"] is None
     assert data["data"]["workouts"][0]["moving"] == "1:00:00"
     assert data["data"]["workouts"][0]["pauses"] is None
-    assert data["data"]["workouts"][0]["with_gpx"] is False
+    assert data["data"]["workouts"][0]["with_file"] is False
     assert data["data"]["workouts"][0]["map"] is None
     assert data["data"]["workouts"][0]["weather_start"] is None
     assert data["data"]["workouts"][0]["weather_end"] is None
@@ -691,7 +691,7 @@ class TestPostWorkoutWithKml(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["min_alt"] == 975.0
         assert data["data"]["workouts"][0]["moving"] == "0:04:10"
         assert data["data"]["workouts"][0]["pauses"] is None
-        assert data["data"]["workouts"][0]["with_gpx"] is True
+        assert data["data"]["workouts"][0]["with_file"] is True
         assert data["data"]["workouts"][0]["map"] is not None
         assert data["data"]["workouts"][0]["weather_start"] is None
         assert data["data"]["workouts"][0]["weather_end"] is None
@@ -737,7 +737,7 @@ class TestPostWorkoutWithKmz(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["min_alt"] == 975.0
         assert data["data"]["workouts"][0]["moving"] == "0:03:55"
         assert data["data"]["workouts"][0]["pauses"] == "0:00:15"
-        assert data["data"]["workouts"][0]["with_gpx"] is True
+        assert data["data"]["workouts"][0]["with_file"] is True
         assert data["data"]["workouts"][0]["map"] is not None
         assert data["data"]["workouts"][0]["weather_start"] is None
         assert data["data"]["workouts"][0]["weather_end"] is None
@@ -789,7 +789,7 @@ class TestPostWorkoutWithTcx(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["min_alt"] == 976.0
         assert data["data"]["workouts"][0]["moving"] == "0:04:10"
         assert data["data"]["workouts"][0]["pauses"] is None
-        assert data["data"]["workouts"][0]["with_gpx"] is True
+        assert data["data"]["workouts"][0]["with_file"] is True
         assert data["data"]["workouts"][0]["map"] is not None
         assert data["data"]["workouts"][0]["weather_start"] is None
         assert data["data"]["workouts"][0]["weather_end"] is None
@@ -835,7 +835,7 @@ class TestPostWorkoutWithFit(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["min_alt"] == 976.0
         assert data["data"]["workouts"][0]["moving"] == "0:04:10"
         assert data["data"]["workouts"][0]["pauses"] is None
-        assert data["data"]["workouts"][0]["with_gpx"] is True
+        assert data["data"]["workouts"][0]["with_file"] is True
         assert data["data"]["workouts"][0]["map"] is not None
         assert data["data"]["workouts"][0]["weather_start"] is None
         assert data["data"]["workouts"][0]["weather_end"] is None
@@ -869,7 +869,7 @@ class TestPostWorkoutWithFit(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["title"] is not None
         assert data["data"]["workouts"][0]["sport_id"] == 1
         assert data["data"]["workouts"][0]["duration"] == "0:05:35"
-        assert data["data"]["workouts"][0]["with_gpx"] is True
+        assert data["data"]["workouts"][0]["with_file"] is True
         assert data["data"]["workouts"][0]["map"] is not None
 
 
@@ -1451,7 +1451,7 @@ class TestPostWorkoutWithZipArchive(UserTaskMixin, WorkoutApiTestCaseMixin):
             assert data["data"]["workouts"][0]["min_alt"] == 975.0
             assert data["data"]["workouts"][0]["moving"] == "0:04:10"
             assert data["data"]["workouts"][0]["pauses"] is None
-            assert data["data"]["workouts"][0]["with_gpx"] is True
+            assert data["data"]["workouts"][0]["with_file"] is True
             assert data["data"]["workouts"][0]["map"] is not None
             assert data["data"]["workouts"][0]["weather_start"] is None
             assert data["data"]["workouts"][0]["weather_end"] is None

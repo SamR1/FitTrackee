@@ -234,7 +234,7 @@
       ),
       weatherStart: segment ? null : workout.weather_start,
       with_analysis: workout.with_analysis,
-      with_gpx: workout.with_gpx,
+      with_file: workout.with_file,
       workoutId: workout.id,
       workoutTime: workoutDate.workout_time,
       workoutVisibility: workout.workout_visibility,
