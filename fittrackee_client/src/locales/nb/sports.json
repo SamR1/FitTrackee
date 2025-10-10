@@ -1,15 +1,30 @@
 {
+  "Canoeing": {
+    "LABEL": "Padling"
+  },
   "Cycling (Sport)": {
     "LABEL": "Sykling (sport)"
   },
   "Cycling (Transport)": {
-    "LABEL": "Sykling (transport)"
+    "LABEL": "Sykling (Transport)"
+  },
+  "Cycling (Trekking)": {
+    "LABEL": "Sykling (Langdistanse)"
   },
   "Cycling (Virtual)": {
     "LABEL": "Sykling (virtuell)"
   },
+  "Halfbike": {
+    "LABEL": "Halvsykkel"
+  },
+  "Hiking": {
+    "LABEL": "Fottur"
+  },
+  "Kayaking": {
+    "LABEL": "Kajakkpadling"
+  },
   "Mountain Biking": {
-    "LABEL": "Fjellsykling"
+    "LABEL": "Terrengsykling"
   },
   "Mountain Biking (Electric)": {
     "LABEL": "Fjellsykling (elektrisk)"
