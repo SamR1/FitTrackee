@@ -12,7 +12,11 @@ export type TRelationshipAction = 'follow' | 'unfollow' | 'block' | 'unblock'
 export type TRelationships = 'followers' | 'following'
 export type TFollowRequestAction = 'accept' | 'reject'
 export type TUserRole = 'user' | 'moderator' | 'admin' | 'owner'
-export type TVisibilityLevels = 'private' | 'followers_only' | 'public'
+export type TVisibilityLevels =
+  | 'private'
+  | 'followers_only'
+  | 'followers_and_remote_only'
+  | 'public'
 export type TSegmentsCreationEvent = 'all' | 'none' | 'only_manual'
 
 export interface IUserLightProfile {
@@ -21,8 +25,10 @@ export interface IUserLightProfile {
   followers: IUserProfile[]
   following: IUserProfile[]
   follows: string
+  fullname?: string
   is_active?: boolean
   is_followed_by: string
+  is_remote: boolean
   nb_workouts: number
   picture: string | boolean
   role: TUserRole

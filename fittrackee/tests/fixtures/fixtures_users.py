@@ -17,6 +17,8 @@ def user_1() -> User:
     user.hide_profile_in_users_directory = False
     user.accepted_policy_date = datetime.now(timezone.utc)
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 
@@ -28,6 +30,8 @@ def user_1_upper() -> User:
     user.hide_profile_in_users_directory = False
     user.accepted_policy_date = datetime.now(timezone.utc)
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 
@@ -42,6 +46,8 @@ def user_1_admin() -> User:
     admin.is_active = True
     admin.accepted_policy_date = datetime.now(timezone.utc)
     db.session.add(admin)
+    db.session.flush()
+    admin.create_actor()
     db.session.commit()
     return admin
 
@@ -58,6 +64,7 @@ def user_1_moderator() -> User:
     moderator.is_active = True
     moderator.accepted_policy_date = datetime.now(timezone.utc)
     db.session.add(moderator)
+    moderator.create_actor()
     db.session.commit()
     return moderator
 
@@ -72,6 +79,7 @@ def user_1_owner() -> User:
     owner.is_active = True
     owner.accepted_policy_date = datetime.now(timezone.utc)
     db.session.add(owner)
+    owner.create_actor()
     db.session.commit()
     return owner
 
@@ -109,6 +117,8 @@ def user_1_raw_speed() -> User:
     user.use_raw_gpx_speed = True
     user.accepted_policy_date = datetime.now(timezone.utc)
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 
@@ -121,6 +131,8 @@ def user_1_paris() -> User:
     user.hide_profile_in_users_directory = False
     user.accepted_policy_date = datetime.now(timezone.utc)
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 
@@ -132,6 +144,8 @@ def user_2() -> User:
     user.hide_profile_in_users_directory = False
     user.accepted_policy_date = datetime.now(timezone.utc)
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 
@@ -168,6 +182,8 @@ def user_2_moderator() -> User:
     user.role = UserRole.MODERATOR.value
     user.accepted_policy_date = datetime.now(timezone.utc)
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 
@@ -180,6 +196,8 @@ def user_3() -> User:
     user.weekm = True
     user.accepted_policy_date = datetime.now(timezone.utc)
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 
@@ -204,6 +222,8 @@ def user_4() -> User:
     user.hide_profile_in_users_directory = False
     user.weekm = True
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 
@@ -216,6 +236,8 @@ def inactive_user() -> User:
     user.confirmation_token = random_string()
     user.accepted_policy_date = datetime.now(timezone.utc)
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 
@@ -232,6 +254,8 @@ def suspended_user() -> User:
     user.accepted_policy_date = datetime.now(timezone.utc)
     user.suspended_at = datetime.now(timezone.utc)
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 
