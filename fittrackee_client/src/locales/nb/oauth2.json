@@ -1,13 +1,15 @@
 {
-  "ADD_A_NEW_APP": "Legg til et nytt OAuth 2.0-program",
+  "ADD_A_NEW_APP": "Legg til en ny OAuth2-applikasjon",
   "APP": {
     "CLIENT_ID": "ID",
     "CLIENT_SECRET": "Hemmelinghet",
-    "DESCRIPTION": "Programbeskrivelse",
+    "DESCRIPTION": "Applikasjonsbeskrivelse",
+    "ISSUE_AT": "utstedt den",
     "NAME": "Programnavn",
-    "REDIRECT_URL": "Nettadresse-videresendelse",
+    "REDIRECT_URL": "Videresendelse Link",
     "SCOPE": {
       "LABEL": "Omfang",
+      "application:write_DESCRIPTION": "gir skrivetilgang til programkonfigurasjonen.",
       "profile:write_DESCRIPTION": "innvilger skrivetilgang til <code>auth</code>-endepunkter.",
       "workouts:read_DESCRIPTION": "innvilger lesetilgang til <code>workouts</code>-endepunkter."
     },

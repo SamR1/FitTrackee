@@ -1,1 +1,13 @@
-{}
+{
+  "50_CHARACTERS_MAX": "Maksimum 50 tegn",
+  "ADD_A_NEW_EQUIPMENT": "Legg til nytt utstyr",
+  "ALL_WORKOUTS_ASSOCIATIONS_REMOVED": "Alle tilknytninger til treningsøkter vil bli fjernet.",
+  "DEFAULT_FOR_SPORTS": "Standard for sporter",
+  "EDIT_EQUIPMENTS": "Rediger utstyr",
+  "EQUIPMENT": "utstyr|utstyr",
+  "EQUIPMENT_TYPE": "utstyrstype|utstyrstyper",
+  "ERRORS": {
+    "inactive": "Utstyret '{equipmentLabel}' er inaktivt.",
+    "invalid": "Utstyret «{equipmentLabel}» er ugyldig for denne sporten."
+  }
+}

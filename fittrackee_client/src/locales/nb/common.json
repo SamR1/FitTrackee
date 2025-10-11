@@ -1,8 +1,13 @@
 {
   "ABOUT": "om",
+  "ACTION": "aktivitet",
+  "ACTIVE": "aktiv",
   "CONFIRMATION": "Bekreftelse",
   "CONTACT": "kontakt",
+  "CREATION_DATE": "Opprettelsesdato",
+  "DATA_IS_LOADING": "laster inn data …",
   "DAY": "dag | dager",
+  "DESCRIPTION": "Beskrivelse",
   "DISPLAYED": "Vist",
   "DOCUMENTATION": "dokumentasjon",
   "HERE": "her",
