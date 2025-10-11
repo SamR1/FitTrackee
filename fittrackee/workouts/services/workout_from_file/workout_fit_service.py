@@ -1,26 +1,13 @@
-import logging
-import sys
 from typing import IO, Optional
 
 import fitdecode
 import gpxpy.gpx
-import requests
-from flask import current_app
 
 from ...constants import NSMAP
 from ...exceptions import WorkoutFileException
 from .constants import GARMIN_DEVICES
 from .workout_gpx_service import WorkoutGpxService
 
-log_format = logging.Formatter('[%(asctime)s] [%(levelname)s] - %(message)s')
-log = logging.getLogger('test')                                  
-log.setLevel('DEBUG')                                       
-
-# writing to stdout                                                     
-handler = logging.StreamHandler(sys.stdout)                             
-handler.setLevel('DEBUG')                                        
-handler.setFormatter(log_format)                                        
-log.addHandler(handler)
 
 class WorkoutFitService(WorkoutGpxService):
     @staticmethod
@@ -96,8 +83,6 @@ class WorkoutFitService(WorkoutGpxService):
                 ),
             )
 
-            elevation_needed = False
-
             for frame in event_and_record_frames:
                 # create a new segment after 'stop_all' event
                 if (
@@ -142,9 +127,6 @@ class WorkoutFitService(WorkoutGpxService):
                     if frame.has_field("enhanced_altitude")
                     else None
                 )
-                if not frame.has_field("enhanced_altitude"):
-                    elevation_needed = True
-
                 heart_rate = (
                     frame.get_value("heart_rate")
                     if frame.has_field("heart_rate")
@@ -181,32 +163,8 @@ class WorkoutFitService(WorkoutGpxService):
                 "error", "error when parsing fit file"
             ) from e
 
-        if gpx_segment.points:  
+        if gpx_segment.points:
             gpx_track.segments.append(gpx_segment)
-
-        if elevation_needed and current_app.config['OPEN_ELEVATION_API_URL']:
-            url = str(current_app.config['OPEN_ELEVATION_API_URL']) \
-                + '/api/v1/lookup'
-            data = []
-            for segment in gpx_track.segments:
-                for point in segment.points:
-                    data.append({
-                        'latitude': point.latitude,
-                        'longitude': point.longitude
-                    })
-            elevations = requests.post(
-                url,
-                json = { 'locations': data },
-                timeout=(3.05, 27)
-            )
-            results = elevations.json().get('results')
-            index = 0
-            for segment in gpx_track.segments:
-                for point in segment.points:
-                    elevation_point = results[index]
-                    point.elevation = float(elevation_point.get('elevation'))
-                    index += 1
-
 
         if not gpx_track.segments:
             raise WorkoutFileException(

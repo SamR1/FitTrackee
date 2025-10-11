@@ -1,4 +1,5 @@
 import os
+import re
 import zipfile
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
@@ -33,6 +34,9 @@ from fittrackee.workouts.models import (
 from fittrackee.workouts.services import (
     WorkoutGpxService,
     WorkoutsFromFileCreationService,
+)
+from fittrackee.workouts.services.elevation.open_elevation_service import (
+    OpenElevationService,
 )
 from fittrackee.workouts.services.workouts_from_file_creation_service import (
     WorkoutsData,
@@ -1110,6 +1114,43 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         )
         with open(get_absolute_file_path(new_workout.original_file)) as f:
             assert f.read() == tcx_with_one_lap_and_one_track
+
+    def test_it_calls_open_elevation_when_elevations_are_missing_in_file_other_than_gpx(  # noqa
+        self,
+        app: "Flask",
+        user_1: "User",
+        tcx_with_one_lap_and_one_track: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        regex = re.compile("<AltitudeMeters>(.*)</AltitudeMeters>")
+        tcx_without_elevation = regex.sub("", tcx_with_one_lap_and_one_track)
+        kml_file_storage = FileStorage(
+            filename="file.tcx",
+            stream=BytesIO(str.encode(tcx_without_elevation)),
+        )
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            file=kml_file_storage,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+
+        with (
+            patch.object(
+                OpenElevationService,
+                "_get_api_url",
+                return_value="https://api.open-elevation.example.com/api/v1/lookup",
+            ),
+            patch.object(
+                OpenElevationService,
+                "get_elevations",
+                return_value=[],
+            ) as get_elevations_mock,
+        ):
+            service.create_workout_from_file(extension="tcx", equipments=None)
+        db.session.commit()
+
+        assert Workout.query.one() is not None
+        get_elevations_mock.assert_called_once()
 
     def test_it_creates_workout_when_extension_is_fit(
         self,

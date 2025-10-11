@@ -1,9 +1,11 @@
+import re
 from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING, Dict
 from unittest.mock import MagicMock, call, patch
 
 import gpxpy
 import pytest
+import requests
 from geoalchemy2.shape import to_shape
 from shapely import LineString, Point
 
@@ -15,7 +17,7 @@ from fittrackee.tests.fixtures.fixtures_workouts import (
     track_points_part_1_coordinates,
     track_points_part_2_coordinates,
 )
-from fittrackee.tests.mixins import RandomMixin
+from fittrackee.tests.mixins import RandomMixin, ResponseMockMixin
 from fittrackee.tests.workouts.mixins import (
     WorkoutAssertMixin,
     WorkoutFileMixin,
@@ -33,6 +35,9 @@ from fittrackee.workouts.models import (
     WorkoutSegment,
 )
 from fittrackee.workouts.services import WorkoutGpxService
+from fittrackee.workouts.services.elevation.open_elevation_service import (
+    OpenElevationService,
+)
 from fittrackee.workouts.services.workout_from_file.workout_point import (
     WorkoutPoint,
 )
@@ -41,6 +46,136 @@ if TYPE_CHECKING:
     from flask import Flask
 
     from fittrackee.users.models import User
+
+OPEN_ELEVATION_RESPONSE = {
+    "results": [
+        {
+            "elevation": 998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+        },
+        {
+            "elevation": 998.0,
+            "latitude": 44.68091,
+            "longitude": 6.07367,
+        },
+        {
+            "elevation": 994.0,
+            "latitude": 44.6808,
+            "longitude": 6.07364,
+        },
+        {
+            "elevation": 994.0,
+            "latitude": 44.68075,
+            "longitude": 6.07364,
+        },
+        {
+            "elevation": 994.0,
+            "latitude": 44.68071,
+            "longitude": 6.07364,
+        },
+        {
+            "elevation": 993.0,
+            "latitude": 44.68049,
+            "longitude": 6.07361,
+        },
+        {
+            "elevation": 992.0,
+            "latitude": 44.68019,
+            "longitude": 6.07356,
+        },
+        {
+            "elevation": 992.0,
+            "latitude": 44.68014,
+            "longitude": 6.07355,
+        },
+        {
+            "elevation": 987.0,
+            "latitude": 44.67995,
+            "longitude": 6.07358,
+        },
+        {
+            "elevation": 987.0,
+            "latitude": 44.67977,
+            "longitude": 6.07364,
+        },
+        {
+            "elevation": 987.0,
+            "latitude": 44.67972,
+            "longitude": 6.07367,
+        },
+        {
+            "elevation": 987.0,
+            "latitude": 44.67966,
+            "longitude": 6.07368,
+        },
+        {
+            "elevation": 986.0,
+            "latitude": 44.67961,
+            "longitude": 6.0737,
+        },
+        {
+            "elevation": 986.0,
+            "latitude": 44.67938,
+            "longitude": 6.07377,
+        },
+        {
+            "elevation": 986.0,
+            "latitude": 44.67933,
+            "longitude": 6.07381,
+        },
+        {
+            "elevation": 985.0,
+            "latitude": 44.67922,
+            "longitude": 6.07385,
+        },
+        {
+            "elevation": 980.0,
+            "latitude": 44.67911,
+            "longitude": 6.0739,
+        },
+        {
+            "elevation": 980.0,
+            "latitude": 44.679,
+            "longitude": 6.07399,
+        },
+        {
+            "elevation": 980.0,
+            "latitude": 44.67896,
+            "longitude": 6.07402,
+        },
+        {
+            "elevation": 979.0,
+            "latitude": 44.67884,
+            "longitude": 6.07408,
+        },
+        {
+            "elevation": 981.0,
+            "latitude": 44.67863,
+            "longitude": 6.07423,
+        },
+        {
+            "elevation": 980.0,
+            "latitude": 44.67858,
+            "longitude": 6.07425,
+        },
+        {
+            "elevation": 979.0,
+            "latitude": 44.67842,
+            "longitude": 6.07434,
+        },
+        {
+            "elevation": 979.0,
+            "latitude": 44.67837,
+            "longitude": 6.07435,
+        },
+        {
+            "elevation": 975.0,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+        },
+    ]
+}
 
 
 class TestWorkoutGpxServiceParseFile(RandomMixin, WorkoutFileMixin):
@@ -132,7 +267,10 @@ class TestWorkoutGpxServiceGetWeatherData:
 
 @pytest.mark.disable_autouse_update_records_patch
 class TestWorkoutGpxServiceProcessFile(
-    WorkoutGpxInfoMixin, WorkoutFileMixin, WorkoutAssertMixin
+    WorkoutGpxInfoMixin,
+    WorkoutFileMixin,
+    WorkoutAssertMixin,
+    ResponseMockMixin,
 ):
     @staticmethod
     def assert_workout_records(workout: "Workout") -> None:
@@ -571,6 +709,29 @@ class TestWorkoutGpxServiceProcessFile(
             "time": "2018-03-13 12:48:55+00:00",
         }
 
+    def test_it_does_not_call_open_elevation_service_when_file_has_no_missing_elevations(  # noqa
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file: str,
+    ) -> None:
+        service = self.init_service_with_gpx(user_1, sport_1_cycling, gpx_file)
+
+        with (
+            patch.object(
+                OpenElevationService,
+                "_get_api_url",
+                return_value="https://api.open-elevation.example.com/api/v1/lookup",
+            ),
+            patch.object(
+                OpenElevationService, "get_elevations"
+            ) as get_elevations_mock,
+        ):
+            service.process_workout()
+
+        get_elevations_mock.assert_not_called()
+
     def test_it_creates_workout_and_segment_when_gpx_file_has_no_elevation(
         self,
         app: "Flask",
@@ -578,13 +739,18 @@ class TestWorkoutGpxServiceProcessFile(
         user_1: "User",
         gpx_file_without_elevation: str,
     ) -> None:
+        # Open Elevation API URL is not set
         service = self.init_service_with_gpx(
             user_1, sport_1_cycling, gpx_file_without_elevation
         )
 
-        service.process_workout()
-        db.session.commit()
+        with patch.object(
+            OpenElevationService, "get_elevations"
+        ) as get_elevations_mock:
+            service.process_workout()
+            db.session.commit()
 
+        get_elevations_mock.assert_not_called()
         assert service.workout_description is None
         assert service.workout_name == "just a workout"
         # workout
@@ -646,6 +812,137 @@ class TestWorkoutGpxServiceProcessFile(
             "speed": 4.22,
             "time": "2018-03-13 12:48:55+00:00",
         }
+
+    def test_it_creates_workout_and_segment_when_gpx_file_has_no_elevation_and_open_elevation_api_is_set(  # noqa
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_without_elevation: str,
+    ) -> None:
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_without_elevation
+        )
+
+        with (
+            patch.object(
+                OpenElevationService,
+                "_get_api_url",
+                return_value="https://api.open-elevation.example.com/api/v1/lookup",
+            ),
+            patch.object(
+                requests,
+                "post",
+                return_value=self.get_response(OPEN_ELEVATION_RESPONSE),
+            ),
+        ):
+            service.process_workout()
+        db.session.commit()
+
+        workout = Workout.query.one()
+        self.assert_workout(user_1, sport_1_cycling, workout)
+        self.assert_workout_segment(workout)
+        self.assert_workout_records(workout)
+        workout_segment = workout.segments[0]
+        coordinates = (
+            track_points_part_1_coordinates + track_points_part_2_coordinates
+        )
+        assert len(workout_segment.points) == len(coordinates)
+        assert workout_segment.points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "speed": 3.21,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert workout_segment.points[-1] == {
+            "distance": 320.12787035769946,
+            "duration": 250,
+            "elevation": 975.0,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "speed": 4.33,
+            "time": "2018-03-13 12:48:55+00:00",
+        }
+
+    def test_it_creates_workout_and_segment_when_open_elevation_api_returns_empty_list(  # noqa
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_without_elevation: str,
+    ) -> None:
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_without_elevation
+        )
+
+        with (
+            patch.object(
+                OpenElevationService,
+                "_get_api_url",
+                return_value="https://api.open-elevation.example.com/api/v1/lookup",
+            ),
+            patch.object(
+                OpenElevationService,
+                "get_elevations",
+                return_value=[],
+            ),
+        ):
+            service.process_workout()
+        db.session.commit()
+
+        workout = Workout.query.one()
+        workout_segment = workout.segments[0]
+        assert workout_segment.points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": None,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "speed": 3.21,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert workout_segment.points[-1] == {
+            "distance": 317.15294405358054,
+            "duration": 250,
+            "elevation": None,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "speed": 4.22,
+            "time": "2018-03-13 12:48:55+00:00",
+        }
+
+    def test_it_calls_open_elevation_for_each_segment(
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_3_segments: str,
+    ) -> None:
+        regex = re.compile("<ele>(.*)</ele>")
+        gpx_file = regex.sub("", gpx_file_with_3_segments)
+        service = self.init_service_with_gpx(user_1, sport_1_cycling, gpx_file)
+
+        with (
+            patch.object(
+                OpenElevationService,
+                "_get_api_url",
+                return_value="https://api.open-elevation.example.com/api/v1/lookup",
+            ),
+            patch.object(
+                OpenElevationService,
+                "get_elevations",
+                return_value=[],
+            ) as get_elevations_mock,
+        ):
+            service.process_workout()
+        db.session.commit()
+
+        workout = Workout.query.one()
+        assert len(workout.segments) == 3
+        assert get_elevations_mock.call_count == 3
 
     def test_it_creates_workout_and_segments_when_gpx_file_contains_3_segments(
         self,

@@ -11,6 +11,7 @@ from fittrackee import db
 
 from ...exceptions import WorkoutExceedingValueException, WorkoutFileException
 from ...models import WORKOUT_VALUES_LIMIT, Workout, WorkoutSegment
+from ..elevation.open_elevation_service import OpenElevationService
 from .base_workout_with_segment_service import (
     BaseWorkoutWithSegmentsCreationService,
 )
@@ -250,6 +251,17 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         segment_points: List[Dict] = []
         coordinates = []
 
+        # Add elevation if OpenElevation is set and at least one value is
+        # missing:
+        elevations = []
+        update_missing_elevation = False
+        open_elevation_service = OpenElevationService()
+        if open_elevation_service.is_enabled and any(
+            point.elevation is None for point in points
+        ):
+            elevations = open_elevation_service.get_elevations(points)
+            update_missing_elevation = len(elevations) > 0
+
         for point_idx, point in enumerate(points):
             if point_idx == 0:
                 if not point.time:
@@ -263,6 +275,9 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                     stopped_time_between_segments += (
                         point.time - previous_segment_last_point_time
                     )
+
+            if update_missing_elevation:
+                point.elevation = elevations[point_idx]["elevation"]
 
             distance = (
                 point.distance_3d(previous_point)  # type: ignore[arg-type]
