@@ -41,6 +41,7 @@ WORKOUT_FILE_MIMETYPES = {
     "fit": "application/vnd.ant.fit",
     "gpx": "application/gpx+xml",
     "kml": "application/vnd.google-earth.kml+xml",
+    "kmz": "application/vnd.google-earth.kmz",
     "tcx": "application/vnd.garmin.tcx+xml",
 }
 
