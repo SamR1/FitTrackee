@@ -2546,7 +2546,26 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
 
         self.assert_404_with_message(response, "no original file for workout")
 
-    def test_it_calls_send_from_directory_if_workout_has_file(
+    def test_it_returns_500_if_workout_has_no_segments(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.original_file = "file.tcx"
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_500(response, "No segments")
+
+    def test_it_calls_send_from_directory_if_original_file_is_gpx(
         self,
         app: Flask,
         user_1: User,
@@ -2576,6 +2595,40 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
             mimetype="application/gpx+xml",
             as_attachment=True,
         )
+
+    def test_it_calls_generate_gpx_if_original_file_is_not_gpx(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        gpx_file: str,
+    ) -> None:
+        tcx_file_path = "file.tcx"
+        workout_cycling_user_1.original_file = tcx_file_path
+        with patch(
+            "fittrackee.workouts.workouts.generate_gpx",
+            return_value=gpx_file,
+        ) as mock:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app, user_1.email
+            )
+
+            response = client.get(
+                self.route.format(
+                    workout_uuid=workout_cycling_user_1.short_id
+                ),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        mock.assert_called_once_with(workout_cycling_user_1)
+        assert response.status_code == 200
+        assert response.mimetype == "application/gpx+xml"
+        assert (
+            response.headers["Content-Disposition"]
+            == "attachment; filename=file.gpx"
+        )
+        assert response.data.decode() == gpx_file
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -2692,7 +2745,7 @@ class TestDownloadWorkoutGpxAsUser(
 class TestDownloadWorkoutGpxAsUnauthenticatedUser(
     DownloadWorkoutGpxTestCase, GetWorkoutGpxPublicVisibilityMixin
 ):
-    def test_it_returns_404(
+    def test_it_returns_401_when_user_is_not_authenticated(
         self,
         app: Flask,
         user_1: User,

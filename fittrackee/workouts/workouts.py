@@ -10,6 +10,7 @@ from flask import (
     Blueprint,
     Response,
     current_app,
+    make_response,
     request,
     send_from_directory,
 )
@@ -77,7 +78,7 @@ from .utils.geometry import (
     get_buffered_location,
     get_geojson_from_segments,
 )
-from .utils.gpx import get_file_extension
+from .utils.gpx import generate_gpx, get_file_extension
 from .utils.workouts import get_datetime_from_request_args
 
 if TYPE_CHECKING:
@@ -203,7 +204,7 @@ def get_statistics(
 
 
 def download_workout_file(
-    workout_short_id: str, auth_user_id: int, original_file: bool
+    workout_short_id: str, auth_user_id: int, as_gpx: bool = False
 ) -> Union[HttpResponse, Response]:
     workout_uuid = decode_short_id(workout_short_id)
     workout = Workout.query.filter_by(
@@ -215,27 +216,33 @@ def download_workout_file(
             message=f"workout not found (id: {workout_short_id})",
         )
 
-    if (original_file and workout.original_file is None) or (
-        not original_file and workout.gpx is None
-    ):
+    if not workout.original_file:
         return DataNotFoundErrorResponse(
-            data_type="original_file" if original_file else "gpx",
-            message=(
-                f"no {'original' if original_file else 'gpx'} "
-                f"file for workout (id: {workout_short_id})"
-            ),
+            data_type="original_file",
+            message=f"no original file for workout (id: {workout_short_id})",
         )
 
-    return send_from_directory(
-        current_app.config["UPLOAD_FOLDER"],
-        workout.original_file if original_file else workout.gpx,
-        mimetype=WORKOUT_FILE_MIMETYPES[
-            get_file_extension(workout.original_file)
-            if original_file
-            else "gpx"
-        ],
-        as_attachment=True,
+    file_extension = get_file_extension(workout.original_file)
+
+    if not as_gpx or file_extension == "gpx":
+        return send_from_directory(
+            current_app.config["UPLOAD_FOLDER"],
+            workout.original_file,
+            mimetype=WORKOUT_FILE_MIMETYPES[file_extension],
+            as_attachment=True,
+        )
+
+    try:
+        gpx_xml = generate_gpx(workout)
+    except WorkoutGPXException as e:
+        return InternalServerErrorResponse(message=str(e))
+    filename = workout.original_file.replace(file_extension, "gpx")
+    response = make_response(gpx_xml)
+    response.mimetype = WORKOUT_FILE_MIMETYPES["gpx"]
+    response.headers["Content-Disposition"] = (
+        f"attachment; filename={filename}"
     )
+    return response
 
 
 def get_user_workouts_query(
@@ -1806,10 +1813,7 @@ def download_workout_gpx(
         - ``workout not found``
         - ``no file for workout``
     """
-    # TODO: generate gpx file if the original file is not a gpx file
-    return download_workout_file(
-        workout_short_id, auth_user.id, original_file=True
-    )
+    return download_workout_file(workout_short_id, auth_user.id, as_gpx=True)
 
 
 @workouts_blueprint.route(
@@ -1851,9 +1855,7 @@ def download_workout_original_file(
         - ``workout not found``
         - ``no original file for workout``
     """
-    return download_workout_file(
-        workout_short_id, auth_user.id, original_file=True
-    )
+    return download_workout_file(workout_short_id, auth_user.id)
 
 
 @workouts_blueprint.route("/workouts/map/<map_id>", methods=["GET"])

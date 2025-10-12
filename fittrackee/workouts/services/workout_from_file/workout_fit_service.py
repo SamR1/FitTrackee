@@ -3,8 +3,9 @@ from typing import IO, Optional
 import fitdecode
 import gpxpy.gpx
 
+from ...constants import NSMAP
 from ...exceptions import WorkoutFileException
-from .constants import GARMIN_DEVICES, NSMAP
+from .constants import GARMIN_DEVICES
 from .workout_gpx_service import WorkoutGpxService
 
 
