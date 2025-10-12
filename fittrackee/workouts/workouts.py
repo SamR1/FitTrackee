@@ -1379,9 +1379,9 @@ def get_workout_data(
     ):
         return not_found_response
 
-    if not workout.gpx or workout.gpx == "":
+    if not workout.original_file or workout.original_file == "":
         return NotFoundErrorResponse(
-            f"no gpx file for this workout (id: {workout_short_id})"
+            f"no file for this workout (id: {workout_short_id})"
         )
 
     try:
@@ -1457,7 +1457,7 @@ def get_workout_chart_data(
     auth_user: Optional[User], workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get chart data from a workout gpx file, to display it with Chart.js.
+    Get chart data to display it with Chart.js.
 
     **Example request**:
 
@@ -1804,10 +1804,11 @@ def download_workout_gpx(
         - ``you do not have permissions, your account is suspended``
     :statuscode 404:
         - ``workout not found``
-        - ``no gpx file for workout``
+        - ``no file for workout``
     """
+    # TODO: generate gpx file if the original file is not a gpx file
     return download_workout_file(
-        workout_short_id, auth_user.id, original_file=False
+        workout_short_id, auth_user.id, original_file=True
     )
 
 

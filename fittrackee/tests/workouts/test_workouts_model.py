@@ -235,7 +235,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout = self.update_workout_with_file_data(
             workout_cycling_user_1_with_coordinates
         )
-        workout.gpx = "file.gpx"
+        workout.original_file = "file.gpx"
         workout.original_file = "file.tcx"
         workout.ave_cadence = 55
         workout.ave_hr = 90
@@ -306,7 +306,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
     ) -> None:
         # it does not return elevation data
         workout = workout_outdoor_tennis_user_1_with_elevation_data
-        workout.gpx = "file.gpx"
+        workout.original_file = "file.gpx"
         workout.original_file = "file.gpx"
         workout.ave_cadence = 55
         workout.ave_hr = 90
@@ -382,7 +382,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_running_user_1: Workout,
     ) -> None:
         workout = self.update_workout_with_file_data(workout_running_user_1)
-        workout.gpx = "file.gpx"
+        workout.original_file = "file.gpx"
         workout.original_file = "file.gpx"
         workout.ave_cadence = 55
         workout.ave_hr = 90
@@ -454,7 +454,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout = self.update_workout_with_file_data(
             workout_paragliding_user_1
         )
-        workout.gpx = "file.gpx"
+        workout.original_file = "file.gpx"
         workout.original_file = "file.gpx"
         workout.ave_cadence = 55
         workout.ave_hr = 90
@@ -1001,7 +1001,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         files_paths = {}
-        extensions = ["gpx", "kml", "png"]
+        extensions = ["kml", "png"]
         for extension in extensions:
             relative_path = os.path.join(
                 "workouts", str(user_1.id), f"file.{extension}"
@@ -1011,9 +1011,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             workout_file = Path(file_path)
             workout_file.parent.mkdir(exist_ok=True, parents=True)
             workout_file.write_text("some text")
-            if extension == "gpx":
-                workout_cycling_user_1.gpx = relative_path
-            elif extension == "kml":
+            if extension in "kml":
                 workout_cycling_user_1.original_file = relative_path
             else:
                 workout_cycling_user_1.map = relative_path
@@ -2839,7 +2837,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
         workout_cycling_user_2.map_visibility = input_workout_visibility
         workout_cycling_user_2.analysis_visibility = input_workout_visibility
         workout_cycling_user_2.workout_visibility = input_workout_visibility
-        workout_cycling_user_2.gpx = "file.gpx"
+        workout_cycling_user_2.original_file = "file.gpx"
         workout_cycling_user_2.original_file = "file.tcx"
         map_id = random_string()
         workout_cycling_user_2 = self.update_workout_with_file_data(
@@ -3121,7 +3119,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         workout_cycling_user_2.map_visibility = VisibilityLevel.FOLLOWERS
         workout_cycling_user_2.analysis_visibility = VisibilityLevel.FOLLOWERS
         workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
-        workout_cycling_user_2.gpx = "file.gpx"
+        workout_cycling_user_2.original_file = "file.gpx"
         workout_cycling_user_2.original_file = "file.tcx"
         map_id = random_string()
         workout_cycling_user_2 = self.update_workout_with_file_data(

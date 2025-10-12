@@ -63,7 +63,7 @@ class TestGetChartData:
         workout_cycling_user_1: "Workout",
         workout_cycling_user_1_segment: "WorkoutSegment",
     ) -> None:
-        workout_cycling_user_1.gpx = None
+        workout_cycling_user_1.original_file = None
 
         chart_data = get_chart_data(
             workout_cycling_user_1,

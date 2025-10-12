@@ -27,7 +27,7 @@ class GetWorkoutGpxAsFollowerMixin:
         follower: User,
         followed: User,
     ) -> None:
-        workout.gpx = "file.gpx"
+        workout.original_file = "file.gpx"
         workout.workout_visibility = analysis_visibility
         workout.analysis_visibility = analysis_visibility
         workout.map_visibility = map_visibility
@@ -42,7 +42,7 @@ class GetWorkoutGpxPublicVisibilityMixin:
         analysis_visibility: VisibilityLevel = VisibilityLevel.PUBLIC,
         map_visibility: VisibilityLevel,
     ) -> None:
-        workout.gpx = "file.gpx"
+        workout.original_file = "file.gpx"
         workout.workout_visibility = analysis_visibility
         workout.analysis_visibility = VisibilityLevel.PUBLIC
         workout.map_visibility = map_visibility
@@ -619,8 +619,7 @@ class TestGetWorkoutGeoJsonAsWorkoutOwner(GetWorkoutGeoJSONTestCase):
         data = json.loads(response.data.decode())
         assert "not found" in data["status"]
         assert (
-            "no gpx file for this workout (id: "
-            f"{workout_cycling_user_1.short_id})"
+            f"no file for this workout (id: {workout_cycling_user_1.short_id})"
         ) in data["message"]
 
     def test_it_returns_error_when_user_is_suspended(
@@ -631,7 +630,7 @@ class TestGetWorkoutGeoJsonAsWorkoutOwner(GetWorkoutGeoJSONTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         gpx_content = self.random_string()
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.gpx"
         user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -657,7 +656,7 @@ class TestGetWorkoutGeoJsonAsWorkoutOwner(GetWorkoutGeoJSONTestCase):
         workout_cycling_user_1_with_coordinates: Workout,
         workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
     ) -> None:
-        workout_cycling_user_1_with_coordinates.gpx = "file.gpx"
+        workout_cycling_user_1_with_coordinates.original_file = "file.gpx"
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -687,7 +686,7 @@ class TestGetWorkoutGeoJsonAsWorkoutOwner(GetWorkoutGeoJSONTestCase):
         workout_cycling_user_1: Workout,
         workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.gpx"
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1032,8 +1031,7 @@ class TestGetWorkoutSegmentGeoJsonAsWorkoutOwner(
         data = json.loads(response.data.decode())
         assert "not found" in data["status"]
         assert (
-            "no gpx file for this workout (id: "
-            f"{workout_cycling_user_1.short_id})"
+            f"no file for this workout (id: {workout_cycling_user_1.short_id})"
         ) in data["message"]
 
     def test_it_returns_error_when_user_is_suspended(
@@ -1044,7 +1042,7 @@ class TestGetWorkoutSegmentGeoJsonAsWorkoutOwner(
         workout_cycling_user_1: Workout,
     ) -> None:
         gpx_content = self.random_string()
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.gpx"
         user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1070,7 +1068,7 @@ class TestGetWorkoutSegmentGeoJsonAsWorkoutOwner(
         workout_cycling_user_1_with_coordinates: Workout,
         workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
     ) -> None:
-        workout_cycling_user_1_with_coordinates.gpx = "file.gpx"
+        workout_cycling_user_1_with_coordinates.original_file = "file.gpx"
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1099,7 +1097,7 @@ class TestGetWorkoutSegmentGeoJsonAsWorkoutOwner(
         workout_cycling_user_1: Workout,
         workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.gpx"
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1451,7 +1449,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         assert response.status_code == 404
         assert "not found" in data["status"]
         assert (
-            f"no gpx file for this workout (id: {workout_short_id})"
+            f"no file for this workout (id: {workout_short_id})"
             in data["message"]
         )
 
@@ -1489,7 +1487,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.gpx"
         user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1551,39 +1549,36 @@ class TestGetWorkoutChartDataAsFollower(
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-        follow_request_from_user_1_to_user_2: FollowRequest,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_0_chart_data_wo_hr: List[Dict],
+        follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         self.init_test_data_for_follower(
-            workout_cycling_user_2,
+            workout_cycling_user_1_with_coordinates,
             analysis_visibility=input_analysis_visibility,
             map_visibility=VisibilityLevel.PRIVATE,
-            follower=user_1,
-            followed=user_2,
+            follower=user_2,
+            followed=user_1,
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_2.email
         )
-        chart_data: List = []
-        workout_cycling_user_2.gpx = "file.gpx"
-        with (
-            patch("builtins.open", new_callable=mock_open),
-            patch(
-                "fittrackee.workouts.workouts.get_chart_data",
-                return_value=chart_data,
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id
             ),
-        ):
-            response = client.get(
-                self.route.format(
-                    workout_uuid=workout_cycling_user_2.short_id
-                ),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
-            )
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
-        assert data["data"]["chart_data"] == chart_data
+        assert (
+            data["data"]["chart_data"]
+            == workout_cycling_user_1_segment_0_chart_data_wo_hr
+        )
 
     @pytest.mark.parametrize(
         "input_hr_visibility,expected_can_see_heart_rate",
@@ -1598,25 +1593,25 @@ class TestGetWorkoutChartDataAsFollower(
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
-        follow_request_from_user_1_to_user_2: FollowRequest,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        follow_request_from_user_2_to_user_1: FollowRequest,
         input_hr_visibility: VisibilityLevel,
         expected_can_see_heart_rate: bool,
     ) -> None:
         self.init_test_data_for_follower(
-            workout_cycling_user_2,
+            workout_cycling_user_1_with_coordinates,
             analysis_visibility=VisibilityLevel.PUBLIC,
             map_visibility=VisibilityLevel.PUBLIC,
-            follower=user_1,
-            followed=user_2,
+            follower=user_2,
+            followed=user_1,
         )
-        user_2.hr_visibility = input_hr_visibility
+        user_1.hr_visibility = input_hr_visibility
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_2.email
         )
-        workout_cycling_user_2.gpx = "file.gpx"
+
         with (
-            patch("builtins.open", new_callable=mock_open),
             patch(
                 "fittrackee.workouts.workouts.get_chart_data",
                 return_value=[],
@@ -1624,13 +1619,13 @@ class TestGetWorkoutChartDataAsFollower(
         ):
             client.get(
                 self.route.format(
-                    workout_uuid=workout_cycling_user_2.short_id
+                    workout_uuid=workout_cycling_user_1_with_coordinates.short_id
                 ),
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         get_chart_data_mock.assert_called_once_with(
-            workout_cycling_user_2,
+            workout_cycling_user_1_with_coordinates,
             can_see_heart_rate=expected_can_see_heart_rate,
             segment_id=None,
         )
@@ -1644,7 +1639,7 @@ class TestGetWorkoutChartDataAsFollower(
         workout_cycling_user_2: Workout,
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
-        workout_cycling_user_2.gpx = "file.gpx"
+        workout_cycling_user_2.original_file = "file.gpx"
         self.init_test_data_for_follower(
             workout_cycling_user_2,
             analysis_visibility=VisibilityLevel.FOLLOWERS,
@@ -1701,25 +1696,29 @@ class TestGetWorkoutChartDataAsUser(
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
     ) -> None:
         self.init_test_data_for_public_workout(
-            workout_cycling_user_2,
+            workout_cycling_user_1_with_coordinates,
             analysis_visibility=input_analysis_visibility,
             map_visibility=VisibilityLevel.PRIVATE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_2.email
         )
 
         response = client.get(
-            self.route.format(workout_uuid=workout_cycling_user_2.short_id),
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id
+            ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
             response,
-            f"workout not found (id: {workout_cycling_user_2.short_id})",
+            "workout not found (id: "
+            f"{workout_cycling_user_1_with_coordinates.short_id})",
         )
 
     @pytest.mark.parametrize(
@@ -1735,19 +1734,23 @@ class TestGetWorkoutChartDataAsUser(
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
         input_hr_visibility: VisibilityLevel,
         expected_can_see_heart_rate: bool,
     ) -> None:
-        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_2.analysis_visibility = VisibilityLevel.PUBLIC
-        user_2.hr_visibility = input_hr_visibility
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+        workout_cycling_user_1_with_coordinates.workout_visibility = (
+            VisibilityLevel.PUBLIC
         )
-        workout_cycling_user_2.gpx = "file.gpx"
+        workout_cycling_user_1_with_coordinates.analysis_visibility = (
+            VisibilityLevel.PUBLIC
+        )
+        user_1.hr_visibility = input_hr_visibility
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
         with (
-            patch("builtins.open", new_callable=mock_open),
             patch(
                 "fittrackee.workouts.workouts.get_chart_data",
                 return_value=[],
@@ -1755,13 +1758,13 @@ class TestGetWorkoutChartDataAsUser(
         ):
             client.get(
                 self.route.format(
-                    workout_uuid=workout_cycling_user_2.short_id
+                    workout_uuid=workout_cycling_user_1_with_coordinates.short_id
                 ),
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
         get_chart_data_mock.assert_called_once_with(
-            workout_cycling_user_2,
+            workout_cycling_user_1_with_coordinates,
             can_see_heart_rate=expected_can_see_heart_rate,
             segment_id=None,
         )
@@ -1772,36 +1775,33 @@ class TestGetWorkoutChartDataAsUser(
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_0_chart_data: List[Dict],
     ) -> None:
         self.init_test_data_for_public_workout(
-            workout_cycling_user_2,
+            workout_cycling_user_1_with_coordinates,
             analysis_visibility=VisibilityLevel.PUBLIC,
             map_visibility=VisibilityLevel.PRIVATE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        chart_data: List = []
-        workout_cycling_user_2.gpx = "file.gpx"
-        with (
-            patch("builtins.open", new_callable=mock_open),
-            patch(
-                "fittrackee.workouts.workouts.get_chart_data",
-                return_value=chart_data,
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id
             ),
-        ):
-            response = client.get(
-                self.route.format(
-                    workout_uuid=workout_cycling_user_2.short_id
-                ),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
-            )
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
-        assert data["data"]["chart_data"] == chart_data
+        assert (
+            data["data"]["chart_data"]
+            == workout_cycling_user_1_segment_0_chart_data
+        )
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -1819,7 +1819,7 @@ class TestGetWorkoutChartDataAsUser(
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        workout_cycling_user_2.gpx = "file.gpx"
+        workout_cycling_user_2.original_file = "file.gpx"
         user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
 
@@ -1863,22 +1863,26 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
     ) -> None:
         self.init_test_data_for_public_workout(
-            workout_cycling_user_1,
+            workout_cycling_user_1_with_coordinates,
             analysis_visibility=input_analysis_visibility,
             map_visibility=VisibilityLevel.PRIVATE,
         )
         client = app.test_client()
 
         response = client.get(
-            self.route.format(workout_uuid=workout_cycling_user_1.short_id),
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id
+            ),
         )
 
         self.assert_404_with_message(
             response,
-            f"workout not found (id: {workout_cycling_user_1.short_id})",
+            "workout not found (id: "
+            f"{workout_cycling_user_1_with_coordinates.short_id})",
         )
 
     @pytest.mark.parametrize(
@@ -1893,28 +1897,34 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
         input_hr_visibility: VisibilityLevel,
         expected_can_see_heart_rate: bool,
     ) -> None:
-        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1_with_coordinates.workout_visibility = (
+            VisibilityLevel.PUBLIC
+        )
+        workout_cycling_user_1_with_coordinates.analysis_visibility = (
+            VisibilityLevel.PUBLIC
+        )
         user_1.hr_visibility = input_hr_visibility
         client = app.test_client()
-        workout_cycling_user_1.gpx = "file.gpx"
+
         with (
-            patch("builtins.open", new_callable=mock_open),
             patch(
                 "fittrackee.workouts.workouts.get_chart_data",
                 return_value=[],
             ) as get_chart_data_mock,
         ):
             client.get(
-                self.route.format(workout_uuid=workout_cycling_user_1.short_id)
+                self.route.format(
+                    workout_uuid=workout_cycling_user_1_with_coordinates.short_id
+                )
             )
 
         get_chart_data_mock.assert_called_once_with(
-            workout_cycling_user_1,
+            workout_cycling_user_1_with_coordinates,
             can_see_heart_rate=expected_can_see_heart_rate,
             segment_id=None,
         )
@@ -1924,32 +1934,30 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_0_chart_data_wo_hr: List[Dict],
     ) -> None:
-        chart_data: List = []
         self.init_test_data_for_public_workout(
-            workout_cycling_user_1,
+            workout_cycling_user_1_with_coordinates,
             analysis_visibility=VisibilityLevel.PUBLIC,
             map_visibility=VisibilityLevel.PRIVATE,
         )
         client = app.test_client()
-        with (
-            patch("builtins.open", new_callable=mock_open),
-            patch(
-                "fittrackee.workouts.workouts.get_chart_data",
-                return_value=chart_data,
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id
             ),
-        ):
-            response = client.get(
-                self.route.format(
-                    workout_uuid=workout_cycling_user_1.short_id
-                ),
-            )
+        )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
-        assert data["data"]["chart_data"] == chart_data
+        assert (
+            data["data"]["chart_data"]
+            == workout_cycling_user_1_segment_0_chart_data_wo_hr
+        )
 
 
 class TestGetWorkoutSegmentGpx(WorkoutApiTestCaseMixin):
@@ -1983,7 +1991,7 @@ class TestGetWorkoutSegmentGpx(WorkoutApiTestCaseMixin):
         workout_cycling_user_1_segment: WorkoutSegment,
         gpx_file_with_segments: str,
     ) -> None:
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.gpx"
         user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2025,7 +2033,7 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
         )
 
         self.assert_404_with_message(
-            response, f"no gpx file for this workout (id: {workout_short_id})"
+            response, f"no file for this workout (id: {workout_short_id})"
         )
 
     def test_it_returns_chart_data(
@@ -2040,7 +2048,7 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
             app, user_1.email
         )
         chart_data: List = []
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.gpx"
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
@@ -2150,7 +2158,7 @@ class TestGetWorkoutSegmentChartDataAsFollower(
             app, user_2.email
         )
         chart_data: List = []
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.gpx"
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
@@ -2180,7 +2188,7 @@ class TestGetWorkoutSegmentChartDataAsFollower(
         workout_cycling_user_1_segment: WorkoutSegment,
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.gpx"
         self.init_test_data_for_follower(
             workout_cycling_user_1,
             analysis_visibility=VisibilityLevel.FOLLOWERS,
@@ -2290,7 +2298,7 @@ class TestGetWorkoutSegmentChartDataAsUser(
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.gpx"
         with (
             patch("builtins.open", new_callable=mock_open),
             patch(
@@ -2325,7 +2333,7 @@ class TestGetWorkoutSegmentChartDataAsUser(
             analysis_visibility=VisibilityLevel.PUBLIC,
             map_visibility=VisibilityLevel.PRIVATE,
         )
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.gpx"
         user_2.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2520,7 +2528,7 @@ class DownloadWorkoutGpxTestCase(WorkoutApiTestCaseMixin):
 
 
 class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
-    def test_it_returns_404_if_workout_does_not_have_gpx(
+    def test_it_returns_404_if_workout_does_not_have_file(
         self,
         app: Flask,
         user_1: User,
@@ -2536,9 +2544,9 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_404_with_message(response, "no gpx file for workout")
+        self.assert_404_with_message(response, "no original file for workout")
 
-    def test_it_calls_send_from_directory_if_workout_has_gpx(
+    def test_it_calls_send_from_directory_if_workout_has_file(
         self,
         app: Flask,
         user_1: User,
@@ -2546,7 +2554,7 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
         workout_cycling_user_1: Workout,
     ) -> None:
         gpx_file_path = "file.gpx"
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = gpx_file_path
         with patch(
             "fittrackee.workouts.workouts.send_from_directory",
             return_value="file",
@@ -2576,7 +2584,7 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.gpx"
         user_1.suspended_at = datetime.now(timezone.utc)
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2614,7 +2622,7 @@ class TestDownloadWorkoutGpxAsFollower(DownloadWorkoutGpxTestCase):
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.gpx = "file.gpx"
+        workout_cycling_user_2.original_file = "file.gpx"
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_2.analysis_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_2.map_visibility = VisibilityLevel.PUBLIC
@@ -2817,7 +2825,7 @@ class TestDownloadWorkoutOriginalFileAsFollower(
         follow_request_from_user_1_to_user_2: FollowRequest,
     ) -> None:
         user_2.approves_follow_request_from(user_1)
-        workout_cycling_user_2.gpx = "file.tcx"
+        workout_cycling_user_2.original_file = "file.tcx"
         workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_2.analysis_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_2.map_visibility = VisibilityLevel.PUBLIC
