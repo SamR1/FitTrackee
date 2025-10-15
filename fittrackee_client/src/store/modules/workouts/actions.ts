@@ -213,7 +213,9 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
           if (
             payload.segmentId &&
             (workout.segments.length === 0 ||
-              !workout.segments[+payload.segmentId - 1])
+              !workout.segments.find(
+                (segment) => segment.segment_id === payload.segmentId
+              ))
           ) {
             throw new Error('WORKOUT_NOT_FOUND')
           }

@@ -27,18 +27,6 @@ class TestGetChartData:
                 can_see_heart_rate=True,
             )
 
-    def test_it_raises_error_when_segment_id_is_invalid(
-        self,
-        app: "Flask",
-        user_1: "User",
-        sport_1_cycling: "Sport",
-        workout_cycling_user_1: "Workout",
-    ) -> None:
-        with pytest.raises(WorkoutGPXException, match="Incorrect segment id"):
-            get_chart_data(
-                workout_cycling_user_1, can_see_heart_rate=True, segment_id=0
-            )
-
     def test_it_raises_error_when_segment_not_found(
         self,
         app: "Flask",
@@ -47,12 +35,13 @@ class TestGetChartData:
         workout_cycling_user_1: "Workout",
     ) -> None:
         with pytest.raises(
-            WorkoutGPXException, match="No segment with id '9999'"
+            WorkoutGPXException,
+            match="No segment with id 'C4asMMbRJsxTirSjTVWeWU'",
         ):
             get_chart_data(
                 workout_cycling_user_1,
                 can_see_heart_rate=True,
-                segment_id=9999,
+                segment_short_id="C4asMMbRJsxTirSjTVWeWU",
             )
 
     def test_it_returns_empty_list_when_no_points_and_not_gpx(
@@ -112,7 +101,7 @@ class TestGetChartData:
             get_chart_data(
                 workout_cycling_user_1_with_coordinates,
                 can_see_heart_rate=True,
-                segment_id=1,
+                segment_short_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             )
         get_chart_data_from_segment_points_mock.assert_called_once_with(
             [workout_cycling_user_1_segment_0_with_coordinates.points],

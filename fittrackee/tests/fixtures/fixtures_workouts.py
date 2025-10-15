@@ -138,8 +138,8 @@ def workout_cycling_user_1_segment(
     workout_segment = WorkoutSegment(
         workout_id=workout_cycling_user_1.id,
         workout_uuid=workout_cycling_user_1.uuid,
-        segment_id=0,
     )
+    workout_segment.start_date = workout_cycling_user_1.workout_date
     workout_segment.duration = workout_cycling_user_1.duration
     workout_segment.distance = workout_cycling_user_1.distance
     update_workout(workout_segment)
@@ -191,7 +191,9 @@ def workout_cycling_user_1_segment_0_with_coordinates(
     workout_segment = WorkoutSegment(
         workout_id=workout_cycling_user_1_with_coordinates.id,
         workout_uuid=workout_cycling_user_1_with_coordinates.uuid,
-        segment_id=0,
+    )
+    workout_segment.start_date = (
+        workout_cycling_user_1_with_coordinates.workout_date
     )
     workout_segment.duration = timedelta(minutes=1, seconds=30)
     workout_segment.moving = workout_segment.duration
@@ -545,7 +547,15 @@ def workout_cycling_user_1_segment_1_with_coordinates(
     workout_segment = WorkoutSegment(
         workout_id=workout_cycling_user_1_with_coordinates.id,
         workout_uuid=workout_cycling_user_1_with_coordinates.uuid,
-        segment_id=1,
+    )
+    workout_segment.start_date = datetime(
+        year=2018,
+        month=3,
+        day=13,
+        hour=12,
+        minute=46,
+        second=30,
+        tzinfo=timezone.utc,
     )
     workout_segment.duration = timedelta(minutes=2, seconds=25)
     workout_segment.moving = workout_segment.duration
@@ -759,7 +769,15 @@ def workout_cycling_user_1_segment_2(
     workout_segment = WorkoutSegment(
         workout_id=workout_cycling_user_1.id,
         workout_uuid=workout_cycling_user_1.uuid,
-        segment_id=1,
+    )
+    workout_segment.start_date = datetime(
+        year=2018,
+        month=3,
+        day=13,
+        hour=12,
+        minute=43,
+        second=00,
+        tzinfo=timezone.utc,
     )
     workout_segment.duration = timedelta(seconds=3000)
     workout_segment.moving = workout_segment.duration
@@ -808,8 +826,8 @@ def workout_running_user_1_segment(
     workout_segment = WorkoutSegment(
         workout_id=workout_running_user_1.id,
         workout_uuid=workout_running_user_1.uuid,
-        segment_id=0,
     )
+    workout_segment.start_date = workout_running_user_1.workout_date
     workout_segment.duration = workout_running_user_1.duration
     workout_segment.distance = workout_running_user_1.distance
     update_workout(workout_segment)
@@ -844,7 +862,9 @@ def workout_running_user_1_segment_with_coordinates(
     workout_segment = WorkoutSegment(
         workout_id=workout_running_user_1_with_coordinates.id,
         workout_uuid=workout_running_user_1_with_coordinates.uuid,
-        segment_id=0,
+    )
+    workout_segment.start_date = (
+        workout_running_user_1_with_coordinates.workout_date
     )
     workout_segment.duration = workout_running_user_1_with_coordinates.duration
     workout_segment.distance = workout_running_user_1_with_coordinates.distance
@@ -1085,8 +1105,9 @@ def workout_cycling_user_2_segment(
     workout_segment = WorkoutSegment(
         workout_id=workout_cycling_user_2.id,
         workout_uuid=workout_cycling_user_2.uuid,
-        segment_id=0,
     )
+
+    workout_segment.start_date = workout_cycling_user_2.workout_date
     workout_segment.duration = workout_cycling_user_2.duration
     workout_segment.distance = workout_cycling_user_2.distance
     update_workout(workout_segment)

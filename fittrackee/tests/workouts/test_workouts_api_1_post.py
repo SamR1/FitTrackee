@@ -67,7 +67,7 @@ def assert_workout_data_with_gpx(data: Dict, user: User) -> None:
 
     segment = data["data"]["workouts"][0]["segments"][0]
     assert segment["workout_id"] == data["data"]["workouts"][0]["id"]
-    assert segment["segment_id"] == 0
+    assert segment["segment_id"] is not None
     assert segment["duration"] == "0:04:10"
     assert segment["ascent"] == 0.4
     assert segment["ave_speed"] == 4.61
@@ -138,7 +138,7 @@ def assert_workout_data_with_gpx_segments(data: Dict, user: User) -> None:
 
     segment = data["data"]["workouts"][0]["segments"][0]
     assert segment["workout_id"] == data["data"]["workouts"][0]["id"]
-    assert segment["segment_id"] == 0
+    assert segment["segment_id"] is not None
     assert segment["duration"] == "0:01:30"
     assert segment["ascent"] == 0
     assert segment["ave_speed"] == 4.53
@@ -152,7 +152,7 @@ def assert_workout_data_with_gpx_segments(data: Dict, user: User) -> None:
 
     segment = data["data"]["workouts"][0]["segments"][1]
     assert segment["workout_id"] == data["data"]["workouts"][0]["id"]
-    assert segment["segment_id"] == 1
+    assert segment["segment_id"] is not None
     assert segment["duration"] == "0:02:25"
     assert segment["ascent"] == 0.4
     assert segment["ave_speed"] == 4.62
@@ -1460,7 +1460,7 @@ class TestPostWorkoutWithZipArchive(UserTaskMixin, WorkoutApiTestCaseMixin):
 
             segment = data["data"]["workouts"][0]["segments"][0]
             assert segment["workout_id"] == data["data"]["workouts"][0]["id"]
-            assert segment["segment_id"] == 0
+            assert segment["segment_id"] is not None
             assert segment["duration"] == "0:04:10"
             assert segment["ascent"] == 0.4
             assert segment["ave_speed"] == 4.61
@@ -1835,6 +1835,9 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
             assert_workout_data_with_gpx(data, user_1)
         map_id = data["data"]["workouts"][0]["map"]
         workout_short_id = data["data"]["workouts"][0]["id"]
+        segment_short_id = data["data"]["workouts"][0]["segments"][0][
+            "segment_id"
+        ]
 
         response = client.get(
             f"/api/workouts/{workout_short_id}/geojson",
@@ -1848,7 +1851,7 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
         assert isinstance(data["data"]["geojson"], dict)
 
         response = client.get(
-            f"/api/workouts/{workout_short_id}/geojson/segment/1",
+            f"/api/workouts/{workout_short_id}/geojson/segment/{segment_short_id}",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
         data = json.loads(response.data.decode())
@@ -2001,8 +2004,11 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
         )
         data = json.loads(response.data.decode())
         workout_short_id = data["data"]["workouts"][0]["id"]
+        segment_short_id = data["data"]["workouts"][0]["segments"][0][
+            "segment_id"
+        ]
         response = client.get(
-            f"/api/workouts/{workout_short_id}/chart_data/segment/1",
+            f"/api/workouts/{workout_short_id}/chart_data/segment/{segment_short_id}",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -2056,37 +2062,6 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
         )
 
         self.assert_404(response)
-
-    def test_it_returns_500_on_invalid_segment_id(
-        self,
-        app: "Flask",
-        user_1: "User",
-        sport_1_cycling: "Sport",
-        gpx_file: str,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.post(
-            "/api/workouts",
-            data=dict(
-                file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
-                data='{"sport_id": 1}',
-            ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
-        )
-        data = json.loads(response.data.decode())
-        workout_short_id = data["data"]["workouts"][0]["id"]
-        response = client.get(
-            f"/api/workouts/{workout_short_id}/chart_data/segment/0",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        self.assert_500(response, "Incorrect segment id")
 
     def test_it_returns_404_if_segment_id_does_not_exist(
         self,

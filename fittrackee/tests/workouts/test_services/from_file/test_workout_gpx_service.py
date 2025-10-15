@@ -541,7 +541,6 @@ class TestWorkoutGpxServiceProcessFile(
         # first workout segment
         assert workout_segments[0].workout_id == workout.id
         assert workout_segments[0].workout_uuid == workout.uuid
-        assert workout_segments[0].segment_id == 0
         assert float(workout_segments[0].ascent) == 0.0
         assert float(workout_segments[0].ave_speed) == 6.32
         assert float(workout_segments[0].descent) == 4.0
@@ -584,7 +583,6 @@ class TestWorkoutGpxServiceProcessFile(
         # second workout segment
         assert workout_segments[1].workout_id == workout.id
         assert workout_segments[1].workout_uuid == workout.uuid
-        assert workout_segments[1].segment_id == 1
         assert float(workout_segments[1].ascent) == 0
         assert float(workout_segments[1].ave_speed) == 4.54
         assert float(workout_segments[1].descent) == 1.0
@@ -627,7 +625,6 @@ class TestWorkoutGpxServiceProcessFile(
         # third workout segment
         assert workout_segments[2].workout_id == workout.id
         assert workout_segments[2].workout_uuid == workout.uuid
-        assert workout_segments[2].segment_id == 2
         assert float(workout_segments[2].ascent) == 0.0
         assert float(workout_segments[2].ave_speed) == 8.94
         assert float(workout_segments[2].descent) == 1.0
@@ -747,7 +744,6 @@ class TestWorkoutGpxServiceProcessFile(
         # first workout segment
         assert workout_segments[0].workout_id == workout.id
         assert workout_segments[0].workout_uuid == workout.uuid
-        assert workout_segments[0].segment_id == 0
         assert float(workout_segments[0].ascent) == 0.0
         assert float(workout_segments[0].ave_speed) == 6.32
         assert float(workout_segments[0].descent) == 4.0
@@ -783,7 +779,6 @@ class TestWorkoutGpxServiceProcessFile(
         # second workout segment
         assert workout_segments[1].workout_id == workout.id
         assert workout_segments[1].workout_uuid == workout.uuid
-        assert workout_segments[1].segment_id == 2
         assert float(workout_segments[1].ascent) == 0.0
         assert float(workout_segments[1].ave_speed) == 8.94
         assert float(workout_segments[1].descent) == 1.0
@@ -835,7 +830,7 @@ class TestWorkoutGpxServiceProcessFile(
             "min_alt": 979.0,
             "moving": "0:00:10",
             "pauses": None,
-            "segment_id": 2,
+            "segment_id": workout_segments[1].short_id,
             "workout_id": workout.short_id,
         }
 

@@ -1076,7 +1076,7 @@ class TestGetWorkoutSegmentGeoJsonAsWorkoutOwner(
         response = client.get(
             self.route.format(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
-                segment_id=1,
+                segment_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
@@ -1104,7 +1104,8 @@ class TestGetWorkoutSegmentGeoJsonAsWorkoutOwner(
 
         response = client.get(
             self.route.format(
-                workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+                workout_uuid=workout_cycling_user_1.short_id,
+                segment_id=workout_cycling_user_1_segment.short_id,
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
@@ -1179,7 +1180,7 @@ class TestGetWorkoutSegmentGeoJsonAsFollower(
         response = client.get(
             self.route.format(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
-                segment_id=1,
+                segment_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
@@ -1302,7 +1303,7 @@ class TestGetWorkoutSegmentGeoJsonAsUser(
         response = client.get(
             self.route.format(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
-                segment_id=1,
+                segment_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
@@ -1410,7 +1411,7 @@ class TestGetWorkoutSegmentGeoJsonAsUnauthenticatedUser(
         response = client.get(
             self.route.format(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
-                segment_id=1,
+                segment_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             ),
         )
 
@@ -1627,7 +1628,7 @@ class TestGetWorkoutChartDataAsFollower(
         get_chart_data_mock.assert_called_once_with(
             workout_cycling_user_1_with_coordinates,
             can_see_heart_rate=expected_can_see_heart_rate,
-            segment_id=None,
+            segment_short_id=None,
         )
 
     def test_it_returns_error_when_user_is_suspended(
@@ -1766,7 +1767,7 @@ class TestGetWorkoutChartDataAsUser(
         get_chart_data_mock.assert_called_once_with(
             workout_cycling_user_1_with_coordinates,
             can_see_heart_rate=expected_can_see_heart_rate,
-            segment_id=None,
+            segment_short_id=None,
         )
 
     def test_it_returns_chart_data_when_analysis_visibility_is_public(
@@ -1926,7 +1927,7 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         get_chart_data_mock.assert_called_once_with(
             workout_cycling_user_1_with_coordinates,
             can_see_heart_rate=expected_can_see_heart_rate,
-            segment_id=None,
+            segment_short_id=None,
         )
 
     def test_it_returns_chart_data_when_map_visibility_is_public(

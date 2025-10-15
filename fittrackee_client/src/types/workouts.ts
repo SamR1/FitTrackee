@@ -30,7 +30,8 @@ export interface IWorkoutSegment {
   min_alt: number
   moving: string
   pauses: string
-  segment_id: number
+  segment_id: string
+  segment_number: number
   workout_id: string
 }
 
@@ -156,7 +157,8 @@ export interface IWorkoutObject {
   pauses: string | null
   previousUrl: string | null
   records: IRecord[]
-  segmentId: number | null
+  segmentId: string | null
+  segmentNumber: number | null
   source: string | null
   suspended: boolean
   title: string

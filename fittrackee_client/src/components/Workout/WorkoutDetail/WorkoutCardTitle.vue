@@ -197,7 +197,7 @@
             —
             <i class="fa fa-map-marker" aria-hidden="true" />
             {{ $t('workouts.SEGMENT') }}
-            {{ workoutObject.segmentId + 1 }}
+            {{ workoutObject.segmentNumber }}
           </span>
         </div>
         <div class="workout-date">

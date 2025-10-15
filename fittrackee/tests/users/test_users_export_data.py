@@ -145,7 +145,8 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "original_file": workout.original_file.split("/")[-1],  # type: ignore[union-attr]
                 "records": [record.serialize() for record in workout.records],
                 "segments": [
-                    segment.serialize() for segment in workout.segments
+                    {**segment.serialize(), "segment_number": number}
+                    for number, segment in enumerate(workout.segments, start=1)
                 ],
                 "source": workout.source,
                 "weather_start": None,

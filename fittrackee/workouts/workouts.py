@@ -1365,7 +1365,7 @@ def get_workout_data(
     auth_user: Optional[User],
     workout_short_id: str,
     data_type: str,
-    segment_id: Optional[int] = None,
+    segment_short_id: Optional[str] = None,
 ) -> Union[Dict, HttpResponse]:
     """Get data from workout gpx file"""
     not_found_response = DataNotFoundErrorResponse(
@@ -1398,11 +1398,13 @@ def get_workout_data(
                 "chart_data": get_chart_data(
                     workout,
                     can_see_heart_rate=can_see_heart_rate,
-                    segment_id=segment_id,
+                    segment_short_id=segment_short_id,
                 )
             }
         else:  # data_type == "geojson"
-            geojson = get_geojson_from_segments(workout, segment_id=segment_id)
+            geojson = get_geojson_from_segments(
+                workout, segment_short_id=segment_short_id
+            )
             # Handle error differently when using workout segment uuid
             if not geojson:
                 return NotFoundErrorResponse("geojson not found")
@@ -1566,12 +1568,12 @@ def get_segment_gpx(
 
 
 @workouts_blueprint.route(
-    "/workouts/<string:workout_short_id>/chart_data/segment/<int:segment_id>",
+    "/workouts/<string:workout_short_id>/chart_data/segment/<string:segment_short_id>",
     methods=["GET"],
 )
 @require_auth(scopes=["workouts:read"], optional_auth_user=True)
 def get_segment_chart_data(
-    auth_user: Optional[User], workout_short_id: str, segment_id: int
+    auth_user: Optional[User], workout_short_id: str, segment_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get chart data from a workout gpx file, to display it with Chart.js.
@@ -1580,7 +1582,8 @@ def get_segment_chart_data(
 
     .. sourcecode:: http
 
-      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart/segment/1 HTTP/1.1
+      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart/
+          segment/C4asMMbRJsxTirSjTVWeWU HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1618,7 +1621,7 @@ def get_segment_chart_data(
       }
 
     :param string workout_short_id: workout short id
-    :param integer segment_id: segment id
+    :param string segment_short_id: segment short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
                ``private`` or ``followers_only`` map visibility
@@ -1637,7 +1640,7 @@ def get_segment_chart_data(
 
     """
     return get_workout_data(
-        auth_user, workout_short_id, "chart_data", segment_id
+        auth_user, workout_short_id, "chart_data", segment_short_id
     )
 
 
@@ -1712,12 +1715,12 @@ def get_workout_geojson(
 
 
 @workouts_blueprint.route(
-    "/workouts/<string:workout_short_id>/geojson/segment/<int:segment_id>",
+    "/workouts/<string:workout_short_id>/geojson/segment/<string:segment_short_id>",
     methods=["GET"],
 )
 @require_auth(scopes=["workouts:read"], optional_auth_user=True)
 def get_segment_geojson(
-    auth_user: Optional[User], workout_short_id: str, segment_id: int
+    auth_user: Optional[User], workout_short_id: str, segment_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get workout segment GeoJSON, when segment has geometry
@@ -1726,7 +1729,8 @@ def get_segment_geojson(
 
     .. sourcecode:: http
 
-      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/segment/1 HTTP/1.1
+      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/geojson/
+          segment/C4asMMbRJsxTirSjTVWeWU HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1753,7 +1757,7 @@ def get_segment_geojson(
       }
 
     :param string workout_short_id: workout short id
-    :param integer segment_id: segment id
+    :param string segment_short_id: segment short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
                ``private`` or ``followers_only`` map visibility
@@ -1772,7 +1776,9 @@ def get_segment_geojson(
         - ``geojson not found``
     :statuscode 500: ``error, please try again or contact the administrator``
     """
-    return get_workout_data(auth_user, workout_short_id, "geojson", segment_id)
+    return get_workout_data(
+        auth_user, workout_short_id, "geojson", segment_short_id
+    )
 
 
 @workouts_blueprint.route(

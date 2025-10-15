@@ -602,8 +602,13 @@ class Workout(BaseModel):
             "pauses": str(self.pauses) if self.pauses else None,
             "segments": (
                 [
-                    segment.serialize(can_see_heart_rate=can_see_heart_rate)
-                    for segment in self.segments
+                    {
+                        **segment.serialize(
+                            can_see_heart_rate=can_see_heart_rate
+                        ),
+                        "segment_number": number,
+                    }
+                    for number, segment in enumerate(self.segments, start=1)
                 ]
                 if can_see_analysis_data
                 else []
@@ -922,14 +927,10 @@ class WorkoutSegment(BaseModel):
         ),
     )
 
-    workout_id: Mapped[int] = mapped_column(
-        db.ForeignKey("workouts.id"), primary_key=True
-    )
+    workout_id: Mapped[int] = mapped_column(db.ForeignKey("workouts.id"))
     workout_uuid: Mapped[UUID] = mapped_column(
         postgresql.UUID(as_uuid=True), nullable=False
     )
-    # to remove in a next version to allow segment deletion
-    segment_id: Mapped[int] = mapped_column(primary_key=True)
     duration: Mapped[timedelta] = mapped_column(nullable=False)
     pauses: Mapped[Optional[timedelta]] = mapped_column(nullable=True)
     moving: Mapped[Optional[timedelta]] = mapped_column(nullable=True)
@@ -975,11 +976,10 @@ class WorkoutSegment(BaseModel):
         server_default=text("gen_random_uuid ()"),
         unique=True,
         nullable=False,
+        primary_key=True,
     )
-    # change nullable=False in a next version
-    # (allow to order segments after segment_id removal)
     start_date: Mapped[datetime] = mapped_column(
-        TZDateTime, index=True, nullable=True
+        TZDateTime, index=True, nullable=False
     )
 
     workout: Mapped["Workout"] = relationship(
@@ -988,16 +988,17 @@ class WorkoutSegment(BaseModel):
 
     def __str__(self) -> str:
         return (
-            f"<Segment '{self.segment_id}' "
+            f"<Segment '{self.short_id}' "
             f"for workout '{encode_uuid(self.workout_uuid)}'>"
         )
 
-    def __init__(
-        self, segment_id: int, workout_id: int, workout_uuid: UUID
-    ) -> None:
-        self.segment_id = segment_id
+    def __init__(self, workout_id: int, workout_uuid: UUID) -> None:
         self.workout_id = workout_id
         self.workout_uuid = workout_uuid
+
+    @property
+    def short_id(self) -> str:
+        return encode_uuid(self.uuid)
 
     def store_geometry(self, coordinates: List[List[float]]) -> None:
         self.geom = str(LineString(coordinates))  # type: ignore
@@ -1006,13 +1007,13 @@ class WorkoutSegment(BaseModel):
         sport_label = self.workout.sport.label
         return {
             "workout_id": encode_uuid(self.workout_uuid),
-            "segment_id": self.segment_id,
+            "segment_id": self.short_id,
             "duration": None if self.duration is None else str(self.duration),
             "pauses": str(self.pauses) if self.pauses else None,
             "moving": None if self.moving is None else str(self.moving),
-            "distance": None
-            if self.distance is None
-            else float(self.distance),
+            "distance": (
+                None if self.distance is None else float(self.distance)
+            ),
             "min_alt": (
                 float(self.min_alt) if self.min_alt is not None else None
             ),

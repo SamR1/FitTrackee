@@ -280,8 +280,11 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [record.serialize() for record in workout.records],
             "segments": [
-                segment.serialize(can_see_heart_rate=True)
-                for segment in workout.segments
+                {
+                    **segment.serialize(can_see_heart_rate=True),
+                    "segment_number": number,
+                }
+                for number, segment in enumerate(workout.segments, start=1)
             ],
             "source": workout.source,
             "sport_id": workout.sport_id,
@@ -355,8 +358,11 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 if record.record_type != "HA"
             ],
             "segments": [
-                segment.serialize(can_see_heart_rate=True)
-                for segment in workout.segments
+                {
+                    **segment.serialize(can_see_heart_rate=True),
+                    "segment_number": number,
+                }
+                for number, segment in enumerate(workout.segments, start=1)
             ],
             "source": workout.source,
             "sport_id": workout.sport_id,
@@ -427,8 +433,11 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [record.serialize() for record in workout.records],
             "segments": [
-                segment.serialize(can_see_heart_rate=True)
-                for segment in workout.segments
+                {
+                    **segment.serialize(can_see_heart_rate=True),
+                    "segment_number": number,
+                }
+                for number, segment in enumerate(workout.segments, start=1)
             ],
             "source": workout.source,
             "sport_id": workout.sport_id,
@@ -499,8 +508,11 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [record.serialize() for record in workout.records],
             "segments": [
-                segment.serialize(can_see_heart_rate=True)
-                for segment in workout.segments
+                {
+                    **segment.serialize(can_see_heart_rate=True),
+                    "segment_number": number,
+                }
+                for number, segment in enumerate(workout.segments, start=1)
             ],
             "source": workout.source,
             "sport_id": workout.sport_id,
@@ -1244,7 +1256,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["max_alt"] == workout.max_alt
         assert serialized_workout["min_alt"] == workout.min_alt
         assert serialized_workout["segments"] == [
-            workout_cycling_user_1_segment.serialize()
+            {**workout_cycling_user_1_segment.serialize(), "segment_number": 1}
         ]
         assert serialized_workout["with_analysis"] is True
         assert serialized_workout["with_file"] is False
@@ -1353,7 +1365,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["max_alt"] == workout.max_alt
         assert serialized_workout["min_alt"] == workout.min_alt
         assert serialized_workout["segments"] == [
-            workout_cycling_user_1_segment.serialize()
+            {**workout_cycling_user_1_segment.serialize(), "segment_number": 1}
         ]
         assert serialized_workout["with_analysis"] is True
         assert serialized_workout["with_file"] is True
@@ -1405,7 +1417,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["max_alt"] == workout.max_alt
         assert serialized_workout["min_alt"] == workout.min_alt
         assert serialized_workout["segments"] == [
-            workout_cycling_user_1_segment.serialize()
+            {**workout_cycling_user_1_segment.serialize(), "segment_number": 1}
         ]
         assert serialized_workout["with_analysis"] is True
         assert serialized_workout["with_file"] is False
@@ -1442,7 +1454,12 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["ave_hr"] == workout_cycling_user_1.ave_hr
         assert serialized_workout["max_hr"] == workout_cycling_user_1.max_hr
         assert serialized_workout["segments"] == [
-            workout_cycling_user_1_segment.serialize(can_see_heart_rate=True)
+            {
+                **workout_cycling_user_1_segment.serialize(
+                    can_see_heart_rate=True
+                ),
+                "segment_number": 1,
+            }
         ]
 
     def test_serializer_does_not_return_hr_related_data(
@@ -1469,7 +1486,12 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["ave_hr"] is None
         assert serialized_workout["max_hr"] is None
         assert serialized_workout["segments"] == [
-            workout_cycling_user_1_segment.serialize(can_see_heart_rate=False)
+            {
+                **workout_cycling_user_1_segment.serialize(
+                    can_see_heart_rate=False
+                ),
+                "segment_number": 1,
+            }
         ]
 
     def test_serializer_does_not_return_next_workout(
@@ -1808,7 +1830,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["max_alt"] == workout.max_alt
         assert serialized_workout["min_alt"] == workout.min_alt
         assert serialized_workout["segments"] == [
-            workout_cycling_user_1_segment.serialize()
+            {**workout_cycling_user_1_segment.serialize(), "segment_number": 1}
         ]
         assert serialized_workout["with_analysis"] is True
         assert serialized_workout["with_file"] is False
@@ -1816,7 +1838,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             serialized_workout["workout_visibility"] == VisibilityLevel.PUBLIC
         )
         assert serialized_workout["segments"] == [
-            workout_cycling_user_1_segment.serialize()
+            {**workout_cycling_user_1_segment.serialize(), "segment_number": 1}
         ]
 
     @pytest.mark.parametrize(
@@ -1970,7 +1992,12 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["ave_hr"] == workout_cycling_user_1.ave_hr
         assert serialized_workout["max_hr"] == workout_cycling_user_1.max_hr
         assert serialized_workout["segments"] == [
-            workout_cycling_user_1_segment.serialize(can_see_heart_rate=True)
+            {
+                **workout_cycling_user_1_segment.serialize(
+                    can_see_heart_rate=True
+                ),
+                "segment_number": 1,
+            }
         ]
 
     @pytest.mark.parametrize(
@@ -2001,7 +2028,12 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["ave_hr"] is None
         assert serialized_workout["max_hr"] is None
         assert serialized_workout["segments"] == [
-            workout_cycling_user_1_segment.serialize(can_see_heart_rate=False)
+            {
+                **workout_cycling_user_1_segment.serialize(
+                    can_see_heart_rate=False
+                ),
+                "segment_number": 1,
+            }
         ]
 
     def test_serializer_does_not_return_next_workout(
@@ -2318,7 +2350,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
         assert serialized_workout["max_alt"] == workout.max_alt
         assert serialized_workout["min_alt"] == workout.min_alt
         assert serialized_workout["segments"] == [
-            workout_cycling_user_1_segment.serialize()
+            {**workout_cycling_user_1_segment.serialize(), "segment_number": 1}
         ]
         assert serialized_workout["with_analysis"] is True
         assert serialized_workout["with_file"] is False
@@ -2410,7 +2442,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
             serialized_workout["workout_visibility"] == VisibilityLevel.PUBLIC
         )
         assert serialized_workout["segments"] == [
-            workout_cycling_user_1_segment.serialize()
+            {**workout_cycling_user_1_segment.serialize(), "segment_number": 1}
         ]
 
     @pytest.mark.parametrize(
@@ -2451,7 +2483,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
         assert serialized_workout["max_alt"] == workout.max_alt
         assert serialized_workout["min_alt"] == workout.min_alt
         assert serialized_workout["segments"] == [
-            workout_cycling_user_1_segment.serialize()
+            {**workout_cycling_user_1_segment.serialize(), "segment_number": 1}
         ]
         assert serialized_workout["with_analysis"] is True
         assert serialized_workout["with_file"] is False
@@ -2485,7 +2517,12 @@ class TestWorkoutModelAsUnauthenticatedUser(
         assert serialized_workout["ave_hr"] == workout_cycling_user_1.ave_hr
         assert serialized_workout["max_hr"] == workout_cycling_user_1.max_hr
         assert serialized_workout["segments"] == [
-            workout_cycling_user_1_segment.serialize(can_see_heart_rate=True)
+            {
+                **workout_cycling_user_1_segment.serialize(
+                    can_see_heart_rate=True
+                ),
+                "segment_number": 1,
+            }
         ]
 
     @pytest.mark.parametrize(
@@ -2515,7 +2552,12 @@ class TestWorkoutModelAsUnauthenticatedUser(
         assert serialized_workout["ave_hr"] is None
         assert serialized_workout["max_hr"] is None
         assert serialized_workout["segments"] == [
-            workout_cycling_user_1_segment.serialize(can_see_heart_rate=False)
+            {
+                **workout_cycling_user_1_segment.serialize(
+                    can_see_heart_rate=False
+                ),
+                "segment_number": 1,
+            }
         ]
 
     def test_serializer_does_not_return_next_workout(
@@ -3214,7 +3256,7 @@ class TestWorkoutSegmentModel:
         workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
         assert (
-            f"<Segment '{workout_cycling_user_1_segment.segment_id}' "
+            f"<Segment '{workout_cycling_user_1_segment.short_id}' "
             f"for workout '{workout_cycling_user_1.short_id}'>"
             == str(workout_cycling_user_1_segment)
         )
@@ -3230,7 +3272,6 @@ class TestWorkoutSegmentModel:
         start_date = datetime.now(tz=timezone.utc)
         workout_cycling_user_1_segment.start_date = start_date
         new_segment = WorkoutSegment(
-            segment_id=1,
             workout_id=workout_cycling_user_1.id,
             workout_uuid=workout_cycling_user_1.uuid,
         )
@@ -3279,7 +3320,7 @@ class TestWorkoutSegmentModel:
             "min_alt": workout_cycling_user_1_segment.min_alt,
             "moving": str(workout_cycling_user_1_segment.moving),
             "pauses": workout_cycling_user_1_segment.pauses,
-            "segment_id": 0,
+            "segment_id": workout_cycling_user_1_segment.short_id,
             "workout_id": workout_cycling_user_1_segment.workout.short_id,
         }
 
@@ -3317,7 +3358,7 @@ class TestWorkoutSegmentModel:
             "min_alt": workout_cycling_user_1_segment.min_alt,
             "moving": str(workout_cycling_user_1_segment.moving),
             "pauses": workout_cycling_user_1_segment.pauses,
-            "segment_id": 0,
+            "segment_id": workout_cycling_user_1_segment.short_id,
             "workout_id": workout_cycling_user_1_segment.workout.short_id,
         }
 

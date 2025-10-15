@@ -1,8 +1,9 @@
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional
 
 from sqlalchemy.sql import text
 
 from fittrackee import db
+from fittrackee.utils import decode_short_id
 from fittrackee.workouts.exceptions import WorkoutGPXException
 from fittrackee.workouts.utils.geometry import (
     get_chart_data_from_segment_points,
@@ -16,7 +17,7 @@ def get_chart_data(
     workout: "Workout",
     *,
     can_see_heart_rate: bool,
-    segment_id: Optional[int] = None,
+    segment_short_id: Optional[str] = None,
 ) -> Optional[List]:
     """
     Get chart data from segments points if the segments have points, otherwise
@@ -26,24 +27,22 @@ def get_chart_data(
         SELECT workout_segments.points
         FROM workout_segments
         WHERE workout_segments.workout_id  = :workout_id"""
-    values = {"workout_id": workout.id}
-    if segment_id is not None:
-        segment_index = segment_id - 1
-        if segment_index < 0:
-            raise WorkoutGPXException("error", "Incorrect segment id", None)
+    values: Dict = {"workout_id": workout.id}
+    if segment_short_id is not None:
+        segment_uuid = decode_short_id(segment_short_id)
         sql += """
-          AND workout_segments.segment_id  = :segment_id"""
-        values["segment_id"] = segment_index
+          AND workout_segments.uuid  = :segment_uuid"""
+        values["segment_uuid"] = segment_uuid
     sql += """
-        ORDER BY workout_id, segment_id"""
+        ORDER BY workout_id, start_date"""
     segments_points = db.session.execute(text(sql), values).mappings().all()
 
     if not segments_points:
         raise WorkoutGPXException(
             "not found",
             (
-                f"No segment with id '{segment_id}'"
-                if segment_id is not None
+                f"No segment with id '{segment_short_id}'"
+                if segment_short_id is not None
                 else "No segments"
             ),
             None,
