@@ -12,6 +12,7 @@
       "application:write_DESCRIPTION": "da permessi di scrittura alla configurazioen dell'applicazione.",
       "equipments:read_DESCRIPTION": "da permessi di lettura a <code>equipments</code> endpoints.",
       "equipments:write_DESCRIPTION": "da permessi di scrittura a <code>equipments</code> endpoints.",
+      "follow:write_DESCRIPTION": "assegna accesso in scrittura agli endpoint relativi alle richieste di follow e ai follower.",
       "profile:read_DESCRIPTION": "da permessi di lettura a <code>auth</code> endpoints.",
       "profile:write_DESCRIPTION": "da permessi di scrittura a <code>auth</code> endpoints.",
       "users:read_DESCRIPTION": "da permessi di lettura a <code>users</code> endpoints.",
