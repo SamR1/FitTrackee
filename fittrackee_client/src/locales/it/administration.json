@@ -1,8 +1,9 @@
 {
   "ABOUT": {
+    "DESCRIPTION": "Ogni informazione in più che può essere utile per i tuoi utenti. Si può usare la sintassi Markdown.",
     "TEXT": "Informazioni dettagliate sull'istanza"
   },
-  "ACTION": "Azione",
+  "ACTION": "Azione | Azioni",
   "ACTIVATE_USER_ACCOUNT": "Attiva account",
   "ACTIVE": "Attivo",
   "ADMIN": "Admin",
@@ -11,6 +12,7 @@
   "APPLICATION": "Applicazione",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Email di contatto dell'amministratore",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Massimo numero di workout mostrati sulla mappa globale",
     "MAX_FILES_IN_ZIP_LABEL": "Numero massimo di files zip",
     "MAX_USERS_HELP": "Se settato a 0, non ci sono limiti per le registrazioni.",
     "MAX_USERS_LABEL": "Numero massimo di utenti attivi",
