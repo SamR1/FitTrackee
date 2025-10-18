@@ -1,1 +1,9 @@
-{}
+{
+  "ACCEPTED_FOLLOW_REQUEST": "ha accettato la tua richiesta di follow",
+  "ALL": "Tutti",
+  "APPEALED_SUSPENSION": "presentare ricorso per la sospensione",
+  "APPEALED_USER_WARNING": "presentare ricorso per l'avviso",
+  "COMMENTED_YOUR_WORKOUT": "ha commentato il tuo allenamento",
+  "LIKED_YOUR_COMMENT": "ha messo mi piace al tuo commento",
+  "NO_NOTIFICATIONS": "Nessuna notifica."
+}
