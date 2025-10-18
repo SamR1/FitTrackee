@@ -1,7 +1,12 @@
 {
   "APP_ERROR": "L'applicazione ha riscontrato dei problemi. <br /> Per favore riprova più tardi o contatta l'amministratore.",
+  "ERRORS_ENCOUNTERED": "Sono stati riscontrati degli errori",
   "NOT_FOUND": {
+    "COMMENT": "Commento non trovato",
     "PAGE": "Pagina non trovata",
+    "REPORT": "Segnalazione non trovata",
+    "SEGMENT": "Segmento non trovato",
+    "USER": "Utente non trovato",
     "WORKOUT": "Workout non trovato"
   },
   "SOMETHING_WRONG": "Qualcosa è andato storto",
