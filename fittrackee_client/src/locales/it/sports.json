@@ -1,12 +1,21 @@
 {
+  "Canoeing": {
+    "LABEL": "Canottaggio"
+  },
   "Cycling (Sport)": {
     "LABEL": "Ciclismo (Sport)"
   },
   "Cycling (Transport)": {
     "LABEL": "Ciclismo (Trasporto)"
   },
+  "Cycling (Trekking)": {
+    "LABEL": "CIclismo (Trekking)"
+  },
   "Cycling (Virtual)": {
     "LABEL": "Cicliscmo (Virtuale)"
+  },
+  "Halfbike": {
+    "LABEL": "Halfbike"
   },
   "Hiking": {
     "LABEL": "Escursioni"
@@ -19,6 +28,9 @@
   },
   "Mountaineering": {
     "LABEL": "Alpinismo"
+  },
+  "Padel (Outdoor)": {
+    "LABEL": "Padel (All'aperto)"
   },
   "Rowing": {
     "LABEL": "Canottaggio"
