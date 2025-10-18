@@ -3,6 +3,7 @@
   "DATES": "Date",
   "STATISTICS": "Statistiche",
   "STATISTICS_CHARTS": {
+    "day": "Statistiche giornaliere",
     "month": "Statistiche mensili",
     "week": "Statistiche settimanali",
     "year": "Statistiche annuali"
@@ -14,6 +15,7 @@
     "by_time": "per periodo di tempo"
   },
   "TIME_FRAMES": {
+    "day": "giorno",
     "month": "mese",
     "week": "settimana",
     "year": "anno"
