@@ -1,7 +1,11 @@
 {
+  "ABORT": "Annulla",
+  "ACCEPT": "Accetta",
   "ACCOUNT-CONFIRMATION-RESEND": "Re-invia email di conferma",
+  "APPROVE": "Approva",
   "AUTHORIZE": "Autorizza",
   "BACK": "Indietro",
+  "BLOCK": "Blocca",
   "CANCEL": "Annulla",
   "CLEAR_FILTER": "Resetta filtri",
   "DELETE_MY_ACCOUNT": "Elimina il mio account",
