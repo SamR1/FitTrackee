@@ -1,11 +1,14 @@
 {
   "ERROR": {
+    "<time> is missing in gpx file": "Manca l'elemento <time> nel file .gpx.",
     "Network Error": "Errore di rete.",
     "UNKNOWN": "Errore. Per favore riprova o contatta l'amminstratore.",
+    "a report already exists": "Hai già mandato una segnalazione.",
     "at least one file in zip archive exceeds size limit, please check the archive": "Almeno un file nell'archivio zip supera il limite di dimensione, per favore controlla.",
+    "comment already reactivated": "Il commento è già stato riattivato, per favore aggiorna la pagina.",
     "email: valid email must be provided": "Email: dev'essere inserita un'email valida.",
     "error during gpx file parsing": "Errore nella lettura del file gpx.",
-    "error during gpx processing": "Errore nell'elaborazione del file gpx.",
+    "error during gpx processing": "Errore nell'elaborazione del file .gpx.",
     "error on getting configuration": "Errore nella lettura della configurazione.",
     "error when updating configuration": "Errore nell'aggiornamento della configurazione",
     "error, please try again or contact the administrator": "Errore, per favore riprova o contatta l'amministratore.",
