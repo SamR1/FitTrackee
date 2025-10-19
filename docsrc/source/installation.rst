@@ -577,6 +577,9 @@ Installation
 .. warning::
     | Note that **FitTrackee** is under heavy development, some features may be unstable.
 
+.. note::
+    Depending on the operating system and the version of Python installed, additional dependencies may be required, such as **gcc** or **libgdal-dev**.
+
 From PyPI
 ^^^^^^^^^
 
@@ -790,6 +793,9 @@ Upgrade
 .. warning::
 
     For now, releases do not follow `semantic versioning <https://semver.org>`__. Any version may contain backward-incompatible changes.
+
+.. note::
+    Depending on the operating system and the version of Python installed, additional dependencies may be required, such as **gcc** or **libgdal-dev**.
 
 
 From PyPI
