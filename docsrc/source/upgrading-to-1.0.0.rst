@@ -18,6 +18,8 @@ Instructions for upgrade
     - database (with `pg_dump <https://www.postgresql.org/docs/current/app-pgdump.html>`__ for instance)
     - upload directory (see `Environment variables <installation.html#envvar-UPLOAD_FOLDER>`__)
 
+.. note::
+    Depending on the operating system and the version of Python installed, additional dependencies may be required, such as **gcc** or **libgdal-dev**.
 
 From PyPI or sources
 ^^^^^^^^^^^^^^^^^^^^
