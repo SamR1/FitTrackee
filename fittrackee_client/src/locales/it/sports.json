@@ -20,6 +20,9 @@
   "Hiking": {
     "LABEL": "Escursioni"
   },
+  "Kayaking": {
+    "LABEL": "Kayak"
+  },
   "Mountain Biking": {
     "LABEL": "Mountain Biking"
   },
@@ -29,8 +32,14 @@
   "Mountaineering": {
     "LABEL": "Alpinismo"
   },
+  "Open Water Swimming": {
+    "LABEL": "Nuoto in acque aperte"
+  },
   "Padel (Outdoor)": {
     "LABEL": "Padel (All'aperto)"
+  },
+  "Paragliding": {
+    "LABEL": "parapendio"
   },
   "Rowing": {
     "LABEL": "Canottaggio"
@@ -47,10 +56,22 @@
   "Snowshoes": {
     "LABEL": "Racchette da neve"
   },
+  "Standup Paddleboarding": {
+    "LABEL": "Stand Up Paddling"
+  },
+  "Swimrun": {
+    "LABEL": "Nuotata"
+  },
+  "Tennis (Outdoor)": {
+    "LABEL": "Tennis (All'aperto)"
+  },
   "Trail": {
     "LABEL": "Sentieri"
   },
   "Walking": {
     "LABEL": "Camminata"
+  },
+  "Windsurfing": {
+    "LABEL": "Windsurf"
   }
 }
