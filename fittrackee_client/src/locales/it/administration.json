@@ -12,14 +12,40 @@
   "APPLICATION": "Applicazione",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Email di contatto dell'amministratore",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "L'upload asincrono di archivi zip è disabilitato.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "Questo valore non può superare i 50.000 workout.",
     "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Massimo numero di workout mostrati sulla mappa globale",
     "MAX_FILES_IN_ZIP_LABEL": "Numero massimo di files zip",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Numero massimo di file per il processamento sincrono",
     "MAX_USERS_HELP": "Se settato a 0, non ci sono limiti per le registrazioni.",
     "MAX_USERS_LABEL": "Numero massimo di utenti attivi",
     "NO_CONTACT_EMAIL": "nessuna mail di contatto",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Dimensione massima dei file caricabili (in Mb)",
+    "STATS_WORKOUTS_LIMIT_HELP": "Se settato a 0, nessun limite sul numero dei workout.",
+    "STATS_WORKOUTS_LIMIT_LABEL": "Massimo numero di workout per le statistiche",
     "TITLE": "Configurazione applicazione",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Dimensione massima dell'archivio zip (in Mb)"
+  },
+  "APP_MODERATION": {
+    "ACTIONS": {
+      "ADD_COMMENT": "Aggiungi un commento",
+      "MARK_AS_RESOLVED": "Segna come risolto",
+      "MARK_AS_UNRESOLVED": "Segna come non risolto",
+      "SEND_WARNING_EMAIL": "Manda un avvertimento",
+      "SUSPEND_ACCOUNT": "Sospendi l'account utente",
+      "SUSPEND_CONTENT": "Sospendi il contenuto",
+      "UNSUSPEND_ACCOUNT": "Riattiva l'account utente",
+      "UNSUSPEND_CONTENT": "Riattiva il contenuto"
+    },
+    "APPEAL": {
+      "APPROVED": "L'appello è stato approvato {0}.",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "L'appello è stato approvato annullando la sospensione.",
+      "HIDE": "Nascondi appello",
+      "REASON_IS": "Il motivo è:",
+      "REJECTED": "Questo appello è stato rifiutato {0}."
+    },
+    "RESOLVED_AT": "Risolto il",
+    "RESOLVED_BY": "Risolto da"
   },
   "BACK_TO_ADMIN": "Ritorna ad amministrazione",
   "CONFIRM_USER_ACCOUNT_DELETION": "Sei sicuro di voler eliminare {0} account? Tutti i dati verranno persi, quest'azione non può essere annullata.",
