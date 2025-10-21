@@ -42,7 +42,32 @@
       "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "L'appello è stato approvato annullando la sospensione.",
       "HIDE": "Nascondi appello",
       "REASON_IS": "Il motivo è:",
-      "REJECTED": "Questo appello è stato rifiutato {0}."
+      "REJECTED": "Questo appello è stato rifiutato {0}.",
+      "SEE": "Vedi l'appello"
+    },
+    "DESCRIPTION": "Gestione dei report.",
+    "NOTES_AND_ACTIONS": "Note e azioni",
+    "NO_REPORTS_FOUND": "Nessun report",
+    "ORDER_BY": {
+      "CREATED_AT": "data di creazione",
+      "UPDATED_AT": "data di aggiornamento"
+    },
+    "REASON": "Motivo",
+    "REPORT": "report",
+    "REPORTED_BY": "Segnalato da",
+    "REPORTED_CONTENT": "Conenuto segnalato",
+    "REPORTED_USER": "Utente segnalato",
+    "REPORTER": "segnalato",
+    "REPORT_ACTIONS": {
+      "comment_suspension": "Il commento è stato sospeso da {1} {2}.",
+      "comment_unsuspension": "La sospensione del commento è stata annullata da {1} {2}.",
+      "report_reopening": "Il report è stato riaperto da {1} {2}.",
+      "report_resolution": "La segnalazione è stata risolta da {1} {2}.",
+      "user_suspension": "{0} è stato sospeso da {1} {2}.",
+      "user_unsuspension": "La sospensione di {0} è stata annullata da {1} {2}.",
+      "user_warning": "Un avvertimento è stato mandato a {0} da {1} {2}.",
+      "user_warning_lifting": "L'avvertimento di {0} è stato rimosso da {1} {2}.",
+      "workout_suspension": "il workout è stato sospeso da {1} {2}."
     },
     "RESOLVED_AT": "Risolto il",
     "RESOLVED_BY": "Risolto da"
