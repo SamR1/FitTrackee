@@ -37,6 +37,8 @@
   "NEW_PASSWORD": "Nuova password",
   "NO_SPORT_FOUND": "Nessuno sport trovato.",
   "NO_USERS_FOUND": "Nessun utente trovato.",
+  "NO_WARNING_FOUND": "Nessun avvertimento trovato.",
+  "ONLY_USERS_FROM_THIS_INSTANCE_ARE_DISPLAYED": ", solo {0} da questa istanza sono mostrate",
   "PASSWORD": "Password",
   "PASSWORD_FORGOTTEN": "Password dimenticata?",
   "PASSWORD_INFO": "Inserisci almeno 8 caratteri.",
