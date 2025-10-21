@@ -35,6 +35,20 @@
     "user_warning": "avvertimenti",
     "user_warning_appeal": "appelli agli avvertimenti",
     "user_warning_lifting": "rimozione dei warning",
+    "workout_comment": "commenti sui workout",
+    "workout_like": "like sui workout",
+    "workout_suspension": "pause del workout",
+    "workout_unsuspension": "riattivazioni del workout",
     "workouts_archive_upload": "upload dell'archivio di workout"
-  }
+  },
+  "UNREAD": "Non letto",
+  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "Il tuo account è stato sospeso",
+  "YOUR_ARCHIVE_HAS_BEEN_PROCESSED": "Il tuo arichivio di workout è stato processato",
+  "YOUR_COMMENT_HAS_BEEN_SUSPENDED": "Il tuo commento è stato sospeso",
+  "YOUR_COMMENT_HAS_BEEN_UNSUSPENDED": "La tua sospensione su questo commento è stata annullata",
+  "YOUR_DATA_EXPORT_IS_READY": "Il tuo export dei dati è pronto",
+  "YOUR_WARNING_HAS_BEEN_LIFTED": "Il tuo avvertimento è stato rimosso.",
+  "YOUR_WORKOUT_HAS_BEEN_SUSPENDED": "Il tuo workout è stato sospeso",
+  "YOUR_WORKOUT_HAS_BEEN_UNSUSPENDED": "La sospensione sul tuo workout è stata annullata",
+  "YOU_RECEIVED_A_WARNING": "Hai ricevuto un avvertimento"
 }
