@@ -49,5 +49,6 @@
     }
   },
   "TOTAL": "Totale",
-  "TOTAL_DURATION_WITH_PAUSES": "durata totale con pause"
+  "TOTAL_DURATION_WITH_PAUSES": "durata totale con pause",
+  "TYPE": "tipo"
 }
