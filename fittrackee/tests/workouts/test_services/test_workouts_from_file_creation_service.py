@@ -506,7 +506,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert new_workout.map_visibility == user_1.map_visibility
         assert new_workout.workout_visibility == user_1.workouts_visibility
 
-    def test_it_creates_gpx_file_in_user_directory(
+    def test_it_creates_file_in_user_directory_when_original_file_is_a_gpx(
         self,
         app: "Flask",
         user_1: "User",
@@ -863,6 +863,45 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert new_workout.workout_visibility == VisibilityLevel.PRIVATE
         assert WorkoutSegment.query.count() == 1
 
+    def test_it_creates_file_in_user_directory_when_extension_is_kml(
+        self,
+        app: "Flask",
+        user_1: "User",
+        gpx_file: str,
+        kml_2_3_with_one_track: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        tcx_file_storage = FileStorage(
+            filename="file.tcx",
+            stream=BytesIO(str.encode(kml_2_3_with_one_track)),
+        )
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            file=tcx_file_storage,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+
+        expected_token = self.random_string()
+
+        with patch("secrets.token_urlsafe", return_value=expected_token):
+            service.create_workout_from_file(extension="kml", equipments=None)
+        db.session.commit()
+
+        new_workout = Workout.query.one()
+        assert new_workout.gpx == (
+            f"workouts/{user_1.id}/2018-03-13_12-44-45_"
+            f"{sport_1_cycling.id}_{expected_token}.gpx"
+        )
+        with open(get_absolute_file_path(new_workout.gpx)) as f:
+            assert '<gpx xmlns="http://www.topografix.com/GPX/1/1"' in f.read()
+
+        assert new_workout.original_file == (
+            f"workouts/{user_1.id}/2018-03-13_12-44-45_"
+            f"{sport_1_cycling.id}_{expected_token}.kml"
+        )
+        with open(get_absolute_file_path(new_workout.original_file)) as f:
+            assert f.read() == kml_2_3_with_one_track
+
     def test_it_creates_workout_when_extension_is_kmz(
         self,
         app: "Flask",
@@ -917,6 +956,48 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert new_workout.weather_end is None
         assert new_workout.workout_visibility == VisibilityLevel.PRIVATE
         assert WorkoutSegment.query.count() == 2
+
+    def test_it_creates_file_in_user_directory_when_extension_is_kmz(
+        self,
+        app: "Flask",
+        user_1: "User",
+        kml_2_3_with_one_track: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        file_path = os.path.join(app.root_path, "tests/files/example.kmz")
+        with open(file_path, "rb") as kmz_file:
+            kmz_file_content = kmz_file.read()
+            kmz_file_storage = FileStorage(
+                filename="example.kmz", stream=BytesIO(kmz_file_content)
+            )
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            file=kmz_file_storage,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+
+        expected_token = self.random_string()
+
+        with patch("secrets.token_urlsafe", return_value=expected_token):
+            service.create_workout_from_file(extension="kmz", equipments=None)
+        db.session.commit()
+
+        new_workout = Workout.query.one()
+        assert new_workout.gpx == (
+            f"workouts/{user_1.id}/2018-03-13_12-44-45_"
+            f"{sport_1_cycling.id}_{expected_token}.gpx"
+        )
+        with open(get_absolute_file_path(new_workout.gpx)) as f:
+            assert '<gpx xmlns="http://www.topografix.com/GPX/1/1"' in f.read()
+
+        assert new_workout.original_file == (
+            f"workouts/{user_1.id}/2018-03-13_12-44-45_"
+            f"{sport_1_cycling.id}_{expected_token}.kmz"
+        )
+        with open(
+            get_absolute_file_path(new_workout.original_file), "rb"
+        ) as f:
+            assert f.read() == kmz_file_content
 
     def test_it_creates_workout_when_extension_is_tcx_and_creator_tag_exists(
         self,
@@ -1016,6 +1097,44 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         new_workout = Workout.query.one()
         assert new_workout.source is None
 
+    def test_it_creates_file_in_user_directory_when_extension_is_tcx(
+        self,
+        app: "Flask",
+        user_1: "User",
+        tcx_with_one_lap_and_one_track: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        tcx_file_storage = FileStorage(
+            filename="file.tcx",
+            stream=BytesIO(str.encode(tcx_with_one_lap_and_one_track)),
+        )
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            file=tcx_file_storage,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+
+        expected_token = self.random_string()
+
+        with patch("secrets.token_urlsafe", return_value=expected_token):
+            service.create_workout_from_file(extension="tcx", equipments=None)
+        db.session.commit()
+
+        new_workout = Workout.query.one()
+        assert new_workout.gpx == (
+            f"workouts/{user_1.id}/2018-03-13_12-44-45_"
+            f"{sport_1_cycling.id}_{expected_token}.gpx"
+        )
+        with open(get_absolute_file_path(new_workout.gpx)) as f:
+            assert '<gpx xmlns="http://www.topografix.com/GPX/1/1"' in f.read()
+
+        assert new_workout.original_file == (
+            f"workouts/{user_1.id}/2018-03-13_12-44-45_"
+            f"{sport_1_cycling.id}_{expected_token}.tcx"
+        )
+        with open(get_absolute_file_path(new_workout.original_file)) as f:
+            assert f.read() == tcx_with_one_lap_and_one_track
+
     def test_it_creates_workout_when_extension_is_fit(
         self,
         app: "Flask",
@@ -1023,9 +1142,10 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         sport_1_cycling: "Sport",
     ) -> None:
         file_path = os.path.join(app.root_path, "tests/files/example.fit")
-        with open(file_path, "rb") as kmz_file:
+        with open(file_path, "rb") as fit_file:
+            fit_file_content = fit_file.read()
             fit_file_storage = FileStorage(
-                filename="example.kmz", stream=BytesIO(kmz_file.read())
+                filename="example.fit", stream=BytesIO(fit_file_content)
             )
         service = WorkoutsFromFileCreationService(
             auth_user=user_1,
@@ -1072,6 +1192,47 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert new_workout.weather_end is None
         assert new_workout.workout_visibility == VisibilityLevel.PRIVATE
         assert WorkoutSegment.query.count() == 1
+
+    def test_it_creates_file_in_user_directory_when_extension_is_fit(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        file_path = os.path.join(app.root_path, "tests/files/example.fit")
+        with open(file_path, "rb") as fit_file:
+            fit_file_content = fit_file.read()
+            fit_file_storage = FileStorage(
+                filename="example.fit", stream=BytesIO(fit_file_content)
+            )
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            file=fit_file_storage,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+
+        expected_token = self.random_string()
+
+        with patch("secrets.token_urlsafe", return_value=expected_token):
+            service.create_workout_from_file(extension="fit", equipments=None)
+        db.session.commit()
+
+        new_workout = Workout.query.one()
+        assert new_workout.gpx == (
+            f"workouts/{user_1.id}/2018-03-13_12-44-45_"
+            f"{sport_1_cycling.id}_{expected_token}.gpx"
+        )
+        with open(get_absolute_file_path(new_workout.gpx)) as f:
+            assert '<gpx xmlns="http://www.topografix.com/GPX/1/1"' in f.read()
+
+        assert new_workout.original_file == (
+            f"workouts/{user_1.id}/2018-03-13_12-44-45_"
+            f"{sport_1_cycling.id}_{expected_token}.fit"
+        )
+        with open(
+            get_absolute_file_path(new_workout.original_file), "rb"
+        ) as f:
+            assert f.read() == fit_file_content
 
 
 class WorkoutsFromFileCreationServiceTestCase:

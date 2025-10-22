@@ -1,5 +1,15 @@
 {
+  "AVERAGE": "Gjennomsnitt",
+  "DATES": "Datoer",
   "STATISTICS": "Statistikk",
+  "STATISTICS_CHARTS": {
+    "day": "Daglig statistikk",
+    "month": "Månedlig statistikk",
+    "week": "Ukentlig statistikk",
+    "year": "Årlig statistikk"
+  },
+  "STATISTICS_ON_ALL_WORKOUTS": "Statistikk over alle treningsøkter:",
+  "STATISTICS_ON_LAST_WORKOUTS": "Statistikk over de siste {count} treningsøktene:",
   "TIME_FRAMES": {
     "month": "måned",
     "week": "uke",

@@ -133,10 +133,7 @@
                         fileExtension: workoutObject.originalFile,
                       })
                     "
-                    v-if="
-                      workoutObject.originalFile &&
-                      ['fit', 'kml', 'tcx'].includes(workoutObject.originalFile)
-                    "
+                    v-if="workoutObject.originalFile != 'gpx'"
                   >
                     <i class="fa fa-download" aria-hidden="true" />
                     .{{ workoutObject.originalFile }}

@@ -1,14 +1,15 @@
 {
   "ABOUT": {
-    "DESCRIPTION": "All ytterligere info som kan være nyttig for brukerne dine. Markdown-syntaks kan brukes.",
+    "DESCRIPTION": "Eventuell ekstra informasjon som kan være nyttig for brukerne dine. Markdown-syntaks kan brukes.",
     "TEXT": "Detaljert info om instansen"
   },
-  "ACTION": "Handling",
+  "ACTION": "Handling | Handlinger",
   "ACTIVATE_USER_ACCOUNT": "Aktiver konto",
   "ACTIVE": "Aktiv",
   "ADMIN": "Administrator",
   "ADMINISTRATION": "Administrasjon",
-  "APPLICATION": "Program",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Legg til/fjern administratorrettigheter, slett brukerkonto.",
+  "APPLICATION": "Applikasjon",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "E-post til administrator i kontaktøyemed",
     "MAX_FILES_IN_ZIP_LABEL": "Maks. filer i ZIP-arkiv",

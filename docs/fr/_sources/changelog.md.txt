@@ -1,5 +1,56 @@
 # Change log
 
+## Version 1.0.1 (2025/10/22)
+
+**FitTrackee** is now available for Python 3.14.
+
+**Warning**:
+- The version 1.1.0 will require all workouts to be updated, see [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.0.html#workouts-data-update).
+
+### Bugs Fixed
+
+* [PR#963](https://github.com/SamR1/FitTrackee/pull/963) - Add missing KMZ file download
+
+### Translations
+
+* [PR#958](https://github.com/SamR1/FitTrackee/pull/958) - Translations update from Hosted Weblate (Chinese (Simplified Han script))
+* [PR#961](https://github.com/SamR1/FitTrackee/pull/961) - Translations update from Hosted Weblate (Basque, Croatian and Norwegian Bokmål)
+* [PR#967](https://github.com/SamR1/FitTrackee/pull/967) - Translations update from Hosted Weblate (French, Galician and Italian)
+* [PR#968](https://github.com/SamR1/FitTrackee/pull/968) - Translations update from Hosted Weblate (Italian) 
+
+Translation status:
+- Basque: 100%
+- Bulgarian: 54%
+- Catalan: 26%
+- Chinese (Simplified): 98%
+- Croatian: 100%
+- Czech: 48%
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 88%
+- Italian: 73%
+- Norwegian Bokmål: 45%
+- Polish: 96%
+- Portuguese: 53%
+- Russian: 96%
+- Spanish: 71%
+- Turkish: 1%
+
+### Misc
+
+* [#956](https://github.com/SamR1/FitTrackee/issues/956) - Add support for Python 3.14
+
+
+Thanks to the contributors:
+- @erral
+- @Hawolex
+- @iggydev
+- @ildave
+- Poesty Li
+
+
 ## Version 1.0.0 (2025/10/05)
 
 **FitTrackee** now allows you to filter workouts on location and display them on a map.  
@@ -10,7 +61,7 @@ Two new environment variables have been added: [`ENABLE_GEOSPATIAL_FEATURES`](ht
 Among other changes and improvements, this version also brings a new sport (Outdoor Padel).
 
 **Warning:**  
-- The next version will require all workouts to be updated.
+- The version 1.1.0 will require all workouts to be updated.
 - **Python 3.9** and **PostgreSQL 12** are no longer supported. This version will not yet support **Python 3.14** when it is released.
 - This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade)).
 

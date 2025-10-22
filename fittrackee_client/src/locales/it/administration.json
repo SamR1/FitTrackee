@@ -1,8 +1,9 @@
 {
   "ABOUT": {
+    "DESCRIPTION": "Ogni informazione in più che può essere utile per i tuoi utenti. Si può usare la sintassi Markdown.",
     "TEXT": "Informazioni dettagliate sull'istanza"
   },
-  "ACTION": "Azione",
+  "ACTION": "Azione | Azioni",
   "ACTIVATE_USER_ACCOUNT": "Attiva account",
   "ACTIVE": "Attivo",
   "ADMIN": "Admin",
@@ -11,13 +12,65 @@
   "APPLICATION": "Applicazione",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Email di contatto dell'amministratore",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "L'upload asincrono di archivi zip è disabilitato.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "Questo valore non può superare i 50.000 workout.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Massimo numero di workout mostrati sulla mappa globale",
     "MAX_FILES_IN_ZIP_LABEL": "Numero massimo di files zip",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Numero massimo di file per il processamento sincrono",
     "MAX_USERS_HELP": "Se settato a 0, non ci sono limiti per le registrazioni.",
     "MAX_USERS_LABEL": "Numero massimo di utenti attivi",
     "NO_CONTACT_EMAIL": "nessuna mail di contatto",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Dimensione massima dei file caricabili (in Mb)",
+    "STATS_WORKOUTS_LIMIT_HELP": "Se settato a 0, nessun limite sul numero dei workout.",
+    "STATS_WORKOUTS_LIMIT_LABEL": "Massimo numero di workout per le statistiche",
     "TITLE": "Configurazione applicazione",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Dimensione massima dell'archivio zip (in Mb)"
+  },
+  "APP_MODERATION": {
+    "ACTIONS": {
+      "ADD_COMMENT": "Aggiungi un commento",
+      "MARK_AS_RESOLVED": "Segna come risolto",
+      "MARK_AS_UNRESOLVED": "Segna come non risolto",
+      "SEND_WARNING_EMAIL": "Manda un avvertimento",
+      "SUSPEND_ACCOUNT": "Sospendi l'account utente",
+      "SUSPEND_CONTENT": "Sospendi il contenuto",
+      "UNSUSPEND_ACCOUNT": "Riattiva l'account utente",
+      "UNSUSPEND_CONTENT": "Riattiva il contenuto"
+    },
+    "APPEAL": {
+      "APPROVED": "L'appello è stato approvato {0}.",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "L'appello è stato approvato annullando la sospensione.",
+      "HIDE": "Nascondi appello",
+      "REASON_IS": "Il motivo è:",
+      "REJECTED": "Questo appello è stato rifiutato {0}.",
+      "SEE": "Vedi l'appello"
+    },
+    "DESCRIPTION": "Gestione dei report.",
+    "NOTES_AND_ACTIONS": "Note e azioni",
+    "NO_REPORTS_FOUND": "Nessun report",
+    "ORDER_BY": {
+      "CREATED_AT": "data di creazione",
+      "UPDATED_AT": "data di aggiornamento"
+    },
+    "REASON": "Motivo",
+    "REPORT": "report",
+    "REPORTED_BY": "Segnalato da",
+    "REPORTED_CONTENT": "Conenuto segnalato",
+    "REPORTED_USER": "Utente segnalato",
+    "REPORTER": "segnalato",
+    "REPORT_ACTIONS": {
+      "comment_suspension": "Il commento è stato sospeso da {1} {2}.",
+      "comment_unsuspension": "La sospensione del commento è stata annullata da {1} {2}.",
+      "report_reopening": "Il report è stato riaperto da {1} {2}.",
+      "report_resolution": "La segnalazione è stata risolta da {1} {2}.",
+      "user_suspension": "{0} è stato sospeso da {1} {2}.",
+      "user_unsuspension": "La sospensione di {0} è stata annullata da {1} {2}.",
+      "user_warning": "Un avvertimento è stato mandato a {0} da {1} {2}.",
+      "user_warning_lifting": "L'avvertimento di {0} è stato rimosso da {1} {2}.",
+      "workout_suspension": "il workout è stato sospeso da {1} {2}."
+    },
+    "RESOLVED_AT": "Risolto il",
+    "RESOLVED_BY": "Risolto da"
   },
   "BACK_TO_ADMIN": "Ritorna ad amministrazione",
   "CONFIRM_USER_ACCOUNT_DELETION": "Sei sicuro di voler eliminare {0} account? Tutti i dati verranno persi, quest'azione non può essere annullata.",

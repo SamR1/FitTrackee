@@ -1,16 +1,23 @@
 {
   "CONTENT": {
     "ACCOUNT_DELETION": {
-      "CONTENT": "Du kan forespørre sletting av kontoen din når som helst ved å gå til denne adressen (etter å ha logget inn) og klikke på «Slett kontoen min»-knappen i din kontoredigering.",
-      "TITLE": "Kontosletting"
+      "CONTENT": "Du kan når som helst be om å slette kontoen din ved å gå til denne adressen (etter innlogging) og klikke på knappen «Slett kontoen min» i kontoredigeringen.",
+      "TITLE": "Sletting av konto"
     },
     "CHANGES_TO_OUR_PRIVACY_POLICY": {
-      "TITLE": "Endringer i personvernspraksisen"
+      "CONTENT": "Hvis vi bestemmer oss for å endre vår personvernpolicy, vil vi legge ut endringene på denne siden.\nDette dokumentet er under [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/) lisens. Opprinnelig tilpasset fra [Discourses](https://github.com/discourse/discourse) personvernpolicy.",
+      "TITLE": "Endringer i vår personvernpolicy"
     },
     "DATA_COLLECTED": {
-      "TITLE": "Hvilken info hentes?"
+      "CONTENT": "Følgende informasjon samles inn:\n- Kontoinformasjon (brukernavn, e-postadresse og passord). Du kan også legge inn ytterligere profilinformasjon, som fornavn, etternavn, fødselsdato, sted, biografi og laste opp et profilbilde.\n- [GPX](https://en.wikipedia.org/wiki/GPS_Exchange_Format)-filer. Disse filene inneholder data relatert til aktivitetene dine (geografiske koordinater, dato, distanse, varighet, maks- og gjennomsnittshastighet, høyde, tittel, beskrivelse, puls…). Hvis du ikke vil eksponere noen data, rengjør dem før du laster opp eller legg til treningsøkter uten GPX-filer.\n- Treningsdata (sport, tittel, beskrivelse, dato, varighet, distanse, stigning, nedstigning, notater).\n- Følgere og brukere som følger.\n- Kommentarer og likerklikk.\n- Teknisk informasjon (nettlesernavn og operativsystem).",
+      "TITLE": "Hvilken informasjon samler vi inn?"
+    },
+    "INFORMATION_DISCLOSURE": {
+      "CONTENT": "Vi verken selger, bytter eller overfører din personlige informasjon til eksterne parter.\nDette inkluderer ikke betrodde tredjeparter som hjelper oss med å drifte nettstedet vårt og betjene deg, så lenge disse partene samtykker i å holde denne informasjonen konfidensiell.\nVi kan også utlevere informasjonen din når vi mener at utlevering er passende for å overholde loven, håndheve våre retningslinjer for nettstedet eller beskytte våre eller andres rettigheter, eiendom eller sikkerhet.\nNår du autoriserer en tredjepartsapplikasjon til å bruke kontoen din, kan den, avhengig av omfanget av tillatelser du godkjenner, få tilgang til profilinformasjonen din eller treningsøktene dine. Apper kan aldri få tilgang til passordet ditt.",
+      "TITLE": "Deler vi informasjon til eksterne parter?"
     },
     "INFORMATION_PROTECTION": {
+      "CONTENT": "Vi implementerer en rekke sikkerhetstiltak for å opprettholde sikkerheten til dine personopplysninger når du legger inn, sender inn eller får tilgang til dine personopplysninger.",
       "TITLE": "Hvordan beskyttes din info?"
     },
     "YOUR_CONSENT": {

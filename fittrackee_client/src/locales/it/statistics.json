@@ -3,17 +3,20 @@
   "DATES": "Date",
   "STATISTICS": "Statistiche",
   "STATISTICS_CHARTS": {
+    "day": "Statistiche giornaliere",
     "month": "Statistiche mensili",
     "week": "Statistiche settimanali",
     "year": "Statistiche annuali"
   },
   "STATISTICS_ON_ALL_WORKOUTS": "Statistiche su tutti gli allenamenti:",
   "STATISTICS_ON_LAST_WORKOUTS": "Statistiche sugli ultimi {count} allenamenti:",
+  "STATISTICS_TYPE": "Tipi di statistiche",
   "STATISTICS_TYPES": {
     "by_sport": "per sport",
     "by_time": "per periodo di tempo"
   },
   "TIME_FRAMES": {
+    "day": "giorno",
     "month": "mese",
     "week": "settimana",
     "year": "anno"

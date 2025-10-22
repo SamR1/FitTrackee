@@ -1,1 +1,11 @@
-{}
+{
+  "ACCEPTED_FOLLOW_REQUEST": "har akseptert forespørselen din om å følge",
+  "ALL": "Alle",
+  "APPEALED_SUSPENSION": "anket suspensjonen",
+  "APPEALED_USER_WARNING": "anket advarselen",
+  "COMMENTED_YOUR_WORKOUT": "kommenterte treningsøkten din",
+  "LIKED_YOUR_COMMENT": "likte kommentaren din",
+  "LIKED_YOUR_WORKOUT": "likte treningen din",
+  "MARK_ALL_AS_READ": "Merk alle som lest",
+  "MARK_AS_READ": "merk som lest"
+}

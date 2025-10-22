@@ -1,1 +1,18 @@
-{}
+{
+  "ANALYSIS_VISIBILITY": "Visibilità dell'analisi",
+  "COMMENT_LEVELS": {
+    "followers_only": "Solo follower",
+    "private": "Privato (solo utenti menzionati)",
+    "public": "Pubblico (tutti)"
+  },
+  "HR_VISIBILITY": "Visibilità della frequenza cardiaca",
+  "LEVELS": {
+    "followers_only": "Solo follower",
+    "private": "Privato (solo io)",
+    "public": "Pubblico (tutti)"
+  },
+  "MAP_VISIBILITY": "Visibilità della mappa",
+  "VISIBILITY": "visibilità",
+  "WORKOUTS_VISIBILITY": "Visibilità dei dati relativi ai workout",
+  "WORKOUT_VISIBILITY": "Visibilità del workout"
+}

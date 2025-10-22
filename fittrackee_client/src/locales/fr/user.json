@@ -32,7 +32,7 @@
   "LAST_PRIVACY_POLICY_TO_VALIDATE": "La politique de confidentialité a été mise à jour. Veuillez l'{0} avant de poursuivre.",
   "LOGIN": "Se connecter",
   "LOGOUT": "Se déconnecter",
-  "LOGOUT_CONFIRMATION": "Etes-vous sûr de vouloir vous déconnecter ?",
+  "LOGOUT_CONFIRMATION": "Êtes-vous sûr de vouloir vous déconnecter ?",
   "LOG_IN": "connecter",
   "NEW_PASSWORD": "Nouveau mot de passe",
   "NO_SPORT_FOUND": "Aucun sport trouvé.",
@@ -121,11 +121,11 @@
     "LAST_NAME": "Nom",
     "LATEST_SANCTIONS_RECEIVED": "Dernières sanctions reçues",
     "LOCATION": "Lieu",
-    "MESSAGES_EDITION": "Edition des préférences des messages",
-    "MESSAGES_PREFERENCES": "Preferences des messages",
     "MESSAGES": {
       "warning_about_large_number_of_workouts_on_map": "Afficher un avertissement concernant l'affichage d'un grand nombre d'entraînements sur la carte"
     },
+    "MESSAGES_EDITION": "Edition des préférences des messages",
+    "MESSAGES_PREFERENCES": "Preferences des messages",
     "MONDAY": "Lundi",
     "NOTIFICATIONS": {
       "account_creation": "Quelqu'un s'est enregistré",
@@ -198,7 +198,6 @@
       "BLOCKED-USERS": "utilisateurs bloqués",
       "EQUIPMENTS": "équipements",
       "FOLLOW-REQUESTS": "demandes d'abonnement",
-
       "MESSAGES": "messages",
       "MODERATION": "modération",
       "NOTIFICATIONS": "notifications",
