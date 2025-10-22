@@ -1,6 +1,6 @@
 import hashlib
 import random
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from typing import IO, TYPE_CHECKING, Dict, List, Optional, Union
 
 from flask import current_app
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 weather_service = WeatherService()
 
 
-class BaseWorkoutWithSegmentsCreationService:
+class BaseWorkoutWithSegmentsCreationService(ABC):
     # file is converted in gpx format if not in gpx format
     gpx: "GPX"
 
