@@ -18,6 +18,8 @@ Instructions for upgrade
     - database (with `pg_dump <https://www.postgresql.org/docs/current/app-pgdump.html>`__ for instance)
     - upload directory (see `Environment variables <installation.html#envvar-UPLOAD_FOLDER>`__)
 
+.. note::
+    Depending on the operating system and the version of Python installed, additional dependencies may be required, such as **gcc** or **libgdal-dev**.
 
 From PyPI or sources
 ^^^^^^^^^^^^^^^^^^^^
@@ -105,4 +107,4 @@ For instance to update the first 1,000 workouts created with a file:
 | Once all workouts have been updated, enable geospatial features on the interface by setting the environment variable `ENABLE_GEOSPATIAL_FEATURES <installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES>`_  to ``True`` in ``.env``.
 
 .. important::
-    The next version will require all workouts to be updated.
+    The version 1.1.0 will require all workouts to be updated.

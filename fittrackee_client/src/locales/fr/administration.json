@@ -12,7 +12,7 @@
   "APPLICATION": "Application",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Email de l'administrateur pour contact ",
-    "ASYNCHRONOUS_UPLOAD_DISABLED": "L'upload asynchrone des archives zip est désactivé.",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "Le chargement asynchrone des archives zip est désactivé.",
     "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "Cette valeur ne peut pas excéder 50000 session.",
     "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Nombre max. de séances affichées sur la carte globale",
     "MAX_FILES_IN_ZIP_LABEL": "Nombre max. de fichiers dans une archive zip ",

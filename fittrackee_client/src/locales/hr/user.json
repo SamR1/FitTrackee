@@ -88,6 +88,7 @@
     "CREATED_REPORTS": "Izrađena izvješća",
     "DATE_FORMAT": "Format prikaza datuma",
     "EDIT": "Uredite profil",
+    "EDIT_MESSAGE_PREFERENCES": "Uređivanje postavki poruka",
     "EDIT_NOTIFICATION_PREFERENCES": "Uredite postavke obavijesti",
     "EDIT_PREFERENCES": "Uredite postavke",
     "EDIT_SPORTS_PREFERENCES": "Uredite postavke sportova",
@@ -120,6 +121,11 @@
     "LAST_NAME": "Prezime",
     "LATEST_SANCTIONS_RECEIVED": "Zadnje primljene sankcije",
     "LOCATION": "Mjesto",
+    "MESSAGES": {
+      "warning_about_large_number_of_workouts_on_map": "Prikazuj upozorenje o velikom broju aktivnosti na karti"
+    },
+    "MESSAGES_EDITION": "Uređivanje postavki poruka",
+    "MESSAGES_PREFERENCES": "Postavke poruka",
     "MONDAY": "Ponedjeljak",
     "NOTIFICATIONS": {
       "account_creation": "Netko se registrira",
@@ -191,6 +197,7 @@
       "BLOCKED-USERS": "blokirani korisnici",
       "EQUIPMENTS": "oprema",
       "FOLLOW-REQUESTS": "zahtjevi za praćenje",
+      "MESSAGES": "poruke",
       "MODERATION": "moderiranje",
       "NOTIFICATIONS": "obavijesti",
       "PICTURE": "slika",

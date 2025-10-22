@@ -13,6 +13,8 @@
   "APP_CONFIG": {
     "ADMIN_CONTACT": "E-pošta administratora za kontakt",
     "ASYNCHRONOUS_UPLOAD_DISABLED": "Asinkroni prijenosa zip arhiva je onemogućen.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "Vrijednost ne može prijeći 50,000 aktivnosti.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Maks. broj aktivnosti prikazan na globalnoj karti",
     "MAX_FILES_IN_ZIP_LABEL": "Maks. broj datoteka u zip arhivi",
     "MAX_SYNC_FILES_IN_ZIP_LABEL": "Maks. broj datoteka za sinkronu obradu",
     "MAX_USERS_HELP": "Ako je 0, nema ograničenja za registraciju.",

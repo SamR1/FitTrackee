@@ -101,6 +101,7 @@
     ChartOptions,
     LayoutItem,
     TooltipItem,
+    Plugin,
   } from 'chart.js'
   import type { ComputedRef, Reactive, Ref } from 'vue'
   import { computed, onUnmounted, reactive, ref, toRefs, watch } from 'vue'
@@ -138,7 +139,7 @@
 
   const { darkTheme } = useApp()
 
-  const plugins = [htmlLegendPlugin, verticalHoverLine]
+  const plugins = [htmlLegendPlugin, verticalHoverLine] as Plugin<'line'>[]
   const fromKmUnit = getUnitTo('km')
   const fromMUnit = getUnitTo('m')
 

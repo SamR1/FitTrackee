@@ -1,5 +1,23 @@
 {
+  "Bike": {
+    "LABEL": "Sykkel"
+  },
+  "Bike Trainer": {
+    "LABEL": "Sykkelrulle"
+  },
+  "Board": {
+    "LABEL": "Brett"
+  },
   "Kayak_Boat": {
-    "LABEL": "Kajakk/båt"
+    "LABEL": "Kajakk/Båt"
+  },
+  "Shoes": {
+    "LABEL": "Sko"
+  },
+  "Skis": {
+    "LABEL": "Ski"
+  },
+  "Snowshoes": {
+    "LABEL": "Truger"
   }
 }

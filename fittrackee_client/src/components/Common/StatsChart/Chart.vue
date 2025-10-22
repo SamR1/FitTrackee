@@ -202,7 +202,7 @@
             }
             let sum = 0
             tooltipItems.map((tooltipItem) => {
-              sum += tooltipItem.parsed.y
+              sum += tooltipItem.parsed.y ? tooltipItem.parsed.y : 0
             })
             return (
               `${t('common.TOTAL')}: ` +
