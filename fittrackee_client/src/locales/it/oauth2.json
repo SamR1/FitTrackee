@@ -9,14 +9,21 @@
     "REDIRECT_URL": "URL redirect",
     "SCOPE": {
       "LABEL": "Scope",
-      "application:write_DESCRIPTION": "da permessi di scrittura alla configurazioen dell'applicazione.",
+      "application:write_DESCRIPTION": "da permessi di scrittura alla configurazione dell'applicazione.",
       "equipments:read_DESCRIPTION": "da permessi di lettura a <code>equipments</code> endpoints.",
       "equipments:write_DESCRIPTION": "da permessi di scrittura a <code>equipments</code> endpoints.",
+      "follow:read_DESCRIPTION": "assegna diritti di lettura agli endpoint relativi alle richieste di follow e ai follower.",
+      "follow:write_DESCRIPTION": "assegna accesso in scrittura agli endpoint relativi alle richieste di follow e ai follower.",
+      "geocode:read_DESCRIPTION": "assegna diritti di lettura agli endpoint relativi al geocoding.",
+      "notifications:read_DESCRIPTION": "assegna diritti di lettura agli endpoint sulle <code>notifiche</code>.",
+      "notifications:write_DESCRIPTION": "assegna i diritti di scrittura all'endpoint <code>notifications</code>.",
       "profile:read_DESCRIPTION": "da permessi di lettura a <code>auth</code> endpoints.",
       "profile:write_DESCRIPTION": "da permessi di scrittura a <code>auth</code> endpoints.",
+      "reports:read_DESCRIPTION": "assegna diritti di lettura agli endpoint sui <code>report</code>.",
+      "reports:write_DESCRIPTION": "assegna diritti di scrittura agli endpoint sui <code>report</code>.",
       "users:read_DESCRIPTION": "da permessi di lettura a <code>users</code> endpoints.",
       "users:write_DESCRIPTION": "da permessi di scrittura a <code>users</code>endpoints.",
-      "workouts:read_DESCRIPTION": "da permessi di lettura a <code>workouts</code> endpoints.",
+      "workouts:read_DESCRIPTION": "assegna permessi di lettura agli endopint sui workout e sui commenti",
       "workouts:write_DESCRIPTION": "da permessi di scrittura a <code>workouts</code> endpoints."
     },
     "URL": "URL applicazione"
