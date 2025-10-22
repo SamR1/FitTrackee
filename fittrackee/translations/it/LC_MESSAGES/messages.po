@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2025-10-01 18:53+0200\n"
-"PO-Revision-Date: 2025-10-22 08:40+0000\n"
+"PO-Revision-Date: 2025-10-22 16:21+0000\n"
 "Last-Translator: Davide Gualano <ildave@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/fittrackee/"
 "fittrackee-api-emails/it/>\n"
@@ -402,6 +402,7 @@ msgid ""
 "You can no longer use your account and your profile is no longer "
 "accessible"
 msgstr ""
+"Non puoi più usare il tuo account e il tuo profilo non è più accessibile"
 
 #: fittrackee/emails/templates/user_suspension/body.html:5
 #: fittrackee/emails/templates/user_suspension/body.txt:2
@@ -409,6 +410,8 @@ msgid ""
 "You can still log in to request an export of your data or delete your "
 "account"
 msgstr ""
+"Puoi ancora fare login per richiedere l'export dei tuoi dati o per "
+"cancellare il tuo account"
 
 #: fittrackee/emails/templates/user_unsuspension/body.html:2
 #: fittrackee/emails/templates/user_unsuspension/body.html:3
@@ -434,18 +437,18 @@ msgstr "Avvertimento per %(username)s"
 #: fittrackee/emails/templates/user_warning/body.html:4
 #: fittrackee/emails/templates/user_warning/body.txt:1
 msgid "You received a warning"
-msgstr ""
+msgstr "Hai ricevuto un avvertimento"
 
 #: fittrackee/emails/templates/user_warning_lifting/body.html:3
 #: fittrackee/emails/templates/user_warning_lifting/body.html:4
 #: fittrackee/emails/templates/user_warning_lifting/body.txt:1
 msgid "Your warning has been lifted"
-msgstr ""
+msgstr "Il tuo avvertimento è stato annullato"
 
 #: fittrackee/emails/templates/workout_suspension/body.html:2
 #: fittrackee/emails/templates/workout_suspension/subject.txt:1
 msgid "Your workout has been suspended"
-msgstr ""
+msgstr "Il tuo workout è stato sospeso"
 
 #: fittrackee/emails/templates/workout_suspension/body.html:3
 #: fittrackee/emails/templates/workout_suspension/body.html:4
