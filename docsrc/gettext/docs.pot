@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FitTrackee 1.0.1\n"
 "\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-22 10:46+0200\n"
+"POT-Creation-Date: 2025-10-22 12:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3656,7 +3656,7 @@ msgid "Misc"
 msgstr ""
 
 #: ../source/changelog.md:43
-msgid "PR#966 - Add support for Python 3.14"
+msgid "#956 - Add support for Python 3.14"
 msgstr ""
 
 #: ../source/changelog.md:46

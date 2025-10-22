@@ -40,7 +40,7 @@ Translation status:
 
 ### Misc
 
-* [PR#966](https://github.com/SamR1/FitTrackee/pull/966) - Add support for Python 3.14
+* [#956](https://github.com/SamR1/FitTrackee/issues/956) - Add support for Python 3.14
 
 
 Thanks to the contributors:
