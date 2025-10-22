@@ -68,6 +68,7 @@
     "WEAK": "bassa"
   },
   "PASSWORD_UPDATED": "La tua password è stata aggiornata. Clicca {0} per effettuare il login.",
+  "PRIVACY_POLICY_TO_VALIDATE": "Per favore {0} la privacy policy prima di continuare.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Tipo di account",
     "ASCENT_DATA": "Dati relativi alle salite (singoli, totale)",
