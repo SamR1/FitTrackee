@@ -379,6 +379,8 @@
         display: flex;
         flex-direction: row;
         align-items: baseline;
+        flex-wrap: wrap;
+        gap: $default-padding * 0.5;
         span {
           margin-right: $default-margin * 0.5;
         }
@@ -388,14 +390,14 @@
         padding: 0 $default-margin * 0.5 0 $default-margin * 0.25;
       }
       .workout-date {
+        display: flex;
+        flex-wrap: wrap;
         font-size: 0.8em;
         font-weight: normal;
+        gap: $default-padding * 0.5;
       }
       .workout-segment {
         font-weight: normal;
-      }
-      .workout-link {
-        padding-left: $default-padding;
       }
 
       .workout-buttons {
@@ -459,11 +461,6 @@
           .fa-edit {
             padding: 0 $default-padding * 0.7;
           }
-        }
-
-        .workout-title {
-          display: flex;
-          flex-direction: column;
         }
       }
     }

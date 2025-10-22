@@ -42,6 +42,7 @@
     "no selected file": "No selected file.",
     "no tracks in gpx file": "No track (<trk>) in .gpx file.",
     "no tracks in kml file": "No track (<Track>) in .kml file.",
+    "no valid segments in file": "No valid segments in the file.",
     "no valid segments with GPS found in fit file": "no valid segments with GPS data found in .fit file.",
     "one or more values, entered or calculated, exceed the limits": "One or more values, entered or calculated, exceed the limits.",
     "ongoing request exists": "A data export request already exists.",
