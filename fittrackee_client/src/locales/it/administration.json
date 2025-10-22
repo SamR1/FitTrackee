@@ -67,10 +67,20 @@
       "user_unsuspension": "La sospensione di {0} è stata annullata da {1} {2}.",
       "user_warning": "Un avvertimento è stato mandato a {0} da {1} {2}.",
       "user_warning_lifting": "L'avvertimento di {0} è stato rimosso da {1} {2}.",
-      "workout_suspension": "il workout è stato sospeso da {1} {2}."
+      "workout_suspension": "il workout è stato sospeso da {1} {2}.",
+      "workout_unsuspension": "La sospensione del workout è stata annullata da {1} {2}."
+    },
+    "REPORT_NOTE": "Nota di",
+    "RESOLVED": {
+      "FALSE": "Non risolto",
+      "TRUE": "Risolto"
     },
     "RESOLVED_AT": "Risolto il",
-    "RESOLVED_BY": "Risolto da"
+    "RESOLVED_BY": "Risolto da",
+    "STATUS": "stato",
+    "TEXTAREA_PLACEHOLDER": {
+      "ADD_COMMENT": "Aggiungi un commento, azione intrapresa o qualunque altra informazione utile."
+    }
   },
   "BACK_TO_ADMIN": "Ritorna ad amministrazione",
   "CONFIRM_USER_ACCOUNT_DELETION": "Sei sicuro di voler eliminare {0} account? Tutti i dati verranno persi, quest'azione non può essere annullata.",
