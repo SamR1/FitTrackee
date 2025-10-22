@@ -363,18 +363,19 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         segments: List["gpxpy.gpx.GPXTrackSegment"],
         new_workout_id: int,
         new_workout_uuid: "UUID",
+        first_point: "gpxpy.gpx.GPXTrackPoint",
     ) -> Tuple[timedelta, float]:
         last_segment_index = len(segments) - 1
         max_speed = 0.0
         previous_segment_last_point_time: Optional["datetime"] = None
         stopped_time_between_segments = timedelta(seconds=0)
-        first_point = segments[0].points[0]
 
         # remove existing segments if not creation
         if not self.is_creation and self.workout:
             WorkoutSegment.query.filter_by(workout_id=self.workout.id).delete()
 
-        for segment_idx, segment in enumerate(segments):
+        segment_idx = 0
+        for segment in segments:
             # ignore segments with no distance
             if len(segment.points) < 2:
                 continue
@@ -415,6 +416,8 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             ):
                 max_speed = new_workout_segment.max_speed
 
+            segment_idx += 1
+
         return stopped_time_between_segments, max_speed
 
     def _process_file(self) -> "Workout":
@@ -424,7 +427,20 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             ) from None
 
         track: "gpxpy.gpx.GPXTrack" = self.gpx.tracks[0]
-        start_point = track.segments[0].points[0]
+
+        if len(self.gpx.tracks) == 0:
+            raise WorkoutFileException("error", "no tracks") from None
+
+        start_point = None
+        for segment in track.segments:
+            # segment must contain at least 2 points to be valid.
+            if len(segment.points) > 1:
+                start_point = segment.points[0]
+                break
+
+        if not start_point:
+            raise WorkoutFileException("error", "no valid segments") from None
+
         if start_point.time:
             self.start_point = WorkoutPoint(
                 start_point.longitude,
@@ -449,7 +465,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             )
 
         stopped_time_between_segments, max_speed = self._process_segments(
-            track.segments, self.workout.id, self.workout.uuid
+            track.segments, self.workout.id, self.workout.uuid, start_point
         )
 
         hr_cadence_power_stats = self._get_hr_cadence_power_data(
