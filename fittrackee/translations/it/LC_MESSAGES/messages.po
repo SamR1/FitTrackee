@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2025-10-01 18:53+0200\n"
-"PO-Revision-Date: 2022-12-12 19:48+0000\n"
-"Last-Translator: Donato Perruso <dperruso@protonmail.com>\n"
+"PO-Revision-Date: 2025-10-22 08:40+0000\n"
+"Last-Translator: Davide Gualano <ildave@gmail.com>\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/fittrackee/"
+"fittrackee-api-emails/it/>\n"
 "Language: it\n"
-"Language-Team: Italian <https://hosted.weblate.org/projects/fittrackee"
-"/fittrackee-api-emails/it/>\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.14-dev\n"
 "Generated-By: Babel 2.17.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
@@ -107,26 +108,26 @@ msgstr "Usa il link qui sotto per confermare la tua email."
 #: fittrackee/emails/templates/user_warning_lifting/subject.txt:1
 #, python-format
 msgid "Warning for %(username)s lifted"
-msgstr ""
+msgstr "Avvertimento rimosso per %(username)s"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:3
 msgid "Your appeal has been rejected"
-msgstr ""
+msgstr "Il tuo appello è stato rifiutato"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:4
 #: fittrackee/emails/templates/appeal_rejected/body.txt:1
 msgid "Your appeal on your account suspension has been rejected"
-msgstr ""
+msgstr "L'appello per la sospensione del tuo account è stato rifiutato"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:4
 #: fittrackee/emails/templates/appeal_rejected/body.txt:1
 msgid "Your appeal on your warning has been rejected"
-msgstr ""
+msgstr "L'appello per il tuo warning è stato rifiutato"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:4
 #: fittrackee/emails/templates/appeal_rejected/body.txt:1
 msgid "Your appeal on the following content suspension has been rejected"
-msgstr ""
+msgstr "Il tuo appello di questo sospensione per un contenuto è stato rifiutato"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:6
 #: fittrackee/emails/templates/appeal_rejected/body.txt:3
@@ -137,7 +138,7 @@ msgstr ""
 #: fittrackee/emails/templates/user_warning_lifting/body.html:6
 #: fittrackee/emails/templates/user_warning_lifting/body.txt:3
 msgid "Comment:"
-msgstr ""
+msgstr "Commento:"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:22
 #: fittrackee/emails/templates/appeal_rejected/body.txt:7
@@ -148,7 +149,7 @@ msgstr ""
 #: fittrackee/emails/templates/workout_suspension/body.txt:5
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:5
 msgid "Workout:"
-msgstr ""
+msgstr "Workout:"
 
 #: fittrackee/emails/templates/appeal_rejected/body.txt:5
 #: fittrackee/emails/templates/appeal_rejected/body.txt:9
@@ -159,22 +160,22 @@ msgstr ""
 #: fittrackee/emails/templates/user_warning_lifting/body.txt:9
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:7
 msgid "Link:"
-msgstr ""
+msgstr "Link:"
 
 #: fittrackee/emails/templates/appeal_rejected/subject.txt:1
 msgid "Appeal rejected"
-msgstr ""
+msgstr "Appello rifiutato"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:2
 #: fittrackee/emails/templates/comment_suspension/subject.txt:1
 msgid "Your comment has been suspended"
-msgstr ""
+msgstr "Il tuo commento è stato sospeso"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:3
 #: fittrackee/emails/templates/comment_suspension/body.html:4
 #: fittrackee/emails/templates/comment_suspension/body.txt:1
 msgid "Your comment has been suspended, it is no longer visible"
-msgstr ""
+msgstr "Il tuo commento è stato sospeso, non è più visibile"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:5
 #: fittrackee/emails/templates/comment_suspension/body.txt:3
@@ -191,7 +192,7 @@ msgstr ""
 #: fittrackee/emails/templates/workout_unsuspension/body.html:5
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:3
 msgid "Reason:"
-msgstr ""
+msgstr "Motivo:"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:20
 #: fittrackee/emails/templates/comment_suspension/body.txt:7
@@ -202,49 +203,49 @@ msgstr ""
 #: fittrackee/emails/templates/workout_suspension/body.html:23
 #: fittrackee/emails/templates/workout_suspension/body.txt:7
 msgid "If you think this is an error, you can appeal:"
-msgstr ""
+msgstr "Se pensi che sia un errore, puoi fare appello:"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:27
 #: fittrackee/emails/templates/user_suspension/body.html:14
 #: fittrackee/emails/templates/user_warning/body.html:48
 #: fittrackee/emails/templates/workout_suspension/body.html:30
 msgid "Appeal"
-msgstr ""
+msgstr "Appello"
 
 #: fittrackee/emails/templates/comment_unsuspension/body.html:2
 #: fittrackee/emails/templates/comment_unsuspension/subject.txt:1
 msgid "The suspension on your comment has been lifted"
-msgstr ""
+msgstr "La sospensione al tuo commento è stata rimossa"
 
 #: fittrackee/emails/templates/comment_unsuspension/body.html:3
 #: fittrackee/emails/templates/comment_unsuspension/body.html:4
 #: fittrackee/emails/templates/comment_unsuspension/body.txt:1
 msgid "The suspension on your comment has been lifted, it is visible again"
-msgstr ""
+msgstr "La sospensione al tuo commento è stata rimossa, è nuovamente visibile"
 
 #: fittrackee/emails/templates/data_export_ready/body.html:2
 #: fittrackee/emails/templates/data_export_ready/subject.txt:1
 msgid "Your archive is ready to be downloaded"
-msgstr ""
+msgstr "Il tuo archivio è pronto per essere scaricato"
 
 #: fittrackee/emails/templates/data_export_ready/body.html:3
 msgid "A download link is available in your account."
-msgstr ""
+msgstr "Un link per il download è disponibile nel tuo account."
 
 #: fittrackee/emails/templates/data_export_ready/body.html:4
 #: fittrackee/emails/templates/data_export_ready/body.txt:1
 msgid "You have requested an export of your account on FitTrackee."
-msgstr ""
+msgstr "Hai richiesto l'export del tuo account su FitTrackee."
 
 #: fittrackee/emails/templates/data_export_ready/body.html:4
 #: fittrackee/emails/templates/data_export_ready/body.txt:2
 msgid "The archive is now ready to be downloaded from your account."
-msgstr ""
+msgstr "L'archivio è ora pronto per essere scaricato dal tuo account."
 
 #: fittrackee/emails/templates/data_export_ready/body.html:11
 #: fittrackee/emails/templates/data_export_ready/body.txt:4
 msgid "Download your archive"
-msgstr ""
+msgstr "Scarica il tuo archivio"
 
 #: fittrackee/emails/templates/data_export_ready/body.html:18
 #: fittrackee/emails/templates/data_export_ready/body.txt:5
@@ -252,6 +253,8 @@ msgid ""
 "If you did not request the export, please change your password "
 "immediately or contact your administrator if your account is locked."
 msgstr ""
+"Se non hai richiesto l'export, per favore cambia immediatamente la tua "
+"password o contatta l'amministratore se il tuo account è bloccato."
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_current_email/subject.txt:1
@@ -390,7 +393,7 @@ msgstr "Usa il link qui sotto per resettarla."
 #: fittrackee/emails/templates/user_suspension/body.txt:1
 #: fittrackee/emails/templates/user_suspension/subject.txt:1
 msgid "Your account has been suspended"
-msgstr ""
+msgstr "Il tuo account è stato sospeso"
 
 #: fittrackee/emails/templates/user_suspension/body.html:3
 #: fittrackee/emails/templates/user_suspension/body.html:5
@@ -413,19 +416,19 @@ msgstr ""
 #: fittrackee/emails/templates/user_unsuspension/body.txt:1
 #: fittrackee/emails/templates/user_unsuspension/subject.txt:1
 msgid "Your account has been reactivated"
-msgstr ""
+msgstr "upload dell'archivio di workout"
 
 #: fittrackee/emails/templates/user_unsuspension/body.html:3
 #: fittrackee/emails/templates/user_unsuspension/body.html:4
 #: fittrackee/emails/templates/user_unsuspension/body.txt:2
 msgid "You can now use all the features on FitTrackee"
-msgstr ""
+msgstr "Ora puoi usare tutte le funzionalità di FitTrackee"
 
 #: fittrackee/emails/templates/user_warning/body.html:2
 #: fittrackee/emails/templates/user_warning/subject.txt:1
 #, python-format
 msgid "Warning for %(username)s"
-msgstr ""
+msgstr "Avvertimento per %(username)s"
 
 #: fittrackee/emails/templates/user_warning/body.html:3
 #: fittrackee/emails/templates/user_warning/body.html:4
@@ -602,4 +605,3 @@ msgstr "Discesa"
 #: fittrackee/feeds/templates/workout/body.html:4
 msgid "Description"
 msgstr "Descrizione"
-

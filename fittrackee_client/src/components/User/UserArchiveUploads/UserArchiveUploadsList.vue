@@ -9,6 +9,7 @@
         <li v-for="task in uploadTasks" :key="task.id">
           <div class="task-title">
             <router-link
+              v-if="task.original_file_name"
               :to="`/profile/archive-uploads/${task.id}`"
               :title="task.original_file_name"
             >

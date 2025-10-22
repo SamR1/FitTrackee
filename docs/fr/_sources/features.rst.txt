@@ -820,6 +820,14 @@ Workouts list
 .. figure:: _images/workouts-map.png
    :alt: FitTrackee Workouts Map
 
+
+Global map
+----------
+
+.. figure:: _images/global_map.png
+   :alt: FitTrackee Global Map
+
+
 Statistics
 ----------
 

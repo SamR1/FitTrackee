@@ -75,6 +75,9 @@ Prerequisites
 .. note::
     | If registration is enabled, it is recommended to set Redis and a SMTP provider for email sending and data export requests.
 
+.. note::
+    Depending on the operating system and the version of Python installed, additional dependencies may be required, such as **gcc** or **libgdal-dev**.
+
 
 Environment variables
 ~~~~~~~~~~~~~~~~~~~~~
@@ -577,6 +580,9 @@ Installation
 .. warning::
     | Note that **FitTrackee** is under heavy development, some features may be unstable.
 
+.. note::
+    Depending on the operating system and the version of Python installed, additional dependencies may be required, such as **gcc** or **libgdal-dev**.
+
 From PyPI
 ^^^^^^^^^
 
@@ -730,13 +736,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v1.0.0):
+-  Download the last release (for now, it is the release v1.0.1):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/1.0.0.tar.gz
-   $ tar -xzf v1.0.0.tar.gz
-   $ mv FitTrackee-1.0.0 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/1.0.1.tar.gz
+   $ tar -xzf v1.0.1.tar.gz
+   $ mv FitTrackee-1.0.1 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -790,6 +796,9 @@ Upgrade
 .. warning::
 
     For now, releases do not follow `semantic versioning <https://semver.org>`__. Any version may contain backward-incompatible changes.
+
+.. note::
+    Depending on the operating system and the version of Python installed, additional dependencies may be required, such as **gcc** or **libgdal-dev**.
 
 
 From PyPI
@@ -871,13 +880,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v1.0.0) and overwrite existing files:
+- Download the last release (for now, it is the release v1.0.1) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v1.0.0.tar.gz
-   $ tar -xzf v1.0.0.tar.gz
-   $ cp -R FitTrackee-1.0.0/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v1.0.1.tar.gz
+   $ tar -xzf v1.0.1.tar.gz
+   $ cp -R FitTrackee-1.0.1/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
