@@ -428,9 +428,6 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
 
         track: "gpxpy.gpx.GPXTrack" = self.gpx.tracks[0]
 
-        if len(self.gpx.tracks) == 0:
-            raise WorkoutFileException("error", "no tracks") from None
-
         start_point = None
         for segment in track.segments:
             # segment must contain at least 2 points to be valid.
@@ -439,7 +436,9 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 break
 
         if not start_point:
-            raise WorkoutFileException("error", "no valid segments") from None
+            raise WorkoutFileException(
+                "error", "no valid segments in file"
+            ) from None
 
         if start_point.time:
             self.start_point = WorkoutPoint(
