@@ -86,6 +86,7 @@
   const notificationsForm: Reactive<TNotificationPreferences> = reactive({
     account_creation: true,
     comment_like: true,
+    comment_reply: true,
     follow: true,
     follow_request: true,
     follow_request_approved: true,

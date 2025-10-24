@@ -231,6 +231,7 @@
 
   const appData: Reactive<TAppConfigForm> = reactive({
     admin_contact: '',
+    federation_enabled: false,
     max_users: 0,
     max_single_file_size: 0,
     max_zip_file_size: 0,
