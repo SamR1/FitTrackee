@@ -78,8 +78,6 @@ class WorkoutAssertMixin:
         assert workout.description is None
         assert float(workout.distance) == 0.32  # type: ignore
         assert workout.duration == timedelta(minutes=4, seconds=10)
-        if assert_full:
-            assert workout.gpx is None
         assert workout.map is None
         assert workout.map_id is None
         assert workout.map_visibility == VisibilityLevel.PRIVATE

@@ -547,7 +547,7 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         workout_running_user_1_segment: "WorkoutSegment",
         tcx_with_one_lap_and_one_track: str,
     ) -> None:
-        workout_cycling_user_1.original_file = workout_cycling_user_1.gpx
+        workout_cycling_user_1.original_file = "file.gpx"
         service = WorkoutsFromFileRefreshService(
             logger=test_logger, extension=".tcx"
         )

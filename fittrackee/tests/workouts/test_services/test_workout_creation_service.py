@@ -158,7 +158,6 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         assert workout.description is None
         assert float(workout.distance) == 15.0
         assert workout.duration == timedelta(minutes=50)
-        assert workout.gpx is None
         assert workout.map is None
         assert workout.map_id is None
         assert workout.map_visibility == VisibilityLevel.PRIVATE
@@ -168,6 +167,7 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         assert workout.modification_date is None
         assert workout.moving == timedelta(minutes=50)
         assert workout.notes is None
+        assert workout.original_file is None
         assert workout.pauses == timedelta(seconds=0)
         assert workout.sport_id == sport_1_cycling.id
         assert workout.suspended_at is None

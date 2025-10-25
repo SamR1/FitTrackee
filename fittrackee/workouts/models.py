@@ -263,7 +263,6 @@ class Workout(BaseModel):
     title: Mapped[Optional[str]] = mapped_column(
         db.String(TITLE_MAX_CHARACTERS), nullable=True
     )
-    gpx: Mapped[Optional[str]] = mapped_column(db.String(255), nullable=True)
     creation_date: Mapped[datetime] = mapped_column(
         TZDateTime, default=aware_utc_now
     )
@@ -870,11 +869,6 @@ def on_workout_delete(
                 os.remove(get_absolute_file_path(old_workout.map))
             except OSError:
                 appLog.error("map file not found when deleting workout")
-        if old_workout.gpx:
-            try:
-                os.remove(get_absolute_file_path(old_workout.gpx))
-            except OSError:
-                appLog.error("gpx file not found when deleting workout")
         if old_workout.original_file:
             try:
                 os.remove(get_absolute_file_path(old_workout.original_file))
