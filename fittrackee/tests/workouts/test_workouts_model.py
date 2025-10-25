@@ -2879,7 +2879,6 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
         workout_cycling_user_2.map_visibility = input_workout_visibility
         workout_cycling_user_2.analysis_visibility = input_workout_visibility
         workout_cycling_user_2.workout_visibility = input_workout_visibility
-        workout_cycling_user_2.original_file = "file.gpx"
         workout_cycling_user_2.original_file = "file.tcx"
         map_id = random_string()
         workout_cycling_user_2 = self.update_workout_with_file_data(
@@ -3161,7 +3160,6 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         workout_cycling_user_2.map_visibility = VisibilityLevel.FOLLOWERS
         workout_cycling_user_2.analysis_visibility = VisibilityLevel.FOLLOWERS
         workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
-        workout_cycling_user_2.original_file = "file.gpx"
         workout_cycling_user_2.original_file = "file.tcx"
         map_id = random_string()
         workout_cycling_user_2 = self.update_workout_with_file_data(

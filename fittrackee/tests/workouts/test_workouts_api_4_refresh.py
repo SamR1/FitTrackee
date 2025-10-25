@@ -150,7 +150,6 @@ class TestRefreshWorkout(WorkoutApiTestCaseMixin):
         gpx_file: str,
     ) -> None:
         workout_cycling_user_1.original_file = "workouts/1/example.gpx"
-        workout_cycling_user_1.original_file = "workouts/1/example.gpx"
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )

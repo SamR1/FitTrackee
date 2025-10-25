@@ -47,20 +47,17 @@ def downgrade():
         UPDATE workouts
         SET gpx = original_file
         WHERE original_file like '%.gpx';
-        UPDATE workouts
-        SET gpx = REPLACE (original_file, '.fit', '.gpx')
-        WHERE original_file like '%.fit';
-        UPDATE workouts
-        SET gpx = REPLACE (original_file, '.kml', '.gpx')
-        WHERE original_file like '%.kml';
-        UPDATE workouts
-        SET gpx = REPLACE (original_file, '.kmz', '.gpx')
-        WHERE original_file like '%.kmz';
-        UPDATE workouts
-        SET gpx = REPLACE (original_file, '.tcx', '.gpx')
-        WHERE original_file like '%.tcx';
         """
     )
+
+    for extension in ['fit', 'kml', 'kmz', 'tcx']:
+        op.execute(
+            f"""
+            UPDATE workouts
+            SET gpx = REPLACE (original_file, '.{extension}', '.gpx')
+            WHERE original_file like '%.{extension}';
+            """
+        )
 
     op.execute(
         """
