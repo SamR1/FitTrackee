@@ -54,7 +54,7 @@ lxml = "^6.0.2"
 mistune = "^3.1.4"
 nh3 = "^0.3.1"
 numpy = "=2.2.6" # numpy 2.3+ requires python 3.11+. geoalchemy2 dependency.
-pandas = "=2.3.3"
+pandas = "=2.3.2"
 psycopg2-binary = "^2.9.11"
 pyjwt = "^2.10.1"
 pyopenssl = "^25.3.0"
