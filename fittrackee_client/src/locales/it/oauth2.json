@@ -23,8 +23,8 @@
       "reports:write_DESCRIPTION": "assegna diritti di scrittura agli endpoint sui <code>report</code>.",
       "users:read_DESCRIPTION": "da permessi di lettura a <code>users</code> endpoints.",
       "users:write_DESCRIPTION": "da permessi di scrittura a <code>users</code>endpoints.",
-      "workouts:read_DESCRIPTION": "assegna permessi di lettura agli endopint sui workout e sui commenti",
-      "workouts:write_DESCRIPTION": "da permessi di scrittura a <code>workouts</code> endpoints."
+      "workouts:read_DESCRIPTION": "assegna permessi di lettura agli endopint sui workout e sui commenti.",
+      "workouts:write_DESCRIPTION": "da permessi di scrittura agli endpoint sui workout e sui commenti."
     },
     "URL": "URL applicazione"
   },
