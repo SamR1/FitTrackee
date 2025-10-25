@@ -381,7 +381,6 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 continue
 
             new_workout_segment = WorkoutSegment(
-                segment_id=segment_idx,
                 workout_id=new_workout_id,
                 workout_uuid=new_workout_uuid,
             )

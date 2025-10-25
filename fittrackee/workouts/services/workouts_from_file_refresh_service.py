@@ -2,12 +2,12 @@ from datetime import datetime
 from logging import Logger, getLogger
 from typing import TYPE_CHECKING, Optional
 
-from sqlalchemy import asc, desc, or_
+from sqlalchemy import asc, desc
 
 from fittrackee import db
 from fittrackee.files import get_absolute_file_path
 from fittrackee.users.models import User, UserSportPreference
-from fittrackee.workouts.models import Workout, WorkoutSegment
+from fittrackee.workouts.models import Workout
 
 from ..exceptions import (
     WorkoutExceedingValueException,
@@ -90,18 +90,6 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
                 "error", "error when processing workout"
             ) from e
 
-        db.session.flush()
-
-        # if original file is not a gpx, store the newly generated gpx file
-        if file_extension != "gpx":
-            gpx_file = (
-                self.workout.gpx
-                if self.workout.gpx
-                else self.original_file.replace(file_extension, "gpx")
-            )
-            with open(get_absolute_file_path(gpx_file), "w") as f:
-                f.write(workout_service.gpx.to_xml())
-
         db.session.commit()
         db.session.refresh(self.workout)
         return self.workout
@@ -124,7 +112,6 @@ class WorkoutsFromFileRefreshService:
         date_from: Optional[datetime] = None,
         date_to: Optional[datetime] = None,
         with_weather: bool = False,
-        add_geometry: bool = False,
         verbose: bool = False,
     ) -> None:
         self.per_page: Optional[int] = per_page
@@ -136,7 +123,6 @@ class WorkoutsFromFileRefreshService:
         self.date_from: Optional["datetime"] = date_from
         self.date_to: Optional["datetime"] = date_to
         self.with_weather: bool = with_weather
-        self.add_geometry: bool = add_geometry
         self.logger: "Logger" = logger
         self.verbose: bool = verbose
 
@@ -147,7 +133,7 @@ class WorkoutsFromFileRefreshService:
 
     def refresh(self) -> int:
         workouts_to_refresh_query = Workout.query
-        filters = [Workout.gpx != None]  # noqa
+        filters = [Workout.original_file != None]  # noqa
         if self.username:
             workouts_to_refresh_query = workouts_to_refresh_query.join(
                 User, User.id == Workout.user_id
@@ -161,18 +147,6 @@ class WorkoutsFromFileRefreshService:
             filters.extend([Workout.workout_date >= self.date_from])
         if self.date_to:
             filters.extend([Workout.workout_date <= self.date_to])
-        if self.add_geometry:
-            workouts_to_refresh_query = workouts_to_refresh_query.join(
-                WorkoutSegment
-            )
-            filters.extend(
-                [
-                    or_(
-                        Workout.start_point_geom == None,  # noqa
-                        WorkoutSegment.geom == None,  # noqa
-                    )
-                ]
-            )
 
         updated_workouts = 0
         workouts_to_refresh = (

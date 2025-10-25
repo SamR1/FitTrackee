@@ -6,6 +6,7 @@ from shapely import Point
 from sqlalchemy import func, select
 
 from fittrackee import db
+from fittrackee.utils import decode_short_id
 from fittrackee.workouts.constants import (
     POWER_SPORTS,
     RPM_CADENCE_SPORTS,
@@ -16,7 +17,6 @@ from fittrackee.workouts.constants import (
 from fittrackee.workouts.exceptions import (
     InvalidCoordinatesException,
     InvalidRadiusException,
-    WorkoutException,
 )
 from fittrackee.workouts.models import WorkoutSegment
 
@@ -27,21 +27,19 @@ if TYPE_CHECKING:
 def get_geojson_from_segments(
     workout: "Workout",
     *,
-    segment_id: Optional[int] = None,
+    segment_short_id: Optional[str] = None,
 ) -> Optional[Dict]:
     """
     To refactor when using segment uuid
     """
     filters = [WorkoutSegment.workout_id == workout.id]
-    if segment_id is not None:
-        segment_index = segment_id - 1
-        if segment_index < 0:
-            raise WorkoutException("error", "Incorrect segment id", None)
-        filters.append(WorkoutSegment.segment_id == segment_id - 1)
+    if segment_short_id is not None:
+        segment_uuid = decode_short_id(segment_short_id)
+        filters.append(WorkoutSegment.uuid == segment_uuid)
     geom_subquery = select(WorkoutSegment.geom).filter(*filters).subquery()
     subquery = (
         func.ST_Collect(geom_subquery.c.geom)
-        if segment_id is None
+        if segment_short_id is None
         else geom_subquery.c.geom
     )
     geojson = db.session.scalar(func.ST_AsGeoJSON(subquery))

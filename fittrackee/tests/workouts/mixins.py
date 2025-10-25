@@ -78,8 +78,6 @@ class WorkoutAssertMixin:
         assert workout.description is None
         assert float(workout.distance) == 0.32  # type: ignore
         assert workout.duration == timedelta(minutes=4, seconds=10)
-        if assert_full:
-            assert workout.gpx is None
         assert workout.map is None
         assert workout.map_id is None
         assert workout.map_visibility == VisibilityLevel.PRIVATE
@@ -116,7 +114,6 @@ class WorkoutAssertMixin:
             workout_segment = WorkoutSegment.query.one()
         assert workout_segment.workout_id == workout.id
         assert workout_segment.workout_uuid == workout.uuid
-        assert workout_segment.segment_id == 0
         assert isinstance(workout_segment.uuid, UUID)
         assert float(workout_segment.ascent) == 0.4  # type: ignore[arg-type]
         assert float(workout_segment.ave_speed) == 4.61  # type: ignore[arg-type]

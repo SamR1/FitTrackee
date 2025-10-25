@@ -30,7 +30,8 @@ export interface IWorkoutSegment {
   min_alt: number
   moving: string
   pauses: string
-  segment_id: number
+  segment_id: string
+  segment_number: number
   workout_id: string
 }
 
@@ -124,7 +125,7 @@ export interface IWorkout {
   weather_end: IWeather | null
   weather_start: IWeather | null
   with_analysis: boolean
-  with_gpx: boolean
+  with_file: boolean
   with_geometry?: boolean
   workout_date: string
   workout_visibility?: TVisibilityLevels
@@ -156,7 +157,8 @@ export interface IWorkoutObject {
   pauses: string | null
   previousUrl: string | null
   records: IRecord[]
-  segmentId: number | null
+  segmentId: string | null
+  segmentNumber: number | null
   source: string | null
   suspended: boolean
   title: string
@@ -166,7 +168,7 @@ export interface IWorkoutObject {
   workoutFullDate: string
   weatherStart: IWeather | null
   with_analysis: boolean
-  with_gpx: boolean
+  with_file: boolean
   workoutId: string
   workoutTime: string
   workoutVisibility: TVisibilityLevels | null | undefined

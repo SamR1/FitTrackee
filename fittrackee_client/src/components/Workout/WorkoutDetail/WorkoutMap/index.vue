@@ -2,7 +2,7 @@
   <div id="workout-map">
     <div v-if="workoutData.loading" class="leaflet-container" />
     <div v-else>
-      <VFullscreen v-if="workoutData.workout.with_gpx" v-model="isFullscreen">
+      <VFullscreen v-if="workoutData.workout.with_file" v-model="isFullscreen">
         <div
           class="leaflet-container"
           :class="{ 'fullscreen-map': isFullscreen }"

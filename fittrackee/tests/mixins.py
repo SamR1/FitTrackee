@@ -651,7 +651,9 @@ class WorkoutMixin:
     ) -> Workout:
         workout.map_id = map_id
         workout.map = random_string() if map_id is None else map_id
-        workout.gpx = random_string() if gpx_path is None else gpx_path
+        workout.original_file = (
+            random_string() if gpx_path is None else gpx_path
+        )
         workout.bounds = [1.0, 2.0, 3.0, 4.0] if bounds is None else bounds
         workout.pauses = timedelta(minutes=15)
         workout.ascent = ascent
