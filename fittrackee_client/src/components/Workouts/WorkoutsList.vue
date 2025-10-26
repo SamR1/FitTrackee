@@ -35,7 +35,6 @@
             {{ $t(`workouts.${showWorkouts ? 'HIDE' : 'SHOW'}_WORKOUTS`) }}
           </button>
           <button
-            v-if="appConfig.enable_geospatial_features"
             class="hide-workouts-btn transparent"
             :disabled="noGeometries"
             @click="toggleWorkoutsMap"
@@ -462,12 +461,7 @@
     TWorkoutsStatistics,
   } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
-  import {
-    getQuery,
-    sortList,
-    workoutsPayloadKeys,
-    workoutsPayloadKeysWithGeospatial,
-  } from '@/utils/api'
+  import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
   import { getTotalDuration } from '@/utils/duration.ts'
   import { getSportColor, getSportLabel } from '@/utils/sports'
@@ -492,7 +486,7 @@
     'workout_date',
   ]
 
-  const { appConfig, appLanguage } = useApp()
+  const { appLanguage } = useApp()
   const { isAuthUserSuspended } = useAuthUser()
 
   let query: TWorkoutsPayload = getWorkoutsQuery(route.query)
@@ -551,15 +545,10 @@
       defaultOrder.order_by,
       {
         defaultSort: defaultOrder.order,
-        enableGeospatialFeatures: appConfig.value.enable_geospatial_features,
       }
     )
     Object.keys(newQuery)
-      .filter((k) =>
-        appConfig.value.enable_geospatial_features
-          ? workoutsPayloadKeysWithGeospatial.includes(k)
-          : workoutsPayloadKeys.includes(k)
-      )
+      .filter((k) => workoutsPayloadKeys.includes(k))
       .map((k) => {
         if (typeof newQuery[k] === 'string') {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
