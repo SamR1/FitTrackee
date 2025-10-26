@@ -874,6 +874,23 @@ def on_workout_delete(
                 os.remove(get_absolute_file_path(old_workout.original_file))
             except OSError:
                 appLog.error("original file not found when deleting workout")
+            # delete generated gpx file when original file is not a gpx
+            original_file_extension = get_file_extension(
+                old_workout.original_file
+            )
+            if original_file_extension != "gpx":
+                try:
+                    os.remove(
+                        get_absolute_file_path(
+                            old_workout.original_file.replace(
+                                f".{original_file_extension}", ".gpx"
+                            )
+                        )
+                    )
+                except OSError:
+                    # note: .gpx files are no longer stored from
+                    # version 1.1.0 onwards
+                    pass
 
         Notification.query.filter(
             Notification.event_object_id == old_workout.id,

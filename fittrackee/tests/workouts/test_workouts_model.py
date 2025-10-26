@@ -2,7 +2,7 @@ import os
 import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List
 
 import pytest
 from flask import Flask
@@ -1005,16 +1005,27 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
 
         assert Workout.query.count() == 0
 
+    @pytest.mark.parametrize(
+        "input_description, input_extensions",
+        [
+            ("workout created from 1.1.0", ["kml", "png"]),
+            (
+                "workout created before 1.1.0 (with generated gpx)",
+                ["gpx", "kml", "png"],
+            ),
+        ],
+    )
     def test_it_deletes_workout_with_files(
         self,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
         workout_cycling_user_1: Workout,
+        input_description: str,
+        input_extensions: List[str],
     ) -> None:
         files_paths = {}
-        extensions = ["kml", "png"]
-        for extension in extensions:
+        for extension in input_extensions:
             relative_path = os.path.join(
                 "workouts", str(user_1.id), f"file.{extension}"
             )
@@ -1031,7 +1042,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         db.session.delete(workout_cycling_user_1)
 
         assert Workout.query.count() == 0
-        for extension in extensions:
+        for extension in input_extensions:
             assert os.path.exists(files_paths[extension]) is False
 
     def test_it_updates_equipments_totals(
