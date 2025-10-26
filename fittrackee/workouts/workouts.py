@@ -1582,8 +1582,7 @@ def get_segment_chart_data(
 
     .. sourcecode:: http
 
-      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart/
-          segment/C4asMMbRJsxTirSjTVWeWU HTTP/1.1
+      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart/segment/C4asMMbRJsxTirSjTVWeWU HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1729,8 +1728,7 @@ def get_segment_geojson(
 
     .. sourcecode:: http
 
-      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/geojson/
-          segment/C4asMMbRJsxTirSjTVWeWU HTTP/1.1
+      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/geojson/segment/C4asMMbRJsxTirSjTVWeWU HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -3475,7 +3473,6 @@ def refresh_workout(
     Refresh a workout (created by uploading a file):
 
     - recalculate workout data like max. speed, pauses...
-    - regenerate gpx file if original file is not a gpx
     - update weather if weather provided is set and workout does not have
       weather data
 

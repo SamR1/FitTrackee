@@ -13,6 +13,9 @@ Instructions for upgrade
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. warning::
+    These actions must be performed before upgrading to version 1.1.0.
+
+.. warning::
     Before upgrading, make a backup of all data:
 
     - database (with `pg_dump <https://www.postgresql.org/docs/current/app-pgdump.html>`__ for instance)
@@ -107,4 +110,4 @@ For instance to update the first 1,000 workouts created with a file:
 | Once all workouts have been updated, enable geospatial features on the interface by setting the environment variable `ENABLE_GEOSPATIAL_FEATURES <installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES>`_  to ``True`` in ``.env``.
 
 .. important::
-    The version 1.1.0 will require all workouts to be updated.
+    The version 1.1.0 require all workouts to be updated (``--add-missing-geometry`` option is removed in v1.1.0).

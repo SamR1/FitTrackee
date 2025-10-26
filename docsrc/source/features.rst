@@ -127,7 +127,7 @@ Workouts
   - .kml: generated .gpx file contains one track (``<trk>``) corresponding to ``<MultiTrack>``, containing one segment (``<trkseg>``) per kml track (``<Track>``)
   - .tcx: generated .gpx file contains one track (``<trk>``) containing one segment (``<trkseg>``) per activity (``<Activity>``)
 
-- The original file or the generated gpx file can be downloaded (*modified in 0.12.0*).
+- The original file or the .gpx file generated from workout data can be downloaded (*modified in 1.1.0*).
 - If present in .gpx, .tcx and .fit files, the source (application or device) is displayed.
 
 .. note::
