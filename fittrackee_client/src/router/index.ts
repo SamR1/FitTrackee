@@ -12,6 +12,7 @@ import AdminReports from '@/components/Administration/AdminReports.vue'
 import AdminSports from '@/components/Administration/AdminSports.vue'
 import AdminUsers from '@/components/Administration/AdminUsers.vue'
 import Profile from '@/components/User/ProfileDisplay/index.vue'
+import UserAccount from '@/components/User/ProfileDisplay/UserAccount.vue'
 import UserInfos from '@/components/User/ProfileDisplay/UserInfos.vue'
 import UserNotifications from '@/components/User/ProfileDisplay/UserNotifications.vue'
 import UserPreferences from '@/components/User/ProfileDisplay/UserPreferences.vue'
@@ -211,6 +212,14 @@ const routes: RouteRecordRaw[] = [
             component: UserInfos,
             meta: {
               title: 'user.PROFILE.TABS.PROFILE',
+            },
+          },
+          {
+            path: 'account',
+            name: 'UserAccount',
+            component: UserAccount,
+            meta: {
+              title: 'user.PROFILE.TABS.ACCOUNT',
             },
           },
           {

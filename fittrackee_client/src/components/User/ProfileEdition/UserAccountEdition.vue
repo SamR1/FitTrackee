@@ -1,5 +1,5 @@
 <template>
-  <div id="user-infos-edition">
+  <div id="user-account-edition">
     <Modal
       v-if="displayModal"
       :title="$t('common.CONFIRMATION')"
@@ -8,7 +8,7 @@
       @cancelAction="updateDisplayModal(false)"
       @keydown.esc="updateDisplayModal(false)"
     />
-    <div class="profile-form form-box">
+    <div class="form-box">
       <ErrorMessage :message="errorMessages" v-if="errorMessages" />
       <div class="info-box success-message" v-if="authUserSuccess">
         {{
@@ -60,85 +60,41 @@
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
           </button>
-          <button class="cancel" @click.prevent="$router.push('/profile')">
+          <button
+            class="cancel"
+            @click.prevent="$router.push('/profile/account')"
+          >
             {{ $t('buttons.CANCEL') }}
-          </button>
-          <button class="danger" @click.prevent="updateDisplayModal(true)">
-            {{ $t('buttons.DELETE_MY_ACCOUNT') }}
           </button>
           <button
             class="confirm"
-            v-if="canRequestExport()"
+            :disabled="!canRequestExport()"
             @click.prevent="requestExport"
           >
             {{ $t('buttons.REQUEST_DATA_EXPORT') }}
           </button>
+          <button class="danger" @click.prevent="updateDisplayModal(true)">
+            {{ $t('buttons.DELETE_MY_ACCOUNT') }}
+          </button>
         </div>
       </form>
-      <div class="data-export">
-        <span class="info-box">
-          <i class="fa fa-info-circle" aria-hidden="true" />
-          {{ $t('user.EXPORT_REQUEST.ONLY_ONE_EXPORT_PER_DAY') }}
-        </span>
-        <div v-if="exportRequest" class="data-export-archive">
-          {{ $t('user.EXPORT_REQUEST.DATA_EXPORT') }}
-          ({{ exportRequestDate }}):
-          <span
-            v-if="exportRequest.status === 'successful'"
-            class="archive-link"
-            @click.prevent="downloadArchive(exportRequest.file_name)"
-          >
-            <i class="fa fa-download" aria-hidden="true" />
-            {{ $t('user.EXPORT_REQUEST.DOWNLOAD_ARCHIVE') }}
-            ({{ getReadableFileSizeAsText(exportRequest.file_size) }})
-          </span>
-          <span v-else>
-            {{
-              `${$t(
-                `user.TASKS.STATUS.${exportRequest.status}`
-              )}${exportRequest.status === 'in_progress' ? '…' : ''}`
-            }}
-            <span v-if="exportRequest.status === 'errored'">
-              ({{ $t('user.EXPORT_REQUEST.REQUEST_ANOTHER_EXPORT') }})
-            </span>
-          </span>
-          <span v-if="generatingLink">
-            {{ $t(`user.EXPORT_REQUEST.GENERATING_LINK`) }}
-            <i class="fa fa-spinner fa-pulse" aria-hidden="true" />
-          </span>
-        </div>
-      </div>
+      <UserDataExport :user="user" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { isBefore, subDays } from 'date-fns'
-  import {
-    computed,
-    reactive,
-    ref,
-    toRefs,
-    onMounted,
-    watch,
-    onUnmounted,
-  } from 'vue'
-  import type { ComputedRef, Reactive, Ref } from 'vue'
+  import { reactive, ref, toRefs, onMounted, watch, onUnmounted } from 'vue'
+  import type { Reactive, Ref } from 'vue'
 
-  import authApi from '@/api/authApi'
   import PasswordInput from '@/components/Common/PasswordInput.vue'
+  import UserDataExport from '@/components/User/UserDataExport.vue'
   import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser'
+  import useUserDataExport from '@/composables/useUserDataExport'
   import { AUTH_USER_STORE } from '@/store/constants'
-  import type {
-    IAuthUserProfile,
-    IUserAccountPayload,
-    IExportRequest,
-  } from '@/types/user'
+  import type { IAuthUserProfile, IUserAccountPayload } from '@/types/user'
   import { useStore } from '@/use/useStore'
-  import { formatDate } from '@/utils/dates'
-  import { getReadableFileSizeAsText } from '@/utils/files'
-
   interface Props {
     user: IAuthUserProfile
   }
@@ -149,6 +105,7 @@
 
   const { appConfig, errorMessages } = useApp()
   const { authUserLoading, authUserSuccess } = useAuthUser()
+  const { canRequestExport, requestExport } = useUserDataExport()
 
   const userForm: Reactive<IUserAccountPayload> = reactive({
     email: '',
@@ -158,14 +115,6 @@
   const emailUpdate: Ref<boolean> = ref(false)
   const formErrors: Ref<boolean> = ref(false)
   const displayModal: Ref<boolean> = ref(false)
-  const generatingLink: Ref<boolean> = ref(false)
-
-  const exportRequest: ComputedRef<IExportRequest | null> = computed(
-    () => store.getters[AUTH_USER_STORE.GETTERS.EXPORT_REQUEST]
-  )
-  const exportRequestDate: ComputedRef<string | null> = computed(() =>
-    getExportRequestDate()
-  )
 
   function invalidateForm() {
     formErrors.value = true
@@ -178,24 +127,6 @@
   }
   function updateNewPassword(new_password: string) {
     userForm.new_password = new_password
-  }
-  function getExportRequestDate() {
-    return exportRequest.value
-      ? formatDate(
-          exportRequest.value.created_at,
-          user.value.timezone,
-          user.value.date_format,
-          { withTime: true, language: null, withSeconds: true }
-        )
-      : null
-  }
-  function canRequestExport() {
-    return exportRequest.value?.created_at
-      ? isBefore(
-          new Date(exportRequest.value.created_at),
-          subDays(new Date(), 1)
-        )
-      : true
   }
   function updateProfile() {
     const payload: IUserAccountPayload = {
@@ -213,27 +144,6 @@
   }
   function deleteAccount(username: string) {
     store.dispatch(AUTH_USER_STORE.ACTIONS.DELETE_ACCOUNT, { username })
-  }
-  function requestExport() {
-    store.dispatch(AUTH_USER_STORE.ACTIONS.REQUEST_DATA_EXPORT)
-  }
-  async function downloadArchive(filename: string) {
-    generatingLink.value = true
-    await authApi
-      .get(`/auth/account/export/${filename}`, {
-        responseType: 'blob',
-      })
-      .then((response) => {
-        const archiveFileUrl = window.URL.createObjectURL(
-          new Blob([response.data], { type: 'application/zip' })
-        )
-        const archive_link = document.createElement('a')
-        archive_link.href = archiveFileUrl
-        archive_link.setAttribute('download', filename)
-        document.body.appendChild(archive_link)
-        archive_link.click()
-      })
-      .finally(() => (generatingLink.value = false))
   }
 
   watch(
@@ -267,7 +177,7 @@
 
 <style lang="scss" scoped>
   @use '~@/scss/vars.scss' as *;
-  #user-infos-edition {
+  #user-account-edition {
     padding: $default-padding 0;
 
     .form-items {
@@ -290,22 +200,12 @@
     }
 
     .form-buttons {
+      display: flex;
       flex-direction: row;
+      gap: $default-padding;
+      margin-top: $default-margin;
       @media screen and (max-width: $x-small-limit) {
         flex-direction: column;
-      }
-    }
-
-    .data-export {
-      padding: $default-padding 0;
-      .data-export-archive {
-        padding-top: $default-padding * 2;
-        font-size: 0.9em;
-
-        .archive-link {
-          color: var(--app-a-color);
-          cursor: pointer;
-        }
       }
     }
   }
