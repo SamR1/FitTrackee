@@ -190,8 +190,11 @@
       : null
   }
   function canRequestExport() {
-    return exportRequestDate.value
-      ? isBefore(new Date(exportRequestDate.value), subDays(new Date(), 1))
+    return exportRequest.value?.created_at
+      ? isBefore(
+          new Date(exportRequest.value.created_at),
+          subDays(new Date(), 1)
+        )
       : true
   }
   function updateProfile() {
