@@ -21,13 +21,11 @@ from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..comments.mixins import CommentMixin
-from ..mixins import ApiTestCaseMixin, BaseTestMixin, ReportMixin
+from ..mixins import ApiTestCaseMixin, ReportMixin
 from ..utils import jsonify_dict
 
 
-class ReportTestCase(
-    CommentMixin, ReportMixin, ApiTestCaseMixin, BaseTestMixin
-):
+class ReportTestCase(CommentMixin, ReportMixin, ApiTestCaseMixin):
     route = "/api/reports"
 
     def create_reports(

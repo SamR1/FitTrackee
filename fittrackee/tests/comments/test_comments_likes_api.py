@@ -11,12 +11,12 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import ApiTestCaseMixin, BaseTestMixin
+from ..mixins import ApiTestCaseMixin
 from ..utils import jsonify_dict
 from .mixins import CommentMixin
 
 
-class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
+class TestCommentLikePost(CommentMixin, ApiTestCaseMixin):
     route = "/api/comments/{comment_uuid}/like"
 
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -290,7 +290,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
 
-class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
+class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin):
     route = "/api/comments/{comment_uuid}/like/undo"
 
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -541,7 +541,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
 
-class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
+class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin):
     route = "/api/comments/{comment_uuid}/likes"
 
     def test_it_returns_404_when_workout_does_not_exist(

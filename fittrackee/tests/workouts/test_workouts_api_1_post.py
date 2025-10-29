@@ -23,7 +23,7 @@ from fittrackee.workouts.services.workout_from_file import (
     WorkoutGpxService,
 )
 
-from ..mixins import BaseTestMixin, ReportMixin, UserTaskMixin
+from ..mixins import ReportMixin, UserTaskMixin
 from ..utils import jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin, WorkoutGpxInfoMixin
 
@@ -268,9 +268,7 @@ def assert_files_are_deleted(
     )
 
 
-class TestPostWorkoutWithGpx(
-    WorkoutGpxInfoMixin, WorkoutApiTestCaseMixin, BaseTestMixin
-):
+class TestPostWorkoutWithGpx(WorkoutGpxInfoMixin, WorkoutApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: "Flask", sport_1_cycling: "Sport", gpx_file: str
     ) -> None:
@@ -2352,9 +2350,7 @@ class TestPostAndGetWorkoutUsingTimezones(WorkoutApiTestCaseMixin):
         )
 
 
-class TestPostWorkoutSuspensionAppeal(
-    WorkoutApiTestCaseMixin, ReportMixin, BaseTestMixin
-):
+class TestPostWorkoutSuspensionAppeal(WorkoutApiTestCaseMixin, ReportMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
         app: "Flask",

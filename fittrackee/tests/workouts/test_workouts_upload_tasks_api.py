@@ -7,7 +7,7 @@ import pytest
 from fittrackee import abortable, db
 from fittrackee.users.models import UserTask
 
-from ..mixins import ApiTestCaseMixin, BaseTestMixin, UserTaskMixin
+from ..mixins import ApiTestCaseMixin, UserTaskMixin
 from ..utils import jsonify_dict
 
 if TYPE_CHECKING:
@@ -18,9 +18,7 @@ if TYPE_CHECKING:
 MESSAGE_ID = "e7640357-3b8d-47be-885d-68104cdfe4b2"
 
 
-class TestWorkoutsTasksGetTasks(
-    ApiTestCaseMixin, BaseTestMixin, UserTaskMixin
-):
+class TestWorkoutsTasksGetTasks(ApiTestCaseMixin, UserTaskMixin):
     route = "/api/workouts/upload-tasks"
 
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -150,7 +148,7 @@ class TestWorkoutsTasksGetTasks(
         )
 
 
-class TestWorkoutsTasksGetTask(UserTaskMixin, ApiTestCaseMixin, BaseTestMixin):
+class TestWorkoutsTasksGetTask(UserTaskMixin, ApiTestCaseMixin):
     route = "/api/workouts/upload-tasks/{task_id}"
 
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -251,9 +249,7 @@ class TestWorkoutsTasksGetTask(UserTaskMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
 
-class TestWorkoutsTasksDeleteTask(
-    ApiTestCaseMixin, BaseTestMixin, UserTaskMixin
-):
+class TestWorkoutsTasksDeleteTask(ApiTestCaseMixin, UserTaskMixin):
     route = "/api/workouts/upload-tasks/{task_id}"
 
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -390,9 +386,7 @@ class TestWorkoutsTasksDeleteTask(
         )
 
 
-class TestWorkoutsTasksAbortTask(
-    UserTaskMixin, ApiTestCaseMixin, BaseTestMixin
-):
+class TestWorkoutsTasksAbortTask(UserTaskMixin, ApiTestCaseMixin):
     route = "/api/workouts/upload-tasks/{task_id}/abort"
 
     def test_it_returns_error_if_user_is_not_authenticated(
