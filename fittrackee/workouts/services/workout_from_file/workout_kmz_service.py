@@ -23,6 +23,12 @@ class WorkoutKmzService(WorkoutKmlService):
 
         Tested with files generated with OpenTracks.
         """
+
+        # file is already open with Zipfile (in case of workout refresh)
+        if not zipfile.is_zipfile(workout_file):
+            workout_file.seek(0)
+            return super().parse_file(workout_file, segments_creation_event)
+
         with zipfile.ZipFile(workout_file, "r") as kmz_ref:
             try:
                 kml_content = kmz_ref.open("doc.kml")
