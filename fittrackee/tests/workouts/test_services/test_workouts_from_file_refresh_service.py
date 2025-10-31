@@ -1,3 +1,5 @@
+import os
+import zipfile
 from datetime import datetime, timezone
 from logging import getLogger
 from typing import TYPE_CHECKING, Dict
@@ -127,7 +129,7 @@ class TestWorkoutFromFileRefreshServiceGetFileContent:
         with pytest.raises(
             WorkoutFileException, match="error when opening original file"
         ):
-            service.get_file_content()
+            service.get_file_content("gpx")
 
     def test_it_calls_open_with_original_file_absolute_path(
         self,
@@ -142,7 +144,7 @@ class TestWorkoutFromFileRefreshServiceGetFileContent:
         with patch(
             "builtins.open", new_callable=mock_open, read_data=""
         ) as open_mock:
-            service.get_file_content()
+            service.get_file_content("gpx")
 
         open_mock.assert_called_once_with(
             get_absolute_file_path(workout_cycling_user_1.original_file),  # type: ignore[arg-type]
@@ -164,9 +166,31 @@ class TestWorkoutFromFileRefreshServiceGetFileContent:
         with patch(
             "builtins.open", new_callable=mock_open, read_data=gpx_file
         ):
-            file_content = service.get_file_content()
+            file_content = service.get_file_content("gpx")
 
         assert file_content == gpx_file
+
+    def test_it_returns_kmz_file_content_from_zipfile(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        gpx_file: str,
+    ) -> None:
+        workout_cycling_user_1.original_file = "workouts/1/example.kmz"
+        service = WorkoutFromFileRefreshService(workout=workout_cycling_user_1)
+
+        with patch(
+            "fittrackee.workouts.services.workouts_from_file_refresh_service.get_absolute_file_path",
+            return_value=os.path.join(
+                app.root_path, "tests/files", "example.kmz"
+            ),
+        ):
+            file_content = service.get_file_content("kmz")
+
+        assert isinstance(file_content, zipfile.ZipExtFile)
 
 
 @pytest.mark.disable_autouse_update_records_patch
