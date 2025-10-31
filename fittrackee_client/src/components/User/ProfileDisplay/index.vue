@@ -32,9 +32,18 @@
   )
   const tabs = computed(() =>
     isSuspended.value
-      ? ['PROFILE', 'PREFERENCES', 'SPORTS', 'EQUIPMENTS', 'APPS', 'MODERATION']
+      ? [
+          'PROFILE',
+          'ACCOUNT',
+          'PREFERENCES',
+          'SPORTS',
+          'EQUIPMENTS',
+          'APPS',
+          'MODERATION',
+        ]
       : [
           'PROFILE',
+          'ACCOUNT',
           'PREFERENCES',
           'SPORTS',
           'EQUIPMENTS',
