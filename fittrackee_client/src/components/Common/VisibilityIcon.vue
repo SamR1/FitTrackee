@@ -31,6 +31,7 @@
     switch (visibilityLevel) {
       case 'public':
         return 'globe'
+      case 'followers_and_remote_only':
       case 'followers_only':
         return 'users'
       default:

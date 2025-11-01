@@ -26,143 +26,157 @@
       >
         <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
           <span>{{ workoutObject.title }}</span>
-          <div v-if="isAuthenticated" class="workout-buttons">
-            <button
-              class="transparent icon-button likes"
-              :disabled="refreshLoading"
-              @click="updateLike(workoutObject)"
-              :title="
-                $t(
-                  `workouts.${workoutObject.liked ? 'REMOVE_LIKE' : 'LIKE_WORKOUT'}`
-                )
-              "
-              :aria-label="`${$t(`workouts.${workoutObject.liked ? 'REMOVE_LIKE' : 'LIKE_WORKOUT'}`)} (${workoutObject.likes_count} ${$t(
-                'workouts.LIKES',
-                workoutObject.likes_count
-              )})`"
+          <div v-if="isAuthenticated">
+            <a
+              class="remote-link"
+              v-if="workoutObject.remoteUrl"
+              :href="workoutObject.remoteUrl"
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              <i
-                class="fa"
-                :class="{
-                  'fa-heart': workoutObject.likes_count > 0,
-                  'fa-heart-o': workoutObject.likes_count === 0,
-                  liked: workoutObject.liked,
-                }"
-                aria-hidden="true"
-              />
-            </button>
-            <router-link
-              :to="`/workouts/${workoutObject.workoutId}/likes`"
-              v-if="workoutObject.likes_count > 0"
-              class="likes-count"
-            >
-              {{ workoutObject.likes_count }}
-            </router-link>
-            <button
-              class="transparent icon-button"
-              :disabled="refreshLoading"
-              v-if="isWorkoutOwner"
-              @click="
-                $router.push({
-                  name: 'EditWorkout',
-                  params: { workoutId: workoutObject.workoutId },
-                })
-              "
-              :title="$t(`workouts.EDIT_WORKOUT`)"
-            >
-              <i class="fa fa-edit" aria-hidden="true" />
-            </button>
-            <div class="download-files">
+              {{ $t('workouts.VIEW_ON_REMOTE_INSTANCE') }}
+              <i class="fa fa-external-link-square" aria-hidden="true"></i>
+            </a>
+            <div class="workout-buttons">
               <button
-                id="download-workout"
-                v-if="isWorkoutOwner && workoutObject.with_gpx"
-                class="transparent icon-button"
+                class="transparent icon-button likes"
                 :disabled="refreshLoading"
-                @click.prevent="toggleDownloadButtons()"
-                :title="$t(`workouts.DOWNLOAD_WORKOUT`)"
+                @click="updateLike(workoutObject)"
+                :title="
+                  $t(
+                    `workouts.${workoutObject.liked ? 'REMOVE_LIKE' : 'LIKE_WORKOUT'}`
+                  )
+                "
+                :aria-label="`${$t(`workouts.${workoutObject.liked ? 'REMOVE_LIKE' : 'LIKE_WORKOUT'}`)} (${workoutObject.likes_count} ${$t(
+                  'workouts.LIKES',
+                  workoutObject.likes_count
+                )})`"
               >
                 <i
-                  class="fa fa-download"
+                  class="fa"
+                  :class="{
+                    'fa-heart': workoutObject.likes_count > 0,
+                    'fa-heart-o': workoutObject.likes_count === 0,
+                    liked: workoutObject.liked,
+                  }"
                   aria-hidden="true"
-                  id="download-workout-icon"
                 />
               </button>
-              <div
-                class="download-files-buttons"
-                v-if="displayDownloadButtons && isWorkoutOwner"
-                v-click-outside="hideDownloadButtons"
+              <router-link
+                :to="`/workouts/${workoutObject.workoutId}/likes`"
+                v-if="workoutObject.likes_count > 0"
+                class="likes-count"
               >
+                {{ workoutObject.likes_count }}
+              </router-link>
+              <button
+                class="transparent icon-button"
+                :disabled="refreshLoading"
+                v-if="isWorkoutOwner"
+                @click="
+                  $router.push({
+                    name: 'EditWorkout',
+                    params: { workoutId: workoutObject.workoutId },
+                  })
+                "
+                :title="$t(`workouts.EDIT_WORKOUT`)"
+              >
+                <i class="fa fa-edit" aria-hidden="true" />
+              </button>
+              <div class="download-files">
                 <button
+                  id="download-workout"
+                  v-if="isWorkoutOwner && workoutObject.with_gpx"
                   class="transparent icon-button"
                   :disabled="refreshLoading"
-                  @click.prevent="downloadWorkoutFile(workoutObject.workoutId)"
-                  :title="
-                    workoutObject.originalFile === 'gpx'
-                      ? $t(`workouts.DOWNLOAD_ORIGINAL_FILE`, {
-                          fileExtension: workoutObject.originalFile,
-                        })
-                      : $t(`workouts.DOWNLOAD_GPX_FILE`)
-                  "
+                  @click.prevent="toggleDownloadButtons()"
+                  :title="$t(`workouts.DOWNLOAD_WORKOUT`)"
                 >
-                  <i class="fa fa-download" aria-hidden="true" />
-                  .gpx
+                  <i
+                    class="fa fa-download"
+                    aria-hidden="true"
+                    id="download-workout-icon"
+                  />
                 </button>
-                <button
-                  class="transparent icon-button"
-                  :disabled="refreshLoading"
-                  @click.prevent="
-                    downloadWorkoutFile(workoutObject.workoutId, {
-                      original: true,
-                    })
-                  "
-                  :title="
-                    $t(`workouts.DOWNLOAD_ORIGINAL_FILE`, {
-                      fileExtension: workoutObject.originalFile,
-                    })
-                  "
-                  v-if="workoutObject.originalFile != 'gpx'"
+                <div
+                  class="download-files-buttons"
+                  v-if="displayDownloadButtons && isWorkoutOwner"
+                  v-click-outside="hideDownloadButtons"
                 >
-                  <i class="fa fa-download" aria-hidden="true" />
-                  .{{ workoutObject.originalFile }}
-                </button>
+                  <button
+                    class="transparent icon-button"
+                    :disabled="refreshLoading"
+                    @click.prevent="
+                      downloadWorkoutFile(workoutObject.workoutId)
+                    "
+                    :title="
+                      workoutObject.originalFile === 'gpx'
+                        ? $t(`workouts.DOWNLOAD_ORIGINAL_FILE`, {
+                            fileExtension: workoutObject.originalFile,
+                          })
+                        : $t(`workouts.DOWNLOAD_GPX_FILE`)
+                    "
+                  >
+                    <i class="fa fa-download" aria-hidden="true" />
+                    .gpx
+                  </button>
+                  <button
+                    class="transparent icon-button"
+                    :disabled="refreshLoading"
+                    @click.prevent="
+                      downloadWorkoutFile(workoutObject.workoutId, {
+                        original: true,
+                      })
+                    "
+                    :title="
+                      $t(`workouts.DOWNLOAD_ORIGINAL_FILE`, {
+                        fileExtension: workoutObject.originalFile,
+                      })
+                    "
+                    v-if="workoutObject.originalFile != 'gpx'"
+                  >
+                    <i class="fa fa-download" aria-hidden="true" />
+                    .{{ workoutObject.originalFile }}
+                  </button>
+                </div>
               </div>
+              <button
+                v-if="workoutObject.with_gpx && isWorkoutOwner"
+                class="transparent icon-button"
+                :disabled="refreshLoading"
+                @click.prevent="refreshGpx(workoutObject.workoutId)"
+                :title="$t(`workouts.REFRESH_WORKOUT`)"
+              >
+                <i
+                  class="fa fa-refresh"
+                  :class="{ 'fa-spin': refreshLoading }"
+                  aria-hidden="true"
+                />
+              </button>
+              <button
+                v-if="isWorkoutOwner"
+                id="delete-workout-button"
+                class="transparent icon-button"
+                :disabled="refreshLoading"
+                @click.prevent="displayDeleteModal"
+                :title="$t(`workouts.DELETE_WORKOUT`)"
+              >
+                <i class="fa fa-trash" aria-hidden="true" />
+              </button>
+              <button
+                v-if="
+                  !isWorkoutOwner &&
+                  !currentlyReporting &&
+                  reportStatus !== `workout-${workoutObject.workoutId}-created`
+                "
+                class="transparent icon-button"
+                :disabled="refreshLoading"
+                @click.prevent="displayReportForm"
+                :title="$t('workouts.REPORT_WORKOUT')"
+              >
+                <i class="fa fa-flag" aria-hidden="true" />
+              </button>
             </div>
-            <button
-              v-if="workoutObject.with_gpx && isWorkoutOwner"
-              class="transparent icon-button"
-              :disabled="refreshLoading"
-              @click.prevent="refreshGpx(workoutObject.workoutId)"
-              :title="$t(`workouts.REFRESH_WORKOUT`)"
-            >
-              <i
-                class="fa fa-refresh"
-                :class="{ 'fa-spin': refreshLoading }"
-                aria-hidden="true"
-              />
-            </button>
-            <button
-              v-if="isWorkoutOwner"
-              id="delete-workout-button"
-              class="transparent icon-button"
-              :disabled="refreshLoading"
-              @click.prevent="displayDeleteModal"
-              :title="$t(`workouts.DELETE_WORKOUT`)"
-            >
-              <i class="fa fa-trash" aria-hidden="true" />
-            </button>
-            <button
-              v-if="
-                !isWorkoutOwner &&
-                !currentlyReporting &&
-                reportStatus !== `workout-${workoutObject.workoutId}-created`
-              "
-              class="transparent icon-button"
-              :disabled="refreshLoading"
-              @click.prevent="displayReportForm"
-              :title="$t('workouts.REPORT_WORKOUT')"
-            >
-              <i class="fa fa-flag" aria-hidden="true" />
-            </button>
           </div>
           <div
             v-else
@@ -384,6 +398,16 @@
         span {
           margin-right: $default-margin * 0.5;
         }
+        .remote-link {
+          font-size: 0.85em;
+          font-style: italic;
+          font-weight: normal;
+
+          .fa-external-link-square {
+            font-size: 0.85em;
+            padding: 0;
+          }
+        }
       }
       .likes-count {
         font-weight: normal;
@@ -403,6 +427,7 @@
       .workout-buttons {
         display: flex;
         .download-files {
+          display: flex;
           .download-files-buttons {
             position: absolute;
             z-index: 1010;
