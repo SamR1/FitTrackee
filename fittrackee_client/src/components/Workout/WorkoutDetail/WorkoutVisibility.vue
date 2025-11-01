@@ -35,7 +35,7 @@
         }})
       </span>
     </div>
-    <div class="visibility" v-if="workoutObject.with_gpx">
+    <div class="visibility" v-if="workoutObject.with_file">
       {{ $t('workouts.MAP') }}
       <i
         :class="`fa fa-${getVisibilityIcon(workoutObject.mapVisibility)}`"

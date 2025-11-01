@@ -240,6 +240,7 @@ Can be used if redis is not set (no dramatiq workers running).
 """"""""""""""""""""""""""
 .. versionadded:: 0.12.0
 .. versionchanged:: 1.0.0  Add ``--add-missing-geometry`` option.
+.. versionchanged:: 1.1.0  Remove ``--add-missing-geometry`` option.
 
 Refresh workouts by recalculating data and fetching weather data if provider is set and workout does not have weather data.
 
@@ -273,7 +274,5 @@ Before executing the command, it is recommended to back up of all data (database
      - workout file extension (valid values are: tcx, kmz, gpx, kml, fit)
    * - ``--with-weather``
      - enable weather data collection if weather provider is set and workout has no weather data. WARNING: depending on subscription, the rate limit can be reached, leading to errors and preventing weather data being collected during next uploads until the limit is reset (default: disabled)
-   * - ``--add-missing-geometry``
-     - if provided, it refreshes only workouts without geometry in database to add geometry and points. This option is provided to update workouts created before v1.x and will be removed in a future version when all workouts must have geometry.
    * - ``-v, --verbose``
      - Enable verbose output log (default: disabled)

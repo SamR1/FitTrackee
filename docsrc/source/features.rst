@@ -127,7 +127,7 @@ Workouts
   - .kml: generated .gpx file contains one track (``<trk>``) corresponding to ``<MultiTrack>``, containing one segment (``<trkseg>``) per kml track (``<Track>``)
   - .tcx: generated .gpx file contains one track (``<trk>``) containing one segment (``<trkseg>``) per activity (``<Activity>``)
 
-- The original file or the generated gpx file can be downloaded (*modified in 0.12.0*).
+- The original file or the .gpx file generated from workout data can be downloaded (*modified in 1.1.0*).
 - If present in .gpx, .tcx and .fit files, the source (application or device) is displayed.
 
 .. note::
@@ -288,9 +288,6 @@ Workouts
     When multiple pages are fetched, statistics for all pages are also displayed.
 
   - Filtered workouts can be displayed on a map (*new in 1.0.0*)
-
-.. warning::
-  | Map and filters on location and radius require the environment variable `ENABLE_GEOSPATIAL_FEATURES <installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES>`_ to be set to ``True``. Otherwise these features are not enabled.
 
 .. note::
   | There is a limit on the number of workouts used to calculate statistics to avoid performance issues. The value can be set in administration.
@@ -464,10 +461,6 @@ Global map
 .. note::
   | If the number of workouts exceeds 3000, a modal appears to confirm the display. This message can be hidden (this can be changed in the user preferences).
   | Depending on the browser and device used, displaying a large number of workouts may cause browser slowness or errors.
-
-
-.. warning::
-  Global map require the environment variable `ENABLE_GEOSPATIAL_FEATURES <installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES>`_ to be set to ``True``. Otherwise it is not available.
 
 
 Account & preferences

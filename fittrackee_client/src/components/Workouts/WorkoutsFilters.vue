@@ -91,10 +91,7 @@
                 </optgroup>
               </select>
             </div>
-            <div
-              class="form-item form-item-text"
-              v-if="appConfig.enable_geospatial_features"
-            >
+            <div class="form-item form-item-text">
               <label for="title"> {{ $t('workouts.TITLE', 1) }}:</label>
               <div class="form-inputs-group">
                 <input
@@ -112,25 +109,6 @@
             </div>
           </div>
           <div class="form-items-group">
-            <div
-              class="form-item form-item-text"
-              v-if="!appConfig.enable_geospatial_features"
-            >
-              <label for="title"> {{ $t('workouts.TITLE', 1) }}:</label>
-              <div class="form-inputs-group">
-                <input
-                  id="title"
-                  class="text"
-                  name="title"
-                  :disabled="geocodeLoading"
-                  :value="$route.query.title"
-                  @change="handleFilterChange"
-                  placeholder=""
-                  type="text"
-                  @keyup.enter="onFilter"
-                />
-              </div>
-            </div>
             <div class="form-item form-item-text">
               <label for="description">
                 {{ $t('workouts.DESCRIPTION') }}:
@@ -164,10 +142,7 @@
                 />
               </div>
             </div>
-            <div
-              class="form-item form-item-text"
-              v-if="appConfig.enable_geospatial_features"
-            >
+            <div class="form-item form-item-text">
               <label for="location">{{ $t('workouts.LOCATION') }}:</label>
               <LocationsDropdown
                 :location="location"
@@ -175,10 +150,7 @@
                 @keyup.enter="onFilter"
               />
             </div>
-            <div
-              class="form-item form-item-text"
-              v-if="appConfig.enable_geospatial_features"
-            >
+            <div class="form-item form-item-text">
               <label for="radius">
                 {{ $t('workouts.RADIUS') }} ({{ toUnit }}):</label
               >
@@ -389,8 +361,6 @@
   }
   const props = defineProps<Props>()
   const { authUser } = toRefs(props)
-
-  const { appConfig } = useApp()
 
   const emit = defineEmits(['filter'])
 

@@ -45,5 +45,9 @@ WORKOUT_FILE_MIMETYPES = {
     "tcx": "application/vnd.garmin.tcx+xml",
 }
 
+NSMAP = {
+    "gpxtpx": "http://www.garmin.com/xmlschemas/TrackPointExtension/v1",
+}
+
 
 WGS84_CRS = 4326  # World Geodetic System 1984, in degrees

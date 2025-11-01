@@ -11,7 +11,7 @@ class TestWorkout:
     def test_user_can_add_workout_without_gpx(self, selenium):
         register_valid_user(selenium)
         app_menu = selenium.find_element(By.CLASS_NAME, "nav-items-app-menu")
-        add_workout_link = app_menu.find_elements(By.CLASS_NAME, "nav-item")[4]
+        add_workout_link = app_menu.find_elements(By.CLASS_NAME, "nav-item")[5]
 
         add_workout_link.click()
         selenium.implicitly_wait(1)
@@ -51,7 +51,7 @@ class TestWorkout:
     def test_user_can_add_workout_with_gpx(self, selenium):
         register_valid_user(selenium)
         app_menu = selenium.find_element(By.CLASS_NAME, "nav-items-app-menu")
-        add_workout_link = app_menu.find_elements(By.CLASS_NAME, "nav-item")[4]
+        add_workout_link = app_menu.find_elements(By.CLASS_NAME, "nav-item")[5]
 
         add_workout_link.click()
         selenium.implicitly_wait(1)

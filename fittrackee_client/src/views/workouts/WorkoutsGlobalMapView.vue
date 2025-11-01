@@ -1,9 +1,5 @@
 <template>
-  <div
-    id="workouts-global-map"
-    v-if="appConfig.enable_geospatial_features && authUser.username"
-    class="view"
-  >
+  <div id="workouts-global-map" class="view">
     <div class="container">
       <Card>
         <template #title>
@@ -87,7 +83,6 @@
 
   import SportsMenu from '@/components/Statistics/StatsSportsMenu.vue'
   import WorkoutsMap from '@/components/Workouts/WorkoutsMap.vue'
-  import useApp from '@/composables/useApp.ts'
   import useSports from '@/composables/useSports.ts'
   import { AUTH_USER_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { ISport, ITranslatedSport } from '@/types/sports'
@@ -101,7 +96,6 @@
   const router = useRouter()
   const { t } = useI18n()
 
-  const { appConfig } = useApp()
   const { sports } = useSports()
 
   const paramsKeys: TMapParamsKeys[] = ['to', 'from', 'sport_ids']
@@ -212,10 +206,6 @@
   )
 
   onBeforeMount(() => {
-    // temporary redirection
-    if (!appConfig.value.enable_geospatial_features) {
-      router.push('/')
-    }
     loadWorkouts(params.value)
   })
 </script>

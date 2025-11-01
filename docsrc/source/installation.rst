@@ -195,6 +195,7 @@ deployment method.
 .. envvar:: ENABLE_GEOSPATIAL_FEATURES
 
     .. versionadded:: 1.0.0
+    .. versionremoved:: 1.1.0
 
     | Enables geospatial features on User Interface.
     | **Keep the value set to** ``False`` **until all workouts have been updated to add geometries** (see `Workouts CLI command <cli.html#ftcli-workouts-refresh>`__).

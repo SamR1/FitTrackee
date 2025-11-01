@@ -9,7 +9,7 @@ from fittrackee.files import display_readable_file_size
 
 
 def get_empty_data_for_datatype(data_type: str) -> Union[str, List, None]:
-    if data_type in ["gpx", "chart_data"]:
+    if data_type in ["chart_data"]:
         return ""
     if data_type in ["geojson"]:
         return None
@@ -145,6 +145,11 @@ class DataNotFoundErrorResponse(HttpResponse):
         if message:
             response["message"] = message
         super().__init__(response=response, status_code=404)
+
+
+class GoneResponse(HttpResponse):
+    def __init__(self) -> None:
+        super().__init__(status_code=410, response={})
 
 
 class PayloadTooLargeErrorResponse(GenericErrorResponse):

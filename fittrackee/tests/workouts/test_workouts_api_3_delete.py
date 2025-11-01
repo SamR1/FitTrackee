@@ -252,7 +252,7 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
-        workout_cycling_user_1.gpx = self.random_string()
+        workout_cycling_user_1.original_file = self.random_string()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
