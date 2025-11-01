@@ -79,12 +79,12 @@ export const languageLabels: Record<TLanguage, string> = {
   de: 'Deutsch (88%)', // German
   en: 'English',
   es: 'Español (71%)', // Spanish
-  eu: 'Euskara', // Basque
+  eu: 'Euskara (99%)', // Basque
   fr: 'Français', // French
-  gl: 'Galego', // Galician
-  hr: 'Hrvatski', // Croatian
-  it: 'Italiano (73%)', // Italian
-  nl: 'Nederlands', // Dutch
+  gl: 'Galego (99%)', // Galician
+  hr: 'Hrvatski (99%)', // Croatian
+  it: 'Italiano (99%)', // Italian
+  nl: 'Nederlands (99%)', // Dutch
   nb: 'Norsk bokmål (45%)', // Norwegian Bokmål
   pl: 'Polski (96%)', // Polish
   pt: 'Português (53%)', // Portuguese

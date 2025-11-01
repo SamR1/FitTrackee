@@ -8,7 +8,6 @@ from fittrackee import VERSION
 from fittrackee.tests.fixtures.fixtures_workouts import (
     track_points_part_1_coordinates,
 )
-from fittrackee.tests.mixins import BaseTestMixin
 from fittrackee.workouts.services.workout_from_file import (
     BaseWorkoutWithSegmentsCreationService,
 )
@@ -91,9 +90,7 @@ class TestBaseWorkoutWithSegmentsCreationServiceGetStaticMapTileServerUrl:
             )
 
 
-class TestBaseWorkoutWithSegmentsCreationServiceGenerateMapImage(
-    BaseTestMixin
-):
+class TestBaseWorkoutWithSegmentsCreationServiceGenerateMapImage:
     def test_it_calls_staticmap_to_generate_map_image(
         self, app: "Flask"
     ) -> None:
@@ -124,7 +121,7 @@ class TestBaseWorkoutWithSegmentsCreationServiceGenerateMapImage(
             coordinates=track_points_part_1_coordinates,
         )
 
-        call_args = self.get_args(static_map_get_mock.call_args)
+        call_args, _ = static_map_get_mock.call_args
         assert (
             app.config["TILE_SERVER"]["URL"]
             .replace("{s}.", "")
@@ -142,7 +139,7 @@ class TestBaseWorkoutWithSegmentsCreationServiceGenerateMapImage(
             coordinates=track_points_part_1_coordinates,
         )
 
-        call_args = self.get_args(static_map_get_mock.call_args)
+        call_args, _ = static_map_get_mock.call_args
         assert (
             app_default_static_map.config["TILE_SERVER"]["URL"].replace(
                 "/{z}/{x}/{y}.png", ""
@@ -160,7 +157,7 @@ class TestBaseWorkoutWithSegmentsCreationServiceGenerateMapImage(
             coordinates=track_points_part_1_coordinates,
         )
 
-        call_kwargs = self.get_kwargs(static_map_get_mock.call_args)
+        _, call_kwargs = static_map_get_mock.call_args
 
         assert call_kwargs["headers"] == {
             "User-Agent": f"FitTrackee v{VERSION}"

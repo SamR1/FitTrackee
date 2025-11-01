@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2025-10-01 18:53+0200\n"
-"PO-Revision-Date: 2025-10-03 03:02+0000\n"
+"PO-Revision-Date: 2025-10-25 07:44+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/fittrackee/"
 "fittrackee-api-emails/gl/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.14.1-dev\n"
 "Generated-By: Babel 2.17.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
@@ -538,7 +538,7 @@ msgstr "Raquetas de neve"
 
 #: fittrackee/feeds/feeds/constants.py:24
 msgid "Standup Paddleboarding"
-msgstr "Padexar de pé na táboa"
+msgstr "Padexar de pé"
 
 #: fittrackee/feeds/feeds/constants.py:25
 msgid "Swimrun"
@@ -550,7 +550,7 @@ msgstr "Tenis (Exterior)"
 
 #: fittrackee/feeds/feeds/constants.py:27
 msgid "Trail"
-msgstr "Trail"
+msgstr "Correr por camiños"
 
 #: fittrackee/feeds/feeds/constants.py:28
 msgid "Walking"

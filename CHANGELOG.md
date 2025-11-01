@@ -1,5 +1,53 @@
 # Change log
 
+## Version 1.0.2 (2025/11/01)
+
+**Warning**:
+- The version 1.1.0 will require all workouts to be updated, see [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.0.html#workouts-data-update).
+
+### Bugs Fixed
+
+* [PR#969](https://github.com/SamR1/FitTrackee/pull/969) - fix workout creation when the first segment does not contain any points
+* [PR#971](https://github.com/SamR1/FitTrackee/pull/971) - fix workout link display on workout segment detail
+* [#975](https://github.com/SamR1/FitTrackee/issues/975) - fix "Request data export" button display
+* [#977](https://github.com/SamR1/FitTrackee/issues/977) - error refreshing workouts with KMZ file
+
+### Translations
+
+* [PR#970](https://github.com/SamR1/FitTrackee/pull/970) - Translations update from Hosted Weblate (Italian)
+* [PR#972](https://github.com/SamR1/FitTrackee/pull/972) - Translations update from Hosted Weblate (Galician and Italian)
+
+Translation status:
+- Basque: 99%
+- Bulgarian: 54%
+- Catalan: 26%
+- Chinese (Simplified): 98%
+- Croatian: 99%
+- Czech: 48%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 99%
+- German: 88%
+- Italian: 99%
+- Norwegian Bokmål: 45%
+- Polish: 96%
+- Portuguese: 53%
+- Russian: 96%
+- Spanish: 71%
+- Turkish: 1%
+
+### Misc
+
+- [0786a57](https://github.com/SamR1/FitTrackee/commit/0786a575043c7f7b59a371e3043cb4dce3831126) - remove test code specific to a Python version no longer supported
+- [5248e79](https://github.com/SamR1/FitTrackee/commit/5248e797894f59ae60e4ba31af879e58904d7111) - update docker jobs on CI
+
+
+Thanks to the contributors:
+- @ildave
+- @xmgz
+
+
 ## Version 1.0.1 (2025/10/22)
 
 **FitTrackee** is now available for Python 3.14.

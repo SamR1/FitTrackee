@@ -10,11 +10,11 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout, WorkoutLike
 
-from ..mixins import ApiTestCaseMixin, BaseTestMixin
+from ..mixins import ApiTestCaseMixin
 from ..utils import jsonify_dict
 
 
-class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
+class TestWorkoutLikePost(ApiTestCaseMixin):
     route = "/api/workouts/{workout_uuid}/like"
 
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -234,7 +234,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin, BaseTestMixin):
         )
 
 
-class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
+class TestWorkoutUndoLikePost(ApiTestCaseMixin):
     route = "/api/workouts/{workout_uuid}/like/undo"
 
     def test_it_returns_error_if_user_is_not_authenticated(
@@ -459,7 +459,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin, BaseTestMixin):
         )
 
 
-class TestWorkoutLikesGet(ApiTestCaseMixin, BaseTestMixin):
+class TestWorkoutLikesGet(ApiTestCaseMixin):
     route = "/api/workouts/{workout_uuid}/likes"
 
     def test_it_return_error_when_user_is_suspended(

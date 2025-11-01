@@ -1,4 +1,5 @@
 import os
+import zipfile
 from io import BytesIO
 from typing import IO, TYPE_CHECKING
 
@@ -28,6 +29,14 @@ class WorkoutKmzServiceTestCase:
 
 
 class TestWorkoutKmzServiceParseFile(WorkoutKmzServiceTestCase):
+    @staticmethod
+    def assert_gpx(gpx: "gpxpy.gpx.GPX") -> None:
+        assert len(gpx.tracks) == 1
+        assert len(gpx.tracks[0].segments) == 2
+        moving_data = gpx.get_moving_data()
+        assert moving_data.moving_time == 235.0
+        assert round(moving_data.moving_distance, 1) == 299.5
+
     def test_it_raises_error_when_file_is_not_kmz(
         self, app: "Flask", invalid_kml_file: str
     ) -> None:
@@ -41,7 +50,7 @@ class TestWorkoutKmzServiceParseFile(WorkoutKmzServiceTestCase):
                 segments_creation_event="none",
             )
 
-    def test_it_return_gpx_with_kml_content(
+    def test_it_returns_gpx_with_kml_content_from_file_path(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
     ) -> None:
         gpx = WorkoutKmzService.parse_file(
@@ -49,11 +58,19 @@ class TestWorkoutKmzServiceParseFile(WorkoutKmzServiceTestCase):
             segments_creation_event="none",
         )
 
-        assert len(gpx.tracks) == 1
-        assert len(gpx.tracks[0].segments) == 2
-        moving_data = gpx.get_moving_data()
-        assert moving_data.moving_time == 235.0
-        assert round(moving_data.moving_distance, 1) == 299.5
+        self.assert_gpx(gpx)
+
+    def test_it_returns_gpx_when_content_is_already_unzipped(
+        self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
+    ) -> None:
+        file_path = os.path.join(app.root_path, "tests/files", "example.kmz")
+        with zipfile.ZipFile(file_path, "r") as kmz_ref:
+            kml_content = kmz_ref.open("doc.kml")
+            gpx = WorkoutKmzService.parse_file(
+                kml_content, segments_creation_event="none"
+            )
+
+        self.assert_gpx(gpx)
 
 
 class TestWorkoutKmzServiceInstantiation(WorkoutKmzServiceTestCase):

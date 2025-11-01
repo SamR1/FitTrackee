@@ -1,6 +1,7 @@
+import zipfile
 from datetime import datetime
 from logging import Logger, getLogger
-from typing import TYPE_CHECKING, Optional
+from typing import IO, TYPE_CHECKING, Optional, Union
 
 from sqlalchemy import asc, desc
 
@@ -50,9 +51,15 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
         )
         self.update_weather = update_weather
 
-    def get_file_content(self) -> bytes:
+    def get_file_content(self, file_extension: str) -> Union[bytes, IO[bytes]]:
         try:
-            with open(get_absolute_file_path(self.original_file), "rb") as f:
+            file_path = get_absolute_file_path(self.original_file)
+
+            if file_extension == "kmz":
+                with zipfile.ZipFile(file_path, "r") as kmz_ref:
+                    return kmz_ref.open("doc.kml")
+
+            with open(file_path, "rb") as f:
                 file_content = f.read()
                 return file_content
         except Exception:
@@ -65,7 +72,7 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
         if not self._is_valid_workout_file_extension(file_extension):
             raise WorkoutRefreshException("error", "invalid file extension")
 
-        file_content = self.get_file_content()
+        file_content = self.get_file_content(file_extension)
         workout_service = WORKOUT_FROM_FILE_SERVICES[file_extension](
             auth_user=self.user,
             workout_file=file_content,  # type: ignore[arg-type]

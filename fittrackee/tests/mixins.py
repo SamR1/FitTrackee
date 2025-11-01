@@ -45,36 +45,6 @@ if TYPE_CHECKING:
     from geoalchemy2.elements import WKBElement
 
 
-class BaseTestMixin:
-    """call args are returned differently between Python 3.7 and 3.7+"""
-
-    @staticmethod
-    def get_args(call_args: Tuple) -> Tuple:
-        if len(call_args) == 2:
-            args, _ = call_args
-        else:
-            _, args, _ = call_args
-        return args
-
-    @staticmethod
-    def get_kwargs(call_args: Tuple) -> Dict:
-        if len(call_args) == 2:
-            _, kwargs = call_args
-        else:
-            _, _, kwargs = call_args
-        return kwargs
-
-    def assert_call_args_keys_equal(
-        self, mock: Mock, expected_keys: List
-    ) -> None:
-        args_list = self.get_kwargs(mock.call_args)
-        assert list(args_list.keys()) == expected_keys
-
-    @staticmethod
-    def assert_dict_contains_subset(container: Dict, subset: Dict) -> None:
-        assert subset.items() <= container.items()
-
-
 class RandomMixin:
     @staticmethod
     def random_string(
