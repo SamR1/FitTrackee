@@ -27,7 +27,7 @@
     "@zxcvbn-ts/language-fr": "^3.0.2",
     "@zxcvbn-ts/language-it": "^3.0.2",
     "@zxcvbn-ts/language-pl": "^3.0.2",
-    "axios": "^1.12.2",
+    "axios": "^1.13.1",
     "chart.js": "^4.5.1",
     "chartjs-plugin-datalabels": "^2.2.0",
     "core-js": "^3.46.0",
@@ -51,11 +51,11 @@
   },
   "devDependencies": {
     "@intlify/vue-i18n-loader": "^4.2.0",
-    "@rushstack/eslint-patch": "^1.14.0",
+    "@rushstack/eslint-patch": "^1.14.1",
     "@tsconfig/node18": "^18.2.4",
     "@types/jsdom": "^21.1.7",
     "@types/leaflet": "^1.9.21",
-    "@types/node": "^24.9.1",
+    "@types/node": "^24.9.2",
     "@types/sanitize-html": "^2.16.0",
     "@vitejs/plugin-vue": "^5.2.4",
     "@vue/eslint-config-prettier": "^10.2.0",
@@ -69,11 +69,11 @@
     "jsdom": "^26.1.0",
     "npm-run-all2": "^8.0.4",
     "prettier": "^3.6.2",
-    "sass": "^1.93.2",
+    "sass": "^1.93.3",
     "typescript": "~5.5.4",
-    "vite": "^7.1.11",
+    "vite": "^7.1.12",
     "vitest": "^3.2.4",
-    "vue-tsc": "^3.1.1"
+    "vue-tsc": "^3.1.2"
   },
   "resolutions": {
     "strip-ansi": "6.0.1"
