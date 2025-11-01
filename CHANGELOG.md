@@ -3,7 +3,7 @@
 ## Version 1.0.2 (2025/11/01)
 
 **Warning**:
-- The version 1.1.0 will require all workouts to be updated, see [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.0.html#workouts-data-update).
+- The version 1.1.0 will require all workouts to be updated, see [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.x.html#workouts-data-update).
 
 ### Bugs Fixed
 
@@ -53,7 +53,7 @@ Thanks to the contributors:
 **FitTrackee** is now available for Python 3.14.
 
 **Warning**:
-- The version 1.1.0 will require all workouts to be updated, see [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.0.html#workouts-data-update).
+- The version 1.1.0 will require all workouts to be updated, see [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.x.html#workouts-data-update).
 
 ### Bugs Fixed
 
