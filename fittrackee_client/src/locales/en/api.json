@@ -15,6 +15,7 @@
     "error during gpx file parsing": "Error during .gpx file parsing.",
     "error during gpx processing": "Error during .gpx file processing.",
     "error on getting configuration": "Error on getting configuration.",
+    "error when generating map image": "Error when generating map image.",
     "error when getting timezones": "Error when getting timezones.",
     "error when parsing fit file": "Error when parsing .fit file.",
     "error when parsing gpx file": "Error when parsing .gpx file.",

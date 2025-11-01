@@ -2222,6 +2222,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``error when parsing kml file``
         - ``error when parsing kmz file``
         - ``error when parsing tcx file``
+        - ``error when generating map image``
         - ``gpx file is invalid``
         - ``no activities in tcx file``
         - ``no coordinates in tcx file``
