@@ -9,7 +9,6 @@ from fittrackee import email_service
 from fittrackee.emails.emails import EmailMessage
 from fittrackee.emails.exceptions import InvalidEmailUrlScheme
 
-from ..mixins import BaseTestMixin
 from .template_results.password_reset_request import expected_en_text_body
 
 
@@ -55,7 +54,7 @@ class TestEmailMessage:
         make_msgid_mock.assert_called_once_with(domain=sender.split("@")[-1])
 
 
-class TestEmailServiceUrlParser(BaseTestMixin):
+class TestEmailServiceUrlParser:
     def test_it_raises_error_if_url_scheme_is_invalid(self) -> None:
         url = "stmp://username:password@localhost:587"
         with pytest.raises(InvalidEmailUrlScheme):
@@ -147,7 +146,7 @@ class TestEmailServiceUrlParser(BaseTestMixin):
         assert parsed_email["use_ssl"] is True
 
 
-class TestEmailServiceSend(BaseTestMixin):
+class TestEmailServiceSend:
     email_data = {
         "expiration_delay": "3 seconds",
         "username": "test",
@@ -157,12 +156,13 @@ class TestEmailServiceSend(BaseTestMixin):
         "fittrackee_url": "http://localhost",
     }
 
-    def assert_smtp(self, smtp: Mock) -> None:
+    @staticmethod
+    def assert_smtp(smtp: Mock) -> None:
         assert smtp.sendmail.call_count == 1
-        call_args = self.get_args(smtp.sendmail.call_args)
-        assert call_args[0] == "fittrackee@example.com"
-        assert call_args[1] == "test@test.com"
-        assert expected_en_text_body in call_args[2]
+        args, _ = smtp.sendmail.call_args
+        assert args[0] == "fittrackee@example.com"
+        assert args[1] == "test@test.com"
+        assert expected_en_text_body in args[2]
 
     @patch("smtplib.SMTP_SSL")
     @patch("smtplib.SMTP")

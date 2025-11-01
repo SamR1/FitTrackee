@@ -187,6 +187,132 @@ class TestWorkoutGpxServiceProcessFile(
             "workout_id": workout.short_id,
         }
 
+    @staticmethod
+    def assert_workout_with_two_segments(user: "User", sport: "Sport") -> None:
+        # workout
+        workout = Workout.query.one()
+        assert to_shape(workout.start_point_geom) == Point(
+            segment_0_coordinates[0]
+        )
+        assert workout.user_id == user.id
+        assert workout.sport_id == sport.id
+        assert workout.workout_date == datetime(
+            2018, 3, 13, 12, 44, 50, tzinfo=timezone.utc
+        )
+        assert float(workout.ascent) == 0.0
+        assert float(workout.ave_speed) == 7.63
+        assert workout.bounds == [44.67837, 6.07364, 44.68095, 6.07435]
+        assert float(workout.descent) == 5.0
+        assert float(workout.distance) == 0.042
+        assert workout.duration == timedelta(minutes=2, seconds=30)
+        assert float(workout.max_alt) == 998.0
+        assert float(workout.max_speed) == 13.83
+        assert float(workout.min_alt) == 979.0
+        assert workout.moving == timedelta(seconds=20)
+        assert workout.pauses == timedelta(minutes=2, seconds=10)
+        assert workout.ave_cadence is None
+        assert workout.ave_hr is None
+        assert workout.max_cadence is None
+        assert workout.max_hr is None
+        assert workout.source is None
+        # workout segments
+        workout_segments = WorkoutSegment.query.all()
+        assert len(workout_segments) == 2
+        # first workout segment
+        assert workout_segments[0].workout_id == workout.id
+        assert workout_segments[0].workout_uuid == workout.uuid
+        assert workout_segments[0].segment_id == 0
+        assert float(workout_segments[0].ascent) == 0.0
+        assert float(workout_segments[0].ave_speed) == 6.32
+        assert float(workout_segments[0].descent) == 4.0
+        assert float(workout_segments[0].distance) == 0.018
+        assert workout_segments[0].duration == timedelta(seconds=10)
+        assert float(workout_segments[0].max_alt) == 998.0
+        assert float(workout_segments[0].max_speed) == 9.43
+        assert float(workout_segments[0].min_alt) == 994.0
+        assert workout_segments[0].moving == timedelta(seconds=10)
+        assert workout_segments[0].pauses == timedelta(seconds=0)
+        assert to_shape(workout_segments[0].geom) == LineString(
+            segment_0_coordinates
+        )
+        assert len(workout_segments[0].points) == len(segment_0_coordinates)
+        assert workout_segments[0].points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "speed": 3.21,
+            "time": "2018-03-13 12:44:50+00:00",
+        }
+        assert workout_segments[0].points[-1] == {
+            "distance": 17.551714568218248,
+            "duration": 10,
+            "elevation": 994.0,
+            "latitude": 44.6808,
+            "longitude": 6.07364,
+            "speed": 9.43,
+            "time": "2018-03-13 12:45:00+00:00",
+        }
+        # second workout segment
+        assert workout_segments[1].workout_id == workout.id
+        assert workout_segments[1].workout_uuid == workout.uuid
+        assert workout_segments[1].segment_id == 1
+        assert float(workout_segments[1].ascent) == 0.0
+        assert float(workout_segments[1].ave_speed) == 8.94
+        assert float(workout_segments[1].descent) == 1.0
+        assert float(workout_segments[1].distance) == 0.025
+        assert workout_segments[1].duration == timedelta(seconds=10)
+        assert float(workout_segments[1].max_alt) == 980.0
+        assert float(workout_segments[1].max_speed) == 13.83
+        assert float(workout_segments[1].min_alt) == 979.0
+        assert workout_segments[1].moving == timedelta(seconds=10)
+        assert workout_segments[1].pauses == timedelta(seconds=0)
+        assert to_shape(workout_segments[1].geom) == LineString(
+            segment_2_coordinates
+        )
+        assert len(workout_segments[1].points) == len(segment_2_coordinates)
+        assert workout_segments[1].points[0] == {
+            "distance": 0.0,
+            "duration": 140,
+            "elevation": 980.0,
+            "latitude": 44.67858,
+            "longitude": 6.07425,
+            "speed": 13.83,
+            "time": "2018-03-13 12:47:10+00:00",
+        }
+        assert workout_segments[1].points[-1] == {
+            "distance": 24.83101225255615,
+            "duration": 150,
+            "elevation": 979.0,
+            "latitude": 44.67837,
+            "longitude": 6.07435,
+            "speed": 4.05,
+            "time": "2018-03-13 12:47:20+00:00",
+        }
+
+        serialized_segment = workout_segments[1].serialize()
+        assert serialized_segment == {
+            "ascent": 0.0,
+            "ave_cadence": None,
+            "ave_hr": None,
+            "ave_power": None,
+            "ave_speed": 8.94,
+            "descent": 1.0,
+            "distance": 0.025,
+            "duration": "0:00:10",
+            "max_alt": 980.0,
+            "max_cadence": None,
+            "max_hr": None,
+            "max_power": None,
+            "max_speed": 13.83,
+            "min_alt": 979.0,
+            "moving": "0:00:10",
+            "pauses": None,
+            "segment_id": 1,
+            "workout_id": workout.short_id,
+        }
+
     def init_service_with_gpx(
         self,
         user: "User",
@@ -255,6 +381,37 @@ class TestWorkoutGpxServiceProcessFile(
                     "one or more values, entered or calculated, "
                     "exceed the limits"
                 ),
+            ),
+        ):
+            service.process_workout()
+
+    def test_it_raises_error_file_has_no_valid_segments(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+    ) -> None:
+        gpx_file = """<?xml version='1.0' encoding='UTF-8'?>
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
+  <metadata/>
+  <trk>
+    <trkseg>
+    </trkseg>
+    <trkseg>
+    </trkseg>
+  </trk>
+</gpx>
+"""
+        service = self.init_service_with_gpx(user_1, sport_1_cycling, gpx_file)
+
+        with (
+            pytest.raises(
+                WorkoutFileException, match="no valid segments in file"
             ),
         ):
             service.process_workout()
@@ -704,7 +861,7 @@ class TestWorkoutGpxServiceProcessFile(
         user_1: "User",
         gpx_file_with_zero_distance_segment: str,
     ) -> None:
-        # gpx with 3 segments
+        # gpx with 3 segments, the second segment has only one point
         service = self.init_service_with_gpx(
             user_1, sport_1_cycling, gpx_file_with_zero_distance_segment
         )
@@ -715,129 +872,28 @@ class TestWorkoutGpxServiceProcessFile(
         # no description in gpx file, only name is present
         assert service.workout_description is None
         assert service.workout_name == "just a workout"
-        # workout
-        workout = Workout.query.one()
-        assert to_shape(workout.start_point_geom) == Point(
-            segment_0_coordinates[0]
-        )
-        assert workout.user_id == user_1.id
-        assert workout.sport_id == sport_1_cycling.id
-        assert workout.workout_date == datetime(
-            2018, 3, 13, 12, 44, 50, tzinfo=timezone.utc
-        )
-        assert float(workout.ascent) == 0.0
-        assert float(workout.ave_speed) == 7.63
-        assert workout.bounds == [44.67837, 6.07364, 44.68095, 6.07435]
-        assert float(workout.descent) == 5.0
-        assert float(workout.distance) == 0.042
-        assert workout.duration == timedelta(minutes=2, seconds=30)
-        assert float(workout.max_alt) == 998.0
-        assert float(workout.max_speed) == 13.83
-        assert float(workout.min_alt) == 979.0
-        assert workout.moving == timedelta(seconds=20)
-        assert workout.pauses == timedelta(minutes=2, seconds=10)
-        assert workout.ave_cadence is None
-        assert workout.ave_hr is None
-        assert workout.max_cadence is None
-        assert workout.max_hr is None
-        assert workout.source is None
-        # workout segments
-        workout_segments = WorkoutSegment.query.all()
-        assert len(workout_segments) == 2
-        # first workout segment
-        assert workout_segments[0].workout_id == workout.id
-        assert workout_segments[0].workout_uuid == workout.uuid
-        assert workout_segments[0].segment_id == 0
-        assert float(workout_segments[0].ascent) == 0.0
-        assert float(workout_segments[0].ave_speed) == 6.32
-        assert float(workout_segments[0].descent) == 4.0
-        assert float(workout_segments[0].distance) == 0.018
-        assert workout_segments[0].duration == timedelta(seconds=10)
-        assert float(workout_segments[0].max_alt) == 998.0
-        assert float(workout_segments[0].max_speed) == 9.43
-        assert float(workout_segments[0].min_alt) == 994.0
-        assert workout_segments[0].moving == timedelta(seconds=10)
-        assert workout_segments[0].pauses == timedelta(seconds=0)
-        assert to_shape(workout_segments[0].geom) == LineString(
-            segment_0_coordinates
-        )
-        assert len(workout_segments[0].points) == len(segment_0_coordinates)
-        assert workout_segments[0].points[0] == {
-            "distance": 0.0,
-            "duration": 0,
-            "elevation": 998.0,
-            "latitude": 44.68095,
-            "longitude": 6.07367,
-            "speed": 3.21,
-            "time": "2018-03-13 12:44:50+00:00",
-        }
-        assert workout_segments[0].points[-1] == {
-            "distance": 17.551714568218248,
-            "duration": 10,
-            "elevation": 994.0,
-            "latitude": 44.6808,
-            "longitude": 6.07364,
-            "speed": 9.43,
-            "time": "2018-03-13 12:45:00+00:00",
-        }
-        # second workout segment
-        assert workout_segments[1].workout_id == workout.id
-        assert workout_segments[1].workout_uuid == workout.uuid
-        assert workout_segments[1].segment_id == 2
-        assert float(workout_segments[1].ascent) == 0.0
-        assert float(workout_segments[1].ave_speed) == 8.94
-        assert float(workout_segments[1].descent) == 1.0
-        assert float(workout_segments[1].distance) == 0.025
-        assert workout_segments[1].duration == timedelta(seconds=10)
-        assert float(workout_segments[1].max_alt) == 980.0
-        assert float(workout_segments[1].max_speed) == 13.83
-        assert float(workout_segments[1].min_alt) == 979.0
-        assert workout_segments[1].moving == timedelta(seconds=10)
-        assert workout_segments[1].pauses == timedelta(seconds=0)
-        assert to_shape(workout_segments[1].geom) == LineString(
-            segment_2_coordinates
-        )
-        assert len(workout_segments[1].points) == len(segment_2_coordinates)
-        assert workout_segments[1].points[0] == {
-            "distance": 0.0,
-            "duration": 140,
-            "elevation": 980.0,
-            "latitude": 44.67858,
-            "longitude": 6.07425,
-            "speed": 13.83,
-            "time": "2018-03-13 12:47:10+00:00",
-        }
-        assert workout_segments[1].points[-1] == {
-            "distance": 24.83101225255615,
-            "duration": 150,
-            "elevation": 979.0,
-            "latitude": 44.67837,
-            "longitude": 6.07435,
-            "speed": 4.05,
-            "time": "2018-03-13 12:47:20+00:00",
-        }
+        self.assert_workout_with_two_segments(user_1, sport_1_cycling)
 
-        serialized_segment = workout_segments[1].serialize()
-        assert serialized_segment == {
-            "ascent": 0.0,
-            "ave_cadence": None,
-            "ave_hr": None,
-            "ave_power": None,
-            "ave_speed": 8.94,
-            "descent": 1.0,
-            "distance": 0.025,
-            "duration": "0:00:10",
-            "max_alt": 980.0,
-            "max_cadence": None,
-            "max_hr": None,
-            "max_power": None,
-            "max_speed": 13.83,
-            "min_alt": 979.0,
-            "moving": "0:00:10",
-            "pauses": None,
-            "segment_id": 2,
-            "workout_id": workout.short_id,
-        }
+    def test_it_creates_workout_and_segments_when_first_segment_has_no_points(
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_first_segment_empty: str,
+    ) -> None:
+        # gpx with 3 segments, first segment is empty
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_with_first_segment_empty
+        )
+
+        service.process_workout()
+        db.session.commit()
+
+        # no description in gpx file, only name is present
+        assert service.workout_description is None
+        assert service.workout_name == "just a workout"
+
+        self.assert_workout_with_two_segments(user_1, sport_1_cycling)
 
     def test_it_creates_workout_when_gpx_file_has_gpxtpx_extensions(
         self,

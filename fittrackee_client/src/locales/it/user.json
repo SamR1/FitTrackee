@@ -2,7 +2,7 @@
   "ACCOUNT_CONFIRMATION": "Conferma dell'account",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Non hai ricevuto istruzioni?",
   "ACCOUNT_CONFIRMATION_SENT": "Controlla la tua email. Una nuova email di conferma è stata inviata all'indirizzo specificato.",
-  "ACCOUNT_SUSPENDED_AT": "Account sospeso il {0}",
+  "ACCOUNT_SUSPENDED_AT": "Account sospeso il {0}.",
   "ACTIVE_ACCOUNT": "L'account è attivo",
   "ACTIVE_USER": "utente attivo | utenti attivi",
   "ALREADY_HAVE_ACCOUNT": "Hai già un account?",
@@ -68,33 +68,117 @@
     "WEAK": "bassa"
   },
   "PASSWORD_UPDATED": "La tua password è stata aggiornata. Clicca {0} per effettuare il login.",
+  "PRIVACY_POLICY_TO_VALIDATE": "Per favore {0} la privacy policy prima di continuare.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Tipo di account",
+    "ARCHIVE_UPLOADS": {
+      "ARCHIVE": "Archivio zip",
+      "CONFIRM_TASK_ABORT": "Sei sicuro di voler annullare questa attività di upload archivio?",
+      "CONFIRM_TASK_DELETION": "Sei sicuro di voler cancellare questa attività di upload archivio?",
+      "CREATED_WORKOUTS": "Workout creati",
+      "ERRORED_FILES": "File con errori",
+      "FILES_COUNT": "{count} file",
+      "NOT_FOUND": "Nessun upload di archivio trovato.",
+      "PROGRESS": "Avanzamento"
+    },
     "ASCENT_DATA": "Dati relativi alle salite (singoli, totale)",
     "BACK_TO_PROFILE": "Ritorna al profilo",
     "BIO": "Bio",
     "BIRTH_DATE": "Data di nascita",
+    "CREATED_REPORTS": "Report creati",
     "DATE_FORMAT": "Formato data",
     "EDIT": "Modifica profilo",
+    "EDIT_MESSAGE_PREFERENCES": "Modifica le preferenze dei messaggi",
+    "EDIT_NOTIFICATION_PREFERENCES": "Modifica le preferenze delle notifiche",
     "EDIT_PREFERENCES": "Modifica preferenze",
     "EDIT_SPORTS_PREFERENCES": "Modifica preferenze sport",
+    "ELEVATION_CHART_START": {
+      "LABEL": "Il grafico del dislivello inizia a",
+      "MIN_ALT": "Altitudine minima",
+      "ZERO": "Zero"
+    },
+    "EQUIPMENTS": {
+      "ACTION": "azione",
+      "CONFIRM_EQUIPMENT_DELETION": "Sei sicuro di voler eliminare questo equipaggiamento {0}?",
+      "DESCRIPTION": "descrizione",
+      "DISABLED_BY_ADMIN": "disabilitato dall'admin",
+      "EQUIPMENT_ASSOCIATED_WITH_WORKOUTS": "Questo equipaggiamento è associato a dei workout.",
+      "IS_ACTIVE": "attivo",
+      "LABEL": "etichetta",
+      "YOUR_EQUIPMENTS": "I tuoi equipaggiamenti"
+    },
+    "EQUIPMENTS_EDITION": "Modifica degli equipaggiamenti",
     "ERRORED_EMAIL_UPDATE": "Per favore {0} per cambiare di nuovo la tua mail o contatta l'amministratore",
     "FIRST_DAY_OF_WEEK": "Primo giorno della settimana",
     "FIRST_NAME": "Nome",
+    "FOLLOW_REQUESTS_APPROVAL": {
+      "AUTOMATICALLY": "Automaticamente",
+      "LABEL": "Approvazione delle richieste di follow",
+      "MANUALLY": "Manualmente"
+    },
+    "INTERFACE": "Interfaccia",
     "LANGUAGE": "Lingua",
     "LAST_NAME": "Cognome",
+    "LATEST_SANCTIONS_RECEIVED": "Ultime sanzioni ricevute",
     "LOCATION": "Posizione",
+    "MESSAGES": {
+      "warning_about_large_number_of_workouts_on_map": "Mostra un avviso sul visualizzare un gran numero di workout sulla map"
+    },
+    "MESSAGES_EDITION": "Modifica delle preferenze dei messaggi",
+    "MESSAGES_PREFERENCES": "Preferenze sui messaggi",
     "MONDAY": "Lunedì",
+    "NOTIFICATIONS": {
+      "account_creation": "Qualcuno si registra",
+      "comment_like": "A qualcuno piace il tuo commento",
+      "follow": "Qualcuno ti segue",
+      "follow_request": "Qualcuno ti ha mandato una richiesta di follow",
+      "follow_request_approved": "La tua richiesta di follow è approvata",
+      "mention": "Qualcuno ti ha menzionato",
+      "workout_comment": "Qualcuno ha commentato il tuo workout",
+      "workout_like": "Qualcuno ha messo mi piace al tuo workout"
+    },
+    "NOTIFICATIONS_EDITION": "Modifica delle preferenze sullo notifiche",
+    "NOTIFICATION_PREFERENCES": "Preferenze sulle notifiche",
+    "NO_ARCHIVE_UPLOADS": "Nessun upload di archivi",
+    "NO_SANCTIONS": "Nessuna sanzione",
     "PICTURE": "Foto",
     "PICTURE_EDITION": "Foto",
     "PICTURE_REMOVE": "Rimuovi foto",
     "PICTURE_UPDATE": "Aggiorna foto",
     "PREFERENCES_EDITION": "Preferenze",
+    "PRIVACY-POLICY_EDITION": "Policy della privacy",
     "PROFILE_EDITION": "Profilo",
+    "PROFILE_IN_USERS_DIRECTORY": {
+      "DISPLAYED": "Mostrati",
+      "HIDDEN": "Nascosto",
+      "LABEL": "Profile nella directory degli utenti"
+    },
     "REGISTRATION_DATE": "Data di registrazione",
+    "REPORTS_FROM_OTHER_USERS": "Report dagli altri utenti",
+    "SANCTIONS": {
+      "comment_suspension": "Sospensione del commento ({date})",
+      "user_suspension": "Sospensione account ({date})",
+      "user_warning": "Avvertimento ({date})",
+      "workout_suspension": "Sospensione del workout ({date})"
+    },
+    "SANCTIONS_RECEIVED": "Sanzioni ricevute",
+    "SANCTION_APPEAL": {
+      "APPROVED": "il tuo appello è stato approvato",
+      "IN_PROGRESS": "il tuo appello è in corso di analisi",
+      "REJECTED": "il tuo appello è stato rifiutato"
+    },
+    "SEGMENTS_CREATION_EVENT": {
+      "LABEL": "Le pause scatenano la creazione di un segmeno (solo file .fit)",
+      "all": "Tutti gli eventi di pausa",
+      "none": "Nessuno",
+      "only_manual": "Solo pausa manuale"
+    },
     "SPORT": {
       "ACTION": "azione",
       "COLOR": "colore",
+      "CONFIRM_SPORT_RESET": "Sei sicuro che vuoi ripristinare questo sport?",
+      "CONFIRM_SPORT_RESET_WITH_EQUIPMENTS": "Sei sicuro che vuoi ripristinare questo sport? Tutti gli equipaggiamenti di default saranno rimossi.",
+      "DEFAULT_EQUIPMENTS": "Equipaggiamento di default | Equipaggiamenti di default",
       "DISABLED_BY_ADMIN": "disattivato dall'amministratore",
       "IS_ACTIVE": "attivo",
       "LABEL": "etichetta",
@@ -109,10 +193,26 @@
     "TABS": {
       "ACCOUNT": "account",
       "APPS": "apps",
+      "ARCHIVE-UPLOADS": "upload dell'archivio",
+      "BLOCKED-USERS": "utenti bloccati",
+      "EQUIPMENTS": "equipaggiamenti",
+      "FOLLOW-REQUESTS": "richieste di follow",
+      "MESSAGES": "messaggi",
+      "MODERATION": "moderazione",
+      "NOTIFICATIONS": "notifiche",
       "PICTURE": "foto",
       "PREFERENCES": "preferenze",
+      "PRIVACY-POLICY": "policy sulla privacy",
       "PROFILE": "profilo",
       "SPORTS": "sports"
+    },
+    "THEME_MODE": {
+      "LABEL": "Modalità del tema",
+      "VALUES": {
+        "DARK": "Scuro",
+        "DEFAULT": "Preferenze del browser",
+        "LIGHT": "Chiaro"
+      }
     },
     "TIMEZONE": "Timezone",
     "UNITS": {
@@ -120,22 +220,66 @@
       "LABEL": "Unità per la distanza",
       "METRIC": "Sistema metrico (m, km, m/s, °C)"
     },
+    "USER_RECEIVED_SANCTIONS": "Questo utente ha ricevuto {count} sanzione. | Questo utente ha ricevuto {count} sanzioni.",
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Filtrato",
+      "HELP": "Se filtrato, esclude i valori estremi (che possono essere errori del GPS) quando si calcola la velocità massima.",
       "LABEL": "Strategia di massima velocità",
       "RAW_SPEED": "Greggio"
+    },
+    "WORKOUT_CHARTS_DISPLAY": {
+      "LABEL": "Visualizzazione del grafico dell'analisi dei workout",
+      "MULTIPLE": "Ogni dato è mostrato su un grafico diverso",
+      "ONE": "Tutti i dati nello stesso grafico"
     }
   },
+  "READ_AND_ACCEPT_PRIVACY_POLICY": "Ho letto e accettato il {0}.",
   "REGISTER": "Registra",
   "REGISTER_DISABLED": "Mi dispiace, la registrazione è disabilitata.",
+  "RELATIONSHIPS": {
+    "BLOCKED": "bloccato",
+    "FOLLOWER": "follower",
+    "FOLLOWING": "Seguiti",
+    "FOLLOWS_YOU": "ti segue",
+    "NO_FOLLOWERS": "Nessun follower per ora.",
+    "NO_FOLLOWING": "Non segui nessuno per ora.",
+    "NO_FOLLOW_REQUESTS": "Nessuna richiesta di follow da controllare."
+  },
+  "REPORT": "Report",
   "RESENT_ACCOUNT_CONFIRMATION": "Re-invia email di conferma dell'account",
   "RESET_PASSWORD": "Resetta password",
+  "REVIEW": "revisione",
+  "ROLE": "Ruolo",
   "ROLES": {
-    "admin": "Admin"
+    "admin": "Admin",
+    "moderator": "Moderatore",
+    "owner": "Proprietario",
+    "user": "Utente"
   },
   "SHOW_PASSWORD": "mostra password",
+  "SUSPENDED": "Sospeso",
+  "SUSPENDED_ACCOUNT": "Account sospeso",
+  "SUSPENSION_REASON": "Motivo della sospensione",
+  "TASKS": {
+    "STATUS": {
+      "LABEL": "Stato",
+      "aborted": "annulato",
+      "errored": "in errore",
+      "in_progress": "in corso",
+      "queued": "in coda",
+      "successful": "con successo"
+    }
+  },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Questo account è inattivo.",
+  "TOGGLE_THEME": "Cambia tema (modalità Chiara o Scura)",
+  "USER": "utente | utenti",
   "USERNAME": "Username",
   "USERNAME_INFO": "Sono richiesti da 3 a 30 caratteri, è permesso utilizzare solo caratteri alfanumerici ed il simbolo \"_\".",
-  "USER_PICTURE": "foto profilo"
+  "USER_PICTURE": "foto profilo",
+  "USER_PROFILE": "profilo utente",
+  "WARNING_REASON": "Motivo dell'avvertimento",
+  "YOU": "tu",
+  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "Il tuo account è stato sospeso",
+  "YOU_CAN_APPEAL_ONCE": "Puoi fare appello una volta sola.",
+  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Hai accettato il {0}."
 }
