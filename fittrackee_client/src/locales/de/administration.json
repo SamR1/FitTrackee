@@ -13,7 +13,10 @@
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Kontakt-E-Mail des Administrators",
     "ASYNCHRONOUS_UPLOAD_DISABLED": "Das asynchrone hochladen von ZIP Archiven ist ausgeschaltet.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "Dieser Wert darf 50.000 Workouts nicht überschreiten.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Max. angezeigte Workouts auf der Weltkarte",
     "MAX_FILES_IN_ZIP_LABEL": "Max. Dateianzahl im zip Archiv",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Max. Dateien für synchrone Verarbeitung",
     "MAX_USERS_HELP": "Wenn 0, gibt es keine Registrierungslimitierung..",
     "MAX_USERS_LABEL": "Max. Anzahl aktiver Nutzer",
     "NO_CONTACT_EMAIL": "keine Kontakt-E-Mail",
@@ -87,6 +90,7 @@
     },
     "TITLE": "Moderation",
     "UNRESOLVED_REPORTS_EXIST": "Es gibt ungelöste Meldungen.",
+    "USERS_QUEUED_TASKS_EXIST": "Es gibt Aufgaben in der Warteschlange.",
     "VIEW_REPORT": "Meldungen anzeigen"
   },
   "BACK_TO_ADMIN": "Zurück zu Admin",
