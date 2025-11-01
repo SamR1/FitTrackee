@@ -14,12 +14,12 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import ApiTestCaseMixin, BaseTestMixin, ReportMixin
+from ..mixins import ApiTestCaseMixin, ReportMixin
 from ..utils import jsonify_dict
 from .mixins import CommentMixin
 
 
-class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
+class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
         app: Flask,
@@ -450,9 +450,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin, BaseTestMixin):
         )
 
 
-class TestPostWorkoutCommentReply(
-    CommentMixin, ApiTestCaseMixin, BaseTestMixin
-):
+class TestPostWorkoutCommentReply(CommentMixin, ApiTestCaseMixin):
     @pytest.mark.parametrize(
         "input_comment_visibility",
         [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
@@ -750,9 +748,7 @@ class TestPostWorkoutCommentReply(
         self.assert_400(response, "'reply_to' is invalid")
 
 
-class TestGetWorkoutCommentAsUser(
-    CommentMixin, ApiTestCaseMixin, BaseTestMixin
-):
+class TestGetWorkoutCommentAsUser(CommentMixin, ApiTestCaseMixin):
     def test_it_returns_404_when_workout_comment_does_not_exist(
         self,
         app: Flask,
@@ -1049,9 +1045,7 @@ class TestGetWorkoutCommentAsUser(
         assert data["comment"] == jsonify_dict(comment.serialize())
 
 
-class TestGetWorkoutCommentAsFollower(
-    CommentMixin, ApiTestCaseMixin, BaseTestMixin
-):
+class TestGetWorkoutCommentAsFollower(CommentMixin, ApiTestCaseMixin):
     def test_it_returns_404_when_comment_visibility_does_not_allow_access(
         self,
         app: Flask,
@@ -1199,9 +1193,7 @@ class TestGetWorkoutCommentAsFollower(
         )
 
 
-class TestGetWorkoutCommentAsOwner(
-    CommentMixin, ApiTestCaseMixin, BaseTestMixin
-):
+class TestGetWorkoutCommentAsOwner(CommentMixin, ApiTestCaseMixin):
     @pytest.mark.parametrize(
         "input_text_visibility",
         [
@@ -1313,7 +1305,7 @@ class TestGetWorkoutCommentAsOwner(
 
 
 class TestGetWorkoutCommentAsUnauthenticatedUser(
-    CommentMixin, ApiTestCaseMixin, BaseTestMixin
+    CommentMixin, ApiTestCaseMixin
 ):
     @pytest.mark.parametrize(
         "input_text_visibility",
@@ -1415,9 +1407,7 @@ class TestGetWorkoutCommentAsUnauthenticatedUser(
         )
 
 
-class TestGetWorkoutCommentWithReplies(
-    CommentMixin, ApiTestCaseMixin, BaseTestMixin
-):
+class TestGetWorkoutCommentWithReplies(CommentMixin, ApiTestCaseMixin):
     def test_it_gets_comment_with_replies(
         self,
         app: Flask,
@@ -1677,9 +1667,7 @@ class TestGetWorkoutCommentWithReplies(
         assert data["comment"]["replies"] == []
 
 
-class GetWorkoutCommentsTestCase(
-    CommentMixin, ApiTestCaseMixin, BaseTestMixin
-):
+class GetWorkoutCommentsTestCase(CommentMixin, ApiTestCaseMixin):
     @staticmethod
     def assert_comments_response(
         response: Response, expected_comments: List
@@ -2288,9 +2276,7 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
         ]
 
 
-class TestGetWorkoutsCommentWithReplies(
-    CommentMixin, ApiTestCaseMixin, BaseTestMixin
-):
+class TestGetWorkoutsCommentWithReplies(CommentMixin, ApiTestCaseMixin):
     def test_it_gets_replies_a_user_can_access(
         self,
         app: Flask,
@@ -2360,7 +2346,7 @@ class TestGetWorkoutsCommentWithReplies(
         ]
 
 
-class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
+class TestDeleteWorkoutComment(ApiTestCaseMixin, CommentMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
         app: Flask,
@@ -2590,7 +2576,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
         )
 
 
-class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
+class TestPatchWorkoutComment(ApiTestCaseMixin, CommentMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self,
         app: Flask,
@@ -2917,7 +2903,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, BaseTestMixin, CommentMixin):
 
 
 class TestPostWorkoutCommentSuspensionAppeal(
-    ApiTestCaseMixin, BaseTestMixin, ReportMixin, CommentMixin
+    ApiTestCaseMixin, ReportMixin, CommentMixin
 ):
     def test_it_returns_error_if_user_is_not_authenticated(
         self,

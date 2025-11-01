@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "1.0.1"
+version = "1.0.2"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0-only"
@@ -52,7 +52,7 @@ humanize = "^4.14.0"
 jsonschema = "^4.25.1"
 lxml = "^6.0.2"
 mistune = "^3.1.4"
-nh3 = "^0.3.1"
+nh3 = "^0.3.2"
 numpy = "=2.2.6" # numpy 2.3+ requires python 3.11+. geoalchemy2 dependency.
 pandas = "=2.3.3"
 psycopg2-binary = "^2.9.11"
@@ -77,8 +77,8 @@ pytest-runner = "^6.0.1"
 pytest-selenium = "^4.1.0"
 pytest-xdist = {extras = ["psutil"], version = "^3.8.0"}
 recommonmark = "^0.7.1"
-ruff = "^0.14.1"
-selenium = "^4.37.0"
+ruff = "^0.14.3"
+selenium = "^4.38.0"
 sphinx = "^8.1.3" # sphinx 8.2+ requires python 3.11+
 sphinx-copybutton = "^0.5.2"
 sphinx-intl = "^2.3.2"

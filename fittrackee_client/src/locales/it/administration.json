@@ -67,20 +67,58 @@
       "user_unsuspension": "La sospensione di {0} è stata annullata da {1} {2}.",
       "user_warning": "Un avvertimento è stato mandato a {0} da {1} {2}.",
       "user_warning_lifting": "L'avvertimento di {0} è stato rimosso da {1} {2}.",
-      "workout_suspension": "il workout è stato sospeso da {1} {2}."
+      "workout_suspension": "il workout è stato sospeso da {1} {2}.",
+      "workout_unsuspension": "La sospensione del workout è stata annullata da {1} {2}."
+    },
+    "REPORT_NOTE": "Nota di",
+    "RESOLVED": {
+      "FALSE": "Non risolto",
+      "TRUE": "Risolto"
     },
     "RESOLVED_AT": "Risolto il",
-    "RESOLVED_BY": "Risolto da"
+    "RESOLVED_BY": "Risolto da",
+    "STATUS": "stato",
+    "TEXTAREA_PLACEHOLDER": {
+      "ADD_COMMENT": "Aggiungi un commento, azione intrapresa o qualunque altra informazione utile.",
+      "INFORMATION_VISIBLE_TO_USER": "Questa informazione sarà visibile agli utenti.",
+      "MARK_AS_RESOLVED": "Indicare il motivo della risoluzione.",
+      "MARK_AS_UNRESOLVED": "Indicare il motivo per la non risoluzione.",
+      "SEND_WARNING_EMAIL": "Indicare il motivo dell'avvertimento (non obbligatorio).",
+      "SUSPEND": "Indicare il motivo per la sospensione (non obbligatorio).",
+      "UNSUSPEND": "Aggiungi un commento (non obbligatorio).",
+      "UPDATE_APPEAL": "Indicare il motivo per questa analisi dell'appello."
+    },
+    "TITLE": "Moderazione",
+    "UNRESOLVED_REPORTS_EXIST": "Ci sono dei report non risolti.",
+    "USERS_QUEUED_TASKS_EXIST": "Ci sono attività in coda",
+    "VIEW_REPORT": "Visualizza il report"
   },
   "BACK_TO_ADMIN": "Ritorna ad amministrazione",
+  "CONFIRM_SUSPEND_ACCOUNT": "Sei sicuro di voler sospendere l'account {0}?",
+  "CONFIRM_SUSPEND_CONTENT": "Sei sicuro di voler sospendere il contenuto segnalato?",
   "CONFIRM_USER_ACCOUNT_DELETION": "Sei sicuro di voler eliminare {0} account? Tutti i dati verranno persi, quest'azione non può essere annullata.",
   "CONFIRM_USER_PASSWORD_RESET": "Sei sicuro di voler resettare {0} password?",
   "CURRENT_EMAIL": "Email corrente",
+  "DELETED_COMMENT": "Elimina commento",
+  "DELETED_USER": "Elimina utente",
+  "DELETED_WORKOUT": "Workout cancellato",
   "DELETE_USER": "Elimina utente",
   "EMAIL_SENDING_DISABLED": "L'invio di email è disabilitato.",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "Abilita/disabilita tipi di equipaggiamento.",
   "ENABLE_DISABLE_SPORTS": "Attiva/Disattiva sports.",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "ACTIVE": "Attivo",
+      "HAS_EQUIPMENTS": "gli equipaggiamenti esistono",
+      "IMAGE": "Immagine",
+      "LABEL": "Etichetta"
+    },
+    "TITLE": "Gestione degli equipaggiamenti"
+  },
   "NEW_EMAIL": "Nuova email",
+  "NO_TEXT_ENTERED": "Nessun testo inserito",
   "PASSWORD_RESET_SUCCESSFUL": "La password è stata reimpostata.",
+  "PRIVACY_POLICY_DESCRIPTION": "Aggiungi la tua privacy policy o lascia vuoto per usare quella di default. Puoi usare la sintassi Markdown.",
   "REGISTRATION_DISABLED": "La registrazione è al momento disabilitata.",
   "REGISTRATION_ENABLED": "La registrazione è al momento abilitata.",
   "RESET_USER_PASSWORD": "Reset password",
@@ -101,10 +139,30 @@
       "ORDER_BY": {
         "CREATED_AT": "data di registrazione",
         "IS_ACTIVE": "stato account",
+        "ROLE": "ruolo",
         "USERNAME": "nome utente",
         "WORKOUTS_COUNT": "numero di workout"
       }
-    }
+    },
+    "TABLE": {
+      "CHANGE_ROLE": "Cambia ruolo",
+      "CHANGE_TO_ADMIN": "Cambia in admin",
+      "CHANGE_TO_MODERATOR": "Cambia in moderatore",
+      "CHANGE_TO_USER": "Cambia in utente"
+    },
+    "TITLE": "Amministrazione - Utenti"
+  },
+  "USERS_QUEUED_TASKS": {
+    "DESCRIPTION": "Mostra le attività accodate",
+    "LABEL": "Attività accodate",
+    "LIST_DESCRIPTION": "Se nessun work sta lavlorndo, per favore usa la CLI per processarli.",
+    "NO_USERS_QUEUED_TASKS": "Nessuna attività accodata",
+    "TASK_TYPES": {
+      "LABEL": "Tipo di attività",
+      "user_data_export": "Export dei dati utente",
+      "workouts_archive_upload": "Upload di un archivio dei workout"
+    },
+    "VIEW_OTHER_TASKS": "Visualizza le altre attività accodate"
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "L'indirizzo email è stato aggiornato."
 }

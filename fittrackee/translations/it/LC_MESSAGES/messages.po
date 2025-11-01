@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2025-10-01 18:53+0200\n"
-"PO-Revision-Date: 2025-10-22 08:40+0000\n"
+"PO-Revision-Date: 2025-10-25 07:44+0000\n"
 "Last-Translator: Davide Gualano <ildave@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/fittrackee/"
 "fittrackee-api-emails/it/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14-dev\n"
+"X-Generator: Weblate 5.14.1-dev\n"
 "Generated-By: Babel 2.17.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
@@ -402,6 +402,7 @@ msgid ""
 "You can no longer use your account and your profile is no longer "
 "accessible"
 msgstr ""
+"Non puoi più usare il tuo account e il tuo profilo non è più accessibile"
 
 #: fittrackee/emails/templates/user_suspension/body.html:5
 #: fittrackee/emails/templates/user_suspension/body.txt:2
@@ -409,6 +410,8 @@ msgid ""
 "You can still log in to request an export of your data or delete your "
 "account"
 msgstr ""
+"Puoi ancora fare login per richiedere l'export dei tuoi dati o per "
+"cancellare il tuo account"
 
 #: fittrackee/emails/templates/user_unsuspension/body.html:2
 #: fittrackee/emails/templates/user_unsuspension/body.html:3
@@ -434,39 +437,39 @@ msgstr "Avvertimento per %(username)s"
 #: fittrackee/emails/templates/user_warning/body.html:4
 #: fittrackee/emails/templates/user_warning/body.txt:1
 msgid "You received a warning"
-msgstr ""
+msgstr "Hai ricevuto un avvertimento"
 
 #: fittrackee/emails/templates/user_warning_lifting/body.html:3
 #: fittrackee/emails/templates/user_warning_lifting/body.html:4
 #: fittrackee/emails/templates/user_warning_lifting/body.txt:1
 msgid "Your warning has been lifted"
-msgstr ""
+msgstr "Il tuo avvertimento è stato annullato"
 
 #: fittrackee/emails/templates/workout_suspension/body.html:2
 #: fittrackee/emails/templates/workout_suspension/subject.txt:1
 msgid "Your workout has been suspended"
-msgstr ""
+msgstr "Il tuo workout è stato sospeso"
 
 #: fittrackee/emails/templates/workout_suspension/body.html:3
 #: fittrackee/emails/templates/workout_suspension/body.html:4
 #: fittrackee/emails/templates/workout_suspension/body.txt:1
 msgid "Your workout has been suspended, it is no longer visible"
-msgstr ""
+msgstr "Il tuo workout è stato sospeso, non è più visibile"
 
 #: fittrackee/emails/templates/workout_unsuspension/body.html:2
 #: fittrackee/emails/templates/workout_unsuspension/subject.txt:1
 msgid "The suspension on your workout has been lifted"
-msgstr ""
+msgstr "La sospensione del tuo workout è stata annullata"
 
 #: fittrackee/emails/templates/workout_unsuspension/body.html:3
 #: fittrackee/emails/templates/workout_unsuspension/body.html:4
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:1
 msgid "The suspension on your workout has been lifted, it is visible again"
-msgstr ""
+msgstr "La sospensione del tuo workout è stata annullata, è di nuovo visibile"
 
 #: fittrackee/feeds/feeds/constants.py:5
 msgid "Canoeing"
-msgstr ""
+msgstr "Canoa"
 
 #: fittrackee/feeds/feeds/constants.py:6
 msgid "Cycling (Sport)"
@@ -478,7 +481,7 @@ msgstr "Ciclismo (Trasporto)"
 
 #: fittrackee/feeds/feeds/constants.py:8
 msgid "Cycling (Trekking)"
-msgstr ""
+msgstr "Ciclismo (Trekking)"
 
 #: fittrackee/feeds/feeds/constants.py:9
 msgid "Cycling (Virtual)"
@@ -486,7 +489,7 @@ msgstr "Cicliscmo (Virtuale)"
 
 #: fittrackee/feeds/feeds/constants.py:10
 msgid "Halfbike"
-msgstr ""
+msgstr "Halfbike"
 
 #: fittrackee/feeds/feeds/constants.py:11
 msgid "Hiking"
@@ -494,11 +497,11 @@ msgstr "Escursioni"
 
 #: fittrackee/feeds/feeds/constants.py:12
 msgid "Kayaking"
-msgstr ""
+msgstr "Kayak"
 
 #: fittrackee/feeds/feeds/constants.py:13
 msgid "Mountain Biking"
-msgstr "Mountain Biking"
+msgstr "Mountain Bike"
 
 #: fittrackee/feeds/feeds/constants.py:14
 msgid "Mountain Biking (Electric)"
@@ -510,15 +513,15 @@ msgstr "Alpinismo"
 
 #: fittrackee/feeds/feeds/constants.py:16
 msgid "Open Water Swimming"
-msgstr ""
+msgstr "Nuoto in acque aperte"
 
 #: fittrackee/feeds/feeds/constants.py:17
 msgid "Padel (Outdoor)"
-msgstr ""
+msgstr "Padel (All'aperto)"
 
 #: fittrackee/feeds/feeds/constants.py:18
 msgid "Paragliding"
-msgstr ""
+msgstr "Parapendio"
 
 #: fittrackee/feeds/feeds/constants.py:19
 msgid "Rowing"
@@ -542,15 +545,15 @@ msgstr "Racchette da neve"
 
 #: fittrackee/feeds/feeds/constants.py:24
 msgid "Standup Paddleboarding"
-msgstr ""
+msgstr "Sup in piedi"
 
 #: fittrackee/feeds/feeds/constants.py:25
 msgid "Swimrun"
-msgstr ""
+msgstr "Nuoto"
 
 #: fittrackee/feeds/feeds/constants.py:26
 msgid "Tennis (Outdoor)"
-msgstr ""
+msgstr "Tennis (All'aperto)"
 
 #: fittrackee/feeds/feeds/constants.py:27
 msgid "Trail"
@@ -562,21 +565,21 @@ msgstr "Camminata"
 
 #: fittrackee/feeds/feeds/constants.py:29
 msgid "Windsurfing"
-msgstr ""
+msgstr "Windsurf"
 
 #: fittrackee/feeds/feeds/workouts_feed_service.py:61
 #, python-format
 msgid "Latest public workouts on FitTrackee from %(username)s"
-msgstr ""
+msgstr "I più recenti workout pubblici su FitTrackee di %(username)s"
 
 #: fittrackee/feeds/feeds/workouts_feed_service.py:70
 #, python-format
 msgid "%(username)s's workouts feed"
-msgstr ""
+msgstr "il feed dei workout di %(username)s"
 
 #: fittrackee/feeds/templates/workout/body.html:1
 msgid "Workout map"
-msgstr ""
+msgstr "Mappa dei workout"
 
 #: fittrackee/feeds/templates/workout/body.html:2
 msgid "Duration"

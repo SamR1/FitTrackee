@@ -7,7 +7,6 @@ import pytz
 import requests
 
 from fittrackee.dates import get_datetime_in_utc
-from fittrackee.tests.mixins import BaseTestMixin
 from fittrackee.tests.utils import random_string
 from fittrackee.workouts.services.weather.visual_crossing import VisualCrossing
 from fittrackee.workouts.services.weather.weather_service import WeatherService
@@ -51,7 +50,7 @@ VISUAL_CROSSING_RESPONSE = {
 }
 
 
-class WeatherTestCase(BaseTestMixin):
+class WeatherTestCase:
     api_key = random_string()
 
     @staticmethod
@@ -108,7 +107,7 @@ class TestVisualCrossingGetWeather(WeatherTestCase, ResponseMockMixin):
         with patch.object(requests, "get") as get_mock:
             visual_crossing.get_weather(point)
 
-        args = self.get_args(get_mock.call_args)
+        args, _ = get_mock.call_args
         assert args[0] == (
             "https://weather.visualcrossing.com/VisualCrossingWebServices/"
             f"rest/services/timeline/{point.latitude},{point.longitude}/"
@@ -122,7 +121,7 @@ class TestVisualCrossingGetWeather(WeatherTestCase, ResponseMockMixin):
                 self.get_gpx_point(datetime.now(timezone.utc))
             )
 
-        kwargs = self.get_kwargs(get_mock.call_args)
+        _, kwargs = get_mock.call_args
         assert kwargs.get("params") == {
             "key": self.api_key,
             "iconSet": "icons1",

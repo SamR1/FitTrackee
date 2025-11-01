@@ -1388,7 +1388,7 @@ def on_user_task_delete(
             try:
                 os.remove(get_absolute_file_path(old_record.file_path))
             except OSError:
-                appLog.error("archive found when deleting export request")
+                appLog.error("archive not found when deleting export request")
 
 
 class Notification(BaseModel):

@@ -34,12 +34,12 @@
 
   function getPath(tab: string): string {
     switch (tab) {
-      case 'ACCOUNT':
       case 'PICTURE':
       case 'PRIVACY-POLICY':
         return `/profile/edit/${tab.toLocaleLowerCase()}`
       case 'ARCHIVE-UPLOADS':
         return '/profile/archive-uploads'
+      case 'ACCOUNT':
       case 'APPS':
       case 'BLOCKED-USERS':
       case 'EQUIPMENTS':

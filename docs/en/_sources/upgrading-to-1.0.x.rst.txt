@@ -1,5 +1,8 @@
-Upgrading to 1.0.0
+Upgrading to 1.0.x
 ##################
+
+.. note::
+    This page describes the upgrade from a version prior to 1.0.0 to version 1.0.x.
 
 The version 1.0.0 introduces major changes on workout file processing to improve performances and ease the implementation of the next features:
 

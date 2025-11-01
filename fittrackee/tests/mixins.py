@@ -47,29 +47,10 @@ if TYPE_CHECKING:
 
 
 class BaseTestMixin:
-    """call args are returned differently between Python 3.7 and 3.7+"""
-
     @staticmethod
-    def get_args(call_args: Tuple) -> Tuple:
-        if len(call_args) == 2:
-            args, _ = call_args
-        else:
-            _, args, _ = call_args
-        return args
-
-    @staticmethod
-    def get_kwargs(call_args: Tuple) -> Dict:
-        if len(call_args) == 2:
-            _, kwargs = call_args
-        else:
-            _, _, kwargs = call_args
-        return kwargs
-
-    def assert_call_args_keys_equal(
-        self, mock: Mock, expected_keys: List
-    ) -> None:
-        args_list = self.get_kwargs(mock.call_args)
-        assert list(args_list.keys()) == expected_keys
+    def assert_call_kwargs_keys_equal(mock: Mock, expected_keys: List) -> None:
+        _, call_kwargs = mock.call_args
+        assert list(call_kwargs.keys()) == expected_keys
 
     @staticmethod
     def assert_dict_contains_subset(container: Dict, subset: Dict) -> None:
@@ -697,15 +678,15 @@ class UserInboxTestMixin(BaseTestMixin):
         activity_args: Optional[Dict] = None,
     ) -> None:
         send_to_remote_inbox_mock.send.assert_called_once()
-        self.assert_call_args_keys_equal(
+        self.assert_call_kwargs_keys_equal(
             send_to_remote_inbox_mock.send,
             ["sender_id", "activity", "recipients"],
         )
-        call_args = self.get_kwargs(send_to_remote_inbox_mock.send.call_args)
-        assert call_args["sender_id"] == local_actor.id
-        assert call_args["recipients"] == [remote_actor.inbox_url]
+        _, call_kwargs = send_to_remote_inbox_mock.send.call_args
+        assert call_kwargs["sender_id"] == local_actor.id
+        assert call_kwargs["recipients"] == [remote_actor.inbox_url]
         activity = base_object.get_activity(
             {} if activity_args is None else activity_args
         )
         del activity["id"]
-        self.assert_dict_contains_subset(call_args["activity"], activity)
+        self.assert_dict_contains_subset(call_kwargs["activity"], activity)
