@@ -1,9 +1,51 @@
 # Change log
 
+## Version 1.0.3 (2025/11/05)
+
+**Warning**:
+- The version 1.1.0 will require all workouts to be updated, see [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.x.html#workouts-data-update).
+
+### Bugs Fixed
+
+* [PR#982](https://github.com/SamR1/FitTrackee/pull/982) - downgrade pandas to 2.3.2 to fix install on RHEL7+
+
+### Translations
+
+* [PR#980](https://github.com/SamR1/FitTrackee/pull/980) - Translations update from Hosted Weblate (German and Croatian)
+* [PR#981](https://github.com/SamR1/FitTrackee/pull/981) - Translations update from Hosted Weblate (Basque)
+* [PR#983](https://github.com/SamR1/FitTrackee/pull/983) - Translations update from Hosted Weblate (Galician)
+
+Translation status:
+- Basque: 100%
+- Bulgarian: 54%
+- Catalan: 26%
+- Chinese (Simplified): 98%
+- Croatian: 100%
+- Czech: 48%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 93%
+- Italian: 99%
+- Norwegian Bokmål: 45%
+- Polish: 95%
+- Portuguese: 53%
+- Russian: 95%
+- Spanish: 71%
+- Turkish: 1%
+
+Thanks to the contributors:
+- @bhopmann
+- @erral
+- @iggydev
+- @xmgz
+
+
 ## Version 1.0.2 (2025/11/01)
 
 **Warning**:
-- The version 1.1.0 will require all workouts to be updated, see [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.0.html#workouts-data-update).
+- The version 1.1.0 will require all workouts to be updated, see [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.x.html#workouts-data-update).
 
 ### Bugs Fixed
 
@@ -53,7 +95,7 @@ Thanks to the contributors:
 **FitTrackee** is now available for Python 3.14.
 
 **Warning**:
-- The version 1.1.0 will require all workouts to be updated, see [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.0.html#workouts-data-update).
+- The version 1.1.0 will require all workouts to be updated, see [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.x.html#workouts-data-update).
 
 ### Bugs Fixed
 

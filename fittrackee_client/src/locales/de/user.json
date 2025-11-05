@@ -71,6 +71,16 @@
   "PRIVACY_POLICY_TO_VALIDATE": "Bitte {0} die Datenschutzrichtlinie vor dem Fortfahren.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Kontoausgabe",
+    "ARCHIVE_UPLOADS": {
+      "ARCHIVE": "ZIP-Archiv",
+      "CONFIRM_TASK_ABORT": "Möchten Sie diesen Archiv-Upload-Vorgang wirklich abbrechen?",
+      "CONFIRM_TASK_DELETION": "Möchten Sie diese Archiv-Upload-Aufgabe wirklich löschen?",
+      "CREATED_WORKOUTS": "Erstellte Workouts",
+      "ERRORED_FILES": "Fehlerhafte Datei | Fehlerhafte Dateien",
+      "FILES_COUNT": "{count} Dateien",
+      "NOT_FOUND": "Kein Archiv-Upload gefunden.",
+      "PROGRESS": "Fortschritt"
+    },
     "ASCENT_DATA": "Anstiegs-bezogene Daten (Aufnahmen, gesamt)",
     "BACK_TO_PROFILE": "Zurück zum Profil",
     "BIO": "Biographie",
@@ -233,7 +243,8 @@
   "TASKS": {
     "STATUS": {
       "errored": "fehlgeschlagen",
-      "in_progress": "in Arbeit"
+      "in_progress": "in Arbeit",
+      "successful": "erfolgreich"
     }
   },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Dieser Account ist inaktiv.",
