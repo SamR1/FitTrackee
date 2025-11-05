@@ -133,7 +133,7 @@
   },
   "UPDATE_APPLICATION_DESCRIPTION": "Eguneratu aplikazioaren konfigurazioa.",
   "UPDATE_USER_EMAIL": "Eguneratu eposta",
-  "USER": "erabiltzaile | erabiltzaile",
+  "USER": "erabiltzaileak| erabiltzaileak",
   "USERS": {
     "SELECTS": {
       "ORDER_BY": {

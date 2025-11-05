@@ -14,6 +14,7 @@
       "equipments:write_DESCRIPTION": "erlaubt Schreibzugriff auf <code>equipments</code>-Endpunkte.",
       "follow:read_DESCRIPTION": "gewährt Lesezugriff auf Endpunkte, die sich auf Follow-Anfragen und Follower beziehen.",
       "follow:write_DESCRIPTION": "gewährt Schreibzugriff auf Endpunkte, die sich auf Follow-Anfragen und Follower beziehen.",
+      "geocode:read_DESCRIPTION": "gewährt Lesezugriff auf Endpunkte im Zusammenhang mit Geokodierung.",
       "notifications:read_DESCRIPTION": "gewährt Lesezugriff auf <code>Benachrichtigungen</code> Endpunkte.",
       "notifications:write_DESCRIPTION": "gewährt Schreibzugriff auf <code>Benachrichtigungen</code>-Endpunkte.",
       "profile:read_DESCRIPTION": "erlaubt Lesezugriff auf <code>auth</code>-Endpunkte",
