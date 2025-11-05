@@ -390,7 +390,7 @@
   const props = defineProps<Props>()
   const { authUser } = toRefs(props)
 
-  const { appConfig } = useApp()
+  const { appConfig, appLanguage } = useApp()
 
   const emit = defineEmits(['filter'])
 
@@ -399,9 +399,9 @@
   const store = useStore()
   const { t } = useI18n()
 
-  const { appLanguage } = useApp()
+  // let params: LocationQuery = Object.assign({}, route.query)
 
-  let params: LocationQuery = Object.assign({}, route.query)
+  let params: LocationQuery = { ...route.query }
 
   const toUnit: ComputedRef<string> = computed(() =>
     authUser.value.imperial_units ? units['km'].defaultTarget : 'km'
@@ -411,7 +411,7 @@
       getEquipmentsFilters(store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS])
     )
   const visibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
-    getAllVisibilityLevels()
+    getAllVisibilityLevels(appConfig.value.federation_enabled)
   )
   const location: Ref<string> = ref('')
   const radius: Ref<string> = ref('')

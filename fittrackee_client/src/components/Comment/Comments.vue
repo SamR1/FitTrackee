@@ -76,20 +76,20 @@
     workoutData: IWorkoutData
     authUser: IAuthUserProfile
     disabled?: boolean
+    withParent?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     disabled: false,
+    withParent: false,
   })
-  const { workoutData } = toRefs(props)
+  const { workoutData, withParent } = toRefs(props)
 
   const route = useRoute()
   const store = useStore()
 
   const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
 
-  const comments: ComputedRef<IComment[]> = computed(
-    () => workoutData.value.comments
-  )
+  const comments: ComputedRef<IComment[]> = computed(() => getComments())
   const commentToDelete: ComputedRef<boolean> = computed(
     () => workoutData.value.currentCommentEdition.type === 'delete'
   )
@@ -105,6 +105,25 @@
   const commentId: ComputedRef<string> = computed(
     () => route.params.commentId as string
   )
+
+  function getComments(): IComment[] {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, 'all')
+    let allComments: IComment[] = []
+    if (!withParent.value || !workoutData.value.comments[0].reply_to) {
+      allComments = workoutData.value.comments
+    } else {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const replyToComment: IComment = Object.assign(
+        {},
+        workoutData.value.comments[0].reply_to
+      )
+      replyToComment.replies = workoutData.value.comments
+      allComments = [replyToComment]
+    }
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_COMMENT_LOADING, null)
+    return allComments
+  }
 
   function deleteComment() {
     const commentToDelete: IComment | undefined =
