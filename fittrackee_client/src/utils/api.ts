@@ -112,9 +112,6 @@ export const workoutsPayloadKeys = [
   'to',
   'title',
   'workout_visibility',
-]
-export const workoutsPayloadKeysWithGeospatial = [
-  ...workoutsPayloadKeys,
   'coordinates',
   'osm_id',
   'radius',

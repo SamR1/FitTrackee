@@ -3,7 +3,7 @@
     id="workout-edition"
     class="center-card"
     :class="{
-      'center-form': workout && workout.with_gpx,
+      'center-form': workout && workout.with_file,
       'with-margin': !isCreation,
     }"
   >
@@ -493,7 +493,7 @@
     workoutVisibility: authUser.value.workouts_visibility,
   })
   const withGpx: Ref<boolean> = ref(
-    workout.value.id && workout.value.with_gpx ? true : isCreation.value
+    workout.value.id && workout.value.with_file ? true : isCreation.value
   )
   const formErrors: Ref<boolean> = ref(false)
   const payloadErrorMessages: Ref<string[]> = ref([])
@@ -593,7 +593,7 @@
     workoutForm.mapVisibility = workout.map_visibility
       ? workout.map_visibility
       : 'private'
-    if (!workout.with_gpx) {
+    if (!workout.with_file) {
       const workoutDateTime = formatWorkoutDate(
         getDateWithTZ(workout.workout_date, props.authUser.timezone),
         'yyyy-MM-dd'
@@ -692,7 +692,7 @@
       workout_visibility: workoutForm.workoutVisibility,
     }
     if (props.workout.id) {
-      if (props.workout.with_gpx) {
+      if (props.workout.with_file) {
         payload.analysis_visibility = workoutForm.analysisVisibility
         payload.map_visibility = workoutForm.mapVisibility
       } else {

@@ -2,7 +2,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
-from typing import Generator, Iterator, List, Union
+from typing import Dict, Generator, Iterator, List, Union
 from unittest.mock import MagicMock, Mock, patch
 from uuid import uuid4
 
@@ -10,7 +10,7 @@ import pytest
 from PIL import Image
 from werkzeug.datastructures import FileStorage
 
-from fittrackee import db
+from fittrackee import VERSION, db
 from fittrackee.workouts.models import (
     TITLE_MAX_CHARACTERS,
     Sport,
@@ -138,13 +138,12 @@ def workout_cycling_user_1_segment(
     workout_segment = WorkoutSegment(
         workout_id=workout_cycling_user_1.id,
         workout_uuid=workout_cycling_user_1.uuid,
-        segment_id=0,
     )
+    workout_segment.start_date = workout_cycling_user_1.workout_date
     workout_segment.duration = workout_cycling_user_1.duration
     workout_segment.distance = workout_cycling_user_1.distance
     update_workout(workout_segment)
     db.session.add(workout_segment)
-    workout_cycling_user_1.gpx = "workouts/1/example.gpx"
     workout_cycling_user_1.original_file = "workouts/1/example.tcx"
     db.session.commit()
     return workout_segment
@@ -163,7 +162,6 @@ def workout_cycling_user_1_with_coordinates() -> Workout:
     update_workout(workout)
     workout.bounds = [44.67822, 6.07355, 44.68095, 6.07442]
     db.session.add(workout)
-    workout.gpx = "workouts/1/example.gpx"
     workout.original_file = "workouts/1/example.tcx"
     workout.store_start_point_geometry([6.07367, 44.68095])
     db.session.commit()
@@ -193,7 +191,9 @@ def workout_cycling_user_1_segment_0_with_coordinates(
     workout_segment = WorkoutSegment(
         workout_id=workout_cycling_user_1_with_coordinates.id,
         workout_uuid=workout_cycling_user_1_with_coordinates.uuid,
-        segment_id=0,
+    )
+    workout_segment.start_date = (
+        workout_cycling_user_1_with_coordinates.workout_date
     )
     workout_segment.duration = timedelta(minutes=1, seconds=30)
     workout_segment.moving = workout_segment.duration
@@ -317,6 +317,207 @@ def workout_cycling_user_1_segment_0_with_coordinates(
 
 
 @pytest.fixture()
+def workout_cycling_user_1_segment_0_chart_data() -> List[Dict]:
+    return [
+        {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "hr": 92,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "power": 0,
+            "speed": 3.21,
+            "time": "2018-03-13 12:44:45+00:00",
+        },
+        {
+            "distance": 0.0,
+            "duration": 5,
+            "elevation": 998.0,
+            "hr": 87,
+            "latitude": 44.68091,
+            "longitude": 6.07367,
+            "power": 305,
+            "speed": 3.96,
+            "time": "2018-03-13 12:44:50+00:00",
+        },
+        {
+            "distance": 0.02,
+            "duration": 15,
+            "elevation": 994.0,
+            "hr": 88,
+            "latitude": 44.6808,
+            "longitude": 6.07364,
+            "power": 326,
+            "speed": 4.36,
+            "time": "2018-03-13 12:45:00+00:00",
+        },
+        {
+            "distance": 0.02,
+            "duration": 20,
+            "elevation": 994.0,
+            "hr": 90,
+            "latitude": 44.68075,
+            "longitude": 6.07364,
+            "power": 287,
+            "speed": 3.61,
+            "time": "2018-03-13 12:45:05+00:00",
+        },
+        {
+            "distance": 0.03,
+            "duration": 25,
+            "elevation": 994.0,
+            "hr": 87,
+            "latitude": 44.68071,
+            "longitude": 6.07364,
+            "power": 251,
+            "speed": 3.82,
+            "time": "2018-03-13 12:45:10+00:00",
+        },
+        {
+            "distance": 0.05,
+            "duration": 45,
+            "elevation": 993.0,
+            "hr": 85,
+            "latitude": 44.68049,
+            "longitude": 6.07361,
+            "power": 248,
+            "speed": 4.64,
+            "time": "2018-03-13 12:45:30+00:00",
+        },
+        {
+            "distance": 0.09,
+            "duration": 70,
+            "elevation": 992.0,
+            "hr": 86,
+            "latitude": 44.68019,
+            "longitude": 6.07356,
+            "power": 246,
+            "speed": 4.45,
+            "time": "2018-03-13 12:45:55+00:00",
+        },
+        {
+            "distance": 0.09,
+            "duration": 75,
+            "elevation": 992.0,
+            "hr": 84,
+            "latitude": 44.68014,
+            "longitude": 6.07355,
+            "power": 216,
+            "speed": 4.65,
+            "time": "2018-03-13 12:46:00+00:00",
+        },
+        {
+            "distance": 0.11,
+            "duration": 90,
+            "elevation": 987.0,
+            "hr": 86,
+            "latitude": 44.67995,
+            "longitude": 6.07358,
+            "power": 243,
+            "speed": 5.25,
+            "time": "2018-03-13 12:46:15+00:00",
+        },
+    ]
+
+
+@pytest.fixture()
+def workout_cycling_user_1_segment_0_chart_data_wo_hr() -> List[Dict]:
+    return [
+        {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "power": 0,
+            "speed": 3.21,
+            "time": "2018-03-13 12:44:45+00:00",
+        },
+        {
+            "distance": 0.0,
+            "duration": 5,
+            "elevation": 998.0,
+            "latitude": 44.68091,
+            "longitude": 6.07367,
+            "power": 305,
+            "speed": 3.96,
+            "time": "2018-03-13 12:44:50+00:00",
+        },
+        {
+            "distance": 0.02,
+            "duration": 15,
+            "elevation": 994.0,
+            "latitude": 44.6808,
+            "longitude": 6.07364,
+            "power": 326,
+            "speed": 4.36,
+            "time": "2018-03-13 12:45:00+00:00",
+        },
+        {
+            "distance": 0.02,
+            "duration": 20,
+            "elevation": 994.0,
+            "latitude": 44.68075,
+            "longitude": 6.07364,
+            "power": 287,
+            "speed": 3.61,
+            "time": "2018-03-13 12:45:05+00:00",
+        },
+        {
+            "distance": 0.03,
+            "duration": 25,
+            "elevation": 994.0,
+            "latitude": 44.68071,
+            "longitude": 6.07364,
+            "power": 251,
+            "speed": 3.82,
+            "time": "2018-03-13 12:45:10+00:00",
+        },
+        {
+            "distance": 0.05,
+            "duration": 45,
+            "elevation": 993.0,
+            "latitude": 44.68049,
+            "longitude": 6.07361,
+            "power": 248,
+            "speed": 4.64,
+            "time": "2018-03-13 12:45:30+00:00",
+        },
+        {
+            "distance": 0.09,
+            "duration": 70,
+            "elevation": 992.0,
+            "latitude": 44.68019,
+            "longitude": 6.07356,
+            "power": 246,
+            "speed": 4.45,
+            "time": "2018-03-13 12:45:55+00:00",
+        },
+        {
+            "distance": 0.09,
+            "duration": 75,
+            "elevation": 992.0,
+            "latitude": 44.68014,
+            "longitude": 6.07355,
+            "power": 216,
+            "speed": 4.65,
+            "time": "2018-03-13 12:46:00+00:00",
+        },
+        {
+            "distance": 0.11,
+            "duration": 90,
+            "elevation": 987.0,
+            "latitude": 44.67995,
+            "longitude": 6.07358,
+            "power": 243,
+            "speed": 5.25,
+            "time": "2018-03-13 12:46:15+00:00",
+        },
+    ]
+
+
+@pytest.fixture()
 def workout_cycling_user_1_segment_1_coordinates() -> List[List]:
     return [
         [6.07364, 44.67977],
@@ -346,7 +547,15 @@ def workout_cycling_user_1_segment_1_with_coordinates(
     workout_segment = WorkoutSegment(
         workout_id=workout_cycling_user_1_with_coordinates.id,
         workout_uuid=workout_cycling_user_1_with_coordinates.uuid,
-        segment_id=1,
+    )
+    workout_segment.start_date = datetime(
+        year=2018,
+        month=3,
+        day=13,
+        hour=12,
+        minute=46,
+        second=30,
+        tzinfo=timezone.utc,
     )
     workout_segment.duration = timedelta(minutes=2, seconds=25)
     workout_segment.moving = workout_segment.duration
@@ -560,7 +769,15 @@ def workout_cycling_user_1_segment_2(
     workout_segment = WorkoutSegment(
         workout_id=workout_cycling_user_1.id,
         workout_uuid=workout_cycling_user_1.uuid,
-        segment_id=1,
+    )
+    workout_segment.start_date = datetime(
+        year=2018,
+        month=3,
+        day=13,
+        hour=12,
+        minute=43,
+        second=00,
+        tzinfo=timezone.utc,
     )
     workout_segment.duration = timedelta(seconds=3000)
     workout_segment.moving = workout_segment.duration
@@ -609,13 +826,12 @@ def workout_running_user_1_segment(
     workout_segment = WorkoutSegment(
         workout_id=workout_running_user_1.id,
         workout_uuid=workout_running_user_1.uuid,
-        segment_id=0,
     )
+    workout_segment.start_date = workout_running_user_1.workout_date
     workout_segment.duration = workout_running_user_1.duration
     workout_segment.distance = workout_running_user_1.distance
     update_workout(workout_segment)
     db.session.add(workout_segment)
-    workout_running_user_1.gpx = "workouts/1/example.gpx"
     workout_running_user_1.original_file = "workouts/1/example.tcx"
     db.session.commit()
     return workout_segment
@@ -633,7 +849,6 @@ def workout_running_user_1_with_coordinates() -> Workout:
     )
     update_workout(workout)
     db.session.add(workout)
-    workout.gpx = "workouts/2/example.gpx"
     workout.original_file = "workouts/2/example.tcx"
     workout.store_start_point_geometry([6.07364, 44.67977])
     db.session.commit()
@@ -647,7 +862,9 @@ def workout_running_user_1_segment_with_coordinates(
     workout_segment = WorkoutSegment(
         workout_id=workout_running_user_1_with_coordinates.id,
         workout_uuid=workout_running_user_1_with_coordinates.uuid,
-        segment_id=0,
+    )
+    workout_segment.start_date = (
+        workout_running_user_1_with_coordinates.workout_date
     )
     workout_segment.duration = workout_running_user_1_with_coordinates.duration
     workout_segment.distance = workout_running_user_1_with_coordinates.distance
@@ -715,7 +932,7 @@ def workout_outdoor_tennis_user_1_with_elevation_data(
     workout.max_alt = 260
     workout.min_alt = 260
     workout.map = random_string()
-    workout.gpx = random_string()
+    workout.original_file = random_string()
     workout.bounds = [1.0, 2.0, 3.0, 4.0]
     workout.pauses = timedelta(minutes=15)
     db.session.add(workout)
@@ -888,13 +1105,13 @@ def workout_cycling_user_2_segment(
     workout_segment = WorkoutSegment(
         workout_id=workout_cycling_user_2.id,
         workout_uuid=workout_cycling_user_2.uuid,
-        segment_id=0,
     )
+
+    workout_segment.start_date = workout_cycling_user_2.workout_date
     workout_segment.duration = workout_cycling_user_2.duration
     workout_segment.distance = workout_cycling_user_2.distance
     update_workout(workout_segment)
     db.session.add(workout_segment)
-    workout_cycling_user_2.gpx = "workouts/1/example.gpx"
     workout_cycling_user_2.original_file = "workouts/1/example.tcx"
     db.session.commit()
     return workout_segment
@@ -3001,6 +3218,294 @@ def gpx_file_with_first_segment_empty() -> str:
   </trk>
 </gpx>
 """
+
+
+@pytest.fixture()
+def workout_cycling_user_1_generated_gpx() -> str:
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="FitTrackee v{VERSION}">
+  <trk>
+    <trkseg>
+      <trkpt lat="44.68095" lon="6.07367">
+        <ele>998.0</ele>
+        <time>2018-03-13T12:44:45Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>0</gpxtpx:hr>
+            <gpxtpx:cad>92</gpxtpx:cad>
+            <gpxtpx:power>0</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.68091" lon="6.07367">
+        <ele>998.0</ele>
+        <time>2018-03-13T12:44:50Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>50</gpxtpx:hr>
+            <gpxtpx:cad>87</gpxtpx:cad>
+            <gpxtpx:power>305</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.6808" lon="6.07364">
+        <ele>994.0</ele>
+        <time>2018-03-13T12:45:00Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>51</gpxtpx:hr>
+            <gpxtpx:cad>88</gpxtpx:cad>
+            <gpxtpx:power>326</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.68075" lon="6.07364">
+        <ele>994.0</ele>
+        <time>2018-03-13T12:45:05Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>54</gpxtpx:hr>
+            <gpxtpx:cad>90</gpxtpx:cad>
+            <gpxtpx:power>287</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.68071" lon="6.07364">
+        <ele>994.0</ele>
+        <time>2018-03-13T12:45:10Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>53</gpxtpx:hr>
+            <gpxtpx:cad>87</gpxtpx:cad>
+            <gpxtpx:power>251</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.68049" lon="6.07361">
+        <ele>993.0</ele>
+        <time>2018-03-13T12:45:30Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>54</gpxtpx:hr>
+            <gpxtpx:cad>85</gpxtpx:cad>
+            <gpxtpx:power>248</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.68019" lon="6.07356">
+        <ele>992.0</ele>
+        <time>2018-03-13T12:45:55Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>54</gpxtpx:hr>
+            <gpxtpx:cad>86</gpxtpx:cad>
+            <gpxtpx:power>246</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.68014" lon="6.07355">
+        <ele>992.0</ele>
+        <time>2018-03-13T12:46:00Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>55</gpxtpx:hr>
+            <gpxtpx:cad>84</gpxtpx:cad>
+            <gpxtpx:power>216</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67995" lon="6.07358">
+        <ele>987.0</ele>
+        <time>2018-03-13T12:46:15Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>53</gpxtpx:hr>
+            <gpxtpx:cad>86</gpxtpx:cad>
+            <gpxtpx:power>243</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+    </trkseg>
+    <trkseg>
+      <trkpt lat="44.67977" lon="6.07364">
+        <ele>987.0</ele>
+        <time>2018-03-13T12:46:30Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>56</gpxtpx:hr>
+            <gpxtpx:cad>88</gpxtpx:cad>
+            <gpxtpx:power>267</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67972" lon="6.07367">
+        <ele>987.0</ele>
+        <time>2018-03-13T12:46:35Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>56</gpxtpx:hr>
+            <gpxtpx:cad>86</gpxtpx:cad>
+            <gpxtpx:power>278</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67966" lon="6.07368">
+        <ele>987.0</ele>
+        <time>2018-03-13T12:46:40Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>55</gpxtpx:hr>
+            <gpxtpx:cad>83</gpxtpx:cad>
+            <gpxtpx:power>290</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67961" lon="6.0737">
+        <ele>986.0</ele>
+        <time>2018-03-13T12:46:45Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>56</gpxtpx:hr>
+            <gpxtpx:cad>83</gpxtpx:cad>
+            <gpxtpx:power>228</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67938" lon="6.07377">
+        <ele>986.0</ele>
+        <time>2018-03-13T12:47:05Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>54</gpxtpx:hr>
+            <gpxtpx:cad>85</gpxtpx:cad>
+            <gpxtpx:power>280</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67933" lon="6.07381">
+        <ele>986.0</ele>
+        <time>2018-03-13T12:47:10Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>56</gpxtpx:hr>
+            <gpxtpx:cad>86</gpxtpx:cad>
+            <gpxtpx:power>269</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67922" lon="6.07385">
+        <ele>985.0</ele>
+        <time>2018-03-13T12:47:20Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>53</gpxtpx:hr>
+            <gpxtpx:cad>85</gpxtpx:cad>
+            <gpxtpx:power>280</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67911" lon="6.0739">
+        <ele>980.0</ele>
+        <time>2018-03-13T12:47:30Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>56</gpxtpx:hr>
+            <gpxtpx:cad>84</gpxtpx:cad>
+            <gpxtpx:power>256</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.679" lon="6.07399">
+        <ele>980.0</ele>
+        <time>2018-03-13T12:47:40Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>55</gpxtpx:hr>
+            <gpxtpx:cad>86</gpxtpx:cad>
+            <gpxtpx:power>234</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67896" lon="6.07402">
+        <ele>980.0</ele>
+        <time>2018-03-13T12:47:45Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>55</gpxtpx:hr>
+            <gpxtpx:cad>83</gpxtpx:cad>
+            <gpxtpx:power>241</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67884" lon="6.07408">
+        <ele>979.0</ele>
+        <time>2018-03-13T12:47:55Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>55</gpxtpx:hr>
+            <gpxtpx:cad>83</gpxtpx:cad>
+            <gpxtpx:power>264</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67863" lon="6.07423">
+        <ele>981.0</ele>
+        <time>2018-03-13T12:48:15Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>54</gpxtpx:hr>
+            <gpxtpx:cad>82</gpxtpx:cad>
+            <gpxtpx:power>256</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67858" lon="6.07425">
+        <ele>980.0</ele>
+        <time>2018-03-13T12:48:20Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>57</gpxtpx:hr>
+            <gpxtpx:cad>85</gpxtpx:cad>
+            <gpxtpx:power>267</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67842" lon="6.07434">
+        <ele>979.0</ele>
+        <time>2018-03-13T12:48:35Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>57</gpxtpx:hr>
+            <gpxtpx:cad>84</gpxtpx:cad>
+            <gpxtpx:power>234</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67837" lon="6.07435">
+        <ele>979.0</ele>
+        <time>2018-03-13T12:48:40Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>52</gpxtpx:hr>
+            <gpxtpx:cad>84</gpxtpx:cad>
+            <gpxtpx:power>225</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+      <trkpt lat="44.67822" lon="6.07442">
+        <ele>975.0</ele>
+        <time>2018-03-13T12:48:55Z</time>
+        <extensions>
+          <gpxtpx:TrackPointExtension>
+            <gpxtpx:hr>50</gpxtpx:hr>
+            <gpxtpx:cad>81</gpxtpx:cad>
+            <gpxtpx:power>218</gpxtpx:power>
+          </gpxtpx:TrackPointExtension>
+        </extensions>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>"""
 
 
 @pytest.fixture()

@@ -7,7 +7,6 @@ from shapely import set_precision
 from fittrackee.workouts.exceptions import (
     InvalidCoordinatesException,
     InvalidRadiusException,
-    WorkoutException,
 )
 from fittrackee.workouts.utils.geometry import (
     get_buffered_location,
@@ -113,7 +112,7 @@ class TestGetGeojsonFromSegments:
 
         geojson = get_geojson_from_segments(
             workout_cycling_user_1,
-            segment_id=workout_cycling_user_1_segment_2.segment_id + 1,
+            segment_short_id=workout_cycling_user_1_segment_2.short_id,
         )
 
         assert geojson == {
@@ -130,21 +129,10 @@ class TestGetGeojsonFromSegments:
         workout_cycling_user_1_segment: "WorkoutSegment",
     ) -> None:
         geojson = get_geojson_from_segments(
-            workout_cycling_user_1, segment_id=2
+            workout_cycling_user_1, segment_short_id="C4asMMbRJsxTirSjTVWeWU"
         )
 
         assert geojson is None
-
-    def test_it_raises_exception_when_segment_id_is_invalid(
-        self,
-        app: "Flask",
-        user_1: "User",
-        sport_1_cycling: "Sport",
-        workout_cycling_user_1: "Workout",
-        workout_cycling_user_1_segment: "WorkoutSegment",
-    ) -> None:
-        with pytest.raises(WorkoutException, match="Incorrect segment id"):
-            get_geojson_from_segments(workout_cycling_user_1, segment_id=-1)
 
 
 class TestGetChartDataFromSegmentPoints:

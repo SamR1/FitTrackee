@@ -35,7 +35,6 @@
             {{ $t(`workouts.${showWorkouts ? 'HIDE' : 'SHOW'}_WORKOUTS`) }}
           </button>
           <button
-            v-if="appConfig.enable_geospatial_features"
             class="hide-workouts-btn transparent"
             :disabled="noGeometries"
             @click="toggleWorkoutsMap"
@@ -112,7 +111,7 @@
                     :to="{ name: 'Workout', params: { workoutId: workout.id } }"
                   >
                     <i
-                      v-if="workout.with_gpx"
+                      v-if="workout.with_file"
                       class="fa fa-map-o"
                       aria-hidden="true"
                     />
@@ -120,7 +119,7 @@
                     <VisibilityIcon :visibility="workout.workout_visibility" />
                   </router-link>
                   <StaticMap
-                    v-if="workout.with_gpx && hoverWorkoutId === workout.id"
+                    v-if="workout.with_file && hoverWorkoutId === workout.id"
                     :workout="workout"
                     :display-hover="true"
                   />
@@ -462,12 +461,7 @@
     TWorkoutsStatistics,
   } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
-  import {
-    getQuery,
-    sortList,
-    workoutsPayloadKeys,
-    workoutsPayloadKeysWithGeospatial,
-  } from '@/utils/api'
+  import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
   import { getTotalDuration } from '@/utils/duration.ts'
   import { getSportColor, getSportLabel } from '@/utils/sports'
@@ -492,7 +486,7 @@
     'workout_date',
   ]
 
-  const { appConfig, appLanguage } = useApp()
+  const { appLanguage } = useApp()
   const { isAuthUserSuspended } = useAuthUser()
 
   let query: TWorkoutsPayload = getWorkoutsQuery(route.query)
@@ -511,7 +505,7 @@
         .features.length
   )
   const noGeometries: ComputedRef<boolean> = computed(() =>
-    workouts.value.every((workout) => !workout.with_gpx)
+    workouts.value.every((workout) => !workout.with_file)
   )
   const pagination: ComputedRef<IPagination> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUTS_PAGINATION]
@@ -551,15 +545,10 @@
       defaultOrder.order_by,
       {
         defaultSort: defaultOrder.order,
-        enableGeospatialFeatures: appConfig.value.enable_geospatial_features,
       }
     )
     Object.keys(newQuery)
-      .filter((k) =>
-        appConfig.value.enable_geospatial_features
-          ? workoutsPayloadKeysWithGeospatial.includes(k)
-          : workoutsPayloadKeys.includes(k)
-      )
+      .filter((k) => workoutsPayloadKeys.includes(k))
       .map((k) => {
         if (typeof newQuery[k] === 'string') {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment

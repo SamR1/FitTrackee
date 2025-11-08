@@ -124,13 +124,18 @@
   const workout: ComputedRef<IWorkout> = computed(
     () => props.workoutData.workout
   )
-  const segmentId: Ref<number | null> = ref(
-    route.params.workoutId ? +route.params.segmentId : null
+  const segmentId: Ref<string | null> = ref(
+    route.params.workoutId ? (route.params.segmentId as string) : null
   )
-  const segment: ComputedRef<IWorkoutSegment | null> = computed(() =>
+  const segment: ComputedRef<IWorkoutSegment | undefined> = computed(() =>
     workout.value.segments.length > 0 && segmentId.value
-      ? workout.value.segments[+segmentId.value - 1]
-      : null
+      ? workout.value.segments.find(
+          (segment) => segment.segment_id === segmentId.value
+        )
+      : undefined
+  )
+  const segmentNumber: ComputedRef<number | null> = computed(() =>
+    segment.value ? segment.value.segment_number : null
   )
   const displayModal: Ref<boolean> = ref(false)
   const displayOptions: ComputedRef<IDisplayOptions> = computed(
@@ -159,20 +164,28 @@
   function getWorkoutObjectUrl(
     workout: IWorkout,
     displaySegment: boolean,
-    segmentId: number | null
+    segmentNumber: number | null
   ): Record<string, string | null> {
-    const previousUrl =
-      displaySegment && segmentId && segmentId !== 1
-        ? `/workouts/${workout.id}/segment/${segmentId - 1}`
-        : !displaySegment && workout.previous_workout
-          ? `/workouts/${workout.previous_workout}`
-          : null
-    const nextUrl =
-      displaySegment && segmentId && segmentId < workout.segments.length
-        ? `/workouts/${workout.id}/segment/${segmentId + 1}`
-        : !displaySegment && workout.next_workout
-          ? `/workouts/${workout.next_workout}`
-          : null
+    const previousSegment: IWorkoutSegment | undefined =
+      displaySegment && segmentNumber !== null && segmentNumber !== 1
+        ? workout.segments[segmentNumber - 2]
+        : undefined
+    const previousUrl = previousSegment
+      ? `/workouts/${workout.id}/segment/${previousSegment.segment_id}`
+      : !displaySegment && workout.previous_workout
+        ? `/workouts/${workout.previous_workout}`
+        : null
+    const nextSegment: IWorkoutSegment | undefined =
+      displaySegment &&
+      segmentNumber !== null &&
+      segmentNumber < workout.segments.length
+        ? workout.segments[segmentNumber]
+        : undefined
+    const nextUrl = nextSegment
+      ? `/workouts/${workout.id}/segment/${nextSegment.segment_id}`
+      : !displaySegment && workout.next_workout
+        ? `/workouts/${workout.next_workout}`
+        : null
     return {
       previousUrl,
       nextUrl,
@@ -180,12 +193,12 @@
   }
   function getWorkoutObject(
     workout: IWorkout,
-    segment: IWorkoutSegment | null
+    segment: IWorkoutSegment | undefined
   ): IWorkoutObject {
     const urls = getWorkoutObjectUrl(
       workout,
       props.displaySegment,
-      segmentId.value ? +segmentId.value : null
+      segmentNumber.value
     )
     const workoutDate = formatWorkoutDate(
       getDateWithTZ(
@@ -222,6 +235,7 @@
       previousUrl: urls.previousUrl,
       records: segment ? [] : workout.records,
       segmentId: segment ? segment.segment_id : null,
+      segmentNumber: segment ? segment.segment_number : null,
       suspended: workout.suspended !== undefined ? workout.suspended : false,
       title: workout.title,
       type: props.displaySegment ? 'SEGMENT' : 'WORKOUT',
@@ -234,7 +248,7 @@
       ),
       weatherStart: segment ? null : workout.weather_start,
       with_analysis: workout.with_analysis,
-      with_gpx: workout.with_gpx,
+      with_file: workout.with_file,
       workoutId: workout.id,
       workoutTime: workoutDate.workout_time,
       workoutVisibility: workout.workout_visibility,
@@ -272,7 +286,7 @@
   watch(
     () => route.params.segmentId,
     async (newSegmentId) => {
-      segmentId.value = newSegmentId ? +newSegmentId : null
+      segmentId.value = newSegmentId as string
       scrollToTop()
     }
   )

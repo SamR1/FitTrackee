@@ -227,7 +227,6 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     state: S,
     contentType: IWorkoutContentType | ''
   ): void
-  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX](state: S, gpx: string): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON](
     state: S,
     geojson: GeoJSON | null

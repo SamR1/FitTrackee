@@ -78,7 +78,6 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "ascent": None,
                 "max_speed": workout_cycling_user_1.max_speed,
                 "ave_speed": workout_cycling_user_1.ave_speed,
-                "gpx": None,
                 "original_file": None,
                 "records": [
                     record.serialize()
@@ -143,11 +142,11 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "ascent": float(workout.ascent),  # type: ignore[arg-type]
                 "max_speed": float(workout.max_speed),  # type: ignore[arg-type]
                 "ave_speed": float(workout.ave_speed),  # type: ignore[arg-type]
-                "gpx": workout.gpx.split("/")[-1],  # type: ignore[union-attr]
                 "original_file": workout.original_file.split("/")[-1],  # type: ignore[union-attr]
                 "records": [record.serialize() for record in workout.records],
                 "segments": [
-                    segment.serialize() for segment in workout.segments
+                    {**segment.serialize(), "segment_number": number}
+                    for number, segment in enumerate(workout.segments, start=1)
                 ],
                 "source": workout.source,
                 "weather_start": None,
@@ -416,7 +415,7 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
     @patch.object(secrets, "token_urlsafe", return_value="AOqFRRet8p4")
     @patch.object(UserDataExporter, "export_data")
     @patch("fittrackee.users.export_data.ZipFile")
-    def test_it_calls_zipfile_for_gpx_file(
+    def test_it_calls_zipfile_for_workout_file(
         self,
         zipfile_mock: Mock,
         export_data: Mock,
@@ -448,55 +447,10 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
             )
         # fmt: on
 
-    @patch.object(secrets, "token_urlsafe", return_value="AOqFRRet8p4")
-    @patch.object(UserDataExporter, "export_data")
-    @patch("fittrackee.users.export_data.ZipFile")
-    def test_it_calls_zipfile_for_file_different_than_gpx(
-        self,
-        zipfile_mock: Mock,
-        export_data: Mock,
-        secrets_mock: Mock,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        kml_2_3_with_two_tracks: str,
-    ) -> None:
-        workout = create_a_workout_with_file(
-            user_1, kml_2_3_with_two_tracks, extension="kml"
-        )
-        kml_expected_path = os.path.join(
-            app.config["UPLOAD_FOLDER"],
-            workout.original_file,  # type: ignore[arg-type]
-        )
-        gpx_expected_path = os.path.join(
-            app.config["UPLOAD_FOLDER"],
-            workout.gpx,  # type: ignore[arg-type]
-        )
-        exporter = UserDataExporter(user_1)
-
-        exporter.generate_archive()
-
-        # fmt: off
-        zipfile_mock.return_value.__enter__.\
-            return_value.write.assert_has_calls(
-                [
-                    call(
-                        kml_expected_path,
-                        f"workout_files/{workout.original_file.split('/')[-1]}"  # type: ignore[union-attr]
-                    ),
-                    call(
-                        gpx_expected_path,
-                        f"workout_files/{workout.gpx.split('/')[-1]}"  # type: ignore[union-attr]
-                    ),
-                ], any_order=True
-            )
-        # fmt: on
-
     @patch.object(secrets, "token_urlsafe")
     @patch.object(UserDataExporter, "export_data")
     @patch("fittrackee.users.export_data.ZipFile")
-    def test_it_does_not_call_zipfile_for_another_user_gpx_file(
+    def test_it_does_not_call_zipfile_for_another_user_workout_file(
         self,
         zipfile_mock: Mock,
         export_data: Mock,
@@ -510,7 +464,7 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
         workout = create_a_workout_with_file(user_1, gpx_file)
         expected_path = os.path.join(
             app.config["UPLOAD_FOLDER"],
-            workout.gpx,  # type: ignore[arg-type]
+            workout.original_file,  # type: ignore[arg-type]
         )
         exporter = UserDataExporter(user_2)
 
@@ -518,7 +472,7 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
 
         # fmt: off
         assert (
-            call(expected_path, f"gpx/{workout.gpx.split('/')[-1]}")# type: ignore[union-attr]
+            call(expected_path, f"gpx/{workout.original_file.split('/')[-1]}")# type: ignore[union-attr]
             not in zipfile_mock.return_value.__enter__.
             return_value.write.call_args_list
         )

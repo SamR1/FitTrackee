@@ -5,8 +5,8 @@ import gpxpy.gpx
 import xmltodict
 from gpxpy.gpxfield import parse_time
 
+from ...constants import NSMAP
 from ...exceptions import WorkoutFileException
-from .constants import NSMAP
 from .workout_gpx_service import WorkoutGpxService
 
 

@@ -50,19 +50,6 @@ class TestConfigModel:
         assert serialized_app_config["version"] == VERSION
         assert serialized_app_config["weather_provider"] == "visualcrossing"
 
-        assert serialized_app_config["enable_geospatial_features"] is False
-
-    def test_it_returns_enable_geospatial_features_when_env_var_is_true(
-        self,
-        app_with_enabled_geospatial_features: Flask,
-        monkeypatch: pytest.MonkeyPatch,
-    ) -> None:
-        config = AppConfig.query.one()
-
-        serialized_app_config = config.serialize()
-
-        assert serialized_app_config["enable_geospatial_features"] is True
-
     def test_it_returns_registration_disabled_when_users_count_exceeds_limit(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:

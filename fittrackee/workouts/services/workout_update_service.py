@@ -58,7 +58,7 @@ class WorkoutUpdateService(CheckWorkoutMixin):
     def __init__(
         self, auth_user: "User", workout: "Workout", workout_data: Dict
     ):
-        self.with_file = workout.gpx is not None
+        self.with_file = workout.original_file is not None
         self.workout_data = WorkoutUpdateData(**workout_data)
         self._check_workout_data()
         self.sport = self._get_sport()
@@ -115,7 +115,7 @@ class WorkoutUpdateService(CheckWorkoutMixin):
                 message=(
                     f"invalid key{'' if len(invalid_keys) == 1 else 's'} "
                     f"({invalid_keys_str}) for workout with"
-                    f"{'' if self.with_file else 'out'} gpx"
+                    f"{'' if self.with_file else 'out'} file"
                 ),
             )
 

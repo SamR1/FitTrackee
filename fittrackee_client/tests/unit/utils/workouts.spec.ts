@@ -977,7 +977,7 @@ describe('getDonutDatasets', () => {
           user: 'admin',
           weather_end: null,
           weather_start: null,
-          with_gpx: false,
+          with_file: false,
           workout_date: 'Mon, 01 Jan 2018 00:00:00 GMT',
         },
         {
@@ -1006,7 +1006,7 @@ describe('getDonutDatasets', () => {
           user: 'admin',
           weather_end: null,
           weather_start: null,
-          with_gpx: false,
+          with_file: false,
           workout_date: 'Sun, 07 Jul 2019 07:00:00 GMT',
         },
         {
@@ -1035,7 +1035,7 @@ describe('getDonutDatasets', () => {
           user: 'admin',
           weather_end: null,
           weather_start: null,
-          with_gpx: false,
+          with_file: false,
           workout_date: 'Tue, 21 Sep 2021 19:00:00 GMT',
         },
         {
@@ -1064,7 +1064,7 @@ describe('getDonutDatasets', () => {
           user: 'admin',
           weather_end: null,
           weather_start: null,
-          with_gpx: false,
+          with_file: false,
           workout_date: 'Mon, 20 Sep 2021 07:00:00 GMT',
         },
       ],

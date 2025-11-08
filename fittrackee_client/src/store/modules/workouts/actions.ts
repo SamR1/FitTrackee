@@ -213,7 +213,9 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
           if (
             payload.segmentId &&
             (workout.segments.length === 0 ||
-              !workout.segments[+payload.segmentId - 1])
+              !workout.segments.find(
+                (segment) => segment.segment_id === payload.segmentId
+              ))
           ) {
             throw new Error('WORKOUT_NOT_FOUND')
           }
@@ -254,17 +256,6 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                   context.commit(
                     WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON,
                     res.data.data.geojson
-                  )
-                }
-              })
-          } else if (workout.with_gpx) {
-            authApi
-              .get(`workouts/${payload.workoutId}/gpx${segmentUrl}`)
-              .then((res) => {
-                if (res.data.status === 'success') {
-                  context.commit(
-                    WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX,
-                    res.data.data.gpx
                   )
                 }
               })
@@ -681,12 +672,12 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                 )
               })
           }
-          if (workout.with_gpx) {
-            authApi.get(`workouts/${workoutId}/gpx`).then((res) => {
+          if (workout.with_geometry) {
+            authApi.get(`workouts/${workoutId}/geojson`).then((res) => {
               if (res.data.status === 'success') {
                 context.commit(
-                  WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX,
-                  res.data.data.gpx
+                  WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON,
+                  res.data.data.geojson
                 )
               }
             })
