@@ -1,3 +1,4 @@
+import copy
 from typing import TYPE_CHECKING
 from unittest.mock import patch
 
@@ -17,26 +18,24 @@ POINTS_WITHOUT_ELEVATION = [
     GPXTrackPoint(latitude=44.68095, longitude=6.07367),
     GPXTrackPoint(latitude=44.68091, longitude=6.07367),
     GPXTrackPoint(latitude=44.6808, longitude=6.07364),
+    GPXTrackPoint(latitude=44.68075, longitude=6.07364),
+    GPXTrackPoint(latitude=44.68071, longitude=6.07364),
+    GPXTrackPoint(latitude=44.68049, longitude=6.07361),
+    GPXTrackPoint(latitude=44.68019, longitude=6.07356),
+    GPXTrackPoint(latitude=44.68014, longitude=6.07355),
+    GPXTrackPoint(latitude=44.67995, longitude=6.07358),
 ]
-OPEN_ELEVATION_RESPONSE = {
-    "results": [
-        {
-            "elevation": 998.0,
-            "latitude": 44.68095,
-            "longitude": 6.07367,
-        },
-        {
-            "elevation": 998.0,
-            "latitude": 44.68091,
-            "longitude": 6.07367,
-        },
-        {
-            "elevation": 994.0,
-            "latitude": 44.6808,
-            "longitude": 6.07364,
-        },
-    ]
-}
+OPEN_ELEVATION_RESPONSE = [
+    {"elevation": 998.0, "latitude": 44.68095, "longitude": 6.07367},
+    {"elevation": 998.0, "latitude": 44.68091, "longitude": 6.07367},
+    {"elevation": 994.0, "latitude": 44.6808, "longitude": 6.07364},
+    {"elevation": 994.0, "latitude": 44.68075, "longitude": 6.07364},
+    {"elevation": 994.0, "latitude": 44.68071, "longitude": 6.07364},
+    {"elevation": 1124.0, "latitude": 44.68049, "longitude": 6.07361},
+    {"elevation": 1124.0, "latitude": 44.68019, "longitude": 6.07356},
+    {"elevation": 1124.0, "latitude": 44.68014, "longitude": 6.07355},
+    {"elevation": 1124.0, "latitude": 44.67995, "longitude": 6.07358},
+]
 
 
 class TestOpenElevationServiceInstantiation:
@@ -83,7 +82,9 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
         with patch.object(
             requests,
             "post",
-            return_value=self.get_response(OPEN_ELEVATION_RESPONSE),
+            return_value=self.get_response(
+                {"results": OPEN_ELEVATION_RESPONSE}
+            ),
         ) as post_mock:
             service.get_elevations(POINTS_WITHOUT_ELEVATION)
 
@@ -92,17 +93,10 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
             json={
                 "locations": [
                     {
-                        "latitude": 44.68095,
-                        "longitude": 6.07367,
-                    },
-                    {
-                        "latitude": 44.68091,
-                        "longitude": 6.07367,
-                    },
-                    {
-                        "latitude": 44.6808,
-                        "longitude": 6.07364,
-                    },
+                        "latitude": point.latitude,
+                        "longitude": point.longitude,
+                    }
+                    for point in POINTS_WITHOUT_ELEVATION
                 ]
             },
             timeout=30,
@@ -116,11 +110,13 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
         with patch.object(
             requests,
             "post",
-            return_value=self.get_response(OPEN_ELEVATION_RESPONSE),
+            return_value=self.get_response(
+                {"results": copy.deepcopy(OPEN_ELEVATION_RESPONSE)}
+            ),
         ):
             result = service.get_elevations(POINTS_WITHOUT_ELEVATION)
 
-        assert result == OPEN_ELEVATION_RESPONSE["results"]
+        assert result == OPEN_ELEVATION_RESPONSE
 
     def test_it_returns_empty_list_when_open_elevation_api_raises_exception(
         self, app_with_open_elevation_url: "Flask"
@@ -168,7 +164,7 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
             requests,
             "post",
             return_value=self.get_response(
-                {"results": OPEN_ELEVATION_RESPONSE["results"][:-1]}
+                {"results": OPEN_ELEVATION_RESPONSE[:-1]}
             ),
         ):
             result = service.get_elevations(POINTS_WITHOUT_ELEVATION)
@@ -189,7 +185,7 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
                 requests,
                 "post",
                 return_value=self.get_response(
-                    {"results": OPEN_ELEVATION_RESPONSE["results"][:-1]}
+                    {"results": OPEN_ELEVATION_RESPONSE[:-1]}
                 ),
             ),
         ):
@@ -199,3 +195,84 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
             "Open Elevation API: mismatch between number of points in "
             "results, ignoring results"
         )
+
+    def test_it_does_not_call_smooth_elevations_when_flag_is_false(
+        self, app_with_open_elevation_url: "Flask"
+    ) -> None:
+        service = OpenElevationService()
+
+        with (
+            patch.object(
+                requests,
+                "post",
+                return_value=self.get_response(
+                    {"results": OPEN_ELEVATION_RESPONSE}
+                ),
+            ),
+            patch.object(
+                OpenElevationService, "smooth_elevations"
+            ) as smooth_elevations_mock,
+        ):
+            service.get_elevations(POINTS_WITHOUT_ELEVATION)
+
+        smooth_elevations_mock.assert_not_called()
+
+    def test_it_returns_smoothed_elevations_when_flag_is_true(
+        self, app_with_open_elevation_url: "Flask"
+    ) -> None:
+        service = OpenElevationService()
+
+        with patch.object(
+            requests,
+            "post",
+            return_value=self.get_response(
+                {"results": copy.deepcopy(OPEN_ELEVATION_RESPONSE)}
+            ),
+        ):
+            result = service.get_elevations(
+                [
+                    GPXTrackPoint(
+                        latitude=point["latitude"],
+                        longitude=point["longitude"],
+                    )
+                    for point in OPEN_ELEVATION_RESPONSE
+                ],
+                smooth=True,
+            )
+
+        assert result == [
+            {"elevation": 1009, "latitude": 44.68095, "longitude": 6.07367},
+            {"elevation": 1024, "latitude": 44.68091, "longitude": 6.07367},
+            {"elevation": 1038, "latitude": 44.6808, "longitude": 6.07364},
+            {"elevation": 1052, "latitude": 44.68075, "longitude": 6.07364},
+            {"elevation": 1066, "latitude": 44.68071, "longitude": 6.07364},
+            {"elevation": 1080, "latitude": 44.68049, "longitude": 6.07361},
+            {"elevation": 1095, "latitude": 44.68019, "longitude": 6.07356},
+            {"elevation": 1095, "latitude": 44.68014, "longitude": 6.07355},
+            {"elevation": 1095, "latitude": 44.67995, "longitude": 6.07358},
+        ]
+
+    def test_it_returns_elevations_unchanged_when_length_below_3(
+        self, app_with_open_elevation_url: "Flask"
+    ) -> None:
+        service = OpenElevationService()
+
+        with patch.object(
+            requests,
+            "post",
+            return_value=self.get_response(
+                {"results": copy.deepcopy(OPEN_ELEVATION_RESPONSE[:2])}
+            ),
+        ):
+            result = service.get_elevations(
+                [
+                    GPXTrackPoint(
+                        latitude=point["latitude"],
+                        longitude=point["longitude"],
+                    )
+                    for point in OPEN_ELEVATION_RESPONSE[:2]
+                ],
+                smooth=True,
+            )
+
+        assert result == OPEN_ELEVATION_RESPONSE[:2]
