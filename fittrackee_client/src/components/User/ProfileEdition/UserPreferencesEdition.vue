@@ -252,6 +252,22 @@
           </div>
         </div>
         <label class="form-items">
+          {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING.LABEL') }}
+          <select
+            id="missing_elevations_processing"
+            v-model="userForm.missing_elevations_processing"
+            :disabled="authUserLoading"
+          >
+            <option
+              v-for="item in missingElevationsProcessing"
+              :value="item"
+              :key="item"
+            >
+              {{ $t(`user.PROFILE.MISSING_ELEVATIONS_PROCESSING.${item}`) }}
+            </option>
+          </select>
+        </label>
+        <label class="form-items">
           {{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}
           <select
             id="workouts_visibility"
@@ -477,6 +493,11 @@
     },
   ]
   const segmentsCreationEvents = ['all', 'only_manual', 'none']
+  const missingElevationsProcessing = [
+    'none',
+    'open_elevation',
+    'open_elevation_smooth',
+  ]
 
   const userForm: Reactive<IUserPreferencesPayload> = reactive({
     analysis_visibility: 'private',
@@ -488,6 +509,7 @@
     language: 'en',
     manually_approves_followers: true,
     map_visibility: 'private',
+    missing_elevations_processing: 'none',
     split_workout_charts: false,
     segments_creation_event: 'only_manual',
     start_elevation_at_zero: false,
@@ -612,7 +634,8 @@
     #analysis_visibility,
     #workouts_visibility,
     #hr_visibility,
-    #segments_creation_event {
+    #segments_creation_event,
+    #missing_elevations_processing {
       padding: $default-padding * 0.5;
     }
   }

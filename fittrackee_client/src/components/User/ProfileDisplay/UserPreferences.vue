@@ -86,6 +86,16 @@
       </div>
     </dl>
     <dl>
+      <dt>{{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING.LABEL') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.MISSING_ELEVATIONS_PROCESSING.${
+              user.missing_elevations_processing
+            }`
+          )
+        }}
+      </dd>
       <dt>{{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}:</dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.workouts_visibility}`) }}

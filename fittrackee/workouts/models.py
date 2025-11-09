@@ -17,6 +17,7 @@ from sqlalchemy.sql.expression import nulls_last, text
 from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, appLog, db
+from fittrackee.constants import ELEVATIONS_PROCESSING
 from fittrackee.database import PSQL_INTEGER_LIMIT, TZDateTime
 from fittrackee.dates import aware_utc_now
 from fittrackee.equipments.models import WorkoutEquipment
@@ -344,6 +345,11 @@ class Workout(BaseModel):
     start_point_geom: Mapped[Optional["WKBElement"]] = mapped_column(
         Geometry(geometry_type="POINT", srid=WGS84_CRS, spatial_index=True),
         nullable=True,
+    )
+    missing_elevations_processing: Mapped[Optional[str]] = mapped_column(
+        Enum(*ELEVATIONS_PROCESSING, name="elevations_processing"),
+        server_default="none",
+        nullable=False,
     )
 
     user: Mapped["User"] = relationship(

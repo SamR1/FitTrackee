@@ -8,3 +8,10 @@ class TaskPriority(IntEnum):
     LOW = 100
     MEDIUM = 50
     HIGH = 0
+
+
+ELEVATIONS_PROCESSING = [
+    "none",
+    "open_elevation",
+    "open_elevation_smooth",
+]

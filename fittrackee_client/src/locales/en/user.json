@@ -122,10 +122,16 @@
     "LAST_NAME": "Last name",
     "LATEST_SANCTIONS_RECEIVED": "Latest sanctions received",
     "LOCATION": "Location",
-    "MESSAGES_PREFERENCES": "Messages preferences",
-    "MESSAGES_EDITION": "Message preferences edition",
     "MESSAGES": {
       "warning_about_large_number_of_workouts_on_map": "Display a warning about displaying a large number of workouts on map"
+    },
+    "MESSAGES_EDITION": "Message preferences edition",
+    "MESSAGES_PREFERENCES": "Messages preferences",
+    "MISSING_ELEVATIONS_PROCESSING": {
+      "LABEL": "Missing elevations processing",
+      "none": "None",
+      "open_elevation": "OpenElevation (raw data)",
+      "open_elevation_smooth": "OpenElevation (smoothed data)"
     },
     "MONDAY": "Monday",
     "NOTIFICATIONS": {
@@ -198,8 +204,8 @@
       "BLOCKED-USERS": "blocked users",
       "EQUIPMENTS": "equipments",
       "FOLLOW-REQUESTS": "follow requests",
-      "MODERATION": "moderation",
       "MESSAGES": "messages",
+      "MODERATION": "moderation",
       "NOTIFICATIONS": "notifications",
       "PICTURE": "picture",
       "PREFERENCES": "preferences",

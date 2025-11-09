@@ -127,6 +127,12 @@
     },
     "MESSAGES_EDITION": "Edition des préférences des messages",
     "MESSAGES_PREFERENCES": "Preferences des messages",
+    "MISSING_ELEVATIONS_PROCESSING": {
+      "LABEL": "Traitement des élévations manquantes",
+      "none": "Aucun",
+      "open_elevation": "OpenElevation (données brutes)",
+      "open_elevation_smooth": "OpenElevation (données lissées)"
+    },
     "MONDAY": "Lundi",
     "NOTIFICATIONS": {
       "account_creation": "Quelqu'un s'est enregistré",

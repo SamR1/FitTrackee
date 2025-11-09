@@ -216,6 +216,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             == user_1.split_workout_charts
         )
         assert serialized_user["messages_preferences"] == {}
+        assert serialized_user["missing_elevations_processing"] == "none"
 
     def test_it_returns_empty_dict_when_notification_preferences_are_none(
         self, app: Flask, user_1: User
@@ -357,6 +358,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
         assert "segments_creation_event" not in serialized_user
         assert "split_workout_charts" not in serialized_user
         assert "messages_preferences" not in serialized_user
+        assert "missing_elevations_processing" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -447,6 +449,7 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
         assert "segments_creation_event" not in serialized_user
         assert "split_workout_charts" not in serialized_user
         assert "messages_preferences" not in serialized_user
+        assert "missing_elevations_processing" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_moderator: User, user_2: User
@@ -530,6 +533,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert "segments_creation_event" not in serialized_user
         assert "split_workout_charts" not in serialized_user
         assert "messages_preferences" not in serialized_user
+        assert "missing_elevations_processing" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1: User, user_2: User
