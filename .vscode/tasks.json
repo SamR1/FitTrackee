@@ -1,0 +1,69 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "up: infra + workers",
+      "type": "shell",
+      "dependsOn": [
+        "up: docker infra",
+        "up: dramatiq workers and Init DB"
+      ],
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    },
+    {
+      "label": "down: infra + workers",
+      "type": "shell",
+      "dependsOn": [
+        "down: docker infra",
+        "down: dramatic workers"
+      ],
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    },
+    {
+      "label": "up: dramatiq workers and Init DB",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "set -a; [ -f .devcontainer/.env.devcontainer ] && . .devcontainer/.env.devcontainer || true; set +a; dramatiq fittrackee.tasks:broker --processes=\"${WORKERS_PROCESSES:-1}\" --log-file=\"${DRAMATIQ_LOG:-data/logs/dramatiq.log}\" & echo $! > /tmp/dramatiq.pid; sleep 3"
+      ],
+      "presentation": {
+        "panel": "shared",
+        "echo": true,
+        "reveal": "always",
+        "focus": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "down: dramatic workers",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "if [ -f /tmp/dramatiq.pid ]; then kill \"$(cat /tmp/dramatiq.pid)\" && rm -f /tmp/dramatiq.pid || true; else pkill -f \"dramatiq fittrackee.tasks:broker\" || true; fi"
+      ],
+      "presentation": {
+        "panel": "shared",
+        "echo": true,
+        "reveal": "always",
+        "focus": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "up: docker infra",
+      "type": "shell",
+      "command": "docker compose -f docker-compose-dev.yml up --wait --wait-timeout 60 -d fittrackee fittrackee-db redis mail fittrackee_client && docker compose -f docker-compose-dev.yml down fittrackee",
+      "problemMatcher": []
+    },
+    {
+      "label": "down: docker infra",
+      "type": "shell",
+      "command": "docker compose -f docker-compose-dev.yml down",
+      "problemMatcher": []
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "Vue.volar",
+    "Vue.vscode-typescript-vue-plugin",
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "charliermarsh.ruff",
+  ],
+  "unwantedRecommendations": [
+    "octref.vetur"
+  ]
+}

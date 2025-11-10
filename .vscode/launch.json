@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "API: Flask Dev (with infra)",
+      "type": "debugpy",
+      "request": "launch",
+      "envFile": "${workspaceFolder}/.devcontainer/.env.devcontainer",
+      "module": "flask",
+      "preLaunchTask": "up: infra + workers",
+      "args": [
+        "run",
+        "--debug",
+        "--no-debugger", // Use internal VS Code debugger instead
+        "--no-reload", // Prevent Flask from implicitly killing a debugging session
+        "--with-threads",
+        "--host=0.0.0.0",
+        "--port",
+        "5000"
+      ],
+      "jinja": true,
+      "justMyCode": true
+    }
+    //TODO: Add frontend debugging configuration
+  ]
+}

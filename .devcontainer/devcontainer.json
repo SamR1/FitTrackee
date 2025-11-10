@@ -1,0 +1,41 @@
+{
+  "name": "FitTrackee Minimal Dev",
+  "image": "mcr.microsoft.com/devcontainers/python:3.13-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "moby": false
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20",
+      "installYarn": true
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers-extra/features/poetry:2": {
+      "version": "latest"
+    }
+  },
+  "remoteUser": "root",
+  "postCreateCommand": "poetry config virtualenvs.create false && make install-dev",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "github.copilot-chat",
+        "github.copilot",
+        "visualstudioexptteam.vscodeintellicode",
+        "Vue.volar",
+        "charliermarsh.ruff",
+        "Vue.vscode-typescript-vue-plugin"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python3"
+      }
+    }
+  },
+  "hostRequirements": {
+    "cpus": 2,
+    "memory": "4gb"
+  }
+}
