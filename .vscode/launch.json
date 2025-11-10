@@ -2,25 +2,24 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "API: Flask Dev (with infra)",
+      "name": "Attach: Flask in container",
       "type": "debugpy",
-      "request": "launch",
-      "envFile": "${workspaceFolder}/.devcontainer/.env.devcontainer",
-      "module": "flask",
-      "preLaunchTask": "up: infra + workers",
-      "args": [
-        "run",
-        "--debug",
-        "--no-debugger", // Use internal VS Code debugger instead
-        "--no-reload", // Prevent Flask from implicitly killing a debugging session
-        "--with-threads",
-        "--host=0.0.0.0",
-        "--port",
-        "5000"
+      "request": "attach",
+      "preLaunchTask": "up: devcontainer-compose",
+      "connect": {
+        "host": "127.0.0.1",
+        "port": 5678
+      },
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}",
+          "remoteRoot": "/usr/src/app"
+        },
       ],
+      "justMyCode": false,
       "jinja": true,
-      "justMyCode": true
-    }
+      "subProcess": true
+    },
     //TODO: Add frontend debugging configuration
   ]
 }

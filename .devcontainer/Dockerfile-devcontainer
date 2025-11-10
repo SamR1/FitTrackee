@@ -1,0 +1,6 @@
+FROM fittrackee-fittrackee:latest
+
+# Add debugpy as a dev dependency inside the image using Poetry, then install.
+# This modifies pyproject/lock only inside the image layers.
+RUN . $VIRTUAL_ENV/bin/activate && poetry add --dev debugpy --no-interaction && \
+    poetry install --no-interaction --quiet
