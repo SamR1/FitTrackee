@@ -81,7 +81,7 @@
                 $t(`workouts.MISSING_ELEVATIONS_PROCESSING.${elevationsSource}`)
               }}
             </span>
-            <span v-else-if="authUser.username">
+            <span v-else-if="isWorkoutOwner">
               {{ $t('workouts.NO_DATA_CLEANING') }}
             </span>
           </div>
@@ -136,6 +136,7 @@
     authUser: IAuthUserProfile
     workoutData: IWorkoutData
     sport: ISport | null
+    isWorkoutOwner: boolean
   }
   const props = defineProps<Props>()
   const { authUser, sport, workoutData } = toRefs(props)

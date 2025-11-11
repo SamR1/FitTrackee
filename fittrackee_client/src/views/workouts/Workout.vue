@@ -27,6 +27,7 @@
             :displaySegment="displaySegment"
             :sport="sport"
             :cadenceUnit="cadenceUnit"
+            :isWorkoutOwner="isWorkoutOwner"
             @getCoordinates="updateCoordinates"
           />
           <WorkoutContent

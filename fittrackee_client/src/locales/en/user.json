@@ -71,6 +71,8 @@
   "PRIVACY_POLICY_TO_VALIDATE": "Please {0} the privacy policy before proceeding.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Account edition",
+    "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "The changes apply only to new or refreshed workouts.",
+    "CHANGES_ONLY_TO_NEW_WORKOUTS": "The changes apply only to new workouts.",
     "ARCHIVE_UPLOADS": {
       "ARCHIVE": "Zip archive",
       "CONFIRM_TASK_ABORT": "Are you sure you want to abort this archive upload task?",

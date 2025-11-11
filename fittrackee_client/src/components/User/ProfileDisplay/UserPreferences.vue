@@ -68,7 +68,7 @@
           )
         }}
       </dd>
-      <dt>{{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}:</dt>
+      <dt>{{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}<sup>1</sup>:</dt>
       <dd>
         {{
           $t(
@@ -86,7 +86,10 @@
       </div>
     </dl>
     <dl>
-      <dt>{{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING_LABEL') }}:</dt>
+      <dt>
+        {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING_LABEL')
+        }}<sup>1</sup>:
+      </dt>
       <dd>
         {{
           $t(
@@ -105,15 +108,15 @@
           {{ $t('user.PROFILE.NO_ELEVATION_SERVICE_AVAILABLE') }}
         </span>
       </div>
-      <dt>{{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}:</dt>
+      <dt>{{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}<sup>2</sup>:</dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.workouts_visibility}`) }}
       </dd>
-      <dt>{{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}:</dt>
+      <dt>{{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>2</sup>:</dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.analysis_visibility}`) }}
       </dd>
-      <dt>{{ $t('visibility_levels.MAP_VISIBILITY') }}:</dt>
+      <dt>{{ $t('visibility_levels.MAP_VISIBILITY') }}<sup>2</sup>:</dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.map_visibility}`) }}
       </dd>
@@ -121,7 +124,9 @@
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.hr_visibility}`) }}
       </dd>
-      <dt>{{ $t('user.PROFILE.SEGMENTS_CREATION_EVENT.LABEL') }}:</dt>
+      <dt>
+        {{ $t('user.PROFILE.SEGMENTS_CREATION_EVENT.LABEL') }}<sup>1</sup>:
+      </dt>
       <dd>
         {{
           $t(
@@ -130,6 +135,12 @@
         }}
       </dd>
     </dl>
+    <div class="info-box changes-help">
+      <div>
+        1. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS') }}
+      </div>
+      <div>2. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_WORKOUTS') }}</div>
+    </div>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">
         {{ $t('user.PROFILE.EDIT_PREFERENCES') }}
@@ -188,6 +199,7 @@
     .missing-elevations-help {
       margin-top: -$default-margin * 0.5;
     }
+    .changes-help,
     .missing-elevations-help {
       margin-bottom: $default-margin;
     }

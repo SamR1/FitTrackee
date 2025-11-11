@@ -227,7 +227,7 @@
         </div>
         <div class="form-items form-checkboxes">
           <span class="checkboxes-label">
-            {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}
+            {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}<sup>1</sup>
           </span>
           <div class="checkboxes">
             <label v-for="status in useRawGpxSpeed" :key="status.label">
@@ -252,7 +252,10 @@
           </div>
         </div>
         <label class="form-items">
-          {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING_LABEL') }}
+          <span>
+            {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING_LABEL')
+            }}<sup>1</sup>
+          </span>
           <select
             id="missing_elevations_processing"
             v-model="userForm.missing_elevations_processing"
@@ -279,7 +282,9 @@
           </span>
         </div>
         <label class="form-items">
-          {{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}
+          <span>
+            {{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}<sup>2</sup>
+          </span>
           <select
             id="workouts_visibility"
             v-model="userForm.workouts_visibility"
@@ -296,7 +301,9 @@
           </select>
         </label>
         <label class="form-items">
-          {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}
+          <span>
+            {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>2</sup>
+          </span>
           <select
             id="analysis_visibility"
             v-model="userForm.analysis_visibility"
@@ -313,7 +320,9 @@
           </select>
         </label>
         <label class="form-items">
-          {{ $t('visibility_levels.MAP_VISIBILITY') }}
+          <span>
+            {{ $t('visibility_levels.MAP_VISIBILITY') }}<sup>2</sup>
+          </span>
           <select
             id="map_visibility"
             v-model="userForm.map_visibility"
@@ -345,7 +354,9 @@
           </select>
         </label>
         <label class="form-items">
-          {{ $t('user.PROFILE.SEGMENTS_CREATION_EVENT.LABEL') }}
+          <span>
+            {{ $t('user.PROFILE.SEGMENTS_CREATION_EVENT.LABEL') }}<sup>1</sup>
+          </span>
           <select
             id="segments_creation_event"
             v-model="userForm.segments_creation_event"
@@ -360,6 +371,13 @@
             </option>
           </select>
         </label>
+        <div class="info-box changes-help">
+          <div>
+            1.
+            {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS') }}
+          </div>
+          <div>2. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_WORKOUTS') }}</div>
+        </div>
         <div class="form-buttons">
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
@@ -653,6 +671,10 @@
 
     .missing-elevations-help {
       margin-top: $default-margin * 0.5;
+    }
+    .changes-help {
+      margin-top: $default-margin * 2.5;
+      margin-bottom: -$default-margin;
     }
   }
 </style>
