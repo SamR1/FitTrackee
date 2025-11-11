@@ -1,5 +1,5 @@
 import os
-from enum import IntEnum
+from enum import Enum, IntEnum
 
 TASKS_TIME_LIMIT = int(os.environ.get("TASKS_TIME_LIMIT", "1800")) * 1000
 
@@ -10,8 +10,7 @@ class TaskPriority(IntEnum):
     HIGH = 0
 
 
-ELEVATIONS_PROCESSING = [
-    "none",
-    "open_elevation",
-    "open_elevation_smooth",
-]
+class MissingElevationsProcessing(str, Enum):  # to make enum serializable
+    NONE = "none"
+    OPEN_ELEVATION = "open_elevation"
+    OPEN_ELEVATION_SMOOTH = "open_elevation_smooth"

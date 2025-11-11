@@ -9,8 +9,6 @@ Create Date: 2025-11-09 19:09:16.579739
 from alembic import op
 import sqlalchemy as sa
 
-from fittrackee.constants import ELEVATIONS_PROCESSING
-
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
@@ -19,19 +17,20 @@ down_revision = "e63433a1d62e"
 branch_labels = None
 depends_on = None
 
+elevations_processing = postgresql.ENUM(
+    'NONE', 'OPEN_ELEVATION', 'OPEN_ELEVATION_SMOOTH',
+    name="elevations_processing"
+)
+elevations_processing.create(op.get_bind(), checkfirst=True)
+
 
 def upgrade():
-    elevations_processing = postgresql.ENUM(
-        *ELEVATIONS_PROCESSING, name="elevations_processing"
-    )
-    elevations_processing.create(op.get_bind(), checkfirst=True)
-
     with op.batch_alter_table("users", schema=None) as batch_op:
         batch_op.add_column(
             sa.Column(
                 "missing_elevations_processing",
                 elevations_processing,
-                server_default="none",
+                server_default="NONE",
                 nullable=False,
             )
         )
@@ -41,7 +40,7 @@ def upgrade():
             sa.Column(
                 "missing_elevations_processing",
                 elevations_processing,
-                server_default="none",
+                server_default="NONE",
                 nullable=False,
             )
         )
@@ -56,3 +55,4 @@ def downgrade():
         batch_op.drop_column("missing_elevations_processing")
 
     # ### end Alembic commands ###
+    elevations_processing.drop(op.get_bind())

@@ -17,7 +17,7 @@ from sqlalchemy.sql.expression import nulls_last, text
 from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, appLog, db
-from fittrackee.constants import ELEVATIONS_PROCESSING
+from fittrackee.constants import MissingElevationsProcessing
 from fittrackee.database import PSQL_INTEGER_LIMIT, TZDateTime
 from fittrackee.dates import aware_utc_now
 from fittrackee.equipments.models import WorkoutEquipment
@@ -347,8 +347,8 @@ class Workout(BaseModel):
         nullable=True,
     )
     missing_elevations_processing: Mapped[Optional[str]] = mapped_column(
-        Enum(*ELEVATIONS_PROCESSING, name="elevations_processing"),
-        server_default="none",
+        Enum(MissingElevationsProcessing, name="elevations_processing"),
+        server_default="NONE",
         nullable=False,
     )
 
