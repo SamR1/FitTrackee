@@ -75,7 +75,15 @@
         </div>
         <div class="chart-info">
           <div class="no-data-cleaning">
-            {{ $t('workouts.NO_DATA_CLEANING') }}
+            <span v-if="elevationsSource?.startsWith('open_elevation')">
+              {{ $t('workouts.MISSING_ELEVATIONS_PROCESSING.LABEL') }}
+              {{
+                $t(`workouts.MISSING_ELEVATIONS_PROCESSING.${elevationsSource}`)
+              }}
+            </span>
+            <span v-else-if="authUser.username">
+              {{ $t('workouts.NO_DATA_CLEANING') }}
+            </span>
           </div>
           <div class="elevation-start" v-if="hasElevation">
             <label>
@@ -164,6 +172,17 @@
 
   const hasElevation: ComputedRef<boolean> = computed(
     () => datasets.value && datasets.value.datasets.elevation?.data.length > 0
+  )
+  const elevationsSource: ComputedRef<
+    null | 'open_elevation' | 'open_elevation_smooth'
+  > = computed(() =>
+    workoutData.value.workout.missing_elevations_processing?.startsWith(
+      'open_elevation'
+    )
+      ? (workoutData.value.workout.missing_elevations_processing as
+          | 'open_elevation'
+          | 'open_elevation_smooth')
+      : null
   )
   const chartLoading: ComputedRef<boolean> = computed(
     () => workoutData.value.chartDataLoading

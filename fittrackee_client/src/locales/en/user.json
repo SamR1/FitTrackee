@@ -127,12 +127,7 @@
     },
     "MESSAGES_EDITION": "Message preferences edition",
     "MESSAGES_PREFERENCES": "Messages preferences",
-    "MISSING_ELEVATIONS_PROCESSING": {
-      "LABEL": "Missing elevations processing",
-      "none": "None",
-      "open_elevation": "OpenElevation (raw data)",
-      "open_elevation_smooth": "OpenElevation (smoothed data)"
-    },
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Missing elevations processing",
     "MONDAY": "Monday",
     "NOTIFICATIONS": {
       "account_creation": "Someone registers",

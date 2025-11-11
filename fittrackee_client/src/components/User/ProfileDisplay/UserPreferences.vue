@@ -86,11 +86,11 @@
       </div>
     </dl>
     <dl>
-      <dt>{{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING.LABEL') }}:</dt>
+      <dt>{{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING_LABEL') }}:</dt>
       <dd>
         {{
           $t(
-            `user.PROFILE.MISSING_ELEVATIONS_PROCESSING.${
+            `workouts.MISSING_ELEVATIONS_PROCESSING.${
               user.missing_elevations_processing
             }`
           )

@@ -138,6 +138,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_power": None,
             "max_speed": workout.max_speed,
             "min_alt": None,
+            "missing_elevations_processing": (
+                workout.missing_elevations_processing
+            ),
             "modification_date": None,
             "moving": str(workout.moving),
             "next_workout": None,
@@ -200,6 +203,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_power": None,
             "max_speed": workout.max_speed,
             "min_alt": None,
+            "missing_elevations_processing": (
+                workout.missing_elevations_processing
+            ),
             "modification_date": workout.modification_date,
             "moving": str(workout.moving),
             "next_workout": None,
@@ -271,6 +277,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_power": workout.max_power,
             "max_speed": float(workout.max_speed),  # type: ignore[arg-type]
             "min_alt": float(workout.min_alt),  # type: ignore[arg-type]
+            "missing_elevations_processing": (
+                workout.missing_elevations_processing
+            ),
             "modification_date": workout.modification_date,
             "moving": str(workout.moving),
             "next_workout": None,
@@ -347,6 +356,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "min_alt": None,
             "modification_date": workout.modification_date,
             "moving": str(workout.moving),
+            "missing_elevations_processing": (
+                workout.missing_elevations_processing
+            ),
             "next_workout": None,
             "notes": None,
             "original_file": "gpx",
@@ -424,6 +436,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_power": None,
             "max_speed": float(workout.max_speed),  # type: ignore [arg-type]
             "min_alt": workout.min_alt,
+            "missing_elevations_processing": (
+                workout.missing_elevations_processing
+            ),
             "modification_date": workout.modification_date,
             "moving": str(workout.moving),
             "next_workout": None,
@@ -499,6 +514,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_power": None,
             "max_speed": float(workout.max_speed),  # type: ignore [arg-type]
             "min_alt": workout.min_alt,
+            "missing_elevations_processing": (
+                workout.missing_elevations_processing
+            ),
             "modification_date": workout.modification_date,
             "moving": str(workout.moving),
             "next_workout": None,
@@ -661,6 +679,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_power": None,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
+            "missing_elevations_processing": (
+                workout_cycling_user_1.missing_elevations_processing
+            ),
             "modification_date": workout_cycling_user_1.modification_date,
             "moving": str(workout_cycling_user_1.moving),
             "next_workout": None,

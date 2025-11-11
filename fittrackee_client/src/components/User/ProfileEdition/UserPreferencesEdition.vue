@@ -252,7 +252,7 @@
           </div>
         </div>
         <label class="form-items">
-          {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING.LABEL') }}
+          {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING_LABEL') }}
           <select
             id="missing_elevations_processing"
             v-model="userForm.missing_elevations_processing"
@@ -265,7 +265,7 @@
               :value="item"
               :key="item"
             >
-              {{ $t(`user.PROFILE.MISSING_ELEVATIONS_PROCESSING.${item}`) }}
+              {{ $t(`workouts.MISSING_ELEVATIONS_PROCESSING.${item}`) }}
             </option>
           </select>
         </label>

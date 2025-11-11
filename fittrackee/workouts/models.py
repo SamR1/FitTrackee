@@ -346,10 +346,12 @@ class Workout(BaseModel):
         Geometry(geometry_type="POINT", srid=WGS84_CRS, spatial_index=True),
         nullable=True,
     )
-    missing_elevations_processing: Mapped[Optional[str]] = mapped_column(
-        Enum(MissingElevationsProcessing, name="elevations_processing"),
-        server_default="NONE",
-        nullable=False,
+    missing_elevations_processing: Mapped[MissingElevationsProcessing] = (
+        mapped_column(
+            Enum(MissingElevationsProcessing, name="elevations_processing"),
+            server_default="NONE",
+            nullable=False,
+        )
     )
 
     user: Mapped["User"] = relationship(
@@ -775,6 +777,9 @@ class Workout(BaseModel):
                 )
                 .order_by(Workout.workout_date.asc())
                 .first()
+            )
+            workout["missing_elevations_processing"] = (
+                self.missing_elevations_processing
             )
 
         else:
