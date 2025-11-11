@@ -254,8 +254,10 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         segment_points: List[Dict] = []
         coordinates = []
 
-        # Add elevation if OpenElevation is set and at least one value is
-        # missing:
+        # Add elevation if:
+        # - OpenElevation URL is set
+        # - user preference is set
+        # - and at least one value is missing
         elevations = []
         update_missing_elevation = MissingElevationsProcessing.NONE
 
