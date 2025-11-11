@@ -12,6 +12,7 @@ from sqlalchemy.exc import IntegrityError
 from time_machine import travel
 
 from fittrackee import db
+from fittrackee.constants import MissingElevationsProcessing
 from fittrackee.equipments.models import Equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.reports.models import ReportAction
@@ -310,6 +311,32 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         assert serialized_user["created_reports_count"] == 0
         assert serialized_user["reported_count"] == 0
         assert serialized_user["sanctions_count"] == 0
+
+    def test_it_returns_missing_elevations_processing_when_no_elevation_service_set(  # noqa
+        self, app: Flask, user_1: User
+    ) -> None:
+        user_1.missing_elevations_processing = (
+            MissingElevationsProcessing.OPEN_ELEVATION
+        )
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
+
+        assert (
+            serialized_user["missing_elevations_processing"]
+            == MissingElevationsProcessing.NONE
+        )
+
+    def test_it_returns_missing_elevations_processing_when_elevation_service_set(  # noqa
+        self, app_with_open_elevation_url: Flask, user_1: User
+    ) -> None:
+        user_1.missing_elevations_processing = (
+            MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH
+        )
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
+
+        assert (
+            serialized_user["missing_elevations_processing"]
+            == user_1.missing_elevations_processing
+        )
 
 
 class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):

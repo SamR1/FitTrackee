@@ -153,6 +153,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
         assert data["data"]["admin_contact"] == admin_email
+        assert data["data"]["elevation_services"] == {"open_elevation": False}
         assert data["data"]["file_limit_import"] == 200
         assert data["data"]["file_sync_limit_import"] == 20
         assert data["data"]["global_map_workouts_limit"] == 7000

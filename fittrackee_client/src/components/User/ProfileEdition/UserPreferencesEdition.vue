@@ -256,7 +256,9 @@
           <select
             id="missing_elevations_processing"
             v-model="userForm.missing_elevations_processing"
-            :disabled="authUserLoading"
+            :disabled="
+              !appConfig.elevation_services.open_elevation || authUserLoading
+            "
           >
             <option
               v-for="item in missingElevationsProcessing"
@@ -267,6 +269,15 @@
             </option>
           </select>
         </label>
+        <div
+          v-if="!appConfig.elevation_services.open_elevation"
+          class="info-box missing-elevations-help"
+        >
+          <span>
+            <i class="fa fa-info-circle" aria-hidden="true" />
+            {{ $t('user.PROFILE.NO_ELEVATION_SERVICE_AVAILABLE') }}
+          </span>
+        </div>
         <label class="form-items">
           {{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}
           <select
@@ -395,7 +406,7 @@
 
   const store = useStore()
 
-  const { errorMessages } = useApp()
+  const { appConfig, errorMessages } = useApp()
   const { authUserLoading } = useAuthUser()
 
   const weekStart = [
@@ -562,6 +573,7 @@
     userForm.segments_creation_event =
       user.segments_creation_event ?? 'only_manual'
     userForm.split_workout_charts = user.split_workout_charts
+    userForm.missing_elevations_processing = user.missing_elevations_processing
   }
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES, userForm)
@@ -637,6 +649,10 @@
     #segments_creation_event,
     #missing_elevations_processing {
       padding: $default-padding * 0.5;
+    }
+
+    .missing-elevations-help {
+      margin-top: $default-margin * 0.5;
     }
   }
 </style>

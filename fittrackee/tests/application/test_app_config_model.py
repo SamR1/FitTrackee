@@ -26,6 +26,10 @@ class TestConfigModel:
         serialized_app_config = config.serialize()
         assert serialized_app_config["admin_contact"] == config.admin_contact
         assert (
+            serialized_app_config["elevation_services"]
+            == config.elevation_services
+        )
+        assert (
             serialized_app_config["file_limit_import"]
             == config.file_limit_import
         )
@@ -152,3 +156,25 @@ class TestConfigModel:
             serialized_app_config["global_map_workouts_limit"]
             == global_map_workouts_limit
         )
+
+    def test_it_returns_elevation_services_when_open_elevation_is_disabled(
+        self, app: "Flask"
+    ) -> None:
+        config = AppConfig.query.one()
+
+        serialized_app_config = config.serialize()
+
+        assert serialized_app_config["elevation_services"] == {
+            "open_elevation": False
+        }
+
+    def test_it_returns_elevation_services_when_open_elevation_is_enabled(
+        self, app_with_open_elevation_url: "Flask"
+    ) -> None:
+        config = AppConfig.query.one()
+
+        serialized_app_config = config.serialize()
+
+        assert serialized_app_config["elevation_services"] == {
+            "open_elevation": True
+        }

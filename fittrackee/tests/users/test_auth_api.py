@@ -1495,13 +1495,13 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
     )
     def test_it_updates_user_preferences(
         self,
-        app: Flask,
+        app_with_open_elevation_url: Flask,
         user_1: User,
         input_language: Optional[str],
         expected_language: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app_with_open_elevation_url, user_1.email
         )
 
         response = client.post(

@@ -96,6 +96,15 @@
           )
         }}
       </dd>
+      <div
+        v-if="!appConfig.elevation_services.open_elevation"
+        class="info-box missing-elevations-help"
+      >
+        <span>
+          <i class="fa fa-info-circle" aria-hidden="true" />
+          {{ $t('user.PROFILE.NO_ELEVATION_SERVICE_AVAILABLE') }}
+        </span>
+      </div>
       <dt>{{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}:</dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.workouts_visibility}`) }}
@@ -134,6 +143,7 @@
   import { computed, toRefs } from 'vue'
   import type { ComputedRef } from 'vue'
 
+  import useApp from '@/composables/useApp.ts'
   import useAuthUser from '@/composables/useAuthUser'
   import type { IAuthUserProfile } from '@/types/user'
   import { languageLabels } from '@/utils/locales'
@@ -144,6 +154,7 @@
   const props = defineProps<Props>()
   const { user } = toRefs(props)
 
+  const { appConfig } = useApp()
   const { dateFormat, timezone } = useAuthUser()
 
   const userLanguage: ComputedRef<string> = computed(() =>
@@ -173,8 +184,12 @@
       text-transform: uppercase;
       border-bottom: 1px solid var(--card-border-color);
     }
-    .raw-speed-help {
+    .raw-speed-help,
+    .missing-elevations-help {
       margin-top: -$default-margin * 0.5;
+    }
+    .missing-elevations-help {
+      margin-bottom: $default-margin;
     }
   }
 </style>

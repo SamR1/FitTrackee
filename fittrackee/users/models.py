@@ -950,7 +950,9 @@ class User(BaseModel):
                     else {}
                 ),
                 "missing_elevations_processing": (
-                    self.missing_elevations_processing
+                    MissingElevationsProcessing.NONE
+                    if current_app.config["OPEN_ELEVATION_API_URL"] is None
+                    else self.missing_elevations_processing
                 ),
             }
 
