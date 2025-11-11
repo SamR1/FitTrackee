@@ -11,6 +11,7 @@ from sqlalchemy.dialects.postgresql import insert
 from werkzeug.datastructures import FileStorage
 
 from fittrackee import db
+from fittrackee.constants import MissingElevationsProcessing
 from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
@@ -1117,11 +1118,14 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
 
     def test_it_calls_open_elevation_when_elevations_are_missing_in_file_other_than_gpx(  # noqa
         self,
-        app: "Flask",
+        app_with_open_elevation_url: "Flask",
         user_1: "User",
         tcx_with_one_lap_and_one_track: str,
         sport_1_cycling: "Sport",
     ) -> None:
+        user_1.missing_elevations_processing = (
+            MissingElevationsProcessing.OPEN_ELEVATION
+        )
         regex = re.compile("<AltitudeMeters>(.*)</AltitudeMeters>")
         tcx_without_elevation = regex.sub("", tcx_with_one_lap_and_one_track)
         kml_file_storage = FileStorage(
@@ -1135,11 +1139,6 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         )
 
         with (
-            patch.object(
-                OpenElevationService,
-                "_get_api_url",
-                return_value="https://api.open-elevation.example.com/api/v1/lookup",
-            ),
             patch.object(
                 OpenElevationService,
                 "get_elevations",

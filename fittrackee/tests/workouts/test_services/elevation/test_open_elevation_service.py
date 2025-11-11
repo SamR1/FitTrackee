@@ -5,11 +5,10 @@ from unittest.mock import patch
 import requests
 from gpxpy.gpx import GPXTrackPoint
 
+from fittrackee.tests.mixins import ResponseMockMixin
 from fittrackee.workouts.services.elevation.open_elevation_service import (
     OpenElevationService,
 )
-
-from ...mixins import ResponseMockMixin
 
 if TYPE_CHECKING:
     from flask import Flask

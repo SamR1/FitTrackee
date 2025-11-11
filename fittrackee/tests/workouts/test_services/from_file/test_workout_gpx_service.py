@@ -10,6 +10,7 @@ from geoalchemy2.shape import to_shape
 from shapely import LineString, Point
 
 from fittrackee import db
+from fittrackee.constants import MissingElevationsProcessing
 from fittrackee.tests.fixtures.fixtures_workouts import (
     segment_0_coordinates,
     segment_1_coordinates,
@@ -352,6 +353,9 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout.ave_hr is None
         assert workout.max_cadence is None
         assert workout.max_hr is None
+        assert workout.missing_elevations_processing == (
+            MissingElevationsProcessing.NONE
+        )
         assert workout.source is None
         # workout segments
         workout_segments = WorkoutSegment.query.all()
@@ -711,7 +715,7 @@ class TestWorkoutGpxServiceProcessFile(
 
     def test_it_does_not_call_open_elevation_service_when_file_has_no_missing_elevations(  # noqa
         self,
-        app: "Flask",
+        app_with_open_elevation_url: "Flask",
         sport_1_cycling: Sport,
         user_1: "User",
         gpx_file: str,
@@ -720,10 +724,62 @@ class TestWorkoutGpxServiceProcessFile(
 
         with (
             patch.object(
-                OpenElevationService,
-                "_get_api_url",
-                return_value="https://api.open-elevation.example.com/api/v1/lookup",
+                OpenElevationService, "get_elevations"
+            ) as get_elevations_mock,
+        ):
+            service.process_workout()
+
+        get_elevations_mock.assert_not_called()
+
+    @pytest.mark.parametrize(
+        "input_missing_elevations_processing, expected_kwargs",
+        [
+            (MissingElevationsProcessing.OPEN_ELEVATION, {"smooth": False}),
+            (
+                MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH,
+                {"smooth": True},
             ),
+        ],
+    )
+    def test_it_calls_open_elevation_service_according_to_user_preferences(
+        self,
+        app_with_open_elevation_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_without_elevation: str,
+        input_missing_elevations_processing: "MissingElevationsProcessing",
+        expected_kwargs: Dict,
+    ) -> None:
+        user_1.missing_elevations_processing = (
+            input_missing_elevations_processing
+        )
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_without_elevation
+        )
+
+        with (
+            patch.object(
+                OpenElevationService, "get_elevations", return_value=[]
+            ) as get_elevations_mock,
+        ):
+            service.process_workout()
+
+        _, call_kwargs = get_elevations_mock.call_args
+        assert call_kwargs == expected_kwargs
+
+    def test_it_does_not_call_open_elevation_service_when_user_preferences_is_none(  # noqa
+        self,
+        app_with_open_elevation_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_without_elevation: str,
+    ) -> None:
+        user_1.missing_elevations_processing = MissingElevationsProcessing.NONE
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_without_elevation
+        )
+
+        with (
             patch.object(
                 OpenElevationService, "get_elevations"
             ) as get_elevations_mock,
@@ -732,14 +788,17 @@ class TestWorkoutGpxServiceProcessFile(
 
         get_elevations_mock.assert_not_called()
 
-    def test_it_creates_workout_and_segment_when_gpx_file_has_no_elevation(
+    def test_it_creates_workout_and_segment_without_elevation_when_gpx_file_has_no_elevation(  # noqa
         self,
         app: "Flask",
         sport_1_cycling: Sport,
         user_1: "User",
         gpx_file_without_elevation: str,
     ) -> None:
-        # Open Elevation API URL is not set
+        user_1.missing_elevations_processing = (
+            MissingElevationsProcessing.OPEN_ELEVATION
+        )
+        # Open Elevation API URL is not set, no missing elevation are fetched
         service = self.init_service_with_gpx(
             user_1, sport_1_cycling, gpx_file_without_elevation
         )
@@ -772,6 +831,9 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout.ave_hr is None
         assert workout.max_cadence is None
         assert workout.max_hr is None
+        assert workout.missing_elevations_processing == (
+            MissingElevationsProcessing.NONE
+        )
         assert workout.source is None
         # workout segment
         workout_segment = WorkoutSegment.query.one()
@@ -815,21 +877,19 @@ class TestWorkoutGpxServiceProcessFile(
 
     def test_it_creates_workout_and_segment_when_gpx_file_has_no_elevation_and_open_elevation_api_is_set(  # noqa
         self,
-        app: "Flask",
+        app_with_open_elevation_url: "Flask",
         sport_1_cycling: Sport,
         user_1: "User",
         gpx_file_without_elevation: str,
     ) -> None:
+        user_1.missing_elevations_processing = (
+            MissingElevationsProcessing.OPEN_ELEVATION
+        )
         service = self.init_service_with_gpx(
             user_1, sport_1_cycling, gpx_file_without_elevation
         )
 
         with (
-            patch.object(
-                OpenElevationService,
-                "_get_api_url",
-                return_value="https://api.open-elevation.example.com/api/v1/lookup",
-            ),
             patch.object(
                 requests,
                 "post",
@@ -840,6 +900,9 @@ class TestWorkoutGpxServiceProcessFile(
         db.session.commit()
 
         workout = Workout.query.one()
+        assert workout.missing_elevations_processing == (
+            MissingElevationsProcessing.OPEN_ELEVATION
+        )
         self.assert_workout(user_1, sport_1_cycling, workout)
         self.assert_workout_segment(workout)
         self.assert_workout_records(workout)
@@ -867,23 +930,50 @@ class TestWorkoutGpxServiceProcessFile(
             "time": "2018-03-13 12:48:55+00:00",
         }
 
-    def test_it_creates_workout_and_segment_when_open_elevation_api_returns_empty_list(  # noqa
+    def test_it_creates_workout_when_user_preference_is_open_elevation_smooth(
         self,
-        app: "Flask",
+        app_with_open_elevation_url: "Flask",
         sport_1_cycling: Sport,
         user_1: "User",
         gpx_file_without_elevation: str,
     ) -> None:
+        user_1.missing_elevations_processing = (
+            MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH
+        )
         service = self.init_service_with_gpx(
             user_1, sport_1_cycling, gpx_file_without_elevation
         )
 
         with (
             patch.object(
-                OpenElevationService,
-                "_get_api_url",
-                return_value="https://api.open-elevation.example.com/api/v1/lookup",
+                requests,
+                "post",
+                return_value=self.get_response(OPEN_ELEVATION_RESPONSE),
             ),
+        ):
+            service.process_workout()
+        db.session.commit()
+
+        workout = Workout.query.one()
+        assert workout.missing_elevations_processing == (
+            MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH
+        )
+
+    def test_it_creates_workout_and_segment_when_open_elevation_api_returns_empty_list(  # noqa
+        self,
+        app_with_open_elevation_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_without_elevation: str,
+    ) -> None:
+        user_1.missing_elevations_processing = (
+            MissingElevationsProcessing.OPEN_ELEVATION
+        )
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_without_elevation
+        )
+
+        with (
             patch.object(
                 OpenElevationService,
                 "get_elevations",
@@ -916,21 +1006,19 @@ class TestWorkoutGpxServiceProcessFile(
 
     def test_it_calls_open_elevation_for_each_segment(
         self,
-        app: "Flask",
+        app_with_open_elevation_url: "Flask",
         sport_1_cycling: Sport,
         user_1: "User",
         gpx_file_with_3_segments: str,
     ) -> None:
+        user_1.missing_elevations_processing = (
+            MissingElevationsProcessing.OPEN_ELEVATION
+        )
         regex = re.compile("<ele>(.*)</ele>")
         gpx_file = regex.sub("", gpx_file_with_3_segments)
         service = self.init_service_with_gpx(user_1, sport_1_cycling, gpx_file)
 
         with (
-            patch.object(
-                OpenElevationService,
-                "_get_api_url",
-                return_value="https://api.open-elevation.example.com/api/v1/lookup",
-            ),
             patch.object(
                 OpenElevationService,
                 "get_elevations",
