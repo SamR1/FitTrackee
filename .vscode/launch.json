@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach: Flask in container",
+      "type": "debugpy",
+      "request": "attach",
+      "preLaunchTask": "up: devcontainer-compose",
+      "connect": {
+        "host": "127.0.0.1",
+        "port": 5678
+      },
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}",
+          "remoteRoot": "/usr/src/app"
+        },
+      ],
+      "justMyCode": false,
+      "jinja": true,
+      "subProcess": true
+    },
+    //TODO: Add frontend debugging configuration
+  ]
+}
