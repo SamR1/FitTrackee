@@ -51,7 +51,9 @@ class BaseConfig:
         ),
         "STATICMAP_SUBDOMAINS": os.environ.get("STATICMAP_SUBDOMAINS", ""),
     }
+
     OPEN_ELEVATION_API_URL = os.environ.get("OPEN_ELEVATION_API_URL")
+    VALHALLA_API_URL = os.environ.get("VALHALLA_API_URL")
 
     DRAMATIQ_BROKER = broker
 
