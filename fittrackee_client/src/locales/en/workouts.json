@@ -72,7 +72,7 @@
   "MAX_SYNC_FILES_IN_ZIP": "max. number of files for synchronous upload",
   "MIN_ALTITUDE": "min. altitude",
   "MISSING_ELEVATIONS_PROCESSING": {
-    "LABEL": "Elevations from :",
+    "LABEL": "Elevations updated from",
     "none": "None",
     "open_elevation": "OpenElevation (raw data)",
     "open_elevation_smooth": "OpenElevation (smoothed data)"
