@@ -38,7 +38,7 @@ OPEN_ELEVATION_RESPONSE = [
 
 
 class TestOpenElevationServiceInstantiation:
-    def test_it_instantiates_service_when_no_open_api_url_set_in_env_var(
+    def test_it_instantiates_service_when_no_open_elevation_api_set_in_env_var(
         self, app: "Flask"
     ) -> None:
         service = OpenElevationService()
@@ -46,7 +46,7 @@ class TestOpenElevationServiceInstantiation:
         assert service.url is None
         assert service.is_enabled is False
 
-    def test_it_instantiates_service_when_nominatim_url_is_set_in_env_var(
+    def test_it_instantiates_service_when_open_elevation_api_url_is_set_in_env_var(  # noqa
         self, app_with_open_elevation_url: "Flask"
     ) -> None:
         service = OpenElevationService()
