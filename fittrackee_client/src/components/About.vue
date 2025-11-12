@@ -46,6 +46,9 @@
           {{ weatherProvider.name }}
         </a>
       </div>
+      <div v-if="appConfig.elevation_services.open_elevation">
+        {{ $t('about.ELEVATION_DATA_FROM') }} OpenElevation
+      </div>
       <template v-if="appConfig.about">
         <p class="about-instance">{{ $t('about.ABOUT_THIS_INSTANCE') }}</p>
         <div v-html="convertToMarkdown(appConfig.about)" />
@@ -72,7 +75,7 @@
 
   function get_weather_provider() {
     const weatherProvider: Record<string, string> = {}
-    if (appConfig.value.weatherProvider === 'visualcrossing') {
+    if (appConfig.value.weather_provider === 'visualcrossing') {
       weatherProvider['name'] = 'Visual Crossing'
       weatherProvider['url'] = 'https://www.visualcrossing.com'
     }

@@ -1495,13 +1495,13 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
     )
     def test_it_updates_user_preferences(
         self,
-        app: Flask,
+        app_with_open_elevation_url: Flask,
         user_1: User,
         input_language: Optional[str],
         expected_language: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app_with_open_elevation_url, user_1.email
         )
 
         response = client.post(
@@ -1526,6 +1526,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     hr_visibility="followers_only",
                     segments_creation_event="none",
                     split_workout_charts=True,
+                    missing_elevations_processing="open_elevation",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1549,6 +1550,9 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data["data"]["hr_visibility"] == VisibilityLevel.FOLLOWERS
         assert data["data"]["segments_creation_event"] == "none"
         assert data["data"]["split_workout_charts"] is True
+        assert (
+            data["data"]["missing_elevations_processing"] == "open_elevation"
+        )
 
     @pytest.mark.parametrize(
         "input_map_visibility,input_analysis_visibility,input_workout_visibility,expected_map_visibility,expected_analysis_visibility",
@@ -1619,6 +1623,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     hr_visibility=input_workout_visibility.value,
                     segments_creation_event="none",
                     split_workout_charts=False,
+                    missing_elevations_processing="none",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1667,6 +1672,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     hr_visibility=VisibilityLevel.PUBLIC.value,
                     segments_creation_event="none",
                     split_workout_charts=False,
+                    missing_elevations_processing="none",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),

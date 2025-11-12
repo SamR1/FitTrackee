@@ -348,6 +348,7 @@ def get_authenticated_user_profile(
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
+          "missing_elevations_processing": "none",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -492,6 +493,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
+          "missing_elevations_processing": "none",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -684,6 +686,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
+          "missing_elevations_processing": "none",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -942,6 +945,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
+          "missing_elevations_processing": "none",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -1038,6 +1042,9 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
                   are automatically approved
     :<json string map_visibility: workout map visibility
                   (``public``, ``followers_only``, ``private``)
+    :<json string missing_elevations_processing: source and method for missing
+                  elevations (``none``, ``open_elevation``,
+                  ``open_elevation_smooth``)
     :<json string segments_creation_event: event triggering a segment creation
                   for .fit files (``all``, ``only_manual``, ``none``)
     :<json boolean split_workout_charts: if ``true``, multiple charts are
@@ -1075,6 +1082,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "language",
         "manually_approves_followers",
         "map_visibility",
+        "missing_elevations_processing",
         "segments_creation_event",
         "split_workout_charts",
         "start_elevation_at_zero",
@@ -1106,6 +1114,9 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     hr_visibility = post_data.get("hr_visibility")
     segments_creation_event = post_data.get("segments_creation_event")
     split_workout_charts = post_data.get("split_workout_charts")
+    missing_elevations_processing = post_data.get(
+        "missing_elevations_processing"
+    )
 
     try:
         auth_user.date_format = date_format
@@ -1133,6 +1144,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.hr_visibility = VisibilityLevel(hr_visibility)
         auth_user.segments_creation_event = segments_creation_event
         auth_user.split_workout_charts = split_workout_charts
+        auth_user.missing_elevations_processing = missing_elevations_processing
         db.session.commit()
 
         return {
@@ -1365,6 +1377,7 @@ def edit_user_notifications_preferences(
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
+          "missing_elevations_processing": "none",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -1545,6 +1558,7 @@ def edit_user_messages_preferences(
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
+          "missing_elevations_processing": "none",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {

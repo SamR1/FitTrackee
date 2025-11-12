@@ -536,7 +536,8 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
     ) -> None:
         runner = CliRunner()
 
-        result = runner.invoke(cli, ["workouts", "refresh"])
+        with patch("click.confirm"):
+            result = runner.invoke(cli, ["workouts", "refresh"])
 
         assert result.exit_code == 0
         assert caplog.messages == ["No workouts to refresh.", "\nDone."]
@@ -546,7 +547,8 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
     ) -> None:
         runner = CliRunner()
 
-        result = runner.invoke(cli, ["workouts", "refresh", "--verbose"])
+        with patch("click.confirm"):
+            result = runner.invoke(cli, ["workouts", "refresh", "--verbose"])
 
         assert result.exit_code == 0
         assert caplog.messages == ["No workouts to refresh.", "\nDone."]
@@ -651,9 +653,12 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
     ) -> None:
         runner = CliRunner()
 
-        with patch(
-            "fittrackee.workouts.commands.WorkoutsFromFileRefreshService"
-        ) as service_mock:
+        with (
+            patch("click.confirm"),
+            patch(
+                "fittrackee.workouts.commands.WorkoutsFromFileRefreshService"
+            ) as service_mock,
+        ):
             runner.invoke(cli, ["workouts", "refresh"])
 
         service_mock.assert_called_once_with(
@@ -677,6 +682,7 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
         runner = CliRunner()
 
         with (
+            patch("click.confirm"),
             patch(
                 "fittrackee.workouts.commands.WorkoutsFromFileRefreshService"
             ) as service_mock,
@@ -729,6 +735,7 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
         runner = CliRunner()
 
         with (
+            patch("click.confirm"),
             patch(
                 "fittrackee.workouts.commands.WorkoutsFromFileRefreshService"
             ) as service_mock,
