@@ -1,41 +1,34 @@
-from typing import TYPE_CHECKING, List, Union
+from typing import TYPE_CHECKING, List
 
 import requests
-from flask import current_app
 
 from fittrackee import appLog
+
+from .base_elevation_service import BaseElevationService
 
 if TYPE_CHECKING:
     from gpxpy.gpx import GPXTrackPoint
 
 
-class ValhallaElevationService:
+class ValhallaElevationService(BaseElevationService):
     """
     Documentation:
     https://valhalla.github.io/valhalla/api/elevation/api-reference/
     """
 
-    def __init__(self) -> None:
-        self.url = self._get_api_url()
+    config_key = "VALHALLA_API_URL"
+    url_pattern = "{base_url}/height"
+    log_label = "Valhalla Elevation API"
 
-    @property
-    def is_enabled(self) -> bool:
-        return self.url is not None
-
-    @staticmethod
-    def _get_api_url() -> Union[str, None]:
-        base_url = current_app.config["VALHALLA_API_URL"]
-        if not base_url:
-            return None
-        return f"{base_url}/height"
-
-    def get_elevations(
+    def _get_elevations_for_api(
         self, points: List["GPXTrackPoint"], smooth: bool = False
     ) -> List[int]:
         if not self.url:
+            appLog.debug(
+                "Valhalla Elevation API: no URL set, "
+                "returning empty list of elevation"
+            )
             return []
-
-        appLog.debug("Valhalla Elevation API: getting missing elevations")
 
         try:
             r = requests.post(
@@ -56,13 +49,4 @@ class ValhallaElevationService:
             return []
 
         results = r.json().get("height", [])
-
-        # Should not happen
-        if len(results) != len(points):
-            appLog.error(
-                "Valhalla Elevation API: mismatch between number of points in "
-                "results, ignoring results"
-            )
-            return []
-
         return results

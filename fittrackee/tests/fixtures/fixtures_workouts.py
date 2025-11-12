@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, Mock, patch
 from uuid import uuid4
 
 import pytest
+from gpxpy.gpx import GPXTrackPoint
 from PIL import Image
 from werkzeug.datastructures import FileStorage
 
@@ -1159,6 +1160,21 @@ def workout_cycling_user_2_segment(
     workout_cycling_user_2.original_file = "workouts/1/example.tcx"
     db.session.commit()
     return workout_segment
+
+
+@pytest.fixture()
+def gpx_track_points_without_elevations() -> List["GPXTrackPoint"]:
+    return [
+        GPXTrackPoint(latitude=44.68095, longitude=6.07367),
+        GPXTrackPoint(latitude=44.68091, longitude=6.07367),
+        GPXTrackPoint(latitude=44.6808, longitude=6.07364),
+        GPXTrackPoint(latitude=44.68075, longitude=6.07364),
+        GPXTrackPoint(latitude=44.68071, longitude=6.07364),
+        GPXTrackPoint(latitude=44.68049, longitude=6.07361),
+        GPXTrackPoint(latitude=44.68019, longitude=6.07356),
+        GPXTrackPoint(latitude=44.68014, longitude=6.07355),
+        GPXTrackPoint(latitude=44.67995, longitude=6.07358),
+    ]
 
 
 track_points_part_1_coordinates = [

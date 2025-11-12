@@ -1,73 +1,34 @@
-from typing import TYPE_CHECKING, Dict, List, Union
+from typing import TYPE_CHECKING, List
 
-import numpy as np
 import requests
-from flask import current_app
 
 from fittrackee import appLog
+
+from .base_elevation_service import BaseElevationService
 
 if TYPE_CHECKING:
     from gpxpy.gpx import GPXTrackPoint
 
-WINDOW_LEN = 51
 
-
-class OpenElevationService:
+class OpenElevationService(BaseElevationService):
     """
     Documentation:
     https://github.com/Jorl17/open-elevation/blob/master/docs/api.md
     """
 
-    def __init__(self) -> None:
-        self.url = self._get_api_url()
+    config_key = "OPEN_ELEVATION_API_URL"
+    url_pattern = "{base_url}/api/v1/lookup"
+    log_label = "Open Elevation API"
 
-    @property
-    def is_enabled(self) -> bool:
-        return self.url is not None
-
-    @staticmethod
-    def _get_api_url() -> Union[str, None]:
-        base_url = current_app.config["OPEN_ELEVATION_API_URL"]
-        if not base_url:
-            return None
-        return f"{base_url}/api/v1/lookup"
-
-    @staticmethod
-    def smooth_elevations(points: List[Dict]) -> List[Dict]:
-        """
-        smooth elevations using 'flat' window
-
-        based on SciPy Cookbook:
-        https://scipy-cookbook.readthedocs.io/items/SignalSmooth.html
-        """
-        if len(points) < 3:
-            return points
-
-        points_array = np.array([point["elevation"] for point in points])
-        window_len = len(points) if len(points) < WINDOW_LEN else WINDOW_LEN
-
-        s = np.r_[
-            points_array[window_len - 1 : 0 : -1],
-            points_array,
-            points_array[-2 : -window_len - 1 : -1],
-        ]
-        w = np.ones(window_len, "d")
-        y = np.convolve(w / w.sum(), s, mode="valid")
-        start = window_len // 2 + 1
-        end = start + len(points_array)
-        smooth_array = y[start:end]
-
-        for index in range(len(points)):
-            points[index]["elevation"] = int(smooth_array[index])
-        return points
-
-    def get_elevations(
+    def _get_elevations_for_api(
         self, points: List["GPXTrackPoint"], smooth: bool = False
-    ) -> List[Dict]:
+    ) -> List[int]:
         if not self.url:
+            appLog.debug(
+                "Open Elevation API: no URL set, "
+                "returning empty list of elevation"
+            )
             return []
-
-        appLog.debug("Open Elevation API: getting missing elevations")
 
         try:
             r = requests.post(
@@ -91,15 +52,4 @@ class OpenElevationService:
             return []
 
         results = r.json().get("results", [])
-
-        # Should not happen
-        if len(results) != len(points):
-            appLog.error(
-                "Open Elevation API: mismatch between number of points in "
-                "results, ignoring results"
-            )
-            return []
-
-        if smooth:
-            return self.smooth_elevations(results)
-        return results
+        return [int(r["elevation"]) for r in results]
