@@ -46,8 +46,8 @@
           {{ weatherProvider.name }}
         </a>
       </div>
-      <div v-if="appConfig.elevation_services.open_elevation">
-        {{ $t('about.ELEVATION_DATA_FROM') }} OpenElevation
+      <div v-if="elevationServices.length > 0">
+        {{ $t('about.ELEVATION_DATA_FROM') }} {{ elevationServices.join(', ') }}
       </div>
       <template v-if="appConfig.about">
         <p class="about-instance">{{ $t('about.ABOUT_THIS_INSTANCE') }}</p>
@@ -64,7 +64,7 @@
   import useApp from '@/composables/useApp'
   import { convertToMarkdown } from '@/utils/inputs'
 
-  const { appConfig, appLanguage } = useApp()
+  const { appConfig, elevationServices, appLanguage } = useApp()
 
   const weatherProvider: ComputedRef<Record<string, string>> = computed(() =>
     get_weather_provider()

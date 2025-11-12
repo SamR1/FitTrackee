@@ -259,12 +259,10 @@
           <select
             id="missing_elevations_processing"
             v-model="userForm.missing_elevations_processing"
-            :disabled="
-              !appConfig.elevation_services.open_elevation || authUserLoading
-            "
+            :disabled="elevationServices.length === 0 || authUserLoading"
           >
             <option
-              v-for="item in missingElevationsProcessing"
+              v-for="item in missingElevationsProcessingItems"
               :value="item"
               :key="item"
             >
@@ -273,7 +271,7 @@
           </select>
         </label>
         <div
-          v-if="!appConfig.elevation_services.open_elevation"
+          v-if="elevationServices.length === 0"
           class="info-box missing-elevations-help"
         >
           <span>
@@ -424,7 +422,7 @@
 
   const store = useStore()
 
-  const { appConfig, errorMessages } = useApp()
+  const { elevationServices, errorMessages } = useApp()
   const { authUserLoading } = useAuthUser()
 
   const weekStart = [
@@ -522,11 +520,6 @@
     },
   ]
   const segmentsCreationEvents = ['all', 'only_manual', 'none']
-  const missingElevationsProcessing = [
-    'none',
-    'open_elevation',
-    'open_elevation_smooth',
-  ]
 
   const userForm: Reactive<IUserPreferencesPayload> = reactive({
     analysis_visibility: 'private',
@@ -549,6 +542,18 @@
     workouts_visibility: 'private',
   })
 
+  const missingElevationsProcessingItems: ComputedRef<string[]> = computed(
+    () => {
+      const items = ['none']
+      if (elevationServices.value.includes('Open Elevation')) {
+        items.concat(['open_elevation', 'open_elevation_smooth'])
+      }
+      if (elevationServices.value.includes('Valhalla')) {
+        items.push('valhalla')
+      }
+      return items
+    }
+  )
   const dateFormatOptions: ComputedRef<Record<string, string>[]> = computed(
     () =>
       availableDateFormatOptions(

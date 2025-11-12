@@ -9,6 +9,7 @@ export interface IAppStatistics {
 
 export interface IElevationService {
   open_elevation: boolean
+  valhalla: boolean
 }
 
 export type TAppConfig = {

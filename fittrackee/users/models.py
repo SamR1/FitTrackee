@@ -797,6 +797,29 @@ class User(BaseModel):
             return True
         return self.notification_preferences.get(notification_type, True)
 
+    @property
+    def calculated_missing_elevations_processing(
+        self,
+    ) -> "MissingElevationsProcessing":
+        if (
+            self.missing_elevations_processing
+            in [
+                MissingElevationsProcessing.OPEN_ELEVATION,
+                MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH,
+            ]
+            and current_app.config["OPEN_ELEVATION_API_URL"] is None
+        ):
+            return MissingElevationsProcessing.NONE
+
+        if (
+            self.missing_elevations_processing
+            == MissingElevationsProcessing.VALHALLA
+            and current_app.config["VALHALLA_API_URL"] is None
+        ):
+            return MissingElevationsProcessing.NONE
+
+        return self.missing_elevations_processing
+
     def serialize(
         self,
         *,
@@ -950,9 +973,7 @@ class User(BaseModel):
                     else {}
                 ),
                 "missing_elevations_processing": (
-                    MissingElevationsProcessing.NONE
-                    if current_app.config["OPEN_ELEVATION_API_URL"] is None
-                    else self.missing_elevations_processing
+                    self.calculated_missing_elevations_processing
                 ),
             }
 
