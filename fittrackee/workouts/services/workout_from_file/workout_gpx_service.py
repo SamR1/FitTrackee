@@ -297,7 +297,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                     )
 
             if update_missing_elevation != MissingElevationsProcessing.NONE:
-                point.elevation = elevations[point_idx]["elevation"]
+                point.elevation = elevations[point_idx]
 
             distance = (
                 point.distance_3d(previous_point)  # type: ignore[arg-type]
