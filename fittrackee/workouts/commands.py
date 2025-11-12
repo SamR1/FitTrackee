@@ -260,6 +260,19 @@ def refresh_workouts(
             refresh_logger.setLevel(logging.DEBUG)
             refresh_logger.addHandler(handler)
 
+        if app.config["OPEN_ELEVATION_API_URL"]:
+            click.secho(
+                "\nWarning: Open Elevation API is set.\nIf users have "
+                "enabled missing elevation processing, multiple calls will be "
+                "made to Open Elevation depending on the number of workouts "
+                "to be refreshed, which may result in rate limit errors.",
+                fg="yellow",
+                bold=True,
+            )
+            if not click.confirm("Do you want to continue?"):
+                click.echo("Aborted!")
+                sys.exit(0)
+
         try:
             service = WorkoutsFromFileRefreshService(
                 sport_id=sport_id,
