@@ -210,11 +210,26 @@ def app_with_open_elevation_url(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv(
         "OPEN_ELEVATION_API_URL", "https://api.open-elevation.example.com"
     )
+    if os.getenv("VALHALLA_API_URL"):
+        monkeypatch.delenv("VALHALLA_API_URL")
     yield from get_app(with_config=True)
 
 
 @pytest.fixture
 def app_with_valhalla_url(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv("VALHALLA_API_URL", "https://api.valhalla.example.com")
+    if os.getenv("OPEN_ELEVATION_API_URL"):
+        monkeypatch.delenv("OPEN_ELEVATION_API_URL")
+    yield from get_app(with_config=True)
+
+
+@pytest.fixture
+def app_with_open_elevation_and_valhalla_url(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Generator:
+    monkeypatch.setenv(
+        "OPEN_ELEVATION_API_URL", "https://api.open-elevation.example.com"
+    )
     monkeypatch.setenv("VALHALLA_API_URL", "https://api.valhalla.example.com")
     yield from get_app(with_config=True)
 

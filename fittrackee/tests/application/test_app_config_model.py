@@ -165,7 +165,8 @@ class TestConfigModel:
         serialized_app_config = config.serialize()
 
         assert serialized_app_config["elevation_services"] == {
-            "open_elevation": False
+            "open_elevation": False,
+            "valhalla": False,
         }
 
     def test_it_returns_elevation_services_when_open_elevation_is_enabled(
@@ -176,5 +177,30 @@ class TestConfigModel:
         serialized_app_config = config.serialize()
 
         assert serialized_app_config["elevation_services"] == {
-            "open_elevation": True
+            "open_elevation": True,
+            "valhalla": False,
+        }
+
+    def test_it_returns_elevation_services_when_valhalla_is_enabled(
+        self, app_with_valhalla_url: "Flask"
+    ) -> None:
+        config = AppConfig.query.one()
+
+        serialized_app_config = config.serialize()
+
+        assert serialized_app_config["elevation_services"] == {
+            "open_elevation": False,
+            "valhalla": True,
+        }
+
+    def test_it_returns_elevation_services_when_valhalla_and_open_elevation_are_enabled(  # noqa
+        self, app_with_open_elevation_and_valhalla_url: "Flask"
+    ) -> None:
+        config = AppConfig.query.one()
+
+        serialized_app_config = config.serialize()
+
+        assert serialized_app_config["elevation_services"] == {
+            "open_elevation": True,
+            "valhalla": True,
         }

@@ -81,7 +81,8 @@
     "LABEL": "Elevations updated from",
     "none": "None",
     "open_elevation": "OpenElevation (raw data)",
-    "open_elevation_smooth": "OpenElevation (smoothed data)"
+    "open_elevation_smooth": "OpenElevation (smoothed data)",
+    "valhalla": "Valhalla"
   },
   "MULTISELECT": {
     "deselectLabel": "Press enter to remove",

@@ -81,7 +81,8 @@
     "LABEL": "Altitudes mises à jour à partir de",
     "none": "Aucun",
     "open_elevation": "OpenElevation (données brutes)",
-    "open_elevation_smooth": "OpenElevation (données lissées)"
+    "open_elevation_smooth": "OpenElevation (données lissées)",
+    "valhalla": "Valhalla"
   },
   "MULTISELECT": {
     "deselectLabel": "Appuyer sur Entrée pour supprimer",

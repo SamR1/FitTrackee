@@ -18,6 +18,7 @@ export type TMissingElevationsProcessing =
   | 'none'
   | 'open_elevation'
   | 'open_elevation_smooth'
+  | 'valhalla'
 
 export interface IUserLightProfile {
   blocked: boolean

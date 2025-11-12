@@ -59,8 +59,10 @@ class AppConfig(BaseModel):
     @property
     def elevation_services(self) -> Dict:
         return {
-            "open_elevation": current_app.config["OPEN_ELEVATION_API_URL"]
-            is not None
+            "open_elevation": (
+                current_app.config["OPEN_ELEVATION_API_URL"] is not None
+            ),
+            "valhalla": current_app.config["VALHALLA_API_URL"] is not None,
         }
 
     def serialize(self) -> Dict:

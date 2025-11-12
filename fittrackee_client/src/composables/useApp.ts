@@ -27,6 +27,16 @@ export default function useApp() {
     () => store.getters[ROOT_STORE.GETTERS.DARK_MODE]
   )
   const darkTheme: ComputedRef<boolean> = computed(() => getDarkTheme())
+  const elevationServices: ComputedRef<string[]> = computed(() => {
+    const services = []
+    if (appConfig.value.elevation_services.open_elevation) {
+      services.push('Open Elevation')
+    }
+    if (appConfig.value.elevation_services.valhalla) {
+      services.push('Valhalla')
+    }
+    return services
+  })
 
   const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
     computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
@@ -51,6 +61,7 @@ export default function useApp() {
     darkMode,
     darkTheme,
     displayOptions,
+    elevationServices,
     errorMessages,
     locale,
   }

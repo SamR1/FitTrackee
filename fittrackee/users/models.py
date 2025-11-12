@@ -826,6 +826,29 @@ class User(BaseModel):
             records.append(record.serialize())
         return records
 
+    @property
+    def calculated_missing_elevations_processing(
+        self,
+    ) -> "MissingElevationsProcessing":
+        if (
+            self.missing_elevations_processing
+            in [
+                MissingElevationsProcessing.OPEN_ELEVATION,
+                MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH,
+            ]
+            and current_app.config["OPEN_ELEVATION_API_URL"] is None
+        ):
+            return MissingElevationsProcessing.NONE
+
+        if (
+            self.missing_elevations_processing
+            == MissingElevationsProcessing.VALHALLA
+            and current_app.config["VALHALLA_API_URL"] is None
+        ):
+            return MissingElevationsProcessing.NONE
+
+        return self.missing_elevations_processing
+
     def serialize(
         self,
         *,
@@ -973,9 +996,7 @@ class User(BaseModel):
                 ),
                 "display_speed_with_pace": self.display_speed_with_pace,
                 "missing_elevations_processing": (
-                    MissingElevationsProcessing.NONE
-                    if current_app.config["OPEN_ELEVATION_API_URL"] is None
-                    else self.missing_elevations_processing
+                    self.calculated_missing_elevations_processing
                 ),
             }
 
