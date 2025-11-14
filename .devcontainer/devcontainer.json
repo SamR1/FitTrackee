@@ -26,7 +26,6 @@
         "ms-python.vscode-pylance",
         "github.copilot-chat",
         "github.copilot",
-        "visualstudioexptteam.vscodeintellicode",
         "Vue.volar",
         "charliermarsh.ruff",
         "Vue.vscode-typescript-vue-plugin"
@@ -36,4 +35,5 @@
       }
     }
   }
+
 }
