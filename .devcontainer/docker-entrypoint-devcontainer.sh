@@ -16,5 +16,5 @@ sleep 3
 echo "Starting app with debugpy..."
 # Use internal VS Code debugger instead of Flask's built-in debugger (--no-debugger)
 # Prevent Flask from implicitly killing a debugging session on code changes (--no-reload)
-exec python -m debugpy --connect host.docker.internal:5678 -m \
+exec python -Xfrozen_modules=off -m debugpy --connect host.docker.internal:5678 -m \
     flask run --debug --with-threads --host=0.0.0.0 --port=5000 --no-debugger --no-reload

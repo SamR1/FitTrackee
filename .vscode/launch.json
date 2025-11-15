@@ -6,6 +6,7 @@
       "type": "debugpy",
       "request": "attach",
       "preLaunchTask": "up: devcontainer-compose",
+      "postDebugTask": "down: devcontainer-compose",
       "listen": {
         "host": "0.0.0.0",
         "port": 5678
