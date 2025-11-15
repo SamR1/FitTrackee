@@ -2069,7 +2069,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
             "latitude": 44.68095,
             "longitude": 6.07367,
             "power": 0,
-            "speed": 3.21,
+            "speed": 0,
             "time": "2018-03-13 12:44:45+00:00",
         }
 
