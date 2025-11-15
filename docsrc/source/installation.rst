@@ -1184,6 +1184,63 @@ Open http://localhost:3000
     $ make docker-test-python  # run unit tests on API
 
 
+VSCode
+~~~~~~
+
+.. versionadded:: 1.0.4
+
+Development
+^^^^^^^^^^^
+
+You can use the **Dev Container** without the **debug configuration** and vice versa.
+Dev Container is strongly recommended on Windows because of path handling issues.
+
+
+Dev Container
+"""""""""""""
+Using a Dev Container gives you a ready-to-use environment (Python, Poetry, Node, etc.) without installing them on your host.
+
+**Prerequisites**
+
+- Docker Engine
+- VS Code with `Dev Containers extension <https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers>`__
+
+**How to use**
+
+- Open the FitTrackee folder in VS Code.
+- When prompted, choose **Reopen in Container** (or open the Command Palette and run ``Dev Containers: Reopen in Container``).
+
+Debug configuration & tasks
+"""""""""""""""""""""""""""
+This repository includes a VS Code *launch* configuration that:
+
+- starts the full Docker Compose dev stack in the background,
+- waits until services are healthy,
+- attaches the debugger to the backend so breakpoints work immediately,
+- tears the stack down when you stop the debugger.
+
+**How to start debugging**
+
+- Open the Command Palette and run ``Debug: Start Debugging`` **or** press **F5**.
+
+.. note::
+   If the debugger fails to attach, use ``Debug: Select Debug Session`` to end the session,
+   check container logs, then run ``Tasks: Run Task`` and then **down: devcontainer-compose**
+   before retrying.
+
+.. warning::
+   On Linux, ``host.docker.internal`` does not resolve automatically from inside containers.
+   If the debugger fails to attach and logs show connection issues to ``host.docker.internal:5678``,
+   ensure ``.devcontainer\docker-compose-devcontainer.yml`` includes the host gateway mapping:
+
+   .. code-block:: yaml
+
+      services:
+        fittrackee:
+          extra_hosts:
+            - "host.docker.internal:host-gateway"
+
+
 Yunohost
 ~~~~~~~~
 
