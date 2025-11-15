@@ -256,6 +256,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                     raise WorkoutFileException(
                         "error", "<time> is missing in segment"
                     )
+                calculated_speed: Optional[float] = 0.0
                 new_workout_segment.start_date = point.time
                 # if a previous segment exists, calculate stopped time
                 # between the two segments
@@ -263,6 +264,8 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                     stopped_time_between_segments += (
                         point.time - previous_segment_last_point_time
                     )
+            else:
+                calculated_speed = track_segment.get_speed(point_idx)
 
             distance = (
                 point.distance_3d(previous_point)  # type: ignore[arg-type]
@@ -276,7 +279,6 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             distance = 0.0 if distance is None else distance
             distance += previous_distance
 
-            calculated_speed = track_segment.get_speed(point_idx)
             speed = (
                 0.0
                 if calculated_speed is None
