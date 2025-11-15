@@ -4,7 +4,7 @@
     {
       "label": "up: devcontainer-compose",
       "type": "shell",
-      "command": "docker compose -f docker-compose-dev.yml -f .devcontainer/docker-compose-devcontainer.yml up --wait --wait-timeout 60 -d fittrackee fittrackee-db redis mail fittrackee_client",
+      "command": "docker compose -f docker-compose-dev.yml -f .devcontainer/docker-compose-devcontainer.yml up --wait --wait-timeout 120 -d fittrackee fittrackee-db redis mail fittrackee_client",
       "problemMatcher": []
     },
     {
