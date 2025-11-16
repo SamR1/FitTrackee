@@ -1210,6 +1210,13 @@ Using a Dev Container gives you a ready-to-use environment (Python, Poetry, Node
 - Open the FitTrackee folder in VS Code.
 - When prompted, choose **Reopen in Container** (or open the Command Palette and run ``Dev Containers: Reopen in Container``).
 
+.. note::
+
+   | For better file-system performance on Windows/macOS, use an **anonymous container volume** so code and packages are stored inside the VM filesystem.
+   | Use the Command Palette action ``Dev Containers: Clone Repository in Container Volume`` to clone into a volume.
+   | If you rebuild the container frequently, prefer a **named volume** to preserve installed dependencies between rebuilds.
+   | See `Improve performance <https://code.visualstudio.com/remote/advancedcontainers/improve-performance>`__.
+
 Debug configuration & tasks
 """""""""""""""""""""""""""
 This repository includes a VS Code *launch* configuration that:
