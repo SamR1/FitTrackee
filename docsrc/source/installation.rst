@@ -1217,6 +1217,11 @@ Using a Dev Container gives you a ready-to-use environment (Python, Poetry, Node
    | If you rebuild the container frequently, prefer a **named volume** to preserve installed dependencies between rebuilds.
    | See `Improve performance <https://code.visualstudio.com/remote/advancedcontainers/improve-performance>`__.
 
+.. note::
+
+    Port 5000 (fittrackee-ui) is forwarded automatically, if you change APP_PORT you need to manually forward the new port using ``Forward a Port`` command in the Command Palette.
+
+
 Debug configuration & tasks
 """""""""""""""""""""""""""
 This repository includes a VS Code *launch* configuration that:

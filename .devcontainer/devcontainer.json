@@ -18,6 +18,15 @@
     }
   },
   "remoteUser": "root",
+  "forwardPorts": [
+    5000
+  ],
+  "portsAttributes": {
+    "5000": {
+      "label": "FitTrackee app",
+      "onAutoForward": "notify"
+    }
+  },
   "postCreateCommand": "poetry config virtualenvs.create false && make install-dev",
   "customizations": {
     "vscode": {
@@ -35,5 +44,4 @@
       }
     }
   }
-
 }
