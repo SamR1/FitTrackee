@@ -4,10 +4,6 @@
     {
       "label": "up: devcontainer-compose",
       "type": "shell",
-      "dependsOn": [
-        "build: dev-fittrackee"
-      ],
-      "dependsOrder": "sequence",
       "command": "docker compose -f docker-compose-dev.yml -f .devcontainer/docker-compose-devcontainer.yml up --wait --wait-timeout 60 -d fittrackee fittrackee-db redis mail fittrackee_client",
       "problemMatcher": []
     },
@@ -15,12 +11,6 @@
       "label": "down: devcontainer-compose",
       "type": "shell",
       "command": "docker compose -f docker-compose-dev.yml -f .devcontainer/docker-compose-devcontainer.yml down",
-      "problemMatcher": []
-    },
-    {
-      "label": "build: dev-fittrackee",
-      "type": "shell",
-      "command": "bash -lc 'if [ -z \"$(docker images -q fittrackee-fittrackee)\" ]; then docker compose -f docker-compose-dev.yml build fittrackee; else echo \"[skip] fittrackee-fittrackee exists, skipping build\"; fi'",
       "problemMatcher": []
     }
   ]

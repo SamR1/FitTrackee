@@ -35,9 +35,5 @@
         "python.defaultInterpreterPath": "/usr/local/bin/python3"
       }
     }
-  },
-  "hostRequirements": {
-    "cpus": 2,
-    "memory": "4gb"
   }
 }
