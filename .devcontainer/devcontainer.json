@@ -27,7 +27,10 @@
       "onAutoForward": "notify"
     }
   },
-  "postCreateCommand": "poetry config virtualenvs.create false && make install-dev",
+  "containerEnv": {
+    "POETRY_VIRTUALENVS_IN_PROJECT": "true"
+  },
+  "postCreateCommand": "make install-dev",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -37,7 +40,7 @@
         "charliermarsh.ruff"
       ],
       "settings": {
-        "python.defaultInterpreterPath": "/usr/local/bin/python3"
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python"
       }
     }
   }
