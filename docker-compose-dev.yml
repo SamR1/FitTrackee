@@ -22,10 +22,10 @@ services:
       - ./data/db:/var/lib/postgresql/data
       - ./db/create-databases.sh:/docker-entrypoint-initdb.d/create-databases.sh
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 20s
-      timeout: 60s
-      retries: 3
+      test: ["CMD-SHELL", "psql -h 127.0.0.1 -p 5432 -U postgres -d fittrackee_test_gw7 -tAc \"SELECT EXISTS (SELECT 1 FROM pg_extension WHERE extname='postgis')\" | grep -q t"]
+      interval: 10s
+      timeout: 120s
+      retries: 12
 
   fittrackee:
     container_name: fittrackee

@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Reverse Attach: Flask backend",
+      "type": "debugpy",
+      "request": "attach",
+      "preLaunchTask": "up: devcontainer-compose",
+      "postDebugTask": "down: devcontainer-compose",
+      "listen": {
+        "host": "0.0.0.0",
+        "port": 5678
+      },
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}",
+          "remoteRoot": "/usr/src/app"
+        }
+      ],
+      "justMyCode": false,
+      "jinja": true,
+      "subProcess": true
+    },
+    //TODO: Add frontend debugging configuration
+  ]
+}

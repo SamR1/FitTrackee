@@ -88,6 +88,7 @@ types-freezegun = "^1.1"
 types-pytz = "^2025.2"
 types-redis = "^4.6"
 types-requests = "^2.32"
+debugpy = "^1.8.17"
 
 [tool.poetry.scripts]
 fittrackee = 'fittrackee.__main__:main'

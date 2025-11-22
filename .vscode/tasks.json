@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "up: devcontainer-compose",
+      "type": "shell",
+      "command": "docker compose -f docker-compose-dev.yml -f .devcontainer/docker-compose-devcontainer.yml up --wait --wait-timeout 120 -d fittrackee fittrackee-db redis mail fittrackee_client",
+      "problemMatcher": []
+    },
+    {
+      "label": "down: devcontainer-compose",
+      "type": "shell",
+      "command": "docker compose -f docker-compose-dev.yml -f .devcontainer/docker-compose-devcontainer.yml down",
+      "problemMatcher": []
+    }
+  ]
+}
