@@ -33,8 +33,6 @@
       "extensions": [
         "ms-python.python",
         "ms-python.vscode-pylance",
-        "github.copilot-chat",
-        "github.copilot",
         "Vue.volar",
         "charliermarsh.ruff"
       ],
