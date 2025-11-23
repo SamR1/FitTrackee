@@ -1,0 +1,8 @@
+services:
+  fittrackee:
+    volumes:
+      - ./.devcontainer/docker-entrypoint-devcontainer.sh:/docker-entrypoint.sh:ro
+    entrypoint:
+      - /docker-entrypoint.sh
+    extra_hosts:
+    - "host.docker.internal:host-gateway" # Linux: make host.docker.internal resolve
