@@ -318,6 +318,12 @@
 <p>Les traductions peuvent être mises à jour via <a class="reference external" href="https://hosted.weblate.org/engage/fittrackee/">Weblate</a>.<br />Pour toute demande de nouvelle langue, veuillez ouvrir un ticket afin d'initialiser les fichiers de traduction et de rendre la langue disponible sur Weblate.</p>
 <p>La traduction de la documentation se trouvent dans le répertoire suivant : <code class="docutils literal notranslate"><span class="pre">docsrc/locales</span></code>. Pour l'instant, seuls l'anglais et le français sont disponibles et les fichiers de traduction ne sont pas encore disponibles sur Weblate.</p>
 </section>
+<section id="generative-ai-policy">
+<h3>Politique relative à l'IA générative<a class="headerlink" href="#generative-ai-policy" title="Lien vers cette rubrique">¶</a></h3>
+<p>L'utilisation de grands modèles linguistiques (LLM) ou d'applications d'IA générative est fortement déconseillée. L'une des nombreuses raisons est que ces outils peuvent produire un code plus complexe que nécessaire, voire incorrect.</p>
+<p>Toutefois, si vous utilisez de tels outils comme aide dans votre environnement de développement (IDE), assurez-vous de bien comprendre le code produit et son fonctionnement. Le code doit également s'intégrer à la base de code existante et doit donc être refactorisé si nécessaire.</p>
+<p>D'autre part, les rapports de bugs ou les <em>pull requests</em> (PR) entièrement générés par des outils d'IA/LLM ou comprenant des <em>commits</em> co-écrits par des outils d'IA/LLM dans le cas des <em>pull requests</em> ne sont pas acceptés et seront fermés.</p>
+</section>
 <section id="how-to-install-fittrackee">
 <h3>Comment installer FitTrackee<a class="headerlink" href="#how-to-install-fittrackee" title="Lien vers cette rubrique">¶</a></h3>
 <p>voir les <a class="reference external" href="https://docs.fittrackee.org/en/installation.html">instructions d'installation</a></p>
@@ -362,7 +368,7 @@
 <li><p>Si nécessaire, mettez à jour les traductions (ajoutez au moins les chaînes en anglais).</p>
 <ul>
 <li><p>Côté client, mettre à jour les fichiers dans le répertoire <code class="docutils literal notranslate"><span class="pre">fittrackee_client/src/locales</span></code>.</p></li>
-<li><p>Côté API (courriels), pour extraire les nouvelles chaînes dans <code class="docutils literal notranslate"><span class="pre">messages.pot</span></code> :</p>
+<li><p>Côté API (courriels et flux RSS), pour extraire les nouvelles chaînes dans <code class="docutils literal notranslate"><span class="pre">messages.pot</span></code> :</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>babel-extract
 </pre></div>
 </div>
@@ -459,6 +465,7 @@
 <li><a class="reference internal" href="#contributing-code">Contribuer au code</a><ul>
 <li><a class="reference internal" href="#project-repository">Dépôt du projet</a></li>
 <li><a class="reference internal" href="#translations">Traductions</a></li>
+<li><a class="reference internal" href="#generative-ai-policy">Politique relative à l'IA générative</a></li>
 <li><a class="reference internal" href="#how-to-install-fittrackee">Comment installer FitTrackee</a></li>
 <li><a class="reference internal" href="#pull-requests">Pull Requests</a></li>
 </ul>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-11-05 19:18+0100\n"
+"POT-Creation-Date: 2025-11-23 14:51+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -7343,7 +7343,7 @@ msgstr ""
 #: ../source/changelog.md:2886 ../source/changelog.md:2992
 #: ../source/changelog.md:3041 ../source/changelog.md:3069
 #: ../source/changelog.md:3099 ../source/changelog.md:3194
-#: ../source/contributing.md:44
+#: ../source/contributing.md:52
 msgid "Pull Requests"
 msgstr ""
 
@@ -8817,14 +8817,40 @@ msgid ""
 msgstr ""
 
 #: ../source/contributing.md:40
-msgid "How to install FitTrackee"
+msgid "Generative AI Policy"
 msgstr ""
 
 #: ../source/contributing.md:42
-msgid "see Installations instructions"
+msgid ""
+"The use of large language models (LLMs) or generative AI applications is "
+"strongly discouraged. One reason, among others, is that these tools can "
+"produce code that is more complex than necessary, or even incorrect."
+msgstr ""
+
+#: ../source/contributing.md:44
+msgid ""
+"However, if you do use such tools as a aid in your development "
+"environment (IDE), make sure you fully understand the code produced and "
+"how it works. The code must also fit the existing code base and should "
+"therefore be refactored if necessary."
 msgstr ""
 
 #: ../source/contributing.md:46
+msgid ""
+"On the other hand, bug reports or PRs generated entirely by AI/LLM tools "
+"or with commits co-authored by AI/LLM tools in the case of PRs are not "
+"accepted and will be closed."
+msgstr ""
+
+#: ../source/contributing.md:48
+msgid "How to install FitTrackee"
+msgstr ""
+
+#: ../source/contributing.md:50
+msgid "see Installations instructions"
+msgstr ""
+
+#: ../source/contributing.md:54
 msgid ""
 "Note: Before starting, please open an issue to discuss implementation if "
 "the feature requires major changes or involves the addition of a new "
@@ -8833,117 +8859,119 @@ msgid ""
 "only sports associated with a file can be added for now."
 msgstr ""
 
-#: ../source/contributing.md:49
+#: ../source/contributing.md:57
 msgid "Please make your changes from the development branch (dev)."
 msgstr ""
 
-#: ../source/contributing.md:51
+#: ../source/contributing.md:59
 msgid "Fork the repository (see GitHub instructions)"
 msgstr ""
 
-#: ../source/contributing.md:53
+#: ../source/contributing.md:61
 msgid "Implement your feature."
 msgstr ""
 
-#: ../source/contributing.md:55
+#: ../source/contributing.md:63
 msgid "If your changes need a database migration:"
 msgstr ""
 
-#: ../source/contributing.md:56
+#: ../source/contributing.md:64
 msgid "You can generate one after updating models with the following command:"
 msgstr ""
 
-#: ../source/contributing.md:60
+#: ../source/contributing.md:68
 msgid ""
 "For data migration, an empty migration can be created with this following"
 " command:"
 msgstr ""
 
-#: ../source/contributing.md:64
+#: ../source/contributing.md:72
 msgid "Rename the migration, prefixing with the next number."
 msgstr ""
 
-#: ../source/contributing.md:65
+#: ../source/contributing.md:73
 msgid "To apply database changes:"
 msgstr ""
 
-#: ../source/contributing.md:69
+#: ../source/contributing.md:77
 msgid "Check the downgrade migration."
 msgstr ""
 
-#: ../source/contributing.md:71
+#: ../source/contributing.md:79
 msgid "Run checks (lint, type check and unit tests)."
 msgstr ""
 
-#: ../source/contributing.md:75
+#: ../source/contributing.md:83
 msgid ""
 "There are some end-to-end tests, to run them (needs a running "
 "application):"
 msgstr ""
 
-#: ../source/contributing.md:80
+#: ../source/contributing.md:88
 msgid "If needed, update translations (at least add English strings)."
 msgstr ""
 
-#: ../source/contributing.md:81
+#: ../source/contributing.md:89
 msgid "On client side, update files in fittrackee_client/src/locales folder."
 msgstr ""
 
-#: ../source/contributing.md:82
-msgid "On API side (emails), to extract new strings into messages.pot:"
+#: ../source/contributing.md:90
+msgid ""
+"On API side (emails and RSS Feeds), to extract new strings into "
+"messages.pot:"
 msgstr ""
 
-#: ../source/contributing.md:86
+#: ../source/contributing.md:94
 msgid ""
 "To add new strings in translations files "
 "(fittrackee/emails/translations/<LANG>/LC_MESSAGES/messages.po):"
 msgstr ""
 
-#: ../source/contributing.md:90
+#: ../source/contributing.md:98
 msgid "After updating strings in messages.po, compile the translations:"
 msgstr ""
 
-#: ../source/contributing.md:95
+#: ../source/contributing.md:103
 msgid "If needed, add or update tests."
 msgstr ""
 
-#: ../source/contributing.md:97
+#: ../source/contributing.md:105
 msgid ""
 "If needed, update documentation (no need to build documentation, it will "
 "be done when releasing)."
 msgstr ""
 
-#: ../source/contributing.md:99
+#: ../source/contributing.md:107
 msgid ""
 "If updated code contains client-side changes, you can generate javascript"
 " assets to check FitTrackee without starting client dev server:"
 msgstr ""
 
-#: ../source/contributing.md:103
+#: ../source/contributing.md:111
 msgid ""
 "No need to commit these files, dist files will be generated before "
 "merging or when releasing."
 msgstr ""
 
-#: ../source/contributing.md:105
+#: ../source/contributing.md:113
 msgid "Create your pull request to merge on dev branch."
 msgstr ""
 
-#: ../source/contributing.md:107
+#: ../source/contributing.md:115
 msgid ""
 "Ensure the pull requests description clearly describes the problem and "
 "solution. Include the relevant issue number if applicable."
 msgstr ""
 
-#: ../source/contributing.md:109
+#: ../source/contributing.md:117
 msgid "Check that all tests have been successfully passed."
 msgstr ""
 
-#: ../source/contributing.md:111
+#: ../source/contributing.md:119
 msgid "If needed, update your branch."
 msgstr ""
 
-#: ../source/contributing.md:114
+#: ../source/contributing.md:122
 msgid "Thanks."
 msgstr ""
 
