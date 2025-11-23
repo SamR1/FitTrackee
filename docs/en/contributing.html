@@ -319,6 +319,12 @@
 <p>Documentation translations are located in following directory: <code class="docutils literal notranslate"><span class="pre">docsrc/locales</span></code>.
 For now only English and French are available and translations files are not yet on Weblate.</p>
 </section>
+<section id="generative-ai-policy">
+<h3>Generative AI Policy<a class="headerlink" href="#generative-ai-policy" title="Link to this heading">¶</a></h3>
+<p>The use of large language models (LLMs) or generative AI applications is strongly discouraged. One reason, among others, is that these tools can produce code that is more complex than necessary, or even incorrect.</p>
+<p>However, if you do use such tools as a aid in your development environment (IDE), make sure you fully understand the code produced and how it works. The code must also fit the existing code base and should therefore be refactored if necessary.</p>
+<p>On the other hand, bug reports or PRs generated entirely by AI/LLM tools or with commits co-authored by AI/LLM tools in the case of PRs are not accepted and will be closed.</p>
+</section>
 <section id="how-to-install-fittrackee">
 <h3>How to install FitTrackee<a class="headerlink" href="#how-to-install-fittrackee" title="Link to this heading">¶</a></h3>
 <p>see <a class="reference external" href="https://docs.fittrackee.org/en/installation.html">Installations instructions</a></p>
@@ -363,7 +369,7 @@ For now only English and French are available and translations files are not yet
 <li><p>If needed, update translations (at least add English strings).</p>
 <ul>
 <li><p>On client side, update files in <code class="docutils literal notranslate"><span class="pre">fittrackee_client/src/locales</span></code> folder.</p></li>
-<li><p>On API side (emails), to extract new strings into <code class="docutils literal notranslate"><span class="pre">messages.pot</span></code>:</p>
+<li><p>On API side (emails and RSS Feeds), to extract new strings into <code class="docutils literal notranslate"><span class="pre">messages.pot</span></code>:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>babel-extract
 </pre></div>
 </div>
@@ -460,6 +466,7 @@ For now only English and French are available and translations files are not yet
 <li><a class="reference internal" href="#contributing-code">Contributing Code</a><ul>
 <li><a class="reference internal" href="#project-repository">Project repository</a></li>
 <li><a class="reference internal" href="#translations">Translations</a></li>
+<li><a class="reference internal" href="#generative-ai-policy">Generative AI Policy</a></li>
 <li><a class="reference internal" href="#how-to-install-fittrackee">How to install FitTrackee</a></li>
 <li><a class="reference internal" href="#pull-requests">Pull Requests</a></li>
 </ul>

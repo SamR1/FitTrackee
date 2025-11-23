@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-11-05 19:18+0100\n"
+"POT-Creation-Date: 2025-11-23 14:51+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -7740,7 +7740,7 @@ msgstr ""
 #: ../source/changelog.md:2886 ../source/changelog.md:2992
 #: ../source/changelog.md:3041 ../source/changelog.md:3069
 #: ../source/changelog.md:3099 ../source/changelog.md:3194
-#: ../source/contributing.md:44
+#: ../source/contributing.md:52
 msgid "Pull Requests"
 msgstr ""
 
@@ -9369,16 +9369,54 @@ msgstr ""
 "sur Weblate."
 
 #: ../source/contributing.md:40
+msgid "Generative AI Policy"
+msgstr "Politique relative à l'IA générative"
+
+#: ../source/contributing.md:42
+msgid ""
+"The use of large language models (LLMs) or generative AI applications is "
+"strongly discouraged. One reason, among others, is that these tools can "
+"produce code that is more complex than necessary, or even incorrect."
+msgstr ""
+"L'utilisation de grands modèles linguistiques (LLM) ou d'applications "
+"d'IA générative est fortement déconseillée. L'une des nombreuses raisons "
+"est que ces outils peuvent produire un code plus complexe que nécessaire,"
+" voire incorrect."
+
+#: ../source/contributing.md:44
+msgid ""
+"However, if you do use such tools as a aid in your development "
+"environment (IDE), make sure you fully understand the code produced and "
+"how it works. The code must also fit the existing code base and should "
+"therefore be refactored if necessary."
+msgstr ""
+"Toutefois, si vous utilisez de tels outils comme aide dans votre "
+"environnement de développement (IDE), assurez-vous de bien comprendre le "
+"code produit et son fonctionnement. Le code doit également s'intégrer à la "
+"base de code existante et doit donc être refactorisé si nécessaire."
+
+#: ../source/contributing.md:46
+msgid ""
+"On the other hand, bug reports or PRs generated entirely by AI/LLM tools "
+"or with commits co-authored by AI/LLM tools in the case of PRs are not "
+"accepted and will be closed."
+msgstr ""
+"D'autre part, les rapports de bugs ou les _pull requests_ (PR) "
+"entièrement générés par des outils d'IA/LLM ou comprenant des _commits_ co-"
+"écrits par des outils d'IA/LLM dans le cas des _pull requests_ ne sont "
+"pas acceptés et seront fermés."
+
+#: ../source/contributing.md:48
 msgid "How to install FitTrackee"
 msgstr "Comment installer FitTrackee"
 
-#: ../source/contributing.md:42
+#: ../source/contributing.md:50
 msgid "see Installations instructions"
 msgstr ""
 "voir les [instructions "
 "d'installation](https://docs.fittrackee.org/en/installation.html)"
 
-#: ../source/contributing.md:46
+#: ../source/contributing.md:54
 msgid ""
 "Note: Before starting, please open an issue to discuss implementation if "
 "the feature requires major changes or involves the addition of a new "
@@ -9394,34 +9432,34 @@ msgstr ""
 "air, seuls les sports associés à un fichier peuvent être ajoutés pour le "
 "moment."
 
-#: ../source/contributing.md:49
+#: ../source/contributing.md:57
 msgid "Please make your changes from the development branch (dev)."
 msgstr ""
 "Veuillez effectuer vos modifications à partir de la branche de "
 "développement (`dev`)"
 
-#: ../source/contributing.md:51
+#: ../source/contributing.md:59
 msgid "Fork the repository (see GitHub instructions)"
 msgstr ""
 "Dupliquer le dépôt (voir les [instructions sur "
 "GitHub](https://docs.github.com/fr/get-started/exploring-projects-on-"
 "github/contributing-to-a-project))"
 
-#: ../source/contributing.md:53
+#: ../source/contributing.md:61
 msgid "Implement your feature."
 msgstr "Implémentez votre fonctionnalité"
 
-#: ../source/contributing.md:55
+#: ../source/contributing.md:63
 msgid "If your changes need a database migration:"
 msgstr "Si vos modifications nécessitent une migration de base de données :"
 
-#: ../source/contributing.md:56
+#: ../source/contributing.md:64
 msgid "You can generate one after updating models with the following command:"
 msgstr ""
 "Vous pouvez en générer un après avoir mis à jour les modèles avec la "
 "commande suivante :"
 
-#: ../source/contributing.md:60
+#: ../source/contributing.md:68
 msgid ""
 "For data migration, an empty migration can be created with this following"
 " command:"
@@ -9429,25 +9467,25 @@ msgstr ""
 "Pour la migration des données, un fichier de migration vide peut être "
 "créé avec la commande suivante :"
 
-#: ../source/contributing.md:64
+#: ../source/contributing.md:72
 msgid "Rename the migration, prefixing with the next number."
 msgstr "Renommez la migration en la préfixant avec le numéro suivant."
 
-#: ../source/contributing.md:65
+#: ../source/contributing.md:73
 msgid "To apply database changes:"
 msgstr "Pour appliquer les modifications de la base de données :"
 
-#: ../source/contributing.md:69
+#: ../source/contributing.md:77
 msgid "Check the downgrade migration."
 msgstr "Vérifiez la migration vers une version inférieure."
 
-#: ../source/contributing.md:71
+#: ../source/contributing.md:79
 msgid "Run checks (lint, type check and unit tests)."
 msgstr ""
 "Exécutez des vérifications (_lint_, vérification de type et tests "
 "unitaires)."
 
-#: ../source/contributing.md:75
+#: ../source/contributing.md:83
 msgid ""
 "There are some end-to-end tests, to run them (needs a running "
 "application):"
@@ -9455,25 +9493,27 @@ msgstr ""
 "Il existe des tests de bout en bout. Pour les exécuter (une application "
 "doit être en cours d'exécution) :"
 
-#: ../source/contributing.md:80
+#: ../source/contributing.md:88
 msgid "If needed, update translations (at least add English strings)."
 msgstr ""
 "Si nécessaire, mettez à jour les traductions (ajoutez au moins les "
 "chaînes en anglais)."
 
-#: ../source/contributing.md:81
+#: ../source/contributing.md:89
 msgid "On client side, update files in fittrackee_client/src/locales folder."
 msgstr ""
 "Côté client, mettre à jour les fichiers dans le répertoire "
 "`fittrackee_client/src/locales`."
 
-#: ../source/contributing.md:82
-msgid "On API side (emails), to extract new strings into messages.pot:"
+#: ../source/contributing.md:90
+msgid ""
+"On API side (emails and RSS Feeds), to extract new strings into "
+"messages.pot:"
 msgstr ""
-"Côté API (courriels), pour extraire les nouvelles chaînes dans "
-"`messages.pot` :"
+"Côté API (courriels et flux RSS), pour extraire les nouvelles chaînes "
+"dans `messages.pot` :"
 
-#: ../source/contributing.md:86
+#: ../source/contributing.md:94
 msgid ""
 "To add new strings in translations files "
 "(fittrackee/emails/translations/<LANG>/LC_MESSAGES/messages.po):"
@@ -9481,17 +9521,17 @@ msgstr ""
 "Pour ajouter les nouvelles chaînes dans les fichiers de traductions "
 "(`fittrackee/emails/translations/<LANG>/LC_MESSAGES/messages.po`) :"
 
-#: ../source/contributing.md:90
+#: ../source/contributing.md:98
 msgid "After updating strings in messages.po, compile the translations:"
 msgstr ""
 "Après avoir mis à jour les chaînes dans `messages.po`, compilez les "
 "traductions :"
 
-#: ../source/contributing.md:95
+#: ../source/contributing.md:103
 msgid "If needed, add or update tests."
 msgstr "Si nécessaire, ajoutez ou mettez à jour des tests."
 
-#: ../source/contributing.md:97
+#: ../source/contributing.md:105
 msgid ""
 "If needed, update documentation (no need to build documentation, it will "
 "be done when releasing)."
@@ -9499,7 +9539,7 @@ msgstr ""
 "Si nécessaire, mettez à jour la documentation (inutile de compiler la "
 "documentation, elle sera effectuée lors de la publication de la version)."
 
-#: ../source/contributing.md:99
+#: ../source/contributing.md:107
 msgid ""
 "If updated code contains client-side changes, you can generate javascript"
 " assets to check FitTrackee without starting client dev server:"
@@ -9508,7 +9548,7 @@ msgstr ""
 " générer les ressources JavaScript pour vérifier **FitTrackee** sans "
 "démarrer le serveur de développement client :"
 
-#: ../source/contributing.md:103
+#: ../source/contributing.md:111
 msgid ""
 "No need to commit these files, dist files will be generated before "
 "merging or when releasing."
@@ -9517,11 +9557,11 @@ msgstr ""
 "compilés avant la fusion de la _pull request_ ou lors de la publication "
 "de la version."
 
-#: ../source/contributing.md:105
+#: ../source/contributing.md:113
 msgid "Create your pull request to merge on dev branch."
 msgstr "Créez votre _pull request_ avec comme branche cible la branche `dev`."
 
-#: ../source/contributing.md:107
+#: ../source/contributing.md:115
 msgid ""
 "Ensure the pull requests description clearly describes the problem and "
 "solution. Include the relevant issue number if applicable."
@@ -9530,15 +9570,15 @@ msgstr ""
 " problème et sa solution. Indiquez le numéro du ticket concerné, le cas "
 "échéant."
 
-#: ../source/contributing.md:109
+#: ../source/contributing.md:117
 msgid "Check that all tests have been successfully passed."
 msgstr "Vérifiez que tous les tests se sont exécutés avec succès."
 
-#: ../source/contributing.md:111
+#: ../source/contributing.md:119
 msgid "If needed, update your branch."
 msgstr "Si nécessaire, mettez à jour votre branche."
 
-#: ../source/contributing.md:114
+#: ../source/contributing.md:122
 msgid "Thanks."
 msgstr "Merci."
 
