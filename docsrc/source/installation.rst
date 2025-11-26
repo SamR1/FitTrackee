@@ -238,6 +238,13 @@ deployment method.
     :default: ``https://nominatim.openstreetmap.org``
 
 
+.. envvar:: OPEN_ELEVATION_API_URL
+
+    .. versionadded:: 1.1.0
+
+    URL of `OpenElevation <https://open-elevation.com/>`__ service (public API or self-hosted instance).
+
+
 .. envvar:: PORT
 
     **FitTrackee** port.
