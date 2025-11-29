@@ -43,12 +43,12 @@
   const lineColors: ComputedRef<{ color: string }> = computed(() => ({
     color: darkTheme.value
       ? chartsColors.darkMode.line
-      : chartsColors.ligthMode.line,
+      : chartsColors.lightMode.line,
   }))
   const textColors: ComputedRef<{ color: string }> = computed(() => ({
     color: darkTheme.value
       ? chartsColors.darkMode.text
-      : chartsColors.ligthMode.text,
+      : chartsColors.lightMode.text,
   }))
   const isLineChart: ComputedRef<boolean> = computed(
     () =>

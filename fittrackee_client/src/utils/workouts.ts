@@ -9,7 +9,7 @@ import type {
 import { convertStatsDistance } from '@/utils/units'
 
 export const chartsColors = {
-  ligthMode: {
+  lightMode: {
     // default chartjs values
     text: '#666',
     line: 'rgba(0, 0, 0, 0.1)',
