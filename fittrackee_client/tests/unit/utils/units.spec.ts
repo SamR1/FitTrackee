@@ -1,7 +1,12 @@
 import { describe, it, expect } from 'vitest'
 
 import { TUnit } from '@/types/units'
-import { convertDistance, getTemperature, getWindSpeed } from '@/utils/units'
+import {
+  convertDistance,
+  getTemperature,
+  getWindSpeed,
+  getPace,
+} from '@/utils/units'
 
 describe('convertDistance', () => {
   const testsParams: [number, TUnit, TUnit, number][] = [
@@ -83,6 +88,23 @@ describe('getWindSpeed', () => {
   testsParams.map((testParams) => {
     it(`get wind speed for input: ${testParams[0]} and imperialUnits: ${testParams[1]}`, () => {
       expect(getWindSpeed(testParams[0], testParams[1])).toBe(testParams[2])
+    })
+  })
+})
+
+describe('getPace', () => {
+  const testsParams: [string, boolean, string][] = [
+    ['00:00:00', false, '0:00'],
+    ['00:06:00', false, '6:00'],
+    ['00:08:13', false, '8:13'],
+    ['00:00:00', true, '0:00'],
+    ['00:06:00', true, '9:39'],
+    ['00:08:13', true, '13:13'],
+  ]
+
+  testsParams.map((testParams) => {
+    it(`convert ${testParams[0]} (imperial units: ${testParams[1]}) into ${testParams[2]}}`, () => {
+      expect(getPace(testParams[0], testParams[1])).toBe(testParams[2])
     })
   })
 })

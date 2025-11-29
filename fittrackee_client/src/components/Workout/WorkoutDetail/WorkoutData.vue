@@ -56,6 +56,25 @@
     </div>
     <div
       class="workout-data"
+      v-if="workoutObject.avePace !== null && workoutObject.maxPace !== null"
+    >
+      <i class="fa fa-tachometer" aria-hidden="true" />
+      <span class="label">{{ $t('workouts.AVERAGE_PACE') }}</span
+      >:
+      <Pace
+        :pace="workoutObject.avePace"
+        :strong="true"
+        :useImperialUnits="useImperialUnits"
+      /><br />
+      <span class="label"> {{ $t('workouts.FASTEST_PACE') }} </span>:
+      <Pace
+        :pace="workoutObject.maxPace"
+        :strong="true"
+        :useImperialUnits="useImperialUnits"
+      />
+    </div>
+    <div
+      class="workout-data"
       v-if="workoutObject.maxAlt !== null && workoutObject.minAlt !== null"
     >
       <img

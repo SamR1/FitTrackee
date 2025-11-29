@@ -220,6 +220,52 @@ describe('formatDuration (with units and hours)', () => {
   })
 })
 
+describe('formatDuration (without padded hours and minutes)', () => {
+  const testsParams = [
+    {
+      inputDuration: 0,
+      inputWithHours: false,
+      inputNotPadded: false,
+      expectedDuration: '00:00',
+    },
+    {
+      inputDuration: 0,
+      inputWithHours: false,
+      inputNotPadded: true,
+      expectedDuration: '0:00',
+    },
+    {
+      inputDuration: 71,
+      inputWithHours: false,
+      inputNotPadded: false,
+      expectedDuration: '01:11',
+    },
+    {
+      inputDuration: 71,
+      inputWithHours: false,
+      inputNotPadded: true,
+      expectedDuration: '1:11',
+    },
+    {
+      inputDuration: 3671,
+      inputWithHours: false,
+      inputNotPadded: false,
+      expectedDuration: '01:01:11',
+    },
+  ]
+
+  testsParams.map((testParams) => {
+    it(`it returns ${testParams.expectedDuration} with withHours as ${testParams.inputWithHours} as and notPadded as ${testParams.inputNotPadded}`, () => {
+      expect(
+        formatDuration(testParams.inputDuration, {
+          withHours: testParams.inputWithHours,
+          notPadded: testParams.inputNotPadded,
+        })
+      ).toStrictEqual(testParams.expectedDuration)
+    })
+  })
+})
+
 describe('getDuration ', () => {
   const testsParams = [
     {

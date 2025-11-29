@@ -1,4 +1,5 @@
 import type { IUnit, TFactor, TUnit } from '@/types/units'
+import { formatDuration } from '@/utils/duration.ts'
 
 export const units: Record<string, IUnit> = {
   ft: {
@@ -62,6 +63,16 @@ export const convertStatsDistance = (
 ): number => {
   const unitTo = useImperialUnits ? units[unitFrom].defaultTarget : unitFrom
   return useImperialUnits ? convertDistance(value, unitFrom, unitTo, 2) : value
+}
+
+export const getPace = (pace: string, useImperialUnits: boolean): string => {
+  // 1 min/km = 1.609344 min/mile
+  const [hours, minutes, seconds] = pace.split(':')
+  let totalSeconds = +hours * 3600 + +minutes * 60 + +seconds
+  if (useImperialUnits) {
+    totalSeconds *= 1.609344
+  }
+  return formatDuration(totalSeconds, { notPadded: true })
 }
 
 export const getTemperature = (
