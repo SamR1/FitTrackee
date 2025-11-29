@@ -75,6 +75,13 @@ export const getPace = (pace: string, useImperialUnits: boolean): string => {
   return formatDuration(totalSeconds, { notPadded: true })
 }
 
+export const convertPaceInMinutes = (
+  pace_in_seconds: number, // pace in s/m
+  useImperialUnits: boolean
+): number => {
+  return pace_in_seconds * 1000 * (useImperialUnits ? 1.609344 : 1)
+}
+
 export const getTemperature = (
   temperatureInCelsius: number,
   useImperialUnits: boolean

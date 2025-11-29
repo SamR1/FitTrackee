@@ -6,6 +6,7 @@ import {
   getTemperature,
   getWindSpeed,
   getPace,
+  convertPaceInMinutes,
 } from '@/utils/units'
 
 describe('convertDistance', () => {
@@ -105,6 +106,25 @@ describe('getPace', () => {
   testsParams.map((testParams) => {
     it(`convert ${testParams[0]} (imperial units: ${testParams[1]}) into ${testParams[2]}}`, () => {
       expect(getPace(testParams[0], testParams[1])).toBe(testParams[2])
+    })
+  })
+})
+
+describe('convertPaceInMinutes', () => {
+  const testsParams: [number, boolean, number][] = [
+    [0, false, 0],
+    [360, false, 360000],
+    [493, false, 493000],
+    [0, true, 0],
+    [360, true, 579363.8400000001],
+    [493, true, 793406.5920000001],
+  ]
+
+  testsParams.map((testParams) => {
+    it(`convert ${testParams[0]} (imperial units: ${testParams[1]}) into ${testParams[2]}}`, () => {
+      expect(convertPaceInMinutes(testParams[0], testParams[1])).toBe(
+        testParams[2]
+      )
     })
   })
 })

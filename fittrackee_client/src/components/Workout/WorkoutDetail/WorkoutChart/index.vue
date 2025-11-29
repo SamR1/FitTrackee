@@ -153,6 +153,7 @@
   const splitCharts: Ref<boolean> = ref(
     authUser.value.username ? authUser.value.split_workout_charts : false
   )
+  const onlyPaceDisplayed = ref(false)
 
   const currentDataPoint: Reactive<IHoverPoint> = reactive({
     dataIndex: 0,
@@ -164,6 +165,9 @@
 
   const hasElevation: ComputedRef<boolean> = computed(
     () => datasets.value && datasets.value.datasets.elevation?.data.length > 0
+  )
+  const hasPace: ComputedRef<boolean> = computed(
+    () => datasets.value && datasets.value.datasets.pace?.data.length > 0
   )
   const chartLoading: ComputedRef<boolean> = computed(
     () => workoutData.value.chartDataLoading
@@ -191,7 +195,11 @@
     )
   )
   const displayedDatasets = computed(() => {
-    const displayedDatasets = [datasets.value.datasets.speed]
+    const displayedDatasets = [
+      hasPace.value
+        ? datasets.value.datasets.pace
+        : datasets.value.datasets.speed,
+    ]
     if (datasets.value.datasets.hr.data.length > 0) {
       displayedDatasets.push(datasets.value.datasets.hr)
     }
@@ -323,7 +331,17 @@
             // @ts-ignore
             display: (context: any): boolean => {
               const displayedDatasets = getDisplayedDatasets(context, 'yLeft')
+              onlyPaceDisplayed.value =
+                displayedDatasets.length === 1 &&
+                displayedDatasets[0].label === 'pace'
               return displayedDatasets.length === 1
+            },
+            callback: function (value) {
+              return label === 'pace' || onlyPaceDisplayed.value
+                ? formatDuration(+value, {
+                    notPadded: true,
+                  })
+                : value
             },
             ...textColors.value,
           },
@@ -441,6 +459,8 @@
         return ` (${fromKmUnit}/h)`
       case 'power':
         return ` (W)`
+      case 'pace':
+        return ` (min/${fromKmUnit})`
       default:
         return ''
     }
@@ -473,6 +493,13 @@
     currentDataPoint.x = context.parsed.x
     currentDataPoint.y = context.parsed.y
 
+    if (context.dataset.id === 'pace') {
+      const formattedValue = formatDuration(context.raw, {
+        notPadded: true,
+      })
+      const unit = authUser.value.imperial_units ? 'min/mi' : 'min/km'
+      return ` ${context.dataset.label}: ${formattedValue} ${unit}`
+    }
     const label = ` ${context.dataset.label}: ${context.formattedValue}`
     if (context.dataset.id === 'elevation') {
       return label + ` ${fromMUnit}`

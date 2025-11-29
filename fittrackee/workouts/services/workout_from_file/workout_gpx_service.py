@@ -4,7 +4,6 @@ from statistics import mean
 from typing import IO, TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 import gpxpy.gpx
-import pandas as pd
 import pytz
 from lxml import etree as ET
 
@@ -12,6 +11,10 @@ from fittrackee import db
 
 from ...exceptions import WorkoutExceedingValueException, WorkoutFileException
 from ...models import WORKOUT_VALUES_LIMIT, Workout, WorkoutSegment
+from ...utils.convert import (
+    convert_speed_into_pace_duration,
+    convert_speed_into_pace_in_sec_per_meter,
+)
 from .base_workout_with_segment_service import (
     BaseWorkoutWithSegmentsCreationService,
 )
@@ -171,7 +174,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
 
         if isinstance(object_to_update, WorkoutSegment):
             object_to_update.max_speed = (gpx_info.max_speed / 1000) * 3600
-            object_to_update.max_pace = self._calculate_pace(
+            object_to_update.max_pace = convert_speed_into_pace_duration(
                 object_to_update.max_speed
             )
 
@@ -185,7 +188,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             / 1000
             * 3600
         )
-        object_to_update.ave_pace = self._calculate_pace(
+        object_to_update.ave_pace = convert_speed_into_pace_duration(
             object_to_update.ave_speed
         )
         object_to_update.descent = gpx_info.descent
@@ -238,17 +241,6 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             "max_power": max(powers) if powers else None,
         }
 
-    @staticmethod
-    def _calculate_pace(speed: Optional[float]) -> Optional[timedelta]:
-        # speed unit is 'km/h'
-        if speed is None:
-            return None
-        return (
-            pd.Timedelta(timedelta(minutes=60 / speed if speed else 0))
-            .round("s")
-            .to_pytimedelta()
-        )
-
     def _process_segment_points(
         self,
         track_segment: "gpxpy.gpx.GPXTrackSegment",
@@ -300,7 +292,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 if calculated_speed is None
                 else round((calculated_speed / 1000) * 3600, 2)
             )
-            pace = self._calculate_pace(speed)
+            pace = convert_speed_into_pace_in_sec_per_meter(speed)
 
             time_difference = point.time_difference(first_point)
             segment_point: Dict = {
@@ -309,7 +301,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 "elevation": point.elevation,
                 "latitude": point.latitude,
                 "longitude": point.longitude,
-                "pace": str(pace) if pace else None,
+                "pace": pace,
                 "speed": speed,
                 "time": (
                     str(point.time.astimezone(pytz.utc))
@@ -498,7 +490,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             hr_cadence_power_stats=hr_cadence_power_stats,
         )
         self.workout.max_speed = max_speed
-        self.workout.max_pace = self._calculate_pace(max_speed)
+        self.workout.max_pace = convert_speed_into_pace_duration(max_speed)
         bounds = track.get_bounds()
         self.workout.bounds = (
             [

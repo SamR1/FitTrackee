@@ -6,7 +6,7 @@ import type {
   TWorkoutDatasetKeys,
   TWorkoutDatasets,
 } from '@/types/workouts'
-import { convertStatsDistance } from '@/utils/units'
+import { convertPaceInMinutes, convertStatsDistance } from '@/utils/units'
 
 export const chartsColors = {
   lightMode: {
@@ -76,6 +76,15 @@ export const getDatasets = (
       data: [],
       yAxisID: 'yLeft',
     },
+    pace: {
+      id: 'pace',
+      label: t('workouts.PACE'),
+      backgroundColor: ['transparent'],
+      borderColor: [useDarkMode ? '#5f5c97' : '#8884d8'],
+      borderWidth: 2,
+      data: [],
+      yAxisID: 'yLeft',
+    },
   }
   const distance_labels: unknown[] = []
   const duration_labels: unknown[] = []
@@ -93,6 +102,9 @@ export const getDatasets = (
       datasets.elevation.data.push(
         convertStatsDistance('m', data.elevation, useImperialUnits)
       )
+    }
+    if (data.pace !== undefined) {
+      datasets.pace.data.push(convertPaceInMinutes(data.pace, useImperialUnits))
     }
 
     extensionsData.forEach((extension: TWorkoutDatasetKeys) => {

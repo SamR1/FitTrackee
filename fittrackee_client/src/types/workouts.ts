@@ -243,6 +243,7 @@ export interface IWorkoutApiChartData {
   hr?: number
   latitude: number
   longitude: number
+  pace?: number
   power?: number
   speed: number
   time: string
@@ -273,6 +274,7 @@ export type TWorkoutDatasetKeys =
   | 'hr'
   | 'cadence'
   | 'power'
+  | 'pace'
 
 export type TWorkoutDatasets = {
   [key in TWorkoutDatasetKeys]: IChartDataset
