@@ -108,6 +108,8 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "ave_power": None,
                 "max_power": None,
                 "with_geometry": False,
+                "ave_pace": None,
+                "max_pace": None,
             }
         ]
 
@@ -118,7 +120,9 @@ class TestUserDataExporterGetUserWorkoutsData:
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
-        workout = create_a_workout_with_file(user_1, gpx_file)
+        workout = create_a_workout_with_file(
+            user_1, gpx_file, sport_id=sport_1_cycling.id
+        )
         exporter = UserDataExporter(user_1)
 
         workouts_data = exporter.get_user_workouts_data()
@@ -168,6 +172,72 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "ave_power": None,
                 "max_power": None,
                 "with_geometry": True,
+                "ave_pace": None,
+                "max_pace": None,
+            }
+        ]
+
+    def test_it_returns_data_for_workout_with_gpx_and_pace(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_2_running: Sport,
+        gpx_file: str,
+    ) -> None:
+        workout = create_a_workout_with_file(
+            user_1, gpx_file, sport_id=sport_2_running.id
+        )
+        exporter = UserDataExporter(user_1)
+
+        workouts_data = exporter.get_user_workouts_data()
+
+        assert workouts_data == [
+            {
+                "id": workout.short_id,
+                "sport_id": sport_2_running.id,
+                "sport_label": sport_2_running.label,
+                "title": workout.title,
+                "creation_date": workout.creation_date,
+                "modification_date": workout.modification_date,
+                "workout_date": workout.workout_date,
+                "duration": str(workout.duration),
+                "pauses": None,
+                "moving": str(workout.moving),
+                "distance": float(workout.distance),  # type: ignore[arg-type]
+                "min_alt": float(workout.min_alt),  # type: ignore[arg-type]
+                "max_alt": float(workout.max_alt),  # type: ignore[arg-type]
+                "descent": float(workout.descent),  # type: ignore[arg-type]
+                "ascent": float(workout.ascent),  # type: ignore[arg-type]
+                "max_speed": float(workout.max_speed),  # type: ignore[arg-type]
+                "ave_speed": float(workout.ave_speed),  # type: ignore[arg-type]
+                "original_file": workout.original_file.split("/")[-1],  # type: ignore[union-attr]
+                "records": [record.serialize() for record in workout.records],
+                "segments": [
+                    {**segment.serialize(), "segment_number": number}
+                    for number, segment in enumerate(workout.segments, start=1)
+                ],
+                "source": workout.source,
+                "weather_start": None,
+                "weather_end": None,
+                "notes": workout.notes,
+                "equipments": [],
+                "description": None,
+                "liked": workout.liked_by(user_1),
+                "likes_count": workout.likes.count(),
+                "analysis_visibility": (
+                    workout.calculated_analysis_visibility.value
+                ),
+                "map_visibility": workout.calculated_map_visibility.value,
+                "workout_visibility": workout.workout_visibility.value,
+                "ave_cadence": None,
+                "max_cadence": None,
+                "ave_hr": None,
+                "max_hr": None,
+                "ave_power": None,
+                "max_power": None,
+                "with_geometry": True,
+                "ave_pace": str(workout.ave_pace),
+                "max_pace": str(workout.max_pace),
             }
         ]
 

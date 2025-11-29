@@ -34,10 +34,9 @@ from .exceptions import WorkoutForbiddenException
 from .utils.convert import (
     convert_in_duration,
     convert_value_to_integer,
-    get_cadence,
-    get_power,
 )
 from .utils.gpx import get_file_extension
+from .utils.sports import get_cadence, get_pace, get_power
 
 if TYPE_CHECKING:
     from sqlalchemy.orm.attributes import AttributeEvent
@@ -345,6 +344,12 @@ class Workout(BaseModel):
         Geometry(geometry_type="POINT", srid=WGS84_CRS, spatial_index=True),
         nullable=True,
     )
+    ave_pace: Mapped[Optional[timedelta]] = mapped_column(
+        nullable=True
+    )  # min/km
+    max_pace: Mapped[Optional[timedelta]] = mapped_column(
+        nullable=True
+    )  # min/km
 
     user: Mapped["User"] = relationship(
         "User", lazy="select", single_parent=True
@@ -582,6 +587,8 @@ class Workout(BaseModel):
             "max_hr": self.max_hr if can_see_heart_rate else None,
             "ave_power": get_power(sport_label, self.ave_power),
             "max_power": get_power(sport_label, self.max_power),
+            "ave_pace": get_pace(sport_label, self.ave_pace),
+            "max_pace": get_pace(sport_label, self.max_pace),
         }
 
         if not light or with_equipments:
@@ -992,6 +999,12 @@ class WorkoutSegment(BaseModel):
     start_date: Mapped[datetime] = mapped_column(
         TZDateTime, index=True, nullable=False
     )
+    ave_pace: Mapped[Optional[timedelta]] = mapped_column(
+        nullable=True
+    )  # min/km
+    max_pace: Mapped[Optional[timedelta]] = mapped_column(
+        nullable=True
+    )  # min/km
 
     workout: Mapped["Workout"] = relationship(
         "Workout", lazy="joined", single_parent=True
@@ -1045,6 +1058,8 @@ class WorkoutSegment(BaseModel):
             "max_hr": self.max_hr if can_see_heart_rate else None,
             "ave_power": get_power(sport_label, self.ave_power),
             "max_power": get_power(sport_label, self.max_power),
+            "ave_pace": get_pace(sport_label, self.ave_pace),
+            "max_pace": get_pace(sport_label, self.max_pace),
         }
 
 

@@ -2,7 +2,6 @@ import re
 from datetime import timedelta
 from typing import Optional, Union
 
-from ..constants import POWER_SPORTS, RPM_CADENCE_SPORTS, SPM_CADENCE_SPORTS
 from ..exceptions import InvalidDurationException
 
 
@@ -27,26 +26,3 @@ def convert_value_to_integer(
         100 if record_type in ["AS", "MS"] else 1000  # 'FD' and 'HA
     )
     return round(val * multiplier)
-
-
-def get_cadence(sport_label: str, cadence: Optional[int]) -> Optional[int]:
-    if cadence is None:
-        return None
-
-    if sport_label in RPM_CADENCE_SPORTS:
-        return cadence
-
-    if sport_label in SPM_CADENCE_SPORTS:
-        return cadence * 2
-
-    return None
-
-
-def get_power(sport_label: str, power: Optional[int]) -> Optional[int]:
-    if power is None:
-        return None
-
-    if sport_label in POWER_SPORTS:
-        return power
-
-    return None
