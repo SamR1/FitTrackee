@@ -328,6 +328,11 @@
             ...lineColors.value,
           },
           position: 'left',
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          reverse: (context: any): boolean => {
+            return isPaceOnlyDisplayed(context)
+          },
           title: {
             display: true,
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -490,6 +495,13 @@
     return chart.data.datasets.filter(
       (dataset: IChartDataset, index: number) =>
         dataset.yAxisID === yaxisID && !chart.getDatasetMeta(index).hidden
+    )
+  }
+  function isPaceOnlyDisplayed(context: any) {
+    const displayedDatasets = getDisplayedDatasets(context, 'yLeft')
+    return (
+      context.chart.canvas.id === 'line-chart-pace' ||
+      (displayedDatasets.length === 1 && displayedDatasets[0].label === 'pace')
     )
   }
   function getTooltipTitle(tooltipItems: TooltipItem<any>[]) {
