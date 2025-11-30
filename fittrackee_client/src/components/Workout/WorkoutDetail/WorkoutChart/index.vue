@@ -3,17 +3,33 @@
     <Card>
       <template #title>{{ $t('workouts.ANALYSIS') }} </template>
       <template #content>
-        <div class="split-charts" v-if="displayedDatasets.length > 1">
-          <label for="split-chart">
-            {{ $t('workouts.DISPLAY_MULTIPLE_CHARTS') }}:
-          </label>
-          <input
-            id="split-chart"
-            type="checkbox"
-            :checked="splitCharts"
-            :disabled="workoutData.refreshLoading"
-            @click="splitCharts = !splitCharts"
-          />
+        <div class="chart-display">
+          <div class="chart-options">
+            <div class="split-charts" v-if="displayedDatasets.length > 1">
+              <label for="split-chart">
+                {{ $t('workouts.DISPLAY_MULTIPLE_CHARTS') }}:
+              </label>
+              <input
+                id="split-chart"
+                type="checkbox"
+                :checked="splitCharts"
+                :disabled="workoutData.refreshLoading"
+                @click="splitCharts = !splitCharts"
+              />
+            </div>
+            <div class="display-speed" v-if="hasPace">
+              <label for="display-speed">
+                {{ $t('workouts.SPEED_INSTEAD_OF_PACE') }}:
+              </label>
+              <input
+                id="display-speed"
+                type="checkbox"
+                :checked="displaySpeed"
+                :disabled="workoutData.refreshLoading"
+                @click="displaySpeed = !displaySpeed"
+              />
+            </div>
+          </div>
         </div>
         <div class="chart-radio">
           <label>
@@ -154,6 +170,7 @@
     authUser.value.username ? authUser.value.split_workout_charts : false
   )
   const onlyPaceDisplayed = ref(false)
+  const displaySpeed = ref(false)
 
   const currentDataPoint: Reactive<IHoverPoint> = reactive({
     dataIndex: 0,
@@ -196,7 +213,7 @@
   )
   const displayedDatasets = computed(() => {
     const displayedDatasets = [
-      hasPace.value
+      hasPace.value && !displaySpeed.value
         ? datasets.value.datasets.pace
         : datasets.value.datasets.speed,
     ]
@@ -658,6 +675,16 @@
             }
           }
         }
+        .chart-display {
+          display: flex;
+          gap: $default-margin;
+          margin-bottom: $default-margin * 0.5;
+          font-weight: bold;
+        }
+        .chart-options {
+          display: flex;
+          gap: $default-margin;
+        }
         .line-chart {
           height: 400px;
 
@@ -709,6 +736,25 @@
             margin-left: 40%;
           }
         }
+      }
+
+      @media screen and (max-width: $x-small-limit) {
+        background: yellow;
+        .chart-display {
+          flex-direction: column;
+          gap: 0 !important;
+        }
+        .chart-options {
+          gap: 0;
+          .split-charts,
+          .display-speed {
+            margin: 0;
+            padding: 0;
+          }
+        }
+      }
+      @media screen and (max-width: $xx-small-limit) {
+        background: red;
       }
     }
   }
