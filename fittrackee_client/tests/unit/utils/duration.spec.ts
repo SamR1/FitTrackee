@@ -247,15 +247,27 @@ describe('formatDuration (without padded hours and minutes)', () => {
       expectedDuration: '1:11',
     },
     {
+      inputDuration: 71,
+      inputWithHours: true,
+      inputNotPadded: true,
+      expectedDuration: '0:01:11',
+    },
+    {
       inputDuration: 3671,
       inputWithHours: false,
       inputNotPadded: false,
       expectedDuration: '01:01:11',
     },
+    {
+      inputDuration: 3671,
+      inputWithHours: false,
+      inputNotPadded: true,
+      expectedDuration: '1:01:11',
+    },
   ]
 
   testsParams.map((testParams) => {
-    it(`it returns ${testParams.expectedDuration} with withHours as ${testParams.inputWithHours} as and notPadded as ${testParams.inputNotPadded}`, () => {
+    it(`with input ${testParams.inputDuration}, it returns ${testParams.expectedDuration} with withHours as ${testParams.inputWithHours} as and notPadded as ${testParams.inputNotPadded}`, () => {
       expect(
         formatDuration(testParams.inputDuration, {
           withHours: testParams.inputWithHours,
