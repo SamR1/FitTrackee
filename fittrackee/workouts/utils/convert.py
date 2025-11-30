@@ -48,7 +48,7 @@ def convert_speed_into_pace_duration(
 def convert_speed_into_pace_in_sec_per_meter(
     speed: Optional[float],
 ) -> Optional[float]:
-    # return pace is s/m
+    # return pace in s/m
     #
     # note: speed unit is 'km/h'
     if speed is None:
