@@ -31,6 +31,29 @@
     </div>
     <div
       class="workout-data"
+      v-if="workoutObject.avePace !== null && workoutObject.maxPace !== null"
+    >
+      <img
+        class="chronometer"
+        src="/img/workouts/chronometer.svg"
+        :alt="$t('workouts.PACE')"
+      />
+      <span class="label">{{ $t('workouts.AVERAGE_PACE') }}</span
+      >:
+      <Pace
+        :pace="workoutObject.avePace"
+        :strong="true"
+        :useImperialUnits="useImperialUnits"
+      /><br />
+      <span class="label"> {{ $t('workouts.FASTEST_PACE') }} </span>:
+      <Pace
+        :pace="workoutObject.maxPace"
+        :strong="true"
+        :useImperialUnits="useImperialUnits"
+      />
+    </div>
+    <div
+      class="workout-data"
       v-if="workoutObject.aveSpeed !== null && workoutObject.maxSpeed !== null"
     >
       <i class="fa fa-tachometer" aria-hidden="true" />
@@ -53,25 +76,6 @@
         :useImperialUnits="useImperialUnits"
       />
       <WorkoutRecord :workoutObject="workoutObject" recordType="MS" />
-    </div>
-    <div
-      class="workout-data"
-      v-if="workoutObject.avePace !== null && workoutObject.maxPace !== null"
-    >
-      <i class="fa fa-tachometer" aria-hidden="true" />
-      <span class="label">{{ $t('workouts.AVERAGE_PACE') }}</span
-      >:
-      <Pace
-        :pace="workoutObject.avePace"
-        :strong="true"
-        :useImperialUnits="useImperialUnits"
-      /><br />
-      <span class="label"> {{ $t('workouts.FASTEST_PACE') }} </span>:
-      <Pace
-        :pace="workoutObject.maxPace"
-        :strong="true"
-        :useImperialUnits="useImperialUnits"
-      />
     </div>
     <div
       class="workout-data"
@@ -230,7 +234,8 @@
 
     .fa,
     .mountains,
-    .cadence {
+    .cadence,
+    .chronometer {
       min-width: 22px;
     }
     .fa-bolt {

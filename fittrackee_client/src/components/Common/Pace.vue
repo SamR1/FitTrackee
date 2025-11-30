@@ -2,7 +2,7 @@
   <span class="pace" :class="{ strong }">{{ convertedPace }}</span>
   {{ ' ' }}
   <span v-if="displayUnit" class="unit" :class="{ strong }">
-    {{ useImperialUnits ? 'min/mile' : 'min/km' }}
+    {{ useImperialUnits ? 'min/mi' : 'min/km' }}
   </span>
 </template>
 
