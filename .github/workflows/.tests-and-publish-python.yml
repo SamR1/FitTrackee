@@ -53,13 +53,13 @@ jobs:
           --health-retries 5
     strategy:
       matrix:
-        python-version:  [ "3.10", "3.11", "3.12", "3.13", "3.14" ]
+        python-version:  [ "3.10", "3.11", "3.12", "3.13", "3.14.0" ]
     steps:
 
       - uses: actions/checkout@v4
 
       - name: Install libgdal-dev in order to build numpy with python 3.14
-        if: matrix.python-version == '3.14'
+        if: matrix.python-version == '3.14.0'
         run: |
           apt-get update
           apt-get install -y libgdal-dev
