@@ -18,7 +18,7 @@ from fittrackee.responses import (
 from fittrackee.users.models import User
 from fittrackee.users.roles import UserRole
 
-from .constants import SPORTS_WITHOUT_ELEVATION_DATA
+from .constants import PACE_SPORTS, SPORTS_WITHOUT_ELEVATION_DATA
 from .models import Sport, Workout
 from .utils.uploads import get_upload_dir_size
 from .utils.workouts import get_average_speed, get_datetime_from_request_args
@@ -387,6 +387,7 @@ def get_workouts_by_sport(
               "average_descent": 59.33,
               "average_distance": 15.67,
               "average_duration": 3320,
+              "average_pace": null,
               "average_speed": 16.99,
               "total_workouts": 3,
               "total_ascent": 150.0,
@@ -399,6 +400,7 @@ def get_workouts_by_sport(
               "average_descent": 78.0,
               "average_distance": 5.613,
               "average_duration": 1267,
+              "average_pace": null,
               "average_speed": 15.95,
               "total_workouts": 1,
               "total_ascent": 46.0,
@@ -411,6 +413,7 @@ def get_workouts_by_sport(
               "average_ascent": 78.0,
               "average_distance": 15.282,
               "average_duration": 7641,
+              "average_pace": "0:13:24",
               "average_speed": 4.48,
               "total_workouts": 2,
               "total_ascent": 203.0,
@@ -438,6 +441,7 @@ def get_workouts_by_sport(
               "average_descent": 78.0,
               "average_distance": 5.613,
               "average_duration": 1267,
+              "average_pace": null,
               "average_speed": 15.95,
               "total_workouts": 1,
               "total_ascent": 46.0,
@@ -495,6 +499,7 @@ def get_workouts_by_sport(
         params = request.args.copy()
         sport_id = params.get("sport_id")
         sport_ids_without_elevation_data = []
+        sport_ids_without_pace_data = []
         filters = [Workout.user_id == user.id]
 
         if sport_id:
@@ -504,12 +509,21 @@ def get_workouts_by_sport(
             filters.append(Workout.sport_id == sport_id)
             if sport.label in SPORTS_WITHOUT_ELEVATION_DATA:
                 sport_ids_without_elevation_data = [sport.id]
+            if sport.label not in PACE_SPORTS:
+                sport_ids_without_pace_data = [sport.id]
         else:
             sports_without_elevation_data = Sport.query.filter(
                 Sport.label.in_(SPORTS_WITHOUT_ELEVATION_DATA)
             ).all()
             sport_ids_without_elevation_data = [
                 sport.id for sport in sports_without_elevation_data
+            ]
+
+            sports_without_pace_data = Sport.query.filter(
+                Sport.label.not_in(PACE_SPORTS)
+            ).all()
+            sport_ids_without_pace_data = [
+                sport.id for sport in sports_without_pace_data
             ]
 
         workouts_query = Workout.query.filter(*filters)
@@ -533,6 +547,7 @@ def get_workouts_by_sport(
                 func.sum(workouts_subquery.c.descent),
                 func.sum(workouts_subquery.c.distance),
                 func.sum(workouts_subquery.c.moving),
+                func.avg(workouts_subquery.c.ave_pace),
                 func.count(workouts_subquery.c.id),
             )
             .group_by(workouts_subquery.c.sport_id)
@@ -544,6 +559,7 @@ def get_workouts_by_sport(
             return_elevation_data = (
                 row[0] not in sport_ids_without_elevation_data
             )
+            return_pace_data = row[0] not in sport_ids_without_pace_data
             statistics[row[0]] = {
                 "average_speed": round(float(row[1]), 2),
                 "average_ascent": (
@@ -570,7 +586,12 @@ def get_workouts_by_sport(
                 ),
                 "total_distance": round(float(row[8]), 2),
                 "total_duration": str(row[9]).split(".")[0],
-                "total_workouts": row[10],
+                "average_pace": (
+                    None
+                    if row[10] is None or not return_pace_data
+                    else str(row[10]).split(".")[0]
+                ),
+                "total_workouts": row[11],
             }
 
         return {

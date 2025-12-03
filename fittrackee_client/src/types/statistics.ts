@@ -60,6 +60,7 @@ export type TStatisticsForSport = {
   average_descent: number | null
   average_distance: number
   average_duration: string
+  average_pace: string
   average_speed: number
   average_workouts: number
   total_workouts: number

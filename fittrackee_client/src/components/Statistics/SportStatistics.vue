@@ -131,6 +131,17 @@
               />
             </template>
           </SportStatCard>
+          <SportStatCard
+            v-if="sportStatistics?.average_pace"
+            icon="chronometer"
+            :loading="loading"
+            :total-value="
+              getPace(sportStatistics?.average_pace, authUser.imperial_units)
+            "
+            :text="`min/${distanceUnitTo}`"
+            :label="$t('workouts.AVERAGE_PACE')"
+          >
+          </SportStatCard>
         </div>
       </div>
       <div class="records">
@@ -172,7 +183,7 @@
   import { getDuration, getTotalDuration } from '@/utils/duration'
   import { getRecordsBySports, sortRecords } from '@/utils/records'
   import { translateSports } from '@/utils/sports'
-  import { convertDistance, units } from '@/utils/units'
+  import { convertDistance, getPace, units } from '@/utils/units'
   interface Props {
     sports: ISport[]
     authUser: IAuthUserProfile

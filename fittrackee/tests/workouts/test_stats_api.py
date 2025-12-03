@@ -1849,6 +1849,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_descent": 130.0,
                 "average_distance": 7.71,
                 "average_duration": "0:38:20",
+                "average_pace": None,
                 "average_speed": 17.42,
                 "total_ascent": 560.0,
                 "total_descent": 780.0,
@@ -1861,6 +1862,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_descent": None,
                 "average_distance": 12.0,
                 "average_duration": "1:40:00",
+                "average_pace": "0:08:20",
                 "average_speed": 7.2,
                 "total_ascent": None,
                 "total_descent": None,
@@ -1900,6 +1902,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_distance": float(seven_workouts_user_1[6].distance),  # type: ignore
                 "average_duration": str(seven_workouts_user_1[6].moving),
                 "average_speed": float(seven_workouts_user_1[6].ave_speed),  # type: ignore
+                "average_pace": None,
                 "total_ascent": seven_workouts_user_1[6].ascent,
                 "total_descent": seven_workouts_user_1[6].descent,
                 "total_distance": float(seven_workouts_user_1[6].distance),  # type: ignore
@@ -1911,6 +1914,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_descent": workout_running_user_1.descent,
                 "average_distance": float(workout_running_user_1.distance),  # type: ignore
                 "average_duration": str(workout_running_user_1.moving),
+                "average_pace": str(workout_running_user_1.ave_pace),
                 "average_speed": float(workout_running_user_1.ave_speed),  # type: ignore
                 "total_ascent": workout_running_user_1.ascent,
                 "total_descent": workout_running_user_1.descent,
@@ -1951,6 +1955,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_descent": 130.0,
                 "average_distance": 7.71,
                 "average_duration": "0:38:20",
+                "average_pace": None,
                 "average_speed": 17.42,
                 "total_ascent": 560.0,
                 "total_descent": 780.0,
@@ -1963,6 +1968,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_descent": None,
                 "average_distance": 12.0,
                 "average_duration": "1:40:00",
+                "average_pace": "0:08:20",
                 "average_speed": 7.2,
                 "total_ascent": None,
                 "total_descent": None,
@@ -1994,7 +2000,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert data["data"]["statistics"] == {}
         assert data["data"]["total_workouts"] == 0
 
-    def test_it_get_stats_for_sport_1(
+    def test_it_get_stats_for_cycling(
         self,
         app: Flask,
         user_1: User,
@@ -2008,7 +2014,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f"/api/stats/{user_1.username}/by_sport?sport_id=1",
+            f"/api/stats/{user_1.username}/by_sport?sport_id={sport_1_cycling.id}",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -2021,6 +2027,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_descent": 130.0,
                 "average_distance": 7.71,
                 "average_duration": "0:38:20",
+                "average_pace": None,
                 "average_speed": 17.42,
                 "total_ascent": 560.0,
                 "total_descent": 780.0,
@@ -2031,7 +2038,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         }
         assert data["data"]["total_workouts"] == 7
 
-    def test_it_get_stats_for_sport_1_when_total_workouts_exceed_limit(
+    def test_it_get_stats_for_cycling_when_total_workouts_exceed_limit(
         self,
         app: Flask,
         user_1: User,
@@ -2046,7 +2053,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         )
 
         response = client.get(
-            f"/api/stats/{user_1.username}/by_sport?sport_id=1",
+            f"/api/stats/{user_1.username}/by_sport?sport_id={sport_1_cycling.id}",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -2059,6 +2066,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_descent": 20.0,
                 "average_distance": 9.0,
                 "average_duration": "1:15:00",
+                "average_pace": None,
                 "average_speed": 8.4,
                 "total_ascent": 40.0,
                 "total_descent": 20.0,
@@ -2094,6 +2102,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_descent": None,
                 "average_distance": 2.5,
                 "average_duration": "1:00:00",
+                "average_pace": None,
                 "average_speed": 2.5,
                 "total_ascent": None,
                 "total_descent": None,
