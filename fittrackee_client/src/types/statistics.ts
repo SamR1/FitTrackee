@@ -33,6 +33,7 @@ export type TStatisticsDatasetKeys =
   | 'average_descent'
   | 'average_distance'
   | 'average_duration'
+  | 'average_pace'
   | 'average_speed'
   | 'average_workouts'
   | 'total_workouts'

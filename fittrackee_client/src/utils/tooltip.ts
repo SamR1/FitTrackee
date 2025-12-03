@@ -1,6 +1,6 @@
 import type { TStatisticsDatasetKeys } from '@/types/statistics'
 import { formatDuration } from '@/utils/duration'
-import { units } from '@/utils/units'
+import { getPaceFromTotalSeconds, units } from '@/utils/units'
 
 export const formatTooltipValue = (
   displayedData: TStatisticsDatasetKeys,
@@ -16,6 +16,8 @@ export const formatTooltipValue = (
     case 'average_duration':
     case 'total_duration':
       return formatDuration(value, { formatWithUnits })
+    case 'average_pace':
+      return `${getPaceFromTotalSeconds(value, useImperialUnits)} min/${unitTo}`
     case 'average_distance':
     case 'average_ascent':
     case 'average_descent':

@@ -27,7 +27,7 @@ stats_blueprint = Blueprint("stats", __name__)
 
 
 def get_stats_from_row(
-    row: List, stats_type: str, with_elevation_data: bool
+    row: List, stats_type: str, with_elevation_data: bool, with_pace_data: bool
 ) -> Dict:
     row_stats = {
         "total_workouts": row[2],
@@ -46,6 +46,8 @@ def get_stats_from_row(
     }
     if stats_type == "average":
         row_stats["average_speed"] = round(float(row[1]), 2)
+        if with_pace_data and row[9]:
+            row_stats["average_pace"] = int(row[9].total_seconds())
     return row_stats
 
 
@@ -273,6 +275,11 @@ def get_workouts_by_time(
                 calculation_method(Workout.descent),
                 stats_key,
                 Sport.label,
+                (
+                    func.avg(Workout.ave_pace)  # type: ignore
+                    if stats_type == "average"
+                    else True
+                ),
             )
             .join(Sport, Sport.id == Workout.sport_id)
             .filter(*filters)
@@ -302,15 +309,19 @@ def get_workouts_by_time(
                 ).strftime("%Y-%m-%d")
             sport_key = row[0]
             with_elevation_data = row[8] not in SPORTS_WITHOUT_ELEVATION_DATA
+            with_pace_data = row[8] in PACE_SPORTS
             if date_key not in statistics:
                 statistics[date_key] = {
                     sport_key: get_stats_from_row(
-                        list(row), stats_type, with_elevation_data
+                        list(row),
+                        stats_type,
+                        with_elevation_data,
+                        with_pace_data,
                     )
                 }
             elif sport_key not in statistics[date_key]:
                 statistics[date_key][sport_key] = get_stats_from_row(
-                    list(row), stats_type, with_elevation_data
+                    list(row), stats_type, with_elevation_data, with_pace_data
                 )
             else:
                 statistics[date_key][sport_key]["total_workouts"] += row[2]
@@ -322,6 +333,10 @@ def get_workouts_by_time(
                             row[1],
                         )
                     )
+                    if with_pace_data and row[9]:
+                        statistics[date_key][sport_key]["average_pace"] = int(
+                            row[9].total_seconds()
+                        )
                 statistics[date_key][sport_key][f"{stats_type}_distance"] += (
                     round(float(row[3]), 2)
                 )

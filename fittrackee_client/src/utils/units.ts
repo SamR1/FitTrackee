@@ -65,16 +65,22 @@ export const convertStatsDistance = (
   return useImperialUnits ? convertDistance(value, unitFrom, unitTo, 2) : value
 }
 
-export const getPace = (pace: string, useImperialUnits: boolean): string => {
-  // 1 min/km = 1.609344 min/mile
-  const [hours, minutes, seconds] = pace.split(':')
-  let totalSeconds = +hours * 3600 + +minutes * 60 + +seconds
-  if (useImperialUnits) {
-    totalSeconds *= 1.609344
-  }
-  return formatDuration(totalSeconds, { notPadded: true })
+export const getPaceFromTotalSeconds = (
+  paceInSeconds: number,
+  useImperialUnits: boolean
+): string => {
+  return formatDuration(
+    useImperialUnits ? paceInSeconds * 1.609344 : paceInSeconds,
+    {
+      notPadded: true,
+    }
+  )
 }
-
+export const getPace = (pace: string, useImperialUnits: boolean): string => {
+  const [hours, minutes, seconds] = pace.split(':')
+  const totalSeconds = +hours * 3600 + +minutes * 60 + +seconds
+  return getPaceFromTotalSeconds(totalSeconds, useImperialUnits)
+}
 export const convertPaceInMinutes = (
   pace_in_seconds: number, // pace in s/m
   useImperialUnits: boolean
