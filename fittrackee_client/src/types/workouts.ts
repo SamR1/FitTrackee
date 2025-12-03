@@ -44,9 +44,12 @@ export interface ICardRecord {
   workout_id: string
   label: string
 }
+
+export type TRecordType = 'AP' | 'AS' | 'FD' | 'HA' | 'LD' | 'MP' | 'MS'
+
 export interface IRecord {
   id: number
-  record_type: string
+  record_type: TRecordType
   sport_id: number
   user: string
   value: number | string

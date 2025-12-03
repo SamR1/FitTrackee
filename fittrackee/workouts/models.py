@@ -29,7 +29,7 @@ from fittrackee.visibility_levels import (
     get_calculated_visibility,
 )
 
-from .constants import SPORTS_WITHOUT_ELEVATION_DATA, WGS84_CRS
+from .constants import PACE_SPORTS, SPORTS_WITHOUT_ELEVATION_DATA, WGS84_CRS
 from .exceptions import WorkoutForbiddenException
 from .utils.convert import (
     convert_in_duration,
@@ -81,13 +81,16 @@ WORKOUT_VALUES_LIMIT = {
     "moving_time": PSQL_INTEGER_LIMIT,
 }
 
-record_types = [
-    "AS",  # 'Best Average Speed'
-    "FD",  # 'Farthest Distance'
-    "HA",  # 'Highest Ascent'
-    "LD",  # 'Longest Duration'
-    "MS",  # 'Max speed'
-]
+RECORD_TYPES_COLUMNS_MATCHING = {
+    "AP": "ave_pace",  # 'Average Pace'
+    "AS": "ave_speed",  # 'Average speed'
+    "FD": "distance",  # 'Farthest Distance'
+    "HA": "ascent",  # 'Highest Ascent'
+    "LD": "moving",  # 'Longest Duration'
+    "MP": "max_pace",  # 'Fastest pace'
+    "MS": "max_speed",  # 'Max speed'
+}
+RECORD_TYPES = list(RECORD_TYPES_COLUMNS_MATCHING.keys())
 DESCRIPTION_MAX_CHARACTERS = 10000
 NOTES_MAX_CHARACTERS = 500
 TITLE_MAX_CHARACTERS = 255
@@ -446,6 +449,24 @@ class Workout(BaseModel):
             .first()
         )
 
+    def _get_records(
+        self, for_report: bool, return_elevation_data: bool, sport_label: str
+    ) -> List[Dict]:
+        if for_report:
+            return []
+
+        records = []
+        for record in self.records:
+            if record.record_type == "HA" and not return_elevation_data:
+                continue
+            if (
+                record.record_type in ["AP", "MP"]
+                and sport_label not in PACE_SPORTS
+            ):
+                continue
+            records.append(record.serialize())
+        return records
+
     @property
     def reports(self) -> List["Report"]:
         from fittrackee.reports.models import Report
@@ -562,14 +583,8 @@ class Workout(BaseModel):
                 if self.ascent is not None and return_elevation_data
                 else None
             ),
-            "records": (
-                []
-                if for_report
-                else [
-                    record.serialize()
-                    for record in self.records
-                    if return_elevation_data or record.record_type != "HA"
-                ]
+            "records": self._get_records(
+                for_report, return_elevation_data, sport_label
             ),
             "analysis_visibility": (
                 self.calculated_analysis_visibility.value
@@ -801,21 +816,19 @@ class Workout(BaseModel):
         Note:
         Values for ascent are null for workouts without gpx
         """
-        record_types_columns = {
-            "AS": "ave_speed",  # 'Average speed'
-            "FD": "distance",  # 'Farthest Distance'
-            "HA": "ascent",  # 'Highest Ascent'
-            "LD": "moving",  # 'Longest Duration'
-            "MS": "max_speed",  # 'Max speed'
-        }
         records = {}
-        for record_type, column in record_types_columns.items():
-            column_sorted = getattr(Workout, column).desc()
+        for record_type, column in RECORD_TYPES_COLUMNS_MATCHING.items():
+            workout_column = getattr(Workout, column)
+            column_sorted = nulls_last(
+                workout_column.asc()
+                if record_type in ["AP", "MP"]
+                else workout_column.desc()
+            )
             record_workout = (
                 Workout.query.filter(
                     Workout.user_id == user_id, Workout.sport_id == sport_id
                 )
-                .order_by(nulls_last(column_sorted), Workout.workout_date)
+                .order_by(column_sorted, Workout.workout_date)
                 .first()
             )
             records[record_type] = dict(
@@ -1085,7 +1098,7 @@ class Record(BaseModel):
         postgresql.UUID(as_uuid=True), nullable=False
     )
     record_type: Mapped[str] = mapped_column(
-        Enum(*record_types, name="record_types")
+        Enum(*RECORD_TYPES, name="record_types")
     )
     workout_date: Mapped[datetime] = mapped_column(TZDateTime, nullable=False)
     _value: Mapped[Optional[int]] = mapped_column("value", nullable=True)
@@ -1119,7 +1132,7 @@ class Record(BaseModel):
     def value(self) -> Optional[Union[timedelta, float]]:
         if self._value is None:
             return None
-        if self.record_type == "LD":
+        if self.record_type in ["LD", "AP", "MP"]:
             return timedelta(seconds=self._value)
         elif self.record_type in ["AS", "MS"]:
             return float(self._value / 100)

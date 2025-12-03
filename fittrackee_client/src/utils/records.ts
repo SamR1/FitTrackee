@@ -3,7 +3,7 @@ import type { ITranslatedSport } from '@/types/sports'
 import type { TUnit } from '@/types/units'
 import type { ICardRecord, IRecord, IRecordsBySports } from '@/types/workouts'
 import { formatDate, getDateFormat } from '@/utils/dates'
-import { convertDistance, units } from '@/utils/units'
+import { convertDistance, getPace, units } from '@/utils/units'
 
 const { locale } = createI18n.global
 
@@ -51,9 +51,13 @@ export const formatRecord = (
     case 'LD':
       value = record.value
       break
+    case 'AP':
+    case 'MP':
+      value = `${getPace(record.value as string, useImperialUnits)} ${useImperialUnits ? 'min/mi' : 'min/km'}`
+      break
     default:
       throw new Error(
-        `Invalid record type, expected: "AS", "FD", "HA", "LD", "MD", got: "${record.record_type}"`
+        `Invalid record type, expected: "AP", "AS", "FD", "HA", "LD", "MP", "MS", got: "${record.record_type}"`
       )
   }
   return {

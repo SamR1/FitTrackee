@@ -7,6 +7,31 @@ import { formatRecord, getRecordsBySports } from '@/utils/records'
 describe('formatRecord', () => {
   const testsParams = [
     {
+      description: "return formatted record for 'Average pace'",
+      inputParams: {
+        record: {
+          id: 14,
+          record_type: 'AP',
+          sport_id: 2,
+          user: 'admin',
+          value: '00:05:00',
+          workout_date: 'Sun, 07 Jul 2019 08:00:00 GMT',
+          workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+        },
+        timezone: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM',
+      },
+      expected: {
+        id: 14,
+        record_type: 'AP',
+        sport_id: 2,
+        user: 'admin',
+        value: '5:00 min/km',
+        workout_date: '2019/07/07',
+        workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+      },
+    },
+    {
       description: "return formatted record for 'Average speed'",
       inputParams: {
         record: {
@@ -82,6 +107,31 @@ describe('formatRecord', () => {
       },
     },
     {
+      description: "return formatted record for 'Fastest pace'",
+      inputParams: {
+        record: {
+          id: 15,
+          record_type: 'MP',
+          sport_id: 2,
+          user: 'admin',
+          value: '00:04:00',
+          workout_date: 'Sun, 07 Jul 2019 08:00:00 GMT',
+          workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+        },
+        timezone: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM',
+      },
+      expected: {
+        id: 15,
+        record_type: 'MP',
+        sport_id: 2,
+        user: 'admin',
+        value: '4:00 min/km',
+        workout_date: '2019/07/07',
+        workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+      },
+    },
+    {
       description: "return formatted record for 'Max. speed'",
       inputParams: {
         record: {
@@ -146,8 +196,33 @@ describe('formatRecord', () => {
   })
 })
 
-describe('formatRecord after conversion', () => {
+describe('formatRecord after conversion into imperial units', () => {
   const testsParams = [
+    {
+      description: "return formatted record for 'Average pace'",
+      inputParams: {
+        record: {
+          id: 14,
+          record_type: 'AP',
+          sport_id: 2,
+          user: 'admin',
+          value: '00:05:00',
+          workout_date: 'Sun, 07 Jul 2019 08:00:00 GMT',
+          workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+        },
+        timezone: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM',
+      },
+      expected: {
+        id: 14,
+        record_type: 'AP',
+        sport_id: 2,
+        user: 'admin',
+        value: '8:02 min/mi',
+        workout_date: '2019/07/07',
+        workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+      },
+    },
     {
       description: "return formatted record for 'Average speed'",
       inputParams: {
@@ -219,6 +294,31 @@ describe('formatRecord after conversion', () => {
         sport_id: 1,
         user: 'admin',
         value: '1:01:00',
+        workout_date: '2019/07/07',
+        workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+      },
+    },
+    {
+      description: "return formatted record for 'Fastest pace'",
+      inputParams: {
+        record: {
+          id: 15,
+          record_type: 'MP',
+          sport_id: 2,
+          user: 'admin',
+          value: '00:04:00',
+          workout_date: 'Sun, 07 Jul 2019 08:00:00 GMT',
+          workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
+        },
+        timezone: 'Europe/Paris',
+        date_format: 'yyyy/dd/MM',
+      },
+      expected: {
+        id: 15,
+        record_type: 'MP',
+        sport_id: 2,
+        user: 'admin',
+        value: '6:26 min/mi',
         workout_date: '2019/07/07',
         workout_id: 'hvYBqYBRa7wwXpaStWR4V2',
       },
@@ -306,7 +406,7 @@ describe('formatRecord (invalid record type)', () => {
         'yyyy/dd/MM'
       )
     ).to.throw(
-      'Invalid record type, expected: "AS", "FD", "HA", "LD", "MD", got: "M"'
+      'Invalid record type, expected: "AP", "AS", "FD", "HA", "LD", "MP", "MS", got: "M"'
     )
   })
 })

@@ -38,19 +38,20 @@
         src="/img/workouts/chronometer.svg"
         :alt="$t('workouts.PACE')"
       />
-      <span class="label">{{ $t('workouts.AVERAGE_PACE') }}</span
-      >:
+      <span class="label"> {{ $t('workouts.AVERAGE_PACE') }} </span>:
       <Pace
         :pace="workoutObject.avePace"
         :strong="true"
         :useImperialUnits="useImperialUnits"
-      /><br />
+      />
+      <WorkoutRecord :workoutObject="workoutObject" recordType="AP" /><br />
       <span class="label"> {{ $t('workouts.FASTEST_PACE') }} </span>:
       <Pace
         :pace="workoutObject.maxPace"
         :strong="true"
         :useImperialUnits="useImperialUnits"
       />
+      <WorkoutRecord :workoutObject="workoutObject" recordType="MP" />
     </div>
     <div
       class="workout-data"

@@ -140,9 +140,18 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout segment data from 'gpx_file' fixture
         """
         records = Record.query.order_by(Record.record_type.asc()).all()
-        assert len(records) == 5
+        assert len(records) == 7
         assert records[0].serialize() == {
             "id": 1,
+            "record_type": "AP",
+            "sport_id": workout.sport_id,
+            "user": workout.user.username,
+            "value": str(workout.ave_pace),
+            "workout_date": workout.workout_date,
+            "workout_id": workout.short_id,
+        }
+        assert records[1].serialize() == {
+            "id": 2,
             "record_type": "AS",
             "sport_id": workout.sport_id,
             "user": workout.user.username,
@@ -150,8 +159,8 @@ class TestWorkoutGpxServiceProcessFile(
             "workout_date": workout.workout_date,
             "workout_id": workout.short_id,
         }
-        assert records[1].serialize() == {
-            "id": 2,
+        assert records[2].serialize() == {
+            "id": 3,
             "record_type": "FD",
             "sport_id": workout.sport_id,
             "user": workout.user.username,
@@ -159,8 +168,8 @@ class TestWorkoutGpxServiceProcessFile(
             "workout_date": workout.workout_date,
             "workout_id": workout.short_id,
         }
-        assert records[2].serialize() == {
-            "id": 3,
+        assert records[3].serialize() == {
+            "id": 4,
             "record_type": "HA",
             "sport_id": workout.sport_id,
             "user": workout.user.username,
@@ -168,8 +177,8 @@ class TestWorkoutGpxServiceProcessFile(
             "workout_date": workout.workout_date,
             "workout_id": workout.short_id,
         }
-        assert records[3].serialize() == {
-            "id": 4,
+        assert records[4].serialize() == {
+            "id": 5,
             "record_type": "LD",
             "sport_id": workout.sport_id,
             "user": workout.user.username,
@@ -177,8 +186,17 @@ class TestWorkoutGpxServiceProcessFile(
             "workout_date": workout.workout_date,
             "workout_id": workout.short_id,
         }
-        assert records[4].serialize() == {
-            "id": 5,
+        assert records[5].serialize() == {
+            "id": 6,
+            "record_type": "MP",
+            "sport_id": workout.sport_id,
+            "user": workout.user.username,
+            "value": str(workout.max_pace),
+            "workout_date": workout.workout_date,
+            "workout_id": workout.short_id,
+        }
+        assert records[6].serialize() == {
+            "id": 7,
             "record_type": "MS",
             "sport_id": workout.sport_id,
             "user": workout.user.username,

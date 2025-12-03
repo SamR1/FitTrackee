@@ -20,6 +20,7 @@ from fittrackee.workouts.models import (
 from fittrackee.workouts.services.workout_from_file.base_workout_with_segment_service import (
     StaticMap,
 )
+from fittrackee.workouts.utils.convert import convert_speed_into_pace_duration
 
 from ..utils import random_string
 
@@ -113,6 +114,8 @@ def update_workout(target: Union[Workout, WorkoutSegment]) -> None:
     target.ave_speed = float(distance) / (target.duration.seconds / 3600)
     target.max_speed = target.ave_speed
     target.moving = target.duration
+    target.ave_pace = convert_speed_into_pace_duration(target.ave_speed)
+    target.max_pace = convert_speed_into_pace_duration(target.max_speed)
 
 
 @pytest.fixture()

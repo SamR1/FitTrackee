@@ -18,10 +18,12 @@ def convert_in_duration(value: str) -> timedelta:
 def convert_value_to_integer(
     record_type: str, val: Union[timedelta, float, None]
 ) -> Optional[int]:
-    if val is None or record_type not in ["AS", "FD", "HA", "LD", "MS"]:
+    from ..models import RECORD_TYPES
+
+    if val is None or record_type not in RECORD_TYPES:
         return None
 
-    if isinstance(val, timedelta):  # record_type == "LD"
+    if isinstance(val, timedelta):  # self.record_type in ["LD", "AP", "MP"]
         return int(val.total_seconds())
 
     multiplier = (

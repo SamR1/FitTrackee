@@ -396,7 +396,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
             "invalid",
         )
 
-    def test_it_updates_workout_with_gpx(
+    def test_it_updates_sport_and_title_for_workout_with_gpx(
         self,
         app: "Flask",
         user_1: "User",
@@ -444,32 +444,25 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["with_file"] is True
 
         records = data["data"]["workouts"][0]["records"]
-        assert len(records) == 5
-        assert records[0]["sport_id"] == sport_2_running.id
-        assert records[0]["workout_id"] == data["data"]["workouts"][0]["id"]
-        assert records[0]["record_type"] == "AS"
-        assert records[0]["workout_date"] == "Tue, 13 Mar 2018 12:44:45 GMT"
-        assert records[0]["value"] == 4.61
-        assert records[1]["sport_id"] == sport_2_running.id
-        assert records[1]["workout_id"] == data["data"]["workouts"][0]["id"]
-        assert records[1]["record_type"] == "FD"
-        assert records[1]["workout_date"] == "Tue, 13 Mar 2018 12:44:45 GMT"
-        assert records[1]["value"] == 0.32
-        assert records[2]["sport_id"] == sport_2_running.id
-        assert records[2]["workout_id"] == data["data"]["workouts"][0]["id"]
-        assert records[2]["record_type"] == "HA"
-        assert records[2]["workout_date"] == "Tue, 13 Mar 2018 12:44:45 GMT"
-        assert records[2]["value"] == 0.4
-        assert records[3]["sport_id"] == sport_2_running.id
-        assert records[3]["workout_id"] == data["data"]["workouts"][0]["id"]
-        assert records[3]["record_type"] == "LD"
-        assert records[3]["workout_date"] == "Tue, 13 Mar 2018 12:44:45 GMT"
-        assert records[3]["value"] == "0:04:10"
-        assert records[4]["sport_id"] == sport_2_running.id
-        assert records[4]["workout_id"] == data["data"]["workouts"][0]["id"]
-        assert records[4]["record_type"] == "MS"
-        assert records[4]["workout_date"] == "Tue, 13 Mar 2018 12:44:45 GMT"
-        assert records[4]["value"] == 5.12
+        assert len(records) == 7
+        for record in records:
+            assert record["sport_id"] == sport_2_running.id
+            assert record["workout_id"] == data["data"]["workouts"][0]["id"]
+            assert record["workout_date"] == "Tue, 13 Mar 2018 12:44:45 GMT"
+        assert records[0]["record_type"] == "AP"
+        assert records[0]["value"] == "0:13:01"
+        assert records[1]["record_type"] == "AS"
+        assert records[1]["value"] == 4.61
+        assert records[2]["record_type"] == "FD"
+        assert records[2]["value"] == 0.32
+        assert records[3]["record_type"] == "HA"
+        assert records[3]["value"] == 0.4
+        assert records[4]["record_type"] == "LD"
+        assert records[4]["value"] == "0:04:10"
+        assert records[5]["record_type"] == "MP"
+        assert records[5]["value"] == "0:11:44"
+        assert records[6]["record_type"] == "MS"
+        assert records[6]["value"] == 5.12
 
     @pytest.mark.parametrize(
         "input_description,input_workout_visibility",
@@ -657,27 +650,37 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["notes"] is None
 
         records = data["data"]["workouts"][0]["records"]
-        assert len(records) == 4
+        assert len(records) == 6
         assert records[0]["sport_id"] == sport_2_running.id
         assert records[0]["workout_id"] == workout_short_id
-        assert records[0]["record_type"] == "AS"
+        assert records[0]["record_type"] == "AP"
         assert records[0]["workout_date"] == "Tue, 15 May 2018 15:05:00 GMT"
-        assert records[0]["value"] == 8.0
+        assert records[0]["value"] == "0:06:00"
         assert records[1]["sport_id"] == sport_2_running.id
         assert records[1]["workout_id"] == workout_short_id
-        assert records[1]["record_type"] == "FD"
+        assert records[1]["record_type"] == "AS"
         assert records[1]["workout_date"] == "Tue, 15 May 2018 15:05:00 GMT"
         assert records[1]["value"] == 8.0
         assert records[2]["sport_id"] == sport_2_running.id
         assert records[2]["workout_id"] == workout_short_id
-        assert records[2]["record_type"] == "LD"
+        assert records[2]["record_type"] == "FD"
         assert records[2]["workout_date"] == "Tue, 15 May 2018 15:05:00 GMT"
-        assert records[2]["value"] == "1:00:00"
+        assert records[2]["value"] == 8.0
         assert records[3]["sport_id"] == sport_2_running.id
         assert records[3]["workout_id"] == workout_short_id
-        assert records[3]["record_type"] == "MS"
+        assert records[3]["record_type"] == "LD"
         assert records[3]["workout_date"] == "Tue, 15 May 2018 15:05:00 GMT"
-        assert records[3]["value"] == 8.0
+        assert records[3]["value"] == "1:00:00"
+        assert records[4]["sport_id"] == sport_2_running.id
+        assert records[4]["workout_id"] == workout_short_id
+        assert records[4]["record_type"] == "MP"
+        assert records[4]["workout_date"] == "Tue, 15 May 2018 15:05:00 GMT"
+        assert records[4]["value"] == "0:06:00"
+        assert records[5]["sport_id"] == sport_2_running.id
+        assert records[5]["workout_id"] == workout_short_id
+        assert records[5]["record_type"] == "MS"
+        assert records[5]["workout_date"] == "Tue, 15 May 2018 15:05:00 GMT"
+        assert records[5]["value"] == 8.0
 
     def test_it_updates_ascent_and_descent_values(
         self,

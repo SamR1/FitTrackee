@@ -618,7 +618,7 @@ class TestUserRecords(UserModelAssertMixin, WorkoutMixin):
         assert records[0]["workout_id"] == workout_cycling_user_1.short_id
         assert records[0]["workout_date"]
 
-    def test_it_returns_user_records_when_workout_has_elevation_data(
+    def test_it_does_not_return_pace_records_when_sport_is_cycling(
         self,
         app: Flask,
         user_1: User,
@@ -630,25 +630,41 @@ class TestUserRecords(UserModelAssertMixin, WorkoutMixin):
 
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
-        assert len(serialized_user["records"]) == 5
-        records = sorted(
-            serialized_user["records"], key=lambda r: r["record_type"]
-        )
-        assert records[2]["record_type"] == "HA"
+        assert set(
+            record["record_type"] for record in serialized_user["records"]
+        ) == {"AS", "FD", "HA", "LD", "MS"}
 
-    def test_it_does_not_return_HA_records_when_sport_is_outdoor_tennis(
+    def test_it_does_not_return_HA_and_pace_records_when_sport_is_outdoor_tennis(  # noqa
         self,
         app: Flask,
         user_1: User,
         user_2: User,
         workout_outdoor_tennis_user_1_with_elevation_data: Workout,
     ) -> None:
+        self.update_workout_with_file_data(
+            workout_outdoor_tennis_user_1_with_elevation_data
+        )
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
-        assert len(serialized_user["records"]) == 4
-        assert "HA" not in [
+        assert set(
             record["record_type"] for record in serialized_user["records"]
-        ]
+        ) == {"AS", "FD", "LD", "MS"}
+
+    def test_it_does_pace_records_when_sport_is_running(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,
+    ) -> None:
+        self.update_workout_with_file_data(workout_running_user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
+
+        assert set(
+            record["record_type"] for record in serialized_user["records"]
+        ) == {"AP", "AS", "FD", "HA", "LD", "MP", "MS"}
 
     def test_it_returns_totals_when_workout_has_pauses(
         self,

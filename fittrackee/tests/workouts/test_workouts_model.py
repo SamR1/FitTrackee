@@ -14,11 +14,13 @@ from fittrackee import db
 from fittrackee.equipments.models import Equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.tests.comments.mixins import CommentMixin
+from fittrackee.tests.fixtures.fixtures_workouts import update_workout
 from fittrackee.users.models import User
 from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
 from fittrackee.workouts.models import (
+    Record,
     Sport,
     Workout,
     WorkoutLike,
@@ -147,7 +149,11 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "original_file": None,
             "pauses": None,
             "previous_workout": None,
-            "records": [record.serialize() for record in workout.records],
+            "records": [
+                record.serialize()
+                for record in workout.records
+                if record.record_type not in ["AP", "MP"]
+            ],
             "segments": [],
             "source": workout.source,
             "sport_id": workout.sport_id,
@@ -211,7 +217,11 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "original_file": None,
             "pauses": None,
             "previous_workout": None,
-            "records": [record.serialize() for record in workout.records],
+            "records": [
+                record.serialize()
+                for record in workout.records
+                if record.record_type not in ["AP", "MP"]
+            ],
             "segments": [],
             "source": workout.source,
             "sport_id": workout.sport_id,
@@ -286,7 +296,11 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "original_file": "tcx",
             "pauses": str(workout.pauses),
             "previous_workout": None,
-            "records": [record.serialize() for record in workout.records],
+            "records": [
+                record.serialize()
+                for record in workout.records
+                if record.record_type not in ["AP", "MP"]
+            ],
             "segments": [
                 {
                     **segment.serialize(can_see_heart_rate=True),
@@ -367,7 +381,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "records": [
                 record.serialize()
                 for record in workout.records
-                if record.record_type != "HA"
+                if record.record_type not in ["HA", "AP", "MP"]
             ],
             "segments": [
                 {
@@ -526,7 +540,11 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "original_file": "gpx",
             "pauses": str(workout.pauses),
             "previous_workout": None,
-            "records": [record.serialize() for record in workout.records],
+            "records": [
+                record.serialize()
+                for record in workout.records
+                if record.record_type not in ["AP", "MP"]
+            ],
             "segments": [
                 {
                     **segment.serialize(can_see_heart_rate=True),
@@ -691,7 +709,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "pauses": None,
             "previous_workout": None,
             "records": [
-                record.serialize() for record in workout_cycling_user_1.records
+                record.serialize()
+                for record in workout_cycling_user_1.records
+                if record.record_type not in ["AP", "MP"]
             ],
             "segments": [],
             "source": workout_cycling_user_1.source,
@@ -758,7 +778,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "pauses": None,
             "previous_workout": None,
             "records": [
-                record.serialize() for record in workout_cycling_user_1.records
+                record.serialize()
+                for record in workout_cycling_user_1.records
+                if record.record_type not in ["AP", "MP"]
             ],
             "segments": [],
             "source": workout_cycling_user_1.source,
@@ -828,7 +850,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "pauses": None,
             "previous_workout": None,
             "records": [
-                record.serialize() for record in workout_cycling_user_1.records
+                record.serialize()
+                for record in workout_cycling_user_1.records
+                if record.record_type not in ["AP", "MP"]
             ],
             "segments": [],
             "source": workout_cycling_user_1.source,
@@ -899,7 +923,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "pauses": None,
             "previous_workout": None,
             "records": [
-                record.serialize() for record in workout_cycling_user_1.records
+                record.serialize()
+                for record in workout_cycling_user_1.records
+                if record.record_type not in ["AP", "MP"]
             ],
             "segments": [],
             "source": workout_cycling_user_1.source,
@@ -1783,7 +1809,9 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             "pauses": None,
             "previous_workout": None,
             "records": [
-                record.serialize() for record in workout_cycling_user_1.records
+                record.serialize()
+                for record in workout_cycling_user_1.records
+                if record.record_type not in ["AP", "MP"]
             ],
             "segments": [],
             "source": workout_cycling_user_1.source,
@@ -2312,7 +2340,9 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             "pauses": None,
             "previous_workout": None,
             "records": [
-                record.serialize() for record in workout_cycling_user_1.records
+                record.serialize()
+                for record in workout_cycling_user_1.records
+                if record.record_type not in ["AP", "MP"]
             ],
             "segments": [],
             "source": workout_cycling_user_1.source,
@@ -2784,7 +2814,9 @@ class TestWorkoutModelAsUnauthenticatedUser(
             "pauses": None,
             "previous_workout": None,
             "records": [
-                record.serialize() for record in workout_cycling_user_1.records
+                record.serialize()
+                for record in workout_cycling_user_1.records
+                if record.record_type not in ["AP", "MP"]
             ],
             "segments": [],
             "source": workout_cycling_user_1.source,
@@ -3297,6 +3329,41 @@ class TestWorkoutModel(WorkoutModelTestCase):
         assert to_shape(
             workout_cycling_user_1.start_point_geom  # type: ignore[arg-type]
         ) == Point(first_point_coordinates)
+
+    def test_it_creates_pace_records(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        user_1: User,
+        workout_running_user_1: Workout,
+    ) -> None:
+        workout_running_2_user_1 = Workout(
+            user_id=1,
+            sport_id=2,
+            workout_date=datetime(2020, 2, 20, tzinfo=timezone.utc),
+            distance=10,
+            duration=timedelta(seconds=6300),
+        )
+        update_workout(workout_running_2_user_1)
+        db.session.add(workout_running_2_user_1)
+        db.session.commit()
+
+        ap_record = Record.query.filter_by(record_type="AP").one()
+        assert ap_record.user_id == user_1.id
+        assert ap_record.sport_id == sport_2_running.id
+        assert ap_record.value == workout_running_user_1.ave_pace
+        assert ap_record.workout_date == workout_running_user_1.workout_date
+        assert ap_record.workout_id == workout_running_user_1.id
+        assert ap_record.workout_uuid == workout_running_user_1.uuid
+
+        mp_record = Record.query.filter_by(record_type="MP").one()
+        assert mp_record.user_id == user_1.id
+        assert mp_record.sport_id == sport_2_running.id
+        assert mp_record.value == workout_running_user_1.max_pace
+        assert mp_record.workout_date == workout_running_user_1.workout_date
+        assert mp_record.workout_id == workout_running_user_1.id
+        assert mp_record.workout_uuid == workout_running_user_1.uuid
 
 
 class TestWorkoutSegmentModel:
