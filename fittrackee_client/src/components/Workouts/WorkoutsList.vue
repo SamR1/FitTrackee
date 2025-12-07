@@ -72,6 +72,8 @@
               <th>{{ capitalize($t('workouts.DURATION')) }}</th>
               <th>{{ capitalize($t('workouts.AVE_SPEED')) }}</th>
               <th>{{ capitalize($t('workouts.MAX_SPEED')) }}</th>
+              <th>{{ capitalize($t('workouts.AVE_PACE')) }}</th>
+              <th>{{ capitalize($t('workouts.MAX_PACE')) }}</th>
               <th>{{ capitalize($t('workouts.ASCENT')) }}</th>
               <th>{{ capitalize($t('workouts.DESCENT')) }}</th>
             </tr>
@@ -183,6 +185,26 @@
                 </td>
                 <td class="text-right">
                   <span class="cell-heading">
+                    {{ $t('workouts.AVE_PACE') }}
+                  </span>
+                  <Pace
+                    v-if="workout.ave_pace !== null"
+                    :pace="workout.ave_pace"
+                    :useImperialUnits="user.imperial_units"
+                  />
+                </td>
+                <td class="text-right">
+                  <span class="cell-heading">
+                    {{ $t('workouts.MAX_PACE') }}
+                  </span>
+                  <Pace
+                    v-if="workout.max_pace !== null"
+                    :pace="workout.max_pace"
+                    :useImperialUnits="user.imperial_units"
+                  />
+                </td>
+                <td class="text-right">
+                  <span class="cell-heading">
                     {{ $t('workouts.ASCENT') }}
                   </span>
                   <Distance
@@ -242,6 +264,8 @@
                   <td>{{ capitalize($t('workouts.TOTAL_DISTANCE')) }}</td>
                   <td>{{ capitalize($t('workouts.TOTAL_DURATION')) }}</td>
                   <td></td>
+                  <td></td>
+                  <td></td>
                   <td>
                     <span v-if="workoutsStats[statsKey].total_sports === 1">
                       {{ capitalize($t('workouts.MAX_SPEED')) }}
@@ -278,6 +302,8 @@
                         : ''
                     }}
                   </td>
+                  <td class="text-right hide-col"></td>
+                  <td class="text-right hide-col"></td>
                   <td class="text-right hide-col"></td>
                   <td
                     class="text-right"
@@ -340,6 +366,8 @@
                     </span>
                   </td>
                   <td></td>
+                  <td></td>
+                  <td></td>
                   <td>{{ capitalize($t('workouts.AVE_ASCENT')) }}</td>
                   <td>{{ capitalize($t('workouts.AVE_DESCENT')) }}</td>
                 </tr>
@@ -395,6 +423,8 @@
                     />
                   </td>
                   <td class="text-right hide-col"></td>
+                  <td class="text-right hide-col"></td>
+                  <td class="text-right hide-col"></td>
                   <td class="text-right">
                     <span class="cell-heading">
                       {{ $t('workouts.AVE_ASCENT') }}
@@ -445,6 +475,7 @@
   import type { LocationQuery } from 'vue-router'
 
   import FilterSelects from '@/components/Common/FilterSelects.vue'
+  import Pace from '@/components/Common/Pace.vue'
   import Pagination from '@/components/Common/Pagination.vue'
   import StaticMap from '@/components/Common/StaticMap.vue'
   import NoWorkouts from '@/components/Workouts/NoWorkouts.vue'
@@ -703,7 +734,7 @@
         .smaller {
           th,
           td {
-            font-size: 0.95em;
+            font-size: 0.91em;
             padding: $default-padding 0;
             max-width: 100px;
           }

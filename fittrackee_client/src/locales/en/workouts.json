@@ -35,6 +35,7 @@
   "DESCRIPTION": "description",
   "DESCRIPTION_FIELD_HELP": "if provided, the description replaces that of the file.",
   "DISPLAY_FILTERS": "display filters",
+  "DISPLAY_MORE_FILTERS": "display more filters",
   "DISPLAY_MULTIPLE_CHARTS": "display multiple charts",
   "DISTANCE": "distance",
   "DOWNLOAD_GPX_FILE": "Download the .gpx file",
