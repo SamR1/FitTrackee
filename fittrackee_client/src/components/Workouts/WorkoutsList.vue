@@ -79,28 +79,30 @@
                 {{ capitalize($t('workouts.DURATION')) }}
               </th>
               <th
-                v-if="!sportWithPace"
-                :title="capitalize($t('workouts.AVE_SPEED'))"
+                :title="
+                  capitalize(
+                    $t(`workouts.AVE_${displayPace ? 'PACE' : 'SPEED'}`)
+                  )
+                "
               >
-                {{ capitalize($t('workouts.AVE_SPEED')) }}
+                {{
+                  capitalize(
+                    $t(`workouts.AVE_${displayPace ? 'PACE' : 'SPEED'}`)
+                  )
+                }}
               </th>
               <th
-                v-if="!sportWithPace"
-                :title="capitalize($t('workouts.MAX_SPEED'))"
+                :title="
+                  capitalize(
+                    $t(`workouts.MAX_${displayPace ? 'PACE' : 'SPEED'}`)
+                  )
+                "
               >
-                {{ capitalize($t('workouts.MAX_SPEED')) }}
-              </th>
-              <th
-                v-if="sportWithPace"
-                :title="capitalize($t('workouts.AVE_PACE'))"
-              >
-                {{ capitalize($t('workouts.AVE_PACE')) }}
-              </th>
-              <th
-                v-if="sportWithPace"
-                :title="capitalize($t('workouts.MAX_PACE'))"
-              >
-                {{ capitalize($t('workouts.MAX_PACE')) }}
+                {{
+                  capitalize(
+                    $t(`workouts.MAX_${displayPace ? 'PACE' : 'SPEED'}`)
+                  )
+                }}
               </th>
               <th :title="capitalize($t('workouts.ASCENT'))">
                 {{ capitalize($t('workouts.ASCENT')) }}
@@ -191,46 +193,36 @@
                     workout.moving ? getTotalDuration(workout.moving, $t) : ''
                   }}
                 </td>
-                <td v-if="!sportWithPace" class="text-right">
+                <td class="text-right">
                   <span class="cell-heading">
-                    {{ $t('workouts.AVE_SPEED') }}
+                    {{ $t(`workouts.AVE_${displayPace ? 'PACE' : 'SPEED'}`) }}
                   </span>
                   <Distance
-                    v-if="workout.ave_speed !== null"
+                    v-if="!displayPace && workout.ave_speed !== null"
                     :distance="workout.ave_speed"
                     unitFrom="km"
                     :speed="true"
                     :useImperialUnits="user.imperial_units"
                   />
+                  <Pace
+                    v-if="displayPace && workout.ave_pace !== null"
+                    :pace="workout.ave_pace"
+                    :useImperialUnits="user.imperial_units"
+                  />
                 </td>
-                <td v-if="!sportWithPace" class="text-right">
+                <td class="text-right">
                   <span class="cell-heading">
-                    {{ $t('workouts.MAX_SPEED') }}
+                    {{ $t(`workouts.MAX_${displayPace ? 'PACE' : 'SPEED'}`) }}
                   </span>
                   <Distance
-                    v-if="workout.max_speed !== null"
+                    v-if="!displayPace && workout.max_speed !== null"
                     :distance="workout.max_speed"
                     unitFrom="km"
                     :speed="true"
                     :useImperialUnits="user.imperial_units"
                   />
-                </td>
-                <td v-if="sportWithPace" class="text-right">
-                  <span class="cell-heading">
-                    {{ $t('workouts.AVE_PACE') }}
-                  </span>
                   <Pace
-                    v-if="workout.ave_pace !== null"
-                    :pace="workout.ave_pace"
-                    :useImperialUnits="user.imperial_units"
-                  />
-                </td>
-                <td v-if="sportWithPace" class="text-right">
-                  <span class="cell-heading">
-                    {{ $t('workouts.MAX_PACE') }}
-                  </span>
-                  <Pace
-                    v-if="workout.max_pace !== null"
+                    v-if="displayPace && workout.max_pace !== null"
                     :pace="workout.max_pace"
                     :useImperialUnits="user.imperial_units"
                   />
@@ -306,7 +298,7 @@
                     {{ capitalize($t('workouts.TOTAL_DURATION')) }}
                   </td>
                   <td></td>
-                  <td v-if="sportWithPace"></td>
+                  <td v-if="displayPace"></td>
                   <td v-else class="custom-th">
                     <span
                       :title="capitalize($t('workouts.MAX_SPEED'))"
@@ -357,9 +349,9 @@
                     }}
                   </td>
                   <td class="text-right hide-col"></td>
-                  <td v-if="sportWithPace" class="text-right hide-col"></td>
+                  <td v-if="displayPace" class="text-right hide-col"></td>
                   <td
-                    v-if="!sportWithPace"
+                    v-if="!displayPace"
                     class="text-right"
                     :class="{
                       'hide-col': workoutsStats[statsKey].total_sports > 1,
@@ -424,7 +416,7 @@
                   >
                     {{ capitalize($t('workouts.AVE_DURATION')) }}
                   </td>
-                  <td class="custom-th" v-if="!sportWithPace">
+                  <td class="custom-th" v-if="!displayPace">
                     <span
                       :title="capitalize($t('workouts.AVE_SPEED'))"
                       v-if="workoutsStats[statsKey].total_sports === 1"
@@ -476,7 +468,7 @@
                     }}
                   </td>
                   <td
-                    v-if="!sportWithPace"
+                    v-if="!displayPace"
                     class="text-right"
                     :class="{
                       'hide-col': workoutsStats[statsKey].total_sports > 1,
@@ -571,7 +563,7 @@
   import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
   import { getTotalDuration } from '@/utils/duration.ts'
-  import { getSportColor, getSportLabel } from '@/utils/sports'
+  import { getSportColor, getSportLabel, sportsWithPace } from '@/utils/sports'
   import { convertDistance, convertPaceToMetric } from '@/utils/units'
   import { defaultOrder } from '@/utils/workouts'
 
@@ -626,6 +618,17 @@
       ? ['all']
       : ['current_page', 'all']
   )
+  const displayPace: ComputedRef<boolean> = computed(() => {
+    if (sportWithPace.value) {
+      return true
+    }
+    const sport_ids = [...new Set(workouts.value.map((w) => w.sport_id))]
+    if (sport_ids.length !== 1) {
+      return false
+    }
+    const sport = translatedSports.value.find((s) => s.id === sport_ids[0])
+    return sport !== undefined && sportsWithPace.includes(sport.label)
+  })
 
   function loadWorkouts(payload: TWorkoutsPayload) {
     if (!isAuthUserSuspended.value) {
