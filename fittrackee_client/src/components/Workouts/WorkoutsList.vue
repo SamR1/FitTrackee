@@ -45,7 +45,11 @@
       </div>
       <FilterSelects
         :sort="sortList"
-        :order_by="orderByList"
+        :order_by="
+          orderByList.filter((order) =>
+            displayPace ? true : order !== 'ave_pace'
+          )
+        "
         :query="query"
         message="workouts"
         @updateSelect="reloadWorkouts"
@@ -626,6 +630,7 @@
   const store = useStore()
 
   const orderByList: string[] = [
+    'ave_pace',
     'ave_speed',
     'distance',
     'duration',
