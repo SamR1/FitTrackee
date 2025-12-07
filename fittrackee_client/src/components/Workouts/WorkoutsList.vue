@@ -66,16 +66,36 @@
                   {{ $t('workouts.SPORT') }}
                 </span>
               </th>
-              <th>{{ capitalize($t('workouts.WORKOUT', 1)) }}</th>
-              <th>{{ capitalize($t('workouts.DATE')) }}</th>
-              <th>{{ capitalize($t('workouts.DISTANCE')) }}</th>
-              <th>{{ capitalize($t('workouts.DURATION')) }}</th>
-              <th>{{ capitalize($t('workouts.AVE_SPEED')) }}</th>
-              <th>{{ capitalize($t('workouts.MAX_SPEED')) }}</th>
-              <th>{{ capitalize($t('workouts.AVE_PACE')) }}</th>
-              <th>{{ capitalize($t('workouts.MAX_PACE')) }}</th>
-              <th>{{ capitalize($t('workouts.ASCENT')) }}</th>
-              <th>{{ capitalize($t('workouts.DESCENT')) }}</th>
+              <th :title="capitalize($t('workouts.WORKOUT', 1))">
+                {{ capitalize($t('workouts.WORKOUT', 1)) }}
+              </th>
+              <th :title="capitalize($t('workouts.DATE'))">
+                {{ capitalize($t('workouts.DATE')) }}
+              </th>
+              <th :title="capitalize($t('workouts.DISTANCE'))">
+                {{ capitalize($t('workouts.DISTANCE')) }}
+              </th>
+              <th :title="capitalize($t('workouts.DURATION'))">
+                {{ capitalize($t('workouts.DURATION')) }}
+              </th>
+              <th :title="capitalize($t('workouts.AVE_SPEED'))">
+                {{ capitalize($t('workouts.AVE_SPEED')) }}
+              </th>
+              <th :title="capitalize($t('workouts.MAX_SPEED'))">
+                {{ capitalize($t('workouts.MAX_SPEED')) }}
+              </th>
+              <th :title="capitalize($t('workouts.AVE_PACE'))">
+                {{ capitalize($t('workouts.AVE_PACE')) }}
+              </th>
+              <th :title="capitalize($t('workouts.MAX_PACE'))">
+                {{ capitalize($t('workouts.MAX_PACE')) }}
+              </th>
+              <th :title="capitalize($t('workouts.ASCENT'))">
+                {{ capitalize($t('workouts.ASCENT')) }}
+              </th>
+              <th :title="capitalize($t('workouts.DESCENT'))">
+                {{ capitalize($t('workouts.DESCENT')) }}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -261,18 +281,41 @@
                   <td class="no-borders"></td>
                   <td class="no-borders"></td>
                   <td class="no-borders"></td>
-                  <td>{{ capitalize($t('workouts.TOTAL_DISTANCE')) }}</td>
-                  <td>{{ capitalize($t('workouts.TOTAL_DURATION')) }}</td>
+                  <td
+                    :title="capitalize($t('workouts.TOTAL_DISTANCE'))"
+                    class="custom-th"
+                  >
+                    {{ capitalize($t('workouts.TOTAL_DISTANCE')) }}
+                  </td>
+                  <td
+                    :title="capitalize($t('workouts.TOTAL_DURATION'))"
+                    class="custom-th"
+                  >
+                    {{ capitalize($t('workouts.TOTAL_DURATION')) }}
+                  </td>
                   <td></td>
                   <td></td>
                   <td></td>
-                  <td>
-                    <span v-if="workoutsStats[statsKey].total_sports === 1">
+                  <td class="custom-th">
+                    <span
+                      :title="capitalize($t('workouts.MAX_SPEED'))"
+                      v-if="workoutsStats[statsKey].total_sports === 1"
+                    >
                       {{ capitalize($t('workouts.MAX_SPEED')) }}
                     </span>
                   </td>
-                  <td>{{ capitalize($t('workouts.TOTAL_ASCENT')) }}</td>
-                  <td>{{ capitalize($t('workouts.TOTAL_DESCENT')) }}</td>
+                  <td
+                    :title="capitalize($t('workouts.TOTAL_ASCENT'))"
+                    class="custom-th"
+                  >
+                    {{ capitalize($t('workouts.TOTAL_ASCENT')) }}
+                  </td>
+                  <td
+                    :title="capitalize($t('workouts.TOTAL_DESCENT'))"
+                    class="custom-th"
+                  >
+                    {{ capitalize($t('workouts.TOTAL_DESCENT')) }}
+                  </td>
                 </tr>
                 <tr v-if="workoutsStats[statsKey]" class="totals">
                   <td class="sport-col hide-col"></td>
@@ -358,18 +401,41 @@
                   <td class="no-borders"></td>
                   <td class="no-borders"></td>
                   <td class="no-borders"></td>
-                  <td>{{ capitalize($t('workouts.AVE_DISTANCE')) }}</td>
-                  <td>{{ capitalize($t('workouts.AVE_DURATION')) }}</td>
-                  <td>
-                    <span v-if="workoutsStats[statsKey].total_sports === 1">
+                  <td
+                    :title="capitalize($t('workouts.AVE_DISTANCE'))"
+                    class="custom-th"
+                  >
+                    {{ capitalize($t('workouts.AVE_DISTANCE')) }}
+                  </td>
+                  <td
+                    :title="capitalize($t('workouts.AVE_DURATION'))"
+                    class="custom-th"
+                  >
+                    {{ capitalize($t('workouts.AVE_DURATION')) }}
+                  </td>
+                  <td class="custom-th">
+                    <span
+                      :title="capitalize($t('workouts.AVE_SPEED'))"
+                      v-if="workoutsStats[statsKey].total_sports === 1"
+                    >
                       {{ capitalize($t('workouts.AVE_SPEED')) }}
                     </span>
                   </td>
                   <td></td>
                   <td></td>
                   <td></td>
-                  <td>{{ capitalize($t('workouts.AVE_ASCENT')) }}</td>
-                  <td>{{ capitalize($t('workouts.AVE_DESCENT')) }}</td>
+                  <td
+                    :title="capitalize($t('workouts.AVE_ASCENT'))"
+                    class="custom-th"
+                  >
+                    {{ capitalize($t('workouts.AVE_ASCENT')) }}
+                  </td>
+                  <td
+                    :title="capitalize($t('workouts.AVE_DESCENT'))"
+                    class="custom-th"
+                  >
+                    {{ capitalize($t('workouts.AVE_DESCENT')) }}
+                  </td>
                 </tr>
                 <tr v-if="workoutsStats[statsKey]" class="totals">
                   <td class="sport-col hide-col"></td>
@@ -733,11 +799,18 @@
       .workouts-table {
         .smaller {
           th,
-          td {
+          td,
+          .custom-th {
             font-size: 0.91em;
-            padding: $default-padding 0;
             max-width: 100px;
           }
+        }
+
+        th,
+        .custom-th {
+          padding: $default-padding 2px;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         td {
           text-align: right;
