@@ -341,8 +341,10 @@ export interface TWorkoutsStatistic {
   average_descent: number | null
   average_distance: number | null
   average_duration: string | null
+  average_pace: string | null
   average_speed: number | null
   count: number
+  max_pace: string | null
   max_speed: number | null
   total_ascent: number | null
   total_descent: number | null

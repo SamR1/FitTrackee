@@ -251,6 +251,7 @@
                 </td>
               </tr>
             </template>
+            <!-- Workouts statistics -->
             <template v-if="pagination.total > 1">
               <template v-for="statsKey in statsKeys" :key="statsKey">
                 <tr class="stats-label" :id="`stats_${statsKey}`">
@@ -298,7 +299,14 @@
                     {{ capitalize($t('workouts.TOTAL_DURATION')) }}
                   </td>
                   <td></td>
-                  <td v-if="displayPace"></td>
+                  <td v-if="sportWithPace" class="custom-th">
+                    <span
+                      :title="capitalize($t('workouts.MAX_PACE'))"
+                      v-if="workoutsStats[statsKey].total_sports === 1"
+                    >
+                      {{ capitalize($t('workouts.MAX_PACE')) }}
+                    </span>
+                  </td>
                   <td v-else class="custom-th">
                     <span
                       :title="capitalize($t('workouts.MAX_SPEED'))"
@@ -349,9 +357,27 @@
                     }}
                   </td>
                   <td class="text-right hide-col"></td>
-                  <td v-if="displayPace" class="text-right hide-col"></td>
                   <td
-                    v-if="!displayPace"
+                    v-if="sportWithPace"
+                    class="text-right hide-col"
+                    :class="{
+                      'hide-col': workoutsStats[statsKey].total_sports > 1,
+                    }"
+                  >
+                    <span
+                      class="cell-heading"
+                      v-if="workoutsStats[statsKey].total_sports === 1"
+                    >
+                      {{ $t('workouts.MAX_PACE') }}
+                    </span>
+                    <Pace
+                      v-if="workoutsStats[statsKey].max_pace !== null"
+                      :pace="workoutsStats[statsKey].max_pace"
+                      :useImperialUnits="user.imperial_units"
+                    />
+                  </td>
+                  <td
+                    v-if="!sportWithPace"
                     class="text-right"
                     :class="{
                       'hide-col': workoutsStats[statsKey].total_sports > 1,
@@ -416,7 +442,15 @@
                   >
                     {{ capitalize($t('workouts.AVE_DURATION')) }}
                   </td>
-                  <td class="custom-th" v-if="!displayPace">
+                  <td class="custom-th" v-if="sportWithPace">
+                    <span
+                      :title="capitalize($t('workouts.AVE_PACE'))"
+                      v-if="workoutsStats[statsKey].total_sports === 1"
+                    >
+                      {{ capitalize($t('workouts.AVE_PACE')) }}
+                    </span>
+                  </td>
+                  <td v-else>
                     <span
                       :title="capitalize($t('workouts.AVE_SPEED'))"
                       v-if="workoutsStats[statsKey].total_sports === 1"
@@ -424,7 +458,6 @@
                       {{ capitalize($t('workouts.AVE_SPEED')) }}
                     </span>
                   </td>
-                  <td v-else></td>
                   <td></td>
                   <td
                     :title="capitalize($t('workouts.AVE_ASCENT'))"
@@ -467,8 +500,22 @@
                         : ''
                     }}
                   </td>
+
+                  <td v-if="sportWithPace" class="text-right hide-col">
+                    <span
+                      class="cell-heading"
+                      v-if="workoutsStats[statsKey].total_sports === 1"
+                    >
+                      {{ $t('workouts.AVE_PACE') }}
+                    </span>
+                    <Pace
+                      v-if="workoutsStats[statsKey].average_pace !== null"
+                      :pace="workoutsStats[statsKey].average_pace"
+                      :useImperialUnits="user.imperial_units"
+                    />
+                  </td>
                   <td
-                    v-if="!displayPace"
+                    v-else
                     class="text-right"
                     :class="{
                       'hide-col': workoutsStats[statsKey].total_sports > 1,
@@ -491,7 +538,6 @@
                       :useImperialUnits="user.imperial_units"
                     />
                   </td>
-                  <td v-else class="text-right hide-col"></td>
                   <td class="text-right hide-col"></td>
                   <td class="text-right">
                     <span class="cell-heading">
