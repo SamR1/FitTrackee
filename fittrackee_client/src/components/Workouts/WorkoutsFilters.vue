@@ -450,7 +450,7 @@
   const props = defineProps<Props>()
   const { authUser, translatedSports } = toRefs(props)
 
-  const emit = defineEmits(['filter'])
+  const emit = defineEmits(['filter', 'updateSportWithPace'])
 
   const route = useRoute()
   const router = useRouter()
@@ -535,6 +535,7 @@
   }
   function onFilter() {
     emit('filter')
+    emit('updateSportWithPace', sportId.value)
     if ('page' in params) {
       params['page'] = '1'
     }

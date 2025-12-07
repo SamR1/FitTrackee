@@ -78,16 +78,28 @@
               <th :title="capitalize($t('workouts.DURATION'))">
                 {{ capitalize($t('workouts.DURATION')) }}
               </th>
-              <th :title="capitalize($t('workouts.AVE_SPEED'))">
+              <th
+                v-if="!sportWithPace"
+                :title="capitalize($t('workouts.AVE_SPEED'))"
+              >
                 {{ capitalize($t('workouts.AVE_SPEED')) }}
               </th>
-              <th :title="capitalize($t('workouts.MAX_SPEED'))">
+              <th
+                v-if="!sportWithPace"
+                :title="capitalize($t('workouts.MAX_SPEED'))"
+              >
                 {{ capitalize($t('workouts.MAX_SPEED')) }}
               </th>
-              <th :title="capitalize($t('workouts.AVE_PACE'))">
+              <th
+                v-if="sportWithPace"
+                :title="capitalize($t('workouts.AVE_PACE'))"
+              >
                 {{ capitalize($t('workouts.AVE_PACE')) }}
               </th>
-              <th :title="capitalize($t('workouts.MAX_PACE'))">
+              <th
+                v-if="sportWithPace"
+                :title="capitalize($t('workouts.MAX_PACE'))"
+              >
                 {{ capitalize($t('workouts.MAX_PACE')) }}
               </th>
               <th :title="capitalize($t('workouts.ASCENT'))">
@@ -179,7 +191,7 @@
                     workout.moving ? getTotalDuration(workout.moving, $t) : ''
                   }}
                 </td>
-                <td class="text-right">
+                <td v-if="!sportWithPace" class="text-right">
                   <span class="cell-heading">
                     {{ $t('workouts.AVE_SPEED') }}
                   </span>
@@ -191,7 +203,7 @@
                     :useImperialUnits="user.imperial_units"
                   />
                 </td>
-                <td class="text-right">
+                <td v-if="!sportWithPace" class="text-right">
                   <span class="cell-heading">
                     {{ $t('workouts.MAX_SPEED') }}
                   </span>
@@ -203,7 +215,7 @@
                     :useImperialUnits="user.imperial_units"
                   />
                 </td>
-                <td class="text-right">
+                <td v-if="sportWithPace" class="text-right">
                   <span class="cell-heading">
                     {{ $t('workouts.AVE_PACE') }}
                   </span>
@@ -213,7 +225,7 @@
                     :useImperialUnits="user.imperial_units"
                   />
                 </td>
-                <td class="text-right">
+                <td v-if="sportWithPace" class="text-right">
                   <span class="cell-heading">
                     {{ $t('workouts.MAX_PACE') }}
                   </span>
@@ -294,9 +306,8 @@
                     {{ capitalize($t('workouts.TOTAL_DURATION')) }}
                   </td>
                   <td></td>
-                  <td></td>
-                  <td></td>
-                  <td class="custom-th">
+                  <td v-if="sportWithPace"></td>
+                  <td v-else class="custom-th">
                     <span
                       :title="capitalize($t('workouts.MAX_SPEED'))"
                       v-if="workoutsStats[statsKey].total_sports === 1"
@@ -346,9 +357,9 @@
                     }}
                   </td>
                   <td class="text-right hide-col"></td>
-                  <td class="text-right hide-col"></td>
-                  <td class="text-right hide-col"></td>
+                  <td v-if="sportWithPace" class="text-right hide-col"></td>
                   <td
+                    v-if="!sportWithPace"
                     class="text-right"
                     :class="{
                       'hide-col': workoutsStats[statsKey].total_sports > 1,
@@ -413,7 +424,7 @@
                   >
                     {{ capitalize($t('workouts.AVE_DURATION')) }}
                   </td>
-                  <td class="custom-th">
+                  <td class="custom-th" v-if="!sportWithPace">
                     <span
                       :title="capitalize($t('workouts.AVE_SPEED'))"
                       v-if="workoutsStats[statsKey].total_sports === 1"
@@ -421,8 +432,7 @@
                       {{ capitalize($t('workouts.AVE_SPEED')) }}
                     </span>
                   </td>
-                  <td></td>
-                  <td></td>
+                  <td v-else></td>
                   <td></td>
                   <td
                     :title="capitalize($t('workouts.AVE_ASCENT'))"
@@ -466,6 +476,7 @@
                     }}
                   </td>
                   <td
+                    v-if="!sportWithPace"
                     class="text-right"
                     :class="{
                       'hide-col': workoutsStats[statsKey].total_sports > 1,
@@ -488,8 +499,7 @@
                       :useImperialUnits="user.imperial_units"
                     />
                   </td>
-                  <td class="text-right hide-col"></td>
-                  <td class="text-right hide-col"></td>
+                  <td v-else class="text-right hide-col"></td>
                   <td class="text-right hide-col"></td>
                   <td class="text-right">
                     <span class="cell-heading">
@@ -568,9 +578,10 @@
   interface Props {
     user: IAuthUserProfile
     translatedSports: ITranslatedSport[]
+    sportWithPace: boolean
   }
   const props = defineProps<Props>()
-  const { user, translatedSports } = toRefs(props)
+  const { user, sportWithPace, translatedSports } = toRefs(props)
 
   const route = useRoute()
   const router = useRouter()
