@@ -12,7 +12,15 @@ def convert_in_duration(value: str) -> timedelta:
         raise InvalidDurationException()
     hours = int(value.split(":")[0])
     minutes = int(value.split(":")[1])
-    return timedelta(seconds=(hours * 3600 + minutes * 60))
+    return timedelta(hours=hours, minutes=minutes)
+
+
+def convert_pace_in_duration(value: str) -> timedelta:
+    if not re.match(r"^(\d+):[0-5]\d?$", value):
+        raise InvalidDurationException()
+    minutes = int(value.split(":")[0])
+    seconds = int(value.split(":")[1])
+    return timedelta(minutes=minutes, seconds=seconds)
 
 
 def convert_value_to_integer(

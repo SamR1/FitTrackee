@@ -6,6 +6,7 @@ import pytest
 from fittrackee.workouts.exceptions import InvalidDurationException
 from fittrackee.workouts.utils.convert import (
     convert_in_duration,
+    convert_pace_in_duration,
     convert_speed_into_pace_duration,
     convert_speed_into_pace_in_sec_per_meter,
     convert_value_to_integer,
@@ -112,4 +113,35 @@ class TestConvertSpeedIntoPaceSeconds:
         assert (
             convert_speed_into_pace_in_sec_per_meter(input_speed)  # type: ignore[arg-type]
             == expected_pace
+        )
+
+
+class TestConvertPaceInDuration:
+    @pytest.mark.parametrize(
+        "input_pace",
+        [
+            "",
+            "01:12:00",
+            "09:60",
+        ],
+    )
+    def test_it_raises_exception_when_pace_format_is_invalid(
+        self, input_pace: str
+    ) -> None:
+        with pytest.raises(InvalidDurationException):
+            convert_pace_in_duration(input_pace)
+
+    @pytest.mark.parametrize(
+        "input_pace, expected_duration_in_seconds",
+        [
+            ("00:00", 0),
+            ("01:00", 60),
+            ("90:10", 5410),
+        ],
+    )
+    def test_it_returns_pace_in_duration(
+        self, input_pace: str, expected_duration_in_seconds: int
+    ) -> None:
+        assert convert_pace_in_duration(input_pace) == timedelta(
+            seconds=expected_duration_in_seconds
         )

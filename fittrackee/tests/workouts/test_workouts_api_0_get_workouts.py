@@ -1360,6 +1360,74 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         self.assert_400(response, "invalid value for visibility")
 
+    def test_it_gets_workouts_with_average_pace_filter(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,  # paces: 08:20
+        workout_running_2_user_1: Workout,  # paces: 10:00
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?ave_pace_from=08:00&ave_pace_to=09:00",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert (
+            data["data"]["workouts"][0]["id"]
+            == workout_running_user_1.short_id
+        )
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
+        }
+
+    def test_it_gets_workouts_with_max_pace_filter(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,  # paces: 08:20
+        workout_running_2_user_1: Workout,  # paces: 10:00
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?max_pace_from=10:00&max_pace_to=11:00",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert (
+            data["data"]["workouts"][0]["id"]
+            == workout_running_2_user_1.short_id
+        )
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
+        }
+
 
 class TestGetWorkoutsWithLocationFilters(WorkoutApiTestCaseMixin):
     def test_it_does_not_return_workouts_when_to_far_from_given_coordinates(

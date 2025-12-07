@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
 
+import { convertPaceToMetric } from '../../../src/utils/units'
+
 import { TUnit } from '@/types/units'
 import {
   convertDistance,
@@ -125,6 +127,20 @@ describe('convertPaceInMinutes', () => {
       expect(convertPaceInMinutes(testParams[0], testParams[1])).toBe(
         testParams[2]
       )
+    })
+  })
+})
+
+describe('convertPaceToMetric', () => {
+  const testsParams: [string, string][] = [
+    ['0:00', '0:00'],
+    ['10:00', '6:12'],
+    ['20:15', '12:34'],
+  ]
+
+  testsParams.map((testParams) => {
+    it(`convert ${testParams[0]} into imperial units ${testParams[1]}}`, () => {
+      expect(convertPaceToMetric(testParams[0])).toBe(testParams[1])
     })
   })
 })

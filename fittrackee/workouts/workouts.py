@@ -73,7 +73,7 @@ from .services.workouts_from_file_refresh_service import (
     WorkoutFromFileRefreshService,
 )
 from .utils.chart import get_chart_data
-from .utils.convert import convert_in_duration
+from .utils.convert import convert_in_duration, convert_pace_in_duration
 from .utils.geometry import (
     get_buffered_location,
     get_geojson_from_segments,
@@ -254,8 +254,12 @@ def get_user_workouts_query(
     distance_to = params.get("distance_to")
     duration_from = params.get("duration_from")
     duration_to = params.get("duration_to")
+    ave_pace_from = params.get("ave_pace_from")
+    ave_pace_to = params.get("ave_pace_to")
     ave_speed_from = params.get("ave_speed_from")
     ave_speed_to = params.get("ave_speed_to")
+    max_pace_from = params.get("max_pace_from")
+    max_pace_to = params.get("max_pace_to")
     max_speed_from = params.get("max_speed_from")
     max_speed_to = params.get("max_speed_to")
     order_by = params.get("order_by", "workout_date")
@@ -329,6 +333,22 @@ def get_user_workouts_query(
         filters.append(Workout.moving >= convert_in_duration(duration_from))
     if duration_to:
         filters.append(Workout.moving <= convert_in_duration(duration_to))
+    if ave_pace_from:
+        filters.append(
+            Workout.ave_pace >= convert_pace_in_duration(ave_pace_from)
+        )
+    if ave_pace_to:
+        filters.append(
+            Workout.ave_pace <= convert_pace_in_duration(ave_pace_to)
+        )
+    if max_pace_from:
+        filters.append(
+            Workout.max_pace >= convert_pace_in_duration(max_pace_from)
+        )
+    if max_pace_to:
+        filters.append(
+            Workout.max_pace <= convert_pace_in_duration(max_pace_to)
+        )
     if ave_speed_from:
         filters.append(Workout.ave_speed >= float(ave_speed_from))
     if ave_speed_to:

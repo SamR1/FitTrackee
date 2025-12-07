@@ -87,6 +87,15 @@ export const convertPaceInMinutes = (
 ): number => {
   return pace_in_seconds * 1000 * (useImperialUnits ? 1.609344 : 1)
 }
+export const convertPaceToMetric = (
+  pace: string // min/mi
+): string => {
+  const [minutes, seconds] = pace.split(':')
+  const totalSeconds = +minutes * 60 + +seconds
+  return formatDuration(totalSeconds / 1.609344, {
+    notPadded: true,
+  })
+}
 
 export const getTemperature = (
   temperatureInCelsius: number,

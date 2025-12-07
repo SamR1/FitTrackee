@@ -465,7 +465,7 @@
   import { formatDate } from '@/utils/dates'
   import { getTotalDuration } from '@/utils/duration.ts'
   import { getSportColor, getSportLabel } from '@/utils/sports'
-  import { convertDistance } from '@/utils/units'
+  import { convertDistance, convertPaceToMetric } from '@/utils/units'
   import { defaultOrder } from '@/utils/workouts'
 
   interface Props {
@@ -565,6 +565,9 @@
     Object.entries(convertedPayload).map((entry) => {
       if (entry[0].match('speed|distance|radius') && entry[1]) {
         convertedPayload[entry[0]] = convertDistance(+entry[1], 'mi', 'km')
+      }
+      if (entry[0].match('pace') && entry[1]) {
+        convertedPayload[entry[0]] = convertPaceToMetric(entry[1] as string)
       }
     })
     return convertedPayload

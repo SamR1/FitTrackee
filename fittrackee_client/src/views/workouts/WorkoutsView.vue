@@ -1,5 +1,9 @@
 <template>
-  <div id="workouts" v-if="authUser.username" class="view items-list-view">
+  <div
+    id="workouts"
+    v-if="authUser.username && translatedSports.length > 0"
+    class="view items-list-view"
+  >
     <div class="container items-list-container">
       <div class="filters-container" :class="{ hidden: hiddenFilters }">
         <WorkoutsFilters

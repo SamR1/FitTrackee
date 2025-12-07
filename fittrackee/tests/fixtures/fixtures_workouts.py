@@ -911,6 +911,22 @@ def workout_running_user_1_segment_with_coordinates(
 
 
 @pytest.fixture()
+def workout_running_2_user_1() -> Workout:
+    workout = Workout(
+        user_id=1,
+        sport_id=2,
+        # workout_date: 'Mon, 10 Jun 2020 00:00:00 GMT'
+        workout_date=datetime(2020, 6, 10, tzinfo=timezone.utc),
+        distance=10,
+        duration=timedelta(seconds=6000),
+    )
+    update_workout(workout)
+    db.session.add(workout)
+    db.session.commit()
+    return workout
+
+
+@pytest.fixture()
 def workout_paragliding_user_1(sport_4_paragliding: "Sport") -> Workout:
     workout = Workout(
         user_id=1,
