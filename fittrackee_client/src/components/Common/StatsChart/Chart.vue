@@ -87,6 +87,8 @@
       },
       y: {
         stacked: !displayedData.value.startsWith('average'),
+        reverse: displayedData.value === 'average_pace',
+        beginAtZero: displayedData.value !== 'average_pace',
         grid: {
           drawOnChartArea: false,
           ...lineColors.value,
