@@ -99,7 +99,6 @@ def get_app(
                 current_app.config["UPLOAD_FOLDER"],
                 ignore_errors=True,
             )
-            return app  # type: ignore  # noqa: B012
 
 
 @pytest.fixture

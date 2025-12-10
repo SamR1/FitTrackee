@@ -37,6 +37,14 @@ For new language requests, please open an issue in order to initialize the trans
 Documentation translations are located in following directory: `docsrc/locales`. 
 For now only English and French are available and translations files are not yet on Weblate.
 
+### Generative AI Policy
+
+The use of large language models (LLMs) or generative AI applications is strongly discouraged. One reason, among others, is that these tools can produce code that is more complex than necessary, or even incorrect.
+
+However, if you do use such tools as a aid in your development environment (IDE), make sure you fully understand the code produced and how it works. The code must also fit the existing code base and should therefore be refactored if necessary.
+
+On the other hand, bug reports or PRs generated entirely by AI/LLM tools or with commits co-authored by AI/LLM tools in the case of PRs are not accepted and will be closed.
+
 ### How to install FitTrackee
 
 see [Installations instructions](https://docs.fittrackee.org/en/installation.html)
@@ -79,7 +87,7 @@ Please make your changes from the development branch (`dev`).
 
 * If needed, update translations (at least add English strings).
    * On client side, update files in `fittrackee_client/src/locales` folder.  
-   * On API side (emails), to extract new strings into `messages.pot`:
+   * On API side (emails and RSS Feeds), to extract new strings into `messages.pot`:
      ```shell
      $ make babel-extract
      ```

@@ -32,6 +32,9 @@
   "Open Water Swimming": {
     "LABEL": "Offenes Schwimmen im Wasser"
   },
+  "Padel (Outdoor)": {
+    "LABEL": "Padel"
+  },
   "Paragliding": {
     "LABEL": "Paragliden"
   },
@@ -58,5 +61,8 @@
   },
   "Walking": {
     "LABEL": "Gehen"
+  },
+  "Windsurfing": {
+    "LABEL": "Windsurfen"
   }
 }
