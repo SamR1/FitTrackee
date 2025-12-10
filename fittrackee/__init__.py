@@ -144,9 +144,10 @@ def create_app(init_email: bool = True) -> Flask:
         # Note: check if "app_config" table exist to avoid errors when
         # dropping tables on dev environments
         try:
-            if db.engine.dialect.has_table(db.engine.connect(), "app_config"):
-                db_app_config = get_or_init_config()
-                update_app_config_from_database(app, db_app_config)
+            with db.engine.connect() as conn:
+                if db.engine.dialect.has_table(conn, "app_config"):
+                    db_app_config = get_or_init_config()
+                    update_app_config_from_database(app, db_app_config)
         except ProgrammingError as e:
             # avoid error on AppConfig migration
             if re.match(
