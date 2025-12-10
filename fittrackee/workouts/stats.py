@@ -27,7 +27,11 @@ stats_blueprint = Blueprint("stats", __name__)
 
 
 def get_stats_from_row(
-    row: List, stats_type: str, with_elevation_data: bool, with_pace_data: bool
+    row: List,
+    stats_type: str,
+    with_elevation_data: bool,
+    with_pace_data: bool,
+    with_speed_data: bool,
 ) -> Dict:
     row_stats = {
         "total_workouts": row[2],
@@ -45,7 +49,8 @@ def get_stats_from_row(
         ),
     }
     if stats_type == "average":
-        row_stats["average_speed"] = round(float(row[1]), 2)
+        if with_speed_data and row[1]:
+            row_stats["average_speed"] = round(float(row[1]), 2)
         if with_pace_data and row[9]:
             row_stats["average_pace"] = int(row[9].total_seconds())
     return row_stats
@@ -59,6 +64,8 @@ def get_workouts_by_time(
     """
     Get workouts statistics for a user by time.
     For now only authenticated users can access their statistics.
+    Average speed is returned for Hiking, Running, Trail and Walking only if
+    user preferences allow it.
 
     **Scope**: ``workouts:read``
 
@@ -310,6 +317,9 @@ def get_workouts_by_time(
             sport_key = row[0]
             with_elevation_data = row[8] not in SPORTS_WITHOUT_ELEVATION_DATA
             with_pace_data = row[8] in PACE_SPORTS
+            with_speed_data = (
+                row[8] not in PACE_SPORTS or user.display_speed_with_pace
+            )
             if date_key not in statistics:
                 statistics[date_key] = {
                     sport_key: get_stats_from_row(
@@ -317,15 +327,20 @@ def get_workouts_by_time(
                         stats_type,
                         with_elevation_data,
                         with_pace_data,
+                        with_speed_data,
                     )
                 }
             elif sport_key not in statistics[date_key]:
                 statistics[date_key][sport_key] = get_stats_from_row(
-                    list(row), stats_type, with_elevation_data, with_pace_data
+                    list(row),
+                    stats_type,
+                    with_elevation_data,
+                    with_pace_data,
+                    with_speed_data,
                 )
             else:
                 statistics[date_key][sport_key]["total_workouts"] += row[2]
-                if stats_type == "average":
+                if stats_type == "average" and with_speed_data:
                     statistics[date_key][sport_key]["average_speed"] = (
                         get_average_speed(
                             statistics[date_key][sport_key]["total_workouts"],
@@ -368,6 +383,8 @@ def get_workouts_by_sport(
     """
     Get workouts statistics for a user by sport.
     For now only authenticated users can access their statistics.
+    Average speed is returned for Hiking, Running, Trail and Walking only if
+    user preferences allow it.
 
     **Scope**: ``workouts:read``
 
@@ -429,7 +446,7 @@ def get_workouts_by_sport(
               "average_distance": 15.282,
               "average_duration": 7641,
               "average_pace": "0:13:24",
-              "average_speed": 4.48,
+              "average_speed": None,
               "total_workouts": 2,
               "total_ascent": 203.0,
               "total_ascent": 156.0,
@@ -515,6 +532,7 @@ def get_workouts_by_sport(
         sport_id = params.get("sport_id")
         sport_ids_without_elevation_data = []
         sport_ids_without_pace_data = []
+        sport_ids_without_speed_data = []
         filters = [Workout.user_id == user.id]
 
         if sport_id:
@@ -526,20 +544,22 @@ def get_workouts_by_sport(
                 sport_ids_without_elevation_data = [sport.id]
             if sport.label not in PACE_SPORTS:
                 sport_ids_without_pace_data = [sport.id]
+            elif not auth_user.display_speed_with_pace:
+                sport_ids_without_speed_data = [sport.id]
         else:
-            sports_without_elevation_data = Sport.query.filter(
-                Sport.label.in_(SPORTS_WITHOUT_ELEVATION_DATA)
-            ).all()
+            sports = Sport.query.filter().all()
             sport_ids_without_elevation_data = [
-                sport.id for sport in sports_without_elevation_data
+                sport.id
+                for sport in sports
+                if sport.label in SPORTS_WITHOUT_ELEVATION_DATA
             ]
-
-            sports_without_pace_data = Sport.query.filter(
-                Sport.label.not_in(PACE_SPORTS)
-            ).all()
             sport_ids_without_pace_data = [
-                sport.id for sport in sports_without_pace_data
+                sport.id for sport in sports if sport.label not in PACE_SPORTS
             ]
+            if not auth_user.display_speed_with_pace:
+                sport_ids_without_speed_data = [
+                    sport.id for sport in sports if sport.label in PACE_SPORTS
+                ]
 
         workouts_query = Workout.query.filter(*filters)
         total_workouts = workouts_query.count()
@@ -575,8 +595,11 @@ def get_workouts_by_sport(
                 row[0] not in sport_ids_without_elevation_data
             )
             return_pace_data = row[0] not in sport_ids_without_pace_data
+            return_pace_speed = row[0] not in sport_ids_without_speed_data
             statistics[row[0]] = {
-                "average_speed": round(float(row[1]), 2),
+                "average_speed": (
+                    round(float(row[1]), 2) if return_pace_speed else None
+                ),
                 "average_ascent": (
                     None
                     if row[2] is None or not return_elevation_data

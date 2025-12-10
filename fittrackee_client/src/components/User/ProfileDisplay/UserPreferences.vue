@@ -47,7 +47,9 @@
         }}
       </dd>
       <dt>{{ $t('user.PROFILE.ASCENT_DATA') }}:</dt>
-      <dd>{{ $t(`common.${display_ascent}`) }}</dd>
+      <dd>{{ $t(`common.${displayAscent}`) }}</dd>
+      <dt>{{ $t('user.PROFILE.DISPLAYING_SPEED_IN_ADDITION_TO_PACE') }}:</dt>
+      <dd>{{ $t(`common.${user.display_speed_with_pace ? 'YES' : 'NO'}`) }}</dd>
       <dt>{{ $t('user.PROFILE.WORKOUT_CHARTS_DISPLAY.LABEL') }}:</dt>
       <dd>
         {{
@@ -142,7 +144,7 @@
       : languageLabels['en']
   )
   const fistDayOfWeek = computed(() => (user.value.weekm ? 'MONDAY' : 'SUNDAY'))
-  const display_ascent = computed(() =>
+  const displayAscent = computed(() =>
     user.value.display_ascent ? 'DISPLAYED' : 'HIDDEN'
   )
   const darkMode = computed(() =>

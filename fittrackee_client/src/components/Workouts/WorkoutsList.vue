@@ -46,8 +46,8 @@
       <FilterSelects
         :sort="sortList"
         :order_by="
-          orderByList.filter((order) =>
-            displayPace ? true : order !== 'ave_pace'
+          orderByList.filter(
+            (order) => order !== (displayPace ? 'ave_speed' : 'ave_pace')
           )
         "
         :query="query"
@@ -303,11 +303,8 @@
                     {{ capitalize($t('workouts.TOTAL_DURATION')) }}
                   </td>
                   <td></td>
-                  <td v-if="sportWithPace" class="custom-th">
-                    <span
-                      :title="capitalize($t('workouts.MAX_PACE'))"
-                      v-if="workoutsStats[statsKey].total_sports === 1"
-                    >
+                  <td v-if="displayPace" class="custom-th">
+                    <span :title="capitalize($t('workouts.MAX_PACE'))">
                       {{ capitalize($t('workouts.MAX_PACE')) }}
                     </span>
                   </td>
@@ -362,16 +359,13 @@
                   </td>
                   <td class="text-right hide-col"></td>
                   <td
-                    v-if="sportWithPace"
+                    v-if="displayPace"
                     class="text-right hide-col"
                     :class="{
                       'hide-col': workoutsStats[statsKey].total_sports > 1,
                     }"
                   >
-                    <span
-                      class="cell-heading"
-                      v-if="workoutsStats[statsKey].total_sports === 1"
-                    >
+                    <span class="cell-heading">
                       {{ $t('workouts.MAX_PACE') }}
                     </span>
                     <Pace
@@ -381,7 +375,7 @@
                     />
                   </td>
                   <td
-                    v-if="!sportWithPace"
+                    v-else
                     class="text-right"
                     :class="{
                       'hide-col': workoutsStats[statsKey].total_sports > 1,
@@ -446,11 +440,8 @@
                   >
                     {{ capitalize($t('workouts.AVE_DURATION')) }}
                   </td>
-                  <td class="custom-th" v-if="sportWithPace">
-                    <span
-                      :title="capitalize($t('workouts.AVE_PACE'))"
-                      v-if="workoutsStats[statsKey].total_sports === 1"
-                    >
+                  <td class="custom-th" v-if="displayPace">
+                    <span :title="capitalize($t('workouts.AVE_PACE'))">
                       {{ capitalize($t('workouts.AVE_PACE')) }}
                     </span>
                   </td>
@@ -505,11 +496,8 @@
                     }}
                   </td>
 
-                  <td v-if="sportWithPace" class="text-right hide-col">
-                    <span
-                      class="cell-heading"
-                      v-if="workoutsStats[statsKey].total_sports === 1"
-                    >
+                  <td v-if="displayPace" class="text-right hide-col">
+                    <span class="cell-heading">
                       {{ $t('workouts.AVE_PACE') }}
                     </span>
                     <Pace

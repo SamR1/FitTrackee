@@ -379,6 +379,9 @@ class User(BaseModel):
     messages_preferences: Mapped[Optional[Dict]] = mapped_column(
         postgresql.JSONB, nullable=True
     )
+    display_speed_with_pace: Mapped[bool] = mapped_column(
+        server_default="false", nullable=False
+    )
 
     workouts: Mapped[List["Workout"]] = relationship(
         "Workout", lazy=True, back_populates="user"
@@ -806,6 +809,12 @@ class User(BaseModel):
                 and sport_label not in PACE_SPORTS
             ):
                 continue
+            if (
+                record.record_type in ["AS", "MS"]
+                and sport_label in PACE_SPORTS
+                and not self.display_speed_with_pace
+            ):
+                continue
             records.append(record.serialize())
         return records
 
@@ -954,6 +963,7 @@ class User(BaseModel):
                     if self.messages_preferences
                     else {}
                 ),
+                "display_speed_with_pace": self.display_speed_with_pace,
             }
 
         return serialized_user

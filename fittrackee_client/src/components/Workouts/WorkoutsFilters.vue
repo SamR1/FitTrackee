@@ -512,11 +512,20 @@
     }
     location.value = newLocation.display_name || ''
   }
+  function updateOrderBy(sportWithPace: boolean) {
+    if (params.order_by === 'ave_speed' && sportWithPace) {
+      params.order_by = 'ave_pace'
+    }
+    if (params.order_by === 'ave_pace' && !sportWithPace) {
+      params.order_by = 'ave_speed'
+    }
+  }
   function handleSportChange(event: Event) {
     sportId.value = (event.target as HTMLInputElement).value
     let selectedSport = undefined
     if (sportId.value === '') {
       delete params.sport_id
+      updateOrderBy(false)
     } else {
       params.sport_id = sportId.value
       selectedSport = translatedSports.value.find(
@@ -525,12 +534,14 @@
     }
     if (selectedSport && sportsWithPace.includes(selectedSport.label)) {
       disablePaceInputs.value = false
+      updateOrderBy(true)
     } else {
       delete params.ave_pace_from
       delete params.ave_pace_to
       delete params.max_pace_from
       delete params.max_pace_to
       disablePaceInputs.value = true
+      updateOrderBy(false)
     }
   }
   function onFilter() {

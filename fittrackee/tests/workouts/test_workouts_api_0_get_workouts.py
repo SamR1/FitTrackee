@@ -1746,7 +1746,60 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             == data["data"]["statistics"]["current_page"]
         )
 
-    def test_it_gets_workouts_with_stats_with_outdoor_tennis_workout(
+    @pytest.mark.parametrize("input_display_speed_with_pace", [True, False])
+    def test_it_gets_workouts_with_stats_with_one_running_tennis_workout(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_running_2_user_1: Workout,
+        input_display_speed_with_pace: bool,
+    ) -> None:
+        user_1.display_speed_with_pace = input_display_speed_with_pace
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?with_statistics=true",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["statistics"]["current_page"] == {
+            "average_ascent": None,
+            "average_descent": None,
+            "average_distance": workout_running_2_user_1.distance,
+            "average_duration": str(workout_running_2_user_1.moving),
+            "average_pace": str(workout_running_2_user_1.ave_pace),
+            "average_speed": (
+                workout_running_2_user_1.ave_speed
+                if input_display_speed_with_pace
+                else None
+            ),
+            "count": 1,
+            "max_pace": str(workout_running_2_user_1.max_pace),
+            "max_speed": (
+                workout_running_2_user_1.max_speed
+                if input_display_speed_with_pace
+                else None
+            ),
+            "total_ascent": None,
+            "total_descent": None,
+            "total_distance": workout_running_2_user_1.distance,
+            "total_duration": str(workout_running_2_user_1.moving),
+            "total_sports": 1,
+        }
+        assert (
+            data["data"]["statistics"]["all"]
+            == data["data"]["statistics"]["current_page"]
+        )
+
+    def test_it_gets_workouts_with_stats_with_one_outdoor_tennis_workout(
         self,
         app: Flask,
         user_1: User,
@@ -2193,6 +2246,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
+        user_1.display_speed_with_pace = True
         workout_cycling_user_1.max_speed = 25
         workout_running_user_1.max_speed = 11
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2678,6 +2732,195 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "total_distance": 66.0,
             "total_duration": "6:08:24",
             "total_sports": 2,
+        }
+
+    @pytest.mark.parametrize("input_display_speed_with_pace", [True, False])
+    def test_it_gets_workouts_with_different_sports(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        sport_3_cycling_transport: Sport,
+        sport_4_paragliding: Sport,
+        sport_5_outdoor_tennis: Sport,
+        seven_workouts_user_1: List[Workout],  # without pace
+        workout_running_user_1: Workout,  # with pace. Speeed depends on preferences # noqa
+        workout_outdoor_tennis_user_1: Workout,  # without pace and elevation
+        workout_paragliding_user_1: Workout,  # without pace
+        input_display_speed_with_pace: bool,
+    ) -> None:
+        user_1.display_speed_with_pace = input_display_speed_with_pace
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?with_statistics=true",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 5
+        assert data["data"]["statistics"]["current_page"] == {
+            "average_ascent": 40,
+            "average_descent": 20.0,
+            "average_distance": 8.9,
+            "average_duration": "1:22:00",
+            "average_pace": None,
+            "average_speed": None,
+            "count": 5,
+            "max_pace": None,
+            "max_speed": None,
+            "total_ascent": 40.0,
+            "total_descent": 20.0,
+            "total_distance": 44.5,
+            "total_duration": "6:50:00",
+            "total_sports": 4,
+        }
+        assert data["data"]["statistics"]["all"] == {
+            "average_ascent": 93.33,
+            "average_descent": 130.0,
+            "average_distance": 8.05,
+            "average_duration": "0:52:50",
+            "average_speed": None,
+            "average_pace": None,
+            "count": 10,
+            "max_pace": None,
+            "max_speed": None,
+            "total_ascent": 560.0,
+            "total_descent": 780.0,
+            "total_distance": 80.5,
+            "total_duration": "8:48:24",
+            "total_sports": 4,
+        }
+        assert data["pagination"] == {
+            "has_next": True,
+            "has_prev": False,
+            "page": 1,
+            "pages": 2,
+            "total": 10,
+        }
+
+    @pytest.mark.parametrize("input_display_speed_with_pace", [False, True])
+    def test_it_gets_workouts_when_sport_is_only_running(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,
+        workout_running_2_user_1: Workout,
+        input_display_speed_with_pace: bool,
+    ) -> None:
+        """
+        It does not return speed for sports with pace, regardless user
+        preferences
+        """
+        user_1.display_speed_with_pace = input_display_speed_with_pace
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?with_statistics=true",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 2
+        assert data["data"]["statistics"]["current_page"] == {
+            "average_ascent": None,
+            "average_descent": None,
+            "average_distance": 11.0,
+            "average_duration": "1:40:00",
+            "average_pace": "0:09:10",
+            "average_speed": None,
+            "count": 2,
+            "max_pace": "0:08:20",
+            "max_speed": None,
+            "total_ascent": None,
+            "total_descent": None,
+            "total_distance": 22.0,
+            "total_duration": "3:20:00",
+            "total_sports": 1,
+        }
+        assert (
+            data["data"]["statistics"]["all"]
+            == data["data"]["statistics"]["current_page"]
+        )
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 2,
+        }
+
+    def test_it_gets_workouts_when_sport_id_in_running_and_more_than_one_page_is_returned(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,
+        workout_running_2_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/workouts?with_statistics=true&per_page=1&sport_id={sport_2_running.id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["statistics"]["current_page"] == {
+            "average_ascent": None,
+            "average_descent": None,
+            "average_distance": 10.0,
+            "average_duration": "1:40:00",
+            "average_pace": "0:10:00",
+            "average_speed": None,
+            "count": 1,
+            "max_pace": "0:10:00",
+            "max_speed": None,
+            "total_ascent": None,
+            "total_descent": None,
+            "total_distance": 10.0,
+            "total_duration": "1:40:00",
+            "total_sports": 1,
+        }
+        assert data["data"]["statistics"]["all"] == {
+            "average_ascent": None,
+            "average_descent": None,
+            "average_distance": 11.0,
+            "average_duration": "1:40:00",
+            "average_pace": "0:09:10",
+            "average_speed": None,
+            "count": 2,
+            "max_pace": "0:08:20",
+            "max_speed": None,
+            "total_ascent": None,
+            "total_descent": None,
+            "total_distance": 22.0,
+            "total_duration": "3:20:00",
+            "total_sports": 1,
+        }
+        assert data["pagination"] == {
+            "has_next": True,
+            "has_prev": False,
+            "page": 1,
+            "pages": 2,
+            "total": 2,
         }
 
 

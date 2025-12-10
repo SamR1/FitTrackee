@@ -450,7 +450,11 @@ class Workout(BaseModel):
         )
 
     def _get_records(
-        self, for_report: bool, return_elevation_data: bool, sport_label: str
+        self,
+        for_report: bool,
+        return_elevation_data: bool,
+        sport_label: str,
+        display_speed_with_pace: bool,
     ) -> List[Dict]:
         if for_report:
             return []
@@ -462,6 +466,11 @@ class Workout(BaseModel):
             if (
                 record.record_type in ["AP", "MP"]
                 and sport_label not in PACE_SPORTS
+            ):
+                continue
+            if (
+                record.record_type in ["AS", "MS"]
+                and not display_speed_with_pace
             ):
                 continue
             records.append(record.serialize())
@@ -538,6 +547,9 @@ class Workout(BaseModel):
         return_elevation_data = (
             sport_label not in SPORTS_WITHOUT_ELEVATION_DATA
         )
+        display_speed_with_pace = sport_label not in PACE_SPORTS or (
+            user is not None and user.display_speed_with_pace
+        )
 
         workout_data = {
             **workout_data,
@@ -552,10 +564,14 @@ class Workout(BaseModel):
                 None if self.duration is None else str(self.duration)
             ),
             "ave_speed": (
-                None if self.ave_speed is None else float(self.ave_speed)
+                None
+                if self.ave_speed is None or not display_speed_with_pace
+                else float(self.ave_speed)
             ),
             "max_speed": (
-                None if self.max_speed is None else float(self.max_speed)
+                None
+                if self.max_speed is None or not display_speed_with_pace
+                else float(self.max_speed)
             ),
             "min_alt": (
                 float(self.min_alt)
@@ -584,7 +600,10 @@ class Workout(BaseModel):
                 else None
             ),
             "records": self._get_records(
-                for_report, return_elevation_data, sport_label
+                for_report,
+                return_elevation_data,
+                sport_label,
+                display_speed_with_pace,
             ),
             "analysis_visibility": (
                 self.calculated_analysis_visibility.value

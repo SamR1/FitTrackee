@@ -1663,7 +1663,8 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data["status"] == "success"
         assert data["data"]["statistics"] == {}
 
-    def test_it_gets_average_stats_by_time_all_workouts(
+    @pytest.mark.parametrize("input_display_speed_with_pace", [True, False])
+    def test_it_gets_average_stats_by_time_all_workouts_depending_on_user_preferences(  # noqa
         self,
         app: Flask,
         user_1: User,
@@ -1671,7 +1672,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         sport_2_running: Sport,
         seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
+        input_display_speed_with_pace: bool,
     ) -> None:
+        user_1.display_speed_with_pace = input_display_speed_with_pace
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1710,8 +1713,12 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     "average_distance": 12.0,
                     "average_duration": 6000,
                     "average_pace": 500,
-                    "average_speed": 7.2,
                     "total_workouts": 1,
+                    **(
+                        {"average_speed": 7.2}
+                        if input_display_speed_with_pace
+                        else {}
+                    ),
                 },
             },
         }
@@ -1763,7 +1770,6 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     "average_distance": 12.0,
                     "average_duration": 6000,
                     "average_pace": 500,
-                    "average_speed": 7.2,
                     "total_workouts": 1,
                 },
             },
@@ -1822,6 +1828,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         self.assert_403(response)
 
+    @pytest.mark.parametrize("input_display_speed_with_pace", [True, False])
     def test_it_gets_stats_by_sport(
         self,
         app: Flask,
@@ -1832,7 +1839,9 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
         workout_cycling_user_2: Workout,
+        input_display_speed_with_pace: bool,
     ) -> None:
+        user_1.display_speed_with_pace = input_display_speed_with_pace
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1865,7 +1874,9 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_distance": 12.0,
                 "average_duration": "1:40:00",
                 "average_pace": "0:08:20",
-                "average_speed": 7.2,
+                "average_speed": (
+                    7.2 if input_display_speed_with_pace else None
+                ),
                 "total_ascent": None,
                 "total_descent": None,
                 "total_distance": 12.0,
@@ -1917,7 +1928,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_distance": float(workout_running_user_1.distance),  # type: ignore
                 "average_duration": str(workout_running_user_1.moving),
                 "average_pace": str(workout_running_user_1.ave_pace),
-                "average_speed": float(workout_running_user_1.ave_speed),  # type: ignore
+                "average_speed": None,
                 "total_ascent": workout_running_user_1.ascent,
                 "total_descent": workout_running_user_1.descent,
                 "total_distance": float(workout_running_user_1.distance),  # type: ignore
@@ -1971,7 +1982,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_distance": 12.0,
                 "average_duration": "1:40:00",
                 "average_pace": "0:08:20",
-                "average_speed": 7.2,
+                "average_speed": None,
                 "total_ascent": None,
                 "total_descent": None,
                 "total_distance": 12.0,

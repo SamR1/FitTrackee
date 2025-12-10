@@ -31,9 +31,21 @@ def upgrade():
     op.execute("ALTER TYPE record_types ADD VALUE 'AP'")
     op.execute("ALTER TYPE record_types ADD VALUE 'MP'")
 
+    with op.batch_alter_table("users", schema=None) as batch_op:
+        batch_op.add_column(
+            sa.Column(
+                "display_speed_with_pace",
+                sa.Boolean(),
+                server_default="false",
+                nullable=False,
+            )
+        )
 
 
 def downgrade():
+    with op.batch_alter_table("users", schema=None) as batch_op:
+        batch_op.drop_column("display_speed_with_pace")
+
     op.execute("DELETE FROM records WHERE record_type IN ('AP', 'MP');")
     op.execute("ALTER TYPE record_types RENAME TO record_types_old")
     op.execute("CREATE TYPE record_types AS ENUM('AS', 'FD', 'LD', 'MS', 'HA')")

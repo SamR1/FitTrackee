@@ -177,7 +177,7 @@ class TestUserDataExporterGetUserWorkoutsData:
             }
         ]
 
-    def test_it_returns_data_for_workout_with_gpx_and_pace(
+    def test_it_returns_data_for_workout_when_sport_is_running(
         self,
         app: Flask,
         user_1: User,
@@ -208,10 +208,14 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "max_alt": float(workout.max_alt),  # type: ignore[arg-type]
                 "descent": float(workout.descent),  # type: ignore[arg-type]
                 "ascent": float(workout.ascent),  # type: ignore[arg-type]
-                "max_speed": float(workout.max_speed),  # type: ignore[arg-type]
-                "ave_speed": float(workout.ave_speed),  # type: ignore[arg-type]
+                "max_speed": None,
+                "ave_speed": None,
                 "original_file": workout.original_file.split("/")[-1],  # type: ignore[union-attr]
-                "records": [record.serialize() for record in workout.records],
+                "records": [
+                    record.serialize()
+                    for record in workout.records
+                    if record.record_type not in ["AS", "MS"]
+                ],
                 "segments": [
                     {**segment.serialize(), "segment_number": number}
                     for number, segment in enumerate(workout.segments, start=1)

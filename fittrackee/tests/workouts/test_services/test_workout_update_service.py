@@ -414,6 +414,8 @@ class TestWorkoutUpdateServiceUpdate(RandomMixin):
             **updated_data,
             "ave_pace": "0:06:00",
             "max_pace": "0:06:00",
+            "ave_speed": None,
+            "max_speed": None,
         }
         assert workout_cycling_user_1.equipments == []
 

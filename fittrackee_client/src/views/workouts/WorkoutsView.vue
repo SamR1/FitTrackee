@@ -9,7 +9,6 @@
         <WorkoutsFilters
           :translatedSports="translatedSports"
           :authUser="authUser"
-          :sportWithPace="sportWithPace"
           @filter="toggleFilters"
           @updateSportWithPace="updateSportWithPace"
         />

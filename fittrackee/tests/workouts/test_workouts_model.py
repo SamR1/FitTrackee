@@ -434,6 +434,90 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_hr": workout.ave_hr,
             "ave_pace": str(workout.ave_pace),
             "ave_power": None,
+            "ave_speed": None,
+            "bounds": workout.bounds,
+            "creation_date": workout.creation_date,
+            "descent": workout.descent,
+            "description": None,
+            "distance": workout.distance,
+            "duration": str(workout.duration),
+            "equipments": [],
+            "id": workout.short_id,
+            "liked": False,
+            "likes_count": 0,
+            "map": None,
+            "map_visibility": workout.map_visibility.value,
+            "max_alt": workout.max_alt,
+            "max_cadence": workout.max_cadence * 2,
+            "max_hr": workout.max_hr,
+            "max_pace": str(workout.max_pace),
+            "max_power": None,
+            "max_speed": None,
+            "min_alt": workout.min_alt,
+            "modification_date": workout.modification_date,
+            "moving": str(workout.moving),
+            "next_workout": None,
+            "notes": None,
+            "original_file": "gpx",
+            "pauses": str(workout.pauses),
+            "previous_workout": None,
+            "records": [
+                record.serialize()
+                for record in workout.records
+                if record.record_type not in ["AS", "MS"]
+            ],
+            "segments": [
+                {
+                    **segment.serialize(can_see_heart_rate=True),
+                    "segment_number": number,
+                }
+                for number, segment in enumerate(workout.segments, start=1)
+            ],
+            "source": workout.source,
+            "sport_id": workout.sport_id,
+            "suspended": False,
+            "suspended_at": None,
+            "title": None,
+            "user": user_1.serialize(),
+            "weather_end": None,
+            "weather_start": None,
+            "workout_date": workout.workout_date,
+            "workout_visibility": workout.workout_visibility.value,
+            "with_analysis": True,
+            "with_geometry": False,
+            "with_file": True,
+        }
+
+    def test_it_serializes_workout_with_file_for_running_when_display_speed_with_pace_is_true(  # noqa
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        user_1: User,
+        workout_running_user_1: Workout,
+    ) -> None:
+        user_1.display_speed_with_pace = True
+        workout = self.update_workout_with_file_data(workout_running_user_1)
+        workout.original_file = "file.gpx"
+        workout.original_file = "file.gpx"
+        workout.ave_cadence = 55
+        workout.ave_hr = 90
+        workout.ave_power = 125
+        workout.max_cadence = 62
+        workout.max_hr = 110
+        workout.max_power = 250
+        workout.ave_pace = timedelta(minutes=(60 / float(workout.ave_speed)))  # type: ignore [arg-type]
+        workout.max_pace = timedelta(minutes=(60 / float(workout.max_speed)))  # type: ignore [arg-type]
+
+        serialized_workout = workout.serialize(user=user_1, light=False)
+
+        assert serialized_workout == {
+            "analysis_visibility": workout.analysis_visibility.value,
+            "ascent": workout.ascent,
+            "ave_cadence": workout.ave_cadence * 2,
+            "ave_hr": workout.ave_hr,
+            "ave_pace": str(workout.ave_pace),
+            "ave_power": None,
             "ave_speed": float(workout.ave_speed),  # type: ignore [arg-type]
             "bounds": workout.bounds,
             "creation_date": workout.creation_date,

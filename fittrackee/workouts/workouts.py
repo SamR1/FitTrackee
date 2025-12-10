@@ -196,14 +196,16 @@ def get_statistics(
 
     total_sports = stats_query[9]
     return_speeds = total_sports == 1 and get_speeds
+    ave_pace_raw = 12 if get_speeds else 10
+    max_pace_raw = 13 if get_speeds else 11
     return {
         "average_ascent": get_rounded_float_value(stats_query[4]),
         "average_descent": get_rounded_float_value(stats_query[5]),
         "average_distance": get_rounded_float_value(stats_query[6]),
         "average_duration": get_string_duration_value(stats_query[7]),
         "average_pace": (
-            str(remove_microseconds(stats_query[12]))
-            if get_pace and stats_query[12]
+            str(remove_microseconds(stats_query[ave_pace_raw]))
+            if get_pace and stats_query[ave_pace_raw]
             else None
         ),
         "average_speed": (
@@ -211,8 +213,8 @@ def get_statistics(
         ),
         "count": stats_query[8],
         "max_pace": (
-            str(remove_microseconds(stats_query[13]))
-            if get_pace and stats_query[13]
+            str(remove_microseconds(stats_query[max_pace_raw]))
+            if get_pace and stats_query[max_pace_raw]
             else None
         ),
         "max_speed": (
@@ -224,6 +226,18 @@ def get_statistics(
         "total_duration": get_string_duration_value(stats_query[3]),
         "total_sports": total_sports,
     }
+
+
+def get_workout_data_visibility(
+    workout: "Workout", auth_user: "User"
+) -> Tuple[bool, bool, bool]:
+    sport_label = workout.sport.label
+    return_elevation_data = sport_label not in SPORTS_WITHOUT_ELEVATION_DATA
+    return_pace_data = sport_label in PACE_SPORTS
+    return_speed_data = (
+        auth_user.display_speed_with_pace or sport_label not in PACE_SPORTS
+    )
+    return return_elevation_data, return_pace_data, return_speed_data
 
 
 def download_workout_file(
@@ -648,6 +662,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
 
         statistics = {}
         if params.get("with_statistics", "false").lower() == "true":
+            # no workouts returned
             if workouts_pagination.total == 0:
                 statistics = {
                     "statistics": {
@@ -655,13 +670,12 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                         "all": {**NO_STATISTICS},
                     }
                 }
+            # only one workout returned
             elif workouts_pagination.total == 1:
                 workout = workouts[0]
-                sport_label = workout.sport.label
-                return_elevation_data = (
-                    sport_label not in SPORTS_WITHOUT_ELEVATION_DATA
+                return_elevation_data, return_pace_data, return_speed_data = (
+                    get_workout_data_visibility(workout, auth_user)
                 )
-                return_pace_data = sport_label in PACE_SPORTS
                 ascent = (
                     None
                     if workout.ascent is None or not return_elevation_data
@@ -690,13 +704,13 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                     "average_pace": ave_pace,
                     "average_speed": (
                         None
-                        if workout.ave_speed is None
+                        if workout.ave_speed is None or not return_speed_data
                         else float(workout.ave_speed)
                     ),
                     "count": 1,
                     "max_speed": (
                         None
-                        if workout.max_speed is None
+                        if workout.max_speed is None or not return_speed_data
                         else float(workout.max_speed)
                     ),
                     "max_pace": max_pace,
@@ -712,6 +726,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                         "all": {**workout_total},
                     }
                 }
+            # more than one workout is returned
             else:
                 workouts_subquery = (
                     workouts_query.offset((page - 1) * per_page)
@@ -720,13 +735,25 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 )
                 get_speeds = True
                 get_pace = False
-                if workouts_pagination.pages == 1:
+                # if sport id is provided, get pace and speed visibility
+                # depending on sport
+                if "sport_id" in params:
+                    _, get_pace, get_speeds = get_workout_data_visibility(
+                        workouts[0], auth_user
+                    )
+                # if only page is returned and all workouts are associated with
+                # the same sport, get pace and speed visibility depending on
+                # this sport
+                elif workouts_pagination.pages == 1:
                     sport_labels = {
                         workout.sport.label for workout in workouts
                     }
                     # do not get speeds when workouts with different sport
                     # are fetched
-                    get_speeds = len(sport_labels) == 1
+                    get_speeds = (
+                        len(sport_labels) == 1
+                        and next(iter(sport_labels)) not in PACE_SPORTS
+                    )
                     get_pace = (
                         len(sport_labels) == 1
                         and next(iter(sport_labels)) in PACE_SPORTS
@@ -754,6 +781,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                     workouts_subquery = all_workouts_subquery.subquery()
                     statistics["statistics"]["all"] = get_statistics(
                         workouts_subquery,
+                        get_speeds=get_speeds,
+                        get_pace=get_pace,
                     )
 
         return {
