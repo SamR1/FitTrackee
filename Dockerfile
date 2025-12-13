@@ -7,7 +7,8 @@ ENV PATH=/usr/src/app/fittrackee_client/node_modules/.bin:$PATH
 COPY fittrackee_client/package.json /usr/src/app/fittrackee_client/package.json
 COPY fittrackee_client/yarn.lock /usr/src/app/fittrackee_client/yarn.lock
 RUN apk add --no-cache git
-RUN yarn install --silent --network-timeout 300000
+RUN yarn install --frozen-lockfile --ignore-scripts --silent --network-timeout 300000 && \
+	yarn cache clean
 
 COPY fittrackee_client/. /usr/src/app/fittrackee_client
 RUN yarn build

@@ -38,7 +38,7 @@ jobs:
         working-directory: ${{env.working-directory}}
         run: |
           npm install --global yarn
-          yarn install
+          yarn install --frozen-lockfile --ignore-scripts
       - name: Lint
         working-directory: ${{env.working-directory}}
         run: yarn lint-check
@@ -92,6 +92,21 @@ jobs:
           pip install --quiet poetry
           poetry config virtualenvs.create false
           poetry install --no-interaction --quiet
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+
+      - name: Install yarn and dependencies
+        working-directory: fittrackee_client
+        run: |
+          npm install --global yarn
+          yarn install --frozen-lockfile --ignore-scripts
+
+      - name: Build dist files
+        working-directory: fittrackee_client
+        run: yarn build
 
       - name: Run migrations
         run: flask db upgrade --directory fittrackee/migrations
