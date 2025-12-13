@@ -219,6 +219,15 @@ deployment method.
     :default: ``127.0.0.1``
 
 
+.. envvar:: LOG_LEVEL
+
+    .. versionadded:: 1.x.x
+
+    Log level for **Gunicorn** (when starting application with **FitTrackee** entry point or with Docker image), see `Gunicorn documentation <https://docs.gunicorn.org/en/stable/settings.html#loglevel>`__).
+
+    :default: ``info``
+
+
 .. envvar:: MAP_ATTRIBUTION
 
     .. versionadded:: 0.4.0
