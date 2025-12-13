@@ -89,7 +89,7 @@
       if (isLanguageSupported(navigatorLanguage)) {
         language = navigatorLanguage
       }
-    } catch (e) {
+    } catch {
       language = 'en'
     }
     store.dispatch(ROOT_STORE.ACTIONS.UPDATE_APPLICATION_LANGUAGE, language)
