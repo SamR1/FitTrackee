@@ -92,10 +92,11 @@ deployment method.
 .. envvar:: API_RATE_LIMITS
 
     .. versionadded:: 0.7.0
+    .. versionchanged:: 1.x.x remove default value
 
-    API rate limits, see `API rate limits <installation.html#api-rate-limits>`__.
+    API rate limits user by **Flask-Limiter** see `API rate limits <installation.html#api-rate-limits>`__.
 
-    :default: ``300 per 5 minutes``
+    Example: ``300 per 5 minutes`` (see `Flask-Limiter documentation for notation <https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-limit-string-notation>`_).
 
 
 .. envvar:: APP_LOG
@@ -491,20 +492,19 @@ The default tile server (**OpenStreetMap**) no longer requires subdomains.
 API rate limits
 ~~~~~~~~~~~~~~~
 .. versionadded:: 0.7.0
+.. versionchanged:: 1.x.x Remove ``API_RATE_LIMITS`` default value
 
-| API rate limits are managed by `Flask-Limiter <https://flask-limiter.readthedocs.io/en/stable>`_, based on IP with fixed window strategy.
-| To enable rate limits, **Redis** must be available.
+| If `API_RATE_LIMITS <installation.html#envvar-API_RATE_LIMITS>`__ environment variable is set and **Redis** available, API rate limits are managed by `Flask-Limiter <https://flask-limiter.readthedocs.io/en/stable>`_, based on IP with fixed window strategy.
 
 .. note::
     | If no Redis instance is available for rate limits, FitTrackee can still start.
 
 | All endpoints are subject to rate limits, except endpoints serving assets.
-| Limits can be modified by setting the environment variable ``API_RATE_LIMITS`` (see `Flask-Limiter documentation for notation <https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-limit-string-notation>`_).
 | Rate limits must be separated by a comma, for instance:
 
 .. code-block::
 
-    export API_RATE_LIMITS="200 per day, 50 per hour"
+    export API_RATE_LIMITS="200 per day,50 per hour"
 
 **Flask-Limiter** provides a `Command Line Interface <https://flask-limiter.readthedocs.io/en/stable/cli.html>`_ for maintenance and diagnostic purposes.
 
@@ -522,6 +522,9 @@ API rate limits
       clear   Clear limits for a specific key
       config  View the extension configuration
       limits  Enumerate details about all routes with rate limits
+
+.. note::
+    | Rate limits can be managed by other applications, like `nginx <https://nginx.org/en/docs/http/ngx_http_limit_req_module.html>`__.
 
 
 Weather data
