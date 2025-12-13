@@ -34,11 +34,15 @@ REDIS_URL = os.getenv("REDIS_URL", "redis://")
 API_RATE_LIMITS = os.environ.get("API_RATE_LIMITS", "300 per 5 minutes").split(
     ","
 )
+
+log_handlers: list = [logging.StreamHandler()]
 log_file = os.getenv("APP_LOG")
+if log_file:
+    log_handlers.extend([logging.FileHandler(log_file)])
 logging.basicConfig(
-    filename=log_file,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     datefmt="%Y/%m/%d %H:%M:%S",
+    handlers=log_handlers,
 )
 appLog = logging.getLogger("fittrackee")
 

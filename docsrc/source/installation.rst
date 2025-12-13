@@ -104,6 +104,10 @@ deployment method.
 
     Path to log file
 
+    .. versionchanged:: 1.x.x
+
+    If the value is not set, logging output is displayed only on the console.
+
 
 .. envvar:: APP_SECRET_KEY
 
