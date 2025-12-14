@@ -15,6 +15,7 @@
     "error during gpx file parsing": "Ошибка при разборе .gpx файла.",
     "error during gpx processing": "Ошибка при обработке .gpx файла.",
     "error on getting configuration": "Ошибка при получении конфигурации.",
+    "error when generating map image": "Ошибка при создании изображения карты.",
     "error when getting timezones": "Ошибка при получении часовых поясов.",
     "error when parsing fit file": "Ошибка при разборе .fit файла.",
     "error when parsing gpx file": "Ошибка при разборе .gpx файла.",

@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.09.25 -->
-        <title>Installation - FitTrackee 1.0.3 documentation</title>
+        <title>Installation - FitTrackee 1.0.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=580074bf" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 1.0.3
+      <a href="index.html"><div class="brand">FitTrackee 1.0.4
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 1.0.3
+  <span class="sidebar-brand-text">FitTrackee 1.0.4
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -401,12 +401,10 @@ deployment method.</p>
 <dd><div class="versionadded">
 <p><span class="versionmodified added">Added in version 0.7.0.</span></p>
 </div>
-<p>API rate limits, see <a class="reference external" href="installation.html#api-rate-limits">API rate limits</a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Default<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">300</span> <span class="pre">per</span> <span class="pre">5</span> <span class="pre">minutes</span></code></p>
-</dd>
-</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.0.4: </span>remove default value</p>
+</div>
+<p>API rate limits set for <strong>Flask-Limiter</strong> see <a class="reference external" href="installation.html#api-rate-limits">API rate limits</a>.</p>
 </dd></dl>
 
 <dl class="std envvar">
@@ -416,6 +414,10 @@ deployment method.</p>
 <p><span class="versionmodified added">Added in version 0.4.0.</span></p>
 </div>
 <p>Path to log file</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.0.4.</span></p>
+</div>
+<p>If the value is not set, logging output is displayed only on the console.</p>
 </dd></dl>
 
 <dl class="std envvar">
@@ -597,6 +599,20 @@ engine URL should begin with <code class="docutils literal notranslate"><span cl
 <dl class="field-list simple">
 <dt class="field-odd">Default<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-LOG_LEVEL">
+<span class="sig-name descname"><span class="pre">LOG_LEVEL</span></span><a class="headerlink" href="#envvar-LOG_LEVEL" title="Link to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.0.4.</span></p>
+</div>
+<p>Log level for <strong>Gunicorn</strong> (when starting application with <strong>FitTrackee</strong> entry point or with Docker image), see <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#loglevel">Gunicorn documentation</a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Default<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">info</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -956,9 +972,11 @@ The tile server can be changed by updating <code class="docutils literal notrans
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 0.7.0.</span></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.0.4: </span>Remove <code class="docutils literal notranslate"><span class="pre">API_RATE_LIMITS</span></code> default value</p>
+</div>
 <div class="line-block">
-<div class="line">API rate limits are managed by <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable">Flask-Limiter</a>, based on IP with fixed window strategy.</div>
-<div class="line">To enable rate limits, <strong>Redis</strong> must be available.</div>
+<div class="line">If <a class="reference external" href="installation.html#envvar-API_RATE_LIMITS">API_RATE_LIMITS</a> environment variable is not empty and <strong>Redis</strong> available, API rate limits are managed by <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable">Flask-Limiter</a>, based on IP with fixed window strategy.</div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -968,10 +986,10 @@ The tile server can be changed by updating <code class="docutils literal notrans
 </div>
 <div class="line-block">
 <div class="line">All endpoints are subject to rate limits, except endpoints serving assets.</div>
-<div class="line">Limits can be modified by setting the environment variable <code class="docutils literal notranslate"><span class="pre">API_RATE_LIMITS</span></code> (see <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-limit-string-notation">Flask-Limiter documentation for notation</a>).</div>
-<div class="line">Rate limits must be separated by a comma, for instance:</div>
+<div class="line">Limits are configured by setting the environment variable <code class="docutils literal notranslate"><span class="pre">API_RATE_LIMITS</span></code>, for example <code class="docutils literal notranslate"><span class="pre">300</span> <span class="pre">per</span> <span class="pre">5</span> <span class="pre">minutes</span></code> (see <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-limit-string-notation">Flask-Limiter documentation for notation</a>).</div>
+<div class="line">Multiple rate limits must be separated by a comma, for instance:</div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">API_RATE_LIMITS</span><span class="o">=</span><span class="s2">&quot;200 per day, 50 per hour&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">API_RATE_LIMITS</span><span class="o">=</span><span class="s2">&quot;200 per day,50 per hour&quot;</span>
 </pre></div>
 </div>
 <p><strong>Flask-Limiter</strong> provides a <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable/cli.html">Command Line Interface</a> for maintenance and diagnostic purposes.</p>
@@ -988,6 +1006,12 @@ Commands:
 <span class="w">  </span>config<span class="w">  </span>View<span class="w"> </span>the<span class="w"> </span>extension<span class="w"> </span>configuration
 <span class="w">  </span>limits<span class="w">  </span>Enumerate<span class="w"> </span>details<span class="w"> </span>about<span class="w"> </span>all<span class="w"> </span>routes<span class="w"> </span>with<span class="w"> </span>rate<span class="w"> </span>limits
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Rate limits can be managed by other applications, like <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_limit_req_module.html">nginx</a>.</div>
+</div>
 </div>
 </section>
 <section id="weather-data">
@@ -1239,11 +1263,11 @@ $<span class="w"> </span>make<span class="w"> </span>install-db-dev
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v1.0.3):</p></li>
+<li><p>Download the last release (for now, it is the release v1.0.4):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/1.0.3.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.0.3.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-1.0.3<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/1.0.4.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.0.4.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-1.0.4<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1387,11 +1411,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v1.0.3) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v1.0.4) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v1.0.3.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.0.3.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-1.0.3/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v1.0.4.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.0.4.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-1.0.4/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1704,6 +1728,76 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 </div>
 </section>
 </section>
+<section id="vscode">
+<h2>VSCode<a class="headerlink" href="#vscode" title="Link to this heading">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.0.4.</span></p>
+</div>
+<section id="id7">
+<h3>Development<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<p>You can use the <strong>Dev Container</strong> without the <strong>debug configuration</strong> and vice versa.
+Dev Container is strongly recommended on Windows because of path handling issues.</p>
+<section id="dev-container">
+<h4>Dev Container<a class="headerlink" href="#dev-container" title="Link to this heading">¶</a></h4>
+<p>Using a Dev Container gives you a ready-to-use environment (Python, Poetry, Node, etc.) without installing them on your host.</p>
+<p><strong>Prerequisites</strong></p>
+<ul class="simple">
+<li><p>Docker Engine</p></li>
+<li><p>VS Code with <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers">Dev Containers extension</a></p></li>
+</ul>
+<p><strong>How to use</strong></p>
+<ul class="simple">
+<li><p>Open the FitTrackee folder in VS Code.</p></li>
+<li><p>When prompted, choose <strong>Reopen in Container</strong> (or open the Command Palette and run <code class="docutils literal notranslate"><span class="pre">Dev</span> <span class="pre">Containers:</span> <span class="pre">Reopen</span> <span class="pre">in</span> <span class="pre">Container</span></code>).</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">For better file-system performance on Windows/macOS, use an <strong>anonymous container volume</strong> so code and packages are stored inside the VM filesystem.</div>
+<div class="line">Use the Command Palette action <code class="docutils literal notranslate"><span class="pre">Dev</span> <span class="pre">Containers:</span> <span class="pre">Clone</span> <span class="pre">Repository</span> <span class="pre">in</span> <span class="pre">Container</span> <span class="pre">Volume</span></code> to clone into a volume.</div>
+<div class="line">If you rebuild the container frequently, prefer a <strong>named volume</strong> to preserve installed dependencies between rebuilds.</div>
+<div class="line">See <a class="reference external" href="https://code.visualstudio.com/remote/advancedcontainers/improve-performance">Improve performance</a>.</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Port 5000 (fittrackee-ui) is forwarded automatically, if you change APP_PORT you need to manually forward the new port using <code class="docutils literal notranslate"><span class="pre">Forward</span> <span class="pre">a</span> <span class="pre">Port</span></code> command in the Command Palette.</p>
+</div>
+</section>
+<section id="debug-configuration-tasks">
+<h4>Debug configuration &amp; tasks<a class="headerlink" href="#debug-configuration-tasks" title="Link to this heading">¶</a></h4>
+<p>This repository includes a VS Code <em>launch</em> configuration that:</p>
+<ul class="simple">
+<li><p>starts the full Docker Compose dev stack in the background,</p></li>
+<li><p>waits until services are healthy,</p></li>
+<li><p>attaches the debugger to the backend so breakpoints work immediately,</p></li>
+<li><p>tears the stack down when you stop the debugger.</p></li>
+</ul>
+<p><strong>How to start debugging</strong></p>
+<ul class="simple">
+<li><p>Open the Command Palette and run <code class="docutils literal notranslate"><span class="pre">Debug:</span> <span class="pre">Start</span> <span class="pre">Debugging</span></code> <strong>or</strong> press <strong>F5</strong>.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the debugger fails to attach, use <code class="docutils literal notranslate"><span class="pre">Debug:</span> <span class="pre">Select</span> <span class="pre">Debug</span> <span class="pre">Session</span></code> to end the session,
+check container logs, then run <code class="docutils literal notranslate"><span class="pre">Tasks:</span> <span class="pre">Run</span> <span class="pre">Task</span></code> and then <strong>down: devcontainer-compose</strong>
+before retrying.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>On Linux, <code class="docutils literal notranslate"><span class="pre">host.docker.internal</span></code> does not resolve automatically from inside containers.
+If the debugger fails to attach and logs show connection issues to <code class="docutils literal notranslate"><span class="pre">host.docker.internal:5678</span></code>,
+ensure <code class="docutils literal notranslate"><span class="pre">.devcontainer\docker-compose-devcontainer.yml</span></code> includes the host gateway mapping:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">fittrackee</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">extra_hosts</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;host.docker.internal:host-gateway&quot;</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+</section>
 <section id="yunohost">
 <h2>Yunohost<a class="headerlink" href="#yunohost" title="Link to this heading">¶</a></h2>
 <p>Thanks to contributors, a package is available, see <a class="reference external" href="https://github.com/YunoHost-Apps/fittrackee_ynh">https://github.com/YunoHost-Apps/fittrackee_ynh</a>.</p>
@@ -1809,6 +1903,14 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 <li><a class="reference internal" href="#development">Development</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#vscode">VSCode</a><ul>
+<li><a class="reference internal" href="#id7">Development</a><ul>
+<li><a class="reference internal" href="#dev-container">Dev Container</a></li>
+<li><a class="reference internal" href="#debug-configuration-tasks">Debug configuration &amp; tasks</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#yunohost">Yunohost</a></li>
 <li><a class="reference internal" href="#nixos">NixOS</a></li>
 </ul>
@@ -1822,7 +1924,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=baaebd52"></script>
+</div><script src="_static/documentation_options.js?v=71272d9f"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

@@ -28,17 +28,19 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from fittrackee.emails.emails import EmailService
 from fittrackee.request import CustomRequest
 
-VERSION = __version__ = "1.0.3"
+VERSION = __version__ = "1.0.4"
 DEFAULT_PRIVACY_POLICY_DATA = "2024-12-23 19:00:00"
 REDIS_URL = os.getenv("REDIS_URL", "redis://")
-API_RATE_LIMITS = os.environ.get("API_RATE_LIMITS", "300 per 5 minutes").split(
-    ","
-)
+API_RATE_LIMITS = os.environ.get("API_RATE_LIMITS")
+
+log_handlers: list = [logging.StreamHandler()]
 log_file = os.getenv("APP_LOG")
+if log_file:
+    log_handlers.extend([logging.FileHandler(log_file)])
 logging.basicConfig(
-    filename=log_file,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     datefmt="%Y/%m/%d %H:%M:%S",
+    handlers=log_handlers,
 )
 appLog = logging.getLogger("fittrackee")
 
@@ -67,21 +69,29 @@ bcrypt = Bcrypt()
 migrate = Migrate()
 email_service = EmailService()
 dramatiq = Dramatiq()
+redis_client = redis.from_url(REDIS_URL)
+
 limiter = Limiter(
     key_func=get_remote_address,
-    default_limits=API_RATE_LIMITS,  # type: ignore
+    default_limits=(
+        API_RATE_LIMITS.split(",")  # type: ignore
+        if isinstance(API_RATE_LIMITS, str)
+        else None
+    ),
     default_limits_per_method=True,
     headers_enabled=True,
     storage_uri=REDIS_URL,
     strategy="fixed-window",
 )
-# if redis is not available, disable the rate limiter
-redis_client = redis.from_url(REDIS_URL)
-try:
-    redis_client.ping()
-except redis.exceptions.ConnectionError:
+if not API_RATE_LIMITS:
     limiter.enabled = False
-    appLog.warning("Redis not available, API rate limits are disabled.")
+else:
+    # if redis is not available, disable the rate limiter
+    try:
+        redis_client.ping()
+    except redis.exceptions.ConnectionError:
+        limiter.enabled = False
+        appLog.warning("Redis not available, API rate limits are disabled.")
 
 backend = backends.RedisBackend(client=redis_client)
 abortable = Abortable(backend=backend)

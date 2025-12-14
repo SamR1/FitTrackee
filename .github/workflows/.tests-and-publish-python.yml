@@ -26,12 +26,6 @@ on:
     types: [opened, synchronize, reopened]
 
 env:
-  APP_SETTINGS: fittrackee.config.TestingConfig
-  DATABASE_TEST_URL: "postgresql://fittrackee:fittrackee@postgres:5432/fittrackee_test"
-  EMAIL_URL: "smtp://none:none@0.0.0.0:1025"
-  FLASK_APP: fittrackee/__main__.py
-  SENDER_EMAIL: fittrackee@example.com
-  UI_URL: https://0.0.0.0:5000
   GITHUB_REGISTRY: ghcr.io
   GITHUB_IMAGE_NAME: ${{ github.repository }}
 
@@ -39,188 +33,47 @@ jobs:
   python:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     name: python ${{ matrix.python-version }} (postgis 17-3.5)
-    runs-on: ubuntu-latest
-    container: python:${{ matrix.python-version }}
-    services:
-      postgres:
-        image: postgis/postgis:17-3.5-alpine
-        env:
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+    uses: ./.github/workflows/.workflow-python.yml
     strategy:
       matrix:
         python-version:  [ "3.10", "3.11", "3.12", "3.13", "3.14" ]
-    steps:
-
-      - uses: actions/checkout@v4
-
-      - name: Install libgdal-dev in order to build numpy with python 3.14
-        if: matrix.python-version == '3.14'
-        run: |
-          apt-get update
-          apt-get install -y libgdal-dev
-
-      - name: Install Poetry and Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install --quiet poetry
-          poetry config virtualenvs.create false
-          poetry install --no-interaction --quiet
-
-      - name: Create test databases
-        run: python db/create_ci_test_db.py
-
-      - name: Bandit
-        if: matrix.python-version == '3.13'
-        run: bandit -r fittrackee -c pyproject.toml
-
-      - name: Lint
-        if: matrix.python-version == '3.13'
-        run: ruff check fittrackee e2e
-
-      - name: Mypy
-        if: matrix.python-version == '3.13'
-        run: mypy fittrackee
-
-      - name: Pytest with coverage
-        if: matrix.python-version == '3.10'
-        run: pytest fittrackee -n auto --maxprocesses=2  -p no:warnings --cov fittrackee --cov-report term-missing --maxfail=1
-
-      - name: Coveralls
-        if: ${{ matrix.python-version == '3.10' && github.repository == 'SamR1/FitTrackee' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          pip install coveralls
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          coveralls
-
-      - name: Pytest
-        if: matrix.python-version != '3.10'
-        run: pytest fittrackee -n auto --maxprocesses=2  -p no:warnings --maxfail=1
-
+    with:
+      ubuntu-version: "ubuntu-latest"
+      python-version: ${{ matrix.python-version }}
+      postgis-version: "17-3.5"
+      with-additional-check: true
+      with-coverage: true
 
   postgis:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
-    name: postgis ${{ matrix.psql-version }} (python 3.10)
-    runs-on: ubuntu-latest
-    container: python:3.10
-    services:
-      postgres:
-        image: postgis/postgis:${{ matrix.psql-version }}-alpine
-        env:
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+    name: postgis ${{ matrix.postgis-version }} (python 3.10)
+    uses: ./.github/workflows/.workflow-python.yml
     strategy:
       matrix:
-        psql-version:  [ "13-3.5", "14-3.5", "15-3.5", "16-3.5", "17-3.4", "17-3.6", "18-3.6" ]
-    steps:
-
-      - uses: actions/checkout@v4
-
-      - name: Install Poetry and Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install --quiet poetry
-          poetry config virtualenvs.create false
-          poetry install --no-interaction --quiet
-
-      - name: Create test databases
-        run: python db/create_ci_test_db.py
-
-      - name: Pytest
-        run: pytest fittrackee -n auto --maxprocesses=2 -p no:warnings --maxfail=1
-
+        postgis-version:  [ "13-3.5", "14-3.5", "15-3.5", "16-3.5", "17-3.4", "17-3.6", "18-3.6" ]
+    with:
+      ubuntu-version: "ubuntu-latest"
+      python-version: "3.10"
+      postgis-version: ${{ matrix.postgis-version }}
+      with-additional-check: false
+      with-coverage: false
 
   arm:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     name: postgis 17-3.5 on arm platform (python 3.13)
-    runs-on: ubuntu-24.04-arm
-    container: python:3.13
-    services:
-      postgres:
-        image: imresamu/postgis:17-3.5-alpine
-        env:
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    steps:
+    uses: ./.github/workflows/.workflow-python.yml
+    with:
+      ubuntu-version: "ubuntu-24.04-arm"
+      python-version: "3.13"
+      postgis-version: "17-3.5"
+      with-additional-check: false
+      with-coverage: false
 
-      - uses: actions/checkout@v4
-
-      - name: Install Poetry and Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install --quiet poetry
-          poetry config virtualenvs.create false
-          poetry install --no-interaction --quiet
-
-      - name: Create test databases
-        run: python db/create_ci_test_db.py
-
-      - name: Pytest
-        run: pytest fittrackee -n auto --maxprocesses=2 -p no:warnings --maxfail=1
-
-  end2end:
+  end2end_with_sources:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
-    name: e2e tests with sources
-    runs-on: ubuntu-latest
+    name: e2e tests with sources (Node 20)
     needs: ["python"]
-    container: python:3.13
-    services:
-      postgres:
-        image: postgis/postgis:17-3.5-alpine
-        env:
-          POSTGRES_DB: fittrackee_test
-          POSTGRES_USER: fittrackee
-          POSTGRES_PASSWORD: fittrackee
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-      selenium:
-        image: selenium/standalone-firefox
-      mailhog:
-        image: mailhog/mailhog:latest
-      redis:
-        image: redis:latest
-    env:
-      APP_SETTINGS: fittrackee.config.End2EndTestingConfig
-      EMAIL_URL: "smtp://mailhog:1025"
-      REDIS_URL: "redis://redis:6379"
-    steps:
-
-      - uses: actions/checkout@v4
-
-      - name: Install Poetry and Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install --quiet poetry
-          poetry config virtualenvs.create false
-          poetry install --no-interaction --quiet
-
-      - name: Run migrations
-        run: flask db upgrade --directory fittrackee/migrations
-
-      - name: Start application and run tests with Selenium
-        run: |
-          setsid nohup flask run --with-threads -h 0.0.0.0 -p 5000 >> nohup.out 2>&1 &
-          export TEST_APP_URL=http://$(hostname --ip-address):5000
-          sleep 5
-          nohup dramatiq fittrackee.tasks:broker --processes=1 >> nohup.out 2>&1 &
-          pytest e2e --driver Remote --capability browserName firefox --selenium-host selenium --selenium-port 4444 --maxfail=1
+    uses: ./.github/workflows/.workflow-e2e-with-sources.yml
 
   build_package:
     needs: ["python"]
@@ -231,16 +84,16 @@ jobs:
       with:
         persist-credentials: false
 
-    - name: Use Node.js 23.x
+    - name: Use Node.js 24.x
       uses: actions/setup-node@v4
       with:
-        node-version: 23.x
+        node-version: 24.x
 
     - name: Install yarn and dependencies
       working-directory: fittrackee_client
       run: |
         npm install --global yarn
-        yarn install
+        yarn install --frozen-lockfile --ignore-scripts
 
     - name: Build dist files
       working-directory: fittrackee_client
@@ -272,20 +125,20 @@ jobs:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     name: e2e tests with package
     needs: ["build_package"]
-    uses: ./.github/workflows/.e2e-tests.yml
+    uses: ./.github/workflows/.workflow-e2e.yml
 
   end2end_package_update:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     name: e2e tests after FitTrackee update
     needs: ["build_package"]
-    uses: ./.github/workflows/.e2e-tests.yml
+    uses: ./.github/workflows/.workflow-e2e.yml
     with:
       previous-version: true
 
   publish-to-pypi:
     if: github.repository == 'SamR1/FitTrackee' && startsWith(github.ref, 'refs/tags/v')
     name: Publish Python distribution to PyPI
-    needs: ["postgis", "arm", "end2end", "end2end_package", "end2end_package_update"]
+    needs: ["postgis", "arm", "end2end_with_sources", "end2end_package", "end2end_package_update"]
     runs-on: ubuntu-latest
     environment:
       name: pypi
@@ -348,7 +201,7 @@ jobs:
   push_to_registries:
     if: github.repository == 'SamR1/FitTrackee' && startsWith(github.ref, 'refs/tags/v')
     name: Push Docker image to multiple registries
-    needs: ["postgis", "arm", "end2end", "end2end_package", "end2end_package_update"]
+    needs: ["postgis", "arm", "end2end_with_sources", "end2end_package", "end2end_package_update"]
     runs-on: ubuntu-latest
     permissions:
       contents: read

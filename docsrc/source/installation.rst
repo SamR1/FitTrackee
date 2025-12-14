@@ -92,17 +92,19 @@ deployment method.
 .. envvar:: API_RATE_LIMITS
 
     .. versionadded:: 0.7.0
+    .. versionchanged:: 1.0.4 remove default value
 
-    API rate limits, see `API rate limits <installation.html#api-rate-limits>`__.
-
-    :default: ``300 per 5 minutes``
-
+    API rate limits set for **Flask-Limiter** see `API rate limits <installation.html#api-rate-limits>`__.
 
 .. envvar:: APP_LOG
 
     .. versionadded:: 0.4.0
 
     Path to log file
+
+    .. versionchanged:: 1.0.4
+
+    If the value is not set, logging output is displayed only on the console.
 
 
 .. envvar:: APP_SECRET_KEY
@@ -218,6 +220,15 @@ deployment method.
     **FitTrackee** host.
 
     :default: ``127.0.0.1``
+
+
+.. envvar:: LOG_LEVEL
+
+    .. versionadded:: 1.0.4
+
+    Log level for **Gunicorn** (when starting application with **FitTrackee** entry point or with Docker image), see `Gunicorn documentation <https://docs.gunicorn.org/en/stable/settings.html#loglevel>`__).
+
+    :default: ``info``
 
 
 .. envvar:: MAP_ATTRIBUTION
@@ -479,20 +490,20 @@ The default tile server (**OpenStreetMap**) no longer requires subdomains.
 API rate limits
 ~~~~~~~~~~~~~~~
 .. versionadded:: 0.7.0
+.. versionchanged:: 1.0.4 Remove ``API_RATE_LIMITS`` default value
 
-| API rate limits are managed by `Flask-Limiter <https://flask-limiter.readthedocs.io/en/stable>`_, based on IP with fixed window strategy.
-| To enable rate limits, **Redis** must be available.
+| If `API_RATE_LIMITS <installation.html#envvar-API_RATE_LIMITS>`__ environment variable is not empty and **Redis** available, API rate limits are managed by `Flask-Limiter <https://flask-limiter.readthedocs.io/en/stable>`_, based on IP with fixed window strategy.
 
 .. note::
     | If no Redis instance is available for rate limits, FitTrackee can still start.
 
 | All endpoints are subject to rate limits, except endpoints serving assets.
-| Limits can be modified by setting the environment variable ``API_RATE_LIMITS`` (see `Flask-Limiter documentation for notation <https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-limit-string-notation>`_).
-| Rate limits must be separated by a comma, for instance:
+| Limits are configured by setting the environment variable ``API_RATE_LIMITS``, for example ``300 per 5 minutes`` (see `Flask-Limiter documentation for notation <https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-limit-string-notation>`_).
+| Multiple rate limits must be separated by a comma, for instance:
 
 .. code-block::
 
-    export API_RATE_LIMITS="200 per day, 50 per hour"
+    export API_RATE_LIMITS="200 per day,50 per hour"
 
 **Flask-Limiter** provides a `Command Line Interface <https://flask-limiter.readthedocs.io/en/stable/cli.html>`_ for maintenance and diagnostic purposes.
 
@@ -510,6 +521,9 @@ API rate limits
       clear   Clear limits for a specific key
       config  View the extension configuration
       limits  Enumerate details about all routes with rate limits
+
+.. note::
+    | Rate limits can be managed by other applications, like `nginx <https://nginx.org/en/docs/http/ngx_http_limit_req_module.html>`__.
 
 
 Weather data
@@ -737,13 +751,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v1.0.3):
+-  Download the last release (for now, it is the release v1.0.4):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/1.0.3.tar.gz
-   $ tar -xzf v1.0.3.tar.gz
-   $ mv FitTrackee-1.0.3 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/1.0.4.tar.gz
+   $ tar -xzf v1.0.4.tar.gz
+   $ mv FitTrackee-1.0.4 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -881,13 +895,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v1.0.3) and overwrite existing files:
+- Download the last release (for now, it is the release v1.0.4) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v1.0.3.tar.gz
-   $ tar -xzf v1.0.3.tar.gz
-   $ cp -R FitTrackee-1.0.3/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v1.0.4.tar.gz
+   $ tar -xzf v1.0.4.tar.gz
+   $ cp -R FitTrackee-1.0.4/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).

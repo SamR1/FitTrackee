@@ -147,7 +147,7 @@
 
   const { displayOptions, errorMessages } = useApp()
 
-  let query: { page?: number } = getTasksQuery(route.query)
+  const query: { page?: number } = getTasksQuery(route.query)
   const taskType = computed(() => route.params.taskType as TTaskType)
   const queuedTasks: ComputedRef<IQueuedTask[]> = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS_QUEUED_TASKS]

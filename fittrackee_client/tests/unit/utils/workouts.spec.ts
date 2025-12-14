@@ -217,7 +217,7 @@ describe('getDatasets', () => {
             borderColor: ['#cccccc'],
             borderWidth: 1,
             fill: true,
-            data: [274.28, 312.99, 298.88],
+            data: [274.3, 313, 298.9],
             yAxisID: 'yRight',
           },
           hr: {
