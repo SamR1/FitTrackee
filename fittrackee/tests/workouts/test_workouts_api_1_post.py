@@ -2103,7 +2103,7 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
             "elevation": 998.0,
             "latitude": 44.68095,
             "longitude": 6.07367,
-            "speed": 3.21,
+            "speed": 0.0,
             "time": "2018-03-13 12:44:45+00:00",
         }
 
@@ -2152,7 +2152,7 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
             "duration": 0,
             "latitude": 44.68095,
             "longitude": 6.07367,
-            "speed": 3.21,
+            "speed": 0.0,
             "time": "2018-03-13 12:44:45+00:00",
         }
 
@@ -2197,7 +2197,7 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
             "elevation": 998.0,
             "latitude": 44.68095,
             "longitude": 6.07367,
-            "speed": 3.21,
+            "speed": 0.0,
             "time": "2018-03-13 12:44:45+00:00",
         }
 

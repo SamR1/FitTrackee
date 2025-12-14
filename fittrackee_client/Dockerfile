@@ -16,8 +16,8 @@ ENV VITE_APP_API_URL $VITE_APP_API_URL
 # install dependencies
 COPY package.json /usr/src/app/package.json
 COPY yarn.lock /usr/src/app/yarn.lock
-RUN apt-get update && apt-get install -y git
-RUN yarn install --silent
+RUN apt-get update && apt-get install -y git && \
+    yarn install --frozen-lockfile --ignore-scripts --silent
 
 # copy source
 COPY . /usr/src/app/

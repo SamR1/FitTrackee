@@ -305,8 +305,8 @@
           position: 'left',
           title: {
             display: true,
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error  @typescript-eslint/ban-ts-comment
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             text: (context: any): string[] => {
               const displayedDatasets = getDisplayedDatasets(context, 'yLeft')
               if (displayedDatasets.length === 0) {
@@ -319,8 +319,8 @@
             ...textColors.value,
           },
           ticks: {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error  @typescript-eslint/ban-ts-comment
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             display: (context: any): boolean => {
               const displayedDatasets = getDisplayedDatasets(context, 'yLeft')
               return displayedDatasets.length === 1
@@ -344,8 +344,8 @@
           position: 'right',
           title: {
             display: true,
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error  @typescript-eslint/ban-ts-comment
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             text: (context: any): string => {
               const displayedDatasets = getDisplayedDatasets(context, 'yRight')
               if (displayedDatasets.length !== 1) {
@@ -359,8 +359,8 @@
             ...textColors.value,
           },
           ticks: {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
+            // @ts-expect-error  @typescript-eslint/ban-ts-comment
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             display(context: any): boolean {
               const displayedDatasets = getDisplayedDatasets(context, 'yRight')
               return displayedDatasets.length === 1
@@ -393,6 +393,7 @@
           },
           callbacks: {
             label: (context) => getTooltipLabel(context),
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             title: (tooltipItems: TooltipItem<any>[]) =>
               getTooltipTitle(tooltipItems),
           },
@@ -446,6 +447,7 @@
     }
   }
   function getDisplayedDatasets(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     context: any,
     yaxisID: string
   ): IChartDataset[] {
@@ -455,6 +457,7 @@
         dataset.yAxisID === yaxisID && !chart.getDatasetMeta(index).hidden
     )
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function getTooltipTitle(tooltipItems: TooltipItem<any>[]) {
     if (tooltipItems.length === 0) {
       return ''
@@ -466,6 +469,7 @@
           tooltipItems[0].label.replace(',', '')
         )}`
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function getTooltipLabel(context: any) {
     currentDataPoint.dataIndex = context.dataIndex
     currentDataPoint.datasetIndex = context.datasetIndex
