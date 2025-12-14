@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.09.25 -->
-        <title>Installation - Documentation FitTrackee 1.0.3</title>
+        <title>Installation - Documentation FitTrackee 1.0.4</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=580074bf" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 1.0.3
+      <a href="index.html"><div class="brand">Documentation FitTrackee 1.0.4
 </div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 1.0.3
+  <span class="sidebar-brand-text">Documentation FitTrackee 1.0.4
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -399,12 +399,10 @@
 <dd><div class="versionadded">
 <p><span class="versionmodified added">Ajouté dans la version 0.7.0.</span></p>
 </div>
-<p>Limite d'accès à l'API, cf. <a class="reference external" href="installation.html#api-rate-limits">Limitation d'accès à l'API</a>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">défaut<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">300</span> <span class="pre">per</span> <span class="pre">5</span> <span class="pre">minutes</span></code></p>
-</dd>
-</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 1.0.4: </span>suppression de la valeur par défaut</p>
+</div>
+<p>Limites d'accès à l'API utilisées par <strong>Flask-Limiter</strong>, cf. <a class="reference external" href="installation.html#api-rate-limits">Limitation d'accès à l'API</a>.</p>
 </dd></dl>
 
 <dl class="std envvar">
@@ -414,6 +412,10 @@
 <p><span class="versionmodified added">Ajouté dans la version 0.4.0.</span></p>
 </div>
 <p>Chemin du fichier de log</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 1.0.4.</span></p>
+</div>
+<p>Si la valeur n'est pas définie, la sortie des logs est affichée uniquement sur la console.</p>
 </dd></dl>
 
 <dl class="std envvar">
@@ -593,6 +595,20 @@
 <dl class="field-list simple">
 <dt class="field-odd">défaut<span class="colon">:</span></dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-LOG_LEVEL">
+<span class="sig-name descname"><span class="pre">LOG_LEVEL</span></span><a class="headerlink" href="#envvar-LOG_LEVEL" title="Lien vers cette définition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 1.0.4.</span></p>
+</div>
+<p>Niveau de log pour <strong>Gunicorn</strong> (dans le cas du démarrage direct avec le point d’entrée de FitTrackee ou avec l'image Docker), voir la documentation de <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#loglevel">Gunicorn</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">défaut<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">info</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -948,9 +964,11 @@
 <div class="versionadded">
 <p><span class="versionmodified added">Ajouté dans la version 0.7.0.</span></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 1.0.4: </span>Remove <code class="docutils literal notranslate"><span class="pre">API_RATE_LIMITS</span></code> default value</p>
+</div>
 <div class="line-block">
-<div class="line">La limitation d'accès à l'API est gérée par <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable">Flask-Limiter</a>, et basé sur l'adresse IP avec une stratégie de période fixe.</div>
-<div class="line">Pour activer la limitation d'accès, <strong>Redis</strong> doit être accessible.</div>
+<div class="line">Si <a class="reference external" href="installation.html#envvar-API_RATE_LIMITS">API_RATE_LIMITS</a> est définie et que <strong>Redis</strong> est disponible, la limitation d'accès à l'API est gérée par <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable">Flask-Limiter</a>, et basée sur l'adresse IP avec une stratégie de période fixe.</div>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -960,10 +978,10 @@
 </div>
 <div class="line-block">
 <div class="line">Tous les points d'accès sont soumis à des limitations d'accès sauf les points servant des <em>assets</em>.</div>
-<div class="line">Les limites peuvent être modifiées en configurant la variable <code class="docutils literal notranslate"><span class="pre">API_RATE_LIMITS</span></code> (cf. la <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-limit-string-notation">documentation Flask-Limiter sur la notation</a>).</div>
-<div class="line">Les limites doivent être séparées par des virgules, par exemple :</div>
+<div class="line">Les limites sont définies en configurant la variable <code class="docutils literal notranslate"><span class="pre">API_RATE_LIMITS</span></code>, par exemple <code class="docutils literal notranslate"><span class="pre">300</span> <span class="pre">per</span> <span class="pre">5</span> <span class="pre">minutes</span></code> (cf. la <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-limit-string-notation">documentation Flask-Limiter sur la notation</a>).</div>
+<div class="line">Les limites multiples doivent être séparées par des virgules, par exemple :</div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">API_RATE_LIMITS</span><span class="o">=</span><span class="s2">&quot;200 per day, 50 per hour&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">API_RATE_LIMITS</span><span class="o">=</span><span class="s2">&quot;200 per day,50 per hour&quot;</span>
 </pre></div>
 </div>
 <p><strong>Flask-Limiter</strong> fournit une <a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable/cli.html">Interface de ligne de commande</a> à des fins de maintenance et de diagnostic.</p>
@@ -980,6 +998,12 @@ Commands:
 <span class="w">  </span>config<span class="w">  </span>View<span class="w"> </span>the<span class="w"> </span>extension<span class="w"> </span>configuration
 <span class="w">  </span>limits<span class="w">  </span>Enumerate<span class="w"> </span>details<span class="w"> </span>about<span class="w"> </span>all<span class="w"> </span>routes<span class="w"> </span>with<span class="w"> </span>rate<span class="w"> </span>limits
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">La limitation d'accès peut être gérée par d'autres applications, telles que <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_limit_req_module.html">nginx</a>.</div>
+</div>
 </div>
 </section>
 <section id="weather-data">
@@ -1229,11 +1253,11 @@ $<span class="w"> </span>make<span class="w"> </span>install-db-dev
 </div>
 </div>
 <ul class="simple">
-<li><p>Télécharger la dernière version (à ce jour, la version v1.0.3) :</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v1.0.4) :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/1.0.3.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.0.3.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-1.0.3<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/1.0.4.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.0.4.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-1.0.4<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1375,11 +1399,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <ul class="simple">
 <li><p>Arrêter l'application</p></li>
 <li><p>Changer pour le répertoire dans lequel FitTrackee est localisé</p></li>
-<li><p>Télécharger la dernière version (à ce jour, la version v1.0.3) et écraser les fichiers existants :</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v1.0.4) et écraser les fichiers existants :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v1.0.3.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.0.3.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-1.0.3/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v1.0.4.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.0.4.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-1.0.4/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1690,6 +1714,71 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 </div>
 </section>
 </section>
+<section id="vscode">
+<h2>VSCode<a class="headerlink" href="#vscode" title="Lien vers cette rubrique">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 1.0.4.</span></p>
+</div>
+<section id="id7">
+<h3>Développement<a class="headerlink" href="#id7" title="Lien vers cette rubrique">¶</a></h3>
+<p>Vous pouvez utiliser le <strong>conteneur de développement</strong> (<strong>Dev Container</strong>) sans la <strong>configuration de débogage</strong> et inversement. Le conteneur de développement est fortement recommandé sous Windows en raison de problèmes de gestion des chemins d'accès.</p>
+<section id="dev-container">
+<h4>Conteneur de Développement<a class="headerlink" href="#dev-container" title="Lien vers cette rubrique">¶</a></h4>
+<p>L'utilisation d'un conteneur de développement vous offre un environnement prêt à l'emploi (Python,  Poetry, Node, etc.) sans avoir à les installer sur votre machine.</p>
+<p><strong>Prérequis</strong></p>
+<ul class="simple">
+<li><p>Docker Engine</p></li>
+<li><p>VS Code avec l'extension <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers">Dev Containers</a></p></li>
+</ul>
+<p><strong>Mode d'emploi</strong></p>
+<ul class="simple">
+<li><p>Ouvrir le répertoire FitTrackee dans VS Code.</p></li>
+<li><p>Lorsque vous y êtes invité, choisissez <strong>Reopen in Container</strong> (ou ouvrez la palette de commandes et exécutez <code class="docutils literal notranslate"><span class="pre">Dev</span> <span class="pre">Containers:</span> <span class="pre">Reopen</span> <span class="pre">in</span> <span class="pre">Container</span></code>).</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Pour améliorer les performances du système de fichiers sous Windows/macOS, utilisez un <strong>volume conteneur anonyme</strong> (<em>anonymous container volume</em>) afin que le code et les paquets soient stockés dans le système de fichiers de la machine virtuelle.</div>
+<div class="line">Utilisez l'action <code class="docutils literal notranslate"><span class="pre">Dev</span> <span class="pre">Containers:</span> <span class="pre">Clone</span> <span class="pre">Repository</span> <span class="pre">in</span> <span class="pre">Container</span> <span class="pre">Volume</span></code> de la palette de commandes pour cloner dans un volume.</div>
+<div class="line">Si vous reconstruisez fréquemment le conteneur, privilégiez un <strong>volume nommé</strong> (<em>named volume</em>) afin de préserver les dépendances installées entre les reconstructions.</div>
+<div class="line">Voir la documentation <a class="reference external" href="https://code.visualstudio.com/remote/advancedcontainers/improve-performance">Améliorer les performances (Anglais)</a>.</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Le port 5000 (fittrackee-ui) est redirigé automatiquement. Si vous modifiez APP_PORT, vous devez rediriger manuellement le nouveau port à l'aide de la commande <code class="docutils literal notranslate"><span class="pre">Forward</span> <span class="pre">a</span> <span class="pre">Port</span></code> dans la palette de commandes.</p>
+</div>
+</section>
+<section id="debug-configuration-tasks">
+<h4>Déboguer la configuration et les tâches<a class="headerlink" href="#debug-configuration-tasks" title="Lien vers cette rubrique">¶</a></h4>
+<p>Ce dépôt comprend une configuration de lancement VS Code qui :</p>
+<ul class="simple">
+<li><p>démarre la <em>stack</em> de développement Docker Compose complète en arrière-plan,</p></li>
+<li><p>attend que les services soient opérationnels,</p></li>
+<li><p>attache le débogueur au backend afin que les points d'arrêt fonctionnent immédiatement,</p></li>
+<li><p>démonte la <em>stack</em> lorsque vous arrêtez le débogueur.</p></li>
+</ul>
+<p><strong>Comment démarrer le débogage</strong></p>
+<ul class="simple">
+<li><p>Ouvrez la palette de commandes et exécutez <code class="docutils literal notranslate"><span class="pre">Debug:</span> <span class="pre">Start</span> <span class="pre">Debugging</span></code> <strong>ou</strong> appuyez sur <strong>F5</strong>.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si le débogueur ne parvient pas à se connecter, utilisez <code class="docutils literal notranslate"><span class="pre">Debug:</span> <span class="pre">Select</span> <span class="pre">Debug</span> <span class="pre">Session</span></code> pour mettre fin à la session, vérifiez les logs du conteneur, puis exécutez <code class="docutils literal notranslate"><span class="pre">Tasks:</span> <span class="pre">Run</span> <span class="pre">Task</span></code> et ensuite <strong>down : devcontainer-compose</strong> avant de réessayer.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Sous Linux, <code class="docutils literal notranslate"><span class="pre">host.docker.internal</span></code> ne se résout pas automatiquement à partir de l'intérieur des conteneurs. Si le débogueur ne parvient pas à se connecter et que les logs indiquent des problèmes de connexion à <code class="docutils literal notranslate"><span class="pre">host.docker.internal:5678</span></code>, assurez-vous que <code class="docutils literal notranslate"><span class="pre">.devcontainer\docker-compose-devcontainer.yml</span></code> inclut le mappage de la passerelle hôte :</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">fittrackee</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">extra_hosts</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;host.docker.internal:host-gateway&quot;</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+</section>
 <section id="yunohost">
 <h2>Yunohost<a class="headerlink" href="#yunohost" title="Lien vers cette rubrique">¶</a></h2>
 <p>Grâce aux contributeurs, un paquet est disponible, cf. <a class="reference external" href="https://github.com/YunoHost-Apps/fittrackee_ynh">https://github.com/YunoHost-Apps/fittrackee_ynh</a>.</p>
@@ -1795,6 +1884,14 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
 <li><a class="reference internal" href="#development">Développement</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#vscode">VSCode</a><ul>
+<li><a class="reference internal" href="#id7">Développement</a><ul>
+<li><a class="reference internal" href="#dev-container">Conteneur de Développement</a></li>
+<li><a class="reference internal" href="#debug-configuration-tasks">Déboguer la configuration et les tâches</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#yunohost">Yunohost</a></li>
 <li><a class="reference internal" href="#nixos">NixOS</a></li>
 </ul>
@@ -1808,7 +1905,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=32225150"></script>
+</div><script src="_static/documentation_options.js?v=f9abc19d"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

@@ -10,10 +10,14 @@ FitTrackee
 
 | No mobile app has been developed yet, but several existing mobile apps or
   devices can store workouts data locally and export them into a file.
+
 | Examples for Android applications (non-exhaustive list):
 | \* `Runner Up <https://github.com/jonasoreland/runnerup>`_ (GPL v3)
 | \* `OpenTracks <https://github.com/OpenTracksApp/OpenTracks>`_ (Apache License)
 | \* `FitoTrack <https://codeberg.org/jannis/FitoTrack>`_ (GPL v3)
+
+| To get workouts from devices like smartwatches:
+| \* `Gadgetbridge <https://codeberg.org/Freeyourgadget/Gadgetbridge>`_ (Android, GPL v3)
 
 | Maps are displayed using `Open Street
   Map <https://www.openstreetmap.org>`__.
