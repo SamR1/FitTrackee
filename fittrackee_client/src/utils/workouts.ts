@@ -91,7 +91,7 @@ export const getDatasets = (
     )
     if (data.elevation !== undefined) {
       datasets.elevation.data.push(
-        convertStatsDistance('m', data.elevation, useImperialUnits)
+        +convertStatsDistance('m', data.elevation, useImperialUnits).toFixed(1)
       )
     }
 
