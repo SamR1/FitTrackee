@@ -42,7 +42,7 @@
   interface Props {
     equipment: IEquipment | ILightEquipment
     workoutId?: string | null
-    sportId?: Number | null
+    sportId?: number | null
   }
   const props = defineProps<Props>()
   const { equipment, sportId, workoutId } = toRefs(props)

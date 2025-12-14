@@ -28,6 +28,9 @@ Examples for Android (non-exhaustive list):
 * [OpenTracks](https://github.com/OpenTracksApp/OpenTracks) (Apache License)  
 * [FitoTrack](https://codeberg.org/jannis/FitoTrack) (GPLv3)  
 
+To get workouts from devices like smartwatches:
+* [Gadgetbridge](https://gadgetbridge.org) (Android, GPL v3)
+
 It is also possible to add a workout without a file.
 
 Map data from [OpenStreetMap](https://www.openstreetmap.org).  

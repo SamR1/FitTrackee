@@ -164,6 +164,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         stopped_speed_threshold: float,
         use_raw_gpx_speed: bool,
         hr_cadence_power_stats: dict,
+        raw_max_speed: Optional[float] = None,
     ) -> Union["Workout", "WorkoutSegment"]:
         gpx_info = self.get_gpx_info(
             parsed_gpx=parsed_gpx,
@@ -173,7 +174,12 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         self.check_gpx_info(gpx_info)
 
         if isinstance(object_to_update, WorkoutSegment):
-            object_to_update.max_speed = (gpx_info.max_speed / 1000) * 3600
+            max_speed = (
+                raw_max_speed
+                if use_raw_gpx_speed and raw_max_speed is not None
+                else (gpx_info.max_speed / 1000) * 3600
+            )
+            object_to_update.max_speed = max_speed
             object_to_update.max_pace = convert_speed_into_pace_duration(
                 object_to_update.max_speed
             )
@@ -249,7 +255,12 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         is_last_segment: bool,
         new_workout_segment: "WorkoutSegment",
         first_point: "gpxpy.gpx.GPXTrackPoint",
-    ) -> Tuple[timedelta, Optional[datetime], Dict]:
+    ) -> Tuple[
+        timedelta,
+        Optional[datetime],
+        Dict,
+        float,
+    ]:
         points = track_segment.points
         last_point_index = len(points) - 1
         cadences = []
@@ -259,6 +270,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         previous_distance = 0.0
         segment_points: List[Dict] = []
         coordinates = []
+        raw_max_speed = 0.0
 
         for point_idx, point in enumerate(points):
             if point_idx == 0:
@@ -266,6 +278,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                     raise WorkoutFileException(
                         "error", "<time> is missing in segment"
                     )
+                calculated_speed: Optional[float] = 0.0
                 new_workout_segment.start_date = point.time
                 # if a previous segment exists, calculate stopped time
                 # between the two segments
@@ -273,6 +286,8 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                     stopped_time_between_segments += (
                         point.time - previous_segment_last_point_time
                     )
+            else:
+                calculated_speed = track_segment.get_speed(point_idx)
 
             distance = (
                 point.distance_3d(previous_point)  # type: ignore[arg-type]
@@ -286,12 +301,12 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             distance = 0.0 if distance is None else distance
             distance += previous_distance
 
-            calculated_speed = track_segment.get_speed(point_idx)
             speed = (
                 0.0
                 if calculated_speed is None
                 else round((calculated_speed / 1000) * 3600, 2)
             )
+            raw_max_speed = speed if speed > raw_max_speed else raw_max_speed
             pace = convert_speed_into_pace_in_sec_per_meter(speed)
 
             time_difference = point.time_difference(first_point)
@@ -368,6 +383,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             stopped_time_between_segments,
             previous_segment_last_point_time,
             hr_cadence_stats,
+            raw_max_speed,
         )
 
     def _process_segments(
@@ -403,6 +419,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 stopped_time_between_segments,
                 previous_segment_last_point_time,
                 hr_cadence_power_stats,
+                raw_max_speed,
             ) = self._process_segment_points(
                 segment,
                 stopped_time_between_segments,
@@ -419,6 +436,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 stopped_speed_threshold=self.stopped_speed_threshold,
                 use_raw_gpx_speed=self.auth_user.use_raw_gpx_speed,
                 hr_cadence_power_stats=hr_cadence_power_stats,
+                raw_max_speed=raw_max_speed,
             )
 
             if (

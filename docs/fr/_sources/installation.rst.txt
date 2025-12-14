@@ -92,17 +92,19 @@ deployment method.
 .. envvar:: API_RATE_LIMITS
 
     .. versionadded:: 0.7.0
+    .. versionchanged:: 1.0.4 remove default value
 
-    API rate limits, see `API rate limits <installation.html#api-rate-limits>`__.
-
-    :default: ``300 per 5 minutes``
-
+    API rate limits set for **Flask-Limiter** see `API rate limits <installation.html#api-rate-limits>`__.
 
 .. envvar:: APP_LOG
 
     .. versionadded:: 0.4.0
 
     Path to log file
+
+    .. versionchanged:: 1.0.4
+
+    If the value is not set, logging output is displayed only on the console.
 
 
 .. envvar:: APP_SECRET_KEY
@@ -217,6 +219,15 @@ deployment method.
     **FitTrackee** host.
 
     :default: ``127.0.0.1``
+
+
+.. envvar:: LOG_LEVEL
+
+    .. versionadded:: 1.0.4
+
+    Log level for **Gunicorn** (when starting application with **FitTrackee** entry point or with Docker image), see `Gunicorn documentation <https://docs.gunicorn.org/en/stable/settings.html#loglevel>`__).
+
+    :default: ``info``
 
 
 .. envvar:: MAP_ATTRIBUTION
@@ -478,20 +489,20 @@ The default tile server (**OpenStreetMap**) no longer requires subdomains.
 API rate limits
 ~~~~~~~~~~~~~~~
 .. versionadded:: 0.7.0
+.. versionchanged:: 1.0.4 Remove ``API_RATE_LIMITS`` default value
 
-| API rate limits are managed by `Flask-Limiter <https://flask-limiter.readthedocs.io/en/stable>`_, based on IP with fixed window strategy.
-| To enable rate limits, **Redis** must be available.
+| If `API_RATE_LIMITS <installation.html#envvar-API_RATE_LIMITS>`__ environment variable is not empty and **Redis** available, API rate limits are managed by `Flask-Limiter <https://flask-limiter.readthedocs.io/en/stable>`_, based on IP with fixed window strategy.
 
 .. note::
     | If no Redis instance is available for rate limits, FitTrackee can still start.
 
 | All endpoints are subject to rate limits, except endpoints serving assets.
-| Limits can be modified by setting the environment variable ``API_RATE_LIMITS`` (see `Flask-Limiter documentation for notation <https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-limit-string-notation>`_).
-| Rate limits must be separated by a comma, for instance:
+| Limits are configured by setting the environment variable ``API_RATE_LIMITS``, for example ``300 per 5 minutes`` (see `Flask-Limiter documentation for notation <https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-limit-string-notation>`_).
+| Multiple rate limits must be separated by a comma, for instance:
 
 .. code-block::
 
-    export API_RATE_LIMITS="200 per day, 50 per hour"
+    export API_RATE_LIMITS="200 per day,50 per hour"
 
 **Flask-Limiter** provides a `Command Line Interface <https://flask-limiter.readthedocs.io/en/stable/cli.html>`_ for maintenance and diagnostic purposes.
 
@@ -509,6 +520,9 @@ API rate limits
       clear   Clear limits for a specific key
       config  View the extension configuration
       limits  Enumerate details about all routes with rate limits
+
+.. note::
+    | Rate limits can be managed by other applications, like `nginx <https://nginx.org/en/docs/http/ngx_http_limit_req_module.html>`__.
 
 
 Weather data
@@ -736,13 +750,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v1.0.3):
+-  Download the last release (for now, it is the release v1.0.4):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/1.0.3.tar.gz
-   $ tar -xzf v1.0.3.tar.gz
-   $ mv FitTrackee-1.0.3 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/1.0.4.tar.gz
+   $ tar -xzf v1.0.4.tar.gz
+   $ mv FitTrackee-1.0.4 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -880,13 +894,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v1.0.3) and overwrite existing files:
+- Download the last release (for now, it is the release v1.0.4) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v1.0.3.tar.gz
-   $ tar -xzf v1.0.3.tar.gz
-   $ cp -R FitTrackee-1.0.3/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v1.0.4.tar.gz
+   $ tar -xzf v1.0.4.tar.gz
+   $ cp -R FitTrackee-1.0.4/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
@@ -1182,6 +1196,75 @@ Open http://localhost:3000
     $ make docker-test-client  # run unit tests on Client
     $ make docker-lint-python  # run type check and lint on python files
     $ make docker-test-python  # run unit tests on API
+
+
+VSCode
+~~~~~~
+
+.. versionadded:: 1.0.4
+
+Development
+^^^^^^^^^^^
+
+You can use the **Dev Container** without the **debug configuration** and vice versa.
+Dev Container is strongly recommended on Windows because of path handling issues.
+
+
+Dev Container
+"""""""""""""
+Using a Dev Container gives you a ready-to-use environment (Python, Poetry, Node, etc.) without installing them on your host.
+
+**Prerequisites**
+
+- Docker Engine
+- VS Code with `Dev Containers extension <https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers>`__
+
+**How to use**
+
+- Open the FitTrackee folder in VS Code.
+- When prompted, choose **Reopen in Container** (or open the Command Palette and run ``Dev Containers: Reopen in Container``).
+
+.. note::
+
+   | For better file-system performance on Windows/macOS, use an **anonymous container volume** so code and packages are stored inside the VM filesystem.
+   | Use the Command Palette action ``Dev Containers: Clone Repository in Container Volume`` to clone into a volume.
+   | If you rebuild the container frequently, prefer a **named volume** to preserve installed dependencies between rebuilds.
+   | See `Improve performance <https://code.visualstudio.com/remote/advancedcontainers/improve-performance>`__.
+
+.. note::
+
+    Port 5000 (fittrackee-ui) is forwarded automatically, if you change APP_PORT you need to manually forward the new port using ``Forward a Port`` command in the Command Palette.
+
+
+Debug configuration & tasks
+"""""""""""""""""""""""""""
+This repository includes a VS Code *launch* configuration that:
+
+- starts the full Docker Compose dev stack in the background,
+- waits until services are healthy,
+- attaches the debugger to the backend so breakpoints work immediately,
+- tears the stack down when you stop the debugger.
+
+**How to start debugging**
+
+- Open the Command Palette and run ``Debug: Start Debugging`` **or** press **F5**.
+
+.. note::
+   If the debugger fails to attach, use ``Debug: Select Debug Session`` to end the session,
+   check container logs, then run ``Tasks: Run Task`` and then **down: devcontainer-compose**
+   before retrying.
+
+.. warning::
+   On Linux, ``host.docker.internal`` does not resolve automatically from inside containers.
+   If the debugger fails to attach and logs show connection issues to ``host.docker.internal:5678``,
+   ensure ``.devcontainer\docker-compose-devcontainer.yml`` includes the host gateway mapping:
+
+   .. code-block:: yaml
+
+      services:
+        fittrackee:
+          extra_hosts:
+            - "host.docker.internal:host-gateway"
 
 
 Yunohost

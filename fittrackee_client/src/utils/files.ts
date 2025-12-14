@@ -22,5 +22,8 @@ export const getReadableFileSizeAsText = (fileSize: number): string => {
 
 export const getFileSizeInMB = (fileSize: number): number => {
   const value = fileSize / 1048576
-  return (!fileSize && 0) || +value.toFixed(2)
+  if (!fileSize) {
+    return 0
+  }
+  return +value.toFixed(2)
 }

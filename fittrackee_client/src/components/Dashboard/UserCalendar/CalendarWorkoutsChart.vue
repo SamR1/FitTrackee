@@ -64,8 +64,8 @@
     isHidden.value = !isHidden.value
     await nextTick()
     const pane = isWorkoutsMorePaneDisplayed()
-    if (!isHidden.value) {
-      ;(pane?.children[0] as HTMLButtonElement).focus()
+    if (!isHidden.value && pane) {
+      ;(pane.children[0] as HTMLButtonElement).focus()
     } else {
       document.getElementById(`workouts-donut-${index.value}`)?.focus()
     }

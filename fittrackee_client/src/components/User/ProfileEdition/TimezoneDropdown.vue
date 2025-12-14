@@ -67,7 +67,7 @@
   const isOpen: Ref<boolean> = ref(false)
   const focusItemIndex: Ref<number> = ref(0)
 
-  let timeZones: ComputedRef<string[]> = computed(
+  const timeZones: ComputedRef<string[]> = computed(
     () => store.getters[AUTH_USER_STORE.GETTERS.TIMEZONES]
   )
 

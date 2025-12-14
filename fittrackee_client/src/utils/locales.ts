@@ -88,7 +88,7 @@ export const languageLabels: Record<TLanguage, string> = {
   nb: 'Norsk bokmål (45%)', // Norwegian Bokmål
   pl: 'Polski (95%)', // Polish
   pt: 'Português (53%)', // Portuguese
-  ru: 'Русский (95%)', // Russian
+  ru: 'Русский (97%)', // Russian
   tr: 'Türkçe (1%)', // Turkish
   zh_Hans: '中文（简体）(98%)', // Chinese (Simplified Han script)
 }
