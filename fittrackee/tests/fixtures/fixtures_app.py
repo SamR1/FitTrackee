@@ -99,7 +99,6 @@ def get_app(
                 current_app.config["UPLOAD_FOLDER"],
                 ignore_errors=True,
             )
-            return app  # type: ignore  # noqa: B012
 
 
 @pytest.fixture
@@ -117,6 +116,8 @@ def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
         monkeypatch.delenv("NOMINATIM_URL")
     if os.getenv("ENABLE_GEOSPATIAL_FEATURES"):
         monkeypatch.delenv("ENABLE_GEOSPATIAL_FEATURES")
+    if os.getenv("API_RATE_LIMITS"):
+        monkeypatch.delenv("API_RATE_LIMITS")
     yield from get_app(with_config=True)
 
 

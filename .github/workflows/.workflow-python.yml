@@ -1,0 +1,88 @@
+on:
+  workflow_call:
+    inputs:
+      ubuntu-version:
+        type: string
+      python-version:
+        type: string
+      postgis-version:
+        type: string
+      with-additional-check:
+        type: boolean
+      with-coverage:
+        type: boolean
+
+jobs:
+  python:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
+    runs-on: ubuntu-latest
+    container: python:${{ inputs.python-version }}
+    services:
+      postgres:
+        image: postgis/postgis:${{ inputs.postgis-version }}-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      APP_SETTINGS: fittrackee.config.TestingConfig
+      DATABASE_TEST_URL: "postgresql://fittrackee:fittrackee@postgres:5432/fittrackee_test"
+      EMAIL_URL: "smtp://none:none@0.0.0.0:1025"
+      FLASK_APP: fittrackee/__main__.py
+      SENDER_EMAIL: fittrackee@example.com
+      UI_URL: https://0.0.0.0:5000
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Install libgdal-dev in order to build numpy with python 3.14
+        if: inputs.python-version == '3.14'
+        run: |
+          apt-get update
+          apt-get install -y libgdal-dev
+
+      - name: Install Poetry and Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --quiet poetry
+          poetry config virtualenvs.create false
+          poetry install --no-interaction --quiet
+
+      - name: Create test databases
+        run: python db/create_ci_test_db.py
+
+      - name: Bandit
+        if: ${{ inputs.with-additional-check && inputs.python-version == '3.13' }}
+        run: bandit -r fittrackee -c pyproject.toml
+
+      - name: Lint
+        if: ${{ inputs.with-additional-check && inputs.python-version == '3.13' }}
+        run: |
+          ruff format --check fittrackee e2e
+          ruff check fittrackee e2e
+
+      - name: Mypy
+        if: ${{ inputs.with-additional-check && inputs.python-version == '3.13' }}
+        run: mypy fittrackee
+
+      - name: Pytest
+        if: ${{ !inputs.with-coverage || inputs.python-version != '3.10'  }}
+        run: pytest fittrackee -n auto --maxprocesses=2  -p no:warnings --maxfail=1
+
+      - name: Pytest with coverage
+        if: ${{ inputs.with-coverage && inputs.python-version == '3.10' }}
+        run: pytest fittrackee -n auto --maxprocesses=2  -p no:warnings --cov fittrackee --cov-report term-missing --maxfail=1
+
+      - name: Coveralls
+        if: ${{ inputs.with-coverage && inputs.python-version == '3.10' && github.repository == 'SamR1/FitTrackee' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pip install coveralls
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          coveralls
+
