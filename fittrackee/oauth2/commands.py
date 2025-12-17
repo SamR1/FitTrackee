@@ -6,10 +6,8 @@ from fittrackee.cli.app import app
 
 from .clean import clean_tokens
 
-handler = logging.StreamHandler()
 logger = logging.getLogger("fittrackee_clean_oauth2_tokens")
 logger.setLevel(logging.INFO)
-logger.addHandler(handler)
 
 
 @click.group(name="oauth2")

@@ -19,10 +19,9 @@ from fittrackee.workouts.tasks import (
 from fittrackee.workouts.utils.workouts import get_workout_datetime
 
 WORKOUT_VALID_EXTENSIONS = ", ".join(WORKOUT_ALLOWED_EXTENSIONS)
-handler = logging.StreamHandler()
+
 logger = logging.getLogger("fittrackee_workouts_cli")
 logger.setLevel(logging.INFO)
-logger.addHandler(handler)
 
 
 def validate_order(
@@ -120,10 +119,7 @@ def workouts_archive_uploads(max_archives: int, verbose: bool) -> None:
     To use in case redis is not set.
     """
     with app.app_context():
-        if verbose:
-            upload_logger = logging.getLogger("fittrackee_workouts_upload")
-            upload_logger.setLevel(logging.DEBUG)
-            upload_logger.addHandler(handler)
+        logger.setLevel(logging.DEBUG if verbose else logging.INFO)
         count = process_workouts_archives_uploads(max_archives, logger)
         logger.info(f"\nWorkouts archives processed: {count}.")
 
@@ -151,10 +147,7 @@ def process_queued_archive_upload(task_short_id: str, verbose: bool) -> None:
     To use in case redis is not set.
     """
     with app.app_context():
-        if verbose:
-            upload_logger = logging.getLogger("fittrackee_workouts_upload")
-            upload_logger.setLevel(logging.DEBUG)
-            upload_logger.addHandler(handler)
+        logger.setLevel(logging.DEBUG if verbose else logging.INFO)
         try:
             process_workouts_archive_upload(task_short_id, logger)
         except Exception as e:
@@ -268,11 +261,7 @@ def refresh_workouts(
     Refresh workouts
     """
     with app.app_context():
-        if verbose:
-            refresh_logger = logging.getLogger("fittrackee_workouts_refresh")
-            refresh_logger.setLevel(logging.DEBUG)
-            refresh_logger.addHandler(handler)
-
+        logger.setLevel(logging.DEBUG if verbose else logging.INFO)
         try:
             service = WorkoutsFromFileRefreshService(
                 sport_id=sport_id,
