@@ -12822,7 +12822,7 @@ msgid "``staticmap3.staticmap - ERROR - request failed [None]`` or \"error when 
 msgstr ""
 
 #: ../source/troubleshooting/administrator.rst:0
-msgid "FitTrackee v0.10+ introduces a new environnement variable ``STATICMAP_CACHE_DIR``, for **Static Map 3** cache directory."
+msgid "FitTrackee v0.10+ introduces a new environment variable ``STATICMAP_CACHE_DIR``, for **Static Map 3** cache directory."
 msgstr ""
 
 #: ../source/troubleshooting/administrator.rst:0
@@ -12906,7 +12906,7 @@ msgid "From PyPI or sources"
 msgstr ""
 
 #: ../source/upgrading-to-1.0.x.rst:30
-msgid "**PostGIS** must be installed on your operating system. You can find intructions for your OS on `PostGIS documentation <https://postgis.net/documentation/getting_started/>`_."
+msgid "**PostGIS** must be installed on your operating system. You can find instructions for your OS on `PostGIS documentation <https://postgis.net/documentation/getting_started/>`_."
 msgstr ""
 
 #: ../source/upgrading-to-1.0.x.rst:33
