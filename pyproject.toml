@@ -153,3 +153,11 @@ ignore_errors = true
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.codespell]
+# Ref: https://github.com/codespell-project/codespell#using-a-config-file
+skip = '.git*,*.svg,*.lock,*.css,*.min.*,dist,fr'
+check-hidden = true
+# ignore-regex = ''
+# Unfortunate choices for words which are not correct but too many by now
+ignore-words-list = 'equipments,informations'
