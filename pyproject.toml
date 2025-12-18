@@ -156,8 +156,8 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.codespell]
 # Ref: https://github.com/codespell-project/codespell#using-a-config-file
-skip = '.git*,*.svg,*.lock,*.css,*.min.*,dist,fr'
+skip = '.git*,*.svg,*.lock,*.css,*.min.*,dist,fr,locales,translations,*.map,emails,searchindex.js,language_data.js'
 check-hidden = true
-# ignore-regex = ''
+ignore-regex = '\b(Gard|Nome)\b'
 # Unfortunate choices for words which are not correct but too many by now
-ignore-words-list = 'equipments,informations'
+ignore-words-list = 'equipments,informations,te'
