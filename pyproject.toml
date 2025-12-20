@@ -68,6 +68,7 @@ xmltodict = "^1.0.2"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.9.2"
+codespell = "^2.4.1"
 debugpy = "=1.8.17"
 furo = "^2025.9.25"
 mypy = "^1.18.2"
@@ -156,7 +157,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.codespell]
 # Ref: https://github.com/codespell-project/codespell#using-a-config-file
-skip = '.git*,*.svg,*.lock,*.css,*.min.*,dist,fr,locales,translations,*.map,emails,searchindex.js,language_data.js'
+skip = '.git*,*.svg,*.lock,*.css,*.min.*,dist,fr,locales,translations,*.map,emails,searchindex.js,language_data.js,.idea,.venv,./fittrackee_client/node_modules'
 check-hidden = true
 ignore-regex = '\b(Gard|Nome)\b'
 # Unfortunate choices for words which are not correct but too many by now

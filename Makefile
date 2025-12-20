@@ -43,6 +43,9 @@ clean-install: clean
 	rm -rf dist/
 	rm -rf .staticmap_cache
 
+codespell:
+	$(CODESPELL)
+
 ## Docker commands for evaluation purposes
 docker-bandit:
 	docker compose -f docker-compose-dev.yml exec fittrackee bandit -r fittrackee -c pyproject.toml
