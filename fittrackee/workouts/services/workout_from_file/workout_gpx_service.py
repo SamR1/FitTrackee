@@ -344,7 +344,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             if point_idx == last_point_index:
                 previous_segment_last_point_time = point.time
 
-                # last gpx point
+                # last gpx point (for weather data)
                 if is_last_segment and point.time:
                     self.end_point = WorkoutPoint(
                         point.longitude,

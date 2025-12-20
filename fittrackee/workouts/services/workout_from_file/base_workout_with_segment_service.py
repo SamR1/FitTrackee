@@ -6,7 +6,7 @@ from typing import IO, TYPE_CHECKING, Dict, List, Optional, Union
 from flask import current_app
 from staticmap3 import Line, StaticMap
 
-from fittrackee import VERSION, db
+from fittrackee import VERSION, appLog, db
 from fittrackee.files import get_absolute_file_path
 
 from ..weather import WeatherService
@@ -110,14 +110,21 @@ class BaseWorkoutWithSegmentsCreationService:
     def process_workout(self) -> "Workout":
         workout = self._process_file()
 
-        if (
-            self.get_weather
-            and self.start_point
-            and self.end_point
-            # in case of refresh, update only workouts without weather data
-            and not workout.weather_start
-            and not workout.weather_end
-        ):
+        if not self.get_weather:
+            return workout
+
+        # Start and end points are None when they have no time
+        # When start point has no time, it raises exception before getting
+        # weather
+        if not self.start_point or not self.end_point:
+            appLog.error(
+                f"no time for the last point for workout '{workout.short_id}',"
+                " no weather data is fetched"
+            )
+            return workout
+
+        # In case of refresh, it updates only workouts without weather data
+        if not workout.weather_start and not workout.weather_end:
             weather_start, weather_end = self.get_weather_data(
                 self.start_point,
                 self.end_point,

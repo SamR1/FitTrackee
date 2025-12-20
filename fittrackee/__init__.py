@@ -33,15 +33,22 @@ DEFAULT_PRIVACY_POLICY_DATA = "2024-12-23 19:00:00"
 REDIS_URL = os.getenv("REDIS_URL", "redis://")
 API_RATE_LIMITS = os.environ.get("API_RATE_LIMITS")
 
-log_handlers: list = [logging.StreamHandler()]
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(logging.Formatter(fmt="%(message)s"))
+log_handlers: list = [stream_handler]
+
 log_file = os.getenv("APP_LOG")
 if log_file:
+    file_handler = logging.FileHandler(log_file)
+    file_handler.setFormatter(
+        logging.Formatter(
+            fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            datefmt="%Y/%m/%d %H:%M:%S",
+        )
+    )
     log_handlers.extend([logging.FileHandler(log_file)])
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    datefmt="%Y/%m/%d %H:%M:%S",
-    handlers=log_handlers,
-)
+
+logging.basicConfig(handlers=log_handlers)
 appLog = logging.getLogger("fittrackee")
 
 
