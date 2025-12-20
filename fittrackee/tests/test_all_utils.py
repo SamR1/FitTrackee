@@ -140,14 +140,24 @@ class TestGetDateStringForUser:
                 "Jul. 14, 2024 - 07:32:47",
             ),
             ("cs", "date_string", "Europe/Paris", "14. čvc 2024 - 13:32:47"),
-            ("de", "date_string", "Europe/Paris", "14. Juli 2024 - 13:32:47"),  # codespell:ignore
+            (
+                "de",
+                "date_string",
+                "Europe/Paris",
+                "14. Juli 2024 - 13:32:47",
+            ),  # codespell:ignore
             ("en", "date_string", "Europe/Paris", "Jul. 14, 2024 - 13:32:47"),
             ("es", "date_string", "Europe/Paris", "14 jul 2024 - 13:32:47"),
             ("eu", "date_string", "Europe/Paris", "2024 uzt. 14 - 13:32:47"),
             ("fr", "date_string", "Europe/Paris", "14 juil. 2024 - 13:32:47"),
             ("gl", "date_string", "Europe/Paris", "14 xul. 2024 - 13:32:47"),
             ("it", "date_string", "Europe/Paris", "14 lug 2024 - 13:32:47"),
-            ("nb", "date_string", "Europe/Paris", "14. juli 2024 - 13:32:47"),  # codespell:ignore
+            (
+                "nb",
+                "date_string",
+                "Europe/Paris",
+                "14. juli 2024 - 13:32:47",
+            ),  # codespell:ignore
             ("nl", "date_string", "Europe/Paris", "14 jul. 2024 - 13:32:47"),
             ("pl", "date_string", "Europe/Paris", "14 lip 2024 - 13:32:47"),
             ("pt", "date_string", "Europe/Paris", "14 jul. 2024 - 13:32:47"),
