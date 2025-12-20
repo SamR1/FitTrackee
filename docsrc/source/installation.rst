@@ -56,7 +56,7 @@ Prerequisites
   - installation from sources or package:
 
     - `Python <https://www.python.org/>`__ 3.10+
-    - `PostgreSQL <https://www.postgresql.org/>`__ 13+
+    - `PostgreSQL <https://www.postgresql.org/>`__ 14+
     - `PostGIS <https://postgis.net/>`__ 3.4+
     - `GDAL <https://gdal.org/en/stable/>`__ on the server running the application, if different from the server running the database (GDAL is installed with PostGIS)
 
