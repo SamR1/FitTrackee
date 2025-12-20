@@ -11,6 +11,7 @@ export type TLanguage =
   | 'gl'
   | 'hr'
   | 'it'
+  // | 'kab' //disabled for now
   | 'nb'
   | 'nl'
   | 'pl'

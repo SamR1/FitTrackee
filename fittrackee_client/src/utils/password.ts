@@ -10,6 +10,7 @@ export const loadLanguagePackage = async (language: string) => {
   // - Croatian
   // - Dutch (nl-NL)
   // - Galician
+  // - Kabyle
   // - Norwegian bokmål
   // - Portuguese (pt-PT)
   // - Russian
