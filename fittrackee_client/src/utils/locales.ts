@@ -39,6 +39,7 @@ export const isLanguageSupported = (
     'gl',
     'hr',
     'it',
+    // 'kab',
     'nb',
     'nl',
     'pl',
@@ -62,6 +63,7 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
   gl: gl,
   hr: hr,
   it: it,
+  // kab: enUS, // fallback: date-fns has no Kabyle locale
   nb: nb,
   nl: nl,
   pl: pl,
@@ -89,6 +91,7 @@ export const languageLabels: Record<TLanguage, string> = {
   pl: 'Polski (95%)', // Polish
   pt: 'Português (53%)', // Portuguese
   ru: 'Русский (97%)', // Russian
+  // kab: 'Taqbaylit', // Kabyle
   tr: 'Türkçe (1%)', // Turkish
   zh_Hans: '中文（简体）(98%)', // Chinese (Simplified Han script)
 }
