@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-12-14 16:32+0100\n"
+"POT-Creation-Date: 2025-12-20 14:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -13317,7 +13317,7 @@ msgstr ""
 
 #: ../source/troubleshooting/administrator.rst
 msgid ""
-"FitTrackee v0.10+ introduces a new environnement variable "
+"FitTrackee v0.10+ introduces a new environment variable "
 "``STATICMAP_CACHE_DIR``, for **Static Map 3** cache directory."
 msgstr ""
 
@@ -13430,7 +13430,7 @@ msgstr ""
 #: ../source/upgrading-to-1.0.x.rst:30
 msgid ""
 "**PostGIS** must be installed on your operating system. You can find "
-"intructions for your OS on `PostGIS documentation "
+"instructions for your OS on `PostGIS documentation "
 "<https://postgis.net/documentation/getting_started/>`_."
 msgstr ""
 
