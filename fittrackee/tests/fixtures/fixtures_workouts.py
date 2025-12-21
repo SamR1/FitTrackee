@@ -214,9 +214,9 @@ def workout_cycling_user_1_segment_0_with_coordinates(
             "heart_rate": 92,
             "latitude": 44.68095,
             "longitude": 6.07367,
-            "pace": 1121,
+            "pace": 0,
             "power": 0,
-            "speed": 3.21,
+            "speed": 0,
             "time": "2018-03-13 12:44:45+00:00",
         },
         {
@@ -339,7 +339,7 @@ def workout_cycling_user_1_segment_0_chart_data() -> List[Dict]:
             "latitude": 44.68095,
             "longitude": 6.07367,
             "power": 0,
-            "speed": 3.21,
+            "speed": 0,
             "time": "2018-03-13 12:44:45+00:00",
         },
         {
@@ -443,7 +443,7 @@ def workout_cycling_user_1_segment_0_chart_data_wo_hr() -> List[Dict]:
             "latitude": 44.68095,
             "longitude": 6.07367,
             "power": 0,
-            "speed": 3.21,
+            "speed": 0,
             "time": "2018-03-13 12:44:45+00:00",
         },
         {
@@ -585,9 +585,9 @@ def workout_cycling_user_1_segment_1_with_coordinates(
             "heart_rate": 88,
             "latitude": 44.67977,
             "longitude": 6.07364,
-            "pace": 826,
+            "pace": 0,
             "power": 267,
-            "speed": 4.36,
+            "speed": 0,
             "time": "2018-03-13 12:46:30+00:00",
         },
         {

@@ -102,7 +102,7 @@ def get_chart_data_from_segment_points(
             }
             if return_elevation_data and point.get("elevation"):
                 data["elevation"] = point["elevation"]
-            if return_pace and point.get("pace"):
+            if return_pace and "pace" in point:
                 data["pace"] = point["pace"]
             if return_cadence and "cadence" in point:
                 data["cadence"] = (
