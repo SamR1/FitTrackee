@@ -29,6 +29,8 @@ export const loadLanguagePackage = async (language: string) => {
       return await import('@zxcvbn-ts/language-pl')
     case 'cs':
       return await import('@zxcvbn-ts/language-cs')
+    // case 'fi':
+    //   return await import('@zxcvbn-ts/language-fi')
     default:
       return await import('@zxcvbn-ts/language-en')
   }

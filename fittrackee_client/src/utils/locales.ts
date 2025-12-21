@@ -8,6 +8,7 @@ import {
   enUS,
   es,
   eu,
+  // fi,
   fr,
   gl,
   hr,
@@ -35,6 +36,7 @@ export const isLanguageSupported = (
     'en',
     'es',
     'eu',
+    // 'fi',
     'fr',
     'gl',
     'hr',
@@ -59,6 +61,7 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
   en: enUS,
   es: es,
   eu: eu,
+  // fi: fi,
   fr: fr,
   gl: gl,
   hr: hr,
@@ -91,6 +94,7 @@ export const languageLabels: Record<TLanguage, string> = {
   pl: 'Polski (95%)', // Polish
   pt: 'Português (53%)', // Portuguese
   ru: 'Русский (97%)', // Russian
+  // fi: 'Suomi', // Finnish
   // kab: 'Taqbaylit', // Kabyle
   tr: 'Türkçe (1%)', // Turkish
   zh_Hans: '中文（简体）(98%)', // Chinese (Simplified Han script)
