@@ -117,6 +117,7 @@ export const dateStringFormats: Record<TLanguage, string> = {
   en: 'MMM. do, yyyy',
   es: 'd MMM yyyy',
   eu: 'yyyy MMM. d',
+  // fi: 'd.MMMM.yyyy',
   fr: 'd MMM yyyy',
   gl: 'd MMM yyyy',
   hr: 'd. MMM yyyy.',

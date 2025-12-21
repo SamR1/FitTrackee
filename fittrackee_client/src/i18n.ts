@@ -8,6 +8,7 @@ import deMessages from '@/locales/de/de'
 import enMessages from '@/locales/en/en'
 import esMessages from '@/locales/es/es'
 import euMessages from '@/locales/eu/eu'
+// import fiMessages from '@/locales/fi/fi'
 import frMessages from '@/locales/fr/fr'
 import glMessages from '@/locales/gl/gl'
 import hrMessages from '@/locales/hr/hr'
@@ -35,6 +36,7 @@ export default createI18n({
     en: enMessages,
     es: esMessages,
     eu: euMessages,
+    // fi: fiMessages,
     fr: frMessages,
     gl: glMessages,
     hr: hrMessages,

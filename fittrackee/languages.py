@@ -7,6 +7,7 @@ LANGUAGES_DATE_STRING = {
     "en": "MMM. d, yyyy",  # English
     "es": "d MMM yyyy",  # Spanish
     "eu": "yyyy MMM d",  # Basque
+    # "fi": "d.MMMM.yyyy",  # Finnish
     "fr": "d MMM yyyy",  # French
     "gl": "d MMM yyyy",  # Galician
     "hr": "d. MMM yyyy.",  # Croatian
