@@ -17,7 +17,10 @@
                 @click="splitCharts = !splitCharts"
               />
             </div>
-            <div class="display-speed" v-if="hasPace">
+            <div
+              class="display-speed"
+              v-if="hasPace && authUser.display_speed_with_pace"
+            >
               <label for="display-speed">
                 {{ $t('workouts.SPEED_INSTEAD_OF_PACE') }}:
               </label>
