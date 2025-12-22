@@ -18,7 +18,6 @@
   "FOLLOW": "Jarraitu",
   "HIDE": "Ezkutatu",
   "LOGIN": "Sartu",
-  "NO": "Ez",
   "READ_MORE": "Irakurri gehiago",
   "REFRESH": "Freskatu",
   "REFRESH_TOTALS": "Eguneratu guztizkoak",
@@ -30,6 +29,5 @@
   "SEE_DETAIL": "Ikusi xehetasunak",
   "SUBMIT": "Bidali",
   "UNBLOCK": "Desblokeatu",
-  "UNFOLLOW": "Jarraitzeari utzi",
-  "YES": "Bai"
+  "UNFOLLOW": "Jarraitzeari utzi"
 }
