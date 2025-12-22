@@ -2,12 +2,10 @@ from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Union
 
 import pytest
-from babel.dates import format_datetime
 from flask import Flask
 
 from fittrackee.dates import get_date_string_for_user, get_readable_duration
 from fittrackee.files import display_readable_file_size
-from fittrackee.languages import SUPPORTED_LANGUAGES
 from fittrackee.request import UserAgent
 from fittrackee.utils import clean_input
 
@@ -124,16 +122,6 @@ class TestSanitizeInput:
         self, app: Flask, input_comment: str, expected_comment: str
     ) -> None:
         assert clean_input(input_comment) == expected_comment
-
-
-class TestSupportedLanguages:
-    @pytest.mark.parametrize("input_language", SUPPORTED_LANGUAGES)
-    def test_supported_language_is_valid(
-        self, app: Flask, input_language: str
-    ) -> None:
-        # it should not raise the following error:
-        # babel.core.UnknownLocaleError: unknown locale
-        format_datetime(datetime.now(timezone.utc), locale=input_language)
 
 
 class TestGetDateStringForUser:

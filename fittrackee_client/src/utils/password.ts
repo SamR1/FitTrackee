@@ -1,7 +1,7 @@
 import { zxcvbnOptions } from '@zxcvbn-ts/core'
 
 export const loadLanguagePackage = async (language: string) => {
-  // no package available for
+  // no package available for:
   // - Basque
   // - Bengali
   // - Bulgarian
@@ -14,6 +14,7 @@ export const loadLanguagePackage = async (language: string) => {
   // - Norwegian bokmål
   // - Portuguese (pt-PT)
   // - Russian
+  // - Slovenian
   // - Turkish
   // fallback to english
   switch (language) {

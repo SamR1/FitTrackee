@@ -18,6 +18,7 @@ import {
   pl,
   pt,
   ru,
+  // sl,
   tr,
   zhCN,
 } from 'date-fns/locale'
@@ -47,6 +48,7 @@ export const isLanguageSupported = (
     'pl',
     'pt',
     'ru',
+    // 'sl',
     'tr',
     'zh_Hans',
   ].includes(language)
@@ -72,6 +74,7 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
   pl: pl,
   pt: pt,
   ru: ru,
+  // sl: sl,
   tr: tr,
   zh_Hans: zhCN,
 }
@@ -94,6 +97,7 @@ export const languageLabels: Record<TLanguage, string> = {
   pl: 'Polski (95%)', // Polish
   pt: 'Português (53%)', // Portuguese
   ru: 'Русский (97%)', // Russian
+  // sl: 'Slovenščina', // Slovenian
   // fi: 'Suomi', // Finnish
   // kab: 'Taqbaylit', // Kabyle
   tr: 'Türkçe (1%)', // Turkish
