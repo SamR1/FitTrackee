@@ -177,5 +177,8 @@
     .raw-speed-help {
       margin-top: -$default-margin * 0.5;
     }
+    .pace-help {
+      margin-bottom: $default-margin * 1.5;
+    }
   }
 </style>

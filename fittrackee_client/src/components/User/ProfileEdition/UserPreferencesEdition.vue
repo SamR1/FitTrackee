@@ -504,12 +504,12 @@
   ]
   const displaySpeedWithPace = [
     {
-      label: 'YES',
-      value: true,
-    },
-    {
       label: 'NO',
       value: false,
+    },
+    {
+      label: 'YES',
+      value: true,
     },
   ]
   const segmentsCreationEvents = ['all', 'only_manual', 'none']
