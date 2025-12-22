@@ -47,6 +47,7 @@
   "END": "fin",
   "EXIT_FULLSCREEN": "Sortir du plein-écran",
   "EXIT_HEATMAP": "Quitter la carte de thermique (heatmap)",
+  "EXTREME_VALUES_FOR_PACE_ARE_NOT_DISPLAYED": "Les valeurs extrêmes pour l'allure ne sont pas affichées.",
   "FASTEST_PACE": "allure la + rapide",
   "FROM": "à partir de",
   "GLOBAL_MAP": "Carte globale",
@@ -101,7 +102,7 @@
     "village": "village"
   },
   "NOTES": "notes",
-  "NO_DATA_CLEANING": "données issues du fichier gpx, sans correction",
+  "NO_DATA_CLEANING": "Données issues du fichier, sans correction.",
   "NO_FILE_PROVIDED": "Pas de fichier fourni",
   "NO_FOLDER": "pas de répertoire",
   "NO_LIKES": "Pas de likes",
@@ -179,6 +180,7 @@
     }
   },
   "UPLOAD_FIRST_WORKOUT": "Ajoutez votre première séance !",
+  "VERTICAL_AXIS_FOR_PACE_IS_REVERSED": "L'axe vertical représentant l'allure est inversé.",
   "VIEW_FULLSCREEN": "Afficher en plein-écran",
   "VIEW_HEATMAP": "Afficher la carte thermique (heatmap)",
   "WEATHER": {

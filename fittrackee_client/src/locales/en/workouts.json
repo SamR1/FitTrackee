@@ -47,6 +47,7 @@
   "END": "end",
   "EXIT_FULLSCREEN": "Exit Fullscreen",
   "EXIT_HEATMAP": "Exit Heatmap",
+  "EXTREME_VALUES_FOR_PACE_ARE_NOT_DISPLAYED": "Extreme values for pace are not displayed.",
   "FASTEST_PACE": "fastest pace",
   "FROM": "from",
   "GLOBAL_MAP": "Global map",
@@ -101,7 +102,7 @@
     "village": "village"
   },
   "NOTES": "notes",
-  "NO_DATA_CLEANING": "data from gpx, without any cleaning",
+  "NO_DATA_CLEANING": "Data from file, without any cleaning.",
   "NO_FILE_PROVIDED": "No file provided",
   "NO_FOLDER": "no folder inside",
   "NO_LIKES": "No likes",
@@ -179,6 +180,7 @@
     }
   },
   "UPLOAD_FIRST_WORKOUT": "Upload one!",
+  "VERTICAL_AXIS_FOR_PACE_IS_REVERSED": "The vertical axis for pace is reversed.",
   "VIEW_FULLSCREEN": "View Fullscreen",
   "VIEW_HEATMAP": "View Heatmap",
   "WEATHER": {

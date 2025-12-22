@@ -91,9 +91,14 @@
               :aria-label="$t('workouts.WORKOUT_CHART')"
             />
           </div>
+          <div class="chart-info" v-if="data.label === 'pace' && splitCharts">
+            <div class="data-info">
+              {{ $t('workouts.EXTREME_VALUES_FOR_PACE_ARE_NOT_DISPLAYED') }}
+            </div>
+          </div>
         </div>
         <div class="chart-info">
-          <div class="no-data-cleaning">
+          <div class="data-info">
             {{ $t('workouts.NO_DATA_CLEANING') }}
           </div>
           <div class="elevation-start" v-if="hasElevation">
@@ -106,6 +111,14 @@
               />
               {{ $t('workouts.START_ELEVATION_AT_ZERO') }}
             </label>
+          </div>
+        </div>
+        <div class="chart-info" v-if="hasPace && !splitCharts">
+          <div class="data-info">
+            {{ $t('workouts.EXTREME_VALUES_FOR_PACE_ARE_NOT_DISPLAYED') }}
+            <template v-if="!onlyPaceDisplayed">
+              {{ $t('workouts.VERTICAL_AXIS_FOR_PACE_IS_REVERSED') }}
+            </template>
           </div>
         </div>
       </template>
@@ -381,7 +394,7 @@
             ...textColors.value,
           },
           afterFit: function (scale: LayoutItem) {
-            scale.width = 65
+            scale.width = 67
           },
         },
         yRight: {
@@ -751,7 +764,7 @@
             .elevation-start {
               padding: $default-padding $default-padding * 1.5 0;
             }
-            .no-data-cleaning {
+            .data-info {
               padding: 0 $default-padding * 2;
             }
           }
