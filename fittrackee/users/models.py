@@ -805,7 +805,7 @@ class User(BaseModel):
             ):
                 continue
             if (
-                record.record_type in ["AP", "MP"]
+                record.record_type in ["AP", "BP"]
                 and sport_label not in PACE_SPORTS
             ):
                 continue

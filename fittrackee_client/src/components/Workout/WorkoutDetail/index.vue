@@ -226,7 +226,7 @@
       maxAlt: segment ? segment.max_alt : workout.max_alt,
       maxCadence: segment ? segment.max_cadence : workout.max_cadence,
       maxHr: segment ? segment.max_hr : workout.max_hr,
-      maxPace: segment ? segment.max_pace : workout.max_pace,
+      maxPace: segment ? segment.best_pace : workout.best_pace,
       maxPower: segment ? segment.max_power : workout.max_power,
       maxSpeed: segment ? segment.max_speed : workout.max_speed,
       minAlt: segment ? segment.min_alt : workout.min_alt,

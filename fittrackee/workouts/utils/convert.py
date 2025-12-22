@@ -31,7 +31,7 @@ def convert_value_to_integer(
     if val is None or record_type not in RECORD_TYPES:
         return None
 
-    if isinstance(val, timedelta):  # self.record_type in ["LD", "AP", "MP"]
+    if isinstance(val, timedelta):  # self.record_type in ["LD", "AP", "BP"]
         return int(val.total_seconds())
 
     multiplier = (

@@ -52,12 +52,12 @@ export const formatRecord = (
       value = record.value
       break
     case 'AP':
-    case 'MP':
+    case 'BP':
       value = `${getPace(record.value as string, useImperialUnits)} ${useImperialUnits ? 'min/mi' : 'min/km'}`
       break
     default:
       throw new Error(
-        `Invalid record type, expected: "AP", "AS", "FD", "HA", "LD", "MP", "MS", got: "${record.record_type}"`
+        `Invalid record type, expected: "AP", "AS", "FD", "HA", "LD", "BP", "MS", got: "${record.record_type}"`
       )
   }
   return {

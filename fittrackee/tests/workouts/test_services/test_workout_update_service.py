@@ -413,7 +413,7 @@ class TestWorkoutUpdateServiceUpdate(RandomMixin):
             **initial_data,
             **updated_data,
             "ave_pace": "0:06:00",
-            "max_pace": "0:06:00",
+            "best_pace": "0:06:00",
             "ave_speed": None,
             "max_speed": None,
         }

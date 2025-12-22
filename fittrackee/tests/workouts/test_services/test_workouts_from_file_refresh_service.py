@@ -268,6 +268,15 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
         }
         assert records[2].serialize() == {
             "id": 3,
+            "record_type": "BP",
+            "sport_id": workout_cycling_user_1.sport_id,
+            "user": workout_cycling_user_1.user.username,
+            "value": str(workout_cycling_user_1.best_pace),
+            "workout_date": workout_cycling_user_1.workout_date,
+            "workout_id": workout_cycling_user_1.short_id,
+        }
+        assert records[3].serialize() == {
+            "id": 4,
             "record_type": "FD",
             "sport_id": workout_cycling_user_1.sport_id,
             "user": workout_cycling_user_1.user.username,
@@ -275,7 +284,7 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
             "workout_date": workout_cycling_user_1.workout_date,
             "workout_id": workout_cycling_user_1.short_id,
         }
-        assert records[3].serialize() == {
+        assert records[4].serialize() == {
             "id": 7,
             "record_type": "HA",
             "sport_id": workout_cycling_user_1.sport_id,
@@ -284,21 +293,12 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
             "workout_date": workout_cycling_user_1.workout_date,
             "workout_id": workout_cycling_user_1.short_id,
         }
-        assert records[4].serialize() == {
-            "id": 4,
+        assert records[5].serialize() == {
+            "id": 5,
             "record_type": "LD",
             "sport_id": workout_cycling_user_1.sport_id,
             "user": workout_cycling_user_1.user.username,
             "value": str(workout_cycling_user_1.duration),
-            "workout_date": workout_cycling_user_1.workout_date,
-            "workout_id": workout_cycling_user_1.short_id,
-        }
-        assert records[5].serialize() == {
-            "id": 5,
-            "record_type": "MP",
-            "sport_id": workout_cycling_user_1.sport_id,
-            "user": workout_cycling_user_1.user.username,
-            "value": str(workout_cycling_user_1.max_pace),
             "workout_date": workout_cycling_user_1.workout_date,
             "workout_id": workout_cycling_user_1.short_id,
         }

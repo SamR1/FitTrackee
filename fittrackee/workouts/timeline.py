@@ -68,7 +68,7 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
                 "max_alt": null,
                 "max_cadence": null,
                 "max_hr": null,
-                "max_pace": null,
+                "best_pace": null,
                 "max_power": null,
                 "max_speed": 10.0,
                 "min_alt": null,

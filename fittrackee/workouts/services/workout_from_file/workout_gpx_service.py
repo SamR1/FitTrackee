@@ -180,7 +180,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 else (gpx_info.max_speed / 1000) * 3600
             )
             object_to_update.max_speed = max_speed
-            object_to_update.max_pace = convert_speed_into_pace_duration(
+            object_to_update.best_pace = convert_speed_into_pace_duration(
                 object_to_update.max_speed
             )
 
@@ -508,7 +508,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             hr_cadence_power_stats=hr_cadence_power_stats,
         )
         self.workout.max_speed = max_speed
-        self.workout.max_pace = convert_speed_into_pace_duration(max_speed)
+        self.workout.best_pace = convert_speed_into_pace_duration(max_speed)
         bounds = track.get_bounds()
         self.workout.bounds = (
             [

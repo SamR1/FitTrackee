@@ -782,7 +782,6 @@
       }
 
       @media screen and (max-width: $x-small-limit) {
-        background: yellow;
         .chart-display {
           flex-direction: column;
           gap: 0 !important;

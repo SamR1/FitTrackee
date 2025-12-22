@@ -101,7 +101,7 @@ NO_STATISTICS = {
     "average_pace": None,
     "average_speed": None,
     "count": 0,
-    "max_pace": None,
+    "best_pace": None,
     "max_speed": None,
     "total_ascent": None,
     "total_descent": None,
@@ -184,7 +184,7 @@ def get_statistics(
         columns = [
             *columns,
             func.avg(workouts_subquery.c.ave_pace),
-            func.min(workouts_subquery.c.max_pace),
+            func.min(workouts_subquery.c.best_pace),
         ]
     stats_query = (
         db.session.query(*columns)
@@ -212,7 +212,7 @@ def get_statistics(
             get_rounded_float_value(stats_query[10]) if return_speeds else None
         ),
         "count": stats_query[8],
-        "max_pace": (
+        "best_pace": (
             str(remove_microseconds(stats_query[max_pace_raw]))
             if get_pace and stats_query[max_pace_raw]
             else None
@@ -380,11 +380,11 @@ def get_user_workouts_query(
         )
     if max_pace_from:
         filters.append(
-            Workout.max_pace >= convert_pace_in_duration(max_pace_from)
+            Workout.best_pace >= convert_pace_in_duration(max_pace_from)
         )
     if max_pace_to:
         filters.append(
-            Workout.max_pace <= convert_pace_in_duration(max_pace_to)
+            Workout.best_pace <= convert_pace_in_duration(max_pace_to)
         )
     if ave_speed_from:
         filters.append(Workout.ave_speed >= float(ave_speed_from))
@@ -484,7 +484,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "max_alt": null,
                 "max_cadence": null,
                 "max_hr": null,
-                "max_pace": null,
+                "best_pace": null,
                 "max_power": null,
                 "max_speed": 18.0,
                 "min_alt": null,
@@ -695,7 +695,9 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                     None if workout.moving is None else str(workout.moving)
                 )
                 ave_pace = str(workout.ave_pace) if return_pace_data else None
-                max_pace = str(workout.max_pace) if return_pace_data else None
+                best_pace = (
+                    str(workout.best_pace) if return_pace_data else None
+                )
                 workout_total: Dict = {
                     "average_ascent": ascent,
                     "average_descent": descent,
@@ -713,7 +715,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                         if workout.max_speed is None or not return_speed_data
                         else float(workout.max_speed)
                     ),
-                    "max_pace": max_pace,
+                    "best_pace": best_pace,
                     "total_ascent": ascent,
                     "total_descent": descent,
                     "total_distance": distance,
@@ -1377,7 +1379,7 @@ def get_workout(
                 "max_alt": null,
                 "max_cadence": null,
                 "max_hr": null,
-                "max_pace": null,
+                "best_pace": null,
                 "max_power": null,
                 "max_speed": 16,
                 "min_alt": null,
@@ -2101,7 +2103,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 "max_alt": 158.41,
                 "max_cadence": null,
                 "max_hr": null,
-                "max_pace": null,
+                "best_pace": null,
                 "max_power": null,
                 "max_speed": 25.59,
                 "min_alt": 55.03,
@@ -2172,7 +2174,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                     "max_alt": 158.41,
                     "max_cadence": null,
                     "max_hr": null,
-                    "max_pace": null,
+                    "best_pace": null,
                     "max_power": null,
                     "max_speed": 25.59,
                     "min_alt": 55.03,
@@ -2406,7 +2408,7 @@ def post_workout_no_gpx(
                 "max_alt": null,
                 "max_cadence": null,
                 "max_hr": null,
-                "max_pace": null,
+                "best_pace": null,
                 "max_power": null,
                 "max_speed": 10.0,
                 "min_alt": null,
@@ -2630,7 +2632,7 @@ def update_workout(
                 "max_alt": null,
                 "max_cadence": null,
                 "max_hr": null,
-                "max_pace": null,
+                "best_pace": null,
                 "max_power": null,
                 "max_speed": 10.0,
                 "min_alt": null,
@@ -2906,7 +2908,7 @@ def like_workout(
                 "max_alt": 104.44,
                 "max_cadence": null,
                 "max_hr": null,
-                "max_pace": null,
+                "best_pace": null,
                 "max_power": null,
                 "max_speed": 25.59,
                 "min_alt": 19.0,
@@ -3023,7 +3025,7 @@ def undo_workout_like(
                 "max_alt": 104.44,
                 "max_cadence": null,
                 "max_hr": null,
-                "max_pace": null,
+                "best_pace": null,
                 "max_power": null,
                 "max_speed": 25.59,
                 "min_alt": 19.0,
@@ -3628,7 +3630,7 @@ def refresh_workout(
                 "max_alt": 158.41,
                 "max_cadence": null,
                 "max_hr": null,
-                "max_pace": null,
+                "best_pace": null,
                 "max_power": null,
                 "max_speed": 25.59,
                 "min_alt": 55.03,
@@ -3699,7 +3701,7 @@ def refresh_workout(
                     "max_alt": 158.41,
                     "max_cadence": null,
                     "max_hr": null,
-                    "max_pace": null,
+                    "best_pace": null,
                     "max_power": null,
                     "max_speed": 25.59,
                     "min_alt": 55.03,

@@ -226,8 +226,8 @@
                     :useImperialUnits="user.imperial_units"
                   />
                   <Pace
-                    v-if="displayPace && workout.max_pace !== null"
-                    :pace="workout.max_pace"
+                    v-if="displayPace && workout.best_pace !== null"
+                    :pace="workout.best_pace"
                     :useImperialUnits="user.imperial_units"
                   />
                 </td>
@@ -369,8 +369,8 @@
                       {{ $t('workouts.MAX_PACE') }}
                     </span>
                     <Pace
-                      v-if="workoutsStats[statsKey].max_pace !== null"
-                      :pace="workoutsStats[statsKey].max_pace"
+                      v-if="workoutsStats[statsKey].best_pace !== null"
+                      :pace="workoutsStats[statsKey].best_pace"
                       :useImperialUnits="user.imperial_units"
                     />
                   </td>

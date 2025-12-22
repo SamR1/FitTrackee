@@ -193,7 +193,7 @@ class TestRecordModel:
         assert record_serialize.get("value") == "0:08:20"
         assert isinstance(record_serialize.get("value"), str)
 
-    def test_add_fastest_pace_record(
+    def test_add_best_pace_record(
         self,
         app: Flask,
         user_1: User,
@@ -201,11 +201,11 @@ class TestRecordModel:
         sport_2_running: Sport,
         workout_running_user_1: Workout,
     ) -> None:
-        workout_running_user_1.max_pace = timedelta(minutes=7)
+        workout_running_user_1.best_pace = timedelta(minutes=7)
         record_ap = Record.query.filter_by(
             user_id=workout_running_user_1.user_id,
             sport_id=workout_running_user_1.sport_id,
-            record_type="MP",
+            record_type="BP",
         ).one()
 
         assert isinstance(record_ap.value, datetime.timedelta)

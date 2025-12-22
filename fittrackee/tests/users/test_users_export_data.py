@@ -109,7 +109,7 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "max_power": None,
                 "with_geometry": False,
                 "ave_pace": None,
-                "max_pace": None,
+                "best_pace": None,
             }
         ]
 
@@ -173,7 +173,7 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "max_power": None,
                 "with_geometry": True,
                 "ave_pace": None,
-                "max_pace": None,
+                "best_pace": None,
             }
         ]
 
@@ -241,7 +241,7 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "max_power": None,
                 "with_geometry": True,
                 "ave_pace": str(workout.ave_pace),
-                "max_pace": str(workout.max_pace),
+                "best_pace": str(workout.best_pace),
             }
         ]
 

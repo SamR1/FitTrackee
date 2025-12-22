@@ -26,7 +26,7 @@ export interface IWorkoutSegment {
   max_alt: number
   max_cadence: number | null
   max_hr: number | null
-  max_pace: string | null
+  best_pace: string | null
   max_power: number | null
   max_speed: number
   min_alt: number
@@ -45,7 +45,7 @@ export interface ICardRecord {
   label: string
 }
 
-export type TRecordType = 'AP' | 'AS' | 'FD' | 'HA' | 'LD' | 'MP' | 'MS'
+export type TRecordType = 'AP' | 'AS' | 'FD' | 'HA' | 'LD' | 'BP' | 'MS'
 
 export interface IRecord {
   id: number
@@ -109,7 +109,7 @@ export interface IWorkout {
   max_alt: number | null
   max_cadence: number | null
   max_hr: number | null
-  max_pace: string | null
+  best_pace: string | null
   max_power: number | null
   max_speed: number | null
   min_alt: number | null
@@ -344,7 +344,7 @@ export interface TWorkoutsStatistic {
   average_pace: string | null
   average_speed: number | null
   count: number
-  max_pace: string | null
+  best_pace: string | null
   max_speed: number | null
   total_ascent: number | null
   total_descent: number | null

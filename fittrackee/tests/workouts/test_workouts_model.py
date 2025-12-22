@@ -123,6 +123,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_pace": None,
             "ave_power": None,
             "ave_speed": workout.ave_speed,
+            "best_pace": None,
             "bounds": [],
             "creation_date": workout.creation_date,
             "descent": None,
@@ -138,7 +139,6 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
-            "max_pace": None,
             "max_power": None,
             "max_speed": workout.max_speed,
             "min_alt": None,
@@ -152,7 +152,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "records": [
                 record.serialize()
                 for record in workout.records
-                if record.record_type not in ["AP", "MP"]
+                if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
             "source": workout.source,
@@ -191,6 +191,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_pace": None,
             "ave_power": None,
             "ave_speed": workout.ave_speed,
+            "best_pace": None,
             "bounds": [],
             "creation_date": workout.creation_date,
             "descent": workout.descent,
@@ -206,7 +207,6 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
-            "max_pace": None,
             "max_power": None,
             "max_speed": workout.max_speed,
             "min_alt": None,
@@ -220,7 +220,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "records": [
                 record.serialize()
                 for record in workout.records
-                if record.record_type not in ["AP", "MP"]
+                if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
             "source": workout.source,
@@ -258,7 +258,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout.max_hr = 110
         workout.max_power = 250
         workout.ave_pace = timedelta(minutes=(60 / float(workout.ave_speed)))  # type: ignore [arg-type]
-        workout.max_pace = timedelta(minutes=(60 / float(workout.max_speed)))  # type: ignore [arg-type]
+        workout.best_pace = timedelta(minutes=(60 / float(workout.max_speed)))  # type: ignore [arg-type]
 
         serialized_workout = workout.serialize(user=user_1, light=False)
 
@@ -270,6 +270,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_pace": None,
             "ave_power": workout.ave_power,
             "ave_speed": float(workout.ave_speed),  # type: ignore[arg-type]
+            "best_pace": None,
             "bounds": workout.bounds,
             "creation_date": workout.creation_date,
             "descent": float(workout.descent),  # type: ignore[arg-type]
@@ -285,7 +286,6 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": float(workout.max_alt),  # type: ignore[arg-type]
             "max_cadence": workout.max_cadence,
             "max_hr": workout.max_hr,
-            "max_pace": None,
             "max_power": workout.max_power,
             "max_speed": float(workout.max_speed),  # type: ignore[arg-type]
             "min_alt": float(workout.min_alt),  # type: ignore[arg-type]
@@ -299,7 +299,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "records": [
                 record.serialize()
                 for record in workout.records
-                if record.record_type not in ["AP", "MP"]
+                if record.record_type not in ["AP", "BP"]
             ],
             "segments": [
                 {
@@ -340,7 +340,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout.max_hr = 110
         workout.max_power = 250
         workout.ave_pace = timedelta(minutes=(60 / float(workout.ave_speed)))  # type: ignore [arg-type]
-        workout.max_pace = timedelta(minutes=(60 / float(workout.max_speed)))  # type: ignore [arg-type]
+        workout.best_pace = timedelta(minutes=(60 / float(workout.max_speed)))  # type: ignore [arg-type]
 
         serialized_workout = workout.serialize(user=user_1, light=False)
 
@@ -352,6 +352,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_pace": None,
             "ave_power": None,
             "ave_speed": float(workout.ave_speed),  # type: ignore
+            "best_pace": None,
             "bounds": workout.bounds,
             "creation_date": workout.creation_date,
             "descent": None,
@@ -367,7 +368,6 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": None,
             "max_hr": workout.max_hr,
-            "max_pace": None,
             "max_power": None,
             "max_speed": float(workout.max_speed),  # type: ignore
             "min_alt": None,
@@ -381,7 +381,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "records": [
                 record.serialize()
                 for record in workout.records
-                if record.record_type not in ["HA", "AP", "MP"]
+                if record.record_type not in ["HA", "AP", "BP"]
             ],
             "segments": [
                 {
@@ -423,7 +423,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout.max_hr = 110
         workout.max_power = 250
         workout.ave_pace = timedelta(minutes=(60 / float(workout.ave_speed)))  # type: ignore [arg-type]
-        workout.max_pace = timedelta(minutes=(60 / float(workout.max_speed)))  # type: ignore [arg-type]
+        workout.best_pace = timedelta(minutes=(60 / float(workout.max_speed)))  # type: ignore [arg-type]
 
         serialized_workout = workout.serialize(user=user_1, light=False)
 
@@ -435,6 +435,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_pace": str(workout.ave_pace),
             "ave_power": None,
             "ave_speed": None,
+            "best_pace": str(workout.best_pace),
             "bounds": workout.bounds,
             "creation_date": workout.creation_date,
             "descent": workout.descent,
@@ -450,7 +451,6 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": workout.max_alt,
             "max_cadence": workout.max_cadence * 2,
             "max_hr": workout.max_hr,
-            "max_pace": str(workout.max_pace),
             "max_power": None,
             "max_speed": None,
             "min_alt": workout.min_alt,
@@ -507,7 +507,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout.max_hr = 110
         workout.max_power = 250
         workout.ave_pace = timedelta(minutes=(60 / float(workout.ave_speed)))  # type: ignore [arg-type]
-        workout.max_pace = timedelta(minutes=(60 / float(workout.max_speed)))  # type: ignore [arg-type]
+        workout.best_pace = timedelta(minutes=(60 / float(workout.max_speed)))  # type: ignore [arg-type]
 
         serialized_workout = workout.serialize(user=user_1, light=False)
 
@@ -519,6 +519,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_pace": str(workout.ave_pace),
             "ave_power": None,
             "ave_speed": float(workout.ave_speed),  # type: ignore [arg-type]
+            "best_pace": str(workout.best_pace),
             "bounds": workout.bounds,
             "creation_date": workout.creation_date,
             "descent": workout.descent,
@@ -534,7 +535,6 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": workout.max_alt,
             "max_cadence": workout.max_cadence * 2,
             "max_hr": workout.max_hr,
-            "max_pace": str(workout.max_pace),
             "max_power": None,
             "max_speed": float(workout.max_speed),  # type: ignore [arg-type]
             "min_alt": workout.min_alt,
@@ -586,7 +586,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout.max_hr = 110
         workout.max_power = 250
         workout.ave_pace = timedelta(minutes=(60 / float(workout.ave_speed)))  # type: ignore [arg-type]
-        workout.max_pace = timedelta(minutes=(60 / float(workout.max_speed)))  # type: ignore [arg-type]
+        workout.best_pace = timedelta(minutes=(60 / float(workout.max_speed)))  # type: ignore [arg-type]
 
         serialized_workout = workout.serialize(user=user_1, light=False)
 
@@ -598,6 +598,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_pace": None,
             "ave_power": None,
             "ave_speed": float(workout.ave_speed),  # type: ignore [arg-type]
+            "best_pace": None,
             "bounds": workout.bounds,
             "creation_date": workout.creation_date,
             "descent": workout.descent,
@@ -613,7 +614,6 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": workout.max_alt,
             "max_cadence": None,
             "max_hr": workout.max_hr,
-            "max_pace": None,
             "max_power": None,
             "max_speed": float(workout.max_speed),  # type: ignore [arg-type]
             "min_alt": workout.min_alt,
@@ -627,7 +627,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "records": [
                 record.serialize()
                 for record in workout.records
-                if record.record_type not in ["AP", "MP"]
+                if record.record_type not in ["AP", "BP"]
             ],
             "segments": [
                 {
@@ -766,6 +766,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_pace": None,
             "ave_power": None,
             "ave_speed": workout_cycling_user_1.ave_speed,
+            "best_pace": None,
             "bounds": [],
             "creation_date": workout_cycling_user_1.creation_date,
             "descent": None,
@@ -781,7 +782,6 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
-            "max_pace": None,
             "max_power": None,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
@@ -795,7 +795,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "records": [
                 record.serialize()
                 for record in workout_cycling_user_1.records
-                if record.record_type not in ["AP", "MP"]
+                if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
             "source": workout_cycling_user_1.source,
@@ -837,6 +837,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_pace": None,
             "ave_power": None,
             "ave_speed": workout_cycling_user_1.ave_speed,
+            "best_pace": None,
             "bounds": [],
             "creation_date": None,
             "descent": None,
@@ -851,7 +852,6 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
-            "max_pace": None,
             "max_power": None,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
@@ -864,7 +864,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "records": [
                 record.serialize()
                 for record in workout_cycling_user_1.records
-                if record.record_type not in ["AP", "MP"]
+                if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
             "source": workout_cycling_user_1.source,
@@ -909,6 +909,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_pace": None,
             "ave_power": None,
             "ave_speed": float(workout_cycling_user_1.ave_speed),  # type: ignore[arg-type]
+            "best_pace": None,
             "bounds": [],
             "creation_date": None,
             "descent": float(workout_cycling_user_1.descent),  # type: ignore[arg-type]
@@ -923,7 +924,6 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": float(workout_cycling_user_1.max_alt),  # type: ignore[arg-type]
             "max_cadence": workout_cycling_user_1.max_cadence,
             "max_hr": workout_cycling_user_1.max_hr,
-            "max_pace": None,
             "max_power": None,
             "max_speed": float(workout_cycling_user_1.max_speed),  # type: ignore[arg-type]
             "min_alt": float(workout_cycling_user_1.min_alt),  # type: ignore[arg-type]
@@ -936,7 +936,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "records": [
                 record.serialize()
                 for record in workout_cycling_user_1.records
-                if record.record_type not in ["AP", "MP"]
+                if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
             "source": workout_cycling_user_1.source,
@@ -982,6 +982,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_pace": None,
             "ave_power": None,
             "ave_speed": workout_cycling_user_1.ave_speed,
+            "best_pace": None,
             "bounds": [],
             "creation_date": None,
             "descent": None,
@@ -996,7 +997,6 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
-            "max_pace": None,
             "max_power": None,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
@@ -1009,7 +1009,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "records": [
                 record.serialize()
                 for record in workout_cycling_user_1.records
-                if record.record_type not in ["AP", "MP"]
+                if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
             "source": workout_cycling_user_1.source,
@@ -1868,6 +1868,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             "ave_pace": None,
             "ave_power": workout_cycling_user_1.ave_power,
             "ave_speed": workout_cycling_user_1.ave_speed,
+            "best_pace": None,
             "bounds": [],
             "creation_date": None,
             "descent": None,
@@ -1882,7 +1883,6 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": workout_cycling_user_1.max_cadence,
             "max_hr": workout_cycling_user_1.max_hr,
-            "max_pace": None,
             "max_power": workout_cycling_user_1.max_power,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
@@ -1895,7 +1895,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             "records": [
                 record.serialize()
                 for record in workout_cycling_user_1.records
-                if record.record_type not in ["AP", "MP"]
+                if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
             "source": workout_cycling_user_1.source,
@@ -2399,6 +2399,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             "ave_power": workout_cycling_user_1.ave_power,
             "ascent": None,
             "ave_speed": workout_cycling_user_1.ave_speed,
+            "best_pace": None,
             "bounds": [],
             "creation_date": None,
             "descent": None,
@@ -2413,7 +2414,6 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": workout_cycling_user_1.max_cadence,
             "max_hr": workout_cycling_user_1.max_hr,
-            "max_pace": None,
             "max_power": workout_cycling_user_1.max_power,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
@@ -2426,7 +2426,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             "records": [
                 record.serialize()
                 for record in workout_cycling_user_1.records
-                if record.record_type not in ["AP", "MP"]
+                if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
             "source": workout_cycling_user_1.source,
@@ -2873,6 +2873,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
             "ave_pace": None,
             "ave_power": None,
             "ave_speed": workout_cycling_user_1.ave_speed,
+            "best_pace": None,
             "bounds": [],
             "creation_date": None,
             "descent": None,
@@ -2887,7 +2888,6 @@ class TestWorkoutModelAsUnauthenticatedUser(
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
-            "max_pace": None,
             "max_power": None,
             "max_speed": workout_cycling_user_1.max_speed,
             "min_alt": None,
@@ -2900,7 +2900,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
             "records": [
                 record.serialize()
                 for record in workout_cycling_user_1.records
-                if record.record_type not in ["AP", "MP"]
+                if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
             "source": workout_cycling_user_1.source,
@@ -2977,6 +2977,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "ave_pace": None,
             "ave_power": None,
             "ave_speed": workout_cycling_user_2.ave_speed,
+            "best_pace": None,
             "bounds": [],
             "creation_date": workout_cycling_user_2.creation_date,
             "descent": None,
@@ -2992,7 +2993,6 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
-            "max_pace": None,
             "max_power": None,
             "max_speed": workout_cycling_user_2.max_speed,
             "min_alt": None,
@@ -3062,6 +3062,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "ave_pace": None,
             "ave_power": None,
             "ave_speed": workout_cycling_user_2.ave_speed,
+            "best_pace": None,
             "bounds": workout_cycling_user_2.bounds,
             "creation_date": workout_cycling_user_2.creation_date,
             "descent": workout_cycling_user_2.descent,
@@ -3077,7 +3078,6 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "max_alt": workout_cycling_user_2.max_alt,
             "max_cadence": None,
             "max_hr": None,
-            "max_pace": None,
             "max_power": None,
             "max_speed": workout_cycling_user_2.max_speed,
             "min_alt": workout_cycling_user_2.min_alt,
@@ -3192,6 +3192,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "ave_pace": None,
             "ave_power": None,
             "ave_speed": workout_cycling_user_2.ave_speed,
+            "best_pace": None,
             "bounds": [],
             "creation_date": None,
             "descent": None,
@@ -3206,7 +3207,6 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
-            "max_pace": None,
             "max_power": None,
             "max_speed": workout_cycling_user_2.max_speed,
             "min_alt": None,
@@ -3273,6 +3273,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "ave_pace": None,
             "ave_power": None,
             "ave_speed": workout_cycling_user_2.ave_speed,
+            "best_pace": None,
             "bounds": [],
             "creation_date": workout_cycling_user_2.creation_date,
             "descent": None,
@@ -3288,7 +3289,6 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "max_alt": None,
             "max_cadence": None,
             "max_hr": None,
-            "max_pace": None,
             "max_power": None,
             "max_speed": workout_cycling_user_2.max_speed,
             "min_alt": None,
@@ -3349,6 +3349,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "ave_power": None,
             "ascent": workout_cycling_user_2.ascent,
             "ave_speed": workout_cycling_user_2.ave_speed,
+            "best_pace": None,
             "bounds": workout_cycling_user_2.bounds,
             "creation_date": workout_cycling_user_2.creation_date,
             "descent": workout_cycling_user_2.descent,
@@ -3364,7 +3365,6 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "max_alt": workout_cycling_user_2.max_alt,
             "max_cadence": None,
             "max_hr": None,
-            "max_pace": None,
             "max_power": None,
             "max_speed": workout_cycling_user_2.max_speed,
             "min_alt": workout_cycling_user_2.min_alt,
@@ -3441,10 +3441,10 @@ class TestWorkoutModel(WorkoutModelTestCase):
         assert ap_record.workout_id == workout_running_user_1.id
         assert ap_record.workout_uuid == workout_running_user_1.uuid
 
-        mp_record = Record.query.filter_by(record_type="MP").one()
+        mp_record = Record.query.filter_by(record_type="BP").one()
         assert mp_record.user_id == user_1.id
         assert mp_record.sport_id == sport_2_running.id
-        assert mp_record.value == workout_running_user_1.max_pace
+        assert mp_record.value == workout_running_user_1.best_pace
         assert mp_record.workout_date == workout_running_user_1.workout_date
         assert mp_record.workout_id == workout_running_user_1.id
         assert mp_record.workout_uuid == workout_running_user_1.uuid
@@ -3514,13 +3514,13 @@ class TestWorkoutSegmentModel:
             "ave_pace": None,
             "ave_power": workout_cycling_user_1_segment.ave_power,
             "ave_speed": workout_cycling_user_1_segment.ave_speed,
+            "best_pace": None,
             "descent": workout_cycling_user_1_segment.descent,
             "distance": workout_cycling_user_1_segment.distance,
             "duration": str(workout_cycling_user_1_segment.duration),
             "max_alt": workout_cycling_user_1_segment.max_alt,
             "max_cadence": workout_cycling_user_1_segment.max_cadence,
             "max_hr": None,
-            "max_pace": None,
             "max_power": workout_cycling_user_1_segment.max_power,
             "max_speed": workout_cycling_user_1_segment.max_speed,
             "min_alt": workout_cycling_user_1_segment.min_alt,
@@ -3554,13 +3554,13 @@ class TestWorkoutSegmentModel:
             "ave_pace": None,
             "ave_power": workout_cycling_user_1_segment.ave_power,
             "ave_speed": workout_cycling_user_1_segment.ave_speed,
+            "best_pace": None,
             "descent": workout_cycling_user_1_segment.descent,
             "distance": workout_cycling_user_1_segment.distance,
             "duration": str(workout_cycling_user_1_segment.duration),
             "max_alt": workout_cycling_user_1_segment.max_alt,
             "max_cadence": workout_cycling_user_1_segment.max_cadence,
             "max_hr": workout_cycling_user_1_segment.max_hr,
-            "max_pace": None,
             "max_power": workout_cycling_user_1_segment.max_power,
             "max_speed": workout_cycling_user_1_segment.max_speed,
             "min_alt": workout_cycling_user_1_segment.min_alt,
@@ -3584,13 +3584,13 @@ class TestWorkoutSegmentModel:
         workout_cycling_user_1_segment.ave_pace = timedelta(
             minutes=8, seconds=20
         )
-        workout_cycling_user_1_segment.max_pace = timedelta(
+        workout_cycling_user_1_segment.best_pace = timedelta(
             minutes=6, seconds=35
         )
 
         serialized_segment = workout_cycling_user_1_segment.serialize()
         assert serialized_segment["ave_pace"] is None
-        assert serialized_segment["max_pace"] is None
+        assert serialized_segment["best_pace"] is None
 
     def test_it_returns_serialized_segment_with_pace(
         self,
@@ -3607,13 +3607,13 @@ class TestWorkoutSegmentModel:
         workout_running_user_1_segment.ave_pace = timedelta(
             minutes=8, seconds=20
         )
-        workout_running_user_1_segment.max_pace = timedelta(
+        workout_running_user_1_segment.best_pace = timedelta(
             minutes=6, seconds=35
         )
 
         serialized_segment = workout_running_user_1_segment.serialize()
         assert serialized_segment["ave_pace"] == "0:08:20"
-        assert serialized_segment["max_pace"] == "0:06:35"
+        assert serialized_segment["best_pace"] == "0:06:35"
 
     def test_it_stores_geometry_as_linestring(
         self,

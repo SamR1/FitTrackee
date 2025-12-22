@@ -84,10 +84,10 @@ WORKOUT_VALUES_LIMIT = {
 RECORD_TYPES_COLUMNS_MATCHING = {
     "AP": "ave_pace",  # 'Average Pace'
     "AS": "ave_speed",  # 'Average speed'
+    "BP": "best_pace",  # 'Best pace'
     "FD": "distance",  # 'Farthest Distance'
     "HA": "ascent",  # 'Highest Ascent'
     "LD": "moving",  # 'Longest Duration'
-    "MP": "max_pace",  # 'Fastest pace'
     "MS": "max_speed",  # 'Max speed'
 }
 RECORD_TYPES = list(RECORD_TYPES_COLUMNS_MATCHING.keys())
@@ -350,7 +350,7 @@ class Workout(BaseModel):
     ave_pace: Mapped[Optional[timedelta]] = mapped_column(
         nullable=True
     )  # min/km
-    max_pace: Mapped[Optional[timedelta]] = mapped_column(
+    best_pace: Mapped[Optional[timedelta]] = mapped_column(
         nullable=True
     )  # min/km
 
@@ -464,7 +464,7 @@ class Workout(BaseModel):
             if record.record_type == "HA" and not return_elevation_data:
                 continue
             if (
-                record.record_type in ["AP", "MP"]
+                record.record_type in ["AP", "BP"]
                 and sport_label not in PACE_SPORTS
             ):
                 continue
@@ -622,7 +622,7 @@ class Workout(BaseModel):
             "ave_power": get_power(sport_label, self.ave_power),
             "max_power": get_power(sport_label, self.max_power),
             "ave_pace": get_pace(sport_label, self.ave_pace),
-            "max_pace": get_pace(sport_label, self.max_pace),
+            "best_pace": get_pace(sport_label, self.best_pace),
         }
 
         if not light or with_equipments:
@@ -840,7 +840,7 @@ class Workout(BaseModel):
             workout_column = getattr(Workout, column)
             column_sorted = nulls_last(
                 workout_column.asc()
-                if record_type in ["AP", "MP"]
+                if record_type in ["AP", "BP"]
                 else workout_column.desc()
             )
             record_workout = (
@@ -1034,7 +1034,7 @@ class WorkoutSegment(BaseModel):
     ave_pace: Mapped[Optional[timedelta]] = mapped_column(
         nullable=True
     )  # min/km
-    max_pace: Mapped[Optional[timedelta]] = mapped_column(
+    best_pace: Mapped[Optional[timedelta]] = mapped_column(
         nullable=True
     )  # min/km
 
@@ -1091,7 +1091,7 @@ class WorkoutSegment(BaseModel):
             "ave_power": get_power(sport_label, self.ave_power),
             "max_power": get_power(sport_label, self.max_power),
             "ave_pace": get_pace(sport_label, self.ave_pace),
-            "max_pace": get_pace(sport_label, self.max_pace),
+            "best_pace": get_pace(sport_label, self.best_pace),
         }
 
 
@@ -1151,7 +1151,7 @@ class Record(BaseModel):
     def value(self) -> Optional[Union[timedelta, float]]:
         if self._value is None:
             return None
-        if self.record_type in ["LD", "AP", "MP"]:
+        if self.record_type in ["LD", "AP", "BP"]:
             return timedelta(seconds=self._value)
         elif self.record_type in ["AS", "MS"]:
             return float(self._value / 100)

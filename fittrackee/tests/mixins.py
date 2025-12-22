@@ -633,7 +633,7 @@ class WorkoutMixin:
         workout.max_alt = max_alt
         workout.min_alt = min_alt
         workout.ave_pace = timedelta(seconds=ave_pace_seconds)
-        workout.max_pace = timedelta(seconds=max_pace_seconds)
+        workout.best_pace = timedelta(seconds=max_pace_seconds)
         return workout
 
 

@@ -21,10 +21,10 @@ def get_records(auth_user: User) -> Dict:
     Following types of records are available, depending en sport:
         - average pace (record_type: ``AP``)
         - average speed (record_type: ``AS``)
+        - best pace (record_type: ``BP``)
         - farthest distance (record_type: ``FD``)
         - highest ascent (record_type: ``HA``)
         - longest duration (record_type: ``LD``)
-        - maximum pace (record_type: ``MP``)
         - maximum speed (record_type: ``MS``)
 
     **Scope**: ``workouts:read``
@@ -95,7 +95,7 @@ def get_records(auth_user: User) -> Dict:
             },
             {
               "id": 15,
-              "record_type": "MP",
+              "record_type": "BP",
               "sport_id": 5,
               "user": "admin",
               "value": "0:05:58",
@@ -152,7 +152,7 @@ def get_records(auth_user: User) -> Dict:
                     Sport.label.not_in(SPORTS_WITHOUT_ELEVATION_DATA),
                 ),
                 and_(
-                    Record.record_type.in_(["AP", "MP"]),
+                    Record.record_type.in_(["AP", "BP"]),
                     Sport.label.in_(PACE_SPORTS),
                 ),
             ),

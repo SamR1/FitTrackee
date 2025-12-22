@@ -161,6 +161,15 @@ class TestWorkoutGpxServiceProcessFile(
         }
         assert records[2].serialize() == {
             "id": 3,
+            "record_type": "BP",
+            "sport_id": workout.sport_id,
+            "user": workout.user.username,
+            "value": str(workout.best_pace),
+            "workout_date": workout.workout_date,
+            "workout_id": workout.short_id,
+        }
+        assert records[3].serialize() == {
+            "id": 4,
             "record_type": "FD",
             "sport_id": workout.sport_id,
             "user": workout.user.username,
@@ -168,8 +177,8 @@ class TestWorkoutGpxServiceProcessFile(
             "workout_date": workout.workout_date,
             "workout_id": workout.short_id,
         }
-        assert records[3].serialize() == {
-            "id": 4,
+        assert records[4].serialize() == {
+            "id": 5,
             "record_type": "HA",
             "sport_id": workout.sport_id,
             "user": workout.user.username,
@@ -177,21 +186,12 @@ class TestWorkoutGpxServiceProcessFile(
             "workout_date": workout.workout_date,
             "workout_id": workout.short_id,
         }
-        assert records[4].serialize() == {
-            "id": 5,
+        assert records[5].serialize() == {
+            "id": 6,
             "record_type": "LD",
             "sport_id": workout.sport_id,
             "user": workout.user.username,
             "value": str(workout.duration),
-            "workout_date": workout.workout_date,
-            "workout_id": workout.short_id,
-        }
-        assert records[5].serialize() == {
-            "id": 6,
-            "record_type": "MP",
-            "sport_id": workout.sport_id,
-            "user": workout.user.username,
-            "value": str(workout.max_pace),
             "workout_date": workout.workout_date,
             "workout_id": workout.short_id,
         }
@@ -234,7 +234,7 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout.max_hr is None
         assert workout.source is None
         assert workout.ave_pace == timedelta(minutes=7, seconds=52)
-        assert workout.max_pace == timedelta(minutes=4, seconds=20)
+        assert workout.best_pace == timedelta(minutes=4, seconds=20)
         # workout segments
         workout_segments = WorkoutSegment.query.all()
         assert len(workout_segments) == 2
@@ -252,7 +252,9 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout_segments[0].moving == timedelta(seconds=10)
         assert workout_segments[0].pauses == timedelta(seconds=0)
         assert workout_segments[0].ave_pace == timedelta(minutes=9, seconds=30)
-        assert workout_segments[0].max_pace == timedelta(minutes=6, seconds=22)
+        assert workout_segments[0].best_pace == timedelta(
+            minutes=6, seconds=22
+        )
         assert to_shape(workout_segments[0].geom) == LineString(
             segment_0_coordinates
         )
@@ -291,7 +293,9 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout_segments[1].moving == timedelta(seconds=10)
         assert workout_segments[1].pauses == timedelta(seconds=0)
         assert workout_segments[1].ave_pace == timedelta(minutes=6, seconds=43)
-        assert workout_segments[1].max_pace == timedelta(minutes=4, seconds=20)
+        assert workout_segments[1].best_pace == timedelta(
+            minutes=4, seconds=20
+        )
         assert to_shape(workout_segments[1].geom) == LineString(
             segment_2_coordinates
         )
@@ -325,13 +329,13 @@ class TestWorkoutGpxServiceProcessFile(
             "ave_pace": None,
             "ave_power": None,
             "ave_speed": 8.94,
+            "best_pace": None,
             "descent": 1.0,
             "distance": 0.025,
             "duration": "0:00:10",
             "max_alt": 980.0,
             "max_cadence": None,
             "max_hr": None,
-            "max_pace": None,
             "max_power": None,
             "max_speed": 13.83,
             "min_alt": 979.0,

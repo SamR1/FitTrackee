@@ -115,7 +115,7 @@ def update_workout(target: Union[Workout, WorkoutSegment]) -> None:
     target.max_speed = target.ave_speed
     target.moving = target.duration
     target.ave_pace = convert_speed_into_pace_duration(target.ave_speed)
-    target.max_pace = convert_speed_into_pace_duration(target.max_speed)
+    target.best_pace = convert_speed_into_pace_duration(target.max_speed)
 
 
 @pytest.fixture()

@@ -45,13 +45,13 @@
         :useImperialUnits="useImperialUnits"
       />
       <WorkoutRecord :workoutObject="workoutObject" recordType="AP" /><br />
-      <span class="label"> {{ $t('workouts.FASTEST_PACE') }} </span>:
+      <span class="label"> {{ $t('workouts.BEST_PACE') }} </span>:
       <Pace
         :pace="workoutObject.maxPace"
         :strong="true"
         :useImperialUnits="useImperialUnits"
       />
-      <WorkoutRecord :workoutObject="workoutObject" recordType="MP" />
+      <WorkoutRecord :workoutObject="workoutObject" recordType="BP" />
     </div>
     <div
       class="workout-data"

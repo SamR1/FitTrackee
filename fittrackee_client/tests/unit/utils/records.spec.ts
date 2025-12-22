@@ -107,11 +107,11 @@ describe('formatRecord', () => {
       },
     },
     {
-      description: "return formatted record for 'Fastest pace'",
+      description: "return formatted record for 'Best pace'",
       inputParams: {
         record: {
           id: 15,
-          record_type: 'MP',
+          record_type: 'BP',
           sport_id: 2,
           user: 'admin',
           value: '00:04:00',
@@ -123,7 +123,7 @@ describe('formatRecord', () => {
       },
       expected: {
         id: 15,
-        record_type: 'MP',
+        record_type: 'BP',
         sport_id: 2,
         user: 'admin',
         value: '4:00 min/km',
@@ -299,11 +299,11 @@ describe('formatRecord after conversion into imperial units', () => {
       },
     },
     {
-      description: "return formatted record for 'Fastest pace'",
+      description: "return formatted record for 'Best pace'",
       inputParams: {
         record: {
           id: 15,
-          record_type: 'MP',
+          record_type: 'BP',
           sport_id: 2,
           user: 'admin',
           value: '00:04:00',
@@ -315,7 +315,7 @@ describe('formatRecord after conversion into imperial units', () => {
       },
       expected: {
         id: 15,
-        record_type: 'MP',
+        record_type: 'BP',
         sport_id: 2,
         user: 'admin',
         value: '6:26 min/mi',
@@ -406,7 +406,7 @@ describe('formatRecord (invalid record type)', () => {
         'yyyy/dd/MM'
       )
     ).to.throw(
-      'Invalid record type, expected: "AP", "AS", "FD", "HA", "LD", "MP", "MS", got: "M"'
+      'Invalid record type, expected: "AP", "AS", "FD", "HA", "LD", "BP", "MS", got: "M"'
     )
   })
 })

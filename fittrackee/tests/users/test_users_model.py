@@ -675,7 +675,7 @@ class TestUserRecords(UserModelAssertMixin, WorkoutMixin):
 
         assert set(
             record["record_type"] for record in serialized_user["records"]
-        ) == {"AP", "FD", "HA", "LD", "MP"}
+        ) == {"AP", "BP", "FD", "HA", "LD"}
 
     def test_it_returns_pace_records_with_speed_record_when_preference_allows_it(  # noqa
         self,
@@ -692,7 +692,7 @@ class TestUserRecords(UserModelAssertMixin, WorkoutMixin):
 
         assert set(
             record["record_type"] for record in serialized_user["records"]
-        ) == {"AP", "AS", "FD", "HA", "LD", "MP", "MS"}
+        ) == {"AP", "AS", "FD", "HA", "LD", "BP", "MS"}
 
     def test_it_returns_totals_when_workout_has_pauses(
         self,
