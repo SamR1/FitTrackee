@@ -82,10 +82,17 @@ export const getPace = (pace: string, useImperialUnits: boolean): string => {
   return getPaceFromTotalSeconds(totalSeconds, useImperialUnits)
 }
 export const convertPaceInMinutes = (
-  pace_in_seconds: number, // pace in s/m
+  paceInSeconds: number | null, // pace in s/m
   useImperialUnits: boolean
 ): number => {
-  return pace_in_seconds * 1000 * (useImperialUnits ? 1.609344 : 1)
+  // extreme values (i.e. greater than 1 hour per km or mi) are not shown
+  const maxValue = useImperialUnits ? 2.2369368 : 3.6
+  const pace = paceInSeconds ?? maxValue
+  return +(
+    Math.min(pace, maxValue) *
+    1000 *
+    (useImperialUnits ? 1.609344 : 1)
+  ).toFixed(2)
 }
 export const convertPaceToMetric = (
   pace: string // min/mi

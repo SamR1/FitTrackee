@@ -115,11 +115,11 @@ describe('getPace', () => {
 describe('convertPaceInMinutes', () => {
   const testsParams: [number, boolean, number][] = [
     [0, false, 0],
-    [360, false, 360000],
-    [493, false, 493000],
+    [1.3953488372, false, 1395.35],
+    [6, false, 3600], // exceeds max value (i.e 1:00:00/km)
     [0, true, 0],
-    [360, true, 579363.8400000001],
-    [493, true, 793406.5920000001],
+    [1.3953488372, true, 2245.6],
+    [6, true, 3600], // exceeds max value (i.e 1:00:00/mi)
   ]
 
   testsParams.map((testParams) => {

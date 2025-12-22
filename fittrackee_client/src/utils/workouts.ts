@@ -108,9 +108,7 @@ export const getDatasets = (
     }
 
     extensionsData.forEach((extension: TWorkoutDatasetKeys) => {
-      datasets[extension].data.push(
-        data[extension] === undefined ? null : data[extension]
-      )
+      datasets[extension].data.push(data[extension] ?? null)
     })
     coordinates.push({ latitude: data.latitude, longitude: data.longitude })
   })

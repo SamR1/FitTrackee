@@ -322,6 +322,16 @@
         },
         yLeft: {
           beginAtZero: label === 'elevation' ? elevationStartAtZero : false,
+          // @ts-expect-error  @typescript-eslint/ban-ts-comment
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          max: (context: any): number | undefined => {
+            if (context.type !== 'scale') {
+              return undefined
+            }
+            // When the pace is displayed, extreme values (i.e. greater than
+            // 1 hour) are not shown.
+            return isPaceOnlyDisplayed(context) ? 3600 : undefined
+          },
           display: true,
           grid: {
             drawOnChartArea: false,

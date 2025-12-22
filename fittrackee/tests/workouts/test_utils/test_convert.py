@@ -101,7 +101,7 @@ class TestConvertSpeedIntoPaceSeconds:
     @pytest.mark.parametrize(
         "input_speed,expected_pace",
         [
-            (0.0, 0.0),
+            (0.0, None),
             (3.6, 1.0),
             (5.0, 0.72),
             (11.3, 0.3185840708),

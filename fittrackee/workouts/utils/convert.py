@@ -61,8 +61,6 @@ def convert_speed_into_pace_in_sec_per_meter(
     # return pace in s/m
     #
     # note: speed unit is 'km/h'
-    if speed is None:
-        return None
     if not speed:
-        return 0.0
+        return None
     return round(1 / (speed / 3.6), 10)
