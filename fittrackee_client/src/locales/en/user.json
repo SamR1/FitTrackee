@@ -87,7 +87,10 @@
     "BIRTH_DATE": "Birth date",
     "CREATED_REPORTS": "Created reports",
     "DATE_FORMAT": "Date display format",
-    "DISPLAYING_SPEED_IN_ADDITION_TO_PACE": "Displaying speed in addition to pace",
+    "DISPLAYING_SPEED_IN_ADDITION_TO_PACE": {
+      "HELP": "Applies to workouts related to running, hiking, trail and walking.",
+      "LABEL": "Displaying speed in addition to pace"
+    },
     "EDIT": "Edit profile",
     "EDIT_ACCOUNT": "Edit account",
     "EDIT_MESSAGE_PREFERENCES": "Edit messages preferences",

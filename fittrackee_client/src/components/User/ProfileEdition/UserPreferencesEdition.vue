@@ -184,7 +184,7 @@
         </div>
         <div class="form-items form-checkboxes">
           <span class="checkboxes-label">
-            {{ $t('user.PROFILE.DISPLAYING_SPEED_IN_ADDITION_TO_PACE') }}
+            {{ $t('user.PROFILE.DISPLAYING_SPEED_IN_ADDITION_TO_PACE.LABEL') }}
           </span>
           <div class="checkboxes">
             <label v-for="status in displaySpeedWithPace" :key="status.label">
@@ -200,6 +200,12 @@
                 {{ $t(`common.${status.label}`) }}
               </span>
             </label>
+          </div>
+          <div class="info-box pace-help">
+            <span>
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('user.PROFILE.DISPLAYING_SPEED_IN_ADDITION_TO_PACE.HELP') }}
+            </span>
           </div>
         </div>
         <div class="form-items form-checkboxes">
