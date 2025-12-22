@@ -18,6 +18,7 @@ LANGUAGES_DATE_STRING = {
     "pl": "d MMM yyyy",  # Polish
     "pt": "d MMM yyyy",  # Portuguese
     "ru": "d MMM yyyy",  # Russian
+    # "sl": "d. MMMM yyyy",  # Slovenian
     "tr": "d MMM yyyy",  # Turkish
     "zh_Hans": "y年M月d日",  # Chinese (Simplified Han script)
 }
