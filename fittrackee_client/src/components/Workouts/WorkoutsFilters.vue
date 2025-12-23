@@ -197,21 +197,23 @@
           </div>
 
           <div class="additional-filters">
-            <div @click="toggleMoreFilters" class="additional-filters-btn">
-              <button class="transparent">
-                <i
-                  :class="`fa fa-caret-${displayMoreFilters ? 'up' : 'down'}`"
-                  aria-hidden="true"
-                />
-                <span>
-                  {{
-                    $t(
-                      `workouts.${displayMoreFilters ? 'HIDE' : 'DISPLAY_MORE'}_FILTERS`
-                    )
-                  }}
-                </span>
-              </button>
-            </div>
+            <button
+              class="transparent additional-filters-btn"
+              @click="toggleMoreFilters"
+              type="button"
+            >
+              <i
+                :class="`fa fa-caret-${displayMoreFilters ? 'up' : 'down'}`"
+                aria-hidden="true"
+              />
+              <span>
+                {{
+                  $t(
+                    `workouts.${displayMoreFilters ? 'HIDE' : 'DISPLAY_MORE'}_FILTERS`
+                  )
+                }}
+              </span>
+            </button>
             <div v-if="displayMoreFilters" class="additional-filters-filters">
               <div class="form-items-group">
                 <div class="form-item">
@@ -691,13 +693,11 @@
       display: flex;
       flex-direction: column;
       .additional-filters-btn {
-        button {
-          display: flex;
-          align-items: center;
-          gap: $default-padding * 0.5;
-          padding-left: $default-padding;
-          font-weight: bold;
-        }
+        display: flex;
+        align-items: center;
+        gap: $default-padding * 0.5;
+        padding-left: $default-padding;
+        font-weight: bold;
       }
       .additional-filters-filters {
         display: flex;
