@@ -1,4 +1,5 @@
 import datetime
+from datetime import timedelta
 
 import pytest
 from flask import Flask
@@ -168,3 +169,49 @@ class TestRecordModel:
         record_serialize = record_ms.serialize()
         assert record_serialize.get("value") == 10.0
         assert isinstance(record_serialize.get("value"), float)
+
+    def test_add_average_pace_record(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,
+    ) -> None:
+        workout_running_user_1.ave_pace = timedelta(minutes=8, seconds=20)
+        record_ap = Record.query.filter_by(
+            user_id=workout_running_user_1.user_id,
+            sport_id=workout_running_user_1.sport_id,
+            record_type="AP",
+        ).one()
+
+        assert isinstance(record_ap.value, datetime.timedelta)
+        assert str(record_ap.value) == "0:08:20"
+        assert record_ap._value == 500
+
+        record_serialize = record_ap.serialize()
+        assert record_serialize.get("value") == "0:08:20"
+        assert isinstance(record_serialize.get("value"), str)
+
+    def test_add_best_pace_record(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,
+    ) -> None:
+        workout_running_user_1.best_pace = timedelta(minutes=7)
+        record_ap = Record.query.filter_by(
+            user_id=workout_running_user_1.user_id,
+            sport_id=workout_running_user_1.sport_id,
+            record_type="BP",
+        ).one()
+
+        assert isinstance(record_ap.value, datetime.timedelta)
+        assert str(record_ap.value) == "0:07:00"
+        assert record_ap._value == 420
+
+        record_serialize = record_ap.serialize()
+        assert record_serialize.get("value") == "0:07:00"
+        assert isinstance(record_serialize.get("value"), str)

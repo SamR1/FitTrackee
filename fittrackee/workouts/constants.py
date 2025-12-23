@@ -30,6 +30,12 @@ POWER_SPORTS = [
     "Mountain Biking",
     "Mountain Biking (Electric)",
 ]
+PACE_SPORTS = [
+    "Hiking",
+    "Running",
+    "Trail",
+    "Walking",
+]
 # elevation data (ascent, descent, min and max alt), if present, are not
 # displayed
 SPORTS_WITHOUT_ELEVATION_DATA = [

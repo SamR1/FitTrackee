@@ -37,7 +37,7 @@
               v-if="!errorMessages"
               @click="confirmAction()"
             >
-              {{ $t('buttons.YES') }}
+              {{ $t('common.YES') }}
             </button>
             <button
               tabindex="0"
@@ -45,7 +45,7 @@
               class="cancel"
               @click="emit('cancelAction')"
             >
-              {{ $t(`buttons.${errorMessages ? 'CANCEL' : 'NO'}`) }}
+              {{ $t(errorMessages ? 'buttons.CANCEL' : 'common.NO') }}
             </button>
           </div>
         </template>

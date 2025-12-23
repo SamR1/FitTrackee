@@ -29,6 +29,13 @@ export const sportColors: Record<string, string> = {
   Windsurfing: '#856ece',
 }
 
+export const sportsWithPace: string[] = [
+  'Hiking',
+  'Running',
+  'Trail',
+  'Walking',
+]
+
 export const sportIdColors = (sports: ISport[]): Record<number, string> => {
   const colors: Record<number, string> = {}
   sports.forEach(

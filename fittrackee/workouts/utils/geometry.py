@@ -8,6 +8,7 @@ from sqlalchemy import func, select
 from fittrackee import db
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.constants import (
+    PACE_SPORTS,
     POWER_SPORTS,
     RPM_CADENCE_SPORTS,
     SPM_CADENCE_SPORTS,
@@ -58,6 +59,7 @@ def get_chart_data_from_segment_points(
     """
     Return data needed to generate chart with:
     - speed
+    - pace for hiking, running, trail and walking
     - elevation (if available)
     - heart rate (if available)
     - cadence (if available)
@@ -66,6 +68,8 @@ def get_chart_data_from_segment_points(
     chart_data = []
     # elevation
     return_elevation_data = sport_label not in SPORTS_WITHOUT_ELEVATION_DATA
+    # pace
+    return_pace = sport_label in PACE_SPORTS
     # from extension: cadence
     return_cadence = (
         workout_ave_cadence
@@ -98,6 +102,8 @@ def get_chart_data_from_segment_points(
             }
             if return_elevation_data and point.get("elevation"):
                 data["elevation"] = point["elevation"]
+            if return_pace and "pace" in point:
+                data["pace"] = point["pace"]
             if return_cadence and "cadence" in point:
                 data["cadence"] = (
                     point["cadence"] * 2

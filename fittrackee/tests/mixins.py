@@ -618,6 +618,8 @@ class WorkoutMixin:
         descent: Optional[int] = 12,
         max_alt: Optional[int] = 260,
         min_alt: Optional[int] = 236,
+        ave_pace_seconds: int = 781,
+        max_pace_seconds: int = 704,
     ) -> Workout:
         workout.map_id = map_id
         workout.map = random_string() if map_id is None else map_id
@@ -630,6 +632,8 @@ class WorkoutMixin:
         workout.descent = descent
         workout.max_alt = max_alt
         workout.min_alt = min_alt
+        workout.ave_pace = timedelta(seconds=ave_pace_seconds)
+        workout.best_pace = timedelta(seconds=max_pace_seconds)
         return workout
 
 

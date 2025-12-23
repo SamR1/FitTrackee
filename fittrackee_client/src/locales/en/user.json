@@ -87,6 +87,10 @@
     "BIRTH_DATE": "Birth date",
     "CREATED_REPORTS": "Created reports",
     "DATE_FORMAT": "Date display format",
+    "DISPLAYING_SPEED_IN_ADDITION_TO_PACE": {
+      "HELP": "Applies to workouts related to running, hiking, trail and walking.",
+      "LABEL": "Displaying speed in addition to pace"
+    },
     "EDIT": "Edit profile",
     "EDIT_ACCOUNT": "Edit account",
     "EDIT_MESSAGE_PREFERENCES": "Edit messages preferences",
@@ -122,11 +126,11 @@
     "LAST_NAME": "Last name",
     "LATEST_SANCTIONS_RECEIVED": "Latest sanctions received",
     "LOCATION": "Location",
-    "MESSAGES_PREFERENCES": "Messages preferences",
-    "MESSAGES_EDITION": "Message preferences edition",
     "MESSAGES": {
       "warning_about_large_number_of_workouts_on_map": "Display a warning about displaying a large number of workouts on map"
     },
+    "MESSAGES_EDITION": "Message preferences edition",
+    "MESSAGES_PREFERENCES": "Messages preferences",
     "MONDAY": "Monday",
     "NOTIFICATIONS": {
       "account_creation": "Someone registers",
@@ -198,8 +202,8 @@
       "BLOCKED-USERS": "blocked users",
       "EQUIPMENTS": "equipments",
       "FOLLOW-REQUESTS": "follow requests",
-      "MODERATION": "moderation",
       "MESSAGES": "messages",
+      "MODERATION": "moderation",
       "NOTIFICATIONS": "notifications",
       "PICTURE": "picture",
       "PREFERENCES": "preferences",

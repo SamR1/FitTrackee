@@ -1,4 +1,5 @@
 import type { IUnit, TFactor, TUnit } from '@/types/units'
+import { formatDuration } from '@/utils/duration.ts'
 
 export const units: Record<string, IUnit> = {
   ft: {
@@ -62,6 +63,45 @@ export const convertStatsDistance = (
 ): number => {
   const unitTo = useImperialUnits ? units[unitFrom].defaultTarget : unitFrom
   return useImperialUnits ? convertDistance(value, unitFrom, unitTo, 2) : value
+}
+
+export const getPaceFromTotalSeconds = (
+  paceInSeconds: number,
+  useImperialUnits: boolean
+): string => {
+  return formatDuration(
+    useImperialUnits ? paceInSeconds * 1.609344 : paceInSeconds,
+    {
+      notPadded: true,
+    }
+  )
+}
+export const getPace = (pace: string, useImperialUnits: boolean): string => {
+  const [hours, minutes, seconds] = pace.split(':')
+  const totalSeconds = +hours * 3600 + +minutes * 60 + +seconds
+  return getPaceFromTotalSeconds(totalSeconds, useImperialUnits)
+}
+export const convertPaceInMinutes = (
+  paceInSeconds: number | null, // pace in s/m
+  useImperialUnits: boolean
+): number => {
+  // extreme values (i.e. greater than 1 hour per km or mi) are not shown
+  const maxValue = useImperialUnits ? 2.2369368 : 3.6
+  const pace = paceInSeconds ?? maxValue
+  return +(
+    Math.min(pace, maxValue) *
+    1000 *
+    (useImperialUnits ? 1.609344 : 1)
+  ).toFixed(2)
+}
+export const convertPaceToMetric = (
+  pace: string // min/mi
+): string => {
+  const [minutes, seconds] = pace.split(':')
+  const totalSeconds = +minutes * 60 + +seconds
+  return formatDuration(totalSeconds / 1.609344, {
+    notPadded: true,
+  })
 }
 
 export const getTemperature = (

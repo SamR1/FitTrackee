@@ -216,6 +216,10 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             == user_1.split_workout_charts
         )
         assert serialized_user["messages_preferences"] == {}
+        assert (
+            serialized_user["display_speed_with_pace"]
+            == user_1.display_speed_with_pace
+        )
 
     def test_it_returns_empty_dict_when_notification_preferences_are_none(
         self, app: Flask, user_1: User
@@ -357,6 +361,8 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
         assert "segments_creation_event" not in serialized_user
         assert "split_workout_charts" not in serialized_user
         assert "messages_preferences" not in serialized_user
+        assert "display_ascent" not in serialized_user
+        assert "display_speed_with_pace" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -447,6 +453,8 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
         assert "segments_creation_event" not in serialized_user
         assert "split_workout_charts" not in serialized_user
         assert "messages_preferences" not in serialized_user
+        assert "display_ascent" not in serialized_user
+        assert "display_speed_with_pace" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_moderator: User, user_2: User
@@ -530,6 +538,8 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert "segments_creation_event" not in serialized_user
         assert "split_workout_charts" not in serialized_user
         assert "messages_preferences" not in serialized_user
+        assert "display_ascent" not in serialized_user
+        assert "display_speed_with_pace" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1: User, user_2: User
@@ -618,7 +628,7 @@ class TestUserRecords(UserModelAssertMixin, WorkoutMixin):
         assert records[0]["workout_id"] == workout_cycling_user_1.short_id
         assert records[0]["workout_date"]
 
-    def test_it_returns_user_records_when_workout_has_elevation_data(
+    def test_it_does_not_return_pace_records_when_sport_is_cycling(
         self,
         app: Flask,
         user_1: User,
@@ -630,25 +640,59 @@ class TestUserRecords(UserModelAssertMixin, WorkoutMixin):
 
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
-        assert len(serialized_user["records"]) == 5
-        records = sorted(
-            serialized_user["records"], key=lambda r: r["record_type"]
-        )
-        assert records[2]["record_type"] == "HA"
+        assert set(
+            record["record_type"] for record in serialized_user["records"]
+        ) == {"AS", "FD", "HA", "LD", "MS"}
 
-    def test_it_does_not_return_HA_records_when_sport_is_outdoor_tennis(
+    def test_it_does_not_return_HA_and_pace_records_when_sport_is_outdoor_tennis(  # noqa
         self,
         app: Flask,
         user_1: User,
         user_2: User,
         workout_outdoor_tennis_user_1_with_elevation_data: Workout,
     ) -> None:
+        self.update_workout_with_file_data(
+            workout_outdoor_tennis_user_1_with_elevation_data
+        )
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
-        assert len(serialized_user["records"]) == 4
-        assert "HA" not in [
+        assert set(
             record["record_type"] for record in serialized_user["records"]
-        ]
+        ) == {"AS", "FD", "LD", "MS"}
+
+    def test_it_returns_pace_records_without_speed_record_when_sport_is_running(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,
+    ) -> None:
+        user_1.display_speed_with_pace = False
+        self.update_workout_with_file_data(workout_running_user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
+
+        assert set(
+            record["record_type"] for record in serialized_user["records"]
+        ) == {"AP", "BP", "FD", "HA", "LD"}
+
+    def test_it_returns_pace_records_with_speed_record_when_preference_allows_it(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,
+    ) -> None:
+        user_1.display_speed_with_pace = True
+        self.update_workout_with_file_data(workout_running_user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
+
+        assert set(
+            record["record_type"] for record in serialized_user["records"]
+        ) == {"AP", "AS", "BP", "FD", "HA", "LD", "MS"}
 
     def test_it_returns_totals_when_workout_has_pauses(
         self,

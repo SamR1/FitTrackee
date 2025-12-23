@@ -18,7 +18,6 @@
   "FOLLOW": "Folgen",
   "HIDE": "Verstecken",
   "LOGIN": "Anmelden",
-  "NO": "Nein",
   "READ_MORE": "Mehr lesen",
   "REFRESH": "Aktualisieren",
   "REFRESH_TOTALS": "Gesamtbeträge aktualisieren",
@@ -30,6 +29,5 @@
   "SEE_DETAIL": "Details anzeigen",
   "SUBMIT": "Speichern",
   "UNBLOCK": "Blockierung aufheben",
-  "UNFOLLOW": "Entfolgen",
-  "YES": "Ja"
+  "UNFOLLOW": "Entfolgen"
 }

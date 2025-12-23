@@ -49,6 +49,17 @@
           />
           {{ $t('workouts.SPEED') }}
         </label>
+        <label v-if="fullStats && statsType === 'average'">
+          <input
+            type="radio"
+            name="value_type"
+            value="average_pace"
+            :checked="displayedData === 'average_pace'"
+            :disabled="isDisabled"
+            @click="updateDisplayData"
+          />
+          {{ $t('workouts.PACE') }}
+        </label>
         <label v-if="fullStats">
           <input
             type="radio"
