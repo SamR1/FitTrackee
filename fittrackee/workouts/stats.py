@@ -446,7 +446,7 @@ def get_workouts_by_sport(
               "average_distance": 15.282,
               "average_duration": 7641,
               "average_pace": "0:13:24",
-              "average_speed": None,
+              "average_speed": null,
               "total_workouts": 2,
               "total_ascent": 203.0,
               "total_ascent": 156.0,

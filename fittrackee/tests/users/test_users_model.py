@@ -692,7 +692,7 @@ class TestUserRecords(UserModelAssertMixin, WorkoutMixin):
 
         assert set(
             record["record_type"] for record in serialized_user["records"]
-        ) == {"AP", "AS", "FD", "HA", "LD", "BP", "MS"}
+        ) == {"AP", "AS", "BP", "FD", "HA", "LD", "MS"}
 
     def test_it_returns_totals_when_workout_has_pauses(
         self,

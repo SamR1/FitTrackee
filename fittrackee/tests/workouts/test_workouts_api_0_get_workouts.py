@@ -2745,7 +2745,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
         sport_4_paragliding: Sport,
         sport_5_outdoor_tennis: Sport,
         seven_workouts_user_1: List[Workout],  # without pace
-        workout_running_user_1: Workout,  # with pace. Speeed depends on preferences # noqa
+        workout_running_user_1: Workout,  # with pace. Speed depends on preferences # noqa
         workout_outdoor_tennis_user_1: Workout,  # without pace and elevation
         workout_paragliding_user_1: Workout,  # without pace
         input_display_speed_with_pace: bool,

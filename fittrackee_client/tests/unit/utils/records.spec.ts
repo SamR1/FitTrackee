@@ -406,7 +406,7 @@ describe('formatRecord (invalid record type)', () => {
         'yyyy/dd/MM'
       )
     ).to.throw(
-      'Invalid record type, expected: "AP", "AS", "FD", "HA", "LD", "BP", "MS", got: "M"'
+      'Invalid record type, expected: "AP", "AS", "BP", "FD", "HA", "LD", "MS", got: "M"'
     )
   })
 })

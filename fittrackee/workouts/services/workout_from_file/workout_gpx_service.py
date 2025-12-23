@@ -310,6 +310,9 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             pace = convert_speed_into_pace_in_sec_per_meter(speed)
 
             time_difference = point.time_difference(first_point)
+
+            # All values are calculated and stored regardless the sport.
+            # Serializers filter and return data based on the sport.
             segment_point: Dict = {
                 "distance": distance,
                 "duration": int(time_difference) if time_difference else 0,
@@ -324,7 +327,6 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                     else None
                 ),
             }
-
             if point.extensions:
                 extensions = []
                 for extension in point.extensions:

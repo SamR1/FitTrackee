@@ -45,7 +45,7 @@ export interface ICardRecord {
   label: string
 }
 
-export type TRecordType = 'AP' | 'AS' | 'FD' | 'HA' | 'LD' | 'BP' | 'MS'
+export type TRecordType = 'AP' | 'AS' | 'BP' | 'FD' | 'HA' | 'LD' | 'MS'
 
 export interface IRecord {
   id: number

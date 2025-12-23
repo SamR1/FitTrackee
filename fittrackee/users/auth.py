@@ -1033,8 +1033,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json string date_format: the format used to display dates in the app
     :<json boolean display_ascent: display highest ascent records and total
     :<json boolean display_speed_with_pace: display speed with pace in workout
-                   detail and records (for following sports: Hiking, Running,
-                   Trail and Walking)
+                   detail, sport statistics and records (for following sports:
+                   Hiking, Running, Trail and Walking)
     :<json boolean hide_profile_in_users_directory: if ``true``, user does not
                   appear in users directory
     :<json boolean hr_visibility: heart rate visibility

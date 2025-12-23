@@ -67,6 +67,15 @@ def get_records(auth_user: User) -> Dict:
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },
             {
+              "id": 15,
+              "record_type": "BP",
+              "sport_id": 5,
+              "user": "admin",
+              "value": "0:05:58",
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
               "id": 10,
               "record_type": "FD",
               "sport_id": 5,
@@ -90,15 +99,6 @@ def get_records(auth_user: User) -> Dict:
               "sport_id": 5,
               "user": "admin",
               "value": "0:20:24",
-              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
-              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
-            },
-            {
-              "id": 15,
-              "record_type": "BP",
-              "sport_id": 5,
-              "user": "admin",
-              "value": "0:05:58",
               "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },
