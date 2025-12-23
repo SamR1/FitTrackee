@@ -65,9 +65,7 @@
           <div
             :id="`chart-legend-${data.id}`"
             class="chart-legend"
-            :class="{
-              loading,
-            }"
+            :class="{ loading }"
           />
           <div
             class="line-chart"
@@ -113,7 +111,7 @@
             </label>
           </div>
         </div>
-        <div class="chart-info" v-if="hasPace && !splitCharts">
+        <div class="chart-info" v-if="!splitCharts && paceDisplayed">
           <div class="data-info">
             {{ $t('workouts.EXTREME_VALUES_FOR_PACE_ARE_NOT_DISPLAYED') }}
             <template v-if="!onlyPaceDisplayed">
@@ -189,6 +187,7 @@
   const displaySpeedWithPacePreferences: Ref<boolean> = ref(
     authUser.value.username ? authUser.value.display_speed_with_pace : false
   )
+  const paceDisplayed = ref(false)
   const onlyPaceDisplayed = ref(false)
   const displaySpeed = ref(false)
 
@@ -386,11 +385,15 @@
             // @ts-expect-error  @typescript-eslint/ban-ts-comment
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             display: (context: any): boolean => {
-              const displayedDatasets = getDisplayedDatasets(context, 'yLeft')
+              const displayedDatasetIds = getDisplayedDatasets(
+                context,
+                'yLeft'
+              ).map(({ id }) => id)
+              paceDisplayed.value = displayedDatasetIds.includes('pace')
               onlyPaceDisplayed.value =
-                displayedDatasets.length === 1 &&
-                displayedDatasets[0].id === 'pace'
-              return displayedDatasets.length === 1
+                displayedDatasetIds.length === 1 &&
+                displayedDatasetIds[0] === 'pace'
+              return displayedDatasetIds.length === 1
             },
             callback: function (value) {
               return id === 'pace' || onlyPaceDisplayed.value
