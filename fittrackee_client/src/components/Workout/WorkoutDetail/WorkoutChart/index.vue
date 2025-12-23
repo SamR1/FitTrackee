@@ -17,7 +17,10 @@
                 @click="splitCharts = !splitCharts"
               />
             </div>
-            <div class="display-speed" v-if="hasPace && displaySpeedWithPace">
+            <div
+              class="display-speed"
+              v-if="hasPace && displaySpeedWithPacePreferences"
+            >
               <label for="display-speed">
                 {{ $t('workouts.SPEED_INSTEAD_OF_PACE') }}:
               </label>
@@ -58,9 +61,9 @@
           class="chart-loader"
           :class="{ multiple: multipleCharts }"
         />
-        <div v-for="(data, index) in chartData" :key="data.label">
+        <div v-for="(data, index) in chartData" :key="data.id">
           <div
-            :id="`chart-legend-${data.label}`"
+            :id="`chart-legend-${data.id}`"
             class="chart-legend"
             :class="{
               loading,
@@ -72,10 +75,10 @@
               loading,
               multiple: multipleCharts,
             }"
-            :ref="`line-chart-${data.label}`"
+            :ref="`line-chart-${data.id}`"
           >
             <Line
-              :id="`line-chart-${data.label}`"
+              :id="`line-chart-${data.id}`"
               :ref="
                 (element) => {
                   displayedCharts[index] = element as HTMLElement
@@ -88,7 +91,7 @@
               :aria-label="$t('workouts.WORKOUT_CHART')"
             />
           </div>
-          <div class="chart-info" v-if="data.label === 'pace' && splitCharts">
+          <div class="chart-info" v-if="data.id === 'pace' && splitCharts">
             <div class="data-info">
               {{ $t('workouts.EXTREME_VALUES_FOR_PACE_ARE_NOT_DISPLAYED') }}
             </div>
@@ -173,17 +176,17 @@
   const fromKmUnit = getUnitTo('km')
   const fromMUnit = getUnitTo('m')
 
+  const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
+  const loading: Ref<boolean> = ref(false)
   const displayDistance: Ref<boolean> = ref(true)
   const beginElevationAtZero: Ref<boolean> = ref(
     authUser.value.username ? authUser.value.start_elevation_at_zero : false
   )
-  const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
-  const loading: Ref<boolean> = ref(false)
   const displayedCharts: Ref<HTMLElement[]> = ref([])
   const splitCharts: Ref<boolean> = ref(
     authUser.value.username ? authUser.value.split_workout_charts : false
   )
-  const displaySpeedWithPace: Ref<boolean> = ref(
+  const displaySpeedWithPacePreferences: Ref<boolean> = ref(
     authUser.value.username ? authUser.value.display_speed_with_pace : false
   )
   const onlyPaceDisplayed = ref(false)
@@ -197,17 +200,8 @@
     y: 0,
   })
 
-  const hasElevation: ComputedRef<boolean> = computed(
-    () => datasets.value && datasets.value.datasets.elevation?.data.length > 0
-  )
-  const hasPace: ComputedRef<boolean> = computed(
-    () => datasets.value && datasets.value.datasets.pace?.data.length > 0
-  )
   const chartLoading: ComputedRef<boolean> = computed(
     () => workoutData.value.chartDataLoading
-  )
-  const coordinates: ComputedRef<TCoordinates[]> = computed(
-    () => datasets.value.coordinates
   )
   const lineColors: ComputedRef<{ color: string }> = computed(() => ({
     color: darkTheme.value
@@ -219,6 +213,7 @@
       ? chartsColors.darkMode.text
       : chartsColors.lightMode.text,
   }))
+
   const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
     getDatasets(
       workoutData.value.chartData,
@@ -227,6 +222,15 @@
       darkTheme.value,
       splitCharts.value
     )
+  )
+  const coordinates: ComputedRef<TCoordinates[]> = computed(
+    () => datasets.value.coordinates
+  )
+  const hasElevation: ComputedRef<boolean> = computed(
+    () => datasets.value && datasets.value.datasets.elevation?.data.length > 0
+  )
+  const hasPace: ComputedRef<boolean> = computed(
+    () => datasets.value && datasets.value.datasets.pace?.data.length > 0
   )
   const displayedDatasets = computed(() => {
     const displayedDatasets = [
@@ -253,6 +257,7 @@
   )
   const chartData: ComputedRef<
     {
+      id: string
       label: string
       chartData: ChartData<'line'>
       config: ChartOptions<'line'>
@@ -261,6 +266,7 @@
     if (splitCharts.value) {
       return displayedDatasets.value.map((displayedDataset) => {
         return {
+          id: displayedDataset.id as string,
           label: displayedDataset.label,
           chartData: {
             labels: displayDistance.value
@@ -269,7 +275,7 @@
             datasets: JSON.parse(JSON.stringify([displayedDataset])),
           },
           config: getChartOptions(
-            displayedDataset.label,
+            displayedDataset.id as string,
             beginElevationAtZero.value
           ),
         }
@@ -277,6 +283,7 @@
     }
     return [
       {
+        id: 'all',
         label: 'all',
         chartData: {
           labels: displayDistance.value
@@ -290,7 +297,7 @@
   })
 
   function getChartOptions(
-    label: string,
+    id: string,
     elevationStartAtZero: boolean
   ): ChartOptions<'line'> {
     return {
@@ -335,7 +342,7 @@
           },
         },
         yLeft: {
-          beginAtZero: label === 'elevation' ? elevationStartAtZero : false,
+          beginAtZero: id === 'elevation' ? elevationStartAtZero : false,
           // @ts-expect-error  @typescript-eslint/ban-ts-comment
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           max: (context: any): number | undefined => {
@@ -386,7 +393,7 @@
               return displayedDatasets.length === 1
             },
             callback: function (value) {
-              return label === 'pace' || onlyPaceDisplayed.value
+              return id === 'pace' || onlyPaceDisplayed.value
                 ? formatDuration(+value, {
                     notPadded: true,
                   })
@@ -469,7 +476,7 @@
           display: false,
         },
         htmlLegend: {
-          containerID: `chart-legend-${label}`,
+          containerID: `chart-legend-${id}`,
           displayElevation: hasElevation.value,
         },
       },
