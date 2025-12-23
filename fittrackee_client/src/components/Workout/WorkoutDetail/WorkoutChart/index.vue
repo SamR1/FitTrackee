@@ -724,10 +724,11 @@
           gap: $default-margin;
           margin-bottom: $default-margin * 0.5;
           font-weight: bold;
-        }
-        .chart-options {
-          display: flex;
-          gap: $default-margin;
+
+          .chart-options {
+            display: flex;
+            gap: $default-margin;
+          }
         }
         .line-chart {
           height: 400px;
@@ -784,20 +785,17 @@
 
       @media screen and (max-width: $x-small-limit) {
         .chart-display {
-          flex-direction: column;
-          gap: 0 !important;
-        }
-        .chart-options {
-          gap: 0;
-          .split-charts,
-          .display-speed {
-            margin: 0;
-            padding: 0;
+          .chart-options {
+            flex-direction: column;
+            gap: 0 !important;
+            margin-bottom: $default-margin;
+            .split-charts,
+            .display-speed {
+              margin: 0;
+              padding: 0;
+            }
           }
         }
-      }
-      @media screen and (max-width: $xx-small-limit) {
-        background: red;
       }
     }
   }
