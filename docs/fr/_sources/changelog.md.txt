@@ -1,5 +1,69 @@
 # Change log
 
+## Version 1.0.4 (2025/12/14)
+
+Among changes, this version introduces some changes regarding environment variables:
+- [`APP_LOG`](https://docs.fittrackee.org/en/installation.html#envvar-APP_LOG) can now be emptied to display only logs on the console,
+- [`API_RATE_LIMITS`](https://docs.fittrackee.org/en/installation.html#envvar-API_RATE_LIMITS) has now longer a default value. It is now possible to disable only API rate limits when Redis is available,
+- [`LOG_LEVEL`](https://docs.fittrackee.org/en/installation.html#envvar-LOG_LEVEL) has been added to set **Gunicorn** log level.
+
+For more information on installation see [documentation](https://docs.fittrackee.org/en/installation.html).
+
+**Reminder**:
+- For now, releases do not follow [semantic versioning](https://semver.org). Any version may contain backward-incompatible changes.
+
+**Warning**:
+- The version 1.1.0 will require all workouts to be updated, see [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.x.html#workouts-data-update).
+
+### Features and enhancements
+
+* [PR#994](https://github.com/SamR1/FitTrackee/pull/994) - log_level can be set to gunicorn
+* [PR#996](https://github.com/SamR1/FitTrackee/pull/996) - update logging config to display log on the console
+
+### Bugs Fixed
+
+* [#954](https://github.com/SamR1/FitTrackee/issues/954) - it should be possible to disable only the API Rate Limit
+* [PR#985](https://github.com/SamR1/FitTrackee/pull/985) - fix speeds calculation
+* [PR#992](https://github.com/SamR1/FitTrackee/pull/992) - fix application configuration initialization in database
+* [PR#998](https://github.com/SamR1/FitTrackee/pull/998) - fix elevation in the Workout chart tooltip
+
+### Translations
+
+* [PR#991](https://github.com/SamR1/FitTrackee/pull/991) - Translations update from Hosted Weblate (German)
+* [PR#993](https://github.com/SamR1/FitTrackee/pull/993) - Translations update from Hosted Weblate (Russian)
+
+Translation status:
+- Basque: 100%
+- Bulgarian: 54%
+- Catalan: 26%
+- Chinese (Simplified): 98%
+- Croatian: 100%
+- Czech: 48%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 93%
+- Italian: 99%
+- Norwegian Bokmål: 45%
+- Polish: 95%
+- Portuguese: 53%
+- Russian: 97%
+- Spanish: 71%
+- Turkish: 1%
+
+### Misc
+
+* [PR#984](https://github.com/SamR1/FitTrackee/pull/984) - Add devcontainer support
+* [73ffa44](https://github.com/SamR1/FitTrackee/commit/73ffa44b18727f8afb00c7058da81ca8d08c4df7) - workflows refactoring on CI
+
+Thanks to the contributors:
+- @galshi
+- @hantangantan
+- @sikmir
+- @s0rau
+
+
 ## Version 1.0.3 (2025/11/05)
 
 **Warning**:

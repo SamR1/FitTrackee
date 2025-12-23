@@ -179,9 +179,18 @@ class TestWorkoutGpxServiceProcessFile(
         assert workout segment data from 'gpx_file' fixture
         """
         records = Record.query.order_by(Record.record_type.asc()).all()
-        assert len(records) == 5
+        assert len(records) == 7
         assert records[0].serialize() == {
             "id": 1,
+            "record_type": "AP",
+            "sport_id": workout.sport_id,
+            "user": workout.user.username,
+            "value": str(workout.ave_pace),
+            "workout_date": workout.workout_date,
+            "workout_id": workout.short_id,
+        }
+        assert records[1].serialize() == {
+            "id": 2,
             "record_type": "AS",
             "sport_id": workout.sport_id,
             "user": workout.user.username,
@@ -189,8 +198,17 @@ class TestWorkoutGpxServiceProcessFile(
             "workout_date": workout.workout_date,
             "workout_id": workout.short_id,
         }
-        assert records[1].serialize() == {
-            "id": 2,
+        assert records[2].serialize() == {
+            "id": 3,
+            "record_type": "BP",
+            "sport_id": workout.sport_id,
+            "user": workout.user.username,
+            "value": str(workout.best_pace),
+            "workout_date": workout.workout_date,
+            "workout_id": workout.short_id,
+        }
+        assert records[3].serialize() == {
+            "id": 4,
             "record_type": "FD",
             "sport_id": workout.sport_id,
             "user": workout.user.username,
@@ -198,8 +216,8 @@ class TestWorkoutGpxServiceProcessFile(
             "workout_date": workout.workout_date,
             "workout_id": workout.short_id,
         }
-        assert records[2].serialize() == {
-            "id": 3,
+        assert records[4].serialize() == {
+            "id": 5,
             "record_type": "HA",
             "sport_id": workout.sport_id,
             "user": workout.user.username,
@@ -207,8 +225,8 @@ class TestWorkoutGpxServiceProcessFile(
             "workout_date": workout.workout_date,
             "workout_id": workout.short_id,
         }
-        assert records[3].serialize() == {
-            "id": 4,
+        assert records[5].serialize() == {
+            "id": 6,
             "record_type": "LD",
             "sport_id": workout.sport_id,
             "user": workout.user.username,
@@ -216,8 +234,8 @@ class TestWorkoutGpxServiceProcessFile(
             "workout_date": workout.workout_date,
             "workout_id": workout.short_id,
         }
-        assert records[4].serialize() == {
-            "id": 5,
+        assert records[6].serialize() == {
+            "id": 7,
             "record_type": "MS",
             "sport_id": workout.sport_id,
             "user": workout.user.username,
@@ -257,6 +275,8 @@ class TestWorkoutGpxServiceProcessFile(
             MissingElevationsProcessing.NONE
         )
         assert workout.source is None
+        assert workout.ave_pace == timedelta(minutes=7, seconds=52)
+        assert workout.best_pace == timedelta(minutes=4, seconds=20)
         # workout segments
         workout_segments = WorkoutSegment.query.all()
         assert len(workout_segments) == 2
@@ -273,6 +293,10 @@ class TestWorkoutGpxServiceProcessFile(
         assert float(workout_segments[0].min_alt) == 994.0
         assert workout_segments[0].moving == timedelta(seconds=10)
         assert workout_segments[0].pauses == timedelta(seconds=0)
+        assert workout_segments[0].ave_pace == timedelta(minutes=9, seconds=30)
+        assert workout_segments[0].best_pace == timedelta(
+            minutes=6, seconds=22
+        )
         assert to_shape(workout_segments[0].geom) == LineString(
             segment_0_coordinates
         )
@@ -283,7 +307,8 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 998.0,
             "latitude": 44.68095,
             "longitude": 6.07367,
-            "speed": 3.21,
+            "pace": None,
+            "speed": 0.0,
             "time": "2018-03-13 12:44:50+00:00",
         }
         assert workout_segments[0].points[-1] == {
@@ -292,6 +317,7 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 994.0,
             "latitude": 44.6808,
             "longitude": 6.07364,
+            "pace": 0.3817603393,
             "speed": 9.43,
             "time": "2018-03-13 12:45:00+00:00",
         }
@@ -308,6 +334,10 @@ class TestWorkoutGpxServiceProcessFile(
         assert float(workout_segments[1].min_alt) == 979.0
         assert workout_segments[1].moving == timedelta(seconds=10)
         assert workout_segments[1].pauses == timedelta(seconds=0)
+        assert workout_segments[1].ave_pace == timedelta(minutes=6, seconds=43)
+        assert workout_segments[1].best_pace == timedelta(
+            minutes=4, seconds=20
+        )
         assert to_shape(workout_segments[1].geom) == LineString(
             segment_2_coordinates
         )
@@ -318,7 +348,8 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 980.0,
             "latitude": 44.67858,
             "longitude": 6.07425,
-            "speed": 13.83,
+            "pace": None,
+            "speed": 0.0,
             "time": "2018-03-13 12:47:10+00:00",
         }
         assert workout_segments[1].points[-1] == {
@@ -327,6 +358,7 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 979.0,
             "latitude": 44.67837,
             "longitude": 6.07435,
+            "pace": 0.8888888889,
             "speed": 4.05,
             "time": "2018-03-13 12:47:20+00:00",
         }
@@ -336,8 +368,10 @@ class TestWorkoutGpxServiceProcessFile(
             "ascent": 0.0,
             "ave_cadence": None,
             "ave_hr": None,
+            "ave_pace": None,
             "ave_power": None,
             "ave_speed": 8.94,
+            "best_pace": None,
             "descent": 1.0,
             "distance": 0.025,
             "duration": "0:00:10",
@@ -494,7 +528,8 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 998.0,
             "latitude": 44.68095,
             "longitude": 6.07367,
-            "speed": 3.21,
+            "pace": None,
+            "speed": 0.0,
             "time": "2018-03-13 12:44:45+00:00",
         }
         assert workout_segment.points[-1] == {
@@ -503,6 +538,7 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 975.0,
             "latitude": 44.67822,
             "longitude": 6.07442,
+            "pace": 0.831408776,
             "speed": 4.33,
             "time": "2018-03-13 12:48:55+00:00",
         }
@@ -547,7 +583,8 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 998.0,
             "latitude": 44.68095,
             "longitude": 6.07367,
-            "speed": 3.21,
+            "pace": None,
+            "speed": 0.0,
             "time": "2018-03-13 12:44:45+00:00",
         }
         assert workout_segment.points[-1] == {
@@ -556,6 +593,7 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 975.0,
             "latitude": 44.67822,
             "longitude": 6.07442,
+            "pace": 0.831408776,
             "speed": 4.33,
             "time": "2018-03-13 12:48:55+00:00",
         }
@@ -565,10 +603,10 @@ class TestWorkoutGpxServiceProcessFile(
         app: "Flask",
         sport_1_cycling: Sport,
         user_1_raw_speed: "User",
-        gpx_file: str,
+        gpx_file_with_3_segments: str,
     ) -> None:
         service = self.init_service_with_gpx(
-            user_1_raw_speed, sport_1_cycling, gpx_file
+            user_1_raw_speed, sport_1_cycling, gpx_file_with_3_segments
         )
 
         service.process_workout()
@@ -579,38 +617,82 @@ class TestWorkoutGpxServiceProcessFile(
         # workout
         workout = Workout.query.one()
         assert to_shape(workout.start_point_geom) == Point(
-            track_points_part_1_coordinates[0]
+            segment_0_coordinates[0]
         )
-        assert float(workout.ave_speed) == 4.61
-        assert float(workout.max_speed) == 5.25
-        # workout segment
-        workout_segment = WorkoutSegment.query.one()
-        assert float(workout_segment.ave_speed) == 4.61
-        assert float(workout_segment.max_speed) == 5.25
-        assert workout.source is None
-        workout_segment = workout.segments[0]
-        coordinates = (
-            track_points_part_1_coordinates + track_points_part_2_coordinates
-        )
-        assert to_shape(workout_segment.geom) == LineString(coordinates)
-        assert len(workout_segment.points) == len(coordinates)
-        assert workout_segment.points[0] == {
+        assert float(workout.ascent) == 0.0
+        assert float(workout.ave_speed) == 6.6
+        assert float(workout.descent) == 6.0
+        assert float(workout.distance) == 0.055
+        assert workout.duration == timedelta(minutes=2, seconds=30)
+        assert float(workout.max_alt) == 998.0
+        assert float(workout.max_speed) == 9.43
+        assert float(workout.min_alt) == 979.0
+        assert workout.moving == timedelta(seconds=30)
+        assert workout.pauses == timedelta(minutes=2)
+        # workout segments
+        workout_segments = WorkoutSegment.query.all()
+        assert len(workout_segments) == 3
+        # first workout segment
+        assert float(workout_segments[0].ascent) == 0.0
+        assert float(workout_segments[0].ave_speed) == 6.32
+        assert float(workout_segments[0].descent) == 4.0
+        assert float(workout_segments[0].distance) == 0.018
+        assert workout_segments[0].duration == timedelta(seconds=10)
+        assert float(workout_segments[0].max_alt) == 998.0
+        assert float(workout_segments[0].max_speed) == 9.43
+        assert float(workout_segments[0].min_alt) == 994.0
+        assert workout_segments[0].moving == timedelta(seconds=10)
+        assert workout_segments[0].pauses == timedelta(seconds=0)
+        assert workout_segments[0].points[0] == {
             "distance": 0.0,
             "duration": 0,
             "elevation": 998.0,
             "latitude": 44.68095,
             "longitude": 6.07367,
-            "speed": 3.21,
-            "time": "2018-03-13 12:44:45+00:00",
+            "pace": None,
+            "speed": 0.0,
+            "time": "2018-03-13 12:44:50+00:00",
         }
-        assert workout_segment.points[-1] == {
-            "distance": 320.12787035769946,
-            "duration": 250,
-            "elevation": 975.0,
-            "latitude": 44.67822,
-            "longitude": 6.07442,
-            "speed": 4.33,
-            "time": "2018-03-13 12:48:55+00:00",
+        assert workout_segments[0].points[-1] == {
+            "distance": 17.551714568218248,
+            "duration": 10,
+            "elevation": 994.0,
+            "latitude": 44.6808,
+            "longitude": 6.07364,
+            "pace": 0.3817603393,
+            "speed": 9.43,
+            "time": "2018-03-13 12:45:00+00:00",
+        }
+        # third workout segment
+        assert float(workout_segments[2].ascent) == 0.0
+        assert float(workout_segments[2].ave_speed) == 8.94
+        assert float(workout_segments[2].descent) == 1.0
+        assert float(workout_segments[2].distance) == 0.025
+        assert workout_segments[2].duration == timedelta(seconds=10)
+        assert float(workout_segments[2].max_alt) == 980.0
+        assert float(workout_segments[2].max_speed) == 8.94
+        assert float(workout_segments[2].min_alt) == 979.0
+        assert workout_segments[2].moving == timedelta(seconds=10)
+        assert workout_segments[2].pauses == timedelta(seconds=0)
+        assert workout_segments[2].points[0] == {
+            "distance": 0.0,
+            "duration": 140,
+            "elevation": 980.0,
+            "latitude": 44.67858,
+            "longitude": 6.07425,
+            "pace": None,
+            "speed": 0.0,
+            "time": "2018-03-13 12:47:10+00:00",
+        }
+        assert workout_segments[2].points[-1] == {
+            "distance": 24.83101225255615,
+            "duration": 150,
+            "elevation": 979.0,
+            "latitude": 44.67837,
+            "longitude": 6.07435,
+            "pace": 0.8888888889,
+            "speed": 4.05,
+            "time": "2018-03-13 12:47:20+00:00",
         }
 
     def test_it_does_not_call_open_elevation_service_when_file_has_no_missing_elevations(  # noqa
@@ -762,7 +844,8 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": None,
             "latitude": 44.68095,
             "longitude": 6.07367,
-            "speed": 3.21,
+            "pace": None,
+            "speed": 0.0,
             "time": "2018-03-13 12:44:45+00:00",
         }
         assert workout_segment.points[-1] == {
@@ -771,6 +854,7 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": None,
             "latitude": 44.67822,
             "longitude": 6.07442,
+            "pace": 0.8530805687,
             "speed": 4.22,
             "time": "2018-03-13 12:48:55+00:00",
         }
@@ -817,7 +901,8 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 998.0,
             "latitude": 44.68095,
             "longitude": 6.07367,
-            "speed": 3.21,
+            "pace": None,
+            "speed": 0.0,
             "time": "2018-03-13 12:44:45+00:00",
         }
         assert workout_segment.points[-1] == {
@@ -826,7 +911,8 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 975.0,
             "latitude": 44.67822,
             "longitude": 6.07442,
-            "speed": 4.33,
+            "pace": 0.8530805687,
+            "speed": 4.22,
             "time": "2018-03-13 12:48:55+00:00",
         }
 
@@ -891,7 +977,8 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": None,
             "latitude": 44.68095,
             "longitude": 6.07367,
-            "speed": 3.21,
+            "pace": None,
+            "speed": 0.0,
             "time": "2018-03-13 12:44:45+00:00",
         }
         assert workout_segment.points[-1] == {
@@ -900,6 +987,7 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": None,
             "latitude": 44.67822,
             "longitude": 6.07442,
+            "pace": 0.8530805687,
             "speed": 4.22,
             "time": "2018-03-13 12:48:55+00:00",
         }
@@ -1008,7 +1096,8 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 998.0,
             "latitude": 44.68095,
             "longitude": 6.07367,
-            "speed": 3.21,
+            "pace": None,
+            "speed": 0.0,
             "time": "2018-03-13 12:44:50+00:00",
         }
         assert workout_segments[0].points[-1] == {
@@ -1017,6 +1106,7 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 994.0,
             "latitude": 44.6808,
             "longitude": 6.07364,
+            "pace": 0.3817603393,
             "speed": 9.43,
             "time": "2018-03-13 12:45:00+00:00",
         }
@@ -1050,7 +1140,8 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 987.0,
             "latitude": 44.67972,
             "longitude": 6.07367,
-            "speed": 4.84,
+            "pace": None,
+            "speed": 0.0,
             "time": "2018-03-13 12:46:00+00:00",
         }
         assert workout_segments[1].points[-1] == {
@@ -1060,6 +1151,7 @@ class TestWorkoutGpxServiceProcessFile(
             "latitude": 44.67961,
             "longitude": 6.0737,
             "speed": 4.23,
+            "pace": 0.8510638298,
             "time": "2018-03-13 12:46:10+00:00",
         }
         # third workout segment
@@ -1092,7 +1184,8 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 980.0,
             "latitude": 44.67858,
             "longitude": 6.07425,
-            "speed": 13.83,
+            "pace": None,
+            "speed": 0.0,
             "time": "2018-03-13 12:47:10+00:00",
         }
         assert workout_segments[2].points[-1] == {
@@ -1101,6 +1194,7 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 979.0,
             "latitude": 44.67837,
             "longitude": 6.07435,
+            "pace": 0.8888888889,
             "speed": 4.05,
             "time": "2018-03-13 12:47:20+00:00",
         }
@@ -1239,8 +1333,9 @@ class TestWorkoutGpxServiceProcessFile(
             "heart_rate": 92,
             "latitude": 44.68095,
             "longitude": 6.07367,
+            "pace": None,
             "power": 0,
-            "speed": 3.21,
+            "speed": 0.0,
             "time": "2018-03-13 12:44:45+00:00",
         }
 
@@ -1279,8 +1374,9 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 998.0,
             "latitude": 44.68095,
             "longitude": 6.07367,
+            "pace": None,
             "power": 0,
-            "speed": 3.21,
+            "speed": 0.0,
             "time": "2018-03-13 12:44:45+00:00",
         }
 
@@ -1322,8 +1418,9 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 998.0,
             "latitude": 44.68095,
             "longitude": 6.07367,
+            "pace": None,
             "power": 0,
-            "speed": 3.21,
+            "speed": 0.0,
             "time": "2018-03-13 12:44:45+00:00",
         }
 
@@ -1362,8 +1459,9 @@ class TestWorkoutGpxServiceProcessFile(
             "elevation": 998.0,
             "latitude": 44.68095,
             "longitude": 6.07367,
+            "pace": None,
             "power": 0,
-            "speed": 3.21,
+            "speed": 0.0,
             "time": "2018-03-13 12:44:45+00:00",
         }
 

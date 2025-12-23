@@ -14,6 +14,7 @@
   "HIDDEN": "Skjult",
   "HOME": "Hjem",
   "NEXT": "neste",
+  "NO": "Nei",
   "NO_NOTES": "Ingen notater",
   "PREVIOUS": "forrige",
   "SELECTS": {
@@ -24,5 +25,6 @@
     "ORDER_BY": {
       "LABEL": "sorter etter"
     }
-  }
+  },
+  "YES": "Ja"
 }

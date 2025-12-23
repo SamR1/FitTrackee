@@ -5,11 +5,13 @@
   "CONFIRMATION": "Подтверждение",
   "CONTACT": "контакт",
   "CREATION_DATE": "Дата создания",
+  "DATA_IS_LOADING": "загрузка данных…",
   "DAY": "день | дней",
   "DESCRIPTION": "Описание",
   "DISABLED": "отключено",
   "DISPLAYED": "Показано",
   "DOCUMENTATION": "документация",
+  "DO_NOT_SHOW_THIS_MESSAGE_AGAIN": "Не показывать это сообщение снова",
   "EDITED": "отредактировано",
   "ENABLED": "включено",
   "FILES": "Файлы",
@@ -24,6 +26,7 @@
   "LAST_UPDATED_ON": "Последнее обновление",
   "MINUTES": "минута|минут",
   "NEXT": "далее",
+  "NO": "Нет",
   "NO_DESCRIPTION": "Описание отсутствует",
   "NO_NOTES": "Заметок нет",
   "PREVIOUS": "назад",
@@ -48,5 +51,6 @@
   },
   "TOTAL": "Всего",
   "TOTAL_DURATION_WITH_PAUSES": "общая продолжительность с паузами",
-  "TYPE": "тип"
+  "TYPE": "тип",
+  "YES": "Да"
 }

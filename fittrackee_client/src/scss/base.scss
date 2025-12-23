@@ -245,10 +245,22 @@ button {
 }
 
 .mountains,
-.cadence {
-  margin-bottom: -3px;
+.cadence,
+.chronometer {
   height: 16px;
   filter: var(--icon-svg-filter);
+}
+.mountains,
+.cadence {
+  margin-bottom: -3px;
+}
+.cadence,
+.chronometer {
+  margin-left: -2px;
+}
+.chronometer {
+  margin-bottom: -1px;
+  margin-right: 2px;
 }
 
 .section-title {
@@ -493,7 +505,7 @@ button {
     }
 
     .filters-container {
-      width: 25%;
+      width: 20%;
       @media screen and (max-width: $medium-limit) {
         width: 100%;
 
@@ -527,7 +539,7 @@ button {
     }
 
     .list-container {
-      width: 75%;
+      width: 80%;
       @media screen and (max-width: $medium-limit) {
         width: 100%;
       }

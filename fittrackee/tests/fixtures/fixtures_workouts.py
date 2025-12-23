@@ -20,6 +20,7 @@ from fittrackee.workouts.models import (
 from fittrackee.workouts.services.workout_from_file.base_workout_with_segment_service import (
     StaticMap,
 )
+from fittrackee.workouts.utils.convert import convert_speed_into_pace_duration
 
 from ..utils import random_string
 
@@ -113,6 +114,8 @@ def update_workout(target: Union[Workout, WorkoutSegment]) -> None:
     target.ave_speed = float(distance) / (target.duration.seconds / 3600)
     target.max_speed = target.ave_speed
     target.moving = target.duration
+    target.ave_pace = convert_speed_into_pace_duration(target.ave_speed)
+    target.best_pace = convert_speed_into_pace_duration(target.max_speed)
 
 
 @pytest.fixture()
@@ -211,8 +214,9 @@ def workout_cycling_user_1_segment_0_with_coordinates(
             "heart_rate": 92,
             "latitude": 44.68095,
             "longitude": 6.07367,
+            "pace": None,
             "power": 0,
-            "speed": 3.21,
+            "speed": 0,
             "time": "2018-03-13 12:44:45+00:00",
         },
         {
@@ -223,6 +227,7 @@ def workout_cycling_user_1_segment_0_with_coordinates(
             "heart_rate": 87,
             "latitude": 44.68091,
             "longitude": 6.07367,
+            "pace": 909,
             "power": 305,
             "speed": 3.96,
             "time": "2018-03-13 12:44:50+00:00",
@@ -235,6 +240,7 @@ def workout_cycling_user_1_segment_0_with_coordinates(
             "heart_rate": 88,
             "latitude": 44.6808,
             "longitude": 6.07364,
+            "pace": 826,
             "power": 326,
             "speed": 4.36,
             "time": "2018-03-13 12:45:00+00:00",
@@ -247,6 +253,7 @@ def workout_cycling_user_1_segment_0_with_coordinates(
             "heart_rate": 90,
             "latitude": 44.68075,
             "longitude": 6.07364,
+            "pace": 997,
             "power": 287,
             "speed": 3.61,
             "time": "2018-03-13 12:45:05+00:00",
@@ -259,6 +266,7 @@ def workout_cycling_user_1_segment_0_with_coordinates(
             "heart_rate": 87,
             "latitude": 44.68071,
             "longitude": 6.07364,
+            "pace": 942,
             "power": 251,
             "speed": 3.82,
             "time": "2018-03-13 12:45:10+00:00",
@@ -271,6 +279,7 @@ def workout_cycling_user_1_segment_0_with_coordinates(
             "heart_rate": 85,
             "latitude": 44.68049,
             "longitude": 6.07361,
+            "pace": 776,
             "power": 248,
             "speed": 4.64,
             "time": "2018-03-13 12:45:30+00:00",
@@ -283,6 +292,7 @@ def workout_cycling_user_1_segment_0_with_coordinates(
             "heart_rate": 86,
             "latitude": 44.68019,
             "longitude": 6.07356,
+            "pace": 809,
             "power": 246,
             "speed": 4.45,
             "time": "2018-03-13 12:45:55+00:00",
@@ -295,6 +305,7 @@ def workout_cycling_user_1_segment_0_with_coordinates(
             "heart_rate": 84,
             "latitude": 44.68014,
             "longitude": 6.07355,
+            "pace": 774,
             "power": 216,
             "speed": 4.65,
             "time": "2018-03-13 12:46:00+00:00",
@@ -307,6 +318,7 @@ def workout_cycling_user_1_segment_0_with_coordinates(
             "heart_rate": 86,
             "latitude": 44.67995,
             "longitude": 6.07358,
+            "pace": 686,
             "power": 243,
             "speed": 5.25,
             "time": "2018-03-13 12:46:15+00:00",
@@ -327,7 +339,7 @@ def workout_cycling_user_1_segment_0_chart_data() -> List[Dict]:
             "latitude": 44.68095,
             "longitude": 6.07367,
             "power": 0,
-            "speed": 3.21,
+            "speed": 0,
             "time": "2018-03-13 12:44:45+00:00",
         },
         {
@@ -431,7 +443,7 @@ def workout_cycling_user_1_segment_0_chart_data_wo_hr() -> List[Dict]:
             "latitude": 44.68095,
             "longitude": 6.07367,
             "power": 0,
-            "speed": 3.21,
+            "speed": 0,
             "time": "2018-03-13 12:44:45+00:00",
         },
         {
@@ -573,8 +585,9 @@ def workout_cycling_user_1_segment_1_with_coordinates(
             "heart_rate": 88,
             "latitude": 44.67977,
             "longitude": 6.07364,
+            "pace": None,
             "power": 267,
-            "speed": 4.36,
+            "speed": 0,
             "time": "2018-03-13 12:46:30+00:00",
         },
         {
@@ -585,6 +598,7 @@ def workout_cycling_user_1_segment_1_with_coordinates(
             "heart_rate": 86,
             "latitude": 44.67972,
             "longitude": 6.07367,
+            "pace": 783,
             "power": 278,
             "speed": 4.6,
             "time": "2018-03-13 12:46:35+00:00",
@@ -597,6 +611,7 @@ def workout_cycling_user_1_segment_1_with_coordinates(
             "heart_rate": 83,
             "latitude": 44.67966,
             "longitude": 6.07368,
+            "pace": 793,
             "power": 290,
             "speed": 4.54,
             "time": "2018-03-13 12:46:40+00:00",
@@ -609,6 +624,7 @@ def workout_cycling_user_1_segment_1_with_coordinates(
             "heart_rate": 83,
             "latitude": 44.67961,
             "longitude": 6.0737,
+            "pace": 805,
             "power": 228,
             "speed": 4.47,
             "time": "2018-03-13 12:46:45+00:00",
@@ -621,6 +637,7 @@ def workout_cycling_user_1_segment_1_with_coordinates(
             "heart_rate": 85,
             "latitude": 44.67938,
             "longitude": 6.07377,
+            "pace": 773,
             "power": 280,
             "speed": 4.66,
             "time": "2018-03-13 12:47:05+00:00",
@@ -633,6 +650,7 @@ def workout_cycling_user_1_segment_1_with_coordinates(
             "heart_rate": 86,
             "latitude": 44.67933,
             "longitude": 6.07381,
+            "pace": 784,
             "power": 269,
             "speed": 4.59,
             "time": "2018-03-13 12:47:10+00:00",
@@ -645,6 +663,7 @@ def workout_cycling_user_1_segment_1_with_coordinates(
             "heart_rate": 85,
             "latitude": 44.67922,
             "longitude": 6.07385,
+            "pace": 755,
             "power": 280,
             "speed": 4.77,
             "time": "2018-03-13 12:47:20+00:00",
@@ -657,6 +676,7 @@ def workout_cycling_user_1_segment_1_with_coordinates(
             "heart_rate": 84,
             "latitude": 44.67911,
             "longitude": 6.0739,
+            "pace": 714,
             "power": 256,
             "speed": 5.04,
             "time": "2018-03-13 12:47:30+00:00",
@@ -669,6 +689,7 @@ def workout_cycling_user_1_segment_1_with_coordinates(
             "heart_rate": 86,
             "latitude": 44.679,
             "longitude": 6.07399,
+            "pace": 824,
             "power": 234,
             "speed": 4.37,
             "time": "2018-03-13 12:47:40+00:00",
@@ -681,6 +702,7 @@ def workout_cycling_user_1_segment_1_with_coordinates(
             "heart_rate": 83,
             "latitude": 44.67896,
             "longitude": 6.07402,
+            "pace": 824,
             "power": 241,
             "speed": 4.37,
             "time": "2018-03-13 12:47:45+00:00",
@@ -693,6 +715,7 @@ def workout_cycling_user_1_segment_1_with_coordinates(
             "heart_rate": 83,
             "latitude": 44.67884,
             "longitude": 6.07408,
+            "pace": 732,
             "power": 264,
             "speed": 4.92,
             "time": "2018-03-13 12:47:55+00:00",
@@ -705,6 +728,7 @@ def workout_cycling_user_1_segment_1_with_coordinates(
             "heart_rate": 82,
             "latitude": 44.67863,
             "longitude": 6.07423,
+            "pace": 804,
             "power": 256,
             "speed": 4.48,
             "time": "2018-03-13 12:48:15+00:00",
@@ -717,6 +741,7 @@ def workout_cycling_user_1_segment_1_with_coordinates(
             "heart_rate": 85,
             "latitude": 44.67858,
             "longitude": 6.07425,
+            "pace": 814,
             "power": 267,
             "speed": 4.42,
             "time": "2018-03-13 12:48:20+00:00",
@@ -729,6 +754,7 @@ def workout_cycling_user_1_segment_1_with_coordinates(
             "heart_rate": 84,
             "latitude": 44.67842,
             "longitude": 6.07434,
+            "pace": "00:13:51",
             "power": 234,
             "speed": 4.33,
             "time": "2018-03-13 12:48:35+00:00",
@@ -741,6 +767,7 @@ def workout_cycling_user_1_segment_1_with_coordinates(
             "heart_rate": 84,
             "latitude": 44.67837,
             "longitude": 6.07435,
+            "pace": "00:14:19",
             "power": 225,
             "speed": 4.19,
             "time": "2018-03-13 12:48:40+00:00",
@@ -753,6 +780,7 @@ def workout_cycling_user_1_segment_1_with_coordinates(
             "heart_rate": 81,
             "latitude": 44.67822,
             "longitude": 6.07442,
+            "pace": "00:13:51",
             "power": 218,
             "speed": 4.33,
             "time": "2018-03-13 12:48:55+00:00",
@@ -880,6 +908,22 @@ def workout_running_user_1_segment_with_coordinates(
     )
     db.session.commit()
     return workout_segment
+
+
+@pytest.fixture()
+def workout_running_2_user_1() -> Workout:
+    workout = Workout(
+        user_id=1,
+        sport_id=2,
+        # workout_date: 'Mon, 10 Jun 2020 00:00:00 GMT'
+        workout_date=datetime(2020, 6, 10, tzinfo=timezone.utc),
+        distance=10,
+        duration=timedelta(seconds=6000),
+    )
+    update_workout(workout)
+    db.session.add(workout)
+    db.session.commit()
+    return workout
 
 
 @pytest.fixture()

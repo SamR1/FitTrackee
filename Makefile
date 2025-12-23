@@ -176,11 +176,11 @@ install: install-client install-python
 
 install-client:
 	# NPM_ARGS="--ignore-engines", if errors with Node latest version
-	cd fittrackee_client && $(NPM) install --prod $(NPM_ARGS)
+	cd fittrackee_client && $(NPM) install --frozen-lockfile --ignore-scripts --prod $(NPM_ARGS)
 
 install-client-dev:
 	# NPM_ARGS="--ignore-engines", if errors with Node latest version
-	cd fittrackee_client && $(NPM) install $(NPM_ARGS)
+	cd fittrackee_client && $(NPM) install --frozen-lockfile --ignore-scripts $(NPM_ARGS)
 
 install-dev: install-client-dev install-python-dev
 

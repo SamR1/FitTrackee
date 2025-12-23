@@ -27,7 +27,10 @@ from fittrackee.dates import aware_utc_now
 from fittrackee.files import get_absolute_file_path
 from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import VisibilityLevel
-from fittrackee.workouts.constants import SPORTS_WITHOUT_ELEVATION_DATA
+from fittrackee.workouts.constants import (
+    PACE_SPORTS,
+    SPORTS_WITHOUT_ELEVATION_DATA,
+)
 from fittrackee.workouts.models import Workout
 
 from .constants import (
@@ -376,6 +379,9 @@ class User(BaseModel):
     )
     messages_preferences: Mapped[Optional[Dict]] = mapped_column(
         postgresql.JSONB, nullable=True
+    )
+    display_speed_with_pace: Mapped[bool] = mapped_column(
+        server_default="false", nullable=False
     )
     missing_elevations_processing: Mapped[MissingElevationsProcessing] = (
         mapped_column(
@@ -797,6 +803,29 @@ class User(BaseModel):
             return True
         return self.notification_preferences.get(notification_type, True)
 
+    def _get_records(self) -> List[Dict]:
+        records = []
+        for record in self.records:
+            sport_label = record.sport.label
+            if (
+                record.record_type == "HA"
+                and sport_label in SPORTS_WITHOUT_ELEVATION_DATA
+            ):
+                continue
+            if (
+                record.record_type in ["AP", "BP"]
+                and sport_label not in PACE_SPORTS
+            ):
+                continue
+            if (
+                record.record_type in ["AS", "MS"]
+                and sport_label in PACE_SPORTS
+                and not self.display_speed_with_pace
+            ):
+                continue
+            records.append(record.serialize())
+        return records
+
     def serialize(
         self,
         *,
@@ -877,14 +906,7 @@ class User(BaseModel):
                 )
 
             serialized_user["nb_sports"] = len(sports)
-            serialized_user["records"] = [
-                record.serialize()
-                for record in self.records
-                if (
-                    record.sport.label not in SPORTS_WITHOUT_ELEVATION_DATA
-                    or record.record_type != "HA"
-                )
-            ]
+            serialized_user["records"] = self._get_records()
             serialized_user["sports_list"] = [
                 sport for sportslist in sports for sport in sportslist
             ]
@@ -949,6 +971,7 @@ class User(BaseModel):
                     if self.messages_preferences
                     else {}
                 ),
+                "display_speed_with_pace": self.display_speed_with_pace,
                 "missing_elevations_processing": (
                     MissingElevationsProcessing.NONE
                     if current_app.config["OPEN_ELEVATION_API_URL"] is None

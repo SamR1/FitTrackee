@@ -184,6 +184,32 @@
         </div>
         <div class="form-items form-checkboxes">
           <span class="checkboxes-label">
+            {{ $t('user.PROFILE.DISPLAYING_SPEED_IN_ADDITION_TO_PACE.LABEL') }}
+          </span>
+          <div class="checkboxes">
+            <label v-for="status in displaySpeedWithPace" :key="status.label">
+              <input
+                type="radio"
+                :id="status.label"
+                :name="status.label"
+                :checked="status.value === userForm.display_speed_with_pace"
+                :disabled="authUserLoading"
+                @input="updateValue('display_speed_with_pace', status.value)"
+              />
+              <span class="checkbox-label">
+                {{ $t(`common.${status.label}`) }}
+              </span>
+            </label>
+          </div>
+          <div class="info-box pace-help">
+            <span>
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('user.PROFILE.DISPLAYING_SPEED_IN_ADDITION_TO_PACE.HELP') }}
+            </span>
+          </div>
+        </div>
+        <div class="form-items form-checkboxes">
+          <span class="checkboxes-label">
             {{ $t('user.PROFILE.WORKOUT_CHARTS_DISPLAY.LABEL') }}
           </span>
           <div class="checkboxes">
@@ -521,6 +547,16 @@
       value: false,
     },
   ]
+  const displaySpeedWithPace = [
+    {
+      label: 'NO',
+      value: false,
+    },
+    {
+      label: 'YES',
+      value: true,
+    },
+  ]
   const segmentsCreationEvents = ['all', 'only_manual', 'none']
   const missingElevationsProcessing = [
     'none',
@@ -532,6 +568,7 @@
     analysis_visibility: 'private',
     date_format: 'dd/MM/yyyy',
     display_ascent: true,
+    display_speed_with_pace: false,
     hide_profile_in_users_directory: true,
     hr_visibility: 'private',
     imperial_units: false,
@@ -591,6 +628,7 @@
     userForm.segments_creation_event =
       user.segments_creation_event ?? 'only_manual'
     userForm.split_workout_charts = user.split_workout_charts
+    userForm.display_speed_with_pace = user.display_speed_with_pace
     userForm.missing_elevations_processing = user.missing_elevations_processing
   }
   function updateProfile() {

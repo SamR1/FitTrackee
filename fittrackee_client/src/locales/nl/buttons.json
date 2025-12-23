@@ -18,7 +18,6 @@
   "FOLLOW": "Volg",
   "HIDE": "Verbergen",
   "LOGIN": "Inloggen",
-  "NO": "Nee",
   "READ_MORE": "Lees meer",
   "REFRESH": "Vernieuwen",
   "REFRESH_TOTALS": "Ververs totalen",
@@ -30,6 +29,5 @@
   "SEE_DETAIL": "Bekijk details",
   "SUBMIT": "Opslaan",
   "UNBLOCK": "Deblokkeer",
-  "UNFOLLOW": "Ontvolg",
-  "YES": "Ja"
+  "UNFOLLOW": "Ontvolg"
 }

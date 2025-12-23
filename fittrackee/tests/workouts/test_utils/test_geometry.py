@@ -431,6 +431,48 @@ class TestGetChartDataFromSegmentPoints:
         self,
         app: "Flask",
         sport_1_cycling: "Sport",
+        sport_4_paragliding: "Sport",
+        user_1: "User",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        chart_data = get_chart_data_from_segment_points(
+            [workout_cycling_user_1_segment_0_with_coordinates.points],
+            sport_4_paragliding.label,
+            workout_ave_cadence=140,
+            can_see_heart_rate=True,
+        )
+
+        first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
+            0
+        ]
+        assert chart_data[0] == {
+            "distance": first_point["distance"],
+            "duration": 0,
+            "elevation": first_point["elevation"],
+            "hr": first_point["heart_rate"],
+            "latitude": first_point["latitude"],
+            "longitude": first_point["longitude"],
+            "speed": first_point["speed"],
+            "time": first_point["time"],
+        }
+        last_point = workout_cycling_user_1_segment_0_with_coordinates.points[
+            -1
+        ]
+        assert chart_data[-1] == {
+            "distance": 0.11,
+            "duration": last_point["duration"],
+            "elevation": last_point["elevation"],
+            "hr": last_point["heart_rate"],
+            "latitude": last_point["latitude"],
+            "longitude": last_point["longitude"],
+            "speed": last_point["speed"],
+            "time": last_point["time"],
+        }
+
+    def test_it_returns_pace_when_sport_is_associated_with_pace(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
         sport_2_running: "Sport",
         user_1: "User",
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
@@ -453,6 +495,7 @@ class TestGetChartDataFromSegmentPoints:
             "hr": first_point["heart_rate"],
             "latitude": first_point["latitude"],
             "longitude": first_point["longitude"],
+            "pace": first_point["pace"],
             "speed": first_point["speed"],
             "time": first_point["time"],
         }
@@ -467,6 +510,7 @@ class TestGetChartDataFromSegmentPoints:
             "hr": last_point["heart_rate"],
             "latitude": last_point["latitude"],
             "longitude": last_point["longitude"],
+            "pace": last_point["pace"],
             "speed": last_point["speed"],
             "time": last_point["time"],
         }

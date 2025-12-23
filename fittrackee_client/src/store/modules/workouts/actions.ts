@@ -75,9 +75,11 @@ const reloadComment = (
   commentId: string | undefined,
   workoutId: string | undefined
 ) => {
-  workoutId
-    ? context.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS, workoutId)
-    : context.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENT, commentId)
+  if (workoutId) {
+    context.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS, workoutId)
+  } else {
+    context.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENT, commentId)
+  }
 }
 
 const handleCommentLike = (
@@ -523,12 +525,14 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       .delete(`comments/${payload.commentId}`)
       .then((res) => {
         if (res.status === 204) {
-          payload.workoutId
-            ? context.dispatch(
-                WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
-                payload.workoutId
-              )
-            : router.push('/')
+          if (payload.workoutId) {
+            context.dispatch(
+              WORKOUTS_STORE.ACTIONS.GET_WORKOUT_COMMENTS,
+              payload.workoutId
+            )
+          } else {
+            router.push('/')
+          }
         }
       })
       .catch((error) => {

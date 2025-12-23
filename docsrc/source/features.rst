@@ -163,7 +163,14 @@ Workouts
   | If the sport is Outdoor Tennis or Padel, a heat map is also available (*changed in 1.0.0*).
 - | A chart is displayed for workout with a file, with:
 
-  - speed
+  - speed. By default speed is not displayed when pace is displayed (see below). A user preference allows to keep speed displayed with pace, see `Account & preferences <features.html#account-preferences>`__ (*changed in 1.1.0*).
+  - pace (*new in 1.1.0*), for the following sports:
+
+    - Hiking
+    - Running
+    - Trail
+    - Walking
+
   - elevation if available (*updated in 0.7.20*)
   - heart rate if available (*new in 0.10.0*)
   - cadence if available (*new in 0.10.0*), for the following sports:
@@ -194,11 +201,12 @@ Workouts
     - Mountain Biking (Electric)
 
 .. note::
-   | For now, source and average and max values for heart rate and cadence are not displayed for workouts created before v0.10.0 (see `issue #816 <https://github.com/SamR1/FitTrackee/issues/816>`__).
+   | Source and average and max values for heart rate and cadence are not displayed for workouts created before v0.10.0.
    | Average and max values for power are not displayed for workouts created before v0.11.0.
+   | Pace is not displayed for workouts created before v1.1.0.
    | Refreshing the workout allows these values to be calculated (*new in 0.12.0*).
 
-- These data (speed, elevation, heart rate, cadence and power) can be displayed on one chart or split on multiple charts. The preferred display can be stored in a user preference (*new in 0.11.0*).
+- These data (speed, pace, elevation, heart rate, cadence and power) can be displayed on one chart or split on multiple charts. The preferred display can be stored in a user preference (*new in 0.11.0*).
 - | If **Visual Crossing** (*new in 0.7.11*) API key is provided, weather is displayed in workout detail. Data source is displayed in **About** page.
   | Wind is displayed, with an arrow indicating the direction (a tooltip can be displayed with the direction that the wind is coming **from**) (*new in 0.5.5*).
 - | An `equipment <features.html#equipments>`__ can be associated with a workout (*new in 0.8.0*). For now, only one equipment can be associated.
@@ -266,6 +274,9 @@ Workouts
     - duration
     - average speed
     - maximum speed
+    - when only one sport is displayed and it corresponds to running, hiking, trail running, or walking) (*new in 1.1.0*):
+      - average pace
+      - maximum pace (= best pace)
 
   - Workouts can be sorted by:
 
@@ -273,6 +284,7 @@ Workouts
     - distance
     - duration
     - average speed
+    - average pace (when only one sport is displayed and it corresponds to running, hiking, trail running, or walking) (*new in 1.1.0*)
 
   - Statistics are displayed when more than one workout is displayed (*new in 0.9.4*):
 
@@ -286,6 +298,9 @@ Workouts
     - average speed (when workouts belong to the same sport)
     - average ascent (*new in 0.9.7*)
     - average descent (*new in 0.9.7*)
+    - when workouts belong to the same sport and it corresponds to running, hiking, trail running, or walking) (*new in 1.1.0*):
+      - average pace
+      - best pace
 
     When multiple pages are fetched, statistics for all pages are also displayed.
 
@@ -443,6 +458,7 @@ Statistics
   - ascent (total and average)
   - descent (total and average)
   - records
+  - average pace (if sport corresponds to running, hiking, trail running, or walking) (*new in 1.1.0*)
 
 .. note::
   | There is a limit on the number of workouts used to calculate statistics to avoid performance issues. The value can be set in administration.
@@ -529,6 +545,7 @@ Account & preferences
   - each data displayed on a different chart
 
 - A user can update messages preferences (*new in 1.0.0*).
+- A user can set whether speed can be displayed with pace (*new in 1.1.0*).
 - A user can set missing elevation processing if an OpenElevation API URL is set (*new in 1.1.0*):
 
   - none

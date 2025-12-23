@@ -30,15 +30,14 @@ from fittrackee.visibility_levels import (
     get_calculated_visibility,
 )
 
-from .constants import SPORTS_WITHOUT_ELEVATION_DATA, WGS84_CRS
+from .constants import PACE_SPORTS, SPORTS_WITHOUT_ELEVATION_DATA, WGS84_CRS
 from .exceptions import WorkoutForbiddenException
 from .utils.convert import (
     convert_in_duration,
     convert_value_to_integer,
-    get_cadence,
-    get_power,
 )
 from .utils.gpx import get_file_extension
+from .utils.sports import get_cadence, get_pace, get_power
 
 if TYPE_CHECKING:
     from sqlalchemy.orm.attributes import AttributeEvent
@@ -83,13 +82,16 @@ WORKOUT_VALUES_LIMIT = {
     "moving_time": PSQL_INTEGER_LIMIT,
 }
 
-record_types = [
-    "AS",  # 'Best Average Speed'
-    "FD",  # 'Farthest Distance'
-    "HA",  # 'Highest Ascent'
-    "LD",  # 'Longest Duration'
-    "MS",  # 'Max speed'
-]
+RECORD_TYPES_COLUMNS_MATCHING = {
+    "AP": "ave_pace",  # 'Average Pace'
+    "AS": "ave_speed",  # 'Average speed'
+    "BP": "best_pace",  # 'Best pace'
+    "FD": "distance",  # 'Farthest Distance'
+    "HA": "ascent",  # 'Highest Ascent'
+    "LD": "moving",  # 'Longest Duration'
+    "MS": "max_speed",  # 'Max speed'
+}
+RECORD_TYPES = list(RECORD_TYPES_COLUMNS_MATCHING.keys())
 DESCRIPTION_MAX_CHARACTERS = 10000
 NOTES_MAX_CHARACTERS = 500
 TITLE_MAX_CHARACTERS = 255
@@ -346,6 +348,12 @@ class Workout(BaseModel):
         Geometry(geometry_type="POINT", srid=WGS84_CRS, spatial_index=True),
         nullable=True,
     )
+    ave_pace: Mapped[Optional[timedelta]] = mapped_column(
+        nullable=True
+    )  # min/km
+    best_pace: Mapped[Optional[timedelta]] = mapped_column(
+        nullable=True
+    )  # min/km
     missing_elevations_processing: Mapped[MissingElevationsProcessing] = (
         mapped_column(
             Enum(MissingElevationsProcessing, name="elevations_processing"),
@@ -449,6 +457,33 @@ class Workout(BaseModel):
             .first()
         )
 
+    def _get_records(
+        self,
+        for_report: bool,
+        return_elevation_data: bool,
+        sport_label: str,
+        display_speed_with_pace: bool,
+    ) -> List[Dict]:
+        if for_report:
+            return []
+
+        records = []
+        for record in self.records:
+            if record.record_type == "HA" and not return_elevation_data:
+                continue
+            if (
+                record.record_type in ["AP", "BP"]
+                and sport_label not in PACE_SPORTS
+            ):
+                continue
+            if (
+                record.record_type in ["AS", "MS"]
+                and not display_speed_with_pace
+            ):
+                continue
+            records.append(record.serialize())
+        return records
+
     @property
     def reports(self) -> List["Report"]:
         from fittrackee.reports.models import Report
@@ -520,6 +555,9 @@ class Workout(BaseModel):
         return_elevation_data = (
             sport_label not in SPORTS_WITHOUT_ELEVATION_DATA
         )
+        display_speed_with_pace = sport_label not in PACE_SPORTS or (
+            user is not None and user.display_speed_with_pace
+        )
 
         workout_data = {
             **workout_data,
@@ -534,10 +572,14 @@ class Workout(BaseModel):
                 None if self.duration is None else str(self.duration)
             ),
             "ave_speed": (
-                None if self.ave_speed is None else float(self.ave_speed)
+                None
+                if self.ave_speed is None or not display_speed_with_pace
+                else float(self.ave_speed)
             ),
             "max_speed": (
-                None if self.max_speed is None else float(self.max_speed)
+                None
+                if self.max_speed is None or not display_speed_with_pace
+                else float(self.max_speed)
             ),
             "min_alt": (
                 float(self.min_alt)
@@ -565,14 +607,11 @@ class Workout(BaseModel):
                 if self.ascent is not None and return_elevation_data
                 else None
             ),
-            "records": (
-                []
-                if for_report
-                else [
-                    record.serialize()
-                    for record in self.records
-                    if return_elevation_data or record.record_type != "HA"
-                ]
+            "records": self._get_records(
+                for_report,
+                return_elevation_data,
+                sport_label,
+                display_speed_with_pace,
             ),
             "analysis_visibility": (
                 self.calculated_analysis_visibility.value
@@ -590,6 +629,8 @@ class Workout(BaseModel):
             "max_hr": self.max_hr if can_see_heart_rate else None,
             "ave_power": get_power(sport_label, self.ave_power),
             "max_power": get_power(sport_label, self.max_power),
+            "ave_pace": get_pace(sport_label, self.ave_pace),
+            "best_pace": get_pace(sport_label, self.best_pace),
         }
 
         if not light or with_equipments:
@@ -805,21 +846,19 @@ class Workout(BaseModel):
         Note:
         Values for ascent are null for workouts without gpx
         """
-        record_types_columns = {
-            "AS": "ave_speed",  # 'Average speed'
-            "FD": "distance",  # 'Farthest Distance'
-            "HA": "ascent",  # 'Highest Ascent'
-            "LD": "moving",  # 'Longest Duration'
-            "MS": "max_speed",  # 'Max speed'
-        }
         records = {}
-        for record_type, column in record_types_columns.items():
-            column_sorted = getattr(Workout, column).desc()
+        for record_type, column in RECORD_TYPES_COLUMNS_MATCHING.items():
+            workout_column = getattr(Workout, column)
+            column_sorted = nulls_last(
+                workout_column.asc()
+                if record_type in ["AP", "BP"]
+                else workout_column.desc()
+            )
             record_workout = (
                 Workout.query.filter(
                     Workout.user_id == user_id, Workout.sport_id == sport_id
                 )
-                .order_by(nulls_last(column_sorted), Workout.workout_date)
+                .order_by(column_sorted, Workout.workout_date)
                 .first()
             )
             records[record_type] = dict(
@@ -1003,6 +1042,12 @@ class WorkoutSegment(BaseModel):
     start_date: Mapped[datetime] = mapped_column(
         TZDateTime, index=True, nullable=False
     )
+    ave_pace: Mapped[Optional[timedelta]] = mapped_column(
+        nullable=True
+    )  # min/km
+    best_pace: Mapped[Optional[timedelta]] = mapped_column(
+        nullable=True
+    )  # min/km
 
     workout: Mapped["Workout"] = relationship(
         "Workout", lazy="joined", single_parent=True
@@ -1056,6 +1101,8 @@ class WorkoutSegment(BaseModel):
             "max_hr": self.max_hr if can_see_heart_rate else None,
             "ave_power": get_power(sport_label, self.ave_power),
             "max_power": get_power(sport_label, self.max_power),
+            "ave_pace": get_pace(sport_label, self.ave_pace),
+            "best_pace": get_pace(sport_label, self.best_pace),
         }
 
 
@@ -1081,7 +1128,7 @@ class Record(BaseModel):
         postgresql.UUID(as_uuid=True), nullable=False
     )
     record_type: Mapped[str] = mapped_column(
-        Enum(*record_types, name="record_types")
+        Enum(*RECORD_TYPES, name="record_types")
     )
     workout_date: Mapped[datetime] = mapped_column(TZDateTime, nullable=False)
     _value: Mapped[Optional[int]] = mapped_column("value", nullable=True)
@@ -1115,7 +1162,7 @@ class Record(BaseModel):
     def value(self) -> Optional[Union[timedelta, float]]:
         if self._value is None:
             return None
-        if self.record_type == "LD":
+        if self.record_type in ["LD", "AP", "BP"]:
             return timedelta(seconds=self._value)
         elif self.record_type in ["AS", "MS"]:
             return float(self._value / 100)

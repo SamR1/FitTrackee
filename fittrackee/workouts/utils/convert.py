@@ -2,7 +2,8 @@ import re
 from datetime import timedelta
 from typing import Optional, Union
 
-from ..constants import POWER_SPORTS, RPM_CADENCE_SPORTS, SPM_CADENCE_SPORTS
+import pandas as pd
+
 from ..exceptions import InvalidDurationException
 
 
@@ -11,16 +12,26 @@ def convert_in_duration(value: str) -> timedelta:
         raise InvalidDurationException()
     hours = int(value.split(":")[0])
     minutes = int(value.split(":")[1])
-    return timedelta(seconds=(hours * 3600 + minutes * 60))
+    return timedelta(hours=hours, minutes=minutes)
+
+
+def convert_pace_in_duration(value: str) -> timedelta:
+    if not re.match(r"^(\d+):[0-5]\d?$", value):
+        raise InvalidDurationException()
+    minutes = int(value.split(":")[0])
+    seconds = int(value.split(":")[1])
+    return timedelta(minutes=minutes, seconds=seconds)
 
 
 def convert_value_to_integer(
     record_type: str, val: Union[timedelta, float, None]
 ) -> Optional[int]:
-    if val is None or record_type not in ["AS", "FD", "HA", "LD", "MS"]:
+    from ..models import RECORD_TYPES
+
+    if val is None or record_type not in RECORD_TYPES:
         return None
 
-    if isinstance(val, timedelta):  # record_type == "LD"
+    if isinstance(val, timedelta):  # self.record_type in ["LD", "AP", "BP"]
         return int(val.total_seconds())
 
     multiplier = (
@@ -29,24 +40,27 @@ def convert_value_to_integer(
     return round(val * multiplier)
 
 
-def get_cadence(sport_label: str, cadence: Optional[int]) -> Optional[int]:
-    if cadence is None:
+def convert_speed_into_pace_duration(
+    speed: Optional[float],
+) -> Optional[timedelta]:
+    # return pace as duration for 1km
+    #
+    # note: speed unit is 'km/h'
+    if speed is None:
         return None
-
-    if sport_label in RPM_CADENCE_SPORTS:
-        return cadence
-
-    if sport_label in SPM_CADENCE_SPORTS:
-        return cadence * 2
-
-    return None
+    if not speed:
+        return timedelta(seconds=0)
+    return (
+        pd.Timedelta(timedelta(minutes=60 / speed)).round("s").to_pytimedelta()
+    )
 
 
-def get_power(sport_label: str, power: Optional[int]) -> Optional[int]:
-    if power is None:
+def convert_speed_into_pace_in_sec_per_meter(
+    speed: Optional[float],
+) -> Optional[float]:
+    # return pace in s/m
+    #
+    # note: speed unit is 'km/h'
+    if not speed:
         return None
-
-    if sport_label in POWER_SPORTS:
-        return power
-
-    return None
+    return round(1 / (speed / 3.6), 10)

@@ -1,0 +1,19 @@
+{
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+  },
+  "ruff.enable": true,
+  "ruff.organizeImports": true,
+  "files.exclude": {
+    "**/__pycache__/**": true,
+    "**/.ruff_cache/**": true,
+  },
+  "search.exclude": {
+    "**/__pycache__/**": true,
+    "**/.ruff_cache/**": true,
+  },
+  "python.analysis.exclude": [
+    "**/__pycache__/**",
+    "**/.ruff_cache/**",
+  ],
+}

@@ -18,6 +18,7 @@ export interface IWorkoutSegment {
   ascent: number
   ave_cadence: number | null
   ave_hr: number | null
+  ave_pace: string | null
   ave_power: number | null
   ave_speed: number
   descent: number
@@ -26,6 +27,7 @@ export interface IWorkoutSegment {
   max_alt: number
   max_cadence: number | null
   max_hr: number | null
+  best_pace: string | null
   max_power: number | null
   max_speed: number
   min_alt: number
@@ -43,9 +45,12 @@ export interface ICardRecord {
   workout_id: string
   label: string
 }
+
+export type TRecordType = 'AP' | 'AS' | 'BP' | 'FD' | 'HA' | 'LD' | 'MS'
+
 export interface IRecord {
   id: number
-  record_type: string
+  record_type: TRecordType
   sport_id: number
   user: string
   value: number | string
@@ -87,6 +92,7 @@ export interface IWorkout {
   ascent: number | null
   ave_cadence: number | null
   ave_hr: number | null
+  ave_pace: string | null
   ave_power: number | null
   ave_speed: number | null
   bounds: number[]
@@ -104,6 +110,7 @@ export interface IWorkout {
   max_alt: number | null
   max_cadence: number | null
   max_hr: number | null
+  best_pace: string | null
   max_power: number | null
   max_speed: number | null
   min_alt: number | null
@@ -139,6 +146,7 @@ export interface IWorkoutObject {
   aveCadence: number | null
   aveHr: number | null
   avePower: number | null
+  avePace: string | null
   aveSpeed: number | null
   descent: number | null
   distance: number | null
@@ -149,6 +157,7 @@ export interface IWorkoutObject {
   maxAlt: number | null
   maxCadence: number | null
   maxHr: number | null
+  maxPace: string | null
   maxPower: number | null
   maxSpeed: number | null
   mapVisibility: TVisibilityLevels | null | undefined
@@ -240,6 +249,7 @@ export interface IWorkoutApiChartData {
   hr?: number
   latitude: number
   longitude: number
+  pace?: number
   power?: number
   speed: number
   time: string
@@ -270,6 +280,7 @@ export type TWorkoutDatasetKeys =
   | 'hr'
   | 'cadence'
   | 'power'
+  | 'pace'
 
 export type TWorkoutDatasets = {
   [key in TWorkoutDatasetKeys]: IChartDataset
@@ -333,8 +344,10 @@ export interface TWorkoutsStatistic {
   average_descent: number | null
   average_distance: number | null
   average_duration: string | null
+  average_pace: string | null
   average_speed: number | null
   count: number
+  best_pace: string | null
   max_speed: number | null
   total_ascent: number | null
   total_descent: number | null

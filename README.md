@@ -9,7 +9,7 @@
 [![Vue Version](https://img.shields.io/badge/vue-3.5-brightgreen.svg)](https://v3.vuejs.org/) 
 [![code formatter: prettier](https://img.shields.io/badge/code%20formatter-prettier-ff69b4.svg)](https://github.com/prettier/prettier) 
 [![Typescript Version](https://img.shields.io/npm/types/typescript)](https://www.typescriptlang.org/)  
-[![PostgreSQL version](https://img.shields.io/badge/PostgreSQL-13_|_14_|_15_|_16_|_17_|_18-336791)](https://www.postgresql.org/) [![PostgreSQL version](https://img.shields.io/badge/PostGIS-3.4_|_3.5_|_3.6-5b7b9f)](https://postgis.net/)  
+[![PostgreSQL version](https://img.shields.io/badge/PostgreSQL-14_|_15_|_16_|_17_|_18-336791)](https://www.postgresql.org/) [![PostgreSQL version](https://img.shields.io/badge/PostGIS-3.4_|_3.5_|_3.6-5b7b9f)](https://postgis.net/)  
 [![PyPI version](https://img.shields.io/pypi/v/fittrackee?logo=pypi)](https://pypi.org/project/fittrackee/) [![docker image version](https://img.shields.io/docker/v/fittrackee/fittrackee?logo=docker)](https://hub.docker.com/r/fittrackee/fittrackee)  
 [![Coverage Status](https://coveralls.io/repos/github/SamR1/FitTrackee/badge.svg?branch=main)](https://coveralls.io/github/SamR1/FitTrackee?branch=main)<sup><sup>1</sup></sup> [![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-and-publish-python.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-and-publish-python.yml)
 [![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml)  
@@ -27,6 +27,9 @@ Examples for Android (non-exhaustive list):
 * [Runner Up](https://github.com/jonasoreland/runnerup) (GPLv3)  
 * [OpenTracks](https://github.com/OpenTracksApp/OpenTracks) (Apache License)  
 * [FitoTrack](https://codeberg.org/jannis/FitoTrack) (GPLv3)  
+
+To get workouts from devices like smartwatches:
+* [Gadgetbridge](https://gadgetbridge.org) (Android, GPL v3)
 
 It is also possible to add a workout without a file.
 

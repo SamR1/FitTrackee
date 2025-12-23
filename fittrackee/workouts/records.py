@@ -6,7 +6,7 @@ from sqlalchemy import and_, or_
 from fittrackee.oauth2.server import require_auth
 from fittrackee.users.models import User
 
-from .constants import SPORTS_WITHOUT_ELEVATION_DATA
+from .constants import PACE_SPORTS, SPORTS_WITHOUT_ELEVATION_DATA
 from .models import Record, Sport
 
 records_blueprint = Blueprint("records", __name__)
@@ -18,8 +18,10 @@ def get_records(auth_user: User) -> Dict:
     """
     Get all records for authenticated user.
 
-    Following types of records are available:
+    Following types of records are available, depending en sport:
+        - average pace (record_type: ``AP``)
         - average speed (record_type: ``AS``)
+        - best pace (record_type: ``BP``)
         - farthest distance (record_type: ``FD``)
         - highest ascent (record_type: ``HA``)
         - longest duration (record_type: ``LD``)
@@ -47,47 +49,65 @@ def get_records(auth_user: User) -> Dict:
         "data": {
           "records": [
             {
+              "id": 14,
+              "record_type": "AP",
+              "sport_id": 5,
+              "user": "admin",
+              "value": "0:07:01",
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
               "id": 9,
               "record_type": "AS",
-              "sport_id": 1,
+              "sport_id": 5,
               "user": "admin",
-              "value": 18,
+              "value": 8.55,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 15,
+              "record_type": "BP",
+              "sport_id": 5,
+              "user": "admin",
+              "value": "0:05:58",
               "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },
             {
               "id": 10,
               "record_type": "FD",
-              "sport_id": 1,
+              "sport_id": 5,
               "user": "admin",
-              "value": 18,
+              "value": 2.858,
               "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },
             {
               "id": 13,
               "record_type": "HA",
-              "sport_id": 1,
+              "sport_id": 5,
               "user": "Sam",
-              "value": 43.97,
+              "value": 7.029,
               "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },
             {
               "id": 11,
               "record_type": "LD",
-              "sport_id": 1,
+              "sport_id": 5,
               "user": "admin",
-              "value": "1:01:00",
+              "value": "0:20:24",
               "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },
             {
               "id": 12,
               "record_type": "MS",
-              "sport_id": 1,
+              "sport_id": 5,
               "user": "admin",
-              "value": 18,
+              "value": 10.06,
               "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             }
@@ -126,10 +146,14 @@ def get_records(auth_user: User) -> Dict:
         .filter(
             Record.user_id == auth_user.id,
             or_(
-                Sport.label.not_in(SPORTS_WITHOUT_ELEVATION_DATA),
+                Record.record_type.in_(["AS", "FD", "LD", "MS"]),
                 and_(
-                    Sport.label.in_(SPORTS_WITHOUT_ELEVATION_DATA),
-                    Record.record_type != "HA",
+                    Record.record_type == "HA",
+                    Sport.label.not_in(SPORTS_WITHOUT_ELEVATION_DATA),
+                ),
+                and_(
+                    Record.record_type.in_(["AP", "BP"]),
+                    Sport.label.in_(PACE_SPORTS),
                 ),
             ),
         )

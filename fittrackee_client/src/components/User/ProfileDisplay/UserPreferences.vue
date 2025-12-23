@@ -47,7 +47,17 @@
         }}
       </dd>
       <dt>{{ $t('user.PROFILE.ASCENT_DATA') }}:</dt>
-      <dd>{{ $t(`common.${display_ascent}`) }}</dd>
+      <dd>{{ $t(`common.${displayAscent}`) }}</dd>
+      <dt>
+        {{ $t('user.PROFILE.DISPLAYING_SPEED_IN_ADDITION_TO_PACE.LABEL') }}:
+      </dt>
+      <dd>{{ $t(`common.${user.display_speed_with_pace ? 'YES' : 'NO'}`) }}</dd>
+      <div class="info-box pace-help">
+        <span>
+          <i class="fa fa-info-circle" aria-hidden="true" />
+          {{ $t('user.PROFILE.DISPLAYING_SPEED_IN_ADDITION_TO_PACE.HELP') }}
+        </span>
+      </div>
       <dt>{{ $t('user.PROFILE.WORKOUT_CHARTS_DISPLAY.LABEL') }}:</dt>
       <dd>
         {{
@@ -174,7 +184,7 @@
       : languageLabels['en']
   )
   const fistDayOfWeek = computed(() => (user.value.weekm ? 'MONDAY' : 'SUNDAY'))
-  const display_ascent = computed(() =>
+  const displayAscent = computed(() =>
     user.value.display_ascent ? 'DISPLAYED' : 'HIDDEN'
   )
   const darkMode = computed(() =>
@@ -196,9 +206,11 @@
       border-bottom: 1px solid var(--card-border-color);
     }
     .raw-speed-help,
+    .pace-help,
     .missing-elevations-help {
       margin-top: -$default-margin * 0.5;
     }
+    .pace-help,
     .changes-help,
     .missing-elevations-help {
       margin-bottom: $default-margin;

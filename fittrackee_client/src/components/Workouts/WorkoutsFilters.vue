@@ -32,8 +32,8 @@
                 id="sport_id"
                 name="sport_id"
                 :disabled="geocodeLoading"
-                :value="$route.query.sport_id"
-                @change="handleFilterChange"
+                :value="sportId"
+                @change="handleSportChange"
                 @keyup.enter="onFilter"
               >
                 <option value="" />
@@ -171,6 +171,7 @@
                 />
               </div>
             </div>
+
             <div class="form-item form-item-text">
               <label for="workout_visibility">
                 {{ $t('visibility_levels.WORKOUT_VISIBILITY').toLowerCase() }}:
@@ -195,120 +196,208 @@
             </div>
           </div>
 
-          <div class="form-items-group">
-            <div class="form-item">
-              <label> {{ $t('workouts.DISTANCE') }} ({{ toUnit }}): </label>
-              <div class="form-inputs-group">
-                <input
-                  name="distance_from"
-                  type="number"
-                  min="0"
-                  step="0.1"
-                  :disabled="geocodeLoading"
-                  :value="$route.query.distance_from"
-                  @change="handleFilterChange"
-                  @keyup.enter="onFilter"
-                />
-                <span>{{ $t('workouts.TO') }}</span>
-                <input
-                  name="distance_to"
-                  type="number"
-                  min="0"
-                  step="0.1"
-                  :disabled="geocodeLoading"
-                  :value="$route.query.distance_to"
-                  @change="handleFilterChange"
-                  @keyup.enter="onFilter"
-                />
+          <div class="additional-filters">
+            <button
+              class="transparent additional-filters-btn"
+              @click="toggleMoreFilters"
+              type="button"
+            >
+              <i
+                :class="`fa fa-caret-${displayMoreFilters ? 'up' : 'down'}`"
+                aria-hidden="true"
+              />
+              <span>
+                {{
+                  $t(
+                    `workouts.${displayMoreFilters ? 'HIDE' : 'DISPLAY_MORE'}_FILTERS`
+                  )
+                }}
+              </span>
+            </button>
+            <div v-if="displayMoreFilters" class="additional-filters-filters">
+              <div class="form-items-group">
+                <div class="form-item">
+                  <label> {{ $t('workouts.DISTANCE') }} ({{ toUnit }}): </label>
+                  <div class="form-inputs-group">
+                    <input
+                      name="distance_from"
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      :disabled="geocodeLoading"
+                      :value="$route.query.distance_from"
+                      @change="handleFilterChange"
+                      @keyup.enter="onFilter"
+                    />
+                    <span>{{ $t('workouts.TO') }}</span>
+                    <input
+                      name="distance_to"
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      :disabled="geocodeLoading"
+                      :value="$route.query.distance_to"
+                      @change="handleFilterChange"
+                      @keyup.enter="onFilter"
+                    />
+                  </div>
+                </div>
+                <div class="form-item">
+                  <label> {{ $t('workouts.DURATION') }}: </label>
+                  <div class="form-inputs-group">
+                    <label for="duration_from" class="visually-hidden">
+                      {{ $t('workouts.FROM') }}
+                    </label>
+                    <input
+                      id="duration_from"
+                      name="duration_from"
+                      :disabled="geocodeLoading"
+                      :value="$route.query.duration_from"
+                      @change="handleFilterChange"
+                      pattern="^([0-9]*[0-9]):([0-5][0-9])$"
+                      placeholder="hh:mm"
+                      type="text"
+                      @keyup.enter="onFilter"
+                    />
+                    <span>{{ $t('workouts.TO') }}</span>
+                    <label for="duration_to" class="visually-hidden">
+                      {{ $t('workouts.TO') }}
+                    </label>
+                    <input
+                      id="duration_to"
+                      name="duration_to"
+                      :disabled="geocodeLoading"
+                      :value="$route.query.duration_to"
+                      @change="handleFilterChange"
+                      pattern="^([0-9]*[0-9]):([0-5][0-9])$"
+                      placeholder="hh:mm"
+                      type="text"
+                      @keyup.enter="onFilter"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="form-item">
-              <label> {{ $t('workouts.DURATION') }}: </label>
-              <div class="form-inputs-group">
-                <label for="duration_from" class="visually-hidden">
-                  {{ $t('workouts.FROM') }}
-                </label>
-                <input
-                  id="duration_from"
-                  name="duration_from"
-                  :disabled="geocodeLoading"
-                  :value="$route.query.duration_from"
-                  @change="handleFilterChange"
-                  pattern="^([0-9]*[0-9]):([0-5][0-9])$"
-                  placeholder="hh:mm"
-                  type="text"
-                  @keyup.enter="onFilter"
-                />
-                <span>{{ $t('workouts.TO') }}</span>
-                <label for="duration_to" class="visually-hidden">
-                  {{ $t('workouts.TO') }}
-                </label>
-                <input
-                  id="duration_to"
-                  name="duration_to"
-                  :disabled="geocodeLoading"
-                  :value="$route.query.duration_to"
-                  @change="handleFilterChange"
-                  pattern="^([0-9]*[0-9]):([0-5][0-9])$"
-                  placeholder="hh:mm"
-                  type="text"
-                  @keyup.enter="onFilter"
-                />
-              </div>
-            </div>
-          </div>
 
-          <div class="form-items-group">
-            <div class="form-item">
-              <label> {{ $t('workouts.AVE_SPEED') }} ({{ toUnit }}/h): </label>
-              <div class="form-inputs-group">
-                <input
-                  min="0"
-                  name="ave_speed_from"
-                  :disabled="geocodeLoading"
-                  :value="$route.query.ave_speed_from"
-                  @change="handleFilterChange"
-                  step="0.1"
-                  type="number"
-                  @keyup.enter="onFilter"
-                />
-                <span>{{ $t('workouts.TO') }}</span>
-                <input
-                  min="0"
-                  name="ave_speed_to"
-                  :disabled="geocodeLoading"
-                  :value="$route.query.ave_speed_to"
-                  @change="handleFilterChange"
-                  step="0.1"
-                  type="number"
-                  @keyup.enter="onFilter"
-                />
+              <div class="form-items-group">
+                <div class="form-item">
+                  <label>
+                    {{ $t('workouts.AVE_SPEED') }} ({{ toUnit }}/h):
+                  </label>
+                  <div class="form-inputs-group">
+                    <input
+                      min="0"
+                      name="ave_speed_from"
+                      :disabled="geocodeLoading"
+                      :value="$route.query.ave_speed_from"
+                      @change="handleFilterChange"
+                      step="0.1"
+                      type="number"
+                      @keyup.enter="onFilter"
+                    />
+                    <span>{{ $t('workouts.TO') }}</span>
+                    <input
+                      min="0"
+                      name="ave_speed_to"
+                      :disabled="geocodeLoading"
+                      :value="$route.query.ave_speed_to"
+                      @change="handleFilterChange"
+                      step="0.1"
+                      type="number"
+                      @keyup.enter="onFilter"
+                    />
+                  </div>
+                </div>
+                <div class="form-item">
+                  <label>
+                    {{ $t('workouts.MAX_SPEED') }} ({{ toUnit }}/h):
+                  </label>
+                  <div class="form-inputs-group">
+                    <input
+                      min="0"
+                      name="max_speed_from"
+                      :disabled="geocodeLoading"
+                      :value="$route.query.max_speed_from"
+                      @change="handleFilterChange"
+                      step="0.1"
+                      type="number"
+                      @keyup.enter="onFilter"
+                    />
+                    <span>{{ $t('workouts.TO') }}</span>
+                    <input
+                      min="0"
+                      name="max_speed_to"
+                      :disabled="geocodeLoading"
+                      :value="$route.query.max_speed_to"
+                      @change="handleFilterChange"
+                      step="0.1"
+                      type="number"
+                      @keyup.enter="onFilter"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="form-item">
-              <label> {{ $t('workouts.MAX_SPEED') }} ({{ toUnit }}/h): </label>
-              <div class="form-inputs-group">
-                <input
-                  min="0"
-                  name="max_speed_from"
-                  :disabled="geocodeLoading"
-                  :value="$route.query.max_speed_from"
-                  @change="handleFilterChange"
-                  step="0.1"
-                  type="number"
-                  @keyup.enter="onFilter"
-                />
-                <span>{{ $t('workouts.TO') }}</span>
-                <input
-                  min="0"
-                  name="max_speed_to"
-                  :disabled="geocodeLoading"
-                  :value="$route.query.max_speed_to"
-                  @change="handleFilterChange"
-                  step="0.1"
-                  type="number"
-                  @keyup.enter="onFilter"
-                />
+
+              <div class="form-items-group">
+                <div class="form-item">
+                  <label>
+                    {{ $t('workouts.AVE_PACE') }} (min/{{ toUnit }}):
+                  </label>
+                  <div class="form-inputs-group">
+                    <input
+                      min="0"
+                      name="ave_pace_from"
+                      :disabled="disablePaceInputs"
+                      :value="$route.query.ave_pace_from"
+                      @change="handleFilterChange"
+                      pattern="^([0-9]*[0-9]):([0-5][0-9])$"
+                      placeholder="mm:ss"
+                      type="text"
+                      @keyup.enter="onFilter"
+                    />
+                    <span>{{ $t('workouts.TO') }}</span>
+                    <input
+                      min="0"
+                      name="ave_pace_to"
+                      :disabled="disablePaceInputs"
+                      :value="$route.query.ave_pace_to"
+                      @change="handleFilterChange"
+                      pattern="^([0-9]*[0-9]):([0-5][0-9])$"
+                      placeholder="mm:ss"
+                      type="text"
+                      @keyup.enter="onFilter"
+                    />
+                  </div>
+                </div>
+                <div class="form-item">
+                  <label>
+                    {{ $t('workouts.MAX_PACE') }} (min/{{ toUnit }}):
+                  </label>
+                  <div class="form-inputs-group">
+                    <input
+                      min="0"
+                      name="max_pace_from"
+                      :disabled="disablePaceInputs"
+                      :value="$route.query.max_pace_from"
+                      @change="handleFilterChange"
+                      pattern="^([0-9]*[0-9]):([0-5][0-9])$"
+                      placeholder="mm:ss"
+                      type="text"
+                      @keyup.enter="onFilter"
+                    />
+                    <span>{{ $t('workouts.TO') }}</span>
+                    <input
+                      min="0"
+                      name="max_pace_to"
+                      :disabled="disablePaceInputs"
+                      :value="$route.query.max_pace_to"
+                      @change="handleFilterChange"
+                      pattern="^([0-9]*[0-9]):([0-5][0-9])$"
+                      placeholder="mm:ss"
+                      type="text"
+                      @keyup.enter="onFilter"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -352,6 +441,7 @@
   import type { IAuthUserProfile, TVisibilityLevels } from '@/types/user'
   import { sortEquipments } from '@/utils/equipments'
   import { getLocationFromOsmId } from '@/utils/geocode.ts'
+  import { sportsWithPace } from '@/utils/sports.ts'
   import { units } from '@/utils/units'
   import { getAllVisibilityLevels } from '@/utils/visibility_levels.ts'
 
@@ -360,9 +450,9 @@
     translatedSports: ITranslatedSport[]
   }
   const props = defineProps<Props>()
-  const { authUser } = toRefs(props)
+  const { authUser, translatedSports } = toRefs(props)
 
-  const emit = defineEmits(['filter'])
+  const emit = defineEmits(['filter', 'updateSportWithPace'])
 
   const route = useRoute()
   const router = useRouter()
@@ -388,6 +478,9 @@
   const geocodeLoading: ComputedRef<boolean> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.GEOCODE_LOADING]
   )
+  const sportId: Ref<string> = ref('')
+  const disablePaceInputs: Ref<boolean> = ref(true)
+  const displayMoreFilters: Ref<boolean> = ref(false)
 
   function handleFilterChange(event: Event) {
     const name = (event.target as HTMLInputElement).name
@@ -421,8 +514,41 @@
     }
     location.value = newLocation.display_name || ''
   }
+  function updateOrderBy(sportWithPace: boolean) {
+    if (params.order_by === 'ave_speed' && sportWithPace) {
+      params.order_by = 'ave_pace'
+    }
+    if (params.order_by === 'ave_pace' && !sportWithPace) {
+      params.order_by = 'ave_speed'
+    }
+  }
+  function handleSportChange(event: Event) {
+    sportId.value = (event.target as HTMLInputElement).value
+    let selectedSport = undefined
+    if (sportId.value === '') {
+      delete params.sport_id
+      updateOrderBy(false)
+    } else {
+      params.sport_id = sportId.value
+      selectedSport = translatedSports.value.find(
+        (sport) => sport.id === +sportId.value
+      )
+    }
+    if (selectedSport && sportsWithPace.includes(selectedSport.label)) {
+      disablePaceInputs.value = false
+      updateOrderBy(true)
+    } else {
+      delete params.ave_pace_from
+      delete params.ave_pace_to
+      delete params.max_pace_from
+      delete params.max_pace_to
+      disablePaceInputs.value = true
+      updateOrderBy(false)
+    }
+  }
   function onFilter() {
     emit('filter')
+    emit('updateSportWithPace', sportId.value)
     if ('page' in params) {
       params['page'] = '1'
     }
@@ -431,6 +557,7 @@
   function onClearFilter() {
     location.value = ''
     radius.value = ''
+    sportId.value = ''
     emit('filter')
     router.push({ path: '/workouts', query: {} })
   }
@@ -450,6 +577,9 @@
       })
     return equipmentTypes
   }
+  function toggleMoreFilters() {
+    displayMoreFilters.value = !displayMoreFilters.value
+  }
 
   watch(
     () => route.query,
@@ -467,11 +597,20 @@
       if (result.display_name) {
         location.value = result.display_name
         radius.value = (route.query.radius as string) || ''
-        return
       }
+    } else {
+      location.value = ''
+      radius.value = ''
     }
-    location.value = ''
-    radius.value = ''
+    if (route.query.sport_id) {
+      sportId.value = route.query.sport_id as string
+      const selectedSport = translatedSports.value.find(
+        (sport) => sport.id === +sportId.value
+      )
+      disablePaceInputs.value = !(
+        selectedSport && sportsWithPace.includes(selectedSport.label)
+      )
+    }
   })
   onMounted(() => {
     const filter = document.getElementById('from')
@@ -550,19 +689,32 @@
       border-color: var(--disabled-radius-border);
     }
 
+    .additional-filters {
+      display: flex;
+      flex-direction: column;
+      .additional-filters-btn {
+        display: flex;
+        align-items: center;
+        gap: $default-padding * 0.5;
+        padding-left: $default-padding;
+        font-weight: bold;
+      }
+      .additional-filters-filters {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+
     @media screen and (max-width: $medium-limit) {
       .form {
         .form-all-items {
           flex-direction: row;
-          padding-top: $default-padding * 0.5;
-          justify-content: center;
-
           .form-items-group {
-            flex-grow: 1;
+            margin-top: 20px;
             padding: 0 $default-padding * 0.5;
-            height: 100%;
 
             .form-item {
+              max-width: 205px;
               label,
               span {
                 font-size: 0.9em;
@@ -573,8 +725,9 @@
                 justify-content: normal;
                 padding: 0;
 
-                input {
-                  width: 85%;
+                input,
+                select {
+                  width: 90%;
                 }
                 span {
                   padding: 0;
@@ -584,6 +737,23 @@
 
             .form-item-text {
               padding-top: 0;
+            }
+          }
+
+          .additional-filters {
+            .additional-filters-filters {
+              flex-direction: row;
+              gap: $default-padding;
+              .form-items-group {
+                margin-top: 0;
+              }
+              label {
+                height: 40px;
+                word-break: break-word;
+              }
+              .form-item {
+                width: 100%;
+              }
             }
           }
         }
@@ -604,7 +774,9 @@
           padding-top: 0;
 
           .form-items-group {
+            margin-top: 0;
             .form-item {
+              max-width: initial;
               label {
                 font-size: 1em;
               }
@@ -628,6 +800,18 @@
                 width: 100%;
               }
             }
+          }
+        }
+      }
+      .additional-filters {
+        .additional-filters-filters {
+          flex-direction: column !important;
+          .form-item {
+            width: 100% !important;
+          }
+
+          label {
+            height: initial !important;
           }
         }
       }

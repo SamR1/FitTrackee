@@ -332,6 +332,7 @@ def get_authenticated_user_profile(
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
           "date_format": "dd/MM/yyyy",
           "display_ascent": true,
+          "display_speed_with_pace": false,
           "email": "sam@example.com",
           "email_to_confirm": null,
           "first_name": null,
@@ -477,6 +478,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
           "date_format": "dd/MM/yyyy",
           "display_ascent": true,
+          "display_speed_with_pace": false,
           "email": "sam@example.com",
           "email_to_confirm": null,
           "first_name": null,
@@ -672,6 +674,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
           "date_format": "dd/MM/yyyy",
           "display_ascent": true,
+          "display_speed_with_pace": false,
           "email": "sam@example.com",
           "email_to_confirm": null,
           "first_name": null,
@@ -929,6 +932,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
           "date_format": "MM/dd/yyyy",
           "display_ascent": true,
+          "display_speed_with_pace": false,
           "email": "sam@example.com",
           "email_to_confirm": null,
           "first_name": null,
@@ -1032,6 +1036,9 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
                   (``public``, ``followers_only``, ``private``)
     :<json string date_format: the format used to display dates in the app
     :<json boolean display_ascent: display highest ascent records and total
+    :<json boolean display_speed_with_pace: display speed with pace in workout
+                   detail, sport statistics and records (for following sports:
+                   Hiking, Running, Trail and Walking)
     :<json boolean hide_profile_in_users_directory: if ``true``, user does not
                   appear in users directory
     :<json boolean hr_visibility: heart rate visibility
@@ -1076,6 +1083,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "analysis_visibility",
         "date_format",
         "display_ascent",
+        "display_speed_with_pace",
         "hide_profile_in_users_directory",
         "hr_visibility",
         "imperial_units",
@@ -1114,6 +1122,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     hr_visibility = post_data.get("hr_visibility")
     segments_creation_event = post_data.get("segments_creation_event")
     split_workout_charts = post_data.get("split_workout_charts")
+    display_speed_with_pace = post_data.get("display_speed_with_pace")
     missing_elevations_processing = post_data.get(
         "missing_elevations_processing"
     )
@@ -1144,6 +1153,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.hr_visibility = VisibilityLevel(hr_visibility)
         auth_user.segments_creation_event = segments_creation_event
         auth_user.split_workout_charts = split_workout_charts
+        auth_user.display_speed_with_pace = display_speed_with_pace
         auth_user.missing_elevations_processing = missing_elevations_processing
         db.session.commit()
 
@@ -1361,6 +1371,7 @@ def edit_user_notifications_preferences(
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
           "date_format": "dd/MM/yyyy",
           "display_ascent": true,
+          "display_speed_with_pace": false,
           "email": "sam@example.com",
           "email_to_confirm": null,
           "first_name": null,
@@ -1542,6 +1553,7 @@ def edit_user_messages_preferences(
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
           "date_format": "dd/MM/yyyy",
           "display_ascent": true,
+          "display_speed_with_pace": false,
           "email": "sam@example.com",
           "email_to_confirm": null,
           "first_name": null,

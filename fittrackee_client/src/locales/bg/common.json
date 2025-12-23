@@ -17,6 +17,7 @@
   "LAST_UPDATE": "Последна актуализация",
   "MINUTES": "минута|минути",
   "NEXT": "следващ",
+  "NO": "Не",
   "NO_DESCRIPTION": "няма описание",
   "NO_NOTES": "Без бележки",
   "PREVIOUS": "предишен",
@@ -35,5 +36,6 @@
     }
   },
   "TOTAL": "Общо",
-  "TOTAL_DURATION_WITH_PAUSES": "обща продължителност с паузите"
+  "TOTAL_DURATION_WITH_PAUSES": "обща продължителност с паузите",
+  "YES": "Да"
 }

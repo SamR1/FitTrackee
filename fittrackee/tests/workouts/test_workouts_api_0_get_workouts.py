@@ -1360,6 +1360,74 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         self.assert_400(response, "invalid value for visibility")
 
+    def test_it_gets_workouts_with_average_pace_filter(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,  # paces: 08:20
+        workout_running_2_user_1: Workout,  # paces: 10:00
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?ave_pace_from=08:00&ave_pace_to=09:00",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert (
+            data["data"]["workouts"][0]["id"]
+            == workout_running_user_1.short_id
+        )
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
+        }
+
+    def test_it_gets_workouts_with_max_pace_filter(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,  # paces: 08:20
+        workout_running_2_user_1: Workout,  # paces: 10:00
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?max_pace_from=10:00&max_pace_to=11:00",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert (
+            data["data"]["workouts"][0]["id"]
+            == workout_running_2_user_1.short_id
+        )
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
+        }
+
 
 class TestGetWorkoutsWithLocationFilters(WorkoutApiTestCaseMixin):
     def test_it_does_not_return_workouts_when_to_far_from_given_coordinates(
@@ -1622,6 +1690,8 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_distance": None,
             "average_duration": None,
             "average_speed": None,
+            "average_pace": None,
+            "best_pace": None,
             "count": 0,
             "max_speed": None,
             "total_ascent": None,
@@ -1660,7 +1730,9 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": workout_cycling_user_1.descent,
             "average_distance": workout_cycling_user_1.distance,
             "average_duration": str(workout_cycling_user_1.moving),
+            "average_pace": None,
             "average_speed": workout_cycling_user_1.ave_speed,
+            "best_pace": None,
             "count": 1,
             "max_speed": workout_cycling_user_1.max_speed,
             "total_ascent": workout_cycling_user_1.ascent,
@@ -1674,7 +1746,60 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             == data["data"]["statistics"]["current_page"]
         )
 
-    def test_it_gets_workouts_with_stats_with_outdoor_tennis_workout(
+    @pytest.mark.parametrize("input_display_speed_with_pace", [True, False])
+    def test_it_gets_workouts_with_stats_with_one_running_tennis_workout(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_running_2_user_1: Workout,
+        input_display_speed_with_pace: bool,
+    ) -> None:
+        user_1.display_speed_with_pace = input_display_speed_with_pace
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?with_statistics=true",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["statistics"]["current_page"] == {
+            "average_ascent": None,
+            "average_descent": None,
+            "average_distance": workout_running_2_user_1.distance,
+            "average_duration": str(workout_running_2_user_1.moving),
+            "average_pace": str(workout_running_2_user_1.ave_pace),
+            "average_speed": (
+                workout_running_2_user_1.ave_speed
+                if input_display_speed_with_pace
+                else None
+            ),
+            "best_pace": str(workout_running_2_user_1.best_pace),
+            "count": 1,
+            "max_speed": (
+                workout_running_2_user_1.max_speed
+                if input_display_speed_with_pace
+                else None
+            ),
+            "total_ascent": None,
+            "total_descent": None,
+            "total_distance": workout_running_2_user_1.distance,
+            "total_duration": str(workout_running_2_user_1.moving),
+            "total_sports": 1,
+        }
+        assert (
+            data["data"]["statistics"]["all"]
+            == data["data"]["statistics"]["current_page"]
+        )
+
+    def test_it_gets_workouts_with_stats_with_one_outdoor_tennis_workout(
         self,
         app: Flask,
         user_1: User,
@@ -1699,7 +1824,9 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": None,
             "average_distance": tennis_workout.distance,
             "average_duration": str(tennis_workout.moving),
+            "average_pace": None,
             "average_speed": tennis_workout.ave_speed,
+            "best_pace": None,
             "count": 1,
             "max_speed": tennis_workout.max_speed,
             "total_ascent": None,
@@ -1752,7 +1879,9 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_duration": str(
                 (workout_cycling_user_1.duration + tennis_workout.duration) / 2
             ),
+            "average_pace": None,
             "average_speed": None,
+            "best_pace": None,
             "count": 2,
             "max_speed": None,
             "total_ascent": workout_cycling_user_1.ascent,
@@ -1796,7 +1925,9 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": 125.0,
             "average_distance": 7.8,
             "average_duration": "0:38:44",
+            "average_pace": None,
             "average_speed": 18.79,
+            "best_pace": None,
             "count": 5,
             "max_speed": 36.0,
             "total_ascent": 340.0,
@@ -1811,6 +1942,8 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_distance": 8.17,
             "average_duration": "0:41:53",
             "average_speed": 17.4,
+            "average_pace": None,
+            "best_pace": None,
             "count": 6,
             "max_speed": 36.00,
             "total_ascent": 440.0,
@@ -1853,7 +1986,9 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": 130.0,
             "average_distance": 7.71,
             "average_duration": "0:38:20",
+            "average_pace": None,
             "average_speed": 17.42,
+            "best_pace": None,
             "count": 7,
             "max_speed": 36.0,
             "total_ascent": 560.0,
@@ -1899,7 +2034,9 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": 140.0,
             "average_distance": 7.5,
             "average_duration": "0:37:20",
+            "average_pace": None,
             "average_speed": 14.0,
+            "best_pace": None,
             "count": 2,
             "max_speed": 17.58,
             "total_ascent": 220.0,
@@ -1913,7 +2050,9 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": 130.0,
             "average_distance": 7.71,
             "average_duration": "0:38:20",
+            "average_pace": None,
             "average_speed": 17.42,
+            "best_pace": None,
             "count": 7,
             "max_speed": 36.00,
             "total_ascent": 560.0,
@@ -1957,7 +2096,9 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": 190.0,
             "average_distance": 5.5,
             "average_duration": "0:13:20",
+            "average_pace": None,
             "average_speed": 21.0,
+            "best_pace": None,
             "count": 2,
             "max_speed": 36.0,
             "total_ascent": 220.0,
@@ -1996,7 +2137,9 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": 110.0,
             "average_distance": 6.5,
             "average_duration": "0:58:32",
+            "average_pace": None,
             "average_speed": 11.19,
+            "best_pace": None,
             "count": 2,
             "max_speed": 17.58,
             "total_ascent": 160.0,
@@ -2036,7 +2179,9 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": workout["descent"],
             "average_distance": workout["distance"],
             "average_duration": workout["duration"],
+            "average_pace": None,
             "average_speed": workout["ave_speed"],
+            "best_pace": None,
             "count": 1,
             "max_speed": workout["max_speed"],
             "total_ascent": workout["ascent"],
@@ -2076,7 +2221,9 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": workout["descent"],
             "average_distance": workout["distance"],
             "average_duration": workout["duration"],
+            "average_pace": None,
             "average_speed": workout["ave_speed"],
+            "best_pace": None,
             "count": 1,
             "max_speed": workout["max_speed"],
             "total_ascent": workout["ascent"],
@@ -2099,6 +2246,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
+        user_1.display_speed_with_pace = True
         workout_cycling_user_1.max_speed = 25
         workout_running_user_1.max_speed = 11
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2120,8 +2268,10 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": workout["descent"],
             "average_distance": workout["distance"],
             "average_duration": workout["duration"],
+            "average_pace": workout["ave_pace"],
             "average_speed": workout["ave_speed"],
             "count": 1,
+            "best_pace": workout["best_pace"],
             "max_speed": workout["max_speed"],
             "total_ascent": workout["ascent"],
             "total_descent": workout["descent"],
@@ -2162,8 +2312,10 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": workout["descent"],
             "average_distance": workout["distance"],
             "average_duration": workout["duration"],
+            "average_pace": workout["ave_pace"],
             "average_speed": workout["ave_speed"],
             "count": 1,
+            "best_pace": workout["best_pace"],
             "max_speed": workout["max_speed"],
             "total_ascent": workout["ascent"],
             "total_descent": workout["descent"],
@@ -2202,8 +2354,10 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": workout["descent"],
             "average_distance": workout["distance"],
             "average_duration": workout["duration"],
+            "average_pace": None,
             "average_speed": workout["ave_speed"],
             "count": 1,
+            "best_pace": None,
             "max_speed": workout["max_speed"],
             "total_ascent": workout["ascent"],
             "total_descent": workout["descent"],
@@ -2249,8 +2403,10 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": workout["descent"],
             "average_distance": workout["distance"],
             "average_duration": workout["duration"],
+            "average_pace": None,
             "average_speed": workout["ave_speed"],
             "count": 1,
+            "best_pace": None,
             "max_speed": workout["max_speed"],
             "total_ascent": workout["ascent"],
             "total_descent": workout["descent"],
@@ -2300,8 +2456,10 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": 50.0,
             "average_distance": 9.0,
             "average_duration": "1:18:48",
+            "average_pace": None,
             "average_speed": 7.61,
             "count": 2,
+            "best_pace": None,
             "max_speed": 10.42,
             "total_ascent": 140.0,
             "total_descent": 100.0,
@@ -2350,8 +2508,10 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": 50.0,
             "average_distance": 9.0,
             "average_duration": "1:18:48",
+            "average_pace": None,
             "average_speed": 7.61,
             "count": 2,
+            "best_pace": None,
             "max_speed": 10.42,
             "total_ascent": 140.0,
             "total_descent": 100.0,
@@ -2397,8 +2557,10 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": workout["descent"],
             "average_distance": workout["distance"],
             "average_duration": workout["duration"],
+            "average_pace": None,
             "average_speed": workout["ave_speed"],
             "count": 1,
+            "best_pace": None,
             "max_speed": workout["max_speed"],
             "total_ascent": workout["ascent"],
             "total_descent": workout["descent"],
@@ -2440,8 +2602,10 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": 120.0,
             "average_distance": 11.0,
             "average_duration": "1:20:00",
+            "average_pace": None,
             "average_speed": None,
             "count": 2,
+            "best_pace": None,
             "max_speed": None,
             "total_ascent": float(workout_cycling_user_1.ascent),
             "total_descent": float(workout_cycling_user_1.descent),
@@ -2487,8 +2651,10 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": 133.33,
             "average_distance": 8.2,
             "average_duration": "0:55:20",
+            "average_pace": None,
             "average_speed": None,
             "count": 5,
+            "best_pace": None,
             "max_speed": None,
             "total_ascent": 260.0,
             "total_descent": 400.0,
@@ -2501,8 +2667,10 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": 130.0,
             "average_distance": 8.25,
             "average_duration": "0:46:03",
+            "average_pace": None,
             "average_speed": None,
             "count": 8,
+            "best_pace": None,
             "max_speed": None,
             "total_ascent": 560.0,
             "total_descent": 780.0,
@@ -2539,7 +2707,9 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_distance": 8.33,
             "average_duration": "0:30:34",
             "average_speed": 21.05,
+            "average_pace": None,
             "count": 3,
+            "best_pace": None,
             "max_speed": 35.16,
             "total_ascent": 300.0,
             "total_descent": 380.0,
@@ -2552,14 +2722,205 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "average_descent": 130.0,
             "average_distance": 8.25,
             "average_duration": "0:46:03",
+            "average_pace": None,
             "average_speed": None,
             "count": 8,
+            "best_pace": None,
             "max_speed": None,
             "total_ascent": 560.0,
             "total_descent": 780.0,
             "total_distance": 66.0,
             "total_duration": "6:08:24",
             "total_sports": 2,
+        }
+
+    @pytest.mark.parametrize("input_display_speed_with_pace", [True, False])
+    def test_it_gets_workouts_with_different_sports(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        sport_3_cycling_transport: Sport,
+        sport_4_paragliding: Sport,
+        sport_5_outdoor_tennis: Sport,
+        seven_workouts_user_1: List[Workout],  # without pace
+        workout_running_user_1: Workout,  # with pace. Speed depends on preferences # noqa
+        workout_outdoor_tennis_user_1: Workout,  # without pace and elevation
+        workout_paragliding_user_1: Workout,  # without pace
+        input_display_speed_with_pace: bool,
+    ) -> None:
+        user_1.display_speed_with_pace = input_display_speed_with_pace
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?with_statistics=true",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 5
+        assert data["data"]["statistics"]["current_page"] == {
+            "average_ascent": 40,
+            "average_descent": 20.0,
+            "average_distance": 8.9,
+            "average_duration": "1:22:00",
+            "average_pace": None,
+            "average_speed": None,
+            "count": 5,
+            "best_pace": None,
+            "max_speed": None,
+            "total_ascent": 40.0,
+            "total_descent": 20.0,
+            "total_distance": 44.5,
+            "total_duration": "6:50:00",
+            "total_sports": 4,
+        }
+        assert data["data"]["statistics"]["all"] == {
+            "average_ascent": 93.33,
+            "average_descent": 130.0,
+            "average_distance": 8.05,
+            "average_duration": "0:52:50",
+            "average_speed": None,
+            "average_pace": None,
+            "count": 10,
+            "best_pace": None,
+            "max_speed": None,
+            "total_ascent": 560.0,
+            "total_descent": 780.0,
+            "total_distance": 80.5,
+            "total_duration": "8:48:24",
+            "total_sports": 4,
+        }
+        assert data["pagination"] == {
+            "has_next": True,
+            "has_prev": False,
+            "page": 1,
+            "pages": 2,
+            "total": 10,
+        }
+
+    @pytest.mark.parametrize("input_display_speed_with_pace", [False, True])
+    def test_it_gets_workouts_when_sport_is_only_running(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,
+        workout_running_2_user_1: Workout,
+        input_display_speed_with_pace: bool,
+    ) -> None:
+        """
+        It does not return speed for sports with pace, regardless user
+        preferences
+        """
+        user_1.display_speed_with_pace = input_display_speed_with_pace
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?with_statistics=true",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 2
+        assert data["data"]["statistics"]["current_page"] == {
+            "average_ascent": None,
+            "average_descent": None,
+            "average_distance": 11.0,
+            "average_duration": "1:40:00",
+            "average_pace": "0:09:10",
+            "average_speed": None,
+            "count": 2,
+            "best_pace": "0:08:20",
+            "max_speed": None,
+            "total_ascent": None,
+            "total_descent": None,
+            "total_distance": 22.0,
+            "total_duration": "3:20:00",
+            "total_sports": 1,
+        }
+        assert (
+            data["data"]["statistics"]["all"]
+            == data["data"]["statistics"]["current_page"]
+        )
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 2,
+        }
+
+    def test_it_gets_workouts_when_sport_id_in_running_and_more_than_one_page_is_returned(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,
+        workout_running_2_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/workouts?with_statistics=true&per_page=1&sport_id={sport_2_running.id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["statistics"]["current_page"] == {
+            "average_ascent": None,
+            "average_descent": None,
+            "average_distance": 10.0,
+            "average_duration": "1:40:00",
+            "average_pace": "0:10:00",
+            "average_speed": None,
+            "count": 1,
+            "best_pace": "0:10:00",
+            "max_speed": None,
+            "total_ascent": None,
+            "total_descent": None,
+            "total_distance": 10.0,
+            "total_duration": "1:40:00",
+            "total_sports": 1,
+        }
+        assert data["data"]["statistics"]["all"] == {
+            "average_ascent": None,
+            "average_descent": None,
+            "average_distance": 11.0,
+            "average_duration": "1:40:00",
+            "average_pace": "0:09:10",
+            "average_speed": None,
+            "count": 2,
+            "best_pace": "0:08:20",
+            "max_speed": None,
+            "total_ascent": None,
+            "total_descent": None,
+            "total_distance": 22.0,
+            "total_duration": "3:20:00",
+            "total_sports": 1,
+        }
+        assert data["pagination"] == {
+            "has_next": True,
+            "has_prev": False,
+            "page": 1,
+            "pages": 2,
+            "total": 2,
         }
 
 

@@ -31,6 +31,30 @@
     </div>
     <div
       class="workout-data"
+      v-if="workoutObject.avePace !== null && workoutObject.maxPace !== null"
+    >
+      <img
+        class="chronometer"
+        src="/img/workouts/chronometer.svg"
+        :alt="$t('workouts.PACE')"
+      />
+      <span class="label"> {{ $t('workouts.AVERAGE_PACE') }} </span>:
+      <Pace
+        :pace="workoutObject.avePace"
+        :strong="true"
+        :useImperialUnits="useImperialUnits"
+      />
+      <WorkoutRecord :workoutObject="workoutObject" recordType="AP" /><br />
+      <span class="label"> {{ $t('workouts.BEST_PACE') }} </span>:
+      <Pace
+        :pace="workoutObject.maxPace"
+        :strong="true"
+        :useImperialUnits="useImperialUnits"
+      />
+      <WorkoutRecord :workoutObject="workoutObject" recordType="BP" />
+    </div>
+    <div
+      class="workout-data"
       v-if="workoutObject.aveSpeed !== null && workoutObject.maxSpeed !== null"
     >
       <i class="fa fa-tachometer" aria-hidden="true" />
@@ -211,7 +235,8 @@
 
     .fa,
     .mountains,
-    .cadence {
+    .cadence,
+    .chronometer {
       min-width: 22px;
     }
     .fa-bolt {

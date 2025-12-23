@@ -12,6 +12,10 @@ from fittrackee.constants import MissingElevationsProcessing
 
 from ...exceptions import WorkoutExceedingValueException, WorkoutFileException
 from ...models import WORKOUT_VALUES_LIMIT, Workout, WorkoutSegment
+from ...utils.convert import (
+    convert_speed_into_pace_duration,
+    convert_speed_into_pace_in_sec_per_meter,
+)
 from ..elevation.open_elevation_service import OpenElevationService
 from .base_workout_with_segment_service import (
     BaseWorkoutWithSegmentsCreationService,
@@ -162,6 +166,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         stopped_speed_threshold: float,
         use_raw_gpx_speed: bool,
         hr_cadence_power_stats: dict,
+        raw_max_speed: Optional[float] = None,
     ) -> Union["Workout", "WorkoutSegment"]:
         gpx_info = self.get_gpx_info(
             parsed_gpx=parsed_gpx,
@@ -171,7 +176,15 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         self.check_gpx_info(gpx_info)
 
         if isinstance(object_to_update, WorkoutSegment):
-            object_to_update.max_speed = (gpx_info.max_speed / 1000) * 3600
+            max_speed = (
+                raw_max_speed
+                if use_raw_gpx_speed and raw_max_speed is not None
+                else (gpx_info.max_speed / 1000) * 3600
+            )
+            object_to_update.max_speed = max_speed
+            object_to_update.best_pace = convert_speed_into_pace_duration(
+                object_to_update.max_speed
+            )
 
         object_to_update.ascent = gpx_info.ascent
         object_to_update.ave_speed = (
@@ -182,6 +195,9 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             )
             / 1000
             * 3600
+        )
+        object_to_update.ave_pace = convert_speed_into_pace_duration(
+            object_to_update.ave_speed
         )
         object_to_update.descent = gpx_info.descent
         object_to_update.distance = gpx_info.distance / 1000
@@ -242,7 +258,11 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         new_workout_segment: "WorkoutSegment",
         first_point: "gpxpy.gpx.GPXTrackPoint",
     ) -> Tuple[
-        timedelta, Optional[datetime], Dict, "MissingElevationsProcessing"
+        timedelta,
+        Optional[datetime],
+        Dict,
+        float,
+        "MissingElevationsProcessing",
     ]:
         points = track_segment.points
         last_point_index = len(points) - 1
@@ -253,6 +273,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         previous_distance = 0.0
         segment_points: List[Dict] = []
         coordinates = []
+        raw_max_speed = 0.0
 
         # Add elevation if:
         # - OpenElevation URL is set
@@ -288,6 +309,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                     raise WorkoutFileException(
                         "error", "<time> is missing in segment"
                     )
+                calculated_speed: Optional[float] = 0.0
                 new_workout_segment.start_date = point.time
                 # if a previous segment exists, calculate stopped time
                 # between the two segments
@@ -295,6 +317,8 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                     stopped_time_between_segments += (
                         point.time - previous_segment_last_point_time
                     )
+            else:
+                calculated_speed = track_segment.get_speed(point_idx)
 
             if update_missing_elevation != MissingElevationsProcessing.NONE:
                 point.elevation = elevations[point_idx]["elevation"]
@@ -311,20 +335,25 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             distance = 0.0 if distance is None else distance
             distance += previous_distance
 
-            calculated_speed = track_segment.get_speed(point_idx)
             speed = (
                 0.0
                 if calculated_speed is None
                 else round((calculated_speed / 1000) * 3600, 2)
             )
+            raw_max_speed = speed if speed > raw_max_speed else raw_max_speed
+            pace = convert_speed_into_pace_in_sec_per_meter(speed)
 
             time_difference = point.time_difference(first_point)
+
+            # All values are calculated and stored regardless the sport.
+            # Serializers filter and return data based on the sport.
             segment_point: Dict = {
                 "distance": distance,
                 "duration": int(time_difference) if time_difference else 0,
                 "elevation": point.elevation,
                 "latitude": point.latitude,
                 "longitude": point.longitude,
+                "pace": pace,
                 "speed": speed,
                 "time": (
                     str(point.time.astimezone(pytz.utc))
@@ -332,7 +361,6 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                     else None
                 ),
             }
-
             if point.extensions:
                 extensions = []
                 for extension in point.extensions:
@@ -391,6 +419,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             stopped_time_between_segments,
             previous_segment_last_point_time,
             hr_cadence_stats,
+            raw_max_speed,
             update_missing_elevation,
         )
 
@@ -428,6 +457,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 stopped_time_between_segments,
                 previous_segment_last_point_time,
                 hr_cadence_power_stats,
+                raw_max_speed,
                 update_missing_elevation,
             ) = self._process_segment_points(
                 segment,
@@ -453,6 +483,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 stopped_speed_threshold=self.stopped_speed_threshold,
                 use_raw_gpx_speed=self.auth_user.use_raw_gpx_speed,
                 hr_cadence_power_stats=hr_cadence_power_stats,
+                raw_max_speed=raw_max_speed,
             )
 
             if (
@@ -528,6 +559,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             hr_cadence_power_stats=hr_cadence_power_stats,
         )
         self.workout.max_speed = max_speed
+        self.workout.best_pace = convert_speed_into_pace_duration(max_speed)
         bounds = track.get_bounds()
         self.workout.bounds = (
             [

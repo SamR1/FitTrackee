@@ -409,7 +409,14 @@ class TestWorkoutUpdateServiceUpdate(RandomMixin):
         db.session.refresh(workout_cycling_user_1)
         assert workout_cycling_user_1.get_workout_data(
             user=user_1, additional_data=True
-        ) == {**initial_data, **updated_data}
+        ) == {
+            **initial_data,
+            **updated_data,
+            "ave_pace": "0:06:00",
+            "best_pace": "0:06:00",
+            "ave_speed": None,
+            "max_speed": None,
+        }
         assert workout_cycling_user_1.equipments == []
 
     @pytest.mark.parametrize(
@@ -631,7 +638,7 @@ class TestWorkoutUpdateServiceUpdateForWorkoutWithoutFile(RandomMixin):
         assert workout_cycling_user_1.ascent is None
         assert workout_cycling_user_1.descent is None
         assert Record.query.filter_by(record_type="HA").first() is None
-        assert Record.query.count() == 4
+        assert Record.query.count() == 6
 
     def test_it_updates_workout_date_when_no_timezone_set(
         self,

@@ -4,7 +4,7 @@ import pytest
 from flask import Flask
 
 from fittrackee.users.models import User
-from fittrackee.workouts.models import Sport, Workout, record_types
+from fittrackee.workouts.models import RECORD_TYPES, Sport, Workout
 
 from ..mixins import ApiTestCaseMixin, WorkoutMixin
 
@@ -109,9 +109,10 @@ class TestGetRecords(ApiTestCaseMixin, WorkoutMixin):
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,
     ) -> None:
-        self.update_workout_with_file_data(workout_cycling_user_1)
+        self.update_workout_with_file_data(workout_running_user_1)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -124,10 +125,10 @@ class TestGetRecords(ApiTestCaseMixin, WorkoutMixin):
         data = json.loads(response.data.decode())
         assert response.status_code == 200
         assert "success" in data["status"]
-        assert len(data["data"]["records"]) == 5
+        assert len(data["data"]["records"]) == 7
         assert {
             record["record_type"] for record in data["data"]["records"]
-        } == set(record_types)
+        } == set(RECORD_TYPES)
 
     def test_it_does_not_return_HA_record_when_sport_is_outdoor_tennis(
         self,
@@ -149,9 +150,34 @@ class TestGetRecords(ApiTestCaseMixin, WorkoutMixin):
         assert response.status_code == 200
         assert "success" in data["status"]
         assert len(data["data"]["records"]) == 4
-        assert "HA" not in [
+        assert set(
             record["record_type"] for record in data["data"]["records"]
-        ]
+        ) == {"AS", "FD", "LD", "MS"}
+
+    def test_it_does_not_return_pace_records_when_sport_is_cycling(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        self.update_workout_with_file_data(workout_cycling_user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/records",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["records"]) == 5
+        assert set(
+            record["record_type"] for record in data["data"]["records"]
+        ) == {"AS", "FD", "HA", "LD", "MS"}
 
     def test_it_gets_no_records_if_user_has_no_workout(
         self,

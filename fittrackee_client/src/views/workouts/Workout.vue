@@ -42,7 +42,7 @@
           <WorkoutSegments
             v-if="!displaySegment && workoutData.workout.segments.length > 1"
             :segments="workoutData.workout.segments"
-            :useImperialUnits="authUser ? authUser.imperial_units : false"
+            :useImperialUnits="displayOptions.useImperialUnits"
           />
           <WorkoutContent
             v-if="isWorkoutOwner && !displaySegment"
@@ -83,6 +83,7 @@
   import WorkoutContent from '@/components/Workout/WorkoutDetail/WorkoutContent.vue'
   import WorkoutSegments from '@/components/Workout/WorkoutDetail/WorkoutSegments.vue'
   import WorkoutUser from '@/components/Workout/WorkoutDetail/WorkoutUser.vue'
+  import useApp from '@/composables/useApp.ts'
   import useAuthUser from '@/composables/useAuthUser'
   import useSports from '@/composables/useSports'
   import { SPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
@@ -102,6 +103,7 @@
   const store = useStore()
 
   const { authUser } = useAuthUser()
+  const { displayOptions } = useApp()
   const { getWorkoutSport, sports } = useSports()
 
   const markerCoordinates: Ref<TCoordinates> = ref({
