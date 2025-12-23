@@ -17,10 +17,7 @@
                 @click="splitCharts = !splitCharts"
               />
             </div>
-            <div
-              class="display-speed"
-              v-if="hasPace && authUser.display_speed_with_pace"
-            >
+            <div class="display-speed" v-if="hasPace && displaySpeedWithPace">
               <label for="display-speed">
                 {{ $t('workouts.SPEED_INSTEAD_OF_PACE') }}:
               </label>
@@ -170,6 +167,7 @@
   const store = useStore()
 
   const { darkTheme } = useApp()
+  const { displayOptions } = useApp()
 
   const plugins = [htmlLegendPlugin, verticalHoverLine] as Plugin<'line'>[]
   const fromKmUnit = getUnitTo('km')
@@ -184,6 +182,9 @@
   const displayedCharts: Ref<HTMLElement[]> = ref([])
   const splitCharts: Ref<boolean> = ref(
     authUser.value.username ? authUser.value.split_workout_charts : false
+  )
+  const displaySpeedWithPace: Ref<boolean> = ref(
+    authUser.value.username ? authUser.value.display_speed_with_pace : false
   )
   const onlyPaceDisplayed = ref(false)
   const displaySpeed = ref(false)
@@ -222,7 +223,7 @@
     getDatasets(
       workoutData.value.chartData,
       t,
-      authUser.value.imperial_units,
+      displayOptions.value.useImperialUnits,
       darkTheme.value,
       splitCharts.value
     )
@@ -381,7 +382,7 @@
               const displayedDatasets = getDisplayedDatasets(context, 'yLeft')
               onlyPaceDisplayed.value =
                 displayedDatasets.length === 1 &&
-                displayedDatasets[0].label === 'pace'
+                displayedDatasets[0].id === 'pace'
               return displayedDatasets.length === 1
             },
             callback: function (value) {
@@ -492,7 +493,7 @@
     handleTooltipOnAllCharts()
   }
   function getUnitTo(unitFrom: TUnit): TUnit {
-    return props.authUser.imperial_units
+    return displayOptions.value.useImperialUnits
       ? units[unitFrom].defaultTarget
       : unitFrom
   }
@@ -557,7 +558,7 @@
       const formattedValue = formatDuration(context.raw, {
         notPadded: true,
       })
-      const unit = authUser.value.imperial_units ? 'min/mi' : 'min/km'
+      const unit = displayOptions.value.useImperialUnits ? 'min/mi' : 'min/km'
       return ` ${context.dataset.label}: ${formattedValue} ${unit}`
     }
     const label = ` ${context.dataset.label}: ${context.formattedValue}`
