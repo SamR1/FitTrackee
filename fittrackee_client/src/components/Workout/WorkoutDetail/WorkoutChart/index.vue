@@ -541,7 +541,7 @@
     const displayedDatasets = getDisplayedDatasets(context, 'yLeft')
     return (
       context.chart.canvas.id === 'line-chart-pace' ||
-      (displayedDatasets.length === 1 && displayedDatasets[0].label === 'pace')
+      (displayedDatasets.length === 1 && displayedDatasets[0].id === 'pace')
     )
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -560,7 +560,7 @@
   function getTooltipLabel(context: any) {
     currentDataPoint.dataIndex = context.dataIndex
     currentDataPoint.datasetIndex = context.datasetIndex
-    currentDataPoint.datasetLabel = `line-chart-${context.dataset.label}`
+    currentDataPoint.datasetLabel = `line-chart-${context.dataset.id}`
     currentDataPoint.x = context.parsed.x
     currentDataPoint.y = context.parsed.y
 
