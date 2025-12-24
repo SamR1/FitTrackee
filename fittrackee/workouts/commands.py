@@ -260,12 +260,19 @@ def refresh_workouts(
             refresh_logger.setLevel(logging.DEBUG)
             refresh_logger.addHandler(handler)
 
-        if app.config["OPEN_ELEVATION_API_URL"]:
+        if (
+            app.config["OPEN_ELEVATION_API_URL"]
+            or app.config["VALHALLA_API_URL"]
+        ):
             click.secho(
-                "\nWarning: Open Elevation API is set.\nIf users have "
-                "enabled missing elevation processing, multiple calls will be "
-                "made to Open Elevation depending on the number of workouts "
-                "to be refreshed, which may result in rate limit errors.",
+                "\nWarning: Open Elevation and/or Valhalla API URLs "
+                "are set.\n"
+                "If users have enabled missing elevation processing, multiple "
+                "calls will be made to the elevation services depending on "
+                "the number of workouts to be refreshed, which may result in "
+                "rate limit errors.\n"
+                "Adjust the number of workouts to refresh with '--per-page' "
+                f"option if necessary (current value: {per_page}).",
                 fg="yellow",
                 bold=True,
             )
