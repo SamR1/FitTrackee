@@ -231,6 +231,9 @@
       maxSpeed: segment ? segment.max_speed : workout.max_speed,
       minAlt: segment ? segment.min_alt : workout.min_alt,
       moving: segment ? segment.moving : workout.moving,
+      missingElevationsProcessing: segment
+        ? null
+        : workout.missing_elevations_processing,
       nextUrl: urls.nextUrl,
       originalFile: segment ? null : workout.original_file,
       pauses: segment ? segment.pauses : workout.pauses,

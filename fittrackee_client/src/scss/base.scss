@@ -46,6 +46,10 @@ body {
   min-height: 100vh;
 }
 
+sup {
+  font-size: 0.65em;
+}
+
 a {
   color: var(--app-a-color);
   text-decoration-color: var(--app-a-text-decoration-color);

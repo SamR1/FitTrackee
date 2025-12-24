@@ -17,6 +17,7 @@ from sqlalchemy.sql.expression import nulls_last, text
 from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, appLog, db
+from fittrackee.constants import MissingElevationsProcessing
 from fittrackee.database import PSQL_INTEGER_LIMIT, TZDateTime
 from fittrackee.dates import aware_utc_now
 from fittrackee.equipments.models import WorkoutEquipment
@@ -353,6 +354,13 @@ class Workout(BaseModel):
     best_pace: Mapped[Optional[timedelta]] = mapped_column(
         nullable=True
     )  # min/km
+    missing_elevations_processing: Mapped[MissingElevationsProcessing] = (
+        mapped_column(
+            Enum(MissingElevationsProcessing, name="elevations_processing"),
+            server_default="NONE",
+            nullable=False,
+        )
+    )
 
     user: Mapped["User"] = relationship(
         "User", lazy="select", single_parent=True
@@ -810,6 +818,9 @@ class Workout(BaseModel):
                 )
                 .order_by(Workout.workout_date.asc())
                 .first()
+            )
+            workout["missing_elevations_processing"] = (
+                self.missing_elevations_processing
             )
 
         else:

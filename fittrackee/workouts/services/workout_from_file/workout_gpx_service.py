@@ -8,6 +8,7 @@ import pytz
 from lxml import etree as ET
 
 from fittrackee import db
+from fittrackee.constants import MissingElevationsProcessing
 
 from ...exceptions import WorkoutExceedingValueException, WorkoutFileException
 from ...models import WORKOUT_VALUES_LIMIT, Workout, WorkoutSegment
@@ -15,6 +16,7 @@ from ...utils.convert import (
     convert_speed_into_pace_duration,
     convert_speed_into_pace_in_sec_per_meter,
 )
+from ..elevation.open_elevation_service import OpenElevationService
 from .base_workout_with_segment_service import (
     BaseWorkoutWithSegmentsCreationService,
 )
@@ -260,6 +262,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         Optional[datetime],
         Dict,
         float,
+        "MissingElevationsProcessing",
     ]:
         points = track_segment.points
         last_point_index = len(points) - 1
@@ -271,6 +274,34 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         segment_points: List[Dict] = []
         coordinates = []
         raw_max_speed = 0.0
+
+        # Add elevation if:
+        # - OpenElevation URL is set
+        # - user preference is set
+        # - and at least one value is missing
+        elevations = []
+        update_missing_elevation = MissingElevationsProcessing.NONE
+
+        if (
+            self.auth_user.missing_elevations_processing
+            != MissingElevationsProcessing.NONE
+        ):
+            open_elevation_service = OpenElevationService()
+            if open_elevation_service.is_enabled and any(
+                point.elevation is None for point in points
+            ):
+                elevations = open_elevation_service.get_elevations(
+                    points,
+                    smooth=(
+                        self.auth_user.missing_elevations_processing
+                        == MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH
+                    ),
+                )
+                update_missing_elevation = (
+                    self.auth_user.missing_elevations_processing
+                    if len(elevations) > 0
+                    else MissingElevationsProcessing.NONE
+                )
 
         for point_idx, point in enumerate(points):
             if point_idx == 0:
@@ -288,6 +319,9 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                     )
             else:
                 calculated_speed = track_segment.get_speed(point_idx)
+
+            if update_missing_elevation != MissingElevationsProcessing.NONE:
+                point.elevation = elevations[point_idx]["elevation"]
 
             distance = (
                 point.distance_3d(previous_point)  # type: ignore[arg-type]
@@ -386,6 +420,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             previous_segment_last_point_time,
             hr_cadence_stats,
             raw_max_speed,
+            update_missing_elevation,
         )
 
     def _process_segments(
@@ -404,6 +439,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         if not self.is_creation and self.workout:
             WorkoutSegment.query.filter_by(workout_id=self.workout.id).delete()
 
+        workout_update_missing_elevation = MissingElevationsProcessing.NONE
         segment_idx = 0
         for segment in segments:
             # ignore segments with no distance
@@ -422,6 +458,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 previous_segment_last_point_time,
                 hr_cadence_power_stats,
                 raw_max_speed,
+                update_missing_elevation,
             ) = self._process_segment_points(
                 segment,
                 stopped_time_between_segments,
@@ -430,6 +467,14 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 new_workout_segment,
                 first_point,
             )
+
+            if (
+                workout_update_missing_elevation
+                == MissingElevationsProcessing.NONE
+                and update_missing_elevation
+                != MissingElevationsProcessing.NONE
+            ):
+                workout_update_missing_elevation = update_missing_elevation
 
             self.set_calculated_data(
                 parsed_gpx=segment,
@@ -449,6 +494,10 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
 
             segment_idx += 1
 
+        if self.workout:
+            self.workout.missing_elevations_processing = (
+                workout_update_missing_elevation
+            )
         return stopped_time_between_segments, max_speed
 
     def _process_file(self) -> "Workout":

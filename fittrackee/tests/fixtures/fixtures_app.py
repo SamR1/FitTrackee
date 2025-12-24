@@ -118,6 +118,8 @@ def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
         monkeypatch.delenv("ENABLE_GEOSPATIAL_FEATURES")
     if os.getenv("API_RATE_LIMITS"):
         monkeypatch.delenv("API_RATE_LIMITS")
+    if os.getenv("OPEN_ELEVATION_API_URL"):
+        monkeypatch.delenv("OPEN_ELEVATION_API_URL")
     yield from get_app(with_config=True)
 
 
@@ -198,6 +200,14 @@ def app_wo_email_activation(monkeypatch: pytest.MonkeyPatch) -> Generator:
 @pytest.fixture
 def app_with_nominatim_url(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv("NOMINATIM_URL", "https://nominatim.example.com")
+    yield from get_app(with_config=True)
+
+
+@pytest.fixture
+def app_with_open_elevation_url(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv(
+        "OPEN_ELEVATION_API_URL", "https://api.open-elevation.example.com"
+    )
     yield from get_app(with_config=True)
 
 

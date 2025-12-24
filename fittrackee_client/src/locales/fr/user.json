@@ -85,6 +85,9 @@
     "BACK_TO_PROFILE": "Revenir au profil",
     "BIO": "Bio",
     "BIRTH_DATE": "Date de naissance",
+
+    "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "Les changements ne s'appliquent seulement aux nouvelles séances ou aux séances actualisées.",
+    "CHANGES_ONLY_TO_NEW_WORKOUTS": "Les changements ne s'appliquent seulement aux nouvelles séances.",
     "CREATED_REPORTS": "Signalements créés",
     "DATE_FORMAT": "Format d'affichage de la date",
     "DISPLAYING_SPEED_IN_ADDITION_TO_PACE": {
@@ -131,6 +134,7 @@
     },
     "MESSAGES_EDITION": "Edition des préférences des messages",
     "MESSAGES_PREFERENCES": "Preferences des messages",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Traitement des altitudes manquantes",
     "MONDAY": "Lundi",
     "NOTIFICATIONS": {
       "account_creation": "Quelqu'un s'est enregistré",
@@ -145,6 +149,7 @@
     "NOTIFICATIONS_EDITION": "Edition des préférences de notification",
     "NOTIFICATION_PREFERENCES": "Préférences de notification",
     "NO_ARCHIVE_UPLOADS": "Pas de chargement d'archives",
+    "NO_ELEVATION_SERVICE_AVAILABLE": "Pas de service pour les altitudes manquantes disponible",
     "NO_SANCTIONS": "Pas de sanctions",
     "PICTURE": "Image de profil",
     "PICTURE_EDITION": "Mise à jour de l'image de profil",

@@ -85,6 +85,8 @@
     "BACK_TO_PROFILE": "Back to profile",
     "BIO": "Bio",
     "BIRTH_DATE": "Birth date",
+    "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "The changes apply only to new or refreshed workouts.",
+    "CHANGES_ONLY_TO_NEW_WORKOUTS": "The changes apply only to new workouts.",
     "CREATED_REPORTS": "Created reports",
     "DATE_FORMAT": "Date display format",
     "DISPLAYING_SPEED_IN_ADDITION_TO_PACE": {
@@ -131,6 +133,7 @@
     },
     "MESSAGES_EDITION": "Message preferences edition",
     "MESSAGES_PREFERENCES": "Messages preferences",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Missing elevations processing",
     "MONDAY": "Monday",
     "NOTIFICATIONS": {
       "account_creation": "Someone registers",
@@ -145,6 +148,7 @@
     "NOTIFICATIONS_EDITION": "Notification preferences edition",
     "NOTIFICATION_PREFERENCES": "Notification preferences",
     "NO_ARCHIVE_UPLOADS": "No archive uploads",
+    "NO_ELEVATION_SERVICE_AVAILABLE": "No service for missing elevations available",
     "NO_SANCTIONS": "No sanctions",
     "PICTURE": "Picture",
     "PICTURE_EDITION": "Picture edition",

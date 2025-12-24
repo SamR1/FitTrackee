@@ -21,6 +21,7 @@ from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, appLog, bcrypt, db
 from fittrackee.comments.models import Comment
+from fittrackee.constants import MissingElevationsProcessing
 from fittrackee.database import TZDateTime
 from fittrackee.dates import aware_utc_now
 from fittrackee.files import get_absolute_file_path
@@ -381,6 +382,13 @@ class User(BaseModel):
     )
     display_speed_with_pace: Mapped[bool] = mapped_column(
         server_default="false", nullable=False
+    )
+    missing_elevations_processing: Mapped[MissingElevationsProcessing] = (
+        mapped_column(
+            Enum(MissingElevationsProcessing, name="elevations_processing"),
+            server_default="NONE",
+            nullable=False,
+        )
     )
 
     workouts: Mapped[List["Workout"]] = relationship(
@@ -964,6 +972,11 @@ class User(BaseModel):
                     else {}
                 ),
                 "display_speed_with_pace": self.display_speed_with_pace,
+                "missing_elevations_processing": (
+                    MissingElevationsProcessing.NONE
+                    if current_app.config["OPEN_ELEVATION_API_URL"] is None
+                    else self.missing_elevations_processing
+                ),
             }
 
         return serialized_user

@@ -9,6 +9,7 @@ import type {
   IUserLightProfile,
   IUserProfile,
   TVisibilityLevels,
+  TMissingElevationsProcessing,
 } from '@/types/user'
 
 export type TFileExtension = 'fit' | 'gpx' | 'kml' | 'tcx'
@@ -113,6 +114,7 @@ export interface IWorkout {
   max_power: number | null
   max_speed: number | null
   min_alt: number | null
+  missing_elevations_processing?: TMissingElevationsProcessing
   modification_date: string | null
   moving: string | null
   next_workout: string | null
@@ -160,6 +162,7 @@ export interface IWorkoutObject {
   maxSpeed: number | null
   mapVisibility: TVisibilityLevels | null | undefined
   minAlt: number | null
+  missingElevationsProcessing: TMissingElevationsProcessing | null | undefined
   moving: string | null
   nextUrl: string | null
   originalFile: TFileExtension | null
