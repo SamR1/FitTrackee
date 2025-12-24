@@ -39,6 +39,9 @@ from fittrackee.workouts.services import WorkoutGpxService
 from fittrackee.workouts.services.elevation.open_elevation_service import (
     OpenElevationService,
 )
+from fittrackee.workouts.services.elevation.valhalla_elevation_service import (
+    ValhallaElevationService,
+)
 from fittrackee.workouts.services.workout_from_file.workout_point import (
     WorkoutPoint,
 )
@@ -75,6 +78,35 @@ OPEN_ELEVATION_RESPONSE = {
         {"elevation": 979.0, "latitude": 44.67842, "longitude": 6.07434},
         {"elevation": 979.0, "latitude": 44.67837, "longitude": 6.07435},
         {"elevation": 975.0, "latitude": 44.67822, "longitude": 6.07442},
+    ]
+}
+VALHALLA_RESPONSE = {
+    "height": [
+        998.0,
+        998.0,
+        994.0,
+        994.0,
+        994.0,
+        993.0,
+        992.0,
+        992.0,
+        987.0,
+        987.0,
+        987.0,
+        987.0,
+        986.0,
+        986.0,
+        986.0,
+        985.0,
+        980.0,
+        980.0,
+        980.0,
+        979.0,
+        981.0,
+        980.0,
+        979.0,
+        979.0,
+        975.0,
     ]
 }
 
@@ -749,9 +781,32 @@ class TestWorkoutGpxServiceProcessFile(
         _, call_kwargs = get_elevations_mock.call_args
         assert call_kwargs == expected_kwargs
 
-    def test_it_does_not_call_open_elevation_service_when_user_preferences_is_none(  # noqa
+    def test_it_calls_valhalla_elevation_service_according_to_user_preferences(
         self,
-        app_with_open_elevation_url: "Flask",
+        app_with_valhalla_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_without_elevation: str,
+    ) -> None:
+        user_1.missing_elevations_processing = (
+            MissingElevationsProcessing.VALHALLA
+        )
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_without_elevation
+        )
+
+        with (
+            patch.object(
+                ValhallaElevationService, "get_elevations", return_value=[]
+            ) as get_elevations_mock,
+        ):
+            service.process_workout()
+
+        get_elevations_mock.assert_called_once()
+
+    def test_it_does_not_call_elevation_services_when_user_preferences_is_none(
+        self,
+        app_with_open_elevation_and_valhalla_url: "Flask",
         sport_1_cycling: Sport,
         user_1: "User",
         gpx_file_without_elevation: str,
@@ -764,11 +819,15 @@ class TestWorkoutGpxServiceProcessFile(
         with (
             patch.object(
                 OpenElevationService, "get_elevations"
-            ) as get_elevations_mock,
+            ) as get_open_elevations_mock,
+            patch.object(
+                OpenElevationService, "get_elevations"
+            ) as get_valhalla_elevations_mock,
         ):
             service.process_workout()
 
-        get_elevations_mock.assert_not_called()
+        get_open_elevations_mock.assert_not_called()
+        get_valhalla_elevations_mock.assert_not_called()
 
     def test_it_creates_workout_and_segment_without_elevation_when_gpx_file_has_no_elevation(  # noqa
         self,
@@ -943,6 +1002,35 @@ class TestWorkoutGpxServiceProcessFile(
         workout = Workout.query.one()
         assert workout.missing_elevations_processing == (
             MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH
+        )
+
+    def test_it_creates_workout_when_user_preference_is_valhalla(
+        self,
+        app_with_valhalla_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_without_elevation: str,
+    ) -> None:
+        user_1.missing_elevations_processing = (
+            MissingElevationsProcessing.VALHALLA
+        )
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_without_elevation
+        )
+
+        with (
+            patch.object(
+                requests,
+                "post",
+                return_value=self.get_response(VALHALLA_RESPONSE),
+            ),
+        ):
+            service.process_workout()
+        db.session.commit()
+
+        workout = Workout.query.one()
+        assert workout.missing_elevations_processing == (
+            MissingElevationsProcessing.VALHALLA
         )
 
     def test_it_creates_workout_and_segment_when_open_elevation_api_returns_empty_list(  # noqa
