@@ -3768,7 +3768,9 @@ def refresh_workout(
 
     """
     try:
-        service = WorkoutFromFileRefreshService(workout, update_weather=True)
+        service = WorkoutFromFileRefreshService(
+            workout, update_weather=True, get_elevation_on_refresh=True
+        )
         updated_workout = service.refresh()
     except WorkoutExceedingValueException as e:
         appLog.error(e.detail)
@@ -3783,6 +3785,8 @@ def refresh_workout(
             appLog.exception("Error when refreshing workout")
             return InternalServerErrorResponse(e.message)
         return InvalidPayloadErrorResponse(e.message, e.status)
+    except Exception as e:
+        return handle_error_and_return_response(e, db=db)
     return {
         "status": "success",
         "data": {

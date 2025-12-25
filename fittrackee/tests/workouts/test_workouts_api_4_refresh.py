@@ -7,6 +7,9 @@ import pytest
 
 from fittrackee import db
 from fittrackee.visibility_levels import VisibilityLevel
+from fittrackee.workouts.services.workouts_from_file_refresh_service import (
+    WorkoutFromFileRefreshService,
+)
 
 from ..utils import jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin
@@ -19,6 +22,33 @@ if TYPE_CHECKING:
 
 
 class TestRefreshWorkout(WorkoutApiTestCaseMixin):
+    def test_it_instantiates_workout_from_file_service(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        with (
+            patch.object(
+                WorkoutFromFileRefreshService, "__init__", return_value=None
+            ) as gpx_service_init_mock,
+        ):
+            client.post(
+                f"/api/workouts/{workout_cycling_user_1.short_id}/refresh",
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        gpx_service_init_mock.assert_called_once_with(
+            workout_cycling_user_1,
+            update_weather=True,
+            get_elevation_on_refresh=True,
+        )
+
     def test_it_returns_404_when_workout_not_found(
         self, app: "Flask", user_1: "User"
     ) -> None:
@@ -26,8 +56,8 @@ class TestRefreshWorkout(WorkoutApiTestCaseMixin):
             app, user_1.email
         )
 
-        response = client.delete(
-            f"/api/workouts/{self.random_short_id()}",
+        response = client.post(
+            f"/api/workouts/{self.random_short_id()}/refresh",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -42,8 +72,8 @@ class TestRefreshWorkout(WorkoutApiTestCaseMixin):
     ) -> None:
         client = app.test_client()
 
-        response = client.delete(
-            f"/api/workouts/{workout_cycling_user_1.short_id}"
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/refresh",
         )
 
         self.assert_401(response)
@@ -60,8 +90,8 @@ class TestRefreshWorkout(WorkoutApiTestCaseMixin):
             app, user_2.email
         )
 
-        response = client.delete(
-            f"/api/workouts/{workout_cycling_user_1.short_id}",
+        response = client.post(
+            f"/api/workouts/{workout_cycling_user_1.short_id}/refresh",
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 

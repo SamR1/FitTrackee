@@ -31,7 +31,12 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
     recalculate values ang regenerate geometry and points
     """
 
-    def __init__(self, workout: "Workout", update_weather: bool = False):
+    def __init__(
+        self,
+        workout: "Workout",
+        update_weather: bool = False,
+        get_elevation_on_refresh: bool = True,
+    ):
         if not workout.original_file:
             raise WorkoutRefreshException(
                 "error", "workout without original file"
@@ -50,6 +55,7 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
             else self.sport_preferences.stopped_speed_threshold
         )
         self.update_weather = update_weather
+        self.get_elevation_on_refresh = get_elevation_on_refresh
 
     def get_file_content(self, file_extension: str) -> Union[bytes, IO[bytes]]:
         try:
@@ -80,6 +86,7 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
             sport_id=self.sport.id,
             stopped_speed_threshold=self.stopped_speed_threshold,
             get_weather=self.update_weather,
+            get_elevation_on_refresh=self.get_elevation_on_refresh,
         )
 
         # extract and calculate data from provided file
@@ -119,6 +126,7 @@ class WorkoutsFromFileRefreshService:
         date_from: Optional[datetime] = None,
         date_to: Optional[datetime] = None,
         with_weather: bool = False,
+        with_elevation: bool = False,
         verbose: bool = False,
     ) -> None:
         self.per_page: Optional[int] = per_page
@@ -130,6 +138,7 @@ class WorkoutsFromFileRefreshService:
         self.date_from: Optional["datetime"] = date_from
         self.date_to: Optional["datetime"] = date_to
         self.with_weather: bool = with_weather
+        self.with_elevation: bool = with_elevation
         self.logger: "Logger" = logger
         self.verbose: bool = verbose
 
@@ -178,7 +187,9 @@ class WorkoutsFromFileRefreshService:
 
             try:
                 service = WorkoutFromFileRefreshService(
-                    workout, update_weather=self.with_weather
+                    workout,
+                    update_weather=self.with_weather,
+                    get_elevation_on_refresh=self.with_elevation,
                 )
                 service.refresh()
                 updated_workouts += 1

@@ -37,6 +37,7 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
         # in case of refresh (workout is None on creation)
         workout: Optional["Workout"],
         get_weather: bool = True,
+        get_elevation_on_refresh: bool = False,  # for refresh with CLI
     ) -> None:
         self.auth_user = auth_user
         self.sport_id = sport_id
@@ -47,6 +48,7 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
         self.start_point: Optional["WorkoutPoint"] = None
         self.end_point: Optional["WorkoutPoint"] = None
         self.get_weather = get_weather
+        self.get_elevation_on_refresh = get_elevation_on_refresh
         self.workout = workout
         self.is_creation = workout is None
 

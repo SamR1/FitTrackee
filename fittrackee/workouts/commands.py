@@ -232,6 +232,21 @@ def process_queued_archive_upload(task_short_id: str, verbose: bool) -> None:
     default=False,
 )
 @click.option(
+    "--with-elevation",
+    help=(
+        "enable elevation update when elevation provider is set and "
+        "workout has no elevation data. "
+        "If disabled, existing elevation are not removed when elevation data "
+        "is missing in original file. "
+        "WARNING: depending on subscription, the rate limit can be reached, "
+        "leading to errors and preventing elevation data being collected "
+        "during next uploads until the limit is reset (default: disabled)"
+    ),
+    is_flag=True,
+    show_default=True,
+    default=False,
+)
+@click.option(
     "--verbose",
     "-v",
     "verbose",
@@ -249,6 +264,7 @@ def refresh_workouts(
     user: Optional[str] = None,
     extension: Optional[str] = None,
     with_weather: bool = False,
+    with_elevation: bool = False,
     verbose: bool = False,
 ) -> None:
     """
@@ -260,25 +276,33 @@ def refresh_workouts(
             refresh_logger.setLevel(logging.DEBUG)
             refresh_logger.addHandler(handler)
 
-        if (
-            app.config["OPEN_ELEVATION_API_URL"]
-            or app.config["VALHALLA_API_URL"]
-        ):
-            click.secho(
-                "\nWarning: Open Elevation and/or Valhalla API URLs "
-                "are set.\n"
-                "If users have enabled missing elevation processing, multiple "
-                "calls will be made to the elevation services depending on "
-                "the number of workouts to be refreshed, which may result in "
-                "rate limit errors.\n"
-                "Adjust the number of workouts to refresh with '--per-page' "
-                f"option if necessary (current value: {per_page}).",
-                fg="yellow",
-                bold=True,
-            )
-            if not click.confirm("Do you want to continue?"):
-                click.echo("Aborted!")
-                sys.exit(0)
+        if with_elevation:
+            if (
+                app.config["OPEN_ELEVATION_API_URL"]
+                or app.config["VALHALLA_API_URL"]
+            ):
+                click.secho(
+                    "\nWarning: Open Elevation and/or Valhalla API "
+                    "are set.\n"
+                    "If users have enabled missing elevation processing, "
+                    "multiple calls will be made to the elevation services "
+                    "depending on the number of workouts to be refreshed, "
+                    "which may result in rate limit errors.\n"
+                    "Adjust the number of workouts to refresh with "
+                    "'--per-page' option if necessary "
+                    f"(current value: {per_page}).",
+                    fg="yellow",
+                    bold=True,
+                )
+                if not click.confirm("Do you want to continue?"):
+                    click.echo("Aborted!")
+                    sys.exit(0)
+            else:
+                click.secho(
+                    "\nWarning: '--with-elevation' is provided but "
+                    "no elevation API URL is set.\n",
+                    fg="yellow",
+                )
 
         try:
             service = WorkoutsFromFileRefreshService(
@@ -292,6 +316,7 @@ def refresh_workouts(
                 extension=extension,
                 with_weather=with_weather,
                 verbose=verbose,
+                with_elevation=with_elevation,
                 logger=logger,
             )
             service.refresh()
