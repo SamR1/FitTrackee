@@ -792,6 +792,210 @@ def workout_cycling_user_1_segment_1_with_coordinates(
 
 
 @pytest.fixture()
+def workout_cycling_user_1_segment_1_without_elevation(
+    workout_cycling_user_1_with_coordinates: Workout,
+    workout_cycling_user_1_segment_1_coordinates: List[List],
+    workout_cycling_user_1_segment_1_with_coordinates: WorkoutSegment,
+) -> WorkoutSegment:
+    workout_cycling_user_1_segment_1_with_coordinates.points = [
+        {
+            "cadence": 56,
+            "distance": 0.0,
+            "duration": 105,
+            "heart_rate": 88,
+            "latitude": 44.67977,
+            "longitude": 6.07364,
+            "pace": None,
+            "power": 267,
+            "speed": 0,
+            "time": "2018-03-13 12:46:30+00:00",
+        },
+        {
+            "cadence": 56,
+            "distance": 6.051349268478878,
+            "duration": 110,
+            "heart_rate": 86,
+            "latitude": 44.67972,
+            "longitude": 6.07367,
+            "pace": 783,
+            "power": 278,
+            "speed": 4.6,
+            "time": "2018-03-13 12:46:35+00:00",
+        },
+        {
+            "cadence": 55,
+            "distance": 12.77725695386378,
+            "duration": 115,
+            "heart_rate": 83,
+            "latitude": 44.67966,
+            "longitude": 6.07368,
+            "pace": 793,
+            "power": 290,
+            "speed": 4.54,
+            "time": "2018-03-13 12:46:40+00:00",
+        },
+        {
+            "cadence": 56,
+            "distance": 18.649751790376072,
+            "duration": 120,
+            "heart_rate": 83,
+            "latitude": 44.67961,
+            "longitude": 6.0737,
+            "pace": 805,
+            "power": 228,
+            "speed": 4.47,
+            "time": "2018-03-13 12:46:45+00:00",
+        },
+        {
+            "cadence": 54,
+            "distance": 44.84590773920506,
+            "duration": 140,
+            "heart_rate": 85,
+            "latitude": 44.67938,
+            "longitude": 6.07377,
+            "pace": 773,
+            "power": 280,
+            "speed": 4.66,
+            "time": "2018-03-13 12:47:05+00:00",
+        },
+        {
+            "cadence": 56,
+            "distance": 51.24939597404716,
+            "duration": 145,
+            "heart_rate": 86,
+            "latitude": 44.67933,
+            "longitude": 6.07381,
+            "pace": 784,
+            "power": 269,
+            "speed": 4.59,
+            "time": "2018-03-13 12:47:10+00:00",
+        },
+        {
+            "cadence": 53,
+            "distance": 63.93671950289988,
+            "duration": 155,
+            "heart_rate": 85,
+            "latitude": 44.67922,
+            "longitude": 6.07385,
+            "pace": 755,
+            "power": 280,
+            "speed": 4.77,
+            "time": "2018-03-13 12:47:20+00:00",
+        },
+        {
+            "cadence": 56,
+            "distance": 77.74277217988791,
+            "duration": 165,
+            "heart_rate": 84,
+            "latitude": 44.67911,
+            "longitude": 6.0739,
+            "pace": 714,
+            "power": 256,
+            "speed": 5.04,
+            "time": "2018-03-13 12:47:30+00:00",
+        },
+        {
+            "cadence": 55,
+            "distance": 91.90940943581896,
+            "duration": 175,
+            "heart_rate": 86,
+            "latitude": 44.679,
+            "longitude": 6.07399,
+            "pace": 824,
+            "power": 234,
+            "speed": 4.37,
+            "time": "2018-03-13 12:47:40+00:00",
+        },
+        {
+            "cadence": 55,
+            "distance": 96.9558091208821,
+            "duration": 180,
+            "heart_rate": 83,
+            "latitude": 44.67896,
+            "longitude": 6.07402,
+            "pace": 824,
+            "power": 241,
+            "speed": 4.37,
+            "time": "2018-03-13 12:47:45+00:00",
+        },
+        {
+            "cadence": 55,
+            "distance": 111.16851205741831,
+            "duration": 190,
+            "heart_rate": 83,
+            "latitude": 44.67884,
+            "longitude": 6.07408,
+            "pace": 732,
+            "power": 264,
+            "speed": 4.92,
+            "time": "2018-03-13 12:47:55+00:00",
+        },
+        {
+            "cadence": 54,
+            "distance": 137.46418982445846,
+            "duration": 210,
+            "heart_rate": 82,
+            "latitude": 44.67863,
+            "longitude": 6.07423,
+            "pace": 804,
+            "power": 256,
+            "speed": 4.48,
+            "time": "2018-03-13 12:48:15+00:00",
+        },
+        {
+            "cadence": 57,
+            "distance": 143.33669224740893,
+            "duration": 215,
+            "heart_rate": 85,
+            "latitude": 44.67858,
+            "longitude": 6.07425,
+            "pace": 814,
+            "power": 267,
+            "speed": 4.42,
+            "time": "2018-03-13 12:48:20+00:00",
+        },
+        {
+            "cadence": 57,
+            "distance": 162.5457270763049,
+            "duration": 230,
+            "heart_rate": 84,
+            "latitude": 44.67842,
+            "longitude": 6.07434,
+            "pace": "00:13:51",
+            "power": 234,
+            "speed": 4.33,
+            "time": "2018-03-13 12:48:35+00:00",
+        },
+        {
+            "cadence": 52,
+            "distance": 168.16770449996508,
+            "duration": 235,
+            "heart_rate": 84,
+            "latitude": 44.67837,
+            "longitude": 6.07435,
+            "pace": "00:14:19",
+            "power": 225,
+            "speed": 4.19,
+            "time": "2018-03-13 12:48:40+00:00",
+        },
+        {
+            "cadence": 50,
+            "distance": 186.2099364366852,
+            "duration": 250,
+            "heart_rate": 81,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "pace": "00:13:51",
+            "power": 218,
+            "speed": 4.33,
+            "time": "2018-03-13 12:48:55+00:00",
+        },
+    ]
+    db.session.commit()
+    return workout_cycling_user_1_segment_1_with_coordinates
+
+
+@pytest.fixture()
 def workout_cycling_user_1_segment_2(
     workout_cycling_user_1: Workout,
 ) -> WorkoutSegment:
@@ -2890,6 +3094,102 @@ def gpx_file_without_elevation() -> str:
       <trkpt lat="44.67995" lon="6.07358">
         <time>2018-03-13T12:46:15Z</time>
       </trkpt>
+      <trkpt lat="44.67977" lon="6.07364">
+        <time>2018-03-13T12:46:30Z</time>
+      </trkpt>
+      <trkpt lat="44.67972" lon="6.07367">
+        <time>2018-03-13T12:46:35Z</time>
+      </trkpt>
+      <trkpt lat="44.67966" lon="6.07368">
+        <time>2018-03-13T12:46:40Z</time>
+      </trkpt>
+      <trkpt lat="44.67961" lon="6.0737">
+        <time>2018-03-13T12:46:45Z</time>
+      </trkpt>
+      <trkpt lat="44.67938" lon="6.07377">
+        <time>2018-03-13T12:47:05Z</time>
+      </trkpt>
+      <trkpt lat="44.67933" lon="6.07381">
+        <time>2018-03-13T12:47:10Z</time>
+      </trkpt>
+      <trkpt lat="44.67922" lon="6.07385">
+        <time>2018-03-13T12:47:20Z</time>
+      </trkpt>
+      <trkpt lat="44.67911" lon="6.0739">
+        <time>2018-03-13T12:47:30Z</time>
+      </trkpt>
+      <trkpt lat="44.679" lon="6.07399">
+        <time>2018-03-13T12:47:40Z</time>
+      </trkpt>
+      <trkpt lat="44.67896" lon="6.07402">
+        <time>2018-03-13T12:47:45Z</time>
+      </trkpt>
+      <trkpt lat="44.67884" lon="6.07408">
+        <time>2018-03-13T12:47:55Z</time>
+      </trkpt>
+      <trkpt lat="44.67863" lon="6.07423">
+        <time>2018-03-13T12:48:15Z</time>
+      </trkpt>
+      <trkpt lat="44.67858" lon="6.07425">
+        <time>2018-03-13T12:48:20Z</time>
+      </trkpt>
+      <trkpt lat="44.67842" lon="6.07434">
+        <time>2018-03-13T12:48:35Z</time>
+      </trkpt>
+      <trkpt lat="44.67837" lon="6.07435">
+        <time>2018-03-13T12:48:40Z</time>
+      </trkpt>
+      <trkpt lat="44.67822" lon="6.07442">
+        <time>2018-03-13T12:48:55Z</time>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
+"""
+
+
+@pytest.fixture()
+def gpx_file_with_2_segments_and_without_elevation() -> str:
+    return """<?xml version='1.0' encoding='UTF-8'?>
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
+  <metadata/>
+  <trk>
+    <name>just a workout</name>
+    <trkseg>
+      <trkpt lat="44.68095" lon="6.07367">
+        <time>2018-03-13T12:44:45Z</time>
+      </trkpt>
+      <trkpt lat="44.68091" lon="6.07367">
+        <time>2018-03-13T12:44:50Z</time>
+      </trkpt>
+      <trkpt lat="44.6808" lon="6.07364">
+        <time>2018-03-13T12:45:00Z</time>
+      </trkpt>
+      <trkpt lat="44.68075" lon="6.07364">
+        <time>2018-03-13T12:45:05Z</time>
+      </trkpt>
+      <trkpt lat="44.68071" lon="6.07364">
+        <time>2018-03-13T12:45:10Z</time>
+      </trkpt>
+      <trkpt lat="44.68049" lon="6.07361">
+        <time>2018-03-13T12:45:30Z</time>
+      </trkpt>
+      <trkpt lat="44.68019" lon="6.07356">
+        <time>2018-03-13T12:45:55Z</time>
+      </trkpt>
+      <trkpt lat="44.68014" lon="6.07355">
+        <time>2018-03-13T12:46:00Z</time>
+      </trkpt>
+      <trkpt lat="44.67995" lon="6.07358">
+        <time>2018-03-13T12:46:15Z</time>
+      </trkpt>
+    </trkseg>
+    <trkseg>      
       <trkpt lat="44.67977" lon="6.07364">
         <time>2018-03-13T12:46:30Z</time>
       </trkpt>

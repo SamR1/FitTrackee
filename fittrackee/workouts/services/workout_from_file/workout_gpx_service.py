@@ -468,12 +468,15 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         # service and workout elevation data are already fetched from the same
         # service
         if (
-            self.auth_user.missing_elevations_processing
-            != MissingElevationsProcessing.NONE
-            and self.workout.missing_elevations_processing
+            self.workout.missing_elevations_processing
             == self.auth_user.missing_elevations_processing
         ):
-            return True
+            has_missing_elevation = any(
+                point.get("elevation") is None
+                for segment in self.workout.segments
+                for point in segment.points
+            )
+            return not has_missing_elevation
 
         # otherwise, remove existing elevation to refresh values
         return False
