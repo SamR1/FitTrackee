@@ -671,13 +671,17 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
             user=None,
             extension=None,
             with_weather=False,
+            with_elevation=False,
             logger=logger,
             verbose=False,
         )
         service_mock.return_value.refresh.assert_called_once()
 
     def test_it_calls_workouts_refresh_service_with_all_values(
-        self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
     ) -> None:
         runner = CliRunner()
 
@@ -709,6 +713,7 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
                     "--extension",
                     "fit",
                     "--with-weather",
+                    "--with-elevation",
                     "--verbose",
                 ],
             )
@@ -723,6 +728,7 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
             user=user_1.username,
             extension="fit",
             with_weather=True,
+            with_elevation=True,
             logger=logger,
             verbose=True,
         )

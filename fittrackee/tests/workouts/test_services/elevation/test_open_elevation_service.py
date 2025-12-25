@@ -1,5 +1,5 @@
 import copy
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 from unittest.mock import patch
 
 import requests
@@ -13,17 +13,6 @@ from fittrackee.workouts.services.elevation.open_elevation_service import (
 if TYPE_CHECKING:
     from flask import Flask
 
-POINTS_WITHOUT_ELEVATION = [
-    GPXTrackPoint(latitude=44.68095, longitude=6.07367),
-    GPXTrackPoint(latitude=44.68091, longitude=6.07367),
-    GPXTrackPoint(latitude=44.6808, longitude=6.07364),
-    GPXTrackPoint(latitude=44.68075, longitude=6.07364),
-    GPXTrackPoint(latitude=44.68071, longitude=6.07364),
-    GPXTrackPoint(latitude=44.68049, longitude=6.07361),
-    GPXTrackPoint(latitude=44.68019, longitude=6.07356),
-    GPXTrackPoint(latitude=44.68014, longitude=6.07355),
-    GPXTrackPoint(latitude=44.67995, longitude=6.07358),
-]
 OPEN_ELEVATION_RESPONSE = [
     {"elevation": 998.0, "latitude": 44.68095, "longitude": 6.07367},
     {"elevation": 998.0, "latitude": 44.68091, "longitude": 6.07367},
@@ -38,7 +27,7 @@ OPEN_ELEVATION_RESPONSE = [
 
 
 class TestOpenElevationServiceInstantiation:
-    def test_it_instantiates_service_when_no_open_api_url_set_in_env_var(
+    def test_it_instantiates_service_when_no_open_elevation_api_set_in_env_var(
         self, app: "Flask"
     ) -> None:
         service = OpenElevationService()
@@ -46,7 +35,7 @@ class TestOpenElevationServiceInstantiation:
         assert service.url is None
         assert service.is_enabled is False
 
-    def test_it_instantiates_service_when_nominatim_url_is_set_in_env_var(
+    def test_it_instantiates_service_when_open_elevation_api_url_is_set_in_env_var(  # noqa
         self, app_with_open_elevation_url: "Flask"
     ) -> None:
         service = OpenElevationService()
@@ -60,7 +49,9 @@ class TestOpenElevationServiceInstantiation:
 
 class TestOpenElevationServiceGetElevation(ResponseMockMixin):
     def test_it_does_not_call_open_elevation_api_when_no_url_set(
-        self, app: "Flask"
+        self,
+        app: "Flask",
+        gpx_track_points_without_elevations: List["GPXTrackPoint"],
     ) -> None:
         service = OpenElevationService()
 
@@ -69,12 +60,14 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
             "post",
             return_value=self.get_response({}),
         ) as post_mock:
-            service.get_elevations(POINTS_WITHOUT_ELEVATION)
+            service.get_elevations(gpx_track_points_without_elevations)
 
         post_mock.assert_not_called()
 
     def test_it_calls_open_elevation_api_with_given_points(
-        self, app_with_open_elevation_url: "Flask"
+        self,
+        app_with_open_elevation_url: "Flask",
+        gpx_track_points_without_elevations: List["GPXTrackPoint"],
     ) -> None:
         service = OpenElevationService()
 
@@ -85,7 +78,7 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
                 {"results": OPEN_ELEVATION_RESPONSE}
             ),
         ) as post_mock:
-            service.get_elevations(POINTS_WITHOUT_ELEVATION)
+            service.get_elevations(gpx_track_points_without_elevations)
 
         post_mock.assert_called_once_with(
             service.url,
@@ -95,14 +88,16 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
                         "latitude": point.latitude,
                         "longitude": point.longitude,
                     }
-                    for point in POINTS_WITHOUT_ELEVATION
+                    for point in gpx_track_points_without_elevations
                 ]
             },
             timeout=30,
         )
 
     def test_it_returns_elevations(
-        self, app_with_open_elevation_url: "Flask"
+        self,
+        app_with_open_elevation_url: "Flask",
+        gpx_track_points_without_elevations: List["GPXTrackPoint"],
     ) -> None:
         service = OpenElevationService()
 
@@ -113,12 +108,16 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
                 {"results": copy.deepcopy(OPEN_ELEVATION_RESPONSE)}
             ),
         ):
-            result = service.get_elevations(POINTS_WITHOUT_ELEVATION)
+            result = service.get_elevations(
+                gpx_track_points_without_elevations
+            )
 
-        assert result == OPEN_ELEVATION_RESPONSE
+        assert result == [998, 998, 994, 994, 994, 1124, 1124, 1124, 1124]
 
     def test_it_returns_empty_list_when_open_elevation_api_raises_exception(
-        self, app_with_open_elevation_url: "Flask"
+        self,
+        app_with_open_elevation_url: "Flask",
+        gpx_track_points_without_elevations: List["GPXTrackPoint"],
     ) -> None:
         service = OpenElevationService()
 
@@ -127,13 +126,16 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
             "post",
             side_effect=requests.exceptions.HTTPError,
         ):
-            result = service.get_elevations(POINTS_WITHOUT_ELEVATION)
+            result = service.get_elevations(
+                gpx_track_points_without_elevations
+            )
 
         assert result == []
 
     def test_it_logs_error_when_open_elevation_api_raises_exception(
         self,
         app_with_open_elevation_url: "Flask",
+        gpx_track_points_without_elevations: List["GPXTrackPoint"],
     ) -> None:
         service = OpenElevationService()
 
@@ -148,14 +150,16 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
                 side_effect=requests.exceptions.HTTPError,
             ),
         ):
-            service.get_elevations(POINTS_WITHOUT_ELEVATION)
+            service.get_elevations(gpx_track_points_without_elevations)
 
         logger_mock.exception.assert_called_once_with(
             "Open Elevation API: error when getting missing elevations"
         )
 
     def test_it_returns_empty_list_when_number_of_elevation_returned_open_elevation_does_not_match(  # noqa
-        self, app_with_open_elevation_url: "Flask"
+        self,
+        app_with_open_elevation_url: "Flask",
+        gpx_track_points_without_elevations: List["GPXTrackPoint"],
     ) -> None:
         service = OpenElevationService()
 
@@ -166,19 +170,23 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
                 {"results": OPEN_ELEVATION_RESPONSE[:-1]}
             ),
         ):
-            result = service.get_elevations(POINTS_WITHOUT_ELEVATION)
+            result = service.get_elevations(
+                gpx_track_points_without_elevations
+            )
 
         assert result == []
 
     def test_it_logs_error_when_number_of_elevation_returned_open_elevation_does_not_match(  # noqa
-        self, app_with_open_elevation_url: "Flask"
+        self,
+        app_with_open_elevation_url: "Flask",
+        gpx_track_points_without_elevations: List["GPXTrackPoint"],
     ) -> None:
         service = OpenElevationService()
 
         with (
             patch(
                 "fittrackee.workouts.services.elevation."
-                "open_elevation_service.appLog"
+                "base_elevation_service.appLog"
             ) as logger_mock,
             patch.object(
                 requests,
@@ -188,7 +196,7 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
                 ),
             ),
         ):
-            service.get_elevations(POINTS_WITHOUT_ELEVATION)
+            service.get_elevations(gpx_track_points_without_elevations)
 
         logger_mock.error.assert_called_once_with(
             "Open Elevation API: mismatch between number of points in "
@@ -196,7 +204,9 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
         )
 
     def test_it_does_not_call_smooth_elevations_when_flag_is_false(
-        self, app_with_open_elevation_url: "Flask"
+        self,
+        app_with_open_elevation_url: "Flask",
+        gpx_track_points_without_elevations: List["GPXTrackPoint"],
     ) -> None:
         service = OpenElevationService()
 
@@ -212,7 +222,7 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
                 OpenElevationService, "smooth_elevations"
             ) as smooth_elevations_mock,
         ):
-            service.get_elevations(POINTS_WITHOUT_ELEVATION)
+            service.get_elevations(gpx_track_points_without_elevations)
 
         smooth_elevations_mock.assert_not_called()
 
@@ -239,17 +249,7 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
                 smooth=True,
             )
 
-        assert result == [
-            {"elevation": 1009, "latitude": 44.68095, "longitude": 6.07367},
-            {"elevation": 1024, "latitude": 44.68091, "longitude": 6.07367},
-            {"elevation": 1038, "latitude": 44.6808, "longitude": 6.07364},
-            {"elevation": 1052, "latitude": 44.68075, "longitude": 6.07364},
-            {"elevation": 1066, "latitude": 44.68071, "longitude": 6.07364},
-            {"elevation": 1080, "latitude": 44.68049, "longitude": 6.07361},
-            {"elevation": 1095, "latitude": 44.68019, "longitude": 6.07356},
-            {"elevation": 1095, "latitude": 44.68014, "longitude": 6.07355},
-            {"elevation": 1095, "latitude": 44.67995, "longitude": 6.07358},
-        ]
+        assert result == [1009, 1024, 1038, 1052, 1066, 1080, 1095, 1095, 1095]
 
     def test_it_returns_elevations_unchanged_when_length_below_3(
         self, app_with_open_elevation_url: "Flask"
@@ -274,4 +274,4 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
                 smooth=True,
             )
 
-        assert result == OPEN_ELEVATION_RESPONSE[:2]
+        assert result == [998, 998]

@@ -248,7 +248,7 @@ class TestGetChartDataFromSegmentPoints:
         ]
         assert chart_data[-1] == {
             "cadence": last_point["cadence"],
-            "distance": 0.41,
+            "distance": 0.3,
             "duration": last_point["duration"],
             "elevation": last_point["elevation"],
             "hr": last_point["heart_rate"],

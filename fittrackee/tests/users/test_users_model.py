@@ -316,12 +316,21 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         assert serialized_user["reported_count"] == 0
         assert serialized_user["sanctions_count"] == 0
 
-    def test_it_returns_missing_elevations_processing_when_no_elevation_service_set(  # noqa
-        self, app: Flask, user_1: User
+    @pytest.mark.parametrize(
+        "input_preference",
+        [
+            MissingElevationsProcessing.OPEN_ELEVATION,
+            MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH,
+            MissingElevationsProcessing.VALHALLA,
+        ],
+    )
+    def test_it_returns_missing_elevations_processing_as_none_when_no_elevation_service_set(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        input_preference: "MissingElevationsProcessing",
     ) -> None:
-        user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.OPEN_ELEVATION
-        )
+        user_1.missing_elevations_processing = input_preference
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert (
@@ -329,17 +338,26 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             == MissingElevationsProcessing.NONE
         )
 
+    @pytest.mark.parametrize(
+        "input_preference",
+        [
+            MissingElevationsProcessing.OPEN_ELEVATION,
+            MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH,
+            MissingElevationsProcessing.VALHALLA,
+        ],
+    )
     def test_it_returns_missing_elevations_processing_when_elevation_service_set(  # noqa
-        self, app_with_open_elevation_url: Flask, user_1: User
+        self,
+        app_with_open_elevation_and_valhalla_url: Flask,
+        user_1: User,
+        input_preference: "MissingElevationsProcessing",
     ) -> None:
-        user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH
-        )
+        user_1.missing_elevations_processing = input_preference
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert (
             serialized_user["missing_elevations_processing"]
-            == user_1.missing_elevations_processing
+            == input_preference
         )
 
 

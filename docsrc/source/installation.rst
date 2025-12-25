@@ -344,6 +344,12 @@ deployment method.
         | With installation from PyPI, the directory will be located in
           **virtualenv** directory if the variable is not initialized.
 
+.. envvar:: VALHALLA_API_URL
+
+    .. versionadded:: 1.1.0
+
+    URL of `Valhalla <https://valhalla.github.io/valhalla/>`__ service (public API or self-hosted instance).
+
 .. envvar:: VITE_APP_API_URL
 
     .. versionchanged:: 0.7.26 ⚠️ replaces ``VUE_APP_API_URL``

@@ -97,7 +97,7 @@
         </div>
         <div class="chart-info">
           <div class="data-info">
-            <span v-if="elevationsSource?.startsWith('open_elevation')">
+            <span v-if="elevationsSource !== 'none'">
               {{ $t('workouts.MISSING_ELEVATIONS_PROCESSING.LABEL') }}
               {{
                 $t(`workouts.MISSING_ELEVATIONS_PROCESSING.${elevationsSource}`)
@@ -156,7 +156,10 @@
   import type { TCoordinates } from '@/types/map'
   import type { ISport } from '@/types/sports.ts'
   import type { TUnit } from '@/types/units'
-  import type { IAuthUserProfile } from '@/types/user'
+  import type {
+    IAuthUserProfile,
+    TMissingElevationsProcessing,
+  } from '@/types/user'
   import type { IWorkoutChartData, IWorkoutData } from '@/types/workouts'
   import { formatDuration } from '@/utils/duration.ts'
   import { units } from '@/utils/units'
@@ -208,16 +211,11 @@
     y: 0,
   })
 
-  const elevationsSource: ComputedRef<
-    null | 'open_elevation' | 'open_elevation_smooth'
-  > = computed(() =>
-    workoutData.value.workout.missing_elevations_processing?.startsWith(
-      'open_elevation'
-    )
-      ? (workoutData.value.workout.missing_elevations_processing as
-          | 'open_elevation'
-          | 'open_elevation_smooth')
-      : null
+  const elevationsSource: ComputedRef<TMissingElevationsProcessing> = computed(
+    () =>
+      workoutData.value.workout.missing_elevations_processing
+        ? workoutData.value.workout.missing_elevations_processing
+        : 'none'
   )
   const chartLoading: ComputedRef<boolean> = computed(
     () => workoutData.value.chartDataLoading

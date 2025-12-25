@@ -110,7 +110,7 @@
         }}
       </dd>
       <div
-        v-if="!appConfig.elevation_services.open_elevation"
+        v-if="elevationServices.length === 0"
         class="info-box missing-elevations-help"
       >
         <span>
@@ -175,7 +175,7 @@
   const props = defineProps<Props>()
   const { user } = toRefs(props)
 
-  const { appConfig } = useApp()
+  const { elevationServices } = useApp()
   const { dateFormat, timezone } = useAuthUser()
 
   const userLanguage: ComputedRef<string> = computed(() =>

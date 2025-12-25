@@ -8,6 +8,7 @@ from unittest.mock import MagicMock, call, mock_open, patch
 import pytest
 
 from fittrackee import db
+from fittrackee.constants import MissingElevationsProcessing
 from fittrackee.files import get_absolute_file_path
 from fittrackee.tests.workouts.mixins import (
     WorkoutAssertMixin,
@@ -17,6 +18,9 @@ from fittrackee.workouts.exceptions import (
     WorkoutRefreshException,
 )
 from fittrackee.workouts.models import Record, Workout
+from fittrackee.workouts.services.elevation.open_elevation_service import (
+    OpenElevationService,
+)
 from fittrackee.workouts.services.weather.base_weather import BaseWeather
 from fittrackee.workouts.services.workouts_from_file_refresh_service import (
     WorkoutFromFileRefreshService,
@@ -69,6 +73,7 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
             == sport_1_cycling.stopped_speed_threshold
         )
         assert service.update_weather is False
+        assert service.get_elevation_on_refresh is True
 
     def test_it_instantiates_service_when_user_has_sport_preferences(
         self,
@@ -90,6 +95,7 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
             == user_1_sport_1_preference.stopped_speed_threshold
         )
         assert service.update_weather is False
+        assert service.get_elevation_on_refresh is True
 
     def test_it_instantiates_service_when_update_weather_is_true(
         self,
@@ -112,6 +118,30 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
             == sport_1_cycling.stopped_speed_threshold
         )
         assert service.update_weather is True
+        assert service.get_elevation_on_refresh is True
+
+    def test_it_instantiates_service_when_get_elevation_on_refresh_is_false(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+    ) -> None:
+        service = WorkoutFromFileRefreshService(
+            workout=workout_cycling_user_1, get_elevation_on_refresh=False
+        )
+
+        assert service.workout == workout_cycling_user_1
+        assert service.user == user_1
+        assert service.sport == sport_1_cycling
+        assert service.sport_preferences is None
+        assert (
+            service.stopped_speed_threshold
+            == sport_1_cycling.stopped_speed_threshold
+        )
+        assert service.update_weather is False
+        assert service.get_elevation_on_refresh is False
 
 
 class TestWorkoutFromFileRefreshServiceGetFileContent:
@@ -411,6 +441,70 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
         assert workout_cycling_user_1.weather_start == weather_start
         assert workout_cycling_user_1.weather_end == weather_end
 
+    def test_it_calls_elevation_service_when_get_elevation_on_refresh_is_true(
+        self,
+        app_with_open_elevation_url: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        gpx_file_without_elevation: str,
+        default_weather_service: MagicMock,
+    ) -> None:
+        user_1.missing_elevations_processing = (
+            MissingElevationsProcessing.OPEN_ELEVATION
+        )
+        workout_cycling_user_1.original_file = "workouts/1/example.gpx"
+        service = WorkoutFromFileRefreshService(
+            workout=workout_cycling_user_1, get_elevation_on_refresh=True
+        )
+
+        with (
+            patch(
+                "builtins.open",
+                new_callable=mock_open,
+                read_data=gpx_file_without_elevation,
+            ),
+            patch.object(
+                OpenElevationService, "get_elevations", return_value=[]
+            ) as elevation_service_mock,
+        ):
+            service.refresh()
+
+        elevation_service_mock.assert_called_once()
+
+    def test_it_does_not_call_elevation_service_when_get_elevation_on_refresh_is_false(  # noqa
+        self,
+        app_with_open_elevation_url: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        gpx_file_without_elevation: str,
+        default_weather_service: MagicMock,
+    ) -> None:
+        user_1.missing_elevations_processing = (
+            MissingElevationsProcessing.OPEN_ELEVATION
+        )
+        workout_cycling_user_1.original_file = "workouts/1/example.gpx"
+        service = WorkoutFromFileRefreshService(
+            workout=workout_cycling_user_1, get_elevation_on_refresh=False
+        )
+
+        with (
+            patch(
+                "builtins.open",
+                new_callable=mock_open,
+                read_data=gpx_file_without_elevation,
+            ),
+            patch.object(
+                OpenElevationService, "get_elevations", return_value=[]
+            ) as elevation_service_mock,
+        ):
+            service.refresh()
+
+        elevation_service_mock.assert_not_called()
+
     def test_it_returns_workout(
         self,
         app: "Flask",
@@ -480,6 +574,7 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
         assert service.date_to is None
         assert service.logger == test_logger
         assert service.with_weather is False
+        assert service.with_elevation is False
 
     def test_it_instantiates_service_with_given_values(
         self, app: "Flask"
@@ -497,6 +592,7 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
             date_from=date_from,
             date_to=date_to,
             with_weather=True,
+            with_elevation=True,
         )
 
         assert service.per_page == 50
@@ -509,9 +605,39 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
         assert service.date_to == date_to
         assert service.logger == test_logger
         assert service.with_weather is True
+        assert service.with_elevation is True
 
 
 class TestWorkoutsFromFileRefreshServiceRefresh:
+    @pytest.mark.parametrize("input_with_elevation", [True, False])
+    @pytest.mark.parametrize("input_with_weather", [True, False])
+    def test_it_instantiates_workout_from_file_refresh_service(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        input_with_elevation: bool,
+        input_with_weather: bool,
+    ) -> None:
+        service = WorkoutsFromFileRefreshService(
+            logger=test_logger,
+            with_weather=input_with_weather,
+            with_elevation=input_with_elevation,
+        )
+
+        with patch.object(
+            WorkoutFromFileRefreshService, "__init__", return_value=None
+        ) as service_init_mock:
+            service.refresh()
+
+        service_init_mock.assert_called_once_with(
+            workout_cycling_user_1,
+            update_weather=input_with_weather,
+            get_elevation_on_refresh=input_with_elevation,
+        )
+
     def test_it_returns_0_when_no_workouts_with_file(
         self,
         app: "Flask",
