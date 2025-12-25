@@ -235,9 +235,9 @@ def process_queued_archive_upload(task_short_id: str, verbose: bool) -> None:
     "--with-elevation",
     help=(
         "enable elevation update when elevation provider is set and "
-        "workout has no elevation data. "
+        "some elevation data are missing. "
         "If disabled, existing elevation are not removed when elevation data "
-        "is missing in original file. "
+        "are missing in the original file. "
         "WARNING: depending on subscription, the rate limit can be reached, "
         "leading to errors and preventing elevation data being collected "
         "during next uploads until the limit is reset (default: disabled)"

@@ -133,7 +133,7 @@ Workouts
 .. note::
    .fit files from Garmin devices may contain product id instead of product name. The mapping between the product id and the product name allows the product name to be displayed instead, if available (*mapping updated in 0.11.0*).
 
-- | If some elevation data are missing and an OpenElevation API URL is set, the missing elevations can be retrieved if the user preference is set (*new in 1.1.0*).
+- | If some elevation data are missing and an elevation service is enabled (by setting OpenElevation or Valhalla API URL), the missing elevations can be retrieved if the user preference is set (*new in 1.1.0*).
   | In this case, all elevations are updated.
 - | Some values are only calculated on workout creation.
   | The previously uploaded workouts are not updated in the following cases:
@@ -546,11 +546,12 @@ Account & preferences
 
 - A user can update messages preferences (*new in 1.0.0*).
 - A user can set whether speed can be displayed with pace (*new in 1.1.0*).
-- A user can set missing elevation processing if an OpenElevation API URL is set (*new in 1.1.0*):
+- A user can set missing elevation processing if an OpenElevation or Valhalla API URL is set (*new in 1.1.0*):
 
   - none
   - OpenElevation (raw data)
   - OpenElevation (smoothed data)
+  - Valhalla
 
 
 Equipments
