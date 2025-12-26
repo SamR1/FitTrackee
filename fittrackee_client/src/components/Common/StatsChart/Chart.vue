@@ -231,6 +231,9 @@
     return getNumber(total) + getNumber(value)
   }
   function getUnit(displayedData: string) {
+    if (displayedData === 'total_calories') {
+      return t(`workouts.UNITS.kcal.UNIT`)
+    }
     // returns meters for ascent and descent
     return displayedData.includes('scent') ? 'm' : 'km'
   }

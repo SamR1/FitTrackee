@@ -11,6 +11,7 @@ from lxml import etree as ET
 from fittrackee import appLog, db
 from fittrackee.constants import MissingElevationsProcessing
 
+from ...constants import TRACK_EXTENSION_NSMAP
 from ...exceptions import WorkoutExceedingValueException, WorkoutFileException
 from ...models import WORKOUT_VALUES_LIMIT, Workout, WorkoutSegment
 from ...utils.convert import (
@@ -72,6 +73,18 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         self.cadences: List[int] = []
         self.heart_rates: List[int] = []
         self.powers: List[int] = []
+
+    @staticmethod
+    def _get_track_extensions(calories: str) -> "ET.Element":
+        track_point_extension = ET.Element(
+            "{gpxtrkx}TrackStatsExtension",
+            nsmap=TRACK_EXTENSION_NSMAP,
+        )
+        calories_element = ET.SubElement(
+            track_point_extension, "{gpxtrkx}Calories"
+        )
+        calories_element.text = str(calories)
+        return track_point_extension
 
     @staticmethod
     def _get_extensions(
@@ -589,6 +602,21 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             )
         return stopped_time_between_segments, max_speed
 
+    @staticmethod
+    def _get_calories(track: "gpxpy.gpx.GPXTrack") -> Optional[int]:
+        # Get total calories (units: kcal)
+        calories = None
+        if not track.extensions:
+            return calories
+        for track_extension in track.extensions:
+            for extension in track_extension:
+                if not extension.text:
+                    continue
+                if extension.tag.endswith("}Calories"):
+                    calories = int(extension.text)
+                    break
+        return calories
+
     def _process_file(self) -> "Workout":
         if not self.gpx:
             raise WorkoutFileException(
@@ -649,6 +677,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         )
         self.workout.max_speed = max_speed
         self.workout.best_pace = convert_speed_into_pace_duration(max_speed)
+        self.workout.calories = self._get_calories(track)
         bounds = track.get_bounds()
         self.workout.bounds = (
             [

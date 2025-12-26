@@ -199,6 +199,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017": {
                 f"{sport_1_cycling.id}": {
                     "total_ascent": 220.0,
+                    "total_calories": 121,
                     "total_descent": 280.0,
                     "total_distance": 15.0,
                     "total_duration": 4480,
@@ -208,6 +209,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018": {
                 f"{sport_1_cycling.id}": {
                     "total_ascent": 340.0,
+                    "total_calories": 350,
                     "total_descent": 500.0,
                     "total_distance": 39.0,
                     "total_duration": 11624,
@@ -215,6 +217,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 f"{sport_2_running.id}": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -222,6 +225,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 f"{sport_5_outdoor_tennis.id}": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 2.5,
                     "total_duration": 3600,
@@ -261,6 +265,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2025": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 5.0,
                     "total_duration": 1024,
@@ -303,6 +308,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2024": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 5.0,
                     "total_duration": 1024,
@@ -312,6 +318,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2025": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 5.0,
                     "total_duration": 1024,
@@ -348,6 +355,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018": {
                 "1": {
                     "total_ascent": 40.0,
+                    "total_calories": None,
                     "total_descent": 20.0,
                     "total_distance": 8.0,
                     "total_duration": 6000,
@@ -355,6 +363,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -389,6 +398,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018": {
                 "1": {
                     "total_ascent": 40.0,
+                    "total_calories": None,
                     "total_descent": 20.0,
                     "total_distance": 8.0,
                     "total_duration": 6000,
@@ -396,6 +406,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -430,6 +441,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018": {
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -463,6 +475,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017": {
                 "1": {
                     "total_ascent": 220.0,
+                    "total_calories": 121,
                     "total_descent": 280.0,
                     "total_distance": 15.0,
                     "total_duration": 4480,
@@ -472,6 +485,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018": {
                 "1": {
                     "total_ascent": 340.0,
+                    "total_calories": 350,
                     "total_descent": 500.0,
                     "total_distance": 39.0,
                     "total_duration": 11624,
@@ -479,6 +493,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -515,6 +530,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018": {
                 "1": {
                     "total_ascent": 40.0,
+                    "total_calories": None,
                     "total_descent": 20.0,
                     "total_distance": 8.0,
                     "total_duration": 6000,
@@ -522,6 +538,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -558,6 +575,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018": {
                 "1": {
                     "total_ascent": 40.0,
+                    "total_calories": None,
                     "total_descent": 20.0,
                     "total_distance": 8.0,
                     "total_duration": 6000,
@@ -565,6 +583,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -601,6 +620,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018": {
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -634,6 +654,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017-04": {
                 "1": {
                     "total_ascent": 120.0,
+                    "total_calories": 121,
                     "total_descent": 200.0,
                     "total_distance": 5.0,
                     "total_duration": 1024,
@@ -643,6 +664,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017-12": {
                 "1": {
                     "total_ascent": 100.0,
+                    "total_calories": None,
                     "total_descent": 80.0,
                     "total_distance": 10.0,
                     "total_duration": 3456,
@@ -652,6 +674,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-01": {
                 "1": {
                     "total_ascent": 80.0,
+                    "total_calories": None,
                     "total_descent": 100.0,
                     "total_distance": 10.0,
                     "total_duration": 1024,
@@ -661,6 +684,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-02": {
                 "1": {
                     "total_ascent": 220.0,
+                    "total_calories": 350,
                     "total_descent": 380.0,
                     "total_distance": 11.0,
                     "total_duration": 1600,
@@ -670,6 +694,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-04": {
                 "1": {
                     "total_ascent": 40.0,
+                    "total_calories": None,
                     "total_descent": 20.0,
                     "total_distance": 8.0,
                     "total_duration": 6000,
@@ -677,6 +702,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -686,6 +712,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-05": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 10.0,
                     "total_duration": 3000,
@@ -719,6 +746,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017-04": {
                 "1": {
                     "total_ascent": 120.0,
+                    "total_calories": 121,
                     "total_descent": 200.0,
                     "total_distance": 5.0,
                     "total_duration": 1024,
@@ -728,6 +756,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-01": {
                 "1": {
                     "total_ascent": 180.0,
+                    "total_calories": None,
                     "total_descent": 180.0,
                     "total_distance": 20.0,
                     "total_duration": 4480,
@@ -737,6 +766,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-02": {
                 "1": {
                     "total_ascent": 220.0,
+                    "total_calories": 350,
                     "total_descent": 380.0,
                     "total_distance": 11.0,
                     "total_duration": 1600,
@@ -746,6 +776,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-04": {
                 "1": {
                     "total_ascent": 40.0,
+                    "total_calories": None,
                     "total_descent": 20.0,
                     "total_distance": 8.0,
                     "total_duration": 6000,
@@ -753,6 +784,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -762,6 +794,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-05": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 10.0,
                     "total_duration": 3000,
@@ -795,6 +828,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017-04": {
                 "1": {
                     "total_ascent": 120.0,
+                    "total_calories": 121,
                     "total_descent": 200.0,
                     "total_distance": 5.0,
                     "total_duration": 1024,
@@ -804,6 +838,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017-12": {
                 "1": {
                     "total_ascent": 180.0,
+                    "total_calories": None,
                     "total_descent": 180.0,
                     "total_distance": 20.0,
                     "total_duration": 4480,
@@ -813,6 +848,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-02": {
                 "1": {
                     "total_ascent": 220.0,
+                    "total_calories": 350,
                     "total_descent": 380.0,
                     "total_distance": 11.0,
                     "total_duration": 1600,
@@ -822,6 +858,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-03": {
                 "1": {
                     "total_ascent": 40.0,
+                    "total_calories": None,
                     "total_descent": 20.0,
                     "total_distance": 8.0,
                     "total_duration": 6000,
@@ -831,6 +868,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-04": {
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -840,6 +878,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-05": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 10.0,
                     "total_duration": 3000,
@@ -876,6 +915,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-04": {
                 "1": {
                     "total_ascent": 40.0,
+                    "total_calories": None,
                     "total_descent": 20.0,
                     "total_distance": 8.0,
                     "total_duration": 6000,
@@ -883,6 +923,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -919,6 +960,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-04": {
                 "1": {
                     "total_ascent": 40.0,
+                    "total_calories": None,
                     "total_descent": 20.0,
                     "total_distance": 8.0,
                     "total_duration": 6000,
@@ -926,6 +968,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -962,6 +1005,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-04": {
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -996,6 +1040,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017-04-02": {
                 "1": {
                     "total_ascent": 120.0,
+                    "total_calories": 121,
                     "total_descent": 200.0,
                     "total_distance": 5.0,
                     "total_duration": 1024,
@@ -1005,6 +1050,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017-12-31": {
                 "1": {
                     "total_ascent": 180.0,
+                    "total_calories": None,
                     "total_descent": 180.0,
                     "total_distance": 20.0,
                     "total_duration": 4480,
@@ -1014,6 +1060,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-02-18": {
                 "1": {
                     "total_ascent": 220.0,
+                    "total_calories": 350,
                     "total_descent": 380.0,
                     "total_distance": 11.0,
                     "total_duration": 1600,
@@ -1023,6 +1070,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-04-01": {
                 "1": {
                     "total_ascent": 40.0,
+                    "total_calories": None,
                     "total_descent": 20.0,
                     "total_distance": 8.0,
                     "total_duration": 6000,
@@ -1030,6 +1078,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -1039,6 +1088,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-05-06": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 10.0,
                     "total_duration": 3000,
@@ -1048,6 +1098,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2024-12-29": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 20.0,
                     "total_duration": 3600,
@@ -1057,6 +1108,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2025-01-05": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 40.0,
                     "total_duration": 7200,
@@ -1093,6 +1145,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-04-01": {
                 "1": {
                     "total_ascent": 40.0,
+                    "total_calories": None,
                     "total_descent": 20.0,
                     "total_distance": 8.0,
                     "total_duration": 6000,
@@ -1100,6 +1153,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -1134,6 +1188,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-04-01": {
                 "1": {
                     "total_ascent": 40.0,
+                    "total_calories": None,
                     "total_descent": 20.0,
                     "total_distance": 8.0,
                     "total_duration": 6000,
@@ -1141,6 +1196,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -1175,6 +1231,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-04-01": {
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -1209,6 +1266,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017-03-27": {
                 "1": {
                     "total_ascent": 120.0,
+                    "total_calories": 121,
                     "total_descent": 200.0,
                     "total_distance": 5.0,
                     "total_duration": 1024,
@@ -1218,6 +1276,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017-12-25": {
                 "1": {
                     "total_ascent": 100.0,
+                    "total_calories": None,
                     "total_descent": 80.0,
                     "total_distance": 10.0,
                     "total_duration": 3456,
@@ -1227,6 +1286,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-01-01": {
                 "1": {
                     "total_ascent": 80.0,
+                    "total_calories": None,
                     "total_descent": 100.0,
                     "total_distance": 10.0,
                     "total_duration": 1024,
@@ -1236,6 +1296,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-02-19": {
                 "1": {
                     "total_ascent": 220.0,
+                    "total_calories": 350,
                     "total_descent": 380.0,
                     "total_distance": 11.0,
                     "total_duration": 1600,
@@ -1245,6 +1306,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-03-26": {
                 "1": {
                     "total_ascent": 40.0,
+                    "total_calories": None,
                     "total_descent": 20.0,
                     "total_distance": 8.0,
                     "total_duration": 6000,
@@ -1254,6 +1316,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-04-02": {
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -1263,6 +1326,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-05-07": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 10.0,
                     "total_duration": 3000,
@@ -1272,6 +1336,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2024-12-30": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 40.0,
                     "total_duration": 7200,
@@ -1281,6 +1346,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2025-01-06": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 20.0,
                     "total_duration": 3600,
@@ -1317,6 +1383,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-03-26": {
                 "1": {
                     "total_ascent": 40.0,
+                    "total_calories": None,
                     "total_descent": 20.0,
                     "total_distance": 8.0,
                     "total_duration": 6000,
@@ -1326,6 +1393,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-04-02": {
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -1375,6 +1443,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017-04-03": {
                 "1": {
                     "total_ascent": 120.0,
+                    "total_calories": 121,
                     "total_descent": 200.0,
                     "total_distance": 5.0,
                     "total_duration": 1024,
@@ -1409,6 +1478,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017-04-02": {
                 "1": {
                     "total_ascent": 120.0,
+                    "total_calories": 121,
                     "total_descent": 200.0,
                     "total_distance": 5.0,
                     "total_duration": 1024,
@@ -1418,6 +1488,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017-12-31": {
                 "1": {
                     "total_ascent": 100.0,
+                    "total_calories": None,
                     "total_descent": 80.0,
                     "total_distance": 10.0,
                     "total_duration": 3456,
@@ -1427,6 +1498,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-01-01": {
                 "1": {
                     "total_ascent": 80.0,
+                    "total_calories": None,
                     "total_descent": 100.0,
                     "total_distance": 10.0,
                     "total_duration": 1024,
@@ -1436,6 +1508,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-02-23": {
                 "1": {
                     "total_ascent": 220.0,
+                    "total_calories": 350,
                     "total_descent": 380.0,
                     "total_distance": 11.0,
                     "total_duration": 1600,
@@ -1445,6 +1518,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-04-01": {
                 "1": {
                     "total_ascent": 40.0,
+                    "total_calories": None,
                     "total_descent": 20.0,
                     "total_distance": 8.0,
                     "total_duration": 6000,
@@ -1454,6 +1528,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-04-02": {
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -1463,6 +1538,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-05-09": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 10.0,
                     "total_duration": 3000,
@@ -1472,6 +1548,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2025-01-01": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 20.0,
                     "total_duration": 3600,
@@ -1481,6 +1558,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2025-01-05": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 20.0,
                     "total_duration": 3600,
@@ -1490,6 +1568,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2025-01-06": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 20.0,
                     "total_duration": 3600,
@@ -1525,6 +1604,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-04-02": {
                 "2": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 12.0,
                     "total_duration": 6000,
@@ -1534,6 +1614,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-05-09": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 10.0,
                     "total_duration": 3000,
@@ -1543,6 +1624,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2025-01-01": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 20.0,
                     "total_duration": 3600,
@@ -1552,6 +1634,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2025-01-05": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 20.0,
                     "total_duration": 3600,
@@ -1561,6 +1644,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2025-01-06": {
                 "1": {
                     "total_ascent": None,
+                    "total_calories": None,
                     "total_descent": None,
                     "total_distance": 20.0,
                     "total_duration": 3600,
@@ -1597,6 +1681,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-01-01": {
                 "1": {
                     "total_ascent": 80.0,
+                    "total_calories": None,
                     "total_descent": 100.0,
                     "total_distance": 10.0,
                     "total_duration": 1024,
@@ -1631,6 +1716,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018-01-01": {
                 "1": {
                     "total_ascent": 180.0,
+                    "total_calories": None,
                     "total_descent": 180.0,
                     "total_distance": 20.0,
                     "total_duration": 4480,
@@ -1863,6 +1949,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_pace": None,
                 "average_speed": 17.42,
                 "total_ascent": 560.0,
+                "total_calories": 471,
                 "total_descent": 780.0,
                 "total_distance": 54.0,
                 "total_duration": "4:28:24",
@@ -1878,6 +1965,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                     7.2 if input_display_speed_with_pace else None
                 ),
                 "total_ascent": None,
+                "total_calories": None,
                 "total_descent": None,
                 "total_distance": 12.0,
                 "total_duration": "1:40:00",
@@ -1917,6 +2005,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_speed": float(seven_workouts_user_1[6].ave_speed),  # type: ignore
                 "average_pace": None,
                 "total_ascent": seven_workouts_user_1[6].ascent,
+                "total_calories": None,
                 "total_descent": seven_workouts_user_1[6].descent,
                 "total_distance": float(seven_workouts_user_1[6].distance),  # type: ignore
                 "total_duration": str(seven_workouts_user_1[6].moving),
@@ -1930,6 +2019,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_pace": str(workout_running_user_1.ave_pace),
                 "average_speed": None,
                 "total_ascent": workout_running_user_1.ascent,
+                "total_calories": None,
                 "total_descent": workout_running_user_1.descent,
                 "total_distance": float(workout_running_user_1.distance),  # type: ignore
                 "total_duration": str(workout_running_user_1.moving),
@@ -1971,6 +2061,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_pace": None,
                 "average_speed": 17.42,
                 "total_ascent": 560.0,
+                "total_calories": 471,
                 "total_descent": 780.0,
                 "total_distance": 54.0,
                 "total_duration": "4:28:24",
@@ -1984,6 +2075,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_pace": "0:08:20",
                 "average_speed": None,
                 "total_ascent": None,
+                "total_calories": None,
                 "total_descent": None,
                 "total_distance": 12.0,
                 "total_duration": "1:40:00",
@@ -2043,6 +2135,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_pace": None,
                 "average_speed": 17.42,
                 "total_ascent": 560.0,
+                "total_calories": 471,
                 "total_descent": 780.0,
                 "total_distance": 54.0,
                 "total_duration": "4:28:24",
@@ -2082,8 +2175,9 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_pace": None,
                 "average_speed": 8.4,
                 "total_ascent": 40.0,
+                "total_calories": None,
                 "total_descent": 20.0,
-                "total_distance": 18,
+                "total_distance": 18.0,
                 "total_duration": "2:30:00",
                 "total_workouts": 2,
             }
@@ -2118,6 +2212,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_pace": None,
                 "average_speed": 2.5,
                 "total_ascent": None,
+                "total_calories": None,
                 "total_descent": None,
                 "total_distance": 2.5,
                 "total_duration": "1:00:00",

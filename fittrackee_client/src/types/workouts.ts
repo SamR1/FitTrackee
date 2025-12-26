@@ -96,6 +96,7 @@ export interface IWorkout {
   ave_power: number | null
   ave_speed: number | null
   bounds: number[]
+  calories: number | null
   creation_date: string | null
   descent: number | null
   description: string
@@ -148,6 +149,7 @@ export interface IWorkoutObject {
   avePower: number | null
   avePace: string | null
   aveSpeed: number | null
+  calories: number | null
   descent: number | null
   distance: number | null
   duration: string | null

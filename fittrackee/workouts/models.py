@@ -26,7 +26,7 @@ from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import (
     VisibilityLevel,
     can_view,
-    can_view_heart_rate,
+    can_view_workout_data,
     get_calculated_visibility,
 )
 
@@ -361,6 +361,7 @@ class Workout(BaseModel):
             nullable=False,
         )
     )
+    calories: Mapped[Optional[int]] = mapped_column(nullable=True)  # kcal
 
     user: Mapped["User"] = relationship(
         "User", lazy="select", single_parent=True
@@ -550,7 +551,8 @@ class Workout(BaseModel):
                 **EMPTY_WORKOUT_VALUES,
             }
 
-        can_see_heart_rate = can_view_heart_rate(self.user, user)
+        can_see_heart_rate = can_view_workout_data("hr", self.user, user)
+        can_see_calories = can_view_workout_data("calories", self.user, user)
         sport_label = self.sport.label
         return_elevation_data = (
             sport_label not in SPORTS_WITHOUT_ELEVATION_DATA
@@ -631,6 +633,7 @@ class Workout(BaseModel):
             "max_power": get_power(sport_label, self.max_power),
             "ave_pace": get_pace(sport_label, self.ave_pace),
             "best_pace": get_pace(sport_label, self.best_pace),
+            "calories": self.calories if can_see_calories else None,
         }
 
         if not light or with_equipments:

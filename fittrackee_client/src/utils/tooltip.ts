@@ -25,6 +25,8 @@ export const formatTooltipValue = (
     case 'total_ascent':
     case 'total_descent':
       return `${value.toFixed(2)} ${unitTo}`
+    case 'total_calories':
+      return `${value} ${unitFrom}`
     default:
       return value.toString()
   }

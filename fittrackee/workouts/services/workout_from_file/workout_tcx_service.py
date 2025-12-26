@@ -63,6 +63,7 @@ class WorkoutTcxService(WorkoutGpxService):
         has_tracks = False
         tag_prefix = None
         creator = ""
+        calories: Optional[str] = None
 
         for activity in activities:
             has_points = False
@@ -77,7 +78,11 @@ class WorkoutTcxService(WorkoutGpxService):
             if not laps:
                 continue
 
-            for lap in laps:
+            for index, lap in enumerate(laps):
+                if index == 0:
+                    # Get total calories (units: kcal)
+                    calories = lap.get("Calories")
+
                 tcx_tracks = lap.get("Track", [])
                 if isinstance(tcx_tracks, dict):
                     tcx_tracks = [tcx_tracks]
@@ -160,6 +165,10 @@ class WorkoutTcxService(WorkoutGpxService):
             raise WorkoutFileException(
                 "error", "no coordinates in tcx file"
             ) from None
+
+        if calories:
+            extension = cls._get_track_extensions(calories)
+            gpx_track.extensions.append(extension)
 
         gpx = gpxpy.gpx.GPX()
         author = (

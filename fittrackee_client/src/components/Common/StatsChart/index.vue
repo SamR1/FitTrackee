@@ -49,6 +49,17 @@
           />
           {{ $t('workouts.SPEED') }}
         </label>
+        <label v-if="fullStats && statsType === 'total'">
+          <input
+            type="radio"
+            name="value_type"
+            value="total_calories"
+            :checked="displayedData === 'total_calories'"
+            :disabled="isDisabled"
+            @click="updateDisplayData"
+          />
+          {{ $t('workouts.CALORIES') }}
+        </label>
         <label v-if="fullStats && statsType === 'average'">
           <input
             type="radio"
@@ -116,6 +127,16 @@
             $t(`statistics.TIME_FRAMES.${selectedTimeFrame}`)
           }}
         </div>
+      </div>
+      <div v-if="displayedData === 'total_calories'" class="calories-help">
+        <span class="info-box">
+          <i class="fa fa-info-circle" aria-hidden="true" />
+          {{
+            $t(
+              'workouts.TOTAL_CALORIES_MAY_BE_INCOMPLETE_IF_FILES_DO_NOT_CONTAIN_DATA'
+            )
+          }}
+        </span>
       </div>
     </div>
   </div>
@@ -297,7 +318,8 @@
       }
     }
 
-    .workouts-average {
+    .workouts-average,
+    .calories-help {
       display: flex;
       margin: $default-padding 0 0 $default-padding * 2.5;
       min-height: 20px;

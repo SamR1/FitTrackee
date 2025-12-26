@@ -390,6 +390,11 @@ class User(BaseModel):
             nullable=False,
         )
     )
+    calories_visibility: Mapped[VisibilityLevel] = mapped_column(
+        Enum(VisibilityLevel, name="visibility_levels"),
+        server_default="PRIVATE",
+        nullable=False,
+    )
 
     workouts: Mapped[List["Workout"]] = relationship(
         "Workout", lazy=True, back_populates="user"
@@ -998,6 +1003,7 @@ class User(BaseModel):
                 "missing_elevations_processing": (
                     self.calculated_missing_elevations_processing
                 ),
+                "calories_visibility": self.calories_visibility.value,
             }
 
         return serialized_user

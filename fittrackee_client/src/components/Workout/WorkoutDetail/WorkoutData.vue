@@ -190,6 +190,14 @@
         >{{ workoutObject.maxHr }} {{ t(`workouts.UNITS.bpm.UNIT`) }}</span
       >
     </div>
+    <div class="workout-data" v-if="workoutObject.calories">
+      <i class="fa fa-fire" aria-hidden="true" />
+      <span class="label">{{ $t('workouts.CALORIES') }}</span
+      >:
+      <span class="value" :title="t(`workouts.UNITS.kcal.LABEL`)">
+        {{ workoutObject.calories }} {{ t(`workouts.UNITS.kcal.UNIT`) }}</span
+      >
+    </div>
     <div class="spacer" />
     <WorkoutWeather
       :workoutObject="workoutObject"

@@ -1204,6 +1204,7 @@ def seven_workouts_user_1() -> List[Workout]:
     update_workout(workout_1)
     workout_1.ascent = 120
     workout_1.descent = 200
+    workout_1.calories = 121
     db.session.add(workout_1)
     db.session.flush()
     workouts.append(workout_1)
@@ -1252,6 +1253,7 @@ def seven_workouts_user_1() -> List[Workout]:
     update_workout(workout_4)
     workout_4.ascent = 120
     workout_4.descent = 180
+    workout_4.calories = 150
     db.session.add(workout_4)
     db.session.flush()
     workouts.append(workout_4)
@@ -1268,6 +1270,7 @@ def seven_workouts_user_1() -> List[Workout]:
     update_workout(workout_5)
     workout_5.ascent = 100
     workout_5.descent = 200
+    workout_5.calories = 200
     db.session.add(workout_5)
     db.session.flush()
     workouts.append(workout_5)
@@ -1531,6 +1534,36 @@ def gpx_file() -> str:
   <metadata/>
   <trk>
     <name>just a workout</name>
+    <trkseg>
+"""
+        + track_points_part_1
+        + track_points_part_2
+        + """
+    </trkseg>
+  </trk>
+</gpx>
+"""
+    )
+
+
+@pytest.fixture()
+def gpx_file_with_calories() -> str:
+    return (
+        """<?xml version='1.0' encoding='UTF-8'?>
+<gpx
+  xmlns="http://www.topografix.com/GPX/1/1"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd"
+  version="1.1"
+  creator="vívoactive"
+>
+  <trk>
+    <extensions>
+      <gpxtrkx:TrackStatsExtension xmlns:gpxtrkx="http://www.garmin.com/xmlschemas/TrackStatsExtension/v1">
+        <gpxtrkx:Calories>86</gpxtrkx:Calories>
+      </gpxtrkx:TrackStatsExtension>
+    </extensions>
     <trkseg>
 """
         + track_points_part_1
@@ -4648,6 +4681,40 @@ def tcx_with_one_lap_and_one_track() -> str:
         <Activity Sport="Other">
             <Id>2018-03-13T12:44:45Z</Id>
             <Lap StartTime="2018-03-13T12:44:45Z">
+                <Track>
+"""
+        + tcx_track_points_part_1
+        + tcx_track_points_part_2
+        + """
+                </Track>
+            </Lap>
+          <Creator xsi:type="Device_t">
+            <Name>vívoactive</Name>
+          </Creator>
+        </Activity>
+    </Activities>
+    <Author xsi:type="Application_t">
+      <Name>Garmin Connect API</Name>
+    </Author>
+</TrainingCenterDatabase>
+"""
+    )
+
+
+@pytest.fixture()
+def tcx_with_calories() -> str:
+    return (
+        """<?xml version="1.0" encoding="UTF-8"?>
+<TrainingCenterDatabase
+    xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2 http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd"
+>
+    <Activities>
+        <Activity Sport="Other">
+            <Id>2018-03-13T12:44:45Z</Id>
+            <Lap StartTime="2018-03-13T12:44:45Z">
+                <Calories>86</Calories>
                 <Track>
 """
         + tcx_track_points_part_1

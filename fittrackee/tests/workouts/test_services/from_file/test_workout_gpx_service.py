@@ -1602,6 +1602,26 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
             "time": "2018-03-13 12:44:45+00:00",
         }
 
+    def test_it_creates_workout_when_gpx_file_has_calories(
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_calories: str,
+    ) -> None:
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_with_calories
+        )
+
+        service.process_workout()
+        db.session.commit()
+
+        workout = Workout.query.one()
+        assert workout.calories == 86
+        self.assert_workout(user_1, sport_1_cycling, workout)
+        self.assert_workout_segment(workout)
+        self.assert_workout_records(workout)
+
     @pytest.mark.parametrize("input_get_weather", [{}, {"get_weather": True}])
     def test_it_calls_weather_service_for_start_and_endpoint(
         self,

@@ -125,6 +125,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_speed": workout.ave_speed,
             "best_pace": None,
             "bounds": [],
+            "calories": None,
             "creation_date": workout.creation_date,
             "descent": None,
             "description": None,
@@ -183,6 +184,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout = workout_cycling_user_1
         workout.ascent = 0
         workout.descent = 10
+        workout.calories = 150
 
         serialized_workout = workout.serialize(user=user_1, light=False)
 
@@ -196,6 +198,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_speed": workout.ave_speed,
             "best_pace": None,
             "bounds": [],
+            "calories": workout.calories,
             "creation_date": workout.creation_date,
             "descent": workout.descent,
             "description": None,
@@ -278,6 +281,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_speed": float(workout.ave_speed),  # type: ignore[arg-type]
             "best_pace": None,
             "bounds": workout.bounds,
+            "calories": None,
             "creation_date": workout.creation_date,
             "descent": float(workout.descent),  # type: ignore[arg-type]
             "description": None,
@@ -363,6 +367,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_speed": float(workout.ave_speed),  # type: ignore
             "best_pace": None,
             "bounds": workout.bounds,
+            "calories": None,
             "creation_date": workout.creation_date,
             "descent": None,
             "description": None,
@@ -449,6 +454,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_speed": None,
             "best_pace": str(workout.best_pace),
             "bounds": workout.bounds,
+            "calories": None,
             "creation_date": workout.creation_date,
             "descent": workout.descent,
             "description": None,
@@ -536,6 +542,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_speed": float(workout.ave_speed),  # type: ignore [arg-type]
             "best_pace": str(workout.best_pace),
             "bounds": workout.bounds,
+            "calories": None,
             "creation_date": workout.creation_date,
             "descent": workout.descent,
             "description": None,
@@ -618,6 +625,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_speed": float(workout.ave_speed),  # type: ignore [arg-type]
             "best_pace": None,
             "bounds": workout.bounds,
+            "calories": None,
             "creation_date": workout.creation_date,
             "descent": workout.descent,
             "description": None,
@@ -789,6 +797,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_speed": workout_cycling_user_1.ave_speed,
             "best_pace": None,
             "bounds": [],
+            "calories": None,
             "creation_date": workout_cycling_user_1.creation_date,
             "descent": None,
             "description": None,
@@ -863,6 +872,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_speed": workout_cycling_user_1.ave_speed,
             "best_pace": None,
             "bounds": [],
+            "calories": None,
             "creation_date": None,
             "descent": None,
             "distance": workout_cycling_user_1.distance,
@@ -935,6 +945,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_speed": float(workout_cycling_user_1.ave_speed),  # type: ignore[arg-type]
             "best_pace": None,
             "bounds": [],
+            "calories": None,
             "creation_date": None,
             "descent": float(workout_cycling_user_1.descent),  # type: ignore[arg-type]
             "distance": float(workout_cycling_user_1.distance),  # type: ignore[arg-type]
@@ -1008,6 +1019,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_speed": workout_cycling_user_1.ave_speed,
             "best_pace": None,
             "bounds": [],
+            "calories": None,
             "creation_date": None,
             "descent": None,
             "distance": workout_cycling_user_1.distance,
@@ -1667,6 +1679,57 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             }
         ]
 
+    @pytest.mark.parametrize(
+        "input_calories_visibility",
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC],
+    )
+    def test_serializer_returns_calories_related_data(
+        self,
+        input_calories_visibility: VisibilityLevel,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        user_1.calories_visibility = input_calories_visibility
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.calories = 150
+        add_follower(user_1, user_2)
+        workout = self.update_workout_with_file_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert (
+            serialized_workout["calories"] == workout_cycling_user_1.calories
+        )
+
+    def test_serializer_does_not_return_calories_related_data(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        user_1.calories_visibility = VisibilityLevel.PRIVATE
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.calories = 150
+        add_follower(user_1, user_2)
+        workout = self.update_workout_with_file_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert serialized_workout["calories"] is None
+
     def test_serializer_does_not_return_next_workout(
         self,
         app: Flask,
@@ -1894,6 +1957,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             "ave_speed": workout_cycling_user_1.ave_speed,
             "best_pace": None,
             "bounds": [],
+            "calories": None,
             "creation_date": None,
             "descent": None,
             "distance": workout_cycling_user_1.distance,
@@ -2213,6 +2277,55 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             }
         ]
 
+    def test_serializer_returns_calories_related_data(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        user_1.calories_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.calories = 150
+        workout = self.update_workout_with_file_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert (
+            serialized_workout["calories"] == workout_cycling_user_1.calories
+        )
+
+    @pytest.mark.parametrize(
+        "input_calories_visibility",
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
+    )
+    def test_serializer_does_not_return_calories_related_data(
+        self,
+        input_calories_visibility: VisibilityLevel,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        user_1.calories_visibility = input_calories_visibility
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.calories = 150
+        workout = self.update_workout_with_file_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert serialized_workout["calories"] is None
+
     def test_serializer_does_not_return_next_workout(
         self,
         app: Flask,
@@ -2425,6 +2538,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             "ave_speed": workout_cycling_user_1.ave_speed,
             "best_pace": None,
             "bounds": [],
+            "calories": None,
             "creation_date": None,
             "descent": None,
             "distance": workout_cycling_user_1.distance,
@@ -2741,6 +2855,53 @@ class TestWorkoutModelAsUnauthenticatedUser(
             }
         ]
 
+    def test_serializer_returns_calories_related_data(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        user_1.calories_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.calories = 150
+        workout = self.update_workout_with_file_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(light=False)
+
+        assert (
+            serialized_workout["calories"] == workout_cycling_user_1.calories
+        )
+
+    @pytest.mark.parametrize(
+        "input_calories_visibility",
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
+    )
+    def test_serializer_does_not_return_calories_related_data(
+        self,
+        input_calories_visibility: VisibilityLevel,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        user_1.calories_visibility = input_calories_visibility
+        workout_cycling_user_1.calories = 150
+        workout = self.update_workout_with_file_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(light=False)
+
+        assert serialized_workout["calories"] is None
+
     def test_serializer_does_not_return_next_workout(
         self,
         app: Flask,
@@ -2899,6 +3060,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
             "ave_speed": workout_cycling_user_1.ave_speed,
             "best_pace": None,
             "bounds": [],
+            "calories": None,
             "creation_date": None,
             "descent": None,
             "distance": workout_cycling_user_1.distance,
@@ -3003,6 +3165,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "ave_speed": workout_cycling_user_2.ave_speed,
             "best_pace": None,
             "bounds": [],
+            "calories": None,
             "creation_date": workout_cycling_user_2.creation_date,
             "descent": None,
             "description": None,
@@ -3088,6 +3251,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "ave_speed": workout_cycling_user_2.ave_speed,
             "best_pace": None,
             "bounds": workout_cycling_user_2.bounds,
+            "calories": None,
             "creation_date": workout_cycling_user_2.creation_date,
             "descent": workout_cycling_user_2.descent,
             "description": None,
@@ -3218,6 +3382,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "ave_speed": workout_cycling_user_2.ave_speed,
             "best_pace": None,
             "bounds": [],
+            "calories": None,
             "creation_date": None,
             "descent": None,
             "distance": workout_cycling_user_2.distance,
@@ -3299,6 +3464,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "ave_speed": workout_cycling_user_2.ave_speed,
             "best_pace": None,
             "bounds": [],
+            "calories": None,
             "creation_date": workout_cycling_user_2.creation_date,
             "descent": None,
             "description": None,
@@ -3375,6 +3541,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "ave_speed": workout_cycling_user_2.ave_speed,
             "best_pace": None,
             "bounds": workout_cycling_user_2.bounds,
+            "calories": None,
             "creation_date": workout_cycling_user_2.creation_date,
             "descent": workout_cycling_user_2.descent,
             "description": None,

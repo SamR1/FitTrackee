@@ -1081,6 +1081,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     post_data = request.get_json()
     user_mandatory_data = {
         "analysis_visibility",
+        "calories_visibility",
         "date_format",
         "display_ascent",
         "display_speed_with_pace",
@@ -1126,6 +1127,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     missing_elevations_processing = post_data.get(
         "missing_elevations_processing"
     )
+    calories_visibility = post_data.get("calories_visibility")
 
     try:
         auth_user.date_format = date_format
@@ -1155,6 +1157,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.split_workout_charts = split_workout_charts
         auth_user.display_speed_with_pace = display_speed_with_pace
         auth_user.missing_elevations_processing = missing_elevations_processing
+        auth_user.calories_visibility = VisibilityLevel(calories_visibility)
         db.session.commit()
 
         return {

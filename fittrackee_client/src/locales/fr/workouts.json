@@ -17,6 +17,7 @@
   "BACK_TO_WORKOUT": "revenir à la séance",
   "BEST_PACE": "meilleure allure",
   "CADENCE": "cadence",
+  "CALORIES": "calories",
   "COMMENTS": {
     "ADD": "ajouter un commentaire",
     "COMMENT": "commentaire | commentaires",
@@ -163,6 +164,7 @@
   "TITLE_FIELD_HELP": "si fourni, le titre remplace celui du fichier.",
   "TO": "jusqu'au",
   "TOTAL_ASCENT": "dénivelé positif total",
+  "TOTAL_CALORIES_MAY_BE_INCOMPLETE_IF_FILES_DO_NOT_CONTAIN_DATA": "Le total des calories peut être incomplet si certains fichiers ne contiennent pas les données associées.",
   "TOTAL_DESCENT": "dénivelé négatif total",
   "TOTAL_DISTANCE": "distance totale",
   "TOTAL_DURATION": "durée totale",
@@ -172,6 +174,10 @@
     "bpm": {
       "LABEL": "battements par minute",
       "UNIT": "bpm"
+    },
+    "kcal": {
+      "LABEL": "kilocalories",
+      "UNIT": "kcal"
     },
     "rpm": {
       "LABEL": "révolutions par minute",

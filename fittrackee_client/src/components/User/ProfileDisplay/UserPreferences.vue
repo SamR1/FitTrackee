@@ -134,6 +134,10 @@
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.hr_visibility}`) }}
       </dd>
+      <dt>{{ $t('visibility_levels.CALORIES_VISIBILITY') }}:</dt>
+      <dd>
+        {{ $t(`visibility_levels.LEVELS.${user.calories_visibility}`) }}
+      </dd>
       <dt>
         {{ $t('user.PROFILE.SEGMENTS_CREATION_EVENT.LABEL') }}<sup>1</sup>:
       </dt>
