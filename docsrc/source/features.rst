@@ -158,6 +158,7 @@ Workouts
 - | The user can add description (*new in 0.8.9*) and private notes.
   | A limited Markdown syntax can be used (*new in 0.9.0*).
 - If present and no description is provided by the user, the description from the file is used as the workout description (*new in 0.8.10*).
+- If present in .gpx, .tcx or .fit files, the total calories are displayed (*new in 1.1.0*).
 - | A map is displayed for workout with a file.
   | Controls allow full screen view and position reset (*new in 0.5.5*).
   | If the sport is Outdoor Tennis or Padel, a heat map is also available (*changed in 1.0.0*).
@@ -203,10 +204,10 @@ Workouts
 .. note::
    | Source and average and max values for heart rate and cadence are not displayed for workouts created before v0.10.0.
    | Average and max values for power are not displayed for workouts created before v0.11.0.
-   | Pace is not displayed for workouts created before v1.1.0.
+   | Pace and total calories are not displayed for workouts created before v1.1.0.
    | Refreshing the workout allows these values to be calculated (*new in 0.12.0*).
 
-- These data (speed, pace, elevation, heart rate, cadence and power) can be displayed on one chart or split on multiple charts. The preferred display can be stored in a user preference (*new in 0.11.0*).
+- Speed/pace, elevation, heart rate, cadence and power can be displayed on one chart or split on multiple charts. The preferred display can be stored in a user preference (*new in 0.11.0*).
 - | If **Visual Crossing** (*new in 0.7.11*) API key is provided, weather is displayed in workout detail. Data source is displayed in **About** page.
   | Wind is displayed, with an arrow indicating the direction (a tooltip can be displayed with the direction that the wind is coming **from**) (*new in 0.5.5*).
 - | An `equipment <features.html#equipments>`__ can be associated with a workout (*new in 0.8.0*). For now, only one equipment can be associated.
@@ -218,7 +219,7 @@ Workouts
 .. note::
   Records may differ from records displayed by the application that originally generated the files.
 
-- Visibility level can be set separately for workout data, analysis, map (*new in 0.9.0*) and heart rate (*new in 0.10.0*) :
+- Visibility level can be set separately for workout data, analysis, map (*new in 0.9.0*):
 
   - private: only owner can see data,
   - followers only: only owner and followers can see data,
@@ -228,7 +229,8 @@ Workouts
   | Workout visibility applies to title, description, records and workout data except elevation.
   | Analysis visibility applies to chart data, elevation and segments, if workout is associated with a file.
   | Map visibility applies to the map, if workout is associated with a file.
-  | Heart rate visibility applies to average and max values and chart data, if workout is associated with a file (*new in 0.10.0*).
+  |
+  | In addition, the visibility level can be set for all workouts for heart rate (average and max values and chart data, *new in 0.10.0*) and total calories (value displayed in the workout detail, *new in 1.1.0*).
   |
   | Default visibility can be set in user preferences.
 
@@ -275,6 +277,7 @@ Workouts
     - average speed
     - maximum speed
     - when only one sport is displayed and it corresponds to running, hiking, trail running, or walking) (*new in 1.1.0*):
+
       - average pace
       - maximum pace (= best pace)
 
@@ -299,6 +302,7 @@ Workouts
     - average ascent (*new in 0.9.7*)
     - average descent (*new in 0.9.7*)
     - when workouts belong to the same sport and it corresponds to running, hiking, trail running, or walking) (*new in 1.1.0*):
+
       - average pace
       - best pace
 
@@ -439,6 +443,7 @@ Statistics
     - total workouts
     - total ascent  (*new in 0.5.0*)
     - total descent  (*new in 0.5.0*)
+    - total calories (*new in 1.1.0*)
 
   - averages:
 
@@ -448,6 +453,7 @@ Statistics
     - average workouts  (*new in 0.8.5*)
     - average ascent  (*new in 0.8.5*)
     - average descent  (*new in 0.8.5*)
+    - average pace  (*new in 1.1.0*)
 
 - User statistics by sport (*new in 0.8.5*):
 
@@ -459,6 +465,7 @@ Statistics
   - descent (total and average)
   - records
   - average pace (if sport corresponds to running, hiking, trail running, or walking) (*new in 1.1.0*)
+  - total calories (*new in 1.1.0*)
 
 .. note::
   | There is a limit on the number of workouts used to calculate statistics to avoid performance issues. The value can be set in administration.

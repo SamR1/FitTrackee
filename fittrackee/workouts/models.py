@@ -361,7 +361,7 @@ class Workout(BaseModel):
             nullable=False,
         )
     )
-    calories: Mapped[Optional[int]] = mapped_column(nullable=True)
+    calories: Mapped[Optional[int]] = mapped_column(nullable=True)  # kcal
 
     user: Mapped["User"] = relationship(
         "User", lazy="select", single_parent=True
