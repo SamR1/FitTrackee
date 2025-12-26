@@ -362,7 +362,7 @@
           </select>
         </label>
         <label class="form-items">
-          <span> {{ $t('visibility_levels.HR_VISIBILITY') }}<sup>2</sup> </span>
+          {{ $t('visibility_levels.HR_VISIBILITY') }}
           <select
             id="hr_visibility"
             v-model="userForm.hr_visibility"
@@ -378,9 +378,7 @@
           </select>
         </label>
         <label class="form-items">
-          <span>
-            {{ $t('visibility_levels.CALORIES_VISIBILITY') }}<sup>2</sup>
-          </span>
+          {{ $t('visibility_levels.CALORIES_VISIBILITY') }}
           <select
             id="calories_visibility"
             v-model="userForm.calories_visibility"

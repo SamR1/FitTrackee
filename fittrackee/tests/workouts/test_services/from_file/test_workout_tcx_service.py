@@ -147,11 +147,6 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
         )
 
         self.assert_gpx(gpx)
-        # assert len(gpx.tracks) == 1
-        # assert len(gpx.tracks[0].segments) == 1
-        # moving_data = gpx.get_moving_data()
-        # assert moving_data.moving_time == 250.0
-        # assert round(moving_data.moving_distance, 1) == 318.2
 
     def test_it_returns_gpx_with_tcx_with_two_laps(
         self,
@@ -165,11 +160,6 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
         )
 
         self.assert_gpx(gpx)
-        # assert len(gpx.tracks) == 1
-        # assert len(gpx.tracks[0].segments) == 1
-        # moving_data = gpx.get_moving_data()
-        # assert moving_data.moving_time == 250.0
-        # assert round(moving_data.moving_distance, 1) == 318.2
 
     def test_it_returns_gpx_with_tcx_with_two_activities(
         self,
