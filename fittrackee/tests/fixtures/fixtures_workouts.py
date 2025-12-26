@@ -1204,6 +1204,7 @@ def seven_workouts_user_1() -> List[Workout]:
     update_workout(workout_1)
     workout_1.ascent = 120
     workout_1.descent = 200
+    workout_1.calories = 121
     db.session.add(workout_1)
     db.session.flush()
     workouts.append(workout_1)
@@ -1252,6 +1253,7 @@ def seven_workouts_user_1() -> List[Workout]:
     update_workout(workout_4)
     workout_4.ascent = 120
     workout_4.descent = 180
+    workout_4.calories = 150
     db.session.add(workout_4)
     db.session.flush()
     workouts.append(workout_4)
@@ -1268,6 +1270,7 @@ def seven_workouts_user_1() -> List[Workout]:
     update_workout(workout_5)
     workout_5.ascent = 100
     workout_5.descent = 200
+    workout_5.calories = 200
     db.session.add(workout_5)
     db.session.flush()
     workouts.append(workout_5)

@@ -164,6 +164,7 @@
   "TITLE_FIELD_HELP": "if provided, the title replaces that of the file.",
   "TO": "to",
   "TOTAL_ASCENT": "total ascent",
+  "TOTAL_CALORIES_MAY_BE_INCOMPLETE_IF_FILES_DO_NOT_CONTAIN_DATA": "The total calories may be incomplete if some files do not contain the associated data.",
   "TOTAL_DESCENT": "total descent",
   "TOTAL_DISTANCE": "total distance",
   "TOTAL_DURATION": "total duration",

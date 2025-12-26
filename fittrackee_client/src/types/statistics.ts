@@ -36,11 +36,12 @@ export type TStatisticsDatasetKeys =
   | 'average_pace'
   | 'average_speed'
   | 'average_workouts'
-  | 'total_workouts'
-  | 'total_duration'
-  | 'total_distance'
   | 'total_ascent'
+  | 'total_calories'
   | 'total_descent'
+  | 'total_distance'
+  | 'total_duration'
+  | 'total_workouts'
 
 export type TStatisticsTypes = 'by_time' | 'by_sport'
 
@@ -64,11 +65,12 @@ export type TStatisticsForSport = {
   average_pace: string
   average_speed: number
   average_workouts: number
-  total_workouts: number
-  total_duration: string
-  total_distance: number
   total_ascent: number | null
+  total_calories: number | null
   total_descent: number | null
+  total_distance: number
+  total_duration: string
+  total_workouts: number
 }
 export type TSportStatisticsFromApi = {
   [key in string]: TStatisticsForSport

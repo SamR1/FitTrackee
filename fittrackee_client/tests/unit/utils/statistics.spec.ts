@@ -432,6 +432,26 @@ describe('getDatasets', () => {
           type: 'bar',
         },
       ],
+      total_calories: [
+        {
+          label: 'Cycling (Sport)',
+          backgroundColor: ['#4c9792'],
+          data: [],
+          type: 'bar',
+        },
+        {
+          label: 'Cycling (Transport)',
+          backgroundColor: ['#000000'],
+          data: [],
+          type: 'bar',
+        },
+        {
+          label: 'Hiking',
+          backgroundColor: ['#bb757c'],
+          data: [],
+          type: 'bar',
+        },
+      ],
     }
     expect(getDatasets(sports)).toStrictEqual(expected)
   })
@@ -539,6 +559,14 @@ describe('getDatasets', () => {
           type: 'bar',
         },
       ],
+      total_calories: [
+        {
+          label: 'Cycling (Transport)',
+          backgroundColor: ['#000000'],
+          data: [],
+          type: 'bar',
+        },
+      ],
     }
     expect(getDatasets([sports[1]])).toStrictEqual(expected)
   })
@@ -567,6 +595,7 @@ describe('formatStats', () => {
         total_duration: [],
         total_ascent: [],
         total_descent: [],
+        total_calories: [],
       },
     }
     expect(
@@ -693,6 +722,14 @@ describe('formatStats', () => {
             type: 'bar',
           },
         ],
+        total_calories: [
+          {
+            label: 'Cycling (Transport)',
+            backgroundColor: ['#000000'],
+            data: [0, 0, 0],
+            type: 'bar',
+          },
+        ],
       },
     }
     expect(
@@ -723,6 +760,7 @@ describe('formatStats', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 100,
+          total_calories: null,
         },
       },
       '2021-06': {
@@ -738,6 +776,7 @@ describe('formatStats', () => {
           total_duration: 3500,
           total_ascent: 250,
           total_descent: 150,
+          total_calories: null,
         },
         2: {
           average_ascent: 75,
@@ -751,6 +790,7 @@ describe('formatStats', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 200,
+          total_calories: 200,
         },
       },
       '2021-07': {
@@ -766,6 +806,7 @@ describe('formatStats', () => {
           total_duration: 5000,
           total_ascent: 100,
           total_descent: 100,
+          total_calories: 131,
         },
       },
     }
@@ -789,6 +830,7 @@ describe('formatStats', () => {
         total_duration: [],
         total_ascent: [],
         total_descent: [],
+        total_calories: [],
       },
     }
     expect(
@@ -819,6 +861,7 @@ describe('formatStats', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 100,
+          total_calories: null,
         },
       },
       '2021-06': {
@@ -834,6 +877,7 @@ describe('formatStats', () => {
           total_duration: 3500,
           total_ascent: 250,
           total_descent: 150,
+          total_calories: null,
         },
         2: {
           average_ascent: 75,
@@ -847,6 +891,7 @@ describe('formatStats', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 200,
+          total_calories: 200,
         },
       },
       '2021-07': {
@@ -862,6 +907,7 @@ describe('formatStats', () => {
           total_duration: 5000,
           total_ascent: 100,
           total_descent: 100,
+          total_calories: 131,
         },
       },
     }
@@ -1052,6 +1098,20 @@ describe('formatStats', () => {
             type: 'bar',
           },
         ],
+        total_calories: [
+          {
+            backgroundColor: ['#4c9792'],
+            data: [0, 0, 0],
+            label: 'Cycling (Sport)',
+            type: 'bar',
+          },
+          {
+            backgroundColor: ['#bb757c'],
+            data: [0, 0, 131],
+            label: 'Hiking',
+            type: 'bar',
+          },
+        ],
       },
     }
     expect(
@@ -1084,6 +1144,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 100,
+          total_calories: null,
         },
       },
       '2021': {
@@ -1099,6 +1160,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3500,
           total_ascent: 250,
           total_descent: 150,
+          total_calories: 3200,
         },
         2: {
           average_ascent: 75,
@@ -1112,6 +1174,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 200,
+          total_calories: null,
         },
       },
       '2022': {
@@ -1127,6 +1190,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 100,
           total_descent: 100,
+          total_calories: 2500,
         },
       },
     }
@@ -1239,6 +1303,14 @@ describe('formatStats (duration)', () => {
             type: 'bar',
           },
         ],
+        total_calories: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [0, 3200],
+            type: 'bar',
+          },
+        ],
       },
     }
     expect(
@@ -1268,6 +1340,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 100,
+          total_calories: null,
         },
       },
       '2021-11': {
@@ -1283,6 +1356,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3500,
           total_ascent: 250,
           total_descent: 150,
+          total_calories: 1300,
         },
         2: {
           average_ascent: 75,
@@ -1296,6 +1370,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 200,
+          total_calories: null,
         },
       },
       '2021-12': {
@@ -1311,6 +1386,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 100,
           total_descent: 100,
+          total_calories: 1500,
         },
       },
     }
@@ -1423,6 +1499,14 @@ describe('formatStats (duration)', () => {
             type: 'bar',
           },
         ],
+        total_calories: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [0, 1300, 0],
+            type: 'bar',
+          },
+        ],
       },
     }
     expect(
@@ -1453,6 +1537,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 100,
+          total_calories: null,
         },
       },
       '2021-10-10': {
@@ -1468,6 +1553,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3500,
           total_ascent: 250,
           total_descent: 150,
+          total_calories: 1309,
         },
         2: {
           average_ascent: 75,
@@ -1481,6 +1567,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 200,
+          total_calories: 1200,
         },
       },
       '2021-10-17': {
@@ -1496,6 +1583,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 100,
           total_descent: 100,
+          total_calories: 1300,
         },
       },
     }
@@ -1608,6 +1696,14 @@ describe('formatStats (duration)', () => {
             type: 'bar',
           },
         ],
+        total_calories: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [0, 1309, 0],
+            type: 'bar',
+          },
+        ],
       },
     }
     expect(
@@ -1638,6 +1734,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 100,
+          total_calories: null,
         },
       },
       '2021-10-11': {
@@ -1653,6 +1750,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3500,
           total_ascent: 250,
           total_descent: 150,
+          total_calories: 1354,
         },
         2: {
           average_ascent: 75,
@@ -1666,6 +1764,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 200,
+          total_calories: 1000,
         },
       },
       '2021-10-18': {
@@ -1681,6 +1780,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 100,
           total_descent: 100,
+          total_calories: 1300,
         },
       },
     }
@@ -1793,6 +1893,14 @@ describe('formatStats (duration)', () => {
             type: 'bar',
           },
         ],
+        total_calories: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [0, 1354, 0],
+            type: 'bar',
+          },
+        ],
       },
     }
     expect(
@@ -1823,6 +1931,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 100,
+          total_calories: null,
         },
       },
       '2021-10-10': {
@@ -1838,6 +1947,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3500,
           total_ascent: 250,
           total_descent: 150,
+          total_calories: 1200,
         },
         2: {
           average_ascent: 75,
@@ -1851,6 +1961,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 200,
+          total_calories: null,
         },
       },
       '2021-10-17': {
@@ -1866,6 +1977,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 100,
           total_descent: 100,
+          total_calories: 1350,
         },
       },
     }
@@ -1978,6 +2090,14 @@ describe('formatStats (duration)', () => {
             type: 'bar',
           },
         ],
+        total_calories: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [0, 1200, 0],
+            type: 'bar',
+          },
+        ],
       },
     }
     expect(
@@ -2009,6 +2129,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 100,
+          total_calories: null,
         },
       },
       '2021-10-10': {
@@ -2024,6 +2145,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3500,
           total_ascent: 250,
           total_descent: 150,
+          total_calories: 1200,
         },
         2: {
           average_ascent: 75,
@@ -2037,6 +2159,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 200,
+          total_calories: 1500,
         },
       },
       '2021-10-17': {
@@ -2052,6 +2175,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 100,
           total_descent: 100,
+          total_calories: 950,
         },
       },
     }
@@ -2164,6 +2288,14 @@ describe('formatStats (duration)', () => {
             type: 'bar',
           },
         ],
+        total_calories: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [0, 1200, 0],
+            type: 'bar',
+          },
+        ],
       },
     }
     expect(
@@ -2194,6 +2326,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 100,
+          total_calories: null,
         },
       },
       '2021-10-10': {
@@ -2209,6 +2342,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3500,
           total_ascent: 250,
           total_descent: 150,
+          total_calories: 1200,
         },
         2: {
           average_ascent: 75,
@@ -2222,6 +2356,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 150,
           total_descent: 200,
+          total_calories: 1300,
         },
       },
       '2021-10-17': {
@@ -2237,6 +2372,7 @@ describe('formatStats (duration)', () => {
           total_duration: 3000,
           total_ascent: 100,
           total_descent: 100,
+          total_calories: 800,
         },
       },
     }
@@ -2423,6 +2559,20 @@ describe('formatStats (duration)', () => {
           {
             backgroundColor: ['#bb757c'],
             data: [0, 0, 2],
+            label: 'Hiking',
+            type: 'bar',
+          },
+        ],
+        total_calories: [
+          {
+            backgroundColor: ['#4c9792'],
+            data: [0, 1200, 0],
+            label: 'Cycling (Sport)',
+            type: 'bar',
+          },
+          {
+            backgroundColor: ['#bb757c'],
+            data: [0, 0, 800],
             label: 'Hiking',
             type: 'bar',
           },

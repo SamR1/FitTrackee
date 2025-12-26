@@ -53,6 +53,9 @@ def get_stats_from_row(
             row_stats["average_speed"] = round(float(row[1]), 2)
         if with_pace_data and row[9]:
             row_stats["average_pace"] = int(row[9].total_seconds())
+    if stats_type == "total":
+        row_stats["total_calories"] = row[10]
+
     return row_stats
 
 
@@ -98,27 +101,30 @@ def get_workouts_by_time(
           "statistics": {
             "2017": {
               "3": {
-                "total_workouts": 2,
                 "total_ascent": 203.0,
+                "total_calories": null,
                 "total_ascent": 156.0,
                 "total_distance": 15.282,
                 "total_duration": 12341
+                "total_workouts": 2
               }
             },
             "2019": {
               "1": {
-                "total_workouts": 3,
                 "total_ascent": 150.0,
+                "total_calories": 1300,
                 "total_ascent": 178.0,
                 "total_distance": 47,
                 "total_duration": 9960
+                "total_workouts": 3
               },
               "2": {
-                "total_workouts": 1,
                 "total_ascent": 46.0,
+                "total_calories": 250,
                 "total_ascent": 78.0,
                 "total_distance": 5.613,
                 "total_duration": 1267
+                "total_workouts": 1
               }
             }
           }
@@ -142,6 +148,7 @@ def get_workouts_by_time(
                 "average_ascent": 78.0,
                 "average_distance": 15.282,
                 "average_duration": 7641,
+                "average_pace": 701,
                 "average_speed": 4.48,
                 "total_workouts": 2
               }
@@ -287,6 +294,11 @@ def get_workouts_by_time(
                     if stats_type == "average"
                     else True
                 ),
+                (
+                    func.sum(Workout.calories)  # type: ignore
+                    if stats_type == "total"
+                    else True
+                ),
             )
             .join(Sport, Sport.id == Workout.sport_id)
             .filter(*filters)
@@ -320,6 +332,7 @@ def get_workouts_by_time(
             with_speed_data = (
                 row[8] not in PACE_SPORTS or user.display_speed_with_pace
             )
+
             if date_key not in statistics:
                 statistics[date_key] = {
                     sport_key: get_stats_from_row(
@@ -366,6 +379,8 @@ def get_workouts_by_time(
                     statistics[date_key][sport_key][
                         f"{stats_type}_ascent"
                     ] += round(float(row[6]), 2)
+                if stats_type == "total":
+                    statistics[date_key][sport_key]["total_calories"] = row[10]
 
         return {
             "status": "success",
@@ -423,7 +438,8 @@ def get_workouts_by_sport(
               "average_speed": 16.99,
               "total_workouts": 3,
               "total_ascent": 150.0,
-              "total_ascent": 178.0,
+              "total_calories": 1354,
+              "total_descent": 178.0,
               "total_distance": 47,
               "total_duration": 9960
             },
@@ -436,7 +452,8 @@ def get_workouts_by_sport(
               "average_speed": 15.95,
               "total_workouts": 1,
               "total_ascent": 46.0,
-              "total_ascent": 78.0,
+              "total_calories": null,
+              "total_descent": 78.0,
               "total_distance": 5.613,
               "total_duration": 1267
             },
@@ -449,7 +466,8 @@ def get_workouts_by_sport(
               "average_speed": null,
               "total_workouts": 2,
               "total_ascent": 203.0,
-              "total_ascent": 156.0,
+              "total_calories": 540,
+              "total_descent": 156.0,
               "total_distance": 15.282,
               "total_duration": 12341
             }
@@ -583,6 +601,7 @@ def get_workouts_by_sport(
                 func.sum(workouts_subquery.c.distance),
                 func.sum(workouts_subquery.c.moving),
                 func.avg(workouts_subquery.c.ave_pace),
+                func.sum(workouts_subquery.c.calories),
                 func.count(workouts_subquery.c.id),
             )
             .group_by(workouts_subquery.c.sport_id)
@@ -629,7 +648,8 @@ def get_workouts_by_sport(
                     if row[10] is None or not return_pace_data
                     else str(row[10]).split(".")[0]
                 ),
-                "total_workouts": row[11],
+                "total_calories": row[11],
+                "total_workouts": row[12],
             }
 
         return {
