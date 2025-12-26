@@ -362,10 +362,28 @@
           </select>
         </label>
         <label class="form-items">
-          {{ $t('visibility_levels.HR_VISIBILITY') }}
+          <span> {{ $t('visibility_levels.HR_VISIBILITY') }}<sup>2</sup> </span>
           <select
             id="hr_visibility"
             v-model="userForm.hr_visibility"
+            :disabled="authUserLoading"
+          >
+            <option
+              v-for="level in visibilityLevels"
+              :value="level"
+              :key="level"
+            >
+              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+            </option>
+          </select>
+        </label>
+        <label class="form-items">
+          <span>
+            {{ $t('visibility_levels.CALORIES_VISIBILITY') }}<sup>2</sup>
+          </span>
+          <select
+            id="calories_visibility"
+            v-model="userForm.calories_visibility"
             :disabled="authUserLoading"
           >
             <option
@@ -559,6 +577,7 @@
 
   const userForm: Reactive<IUserPreferencesPayload> = reactive({
     analysis_visibility: 'private',
+    calories_visibility: 'private',
     date_format: 'dd/MM/yyyy',
     display_ascent: true,
     display_speed_with_pace: false,
@@ -707,6 +726,7 @@
     #analysis_visibility,
     #workouts_visibility,
     #hr_visibility,
+    #calories_visibility,
     #segments_creation_event,
     #missing_elevations_processing {
       padding: $default-padding * 0.5;

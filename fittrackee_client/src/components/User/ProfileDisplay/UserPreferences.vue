@@ -130,9 +130,13 @@
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.map_visibility}`) }}
       </dd>
-      <dt>{{ $t('visibility_levels.HR_VISIBILITY') }}:</dt>
+      <dt>{{ $t('visibility_levels.HR_VISIBILITY') }}<sup>2</sup>:</dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.hr_visibility}`) }}
+      </dd>
+      <dt>{{ $t('visibility_levels.CALORIES_VISIBILITY') }}<sup>2</sup>:</dt>
+      <dd>
+        {{ $t(`visibility_levels.LEVELS.${user.calories_visibility}`) }}
       </dd>
       <dt>
         {{ $t('user.PROFILE.SEGMENTS_CREATION_EVENT.LABEL') }}<sup>1</sup>:

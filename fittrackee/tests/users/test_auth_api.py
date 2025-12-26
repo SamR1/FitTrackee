@@ -1528,6 +1528,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     split_workout_charts=True,
                     display_speed_with_pace=True,
                     missing_elevations_processing="open_elevation",
+                    calories_visibility="followers_only",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1555,6 +1556,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert (
             data["data"]["missing_elevations_processing"] == "open_elevation"
         )
+        assert data["data"]["calories_visibility"] == VisibilityLevel.FOLLOWERS
 
     @pytest.mark.parametrize(
         "input_map_visibility,input_analysis_visibility,input_workout_visibility,expected_map_visibility,expected_analysis_visibility",
@@ -1627,6 +1629,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     split_workout_charts=False,
                     display_speed_with_pace=True,
                     missing_elevations_processing="none",
+                    calories_visibility=VisibilityLevel.PRIVATE,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1677,6 +1680,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     split_workout_charts=False,
                     display_speed_with_pace=True,
                     missing_elevations_processing="none",
+                    calories_visibility=VisibilityLevel.PRIVATE.value,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),

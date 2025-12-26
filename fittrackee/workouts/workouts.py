@@ -45,7 +45,7 @@ from fittrackee.utils import decode_short_id, encode_uuid
 from fittrackee.visibility_levels import (
     VisibilityLevel,
     can_view,
-    can_view_heart_rate,
+    can_view_workout_data,
 )
 
 from .constants import (
@@ -1486,7 +1486,9 @@ def get_workout_data(
         )
 
     try:
-        can_see_heart_rate = can_view_heart_rate(workout.user, auth_user)
+        can_see_heart_rate = can_view_workout_data(
+            "hr", workout.user, auth_user
+        )
         if data_type == "chart_data":
             data: "Dict" = {
                 "chart_data": get_chart_data(

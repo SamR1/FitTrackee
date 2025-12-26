@@ -184,6 +184,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout = workout_cycling_user_1
         workout.ascent = 0
         workout.descent = 10
+        workout.calories = 150
 
         serialized_workout = workout.serialize(user=user_1, light=False)
 
@@ -197,7 +198,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "ave_speed": workout.ave_speed,
             "best_pace": None,
             "bounds": [],
-            "calories": None,
+            "calories": workout.calories,
             "creation_date": workout.creation_date,
             "descent": workout.descent,
             "description": None,
@@ -1678,6 +1679,57 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             }
         ]
 
+    @pytest.mark.parametrize(
+        "input_calories_visibility",
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC],
+    )
+    def test_serializer_returns_calories_related_data(
+        self,
+        input_calories_visibility: VisibilityLevel,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        user_1.calories_visibility = input_calories_visibility
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.calories = 150
+        add_follower(user_1, user_2)
+        workout = self.update_workout_with_file_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert (
+            serialized_workout["calories"] == workout_cycling_user_1.calories
+        )
+
+    def test_serializer_does_not_return_calories_related_data(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        user_1.calories_visibility = VisibilityLevel.PRIVATE
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.calories = 150
+        add_follower(user_1, user_2)
+        workout = self.update_workout_with_file_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert serialized_workout["calories"] is None
+
     def test_serializer_does_not_return_next_workout(
         self,
         app: Flask,
@@ -2225,6 +2277,55 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             }
         ]
 
+    def test_serializer_returns_calories_related_data(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        user_1.calories_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.calories = 150
+        workout = self.update_workout_with_file_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert (
+            serialized_workout["calories"] == workout_cycling_user_1.calories
+        )
+
+    @pytest.mark.parametrize(
+        "input_calories_visibility",
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
+    )
+    def test_serializer_does_not_return_calories_related_data(
+        self,
+        input_calories_visibility: VisibilityLevel,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        user_1.calories_visibility = input_calories_visibility
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.calories = 150
+        workout = self.update_workout_with_file_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert serialized_workout["calories"] is None
+
     def test_serializer_does_not_return_next_workout(
         self,
         app: Flask,
@@ -2753,6 +2854,53 @@ class TestWorkoutModelAsUnauthenticatedUser(
                 "segment_number": 1,
             }
         ]
+
+    def test_serializer_returns_calories_related_data(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        user_1.calories_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.calories = 150
+        workout = self.update_workout_with_file_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(light=False)
+
+        assert (
+            serialized_workout["calories"] == workout_cycling_user_1.calories
+        )
+
+    @pytest.mark.parametrize(
+        "input_calories_visibility",
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],
+    )
+    def test_serializer_does_not_return_calories_related_data(
+        self,
+        input_calories_visibility: VisibilityLevel,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        user_1.calories_visibility = input_calories_visibility
+        workout_cycling_user_1.calories = 150
+        workout = self.update_workout_with_file_data(
+            workout_cycling_user_1, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(light=False)
+
+        assert serialized_workout["calories"] is None
 
     def test_serializer_does_not_return_next_workout(
         self,

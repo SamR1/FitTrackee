@@ -59,6 +59,7 @@ export interface IUserProfile extends IUserLightProfile {
 export interface IAuthUserProfile extends IUserProfile {
   analysis_visibility: TVisibilityLevels
   accepted_privacy_policy: boolean | null
+  calories_visibility: TVisibilityLevels
   date_format: string
   display_ascent: boolean
   display_speed_with_pace: boolean
@@ -126,6 +127,7 @@ export interface IUserRelationshipActionPayload {
 
 export interface IUserPreferencesPayload {
   analysis_visibility: TVisibilityLevels
+  calories_visibility: TVisibilityLevels
   date_format: string
   display_ascent: boolean
   display_speed_with_pace: boolean
