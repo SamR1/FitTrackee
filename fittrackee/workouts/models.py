@@ -361,6 +361,7 @@ class Workout(BaseModel):
             nullable=False,
         )
     )
+    calories: Mapped[Optional[int]] = mapped_column(nullable=True)
 
     user: Mapped["User"] = relationship(
         "User", lazy="select", single_parent=True
@@ -631,6 +632,7 @@ class Workout(BaseModel):
             "max_power": get_power(sport_label, self.max_power),
             "ave_pace": get_pace(sport_label, self.ave_pace),
             "best_pace": get_pace(sport_label, self.best_pace),
+            "calories": self.calories,
         }
 
         if not light or with_equipments:

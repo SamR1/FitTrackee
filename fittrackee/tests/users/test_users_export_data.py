@@ -110,6 +110,7 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "with_geometry": False,
                 "ave_pace": None,
                 "best_pace": None,
+                "calories": None,
             }
         ]
 
@@ -174,6 +175,7 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "with_geometry": True,
                 "ave_pace": None,
                 "best_pace": None,
+                "calories": None,
             }
         ]
 
@@ -242,6 +244,7 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "with_geometry": True,
                 "ave_pace": str(workout.ave_pace),
                 "best_pace": str(workout.best_pace),
+                "calories": None,
             }
         ]
 
