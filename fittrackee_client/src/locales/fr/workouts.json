@@ -17,6 +17,7 @@
   "BACK_TO_WORKOUT": "revenir à la séance",
   "BEST_PACE": "meilleure allure",
   "CADENCE": "cadence",
+  "CALORIES": "calories",
   "COMMENTS": {
     "ADD": "ajouter un commentaire",
     "COMMENT": "commentaire | commentaires",
@@ -172,6 +173,10 @@
     "bpm": {
       "LABEL": "battements par minute",
       "UNIT": "bpm"
+    },
+    "kcal": {
+      "LABEL": "kilocalories",
+      "UNIT": "kcal"
     },
     "rpm": {
       "LABEL": "révolutions par minute",
