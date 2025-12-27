@@ -609,7 +609,9 @@ class Workout(BaseModel):
                 else []
             ),
             "with_geometry": (
-                len(self.segments) > 0 and self.segments[0].geom is not None
+                can_see_map_data
+                and len(self.segments) > 0
+                and self.segments[0].geom is not None
             ),
             "weather_start": self.weather_start,
             "weather_end": self.weather_end,

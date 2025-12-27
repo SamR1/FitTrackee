@@ -20,10 +20,8 @@ from fittrackee.users.users_service import UserManagerService
 from fittrackee.users.utils.language import get_language
 from fittrackee.users.utils.tokens import clean_blacklisted_tokens
 
-handler = logging.StreamHandler()
 logger = logging.getLogger("fittrackee_users_cli")
 logger.setLevel(logging.INFO)
-logger.addHandler(handler)
 
 
 @click.group(name="users")
