@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "1.0.4"
+version = "1.0.5"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0-only"
@@ -30,7 +30,7 @@ Changelog = "https://docs.fittrackee.org/en/changelog.html"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-authlib = "=1.6.5"
+authlib = "=1.6.6"
 babel = "^2.11.0"
 click = "^8.3.1"
 dramatiq = {version = "^1.15.0", extras = ["redis"]}
@@ -48,7 +48,7 @@ geoalchemy2 = {extras = ["shapely"], version = "^0.18.1"}
 geopandas = "=1.1.1"
 gpxpy = "=1.6.2"
 gunicorn = "^23.0.0"
-humanize = "^4.14.0"
+humanize = "^4.15.0"
 jsonschema = "^4.25.1"
 lxml = "^6.0.2"
 mistune = "^3.1.4"
@@ -62,16 +62,17 @@ pyproj = "=3.7.1" # pyproj 3.7.2+ requires python 3.11+ and installation may gen
 pyopenssl = "^25.3.0"
 pytz = "^2025.2"
 shortuuid = "^1.0.13"
-sqlalchemy = "=2.0.44"
+sqlalchemy = "=2.0.45"
 staticmap3 = {extras = ["filecache"], version = "^0.1.0"}
 ua-parser = "^1.0.0"
 xmltodict = "^1.0.2"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.9.2"
-debugpy = "=1.8.17"
-furo = "^2025.9.25"
-mypy = "^1.18.2"
+codespell = "^2.4.1"
+debugpy = "=1.8.19"
+furo = "^2025.12.19"
+mypy = "^1.19.1"
 pytest = "^9.0.2"
 pytest-cov = "^7.0.0"
 pytest-html = "^4.1.1"
@@ -79,13 +80,13 @@ pytest-runner = "^6.0.1"
 pytest-selenium = "^4.1.0"
 pytest-xdist = {extras = ["psutil"], version = "^3.8.0"}
 recommonmark = "^0.7.1"
-ruff = "=0.14.8"
+ruff = "=0.14.10"
 selenium = "^4.38.0"
 sphinx = "^8.1.3" # sphinx 8.2+ requires python 3.11+
 sphinx-copybutton = "^0.5.2"
 sphinx-intl = "^2.3.2"
 sphinxcontrib-httpdomain = "^1.8.1"
-time-machine = "^3.1.0"
+time-machine = "^3.2.0"
 types-freezegun = "^1.1"
 types-pytz = "^2025.2"
 types-redis = "^4.6"
@@ -157,3 +158,11 @@ ignore_errors = true
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.codespell]
+# Ref: https://github.com/codespell-project/codespell#using-a-config-file
+skip = '.git*,*.svg,*.lock,*.css,*.min.*,dist,fr,locales,translations,*.map,emails,searchindex.js,language_data.js,.idea,.venv,.mypy_cache,./fittrackee_client/node_modules'
+check-hidden = true
+ignore-regex = '\b(Gard|Nome)\b'
+# Unfortunate choices for words which are not correct but too many by now
+ignore-words-list = 'equipments,informations,te'

@@ -18,7 +18,7 @@ class WorkoutTcxService(WorkoutGpxService):
             return None
         elevation = float(altitude_meters)
         # workaround
-        # some devices/softwares return invalid elevation values
+        # some devices/software return invalid elevation values
         # see https://github.com/piggz/harbour-amazfish/issues/494
         if -9999.99 < elevation < 9999.99:
             return elevation

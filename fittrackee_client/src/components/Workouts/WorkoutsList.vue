@@ -19,7 +19,7 @@
         <div class="buttons">
           <div class="spacer" />
           <button
-            v-if="pagination.total > 1 && showWorkouts"
+            v-if="!displayMap && pagination.total > 1 && showWorkouts"
             class="scroll-button"
             @click="scrollToStatistics()"
             :title="$t('common.SCROLL_DOWN')"
@@ -28,7 +28,7 @@
             <i class="fa fa-chevron-down" aria-hidden="true"></i>
           </button>
           <button
-            v-if="pagination.total > 1"
+            v-if="!displayMap && pagination.total > 1"
             class="hide-workouts-btn transparent"
             @click="toggleWorkouts()"
           >

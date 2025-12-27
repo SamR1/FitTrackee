@@ -7,15 +7,18 @@ LANGUAGES_DATE_STRING = {
     "en": "MMM. d, yyyy",  # English
     "es": "d MMM yyyy",  # Spanish
     "eu": "yyyy MMM d",  # Basque
+    # "fi": "d.MMMM.yyyy",  # Finnish
     "fr": "d MMM yyyy",  # French
     "gl": "d MMM yyyy",  # Galician
     "hr": "d. MMM yyyy.",  # Croatian
     "it": "d MMM yyyy",  # Italian
+    # "kab": "d MMM yyyy",  # Kabyle  # disabled for now
     "nb": "d. MMM yyyy",  # Norwegian Bokmål
     "nl": "d MMM. yyyy",  # Dutch
     "pl": "d MMM yyyy",  # Polish
     "pt": "d MMM yyyy",  # Portuguese
     "ru": "d MMM yyyy",  # Russian
+    # "sl": "d. MMMM yyyy",  # Slovenian
     "tr": "d MMM yyyy",  # Turkish
     "zh_Hans": "y年M月d日",  # Chinese (Simplified Han script)
 }

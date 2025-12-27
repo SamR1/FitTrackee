@@ -96,7 +96,7 @@ def get_remote_user_object(
         user_object["icon"] = {
             "type": "Image",
             "mediaType": "image/jpeg",
-            "url": "https://exemple.com/916cac70b7c694a4.jpg",
+            "url": "https://example.com/916cac70b7c694a4.jpg",
         }
     return user_object
 

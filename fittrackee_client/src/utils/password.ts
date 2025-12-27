@@ -1,7 +1,7 @@
 import { zxcvbnOptions } from '@zxcvbn-ts/core'
 
 export const loadLanguagePackage = async (language: string) => {
-  // no package available for
+  // no package available for:
   // - Basque
   // - Bengali
   // - Bulgarian
@@ -10,9 +10,11 @@ export const loadLanguagePackage = async (language: string) => {
   // - Croatian
   // - Dutch (nl-NL)
   // - Galician
+  // - Kabyle
   // - Norwegian bokmål
   // - Portuguese (pt-PT)
   // - Russian
+  // - Slovenian
   // - Turkish
   // fallback to english
   switch (language) {
@@ -28,6 +30,8 @@ export const loadLanguagePackage = async (language: string) => {
       return await import('@zxcvbn-ts/language-pl')
     case 'cs':
       return await import('@zxcvbn-ts/language-cs')
+    // case 'fi':
+    //   return await import('@zxcvbn-ts/language-fi')
     default:
       return await import('@zxcvbn-ts/language-en')
   }
