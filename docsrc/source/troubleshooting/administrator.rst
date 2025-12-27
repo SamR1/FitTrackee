@@ -50,7 +50,7 @@ Failed to upload or download files
 ``staticmap3.staticmap - ERROR - request failed [None]`` or "error when generating map image"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- | FitTrackee v0.10+ introduces a new environnement variable ``STATICMAP_CACHE_DIR``, for **Static Map 3** cache directory.
+- | FitTrackee v0.10+ introduces a new environment variable ``STATICMAP_CACHE_DIR``, for **Static Map 3** cache directory.
   | For docker installation, the directory must be writable for ``fittrackee`` user, see in ``docker-compose.yml`` example in the `repository <https://github.com/SamR1/FitTrackee/blob/main/docker-compose.yml>`__:
 
   .. code:: yaml

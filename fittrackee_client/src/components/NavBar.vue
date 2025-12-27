@@ -344,7 +344,7 @@
           padding: 0;
           margin-left: 2px;
           ::v-deep(.dropdown-list) {
-            z-index: 1000;
+            z-index: 1001;
             margin-left: -150px !important;
             width: 190px !important;
           }

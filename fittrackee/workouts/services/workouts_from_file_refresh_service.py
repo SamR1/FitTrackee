@@ -1,11 +1,10 @@
 import zipfile
 from datetime import datetime
-from logging import Logger, getLogger
 from typing import IO, TYPE_CHECKING, Optional, Union
 
 from sqlalchemy import asc, desc
 
-from fittrackee import db
+from fittrackee import appLog, db
 from fittrackee.files import get_absolute_file_path
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.workouts.models import Workout
@@ -20,10 +19,9 @@ from .mixins import WorkoutFileMixin
 from .workout_from_file.services import WORKOUT_FROM_FILE_SERVICES
 
 if TYPE_CHECKING:
+    from logging import Logger
+
     from fittrackee.workouts.models import Sport
-
-
-appLog = getLogger("fittrackee_workout_refresh")
 
 
 class WorkoutFromFileRefreshService(WorkoutFileMixin):

@@ -1445,6 +1445,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         ]
         assert serialized_workout["with_analysis"] is True
         assert serialized_workout["with_file"] is False
+        assert serialized_workout["with_geometry"] is False
         assert (
             serialized_workout["workout_visibility"]
             == input_workout_visibility
@@ -1495,6 +1496,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["segments"] == []
         assert serialized_workout["with_analysis"] is False
         assert serialized_workout["with_file"] is False
+        assert serialized_workout["with_geometry"] is False
         assert (
             serialized_workout["workout_visibility"]
             == input_workout_visibility
@@ -1554,8 +1556,49 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         ]
         assert serialized_workout["with_analysis"] is True
         assert serialized_workout["with_file"] is True
+        assert serialized_workout["with_geometry"] is False
         assert (
             serialized_workout["workout_visibility"] == VisibilityLevel.PUBLIC
+        )
+
+    @pytest.mark.parametrize(
+        "input_map_visibility,expected_with_file_geometry",
+        [
+            (VisibilityLevel.FOLLOWERS, True),
+            (VisibilityLevel.PRIVATE, False),
+        ],
+    )
+    def test_it_returns_visibility_when_file_has_geometry(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        input_map_visibility: VisibilityLevel,
+        expected_with_file_geometry: bool,
+    ) -> None:
+        workout_cycling_user_1_with_coordinates.workout_visibility = (
+            VisibilityLevel.FOLLOWERS
+        )
+        workout_cycling_user_1_with_coordinates.analysis_visibility = (
+            VisibilityLevel.FOLLOWERS
+        )
+        workout_cycling_user_1_with_coordinates.map_visibility = (
+            input_map_visibility
+        )
+        add_follower(user_1, user_2)
+        workout = self.update_workout_with_file_data(
+            workout_cycling_user_1_with_coordinates, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert serialized_workout["with_analysis"] is True
+        assert serialized_workout["with_file"] == expected_with_file_geometry
+        assert (
+            serialized_workout["with_geometry"] == expected_with_file_geometry
         )
 
     @pytest.mark.parametrize(
@@ -1606,6 +1649,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         ]
         assert serialized_workout["with_analysis"] is True
         assert serialized_workout["with_file"] is False
+        assert serialized_workout["with_geometry"] is False
         assert (
             serialized_workout["workout_visibility"] == VisibilityLevel.PUBLIC
         )
@@ -2210,6 +2254,45 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             serialized_workout["workout_visibility"] == VisibilityLevel.PUBLIC
         )
 
+    @pytest.mark.parametrize(
+        "input_map_visibility,expected_with_file_geometry",
+        [
+            (VisibilityLevel.PUBLIC, True),
+            (VisibilityLevel.PRIVATE, False),
+        ],
+    )
+    def test_it_returns_visibility_when_file_has_geometry(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        input_map_visibility: VisibilityLevel,
+        expected_with_file_geometry: bool,
+    ) -> None:
+        workout_cycling_user_1_with_coordinates.workout_visibility = (
+            VisibilityLevel.PUBLIC
+        )
+        workout_cycling_user_1_with_coordinates.analysis_visibility = (
+            VisibilityLevel.PUBLIC
+        )
+        workout_cycling_user_1_with_coordinates.map_visibility = (
+            input_map_visibility
+        )
+        workout = self.update_workout_with_file_data(
+            workout_cycling_user_1_with_coordinates, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(user=user_2, light=False)
+
+        assert serialized_workout["with_analysis"] is True
+        assert serialized_workout["with_file"] == expected_with_file_geometry
+        assert (
+            serialized_workout["with_geometry"] == expected_with_file_geometry
+        )
+
     def test_serializer_returns_hr_related_data(
         self,
         app: Flask,
@@ -2739,6 +2822,44 @@ class TestWorkoutModelAsUnauthenticatedUser(
         assert serialized_workout["segments"] == [
             {**workout_cycling_user_1_segment.serialize(), "segment_number": 1}
         ]
+
+    @pytest.mark.parametrize(
+        "input_map_visibility,expected_with_file_geometry",
+        [
+            (VisibilityLevel.PUBLIC, True),
+            (VisibilityLevel.PRIVATE, False),
+        ],
+    )
+    def test_it_returns_visibility_when_file_has_geometry(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        input_map_visibility: VisibilityLevel,
+        expected_with_file_geometry: bool,
+    ) -> None:
+        workout_cycling_user_1_with_coordinates.workout_visibility = (
+            VisibilityLevel.PUBLIC
+        )
+        workout_cycling_user_1_with_coordinates.analysis_visibility = (
+            VisibilityLevel.PUBLIC
+        )
+        workout_cycling_user_1_with_coordinates.map_visibility = (
+            input_map_visibility
+        )
+        workout = self.update_workout_with_file_data(
+            workout_cycling_user_1_with_coordinates, map_id=random_string()
+        )
+
+        serialized_workout = workout.serialize(light=False)
+
+        assert serialized_workout["with_analysis"] is True
+        assert serialized_workout["with_file"] == expected_with_file_geometry
+        assert (
+            serialized_workout["with_geometry"] == expected_with_file_geometry
+        )
 
     @pytest.mark.parametrize(
         "input_map_visibility,input_analysis_visibility",

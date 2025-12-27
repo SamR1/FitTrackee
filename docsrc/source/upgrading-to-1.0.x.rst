@@ -31,7 +31,7 @@ From PyPI or sources
 ^^^^^^^^^^^^^^^^^^^^
 
 **PostGIS** must be installed on your operating system.
-You can find intructions for your OS on `PostGIS documentation <https://postgis.net/documentation/getting_started/>`_.
+You can find instructions for your OS on `PostGIS documentation <https://postgis.net/documentation/getting_started/>`_.
 
 Here are the instructions for installation on ArchLinux with `yay <https://github.com/Jguer/yay>`__ (to adapt depending on your operating system):
 

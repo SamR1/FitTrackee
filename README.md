@@ -25,11 +25,11 @@ with data on your own server.
 Several mobile apps or devices can store workouts data locally and export them into a file.  
 Examples for Android (non-exhaustive list):  
 * [Runner Up](https://github.com/jonasoreland/runnerup) (GPLv3)  
-* [OpenTracks](https://github.com/OpenTracksApp/OpenTracks) (Apache License)  
+* [OpenTracks](https://codeberg.org/OpenTracksApp/OpenTracks) (Apache License)  
 * [FitoTrack](https://codeberg.org/jannis/FitoTrack) (GPLv3)  
 
 To get workouts from devices like smartwatches:
-* [Gadgetbridge](https://gadgetbridge.org) (Android, GPL v3)
+* [Gadgetbridge](https://gadgetbridge.org) (Android, GPLv3)
 
 It is also possible to add a workout without a file.
 
@@ -39,12 +39,14 @@ Map data from [OpenStreetMap](https://www.openstreetmap.org).
 
 - [Features](https://docs.fittrackee.org/en/features.html)
 - [Installation instructions](https://docs.fittrackee.org/en/installation.html)
+- [Command line interface](https://docs.fittrackee.org/en/cli.html)
+- [Third-party tools](https://docs.fittrackee.org/en/third_party_tools.html)
 - [Changelog](https://docs.fittrackee.org/en/changelog.html)
 - [Troubleshooting](https://docs.fittrackee.org/en/troubleshooting/index.html)
 - [Contributing](https://docs.fittrackee.org/en/contributing.html)
 
 **Under heavy development (some features may be unstable).**  
-(see [issues](https://github.com/SamR1/FitTrackee/issues) and [documentation](https://docs.fittrackee.org) for more info.)  
+(see [provisional roadmap](https://github.com/SamR1/FitTrackee/issues/1010), [issues](https://github.com/SamR1/FitTrackee/issues) and [documentation](https://docs.fittrackee.org) for more information)  
 
 ![FitTrackee Dashboard Screenshot](https://docs.fittrackee.org/en/_images/dashboard.png)
 

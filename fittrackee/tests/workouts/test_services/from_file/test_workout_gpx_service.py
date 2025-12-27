@@ -1659,6 +1659,26 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
             ]
         )
 
+    def test_it_does_not_calls_weather_service_when_endpoint_has_no_time(
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_without_time_on_last_point: str,
+        default_weather_service: MagicMock,
+    ) -> None:
+        service = self.init_service_with_gpx(
+            user_1,
+            sport_1_cycling,
+            gpx_file_without_time_on_last_point,
+            get_weather=True,
+        )
+
+        service.process_workout()
+        db.session.commit()
+
+        default_weather_service.assert_not_called()
+
     def test_it_does_not_call_weather_service_when_flag_is_false(
         self,
         app: "Flask",

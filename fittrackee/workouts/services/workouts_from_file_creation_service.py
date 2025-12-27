@@ -5,12 +5,11 @@ from abc import abstractmethod
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from io import BytesIO
-from logging import getLogger
 from typing import IO, TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 from flask import current_app
 
-from fittrackee import db
+from fittrackee import appLog, db
 from fittrackee.equipments.exceptions import InvalidEquipmentsException
 from fittrackee.equipments.models import Equipment
 from fittrackee.files import get_absolute_file_path
@@ -38,8 +37,6 @@ if TYPE_CHECKING:
 
     from fittrackee.visibility_levels import VisibilityLevel
     from fittrackee.workouts.models import Workout
-
-appLog = getLogger("fittrackee_workouts_upload")
 
 
 @dataclass

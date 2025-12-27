@@ -1,5 +1,51 @@
 # Change log
 
+## Version 1.0.5 (2025/12/27)
+
+**Warning**:
+- The version 1.1.0 will require all workouts to be updated, see [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.x.html#workouts-data-update).
+
+### Bugs Fixed
+
+* [PR#1002](https://github.com/SamR1/FitTrackee/pull/1002) - improve logging + minor fixes
+* [32a0ca1](https://github.com/SamR1/FitTrackee/commit/32a0ca157827e657e82f7fa2e3d0fce955d61de3) - fix buttons when the map is displayed in workouts list
+* [97c55d2](https://github.com/SamR1/FitTrackee/commit/97c55d2c1124ed1d7303d906a93952a4770581b7) - fix with_geometry value depending on map visibility
+* [1663f64](https://github.com/SamR1/FitTrackee/commit/1663f6477f61a20abc980ae0c1e45ca19064dd53) - fix language dropdown when map is displayed
+
+### Translations
+
+* [PR#1004](https://github.com/SamR1/FitTrackee/pull/1004) - Init Kabyle translations files
+* [PR#1007](https://github.com/SamR1/FitTrackee/pull/1007) - Init Finnish translations files
+* [PR#1009](https://github.com/SamR1/FitTrackee/pull/1009) - Init Slovenian translations files
+
+Translation status for languages available on the interface:
+- Basque: 100%
+- Bulgarian: 54%
+- Catalan: 26%
+- Chinese (Simplified): 98%
+- Croatian: 100%
+- Czech: 48%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 93%
+- Italian: 99%
+- Norwegian Bokmål: 45%
+- Polish: 95%
+- Portuguese: 53%
+- Russian: 97%
+- Spanish: 71%
+- Turkish: 1%
+
+### Misc
+
+* [PR#1001](https://github.com/SamR1/FitTrackee/pull/1001) add codespell support (config, workflow to detect/not fix) and make it fix some typos
+
+Thanks to the contributors:
+- @yarikoptic
+
+
 ## Version 1.0.4 (2025/12/14)
 
 Among changes, this version introduces some changes regarding environment variables:
@@ -209,7 +255,7 @@ Thanks to the contributors:
 
 **FitTrackee** now allows you to filter workouts on location and display them on a map.  
 To do so, **FitTrackee** requires the installation of **PostGIS** extension on **PostgreSQL** database and the recalculation of all workouts to generate geospatial data.  
-You can find the upgrade instructions in [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.0.html)).  
+You can find the upgrade instructions in [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.x.html).  
 Two new environment variables have been added: [`ENABLE_GEOSPATIAL_FEATURES`](https://docs.fittrackee.org/en/installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES) and [`NOMINATIM_URL`](https://docs.fittrackee.org/en/installation.html#envvar-NOMINATIM_URL).
 
 Among other changes and improvements, this version also brings a new sport (Outdoor Padel).
@@ -331,7 +377,7 @@ If you find bugs, please report them.
 
 **Warning:**  
 This version introduces major changes:
-- **FitTrackee** v1+ now requires **PostGIS** extension and additional dependencies, see the upgrade instructions in [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.0.html)).
+- **FitTrackee** v1+ now requires **PostGIS** extension and additional dependencies, see the upgrade instructions in [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.x.html).
 - Two new environment variables have been added: [`ENABLE_GEOSPATIAL_FEATURES`](https://docs.fittrackee.org/en/installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES) and [`NOMINATIM_URL`](https://docs.fittrackee.org/en/installation.html#envvar-NOMINATIM_URL).
 - This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation.html#upgrade)).
 
