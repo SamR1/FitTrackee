@@ -477,9 +477,10 @@ class Workout(BaseModel):
                 and sport_label not in PACE_SPORTS
             ):
                 continue
-            if (
-                record.record_type in ["AS", "MS"]
-                and not display_speed_with_pace
+            if record.record_type in ["AS", "MS"] and (
+                not display_speed_with_pace
+                and self.ave_pace is not None
+                and self.best_pace is not None
             ):
                 continue
             records.append(record.serialize())
@@ -575,12 +576,14 @@ class Workout(BaseModel):
             ),
             "ave_speed": (
                 None
-                if self.ave_speed is None or not display_speed_with_pace
+                if self.ave_speed is None
+                or (not display_speed_with_pace and self.ave_pace is not None)
                 else float(self.ave_speed)
             ),
             "max_speed": (
                 None
-                if self.max_speed is None or not display_speed_with_pace
+                if self.max_speed is None
+                or (not display_speed_with_pace and self.best_pace is not None)
                 else float(self.max_speed)
             ),
             "min_alt": (
