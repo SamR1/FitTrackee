@@ -709,6 +709,23 @@ class TestWorkoutGpxServiceProcessFile(
             "time": "2018-03-13 12:48:55+00:00",
         }
 
+    def test_it_creates_workout_and_segment_when_gpx_file_has_invalid_elevation(  # noqa
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_invalid_elevation: str,
+    ) -> None:
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_with_invalid_elevation
+        )
+
+        service.process_workout()
+        db.session.commit()
+
+        workout = Workout.query.one()
+        self.assert_workout(user_1, sport_1_cycling, workout)
+
     def test_it_creates_workout_and_segments_when_gpx_file_contains_3_segments(
         self,
         app: "Flask",

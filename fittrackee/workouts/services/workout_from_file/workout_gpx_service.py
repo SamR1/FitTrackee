@@ -237,6 +237,17 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             "max_power": max(powers) if powers else None,
         }
 
+    @staticmethod
+    def _get_point_elevation(elevation: Optional[float]) -> Optional[float]:
+        if not elevation:
+            return None
+
+        # some devices/software stores invalid elevation values
+        # note: to refactor
+        if -9999.99 < elevation < 9999.99:
+            return elevation
+        return None
+
     def _process_segment_points(
         self,
         track_segment: "gpxpy.gpx.GPXTrackSegment",
@@ -278,6 +289,8 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                     )
             else:
                 calculated_speed = track_segment.get_speed(point_idx)
+
+            point.elevation = self._get_point_elevation(point.elevation)
 
             distance = (
                 point.distance_3d(previous_point)  # type: ignore[arg-type]
