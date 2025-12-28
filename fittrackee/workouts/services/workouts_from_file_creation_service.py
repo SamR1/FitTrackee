@@ -195,7 +195,7 @@ class AbstractWorkoutsCreationService(BaseWorkoutService, WorkoutFileMixin):
                 if workout_file is None
                 else workout_file
             ),
-            sport_id=self.workouts_data.sport_id,
+            sport=self.sport,
             stopped_speed_threshold=self.stopped_speed_threshold,
             get_weather=get_weather,
             workout=None,

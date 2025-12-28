@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from uuid import UUID
 
     from fittrackee.users.models import User
+    from fittrackee.workouts.models import Sport
 
 
 @dataclass
@@ -44,7 +45,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         self,
         auth_user: "User",
         workout_file: IO[bytes],
-        sport_id: int,
+        sport: "Sport",
         stopped_speed_threshold: float,
         get_weather: bool = True,
         workout: Optional["Workout"] = None,
@@ -52,7 +53,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         super().__init__(
             auth_user,
             workout_file,
-            sport_id,
+            sport,
             stopped_speed_threshold,
             workout,
             get_weather,
@@ -483,7 +484,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         if not self.workout:
             self.workout = Workout(
                 user_id=self.auth_user.id,
-                sport_id=self.sport_id,
+                sport_id=self.sport.id,
                 workout_date=self.get_workout_date(),
             )
             db.session.add(self.workout)

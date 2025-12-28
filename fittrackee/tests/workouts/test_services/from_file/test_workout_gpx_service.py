@@ -84,13 +84,13 @@ class TestWorkoutGpxServiceInstantiation(WorkoutFileMixin):
         service = WorkoutGpxService(
             user_1,
             self.get_file_content(gpx_file),
-            sport_1_cycling.id,
+            sport_1_cycling,
             sport_1_cycling.stopped_speed_threshold,
         )
 
         # from BaseWorkoutService
         assert service.auth_user == user_1
-        assert service.sport_id == sport_1_cycling.id
+        assert service.sport == sport_1_cycling
         # from BaseWorkoutWithSegmentsCreationService
         assert service.coordinates == []
         assert (
@@ -323,7 +323,7 @@ class TestWorkoutGpxServiceProcessFile(
         return WorkoutGpxService(
             user,
             self.get_file_content(gpx_content),
-            sport.id,
+            sport,
             sport.stopped_speed_threshold,
             get_weather=get_weather,
         )
