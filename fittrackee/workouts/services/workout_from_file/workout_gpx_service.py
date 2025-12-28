@@ -9,6 +9,7 @@ from lxml import etree as ET
 
 from fittrackee import db
 
+from ...constants import SPORTS_WITHOUT_ELEVATION_DATA
 from ...exceptions import WorkoutExceedingValueException, WorkoutFileException
 from ...models import WORKOUT_VALUES_LIMIT, Workout, WorkoutSegment
 from .base_workout_with_segment_service import (
@@ -238,9 +239,10 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             "max_power": max(powers) if powers else None,
         }
 
-    @staticmethod
-    def _get_point_elevation(elevation: Optional[float]) -> Optional[float]:
-        if not elevation:
+    def _get_point_elevation(
+        self, elevation: Optional[float]
+    ) -> Optional[float]:
+        if not elevation or self.sport.label in SPORTS_WITHOUT_ELEVATION_DATA:
             return None
 
         # some devices/software stores invalid elevation values
@@ -280,7 +282,6 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                     raise WorkoutFileException(
                         "error", "<time> is missing in segment"
                     )
-                calculated_speed: Optional[float] = 0.0
                 new_workout_segment.start_date = point.time
                 # if a previous segment exists, calculate stopped time
                 # between the two segments
@@ -288,8 +289,6 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                     stopped_time_between_segments += (
                         point.time - previous_segment_last_point_time
                     )
-            else:
-                calculated_speed = track_segment.get_speed(point_idx)
 
             point.elevation = self._get_point_elevation(point.elevation)
 
@@ -305,6 +304,9 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             distance = 0.0 if distance is None else distance
             distance += previous_distance
 
+            calculated_speed = (
+                0.0 if point_idx == 0 else track_segment.get_speed(point_idx)
+            )
             speed = (
                 0.0
                 if calculated_speed is None
