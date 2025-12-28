@@ -345,7 +345,6 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         # it does not return elevation data
         workout = workout_outdoor_tennis_user_1_with_elevation_data
         workout.original_file = "file.gpx"
-        workout.original_file = "file.gpx"
         workout.ave_cadence = 55
         workout.ave_hr = 90
         workout.ave_power = 125
@@ -431,7 +430,6 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_running_user_1: Workout,
     ) -> None:
         workout = self.update_workout_with_file_data(workout_running_user_1)
-        workout.original_file = "file.gpx"
         workout.original_file = "file.gpx"
         workout.ave_cadence = 55
         workout.ave_hr = 90
@@ -520,7 +518,6 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         user_1.display_speed_with_pace = True
         workout = self.update_workout_with_file_data(workout_running_user_1)
         workout.original_file = "file.gpx"
-        workout.original_file = "file.gpx"
         workout.ave_cadence = 55
         workout.ave_hr = 90
         workout.ave_power = 125
@@ -557,6 +554,84 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_alt": workout.max_alt,
             "max_cadence": workout.max_cadence * 2,
             "max_hr": workout.max_hr,
+            "max_power": None,
+            "max_speed": float(workout.max_speed),  # type: ignore [arg-type]
+            "min_alt": workout.min_alt,
+            "missing_elevations_processing": (
+                workout.missing_elevations_processing
+            ),
+            "modification_date": workout.modification_date,
+            "moving": str(workout.moving),
+            "next_workout": None,
+            "notes": None,
+            "original_file": "gpx",
+            "pauses": str(workout.pauses),
+            "previous_workout": None,
+            "records": [record.serialize() for record in workout.records],
+            "segments": [
+                {
+                    **segment.serialize(can_see_heart_rate=True),
+                    "segment_number": number,
+                }
+                for number, segment in enumerate(workout.segments, start=1)
+            ],
+            "source": workout.source,
+            "sport_id": workout.sport_id,
+            "suspended": False,
+            "suspended_at": None,
+            "title": None,
+            "user": user_1.serialize(),
+            "weather_end": None,
+            "weather_start": None,
+            "workout_date": workout.workout_date,
+            "workout_visibility": workout.workout_visibility.value,
+            "with_analysis": True,
+            "with_geometry": False,
+            "with_file": True,
+        }
+
+    def test_it_serializes_workout_with_speed_when_pace_is_not_calculated(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        user_1: User,
+        workout_running_user_1: Workout,
+    ) -> None:
+        # for workout created before v1.1.0 and not yet refreshed
+        user_1.display_speed_with_pace = False
+        workout = self.update_workout_with_file_data(workout_running_user_1)
+        workout.original_file = "file.gpx"
+        workout.ave_pace = None
+        workout.best_pace = None
+
+        serialized_workout = workout.serialize(user=user_1, light=False)
+
+        assert serialized_workout == {
+            "analysis_visibility": workout.analysis_visibility.value,
+            "ascent": workout.ascent,
+            "ave_cadence": None,
+            "ave_hr": None,
+            "ave_pace": None,
+            "ave_power": None,
+            "ave_speed": float(workout.ave_speed),  # type: ignore [arg-type]
+            "best_pace": None,
+            "bounds": workout.bounds,
+            "calories": None,
+            "creation_date": workout.creation_date,
+            "descent": workout.descent,
+            "description": None,
+            "distance": workout.distance,
+            "duration": str(workout.duration),
+            "equipments": [],
+            "id": workout.short_id,
+            "liked": False,
+            "likes_count": 0,
+            "map": None,
+            "map_visibility": workout.map_visibility.value,
+            "max_alt": workout.max_alt,
+            "max_cadence": None,
+            "max_hr": None,
             "max_power": None,
             "max_speed": float(workout.max_speed),  # type: ignore [arg-type]
             "min_alt": workout.min_alt,
