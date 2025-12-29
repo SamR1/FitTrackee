@@ -74,9 +74,7 @@
           </div>
         </div>
         <div class="chart-info">
-          <div class="no-data-cleaning">
-            {{ $t('workouts.NO_DATA_CLEANING') }}
-          </div>
+          <div class="data-info"></div>
           <div class="elevation-start" v-if="hasElevation">
             <label>
               <input
@@ -671,8 +669,8 @@
             .elevation-start {
               padding: $default-padding $default-padding * 1.5 0;
             }
-            .no-data-cleaning {
-              padding: 0 $default-padding * 2;
+            .data-info {
+              display: none;
             }
           }
           .split-charts {

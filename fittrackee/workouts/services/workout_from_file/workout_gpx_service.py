@@ -9,6 +9,7 @@ from lxml import etree as ET
 
 from fittrackee import db
 
+from ...constants import SPORTS_WITHOUT_ELEVATION_DATA
 from ...exceptions import WorkoutExceedingValueException, WorkoutFileException
 from ...models import WORKOUT_VALUES_LIMIT, Workout, WorkoutSegment
 from .base_workout_with_segment_service import (
@@ -20,6 +21,7 @@ if TYPE_CHECKING:
     from uuid import UUID
 
     from fittrackee.users.models import User
+    from fittrackee.workouts.models import Sport
 
 
 @dataclass
@@ -44,7 +46,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         self,
         auth_user: "User",
         workout_file: IO[bytes],
-        sport_id: int,
+        sport: "Sport",
         stopped_speed_threshold: float,
         get_weather: bool = True,
         workout: Optional["Workout"] = None,
@@ -52,7 +54,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         super().__init__(
             auth_user,
             workout_file,
-            sport_id,
+            sport,
             stopped_speed_threshold,
             workout,
             get_weather,
@@ -237,9 +239,10 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             "max_power": max(powers) if powers else None,
         }
 
-    @staticmethod
-    def _get_point_elevation(elevation: Optional[float]) -> Optional[float]:
-        if not elevation:
+    def _get_point_elevation(
+        self, elevation: Optional[float]
+    ) -> Optional[float]:
+        if not elevation or self.sport.label in SPORTS_WITHOUT_ELEVATION_DATA:
             return None
 
         # some devices/software stores invalid elevation values
@@ -279,7 +282,6 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                     raise WorkoutFileException(
                         "error", "<time> is missing in segment"
                     )
-                calculated_speed: Optional[float] = 0.0
                 new_workout_segment.start_date = point.time
                 # if a previous segment exists, calculate stopped time
                 # between the two segments
@@ -287,8 +289,6 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                     stopped_time_between_segments += (
                         point.time - previous_segment_last_point_time
                     )
-            else:
-                calculated_speed = track_segment.get_speed(point_idx)
 
             point.elevation = self._get_point_elevation(point.elevation)
 
@@ -304,6 +304,9 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             distance = 0.0 if distance is None else distance
             distance += previous_distance
 
+            calculated_speed = (
+                0.0 if point_idx == 0 else track_segment.get_speed(point_idx)
+            )
             speed = (
                 0.0
                 if calculated_speed is None
@@ -483,7 +486,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         if not self.workout:
             self.workout = Workout(
                 user_id=self.auth_user.id,
-                sport_id=self.sport_id,
+                sport_id=self.sport.id,
                 workout_date=self.get_workout_date(),
             )
             db.session.add(self.workout)
