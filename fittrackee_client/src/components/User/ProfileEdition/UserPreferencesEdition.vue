@@ -288,11 +288,17 @@
             :disabled="elevationServices.length === 0 || authUserLoading"
           >
             <option
-              v-for="item in missingElevationsProcessingItems"
+              v-for="item in elevationsProcessingItems"
               :value="item"
               :key="item"
             >
-              {{ $t(`workouts.ELEVATION_DATA_SOURCE.${item}`) }}
+              {{
+                $t(
+                  `workouts.ELEVATION_DATA_SOURCE.${
+                    item === 'file' ? 'none' : item
+                  }`
+                )
+              }}
             </option>
           </select>
         </label>
@@ -464,7 +470,8 @@
 
   const store = useStore()
 
-  const { elevationServices, errorMessages } = useApp()
+  const { elevationServices, elevationsProcessingItems, errorMessages } =
+    useApp()
   const { authUserLoading } = useAuthUser()
 
   const weekStart = [
@@ -596,18 +603,6 @@
     workouts_visibility: 'private',
   })
 
-  const missingElevationsProcessingItems: ComputedRef<string[]> = computed(
-    () => {
-      let items = ['file']
-      if (elevationServices.value.includes('Open Elevation')) {
-        items = items.concat(['open_elevation', 'open_elevation_smooth'])
-      }
-      if (elevationServices.value.includes('Valhalla')) {
-        items.push('valhalla')
-      }
-      return items
-    }
-  )
   const dateFormatOptions: ComputedRef<Record<string, string>[]> = computed(
     () =>
       availableDateFormatOptions(

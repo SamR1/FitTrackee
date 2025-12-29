@@ -58,6 +58,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         get_weather: bool = True,
         get_elevation_on_refresh: bool = True,
         workout: Optional["Workout"] = None,
+        change_elevation_source: Optional[ElevationDataSource] = None,
     ):
         super().__init__(
             auth_user,
@@ -67,6 +68,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             workout,
             get_weather,
             get_elevation_on_refresh,
+            change_elevation_source,
         )
         self.gpx: "gpxpy.gpx.GPX" = self.parse_file(
             workout_file, auth_user.segments_creation_event
@@ -278,6 +280,65 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             return elevation
         return None
 
+    def _get_elevations_and_elevation_data_source(
+        self,
+        points: List["gpxpy.gpx.GPXTrackPoint"],
+        existing_elevations: "pd.DataFrame",
+    ) -> Tuple[List[int], "ElevationDataSource"]:
+        # Get elevations if:
+        # - user preference is set
+        # - corresponding Elevation API URL is set
+        # - at least one value is missing
+        # In case or refresh on workout refresh
+        # - get_elevation_on_refresh is True and no existing elevations
+        # - or change_elevation_source is provided and different than
+        #   ElevationDataSource.FILE
+
+        if (
+            not self.is_creation
+            and self.change_elevation_source == ElevationDataSource.FILE
+        ):
+            return [], ElevationDataSource.FILE
+
+        elevations = []
+        elevation_data_source = (
+            self.workout.elevation_data_source
+            if self.workout
+            else ElevationDataSource.FILE
+        )
+
+        if self.sport.label not in SPORTS_WITHOUT_ELEVATION_DATA:
+            elevation_service = None
+            if (
+                self.is_creation
+                # refresh
+                or (
+                    self.change_elevation_source is None
+                    and existing_elevations.empty
+                    and self.get_elevation_on_refresh
+                )
+            ) and any(point.elevation is None for point in points):
+                elevation_service = ElevationService(
+                    self.auth_user.missing_elevations_processing
+                )
+            elif (
+                self.workout
+                and self.change_elevation_source is not None
+                and self.change_elevation_source
+                != self.workout.elevation_data_source
+            ):
+                elevation_service = ElevationService(
+                    self.change_elevation_source
+                )
+
+            if elevation_service:
+                elevations = elevation_service.get_elevations(points)
+                if len(elevations) > 0:
+                    elevation_data_source = (
+                        elevation_service.elevation_data_source
+                    )
+        return elevations, elevation_data_source
+
     def _process_segment_points(
         self,
         track_segment: "gpxpy.gpx.GPXTrackSegment",
@@ -306,35 +367,11 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         raw_max_speed = 0.0
         workout_id = self.workout.short_id if self.workout else ""
 
-        # Get elevations if:
-        # - user preference is set
-        # - corresponding Elevation API URL is set
-        # - at least one value is missing
-        # Additional connections on workout refresh
-        # - get_elevation_on_refresh is True
-        # - and no existing elevations
-        elevations = []
-        update_missing_elevations = ElevationDataSource.FILE
-
-        if (
-            self.sport.label not in SPORTS_WITHOUT_ELEVATION_DATA
-            and (
-                self.is_creation
-                # refresh
-                or (
-                    existing_elevations.empty and self.get_elevation_on_refresh
-                )
+        elevations, elevation_data_source = (
+            self._get_elevations_and_elevation_data_source(
+                points, existing_elevations
             )
-            and any(point.elevation is None for point in points)
-        ):
-            elevation_service = ElevationService(
-                self.auth_user.missing_elevations_processing
-            )
-            elevations = elevation_service.get_elevations(points)
-            if len(elevations) > 0:
-                update_missing_elevations = (
-                    self.auth_user.missing_elevations_processing
-                )
+        )
 
         for point_idx, point in enumerate(points):
             if point_idx == 0:
@@ -352,7 +389,10 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
 
             point.elevation = self._get_point_elevation(point.elevation)
             # get elevation previously fetched
-            if not existing_elevations.empty:
+            if (
+                not self.change_elevation_source
+                and not existing_elevations.empty
+            ):
                 try:
                     previous_value = existing_elevations.at[
                         f"{point.time}|{point.latitude}|{point.longitude}",
@@ -369,7 +409,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                         f"workout '{workout_id}'."
                     )
             # get elevation from Elevation service
-            elif update_missing_elevations != ElevationDataSource.FILE:
+            elif elevation_data_source != ElevationDataSource.FILE:
                 point.elevation = elevations[point_idx]
 
             distance = (
@@ -472,7 +512,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             previous_segment_last_point_time,
             hr_cadence_stats,
             raw_max_speed,
-            update_missing_elevations,
+            elevation_data_source,
         )
 
     def _can_get_existing_elevations(self) -> bool:
@@ -591,7 +631,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 existing_elevations,
             )
 
-            if (
+            if self.change_elevation_source or (
                 workout_update_missing_elevations == ElevationDataSource.FILE
                 and update_missing_elevations != ElevationDataSource.FILE
             ):
@@ -615,7 +655,11 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
 
             segment_idx += 1
 
-        if self.workout and (self.is_creation or existing_elevations.empty):
+        if self.workout and (
+            self.is_creation
+            or self.change_elevation_source
+            or existing_elevations.empty
+        ):
             self.workout.elevation_data_source = (
                 workout_update_missing_elevations
             )

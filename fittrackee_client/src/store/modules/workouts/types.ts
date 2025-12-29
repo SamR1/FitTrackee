@@ -29,6 +29,7 @@ import type {
   ILikesPayload,
   TWorkoutsStatistics,
   TWorkoutsMapPayload,
+  IWorkoutElevationSourceDataPayload,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
@@ -151,6 +152,10 @@ export interface IWorkoutsActions {
   [WORKOUTS_STORE.ACTIONS.GET_WORKOUT_GEOJSON](
     context: ActionContext<IWorkoutsState, IRootState>,
     workoutId: string
+  ): void
+  [WORKOUTS_STORE.ACTIONS.UPDATE_ELEVATION_DATA_SOURCES](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IWorkoutElevationSourceDataPayload
   ): void
 }
 

@@ -26,6 +26,7 @@ import type {
   IAppealPayload,
   ILikesPayload,
   TWorkoutsMapPayload,
+  IWorkoutElevationSourceDataPayload,
 } from '@/types/workouts'
 import { handleError } from '@/utils'
 
@@ -744,6 +745,30 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       })
       .finally(() =>
         context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, false)
+      )
+  },
+
+  [WORKOUTS_STORE.ACTIONS.UPDATE_ELEVATION_DATA_SOURCES](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IWorkoutElevationSourceDataPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_REFRESH_LOADING, true)
+    authApi
+      .patch(`workouts/${payload.workoutId}`, {
+        elevation_data_source: payload.elevationDataSource,
+      })
+      .then(() => {
+        context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
+        context.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
+          workoutId: payload.workoutId,
+        })
+      })
+      .catch(() => {
+        handleError(context, null, 'Error when updating elevation data source')
+      })
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_REFRESH_LOADING, false)
       )
   },
 }

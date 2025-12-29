@@ -35,6 +35,17 @@ export const sportsWithPace: string[] = [
   'Trail',
   'Walking',
 ]
+export const sportsWithoutElevation: string[] = [
+  // racket sports
+  'Padel (Outdoor)',
+  'Tennis (Outdoor)',
+  // water sports
+  'Canoeing',
+  'Kayaking',
+  'Open Water Swimming',
+  'Rowing',
+  'Standup Paddleboarding',
+]
 
 export const sportIdColors = (sports: ISport[]): Record<number, string> => {
   const colors: Record<number, string> = {}

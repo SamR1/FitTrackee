@@ -47,7 +47,11 @@ from fittrackee.visibility_levels import (
     can_view,
     can_view_workout_data,
 )
+from fittrackee.workouts.services.elevation.elevation_service import (
+    ElevationService,
+)
 
+from ..constants import ElevationDataSource
 from .constants import (
     PACE_SPORTS,
     SPORTS_WITHOUT_ELEVATION_DATA,
@@ -2729,6 +2733,10 @@ def update_workout(
         (only for workout without gpx)
     :<json integer duration: workout duration in seconds
         (only for workout without gpx)
+    :<json string elevation_data_source: source and method for elevations,
+              depending on application configuration
+              (``file``, ``open_elevation``, ``open_elevation_smooth``,
+              ``valhalla``)
     :<json array of strings equipment_ids:
         the id of the equipment to associate with this workout (any existing
         equipment for this workout will be replaced).
@@ -2758,6 +2766,9 @@ def update_workout(
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``
         - ``one or more values, entered or calculated, exceed the limits``
+        - ``'elevation_data_source' can not be provided for workout without
+        file``
+        - ``'<ELEVATION_DATA_SOURCE>' as elevation data source is not valid``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -2771,10 +2782,35 @@ def update_workout(
     workout_data = request.get_json()
     if not workout_data:
         return InvalidPayloadErrorResponse()
-
+    if "elevation_data_source" in workout_data and not workout.original_file:
+        return InvalidPayloadErrorResponse(
+            "'elevation_data_source' can not be provided "
+            "for workout without file"
+        )
     try:
         service = WorkoutUpdateService(auth_user, workout, workout_data)
         service.update()
+
+        if "elevation_data_source" in workout_data:
+            elevation_service = ElevationService(
+                workout_data["elevation_data_source"]
+            )
+            if (
+                workout_data["elevation_data_source"]
+                != ElevationDataSource.FILE
+                and not elevation_service.elevation_service
+            ):
+                return InvalidPayloadErrorResponse(
+                    f"'{workout_data['elevation_data_source']}' as elevation data source is not valid"
+                )
+            db.session.flush()
+            refresh_service = WorkoutFromFileRefreshService(
+                workout,
+                update_weather=False,
+                get_elevation_on_refresh=True,
+                change_elevation_source=workout_data["elevation_data_source"],
+            )
+            refresh_service.refresh()
         db.session.commit()
 
         return {

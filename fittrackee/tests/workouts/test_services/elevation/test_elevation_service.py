@@ -30,6 +30,7 @@ class TestElevationServiceInstantiation:
 
         assert service.elevation_service is None
         assert service.smooth is False
+        assert service.elevation_data_source == ElevationDataSource.FILE
 
     def test_it_instantiates_service_when_all_elevation_api_urls_set_and_preference_is_none(  # noqa
         self, app_with_open_elevation_and_valhalla_url: "Flask", user_1: "User"
@@ -39,6 +40,7 @@ class TestElevationServiceInstantiation:
 
         assert service.elevation_service is None
         assert service.smooth is False
+        assert service.elevation_data_source == ElevationDataSource.FILE
 
     def test_it_instantiates_service_when_no_elevation_api_urls_set_and_preference_is_not_none(  # noqa
         self, app: "Flask", user_1: "User"
@@ -50,6 +52,9 @@ class TestElevationServiceInstantiation:
 
         assert service.elevation_service is None
         assert service.smooth is False
+        assert (
+            service.elevation_data_source == ElevationDataSource.OPEN_ELEVATION
+        )
 
     @pytest.mark.parametrize(
         "input_preference,expected_service,expected_smooth",
@@ -86,6 +91,7 @@ class TestElevationServiceInstantiation:
 
         assert isinstance(service.elevation_service, expected_service)  # type: ignore[arg-type]
         assert service.smooth is expected_smooth
+        assert service.elevation_data_source == input_preference
 
 
 class TestElevationServiceGetElevations:

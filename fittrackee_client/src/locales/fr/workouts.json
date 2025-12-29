@@ -80,7 +80,9 @@
   "MIN_ALTITUDE": "altitude min.",
   "ELEVATION_DATA_SOURCE": {
     "LABEL": "Altitudes mises à jour à partir de",
-    "file": "Aucun (données altitude à partir du fichier)",
+    "CHANGE_SOURCE": "Changer la source des données d'altitude",
+    "none": "Aucun (données d'altitude à partir du fichier)",
+    "file": "A partir du fichier",
     "open_elevation": "OpenElevation (données brutes)",
     "open_elevation_smooth": "OpenElevation (données lissées)",
     "valhalla": "Valhalla"

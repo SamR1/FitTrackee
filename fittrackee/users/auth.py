@@ -1050,8 +1050,9 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json string map_visibility: workout map visibility
                   (``public``, ``followers_only``, ``private``)
     :<json string missing_elevations_processing: source and method for missing
-                  elevations (``none``, ``open_elevation``,
-                  ``open_elevation_smooth``)
+                  elevations, depending on application configuration
+                  (``file`` (missing elevation are not processed),
+                  ``open_elevation``, ``open_elevation_smooth``, ``valhalla``)
     :<json string segments_creation_event: event triggering a segment creation
                   for .fit files (``all``, ``only_manual``, ``none``)
     :<json boolean split_workout_charts: if ``true``, multiple charts are

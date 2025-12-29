@@ -21,6 +21,7 @@ from .workout_from_file.services import WORKOUT_FROM_FILE_SERVICES
 if TYPE_CHECKING:
     from logging import Logger
 
+    from fittrackee.constants import ElevationDataSource
     from fittrackee.workouts.models import Sport
 
 
@@ -34,6 +35,7 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
         workout: "Workout",
         update_weather: bool = False,
         get_elevation_on_refresh: bool = True,
+        change_elevation_source: Optional["ElevationDataSource"] = None,
     ):
         if not workout.original_file:
             raise WorkoutRefreshException(
@@ -54,6 +56,7 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
         )
         self.update_weather = update_weather
         self.get_elevation_on_refresh = get_elevation_on_refresh
+        self.change_elevation_source = change_elevation_source
 
     def get_file_content(self, file_extension: str) -> Union[bytes, IO[bytes]]:
         try:
@@ -85,6 +88,7 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
             stopped_speed_threshold=self.stopped_speed_threshold,
             get_weather=self.update_weather,
             get_elevation_on_refresh=self.get_elevation_on_refresh,
+            change_elevation_source=self.change_elevation_source,
         )
 
         # extract and calculate data from provided file

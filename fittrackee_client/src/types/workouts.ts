@@ -205,6 +205,11 @@ export interface IWorkoutForm {
   workout_visibility: TVisibilityLevels
 }
 
+export interface IWorkoutElevationSourceDataPayload {
+  workoutId: string
+  elevationDataSource: TElevationDataSource
+}
+
 export interface IWorkoutPayload {
   workoutId: string | string[]
   segmentId?: string | string[]

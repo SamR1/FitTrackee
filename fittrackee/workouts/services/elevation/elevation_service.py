@@ -19,18 +19,20 @@ class ElevationService:
     """
 
     def __init__(self, elevation_data_source: "ElevationDataSource") -> None:
-        self.elevation_service, self.smooth = self._get_elevation_service(
-            elevation_data_source
+        self.elevation_service, self.smooth, self.elevation_data_source = (
+            self._get_elevation_service(elevation_data_source)
         )
 
     @staticmethod
     def _get_elevation_service(
         elevation_data_source: "ElevationDataSource",
     ) -> Tuple[
-        Union["OpenElevationService", "ValhallaElevationService", None], bool
+        Union["OpenElevationService", "ValhallaElevationService", None],
+        bool,
+        "ElevationDataSource",
     ]:
         if elevation_data_source == ElevationDataSource.FILE:
-            return None, False
+            return None, False, elevation_data_source
 
         if elevation_data_source in [
             ElevationDataSource.OPEN_ELEVATION,
@@ -45,13 +47,18 @@ class ElevationService:
                     elevation_data_source
                     == ElevationDataSource.OPEN_ELEVATION_SMOOTH
                 ),
+                elevation_data_source,
             )
 
         if elevation_data_source == ElevationDataSource.VALHALLA:
             service = ValhallaElevationService()
-            return service if service.is_enabled else None, False
+            return (
+                service if service.is_enabled else None,
+                False,
+                elevation_data_source,
+            )
 
-        return None, False
+        return None, False, ElevationDataSource.FILE
 
     def get_elevations(self, points: List["GPXTrackPoint"]) -> List[int]:
         if not self.elevation_service:

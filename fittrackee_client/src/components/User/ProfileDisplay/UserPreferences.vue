@@ -104,7 +104,9 @@
         {{
           $t(
             `workouts.ELEVATION_DATA_SOURCE.${
-              user.missing_elevations_processing
+              user.missing_elevations_processing === 'file'
+                ? 'none'
+                : user.missing_elevations_processing
             }`
           )
         }}
