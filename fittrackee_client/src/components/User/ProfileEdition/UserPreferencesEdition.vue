@@ -292,7 +292,7 @@
               :value="item"
               :key="item"
             >
-              {{ $t(`workouts.MISSING_ELEVATIONS_PROCESSING.${item}`) }}
+              {{ $t(`workouts.ELEVATION_DATA_SOURCE.${item}`) }}
             </option>
           </select>
         </label>
@@ -585,7 +585,7 @@
     language: 'en',
     manually_approves_followers: true,
     map_visibility: 'private',
-    missing_elevations_processing: 'none',
+    missing_elevations_processing: 'file',
     split_workout_charts: false,
     segments_creation_event: 'only_manual',
     start_elevation_at_zero: false,
@@ -598,7 +598,7 @@
 
   const missingElevationsProcessingItems: ComputedRef<string[]> = computed(
     () => {
-      let items = ['none']
+      let items = ['file']
       if (elevationServices.value.includes('Open Elevation')) {
         items = items.concat(['open_elevation', 'open_elevation_smooth'])
       }

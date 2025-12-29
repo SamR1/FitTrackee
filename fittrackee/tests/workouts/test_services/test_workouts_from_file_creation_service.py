@@ -11,7 +11,7 @@ from sqlalchemy.dialects.postgresql import insert
 from werkzeug.datastructures import FileStorage
 
 from fittrackee import db
-from fittrackee.constants import MissingElevationsProcessing
+from fittrackee.constants import ElevationDataSource
 from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
@@ -1124,7 +1124,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         sport_1_cycling: "Sport",
     ) -> None:
         user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.OPEN_ELEVATION
+            ElevationDataSource.OPEN_ELEVATION
         )
         regex = re.compile("<AltitudeMeters>(.*)</AltitudeMeters>")
         tcx_without_elevation = regex.sub("", tcx_with_one_lap_and_one_track)

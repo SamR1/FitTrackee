@@ -103,7 +103,7 @@
       <dd>
         {{
           $t(
-            `workouts.MISSING_ELEVATIONS_PROCESSING.${
+            `workouts.ELEVATION_DATA_SOURCE.${
               user.missing_elevations_processing
             }`
           )

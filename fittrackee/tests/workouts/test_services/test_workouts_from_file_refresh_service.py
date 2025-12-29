@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, call, mock_open, patch
 import pytest
 
 from fittrackee import db
-from fittrackee.constants import MissingElevationsProcessing
+from fittrackee.constants import ElevationDataSource
 from fittrackee.files import get_absolute_file_path
 from fittrackee.tests.workouts.mixins import (
     WorkoutAssertMixin,
@@ -452,7 +452,7 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
         default_weather_service: MagicMock,
     ) -> None:
         user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.OPEN_ELEVATION
+            ElevationDataSource.OPEN_ELEVATION
         )
         workout_cycling_user_1.original_file = "workouts/1/example.gpx"
         service = WorkoutFromFileRefreshService(
@@ -484,7 +484,7 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
         default_weather_service: MagicMock,
     ) -> None:
         user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.OPEN_ELEVATION
+            ElevationDataSource.OPEN_ELEVATION
         )
         workout_cycling_user_1.original_file = "workouts/1/example.gpx"
         service = WorkoutFromFileRefreshService(

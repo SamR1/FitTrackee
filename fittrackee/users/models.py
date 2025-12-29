@@ -21,7 +21,7 @@ from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, appLog, bcrypt, db
 from fittrackee.comments.models import Comment
-from fittrackee.constants import MissingElevationsProcessing
+from fittrackee.constants import ElevationDataSource
 from fittrackee.database import TZDateTime
 from fittrackee.dates import aware_utc_now
 from fittrackee.files import get_absolute_file_path
@@ -383,12 +383,10 @@ class User(BaseModel):
     display_speed_with_pace: Mapped[bool] = mapped_column(
         server_default="false", nullable=False
     )
-    missing_elevations_processing: Mapped[MissingElevationsProcessing] = (
-        mapped_column(
-            Enum(MissingElevationsProcessing, name="elevations_processing"),
-            server_default="NONE",
-            nullable=False,
-        )
+    missing_elevations_processing: Mapped[ElevationDataSource] = mapped_column(
+        Enum(ElevationDataSource, name="elevation_data_source"),
+        server_default="FILE",
+        nullable=False,
     )
     calories_visibility: Mapped[VisibilityLevel] = mapped_column(
         Enum(VisibilityLevel, name="visibility_levels"),
@@ -834,23 +832,22 @@ class User(BaseModel):
     @property
     def calculated_missing_elevations_processing(
         self,
-    ) -> "MissingElevationsProcessing":
+    ) -> "ElevationDataSource":
         if (
             self.missing_elevations_processing
             in [
-                MissingElevationsProcessing.OPEN_ELEVATION,
-                MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH,
+                ElevationDataSource.OPEN_ELEVATION,
+                ElevationDataSource.OPEN_ELEVATION_SMOOTH,
             ]
             and current_app.config["OPEN_ELEVATION_API_URL"] is None
         ):
-            return MissingElevationsProcessing.NONE
+            return ElevationDataSource.FILE
 
         if (
-            self.missing_elevations_processing
-            == MissingElevationsProcessing.VALHALLA
+            self.missing_elevations_processing == ElevationDataSource.VALHALLA
             and current_app.config["VALHALLA_API_URL"] is None
         ):
-            return MissingElevationsProcessing.NONE
+            return ElevationDataSource.FILE
 
         return self.missing_elevations_processing
 

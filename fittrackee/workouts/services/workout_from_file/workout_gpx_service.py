@@ -9,7 +9,7 @@ import pytz
 from lxml import etree as ET
 
 from fittrackee import appLog, db
-from fittrackee.constants import MissingElevationsProcessing
+from fittrackee.constants import ElevationDataSource
 
 from ...constants import SPORTS_WITHOUT_ELEVATION_DATA, TRACK_EXTENSION_NSMAP
 from ...exceptions import WorkoutExceedingValueException, WorkoutFileException
@@ -292,7 +292,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         Optional[datetime],
         Dict,
         float,
-        "MissingElevationsProcessing",
+        "ElevationDataSource",
     ]:
         points = track_segment.points
         last_point_index = len(points) - 1
@@ -314,7 +314,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         # - get_elevation_on_refresh is True
         # - and no existing elevations
         elevations = []
-        update_missing_elevations = MissingElevationsProcessing.NONE
+        update_missing_elevations = ElevationDataSource.FILE
 
         if (
             self.sport.label not in SPORTS_WITHOUT_ELEVATION_DATA
@@ -367,7 +367,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                         f"workout '{workout_id}'."
                     )
             # get elevation from Elevation service
-            elif update_missing_elevations != MissingElevationsProcessing.NONE:
+            elif update_missing_elevations != ElevationDataSource.FILE:
                 point.elevation = elevations[point_idx]
 
             distance = (
@@ -481,10 +481,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         # no existing elevations to store since original file contains
         # already missing elevation or no elevation service has been
         # previously set
-        if (
-            self.workout.missing_elevations_processing
-            == MissingElevationsProcessing.NONE
-        ):
+        if self.workout.elevation_data_source == ElevationDataSource.FILE:
             return False
 
         # to avoid removing existing elevation when get_elevation_on_refresh
@@ -501,7 +498,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         # service and workout elevation data are already fetched from the same
         # service
         if (
-            self.workout.missing_elevations_processing
+            self.workout.elevation_data_source
             == self.auth_user.missing_elevations_processing
         ):
             has_missing_elevation = any(
@@ -560,7 +557,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             # remove existing segments
             WorkoutSegment.query.filter_by(workout_id=self.workout.id).delete()
 
-        workout_update_missing_elevations = MissingElevationsProcessing.NONE
+        workout_update_missing_elevations = ElevationDataSource.FILE
         segment_idx = 0
         for segment in segments:
             # ignore segments with no distance
@@ -591,10 +588,8 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             )
 
             if (
-                workout_update_missing_elevations
-                == MissingElevationsProcessing.NONE
-                and update_missing_elevations
-                != MissingElevationsProcessing.NONE
+                workout_update_missing_elevations == ElevationDataSource.FILE
+                and update_missing_elevations != ElevationDataSource.FILE
             ):
                 workout_update_missing_elevations = update_missing_elevations
 
@@ -617,7 +612,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             segment_idx += 1
 
         if self.workout and (self.is_creation or existing_elevations.empty):
-            self.workout.missing_elevations_processing = (
+            self.workout.elevation_data_source = (
                 workout_update_missing_elevations
             )
         return stopped_time_between_segments, max_speed

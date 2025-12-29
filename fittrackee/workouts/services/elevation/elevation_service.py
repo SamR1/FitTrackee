@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, List, Tuple, Union
 
-from fittrackee.constants import MissingElevationsProcessing
+from fittrackee.constants import ElevationDataSource
 
 from .open_elevation_service import OpenElevationService
 from .valhalla_elevation_service import ValhallaElevationService
@@ -31,15 +31,12 @@ class ElevationService:
     ) -> Tuple[
         Union["OpenElevationService", "ValhallaElevationService", None], bool
     ]:
-        if (
-            auth_user.missing_elevations_processing
-            == MissingElevationsProcessing.NONE
-        ):
+        if auth_user.missing_elevations_processing == ElevationDataSource.FILE:
             return None, False
 
         if auth_user.missing_elevations_processing in [
-            MissingElevationsProcessing.OPEN_ELEVATION,
-            MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH,
+            ElevationDataSource.OPEN_ELEVATION,
+            ElevationDataSource.OPEN_ELEVATION_SMOOTH,
         ]:
             service: Union[
                 "OpenElevationService", "ValhallaElevationService"
@@ -48,13 +45,13 @@ class ElevationService:
                 service if service.is_enabled else None,
                 (
                     auth_user.missing_elevations_processing
-                    == MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH
+                    == ElevationDataSource.OPEN_ELEVATION_SMOOTH
                 ),
             )
 
         if (
             auth_user.missing_elevations_processing
-            == MissingElevationsProcessing.VALHALLA
+            == ElevationDataSource.VALHALLA
         ):
             service = ValhallaElevationService()
             return service if service.is_enabled else None, False
