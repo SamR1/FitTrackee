@@ -290,7 +290,7 @@ class WorkoutGpxServiceProcessFileTestCase(
         assert workout.ave_hr is None
         assert workout.max_cadence is None
         assert workout.max_hr is None
-        assert workout.elevation_data_source == (ElevationDataSource.FILE)
+        assert workout.elevation_data_source == ElevationDataSource.FILE
         assert workout.source is None
         assert workout.ave_pace == timedelta(minutes=7, seconds=52)
         assert workout.best_pace == timedelta(minutes=4, seconds=20)
@@ -974,7 +974,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         assert workout.ave_hr is None
         assert workout.max_cadence is None
         assert workout.max_hr is None
-        assert workout.elevation_data_source == (ElevationDataSource.FILE)
+        assert workout.elevation_data_source == ElevationDataSource.FILE
         assert workout.source is None
         # workout segment
         workout_segment = WorkoutSegment.query.one()
@@ -1195,7 +1195,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         db.session.commit()
 
         workout = Workout.query.one()
-        assert workout.elevation_data_source == (ElevationDataSource.VALHALLA)
+        assert workout.elevation_data_source == ElevationDataSource.VALHALLA
         assert workout.segments[0].points[0] == {
             "distance": 0.0,
             "duration": 0,

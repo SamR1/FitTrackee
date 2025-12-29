@@ -52,9 +52,7 @@ class TestElevationServiceInstantiation:
 
         assert service.elevation_service is None
         assert service.smooth is False
-        assert (
-            service.elevation_data_source == ElevationDataSource.OPEN_ELEVATION
-        )
+        assert service.elevation_data_source == ElevationDataSource.FILE
 
     @pytest.mark.parametrize(
         "input_preference,expected_service,expected_smooth",

@@ -34,30 +34,27 @@ class ElevationService:
         if elevation_data_source == ElevationDataSource.FILE:
             return None, False, elevation_data_source
 
+        service: Union[
+            "OpenElevationService", "ValhallaElevationService", None
+        ] = None
         if elevation_data_source in [
             ElevationDataSource.OPEN_ELEVATION,
             ElevationDataSource.OPEN_ELEVATION_SMOOTH,
         ]:
-            service: Union[
-                "OpenElevationService", "ValhallaElevationService"
-            ] = OpenElevationService()
+            service = OpenElevationService()
+
+        if elevation_data_source == ElevationDataSource.VALHALLA:
+            service = ValhallaElevationService()
+
+        if service and service.is_enabled:
             return (
-                service if service.is_enabled else None,
+                service,
                 (
                     elevation_data_source
                     == ElevationDataSource.OPEN_ELEVATION_SMOOTH
                 ),
                 elevation_data_source,
             )
-
-        if elevation_data_source == ElevationDataSource.VALHALLA:
-            service = ValhallaElevationService()
-            return (
-                service if service.is_enabled else None,
-                False,
-                elevation_data_source,
-            )
-
         return None, False, ElevationDataSource.FILE
 
     def get_elevations(self, points: List["GPXTrackPoint"]) -> List[int]:
