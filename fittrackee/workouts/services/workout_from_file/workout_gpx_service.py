@@ -327,7 +327,9 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             )
             and any(point.elevation is None for point in points)
         ):
-            elevation_service = ElevationService(self.auth_user)
+            elevation_service = ElevationService(
+                self.auth_user.missing_elevations_processing
+            )
             elevations = elevation_service.get_elevations(points)
             if len(elevations) > 0:
                 update_missing_elevations = (
@@ -491,7 +493,9 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
 
         # to avoid removing existing elevation when Elevation service has been
         # disabled (i.e. elevation API URLs have been removed)
-        if not ElevationService(self.auth_user).elevation_service:
+        if not ElevationService(
+            self.auth_user.missing_elevations_processing
+        ).elevation_service:
             return True
 
         # to avoid removing existing elevation when user has set elevation

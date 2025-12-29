@@ -8,8 +8,6 @@ from .valhalla_elevation_service import ValhallaElevationService
 if TYPE_CHECKING:
     from gpxpy.gpx import GPXTrackPoint
 
-    from fittrackee.users.models import User
-
 WINDOW_LEN = 51
 
 
@@ -20,21 +18,21 @@ class ElevationService:
     - Valhalla
     """
 
-    def __init__(self, auth_user: "User") -> None:
+    def __init__(self, elevation_data_source: "ElevationDataSource") -> None:
         self.elevation_service, self.smooth = self._get_elevation_service(
-            auth_user
+            elevation_data_source
         )
 
     @staticmethod
     def _get_elevation_service(
-        auth_user: "User",
+        elevation_data_source: "ElevationDataSource",
     ) -> Tuple[
         Union["OpenElevationService", "ValhallaElevationService", None], bool
     ]:
-        if auth_user.missing_elevations_processing == ElevationDataSource.FILE:
+        if elevation_data_source == ElevationDataSource.FILE:
             return None, False
 
-        if auth_user.missing_elevations_processing in [
+        if elevation_data_source in [
             ElevationDataSource.OPEN_ELEVATION,
             ElevationDataSource.OPEN_ELEVATION_SMOOTH,
         ]:
@@ -44,15 +42,12 @@ class ElevationService:
             return (
                 service if service.is_enabled else None,
                 (
-                    auth_user.missing_elevations_processing
+                    elevation_data_source
                     == ElevationDataSource.OPEN_ELEVATION_SMOOTH
                 ),
             )
 
-        if (
-            auth_user.missing_elevations_processing
-            == ElevationDataSource.VALHALLA
-        ):
+        if elevation_data_source == ElevationDataSource.VALHALLA:
             service = ValhallaElevationService()
             return service if service.is_enabled else None, False
 

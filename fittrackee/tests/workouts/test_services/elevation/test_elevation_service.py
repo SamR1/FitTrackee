@@ -26,7 +26,7 @@ class TestElevationServiceInstantiation:
         self, app: "Flask", user_1: "User"
     ) -> None:
         # user preference is None
-        service = ElevationService(user_1)
+        service = ElevationService(user_1.missing_elevations_processing)
 
         assert service.elevation_service is None
         assert service.smooth is False
@@ -35,7 +35,7 @@ class TestElevationServiceInstantiation:
         self, app_with_open_elevation_and_valhalla_url: "Flask", user_1: "User"
     ) -> None:
         # user preference is None
-        service = ElevationService(user_1)
+        service = ElevationService(user_1.missing_elevations_processing)
 
         assert service.elevation_service is None
         assert service.smooth is False
@@ -46,7 +46,7 @@ class TestElevationServiceInstantiation:
         user_1.missing_elevations_processing = (
             ElevationDataSource.OPEN_ELEVATION
         )
-        service = ElevationService(user_1)
+        service = ElevationService(user_1.missing_elevations_processing)
 
         assert service.elevation_service is None
         assert service.smooth is False
@@ -82,7 +82,7 @@ class TestElevationServiceInstantiation:
         expected_smooth: bool,
     ) -> None:
         user_1.missing_elevations_processing = input_preference
-        service = ElevationService(user_1)
+        service = ElevationService(user_1.missing_elevations_processing)
 
         assert isinstance(service.elevation_service, expected_service)  # type: ignore[arg-type]
         assert service.smooth is expected_smooth
@@ -104,7 +104,7 @@ class TestElevationServiceGetElevations:
         input_preferences: "ElevationDataSource",
     ) -> None:
         user_1.missing_elevations_processing = input_preferences
-        service = ElevationService(user_1)
+        service = ElevationService(user_1.missing_elevations_processing)
 
         with (
             patch.object(
@@ -131,7 +131,7 @@ class TestElevationServiceGetElevations:
         user_1.missing_elevations_processing = (
             ElevationDataSource.OPEN_ELEVATION
         )
-        service = ElevationService(user_1)
+        service = ElevationService(user_1.missing_elevations_processing)
 
         with (
             patch.object(
@@ -157,7 +157,7 @@ class TestElevationServiceGetElevations:
         user_1.missing_elevations_processing = (
             ElevationDataSource.OPEN_ELEVATION_SMOOTH
         )
-        service = ElevationService(user_1)
+        service = ElevationService(user_1.missing_elevations_processing)
 
         with (
             patch.object(
@@ -181,7 +181,7 @@ class TestElevationServiceGetElevations:
         gpx_track_points_without_elevations: List["GPXTrackPoint"],
     ) -> None:
         user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
-        service = ElevationService(user_1)
+        service = ElevationService(user_1.missing_elevations_processing)
 
         with (
             patch.object(
@@ -214,7 +214,7 @@ class TestElevationServiceGetElevations:
         expected_response: str,
     ) -> None:
         user_1.missing_elevations_processing = input_preferences
-        service = ElevationService(user_1)
+        service = ElevationService(user_1.missing_elevations_processing)
 
         with (
             patch.object(
