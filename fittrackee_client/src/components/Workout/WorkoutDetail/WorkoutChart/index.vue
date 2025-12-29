@@ -96,16 +96,12 @@
           </div>
         </div>
         <div class="chart-info">
-          <div class="data-info"></div>
           <div class="data-info">
             <span v-if="elevationsSource !== 'none'">
               {{ $t('workouts.MISSING_ELEVATIONS_PROCESSING.LABEL') }}
               {{
                 $t(`workouts.MISSING_ELEVATIONS_PROCESSING.${elevationsSource}`)
               }}
-            </span>
-            <span v-else-if="isWorkoutOwner">
-              {{ $t('workouts.NO_DATA_CLEANING') }}
             </span>
           </div>
           <div class="elevation-start" v-if="hasElevation">
