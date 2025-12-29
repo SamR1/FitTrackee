@@ -96,6 +96,7 @@
           </div>
         </div>
         <div class="chart-info">
+          <div class="data-info"></div>
           <div class="data-info">
             <span v-if="elevationsSource !== 'none'">
               {{ $t('workouts.MISSING_ELEVATIONS_PROCESSING.LABEL') }}

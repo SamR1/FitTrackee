@@ -80,13 +80,13 @@ class TestWorkoutFitServiceInstantiation(WorkoutFitServiceTestCase):
         service = WorkoutFitService(
             user_1,
             self.get_fit_content(app, file_name="example.fit"),
-            sport_1_cycling.id,
+            sport_1_cycling,
             sport_1_cycling.stopped_speed_threshold,
         )
 
         # from BaseWorkoutService
         assert service.auth_user == user_1
-        assert service.sport_id == sport_1_cycling.id
+        assert service.sport == sport_1_cycling
         # from BaseWorkoutWithSegmentsCreationService
         assert service.coordinates == []
         assert (

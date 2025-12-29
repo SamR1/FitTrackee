@@ -69,7 +69,7 @@ Sports
 .. note::
   | Except the stopped speed threshold, all sports are analyzed in the same way (no specificity taken into account for the moment).
   | Swimrun is displayed as a single activity with no difference between segments for now.
-  | Elevation-related data for Outdoor Tennis and Padel are not displayed if the file contains elevation (they are still stored in database).
+  | Elevation-related data for racket sports (Outdoor Tennis and Padel) and water sports (Canoeing, Kayaking, Open Water Swimming, Rowing and Standup Paddleboarding) are not stored and displayed if the file contains elevation (*changed in 1.x.x*).
 
 Workouts
 --------

@@ -3182,6 +3182,11 @@ def gpx_file_without_elevation() -> str:
 
 
 @pytest.fixture()
+def gpx_file_with_invalid_elevation(gpx_file: str) -> str:
+    return gpx_file.replace("<ele>993</ele>", "<ele>-19999.0</ele>")
+
+
+@pytest.fixture()
 def gpx_file_with_2_segments_and_without_elevation() -> str:
     return """<?xml version='1.0' encoding='UTF-8'?>
 <gpx

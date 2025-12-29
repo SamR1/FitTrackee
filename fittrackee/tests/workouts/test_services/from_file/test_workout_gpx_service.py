@@ -151,13 +151,13 @@ class TestWorkoutGpxServiceInstantiation(WorkoutFileMixin):
         service = WorkoutGpxService(
             user_1,
             self.get_file_content(gpx_file),
-            sport_1_cycling.id,
+            sport_1_cycling,
             sport_1_cycling.stopped_speed_threshold,
         )
 
         # from BaseWorkoutService
         assert service.auth_user == user_1
-        assert service.sport_id == sport_1_cycling.id
+        assert service.sport == sport_1_cycling
         # from BaseWorkoutWithSegmentsCreationService
         assert service.coordinates == []
         assert (
@@ -418,6 +418,53 @@ class WorkoutGpxServiceProcessFileTestCase(
             "workout_id": workout.short_id,
         }
 
+    @staticmethod
+    def assert_workout_without_elevation() -> None:
+        # workout
+        workout = Workout.query.one()
+        assert workout.duration == timedelta(minutes=4, seconds=10)
+        assert workout.ascent is None
+        assert float(workout.ave_speed) == 4.57
+        assert workout.descent is None
+        assert float(workout.distance) == 0.317
+        assert workout.max_alt is None
+        assert float(workout.max_speed) == 5.1
+        assert workout.min_alt is None
+        assert workout.moving == timedelta(minutes=4, seconds=10)
+        assert workout.pauses == timedelta(seconds=0)
+        # workout segment
+        workout_segment = WorkoutSegment.query.one()
+        assert workout_segment.duration == timedelta(minutes=4, seconds=10)
+        assert workout_segment.ascent is None
+        assert float(workout_segment.ave_speed) == 4.57
+        assert workout_segment.descent is None
+        assert float(workout_segment.distance) == 0.317
+        assert workout_segment.max_alt is None
+        assert float(workout_segment.max_speed) == 5.1
+        assert workout_segment.min_alt is None
+        assert workout_segment.moving == timedelta(minutes=4, seconds=10)
+        assert workout_segment.pauses == timedelta(seconds=0)
+        assert workout_segment.points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": None,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "pace": None,
+            "speed": 0.0,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert workout_segment.points[-1] == {
+            "distance": 317.15294405358054,
+            "duration": 250,
+            "elevation": None,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "pace": 0.8530805687,
+            "speed": 4.22,
+            "time": "2018-03-13 12:48:55+00:00",
+        }
+
     def init_service_with_gpx(
         self,
         user: "User",
@@ -430,7 +477,7 @@ class WorkoutGpxServiceProcessFileTestCase(
         return WorkoutGpxService(
             user,
             self.get_file_content(gpx_content),
-            sport.id,
+            sport,
             sport.stopped_speed_threshold,
             get_weather=get_weather,
             **(
@@ -957,6 +1004,74 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
             "time": "2018-03-13 12:48:55+00:00",
         }
 
+    def test_it_creates_workout_and_segment_when_gpx_file_has_invalid_elevation(  # noqa
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_invalid_elevation: str,
+    ) -> None:
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_with_invalid_elevation
+        )
+
+        service.process_workout()
+        db.session.commit()
+
+        workout = Workout.query.one()
+        self.assert_workout(user_1, sport_1_cycling, workout)
+
+    def test_it_creates_workout_for_sport_without_elevation_when_file_contains_elevation(  # noqa
+        self,
+        app_with_open_elevation_url: "Flask",
+        sport_5_outdoor_tennis: Sport,
+        user_1: "User",
+        gpx_file: str,  # file w/ elevation
+    ) -> None:
+        user_1.missing_elevations_processing = (
+            MissingElevationsProcessing.OPEN_ELEVATION
+        )
+        service = self.init_service_with_gpx(
+            user_1, sport_5_outdoor_tennis, gpx_file
+        )
+
+        with (
+            patch.object(
+                requests,
+                "post",
+                return_value=self.get_response(OPEN_ELEVATION_RESPONSE),
+            ),
+        ):
+            service.process_workout()
+        db.session.commit()
+
+        self.assert_workout_without_elevation()
+
+    def test_it_creates_workout_for_sport_without_elevation_when_file_does_not_contain_elevation(  # noqa
+        self,
+        app_with_open_elevation_url: "Flask",
+        sport_5_outdoor_tennis: Sport,
+        user_1: "User",
+        gpx_file_without_elevation: str,
+    ) -> None:
+        user_1.missing_elevations_processing = (
+            MissingElevationsProcessing.OPEN_ELEVATION
+        )
+        service = self.init_service_with_gpx(
+            user_1, sport_5_outdoor_tennis, gpx_file_without_elevation
+        )
+
+        with patch.object(
+            requests,
+            "post",
+            return_value=self.get_response(OPEN_ELEVATION_RESPONSE),
+        ) as requests_post_mock:
+            service.process_workout()
+        db.session.commit()
+
+        requests_post_mock.assert_not_called()
+        self.assert_workout_without_elevation()
+
     def test_it_creates_workout_and_segment_when_gpx_file_has_no_elevation_and_open_elevation_api_is_set(  # noqa
         self,
         app_with_open_elevation_url: "Flask",
@@ -1106,28 +1221,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
             service.process_workout()
         db.session.commit()
 
-        workout = Workout.query.one()
-        workout_segment = workout.segments[0]
-        assert workout_segment.points[0] == {
-            "distance": 0.0,
-            "duration": 0,
-            "elevation": None,
-            "latitude": 44.68095,
-            "longitude": 6.07367,
-            "pace": None,
-            "speed": 0.0,
-            "time": "2018-03-13 12:44:45+00:00",
-        }
-        assert workout_segment.points[-1] == {
-            "distance": 317.15294405358054,
-            "duration": 250,
-            "elevation": None,
-            "latitude": 44.67822,
-            "longitude": 6.07442,
-            "pace": 0.8530805687,
-            "speed": 4.22,
-            "time": "2018-03-13 12:48:55+00:00",
-        }
+        self.assert_workout_without_elevation()
 
     def test_it_calls_open_elevation_for_each_segment(
         self,

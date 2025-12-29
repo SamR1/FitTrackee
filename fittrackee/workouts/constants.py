@@ -37,10 +37,17 @@ PACE_SPORTS = [
     "Walking",
 ]
 # elevation data (ascent, descent, min and max alt), if present, are not
-# displayed
+# stored and/or displayed
 SPORTS_WITHOUT_ELEVATION_DATA = [
+    # racket sports
     "Padel (Outdoor)",
     "Tennis (Outdoor)",
+    # water sports
+    "Canoeing",
+    "Kayaking",
+    "Open Water Swimming",
+    "Rowing",
+    "Standup Paddleboarding",
 ]
 
 WORKOUT_FILE_MIMETYPES = {

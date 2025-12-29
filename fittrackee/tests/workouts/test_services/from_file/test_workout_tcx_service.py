@@ -291,13 +291,13 @@ class TestWorkoutTcxServiceInstantiation(WorkoutFileMixin):
         service = WorkoutTcxService(
             user_1,
             self.get_file_content(tcx_with_one_lap_and_one_track),
-            sport_1_cycling.id,
+            sport_1_cycling,
             sport_1_cycling.stopped_speed_threshold,
         )
 
         # from BaseWorkoutService
         assert service.auth_user == user_1
-        assert service.sport_id == sport_1_cycling.id
+        assert service.sport == sport_1_cycling
         # from BaseWorkoutWithSegmentsCreationService
         assert service.coordinates == []
         assert (

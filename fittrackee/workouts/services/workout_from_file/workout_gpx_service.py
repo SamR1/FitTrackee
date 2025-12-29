@@ -11,7 +11,7 @@ from lxml import etree as ET
 from fittrackee import appLog, db
 from fittrackee.constants import MissingElevationsProcessing
 
-from ...constants import TRACK_EXTENSION_NSMAP
+from ...constants import SPORTS_WITHOUT_ELEVATION_DATA, TRACK_EXTENSION_NSMAP
 from ...exceptions import WorkoutExceedingValueException, WorkoutFileException
 from ...models import WORKOUT_VALUES_LIMIT, Workout, WorkoutSegment
 from ...utils.convert import (
@@ -28,6 +28,7 @@ if TYPE_CHECKING:
     from uuid import UUID
 
     from fittrackee.users.models import User
+    from fittrackee.workouts.models import Sport
 
 
 @dataclass
@@ -52,7 +53,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         self,
         auth_user: "User",
         workout_file: IO[bytes],
-        sport_id: int,
+        sport: "Sport",
         stopped_speed_threshold: float,
         get_weather: bool = True,
         get_elevation_on_refresh: bool = True,
@@ -61,7 +62,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         super().__init__(
             auth_user,
             workout_file,
-            sport_id,
+            sport,
             stopped_speed_threshold,
             workout,
             get_weather,
@@ -265,6 +266,18 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             "max_power": max(powers) if powers else None,
         }
 
+    def _get_point_elevation(
+        self, elevation: Optional[float]
+    ) -> Optional[float]:
+        if not elevation or self.sport.label in SPORTS_WITHOUT_ELEVATION_DATA:
+            return None
+
+        # some devices/software stores invalid elevation values
+        # note: to refactor
+        if -9999.99 < elevation < 9999.99:
+            return elevation
+        return None
+
     def _process_segment_points(
         self,
         track_segment: "gpxpy.gpx.GPXTrackSegment",
@@ -304,10 +317,16 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         update_missing_elevations = MissingElevationsProcessing.NONE
 
         if (
-            self.is_creation
-            # refresh
-            or (existing_elevations.empty and self.get_elevation_on_refresh)
-        ) and any(point.elevation is None for point in points):
+            self.sport.label not in SPORTS_WITHOUT_ELEVATION_DATA
+            and (
+                self.is_creation
+                # refresh
+                or (
+                    existing_elevations.empty and self.get_elevation_on_refresh
+                )
+            )
+            and any(point.elevation is None for point in points)
+        ):
             elevation_service = ElevationService(self.auth_user)
             elevations = elevation_service.get_elevations(points)
             if len(elevations) > 0:
@@ -329,6 +348,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                         point.time - previous_segment_last_point_time
                     )
 
+            point.elevation = self._get_point_elevation(point.elevation)
             # get elevation previously fetched
             if not existing_elevations.empty:
                 try:
@@ -649,7 +669,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         if not self.workout:
             self.workout = Workout(
                 user_id=self.auth_user.id,
-                sport_id=self.sport_id,
+                sport_id=self.sport.id,
                 workout_date=self.get_workout_date(),
             )
             db.session.add(self.workout)

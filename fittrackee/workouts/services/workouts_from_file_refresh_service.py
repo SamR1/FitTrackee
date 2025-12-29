@@ -81,7 +81,7 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
             auth_user=self.user,
             workout_file=file_content,  # type: ignore[arg-type]
             workout=self.workout,
-            sport_id=self.sport.id,
+            sport=self.sport,
             stopped_speed_threshold=self.stopped_speed_threshold,
             get_weather=self.update_weather,
             get_elevation_on_refresh=self.get_elevation_on_refresh,
