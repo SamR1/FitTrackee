@@ -280,7 +280,7 @@
         <label class="form-items">
           <span>
             {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING_LABEL')
-            }}<sup>1</sup>
+            }}<sup>2</sup>
           </span>
           <select
             id="missing_elevations_processing"
@@ -313,7 +313,7 @@
         </div>
         <label class="form-items">
           <span>
-            {{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}<sup>2</sup>
+            {{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}<sup>3</sup>
           </span>
           <select
             id="workouts_visibility"
@@ -332,7 +332,7 @@
         </label>
         <label class="form-items">
           <span>
-            {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>2</sup>
+            {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>3</sup>
           </span>
           <select
             id="analysis_visibility"
@@ -351,7 +351,7 @@
         </label>
         <label class="form-items">
           <span>
-            {{ $t('visibility_levels.MAP_VISIBILITY') }}<sup>2</sup>
+            {{ $t('visibility_levels.MAP_VISIBILITY') }}<sup>3</sup>
           </span>
           <select
             id="map_visibility"
@@ -422,7 +422,13 @@
             1.
             {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS') }}
           </div>
-          <div>2. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_WORKOUTS') }}</div>
+          <div>
+            2.
+            {{
+              $t('user.PROFILE.CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI')
+            }}
+          </div>
+          <div>3. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_WORKOUTS') }}</div>
         </div>
         <div class="form-buttons">
           <button class="confirm" type="submit">

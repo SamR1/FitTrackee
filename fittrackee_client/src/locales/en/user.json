@@ -85,6 +85,7 @@
     "BACK_TO_PROFILE": "Back to profile",
     "BIO": "Bio",
     "BIRTH_DATE": "Birth date",
+    "CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI": "The changes can be applied when a refresh is performed with the Command Line Interface (CLI).",
     "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "The changes apply only to new or refreshed workouts.",
     "CHANGES_ONLY_TO_NEW_WORKOUTS": "The changes apply only to new workouts.",
     "CREATED_REPORTS": "Created reports",
@@ -133,7 +134,7 @@
     },
     "MESSAGES_EDITION": "Message preferences edition",
     "MESSAGES_PREFERENCES": "Messages preferences",
-    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Missing elevations processing",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Missing elevations processing on creation",
     "MONDAY": "Monday",
     "NOTIFICATIONS": {
       "account_creation": "Someone registers",

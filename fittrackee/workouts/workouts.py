@@ -3637,7 +3637,6 @@ def refresh_workout(
 
     **Example response**:
 
-
     .. sourcecode:: http
 
       HTTP/1.1 200 SUCCESS
@@ -3807,7 +3806,7 @@ def refresh_workout(
     """
     try:
         service = WorkoutFromFileRefreshService(
-            workout, update_weather=True, get_elevation_on_refresh=True
+            workout, update_weather=True, get_elevation_on_refresh=False
         )
         updated_workout = service.refresh()
     except WorkoutExceedingValueException as e:

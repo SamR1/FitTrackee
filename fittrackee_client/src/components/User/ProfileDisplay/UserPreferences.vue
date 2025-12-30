@@ -98,7 +98,7 @@
     <dl>
       <dt>
         {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING_LABEL')
-        }}<sup>1</sup>:
+        }}<sup>2</sup>:
       </dt>
       <dd>
         {{
@@ -120,15 +120,15 @@
           {{ $t('user.PROFILE.NO_ELEVATION_SERVICE_AVAILABLE') }}
         </span>
       </div>
-      <dt>{{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}<sup>2</sup>:</dt>
+      <dt>{{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}<sup>3</sup>:</dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.workouts_visibility}`) }}
       </dd>
-      <dt>{{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>2</sup>:</dt>
+      <dt>{{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>3</sup>:</dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.analysis_visibility}`) }}
       </dd>
-      <dt>{{ $t('visibility_levels.MAP_VISIBILITY') }}<sup>2</sup>:</dt>
+      <dt>{{ $t('visibility_levels.MAP_VISIBILITY') }}<sup>3</sup>:</dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.map_visibility}`) }}
       </dd>
@@ -155,7 +155,10 @@
       <div>
         1. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS') }}
       </div>
-      <div>2. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_WORKOUTS') }}</div>
+      <div>
+        2. {{ $t('user.PROFILE.CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI') }}
+      </div>
+      <div>3. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_WORKOUTS') }}</div>
     </div>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">

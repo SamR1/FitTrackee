@@ -46,7 +46,7 @@ class TestRefreshWorkout(WorkoutApiTestCaseMixin):
         gpx_service_init_mock.assert_called_once_with(
             workout_cycling_user_1,
             update_weather=True,
-            get_elevation_on_refresh=True,
+            get_elevation_on_refresh=False,
         )
 
     def test_it_returns_404_when_workout_not_found(
