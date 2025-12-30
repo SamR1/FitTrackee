@@ -16,6 +16,7 @@
           :workoutObject="workoutObject"
           :isWorkoutOwner="isWorkoutOwner"
           :refreshLoading="workoutData.refreshLoading"
+          :elevationLoading="workoutData.elevationLoading"
           @displayModal="updateDisplayModal(true)"
         />
         <ReportForm
@@ -239,7 +240,7 @@
       segmentId: segment ? segment.segment_id : null,
       segmentNumber: segment ? segment.segment_number : null,
       source: segment ? null : workout.source || null,
-      suspended: workout.suspended !== undefined ? workout.suspended : false,
+      suspended: workout.suspended === undefined ? false : workout.suspended,
       title: workout.title,
       type: props.displaySegment ? 'SEGMENT' : 'WORKOUT',
       workoutDate: workoutDate.workout_date,

@@ -13,7 +13,7 @@
                 id="split-chart"
                 type="checkbox"
                 :checked="splitCharts"
-                :disabled="workoutData.refreshLoading"
+                :disabled="isRefreshing"
                 @click="splitCharts = !splitCharts"
               />
             </div>
@@ -28,7 +28,7 @@
                 id="display-speed"
                 type="checkbox"
                 :checked="displaySpeed"
-                :disabled="workoutData.refreshLoading"
+                :disabled="isRefreshing"
                 @click="displaySpeed = !displaySpeed"
               />
             </div>
@@ -40,7 +40,7 @@
               type="radio"
               name="distance"
               :checked="displayDistance"
-              :disabled="loading || workoutData.refreshLoading"
+              :disabled="loading || isRefreshing"
               @click="updateDisplayDistance"
             />
             {{ $t('workouts.DISTANCE') }}
@@ -49,7 +49,7 @@
             <input
               type="radio"
               name="duration"
-              :disabled="loading || workoutData.refreshLoading"
+              :disabled="loading || isRefreshing"
               :checked="!displayDistance"
               @click="updateDisplayDistance"
             />
@@ -107,7 +107,7 @@
               <input
                 type="checkbox"
                 :checked="beginElevationAtZero"
-                :disabled="workoutData.refreshLoading"
+                :disabled="isRefreshing"
                 @click="beginElevationAtZero = !beginElevationAtZero"
               />
               {{ $t('workouts.START_ELEVATION_AT_ZERO') }}
@@ -162,9 +162,10 @@
     workoutData: IWorkoutData
     sport: ISport | null
     isWorkoutOwner: boolean
+    isRefreshing: boolean
   }
   const props = defineProps<Props>()
-  const { authUser, sport, workoutData } = toRefs(props)
+  const { authUser, isRefreshing, sport, workoutData } = toRefs(props)
 
   const emit = defineEmits(['getCoordinates'])
 

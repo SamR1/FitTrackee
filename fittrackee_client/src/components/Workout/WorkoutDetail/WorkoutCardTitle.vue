@@ -4,7 +4,7 @@
       v-if="isWorkoutOwner || workoutObject.segmentId !== null"
       class="workout-previous workout-arrow transparent"
       :class="{ inactive: !workoutObject.previousUrl }"
-      :disabled="!workoutObject.previousUrl || refreshLoading"
+      :disabled="!workoutObject.previousUrl || isRefreshing"
       :title="
         workoutObject.previousUrl
           ? $t(`workouts.PREVIOUS_${workoutObject.type}`)
@@ -29,7 +29,7 @@
           <div v-if="isAuthenticated" class="workout-buttons">
             <button
               class="transparent icon-button likes"
-              :disabled="refreshLoading"
+              :disabled="isRefreshing"
               @click="updateLike(workoutObject)"
               :title="
                 $t(
@@ -58,9 +58,66 @@
             >
               {{ workoutObject.likes_count }}
             </router-link>
+
+            <div class="download-files">
+              <button
+                id="download-workout"
+                v-if="isWorkoutOwner && workoutObject.with_file"
+                class="transparent icon-button"
+                :disabled="isRefreshing"
+                @click.prevent="toggleDownloadButtons()"
+                :title="$t(`workouts.DOWNLOAD_WORKOUT`)"
+              >
+                <i
+                  class="fa fa-download"
+                  aria-hidden="true"
+                  id="download-workout-icon"
+                />
+              </button>
+              <div
+                class="download-files-buttons"
+                v-if="displayDownloadButtons && isWorkoutOwner"
+                v-click-outside="hideDownloadButtons"
+              >
+                <button
+                  class="transparent icon-button"
+                  :disabled="isRefreshing"
+                  @click.prevent="downloadWorkoutFile(workoutObject.workoutId)"
+                  :title="
+                    workoutObject.originalFile === 'gpx'
+                      ? $t(`workouts.DOWNLOAD_ORIGINAL_FILE`, {
+                          fileExtension: workoutObject.originalFile,
+                        })
+                      : $t(`workouts.DOWNLOAD_GPX_FILE`)
+                  "
+                >
+                  <i class="fa fa-download" aria-hidden="true" />
+                  .gpx
+                </button>
+                <button
+                  class="transparent icon-button"
+                  :disabled="isRefreshing"
+                  @click.prevent="
+                    downloadWorkoutFile(workoutObject.workoutId, {
+                      original: true,
+                    })
+                  "
+                  :title="
+                    $t(`workouts.DOWNLOAD_ORIGINAL_FILE`, {
+                      fileExtension: workoutObject.originalFile,
+                    })
+                  "
+                  v-if="workoutObject.originalFile != 'gpx'"
+                >
+                  <i class="fa fa-download" aria-hidden="true" />
+                  .{{ workoutObject.originalFile }}
+                </button>
+              </div>
+            </div>
+
             <button
               class="transparent icon-button"
-              :disabled="refreshLoading"
+              :disabled="isRefreshing"
               v-if="isWorkoutOwner"
               @click="
                 $router.push({
@@ -72,6 +129,21 @@
             >
               <i class="fa fa-edit" aria-hidden="true" />
             </button>
+
+            <button
+              v-if="workoutObject.with_file && isWorkoutOwner"
+              class="transparent icon-button"
+              :disabled="isRefreshing"
+              @click.prevent="refreshGpx(workoutObject.workoutId)"
+              :title="$t(`workouts.REFRESH_WORKOUT`)"
+            >
+              <i
+                class="fa fa-refresh"
+                :class="{ 'fa-spin': refreshLoading }"
+                aria-hidden="true"
+              />
+            </button>
+
             <div
               class="change-elevation-source"
               v-if="displayChangeElevationSource"
@@ -80,7 +152,7 @@
                 id="change-elevation-source-button"
                 class="transparent icon-button"
                 @click="toggleChangeElevationSourceButtons"
-                :disabled="refreshLoading"
+                :disabled="isRefreshing"
                 :title="$t('workouts.ELEVATION_DATA_SOURCE.CHANGE_SOURCE')"
               >
                 <img
@@ -104,7 +176,7 @@
                   )"
                   :key="item"
                   class="transparent icon-button"
-                  :disabled="refreshLoading"
+                  :disabled="isRefreshing"
                   @click.prevent="
                     updateElevationDataSource(
                       workoutObject.workoutId,
@@ -116,80 +188,11 @@
                 </button>
               </div>
             </div>
-            <div class="download-files">
-              <button
-                id="download-workout"
-                v-if="isWorkoutOwner && workoutObject.with_file"
-                class="transparent icon-button"
-                :disabled="refreshLoading"
-                @click.prevent="toggleDownloadButtons()"
-                :title="$t(`workouts.DOWNLOAD_WORKOUT`)"
-              >
-                <i
-                  class="fa fa-download"
-                  aria-hidden="true"
-                  id="download-workout-icon"
-                />
-              </button>
-              <div
-                class="download-files-buttons"
-                v-if="displayDownloadButtons && isWorkoutOwner"
-                v-click-outside="hideDownloadButtons"
-              >
-                <button
-                  class="transparent icon-button"
-                  :disabled="refreshLoading"
-                  @click.prevent="downloadWorkoutFile(workoutObject.workoutId)"
-                  :title="
-                    workoutObject.originalFile === 'gpx'
-                      ? $t(`workouts.DOWNLOAD_ORIGINAL_FILE`, {
-                          fileExtension: workoutObject.originalFile,
-                        })
-                      : $t(`workouts.DOWNLOAD_GPX_FILE`)
-                  "
-                >
-                  <i class="fa fa-download" aria-hidden="true" />
-                  .gpx
-                </button>
-                <button
-                  class="transparent icon-button"
-                  :disabled="refreshLoading"
-                  @click.prevent="
-                    downloadWorkoutFile(workoutObject.workoutId, {
-                      original: true,
-                    })
-                  "
-                  :title="
-                    $t(`workouts.DOWNLOAD_ORIGINAL_FILE`, {
-                      fileExtension: workoutObject.originalFile,
-                    })
-                  "
-                  v-if="workoutObject.originalFile != 'gpx'"
-                >
-                  <i class="fa fa-download" aria-hidden="true" />
-                  .{{ workoutObject.originalFile }}
-                </button>
-              </div>
-            </div>
-
-            <button
-              v-if="workoutObject.with_file && isWorkoutOwner"
-              class="transparent icon-button"
-              :disabled="refreshLoading"
-              @click.prevent="refreshGpx(workoutObject.workoutId)"
-              :title="$t(`workouts.REFRESH_WORKOUT`)"
-            >
-              <i
-                class="fa fa-refresh"
-                :class="{ 'fa-spin': refreshLoading }"
-                aria-hidden="true"
-              />
-            </button>
             <button
               v-if="isWorkoutOwner"
               id="delete-workout-button"
               class="transparent icon-button"
-              :disabled="refreshLoading"
+              :disabled="isRefreshing"
               @click.prevent="displayDeleteModal"
               :title="$t(`workouts.DELETE_WORKOUT`)"
             >
@@ -202,7 +205,7 @@
                 reportStatus !== `workout-${workoutObject.workoutId}-created`
               "
               class="transparent icon-button"
-              :disabled="refreshLoading"
+              :disabled="isRefreshing"
               @click.prevent="displayReportForm"
               :title="$t('workouts.REPORT_WORKOUT')"
             >
@@ -232,7 +235,7 @@
               {{ workoutObject.likes_count }}
             </router-link>
           </div>
-          <div v-if="refreshLoading" class="refresh-message">
+          <div v-if="isRefreshing" class="refresh-message">
             {{ $t('workouts.REFRESHING_WORKOUT') }}
           </div>
         </div>
@@ -267,7 +270,7 @@
       v-if="isWorkoutOwner || workoutObject.segmentId !== null"
       class="workout-next workout-arrow transparent"
       :class="{ inactive: !workoutObject.nextUrl }"
-      :disabled="!workoutObject.nextUrl || refreshLoading"
+      :disabled="!workoutObject.nextUrl || isRefreshing"
       :title="
         workoutObject.nextUrl
           ? $t(`workouts.NEXT_${workoutObject.type}`)
@@ -309,9 +312,16 @@
     workoutObject: IWorkoutObject
     isWorkoutOwner: boolean
     refreshLoading: boolean
+    elevationLoading: boolean
   }
   const props = defineProps<Props>()
-  const { isWorkoutOwner, refreshLoading, sport, workoutObject } = toRefs(props)
+  const {
+    elevationLoading,
+    isWorkoutOwner,
+    refreshLoading,
+    sport,
+    workoutObject,
+  } = toRefs(props)
 
   const emit = defineEmits(['displayModal'])
 
@@ -326,6 +336,9 @@
     kml: 'application/vnd.google-earth.kml+xml',
     tcx: 'application/vnd.garmin.tcx+xml',
   }
+  const isRefreshing: ComputedRef<boolean> = computed(
+    () => refreshLoading.value || elevationLoading.value
+  )
   const currentlyReporting: ComputedRef<boolean> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.CURRENT_REPORTING]
   )

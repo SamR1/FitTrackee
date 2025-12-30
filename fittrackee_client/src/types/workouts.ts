@@ -279,6 +279,7 @@ export interface IWorkoutData {
   currentCommentEdition: ICurrentCommentEdition
   currentReporting: boolean
   refreshLoading: boolean
+  elevationLoading: boolean
 }
 
 export type TWorkoutDatasetKeys =

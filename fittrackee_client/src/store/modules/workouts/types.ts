@@ -284,6 +284,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     state: S,
     mapLoading: boolean
   ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_ELEVATION_DATA_LOADING](
+    state: S,
+    elevationLoading: boolean
+  ): void
 }
 
 export type TWorkoutsStoreModule<S = IWorkoutsState> = Omit<

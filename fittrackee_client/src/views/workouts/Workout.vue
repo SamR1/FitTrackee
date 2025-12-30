@@ -19,10 +19,12 @@
             :displaySegment="displaySegment"
             :isWorkoutOwner="isWorkoutOwner"
             :cadenceUnit="cadenceUnit"
+            :isRefreshing="isRefreshing"
           />
           <WorkoutChart
             v-if="workoutData.workout.with_analysis"
             :workoutData="workoutData"
+            :isRefreshing="isRefreshing"
             :authUser="authUser"
             :displaySegment="displaySegment"
             :sport="sport"
@@ -36,7 +38,7 @@
             content-type="DESCRIPTION"
             :content="workoutData.workout.description"
             :loading="workoutData.loading"
-            :disabled="workoutData.refreshLoading"
+            :disabled="isRefreshing"
             :allow-edition="isWorkoutOwner"
           />
           <WorkoutSegments
@@ -49,13 +51,13 @@
             :workout-id="workoutData.workout.id"
             content-type="NOTES"
             :content="workoutData.workout.notes"
-            :disabled="workoutData.refreshLoading"
+            :disabled="isRefreshing"
             :loading="workoutData.loading"
           />
           <Comments
             v-if="!displaySegment"
             :workoutData="workoutData"
-            :disabled="workoutData.refreshLoading"
+            :disabled="isRefreshing"
             :auth-user="authUser"
           />
           <div id="bottom" />
@@ -113,6 +115,9 @@
 
   const workoutData: ComputedRef<IWorkoutData> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
+  )
+  const isRefreshing: ComputedRef<boolean> = computed(
+    () => workoutData.value.refreshLoading || workoutData.value.elevationLoading
   )
   const isWorkoutOwner: ComputedRef<boolean> = computed(
     () => authUser.value.username === workoutData.value.workout.user.username
