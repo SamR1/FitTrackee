@@ -1628,7 +1628,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     segments_creation_event="none",
                     split_workout_charts=False,
                     display_speed_with_pace=True,
-                    missing_elevations_processing="none",
+                    missing_elevations_processing="file",
                     calories_visibility=VisibilityLevel.PRIVATE,
                 )
             ),
@@ -1679,7 +1679,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     segments_creation_event="none",
                     split_workout_charts=False,
                     display_speed_with_pace=True,
-                    missing_elevations_processing="none",
+                    missing_elevations_processing="file",
                     calories_visibility=VisibilityLevel.PRIVATE.value,
                 )
             ),

@@ -280,7 +280,7 @@
         <label class="form-items">
           <span>
             {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING_LABEL')
-            }}<sup>1</sup>
+            }}<sup>2</sup>
           </span>
           <select
             id="missing_elevations_processing"
@@ -288,11 +288,17 @@
             :disabled="elevationServices.length === 0 || authUserLoading"
           >
             <option
-              v-for="item in missingElevationsProcessingItems"
+              v-for="item in elevationsProcessingItems"
               :value="item"
               :key="item"
             >
-              {{ $t(`workouts.MISSING_ELEVATIONS_PROCESSING.${item}`) }}
+              {{
+                $t(
+                  `workouts.ELEVATION_DATA_SOURCE.${
+                    item === 'file' ? 'none' : item
+                  }`
+                )
+              }}
             </option>
           </select>
         </label>
@@ -307,7 +313,7 @@
         </div>
         <label class="form-items">
           <span>
-            {{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}<sup>2</sup>
+            {{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}<sup>3</sup>
           </span>
           <select
             id="workouts_visibility"
@@ -326,7 +332,7 @@
         </label>
         <label class="form-items">
           <span>
-            {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>2</sup>
+            {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>3</sup>
           </span>
           <select
             id="analysis_visibility"
@@ -345,7 +351,7 @@
         </label>
         <label class="form-items">
           <span>
-            {{ $t('visibility_levels.MAP_VISIBILITY') }}<sup>2</sup>
+            {{ $t('visibility_levels.MAP_VISIBILITY') }}<sup>3</sup>
           </span>
           <select
             id="map_visibility"
@@ -416,7 +422,13 @@
             1.
             {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS') }}
           </div>
-          <div>2. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_WORKOUTS') }}</div>
+          <div>
+            2.
+            {{
+              $t('user.PROFILE.CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI')
+            }}
+          </div>
+          <div>3. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_WORKOUTS') }}</div>
         </div>
         <div class="form-buttons">
           <button class="confirm" type="submit">
@@ -464,7 +476,8 @@
 
   const store = useStore()
 
-  const { elevationServices, errorMessages } = useApp()
+  const { elevationServices, elevationsProcessingItems, errorMessages } =
+    useApp()
   const { authUserLoading } = useAuthUser()
 
   const weekStart = [
@@ -585,7 +598,7 @@
     language: 'en',
     manually_approves_followers: true,
     map_visibility: 'private',
-    missing_elevations_processing: 'none',
+    missing_elevations_processing: 'file',
     split_workout_charts: false,
     segments_creation_event: 'only_manual',
     start_elevation_at_zero: false,
@@ -596,18 +609,6 @@
     workouts_visibility: 'private',
   })
 
-  const missingElevationsProcessingItems: ComputedRef<string[]> = computed(
-    () => {
-      let items = ['none']
-      if (elevationServices.value.includes('Open Elevation')) {
-        items = items.concat(['open_elevation', 'open_elevation_smooth'])
-      }
-      if (elevationServices.value.includes('Valhalla')) {
-        items.push('valhalla')
-      }
-      return items
-    }
-  )
   const dateFormatOptions: ComputedRef<Record<string, string>[]> = computed(
     () =>
       availableDateFormatOptions(

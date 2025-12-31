@@ -1,6 +1,7 @@
 {
   "ERROR": {
     "<time> is missing in gpx file": "<time> element is missing in .gpx file.",
+    "Error when updating elevation data source": "Error when updating elevation data source",
     "Network Error": "Network Error.",
     "UNKNOWN": "Error. Please try again or contact the administrator.",
     "a report already exists": "You have already submitted a report.",

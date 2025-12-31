@@ -85,7 +85,7 @@
     "BACK_TO_PROFILE": "Revenir au profil",
     "BIO": "Bio",
     "BIRTH_DATE": "Date de naissance",
-
+    "CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI": "Les changements peuvent être appliqués lorsqu'une actualisation est effectué à l'aide de l'interface de ligne de commande (CLI).",
     "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "Les changements ne s'appliquent seulement aux nouvelles séances ou aux séances actualisées.",
     "CHANGES_ONLY_TO_NEW_WORKOUTS": "Les changements ne s'appliquent seulement aux nouvelles séances.",
     "CREATED_REPORTS": "Signalements créés",
@@ -134,7 +134,7 @@
     },
     "MESSAGES_EDITION": "Edition des préférences des messages",
     "MESSAGES_PREFERENCES": "Preferences des messages",
-    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Traitement des altitudes manquantes",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Traitement des altitudes manquantes lors de la création",
     "MONDAY": "Lundi",
     "NOTIFICATIONS": {
       "account_creation": "Quelqu'un s'est enregistré",

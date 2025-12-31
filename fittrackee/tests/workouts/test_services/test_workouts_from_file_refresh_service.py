@@ -8,8 +8,11 @@ from unittest.mock import MagicMock, call, mock_open, patch
 import pytest
 
 from fittrackee import db
-from fittrackee.constants import MissingElevationsProcessing
+from fittrackee.constants import ElevationDataSource
 from fittrackee.files import get_absolute_file_path
+from fittrackee.tests.fixtures.fixtures_workouts import (
+    VALHALLA_VALUES,
+)
 from fittrackee.tests.workouts.mixins import (
     WorkoutAssertMixin,
 )
@@ -20,6 +23,9 @@ from fittrackee.workouts.exceptions import (
 from fittrackee.workouts.models import Record, Workout
 from fittrackee.workouts.services.elevation.open_elevation_service import (
     OpenElevationService,
+)
+from fittrackee.workouts.services.elevation.valhalla_elevation_service import (
+    ValhallaElevationService,
 )
 from fittrackee.workouts.services.weather.base_weather import BaseWeather
 from fittrackee.workouts.services.workouts_from_file_refresh_service import (
@@ -142,6 +148,34 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         )
         assert service.update_weather is False
         assert service.get_elevation_on_refresh is False
+
+    def test_it_instantiates_service_when_change_elevation_source_is_provided(
+        self,
+        app_with_open_elevation_url: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+    ) -> None:
+        service = WorkoutFromFileRefreshService(
+            workout=workout_cycling_user_1,
+            change_elevation_source=ElevationDataSource.OPEN_ELEVATION,
+        )
+
+        assert service.workout == workout_cycling_user_1
+        assert service.user == user_1
+        assert service.sport == sport_1_cycling
+        assert service.sport_preferences is None
+        assert (
+            service.stopped_speed_threshold
+            == sport_1_cycling.stopped_speed_threshold
+        )
+        assert service.update_weather is False
+        assert service.get_elevation_on_refresh is True
+        assert (
+            service.change_elevation_source
+            == ElevationDataSource.OPEN_ELEVATION
+        )
 
 
 class TestWorkoutFromFileRefreshServiceGetFileContent:
@@ -452,7 +486,7 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
         default_weather_service: MagicMock,
     ) -> None:
         user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.OPEN_ELEVATION
+            ElevationDataSource.OPEN_ELEVATION
         )
         workout_cycling_user_1.original_file = "workouts/1/example.gpx"
         service = WorkoutFromFileRefreshService(
@@ -484,7 +518,7 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
         default_weather_service: MagicMock,
     ) -> None:
         user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.OPEN_ELEVATION
+            ElevationDataSource.OPEN_ELEVATION
         )
         workout_cycling_user_1.original_file = "workouts/1/example.gpx"
         service = WorkoutFromFileRefreshService(
@@ -504,6 +538,38 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
             service.refresh()
 
         elevation_service_mock.assert_not_called()
+
+    def test_it_calls_elevation_service_when_change_elevation_source_is_provided(  # noqa
+        self,
+        app_with_valhalla_url: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        gpx_file: str,
+        default_weather_service: MagicMock,
+    ) -> None:
+        workout_cycling_user_1.original_file = "workouts/1/example.gpx"
+        service = WorkoutFromFileRefreshService(
+            workout=workout_cycling_user_1,
+            change_elevation_source=ElevationDataSource.VALHALLA,
+        )
+
+        with (
+            patch("builtins.open", new_callable=mock_open, read_data=gpx_file),
+            patch.object(
+                ValhallaElevationService,
+                "get_elevations",
+                return_value=VALHALLA_VALUES,
+            ) as elevation_service_mock,
+        ):
+            service.refresh()
+
+        elevation_service_mock.assert_called_once()
+        assert (
+            workout_cycling_user_1.elevation_data_source
+            == ElevationDataSource.VALHALLA
+        )
 
     def test_it_returns_workout(
         self,

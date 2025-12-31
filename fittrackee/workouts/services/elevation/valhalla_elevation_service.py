@@ -2,9 +2,8 @@ from typing import TYPE_CHECKING, List
 
 import requests
 
-from fittrackee import appLog
-
 from .base_elevation_service import BaseElevationService
+from .exceptions import ElevationServiceException
 
 if TYPE_CHECKING:
     from gpxpy.gpx import GPXTrackPoint
@@ -24,29 +23,18 @@ class ValhallaElevationService(BaseElevationService):
         self, points: List["GPXTrackPoint"], smooth: bool = False
     ) -> List[int]:
         if not self.url:
-            appLog.debug(
-                "Valhalla Elevation API: no URL set, "
-                "returning empty list of elevation"
-            )
-            return []
+            raise ElevationServiceException("Valhalla API: no URL set")
 
-        try:
-            r = requests.post(
-                self.url,
-                json={
-                    "shape": [
-                        {"lat": point.latitude, "lon": point.longitude}
-                        for point in points
-                    ]
-                },
-                timeout=30,
-            )
-            r.raise_for_status()
-        except requests.exceptions.HTTPError:
-            appLog.exception(
-                "Valhalla Elevation API: error when getting missing elevations"
-            )
-            return []
-
+        r = requests.post(
+            self.url,
+            json={
+                "shape": [
+                    {"lat": point.latitude, "lon": point.longitude}
+                    for point in points
+                ]
+            },
+            timeout=30,
+        )
+        r.raise_for_status()
         results = r.json().get("height", [])
         return results

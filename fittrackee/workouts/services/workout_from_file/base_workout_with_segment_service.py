@@ -7,6 +7,7 @@ from flask import current_app
 from staticmap3 import Line, StaticMap
 
 from fittrackee import VERSION, appLog, db
+from fittrackee.constants import ElevationDataSource
 from fittrackee.files import get_absolute_file_path
 
 from ..weather import WeatherService
@@ -39,7 +40,9 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
         # in case of refresh (workout is None on creation)
         workout: Optional["Workout"],
         get_weather: bool = True,
+        # for refresh
         get_elevation_on_refresh: bool = False,  # for refresh with CLI
+        change_elevation_source: Optional[ElevationDataSource] = None,
     ) -> None:
         self.auth_user = auth_user
         self.sport = sport
@@ -53,6 +56,7 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
         self.get_elevation_on_refresh = get_elevation_on_refresh
         self.workout = workout
         self.is_creation = workout is None
+        self.change_elevation_source = change_elevation_source
 
     @abstractmethod
     def get_workout_date(self) -> "datetime":
@@ -112,7 +116,11 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
         pass
 
     def process_workout(self) -> "Workout":
-        workout = self._process_file()
+        try:
+            workout = self._process_file()
+        except Exception as e:
+            db.session.rollback()
+            raise e
 
         if not self.get_weather:
             return workout

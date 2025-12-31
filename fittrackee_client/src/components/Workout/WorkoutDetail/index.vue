@@ -12,11 +12,11 @@
       <template #title>
         <WorkoutCardTitle
           v-if="sport"
-          :authUser="authUser"
           :sport="sport"
           :workoutObject="workoutObject"
           :isWorkoutOwner="isWorkoutOwner"
           :refreshLoading="workoutData.refreshLoading"
+          :elevationLoading="workoutData.elevationLoading"
           @displayModal="updateDisplayModal(true)"
         />
         <ReportForm
@@ -219,6 +219,7 @@
       distance: segment ? segment.distance : workout.distance,
       descent: segment ? segment.descent : workout.descent,
       duration: segment ? segment.duration : workout.duration,
+      elevationDataSource: segment ? null : workout.elevation_data_source,
       equipments: segment ? null : workout.equipments,
       liked: workout.liked,
       likes_count: workout.likes_count,
@@ -231,9 +232,6 @@
       maxSpeed: segment ? segment.max_speed : workout.max_speed,
       minAlt: segment ? segment.min_alt : workout.min_alt,
       moving: segment ? segment.moving : workout.moving,
-      missingElevationsProcessing: segment
-        ? null
-        : workout.missing_elevations_processing,
       nextUrl: urls.nextUrl,
       originalFile: segment ? null : workout.original_file,
       pauses: segment ? segment.pauses : workout.pauses,
@@ -242,7 +240,7 @@
       segmentId: segment ? segment.segment_id : null,
       segmentNumber: segment ? segment.segment_number : null,
       source: segment ? null : workout.source || null,
-      suspended: workout.suspended !== undefined ? workout.suspended : false,
+      suspended: workout.suspended === undefined ? false : workout.suspended,
       title: workout.title,
       type: props.displaySegment ? 'SEGMENT' : 'WORKOUT',
       workoutDate: workoutDate.workout_date,

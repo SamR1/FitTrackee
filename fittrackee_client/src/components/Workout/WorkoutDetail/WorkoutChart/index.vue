@@ -13,7 +13,7 @@
                 id="split-chart"
                 type="checkbox"
                 :checked="splitCharts"
-                :disabled="workoutData.refreshLoading"
+                :disabled="isRefreshing"
                 @click="splitCharts = !splitCharts"
               />
             </div>
@@ -28,7 +28,7 @@
                 id="display-speed"
                 type="checkbox"
                 :checked="displaySpeed"
-                :disabled="workoutData.refreshLoading"
+                :disabled="isRefreshing"
                 @click="displaySpeed = !displaySpeed"
               />
             </div>
@@ -40,7 +40,7 @@
               type="radio"
               name="distance"
               :checked="displayDistance"
-              :disabled="loading || workoutData.refreshLoading"
+              :disabled="loading || isRefreshing"
               @click="updateDisplayDistance"
             />
             {{ $t('workouts.DISTANCE') }}
@@ -49,7 +49,7 @@
             <input
               type="radio"
               name="duration"
-              :disabled="loading || workoutData.refreshLoading"
+              :disabled="loading || isRefreshing"
               :checked="!displayDistance"
               @click="updateDisplayDistance"
             />
@@ -97,11 +97,9 @@
         </div>
         <div class="chart-info">
           <div class="data-info">
-            <span v-if="elevationsSource !== 'none'">
-              {{ $t('workouts.MISSING_ELEVATIONS_PROCESSING.LABEL') }}
-              {{
-                $t(`workouts.MISSING_ELEVATIONS_PROCESSING.${elevationsSource}`)
-              }}
+            <span v-if="elevationsSource !== 'file'">
+              {{ $t('workouts.ELEVATION_DATA_SOURCE.LABEL') }}
+              {{ $t(`workouts.ELEVATION_DATA_SOURCE.${elevationsSource}`) }}
             </span>
           </div>
           <div class="elevation-start" v-if="hasElevation">
@@ -109,7 +107,7 @@
               <input
                 type="checkbox"
                 :checked="beginElevationAtZero"
-                :disabled="workoutData.refreshLoading"
+                :disabled="isRefreshing"
                 @click="beginElevationAtZero = !beginElevationAtZero"
               />
               {{ $t('workouts.START_ELEVATION_AT_ZERO') }}
@@ -153,10 +151,7 @@
   import type { TCoordinates } from '@/types/map'
   import type { ISport } from '@/types/sports.ts'
   import type { TUnit } from '@/types/units'
-  import type {
-    IAuthUserProfile,
-    TMissingElevationsProcessing,
-  } from '@/types/user'
+  import type { IAuthUserProfile, TElevationDataSource } from '@/types/user'
   import type { IWorkoutChartData, IWorkoutData } from '@/types/workouts'
   import { formatDuration } from '@/utils/duration.ts'
   import { units } from '@/utils/units'
@@ -167,9 +162,10 @@
     workoutData: IWorkoutData
     sport: ISport | null
     isWorkoutOwner: boolean
+    isRefreshing: boolean
   }
   const props = defineProps<Props>()
-  const { authUser, sport, workoutData } = toRefs(props)
+  const { authUser, isRefreshing, sport, workoutData } = toRefs(props)
 
   const emit = defineEmits(['getCoordinates'])
 
@@ -208,11 +204,10 @@
     y: 0,
   })
 
-  const elevationsSource: ComputedRef<TMissingElevationsProcessing> = computed(
-    () =>
-      workoutData.value.workout.missing_elevations_processing
-        ? workoutData.value.workout.missing_elevations_processing
-        : 'none'
+  const elevationsSource: ComputedRef<TElevationDataSource> = computed(() =>
+    workoutData.value.workout.elevation_data_source
+      ? workoutData.value.workout.elevation_data_source
+      : 'file'
   )
   const chartLoading: ComputedRef<boolean> = computed(
     () => workoutData.value.chartDataLoading

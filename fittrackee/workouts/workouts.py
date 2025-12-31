@@ -47,7 +47,11 @@ from fittrackee.visibility_levels import (
     can_view,
     can_view_workout_data,
 )
+from fittrackee.workouts.services.elevation.elevation_service import (
+    ElevationService,
+)
 
+from ..constants import ElevationDataSource
 from .constants import (
     PACE_SPORTS,
     SPORTS_WITHOUT_ELEVATION_DATA,
@@ -476,6 +480,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "descent": null,
                 "distance": 18.0,
                 "duration": "1:00:00",
+                "elevation_data_source": "file",
                 "equipments": [],
                 "id": "kjxavSTUrJvoAh2wvCeGEF",
                 "liked": false,
@@ -489,7 +494,6 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "max_speed": 18.0,
                 "min_alt": null,
                 "modification_date": null,
-                "missing_elevations_processing": "none",
                 "moving": "1:00:00",
                 "next_workout": null,
                 "notes": "",
@@ -1372,6 +1376,7 @@ def get_workout(
                 "description": null,
                 "distance": 12,
                 "duration": "0:45:00",
+                "elevation_data_source": "file",
                 "equipments": [],
                 "id": "kjxavSTUrJvoAh2wvCeGEF",
                 "liked": false,
@@ -1384,7 +1389,6 @@ def get_workout(
                 "max_power": null,
                 "max_speed": 16,
                 "min_alt": null,
-                "missing_elevations_processing": "none",
                 "modification_date": "Sun, 14 Jul 2019 18:57:22 GMT",
                 "moving": "0:45:00",
                 "next_workout": 4,
@@ -2099,6 +2103,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 "description": null,
                 "distance": 23.478,
                 "duration": "2:08:35",
+                "elevation_data_source": "file",
                 "equipments": [],
                 "id": "PsjeeXbJZ2JJNQcTCPxVvF",
                 "liked": false,
@@ -2111,7 +2116,6 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 "max_power": null,
                 "max_speed": 25.59,
                 "min_alt": 55.03,
-                "missing_elevations_processing": "none",
                 "modification_date": null,
                 "moving": "1:47:11",
                 "next_workout": "Kd5wyhwLtVozw6o3AU5M4J",
@@ -2408,6 +2412,7 @@ def post_workout_no_gpx(
                 "id": "Kd5wyhwLtVozw6o3AU5M4J",
                 "liked": false,
                 "likes_count": 0,
+                "elevation_data_source": "file",
                 "equipments": [],
                 "map": null,
                 "map_visibility": "private",
@@ -2417,7 +2422,6 @@ def post_workout_no_gpx(
                 "max_power": null,
                 "max_speed": 10.0,
                 "min_alt": null,
-                "missing_elevations_processing": "none",
                 "modification_date": null,
                 "moving": "0:17:04",
                 "next_workout": 3,
@@ -2630,6 +2634,7 @@ def update_workout(
                 "description": null,
                 "distance": 10.0,
                 "duration": "0:17:04",
+                "elevation_data_source": "file",
                 "equipments": [],
                 "id": "2oRDfncv6vpRkfp3yrCYHt",
                 "liked": false,
@@ -2642,7 +2647,6 @@ def update_workout(
                 "max_power": null,
                 "max_speed": 10.0,
                 "min_alt": null,
-                "missing_elevations_processing": "none",
                 "modification_date": null,
                 "moving": "0:17:04",
                 "next_workout": 3,
@@ -2729,6 +2733,10 @@ def update_workout(
         (only for workout without gpx)
     :<json integer duration: workout duration in seconds
         (only for workout without gpx)
+    :<json string elevation_data_source: source and method for elevations,
+              depending on application configuration
+              (``file``, ``open_elevation``, ``open_elevation_smooth``,
+              ``valhalla``)
     :<json array of strings equipment_ids:
         the id of the equipment to associate with this workout (any existing
         equipment for this workout will be replaced).
@@ -2758,6 +2766,8 @@ def update_workout(
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``
         - ``one or more values, entered or calculated, exceed the limits``
+        - ``'elevation_data_source' can not be provided for workout without file``
+        - ``'<ELEVATION_DATA_SOURCE>' as elevation data source is not valid``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -2771,10 +2781,35 @@ def update_workout(
     workout_data = request.get_json()
     if not workout_data:
         return InvalidPayloadErrorResponse()
-
+    if "elevation_data_source" in workout_data and not workout.original_file:
+        return InvalidPayloadErrorResponse(
+            "'elevation_data_source' can not be provided "
+            "for workout without file"
+        )
     try:
         service = WorkoutUpdateService(auth_user, workout, workout_data)
         service.update()
+
+        if "elevation_data_source" in workout_data:
+            elevation_service = ElevationService(
+                workout_data["elevation_data_source"]
+            )
+            if (
+                workout_data["elevation_data_source"]
+                != ElevationDataSource.FILE
+                and not elevation_service.elevation_service
+            ):
+                return InvalidPayloadErrorResponse(
+                    f"'{workout_data['elevation_data_source']}' as elevation data source is not valid"
+                )
+            db.session.flush()
+            refresh_service = WorkoutFromFileRefreshService(
+                workout,
+                update_weather=False,
+                get_elevation_on_refresh=True,
+                change_elevation_source=workout_data["elevation_data_source"],
+            )
+            refresh_service.refresh()
         db.session.commit()
 
         return {
@@ -2907,6 +2942,7 @@ def like_workout(
                 "description": null,
                 "distance": 23.41,
                 "duration": "3:32:27",
+                "elevation_data_source": "file",
                 "equipments": [],
                 "id": "HgzYFXgvWKCEpdq3vYk67q",
                 "liked": true,
@@ -2919,7 +2955,6 @@ def like_workout(
                 "max_power": null,
                 "max_speed": 25.59,
                 "min_alt": 19.0,
-                "missing_elevations_processing": "none",
                 "modification_date": "Wed, 04 Dec 2024 16:45:14 GMT",
                 "moving": "1:47:04",
                 "next_workout": null,
@@ -3025,6 +3060,7 @@ def undo_workout_like(
                 "description": null,
                 "distance": 23.41,
                 "duration": "3:32:27",
+                "elevation_data_source": "file",
                 "equipments": [],
                 "id": "HgzYFXgvWKCEpdq3vYk67q",
                 "liked": false,
@@ -3037,7 +3073,6 @@ def undo_workout_like(
                 "max_power": null,
                 "max_speed": 25.59,
                 "min_alt": 19.0,
-                "missing_elevations_processing": "none",
                 "modification_date": "Wed, 04 Dec 2024 16:45:14 GMT",
                 "moving": "1:47:04",
                 "next_workout": null,
@@ -3601,7 +3636,6 @@ def refresh_workout(
 
     **Example response**:
 
-
     .. sourcecode:: http
 
       HTTP/1.1 200 SUCCESS
@@ -3643,7 +3677,7 @@ def refresh_workout(
                 "max_power": null,
                 "max_speed": 25.59,
                 "min_alt": 55.03,
-                "missing_elevations_processing": "none",
+                "elevation_data_source": "file",
                 "modification_date": null,
                 "moving": "1:47:11",
                 "next_workout": "Kd5wyhwLtVozw6o3AU5M4J",
@@ -3771,7 +3805,7 @@ def refresh_workout(
     """
     try:
         service = WorkoutFromFileRefreshService(
-            workout, update_weather=True, get_elevation_on_refresh=True
+            workout, update_weather=True, get_elevation_on_refresh=False
         )
         updated_workout = service.refresh()
     except WorkoutExceedingValueException as e:

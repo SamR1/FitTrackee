@@ -10,8 +10,11 @@ from geoalchemy2.shape import to_shape
 from shapely import LineString, Point
 
 from fittrackee import db
-from fittrackee.constants import MissingElevationsProcessing
+from fittrackee.constants import ElevationDataSource
 from fittrackee.tests.fixtures.fixtures_workouts import (
+    OPEN_ELEVATION_RESPONSE,
+    VALHALLA_RESPONSE,
+    VALHALLA_VALUES,
     segment_0_coordinates,
     segment_1_coordinates,
     segment_2_coordinates,
@@ -19,6 +22,7 @@ from fittrackee.tests.fixtures.fixtures_workouts import (
     track_points_part_2_coordinates,
 )
 from fittrackee.tests.mixins import RandomMixin, ResponseMockMixin
+from fittrackee.tests.utils import generate_response
 from fittrackee.tests.workouts.mixins import (
     WorkoutAssertMixin,
     WorkoutFileMixin,
@@ -26,6 +30,7 @@ from fittrackee.tests.workouts.mixins import (
 )
 from fittrackee.workouts.exceptions import (
     WorkoutExceedingValueException,
+    WorkoutException,
     WorkoutFileException,
 )
 from fittrackee.workouts.models import (
@@ -50,64 +55,6 @@ if TYPE_CHECKING:
     from flask import Flask
 
     from fittrackee.users.models import User
-
-OPEN_ELEVATION_RESPONSE = {
-    "results": [
-        {"elevation": 998.0, "latitude": 44.68095, "longitude": 6.07367},
-        {"elevation": 998.0, "latitude": 44.68091, "longitude": 6.07367},
-        {"elevation": 994.0, "latitude": 44.6808, "longitude": 6.07364},
-        {"elevation": 994.0, "latitude": 44.68075, "longitude": 6.07364},
-        {"elevation": 994.0, "latitude": 44.68071, "longitude": 6.07364},
-        {"elevation": 993.0, "latitude": 44.68049, "longitude": 6.07361},
-        {"elevation": 992.0, "latitude": 44.68019, "longitude": 6.07356},
-        {"elevation": 992.0, "latitude": 44.68014, "longitude": 6.07355},
-        {"elevation": 987.0, "latitude": 44.67995, "longitude": 6.07358},
-        {"elevation": 987.0, "latitude": 44.67977, "longitude": 6.07364},
-        {"elevation": 987.0, "latitude": 44.67972, "longitude": 6.07367},
-        {"elevation": 987.0, "latitude": 44.67966, "longitude": 6.07368},
-        {"elevation": 986.0, "latitude": 44.67961, "longitude": 6.0737},
-        {"elevation": 986.0, "latitude": 44.67938, "longitude": 6.07377},
-        {"elevation": 986.0, "latitude": 44.67933, "longitude": 6.07381},
-        {"elevation": 985.0, "latitude": 44.67922, "longitude": 6.07385},
-        {"elevation": 980.0, "latitude": 44.67911, "longitude": 6.0739},
-        {"elevation": 980.0, "latitude": 44.679, "longitude": 6.07399},
-        {"elevation": 980.0, "latitude": 44.67896, "longitude": 6.07402},
-        {"elevation": 979.0, "latitude": 44.67884, "longitude": 6.07408},
-        {"elevation": 981.0, "latitude": 44.67863, "longitude": 6.07423},
-        {"elevation": 980.0, "latitude": 44.67858, "longitude": 6.07425},
-        {"elevation": 979.0, "latitude": 44.67842, "longitude": 6.07434},
-        {"elevation": 979.0, "latitude": 44.67837, "longitude": 6.07435},
-        {"elevation": 975.0, "latitude": 44.67822, "longitude": 6.07442},
-    ]
-}
-VALHALLA_VALUES = [
-    1998.0,
-    1998.0,
-    1994.0,
-    1994.0,
-    1994.0,
-    1993.0,
-    1992.0,
-    1992.0,
-    1987.0,
-    1987.0,
-    1987.0,
-    1987.0,
-    1986.0,
-    1986.0,
-    1986.0,
-    1985.0,
-    1980.0,
-    1980.0,
-    1980.0,
-    1979.0,
-    1981.0,
-    1980.0,
-    1979.0,
-    1979.0,
-    1975.0,
-]
-VALHALLA_RESPONSE = {"height": VALHALLA_VALUES}
 
 
 class TestWorkoutGpxServiceParseFile(RandomMixin, WorkoutFileMixin):
@@ -155,10 +102,9 @@ class TestWorkoutGpxServiceInstantiation(WorkoutFileMixin):
             sport_1_cycling.stopped_speed_threshold,
         )
 
-        # from BaseWorkoutService
+        # from BaseWorkoutWithSegmentsCreationService
         assert service.auth_user == user_1
         assert service.sport == sport_1_cycling
-        # from BaseWorkoutWithSegmentsCreationService
         assert service.coordinates == []
         assert (
             service.stopped_speed_threshold
@@ -168,6 +114,50 @@ class TestWorkoutGpxServiceInstantiation(WorkoutFileMixin):
         assert service.workout_description is None
         assert service.start_point is None
         assert service.end_point is None
+        assert service.workout is None
+        assert service.is_creation is True
+        assert service.get_weather is True
+        assert service.get_elevation_on_refresh is True
+        assert service.change_elevation_source is None
+        # from WorkoutGpxService
+        assert isinstance(service.gpx, gpxpy.gpx.GPX)
+
+    def test_it_instantiates_service_with_all_parameters(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+        gpx_file: str,
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        service = WorkoutGpxService(
+            user_1,
+            self.get_file_content(gpx_file),
+            sport_1_cycling,
+            sport_1_cycling.stopped_speed_threshold,
+            False,
+            True,
+            workout_cycling_user_1,
+            ElevationDataSource.FILE,
+        )
+
+        # from BaseWorkoutWithSegmentsCreationService
+        assert service.auth_user == user_1
+        assert service.sport == sport_1_cycling
+        assert service.coordinates == []
+        assert (
+            service.stopped_speed_threshold
+            == sport_1_cycling.stopped_speed_threshold
+        )
+        assert service.workout_name is None
+        assert service.workout_description is None
+        assert service.start_point is None
+        assert service.end_point is None
+        assert service.workout == workout_cycling_user_1
+        assert service.is_creation is False
+        assert service.get_weather is False
+        assert service.get_elevation_on_refresh is True
+        assert service.change_elevation_source is ElevationDataSource.FILE
         # from WorkoutGpxService
         assert isinstance(service.gpx, gpxpy.gpx.GPX)
 
@@ -302,9 +292,7 @@ class WorkoutGpxServiceProcessFileTestCase(
         assert workout.ave_hr is None
         assert workout.max_cadence is None
         assert workout.max_hr is None
-        assert workout.missing_elevations_processing == (
-            MissingElevationsProcessing.NONE
-        )
+        assert workout.elevation_data_source == ElevationDataSource.FILE
         assert workout.source is None
         assert workout.ave_pace == timedelta(minutes=7, seconds=52)
         assert workout.best_pace == timedelta(minutes=4, seconds=20)
@@ -473,6 +461,7 @@ class WorkoutGpxServiceProcessFileTestCase(
         get_weather: bool = True,
         get_elevation_on_refresh: Optional[bool] = None,
         workout: Optional["Workout"] = None,
+        change_elevation_source: Optional["ElevationDataSource"] = None,
     ) -> "WorkoutGpxService":
         return WorkoutGpxService(
             user,
@@ -486,6 +475,7 @@ class WorkoutGpxServiceProcessFileTestCase(
                 else {"get_elevation_on_refresh": get_elevation_on_refresh}
             ),
             workout=workout,
+            change_elevation_source=change_elevation_source,
         )
 
 
@@ -807,9 +797,9 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
     @pytest.mark.parametrize(
         "input_missing_elevations_processing, expected_kwargs",
         [
-            (MissingElevationsProcessing.OPEN_ELEVATION, {"smooth": False}),
+            (ElevationDataSource.OPEN_ELEVATION, {"smooth": False}),
             (
-                MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH,
+                ElevationDataSource.OPEN_ELEVATION_SMOOTH,
                 {"smooth": True},
             ),
         ],
@@ -820,7 +810,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         sport_1_cycling: Sport,
         user_1: "User",
         gpx_file_without_elevation: str,
-        input_missing_elevations_processing: "MissingElevationsProcessing",
+        input_missing_elevations_processing: "ElevationDataSource",
         expected_kwargs: Dict,
     ) -> None:
         user_1.missing_elevations_processing = (
@@ -848,9 +838,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         user_1: "User",
         gpx_file_without_elevation: str,
     ) -> None:
-        user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.VALHALLA
-        )
+        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
         service = self.init_service_with_gpx(
             user_1, sport_1_cycling, gpx_file_without_elevation
         )
@@ -871,7 +859,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         user_1: "User",
         gpx_file_without_elevation: str,
     ) -> None:
-        user_1.missing_elevations_processing = MissingElevationsProcessing.NONE
+        user_1.missing_elevations_processing = ElevationDataSource.FILE
         service = self.init_service_with_gpx(
             user_1, sport_1_cycling, gpx_file_without_elevation
         )
@@ -897,7 +885,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         gpx_file_without_elevation: str,
     ) -> None:
         user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.OPEN_ELEVATION
+            ElevationDataSource.OPEN_ELEVATION
         )
         service = self.init_service_with_gpx(
             user_1,
@@ -915,6 +903,36 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
 
         get_elevations_mock.assert_called_once()
 
+    def test_it_ignores_change_elevation_source(
+        self,
+        app_with_open_elevation_and_valhalla_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_without_elevation: str,
+    ) -> None:
+        user_1.missing_elevations_processing = (
+            ElevationDataSource.OPEN_ELEVATION_SMOOTH
+        )
+        service = self.init_service_with_gpx(
+            user_1,
+            sport_1_cycling,
+            gpx_file_without_elevation,
+            change_elevation_source=ElevationDataSource.VALHALLA,
+        )
+
+        with (
+            patch.object(
+                OpenElevationService, "get_elevations", return_value=[]
+            ) as get_open_elevations_mock,
+            patch.object(
+                ValhallaElevationService, "get_elevations", return_value=[]
+            ) as get_valhalla_elevations_mock,
+        ):
+            service.process_workout()
+
+        get_open_elevations_mock.assert_called_once()
+        get_valhalla_elevations_mock.assert_not_called()
+
     def test_it_creates_workout_and_segment_without_elevation_when_gpx_file_has_no_elevation(  # noqa
         self,
         app: "Flask",
@@ -923,7 +941,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         gpx_file_without_elevation: str,
     ) -> None:
         user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.OPEN_ELEVATION
+            ElevationDataSource.OPEN_ELEVATION
         )
         # Open Elevation API URL is not set, no missing elevation are fetched
         service = self.init_service_with_gpx(
@@ -958,9 +976,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         assert workout.ave_hr is None
         assert workout.max_cadence is None
         assert workout.max_hr is None
-        assert workout.missing_elevations_processing == (
-            MissingElevationsProcessing.NONE
-        )
+        assert workout.elevation_data_source == ElevationDataSource.FILE
         assert workout.source is None
         # workout segment
         workout_segment = WorkoutSegment.query.one()
@@ -1029,7 +1045,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         gpx_file: str,  # file w/ elevation
     ) -> None:
         user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.OPEN_ELEVATION
+            ElevationDataSource.OPEN_ELEVATION
         )
         service = self.init_service_with_gpx(
             user_1, sport_5_outdoor_tennis, gpx_file
@@ -1055,7 +1071,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         gpx_file_without_elevation: str,
     ) -> None:
         user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.OPEN_ELEVATION
+            ElevationDataSource.OPEN_ELEVATION
         )
         service = self.init_service_with_gpx(
             user_1, sport_5_outdoor_tennis, gpx_file_without_elevation
@@ -1080,7 +1096,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         gpx_file_without_elevation: str,
     ) -> None:
         user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.OPEN_ELEVATION
+            ElevationDataSource.OPEN_ELEVATION
         )
         service = self.init_service_with_gpx(
             user_1, sport_1_cycling, gpx_file_without_elevation
@@ -1097,8 +1113,8 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         db.session.commit()
 
         workout = Workout.query.one()
-        assert workout.missing_elevations_processing == (
-            MissingElevationsProcessing.OPEN_ELEVATION
+        assert workout.elevation_data_source == (
+            ElevationDataSource.OPEN_ELEVATION
         )
         self.assert_workout(user_1, sport_1_cycling, workout)
         self.assert_workout_segment(workout)
@@ -1137,7 +1153,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         gpx_file_without_elevation: str,
     ) -> None:
         user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH
+            ElevationDataSource.OPEN_ELEVATION_SMOOTH
         )
         service = self.init_service_with_gpx(
             user_1, sport_1_cycling, gpx_file_without_elevation
@@ -1154,8 +1170,8 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         db.session.commit()
 
         workout = Workout.query.one()
-        assert workout.missing_elevations_processing == (
-            MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH
+        assert workout.elevation_data_source == (
+            ElevationDataSource.OPEN_ELEVATION_SMOOTH
         )
 
     def test_it_creates_workout_when_user_preference_is_valhalla(
@@ -1165,9 +1181,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         user_1: "User",
         gpx_file_without_elevation: str,
     ) -> None:
-        user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.VALHALLA
-        )
+        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
         service = self.init_service_with_gpx(
             user_1, sport_1_cycling, gpx_file_without_elevation
         )
@@ -1183,9 +1197,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         db.session.commit()
 
         workout = Workout.query.one()
-        assert workout.missing_elevations_processing == (
-            MissingElevationsProcessing.VALHALLA
-        )
+        assert workout.elevation_data_source == ElevationDataSource.VALHALLA
         assert workout.segments[0].points[0] == {
             "distance": 0.0,
             "duration": 0,
@@ -1205,7 +1217,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         gpx_file_without_elevation: str,
     ) -> None:
         user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.OPEN_ELEVATION
+            ElevationDataSource.OPEN_ELEVATION
         )
         service = self.init_service_with_gpx(
             user_1, sport_1_cycling, gpx_file_without_elevation
@@ -1231,7 +1243,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         gpx_file_with_3_segments: str,
     ) -> None:
         user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.OPEN_ELEVATION
+            ElevationDataSource.OPEN_ELEVATION
         )
         regex = re.compile("<ele>(.*)</ele>")
         gpx_file = regex.sub("", gpx_file_with_3_segments)
@@ -1848,8 +1860,8 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
         service.process_workout()
 
         db.session.refresh(workout_cycling_user_1)
-        assert workout_cycling_user_1.missing_elevations_processing == (
-            MissingElevationsProcessing.NONE
+        assert workout_cycling_user_1.elevation_data_source == (
+            ElevationDataSource.FILE
         )
         self.assert_workout(
             user_1, sport_1_cycling, workout_cycling_user_1, assert_full=False
@@ -1885,11 +1897,9 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
         workout_cycling_user_1_with_coordinates: "Workout",
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
-        user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.VALHALLA
-        )
-        workout_cycling_user_1_with_coordinates.missing_elevations_processing = (  # noqa
-            MissingElevationsProcessing.NONE
+        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        workout_cycling_user_1_with_coordinates.elevation_data_source = (
+            ElevationDataSource.FILE
         )
         service = self.init_service_with_gpx(
             user_1,
@@ -1911,7 +1921,7 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
         requests_mock.assert_called_once()
         db.session.refresh(workout_cycling_user_1_with_coordinates)
         assert (
-            workout_cycling_user_1_with_coordinates.missing_elevations_processing
+            workout_cycling_user_1_with_coordinates.elevation_data_source
             == user_1.missing_elevations_processing
         )
         new_segment = WorkoutSegment.query.one()
@@ -1927,12 +1937,8 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
         gpx_file_without_elevation: str,
         workout_cycling_user_1: "Workout",
     ) -> None:
-        user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.VALHALLA
-        )
-        workout_cycling_user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.NONE
-        )
+        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        workout_cycling_user_1.elevation_data_source = ElevationDataSource.FILE
         service = self.init_service_with_gpx(
             user_1,
             sport_1_cycling,
@@ -1953,8 +1959,8 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
         requests_mock.assert_not_called()
         db.session.refresh(workout_cycling_user_1)
         assert (
-            workout_cycling_user_1.missing_elevations_processing
-            == MissingElevationsProcessing.NONE  # unchanged
+            workout_cycling_user_1.elevation_data_source
+            == ElevationDataSource.FILE  # unchanged
         )
         assert (
             workout_cycling_user_1.segments[0].points[0].get("elevation")
@@ -1971,10 +1977,10 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
         user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH
+            ElevationDataSource.OPEN_ELEVATION_SMOOTH
         )
-        workout_cycling_user_1_with_coordinates.missing_elevations_processing = (  # noqa
-            MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH
+        workout_cycling_user_1_with_coordinates.elevation_data_source = (
+            ElevationDataSource.OPEN_ELEVATION_SMOOTH
         )
         service = self.init_service_with_gpx(
             user_1,
@@ -1996,15 +2002,15 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
         requests_mock.assert_not_called()
         db.session.refresh(workout_cycling_user_1_with_coordinates)
         assert (
-            workout_cycling_user_1_with_coordinates.missing_elevations_processing
-            == MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH  # unchanged
+            workout_cycling_user_1_with_coordinates.elevation_data_source
+            == ElevationDataSource.OPEN_ELEVATION_SMOOTH  # unchanged
         )
         new_segment = WorkoutSegment.query.one()
         assert (
             new_segment.points[0].get("elevation") == 998.0  # value unchanged
         )
 
-    def test_it_calls_elevation_service_when_workout_missing_elevations_processing_is_different(  # noqa
+    def test_it_calls_elevation_service_when_elevation_data_source_is_different(  # noqa
         self,
         app_with_open_elevation_and_valhalla_url: "Flask",
         sport_1_cycling: Sport,
@@ -2013,11 +2019,9 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
         workout_cycling_user_1_with_coordinates: "Workout",
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
-        user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.VALHALLA
-        )
-        workout_cycling_user_1_with_coordinates.missing_elevations_processing = (  # noqa
-            MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH
+        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        workout_cycling_user_1_with_coordinates.elevation_data_source = (
+            ElevationDataSource.OPEN_ELEVATION_SMOOTH
         )
         service = self.init_service_with_gpx(
             user_1,
@@ -2039,8 +2043,8 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
         requests_mock.assert_called_once()
         db.session.refresh(workout_cycling_user_1_with_coordinates)
         assert (
-            workout_cycling_user_1_with_coordinates.missing_elevations_processing
-            == MissingElevationsProcessing.VALHALLA
+            workout_cycling_user_1_with_coordinates.elevation_data_source
+            == ElevationDataSource.VALHALLA
         )
         new_segment = WorkoutSegment.query.one()
         assert new_segment.points[0].get("elevation") == 1998.0
@@ -2055,12 +2059,10 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
         # Elevation API URLs have been removed after workout creation
-        workout_cycling_user_1_with_coordinates.missing_elevations_processing = (  # noqa
-            MissingElevationsProcessing.OPEN_ELEVATION
+        workout_cycling_user_1_with_coordinates.elevation_data_source = (
+            ElevationDataSource.OPEN_ELEVATION
         )
-        user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.VALHALLA
-        )
+        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
         service = self.init_service_with_gpx(
             user_1,
             sport_1_cycling,
@@ -2076,8 +2078,8 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
 
         requests_mock.assert_not_called()
         assert (
-            workout_cycling_user_1_with_coordinates.missing_elevations_processing
-            == MissingElevationsProcessing.OPEN_ELEVATION
+            workout_cycling_user_1_with_coordinates.elevation_data_source
+            == ElevationDataSource.OPEN_ELEVATION
         )
         new_segment = WorkoutSegment.query.one()
         assert new_segment.points[0] == {
@@ -2100,11 +2102,11 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
         workout_cycling_user_1_with_coordinates: "Workout",
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
-        workout_cycling_user_1_with_coordinates.missing_elevations_processing = (  # noqa
-            MissingElevationsProcessing.VALHALLA
+        workout_cycling_user_1_with_coordinates.elevation_data_source = (
+            ElevationDataSource.VALHALLA
         )
         # user remove elevation service from preference
-        user_1.missing_elevations_processing = MissingElevationsProcessing.NONE
+        user_1.missing_elevations_processing = ElevationDataSource.FILE
         service = self.init_service_with_gpx(
             user_1,
             sport_1_cycling,
@@ -2120,8 +2122,8 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
 
         requests_mock.assert_not_called()
         assert (
-            workout_cycling_user_1_with_coordinates.missing_elevations_processing
-            == MissingElevationsProcessing.VALHALLA
+            workout_cycling_user_1_with_coordinates.elevation_data_source
+            == ElevationDataSource.VALHALLA
         )
         new_segment = WorkoutSegment.query.one()
         assert new_segment.points[0] == {
@@ -2144,11 +2146,9 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
         workout_cycling_user_1_with_coordinates: "Workout",
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
-        user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.VALHALLA
-        )
-        workout_cycling_user_1_with_coordinates.missing_elevations_processing = (  # noqa
-            MissingElevationsProcessing.VALHALLA
+        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        workout_cycling_user_1_with_coordinates.elevation_data_source = (
+            ElevationDataSource.VALHALLA
         )
         service = self.init_service_with_gpx(
             user_1,
@@ -2165,8 +2165,8 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
 
         requests_mock.assert_not_called()
         assert (
-            workout_cycling_user_1_with_coordinates.missing_elevations_processing
-            == MissingElevationsProcessing.VALHALLA  # unchanged
+            workout_cycling_user_1_with_coordinates.elevation_data_source
+            == ElevationDataSource.VALHALLA  # unchanged
         )
         new_segment = WorkoutSegment.query.one()
         assert new_segment.points[0] == {
@@ -2191,11 +2191,9 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
         workout_cycling_user_1_segment_1_without_elevation: "WorkoutSegment",
     ) -> None:
         # due to rate limits issues, not all data could be collected
-        user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.VALHALLA
-        )
-        workout_cycling_user_1_with_coordinates.missing_elevations_processing = (  # noqa
-            MissingElevationsProcessing.VALHALLA
+        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        workout_cycling_user_1_with_coordinates.elevation_data_source = (
+            ElevationDataSource.VALHALLA
         )
         service = self.init_service_with_gpx(
             user_1,
@@ -2219,8 +2217,8 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
 
         assert requests_mock.call_count == 2
         assert (
-            workout_cycling_user_1_with_coordinates.missing_elevations_processing
-            == MissingElevationsProcessing.VALHALLA
+            workout_cycling_user_1_with_coordinates.elevation_data_source
+            == ElevationDataSource.VALHALLA
         )
         new_segments = WorkoutSegment.query.all()
         assert new_segments[0].points[0] == {
@@ -2252,12 +2250,10 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
         gpx_file_without_elevation: str,
         workout_cycling_user_1: "Workout",
     ) -> None:
-        user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.VALHALLA
-        )
+        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
         # This case should not happen
-        workout_cycling_user_1.missing_elevations_processing = (
-            MissingElevationsProcessing.VALHALLA
+        workout_cycling_user_1.elevation_data_source = (
+            ElevationDataSource.VALHALLA
         )
         service = self.init_service_with_gpx(
             user_1,
@@ -2278,8 +2274,8 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
 
         requests_mock.assert_called_once()
         assert (
-            workout_cycling_user_1.missing_elevations_processing
-            == MissingElevationsProcessing.VALHALLA
+            workout_cycling_user_1.elevation_data_source
+            == ElevationDataSource.VALHALLA
         )
         new_segment = WorkoutSegment.query.one()
         assert new_segment.points[0] == {
@@ -2291,4 +2287,455 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
             "pace": None,
             "speed": 0.0,
             "time": "2018-03-13 12:44:45+00:00",
+        }
+
+    def test_it_ignores_invalid_change_elevation_source(
+        self,
+        app_with_open_elevation_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file: str,
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        # check on change_elevation_source is made before calling service
+        user_1.missing_elevations_processing = (
+            ElevationDataSource.OPEN_ELEVATION
+        )
+        service = self.init_service_with_gpx(
+            user_1,
+            sport_1_cycling,
+            gpx_file,
+            get_elevation_on_refresh=True,
+            workout=workout_cycling_user_1_with_coordinates,
+            change_elevation_source=ElevationDataSource.VALHALLA,
+        )
+
+        with (
+            patch.object(
+                OpenElevationService, "get_elevations", return_value=[]
+            ) as get_open_elevations_mock,
+            patch.object(
+                ValhallaElevationService,
+                "get_elevations",
+                return_value=VALHALLA_VALUES,
+            ) as get_valhalla_elevations_mock,
+        ):
+            service.process_workout()
+
+        get_open_elevations_mock.assert_not_called()
+        get_valhalla_elevations_mock.assert_not_called()
+        assert (
+            workout_cycling_user_1_with_coordinates.elevation_data_source
+            == ElevationDataSource.FILE  # unchanged
+        )
+        new_segments = WorkoutSegment.query.all()
+        assert new_segments[0].points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "pace": None,
+            "speed": 0.0,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert new_segments[0].points[-1] == {
+            "distance": 320.12787035769946,
+            "duration": 250,
+            "elevation": 975.0,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "pace": 0.831408776,
+            "speed": 4.33,
+            "time": "2018-03-13 12:48:55+00:00",
+        }
+
+    def test_it_overrides_user_preferences_when_change_elevation_source_is_provided(  # noqa
+        self,
+        app_with_open_elevation_and_valhalla_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file: str,
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        user_1.missing_elevations_processing = (
+            ElevationDataSource.OPEN_ELEVATION
+        )
+        service = self.init_service_with_gpx(
+            user_1,
+            sport_1_cycling,
+            gpx_file,
+            get_elevation_on_refresh=True,
+            workout=workout_cycling_user_1_with_coordinates,
+            change_elevation_source=ElevationDataSource.VALHALLA,
+        )
+
+        with (
+            patch.object(
+                OpenElevationService, "get_elevations", return_value=[]
+            ) as get_open_elevations_mock,
+            patch.object(
+                ValhallaElevationService,
+                "get_elevations",
+                return_value=VALHALLA_VALUES,
+            ) as get_valhalla_elevations_mock,
+        ):
+            service.process_workout()
+
+        get_open_elevations_mock.assert_not_called()
+        get_valhalla_elevations_mock.assert_called_once()
+        assert (
+            workout_cycling_user_1_with_coordinates.elevation_data_source
+            == ElevationDataSource.VALHALLA
+        )
+        new_segments = WorkoutSegment.query.all()
+        assert new_segments[0].points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 1998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "pace": None,
+            "speed": 0.0,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert new_segments[0].points[-1] == {
+            "distance": 320.12787035769946,
+            "duration": 250,
+            "elevation": 1975.0,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "pace": 0.831408776,
+            "speed": 4.33,
+            "time": "2018-03-13 12:48:55+00:00",
+        }
+
+    def test_it_overrides_user_preferences_when_gpx_has_no_elevation(
+        self,
+        app_with_open_elevation_and_valhalla_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_without_elevation: str,
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        user_1.missing_elevations_processing = ElevationDataSource.FILE
+        service = self.init_service_with_gpx(
+            user_1,
+            sport_1_cycling,
+            gpx_file_without_elevation,
+            get_elevation_on_refresh=True,
+            workout=workout_cycling_user_1_with_coordinates,
+            change_elevation_source=ElevationDataSource.VALHALLA,
+        )
+
+        with (
+            patch.object(
+                OpenElevationService, "get_elevations", return_value=[]
+            ) as get_open_elevations_mock,
+            patch.object(
+                ValhallaElevationService,
+                "get_elevations",
+                return_value=VALHALLA_VALUES,
+            ) as get_valhalla_elevations_mock,
+        ):
+            service.process_workout()
+
+        get_open_elevations_mock.assert_not_called()
+        get_valhalla_elevations_mock.assert_called_once()
+        assert (
+            workout_cycling_user_1_with_coordinates.elevation_data_source
+            == ElevationDataSource.VALHALLA
+        )
+        new_segments = WorkoutSegment.query.all()
+        assert new_segments[0].points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 1998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "pace": None,
+            "speed": 0.0,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert new_segments[0].points[-1] == {
+            "distance": 320.12787035769946,
+            "duration": 250,
+            "elevation": 1975.0,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "pace": 0.831408776,
+            "speed": 4.33,
+            "time": "2018-03-13 12:48:55+00:00",
+        }
+
+    def test_it_gets_elevation_from_file_when_change_elevation_source_is_file(
+        self,
+        app_with_open_elevation_and_valhalla_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file: str,
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        user_1.missing_elevations_processing = (
+            ElevationDataSource.OPEN_ELEVATION
+        )
+        workout_cycling_user_1.elevation_data_source = (
+            ElevationDataSource.VALHALLA
+        )
+        service = self.init_service_with_gpx(
+            user_1,
+            sport_1_cycling,
+            gpx_file,
+            get_elevation_on_refresh=True,
+            workout=workout_cycling_user_1,
+            change_elevation_source=ElevationDataSource.FILE,
+        )
+
+        with (
+            patch.object(
+                OpenElevationService, "get_elevations", return_value=[]
+            ) as get_open_elevations_mock,
+            patch.object(
+                ValhallaElevationService,
+                "get_elevations",
+                return_value=[],
+            ) as get_valhalla_elevations_mock,
+        ):
+            service.process_workout()
+
+        get_open_elevations_mock.assert_not_called()
+        get_valhalla_elevations_mock.assert_not_called()
+        assert (
+            workout_cycling_user_1.elevation_data_source
+            == ElevationDataSource.FILE
+        )
+        new_segments = WorkoutSegment.query.all()
+        assert new_segments[0].points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "pace": None,
+            "speed": 0.0,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert new_segments[0].points[-1] == {
+            "distance": 320.12787035769946,
+            "duration": 250,
+            "elevation": 975.0,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "pace": 0.831408776,
+            "speed": 4.33,
+            "time": "2018-03-13 12:48:55+00:00",
+        }
+
+    @pytest.mark.parametrize(
+        "input_elevation_data_source",
+        [ElevationDataSource.FILE, ElevationDataSource.OPEN_ELEVATION],
+    )
+    def test_it_does_not_remove_elevation_when_elevation_service_returns_empty_list(  # noqa
+        self,
+        app_with_open_elevation_and_valhalla_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_segments: str,
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+        input_elevation_data_source: "ElevationDataSource",
+    ) -> None:
+        workout_cycling_user_1_with_coordinates.elevation_data_source = (
+            input_elevation_data_source
+        )
+        db.session.commit()
+        service = self.init_service_with_gpx(
+            user_1,
+            sport_1_cycling,
+            gpx_file_with_segments,
+            get_elevation_on_refresh=True,
+            workout=workout_cycling_user_1_with_coordinates,
+            change_elevation_source=ElevationDataSource.VALHALLA,
+        )
+
+        with (
+            patch.object(
+                OpenElevationService, "get_elevations", return_value=[]
+            ) as get_open_elevations_mock,
+            patch.object(
+                requests,
+                "post",
+                return_value=self.get_response({"height": []}),
+            ) as valhalla_requests_mock,
+            pytest.raises(WorkoutException),
+        ):
+            service.process_workout()
+
+        get_open_elevations_mock.assert_not_called()
+        assert valhalla_requests_mock.call_count == 1
+        db.session.refresh(workout_cycling_user_1_with_coordinates)
+        assert (
+            workout_cycling_user_1_with_coordinates.elevation_data_source
+            == input_elevation_data_source
+        )
+        segments = WorkoutSegment.query.all()
+        assert segments[0].points[0] == {
+            "cadence": 0,
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "heart_rate": 92,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "pace": None,
+            "power": 0,
+            "speed": 0,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert segments[0].points[-1] == {
+            "cadence": 53,
+            "distance": 113.32529632259636,
+            "duration": 90,
+            "elevation": 987.0,
+            "heart_rate": 86,
+            "latitude": 44.67995,
+            "longitude": 6.07358,
+            "pace": 0.6857142857,
+            "power": 243,
+            "speed": 5.25,
+            "time": "2018-03-13 12:46:15+00:00",
+        }
+        assert segments[1].points[0] == {
+            "cadence": 56,
+            "distance": 0.0,
+            "duration": 105,
+            "elevation": 987.0,
+            "heart_rate": 88,
+            "latitude": 44.67977,
+            "longitude": 6.07364,
+            "pace": None,
+            "power": 267,
+            "speed": 0,
+            "time": "2018-03-13 12:46:30+00:00",
+        }
+        assert segments[1].points[-1] == {
+            "cadence": 50,
+            "distance": 186.2099364366852,
+            "duration": 250,
+            "elevation": 975.0,
+            "heart_rate": 81,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "pace": 0.831408776,
+            "power": 218,
+            "speed": 4.33,
+            "time": "2018-03-13 12:48:55+00:00",
+        }
+
+    def test_it_raises_error_when_elevation_service_returns_error(
+        self,
+        app_with_open_elevation_and_valhalla_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_segments: str,
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        service = self.init_service_with_gpx(
+            user_1,
+            sport_1_cycling,
+            gpx_file_with_segments,
+            get_elevation_on_refresh=True,
+            workout=workout_cycling_user_1_with_coordinates,
+            change_elevation_source=ElevationDataSource.VALHALLA,
+        )
+
+        with (
+            patch(
+                "fittrackee.workouts.services.workout_from_file."
+                "workout_gpx_service.appLog"
+            ) as logger_mock,
+            patch.object(
+                requests,
+                "post",
+                side_effect=[
+                    self.get_response({"height": VALHALLA_VALUES[:9]}),
+                    generate_response(
+                        status_code=429,  # API rate limit exception
+                    ),
+                ],
+            ) as valhalla_requests_mock,
+            pytest.raises(
+                WorkoutException,
+                match="Error when getting elevation from elevation service",
+            ),
+        ):
+            service.process_workout()
+
+        assert valhalla_requests_mock.call_count == 2
+        logger_mock.error.assert_called_once_with(
+            "429 Client Error: None for url: None"
+        )
+        # workout remains unchanged
+        assert (
+            workout_cycling_user_1_with_coordinates.elevation_data_source
+            == ElevationDataSource.FILE
+        )
+        segments = WorkoutSegment.query.all()
+        assert segments[0].points[0] == {
+            "cadence": 0,
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "heart_rate": 92,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "pace": None,
+            "power": 0,
+            "speed": 0,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert segments[0].points[-1] == {
+            "cadence": 53,
+            "distance": 113.32529632259636,
+            "duration": 90,
+            "elevation": 987.0,
+            "heart_rate": 86,
+            "latitude": 44.67995,
+            "longitude": 6.07358,
+            "pace": 0.6857142857,
+            "power": 243,
+            "speed": 5.25,
+            "time": "2018-03-13 12:46:15+00:00",
+        }
+        assert segments[1].points[0] == {
+            "cadence": 56,
+            "distance": 0.0,
+            "duration": 105,
+            "elevation": 987.0,
+            "heart_rate": 88,
+            "latitude": 44.67977,
+            "longitude": 6.07364,
+            "pace": None,
+            "power": 267,
+            "speed": 0,
+            "time": "2018-03-13 12:46:30+00:00",
+        }
+        assert segments[1].points[-1] == {
+            "cadence": 50,
+            "distance": 186.2099364366852,
+            "duration": 250,
+            "elevation": 975.0,
+            "heart_rate": 81,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "pace": 0.831408776,
+            "power": 218,
+            "speed": 4.33,
+            "time": "2018-03-13 12:48:55+00:00",
         }

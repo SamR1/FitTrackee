@@ -78,9 +78,11 @@
   "MAX_SPEED": "max. speed",
   "MAX_SYNC_FILES_IN_ZIP": "max. number of files for synchronous upload",
   "MIN_ALTITUDE": "min. altitude",
-  "MISSING_ELEVATIONS_PROCESSING": {
+  "ELEVATION_DATA_SOURCE": {
     "LABEL": "Elevations updated from",
-    "none": "None",
+    "CHANGE_SOURCE": "Change elevation data source",
+    "none": "None (elevation data from file)",
+    "file": "From file",
     "open_elevation": "OpenElevation (raw data)",
     "open_elevation_smooth": "OpenElevation (smoothed data)",
     "valhalla": "Valhalla"

@@ -10,8 +10,8 @@ class TaskPriority(IntEnum):
     HIGH = 0
 
 
-class MissingElevationsProcessing(str, Enum):  # to make enum serializable
-    NONE = "none"
+class ElevationDataSource(str, Enum):  # to make enum serializable
+    FILE = "file"
     OPEN_ELEVATION = "open_elevation"
     OPEN_ELEVATION_SMOOTH = "open_elevation_smooth"
     VALHALLA = "valhalla"

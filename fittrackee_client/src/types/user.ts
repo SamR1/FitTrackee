@@ -14,8 +14,8 @@ export type TFollowRequestAction = 'accept' | 'reject'
 export type TUserRole = 'user' | 'moderator' | 'admin' | 'owner'
 export type TVisibilityLevels = 'private' | 'followers_only' | 'public'
 export type TSegmentsCreationEvent = 'all' | 'none' | 'only_manual'
-export type TMissingElevationsProcessing =
-  | 'none'
+export type TElevationDataSource =
+  | 'file'
   | 'open_elevation'
   | 'open_elevation_smooth'
   | 'valhalla'
@@ -71,7 +71,7 @@ export interface IAuthUserProfile extends IUserProfile {
   manually_approves_followers: boolean
   map_visibility: TVisibilityLevels
   messages_preferences: TMessagePreferences
-  missing_elevations_processing: TMissingElevationsProcessing
+  missing_elevations_processing: TElevationDataSource
   nb_sports: number
   notification_preferences: TNotificationPreferences
   records: IRecord[]
@@ -137,7 +137,7 @@ export interface IUserPreferencesPayload {
   language: TLanguage
   manually_approves_followers: boolean
   map_visibility: TVisibilityLevels
-  missing_elevations_processing: TMissingElevationsProcessing
+  missing_elevations_processing: TElevationDataSource
   segments_creation_event: TSegmentsCreationEvent
   split_workout_charts: boolean
   start_elevation_at_zero: boolean

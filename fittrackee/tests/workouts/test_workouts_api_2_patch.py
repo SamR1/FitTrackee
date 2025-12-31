@@ -1,13 +1,22 @@
 import json
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
+from unittest.mock import patch
 
 import pytest
 
 from fittrackee import db
+from fittrackee.constants import ElevationDataSource
 from fittrackee.equipments.models import Equipment
+from fittrackee.tests.fixtures.fixtures_workouts import VALHALLA_VALUES
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.visibility_levels import VisibilityLevel
+from fittrackee.workouts.services.elevation.elevation_service import (
+    ElevationService,
+)
+from fittrackee.workouts.services.elevation.valhalla_elevation_service import (
+    ValhallaElevationService,
+)
 
 from ..utils import jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin
@@ -585,6 +594,101 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
             == input_map_visibility.value
         )
 
+    @pytest.mark.parametrize(
+        "input_elevation_data_source", ["invalid", "valhalla"]
+    )
+    def test_it_returns_400_when_elevation_data_source_is_invalid(
+        self,
+        app_with_open_elevation_url: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
+        input_elevation_data_source: str,
+    ) -> None:
+        workout = create_a_workout_with_file(user_1, gpx_file)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_open_elevation_url, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/workouts/{workout.short_id}",
+            content_type="application/json",
+            json={"elevation_data_source": input_elevation_data_source},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            f"'{input_elevation_data_source}' as elevation "
+            f"data source is not valid",
+        )
+
+    def test_it_updates_elevation_data_source_from_elevation_service(
+        self,
+        app_with_valhalla_url: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
+    ) -> None:
+        workout = create_a_workout_with_file(user_1, gpx_file)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_valhalla_url, user_1.email
+        )
+
+        with (
+            patch.object(
+                ValhallaElevationService,
+                "get_elevations",
+                return_value=VALHALLA_VALUES,
+            ) as get_elevations_mock,
+        ):
+            response = client.patch(
+                f"/api/workouts/{workout.short_id}",
+                content_type="application/json",
+                json={"elevation_data_source": "valhalla"},
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        get_elevations_mock.assert_called_once()
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert (
+            data["data"]["workouts"][0]["elevation_data_source"] == "valhalla"
+        )
+
+    def test_it_updates_elevation_data_source_from_file(
+        self,
+        app_with_valhalla_url: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
+    ) -> None:
+        workout = create_a_workout_with_file(user_1, gpx_file)
+        workout.elevation_data_source = ElevationDataSource.VALHALLA
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_valhalla_url, user_1.email
+        )
+        with (
+            patch.object(
+                ElevationService, "get_elevations", return_value=[]
+            ) as get_elevations_mock,
+        ):
+            response = client.patch(
+                f"/api/workouts/{workout.short_id}",
+                content_type="application/json",
+                json={"elevation_data_source": "file"},
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        get_elevations_mock.assert_not_called()
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["elevation_data_source"] == "file"
+
 
 class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
     def test_it_updates_a_workout_wo_gpx(
@@ -895,4 +999,28 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         assert (
             data["data"]["workouts"][0]["map_visibility"]
             == VisibilityLevel.PRIVATE.value
+        )
+
+    def test_it_returns_400_when_elevation_data_source_is_provided(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            content_type="application/json",
+            json={"elevation_data_source": "file"},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            "'elevation_data_source' can not be provided "
+            "for workout without file",
         )

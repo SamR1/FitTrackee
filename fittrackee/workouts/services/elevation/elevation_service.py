@@ -1,14 +1,12 @@
 from typing import TYPE_CHECKING, List, Tuple, Union
 
-from fittrackee.constants import MissingElevationsProcessing
+from fittrackee.constants import ElevationDataSource
 
 from .open_elevation_service import OpenElevationService
 from .valhalla_elevation_service import ValhallaElevationService
 
 if TYPE_CHECKING:
     from gpxpy.gpx import GPXTrackPoint
-
-    from fittrackee.users.models import User
 
 WINDOW_LEN = 51
 
@@ -20,46 +18,44 @@ class ElevationService:
     - Valhalla
     """
 
-    def __init__(self, auth_user: "User") -> None:
-        self.elevation_service, self.smooth = self._get_elevation_service(
-            auth_user
+    def __init__(self, elevation_data_source: "ElevationDataSource") -> None:
+        self.elevation_service, self.smooth, self.elevation_data_source = (
+            self._get_elevation_service(elevation_data_source)
         )
 
     @staticmethod
     def _get_elevation_service(
-        auth_user: "User",
+        elevation_data_source: "ElevationDataSource",
     ) -> Tuple[
-        Union["OpenElevationService", "ValhallaElevationService", None], bool
+        Union["OpenElevationService", "ValhallaElevationService", None],
+        bool,
+        "ElevationDataSource",
     ]:
-        if (
-            auth_user.missing_elevations_processing
-            == MissingElevationsProcessing.NONE
-        ):
-            return None, False
+        if elevation_data_source == ElevationDataSource.FILE:
+            return None, False, elevation_data_source
 
-        if auth_user.missing_elevations_processing in [
-            MissingElevationsProcessing.OPEN_ELEVATION,
-            MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH,
+        service: Union[
+            "OpenElevationService", "ValhallaElevationService", None
+        ] = None
+        if elevation_data_source in [
+            ElevationDataSource.OPEN_ELEVATION,
+            ElevationDataSource.OPEN_ELEVATION_SMOOTH,
         ]:
-            service: Union[
-                "OpenElevationService", "ValhallaElevationService"
-            ] = OpenElevationService()
-            return (
-                service if service.is_enabled else None,
-                (
-                    auth_user.missing_elevations_processing
-                    == MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH
-                ),
-            )
+            service = OpenElevationService()
 
-        if (
-            auth_user.missing_elevations_processing
-            == MissingElevationsProcessing.VALHALLA
-        ):
+        if elevation_data_source == ElevationDataSource.VALHALLA:
             service = ValhallaElevationService()
-            return service if service.is_enabled else None, False
 
-        return None, False
+        if service and service.is_enabled:
+            return (
+                service,
+                (
+                    elevation_data_source
+                    == ElevationDataSource.OPEN_ELEVATION_SMOOTH
+                ),
+                elevation_data_source,
+            )
+        return None, False, ElevationDataSource.FILE
 
     def get_elevations(self, points: List["GPXTrackPoint"]) -> List[int]:
         if not self.elevation_service:

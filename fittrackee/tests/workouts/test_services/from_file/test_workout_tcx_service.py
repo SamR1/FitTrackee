@@ -295,10 +295,9 @@ class TestWorkoutTcxServiceInstantiation(WorkoutFileMixin):
             sport_1_cycling.stopped_speed_threshold,
         )
 
-        # from BaseWorkoutService
+        # from BaseWorkoutWithSegmentsCreationService
         assert service.auth_user == user_1
         assert service.sport == sport_1_cycling
-        # from BaseWorkoutWithSegmentsCreationService
         assert service.coordinates == []
         assert (
             service.stopped_speed_threshold
@@ -308,5 +307,10 @@ class TestWorkoutTcxServiceInstantiation(WorkoutFileMixin):
         assert service.workout_description is None
         assert service.start_point is None
         assert service.end_point is None
+        assert service.workout is None
+        assert service.is_creation is True
+        assert service.get_weather is True
+        assert service.get_elevation_on_refresh is True
+        assert service.change_elevation_source is None
         # from WorkoutGpxService
         assert isinstance(service.gpx, gpxpy.gpx.GPX)

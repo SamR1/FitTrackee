@@ -37,6 +37,16 @@ export default function useApp() {
     }
     return services
   })
+  const elevationsProcessingItems: ComputedRef<string[]> = computed(() => {
+    let items = ['file']
+    if (elevationServices.value.includes('Open Elevation')) {
+      items = items.concat(['open_elevation', 'open_elevation_smooth'])
+    }
+    if (elevationServices.value.includes('Valhalla')) {
+      items.push('valhalla')
+    }
+    return items
+  })
 
   const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
     computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
@@ -62,6 +72,7 @@ export default function useApp() {
     darkTheme,
     displayOptions,
     elevationServices,
+    elevationsProcessingItems,
     errorMessages,
     locale,
   }

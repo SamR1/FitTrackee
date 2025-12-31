@@ -122,6 +122,10 @@ button {
     &.confirm:disabled {
       border-color: var(--disabled-border-color);
       color: var(--disabled-color);
+
+      img {
+        filter: invert(1) brightness(1.5) contrast(0.1);
+      }
     }
   }
   &.icon-button {
@@ -261,6 +265,10 @@ button {
 .chronometer {
   margin-bottom: -1px;
   margin-right: 2px;
+}
+.elevation-edition {
+  height: 14px;
+  filter: var(--icon-svg-filter);
 }
 
 .section-title {

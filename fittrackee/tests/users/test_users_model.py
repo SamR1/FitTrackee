@@ -12,7 +12,7 @@ from sqlalchemy.exc import IntegrityError
 from time_machine import travel
 
 from fittrackee import db
-from fittrackee.constants import MissingElevationsProcessing
+from fittrackee.constants import ElevationDataSource
 from fittrackee.equipments.models import Equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.reports.models import ReportAction
@@ -221,7 +221,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             serialized_user["display_speed_with_pace"]
             == user_1.display_speed_with_pace
         )
-        assert serialized_user["missing_elevations_processing"] == "none"
+        assert serialized_user["missing_elevations_processing"] == "file"
         assert (
             serialized_user["calories_visibility"]
             == user_1.calories_visibility
@@ -323,38 +323,38 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
     @pytest.mark.parametrize(
         "input_preference",
         [
-            MissingElevationsProcessing.OPEN_ELEVATION,
-            MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH,
-            MissingElevationsProcessing.VALHALLA,
+            ElevationDataSource.OPEN_ELEVATION,
+            ElevationDataSource.OPEN_ELEVATION_SMOOTH,
+            ElevationDataSource.VALHALLA,
         ],
     )
     def test_it_returns_missing_elevations_processing_as_none_when_no_elevation_service_set(  # noqa
         self,
         app: Flask,
         user_1: User,
-        input_preference: "MissingElevationsProcessing",
+        input_preference: "ElevationDataSource",
     ) -> None:
         user_1.missing_elevations_processing = input_preference
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert (
             serialized_user["missing_elevations_processing"]
-            == MissingElevationsProcessing.NONE
+            == ElevationDataSource.FILE
         )
 
     @pytest.mark.parametrize(
         "input_preference",
         [
-            MissingElevationsProcessing.OPEN_ELEVATION,
-            MissingElevationsProcessing.OPEN_ELEVATION_SMOOTH,
-            MissingElevationsProcessing.VALHALLA,
+            ElevationDataSource.OPEN_ELEVATION,
+            ElevationDataSource.OPEN_ELEVATION_SMOOTH,
+            ElevationDataSource.VALHALLA,
         ],
     )
     def test_it_returns_missing_elevations_processing_when_elevation_service_set(  # noqa
         self,
         app_with_open_elevation_and_valhalla_url: Flask,
         user_1: User,
-        input_preference: "MissingElevationsProcessing",
+        input_preference: "ElevationDataSource",
     ) -> None:
         user_1.missing_elevations_processing = input_preference
         serialized_user = user_1.serialize(current_user=user_1, light=False)

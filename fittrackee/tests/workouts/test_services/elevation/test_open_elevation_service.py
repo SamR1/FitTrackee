@@ -2,10 +2,14 @@ import copy
 from typing import TYPE_CHECKING, List
 from unittest.mock import patch
 
+import pytest
 import requests
 from gpxpy.gpx import GPXTrackPoint
 
 from fittrackee.tests.mixins import ResponseMockMixin
+from fittrackee.workouts.services.elevation.exceptions import (
+    ElevationServiceException,
+)
 from fittrackee.workouts.services.elevation.open_elevation_service import (
     OpenElevationService,
 )
@@ -48,18 +52,24 @@ class TestOpenElevationServiceInstantiation:
 
 
 class TestOpenElevationServiceGetElevation(ResponseMockMixin):
-    def test_it_does_not_call_open_elevation_api_when_no_url_set(
+    def test_it_raises_exception_when_open_elevation_api_when_no_url_set(
         self,
         app: "Flask",
         gpx_track_points_without_elevations: List["GPXTrackPoint"],
     ) -> None:
         service = OpenElevationService()
 
-        with patch.object(
-            requests,
-            "post",
-            return_value=self.get_response({}),
-        ) as post_mock:
+        with (
+            patch.object(
+                requests,
+                "post",
+                return_value=self.get_response({}),
+            ) as post_mock,
+            pytest.raises(
+                ElevationServiceException,
+                match="Open Elevation API: no URL set",
+            ),
+        ):
             service.get_elevations(gpx_track_points_without_elevations)
 
         post_mock.assert_not_called()
@@ -114,25 +124,7 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
 
         assert result == [998, 998, 994, 994, 994, 1124, 1124, 1124, 1124]
 
-    def test_it_returns_empty_list_when_open_elevation_api_raises_exception(
-        self,
-        app_with_open_elevation_url: "Flask",
-        gpx_track_points_without_elevations: List["GPXTrackPoint"],
-    ) -> None:
-        service = OpenElevationService()
-
-        with patch.object(
-            requests,
-            "post",
-            side_effect=requests.exceptions.HTTPError,
-        ):
-            result = service.get_elevations(
-                gpx_track_points_without_elevations
-            )
-
-        assert result == []
-
-    def test_it_logs_error_when_open_elevation_api_raises_exception(
+    def test_it_raises_error_when_open_elevation_api_raises_exception(
         self,
         app_with_open_elevation_url: "Flask",
         gpx_track_points_without_elevations: List["GPXTrackPoint"],
@@ -140,43 +132,16 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
         service = OpenElevationService()
 
         with (
-            patch(
-                "fittrackee.workouts.services.elevation."
-                "open_elevation_service.appLog"
-            ) as logger_mock,
             patch.object(
                 requests,
                 "post",
                 side_effect=requests.exceptions.HTTPError,
             ),
+            pytest.raises(requests.exceptions.HTTPError),
         ):
             service.get_elevations(gpx_track_points_without_elevations)
 
-        logger_mock.exception.assert_called_once_with(
-            "Open Elevation API: error when getting missing elevations"
-        )
-
     def test_it_returns_empty_list_when_number_of_elevation_returned_open_elevation_does_not_match(  # noqa
-        self,
-        app_with_open_elevation_url: "Flask",
-        gpx_track_points_without_elevations: List["GPXTrackPoint"],
-    ) -> None:
-        service = OpenElevationService()
-
-        with patch.object(
-            requests,
-            "post",
-            return_value=self.get_response(
-                {"results": OPEN_ELEVATION_RESPONSE[:-1]}
-            ),
-        ):
-            result = service.get_elevations(
-                gpx_track_points_without_elevations
-            )
-
-        assert result == []
-
-    def test_it_logs_error_when_number_of_elevation_returned_open_elevation_does_not_match(  # noqa
         self,
         app_with_open_elevation_url: "Flask",
         gpx_track_points_without_elevations: List["GPXTrackPoint"],
@@ -195,12 +160,18 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
                     {"results": OPEN_ELEVATION_RESPONSE[:-1]}
                 ),
             ),
+            pytest.raises(
+                ElevationServiceException,
+                match=(
+                    "Open Elevation API: mismatch between number of points in "
+                    "results"
+                ),
+            ),
         ):
             service.get_elevations(gpx_track_points_without_elevations)
 
         logger_mock.error.assert_called_once_with(
-            "Open Elevation API: mismatch between number of points in "
-            "results, ignoring results"
+            "Open Elevation API: mismatch between number of points in results"
         )
 
     def test_it_does_not_call_smooth_elevations_when_flag_is_false(

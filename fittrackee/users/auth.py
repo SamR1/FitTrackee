@@ -349,7 +349,7 @@ def get_authenticated_user_profile(
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
-          "missing_elevations_processing": "none",
+          "missing_elevations_processing": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -495,7 +495,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
-          "missing_elevations_processing": "none",
+          "missing_elevations_processing": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -689,7 +689,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
-          "missing_elevations_processing": "none",
+          "missing_elevations_processing": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -949,7 +949,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
-          "missing_elevations_processing": "none",
+          "missing_elevations_processing": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -1050,8 +1050,9 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json string map_visibility: workout map visibility
                   (``public``, ``followers_only``, ``private``)
     :<json string missing_elevations_processing: source and method for missing
-                  elevations (``none``, ``open_elevation``,
-                  ``open_elevation_smooth``)
+                  elevations, depending on application configuration
+                  (``file`` (missing elevation are not processed),
+                  ``open_elevation``, ``open_elevation_smooth``, ``valhalla``)
     :<json string segments_creation_event: event triggering a segment creation
                   for .fit files (``all``, ``only_manual``, ``none``)
     :<json boolean split_workout_charts: if ``true``, multiple charts are
@@ -1391,7 +1392,7 @@ def edit_user_notifications_preferences(
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
-          "missing_elevations_processing": "none",
+          "missing_elevations_processing": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -1573,7 +1574,7 @@ def edit_user_messages_preferences(
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
-          "missing_elevations_processing": "none",
+          "missing_elevations_processing": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
