@@ -22,6 +22,7 @@ from fittrackee.tests.fixtures.fixtures_workouts import (
     track_points_part_2_coordinates,
 )
 from fittrackee.tests.mixins import RandomMixin, ResponseMockMixin
+from fittrackee.tests.utils import generate_response
 from fittrackee.tests.workouts.mixins import (
     WorkoutAssertMixin,
     WorkoutFileMixin,
@@ -29,6 +30,7 @@ from fittrackee.tests.workouts.mixins import (
 )
 from fittrackee.workouts.exceptions import (
     WorkoutExceedingValueException,
+    WorkoutException,
     WorkoutFileException,
 )
 from fittrackee.workouts.models import (
@@ -2008,7 +2010,7 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
             new_segment.points[0].get("elevation") == 998.0  # value unchanged
         )
 
-    def test_it_calls_elevation_service_when_workout_missing_elevations_processing_is_different(  # noqa
+    def test_it_calls_elevation_service_when_elevation_data_source_is_different(  # noqa
         self,
         app_with_open_elevation_and_valhalla_url: "Flask",
         sport_1_cycling: Sport,
@@ -2528,6 +2530,212 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
             "latitude": 44.67822,
             "longitude": 6.07442,
             "pace": 0.831408776,
+            "speed": 4.33,
+            "time": "2018-03-13 12:48:55+00:00",
+        }
+
+    @pytest.mark.parametrize(
+        "input_elevation_data_source",
+        [ElevationDataSource.FILE, ElevationDataSource.OPEN_ELEVATION],
+    )
+    def test_it_does_not_remove_elevation_when_elevation_service_returns_empty_list(  # noqa
+        self,
+        app_with_open_elevation_and_valhalla_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_segments: str,
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+        input_elevation_data_source: "ElevationDataSource",
+    ) -> None:
+        workout_cycling_user_1_with_coordinates.elevation_data_source = (
+            input_elevation_data_source
+        )
+        db.session.commit()
+        service = self.init_service_with_gpx(
+            user_1,
+            sport_1_cycling,
+            gpx_file_with_segments,
+            get_elevation_on_refresh=True,
+            workout=workout_cycling_user_1_with_coordinates,
+            change_elevation_source=ElevationDataSource.VALHALLA,
+        )
+
+        with (
+            patch.object(
+                OpenElevationService, "get_elevations", return_value=[]
+            ) as get_open_elevations_mock,
+            patch.object(
+                requests,
+                "post",
+                return_value=self.get_response({"height": []}),
+            ) as valhalla_requests_mock,
+            pytest.raises(WorkoutException),
+        ):
+            service.process_workout()
+
+        get_open_elevations_mock.assert_not_called()
+        assert valhalla_requests_mock.call_count == 1
+        db.session.refresh(workout_cycling_user_1_with_coordinates)
+        assert (
+            workout_cycling_user_1_with_coordinates.elevation_data_source
+            == input_elevation_data_source
+        )
+        segments = WorkoutSegment.query.all()
+        assert segments[0].points[0] == {
+            "cadence": 0,
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "heart_rate": 92,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "pace": None,
+            "power": 0,
+            "speed": 0,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert segments[0].points[-1] == {
+            "cadence": 53,
+            "distance": 113.32529632259636,
+            "duration": 90,
+            "elevation": 987.0,
+            "heart_rate": 86,
+            "latitude": 44.67995,
+            "longitude": 6.07358,
+            "pace": 0.6857142857,
+            "power": 243,
+            "speed": 5.25,
+            "time": "2018-03-13 12:46:15+00:00",
+        }
+        assert segments[1].points[0] == {
+            "cadence": 56,
+            "distance": 0.0,
+            "duration": 105,
+            "elevation": 987.0,
+            "heart_rate": 88,
+            "latitude": 44.67977,
+            "longitude": 6.07364,
+            "pace": None,
+            "power": 267,
+            "speed": 0,
+            "time": "2018-03-13 12:46:30+00:00",
+        }
+        assert segments[1].points[-1] == {
+            "cadence": 50,
+            "distance": 186.2099364366852,
+            "duration": 250,
+            "elevation": 975.0,
+            "heart_rate": 81,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "pace": 0.831408776,
+            "power": 218,
+            "speed": 4.33,
+            "time": "2018-03-13 12:48:55+00:00",
+        }
+
+    def test_it_raises_error_when_elevation_service_returns_error(
+        self,
+        app_with_open_elevation_and_valhalla_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_segments: str,
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        service = self.init_service_with_gpx(
+            user_1,
+            sport_1_cycling,
+            gpx_file_with_segments,
+            get_elevation_on_refresh=True,
+            workout=workout_cycling_user_1_with_coordinates,
+            change_elevation_source=ElevationDataSource.VALHALLA,
+        )
+
+        with (
+            patch(
+                "fittrackee.workouts.services.workout_from_file."
+                "workout_gpx_service.appLog"
+            ) as logger_mock,
+            patch.object(
+                requests,
+                "post",
+                side_effect=[
+                    self.get_response({"height": VALHALLA_VALUES[:9]}),
+                    generate_response(
+                        status_code=429,  # API rate limit exception
+                    ),
+                ],
+            ) as valhalla_requests_mock,
+            pytest.raises(
+                WorkoutException,
+                match="Error when getting elevation from elevation service",
+            ),
+        ):
+            service.process_workout()
+
+        assert valhalla_requests_mock.call_count == 2
+        logger_mock.error.assert_called_once_with(
+            "429 Client Error: None for url: None"
+        )
+        # workout remains unchanged
+        assert (
+            workout_cycling_user_1_with_coordinates.elevation_data_source
+            == ElevationDataSource.FILE
+        )
+        segments = WorkoutSegment.query.all()
+        assert segments[0].points[0] == {
+            "cadence": 0,
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "heart_rate": 92,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "pace": None,
+            "power": 0,
+            "speed": 0,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert segments[0].points[-1] == {
+            "cadence": 53,
+            "distance": 113.32529632259636,
+            "duration": 90,
+            "elevation": 987.0,
+            "heart_rate": 86,
+            "latitude": 44.67995,
+            "longitude": 6.07358,
+            "pace": 0.6857142857,
+            "power": 243,
+            "speed": 5.25,
+            "time": "2018-03-13 12:46:15+00:00",
+        }
+        assert segments[1].points[0] == {
+            "cadence": 56,
+            "distance": 0.0,
+            "duration": 105,
+            "elevation": 987.0,
+            "heart_rate": 88,
+            "latitude": 44.67977,
+            "longitude": 6.07364,
+            "pace": None,
+            "power": 267,
+            "speed": 0,
+            "time": "2018-03-13 12:46:30+00:00",
+        }
+        assert segments[1].points[-1] == {
+            "cadence": 50,
+            "distance": 186.2099364366852,
+            "duration": 250,
+            "elevation": 975.0,
+            "heart_rate": 81,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "pace": 0.831408776,
+            "power": 218,
             "speed": 4.33,
             "time": "2018-03-13 12:48:55+00:00",
         }

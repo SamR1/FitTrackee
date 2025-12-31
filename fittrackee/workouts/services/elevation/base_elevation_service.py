@@ -6,6 +6,8 @@ import numpy as np
 
 from fittrackee import appLog
 
+from .exceptions import ElevationServiceException
+
 if TYPE_CHECKING:
     from gpxpy.gpx import GPXTrackPoint
 
@@ -76,13 +78,12 @@ class BaseElevationService(ABC):
 
         # Should not happen
         if len(results) != len(points):
-            appLog.error(
-                (
-                    "{log_label}: mismatch between number of points in "
-                    "results, ignoring results"
-                ).format(log_label=self.log_label)
+            error = (
+                f"{self.log_label}: mismatch between number of points in "
+                "results"
             )
-            return []
+            appLog.error(error)
+            raise ElevationServiceException(error)
 
         if smooth:
             return self.smooth_elevations(results)

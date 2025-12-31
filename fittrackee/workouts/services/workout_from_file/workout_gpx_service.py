@@ -12,7 +12,11 @@ from fittrackee import appLog, db
 from fittrackee.constants import ElevationDataSource
 
 from ...constants import SPORTS_WITHOUT_ELEVATION_DATA, TRACK_EXTENSION_NSMAP
-from ...exceptions import WorkoutExceedingValueException, WorkoutFileException
+from ...exceptions import (
+    WorkoutExceedingValueException,
+    WorkoutException,
+    WorkoutFileException,
+)
 from ...models import WORKOUT_VALUES_LIMIT, Workout, WorkoutSegment
 from ...utils.convert import (
     convert_speed_into_pace_duration,
@@ -337,10 +341,10 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         existing_elevations: "pd.DataFrame",
         elevation_service: Optional["ElevationService"],
     ) -> Tuple[
-        timedelta,
-        Optional[datetime],
-        Dict,
-        float,
+        timedelta,  # stopped_time_between_segments
+        Optional[datetime],  # previous_segment_last_point_time
+        Dict,  # hr_cadence_stats
+        float,  # raw_max_speed
     ]:
         points = track_segment.points
         last_point_index = len(points) - 1
@@ -356,7 +360,14 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         workout_id = self.workout.short_id if self.workout else ""
 
         if elevation_service:
-            elevations = elevation_service.get_elevations(points)
+            try:
+                elevations = elevation_service.get_elevations(points)
+            except Exception as e:
+                appLog.error(str(e))
+                raise WorkoutException(
+                    "error",
+                    "Error when getting elevation from elevation service",
+                ) from e
 
         for point_idx, point in enumerate(points):
             if point_idx == 0:
@@ -580,10 +591,15 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         existing_elevations = pd.DataFrame()
         # on workout refresh
         if not self.is_creation and self.workout:
+            workout_update_missing_elevations = (
+                self.workout.elevation_data_source
+            )
             existing_elevations = self._get_existing_elevations()
 
             # remove existing segments
             WorkoutSegment.query.filter_by(workout_id=self.workout.id).delete()
+        else:
+            workout_update_missing_elevations = ElevationDataSource.FILE
 
         has_missing_elevation = False
         for segment in segments:

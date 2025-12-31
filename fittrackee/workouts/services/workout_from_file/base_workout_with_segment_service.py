@@ -116,7 +116,11 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
         pass
 
     def process_workout(self) -> "Workout":
-        workout = self._process_file()
+        try:
+            workout = self._process_file()
+        except Exception as e:
+            db.session.rollback()
+            raise e
 
         if not self.get_weather:
             return workout
