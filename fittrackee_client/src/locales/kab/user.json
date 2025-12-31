@@ -1,1 +1,14 @@
-{}
+{
+  "EMAIL": "Imayl",
+  "LOGIN": "Qqen",
+  "LOGOUT": "Senser tuqqna",
+  "PASSWORD": "Awal n uɛeddi",
+  "PROFILE": {
+    "INTERFACE": "Agrudem",
+    "LANGUAGE": "Tutlayt",
+    "LOCATION": "Adig",
+    "MONDAY": "Arim",
+    "PICTURE": "Tugna",
+    "SUNDAY": "Acer"
+  }
+}
