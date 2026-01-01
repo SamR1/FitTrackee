@@ -1237,6 +1237,7 @@ def edit_user_sport_preferences(
         - ``equipment with id <equipment_id> does not exist``
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``
+        - ``invalid pace_speed_display for sport '<sport_label>', only speed can be displayed."``
     :statuscode 403:
         - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``sport does not exist``
@@ -1292,7 +1293,7 @@ def edit_user_sport_preferences(
             if sport.label not in PACE_SPORTS:
                 return InvalidPayloadErrorResponse(
                     f"invalid pace_speed_display for sport '{sport.label}', "
-                    f"only speed can be displayed."
+                    "only speed can be displayed."
                 )
             user_sport.pace_speed_display = pace_speed_display
 

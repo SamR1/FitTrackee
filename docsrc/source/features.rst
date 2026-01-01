@@ -165,13 +165,16 @@ Workouts
   | If the sport is Outdoor Tennis or Padel, a heat map is also available (*changed in 1.0.0*).
 - | A chart is displayed for workout with a file, with:
 
-  - speed. By default speed is not displayed when pace is displayed (see below). A user preference allows to keep speed displayed with pace, see `Account & preferences <features.html#account-preferences>`__ (*changed in 1.1.0*).
+  - speed. By default speed is not displayed when pace is displayed (see below).
   - pace (*new in 1.1.0*), for the following sports:
 
     - Hiking
     - Running
     - Trail
     - Walking
+
+    .. note::
+      For these sport, a sport preference allows to set the display (see `Account & preferences <features.html#account-preferences>`__).
 
   - elevation if available (*updated in 0.7.20*)
   - heart rate if available (*new in 0.10.0*)
@@ -277,7 +280,7 @@ Workouts
     - duration
     - average speed
     - maximum speed
-    - when only one sport is displayed and it corresponds to running, hiking, trail running, or walking) (*new in 1.1.0*):
+    - when only one sport is displayed and 'pace' is set in the sport preference (*new in 1.1.0*):
 
       - average pace
       - maximum pace (= best pace)
@@ -288,7 +291,7 @@ Workouts
     - distance
     - duration
     - average speed
-    - average pace (when only one sport is displayed and it corresponds to running, hiking, trail running, or walking) (*new in 1.1.0*)
+    - average pace (when only one sport is displayed and 'pace' is set in the sport preference) (*new in 1.1.0*)
 
   - Statistics are displayed when more than one workout is displayed (*new in 0.9.4*):
 
@@ -302,7 +305,7 @@ Workouts
     - average speed (when workouts belong to the same sport)
     - average ascent (*new in 0.9.7*)
     - average descent (*new in 0.9.7*)
-    - when workouts belong to the same sport and it corresponds to running, hiking, trail running, or walking) (*new in 1.1.0*):
+    - when workouts belong to the same sport and 'pace' is set in the sport preference (*new in 1.1.0*):
 
       - average pace
       - best pace
@@ -465,7 +468,7 @@ Statistics
   - ascent (total and average)
   - descent (total and average)
   - records
-  - average pace (if sport corresponds to running, hiking, trail running, or walking) (*new in 1.1.0*)
+  - average pace (if 'pace' is set in the sport preference ) (*new in 1.1.0*)
   - total calories (*new in 1.1.0*)
 
 .. note::
@@ -523,6 +526,11 @@ Account & preferences
   - can override stopped speed threshold (for next uploaded gpx files)
   - disable/enable a sport
   - define default `equipments <features.html#equipments>`__ (*new in 0.8.0*).
+  - set Pace/Speed display for Hiking, Running, Trail and Walking (*new in 1.1.0*):
+
+    - pace
+    - speed
+    - pace and speed
 
 .. note::
   | If a sport is disabled by an administrator, it can not be enabled by a user. In this case, it will only appear in preferences if the user has workouts and only sport color can be changed.
@@ -553,7 +561,6 @@ Account & preferences
   - each data displayed on a different chart
 
 - A user can update messages preferences (*new in 1.0.0*).
-- A user can set whether speed can be displayed with pace (*new in 1.1.0*).
 - A user can set missing elevation processing if an OpenElevation or Valhalla API URL is set (*new in 1.1.0*):
 
   - none

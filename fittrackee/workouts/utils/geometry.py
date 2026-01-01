@@ -57,7 +57,7 @@ def get_chart_data_from_segment_points(
     """
     Return data needed to generate chart with:
     - speed depending on sport and user sport preferences
-    - pace on sport and user sport preferences
+    - pace depending on sport and user sport preferences
     - elevation (if available)
     - heart rate (if available)
     - cadence (if available)
