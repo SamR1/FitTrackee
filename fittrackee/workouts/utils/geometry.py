@@ -8,11 +8,6 @@ from sqlalchemy import func, select
 from fittrackee import db
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.constants import (
-    PACE_SPORTS,
-    POWER_SPORTS,
-    RPM_CADENCE_SPORTS,
-    SPM_CADENCE_SPORTS,
-    SPORTS_WITHOUT_ELEVATION_DATA,
     WGS84_CRS,
 )
 from fittrackee.workouts.exceptions import (
@@ -20,9 +15,11 @@ from fittrackee.workouts.exceptions import (
     InvalidRadiusException,
 )
 from fittrackee.workouts.models import WorkoutSegment
+from fittrackee.workouts.utils.sports import get_sport_displayed_data
 
 if TYPE_CHECKING:
-    from fittrackee.workouts.models import Workout
+    from fittrackee.users.models import User
+    from fittrackee.workouts.models import Sport, Workout
 
 
 def get_geojson_from_segments(
@@ -51,33 +48,26 @@ def get_geojson_from_segments(
 
 def get_chart_data_from_segment_points(
     segments_points: List[List[Dict]],
-    sport_label: str,
+    sport: "Sport",
     *,
+    user: Optional["User"],
     workout_ave_cadence: Optional[int],
     can_see_heart_rate: bool,
 ) -> List:
     """
     Return data needed to generate chart with:
-    - speed
-    - pace for hiking, running, trail and walking
+    - speed depending on sport and user sport preferences
+    - pace on sport and user sport preferences
     - elevation (if available)
     - heart rate (if available)
     - cadence (if available)
     - power (if available)
     """
     chart_data = []
-    # elevation
-    return_elevation_data = sport_label not in SPORTS_WITHOUT_ELEVATION_DATA
-    # pace
-    return_pace = sport_label in PACE_SPORTS
-    # from extension: cadence
+    sport_data_visibility = get_sport_displayed_data(sport, user)
     return_cadence = (
-        workout_ave_cadence
-        and sport_label in RPM_CADENCE_SPORTS + SPM_CADENCE_SPORTS
+        workout_ave_cadence and sport_data_visibility.display_cadence
     )
-    cadence_in_spm = sport_label in SPM_CADENCE_SPORTS
-    # from extension: power
-    return_power = sport_label in POWER_SPORTS
     total_distance = 0
 
     for segment_points in segments_points:
@@ -97,23 +87,26 @@ def get_chart_data_from_segment_points(
                 "duration": point["duration"] - first_point_duration,
                 "latitude": point["latitude"],
                 "longitude": point["longitude"],
-                "speed": point["speed"],
                 "time": point["time"],
             }
-            if return_elevation_data and point.get("elevation"):
+            if sport_data_visibility.display_elevation and point.get(
+                "elevation"
+            ):
                 data["elevation"] = point["elevation"]
-            if return_pace and "pace" in point:
+            if sport_data_visibility.display_pace and "pace" in point:
                 data["pace"] = point["pace"]
+            if sport_data_visibility.display_speed and "speed" in point:
+                data["speed"] = point["speed"]
             if return_cadence and "cadence" in point:
                 data["cadence"] = (
                     point["cadence"] * 2
-                    if cadence_in_spm
+                    if sport_data_visibility.display_spm_cadence
                     else point["cadence"]
                 )
+            if sport_data_visibility.display_power and "power" in point:
+                data["power"] = point["power"]
             if can_see_heart_rate and "heart_rate" in point:
                 data["hr"] = point["heart_rate"]
-            if return_power and "power" in point:
-                data["power"] = point["power"]
 
             if index == points_count:
                 total_distance = distance

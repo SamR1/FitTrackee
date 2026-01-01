@@ -18,8 +18,8 @@ from fittrackee.responses import (
 from fittrackee.users.models import User
 from fittrackee.users.roles import UserRole
 
-from .constants import PACE_SPORTS, SPORTS_WITHOUT_ELEVATION_DATA
 from .models import Sport, Workout
+from .utils.sports import get_sports_displayed_data
 from .utils.uploads import get_upload_dir_size
 from .utils.workouts import get_average_speed, get_datetime_from_request_args
 
@@ -51,10 +51,10 @@ def get_stats_from_row(
     if stats_type == "average":
         if with_speed_data and row[1]:
             row_stats["average_speed"] = round(float(row[1]), 2)
-        if with_pace_data and row[9]:
-            row_stats["average_pace"] = int(row[9].total_seconds())
+        if with_pace_data and row[8]:
+            row_stats["average_pace"] = int(row[8].total_seconds())
     if stats_type == "total":
-        row_stats["total_calories"] = row[10]
+        row_stats["total_calories"] = row[9]
 
     return row_stats
 
@@ -288,7 +288,6 @@ def get_workouts_by_time(
                 calculation_method(Workout.ascent),
                 calculation_method(Workout.descent),
                 stats_key,
-                Sport.label,
                 (
                     func.avg(Workout.ave_pace)  # type: ignore
                     if stats_type == "average"
@@ -300,9 +299,8 @@ def get_workouts_by_time(
                     else True
                 ),
             )
-            .join(Sport, Sport.id == Workout.sport_id)
             .filter(*filters)
-            .group_by(stats_key, Workout.sport_id, Sport.label)
+            .group_by(stats_key, Workout.sport_id)
         )
 
         if current_app.config["stats_workouts_limit"]:
@@ -319,6 +317,9 @@ def get_workouts_by_time(
             )
         results = workouts_query.all()
 
+        sports = Sport.query.filter().all()
+        sports_displayed_data = get_sports_displayed_data(sports, auth_user)
+
         statistics = {}
         for row in results:
             date_key = row[7]
@@ -327,11 +328,11 @@ def get_workouts_by_time(
                     get_datetime_in_utc(date_key + "-1", "%G-%V-%u") - delta
                 ).strftime("%Y-%m-%d")
             sport_key = row[0]
-            with_elevation_data = row[8] not in SPORTS_WITHOUT_ELEVATION_DATA
-            with_pace_data = row[8] in PACE_SPORTS
-            with_speed_data = (
-                row[8] not in PACE_SPORTS or user.display_speed_with_pace
-            )
+            with_elevation_data = sports_displayed_data[
+                sport_key
+            ].display_elevation
+            with_pace_data = sports_displayed_data[sport_key].display_pace
+            with_speed_data = sports_displayed_data[sport_key].display_speed
 
             if date_key not in statistics:
                 statistics[date_key] = {
@@ -361,9 +362,9 @@ def get_workouts_by_time(
                             row[1],
                         )
                     )
-                    if with_pace_data and row[9]:
+                    if with_pace_data and row[8]:
                         statistics[date_key][sport_key]["average_pace"] = int(
-                            row[9].total_seconds()
+                            row[8].total_seconds()
                         )
                 statistics[date_key][sport_key][f"{stats_type}_distance"] += (
                     round(float(row[3]), 2)
@@ -380,7 +381,7 @@ def get_workouts_by_time(
                         f"{stats_type}_ascent"
                     ] += round(float(row[6]), 2)
                 if stats_type == "total":
-                    statistics[date_key][sport_key]["total_calories"] = row[10]
+                    statistics[date_key][sport_key]["total_calories"] = row[9]
 
         return {
             "status": "success",
@@ -548,9 +549,6 @@ def get_workouts_by_sport(
 
         params = request.args.copy()
         sport_id = params.get("sport_id")
-        sport_ids_without_elevation_data = []
-        sport_ids_without_pace_data = []
-        sport_ids_without_speed_data = []
         filters = [Workout.user_id == user.id]
 
         if sport_id:
@@ -558,26 +556,10 @@ def get_workouts_by_sport(
             if not sport:
                 return NotFoundErrorResponse("sport does not exist")
             filters.append(Workout.sport_id == sport_id)
-            if sport.label in SPORTS_WITHOUT_ELEVATION_DATA:
-                sport_ids_without_elevation_data = [sport.id]
-            if sport.label not in PACE_SPORTS:
-                sport_ids_without_pace_data = [sport.id]
-            elif not auth_user.display_speed_with_pace:
-                sport_ids_without_speed_data = [sport.id]
+            sports = [sport]
         else:
             sports = Sport.query.filter().all()
-            sport_ids_without_elevation_data = [
-                sport.id
-                for sport in sports
-                if sport.label in SPORTS_WITHOUT_ELEVATION_DATA
-            ]
-            sport_ids_without_pace_data = [
-                sport.id for sport in sports if sport.label not in PACE_SPORTS
-            ]
-            if not auth_user.display_speed_with_pace:
-                sport_ids_without_speed_data = [
-                    sport.id for sport in sports if sport.label in PACE_SPORTS
-                ]
+        sports_displayed_data = get_sports_displayed_data(sports, auth_user)
 
         workouts_query = Workout.query.filter(*filters)
         total_workouts = workouts_query.count()
@@ -610,11 +592,11 @@ def get_workouts_by_sport(
 
         statistics = {}
         for row in results:
-            return_elevation_data = (
-                row[0] not in sport_ids_without_elevation_data
-            )
-            return_pace_data = row[0] not in sport_ids_without_pace_data
-            return_pace_speed = row[0] not in sport_ids_without_speed_data
+            return_elevation_data = sports_displayed_data[
+                row[0]
+            ].display_elevation
+            return_pace_data = sports_displayed_data[row[0]].display_pace
+            return_pace_speed = sports_displayed_data[row[0]].display_speed
             statistics[row[0]] = {
                 "average_speed": (
                     round(float(row[1]), 2) if return_pace_speed else None

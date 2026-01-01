@@ -119,10 +119,10 @@ class TestUserDataExporterGetUserWorkoutsData:
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        gpx_file: str,
+        gpx_file_with_ns3_extensions: str,
     ) -> None:
         workout = create_a_workout_with_file(
-            user_1, gpx_file, sport_id=sport_1_cycling.id
+            user_1, gpx_file_with_ns3_extensions, sport_id=sport_1_cycling.id
         )
         exporter = UserDataExporter(user_1)
 
@@ -150,7 +150,12 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "original_file": workout.original_file.split("/")[-1],  # type: ignore[union-attr]
                 "records": [record.serialize() for record in workout.records],
                 "segments": [
-                    {**segment.serialize(), "segment_number": number}
+                    {
+                        **segment.serialize(
+                            user=user_1, can_see_heart_rate=True
+                        ),
+                        "segment_number": number,
+                    }
                     for number, segment in enumerate(workout.segments, start=1)
                 ],
                 "source": workout.source,
@@ -166,12 +171,12 @@ class TestUserDataExporterGetUserWorkoutsData:
                 ),
                 "map_visibility": workout.calculated_map_visibility.value,
                 "workout_visibility": workout.workout_visibility.value,
-                "ave_cadence": None,
-                "max_cadence": None,
-                "ave_hr": None,
-                "max_hr": None,
-                "ave_power": None,
-                "max_power": None,
+                "ave_cadence": workout.ave_cadence,
+                "max_cadence": workout.max_cadence,
+                "ave_hr": workout.ave_hr,
+                "max_hr": workout.max_hr,
+                "ave_power": workout.ave_power,
+                "max_power": workout.max_power,
                 "with_geometry": True,
                 "ave_pace": None,
                 "best_pace": None,
@@ -184,10 +189,10 @@ class TestUserDataExporterGetUserWorkoutsData:
         app: Flask,
         user_1: User,
         sport_2_running: Sport,
-        gpx_file: str,
+        gpx_file_with_ns3_extensions: str,
     ) -> None:
         workout = create_a_workout_with_file(
-            user_1, gpx_file, sport_id=sport_2_running.id
+            user_1, gpx_file_with_ns3_extensions, sport_id=sport_2_running.id
         )
         exporter = UserDataExporter(user_1)
 
@@ -219,7 +224,12 @@ class TestUserDataExporterGetUserWorkoutsData:
                     if record.record_type not in ["AS", "MS"]
                 ],
                 "segments": [
-                    {**segment.serialize(), "segment_number": number}
+                    {
+                        **segment.serialize(
+                            user=user_1, can_see_heart_rate=True
+                        ),
+                        "segment_number": number,
+                    }
                     for number, segment in enumerate(workout.segments, start=1)
                 ],
                 "source": workout.source,
@@ -235,10 +245,10 @@ class TestUserDataExporterGetUserWorkoutsData:
                 ),
                 "map_visibility": workout.calculated_map_visibility.value,
                 "workout_visibility": workout.workout_visibility.value,
-                "ave_cadence": None,
-                "max_cadence": None,
-                "ave_hr": None,
-                "max_hr": None,
+                "ave_cadence": workout.ave_cadence * 2,  # type: ignore[operator]
+                "max_cadence": workout.max_cadence * 2,  # type: ignore[operator]
+                "ave_hr": workout.ave_hr,
+                "max_hr": workout.max_hr,
                 "ave_power": None,
                 "max_power": None,
                 "with_geometry": True,

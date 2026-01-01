@@ -382,7 +382,9 @@ class WorkoutGpxServiceProcessFileTestCase(
             "time": "2018-03-13 12:47:20+00:00",
         }
 
-        serialized_segment = workout_segments[1].serialize()
+        serialized_segment = workout_segments[1].serialize(
+            user=user, can_see_heart_rate=True
+        )
         assert serialized_segment == {
             "ascent": 0.0,
             "ave_cadence": None,

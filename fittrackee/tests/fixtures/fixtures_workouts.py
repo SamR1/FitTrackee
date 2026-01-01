@@ -12,6 +12,7 @@ from PIL import Image
 from werkzeug.datastructures import FileStorage
 
 from fittrackee import VERSION, db
+from fittrackee.constants import PaceSpeedDisplay
 from fittrackee.workouts.models import (
     TITLE_MAX_CHARACTERS,
     Sport,
@@ -81,6 +82,7 @@ def sport_1_cycling_inactive() -> Sport:
 def sport_2_running() -> Sport:
     sport = Sport(label="Running")
     sport.stopped_speed_threshold = 0.1
+    sport.pace_speed_display = PaceSpeedDisplay.PACE
     db.session.add(sport)
     db.session.commit()
     return sport

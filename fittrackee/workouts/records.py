@@ -1,13 +1,15 @@
 from typing import Dict
 
 from flask import Blueprint
-from sqlalchemy import and_, or_
+from sqlalchemy.sql import select
+from sqlalchemy.sql import text as sql_text
 
+from fittrackee import db
 from fittrackee.oauth2.server import require_auth
 from fittrackee.users.models import User
 
-from .constants import PACE_SPORTS, SPORTS_WITHOUT_ELEVATION_DATA
-from .models import Record, Sport
+from .constants import SPORTS_WITHOUT_ELEVATION_DATA
+from .models import Record
 
 records_blueprint = Blueprint("records", __name__)
 
@@ -141,25 +143,46 @@ def get_records(auth_user: User) -> Dict:
         - ``you do not have permissions, your account is suspended``
 
     """
-    records = (
-        Record.query.join(Sport)
-        .filter(
-            Record.user_id == auth_user.id,
-            or_(
-                Record.record_type.in_(["AS", "FD", "LD", "MS"]),
-                and_(
-                    Record.record_type == "HA",
-                    Sport.label.not_in(SPORTS_WITHOUT_ELEVATION_DATA),
-                ),
-                and_(
-                    Record.record_type.in_(["AP", "BP"]),
-                    Sport.label.in_(PACE_SPORTS),
-                ),
-            ),
-        )
-        .order_by(Record.sport_id.asc(), Record.record_type.asc())
-        .all()
-    )
+    params = {
+        "user_id": auth_user.id,
+        "sports_without_elevation_data": tuple(SPORTS_WITHOUT_ELEVATION_DATA),
+    }
+    sql = """
+          SELECT records.*
+          FROM records
+          JOIN sports ON records.sport_id = sports.id
+          LEFT OUTER JOIN users_sports_preferences usp 
+                       ON usp.sport_id = records.sport_id AND
+                          usp.user_id = records.user_id
+          WHERE records.user_id = :user_id AND
+            (
+              records.record_type IN ('FD', 'LD') OR ( 
+                records.record_type = 'HA' AND
+                sports.label NOT IN :sports_without_elevation_data
+              ) OR (
+                records.record_type IN ('AS', 'MS') AND
+                (
+                  usp.pace_speed_display <> 'PACE' OR ( 
+                    usp.pace_speed_display IS NULL AND
+                    sports.pace_speed_display <> 'PACE'
+                  )
+                )
+              ) OR (
+                records.record_type IN ('AP', 'BP') AND
+                (
+                  usp.pace_speed_display <> 'SPEED' OR (
+                    usp.pace_speed_display IS NULL AND
+                    sports.pace_speed_display <> 'SPEED'
+                  )
+                )
+              )
+            )
+          ORDER BY records.sport_id, records.record_type;"""
+
+    records = db.session.scalars(  # type: ignore
+        select(Record).from_statement(sql_text(sql)).params(**params)
+    ).all()
+
     return {
         "status": "success",
         "data": {"records": [record.serialize() for record in records]},

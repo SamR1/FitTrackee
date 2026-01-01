@@ -1627,6 +1627,7 @@ class TestGetWorkoutChartDataAsFollower(
 
         get_chart_data_mock.assert_called_once_with(
             workout_cycling_user_1_with_coordinates,
+            user=user_2,
             can_see_heart_rate=expected_can_see_heart_rate,
             segment_short_id=None,
         )
@@ -1766,6 +1767,7 @@ class TestGetWorkoutChartDataAsUser(
 
         get_chart_data_mock.assert_called_once_with(
             workout_cycling_user_1_with_coordinates,
+            user=user_2,
             can_see_heart_rate=expected_can_see_heart_rate,
             segment_short_id=None,
         )
@@ -1893,7 +1895,7 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
             (VisibilityLevel.FOLLOWERS, False),
         ],
     )
-    def test_it_calls_get_chart_data_from_gpx_when_user_can_not_see_heart_rate(
+    def test_it_calls_get_chart_data_when_user_can_not_see_heart_rate(
         self,
         app: Flask,
         user_1: User,
@@ -1926,6 +1928,7 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
 
         get_chart_data_mock.assert_called_once_with(
             workout_cycling_user_1_with_coordinates,
+            user=None,
             can_see_heart_rate=expected_can_see_heart_rate,
             segment_short_id=None,
         )
