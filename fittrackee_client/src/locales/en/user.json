@@ -90,10 +90,6 @@
     "CHANGES_ONLY_TO_NEW_WORKOUTS": "The changes apply only to new workouts.",
     "CREATED_REPORTS": "Created reports",
     "DATE_FORMAT": "Date display format",
-    "DISPLAYING_SPEED_IN_ADDITION_TO_PACE": {
-      "HELP": "Applies to workouts related to running, hiking, trail and walking.",
-      "LABEL": "Displaying speed in addition to pace"
-    },
     "EDIT": "Edit profile",
     "EDIT_ACCOUNT": "Edit account",
     "EDIT_MESSAGE_PREFERENCES": "Edit messages preferences",
@@ -192,6 +188,12 @@
       "DISABLED_BY_ADMIN": "disabled by admin",
       "IS_ACTIVE": "active",
       "LABEL": "label",
+      "PACE_SPEED_DISPLAY": {
+        "LABEL": "Pace/Speed display",
+        "pace": "Pace",
+        "pace_and_speed": "Pace and speed",
+        "speed": "Speed"
+      },
       "STOPPED_SPEED_THRESHOLD": "stopped speed threshold"
     },
     "SPORTS_EDITION": "Sports preferences edition",

@@ -31,6 +31,7 @@ from fittrackee.visibility_levels import (
 )
 
 from .constants import (
+    PACE_SPORTS,
     WGS84_CRS,
 )
 from .exceptions import WorkoutForbiddenException
@@ -251,6 +252,14 @@ class Sport(BaseModel):
                 else sport_preferences["stopped_speed_threshold"]
             ),
         }
+
+        if self.label in PACE_SPORTS:
+            serialized_sport["pace_speed_display"] = (
+                self.pace_speed_display
+                if sport_preferences is None
+                else sport_preferences["pace_speed_display"]
+            )
+
         if check_workouts:
             serialized_sport["has_workouts"] = self.has_workouts
 

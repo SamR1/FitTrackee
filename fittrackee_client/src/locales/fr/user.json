@@ -90,10 +90,6 @@
     "CHANGES_ONLY_TO_NEW_WORKOUTS": "Les changements ne s'appliquent seulement aux nouvelles séances.",
     "CREATED_REPORTS": "Signalements créés",
     "DATE_FORMAT": "Format d'affichage de la date",
-    "DISPLAYING_SPEED_IN_ADDITION_TO_PACE": {
-      "HELP": "S'applique aux séances associées à la course, la randonnée, le trail et la marche.",
-      "LABEL": "Afficher la vitesse en plus de l'allure"
-    },
     "EDIT": "Modifier le profil",
     "EDIT_ACCOUNT": "Modifier le compte",
     "EDIT_MESSAGE_PREFERENCES": "Modifier les préférences des messages",
@@ -192,6 +188,12 @@
       "DISABLED_BY_ADMIN": "désactivé par l'administrateur",
       "IS_ACTIVE": "actif",
       "LABEL": "label",
+      "PACE_SPEED_DISPLAY": {
+        "LABEL": "Affichage de l'allure et/ou de la vitesse",
+        "pace": "Allure",
+        "pace_and_speed": "Allure et vitesse",
+        "speed": "Vitesse"
+      },
       "STOPPED_SPEED_THRESHOLD": "seuil de vitesse arrêtée"
     },
     "SPORTS_EDITION": "Mise à jour des préférences des sports",

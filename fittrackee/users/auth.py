@@ -51,6 +51,7 @@ from fittrackee.visibility_levels import (
 )
 from fittrackee.workouts.models import Sport
 
+from ..workouts.constants import PACE_SPORTS
 from .exceptions import UserControlsException, UserCreationException
 from .models import (
     BlacklistedToken,
@@ -1162,7 +1163,13 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route("/auth/profile/edit/sports", methods=["POST"])
+@auth_blueprint.route(
+    "/auth/profile/edit/sports",
+    methods=[
+        "POST",  # deprecated
+        "PATCH",
+    ],
+)
 @require_auth(scopes=["profile:write"])
 def edit_user_sport_preferences(
     auth_user: User,
@@ -1170,13 +1177,16 @@ def edit_user_sport_preferences(
     """
     Edit authenticated user sport preferences.
 
+    **Notes**: ``POST`` method is deprecated and will be removed in a future
+    version.
+
     **Scope**: ``profile:write``
 
     **Example request**:
 
     .. sourcecode:: http
 
-      POST /api/auth/profile/edit/sports HTTP/1.1
+      PATCH /api/auth/profile/edit/sports HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1191,6 +1201,7 @@ def edit_user_sport_preferences(
           "color": "#000000",
           "default_equipment_ids": [],
           "is_active": true,
+          "pace_speed_display": "speed",
           "sport_id": 1,
           "stopped_speed_threshold": 1,
           "user_id": 1
@@ -1204,6 +1215,9 @@ def edit_user_sport_preferences(
     :<json string color: valid hexadecimal color
     :<json boolean is_active: is sport available when adding a workout
     :<json float stopped_speed_threshold: stopped speed threshold used by gpxpy
+    :<json string pace_speed_display: Pace/Speed display in workout detail,
+           sport statistics and records for following sports: Hiking, Running,
+           Trail and Walking (``pace``, ``speed``, ``pace_and_speed``)
     :<json array of strings default_equipment_ids: the default equipment id
            to use for this sport.
            **Note**: for now only one equipment can be associated.
@@ -1228,6 +1242,12 @@ def edit_user_sport_preferences(
     :statuscode 404: ``sport does not exist``
     :statuscode 500: ``error, please try again or contact the administrator``
     """
+    if request.method == "POST":
+        appLog.warning(
+            f"'POST' method is deprecated for {request.path}, "
+            "please use 'PATCH' instead."
+        )
+
     post_data = request.get_json()
     if (
         not post_data
@@ -1245,6 +1265,7 @@ def edit_user_sport_preferences(
     is_active = post_data.get("is_active")
     stopped_speed_threshold = post_data.get("stopped_speed_threshold")
     default_equipment_ids = post_data.get("default_equipment_ids")
+    pace_speed_display = post_data.get("pace_speed_display")
 
     try:
         user_sport = UserSportPreference.query.filter_by(
@@ -1267,6 +1288,13 @@ def edit_user_sport_preferences(
             user_sport.is_active = is_active
         if stopped_speed_threshold:
             user_sport.stopped_speed_threshold = stopped_speed_threshold
+        if pace_speed_display:
+            if sport.label not in PACE_SPORTS:
+                return InvalidPayloadErrorResponse(
+                    f"invalid pace_speed_display for sport '{sport.label}', "
+                    f"only speed can be displayed."
+                )
+            user_sport.pace_speed_display = pace_speed_display
 
         if default_equipment_ids is not None:
             existing_default_equipments = user_sport.default_equipments.all()

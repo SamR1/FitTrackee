@@ -10,6 +10,7 @@ from sqlalchemy.dialects.postgresql import insert
 from time_machine import travel
 
 from fittrackee import db
+from fittrackee.constants import PaceSpeedDisplay
 from fittrackee.equipments.models import Equipment
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.users.models import (
@@ -1713,7 +1714,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             app, user_1.email
         )
 
-        response = client.post(
+        response = client.patch(
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(dict()),
@@ -1729,7 +1730,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             app, user_1.email
         )
 
-        response = client.post(
+        response = client.patch(
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(dict(is_active=True)),
@@ -1745,7 +1746,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             app, user_1.email
         )
 
-        response = client.post(
+        response = client.patch(
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(dict(sport_id=1, is_active=True)),
@@ -1761,7 +1762,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             app, user_1.email
         )
 
-        response = client.post(
+        response = client.patch(
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(dict(sport_id=1)),
@@ -1777,7 +1778,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             app, user_1.email
         )
 
-        response = client.post(
+        response = client.patch(
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(
@@ -1801,7 +1802,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             app, suspended_user.email
         )
 
-        response = client.post(
+        response = client.patch(
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(
@@ -1830,7 +1831,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             app, user_1.email
         )
 
-        response = client.post(
+        response = client.patch(
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(
@@ -1842,15 +1843,15 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
+        assert response.status_code == 200
+        preference = UserSportPreference.query.filter_by(
+            sport_id=sport_2_running.id, user_id=user_1.id
+        ).one()
+        assert preference.color == input_color
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["message"] == "user sport preferences updated"
-        assert response.status_code == 200
-        assert data["data"]["user_id"] == user_1.id
-        assert data["data"]["sport_id"] == sport_2_running.id
-        assert data["data"]["color"] == input_color
-        assert data["data"]["is_active"] is True
-        assert data["data"]["stopped_speed_threshold"] == 0.1
+        assert data["data"] == preference.serialize()
 
     def test_it_updates_default_equipments_for_auth_user_without_existing_preferences(  # noqa
         self,
@@ -1864,7 +1865,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             app, user_1.email
         )
 
-        response = client.post(
+        response = client.patch(
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(
@@ -1876,17 +1877,17 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
+        assert response.status_code == 200
+        preference = UserSportPreference.query.filter_by(
+            sport_id=sport_2_running.id, user_id=user_1.id
+        ).one()
+        assert preference.default_equipments.all() == [equipment_shoes_user_1]
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["message"] == "user sport preferences updated"
-        assert response.status_code == 200
-        assert data["data"]["user_id"] == user_1.id
-        assert data["data"]["sport_id"] == sport_2_running.id
         assert data["data"]["default_equipments"] == [
             jsonify_dict(equipment_shoes_user_1.serialize(current_user=user_1))
         ]
-        assert data["data"]["is_active"] is True
-        assert data["data"]["stopped_speed_threshold"] == 0.1
 
     def test_it_updates_default_equipments_for_auth_user_with_existing_preferences(  # noqa
         self,
@@ -1917,7 +1918,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             app, user_1.email
         )
 
-        response = client.post(
+        response = client.patch(
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(
@@ -1931,17 +1932,17 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
+        assert response.status_code == 200
+        preference = UserSportPreference.query.filter_by(
+            sport_id=sport_1_cycling.id, user_id=user_1.id
+        ).one()
+        assert preference.default_equipments.all() == [equipment_bike_user_1]
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["message"] == "user sport preferences updated"
-        assert response.status_code == 200
-        assert data["data"]["user_id"] == user_1.id
-        assert data["data"]["sport_id"] == sport_1_cycling.id
         assert data["data"]["default_equipments"] == [
             jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
-        assert data["data"]["is_active"] is True
-        assert data["data"]["stopped_speed_threshold"] == 1
 
     def test_it_does_not_update_equipment_when_ids_not_provided(
         self,
@@ -1968,7 +1969,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             app, user_1.email
         )
 
-        response = client.post(
+        response = client.patch(
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(
@@ -1980,19 +1981,17 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
+        assert response.status_code == 200
+        preference = UserSportPreference.query.filter_by(
+            sport_id=sport_1_cycling.id, user_id=user_1.id
+        ).one()
+        assert preference.default_equipments.all() == [equipment_bike_user_1]
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["message"] == "user sport preferences updated"
-        assert response.status_code == 200
-        assert data["data"]["user_id"] == user_1.id
-        assert data["data"]["sport_id"] == sport_1_cycling.id
         assert data["data"]["default_equipments"] == [
             jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
-        assert data["data"]["is_active"] is True
-        assert (
-            data["data"]["stopped_speed_threshold"] == stopped_speed_threshold
-        )
 
     def test_it_cannot_update_default_equipment_for_other_user_equip(
         self,
@@ -2007,7 +2006,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             app, user_2.email
         )
 
-        response = client.post(
+        response = client.patch(
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(
@@ -2039,7 +2038,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             app, user_1.email
         )
 
-        response = client.post(
+        response = client.patch(
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(
@@ -2072,7 +2071,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             app, user_1.email
         )
 
-        response = client.post(
+        response = client.patch(
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(
@@ -2096,7 +2095,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             app, user_1.email
         )
 
-        response = client.post(
+        response = client.patch(
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(
@@ -2108,15 +2107,15 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
+        assert response.status_code == 200
+        preference = UserSportPreference.query.filter_by(
+            sport_id=sport_1_cycling.id, user_id=user_1.id
+        ).one()
+        assert preference.is_active is False
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["message"] == "user sport preferences updated"
-        assert response.status_code == 200
-        assert data["data"]["user_id"] == user_1.id
-        assert data["data"]["sport_id"] == sport_1_cycling.id
-        assert data["data"]["color"] is None
         assert data["data"]["is_active"] is False
-        assert data["data"]["stopped_speed_threshold"] == 1
 
     def test_it_updates_stopped_speed_threshold_for_auth_user(
         self, app: Flask, user_1: User, sport_1_cycling: Sport
@@ -2125,7 +2124,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             app, user_1.email
         )
 
-        response = client.post(
+        response = client.patch(
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(
@@ -2137,15 +2136,104 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
+        assert response.status_code == 200
+        preference = UserSportPreference.query.filter_by(
+            sport_id=sport_1_cycling.id, user_id=user_1.id
+        ).one()
+        assert preference.stopped_speed_threshold == 0.5
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["message"] == "user sport preferences updated"
-        assert response.status_code == 200
-        assert data["data"]["user_id"] == user_1.id
-        assert data["data"]["sport_id"] == sport_1_cycling.id
-        assert data["data"]["color"] is None
-        assert data["data"]["is_active"]
         assert data["data"]["stopped_speed_threshold"] == 0.5
+
+    def test_it_updates_pace_speed_display(
+        self, app: Flask, user_1: User, sport_2_running: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            "/api/auth/profile/edit/sports",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    sport_id=sport_2_running.id,
+                    pace_speed_display=PaceSpeedDisplay.PACE_AND_SPEED,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        preference = UserSportPreference.query.filter_by(
+            sport_id=sport_2_running.id, user_id=user_1.id
+        ).one()
+        assert preference.pace_speed_display == PaceSpeedDisplay.PACE_AND_SPEED
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["message"] == "user sport preferences updated"
+        assert data["data"]["pace_speed_display"] == (
+            PaceSpeedDisplay.PACE_AND_SPEED
+        )
+
+    def test_it_returns_error_when_pace_speed_display_is_invalid(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            "/api/auth/profile/edit/sports",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    sport_id=sport_1_cycling.id,
+                    pace_speed_display=PaceSpeedDisplay.PACE_AND_SPEED,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 400
+        preference = UserSportPreference.query.filter_by(
+            sport_id=sport_1_cycling.id, user_id=user_1.id
+        ).one()
+        assert preference.pace_speed_display == PaceSpeedDisplay.SPEED
+        data = json.loads(response.data.decode())
+        assert data["status"] == "error"
+        assert data["message"] == (
+            "invalid pace_speed_display for sport 'Cycling (Sport)', "
+            "only speed can be displayed."
+        )
+
+    def test_it_updates_preferences_with_deprecated_post_method(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        with patch("fittrackee.users.auth.appLog") as logger_mock:
+            response = client.post(
+                "/api/auth/profile/edit/sports",
+                content_type="application/json",
+                data=json.dumps(
+                    dict(
+                        sport_id=sport_1_cycling.id,
+                        stopped_speed_threshold=0.5,
+                    )
+                ),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        data = json.loads(response.data.decode())
+        assert data["data"]["stopped_speed_threshold"] == 0.5
+        logger_mock.warning.assert_called_once_with(
+            "'POST' method is deprecated for /api/auth/profile/edit/sports, "
+            "please use 'PATCH' instead."
+        )
 
     def test_expected_scope_is_profile_write(
         self, app: Flask, user_1: User

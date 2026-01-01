@@ -1067,11 +1067,13 @@ class UserSportPreference(BaseModel):
         user_id: int,
         sport_id: int,
         stopped_speed_threshold: float,
+        pace_speed_display: "PaceSpeedDisplay" = PaceSpeedDisplay.SPEED,
     ) -> None:
         self.user_id = user_id
         self.sport_id = sport_id
         self.is_active = True
         self.stopped_speed_threshold = stopped_speed_threshold
+        self.pace_speed_display = pace_speed_display
 
     def serialize(self) -> Dict:
         return {
@@ -1079,6 +1081,7 @@ class UserSportPreference(BaseModel):
             "sport_id": self.sport_id,
             "color": self.color,
             "is_active": self.is_active,
+            "pace_speed_display": self.pace_speed_display,
             "stopped_speed_threshold": self.stopped_speed_threshold,
             "default_equipments": [
                 equipment.serialize(current_user=self.user)

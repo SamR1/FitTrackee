@@ -917,8 +917,49 @@ class TestUserModelToken(RandomMixin):
         )
 
 
-class TestUserSportModel:
-    def test_user_sport_preferences_model(
+class TestUserSportPreferenceModel:
+    def test_user_sports_preferences_model_with_default_pace_speed_display(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+    ) -> None:
+        preference = UserSportPreference(
+            user_id=user_1.id,
+            sport_id=sport_1_cycling.id,
+            stopped_speed_threshold=1.0,
+        )
+        db.session.commit()
+
+        assert preference.user_id == user_1.id
+        assert preference.sport_id == sport_1_cycling.id
+        assert preference.color is None
+        assert preference.is_active is True
+        assert preference.stopped_speed_threshold == 1.0
+        assert preference.pace_speed_display == PaceSpeedDisplay.SPEED
+
+    def test_user_sports_preferences_model_with_provided_pace_speed_display(
+        self,
+        app: "Flask",
+        sport_2_running: "Sport",
+        user_1: "User",
+    ) -> None:
+        preference = UserSportPreference(
+            user_id=user_1.id,
+            sport_id=sport_2_running.id,
+            stopped_speed_threshold=0.1,
+            pace_speed_display=PaceSpeedDisplay.PACE,
+        )
+        db.session.commit()
+
+        assert preference.user_id == user_1.id
+        assert preference.sport_id == sport_2_running.id
+        assert preference.color is None
+        assert preference.is_active is True
+        assert preference.stopped_speed_threshold == 0.1
+        assert preference.pace_speed_display == PaceSpeedDisplay.PACE
+
+    def test_it_serializes_user_sport_preferences(
         self,
         app: Flask,
         user_1: User,
@@ -927,14 +968,19 @@ class TestUserSportModel:
     ) -> None:
         serialized_user_sport = user_1_sport_1_preference.serialize()
 
-        assert serialized_user_sport["user_id"] == user_1.id
-        assert serialized_user_sport["sport_id"] == sport_1_cycling.id
-        assert serialized_user_sport["color"] is None
-        assert serialized_user_sport["is_active"]
-        assert serialized_user_sport["stopped_speed_threshold"] == 1
-        assert serialized_user_sport["default_equipments"] == []
+        assert serialized_user_sport == {
+            "user_id": user_1.id,
+            "sport_id": sport_1_cycling.id,
+            "color": None,
+            "pace_speed_display": user_1_sport_1_preference.pace_speed_display,
+            "is_active": True,
+            "stopped_speed_threshold": (
+                user_1_sport_1_preference.stopped_speed_threshold
+            ),
+            "default_equipments": [],
+        }
 
-    def test_user_sport_preferences_model_with_default_equipments(
+    def test_it_serializes_user_sport_preferences_with_default_equipments(
         self,
         app: Flask,
         user_1: User,

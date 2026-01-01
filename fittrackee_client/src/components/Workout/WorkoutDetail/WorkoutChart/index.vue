@@ -190,7 +190,9 @@
     authUser.value.username ? authUser.value.split_workout_charts : false
   )
   const displaySpeedWithPacePreferences: Ref<boolean> = ref(
-    authUser.value.username ? authUser.value.display_speed_with_pace : false
+    sport.value?.id
+      ? sport.value.pace_speed_display === 'pace_and_speed'
+      : false
   )
   const paceDisplayed = ref(false)
   const onlyPaceDisplayed = ref(false)
