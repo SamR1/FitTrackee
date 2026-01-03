@@ -172,8 +172,8 @@
                     {{
                       formatDate(
                         workout.workout_date,
-                        user.timezone,
-                        user.date_format
+                        authUser.timezone,
+                        authUser.date_format
                       )
                     }}
                   </time>
@@ -186,7 +186,7 @@
                     v-if="workout.distance !== null"
                     :distance="workout.distance"
                     unitFrom="km"
-                    :useImperialUnits="user.imperial_units"
+                    :useImperialUnits="authUser.imperial_units"
                   />
                 </td>
                 <td class="text-right">
@@ -206,12 +206,12 @@
                     :distance="workout.ave_speed"
                     unitFrom="km"
                     :speed="true"
-                    :useImperialUnits="user.imperial_units"
+                    :useImperialUnits="authUser.imperial_units"
                   />
                   <Pace
                     v-if="displayPace && workout.ave_pace !== null"
                     :pace="workout.ave_pace"
-                    :useImperialUnits="user.imperial_units"
+                    :useImperialUnits="authUser.imperial_units"
                   />
                 </td>
                 <td class="text-right">
@@ -223,12 +223,12 @@
                     :distance="workout.max_speed"
                     unitFrom="km"
                     :speed="true"
-                    :useImperialUnits="user.imperial_units"
+                    :useImperialUnits="authUser.imperial_units"
                   />
                   <Pace
                     v-if="displayPace && workout.best_pace !== null"
                     :pace="workout.best_pace"
-                    :useImperialUnits="user.imperial_units"
+                    :useImperialUnits="authUser.imperial_units"
                   />
                 </td>
                 <td class="text-right">
@@ -239,7 +239,7 @@
                     v-if="workout.ascent !== null"
                     :distance="workout.ascent"
                     unitFrom="m"
-                    :useImperialUnits="user.imperial_units"
+                    :useImperialUnits="authUser.imperial_units"
                   />
                 </td>
                 <td class="text-right">
@@ -250,7 +250,7 @@
                     v-if="workout.descent !== null"
                     :distance="workout.descent"
                     unitFrom="m"
-                    :useImperialUnits="user.imperial_units"
+                    :useImperialUnits="authUser.imperial_units"
                   />
                 </td>
               </tr>
@@ -303,7 +303,12 @@
                     {{ capitalize($t('workouts.TOTAL_DURATION')) }}
                   </td>
                   <td></td>
-                  <td v-if="displayPace" class="custom-th">
+                  <td
+                    v-if="
+                      displayPace && workoutsStats[statsKey].total_sports === 1
+                    "
+                    class="custom-th"
+                  >
                     <span :title="capitalize($t('workouts.MAX_PACE'))">
                       {{ capitalize($t('workouts.MAX_PACE')) }}
                     </span>
@@ -341,7 +346,7 @@
                       v-if="workoutsStats[statsKey].total_distance !== null"
                       :distance="workoutsStats[statsKey].total_distance"
                       unitFrom="km"
-                      :useImperialUnits="user.imperial_units"
+                      :useImperialUnits="authUser.imperial_units"
                     />
                   </td>
                   <td class="text-right">
@@ -359,7 +364,9 @@
                   </td>
                   <td class="text-right hide-col"></td>
                   <td
-                    v-if="displayPace"
+                    v-if="
+                      displayPace && workoutsStats[statsKey].total_sports === 1
+                    "
                     class="text-right hide-col"
                     :class="{
                       'hide-col': workoutsStats[statsKey].total_sports > 1,
@@ -371,7 +378,7 @@
                     <Pace
                       v-if="workoutsStats[statsKey].best_pace !== null"
                       :pace="workoutsStats[statsKey].best_pace"
-                      :useImperialUnits="user.imperial_units"
+                      :useImperialUnits="authUser.imperial_units"
                     />
                   </td>
                   <td
@@ -395,7 +402,7 @@
                       :distance="workoutsStats[statsKey].max_speed"
                       unitFrom="km"
                       :speed="true"
-                      :useImperialUnits="user.imperial_units"
+                      :useImperialUnits="authUser.imperial_units"
                     />
                   </td>
                   <td class="text-right">
@@ -406,7 +413,7 @@
                       v-if="workoutsStats[statsKey].total_ascent !== null"
                       :distance="workoutsStats[statsKey].total_ascent"
                       unitFrom="m"
-                      :useImperialUnits="user.imperial_units"
+                      :useImperialUnits="authUser.imperial_units"
                     />
                   </td>
                   <td class="text-right">
@@ -417,7 +424,7 @@
                       v-if="workoutsStats[statsKey].total_descent !== null"
                       :distance="workoutsStats[statsKey].total_descent"
                       unitFrom="m"
-                      :useImperialUnits="user.imperial_units"
+                      :useImperialUnits="authUser.imperial_units"
                     />
                   </td>
                 </tr>
@@ -440,7 +447,12 @@
                   >
                     {{ capitalize($t('workouts.AVE_DURATION')) }}
                   </td>
-                  <td class="custom-th" v-if="displayPace">
+                  <td
+                    class="custom-th"
+                    v-if="
+                      displayPace && workoutsStats[statsKey].total_sports === 1
+                    "
+                  >
                     <span :title="capitalize($t('workouts.AVE_PACE'))">
                       {{ capitalize($t('workouts.AVE_PACE')) }}
                     </span>
@@ -479,7 +491,7 @@
                       v-if="workoutsStats[statsKey].average_distance !== null"
                       :distance="workoutsStats[statsKey].average_distance"
                       unitFrom="km"
-                      :useImperialUnits="user.imperial_units"
+                      :useImperialUnits="authUser.imperial_units"
                     />
                   </td>
                   <td class="text-right">
@@ -496,14 +508,19 @@
                     }}
                   </td>
 
-                  <td v-if="displayPace" class="text-right hide-col">
+                  <td
+                    v-if="
+                      displayPace && workoutsStats[statsKey].total_sports === 1
+                    "
+                    class="text-right hide-col"
+                  >
                     <span class="cell-heading">
                       {{ $t('workouts.AVE_PACE') }}
                     </span>
                     <Pace
                       v-if="workoutsStats[statsKey].average_pace !== null"
                       :pace="workoutsStats[statsKey].average_pace"
-                      :useImperialUnits="user.imperial_units"
+                      :useImperialUnits="authUser.imperial_units"
                     />
                   </td>
                   <td
@@ -527,7 +544,7 @@
                       :distance="workoutsStats[statsKey].average_speed"
                       unitFrom="km"
                       :speed="true"
-                      :useImperialUnits="user.imperial_units"
+                      :useImperialUnits="authUser.imperial_units"
                     />
                   </td>
                   <td class="text-right hide-col"></td>
@@ -539,7 +556,7 @@
                       v-if="workoutsStats[statsKey].average_ascent !== null"
                       :distance="workoutsStats[statsKey].average_ascent"
                       unitFrom="m"
-                      :useImperialUnits="user.imperial_units"
+                      :useImperialUnits="authUser.imperial_units"
                     />
                   </td>
                   <td class="text-right">
@@ -550,7 +567,7 @@
                       v-if="workoutsStats[statsKey].average_descent !== null"
                       :distance="workoutsStats[statsKey].average_descent"
                       unitFrom="m"
-                      :useImperialUnits="user.imperial_units"
+                      :useImperialUnits="authUser.imperial_units"
                     />
                   </td>
                 </tr>
@@ -601,17 +618,18 @@
   import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
   import { getTotalDuration } from '@/utils/duration.ts'
-  import { getDisplayPace, getSportColor, getSportLabel } from '@/utils/sports'
+  import { getSportColor, getSportLabel } from '@/utils/sports'
   import { convertDistance, convertPaceToMetric } from '@/utils/units'
   import { defaultOrder } from '@/utils/workouts'
 
   interface Props {
-    user: IAuthUserProfile
+    authUser: IAuthUserProfile
     translatedSports: ITranslatedSport[]
-    sportWithPace: boolean
+    displayPace: boolean
+    workouts: IWorkout[]
   }
   const props = defineProps<Props>()
-  const { user, sportWithPace, translatedSports } = toRefs(props)
+  const { authUser, displayPace, translatedSports, workouts } = toRefs(props)
 
   const route = useRoute()
   const router = useRouter()
@@ -635,9 +653,6 @@
   const showWorkouts: Ref<boolean> = ref(true)
   const displayMap: Ref<boolean> = ref(false)
 
-  const workouts: ComputedRef<IWorkout[]> = computed(
-    () => store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS]
-  )
   const workoutsDisplayedOnMap: ComputedRef<number> = computed(
     () =>
       store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS_COLLECTION]
@@ -657,16 +672,6 @@
       ? ['all']
       : ['current_page', 'all']
   )
-  const displayPace: ComputedRef<boolean> = computed(() => {
-    if (sportWithPace.value) {
-      return true
-    }
-    const sport_ids = [...new Set(workouts.value.map((w) => w.sport_id))]
-    if (sport_ids.length !== 1) {
-      return false
-    }
-    return getDisplayPace(sport_ids[0], translatedSports.value)
-  })
 
   function loadWorkouts(payload: TWorkoutsPayload) {
     if (!isAuthUserSuspended.value) {
@@ -674,7 +679,7 @@
         displayMap.value
           ? WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_COLLECTION
           : WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS,
-        user.value.imperial_units ? getConvertedPayload(payload) : payload
+        authUser.value.imperial_units ? getConvertedPayload(payload) : payload
       )
     }
   }

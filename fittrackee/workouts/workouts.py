@@ -51,7 +51,7 @@ from fittrackee.workouts.services.elevation.elevation_service import (
     ElevationService,
 )
 
-from ..constants import ElevationDataSource
+from ..constants import ElevationDataSource, PaceSpeedDisplay
 from .constants import (
     SPORTS_WITHOUT_ELEVATION_DATA,
     WORKOUT_FILE_MIMETYPES,
@@ -664,6 +664,18 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
             params.get("return_equipments", "false").lower() == "true"
         )
 
+        force_display_speed = False
+        if (
+            workouts_pagination.total
+            and workouts_pagination.total > 1
+            and "sport_id" not in params
+        ):
+            workouts_sports = {workout.sport for workout in workouts}
+            force_display_speed = any(
+                sport.pace_speed_display == PaceSpeedDisplay.SPEED
+                for sport in workouts_sports
+            )
+
         statistics = {}
         if params.get("with_statistics", "false").lower() == "true":
             # no workouts returned
@@ -782,6 +794,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                         user=auth_user,
                         params=params,
                         with_equipments=with_equipments,
+                        force_display_speed=force_display_speed,
                     )
                     for workout in workouts
                 ],

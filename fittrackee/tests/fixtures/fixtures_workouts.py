@@ -2,7 +2,7 @@ import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
-from typing import Dict, Generator, Iterator, List, Union
+from typing import TYPE_CHECKING, Dict, Generator, Iterator, List, Union
 from unittest.mock import MagicMock, Mock, patch
 from uuid import uuid4
 
@@ -25,6 +25,9 @@ from fittrackee.workouts.services.workout_from_file.base_workout_with_segment_se
 from fittrackee.workouts.utils.convert import convert_speed_into_pace_duration
 
 from ..utils import random_string
+
+if TYPE_CHECKING:
+    from fittrackee.users.models import User
 
 byte_io = BytesIO()
 Image.new("RGB", (256, 256)).save(byte_io, "PNG")
@@ -112,6 +115,16 @@ def sport_5_outdoor_tennis() -> Sport:
     return sport
 
 
+@pytest.fixture()
+def sport_6_hiking() -> Sport:
+    sport = Sport(label="Hiking")
+    sport.stopped_speed_threshold = 0.1
+    sport.pace_speed_display = PaceSpeedDisplay.PACE
+    db.session.add(sport)
+    db.session.commit()
+    return sport
+
+
 def update_workout(target: Union[Workout, WorkoutSegment]) -> None:
     distance = target.distance if target.distance else 0
     target.ave_speed = float(distance) / (target.duration.seconds / 3600)
@@ -122,10 +135,12 @@ def update_workout(target: Union[Workout, WorkoutSegment]) -> None:
 
 
 @pytest.fixture()
-def workout_cycling_user_1() -> Workout:
+def workout_cycling_user_1(
+    user_1: "User", sport_1_cycling: "Sport"
+) -> Workout:
     workout = Workout(
-        user_id=1,
-        sport_id=1,
+        user_id=user_1.id,
+        sport_id=sport_1_cycling.id,
         # workout_date: 'Mon, 01 Jan 2018 00:00:00 GMT'
         workout_date=datetime(2018, 1, 1, tzinfo=timezone.utc),
         distance=10,
@@ -156,10 +171,12 @@ def workout_cycling_user_1_segment(
 
 
 @pytest.fixture()
-def workout_cycling_user_1_with_coordinates() -> Workout:
+def workout_cycling_user_1_with_coordinates(
+    user_1: "User", sport_1_cycling: "Sport"
+) -> Workout:
     workout = Workout(
-        user_id=1,
-        sport_id=1,
+        user_id=user_1.id,
+        sport_id=sport_1_cycling.id,
         # workout_date: 'Tue, 13 Mar 2018 00:00:00 GMT'
         workout_date=datetime(2018, 3, 13, tzinfo=timezone.utc),
         distance=0.300,
@@ -1023,10 +1040,12 @@ def workout_cycling_user_1_segment_2(
 
 
 @pytest.fixture()
-def another_workout_cycling_user_1() -> Workout:
+def another_workout_cycling_user_1(
+    user_1: "User", sport_1_cycling: "Sport"
+) -> Workout:
     workout = Workout(
-        user_id=1,
-        sport_id=1,
+        user_id=user_1.id,
+        sport_id=sport_1_cycling.id,
         # workout_date: 'Mon, 01 Jan 2024 00:00:00 GMT'
         workout_date=datetime(2024, 1, 1, tzinfo=timezone.utc),
         distance=18,
@@ -1039,10 +1058,12 @@ def another_workout_cycling_user_1() -> Workout:
 
 
 @pytest.fixture()
-def workout_running_user_1() -> Workout:
+def workout_running_user_1(
+    user_1: "User", sport_2_running: "Sport"
+) -> Workout:
     workout = Workout(
-        user_id=1,
-        sport_id=2,
+        user_id=user_1.id,
+        sport_id=sport_2_running.id,
         # workout_date: 'Mon, 02 Apr 2018 00:00:00 GMT'
         workout_date=datetime(2018, 4, 2, tzinfo=timezone.utc),
         distance=12,
@@ -1073,10 +1094,12 @@ def workout_running_user_1_segment(
 
 
 @pytest.fixture()
-def workout_running_user_1_with_coordinates() -> Workout:
+def workout_running_user_1_with_coordinates(
+    user_1: "User", sport_2_running: "Sport"
+) -> Workout:
     workout = Workout(
-        user_id=1,
-        sport_id=2,
+        user_id=user_1.id,
+        sport_id=sport_2_running.id,
         # workout_date: 'Mon, 02 Apr 2018 00:00:00 GMT'
         workout_date=datetime(2018, 4, 2, tzinfo=timezone.utc),
         distance=12,
@@ -1118,10 +1141,12 @@ def workout_running_user_1_segment_with_coordinates(
 
 
 @pytest.fixture()
-def workout_running_2_user_1() -> Workout:
+def workout_running_2_user_1(
+    user_1: "User", sport_2_running: "Sport"
+) -> Workout:
     workout = Workout(
-        user_id=1,
-        sport_id=2,
+        user_id=user_1.id,
+        sport_id=sport_2_running.id,
         # workout_date: 'Mon, 10 Jun 2020 00:00:00 GMT'
         workout_date=datetime(2020, 6, 10, tzinfo=timezone.utc),
         distance=10,
@@ -1134,9 +1159,11 @@ def workout_running_2_user_1() -> Workout:
 
 
 @pytest.fixture()
-def workout_paragliding_user_1(sport_4_paragliding: "Sport") -> Workout:
+def workout_paragliding_user_1(
+    user_1: "User", sport_4_paragliding: "Sport"
+) -> Workout:
     workout = Workout(
-        user_id=1,
+        user_id=user_1.id,
         sport_id=sport_4_paragliding.id,
         # workout_date: 'Mon, 02 Apr 2018 00:00:00 GMT'
         workout_date=datetime(2018, 4, 2, tzinfo=timezone.utc),
@@ -1150,9 +1177,11 @@ def workout_paragliding_user_1(sport_4_paragliding: "Sport") -> Workout:
 
 
 @pytest.fixture()
-def workout_outdoor_tennis_user_1(sport_5_outdoor_tennis: "Sport") -> Workout:
+def workout_outdoor_tennis_user_1(
+    user_1: "User", sport_5_outdoor_tennis: "Sport"
+) -> Workout:
     workout = Workout(
-        user_id=1,
+        user_id=user_1.id,
         sport_id=sport_5_outdoor_tennis.id,
         # workout_date: 'Mon, 02 Apr 2018 00:00:00 GMT'
         workout_date=datetime(2018, 4, 2, tzinfo=timezone.utc),
@@ -1167,10 +1196,11 @@ def workout_outdoor_tennis_user_1(sport_5_outdoor_tennis: "Sport") -> Workout:
 
 @pytest.fixture()
 def workout_outdoor_tennis_user_1_with_elevation_data(
+    user_1: "User",
     sport_5_outdoor_tennis: "Sport",
 ) -> Workout:
     workout = Workout(
-        user_id=1,
+        user_id=user_1.id,
         sport_id=sport_5_outdoor_tennis.id,
         # workout_date: 'Mon, 02 Apr 2018 00:00:00 GMT'
         workout_date=datetime(2018, 4, 2, tzinfo=timezone.utc),
@@ -1192,11 +1222,37 @@ def workout_outdoor_tennis_user_1_with_elevation_data(
 
 
 @pytest.fixture()
-def seven_workouts_user_1() -> List[Workout]:
+def workout_hiking_user_1(
+    user_1: "User",
+    sport_6_hiking: "Sport",
+) -> Workout:
+    workout = Workout(
+        user_id=user_1.id,
+        sport_id=sport_6_hiking.id,
+        # workout_date: 'Mon, 09 Apr 2018 00:00:00 GMT'
+        workout_date=datetime(2018, 4, 9, tzinfo=timezone.utc),
+        distance=4.5,
+        duration=timedelta(seconds=3600),
+    )
+    workout.ascent = 350
+    workout.descent = 340
+    workout.max_alt = 2600
+    workout.min_alt = 950
+    workout.pauses = timedelta(minutes=15)
+    update_workout(workout)
+    db.session.add(workout)
+    db.session.commit()
+    return workout
+
+
+@pytest.fixture()
+def seven_workouts_user_1(
+    user_1: "User", sport_1_cycling: "Sport"
+) -> List[Workout]:
     workouts = []
     workout_1 = Workout(
-        user_id=1,
-        sport_id=1,
+        user_id=user_1.id,
+        sport_id=sport_1_cycling.id,
         # workout_date: 'Sun, 2 Apr 2017 22:00:00 GMT'
         workout_date=datetime(2017, 4, 2, 22, tzinfo=timezone.utc),
         distance=5,
@@ -1212,8 +1268,8 @@ def seven_workouts_user_1() -> List[Workout]:
     workouts.append(workout_1)
 
     workout_2 = Workout(
-        user_id=1,
-        sport_id=1,
+        user_id=user_1.id,
+        sport_id=sport_1_cycling.id,
         # workout_date: 'Sun, 31 Dec 2017 23:00:00 GMT'
         workout_date=datetime(2017, 12, 31, 23, tzinfo=timezone.utc),
         distance=10,
@@ -1228,8 +1284,8 @@ def seven_workouts_user_1() -> List[Workout]:
     workouts.append(workout_2)
 
     workout_3 = Workout(
-        user_id=1,
-        sport_id=1,
+        user_id=user_1.id,
+        sport_id=sport_1_cycling.id,
         # workout_date: 'Mon, 01 Jan 2018 00:00:00 GMT'
         workout_date=datetime(2018, 1, 1, tzinfo=timezone.utc),
         distance=10,
@@ -1244,8 +1300,8 @@ def seven_workouts_user_1() -> List[Workout]:
     workouts.append(workout_3)
 
     workout_4 = Workout(
-        user_id=1,
-        sport_id=1,
+        user_id=user_1.id,
+        sport_id=sport_1_cycling.id,
         # workout_date: 'Fri, 23 Feb 2018 10:00:00 GMT'
         workout_date=datetime(2018, 2, 23, 10, tzinfo=timezone.utc),
         distance=1,
@@ -1261,8 +1317,8 @@ def seven_workouts_user_1() -> List[Workout]:
     workouts.append(workout_4)
 
     workout_5 = Workout(
-        user_id=1,
-        sport_id=1,
+        user_id=user_1.id,
+        sport_id=sport_1_cycling.id,
         # workout_date: 'Fri, 23 Feb 2018 00:00:00 GMT'
         workout_date=datetime(2018, 2, 23, tzinfo=timezone.utc),
         distance=10,
@@ -1278,8 +1334,8 @@ def seven_workouts_user_1() -> List[Workout]:
     workouts.append(workout_5)
 
     workout_6 = Workout(
-        user_id=1,
-        sport_id=1,
+        user_id=user_1.id,
+        sport_id=sport_1_cycling.id,
         # workout_date: 'Sun, 01 Apr 2018 00:00:00 GMT'
         workout_date=datetime(2018, 4, 1, tzinfo=timezone.utc),
         distance=8,
@@ -1295,8 +1351,8 @@ def seven_workouts_user_1() -> List[Workout]:
 
     distance = 10
     workout_7 = Workout(
-        user_id=1,
-        sport_id=1,
+        user_id=user_1.id,
+        sport_id=sport_1_cycling.id,
         # workout_date: 'Wed, 09 May 2018 00:00:00 GMT'
         workout_date=datetime(2018, 5, 9, tzinfo=timezone.utc),
         distance=distance,
@@ -1314,7 +1370,9 @@ def seven_workouts_user_1() -> List[Workout]:
 
 
 @pytest.fixture()
-def three_workouts_2025_user_1() -> List[Workout]:
+def three_workouts_2025_user_1(
+    user_1: "User", sport_1_cycling: "Sport"
+) -> List[Workout]:
     workouts = []
     for workout_date in [
         datetime(2025, 1, 1, tzinfo=timezone.utc),
@@ -1322,8 +1380,8 @@ def three_workouts_2025_user_1() -> List[Workout]:
         datetime(2025, 1, 6, tzinfo=timezone.utc),
     ]:
         workout = Workout(
-            user_id=1,
-            sport_id=1,
+            user_id=user_1.id,
+            sport_id=sport_1_cycling.id,
             workout_date=workout_date,
             distance=20,
             duration=timedelta(seconds=3600),
@@ -1337,10 +1395,12 @@ def three_workouts_2025_user_1() -> List[Workout]:
 
 
 @pytest.fixture()
-def workout_cycling_user_2() -> Workout:
+def workout_cycling_user_2(
+    user_2: "User", sport_1_cycling: "Sport"
+) -> Workout:
     workout = Workout(
-        user_id=2,
-        sport_id=1,
+        user_id=user_2.id,
+        sport_id=sport_1_cycling.id,
         # workout_date: 'Tue, 23 Jan 2018 00:00:00 GMT'
         workout_date=datetime(2018, 1, 23, tzinfo=timezone.utc),
         distance=15,

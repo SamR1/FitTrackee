@@ -525,6 +525,7 @@ class Workout(BaseModel):
         additional_data: bool = False,
         light: bool = True,
         with_equipments: bool = False,  # for workouts list
+        force_display_speed: bool = False,  # for workouts list
     ) -> Dict:
         """
         Used by Workout serializer and data export
@@ -542,6 +543,8 @@ class Workout(BaseModel):
           If 'light' is False, 'with_equipments' is ignored.
         - with_equipments: only used when 'light' is True. Needed for
           3rd-party apps updating workouts equipments
+        - force_display_speed: only used when 'light' is True, it allows to
+          display speed when multiple sports are displayed
         """
         for_report = (
             for_report and user is not None and user.has_moderator_rights
@@ -577,7 +580,9 @@ class Workout(BaseModel):
 
         can_see_heart_rate = can_view_workout_data("hr", self.user, user)
         can_see_calories = can_view_workout_data("calories", self.user, user)
-        sport_data_visibility = get_sport_displayed_data(self.sport, user)
+        sport_data_visibility = get_sport_displayed_data(
+            self.sport, user, force_display_speed
+        )
 
         workout_data = {
             **workout_data,
@@ -695,9 +700,13 @@ class Workout(BaseModel):
         for_report: bool = False,
         light: bool = True,  # for workouts list and timeline
         with_equipments: bool = False,  # for workouts list
+        force_display_speed: bool = False,  # for workouts list
     ) -> Dict:
         """
-        If 'light' is False, 'with_equipments' is ignored.
+        If 'light' is False, 'with_equipments' and 'force_display_speed' are
+        ignored.
+
+        'force_display_speed' allows to override sport preferences
         """
 
         for_report = (
@@ -728,6 +737,7 @@ class Workout(BaseModel):
             additional_data=additional_data,
             light=light,
             with_equipments=with_equipments,
+            force_display_speed=force_display_speed,
         )
 
         workout["map"] = (

@@ -441,18 +441,18 @@
   import type { IAuthUserProfile, TVisibilityLevels } from '@/types/user'
   import { sortEquipments } from '@/utils/equipments'
   import { getLocationFromOsmId } from '@/utils/geocode.ts'
-  import { sportsWithPace } from '@/utils/sports.ts'
   import { units } from '@/utils/units'
   import { getAllVisibilityLevels } from '@/utils/visibility_levels.ts'
 
   interface Props {
     authUser: IAuthUserProfile
+    displayPace: boolean
     translatedSports: ITranslatedSport[]
   }
   const props = defineProps<Props>()
-  const { authUser, translatedSports } = toRefs(props)
+  const { authUser, displayPace, translatedSports } = toRefs(props)
 
-  const emit = defineEmits(['filter', 'updateSportWithPace'])
+  const emit = defineEmits(['filter'])
 
   const route = useRoute()
   const router = useRouter()
@@ -524,16 +524,16 @@
   }
   function handleSportChange(event: Event) {
     sportId.value = (event.target as HTMLInputElement).value
-    let selectedSport = undefined
     if (sportId.value === '') {
       delete params.sport_id
       updateOrderBy(false)
-    } else {
-      params.sport_id = sportId.value
-      selectedSport = translatedSports.value.find(
-        (sport) => sport.id === +sportId.value
-      )
+      disablePaceInputs.value = !displayPace.value
+      return
     }
+    params.sport_id = sportId.value
+    const selectedSport = translatedSports.value.find(
+      (sport) => sport.id === +sportId.value
+    )
     if (
       selectedSport &&
       ['pace', 'pace_and_speed'].includes(selectedSport.pace_speed_display)
@@ -549,9 +549,21 @@
       updateOrderBy(false)
     }
   }
+  function updateDisablePaceInputs() {
+    if (route.query.sport_id) {
+      sportId.value = route.query.sport_id as string
+      const selectedSport = translatedSports.value.find(
+        (sport) => sport.id === +sportId.value
+      )
+      disablePaceInputs.value =
+        selectedSport === undefined ||
+        selectedSport.pace_speed_display === 'speed'
+    } else {
+      disablePaceInputs.value = !displayPace.value
+    }
+  }
   function onFilter() {
     emit('filter')
-    emit('updateSportWithPace', sportId.value)
     if ('page' in params) {
       params['page'] = '1'
     }
@@ -590,6 +602,12 @@
       params = Object.assign({}, newQuery)
     }
   )
+  watch(
+    () => displayPace.value,
+    () => {
+      updateDisablePaceInputs()
+    }
+  )
 
   onBeforeMount(async () => {
     if (route.query.osm_id) {
@@ -605,15 +623,7 @@
       location.value = ''
       radius.value = ''
     }
-    if (route.query.sport_id) {
-      sportId.value = route.query.sport_id as string
-      const selectedSport = translatedSports.value.find(
-        (sport) => sport.id === +sportId.value
-      )
-      disablePaceInputs.value = !(
-        selectedSport && sportsWithPace.includes(selectedSport.label)
-      )
-    }
+    updateDisablePaceInputs()
   })
   onMounted(() => {
     const filter = document.getElementById('from')

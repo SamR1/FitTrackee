@@ -73,6 +73,7 @@ class TestGetWorkouts(WorkoutApiTestCaseMixin):
         assert response.status_code == 200
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 2
+
         assert "creation_date" in data["data"]["workouts"][0]
         assert (
             "Mon, 02 Apr 2018 00:00:00 GMT"
@@ -81,9 +82,13 @@ class TestGetWorkouts(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["user"] == jsonify_dict(
             user_1.serialize()
         )
-        assert 2 == data["data"]["workouts"][0]["sport_id"]
-        assert 12.0 == data["data"]["workouts"][0]["distance"]
-        assert "1:40:00" == data["data"]["workouts"][0]["duration"]
+        assert data["data"]["workouts"][0]["sport_id"] == sport_2_running.id
+        assert data["data"]["workouts"][0]["distance"] == 12.0
+        assert data["data"]["workouts"][0]["duration"] == "1:40:00"
+        assert data["data"]["workouts"][0]["ave_pace"] == "0:08:20"
+        assert data["data"]["workouts"][0]["ave_speed"] == 7.2
+        assert data["data"]["workouts"][0]["best_pace"] == "0:08:20"
+        assert data["data"]["workouts"][0]["max_speed"] == 7.2
 
         assert "creation_date" in data["data"]["workouts"][1]
         assert (
@@ -93,9 +98,13 @@ class TestGetWorkouts(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][1]["user"] == jsonify_dict(
             user_1.serialize()
         )
-        assert 1 == data["data"]["workouts"][1]["sport_id"]
-        assert 10.0 == data["data"]["workouts"][1]["distance"]
-        assert "1:00:00" == data["data"]["workouts"][1]["duration"]
+        assert data["data"]["workouts"][1]["sport_id"] == sport_1_cycling.id
+        assert data["data"]["workouts"][1]["distance"] == 10.0
+        assert data["data"]["workouts"][1]["duration"] == "1:00:00"
+        assert data["data"]["workouts"][1]["ave_pace"] is None
+        assert data["data"]["workouts"][1]["ave_speed"] == 10.0
+        assert data["data"]["workouts"][1]["best_pace"] is None
+        assert data["data"]["workouts"][1]["max_speed"] == 10.0
         assert data["pagination"] == {
             "has_next": False,
             "has_prev": False,
@@ -1726,6 +1735,10 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
         assert response.status_code == 200
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["ave_pace"] is None
+        assert data["data"]["workouts"][0]["ave_speed"] == 10.0
+        assert data["data"]["workouts"][0]["best_pace"] is None
+        assert data["data"]["workouts"][0]["max_speed"] == 10.0
         assert data["data"]["statistics"]["current_page"] == {
             "average_ascent": workout_cycling_user_1.ascent,
             "average_descent": workout_cycling_user_1.descent,
@@ -1768,6 +1781,10 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
         assert response.status_code == 200
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["ave_pace"] == "0:10:00"
+        assert data["data"]["workouts"][0]["ave_speed"] is None
+        assert data["data"]["workouts"][0]["best_pace"] == "0:10:00"
+        assert data["data"]["workouts"][0]["max_speed"] is None
         assert data["data"]["statistics"]["current_page"] == {
             "average_ascent": None,
             "average_descent": None,
@@ -1809,6 +1826,10 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
         assert response.status_code == 200
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["ave_pace"] is None
+        assert data["data"]["workouts"][0]["ave_speed"] == 2.5
+        assert data["data"]["workouts"][0]["best_pace"] is None
+        assert data["data"]["workouts"][0]["max_speed"] == 2.5
         assert data["data"]["statistics"]["current_page"] == {
             "average_ascent": None,
             "average_descent": None,
@@ -1860,6 +1881,14 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
         assert response.status_code == 200
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 2
+        assert data["data"]["workouts"][0]["ave_pace"] is None
+        assert data["data"]["workouts"][0]["ave_speed"] == 2.5
+        assert data["data"]["workouts"][0]["best_pace"] is None
+        assert data["data"]["workouts"][0]["max_speed"] == 2.5
+        assert data["data"]["workouts"][1]["ave_pace"] is None
+        assert data["data"]["workouts"][1]["ave_speed"] == 10.0
+        assert data["data"]["workouts"][1]["best_pace"] is None
+        assert data["data"]["workouts"][1]["max_speed"] == 10.0
         assert data["data"]["statistics"]["current_page"] == {
             "average_ascent": workout_cycling_user_1.ascent,
             "average_descent": workout_cycling_user_1.descent,
@@ -1888,6 +1917,91 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             data["data"]["statistics"]["all"]
             == data["data"]["statistics"]["current_page"]
         )
+
+    @pytest.mark.parametrize(
+        "input_pace_speed_display",
+        [
+            PaceSpeedDisplay.PACE,
+            PaceSpeedDisplay.PACE_AND_SPEED,
+        ],
+    )
+    def test_it_gets_workouts_with_different_sports_and_pace_speed_display(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1: Workout,  # without pace
+        workout_running_user_1: Workout,  # with pace
+        workout_outdoor_tennis_user_1: Workout,  # without pace and elevation
+        workout_paragliding_user_1: Workout,  # without pace
+        input_pace_speed_display: PaceSpeedDisplay,
+        user_1_sport_2_preference: UserSportPreference,
+    ) -> None:
+        """
+        speeds are returned regardless pace_speed_display
+        """
+        user_1_sport_2_preference.pace_speed_display = input_pace_speed_display
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 4
+        assert data["data"]["workouts"][0]["sport_id"] == sport_2_running.id
+        assert data["data"]["workouts"][0]["ave_pace"] == "0:08:20"
+        assert data["data"]["workouts"][0]["ave_speed"] == 7.2
+        assert data["data"]["workouts"][0]["best_pace"] == "0:08:20"
+        assert data["data"]["workouts"][0]["max_speed"] == 7.2
+        assert data["data"]["workouts"][3]["sport_id"] == sport_1_cycling.id
+        assert data["data"]["workouts"][3]["ave_pace"] is None
+        assert data["data"]["workouts"][3]["ave_speed"] == 10.0
+        assert data["data"]["workouts"][3]["best_pace"] is None
+        assert data["data"]["workouts"][3]["max_speed"] == 10.0
+
+    def test_it_gets_workouts_with_pace_speed_display_is_speed(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_cycling_user_1: Workout,  # without pace
+        workout_running_user_1: Workout,  # with pace
+        workout_outdoor_tennis_user_1: Workout,  # without pace and elevation
+        workout_paragliding_user_1: Workout,  # without pace
+        user_1_sport_2_preference: UserSportPreference,
+    ) -> None:
+        user_1_sport_2_preference.pace_speed_display = PaceSpeedDisplay.SPEED
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 4
+        assert data["data"]["workouts"][0]["sport_id"] == sport_2_running.id
+        assert data["data"]["workouts"][0]["ave_pace"] is None
+        assert data["data"]["workouts"][0]["ave_speed"] == 7.2
+        assert data["data"]["workouts"][0]["best_pace"] is None
+        assert data["data"]["workouts"][0]["max_speed"] == 7.2
+        assert data["data"]["workouts"][3]["sport_id"] == sport_1_cycling.id
+        assert data["data"]["workouts"][3]["ave_pace"] is None
+        assert data["data"]["workouts"][3]["ave_speed"] == 10.0
+        assert data["data"]["workouts"][3]["best_pace"] is None
+        assert data["data"]["workouts"][3]["max_speed"] == 10.0
 
     def test_it_gets_workouts_with_stats_when_total_workouts_exceed_limit(
         self,
@@ -2809,6 +2923,64 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
             "page": 1,
             "pages": 2,
             "total": 10,
+        }
+
+    def test_it_gets_workouts_with_sports_only_with_pace(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_2_running: Sport,
+        sport_6_hiking: Sport,
+        workout_running_user_1: Workout,
+        workout_hiking_user_1: Workout,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?with_statistics=true",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 2
+        assert data["data"]["workouts"][0]["ave_pace"] == "0:13:20"
+        assert data["data"]["workouts"][0]["ave_speed"] is None
+        assert data["data"]["workouts"][0]["best_pace"] == "0:13:20"
+        assert data["data"]["workouts"][0]["max_speed"] is None
+        assert data["data"]["workouts"][1]["ave_pace"] == "0:08:20"
+        assert data["data"]["workouts"][1]["ave_speed"] is None
+        assert data["data"]["workouts"][1]["best_pace"] == "0:08:20"
+        assert data["data"]["workouts"][1]["max_speed"] is None
+        assert data["data"]["statistics"]["current_page"] == {
+            "average_ascent": 350.0,
+            "average_descent": 340.0,
+            "average_distance": 8.25,
+            "average_duration": "1:20:00",
+            "average_pace": None,
+            "average_speed": None,
+            "best_pace": None,
+            "count": 2,
+            "max_speed": None,
+            "total_ascent": 350.0,
+            "total_descent": 340.0,
+            "total_distance": 16.5,
+            "total_duration": "2:40:00",
+            "total_sports": 2,
+        }
+        assert (
+            data["data"]["statistics"]["all"]
+            == data["data"]["statistics"]["current_page"]
+        )
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 2,
         }
 
     def test_it_gets_workouts_when_sport_is_only_running(

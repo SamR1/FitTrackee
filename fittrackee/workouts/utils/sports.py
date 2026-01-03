@@ -29,12 +29,17 @@ class SportDisplayedData:
 
 
 def get_sports_displayed_data(
-    sports: List["Sport"], user: Optional["User"]
+    sports: List["Sport"],
+    user: Optional["User"],
+    force_display_speed: bool = False,
 ) -> Dict:
     """
     Get sports display config from:
     - 'user_sports_preferences' if user is provided and a preference exists
     - otherwise from 'sports'
+
+    'force_display_speed' allows to display speed in Workout list regardless
+    sport preferences
     """
     from fittrackee.users.models import UserSportPreference
 
@@ -55,7 +60,8 @@ def get_sports_displayed_data(
         sports_data_visibility[sport.id] = SportDisplayedData(
             display_elevation=sport.label not in SPORTS_WITHOUT_ELEVATION_DATA,
             display_pace=pace_speed_display != PaceSpeedDisplay.SPEED,
-            display_speed=pace_speed_display != PaceSpeedDisplay.PACE,
+            display_speed=force_display_speed
+            or pace_speed_display != PaceSpeedDisplay.PACE,
             display_power=sport.label in POWER_SPORTS,
             display_cadence=sport.label in CADENCE_SPORTS,
             display_spm_cadence=sport.label in SPM_CADENCE_SPORTS,
@@ -65,9 +71,11 @@ def get_sports_displayed_data(
 
 
 def get_sport_displayed_data(
-    sport: "Sport", user: Optional["User"]
+    sport: "Sport", user: Optional["User"], force_display_speed: bool = False
 ) -> "SportDisplayedData":
-    return get_sports_displayed_data([sport], user)[sport.id]
+    return get_sports_displayed_data([sport], user, force_display_speed)[
+        sport.id
+    ]
 
 
 def get_pace(
