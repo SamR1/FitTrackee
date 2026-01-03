@@ -68,7 +68,7 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
   gl: gl,
   hr: hr,
   it: it,
-  // kab: enUS, // fallback: date-fns has no Kabyle locale
+  kab: enUS, // fallback: date-fns has no Kabyle locale
   nb: nb,
   nl: nl,
   pl: pl,
@@ -99,7 +99,7 @@ export const languageLabels: Record<TLanguage, string> = {
   ru: 'Русский (97%)', // Russian
   // sl: 'Slovenščina', // Slovenian
   // fi: 'Suomi', // Finnish
-  // kab: 'Taqbaylit', // Kabyle
+  kab: 'Taqbaylit (2%)', // Kabyle
   tr: 'Türkçe (1%)', // Turkish
   zh_Hans: '中文（简体）(98%)', // Chinese (Simplified Han script)
 }
