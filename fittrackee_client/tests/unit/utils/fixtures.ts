@@ -32,6 +32,7 @@ export const sports: ISport[] = [
     is_active: true,
     is_active_for_user: false,
     label: 'Hiking',
+    pace_speed_display: 'pace',
     stopped_speed_threshold: 0.1,
   },
 ]

@@ -10,12 +10,14 @@ from fittrackee.workouts.utils.geometry import (
 )
 
 if TYPE_CHECKING:
+    from fittrackee.users.models import User
     from fittrackee.workouts.models import Workout
 
 
 def get_chart_data(
     workout: "Workout",
     *,
+    user: Optional["User"],
     can_see_heart_rate: bool,
     segment_short_id: Optional[str] = None,
 ) -> Optional[List]:
@@ -51,7 +53,8 @@ def get_chart_data(
     if segments_points[0].points:
         return get_chart_data_from_segment_points(
             [segment["points"] for segment in segments_points],
-            workout.sport.label,
+            workout.sport,
+            user=user,
             workout_ave_cadence=workout.ave_cadence,
             can_see_heart_rate=can_see_heart_rate,
         )

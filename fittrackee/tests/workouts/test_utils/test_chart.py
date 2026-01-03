@@ -24,6 +24,7 @@ class TestGetChartData:
         with pytest.raises(WorkoutGPXException, match="No segments"):
             get_chart_data(
                 workout_cycling_user_1,
+                user=user_1,
                 can_see_heart_rate=True,
             )
 
@@ -40,6 +41,7 @@ class TestGetChartData:
         ):
             get_chart_data(
                 workout_cycling_user_1,
+                user=user_1,
                 can_see_heart_rate=True,
                 segment_short_id="C4asMMbRJsxTirSjTVWeWU",
             )
@@ -56,6 +58,7 @@ class TestGetChartData:
 
         chart_data = get_chart_data(
             workout_cycling_user_1,
+            user=user_1,
             can_see_heart_rate=True,
         )
 
@@ -75,6 +78,7 @@ class TestGetChartData:
         ) as get_chart_data_from_segment_points_mock:
             get_chart_data(
                 workout_cycling_user_1_with_coordinates,
+                user=user_1,
                 can_see_heart_rate=True,
             )
         get_chart_data_from_segment_points_mock.assert_called_once_with(
@@ -82,7 +86,8 @@ class TestGetChartData:
                 workout_cycling_user_1_segment_0_with_coordinates.points,
                 workout_cycling_user_1_segment_1_with_coordinates.points,
             ],
-            workout_cycling_user_1_with_coordinates.sport.label,
+            workout_cycling_user_1_with_coordinates.sport,
+            user=user_1,
             workout_ave_cadence=None,
             can_see_heart_rate=True,
         )
@@ -100,12 +105,14 @@ class TestGetChartData:
         ) as get_chart_data_from_segment_points_mock:
             get_chart_data(
                 workout_cycling_user_1_with_coordinates,
+                user=user_1,
                 can_see_heart_rate=True,
                 segment_short_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             )
         get_chart_data_from_segment_points_mock.assert_called_once_with(
             [workout_cycling_user_1_segment_0_with_coordinates.points],
-            workout_cycling_user_1_with_coordinates.sport.label,
+            workout_cycling_user_1_with_coordinates.sport,
+            user=user_1,
             workout_ave_cadence=None,
             can_see_heart_rate=True,
         )

@@ -1,5 +1,7 @@
 import type { IEquipment } from '@/types/equipments'
 
+export type TPaceSpeedDisplay = 'pace' | 'speed' | 'pace_and_speed'
+
 export interface ISport {
   color: string | null
   default_equipments: IEquipment[]
@@ -9,6 +11,7 @@ export interface ISport {
   is_active: boolean
   is_active_for_user: boolean
   label: string
+  pace_speed_display: TPaceSpeedDisplay
   stopped_speed_threshold: number
 }
 

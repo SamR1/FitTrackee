@@ -141,7 +141,8 @@ class TestGetChartDataFromSegmentPoints:
     ) -> None:
         chart_data = get_chart_data_from_segment_points(
             [],
-            sport_1_cycling.label,
+            sport_1_cycling,
+            user=None,
             workout_ave_cadence=None,
             can_see_heart_rate=True,
         )
@@ -158,7 +159,8 @@ class TestGetChartDataFromSegmentPoints:
     ) -> None:
         chart_data = get_chart_data_from_segment_points(
             [workout_cycling_user_1_segment.points],
-            sport_1_cycling.label,
+            sport_1_cycling,
+            user=None,
             workout_ave_cadence=70,
             can_see_heart_rate=True,
         )
@@ -174,7 +176,8 @@ class TestGetChartDataFromSegmentPoints:
     ) -> None:
         chart_data = get_chart_data_from_segment_points(
             [workout_cycling_user_1_segment_0_with_coordinates.points],
-            sport_1_cycling.label,
+            sport_1_cycling,
+            user=None,
             workout_ave_cadence=70,
             can_see_heart_rate=True,
         )
@@ -223,7 +226,8 @@ class TestGetChartDataFromSegmentPoints:
                 workout_cycling_user_1_segment_0_with_coordinates.points,
                 workout_cycling_user_1_segment_1_with_coordinates.points,
             ],
-            sport_1_cycling.label,
+            sport_1_cycling,
+            user=None,
             workout_ave_cadence=70,
             can_see_heart_rate=True,
         )
@@ -269,7 +273,8 @@ class TestGetChartDataFromSegmentPoints:
     ) -> None:
         chart_data = get_chart_data_from_segment_points(
             [workout_cycling_user_1_segment_0_with_coordinates.points],
-            sport_1_cycling.label,
+            sport_1_cycling,
+            user=None,
             workout_ave_cadence=70,
             can_see_heart_rate=False,
         )
@@ -313,7 +318,8 @@ class TestGetChartDataFromSegmentPoints:
     ) -> None:
         chart_data = get_chart_data_from_segment_points(
             [workout_cycling_user_1_segment_0_with_coordinates.points],
-            sport_4_paragliding.label,
+            sport_4_paragliding,
+            user=None,
             workout_ave_cadence=70,
             can_see_heart_rate=True,
         )
@@ -355,7 +361,8 @@ class TestGetChartDataFromSegmentPoints:
     ) -> None:
         chart_data = get_chart_data_from_segment_points(
             [workout_cycling_user_1_segment_0_with_coordinates.points],
-            sport_4_paragliding.label,
+            sport_4_paragliding,
+            user=None,
             workout_ave_cadence=0,
             can_see_heart_rate=True,
         )
@@ -397,7 +404,8 @@ class TestGetChartDataFromSegmentPoints:
     ) -> None:
         chart_data = get_chart_data_from_segment_points(
             [workout_cycling_user_1_segment_0_with_coordinates.points],
-            sport_5_outdoor_tennis.label,
+            sport_5_outdoor_tennis,
+            user=None,
             workout_ave_cadence=70,
             can_see_heart_rate=True,
         )
@@ -437,7 +445,8 @@ class TestGetChartDataFromSegmentPoints:
     ) -> None:
         chart_data = get_chart_data_from_segment_points(
             [workout_cycling_user_1_segment_0_with_coordinates.points],
-            sport_4_paragliding.label,
+            sport_4_paragliding,
+            user=None,
             workout_ave_cadence=140,
             can_see_heart_rate=True,
         )
@@ -479,7 +488,8 @@ class TestGetChartDataFromSegmentPoints:
     ) -> None:
         chart_data = get_chart_data_from_segment_points(
             [workout_cycling_user_1_segment_0_with_coordinates.points],
-            sport_2_running.label,
+            sport_2_running,
+            user=None,
             workout_ave_cadence=140,
             can_see_heart_rate=True,
         )
@@ -496,7 +506,6 @@ class TestGetChartDataFromSegmentPoints:
             "latitude": first_point["latitude"],
             "longitude": first_point["longitude"],
             "pace": first_point["pace"],
-            "speed": first_point["speed"],
             "time": first_point["time"],
         }
         last_point = workout_cycling_user_1_segment_0_with_coordinates.points[
@@ -511,7 +520,6 @@ class TestGetChartDataFromSegmentPoints:
             "latitude": last_point["latitude"],
             "longitude": last_point["longitude"],
             "pace": last_point["pace"],
-            "speed": last_point["speed"],
             "time": last_point["time"],
         }
 

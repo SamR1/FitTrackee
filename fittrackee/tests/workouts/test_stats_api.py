@@ -6,8 +6,9 @@ import pytest
 from flask import Flask
 
 from fittrackee import db
+from fittrackee.constants import PaceSpeedDisplay
 from fittrackee.tests.fixtures.fixtures_workouts import update_workout
-from fittrackee.users.models import User
+from fittrackee.users.models import User, UserSportPreference
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import ApiTestCaseMixin
@@ -1749,8 +1750,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         assert data["status"] == "success"
         assert data["data"]["statistics"] == {}
 
-    @pytest.mark.parametrize("input_display_speed_with_pace", [True, False])
-    def test_it_gets_average_stats_by_time_all_workouts_depending_on_user_preferences(  # noqa
+    def test_it_gets_average_stats_by_time_all_workouts_when_pace_speed_display_preference_is_pace(  # noqa
         self,
         app: Flask,
         user_1: User,
@@ -1758,9 +1758,9 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         sport_2_running: Sport,
         seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
-        input_display_speed_with_pace: bool,
+        user_1_sport_2_preference: UserSportPreference,
     ) -> None:
-        user_1.display_speed_with_pace = input_display_speed_with_pace
+        user_1_sport_2_preference.pace_speed_display = PaceSpeedDisplay.PACE
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1800,11 +1800,117 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                     "average_duration": 6000,
                     "average_pace": 500,
                     "total_workouts": 1,
-                    **(
-                        {"average_speed": 7.2}
-                        if input_display_speed_with_pace
-                        else {}
-                    ),
+                },
+            },
+        }
+
+    def test_it_gets_average_stats_by_time_all_workouts_when_pace_speed_display_preference_is_speed(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: List[Workout],
+        workout_running_user_1: Workout,
+        user_1_sport_2_preference: UserSportPreference,
+    ) -> None:
+        user_1_sport_2_preference.pace_speed_display = PaceSpeedDisplay.SPEED
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/stats/{user_1.username}/by_time?type=average",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2017": {
+                "1": {
+                    "average_ascent": 110.0,
+                    "average_descent": 140.0,
+                    "average_distance": 7.5,
+                    "average_duration": 2240,
+                    "average_speed": 14.0,
+                    "total_workouts": 2,
+                }
+            },
+            "2018": {
+                "1": {
+                    "average_ascent": 85.0,
+                    "average_descent": 125.0,
+                    "average_distance": 7.8,
+                    "average_duration": 2324,
+                    "average_speed": 18.79,
+                    "total_workouts": 5,
+                },
+                "2": {
+                    "average_ascent": None,
+                    "average_descent": None,
+                    "average_distance": 12.0,
+                    "average_duration": 6000,
+                    "average_speed": 7.2,
+                    "total_workouts": 1,
+                },
+            },
+        }
+
+    def test_it_gets_average_stats_by_time_all_workouts_when_pace_speed_display_preference_is_pace_and_speed(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: List[Workout],
+        workout_running_user_1: Workout,
+        user_1_sport_2_preference: UserSportPreference,
+    ) -> None:
+        user_1_sport_2_preference.pace_speed_display = (
+            PaceSpeedDisplay.PACE_AND_SPEED
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/stats/{user_1.username}/by_time?type=average",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2017": {
+                "1": {
+                    "average_ascent": 110.0,
+                    "average_descent": 140.0,
+                    "average_distance": 7.5,
+                    "average_duration": 2240,
+                    "average_speed": 14.0,
+                    "total_workouts": 2,
+                }
+            },
+            "2018": {
+                "1": {
+                    "average_ascent": 85.0,
+                    "average_descent": 125.0,
+                    "average_distance": 7.8,
+                    "average_duration": 2324,
+                    "average_speed": 18.79,
+                    "total_workouts": 5,
+                },
+                "2": {
+                    "average_ascent": None,
+                    "average_descent": None,
+                    "average_distance": 12.0,
+                    "average_duration": 6000,
+                    "average_pace": 500,
+                    "average_speed": 7.2,
+                    "total_workouts": 1,
                 },
             },
         }
@@ -1914,7 +2020,6 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         self.assert_403(response)
 
-    @pytest.mark.parametrize("input_display_speed_with_pace", [True, False])
     def test_it_gets_stats_by_sport(
         self,
         app: Flask,
@@ -1925,9 +2030,64 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         seven_workouts_user_1: List[Workout],
         workout_running_user_1: Workout,
         workout_cycling_user_2: Workout,
-        input_display_speed_with_pace: bool,
     ) -> None:
-        user_1.display_speed_with_pace = input_display_speed_with_pace
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/stats/{user_1.username}/by_sport",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "1": {  # sport_1_cycling
+                "average_ascent": 93.33,
+                "average_descent": 130.0,
+                "average_distance": 7.71,
+                "average_duration": "0:38:20",
+                "average_pace": None,
+                "average_speed": 17.42,
+                "total_ascent": 560.0,
+                "total_calories": 471,
+                "total_descent": 780.0,
+                "total_distance": 54.0,
+                "total_duration": "4:28:24",
+                "total_workouts": 7,
+            },
+            "2": {  # sport_2_running
+                "average_ascent": None,
+                "average_descent": None,
+                "average_distance": 12.0,
+                "average_duration": "1:40:00",
+                "average_speed": None,
+                "average_pace": "0:08:20",
+                "total_ascent": None,
+                "total_calories": None,
+                "total_descent": None,
+                "total_distance": 12.0,
+                "total_duration": "1:40:00",
+                "total_workouts": 1,
+            },
+        }
+        assert data["data"]["total_workouts"] == 8
+
+    def test_it_gets_stats_by_sport_when_pace_speed_display_is_pace(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: List[Workout],
+        workout_running_user_1: Workout,
+        workout_cycling_user_2: Workout,
+        user_1_sport_2_preference: UserSportPreference,
+    ) -> None:
+        user_1_sport_2_preference.pace_speed_display = PaceSpeedDisplay.PACE
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1961,9 +2121,123 @@ class TestGetStatsBySport(ApiTestCaseMixin):
                 "average_distance": 12.0,
                 "average_duration": "1:40:00",
                 "average_pace": "0:08:20",
-                "average_speed": (
-                    7.2 if input_display_speed_with_pace else None
-                ),
+                "average_speed": None,
+                "total_ascent": None,
+                "total_calories": None,
+                "total_descent": None,
+                "total_distance": 12.0,
+                "total_duration": "1:40:00",
+                "total_workouts": 1,
+            },
+        }
+        assert data["data"]["total_workouts"] == 8
+
+    def test_it_gets_stats_by_sport_when_pace_speed_display_is_speed(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: List[Workout],
+        workout_running_user_1: Workout,
+        workout_cycling_user_2: Workout,
+        user_1_sport_2_preference: UserSportPreference,
+    ) -> None:
+        user_1_sport_2_preference.pace_speed_display = PaceSpeedDisplay.SPEED
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/stats/{user_1.username}/by_sport",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "1": {
+                "average_ascent": 93.33,
+                "average_descent": 130.0,
+                "average_distance": 7.71,
+                "average_duration": "0:38:20",
+                "average_pace": None,
+                "average_speed": 17.42,
+                "total_ascent": 560.0,
+                "total_calories": 471,
+                "total_descent": 780.0,
+                "total_distance": 54.0,
+                "total_duration": "4:28:24",
+                "total_workouts": 7,
+            },
+            "2": {
+                "average_ascent": None,
+                "average_descent": None,
+                "average_distance": 12.0,
+                "average_duration": "1:40:00",
+                "average_pace": None,
+                "average_speed": 7.2,
+                "total_ascent": None,
+                "total_calories": None,
+                "total_descent": None,
+                "total_distance": 12.0,
+                "total_duration": "1:40:00",
+                "total_workouts": 1,
+            },
+        }
+        assert data["data"]["total_workouts"] == 8
+
+    def test_it_gets_stats_by_sport_when_pace_speed_display_is_pace_and_speed(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        seven_workouts_user_1: List[Workout],
+        workout_running_user_1: Workout,
+        workout_cycling_user_2: Workout,
+        user_1_sport_2_preference: UserSportPreference,
+    ) -> None:
+        user_1_sport_2_preference.pace_speed_display = (
+            PaceSpeedDisplay.PACE_AND_SPEED
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/stats/{user_1.username}/by_sport",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "1": {
+                "average_ascent": 93.33,
+                "average_descent": 130.0,
+                "average_distance": 7.71,
+                "average_duration": "0:38:20",
+                "average_pace": None,
+                "average_speed": 17.42,
+                "total_ascent": 560.0,
+                "total_calories": 471,
+                "total_descent": 780.0,
+                "total_distance": 54.0,
+                "total_duration": "4:28:24",
+                "total_workouts": 7,
+            },
+            "2": {
+                "average_ascent": None,
+                "average_descent": None,
+                "average_distance": 12.0,
+                "average_duration": "1:40:00",
+                "average_pace": "0:08:20",
+                "average_speed": 7.2,
                 "total_ascent": None,
                 "total_calories": None,
                 "total_descent": None,

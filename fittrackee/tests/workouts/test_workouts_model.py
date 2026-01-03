@@ -11,11 +11,12 @@ from shapely import LineString, Point
 from sqlalchemy.exc import IntegrityError
 
 from fittrackee import db
+from fittrackee.constants import PaceSpeedDisplay
 from fittrackee.equipments.models import Equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.tests.fixtures.fixtures_workouts import update_workout
-from fittrackee.users.models import User
+from fittrackee.users.models import User, UserSportPreference
 from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import WorkoutForbiddenException
@@ -310,7 +311,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             ],
             "segments": [
                 {
-                    **segment.serialize(can_see_heart_rate=True),
+                    **segment.serialize(user=user_1, can_see_heart_rate=True),
                     "segment_number": number,
                 }
                 for number, segment in enumerate(workout.segments, start=1)
@@ -393,7 +394,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             ],
             "segments": [
                 {
-                    **segment.serialize(can_see_heart_rate=True),
+                    **segment.serialize(user=user_1, can_see_heart_rate=True),
                     "segment_number": number,
                 }
                 for number, segment in enumerate(workout.segments, start=1)
@@ -477,7 +478,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             ],
             "segments": [
                 {
-                    **segment.serialize(can_see_heart_rate=True),
+                    **segment.serialize(user=user_1, can_see_heart_rate=True),
                     "segment_number": number,
                 }
                 for number, segment in enumerate(workout.segments, start=1)
@@ -497,15 +498,16 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "with_file": True,
         }
 
-    def test_it_serializes_workout_with_file_for_running_when_display_speed_with_pace_is_true(  # noqa
+    def test_it_serializes_workout_with_file_for_running_when_pace_speed_display_is_pace(  # noqa
         self,
         app: Flask,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
         user_1: User,
         workout_running_user_1: Workout,
+        user_1_sport_2_preference: UserSportPreference,
     ) -> None:
-        user_1.display_speed_with_pace = True
+        user_1_sport_2_preference.pace_speed_display = PaceSpeedDisplay.PACE
         workout = self.update_workout_with_file_data(workout_running_user_1)
         workout.original_file = "file.gpx"
         workout.ave_cadence = 55
@@ -519,64 +521,77 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
 
         serialized_workout = workout.serialize(user=user_1, light=False)
 
-        assert serialized_workout == {
-            "analysis_visibility": workout.analysis_visibility.value,
-            "ascent": workout.ascent,
-            "ave_cadence": workout.ave_cadence * 2,
-            "ave_hr": workout.ave_hr,
-            "ave_pace": str(workout.ave_pace),
-            "ave_power": None,
-            "ave_speed": float(workout.ave_speed),  # type: ignore [arg-type]
-            "best_pace": str(workout.best_pace),
-            "bounds": workout.bounds,
-            "calories": None,
-            "creation_date": workout.creation_date,
-            "descent": workout.descent,
-            "description": None,
-            "distance": workout.distance,
-            "duration": str(workout.duration),
-            "equipments": [],
-            "id": workout.short_id,
-            "liked": False,
-            "likes_count": 0,
-            "map": None,
-            "map_visibility": workout.map_visibility.value,
-            "max_alt": workout.max_alt,
-            "max_cadence": workout.max_cadence * 2,
-            "max_hr": workout.max_hr,
-            "max_power": None,
-            "max_speed": float(workout.max_speed),  # type: ignore [arg-type]
-            "min_alt": workout.min_alt,
-            "elevation_data_source": workout.elevation_data_source,
-            "modification_date": workout.modification_date,
-            "moving": str(workout.moving),
-            "next_workout": None,
-            "notes": None,
-            "original_file": "gpx",
-            "pauses": str(workout.pauses),
-            "previous_workout": None,
-            "records": [record.serialize() for record in workout.records],
-            "segments": [
-                {
-                    **segment.serialize(can_see_heart_rate=True),
-                    "segment_number": number,
-                }
-                for number, segment in enumerate(workout.segments, start=1)
-            ],
-            "source": workout.source,
-            "sport_id": workout.sport_id,
-            "suspended": False,
-            "suspended_at": None,
-            "title": None,
-            "user": user_1.serialize(),
-            "weather_end": None,
-            "weather_start": None,
-            "workout_date": workout.workout_date,
-            "workout_visibility": workout.workout_visibility.value,
-            "with_analysis": True,
-            "with_geometry": False,
-            "with_file": True,
-        }
+        assert serialized_workout["ave_pace"] == str(workout.ave_pace)
+        assert serialized_workout["best_pace"] == str(workout.best_pace)
+        assert serialized_workout["ave_speed"] is None
+        assert serialized_workout["max_speed"] is None
+        assert {
+            record["record_type"] for record in serialized_workout["records"]
+        } == {"AP", "BP", "FD", "HA", "LD"}
+
+    def test_it_serializes_workout_with_file_for_running_when_pace_speed_display_is_speed(  # noqa
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        user_1: User,
+        workout_running_user_1: Workout,
+        user_1_sport_2_preference: UserSportPreference,
+    ) -> None:
+        user_1_sport_2_preference.pace_speed_display = PaceSpeedDisplay.SPEED
+        workout = self.update_workout_with_file_data(workout_running_user_1)
+        workout.original_file = "file.gpx"
+        workout.ave_cadence = 55
+        workout.ave_hr = 90
+        workout.ave_power = 125
+        workout.max_cadence = 62
+        workout.max_hr = 110
+        workout.max_power = 250
+        workout.ave_pace = timedelta(minutes=(60 / float(workout.ave_speed)))  # type: ignore [arg-type]
+        workout.best_pace = timedelta(minutes=(60 / float(workout.max_speed)))  # type: ignore [arg-type]
+
+        serialized_workout = workout.serialize(user=user_1, light=False)
+
+        assert serialized_workout["ave_pace"] is None
+        assert serialized_workout["best_pace"] is None
+        assert serialized_workout["ave_speed"] == float(workout.ave_speed)  # type: ignore [arg-type]
+        assert serialized_workout["max_speed"] == float(workout.max_speed)  # type: ignore [arg-type]
+        assert {
+            record["record_type"] for record in serialized_workout["records"]
+        } == {"AS", "FD", "HA", "LD", "MS"}
+
+    def test_it_serializes_workout_with_file_for_running_when_pace_speed_display_is_pace_and_speed(  # noqa
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        user_1: User,
+        workout_running_user_1: Workout,
+        user_1_sport_2_preference: UserSportPreference,
+    ) -> None:
+        user_1_sport_2_preference.pace_speed_display = (
+            PaceSpeedDisplay.PACE_AND_SPEED
+        )
+        workout = self.update_workout_with_file_data(workout_running_user_1)
+        workout.original_file = "file.gpx"
+        workout.ave_cadence = 55
+        workout.ave_hr = 90
+        workout.ave_power = 125
+        workout.max_cadence = 62
+        workout.max_hr = 110
+        workout.max_power = 250
+        workout.ave_pace = timedelta(minutes=(60 / float(workout.ave_speed)))  # type: ignore [arg-type]
+        workout.best_pace = timedelta(minutes=(60 / float(workout.max_speed)))  # type: ignore [arg-type]
+
+        serialized_workout = workout.serialize(user=user_1, light=False)
+
+        assert serialized_workout["ave_pace"] == str(workout.ave_pace)
+        assert serialized_workout["best_pace"] == str(workout.best_pace)
+        assert serialized_workout["ave_speed"] == float(workout.ave_speed)  # type: ignore [arg-type]
+        assert serialized_workout["max_speed"] == float(workout.max_speed)  # type: ignore [arg-type]
+        assert {
+            record["record_type"] for record in serialized_workout["records"]
+        } == {"AP", "AS", "BP", "FD", "HA", "LD", "MS"}
 
     def test_it_serializes_workout_with_speed_when_pace_is_not_calculated(
         self,
@@ -587,7 +602,6 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_running_user_1: Workout,
     ) -> None:
         # for workout created before v1.1.0 and not yet refreshed
-        user_1.display_speed_with_pace = False
         workout = self.update_workout_with_file_data(workout_running_user_1)
         workout.original_file = "file.gpx"
         workout.ave_pace = None
@@ -634,7 +648,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "records": [record.serialize() for record in workout.records],
             "segments": [
                 {
-                    **segment.serialize(can_see_heart_rate=True),
+                    **segment.serialize(user=user_1, can_see_heart_rate=True),
                     "segment_number": number,
                 }
                 for number, segment in enumerate(workout.segments, start=1)
@@ -719,7 +733,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             ],
             "segments": [
                 {
-                    **segment.serialize(can_see_heart_rate=True),
+                    **segment.serialize(user=user_1, can_see_heart_rate=True),
                     "segment_number": number,
                 }
                 for number, segment in enumerate(workout.segments, start=1)
@@ -1500,7 +1514,10 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["max_alt"] == workout.max_alt
         assert serialized_workout["min_alt"] == workout.min_alt
         assert serialized_workout["segments"] == [
-            {**workout_cycling_user_1_segment.serialize(), "segment_number": 1}
+            {
+                **workout_cycling_user_1_segment.serialize(user=user_2),
+                "segment_number": 1,
+            }
         ]
         assert serialized_workout["with_analysis"] is True
         assert serialized_workout["with_file"] is False
@@ -1611,7 +1628,10 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["max_alt"] == workout.max_alt
         assert serialized_workout["min_alt"] == workout.min_alt
         assert serialized_workout["segments"] == [
-            {**workout_cycling_user_1_segment.serialize(), "segment_number": 1}
+            {
+                **workout_cycling_user_1_segment.serialize(user=user_2),
+                "segment_number": 1,
+            }
         ]
         assert serialized_workout["with_analysis"] is True
         assert serialized_workout["with_file"] is True
@@ -1744,7 +1764,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["segments"] == [
             {
                 **workout_cycling_user_1_segment.serialize(
-                    can_see_heart_rate=True
+                    user=user_2, can_see_heart_rate=True
                 ),
                 "segment_number": 1,
             }
@@ -1776,7 +1796,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["segments"] == [
             {
                 **workout_cycling_user_1_segment.serialize(
-                    can_see_heart_rate=False
+                    user=user_2, can_see_heart_rate=False
                 ),
                 "segment_number": 1,
             }
@@ -1918,7 +1938,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
                 user=user_2, for_report=input_for_report, light=False
             )
 
-    def test_serialize_returns_suspended_workout_when_user_commented_workout(
+    def test_serializer_returns_suspended_workout_when_user_commented_workout(
         self,
         app: Flask,
         sport_1_cycling: Sport,
@@ -2174,16 +2194,16 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["max_alt"] == workout.max_alt
         assert serialized_workout["min_alt"] == workout.min_alt
         assert serialized_workout["segments"] == [
-            {**workout_cycling_user_1_segment.serialize(), "segment_number": 1}
+            {
+                **workout_cycling_user_1_segment.serialize(user=user_2),
+                "segment_number": 1,
+            }
         ]
         assert serialized_workout["with_analysis"] is True
         assert serialized_workout["with_file"] is False
         assert (
             serialized_workout["workout_visibility"] == VisibilityLevel.PUBLIC
         )
-        assert serialized_workout["segments"] == [
-            {**workout_cycling_user_1_segment.serialize(), "segment_number": 1}
-        ]
 
     @pytest.mark.parametrize(
         "input_analysis_visibility,input_workout_visibility",
@@ -2377,7 +2397,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["segments"] == [
             {
                 **workout_cycling_user_1_segment.serialize(
-                    can_see_heart_rate=True
+                    user=user_2, can_see_heart_rate=True
                 ),
                 "segment_number": 1,
             }
@@ -2413,7 +2433,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         assert serialized_workout["segments"] == [
             {
                 **workout_cycling_user_1_segment.serialize(
-                    can_see_heart_rate=False
+                    user=user_2, can_see_heart_rate=False
                 ),
                 "segment_number": 1,
             }

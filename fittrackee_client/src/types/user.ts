@@ -6,6 +6,7 @@ import type {
   TMessagePreferences,
   TNotificationPreferences,
 } from '@/types/notifications.ts'
+import type { TPaceSpeedDisplay } from '@/types/sports.ts'
 import type { IComment, IRecord, IWorkout } from '@/types/workouts'
 
 export type TRelationshipAction = 'follow' | 'unfollow' | 'block' | 'unblock'
@@ -62,7 +63,6 @@ export interface IAuthUserProfile extends IUserProfile {
   calories_visibility: TVisibilityLevels
   date_format: string
   display_ascent: boolean
-  display_speed_with_pace: boolean
   email: string
   hide_profile_in_users_directory: boolean
   hr_visibility: TVisibilityLevels
@@ -130,7 +130,6 @@ export interface IUserPreferencesPayload {
   calories_visibility: TVisibilityLevels
   date_format: string
   display_ascent: boolean
-  display_speed_with_pace: boolean
   hide_profile_in_users_directory: boolean
   hr_visibility: TVisibilityLevels
   imperial_units: boolean
@@ -157,6 +156,7 @@ export interface IUserSportPreferencesPayload {
   sport_id: number
   color: string | null
   is_active: boolean
+  pace_speed_display: TPaceSpeedDisplay
   stopped_speed_threshold: number
   fromSport: boolean
   default_equipment_ids?: string[]

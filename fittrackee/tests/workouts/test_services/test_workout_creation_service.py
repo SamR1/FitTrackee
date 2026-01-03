@@ -5,6 +5,7 @@ import pytest
 from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
+from fittrackee.constants import ElevationDataSource
 from fittrackee.database import PSQL_INTEGER_LIMIT
 from fittrackee.equipments.exceptions import InvalidEquipmentsException
 from fittrackee.tests.mixins import RandomMixin
@@ -151,17 +152,26 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         workout = Workout.query.one()
         assert workout.analysis_visibility == VisibilityLevel.PRIVATE
         assert workout.ascent is None
+        assert workout.ave_cadence is None
+        assert workout.ave_hr is None
+        assert str(workout.ave_pace) == "0:03:20"
+        assert workout.ave_power is None
         assert float(workout.ave_speed) == 18.0
+        assert str(workout.best_pace) == "0:03:20"
         assert workout.bounds is None
         assert workout.creation_date is not None
         assert workout.descent is None
         assert workout.description is None
         assert float(workout.distance) == 15.0
         assert workout.duration == timedelta(minutes=50)
+        assert workout.elevation_data_source == ElevationDataSource.FILE
         assert workout.map is None
         assert workout.map_id is None
         assert workout.map_visibility == VisibilityLevel.PRIVATE
         assert workout.max_alt is None
+        assert workout.max_cadence is None
+        assert workout.max_hr is None
+        assert workout.max_power is None
         assert workout.max_speed == 18.0
         assert workout.min_alt is None
         assert workout.modification_date is None
@@ -170,6 +180,7 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         assert workout.original_file is None
         assert workout.pauses == timedelta(seconds=0)
         assert workout.sport_id == sport_1_cycling.id
+        assert workout.start_point_geom is None
         assert workout.suspended_at is None
         assert workout.title == "Cycling (Sport) - 2025-02-08 09:00:00"
         assert workout.user_id == user_1.id
@@ -183,9 +194,18 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         assert WorkoutSegment.query.count() == 0
         # records
         records = Record.query.order_by(Record.record_type.asc()).all()
-        assert len(records) == 4
+        assert len(records) == 6
         assert records[0].serialize() == {
             "id": 1,
+            "record_type": "AP",
+            "sport_id": workout.sport_id,
+            "user": workout.user.username,
+            "value": str(workout.ave_pace),
+            "workout_date": workout.workout_date,
+            "workout_id": workout.short_id,
+        }
+        assert records[1].serialize() == {
+            "id": 2,
             "record_type": "AS",
             "sport_id": workout.sport_id,
             "user": workout.user.username,
@@ -193,8 +213,17 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
             "workout_date": workout.workout_date,
             "workout_id": workout.short_id,
         }
-        assert records[1].serialize() == {
-            "id": 2,
+        assert records[2].serialize() == {
+            "id": 3,
+            "record_type": "BP",
+            "sport_id": workout.sport_id,
+            "user": workout.user.username,
+            "value": str(workout.best_pace),
+            "workout_date": workout.workout_date,
+            "workout_id": workout.short_id,
+        }
+        assert records[3].serialize() == {
+            "id": 4,
             "record_type": "FD",
             "sport_id": workout.sport_id,
             "user": workout.user.username,
@@ -202,8 +231,8 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
             "workout_date": workout.workout_date,
             "workout_id": workout.short_id,
         }
-        assert records[2].serialize() == {
-            "id": 3,
+        assert records[4].serialize() == {
+            "id": 5,
             "record_type": "LD",
             "sport_id": workout.sport_id,
             "user": workout.user.username,
@@ -211,8 +240,127 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
             "workout_date": workout.workout_date,
             "workout_id": workout.short_id,
         }
+        assert records[5].serialize() == {
+            "id": 6,
+            "record_type": "MS",
+            "sport_id": workout.sport_id,
+            "user": workout.user.username,
+            "value": workout.max_speed,
+            "workout_date": workout.workout_date,
+            "workout_id": workout.short_id,
+        }
+
+    def test_it_creates_workout_with_sport_with_pace(
+        self,
+        app: "Flask",
+        sport_2_running: "Sport",
+        user_1: "User",
+    ) -> None:
+        workout_data = {
+            "distance": 7,
+            "duration": 3600,
+            "sport_id": sport_2_running.id,
+            "workout_date": "2025-02-08 09:00",
+        }
+        service = WorkoutCreationService(user_1, workout_data)
+
+        service.process()
+        db.session.commit()
+
+        # workout
+        workout = Workout.query.one()
+        assert workout.analysis_visibility == VisibilityLevel.PRIVATE
+        assert workout.ascent is None
+        assert workout.ave_cadence is None
+        assert workout.ave_hr is None
+        assert str(workout.ave_pace) == "0:08:34"
+        assert workout.ave_power is None
+        assert float(workout.ave_speed) == 7.0
+        assert str(workout.best_pace) == "0:08:34"
+        assert workout.bounds is None
+        assert workout.creation_date is not None
+        assert workout.descent is None
+        assert workout.description is None
+        assert float(workout.distance) == 7.0
+        assert workout.duration == timedelta(hours=1)
+        assert workout.elevation_data_source == ElevationDataSource.FILE
+        assert workout.map is None
+        assert workout.map_id is None
+        assert workout.map_visibility == VisibilityLevel.PRIVATE
+        assert workout.max_alt is None
+        assert workout.max_cadence is None
+        assert workout.max_hr is None
+        assert workout.max_power is None
+        assert workout.max_speed == 7.0
+        assert workout.min_alt is None
+        assert workout.modification_date is None
+        assert workout.moving == timedelta(hours=1)
+        assert workout.notes is None
+        assert workout.original_file is None
+        assert workout.pauses == timedelta(seconds=0)
+        assert workout.sport_id == sport_2_running.id
+        assert workout.start_point_geom is None
+        assert workout.suspended_at is None
+        assert workout.title == "Running - 2025-02-08 09:00:00"
+        assert workout.user_id == user_1.id
+        assert workout.weather_start is None
+        assert workout.weather_end is None
+        assert workout.workout_date == datetime(
+            2025, 2, 8, 9, tzinfo=timezone.utc
+        )
+        assert workout.workout_visibility == VisibilityLevel.PRIVATE
+        # segment
+        assert WorkoutSegment.query.count() == 0
+        # records
+        records = Record.query.order_by(Record.record_type.asc()).all()
+        assert len(records) == 6
+        assert records[0].serialize() == {
+            "id": 1,
+            "record_type": "AP",
+            "sport_id": workout.sport_id,
+            "user": workout.user.username,
+            "value": str(workout.ave_pace),
+            "workout_date": workout.workout_date,
+            "workout_id": workout.short_id,
+        }
+        assert records[1].serialize() == {
+            "id": 2,
+            "record_type": "AS",
+            "sport_id": workout.sport_id,
+            "user": workout.user.username,
+            "value": workout.ave_speed,
+            "workout_date": workout.workout_date,
+            "workout_id": workout.short_id,
+        }
+        assert records[2].serialize() == {
+            "id": 3,
+            "record_type": "BP",
+            "sport_id": workout.sport_id,
+            "user": workout.user.username,
+            "value": str(workout.best_pace),
+            "workout_date": workout.workout_date,
+            "workout_id": workout.short_id,
+        }
         assert records[3].serialize() == {
             "id": 4,
+            "record_type": "FD",
+            "sport_id": workout.sport_id,
+            "user": workout.user.username,
+            "value": workout.distance,
+            "workout_date": workout.workout_date,
+            "workout_id": workout.short_id,
+        }
+        assert records[4].serialize() == {
+            "id": 5,
+            "record_type": "LD",
+            "sport_id": workout.sport_id,
+            "user": workout.user.username,
+            "value": str(workout.duration),
+            "workout_date": workout.workout_date,
+            "workout_id": workout.short_id,
+        }
+        assert records[5].serialize() == {
+            "id": 6,
             "record_type": "MS",
             "sport_id": workout.sport_id,
             "user": workout.user.username,
@@ -401,6 +549,9 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         workout = Workout.query.one()
         assert workout.ascent == input_elevation_data["ascent"]
         assert workout.descent == input_elevation_data["descent"]
+        assert Record.query.filter_by(
+            workout_id=workout.id, record_type="HA"
+        ).count() == (0 if input_elevation_data["ascent"] is None else 1)
 
     def test_it_creates_workout_when_title_is_provided(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"

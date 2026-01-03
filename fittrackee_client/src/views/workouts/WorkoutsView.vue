@@ -9,8 +9,8 @@
         <WorkoutsFilters
           :translatedSports="translatedSports"
           :authUser="authUser"
+          :displayPace="displayPace"
           @filter="toggleFilters"
-          @updateSportWithPace="updateSportWithPace"
         />
       </div>
       <div class="display-filters">
@@ -26,9 +26,10 @@
       </div>
       <div class="list-container">
         <WorkoutsList
-          :user="authUser"
+          :authUser="authUser"
+          :displayPace="displayPace"
           :translatedSports="translatedSports"
-          :sportWithPace="sportWithPace"
+          :workouts="workouts"
         />
       </div>
     </div>
@@ -36,21 +37,24 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, watch } from 'vue'
+  import { computed, ref } from 'vue'
   import type { ComputedRef } from 'vue'
   import { useI18n } from 'vue-i18n'
-  import { useRoute } from 'vue-router'
 
   import WorkoutsFilters from '@/components/Workouts/WorkoutsFilters.vue'
   import WorkoutsList from '@/components/Workouts/WorkoutsList.vue'
-  import { AUTH_USER_STORE, SPORTS_STORE } from '@/store/constants'
+  import {
+    AUTH_USER_STORE,
+    SPORTS_STORE,
+    WORKOUTS_STORE,
+  } from '@/store/constants'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
+  import type { IWorkout } from '@/types/workouts.ts'
   import { useStore } from '@/use/useStore'
-  import { sportsWithPace, translateSports } from '@/utils/sports'
+  import { getDisplayPace, translateSports } from '@/utils/sports'
 
   const { t } = useI18n()
-  const route = useRoute()
   const store = useStore()
 
   const authUser: ComputedRef<IAuthUserProfile> = computed(
@@ -63,36 +67,26 @@
     translateSports(sports.value, t)
   )
   const hiddenFilters = ref(true)
-  const sportWithPace = ref(false)
+
+  const workouts: ComputedRef<IWorkout[]> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS]
+  )
+  const displayPace: ComputedRef<boolean> = computed(() => {
+    const sport_ids = [...new Set(workouts.value.map((w) => w.sport_id))]
+    if (sport_ids.length === 0) {
+      return false
+    }
+    if (sport_ids.length === 1) {
+      return getDisplayPace(sport_ids[0], translatedSports.value)
+    }
+    return translatedSports.value
+      .filter((s) => sport_ids.includes(s.id))
+      .every(
+        (s) => s.pace_speed_display && s.pace_speed_display.startsWith('pace')
+      )
+  })
 
   function toggleFilters() {
     hiddenFilters.value = !hiddenFilters.value
   }
-  function updateSportWithPace(sportId: string | undefined) {
-    if (sportId !== undefined && sportId !== '') {
-      const selectedSport = translatedSports.value.find(
-        (sport) => sport.id === +sportId
-      )
-      if (selectedSport && sportsWithPace.includes(selectedSport.label)) {
-        sportWithPace.value = true
-        return
-      }
-    }
-    sportWithPace.value = false
-  }
-
-  watch(
-    () => route.query,
-    (newValue) => {
-      updateSportWithPace(newValue.sport_id as string | undefined)
-    }
-  )
-  watch(
-    () => [...translatedSports.value],
-    (newValue) => {
-      if (newValue.length > 0) {
-        updateSportWithPace(route.query.sport_id as string | undefined)
-      }
-    }
-  )
 </script>

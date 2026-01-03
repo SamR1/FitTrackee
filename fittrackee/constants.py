@@ -15,3 +15,9 @@ class ElevationDataSource(str, Enum):  # to make enum serializable
     OPEN_ELEVATION = "open_elevation"
     OPEN_ELEVATION_SMOOTH = "open_elevation_smooth"
     VALHALLA = "valhalla"
+
+
+class PaceSpeedDisplay(str, Enum):
+    PACE = "pace"  # min/km
+    SPEED = "speed"
+    PACE_AND_SPEED = "pace_and_speed"

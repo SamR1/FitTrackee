@@ -482,7 +482,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
     context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_USER_LOADING, true)
     const { fromSport, ...data } = payload
     authApi
-      .post('auth/profile/edit/sports', data)
+      .patch('auth/profile/edit/sports', data)
       .then((res) => {
         if (res.data.status === 'success') {
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
