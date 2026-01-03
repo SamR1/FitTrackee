@@ -7,12 +7,12 @@ export type TLanguage =
   | 'en'
   | 'es'
   | 'eu'
-  // | 'fi'
+  // | 'fi' //disabled for now
   | 'fr'
   | 'gl'
   | 'hr'
   | 'it'
-  // | 'kab' //disabled for now
+  | 'kab'
   | 'nb'
   | 'nl'
   | 'pl'

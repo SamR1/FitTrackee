@@ -13,7 +13,7 @@ import frMessages from '@/locales/fr/fr'
 import glMessages from '@/locales/gl/gl'
 import hrMessages from '@/locales/hr/hr'
 import itMessages from '@/locales/it/it'
-// import kabMessages from '@/locales/kab/kab'
+import kabMessages from '@/locales/kab/kab'
 import nbMessages from '@/locales/nb/nb'
 import nlMessages from '@/locales/nl/nl'
 import plMessages from '@/locales/pl/pl'
@@ -42,7 +42,7 @@ export default createI18n({
     gl: glMessages,
     hr: hrMessages,
     it: itMessages,
-    // kab: kabMessages,
+    kab: kabMessages,
     nb: nbMessages,
     nl: nlMessages,
     pl: plMessages,
