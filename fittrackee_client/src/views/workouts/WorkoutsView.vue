@@ -47,7 +47,7 @@
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
-  import { sportsWithPace, translateSports } from '@/utils/sports'
+  import { getDisplayPace, translateSports } from '@/utils/sports'
 
   const { t } = useI18n()
   const route = useRoute()
@@ -69,16 +69,7 @@
     hiddenFilters.value = !hiddenFilters.value
   }
   function updateSportWithPace(sportId: string | undefined) {
-    if (sportId !== undefined && sportId !== '') {
-      const selectedSport = translatedSports.value.find(
-        (sport) => sport.id === +sportId
-      )
-      if (selectedSport && sportsWithPace.includes(selectedSport.label)) {
-        sportWithPace.value = true
-        return
-      }
-    }
-    sportWithPace.value = false
+    sportWithPace.value = getDisplayPace(sportId, translatedSports.value)
   }
 
   watch(

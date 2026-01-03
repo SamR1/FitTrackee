@@ -601,7 +601,7 @@
   import { getQuery, sortList, workoutsPayloadKeys } from '@/utils/api'
   import { formatDate } from '@/utils/dates'
   import { getTotalDuration } from '@/utils/duration.ts'
-  import { getSportColor, getSportLabel, sportsWithPace } from '@/utils/sports'
+  import { getDisplayPace, getSportColor, getSportLabel } from '@/utils/sports'
   import { convertDistance, convertPaceToMetric } from '@/utils/units'
   import { defaultOrder } from '@/utils/workouts'
 
@@ -665,8 +665,7 @@
     if (sport_ids.length !== 1) {
       return false
     }
-    const sport = translatedSports.value.find((s) => s.id === sport_ids[0])
-    return sport !== undefined && sportsWithPace.includes(sport.label)
+    return getDisplayPace(sport_ids[0], translatedSports.value)
   })
 
   function loadWorkouts(payload: TWorkoutsPayload) {

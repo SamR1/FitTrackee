@@ -534,7 +534,10 @@
         (sport) => sport.id === +sportId.value
       )
     }
-    if (selectedSport && sportsWithPace.includes(selectedSport.label)) {
+    if (
+      selectedSport &&
+      ['pace', 'pace_and_speed'].includes(selectedSport.pace_speed_display)
+    ) {
       disablePaceInputs.value = false
       updateOrderBy(true)
     } else {
@@ -569,10 +572,10 @@
         const equipmentTypeLabel = t(
           `equipment_types.${e.equipment_type.label}.LABEL`
         )
-        if (!(equipmentTypeLabel in equipmentTypes)) {
-          equipmentTypes[equipmentTypeLabel] = [e]
-        } else {
+        if (equipmentTypeLabel in equipmentTypes) {
           equipmentTypes[equipmentTypeLabel].push(e)
+        } else {
+          equipmentTypes[equipmentTypeLabel] = [e]
         }
       })
     return equipmentTypes
