@@ -127,12 +127,15 @@ Workouts
   - .kml: generated .gpx file contains one track (``<trk>``) corresponding to ``<MultiTrack>``, containing one segment (``<trkseg>``) per kml track (``<Track>``)
   - .tcx: generated .gpx file contains one track (``<trk>``) containing one segment (``<trkseg>``) per activity (``<Activity>``)
 
-- The original file or the generated gpx file can be downloaded (*modified in 0.12.0*).
+- The original file or the .gpx file generated from workout data can be downloaded (*modified in 1.1.0*).
 - If present in .gpx, .tcx and .fit files, the source (application or device) is displayed.
 
 .. note::
    .fit files from Garmin devices may contain product id instead of product name. The mapping between the product id and the product name allows the product name to be displayed instead, if available (*mapping updated in 0.11.0*).
 
+- | If some elevation data are missing and an elevation service is enabled (by setting OpenElevation or Valhalla API URL), the missing elevations can be retrieved on workout creation if the user preference is set (*new in 1.1.0*).
+  | In this case, all elevations are updated.
+- Elevation data source can also be changed after creation if an elevation service is enabled (*new in 1.1.0*).
 - | Some values are only calculated on workout creation.
   | The previously uploaded workouts are not updated in the following cases:
 
@@ -156,12 +159,23 @@ Workouts
 - | The user can add description (*new in 0.8.9*) and private notes.
   | A limited Markdown syntax can be used (*new in 0.9.0*).
 - If present and no description is provided by the user, the description from the file is used as the workout description (*new in 0.8.10*).
+- If present in .gpx, .tcx or .fit files, the total calories are displayed (*new in 1.1.0*).
 - | A map is displayed for workout with a file.
   | Controls allow full screen view and position reset (*new in 0.5.5*).
   | If the sport is Outdoor Tennis or Padel, a heat map is also available (*changed in 1.0.0*).
 - | A chart is displayed for workout with a file, with:
 
-  - speed
+  - speed. By default speed is not displayed when pace is displayed (see below).
+  - pace (*new in 1.1.0*), for the following sports:
+
+    - Hiking
+    - Running
+    - Trail
+    - Walking
+
+    .. note::
+      For these sport, a sport preference allows to set the display (see `Account & preferences <features.html#account-preferences>`__).
+
   - elevation if available (*updated in 0.7.20*)
   - heart rate if available (*new in 0.10.0*)
   - cadence if available (*new in 0.10.0*), for the following sports:
@@ -192,11 +206,12 @@ Workouts
     - Mountain Biking (Electric)
 
 .. note::
-   | For now, source and average and max values for heart rate and cadence are not displayed for workouts created before v0.10.0 (see `issue #816 <https://github.com/SamR1/FitTrackee/issues/816>`__).
+   | Source and average and max values for heart rate and cadence are not displayed for workouts created before v0.10.0.
    | Average and max values for power are not displayed for workouts created before v0.11.0.
+   | Pace and total calories are not displayed for workouts created before v1.1.0.
    | Refreshing the workout allows these values to be calculated (*new in 0.12.0*).
 
-- These data (speed, elevation, heart rate, cadence and power) can be displayed on one chart or split on multiple charts. The preferred display can be stored in a user preference (*new in 0.11.0*).
+- Speed/pace, elevation, heart rate, cadence and power can be displayed on one chart or split on multiple charts. The preferred display can be stored in a user preference (*new in 0.11.0*).
 - | If **Visual Crossing** (*new in 0.7.11*) API key is provided, weather is displayed in workout detail. Data source is displayed in **About** page.
   | Wind is displayed, with an arrow indicating the direction (a tooltip can be displayed with the direction that the wind is coming **from**) (*new in 0.5.5*).
 - | An `equipment <features.html#equipments>`__ can be associated with a workout (*new in 0.8.0*). For now, only one equipment can be associated.
@@ -208,7 +223,7 @@ Workouts
 .. note::
   Records may differ from records displayed by the application that originally generated the files.
 
-- Visibility level can be set separately for workout data, analysis, map (*new in 0.9.0*) and heart rate (*new in 0.10.0*) :
+- Visibility level can be set separately for workout data, analysis, map (*new in 0.9.0*):
 
   - private: only owner can see data,
   - followers only: only owner and followers can see data,
@@ -218,7 +233,8 @@ Workouts
   | Workout visibility applies to title, description, records and workout data except elevation.
   | Analysis visibility applies to chart data, elevation and segments, if workout is associated with a file.
   | Map visibility applies to the map, if workout is associated with a file.
-  | Heart rate visibility applies to average and max values and chart data, if workout is associated with a file (*new in 0.10.0*).
+  |
+  | In addition, the visibility level can be set for all workouts for heart rate (average and max values and chart data, *new in 0.10.0*) and total calories (value displayed in the workout detail, *new in 1.1.0*).
   |
   | Default visibility can be set in user preferences.
 
@@ -264,6 +280,10 @@ Workouts
     - duration
     - average speed
     - maximum speed
+    - when only one sport is displayed and 'pace' is set in the sport preference (*new in 1.1.0*):
+
+      - average pace
+      - maximum pace (= best pace)
 
   - Workouts can be sorted by:
 
@@ -271,6 +291,7 @@ Workouts
     - distance
     - duration
     - average speed
+    - average pace (when only one sport is displayed and 'pace' is set in the sport preference) (*new in 1.1.0*)
 
   - Statistics are displayed when more than one workout is displayed (*new in 0.9.4*):
 
@@ -284,13 +305,14 @@ Workouts
     - average speed (when workouts belong to the same sport)
     - average ascent (*new in 0.9.7*)
     - average descent (*new in 0.9.7*)
+    - when workouts belong to the same sport and 'pace' is set in the sport preference (*new in 1.1.0*):
+
+      - average pace
+      - best pace
 
     When multiple pages are fetched, statistics for all pages are also displayed.
 
   - Filtered workouts can be displayed on a map (*new in 1.0.0*)
-
-.. warning::
-  | Map and filters on location and radius require the environment variable `ENABLE_GEOSPATIAL_FEATURES <installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES>`_ to be set to ``True``. Otherwise these features are not enabled.
 
 .. note::
   | There is a limit on the number of workouts used to calculate statistics to avoid performance issues. The value can be set in administration.
@@ -425,6 +447,7 @@ Statistics
     - total workouts
     - total ascent  (*new in 0.5.0*)
     - total descent  (*new in 0.5.0*)
+    - total calories (*new in 1.1.0*)
 
   - averages:
 
@@ -434,6 +457,7 @@ Statistics
     - average workouts  (*new in 0.8.5*)
     - average ascent  (*new in 0.8.5*)
     - average descent  (*new in 0.8.5*)
+    - average pace  (*new in 1.1.0*)
 
 - User statistics by sport (*new in 0.8.5*):
 
@@ -444,6 +468,8 @@ Statistics
   - ascent (total and average)
   - descent (total and average)
   - records
+  - average pace (if 'pace' is set in the sport preference ) (*new in 1.1.0*)
+  - total calories (*new in 1.1.0*)
 
 .. note::
   | There is a limit on the number of workouts used to calculate statistics to avoid performance issues. The value can be set in administration.
@@ -464,10 +490,6 @@ Global map
 .. note::
   | If the number of workouts exceeds 3000, a modal appears to confirm the display. This message can be hidden (this can be changed in the user preferences).
   | Depending on the browser and device used, displaying a large number of workouts may cause browser slowness or errors.
-
-
-.. warning::
-  Global map require the environment variable `ENABLE_GEOSPATIAL_FEATURES <installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES>`_ to be set to ``True``. Otherwise it is not available.
 
 
 Account & preferences
@@ -504,6 +526,11 @@ Account & preferences
   - can override stopped speed threshold (for next uploaded gpx files)
   - disable/enable a sport
   - define default `equipments <features.html#equipments>`__ (*new in 0.8.0*).
+  - set Pace/Speed display for Hiking, Running, Trail and Walking (*new in 1.1.0*):
+
+    - pace
+    - speed
+    - pace and speed
 
 .. note::
   | If a sport is disabled by an administrator, it can not be enabled by a user. In this case, it will only appear in preferences if the user has workouts and only sport color can be changed.
@@ -534,6 +561,12 @@ Account & preferences
   - each data displayed on a different chart
 
 - A user can update messages preferences (*new in 1.0.0*).
+- A user can set missing elevation processing if an OpenElevation or Valhalla API URL is set (*new in 1.1.0*):
+
+  - none
+  - OpenElevation (raw data)
+  - OpenElevation (smoothed data)
+  - Valhalla
 
 
 Equipments
@@ -818,6 +851,9 @@ Workouts list
 .. figure:: _images/workouts-list.png
    :alt: FitTrackee Workouts List
 
+.. figure:: _images/workouts-list-with-additional-filters.png
+   :alt: FitTrackee Workouts List with additional filters
+
 .. figure:: _images/workouts-map.png
    :alt: FitTrackee Workouts Map
 
@@ -842,7 +878,7 @@ User Preferences
 ----------------
 
 .. figure:: _images/user-preferences.png
-   :alt: FitTrackee Equipments
+   :alt: FitTrackee User Preferences
 
 
 Equipments

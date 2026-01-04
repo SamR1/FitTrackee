@@ -851,6 +851,9 @@ Workouts list
 .. figure:: _images/workouts-list.png
    :alt: FitTrackee Workouts List
 
+.. figure:: _images/workouts-list-with-additional-filters.png
+   :alt: FitTrackee Workouts List with additional filters
+
 .. figure:: _images/workouts-map.png
    :alt: FitTrackee Workouts Map
 
@@ -875,7 +878,7 @@ User Preferences
 ----------------
 
 .. figure:: _images/user-preferences.png
-   :alt: FitTrackee Equipments
+   :alt: FitTrackee User Preferences
 
 
 Equipments

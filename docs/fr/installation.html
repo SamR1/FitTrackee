@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Installation - Documentation FitTrackee 1.0.6</title>
+        <title>Installation - Documentation FitTrackee 1.1.0b1</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 1.0.6
+      <a href="index.html"><div class="brand">Documentation FitTrackee 1.1.0b1
 </div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 1.0.6
+  <span class="sidebar-brand-text">Documentation FitTrackee 1.1.0b1
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -351,7 +351,7 @@
 <li><p>installation à partir des sources ou du paquet :</p>
 <ul>
 <li><p><a class="reference external" href="https://www.python.org/">Python</a> 3.10+</p></li>
-<li><p><a class="reference external" href="https://www.postgresql.org/">PostgreSQL</a> 13+</p></li>
+<li><p><a class="reference external" href="https://www.postgresql.org/">PostgreSQL</a> 14+</p></li>
 <li><p><a class="reference external" href="https://postgis.net/">PostGIS</a> 3.4+</p></li>
 <li><p><a class="reference external" href="https://gdal.org/en/stable/">GDAL</a> sur le serveur hébergeant l'application, s'il est différent de celui de la base de données (GDAL est installé avec PostGIS)</p></li>
 </ul>
@@ -563,6 +563,9 @@
 <dd><div class="versionadded">
 <p><span class="versionmodified added">Ajouté dans la version 1.0.0.</span></p>
 </div>
+<div class="versionremoved">
+<p><span class="versionmodified removed">Supprimé dans la version 1.1.0.</span></p>
+</div>
 <div class="line-block">
 <div class="line">Active les fonctionnalités géospatiales sur l'interface utilisateur.</div>
 <div class="line"><strong>Garder la valeur à</strong> <code class="docutils literal notranslate"><span class="pre">False</span></code> <strong>jusqu'à ce que toutes les séances aient été mises à jour pour ajouter les geométries</strong> (voir <a class="reference external" href="cli.html#ftcli-workouts-refresh">l'interface de ligne de commandes des séances</a>).</div>
@@ -575,7 +578,7 @@
 </dl>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
-<p>This is a temporary flag. It will be removed in the next version, which will require all workouts to be updated.</p>
+<p>Il s'agit d'un indicateur temporaire. Il sera supprimé dans la prochaine version, ce qui nécessitera la mise à jour de tous les séances.</p>
 </div>
 </dd></dl>
 
@@ -639,6 +642,15 @@
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">https://nominatim.openstreetmap.org</span></code></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-OPEN_ELEVATION_API_URL">
+<span class="sig-name descname"><span class="pre">OPEN_ELEVATION_API_URL</span></span><a class="headerlink" href="#envvar-OPEN_ELEVATION_API_URL" title="Lien vers cette définition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 1.1.0.</span></p>
+</div>
+<p>URL du service <a class="reference external" href="https://open-elevation.com/">OpenElevation</a> (API publique ou auto-hébergée).</p>
 </dd></dl>
 
 <dl class="std envvar">
@@ -775,6 +787,15 @@
 <div class="line">Dans le cas d'une installation avec PyPI, le répertoire sera localisé dans le répertoire de l'environnement virtuel Python si la variable n'est pas initialisée.</div>
 </div>
 </div>
+</dd></dl>
+
+<dl class="std envvar">
+<dt class="sig sig-object std" id="envvar-VALHALLA_API_URL">
+<span class="sig-name descname"><span class="pre">VALHALLA_API_URL</span></span><a class="headerlink" href="#envvar-VALHALLA_API_URL" title="Lien vers cette définition">¶</a></dt>
+<dd><div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 1.1.0.</span></p>
+</div>
+<p>URL du service <a class="reference external" href="https://valhalla.github.io/valhalla/">Valhalla</a> (API publique ou auto-hébergée).</p>
 </dd></dl>
 
 <dl class="std envvar">
@@ -1253,11 +1274,11 @@ $<span class="w"> </span>make<span class="w"> </span>install-db-dev
 </div>
 </div>
 <ul class="simple">
-<li><p>Télécharger la dernière version (à ce jour, la version v1.0.6) :</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v1.1.0b1) :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/1.0.6.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.0.6.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-1.0.6<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/1.1.0b1.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.1.0b1.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-1.1.0b1<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1399,11 +1420,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <ul class="simple">
 <li><p>Arrêter l'application</p></li>
 <li><p>Changer pour le répertoire dans lequel FitTrackee est localisé</p></li>
-<li><p>Télécharger la dernière version (à ce jour, la version v1.0.6) et écraser les fichiers existants :</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v1.1.0b1) et écraser les fichiers existants :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v1.0.6.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.0.6.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-1.0.6/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v1.1.0b1.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.1.0b1.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-1.1.0b1/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -1818,7 +1839,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2018 - 2025, SamR1
+                Copyright &#169; 2017 - 2026, SamR1
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -1905,7 +1926,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=6a2bcfee"></script>
+</div><script src="_static/documentation_options.js?v=7c2c43b8"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

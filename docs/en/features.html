@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Features - FitTrackee 1.0.6 documentation</title>
+        <title>Features - FitTrackee 1.1.0b1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 1.0.6
+      <a href="index.html"><div class="brand">FitTrackee 1.1.0b1
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 1.0.6
+  <span class="sidebar-brand-text">FitTrackee 1.1.0b1
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -455,7 +455,7 @@
 </ul>
 </div>
 <ul class="simple">
-<li><p>The original file or the generated gpx file can be downloaded (<em>modified in 0.12.0</em>).</p></li>
+<li><p>The original file or the .gpx file generated from workout data can be downloaded (<em>modified in 1.1.0</em>).</p></li>
 <li><p>If present in .gpx, .tcx and .fit files, the source (application or device) is displayed.</p></li>
 </ul>
 <div class="admonition note">
@@ -463,6 +463,12 @@
 <p>.fit files from Garmin devices may contain product id instead of product name. The mapping between the product id and the product name allows the product name to be displayed instead, if available (<em>mapping updated in 0.11.0</em>).</p>
 </div>
 <ul>
+<li><div class="line-block">
+<div class="line">If some elevation data are missing and an elevation service is enabled (by setting OpenElevation or Valhalla API URL), the missing elevations can be retrieved on workout creation if the user preference is set (<em>new in 1.1.0</em>).</div>
+<div class="line">In this case, all elevations are updated.</div>
+</div>
+</li>
+<li><p>Elevation data source can also be changed after creation if an elevation service is enabled (<em>new in 1.1.0</em>).</p></li>
 <li><div class="line-block">
 <div class="line">Some values are only calculated on workout creation.</div>
 <div class="line">The previously uploaded workouts are not updated in the following cases:</div>
@@ -500,6 +506,7 @@
 </div>
 </li>
 <li><p>If present and no description is provided by the user, the description from the file is used as the workout description (<em>new in 0.8.10</em>).</p></li>
+<li><p>If present in .gpx, .tcx or .fit files, the total calories are displayed (<em>new in 1.1.0</em>).</p></li>
 <li><div class="line-block">
 <div class="line">A map is displayed for workout with a file.</div>
 <div class="line">Controls allow full screen view and position reset (<em>new in 0.5.5</em>).</div>
@@ -509,12 +516,24 @@
 <li><div class="line-block">
 <div class="line">A chart is displayed for workout with a file, with:</div>
 </div>
+<ul>
+<li><p>speed. By default speed is not displayed when pace is displayed (see below).</p></li>
+<li><p>pace (<em>new in 1.1.0</em>), for the following sports:</p>
 <ul class="simple">
-<li><p>speed</p></li>
+<li><p>Hiking</p></li>
+<li><p>Running</p></li>
+<li><p>Trail</p></li>
+<li><p>Walking</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For these sport, a sport preference allows to set the display (see <a class="reference external" href="features.html#account-preferences">Account &amp; preferences</a>).</p>
+</div>
+</li>
 <li><p>elevation if available (<em>updated in 0.7.20</em>)</p></li>
 <li><p>heart rate if available (<em>new in 0.10.0</em>)</p></li>
 <li><p>cadence if available (<em>new in 0.10.0</em>), for the following sports:</p>
-<ul>
+<ul class="simple">
 <li><p>Cycling (Sport)</p></li>
 <li><p>Cycling (Trekking)</p></li>
 <li><p>Cycling (Transport)</p></li>
@@ -532,7 +551,7 @@
 </ul>
 </li>
 <li><p>power if available (<em>new in 0.11.0</em>), for the following sports:</p>
-<ul>
+<ul class="simple">
 <li><p>Cycling (Sport)</p></li>
 <li><p>Cycling (Trekking)</p></li>
 <li><p>Cycling (Transport)</p></li>
@@ -548,13 +567,14 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">For now, source and average and max values for heart rate and cadence are not displayed for workouts created before v0.10.0 (see <a class="reference external" href="https://github.com/SamR1/FitTrackee/issues/816">issue #816</a>).</div>
+<div class="line">Source and average and max values for heart rate and cadence are not displayed for workouts created before v0.10.0.</div>
 <div class="line">Average and max values for power are not displayed for workouts created before v0.11.0.</div>
+<div class="line">Pace and total calories are not displayed for workouts created before v1.1.0.</div>
 <div class="line">Refreshing the workout allows these values to be calculated (<em>new in 0.12.0</em>).</div>
 </div>
 </div>
 <ul>
-<li><p>These data (speed, elevation, heart rate, cadence and power) can be displayed on one chart or split on multiple charts. The preferred display can be stored in a user preference (<em>new in 0.11.0</em>).</p></li>
+<li><p>Speed/pace, elevation, heart rate, cadence and power can be displayed on one chart or split on multiple charts. The preferred display can be stored in a user preference (<em>new in 0.11.0</em>).</p></li>
 <li><div class="line-block">
 <div class="line">If <strong>Visual Crossing</strong> (<em>new in 0.7.11</em>) API key is provided, weather is displayed in workout detail. Data source is displayed in <strong>About</strong> page.</div>
 <div class="line">Wind is displayed, with an arrow indicating the direction (a tooltip can be displayed with the direction that the wind is coming <strong>from</strong>) (<em>new in 0.5.5</em>).</div>
@@ -574,7 +594,7 @@
 <p>Records may differ from records displayed by the application that originally generated the files.</p>
 </div>
 <ul>
-<li><p>Visibility level can be set separately for workout data, analysis, map (<em>new in 0.9.0</em>) and heart rate (<em>new in 0.10.0</em>) :</p>
+<li><p>Visibility level can be set separately for workout data, analysis, map (<em>new in 0.9.0</em>):</p>
 <ul class="simple">
 <li><p>private: only owner can see data,</p></li>
 <li><p>followers only: only owner and followers can see data,</p></li>
@@ -585,7 +605,8 @@
 <div class="line">Workout visibility applies to title, description, records and workout data except elevation.</div>
 <div class="line">Analysis visibility applies to chart data, elevation and segments, if workout is associated with a file.</div>
 <div class="line">Map visibility applies to the map, if workout is associated with a file.</div>
-<div class="line">Heart rate visibility applies to average and max values and chart data, if workout is associated with a file (<em>new in 0.10.0</em>).</div>
+<div class="line"><br /></div>
+<div class="line">In addition, the visibility level can be set for all workouts for heart rate (average and max values and chart data, <em>new in 0.10.0</em>) and total calories (value displayed in the workout detail, <em>new in 1.1.0</em>).</div>
 <div class="line"><br /></div>
 <div class="line">Default visibility can be set in user preferences.</div>
 </div>
@@ -644,6 +665,12 @@
 <li><p>duration</p></li>
 <li><p>average speed</p></li>
 <li><p>maximum speed</p></li>
+<li><p>when only one sport is displayed and ‘pace’ is set in the sport preference (<em>new in 1.1.0</em>):</p>
+<ul>
+<li><p>average pace</p></li>
+<li><p>maximum pace (= best pace)</p></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><p>Workouts can be sorted by:</p>
@@ -652,6 +679,7 @@
 <li><p>distance</p></li>
 <li><p>duration</p></li>
 <li><p>average speed</p></li>
+<li><p>average pace (when only one sport is displayed and ‘pace’ is set in the sport preference) (<em>new in 1.1.0</em>)</p></li>
 </ul>
 </li>
 <li><p>Statistics are displayed when more than one workout is displayed (<em>new in 0.9.4</em>):</p>
@@ -666,6 +694,12 @@
 <li><p>average speed (when workouts belong to the same sport)</p></li>
 <li><p>average ascent (<em>new in 0.9.7</em>)</p></li>
 <li><p>average descent (<em>new in 0.9.7</em>)</p></li>
+<li><p>when workouts belong to the same sport and ‘pace’ is set in the sport preference (<em>new in 1.1.0</em>):</p>
+<ul>
+<li><p>average pace</p></li>
+<li><p>best pace</p></li>
+</ul>
+</li>
 </ul>
 <p>When multiple pages are fetched, statistics for all pages are also displayed.</p>
 </li>
@@ -673,12 +707,6 @@
 </ul>
 </li>
 </ul>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<div class="line-block">
-<div class="line">Map and filters on location and radius require the environment variable <a class="reference external" href="installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES">ENABLE_GEOSPATIAL_FEATURES</a> to be set to <code class="docutils literal notranslate"><span class="pre">True</span></code>. Otherwise these features are not enabled.</div>
-</div>
-</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
@@ -867,6 +895,7 @@
 <li><p>total workouts</p></li>
 <li><p>total ascent  (<em>new in 0.5.0</em>)</p></li>
 <li><p>total descent  (<em>new in 0.5.0</em>)</p></li>
+<li><p>total calories (<em>new in 1.1.0</em>)</p></li>
 </ul>
 </li>
 <li><p>averages:</p>
@@ -877,6 +906,7 @@
 <li><p>average workouts  (<em>new in 0.8.5</em>)</p></li>
 <li><p>average ascent  (<em>new in 0.8.5</em>)</p></li>
 <li><p>average descent  (<em>new in 0.8.5</em>)</p></li>
+<li><p>average pace  (<em>new in 1.1.0</em>)</p></li>
 </ul>
 </li>
 </ul>
@@ -890,6 +920,8 @@
 <li><p>ascent (total and average)</p></li>
 <li><p>descent (total and average)</p></li>
 <li><p>records</p></li>
+<li><p>average pace (if ‘pace’ is set in the sport preference ) (<em>new in 1.1.0</em>)</p></li>
+<li><p>total calories (<em>new in 1.1.0</em>)</p></li>
 </ul>
 </li>
 </ul>
@@ -921,10 +953,6 @@
 <div class="line">If the number of workouts exceeds 3000, a modal appears to confirm the display. This message can be hidden (this can be changed in the user preferences).</div>
 <div class="line">Depending on the browser and device used, displaying a large number of workouts may cause browser slowness or errors.</div>
 </div>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Global map require the environment variable <a class="reference external" href="installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES">ENABLE_GEOSPATIAL_FEATURES</a> to be set to <code class="docutils literal notranslate"><span class="pre">True</span></code>. Otherwise it is not available.</p>
 </div>
 </section>
 <section id="account-preferences">
@@ -965,6 +993,13 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><p>can override stopped speed threshold (for next uploaded gpx files)</p></li>
 <li><p>disable/enable a sport</p></li>
 <li><p>define default <a class="reference external" href="features.html#equipments">equipments</a> (<em>new in 0.8.0</em>).</p></li>
+<li><p>set Pace/Speed display for Hiking, Running, Trail and Walking (<em>new in 1.1.0</em>):</p>
+<ul>
+<li><p>pace</p></li>
+<li><p>speed</p></li>
+<li><p>pace and speed</p></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -1008,6 +1043,14 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 </ul>
 </li>
 <li><p>A user can update messages preferences (<em>new in 1.0.0</em>).</p></li>
+<li><p>A user can set missing elevation processing if an OpenElevation or Valhalla API URL is set (<em>new in 1.1.0</em>):</p>
+<ul>
+<li><p>none</p></li>
+<li><p>OpenElevation (raw data)</p></li>
+<li><p>OpenElevation (smoothed data)</p></li>
+<li><p>Valhalla</p></li>
+</ul>
+</li>
 </ul>
 </section>
 <section id="equipments">
@@ -1157,8 +1200,8 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 </div>
 </section>
 </section>
-<section id="id3">
-<h3>Users<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<section id="id2">
+<h3>Users<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.9.0: </span>Add moderator and owner role</p>
 </div>
@@ -1255,8 +1298,8 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><p>enable or disable an equipment type in order to match disabled sports (a equipment type can be disabled even if equipment with this type exists)  (<em>new in 0.8.0</em>).</p></li>
 </ul>
 </section>
-<section id="id4">
-<h3>Sports<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<section id="id3">
+<h3>Sports<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Only users with administration rights can access sports administration.</p></li>
 <li><p>Enable or disable a sport (a sport can be disabled even if workout with this sport exists).</p></li>
@@ -1307,8 +1350,8 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 </section>
 <section id="screenshots">
 <h2>Screenshots<a class="headerlink" href="#screenshots" title="Link to this heading">¶</a></h2>
-<section id="id5">
-<h3>Dashboard<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<section id="id4">
+<h3>Dashboard<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
 <figure class="align-default">
 <img alt="FitTrackee Dashboard" src="_images/dashboard.png" />
 </figure>
@@ -1356,17 +1399,20 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <img alt="FitTrackee Workouts List" src="_images/workouts-list.png" />
 </figure>
 <figure class="align-default">
+<img alt="FitTrackee Workouts List with additional filters" src="_images/workouts-list-with-additional-filters.png" />
+</figure>
+<figure class="align-default">
 <img alt="FitTrackee Workouts Map" src="_images/workouts-map.png" />
 </figure>
 </section>
-<section id="id6">
-<h3>Global map<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<section id="id5">
+<h3>Global map<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
 <figure class="align-default">
 <img alt="FitTrackee Global Map" src="_images/global_map.png" />
 </figure>
 </section>
-<section id="id7">
-<h3>Statistics<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<section id="id6">
+<h3>Statistics<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
 <figure class="align-default">
 <img alt="FitTrackee Statistics" src="_images/statistics-by-time-period.png" />
 </figure>
@@ -1377,11 +1423,11 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <section id="user-preferences">
 <h3>User Preferences<a class="headerlink" href="#user-preferences" title="Link to this heading">¶</a></h3>
 <figure class="align-default">
-<img alt="FitTrackee Equipments" src="_images/user-preferences.png" />
+<img alt="FitTrackee User Preferences" src="_images/user-preferences.png" />
 </figure>
 </section>
-<section id="id8">
-<h3>Equipments<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
+<section id="id7">
+<h3>Equipments<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
 <figure class="align-default">
 <img alt="FitTrackee Equipments" src="_images/equipments-list.png" />
 </figure>
@@ -1389,8 +1435,8 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <img alt="FitTrackee Equipment Detail" src="_images/equipment-detail.png" />
 </figure>
 </section>
-<section id="id9">
-<h3>Notifications<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h3>
+<section id="id8">
+<h3>Notifications<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
 <figure class="align-default">
 <img alt="FitTrackee Notifications" src="_images/notifications.png" />
 </figure>
@@ -1401,8 +1447,8 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <img alt="FitTrackee Users Directory" src="_images/users-directory.png" />
 </figure>
 </section>
-<section id="id10">
-<h3>Administration<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
+<section id="id9">
+<h3>Administration<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h3>
 <figure class="align-default">
 <img alt="FitTrackee Administration" src="_images/administration-menu.png" />
 </figure>
@@ -1442,7 +1488,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2018 - 2025, SamR1
+                Copyright &#169; 2017 - 2026, SamR1
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -1498,26 +1544,26 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><a class="reference internal" href="#privacy-policy">Privacy policy</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id3">Users</a></li>
+<li><a class="reference internal" href="#id2">Users</a></li>
 <li><a class="reference internal" href="#moderation">Moderation</a></li>
 <li><a class="reference internal" href="#equipment-types">Equipment Types</a></li>
-<li><a class="reference internal" href="#id4">Sports</a></li>
+<li><a class="reference internal" href="#id3">Sports</a></li>
 <li><a class="reference internal" href="#queued-tasks">Queued tasks</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#translations">Translations</a></li>
 <li><a class="reference internal" href="#screenshots">Screenshots</a><ul>
-<li><a class="reference internal" href="#id5">Dashboard</a></li>
+<li><a class="reference internal" href="#id4">Dashboard</a></li>
 <li><a class="reference internal" href="#dashboard-on-mobile">Dashboard on Mobile</a></li>
 <li><a class="reference internal" href="#workout-detail">Workout detail</a></li>
 <li><a class="reference internal" href="#workouts-list">Workouts list</a></li>
-<li><a class="reference internal" href="#id6">Global map</a></li>
-<li><a class="reference internal" href="#id7">Statistics</a></li>
+<li><a class="reference internal" href="#id5">Global map</a></li>
+<li><a class="reference internal" href="#id6">Statistics</a></li>
 <li><a class="reference internal" href="#user-preferences">User Preferences</a></li>
-<li><a class="reference internal" href="#id8">Equipments</a></li>
-<li><a class="reference internal" href="#id9">Notifications</a></li>
+<li><a class="reference internal" href="#id7">Equipments</a></li>
+<li><a class="reference internal" href="#id8">Notifications</a></li>
 <li><a class="reference internal" href="#users-directory">Users directory</a></li>
-<li><a class="reference internal" href="#id10">Administration</a></li>
+<li><a class="reference internal" href="#id9">Administration</a></li>
 </ul>
 </li>
 </ul>
@@ -1531,7 +1577,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=e2a723ec"></script>
+</div><script src="_static/documentation_options.js?v=f4a0afba"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Fonctionnalités - Documentation FitTrackee 1.0.6</title>
+        <title>Fonctionnalités - Documentation FitTrackee 1.1.0b1</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 1.0.6
+      <a href="index.html"><div class="brand">Documentation FitTrackee 1.1.0b1
 </div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 1.0.6
+  <span class="sidebar-brand-text">Documentation FitTrackee 1.1.0b1
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -455,7 +455,7 @@
 </ul>
 </div>
 <ul class="simple">
-<li><p>Les fichiers (originaux or générés) peuvent être téléchargés (<em>modifié dans la version 0.12.0</em>).</p></li>
+<li><p>Les fichiers (original ou gpx généré) peuvent être téléchargés (<em>modifié dans la version 1.1.0</em>).</p></li>
 <li><p>Si présent dans les fichiers .gpx, .tcx et .fit, la source (application ou appareil) est affichée.</p></li>
 </ul>
 <div class="admonition note">
@@ -463,6 +463,12 @@
 <p>Les fichiers .fit provenant des appareils Garmin peuvent contenir l'identifiant du produit au lieu du nom du produit. Une correspondance entre l'identifiant et le nom permet d'afficher le nom du produit à la place, si disponible (<em>correspondance mise à jour dans la version 0.11.0</em>).</p>
 </div>
 <ul>
+<li><div class="line-block">
+<div class="line">Si certaines données d'altitude sont manquantes et qu'un service d'altitude est activé (en configurant l'URL de l'API d'OpenElevation ou Valhalla), les altitudes manquantes peuvent être récupérées lors de la création de la séance si l'option utilisateur est activée (<em>nouveau dans la version 1.1.0</em>).</div>
+<div class="line">Dans ce cas, toutes les élévations sont mises à jour.</div>
+</div>
+</li>
+<li><p>La source des données d'altitude peut également être modifiée après la création si un service d'altitude est activé (<em>nouveau dans la version 1.1.0</em>).</p></li>
 <li><div class="line-block">
 <div class="line">Certains valeurs sont calculées uniquement à la création de la séance.</div>
 <div class="line">Les séances précédemment créées sont pas mises à jour dans les cas suivants :</div>
@@ -500,6 +506,7 @@
 </div>
 </li>
 <li><p>Si présente et qu'aucune description n'est fournie par l'utilisateur, la description du fichier est utilisée comme description de la séance.</p></li>
+<li><p>Si présent dans les fichiers .gpx, .tcx et .fit, les calories totales sont affichées.</p></li>
 <li><div class="line-block">
 <div class="line">La carte est affichée pour les séances avec un fichier.</div>
 <div class="line">Des boutons permettent une visualisation en plein écran et la réinitialisation de la position (<em>nouveau dans la version 0.5.5</em>).</div>
@@ -509,12 +516,24 @@
 <li><div class="line-block">
 <div class="line">Un graphique est affiché pour les séances avec un fichier, avec :</div>
 </div>
+<ul>
+<li><p>la vitesse. Par défaut, la vitesse n'est pas affichée lorsque l'allure est affichée (voir ci-dessous).</p></li>
+<li><p>l'allure (<em>nouveau dans la version 1.1.0</em>), pour les sports suivants :</p>
 <ul class="simple">
-<li><p>la vitesse</p></li>
+<li><p>Randonnée</p></li>
+<li><p>Course à pied</p></li>
+<li><p>Trail</p></li>
+<li><p>Marche</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Pour ces sports, Une préférence utilisateur permet de définir l'affichage (voir <a class="reference external" href="features.html#account-preferences">Compte &amp; préférences</a>).</p>
+</div>
+</li>
 <li><p>l'altitude si disponible (<em>modifié dans la version 0.7.20</em>)</p></li>
 <li><p>la fréquence cardiaque si disponible (<em>nouveau dans la version 0.10.0</em>)</p></li>
 <li><p>la cadence si disponible (<em>nouveau dans la version 0.10.0</em>), pour les sports suivants :</p>
-<ul>
+<ul class="simple">
 <li><p>Vélo (Sport)</p></li>
 <li><p>Vélo (Trekking)</p></li>
 <li><p>Vélo (Transport)</p></li>
@@ -532,7 +551,7 @@
 </ul>
 </li>
 <li><p>la puissance si disponible (<em>nouveau dans la version 0.11.0</em>), pour les sports suivants :</p>
-<ul>
+<ul class="simple">
 <li><p>Vélo (Sport)</p></li>
 <li><p>Vélo (Trekking)</p></li>
 <li><p>Vélo (Transport)</p></li>
@@ -548,13 +567,14 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Pour le moment, la source et les valeurs moyennes et maximales pour la fréquence cardiaque et la cadence ne sont pas affichées pour les séances créées avant la version v0.10.0 (cf. <a class="reference external" href="https://github.com/SamR1/FitTrackee/issues/816">ticket #816</a>).</div>
+<div class="line">La source, les valeurs moyennes et maximales pour la fréquence cardiaque et la cadence ne sont pas affichées pour les séances créées avant la version v0.10.0.</div>
 <div class="line">Les valeurs moyennes et maximales pour la puissance ne sont pas affichées pour les séances créées avant la version v0.11.0.</div>
-<div class="line">Refreshing the workout allows these values to be calculated (<em>new in 0.12.0</em>).</div>
+<div class="line">L'allure et les calories totales ne sont pas affichées pour les séances créées avant la version v1.1.0.</div>
+<div class="line">L'actualisation de la séance  permet de calculer ces valeurs (<em>nouveau dans la version 0.12.0</em>).</div>
 </div>
 </div>
 <ul>
-<li><p>Ces données (vitesse, altitude, fréquence cardiaque, cadence et puissance) peuvent être affichées sur un seul graphique ou réparties sur plusieurs graphiques. L'affichage préféré peut être enregistré dans les préférences utilisateur (<em>nouveau dans la version 0.11.0</em>).</p></li>
+<li><p>Ces données (vitesse/allure, altitude, fréquence cardiaque, cadence et puissance) peuvent être affichées sur un seul graphique ou réparties sur plusieurs graphiques. L'affichage préféré peut être enregistré dans les préférences utilisateur (<em>nouveau dans la version 0.11.0</em>).</p></li>
 <li><div class="line-block">
 <div class="line">Si la clé d'API de <strong>Visual Crossing</strong> (<em>nouveau in 0.7.11</em>) est fournie, la météo est affichée dans les détails de l'entraînement. La source des données est affichée dans la page <strong>A propos</strong>.</div>
 <div class="line">La vitesse du vent est affichée, avec une flèche indiquant la direction (une infobulle peut être affichée avec la direction (provenance du vent)) (<em>nouveau dans la version 0.5.5</em>).</div>
@@ -574,7 +594,7 @@
 <p>Les records peuvent différer des records affichés par l'application qui a généré les fichiers à l'origine.</p>
 </div>
 <ul>
-<li><p>Le niveau de visibilité peut être configuré séparément pour les données de la séance, l'analyse, la carte (<em>nouveau dans la version 0.9.0</em>) et la fréquence cardiaque (<em>nouveau dans la version 0.10.0</em>) :</p>
+<li><p>Le niveau de visibilité peut être configuré séparément pour les données de la séance, l'analyse, la carte (<em>nouveau dans la version 0.9.0</em>):</p>
 <ul class="simple">
 <li><p>privé : seul le propriétaire de la séance peut voir les données,</p></li>
 <li><p>abonnés seulement : seul le propriétaire de la séance et les abonnés peuvent voir les données,</p></li>
@@ -585,7 +605,8 @@
 <div class="line">La visibilité de la séance s'applique sur le titre, la description, les records et données de la séances à l'exception de l'altitude.</div>
 <div class="line">La visibilité de l'analyse s'applique sur les données du graphique, l'altitude et les segments, si la séance est associée à un fichier.</div>
 <div class="line">La visibilité de la carte s'applique sur la carte, si la séance est associée à un fichier.</div>
-<div class="line">La visibilité de la fréquence cardiaque s'applique aux valeurs moyennes et maximales et aux données affichées dans le graphe, si la séance est associée à un fichier (<em>nouveau dans la version 0.10.0</em>).</div>
+<div class="line"><br /></div>
+<div class="line">De plus, la visibilité peut être définie pour tous les entraînements pour la fréquence cardiaque (valeurs moyennes et maximales et aux données affichées dans le graphe, <em>nouveau dans la version 0.10.0</em>) et les calories totales (valeur affichée dans le détail de la séance, <em>nouveau dans la version 1.1.0</em>).</div>
 <div class="line"><br /></div>
 <div class="line">La visibilité peut être configurée dans les préférences de l'utilisateur.</div>
 </div>
@@ -644,6 +665,12 @@
 <li><p>la durée</p></li>
 <li><p>la vitesse moyenne</p></li>
 <li><p>la vitesse maximale</p></li>
+<li><p>lorsqu'un seul sport est affiché et que 'allure' est sélectionnée dans les préférences sportives (nouveau dans la version 1.1.0) :</p>
+<ul>
+<li><p>l'allure moyenne</p></li>
+<li><p>l'allure max. (= meilleure allure)</p></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><p>Les séances peuvent être triées par :</p>
@@ -652,6 +679,7 @@
 <li><p>la distance</p></li>
 <li><p>la durée</p></li>
 <li><p>la vitesse moyenne</p></li>
+<li><p>l'allure moyenne (lorsqu'un seul sport est affiché et que 'allure' est sélectionnée dans les préférences du sport) (<em>nouveau dans la version 1.1.0</em>)</p></li>
 </ul>
 </li>
 <li><p>Des statistiques sont affichées quand plus d'une séance est affichée (<em>nouveau dans la version 0.9.4</em>):</p>
@@ -666,6 +694,12 @@
 <li><p>vitesse moyenne (quand les séances appartiennent au même sport)</p></li>
 <li><p>dénivelé positif moyen (<em>nouveau dans la version 0.9.7</em>)</p></li>
 <li><p>dénivelé négatif moyen (<em>nouveau dans la version 0.9.7</em>)</p></li>
+<li><p>lorsque les séances appartiennent au même sport et que 'allure' est sélectionnée dans les préférences du sport (<em>nouveau dans la version 1.1.0</em>)</p>
+<ul>
+<li><p>l'allure moyenne</p></li>
+<li><p>la meilleure allure</p></li>
+</ul>
+</li>
 </ul>
 <p>Quand plusieurs pages sont récupérées, les statistiques pour l'ensemble des pages sont également affichées.</p>
 </li>
@@ -673,12 +707,6 @@
 </ul>
 </li>
 </ul>
-<div class="admonition warning">
-<p class="admonition-title">Avertissement</p>
-<div class="line-block">
-<div class="line">La carte et les filtres sur la localisation et le rayon nécessitent que la variable d'environnement <a class="reference external" href="installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES">ENABLE_GEOSPATIAL_FEATURES</a> soit configurée à <code class="docutils literal notranslate"><span class="pre">True</span></code>. Dans le cas contraire ces fonctionnalités ne sont pas activées.</div>
-</div>
-</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
@@ -867,6 +895,7 @@
 <li><p>nombre total de séances</p></li>
 <li><p>dénivelé positif total  (<em>nouveau dans la version 0.5.0</em>)</p></li>
 <li><p>dénivelé négatif total  (<em>nouveau dans la version 0.5.0</em>)</p></li>
+<li><p>calories totales  (<em>nouveau dans la version 1.1.0</em>)</p></li>
 </ul>
 </li>
 <li><p>moyennes :</p>
@@ -877,6 +906,7 @@
 <li><p>nombre moyen de séances (<em>nouveau dans la version 0.8.5</em>)</p></li>
 <li><p>dénivelé positif moyen (<em>nouveau dans la version 0.8.5</em>)</p></li>
 <li><p>dénivelé négatif moyen (<em>nouveau dans la version 0.8.5</em>)</p></li>
+<li><p>allure moyenne (<em>nouveau dans la version 1.1.0</em>)</p></li>
 </ul>
 </li>
 </ul>
@@ -890,6 +920,8 @@
 <li><p>dénivelé positif (total et moyenne)</p></li>
 <li><p>dénivelé négatif (total et moyenne)</p></li>
 <li><p>records</p></li>
+<li><p>allure moyenne (lorsque l'option 'allure' est sélectionnée dans les préférences du sport) (<em>nouveau dans la version 1.1.0</em>)</p></li>
+<li><p>calories totales  (<em>nouveau dans la version 1.1.0</em>)</p></li>
 </ul>
 </li>
 </ul>
@@ -921,10 +953,6 @@
 <div class="line">Si le nombre de séances dépasse les 3000, une modale apparait pour valider l'affichage. Ce message peut être masqué (cela peut être modifié dans le préférences utilisateurs)</div>
 <div class="line">Selon le navigateur et l'appareil utilisés, l'affichage d'un grand nombre des séances peut entraîner des ralentissements du navigateur ou des erreurs.</div>
 </div>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Avertissement</p>
-<p>La carte globale nécessite que la variable d'environnement <a class="reference external" href="installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES">ENABLE_GEOSPATIAL_FEATURES</a> soit configurée à <code class="docutils literal notranslate"><span class="pre">True</span></code>. Dans le cas contraire elle n'est pas disponible.</p>
 </div>
 </section>
 <section id="account-preferences">
@@ -964,6 +992,13 @@
 <li><p>modifier le seuil de vitesse d'arrêt (pour les prochains fichiers gpx ajoutés)</p></li>
 <li><p>désactiver/activer un sport.</p></li>
 <li><p>définir des <a class="reference external" href="features.html#equipments">équipements</a> par défaut (<em>nouveau dans la version 0.8.0</em>)</p></li>
+<li><p>configurer de l'affichage de la vitesse/allure pour la randonnée, la course, le trail et la marche (<em>nouveau dans la version 1.1.0</em>) :</p>
+<ul>
+<li><p>allure</p></li>
+<li><p>vitesse</p></li>
+<li><p>allure et vitesse moyenne</p></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -1007,6 +1042,14 @@
 </ul>
 </li>
 <li><p>Un utilisateur peut définir des préférences des messages (<em>nouveau dans la version 1.0.0</em>).</p></li>
+<li><p>Un utilisateur peut configurer le traitement des altitudes manquantes si une URL de l'API d'OpenElevation ou de Valhalla est définie (<em>nouveau dans la version 1.1.0</em>):</p>
+<ul>
+<li><p>aucune</p></li>
+<li><p>OpenElevation (données brutes)</p></li>
+<li><p>OpenElevation (données lissées)</p></li>
+<li><p>Valhalla</p></li>
+</ul>
+</li>
 </ul>
 </section>
 <section id="equipments">
@@ -1156,8 +1199,8 @@
 </div>
 </section>
 </section>
-<section id="id3">
-<h3>Utilisateurs<a class="headerlink" href="#id3" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id2">
+<h3>Utilisateurs<a class="headerlink" href="#id2" title="Lien vers cette rubrique">¶</a></h3>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 0.9.0: </span>Ajout des rôles de modérateur et propriétaire</p>
 </div>
@@ -1254,8 +1297,8 @@
 <li><p>activer ou désactiver un type d'équipement afin de correspondre aux sports désactivés (un type d'équipement peut être désactivé même si un équipement pour ce type existe) (<em>nouveau dans la version 0.8.0</em>).</p></li>
 </ul>
 </section>
-<section id="id4">
-<h3>Sports<a class="headerlink" href="#id4" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id3">
+<h3>Sports<a class="headerlink" href="#id3" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
 <li><p>Seuls les utilisateurs ayant des droits d'administration peuvent accéder à l'administration des sports.</p></li>
 <li><p>activer ou désactiver un sport (un sport peut être désactivé même si une séance avec ce sport existe).</p></li>
@@ -1306,8 +1349,8 @@
 </section>
 <section id="screenshots">
 <h2>Captures d'écran<a class="headerlink" href="#screenshots" title="Lien vers cette rubrique">¶</a></h2>
-<section id="id5">
-<h3>Tableau de bord<a class="headerlink" href="#id5" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id4">
+<h3>Tableau de bord<a class="headerlink" href="#id4" title="Lien vers cette rubrique">¶</a></h3>
 <figure class="align-default">
 <img alt="Tableau de bord sur FitTrackee" src="_images/dashboard.png" />
 </figure>
@@ -1355,17 +1398,20 @@
 <img alt="Liste des séances sur FitTrackee" src="_images/workouts-list.png" />
 </figure>
 <figure class="align-default">
+<img alt="Liste des séances sur FitTrackee, avec des filtres additionnels" src="_images/workouts-list-with-additional-filters.png" />
+</figure>
+<figure class="align-default">
 <img alt="carte des séances sur FitTrackee" src="_images/workouts-map.png" />
 </figure>
 </section>
-<section id="id6">
-<h3>Carte Globale<a class="headerlink" href="#id6" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id5">
+<h3>Carte Globale<a class="headerlink" href="#id5" title="Lien vers cette rubrique">¶</a></h3>
 <figure class="align-default">
 <img alt="Carte globale sur FitTrackee" src="_images/global_map.png" />
 </figure>
 </section>
-<section id="id7">
-<h3>Statistiques<a class="headerlink" href="#id7" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id6">
+<h3>Statistiques<a class="headerlink" href="#id6" title="Lien vers cette rubrique">¶</a></h3>
 <figure class="align-default">
 <img alt="Statistics sur FitTrackee" src="_images/statistics-by-time-period.png" />
 </figure>
@@ -1376,11 +1422,11 @@
 <section id="user-preferences">
 <h3>Préférences de l'utilisateur<a class="headerlink" href="#user-preferences" title="Lien vers cette rubrique">¶</a></h3>
 <figure class="align-default">
-<img alt="Équipements sur FitTrackee" src="_images/user-preferences.png" />
+<img alt="Préférences de l'utilisateur sur FitTrackee" src="_images/user-preferences.png" />
 </figure>
 </section>
-<section id="id8">
-<h3>Équipements<a class="headerlink" href="#id8" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id7">
+<h3>Équipements<a class="headerlink" href="#id7" title="Lien vers cette rubrique">¶</a></h3>
 <figure class="align-default">
 <img alt="Équipements sur FitTrackee" src="_images/equipments-list.png" />
 </figure>
@@ -1388,8 +1434,8 @@
 <img alt="Détail d'un équipement sur FitTrackee" src="_images/equipment-detail.png" />
 </figure>
 </section>
-<section id="id9">
-<h3>Notifications<a class="headerlink" href="#id9" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id8">
+<h3>Notifications<a class="headerlink" href="#id8" title="Lien vers cette rubrique">¶</a></h3>
 <figure class="align-default">
 <img alt="Notifications sur FitTrackee" src="_images/notifications.png" />
 </figure>
@@ -1400,8 +1446,8 @@
 <img alt="Répertoire des utilisateurs sur FitTrackee" src="_images/users-directory.png" />
 </figure>
 </section>
-<section id="id10">
-<h3>Administration<a class="headerlink" href="#id10" title="Lien vers cette rubrique">¶</a></h3>
+<section id="id9">
+<h3>Administration<a class="headerlink" href="#id9" title="Lien vers cette rubrique">¶</a></h3>
 <figure class="align-default">
 <img alt="Administration de FitTrackee" src="_images/administration-menu.png" />
 </figure>
@@ -1441,7 +1487,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2018 - 2025, SamR1
+                Copyright &#169; 2017 - 2026, SamR1
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -1497,26 +1543,26 @@
 <li><a class="reference internal" href="#privacy-policy">Politique de confidentialité</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id3">Utilisateurs</a></li>
+<li><a class="reference internal" href="#id2">Utilisateurs</a></li>
 <li><a class="reference internal" href="#moderation">Modération</a></li>
 <li><a class="reference internal" href="#equipment-types">Types d'équipement</a></li>
-<li><a class="reference internal" href="#id4">Sports</a></li>
+<li><a class="reference internal" href="#id3">Sports</a></li>
 <li><a class="reference internal" href="#queued-tasks">Tâches en attente</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#translations">Traductions</a></li>
 <li><a class="reference internal" href="#screenshots">Captures d'écran</a><ul>
-<li><a class="reference internal" href="#id5">Tableau de bord</a></li>
+<li><a class="reference internal" href="#id4">Tableau de bord</a></li>
 <li><a class="reference internal" href="#dashboard-on-mobile">Tableau de bord sur mobile</a></li>
 <li><a class="reference internal" href="#workout-detail">Page de détail d'une séance</a></li>
 <li><a class="reference internal" href="#workouts-list">Liste des séances</a></li>
-<li><a class="reference internal" href="#id6">Carte Globale</a></li>
-<li><a class="reference internal" href="#id7">Statistiques</a></li>
+<li><a class="reference internal" href="#id5">Carte Globale</a></li>
+<li><a class="reference internal" href="#id6">Statistiques</a></li>
 <li><a class="reference internal" href="#user-preferences">Préférences de l'utilisateur</a></li>
-<li><a class="reference internal" href="#id8">Équipements</a></li>
-<li><a class="reference internal" href="#id9">Notifications</a></li>
+<li><a class="reference internal" href="#id7">Équipements</a></li>
+<li><a class="reference internal" href="#id8">Notifications</a></li>
 <li><a class="reference internal" href="#users-directory">Répertoire des utilisateurs</a></li>
-<li><a class="reference internal" href="#id10">Administration</a></li>
+<li><a class="reference internal" href="#id9">Administration</a></li>
 </ul>
 </li>
 </ul>
@@ -1530,7 +1576,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=6a2bcfee"></script>
+</div><script src="_static/documentation_options.js?v=7c2c43b8"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
