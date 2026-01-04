@@ -1,5 +1,47 @@
 # Change log
 
+## Version 1.0.6 (2026/01/04)
+
+**Warning**:
+- The version 1.1.0 will require all workouts to be updated, see [documentation](https://docs.fittrackee.org/en/upgrading-to-1.0.x.html#workouts-data-update).
+
+### Bugs Fixed
+
+* [#1015](https://github.com/SamR1/FitTrackee/issues/1015) - Invalid elevation data prevents the file from being uploaded
+* [PR#1018](https://github.com/SamR1/FitTrackee/pull/1018) - Do not display elevation for water sports
+
+### Translations
+
+* [#1003](https://github.com/SamR1/FitTrackee/issues/1003) - [translations request] Kabyle
+* [PR#1020](https://github.com/SamR1/FitTrackee/pull/1020) - Translations update from Hosted Weblate (Kabyle)
+* [PR#1022](https://github.com/SamR1/FitTrackee/pull/1022) - Translations update from Hosted Weblate (Polish)
+
+Translation status for languages available on the interface:
+- Basque: 100%
+- Bulgarian: 54%
+- Catalan: 26%
+- Chinese (Simplified): 98%
+- Croatian: 100%
+- Czech: 48%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 93%
+- Italian: 99%
+- Kabyle: 2%
+- Norwegian Bokmål: 45%
+- Polish: 98%
+- Portuguese: 53%
+- Russian: 97%
+- Spanish: 71%
+- Turkish: 1%
+
+Thanks to the contributors:
+- @easytigrrr
+- ButterflyOfFire
+
+
 ## Version 1.0.5 (2025/12/27)
 
 **Warning**:
