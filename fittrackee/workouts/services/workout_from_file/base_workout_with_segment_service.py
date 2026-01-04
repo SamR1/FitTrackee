@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from gpxpy.gpx import GPX
 
     from fittrackee.users.models import User
-    from fittrackee.workouts.models import Workout
+    from fittrackee.workouts.models import Sport, Workout
 
 weather_service = WeatherService()
 
@@ -32,14 +32,16 @@ class BaseWorkoutWithSegmentsCreationService:
         self,
         auth_user: "User",
         workout_file: IO[bytes],
-        sport_id: int,
+        sport: "Sport",
+        # stopped_speed_threshold based on the user's sports preferences,
+        # if any. Otherwise, based on the sport
         stopped_speed_threshold: float,
         # in case of refresh (workout is None on creation)
         workout: Optional["Workout"],
         get_weather: bool = True,
     ) -> None:
         self.auth_user = auth_user
-        self.sport_id = sport_id
+        self.sport = sport
         self.coordinates: List[List[float]] = []
         self.stopped_speed_threshold = stopped_speed_threshold
         self.workout_name: Optional[str] = None
