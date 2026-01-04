@@ -37,7 +37,7 @@ Map data from [OpenStreetMap](https://www.openstreetmap.org).
 
 ## Documentation
 
-- [Features](https://docs.fittrackee.org/en/features.html)
+- [Features](https://docs.fittrackee.org/en/features.html) ([screenshots](https://docs.fittrackee.org/en/features.html#screenshots))
 - [Installation instructions](https://docs.fittrackee.org/en/installation.html)
 - [Command line interface](https://docs.fittrackee.org/en/cli.html)
 - [Third-party tools](https://docs.fittrackee.org/en/third_party_tools.html)

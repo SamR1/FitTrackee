@@ -94,7 +94,7 @@ export const languageLabels: Record<TLanguage, string> = {
   it: 'Italiano (99%)', // Italian
   nl: 'Nederlands (99%)', // Dutch
   nb: 'Norsk bokmål (45%)', // Norwegian Bokmål
-  pl: 'Polski (95%)', // Polish
+  pl: 'Polski (98%)', // Polish
   pt: 'Português (53%)', // Portuguese
   ru: 'Русский (97%)', // Russian
   // sl: 'Slovenščina', // Slovenian
