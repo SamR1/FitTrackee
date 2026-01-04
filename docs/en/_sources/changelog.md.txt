@@ -1,5 +1,51 @@
 # Change log
 
+## Version 1.1.0b1 (2026/01/04)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+This version includes pace display, elevation correction from **OpenElevation API** or **Valhalla Elevation API**, and total calories from the file.\
+**Notes**: For workouts uploaded prior to the version 1.1.0, they must be refreshed (via the User Interface or the [Workouts CLI](https://next.docs.fittrackee.org/en/cli.html#ftcli-workouts-refresh)).
+
+Two environment variables have been added to enable elevation correction: [`OPEN_ELEVATION_API_URL`](https://next.docs.fittrackee.org/en/installation.html#envvar-OPEN_ELEVATION_API_URL) and [`VALHALLA_API_URL`](https://next.docs.fittrackee.org/en/installation.html#envvar-VALHALLA_API_URL).
+
+A new option has also been added to the Workouts CLI (`--with-elevation`) to allow refreshing workouts without calling Elevation service (which may result in rate limit issues). The missing elevations are updated only when `--with-elevation` is provided.
+
+Starting with this version, [`ENABLE_GEOSPATIAL_FEATURES`](https://next.docs.fittrackee.org/en/installation.html#envvar-ENABLE_GEOSPATIAL_FEATURES) is no longer used and can be removed. In addition, the `--add-missing-geometry` has also been removed from the Workouts CLI.
+
+**Warning**:
+- **PostgreSQL 13** is no longer supported.
+- This release contains database migrations (see upgrade instructions in [documentation](https://next.docs.fittrackee.org/en/installation.html#upgrade)). 
+- This version requires all workouts to be updated before installation.\
+  Otherwise, the following error will be displayed:
+  ```bash
+  $ ftcli db upgrade                                          
+  INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+  INFO  [alembic.runtime.migration] Will assume transactional DDL.
+  INFO  [alembic.runtime.migration] Running upgrade 141d3978536a -> e63433a1d62e, remove workout_segment.segment_id and workout.gpx
+  
+  Error:
+  Can not run migration, workouts with file and without geometry exist.
+  Please downgrade to the previous version of FitTrackee (<1.1.0) and run Workout Refresh CLI with '--add-missing-geometry' option.
+  ```
+
+### Features and enhancements
+
+* [#302](https://github.com/SamR1/FitTrackee/issues/302) - Display pace
+* [#701](https://github.com/SamR1/FitTrackee/issues/701) - Add SRTM altitude correction
+* [PR#910](https://github.com/SamR1/FitTrackee/pull/910) - Get elevation from a remote service when missing in the import
+* [#976](https://github.com/SamR1/FitTrackee/issues/976) - Extract and display the total calories stored in file
+
+### Misc
+
+* [#952](https://github.com/SamR1/FitTrackee/issues/952) - Remove unnecessary methods following workouts update in v1.0.0
+* [#995](https://github.com/SamR1/FitTrackee/issues/995) - Drop PostgreSQL13 support
+
+Thanks to the contributors:
+- @kmorinCL
+
+
 ## Version 1.0.6 (2026/01/04)
 
 **Warning**:

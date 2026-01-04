@@ -56,7 +56,7 @@ Prerequisites
   - installation from sources or package:
 
     - `Python <https://www.python.org/>`__ 3.10+
-    - `PostgreSQL <https://www.postgresql.org/>`__ 13+
+    - `PostgreSQL <https://www.postgresql.org/>`__ 14+
     - `PostGIS <https://postgis.net/>`__ 3.4+
     - `GDAL <https://gdal.org/en/stable/>`__ on the server running the application, if different from the server running the database (GDAL is installed with PostGIS)
 
@@ -197,6 +197,7 @@ deployment method.
 .. envvar:: ENABLE_GEOSPATIAL_FEATURES
 
     .. versionadded:: 1.0.0
+    .. versionremoved:: 1.1.0
 
     | Enables geospatial features on User Interface.
     | **Keep the value set to** ``False`` **until all workouts have been updated to add geometries** (see `Workouts CLI command <cli.html#ftcli-workouts-refresh>`__).
@@ -246,6 +247,13 @@ deployment method.
     URL of `Nominatim <https://nominatim.org>`__ server, used to get location coordinates from user input
 
     :default: ``https://nominatim.openstreetmap.org``
+
+
+.. envvar:: OPEN_ELEVATION_API_URL
+
+    .. versionadded:: 1.1.0
+
+    URL of `OpenElevation <https://open-elevation.com/>`__ service (public API or self-hosted instance).
 
 
 .. envvar:: PORT
@@ -335,6 +343,12 @@ deployment method.
     .. danger::
         | With installation from PyPI, the directory will be located in
           **virtualenv** directory if the variable is not initialized.
+
+.. envvar:: VALHALLA_API_URL
+
+    .. versionadded:: 1.1.0
+
+    URL of `Valhalla <https://valhalla.github.io/valhalla/>`__ service (public API or self-hosted instance).
 
 .. envvar:: VITE_APP_API_URL
 
@@ -750,13 +764,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v1.0.6):
+-  Download the last release (for now, it is the release v1.1.0b1):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/1.0.6.tar.gz
-   $ tar -xzf v1.0.6.tar.gz
-   $ mv FitTrackee-1.0.6 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/1.1.0b1.tar.gz
+   $ tar -xzf v1.1.0b1.tar.gz
+   $ mv FitTrackee-1.1.0b1 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -894,13 +908,13 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v1.0.6) and overwrite existing files:
+- Download the last release (for now, it is the release v1.1.0b1) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/v1.0.6.tar.gz
-   $ tar -xzf v1.0.6.tar.gz
-   $ cp -R FitTrackee-1.0.6/* FitTrackee/
+   $ wget https://github.com/SamR1/FitTrackee/archive/v1.1.0b1.tar.gz
+   $ tar -xzf v1.1.0b1.tar.gz
+   $ cp -R FitTrackee-1.1.0b1/* FitTrackee/
    $ cd FitTrackee
 
 - Update **.env** if needed (see `Environment variables <installation.html#environment-variables>`__).
