@@ -1824,7 +1824,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         self,
         app: Flask,
         user_1: User,
-        sport_2_running: Sport,
+        sport_1_cycling: Sport,
         input_color: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1836,8 +1836,37 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             content_type="application/json",
             data=json.dumps(
                 dict(
-                    sport_id=sport_2_running.id,
+                    sport_id=sport_1_cycling.id,
                     color=input_color,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        preference = UserSportPreference.query.filter_by(
+            sport_id=sport_1_cycling.id, user_id=user_1.id
+        ).one()
+        assert preference.color == input_color
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["message"] == "user sport preferences updated"
+        assert data["data"] == preference.serialize()
+
+    def test_it_creates_preference_and_gets_default_value_from_original_sport(
+        self, app: Flask, user_1: User, sport_2_running: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            "/api/auth/profile/edit/sports",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    sport_id=sport_2_running.id,
+                    color="#FFF",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1847,7 +1876,14 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         preference = UserSportPreference.query.filter_by(
             sport_id=sport_2_running.id, user_id=user_1.id
         ).one()
-        assert preference.color == input_color
+        assert preference.color == "#FFF"
+        assert (
+            preference.pace_speed_display == sport_2_running.pace_speed_display
+        )
+        assert (
+            preference.stopped_speed_threshold
+            == sport_2_running.stopped_speed_threshold
+        )
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["message"] == "user sport preferences updated"
