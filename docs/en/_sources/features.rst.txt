@@ -842,7 +842,7 @@ User Preferences
 ----------------
 
 .. figure:: _images/user-preferences.png
-   :alt: FitTrackee Equipments
+   :alt: FitTrackee User Preferences
 
 
 Equipments

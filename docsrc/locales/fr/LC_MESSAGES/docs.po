@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-01-04 08:57+0100\n"
+"POT-Creation-Date: 2026-01-04 15:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -10010,9 +10010,9 @@ msgid ""
 "contains elevation (*changed in 1.0.6*)."
 msgstr ""
 "Les données liées à l'altitude pour les sports de raquettes (Tennis et "
-"Padel en extérieur) et les sports nautiques (Canoë, Kayak, Aviron, Nage en eau "
-"libre et Stand up paddle) ne sont ni stockées ni affichées si le fichier "
-"en contient (*modifié dans la version 1.0.6*)."
+"Padel en extérieur) et les sports nautiques (Canoë, Kayak, Aviron, Nage "
+"en eau libre et Stand up paddle) ne sont ni stockées ni affichées si le "
+"fichier en contient (*modifié dans la version 1.0.6*)."
 
 #: ../source/features.rst:77
 msgid "A workout can be created by:"
@@ -12296,7 +12296,11 @@ msgstr "Statistiques pour un sport sur FitTrackee"
 msgid "User Preferences"
 msgstr "Préférences de l'utilisateur"
 
-#: ../source/features.rst:844 ../source/features.rst:851
+#: ../source/features.rst:844
+msgid "FitTrackee User Preferences"
+msgstr "Préférences de l'utilisateur sur FitTrackee"
+
+#: ../source/features.rst:851
 msgid "FitTrackee Equipments"
 msgstr "Équipements sur FitTrackee"
 

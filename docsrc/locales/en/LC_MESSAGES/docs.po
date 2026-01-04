@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-01-04 08:57+0100\n"
+"POT-Creation-Date: 2026-01-04 15:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -11201,7 +11201,11 @@ msgstr ""
 msgid "User Preferences"
 msgstr ""
 
-#: ../source/features.rst:844 ../source/features.rst:851
+#: ../source/features.rst:844
+msgid "FitTrackee User Preferences"
+msgstr ""
+
+#: ../source/features.rst:851
 msgid "FitTrackee Equipments"
 msgstr ""
 
