@@ -89,6 +89,7 @@
   import type { ISport } from '@/types/sports.ts'
   import type { IWorkoutData, IWorkoutPayload } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
+  import { getUserName } from '@/utils/user'
   import { getCadenceUnit } from '@/utils/workouts.ts'
 
   interface Props {
@@ -111,8 +112,10 @@
   const workoutData: ComputedRef<IWorkoutData> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
   )
-  const isWorkoutOwner: ComputedRef<boolean> = computed(
-    () => authUser.value.username === workoutData.value.workout.user.username
+  const isWorkoutOwner = computed(
+    () =>
+      getUserName(authUser.value) ===
+      getUserName(workoutData.value.workout.user)
   )
   const sport: ComputedRef<ISport | null> = computed(() =>
     getWorkoutSport(workoutData.value.workout)

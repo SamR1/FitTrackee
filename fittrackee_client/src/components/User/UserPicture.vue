@@ -17,6 +17,7 @@
 
   import type { IUserLightProfile, IUserProfile } from '@/types/user'
   import { getApiUrl } from '@/utils'
+  import { getUserName } from '@/utils/user'
 
   interface Props {
     user: IUserProfile | IUserLightProfile
@@ -25,8 +26,8 @@
   const { user } = toRefs(props)
 
   const authUserPictureUrl = computed(() =>
-    user.value.picture
-      ? `${getApiUrl()}users/${user.value.username}/picture?${Date.now()}`
+    props.user.picture
+      ? `${getApiUrl()}users/${getUserName(user.value)}/picture?${Date.now()}`
       : ''
   )
 </script>
