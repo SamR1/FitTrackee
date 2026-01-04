@@ -69,7 +69,7 @@ Sports
 .. note::
   | Except the stopped speed threshold, all sports are analyzed in the same way (no specificity taken into account for the moment).
   | Swimrun is displayed as a single activity with no difference between segments for now.
-  | Elevation-related data for racket sports (Outdoor Tennis and Padel) and water sports (Canoeing, Kayaking, Open Water Swimming, Rowing and Standup Paddleboarding) are not stored and displayed if the file contains elevation (*changed in 1.x.x*).
+  | Elevation-related data for racket sports (Outdoor Tennis and Padel) and water sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) are not stored and displayed if the file contains elevation (*changed in 1.0.6*).
 
 Workouts
 --------
@@ -800,6 +800,7 @@ FitTrackee is available in the following languages (which can be saved in the us
 - Croatian (*new in 0.9.8*)
 - Catalan (*new in 0.10.0*)
 - Turkish (*new in 0.10.3*)
+- Kabyle (*new in 1.0.6*)
 
 Application translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__ (development branch, may differ from the released version):
 
@@ -869,6 +870,13 @@ Statistics
 
 .. figure:: _images/statistics-by-sport.png
    :alt: FitTrackee Sport Statistics
+
+User Preferences
+----------------
+
+.. figure:: _images/user-preferences.png
+   :alt: FitTrackee Equipments
+
 
 Equipments
 ----------
