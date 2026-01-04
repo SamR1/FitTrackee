@@ -122,7 +122,7 @@ export const dateStringFormats: Record<TLanguage, string> = {
   gl: 'd MMM yyyy',
   hr: 'd. MMM yyyy.',
   it: 'd MMM yyyy',
-  // kab: 'd MMM yyyy',
+  kab: 'd MMM yyyy',
   nb: 'do MMM yyyy',
   nl: 'd MMM yyyy',
   pl: 'd MMM yyyy',

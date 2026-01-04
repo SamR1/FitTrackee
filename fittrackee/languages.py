@@ -12,7 +12,7 @@ LANGUAGES_DATE_STRING = {
     "gl": "d MMM yyyy",  # Galician
     "hr": "d. MMM yyyy.",  # Croatian
     "it": "d MMM yyyy",  # Italian
-    # "kab": "d MMM yyyy",  # Kabyle  # disabled for now
+    "kab": "d MMM yyyy",  # Kabyle
     "nb": "d. MMM yyyy",  # Norwegian Bokmål
     "nl": "d MMM. yyyy",  # Dutch
     "pl": "d MMM yyyy",  # Polish

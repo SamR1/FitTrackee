@@ -1,1 +1,23 @@
-{}
+{
+  "ACTIVE": "D urmid",
+  "ADMIN": "Anedbal",
+  "ADMINISTRATION": "Tadbelt",
+  "APPLICATION": "Asnas",
+  "APP_MODERATION": {
+    "REASON": "Taɣẓint"
+  },
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "ACTIVE": "D urmid",
+      "IMAGE": "Tugna",
+      "LABEL": "Tabzimt"
+    }
+  },
+  "SPORTS": {
+    "TABLE": {
+      "ACTIVE": "D urmid",
+      "IMAGE": "Tugna",
+      "LABEL": "Tabzimt"
+    }
+  }
+}

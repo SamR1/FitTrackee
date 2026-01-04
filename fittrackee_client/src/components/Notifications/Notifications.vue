@@ -146,6 +146,6 @@
   .preferences-link {
     font-size: 0.9em;
     font-style: italic;
-    margin-left: $default-margin;
+    margin: 0 0 $default-margin * 2 $default-margin;
   }
 </style>
