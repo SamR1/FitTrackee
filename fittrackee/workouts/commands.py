@@ -164,6 +164,12 @@ def process_queued_archive_upload(task_short_id: str, verbose: bool) -> None:
     callback=validate_sport_id,
 )
 @click.option(
+    "--new-sport-id",
+    help="sport id to which the workouts will be associated",
+    type=int,
+    callback=validate_sport_id,
+)
+@click.option(
     "--from",
     "date_from",
     help="start date (format: %Y-%m-%d)",
@@ -249,6 +255,7 @@ def process_queued_archive_upload(task_short_id: str, verbose: bool) -> None:
 )
 def refresh_workouts(
     sport_id: Optional[int] = None,
+    new_sport_id: Optional[int] = None,
     date_from: Optional[datetime] = None,
     date_to: Optional[datetime] = None,
     per_page: int = 10,
@@ -294,9 +301,16 @@ def refresh_workouts(
                     fg="yellow",
                 )
 
+        if new_sport_id and not sport_id:
+            raise click.BadOptionUsage(
+                "--new-sport-id",
+                "'--new-sport-id' must be provided with '--sport-id'",
+            )
+
         try:
             service = WorkoutsFromFileRefreshService(
                 sport_id=sport_id,
+                new_sport_id=new_sport_id,
                 date_from=date_from,
                 date_to=date_to,
                 per_page=per_page,
