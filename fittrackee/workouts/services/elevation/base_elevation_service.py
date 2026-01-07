@@ -1,6 +1,6 @@
 import os
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, List, Union
+from typing import TYPE_CHECKING, List
 
 import numpy as np
 
@@ -24,12 +24,12 @@ class BaseElevationService(ABC):
 
     @property
     def is_enabled(self) -> bool:
-        return self.url is not None
+        return self.url != ""
 
-    def _get_api_url(self) -> Union[str, None]:
+    def _get_api_url(self) -> str:
         base_url = os.environ.get(self.config_key)
         if not base_url:
-            return None
+            return ""
         return self.url_pattern.format(base_url=base_url)
 
     @staticmethod

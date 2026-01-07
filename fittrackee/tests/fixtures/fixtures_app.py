@@ -235,6 +235,15 @@ def app_with_open_elevation_and_valhalla_url(
 
 
 @pytest.fixture
+def app_with_empty_string_as_open_elevation_and_valhalla_url(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Generator:
+    monkeypatch.setenv("OPEN_ELEVATION_API_URL", "")
+    monkeypatch.setenv("VALHALLA_API_URL", "")
+    yield from get_app(with_config=True)
+
+
+@pytest.fixture
 def app_with_global_map_workouts_limit_equal_to_1(
     monkeypatch: pytest.MonkeyPatch,
 ) -> Generator:

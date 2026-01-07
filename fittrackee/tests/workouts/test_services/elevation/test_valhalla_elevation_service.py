@@ -35,7 +35,7 @@ class TestValhallaElevationServiceInstantiation:
     ) -> None:
         service = ValhallaElevationService()
 
-        assert service.url is None
+        assert service.url == ""
         assert service.is_enabled is False
 
     def test_it_instantiates_service_when_valhalla_url_is_set_in_env_var(

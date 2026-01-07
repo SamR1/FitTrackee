@@ -36,7 +36,7 @@ class TestOpenElevationServiceInstantiation:
     ) -> None:
         service = OpenElevationService()
 
-        assert service.url is None
+        assert service.url == ""
         assert service.is_enabled is False
 
     def test_it_instantiates_service_when_open_elevation_api_url_is_set_in_env_var(  # noqa

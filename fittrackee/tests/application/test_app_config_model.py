@@ -204,3 +204,15 @@ class TestConfigModel:
             "open_elevation": True,
             "valhalla": True,
         }
+
+    def test_it_returns_elevation_services_when_valhalla_and_open_elevation_urls_are_empty_string(  # noqa
+        self, app_with_empty_string_as_open_elevation_and_valhalla_url: "Flask"
+    ) -> None:
+        config = AppConfig.query.one()
+
+        serialized_app_config = config.serialize()
+
+        assert serialized_app_config["elevation_services"] == {
+            "open_elevation": False,
+            "valhalla": False,
+        }
