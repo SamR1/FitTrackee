@@ -526,6 +526,7 @@ class Workout(BaseModel):
         light: bool = True,
         with_equipments: bool = False,  # for workouts list
         force_display_speed: bool = False,  # for workouts list
+        sport_data_visibility: Optional["SportDisplayedData"] = None,
     ) -> Dict:
         """
         Used by Workout serializer and data export
@@ -580,9 +581,10 @@ class Workout(BaseModel):
 
         can_see_heart_rate = can_view_workout_data("hr", self.user, user)
         can_see_calories = can_view_workout_data("calories", self.user, user)
-        sport_data_visibility = get_sport_displayed_data(
-            self.sport, user, force_display_speed
-        )
+        if sport_data_visibility is None:
+            sport_data_visibility = get_sport_displayed_data(
+                self.sport, user, force_display_speed
+            )
 
         workout_data = {
             **workout_data,
@@ -728,6 +730,9 @@ class Workout(BaseModel):
         is_owner = user is not None and user.id == self.user_id
         is_workout_suspended = self.suspended_at is not None
         additional_data = not is_workout_suspended or for_report or is_owner
+        sport_data_visibility = get_sport_displayed_data(
+            self.sport, user, force_display_speed
+        )
 
         workout = self.get_workout_data(
             user,
@@ -738,6 +743,7 @@ class Workout(BaseModel):
             light=light,
             with_equipments=with_equipments,
             force_display_speed=force_display_speed,
+            sport_data_visibility=sport_data_visibility,
         )
 
         workout["map"] = (
@@ -837,7 +843,11 @@ class Workout(BaseModel):
                 .order_by(Workout.workout_date.asc())
                 .first()
             )
-            workout["elevation_data_source"] = self.elevation_data_source
+            workout["elevation_data_source"] = (
+                self.elevation_data_source
+                if sport_data_visibility.display_elevation
+                else ElevationDataSource.FILE
+            )
 
         else:
             next_workout = None

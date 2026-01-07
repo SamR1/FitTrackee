@@ -11,7 +11,7 @@ from shapely import LineString, Point
 from sqlalchemy.exc import IntegrityError
 
 from fittrackee import db
-from fittrackee.constants import PaceSpeedDisplay
+from fittrackee.constants import ElevationDataSource, PaceSpeedDisplay
 from fittrackee.equipments.models import Equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.tests.comments.mixins import CommentMixin
@@ -1431,6 +1431,25 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         )
 
         assert serialized_workout["liked"] is True
+
+    def test_it_returns_elevation_data_source_when_sport_without_elevation(
+        self,
+        app: Flask,
+        user_1: User,
+        workout_outdoor_tennis_user_1: Workout,
+    ) -> None:
+        workout_outdoor_tennis_user_1.elevation_data_source = (
+            ElevationDataSource.OPEN_ELEVATION
+        )
+
+        serialized_workout = workout_outdoor_tennis_user_1.serialize(
+            user=user_1, light=False
+        )
+
+        assert (
+            serialized_workout["elevation_data_source"]
+            == ElevationDataSource.FILE
+        )
 
 
 class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
