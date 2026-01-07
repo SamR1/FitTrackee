@@ -3,6 +3,7 @@ import type { IWorkout, IMapWorkout } from '@/types/workouts'
 
 export const sportColors: Record<string, string> = {
   Canoeing: '#75b3be',
+  'Canoeing (Whitewater)': '#4f8c96',
   'Cycling (Sport)': '#4c9792',
   'Cycling (Trekking)': '#a8af88',
   'Cycling (Transport)': '#88af98',
@@ -10,6 +11,7 @@ export const sportColors: Record<string, string> = {
   Halfbike: '#d3638a',
   Hiking: '#bb757c',
   Kayaking: '#4978c4',
+  'Kayaking (Whitewater)': '#2f62aa',
   'Mountain Biking': '#d4b371',
   'Mountain Biking (Electric)': '#fc9d6f',
   Mountaineering: '#48b3b7',

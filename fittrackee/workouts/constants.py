@@ -43,7 +43,7 @@ SPORTS_WITHOUT_ELEVATION_DATA = [
     # racket sports
     "Padel (Outdoor)",
     "Tennis (Outdoor)",
-    # water sports
+    # flatwater sports
     "Canoeing",
     "Kayaking",
     "Open Water Swimming",

@@ -3,6 +3,7 @@ from flask_babel import gettext as _
 # for strings detection by gettext
 AVAILABLE_SPORTS = [
     _("Canoeing"),
+    _("Canoeing (Whitewater)"),
     _("Cycling (Sport)"),
     _("Cycling (Transport)"),
     _("Cycling (Trekking)"),
@@ -10,6 +11,7 @@ AVAILABLE_SPORTS = [
     _("Halfbike"),
     _("Hiking"),
     _("Kayaking"),
+    _("Kayaking (Whitewater)"),
     _("Mountain Biking"),
     _("Mountain Biking (Electric)"),
     _("Mountaineering"),

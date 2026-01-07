@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-10-01 18:53+0200\n"
+"POT-Creation-Date: 2026-01-07 10:34+0100\n"
 "PO-Revision-Date: 2024-05-12 18:01+0000\n"
 "Last-Translator: Jozef Mlich <jmlich83@gmail.com>\n"
 "Language: cs\n"
@@ -460,98 +460,106 @@ msgid "Canoeing"
 msgstr "Kánoe"
 
 #: fittrackee/feeds/feeds/constants.py:6
+msgid "Canoeing (Whitewater)"
+msgstr ""
+
+#: fittrackee/feeds/feeds/constants.py:7
 msgid "Cycling (Sport)"
 msgstr "Cyklistika (Sport)"
 
-#: fittrackee/feeds/feeds/constants.py:7
+#: fittrackee/feeds/feeds/constants.py:8
 msgid "Cycling (Transport)"
 msgstr "Jízda na kole (Přeprava)"
 
-#: fittrackee/feeds/feeds/constants.py:8
+#: fittrackee/feeds/feeds/constants.py:9
 msgid "Cycling (Trekking)"
 msgstr "Jízda na kole (Trekking)"
 
-#: fittrackee/feeds/feeds/constants.py:9
+#: fittrackee/feeds/feeds/constants.py:10
 msgid "Cycling (Virtual)"
 msgstr "Jízda na kole (Virtuální)"
 
-#: fittrackee/feeds/feeds/constants.py:10
+#: fittrackee/feeds/feeds/constants.py:11
 msgid "Halfbike"
 msgstr ""
 
-#: fittrackee/feeds/feeds/constants.py:11
+#: fittrackee/feeds/feeds/constants.py:12
 msgid "Hiking"
 msgstr "Turistika"
 
-#: fittrackee/feeds/feeds/constants.py:12
+#: fittrackee/feeds/feeds/constants.py:13
 msgid "Kayaking"
 msgstr ""
 
-#: fittrackee/feeds/feeds/constants.py:13
+#: fittrackee/feeds/feeds/constants.py:14
+msgid "Kayaking (Whitewater)"
+msgstr ""
+
+#: fittrackee/feeds/feeds/constants.py:15
 msgid "Mountain Biking"
 msgstr "Horská cyklistika"
 
-#: fittrackee/feeds/feeds/constants.py:14
+#: fittrackee/feeds/feeds/constants.py:16
 msgid "Mountain Biking (Electric)"
 msgstr "Horská cyklistika (Elektrická)"
 
-#: fittrackee/feeds/feeds/constants.py:15
+#: fittrackee/feeds/feeds/constants.py:17
 msgid "Mountaineering"
 msgstr "Horolezectví"
 
-#: fittrackee/feeds/feeds/constants.py:16
+#: fittrackee/feeds/feeds/constants.py:18
 msgid "Open Water Swimming"
 msgstr "Plavání na otevřené vodě"
 
-#: fittrackee/feeds/feeds/constants.py:17
+#: fittrackee/feeds/feeds/constants.py:19
 msgid "Padel (Outdoor)"
 msgstr ""
 
-#: fittrackee/feeds/feeds/constants.py:18
+#: fittrackee/feeds/feeds/constants.py:20
 msgid "Paragliding"
 msgstr "Paragliding"
 
-#: fittrackee/feeds/feeds/constants.py:19
+#: fittrackee/feeds/feeds/constants.py:21
 msgid "Rowing"
 msgstr "Veslování"
 
-#: fittrackee/feeds/feeds/constants.py:20
+#: fittrackee/feeds/feeds/constants.py:22
 msgid "Running"
 msgstr "Běhání"
 
-#: fittrackee/feeds/feeds/constants.py:21
+#: fittrackee/feeds/feeds/constants.py:23
 msgid "Skiing (Alpine)"
 msgstr "Lyžování (Alpské)"
 
-#: fittrackee/feeds/feeds/constants.py:22
+#: fittrackee/feeds/feeds/constants.py:24
 msgid "Skiing (Cross Country)"
 msgstr "Lyžování (Běžky)"
 
-#: fittrackee/feeds/feeds/constants.py:23
+#: fittrackee/feeds/feeds/constants.py:25
 msgid "Snowshoes"
 msgstr "Sněžnice"
 
-#: fittrackee/feeds/feeds/constants.py:24
+#: fittrackee/feeds/feeds/constants.py:26
 msgid "Standup Paddleboarding"
 msgstr ""
 
-#: fittrackee/feeds/feeds/constants.py:25
+#: fittrackee/feeds/feeds/constants.py:27
 msgid "Swimrun"
 msgstr ""
 
-#: fittrackee/feeds/feeds/constants.py:26
+#: fittrackee/feeds/feeds/constants.py:28
 msgid "Tennis (Outdoor)"
 msgstr ""
 
-#: fittrackee/feeds/feeds/constants.py:27
+#: fittrackee/feeds/feeds/constants.py:29
 msgid "Trail"
 msgstr "Trail"
 
-#: fittrackee/feeds/feeds/constants.py:28
+#: fittrackee/feeds/feeds/constants.py:30
 msgid "Walking"
 msgstr "Chůze"
 
-#: fittrackee/feeds/feeds/constants.py:29
+#: fittrackee/feeds/feeds/constants.py:31
 msgid "Windsurfing"
 msgstr ""
 
