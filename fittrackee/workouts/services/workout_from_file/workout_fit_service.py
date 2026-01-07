@@ -62,8 +62,16 @@ class WorkoutFitService(WorkoutGpxService):
             )
             frame = next(file_id_frames, None)
             if frame and frame.has_field("manufacturer"):
-                creator = frame.get_value("manufacturer")
-                if frame.has_field("product") and frame.get_value("product"):
+                creator = (
+                    frame.get_value("manufacturer")
+                    if isinstance(frame.get_value("manufacturer"), str)
+                    else None
+                )
+                if (
+                    creator
+                    and frame.has_field("product")
+                    and frame.get_value("product")
+                ):
                     product = frame.get_raw_value("product")
                     if (
                         creator.lower() == "garmin"

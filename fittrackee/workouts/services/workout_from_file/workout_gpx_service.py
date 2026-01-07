@@ -688,7 +688,10 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 if not extension.text:
                     continue
                 if extension.tag.endswith("}Calories"):
-                    calories = int(extension.text)
+                    try:
+                        calories = int(float(extension.text))
+                    except ValueError:
+                        calories = None
                     break
         return calories
 

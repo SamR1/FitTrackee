@@ -23,6 +23,7 @@
     "error when parsing kml file": "Error when parsing .kml file.",
     "error when parsing kmz file": "Error when parsing .kmz file.",
     "error when parsing tcx file": "Error when parsing .tcx file.",
+    "error when processing workout": "Error when processing workout",
     "error when saving workout": "Error when saving workout.",
     "error when updating configuration": "Error when updating configuration.",
     "error while fetching comments": "Error while fetching comments.",
