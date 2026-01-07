@@ -49,7 +49,8 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "about": null,
           "admin_contact": "admin@example.com",
           "elevation_services":	{
-            "open_elevation": false
+            "open_elevation": false,
+            "valhalla": false
           },
           "file_sync_limit_import": 10,
           "file_limit_import": 10,
@@ -111,7 +112,8 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
           "about": null,
           "admin_contact": "admin@example.com",
           "elevation_services":	{
-            "open_elevation": false
+            "open_elevation": false,
+            "valhalla": false
           },
           "file_sync_limit_import": 10,
           "file_limit_import": 10,

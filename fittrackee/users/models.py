@@ -838,13 +838,13 @@ class User(BaseModel):
                 ElevationDataSource.OPEN_ELEVATION,
                 ElevationDataSource.OPEN_ELEVATION_SMOOTH,
             ]
-            and current_app.config["OPEN_ELEVATION_API_URL"] is None
+            and not current_app.config["OPEN_ELEVATION_API_URL"]
         ):
             return ElevationDataSource.FILE
 
         if (
             self.missing_elevations_processing == ElevationDataSource.VALHALLA
-            and current_app.config["VALHALLA_API_URL"] is None
+            and not current_app.config["VALHALLA_API_URL"]
         ):
             return ElevationDataSource.FILE
 
