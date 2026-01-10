@@ -648,6 +648,27 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
         assert result.exit_code == 2
         assert "Invalid value for '--extension'" in result.output
 
+    def test_it_raises_error_when_new_sport_id_not_provided_with_sport_id(
+        self, app: "Flask", sport_1_cycling: "Sport"
+    ) -> None:
+        runner = CliRunner()
+
+        result = runner.invoke(
+            cli,
+            [
+                "workouts",
+                "refresh",
+                "--new-sport-id",
+                "1",
+            ],
+        )
+
+        assert result.exit_code == 2
+        assert (
+            "'--new-sport-id' must be provided with '--sport-id'"
+            in result.output
+        )
+
     def test_it_calls_workouts_refresh_service_whit_default_values(
         self, app: "Flask"
     ) -> None:
@@ -663,6 +684,7 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
 
         service_mock.assert_called_once_with(
             sport_id=None,
+            new_sport_id=None,
             date_from=None,
             date_to=None,
             per_page=10,
@@ -681,6 +703,7 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
         self,
         app: "Flask",
         sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
         user_1: "User",
     ) -> None:
         runner = CliRunner()
@@ -698,6 +721,8 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
                     "refresh",
                     "--sport-id",
                     f"{sport_1_cycling.id}",
+                    "--new-sport-id",
+                    f"{sport_2_running.id}",
                     "--user",
                     user_1.username,
                     "--from",
@@ -719,7 +744,8 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
             )
 
         service_mock.assert_called_once_with(
-            sport_id=1,
+            sport_id=sport_1_cycling.id,
+            new_sport_id=sport_2_running.id,
             date_from=datetime(2025, 1, 1, 0, 0, tzinfo=timezone.utc),
             date_to=datetime(2025, 6, 1, 0, 0, tzinfo=timezone.utc),
             per_page=100,

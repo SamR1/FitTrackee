@@ -28,7 +28,13 @@ SPORT_EQUIPMENT_TYPES = {
     ],
     "Bike Trainer": ["Cycling (Virtual)"],
     "Board": ["Standup Paddleboarding", "Windsurfing"],
-    "Kayak_Boat": ["Canoeing", "Rowing", "Kayaking"],
+    "Kayak_Boat": [
+        "Canoeing",
+        "Canoeing (Whitewater)",
+        "Kayaking",
+        "Kayaking (Whitewater)",
+        "Rowing",
+    ],
     "Skis": ["Skiing (Alpine)", "Skiing (Cross Country)"],
     "Snowshoes": ["Snowshoes"],
 }

@@ -2783,6 +2783,8 @@ def update_workout(
             "for workout without file"
         )
     try:
+        old_sport_id = workout.sport_id
+        new_sport_id = workout_data.get("sport_id")
         service = WorkoutUpdateService(auth_user, workout, workout_data)
         service.update()
 
@@ -2806,6 +2808,20 @@ def update_workout(
                 change_elevation_source=workout_data["elevation_data_source"],
             )
             refresh_service.refresh()
+        elif (
+            workout.original_file
+            and new_sport_id is not None
+            and new_sport_id != old_sport_id
+        ):
+            db.session.flush()
+            db.session.refresh(workout)
+            refresh_service = WorkoutFromFileRefreshService(
+                workout,
+                update_weather=False,
+                get_elevation_on_refresh=False,
+            )
+            refresh_service.refresh()
+
         db.session.commit()
 
         return {

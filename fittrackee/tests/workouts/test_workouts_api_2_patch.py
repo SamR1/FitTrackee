@@ -11,11 +11,15 @@ from fittrackee.equipments.models import Equipment
 from fittrackee.tests.fixtures.fixtures_workouts import VALHALLA_VALUES
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.visibility_levels import VisibilityLevel
+from fittrackee.workouts.models import WorkoutSegment
 from fittrackee.workouts.services.elevation.elevation_service import (
     ElevationService,
 )
 from fittrackee.workouts.services.elevation.valhalla_elevation_service import (
     ValhallaElevationService,
+)
+from fittrackee.workouts.services.workouts_from_file_refresh_service import (
+    WorkoutFromFileRefreshService,
 )
 
 from ..utils import jsonify_dict
@@ -405,12 +409,11 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
             "invalid",
         )
 
-    def test_it_updates_sport_and_title_for_workout_with_gpx(
+    def test_it_updates_title_for_workout_with_gpx(
         self,
         app: "Flask",
         user_1: "User",
         sport_1_cycling: "Sport",
-        sport_2_running: "Sport",
         gpx_file: str,
     ) -> None:
         workout = create_a_workout_with_file(user_1, gpx_file)
@@ -418,18 +421,35 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
             app, user_1.email
         )
 
-        response = client.patch(
-            f"/api/workouts/{workout.short_id}",
-            content_type="application/json",
-            json={"sport_id": 2, "title": "Workout test"},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
+        with patch.object(
+            WorkoutFromFileRefreshService, "refresh"
+        ) as refresh_mock:
+            response = client.patch(
+                f"/api/workouts/{workout.short_id}",
+                content_type="application/json",
+                json={"title": "Workout test"},
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
 
+        refresh_mock.assert_not_called()
+        db.session.refresh(workout)
+        assert workout.title == "Workout test"
+        segment = WorkoutSegment.query.filter_by(workout_id=workout.id).one()
+        assert segment.points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 998.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "pace": None,
+            "speed": 0.0,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 1
-        assert sport_2_running.id == data["data"]["workouts"][0]["sport_id"]
+        assert data["data"]["workouts"][0]["sport_id"] == sport_1_cycling.id
         assert data["data"]["workouts"][0]["title"] == "Workout test"
         assert "creation_date" in data["data"]["workouts"][0]
         assert (
@@ -441,12 +461,12 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         )
         assert "0:04:10" == data["data"]["workouts"][0]["duration"]
         assert data["data"]["workouts"][0]["ascent"] == 0.4
-        assert data["data"]["workouts"][0]["ave_speed"] is None
+        assert data["data"]["workouts"][0]["ave_speed"] == 4.61
         assert data["data"]["workouts"][0]["descent"] == 23.4
         assert data["data"]["workouts"][0]["description"] is None
         assert data["data"]["workouts"][0]["distance"] == 0.32
         assert data["data"]["workouts"][0]["max_alt"] == 998.0
-        assert data["data"]["workouts"][0]["max_speed"] is None
+        assert data["data"]["workouts"][0]["max_speed"] == 5.12
         assert data["data"]["workouts"][0]["min_alt"] == 975.0
         assert data["data"]["workouts"][0]["moving"] == "0:04:10"
         assert data["data"]["workouts"][0]["pauses"] is None
@@ -455,19 +475,99 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         records = data["data"]["workouts"][0]["records"]
         assert len(records) == 5
         for record in records:
-            assert record["sport_id"] == sport_2_running.id
+            assert record["sport_id"] == sport_1_cycling.id
             assert record["workout_id"] == data["data"]["workouts"][0]["id"]
             assert record["workout_date"] == "Tue, 13 Mar 2018 12:44:45 GMT"
-        assert records[0]["record_type"] == "AP"
-        assert records[0]["value"] == "0:13:01"
-        assert records[1]["record_type"] == "BP"
-        assert records[1]["value"] == "0:11:44"
-        assert records[2]["record_type"] == "FD"
-        assert records[2]["value"] == 0.32
-        assert records[3]["record_type"] == "HA"
-        assert records[3]["value"] == 0.4
-        assert records[4]["record_type"] == "LD"
-        assert records[4]["value"] == "0:04:10"
+        assert records[0]["record_type"] == "AS"
+        assert records[0]["value"] == 4.61
+        assert records[1]["record_type"] == "FD"
+        assert records[1]["value"] == 0.32
+        assert records[2]["record_type"] == "HA"
+        assert records[2]["value"] == 0.4
+        assert records[3]["record_type"] == "LD"
+        assert records[3]["value"] == "0:04:10"
+        assert records[4]["record_type"] == "MS"
+        assert records[4]["value"] == 5.12
+
+    def test_it_updates_sport_and_refreshes_workout(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        sport_5_outdoor_tennis: "Sport",
+        gpx_file: str,
+    ) -> None:
+        workout = create_a_workout_with_file(user_1, gpx_file)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/workouts/{workout.short_id}",
+            content_type="application/json",
+            json={"sport_id": sport_5_outdoor_tennis.id},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        db.session.refresh(workout)
+        assert workout.sport_id == sport_5_outdoor_tennis.id
+        segment = WorkoutSegment.query.filter_by(workout_id=workout.id).one()
+        assert segment.points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": None,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "pace": None,
+            "speed": 0.0,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert (
+            data["data"]["workouts"][0]["sport_id"]
+            == sport_5_outdoor_tennis.id
+        )
+        assert data["data"]["workouts"][0]["title"] == "just a workout"
+        assert "creation_date" in data["data"]["workouts"][0]
+        assert (
+            "Tue, 13 Mar 2018 12:44:45 GMT"
+            == data["data"]["workouts"][0]["workout_date"]
+        )
+        assert data["data"]["workouts"][0]["user"] == jsonify_dict(
+            user_1.serialize()
+        )
+        assert "0:04:10" == data["data"]["workouts"][0]["duration"]
+        assert data["data"]["workouts"][0]["ascent"] is None
+        assert data["data"]["workouts"][0]["ave_pace"] is None
+        assert data["data"]["workouts"][0]["ave_speed"] == 4.57
+        assert data["data"]["workouts"][0]["best_pace"] is None
+        assert data["data"]["workouts"][0]["descent"] is None
+        assert data["data"]["workouts"][0]["description"] is None
+        assert data["data"]["workouts"][0]["distance"] == 0.317
+        assert data["data"]["workouts"][0]["max_alt"] is None
+        assert data["data"]["workouts"][0]["max_speed"] == 5.1
+        assert data["data"]["workouts"][0]["min_alt"] is None
+        assert data["data"]["workouts"][0]["moving"] == "0:04:10"
+        assert data["data"]["workouts"][0]["pauses"] is None
+        assert data["data"]["workouts"][0]["with_file"] is True
+
+        records = data["data"]["workouts"][0]["records"]
+        assert len(records) == 4
+        for record in records:
+            assert record["sport_id"] == sport_5_outdoor_tennis.id
+            assert record["workout_id"] == data["data"]["workouts"][0]["id"]
+            assert record["workout_date"] == "Tue, 13 Mar 2018 12:44:45 GMT"
+        assert records[0]["record_type"] == "AS"
+        assert records[0]["value"] == 4.57
+        assert records[1]["record_type"] == "FD"
+        assert records[1]["value"] == 0.317
+        assert records[2]["record_type"] == "LD"
+        assert records[2]["value"] == "0:04:10"
+        assert records[3]["record_type"] == "MS"
+        assert records[3]["value"] == 5.1
 
     @pytest.mark.parametrize(
         "input_description,input_workout_visibility",
@@ -704,21 +804,25 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
             app, user_1.email
         )
 
-        response = client.patch(
-            f"/api/workouts/{workout_short_id}",
-            content_type="application/json",
-            json={
-                "sport_id": 2,
-                "duration": 3600,
-                "workout_date": "2018-05-15 15:05",
-                "distance": 8,
-                "title": "Workout test",
-            },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
+        with patch.object(
+            WorkoutFromFileRefreshService, "refresh"
+        ) as refresh_mock:
+            response = client.patch(
+                f"/api/workouts/{workout_short_id}",
+                content_type="application/json",
+                json={
+                    "sport_id": 2,
+                    "duration": 3600,
+                    "workout_date": "2018-05-15 15:05",
+                    "distance": 8,
+                    "title": "Workout test",
+                },
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
 
         data = json.loads(response.data.decode())
 
+        refresh_mock.assert_not_called()
         assert response.status_code == 200
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 1

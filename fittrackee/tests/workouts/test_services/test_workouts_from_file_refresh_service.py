@@ -20,7 +20,7 @@ from fittrackee.workouts.exceptions import (
     WorkoutFileException,
     WorkoutRefreshException,
 )
-from fittrackee.workouts.models import Record, Workout
+from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 from fittrackee.workouts.services.elevation.open_elevation_service import (
     OpenElevationService,
 )
@@ -38,7 +38,7 @@ if TYPE_CHECKING:
 
     from fittrackee.equipments.models import Equipment
     from fittrackee.users.models import User, UserSportPreference
-    from fittrackee.workouts.models import Sport, WorkoutSegment
+    from fittrackee.workouts.models import Sport
 
 # files from gpx_test.zip
 TEST_FILES_LIST = ["test_1.gpx", "test_2.gpx", "test_3.gpx"]
@@ -636,6 +636,7 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
         assert service.username is None
         assert service.extension is None
         assert service.sport_id is None
+        assert service.new_sport_id is None
         assert service.date_from is None
         assert service.date_to is None
         assert service.logger == test_logger
@@ -655,6 +656,7 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
             user="Test",
             extension=".fit",
             sport_id=1,
+            new_sport_id=2,
             date_from=date_from,
             date_to=date_to,
             with_weather=True,
@@ -667,6 +669,7 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
         assert service.username == "Test"
         assert service.extension == ".fit"
         assert service.sport_id == 1
+        assert service.new_sport_id == 2
         assert service.date_from == date_from
         assert service.date_to == date_to
         assert service.logger == test_logger
@@ -763,6 +766,9 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
 
         assert count == 1
         db.session.refresh(workout_cycling_user_1)
+        assert (
+            workout_cycling_user_1.sport_id == sport_1_cycling.id
+        )  # unchanged
         assert float(workout_cycling_user_1.distance) == 0.112  # type: ignore[arg-type]
 
     def test_it_refreshes_only_workout_with_given_extension(
@@ -819,7 +825,49 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
 
         assert count == 1
         db.session.refresh(workout_running_user_1)
+        assert (
+            workout_cycling_user_1.sport_id == sport_1_cycling.id
+        )  # unchanged
         assert float(workout_running_user_1.distance) == 0.318  # type: ignore[arg-type]
+
+    def test_it_updates_sport_and_refreshes_workout(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_5_outdoor_tennis: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        workout_running_user_1: "Workout",
+        tcx_with_one_lap_and_one_track: str,
+    ) -> None:
+        service = WorkoutsFromFileRefreshService(
+            logger=test_logger, new_sport_id=sport_5_outdoor_tennis.id
+        )
+
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=tcx_with_one_lap_and_one_track,
+        ):
+            count = service.refresh()
+        db.session.commit()
+
+        assert count == 1
+        db.session.refresh(workout_cycling_user_1)
+        assert workout_cycling_user_1.sport_id == sport_5_outdoor_tennis.id
+        segment = WorkoutSegment.query.filter_by(
+            workout_id=workout_cycling_user_1.id
+        ).one()
+        assert segment.points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": None,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "pace": None,
+            "speed": 0.0,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
 
     def test_it_refreshes_workout_date_from_given_date(
         self,

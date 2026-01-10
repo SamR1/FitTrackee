@@ -125,6 +125,7 @@ class WorkoutsFromFileRefreshService:
         user: Optional[str] = None,
         extension: Optional[str] = None,
         sport_id: Optional[int] = None,
+        new_sport_id: Optional[int] = None,
         date_from: Optional[datetime] = None,
         date_to: Optional[datetime] = None,
         with_weather: bool = False,
@@ -137,6 +138,7 @@ class WorkoutsFromFileRefreshService:
         self.username: Optional[str] = user
         self.extension: Optional[str] = extension if extension else None
         self.sport_id: Optional[int] = sport_id
+        self.new_sport_id: Optional[int] = new_sport_id
         self.date_from: Optional["datetime"] = date_from
         self.date_to: Optional["datetime"] = date_to
         self.with_weather: bool = with_weather
@@ -188,6 +190,10 @@ class WorkoutsFromFileRefreshService:
             self._log_if_verbose(f"Refreshing workout {index}/{total}...")
 
             try:
+                if self.new_sport_id:
+                    workout.sport_id = self.new_sport_id
+                    db.session.flush()
+                    db.session.refresh(workout)
                 service = WorkoutFromFileRefreshService(
                     workout,
                     update_weather=self.with_weather,

@@ -7,17 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-10-01 18:53+0200\n"
+"POT-Creation-Date: 2026-01-07 10:34+0100\n"
 "PO-Revision-Date: 2025-10-09 11:07+0000\n"
 "Last-Translator: Mikel Larreategi <mlarreategi@codesyntax.com>\n"
-"Language-Team: Basque <https://hosted.weblate.org/projects/fittrackee/"
-"fittrackee-api-emails/eu/>\n"
 "Language: eu\n"
+"Language-Team: Basque <https://hosted.weblate.org/projects/fittrackee"
+"/fittrackee-api-emails/eu/>\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.14-dev\n"
 "Generated-By: Babel 2.17.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
@@ -466,98 +465,106 @@ msgid "Canoeing"
 msgstr "Kanoa"
 
 #: fittrackee/feeds/feeds/constants.py:6
+msgid "Canoeing (Whitewater)"
+msgstr ""
+
+#: fittrackee/feeds/feeds/constants.py:7
 msgid "Cycling (Sport)"
 msgstr "Txirrindularitza (Kirola)"
 
-#: fittrackee/feeds/feeds/constants.py:7
+#: fittrackee/feeds/feeds/constants.py:8
 msgid "Cycling (Transport)"
 msgstr "Txirrindularitza (Garraioa)"
 
-#: fittrackee/feeds/feeds/constants.py:8
+#: fittrackee/feeds/feeds/constants.py:9
 msgid "Cycling (Trekking)"
 msgstr "Txirrindularitza (mendikoa)"
 
-#: fittrackee/feeds/feeds/constants.py:9
+#: fittrackee/feeds/feeds/constants.py:10
 msgid "Cycling (Virtual)"
 msgstr "Txirrindularitza (birtuala)"
 
-#: fittrackee/feeds/feeds/constants.py:10
+#: fittrackee/feeds/feeds/constants.py:11
 msgid "Halfbike"
 msgstr "Halfbike"
 
-#: fittrackee/feeds/feeds/constants.py:11
+#: fittrackee/feeds/feeds/constants.py:12
 msgid "Hiking"
 msgstr "Mendi ibilaldia"
 
-#: fittrackee/feeds/feeds/constants.py:12
+#: fittrackee/feeds/feeds/constants.py:13
 msgid "Kayaking"
 msgstr "Kayak"
 
-#: fittrackee/feeds/feeds/constants.py:13
+#: fittrackee/feeds/feeds/constants.py:14
+msgid "Kayaking (Whitewater)"
+msgstr ""
+
+#: fittrackee/feeds/feeds/constants.py:15
 msgid "Mountain Biking"
 msgstr "Mendiko bizikleta"
 
-#: fittrackee/feeds/feeds/constants.py:14
+#: fittrackee/feeds/feeds/constants.py:16
 msgid "Mountain Biking (Electric)"
 msgstr "Mendiko bizikleta (elektrikoa)"
 
-#: fittrackee/feeds/feeds/constants.py:15
+#: fittrackee/feeds/feeds/constants.py:17
 msgid "Mountaineering"
 msgstr "Mendizaletasuna"
 
-#: fittrackee/feeds/feeds/constants.py:16
+#: fittrackee/feeds/feeds/constants.py:18
 msgid "Open Water Swimming"
 msgstr "Ur irekietako igeriketa"
 
-#: fittrackee/feeds/feeds/constants.py:17
+#: fittrackee/feeds/feeds/constants.py:19
 msgid "Padel (Outdoor)"
 msgstr "Padel (kanpokoa)"
 
-#: fittrackee/feeds/feeds/constants.py:18
+#: fittrackee/feeds/feeds/constants.py:20
 msgid "Paragliding"
 msgstr "Parapentea"
 
-#: fittrackee/feeds/feeds/constants.py:19
+#: fittrackee/feeds/feeds/constants.py:21
 msgid "Rowing"
 msgstr "Arrauna"
 
-#: fittrackee/feeds/feeds/constants.py:20
+#: fittrackee/feeds/feeds/constants.py:22
 msgid "Running"
 msgstr "Korrika egitea"
 
-#: fittrackee/feeds/feeds/constants.py:21
+#: fittrackee/feeds/feeds/constants.py:23
 msgid "Skiing (Alpine)"
 msgstr "Eskia (alpinoa)"
 
-#: fittrackee/feeds/feeds/constants.py:22
+#: fittrackee/feeds/feeds/constants.py:24
 msgid "Skiing (Cross Country)"
 msgstr "Mendiko eskia"
 
-#: fittrackee/feeds/feeds/constants.py:23
+#: fittrackee/feeds/feeds/constants.py:25
 msgid "Snowshoes"
 msgstr "Erraketak"
 
-#: fittrackee/feeds/feeds/constants.py:24
+#: fittrackee/feeds/feeds/constants.py:26
 msgid "Standup Paddleboarding"
 msgstr "Paddle Surf"
 
-#: fittrackee/feeds/feeds/constants.py:25
+#: fittrackee/feeds/feeds/constants.py:27
 msgid "Swimrun"
 msgstr "Igerikorrika"
 
-#: fittrackee/feeds/feeds/constants.py:26
+#: fittrackee/feeds/feeds/constants.py:28
 msgid "Tennis (Outdoor)"
 msgstr "Tenisa (kanpokoa)"
 
-#: fittrackee/feeds/feeds/constants.py:27
+#: fittrackee/feeds/feeds/constants.py:29
 msgid "Trail"
 msgstr "Mendiko lasterketa"
 
-#: fittrackee/feeds/feeds/constants.py:28
+#: fittrackee/feeds/feeds/constants.py:30
 msgid "Walking"
 msgstr "Oinez ibiltzea"
 
-#: fittrackee/feeds/feeds/constants.py:29
+#: fittrackee/feeds/feeds/constants.py:31
 msgid "Windsurfing"
 msgstr "Windsurf"
 
@@ -602,3 +609,4 @@ msgstr "Jaitsiera"
 #: fittrackee/feeds/templates/workout/body.html:4
 msgid "Description"
 msgstr "Deskribapena"
+
