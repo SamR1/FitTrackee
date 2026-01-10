@@ -69,9 +69,7 @@ class BaseElevationService(ABC):
         self, points: List["GPXTrackPoint"], smooth: bool = False
     ) -> List[int]:
         appLog.debug(
-            "{log_label}: getting missing elevations".format(
-                log_label=self.log_label
-            )
+            "{log_label}: getting elevations".format(log_label=self.log_label)
         )
 
         results = self._get_elevations_for_api(points)

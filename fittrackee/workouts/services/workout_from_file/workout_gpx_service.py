@@ -363,7 +363,6 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             try:
                 elevations = elevation_service.get_elevations(points)
             except Exception as e:
-                appLog.error(str(e))
                 raise WorkoutException(
                     "error",
                     "Error when getting elevation from elevation service",
