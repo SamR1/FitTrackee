@@ -104,6 +104,39 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
             timeout=30,
         )
 
+    def test_it_calls_open_elevation_api_by_batch_when_exceeding_limit(
+        self,
+        app_with_open_elevation_url: "Flask",
+        gpx_track_points_without_elevations: List["GPXTrackPoint"],
+    ) -> None:
+        service = OpenElevationService()
+
+        with (
+            patch(
+                "fittrackee.workouts.services.elevation."
+                "open_elevation_service.MAX_POINTS",
+                5,
+            ),
+            patch.object(
+                requests,
+                "post",
+                side_effect=[
+                    self.get_response(
+                        {"results": OPEN_ELEVATION_RESPONSE[:5]}
+                    ),
+                    self.get_response(
+                        {"results": OPEN_ELEVATION_RESPONSE[5:]}
+                    ),
+                ],
+            ) as post_mock,
+        ):
+            result = service.get_elevations(
+                gpx_track_points_without_elevations
+            )
+
+        assert post_mock.call_count == 2
+        assert result == [998, 998, 994, 994, 994, 1124, 1124, 1124, 1124]
+
     def test_it_returns_elevations(
         self,
         app_with_open_elevation_url: "Flask",

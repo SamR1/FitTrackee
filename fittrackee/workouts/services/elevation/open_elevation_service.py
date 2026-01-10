@@ -9,6 +9,9 @@ if TYPE_CHECKING:
     from gpxpy.gpx import GPXTrackPoint
 
 
+MAX_POINTS = 15000
+
+
 class OpenElevationService(BaseElevationService):
     """
     Documentation:
@@ -25,19 +28,23 @@ class OpenElevationService(BaseElevationService):
         if not self.url:
             raise ElevationServiceException("Open Elevation API: no URL set")
 
-        r = requests.post(
-            self.url,
-            json={
-                "locations": [
-                    {
-                        "latitude": point.latitude,
-                        "longitude": point.longitude,
-                    }
-                    for point in points
-                ]
-            },
-            timeout=30,
-        )
-        r.raise_for_status()
-        results = r.json().get("results", [])
-        return [int(r["elevation"]) for r in results]
+        elevations: List[int] = []
+        for i in range(0, len(points), MAX_POINTS):
+            r = requests.post(
+                self.url,
+                json={
+                    "locations": [
+                        {
+                            "latitude": point.latitude,
+                            "longitude": point.longitude,
+                        }
+                        for point in points[i : i + MAX_POINTS]
+                    ]
+                },
+                timeout=30,
+            )
+            r.raise_for_status()
+            results = r.json().get("results", [])
+            elevations = [*elevations, *[int(r["elevation"]) for r in results]]
+
+        return elevations
