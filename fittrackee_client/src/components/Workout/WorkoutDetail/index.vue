@@ -265,7 +265,6 @@
     updateDisplayModal(false)
   }
   function deleteWorkout(workoutId: string) {
-    updateDisplayModal(false)
     store.dispatch(WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT, {
       workoutId: workoutId,
     })

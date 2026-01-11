@@ -1264,7 +1264,19 @@ def edit_user_sport_preferences(
 
     color = post_data.get("color")
     is_active = post_data.get("is_active")
-    stopped_speed_threshold = post_data.get("stopped_speed_threshold")
+    if "stopped_speed_threshold" in post_data:
+        stopped_speed_threshold = post_data["stopped_speed_threshold"]
+        if (
+            not isinstance(stopped_speed_threshold, (int, float))
+            # gpxpy ignores value when equals 0
+            or stopped_speed_threshold <= 0
+        ):
+            return InvalidPayloadErrorResponse(
+                "'stopped_speed_threshold' must be an integer greater then 0"
+            )
+    else:
+        stopped_speed_threshold = None
+
     default_equipment_ids = post_data.get("default_equipment_ids")
     pace_speed_display = post_data.get("pace_speed_display")
 
