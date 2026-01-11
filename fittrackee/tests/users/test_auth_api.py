@@ -2182,6 +2182,37 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         assert data["message"] == "user sport preferences updated"
         assert data["data"]["stopped_speed_threshold"] == 0.5
 
+    @pytest.mark.parametrize(
+        "input_stopped_speed_threshold", [0, -0.1, "invalid"]
+    )
+    def test_it_returns_error_when_stopped_speed_threshold_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        input_stopped_speed_threshold: Union[int, float],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            "/api/auth/profile/edit/sports",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    sport_id=sport_1_cycling.id,
+                    stopped_speed_threshold=input_stopped_speed_threshold,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            "'stopped_speed_threshold' must be an integer greater then 0",
+        )
+
     def test_it_updates_pace_speed_display(
         self, app: Flask, user_1: User, sport_2_running: Sport
     ) -> None:
