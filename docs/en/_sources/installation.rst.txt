@@ -954,8 +954,8 @@ Examples:
     Restart=always
     RestartSec=1
     User=<USER>
-    StandardOutput=syslog
-    StandardError=syslog
+    StandardOutput=journal
+    StandardError=journal
     SyslogIdentifier=fittrackee
     Environment="APP_SECRET_KEY="
     Environment="APP_LOG="
@@ -1000,9 +1000,8 @@ Examples:
     Restart=always
     RestartSec=1
     User=<USER>
-    StandardOutput=syslog
-    StandardError=syslog
-    SyslogIdentifier=fittrackee_workers
+    StandardOutput=journal
+    StandardError=journal
     Environment="FLASK_APP=fittrackee"
     Environment="APP_SECRET_KEY="
     Environment="APP_LOG="
@@ -1037,13 +1036,13 @@ Examples:
         ssl_certificate fullchain.pem;
         ssl_certificate_key privkey.pem;
 
-        ## this parameter controls how large of a file can be 
+        ## this parameter controls how large of a file can be
         ## uploaded, and defaults to 1MB. If you change the FitTrackee
         ## settings to allow larger uploads, you'll need to change this
         ## setting by uncommenting the line below and setting the size limit
-        ## you want. Set to "0" to prevent nginx from checking the 
+        ## you want. Set to "0" to prevent nginx from checking the
         ## request body size at all
-        # client_max_body_size 1m; 
+        # client_max_body_size 1m;
 
         location / {
             proxy_pass http://127.0.0.1:5000;
