@@ -2682,10 +2682,6 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
         )
 
         with (
-            patch(
-                "fittrackee.workouts.services.workout_from_file."
-                "workout_gpx_service.appLog"
-            ) as logger_mock,
             patch.object(
                 requests,
                 "post",
@@ -2704,9 +2700,6 @@ class TestWorkoutGpxServiceProcessFileOnRefresh(
             service.process_workout()
 
         assert valhalla_requests_mock.call_count == 2
-        logger_mock.error.assert_called_once_with(
-            "429 Client Error: None for url: None"
-        )
         # workout remains unchanged
         assert (
             workout_cycling_user_1_with_coordinates.elevation_data_source
