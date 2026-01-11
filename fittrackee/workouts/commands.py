@@ -165,7 +165,10 @@ def process_queued_archive_upload(task_short_id: str, verbose: bool) -> None:
 )
 @click.option(
     "--new-sport-id",
-    help="sport id to which the workouts will be associated",
+    help=(
+        "sport id to which the workouts will be associated "
+        "(must be provided with '--sport-id')"
+    ),
     type=int,
     callback=validate_sport_id,
 )

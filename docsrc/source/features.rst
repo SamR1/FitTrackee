@@ -18,9 +18,10 @@ Workouts
 Sports
 ------
 
-- 24 sports are supported:
+- 27 sports are supported:
 
   - Canoeing  (*new in 0.9.3*)
+  - Canoeing (Whitewater) (*new in 1.1.0*)
   - Cycling (Sport)
   - Cycling (Transport)
   - Cycling (Trekking)  (*new in 0.7.27*)
@@ -28,6 +29,7 @@ Sports
   - Halfbike  (*new in 0.9.7*)
   - Hiking
   - Kayaking  (*new in 0.9.3*)
+  - Kayaking (Whitewater) (*new in 1.1.0*)
   - Mountain Biking
   - Mountain Biking (Electric)  (*new in 0.5.0*)
   - Mountaineering  (*new in 0.7.9*)
@@ -67,9 +69,8 @@ Sports
   Stopped speed threshold can be overridden in user preferences (see `Account & preferences <features.html#account-preferences>`__).
 
 .. note::
-  | Except the stopped speed threshold, all sports are analyzed in the same way (no specificity taken into account for the moment).
   | Swimrun is displayed as a single activity with no difference between segments for now.
-  | Elevation-related data for racket sports (Outdoor Tennis and Padel) and water sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) are not stored and displayed if the file contains elevation (*changed in 1.0.6*).
+  | Elevation-related data for racket sports (Outdoor Tennis and Padel) and flatwater sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) are not stored and displayed if the file contains elevation (*changed in 1.0.6*).
 
 Workouts
 --------
@@ -152,7 +153,7 @@ Workouts
   | A `CLI command <cli.html#ftcli-workouts-refresh>`__ is available to refresh several workouts depending on options.
 
   .. warning::
-     If a weather data provider is defined and the ``--with-weather`` option is provided, the rate limit may be reached, resulting in API rate limit errors when a large number of workouts is refreshed.
+     If a weather data provider is defined and the ``--with-weather`` option is provided and/or an Elevation API URL is set and ``--with-elevation`` option is provided, the rate limit may be reached, resulting in API rate limit errors when a large number of workouts is refreshed.
 
 - | If the name is present in the file, it is used as the workout title. Otherwise, a title is generated from the sport and workout date.
   | User can provide title while uploading file (*new in 0.8.10*).
@@ -580,7 +581,7 @@ Equipments
   - Bike: Cycling (Sport, Transport, Trekking), Halfbike, Mountain Biking and Mountain Biking (Electric) (*changed in 0.9.7*),
   - Bike Trainer: Cycling (Virtual),
   - Board: Standup paddleboarding (*new in 0.10.3*) and Windsurfing (*new in 0.9.10*),
-  - Kayak/Boat: Canoeing, Rowing and Kayaking (*changed in 0.9.3*),
+  - Kayak/Boat: Canoeing, Canoeing (Whitewater), Rowing, Kayaking and Kayaking (Whitewater) (*changed in 1.1.0*),
   - Shoes: Hiking, Mountaineering, Padel (Outdoor), Running, Tennis (Outdoor), Trail and Walking (*changed in 1.0.0*),
   - Skis: Skiing (Alpine and Cross Country),
   - Snowshoes: Snowshoes.

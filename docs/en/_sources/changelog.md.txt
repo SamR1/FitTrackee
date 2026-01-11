@@ -1,5 +1,33 @@
 # Change log
 
+## Version 1.1.0b2 (2026/01/11)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+### Features and enhancements
+
+* [#1025](https://github.com/SamR1/FitTrackee/issues/1025) - Add Whitewater sports \
+  **Notes**: For these sports, elevation is displayed, unlike their equivalents on flatwater (see [PR#1018](https://github.com/SamR1/FitTrackee/pull/1018))
+* [5ec828e](https://github.com/SamR1/FitTrackee/commit/5ec828e21c34fe21371b1d38b4db9f1d477d8818) - refresh workout (with file) on sport change
+* [5fa9b6a](https://github.com/SamR1/FitTrackee/commit/5fa9b6a9a64b8eb64a11490c435b145a9a68bf5f) - CLI - add option to change sport when refreshing workouts
+
+### Bugs Fixed
+
+* [PR#1026](https://github.com/SamR1/FitTrackee/pull/1026) - fix elevation service status when URLs are empty strings
+* [PR#1027](https://github.com/SamR1/FitTrackee/pull/1027) - fix file upload + add missing translations
+  * handling of files containing calories in float format
+  * added missing error message in translations
+  * handling of .fit files when the manufacturer value is not a string
+* [PR#1030](https://github.com/SamR1/FitTrackee/pull/1030) - fix getting elevation with OpenElevation for large files
+* [PR#1031](https://github.com/SamR1/FitTrackee/pull/1031) - minor fixes:
+  * fix modal display on error
+  * fix stopped speed threshold update when value is invalid
+  * fix getting weather when last segment has only one point
+
+Thanks to the beta-testers for feedbacks.
+
+
 ## Version 1.1.0b1 (2026/01/04)
 
 **This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
