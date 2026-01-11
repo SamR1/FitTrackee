@@ -7,6 +7,7 @@ import gpxpy
 import pytest
 import requests
 from geoalchemy2.shape import to_shape
+from gpxpy.gpxfield import SimpleTZ
 from shapely import LineString, Point
 
 from fittrackee import db
@@ -1791,7 +1792,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
             ]
         )
 
-    def test_it_does_not_calls_weather_service_when_endpoint_has_no_time(
+    def test_it_does_not_call_weather_service_when_endpoint_has_no_time(
         self,
         app: "Flask",
         sport_1_cycling: Sport,
@@ -1810,6 +1811,50 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         db.session.commit()
 
         default_weather_service.assert_not_called()
+
+    def test_it_calls_weather_service_when_gpx_last_segment_has_one_point(
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_one_point_on_last_segment: str,
+        default_weather_service: MagicMock,
+    ) -> None:
+        """
+        last segment is ignored
+        """
+        service = self.init_service_with_gpx(
+            user_1,
+            sport_1_cycling,
+            gpx_file_with_one_point_on_last_segment,
+            get_weather=True,
+        )
+
+        service.process_workout()
+        db.session.commit()
+
+        default_weather_service.assert_has_calls(
+            [
+                call(
+                    WorkoutPoint(
+                        6.07367,
+                        44.68095,
+                        datetime(
+                            2018, 3, 13, 12, 44, 45, tzinfo=SimpleTZ("Z")
+                        ),
+                    )
+                ),
+                call(
+                    WorkoutPoint(
+                        6.07435,
+                        44.67837,
+                        datetime(
+                            2018, 3, 13, 12, 48, 40, tzinfo=SimpleTZ("Z")
+                        ),
+                    )
+                ),
+            ]
+        )
 
     def test_it_does_not_call_weather_service_when_flag_is_false(
         self,

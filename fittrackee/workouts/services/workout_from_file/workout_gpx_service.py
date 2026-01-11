@@ -335,7 +335,6 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         track_segment: "gpxpy.gpx.GPXTrackSegment",
         stopped_time_between_segments: timedelta,
         previous_segment_last_point_time: Optional[datetime],
-        is_last_segment: bool,
         new_workout_segment: "WorkoutSegment",
         first_point: "gpxpy.gpx.GPXTrackPoint",
         existing_elevations: "pd.DataFrame",
@@ -479,8 +478,11 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             if point_idx == last_point_index:
                 previous_segment_last_point_time = point.time
 
-                # last gpx point (for weather data)
-                if is_last_segment and point.time:
+                # store last gpx point (for weather data)
+                # Note: since segments with one point are ignored, the last
+                # point is overwritten, to get the last point from last valid
+                # segment
+                if point.time:
                     self.end_point = WorkoutPoint(
                         point.longitude,
                         point.latitude,
@@ -582,7 +584,6 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         new_workout_uuid: "UUID",
         first_point: "gpxpy.gpx.GPXTrackPoint",
     ) -> Tuple[timedelta, float]:
-        last_segment_index = len(segments) - 1
         max_speed = 0.0
         previous_segment_last_point_time: Optional["datetime"] = None
         stopped_time_between_segments = timedelta(seconds=0)
@@ -613,7 +614,6 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             has_missing_elevation, not existing_elevations.empty
         )
 
-        segment_idx = 0
         for segment in segments:
             # ignore segments with no distance
             if len(segment.points) < 2:
@@ -625,7 +625,6 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             )
             db.session.add(new_workout_segment)
 
-            is_last_segment = segment_idx == last_segment_index
             (
                 stopped_time_between_segments,
                 previous_segment_last_point_time,
@@ -635,7 +634,6 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 segment,
                 stopped_time_between_segments,
                 previous_segment_last_point_time,
-                is_last_segment,
                 new_workout_segment,
                 first_point,
                 existing_elevations,
@@ -663,8 +661,6 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 and new_workout_segment.max_speed > max_speed
             ):
                 max_speed = new_workout_segment.max_speed
-
-            segment_idx += 1
 
         if self.workout and (
             self.is_creation

@@ -3502,6 +3502,14 @@ def gpx_file_without_time_on_last_point() -> str:
 
 
 @pytest.fixture()
+def gpx_file_with_one_point_on_last_segment(gpx_file: str) -> str:
+    return gpx_file.replace(
+        '<trkpt lat="44.67822" lon="6.07442">',  # last point
+        '</trkseg><trkseg><trkpt lat="44.67822" lon="6.07442">',
+    )
+
+
+@pytest.fixture()
 def gpx_file_with_segments() -> str:
     return (
         """<?xml version='1.0' encoding='UTF-8'?>
