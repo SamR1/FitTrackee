@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Interface de ligne de commande - Documentation FitTrackee 1.1.0b1</title>
+        <title>Interface de ligne de commande - Documentation FitTrackee 1.1.0b2</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 1.1.0b1
+      <a href="index.html"><div class="brand">Documentation FitTrackee 1.1.0b2
 </div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 1.1.0b1
+  <span class="sidebar-brand-text">Documentation FitTrackee 1.1.0b2
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -613,13 +613,13 @@ Commands:
 <p><span class="versionmodified changed">Modifié dans la version 1.0.0: </span>Ajout de l'option <code class="docutils literal notranslate"><span class="pre">--add-missing-geometry</span></code></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 1.1.0: </span>Suppression de l'option <code class="docutils literal notranslate"><span class="pre">--add-missing-geometry</span></code> et ajout de l'option <code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code>.</p>
+<p><span class="versionmodified changed">Modifié dans la version 1.1.0: </span>Suppression de l'option <code class="docutils literal notranslate"><span class="pre">--add-missing-geometry</span></code> et ajout des options <code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code> et <code class="docutils literal notranslate"><span class="pre">--new-sport-id</span></code>.</p>
 </div>
 <p>Actualiser les séances en recalculant les données de la séance et en récupérant les données météo si un fournisseur est configuré et que la séance n'a pas de données météo</p>
 <p>Avant d'exécuter la commande, il est recommandé de sauvegarder toutes les données (base de données et répertoire des fichiers téléversé) dans le cas  où un grand nombre d'entraînements serait mis à jour.</p>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
-<p>Si un fournisseur de données météo est défini et que l'option <code class="docutils literal notranslate"><span class="pre">--with-weather</span></code> est fournie, la limite d'accès peut être atteinte, résultant en des erreurs de limite dépassée quand un nombre important de séances est actualisé.</p>
+<p>Si un fournisseur de données météo est défini et que l'option <code class="docutils literal notranslate"><span class="pre">--with-weather</span></code> est fournie et/ou une URL d'API de données d'altitude et que l'option <code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code> ets fournie, la limite d'accès peut être atteinte, résultant en des erreurs de limite dépassée quand un nombre important de séances est actualisé.</p>
 </div>
 <div class="table-wrapper colwidths-given table-bordered docutils container">
 <table class="table-bordered docutils align-default">
@@ -636,34 +636,37 @@ Commands:
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--sport-id</span> <span class="pre">INTEGER</span></code></p></td>
 <td><p>identifiant du sport</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--from</span> <span class="pre">TEXT</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--new-sport-id</span> <span class="pre">INTEGER</span></code></p></td>
+<td><p>sport id to which the workouts will be associated (must be provided with <cite>--sport-id</cite>)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--from</span> <span class="pre">TEXT</span></code></p></td>
 <td><p>date de début (format : <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--to</span> <span class="pre">TEXT</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--to</span> <span class="pre">TEXT</span></code></p></td>
 <td><p>date de fin (format : <code class="docutils literal notranslate"><span class="pre">%Y-%m-%d</span></code>)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--per-page</span> <span class="pre">INTEGER</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--per-page</span> <span class="pre">INTEGER</span></code></p></td>
 <td><p>nombre de séances par page (par défaut : 10)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--page</span> <span class="pre">INTEGER</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--page</span> <span class="pre">INTEGER</span></code></p></td>
 <td><p>page pour la pagination (par défaut : 1)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--order</span> <span class="pre">TEXT</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--order</span> <span class="pre">TEXT</span></code></p></td>
 <td><p>ordre de tri des séances : 'asc' ou 'desc' (par défaut : 'asc')</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--user</span> <span class="pre">TEXT</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--user</span> <span class="pre">TEXT</span></code></p></td>
 <td><p>nom de l'utilisateur des séances à mettre à jour</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--extension</span> <span class="pre">TEXT</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--extension</span> <span class="pre">TEXT</span></code></p></td>
 <td><p>extension du fichier de la séance (valeurs possibles: tcx, kmz, gpx, kml, fit)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--with-weather</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--with-weather</span></code></p></td>
 <td><p>active la récupération des données météo si un fournisseur de données est configuré et que la séance n'a pas données météo. ATTENTION: selon la souscription, la limite d'accès peut être atteinte, résultant en des erreurs et empêchant les données météo d'être récupérées pour les prochains chargements de fichiers, le temps que la limite soit réinitialisée (défaut: désactivé)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">----with-elevation</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code></p></td>
 <td><p>active la mise à jour des données d'altitude si un fournisseur de données est configuré et que des données sont manquantes. ATTENTION: selon la souscription, la limite d'accès peut être atteinte, résultant en des erreurs et empêchant les données d'altitude d'être récupérées pour les prochains chargements de fichiers, le temps que la limite soit réinitialisée (défaut: désactivé)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></p></td>
 <td><p>Active les logs verbeux (défaut: désactivé)</p></td>
 </tr>
 </tbody>
@@ -768,7 +771,7 @@ Commands:
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=7c2c43b8"></script>
+</div><script src="_static/documentation_options.js?v=4bd4c9d2"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

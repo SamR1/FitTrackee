@@ -38,7 +38,7 @@ services:
     env_file:
       - .env
 # Image from Docker Hub
-    image: fittrackee/fittrackee:v1.1.0b1
+    image: fittrackee/fittrackee:v1.1.0b2
 # Uncomment following line to build image instead of using pre-built image
 #    build: .
     volumes:
@@ -73,7 +73,7 @@ services:
 #    env_file:
 #      - .env
 ## Image from Docker Hub
-#    image: fittrackee/fittrackee:v1.1.0b1
+#    image: fittrackee/fittrackee:v1.1.0b2
 ## Uncomment following line to build image instead of using pre-built image
 ##    build: .
 #    volumes:

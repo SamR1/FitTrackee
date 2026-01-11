@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Fonctionnalités - Documentation FitTrackee 1.1.0b1</title>
+        <title>Fonctionnalités - Documentation FitTrackee 1.1.0b2</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 1.1.0b1
+      <a href="index.html"><div class="brand">Documentation FitTrackee 1.1.0b2
 </div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 1.1.0b1
+  <span class="sidebar-brand-text">Documentation FitTrackee 1.1.0b2
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -298,9 +298,10 @@
 <section id="sports">
 <h3>Sports<a class="headerlink" href="#sports" title="Lien vers cette rubrique">¶</a></h3>
 <ul class="simple">
-<li><p>24 sports sont pris en charge :</p>
+<li><p>27 sports sont pris en charge :</p>
 <ul>
 <li><p>Canoë  (<em>nouveau dans la version 0.9.3</em>)</p></li>
+<li><p>Canoë en eaux vives (<em>nouveau dans la version 1.1.0</em>)</p></li>
 <li><p>Vélo (Sport)</p></li>
 <li><p>Vélo (Transport)</p></li>
 <li><p>Vélo (Trekking)  (<em>nouveau dans la version 0.7.27</em>)</p></li>
@@ -308,6 +309,7 @@
 <li><p>Halfbike  (<em>nouveau dans la version 0.9.7</em>)</p></li>
 <li><p>Randonnée</p></li>
 <li><p>Kayak  (<em>nouveau dans la version 0.9.3</em>)</p></li>
+<li><p>Kayak en eaux vives (<em>nouveau dans la version 1.1.0</em>)</p></li>
 <li><p>VTT</p></li>
 <li><p>VTT (Électrique)  (<em>nouveau dans la version in 0.5.0</em>)</p></li>
 <li><p>Alpinisme  (<em>nouveau dans la version 0.7.9</em>)</p></li>
@@ -356,9 +358,8 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">A l'exception du seuil de vitesse arrêté, tous les sports sont analysés de la même manière (aucune spécificité prise en compte pour le moment).</div>
 <div class="line">Le sport Swimrun s'affiche comme une seule activité sans différence entre les segments pour le moment.</div>
-<div class="line">Les données liées à l'altitude pour les sports de raquettes (Tennis et Padel en extérieur) et les sports nautiques (Canoë, Kayak, Aviron, Nage en eau libre et Stand up paddle) ne sont ni stockées ni affichées si le fichier en contient (<em>modifié dans la version 1.0.6</em>).</div>
+<div class="line">Les données liées à l'altitude pour les sports de raquettes (Tennis et Padel en extérieur) et les sports nautiques en eau calme (Canoë, Kayak, Aviron, Nage en eau libre et Stand up paddle) ne sont ni stockées ni affichées si le fichier en contient (<em>modifié dans la version 1.0.6</em>).</div>
 </div>
 </div>
 </section>
@@ -491,7 +492,7 @@
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
-<p>Si un fournisseur de données météo est défini et que l'option <code class="docutils literal notranslate"><span class="pre">--with-weather</span></code> est fournie, la limite d'accès peut être atteinte, résultant en des erreurs de limite dépassée quand un nombre important de séances est actualisé.</p>
+<p>Si un fournisseur de données météo est défini et que l'option <code class="docutils literal notranslate"><span class="pre">--with-weather</span></code> est fournie et/ou une URL d'API de données d'altitude et que l'option <code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code> ets fournie, la limite d'accès peut être atteinte, résultant en des erreurs de limite dépassée quand un nombre important de séances est actualisé.</p>
 </div>
 </div>
 <ul>
@@ -1064,7 +1065,7 @@
 <li><p>Vélo : Halfbike, Vélo (Sport, Transport, Trekking), VTT et VTT (Électrique) (<em>modifié dans la version 0.9.7</em>),</p></li>
 <li><p>Vélo d'entraînement : Vélo (Virtuel),</p></li>
 <li><p>Planche: Planche à voile (<em>nouveau dans la version 0.9.10</em>) et Stand up paddle (<em>nouveau dans la version 0.10.3</em>),</p></li>
-<li><p>Kayak/Bateau : Aviron, Canöe et Kayak (<em>modifié dans la version 0.9.3</em>)</p></li>
+<li><p>Kayak/Bateau : Aviron, Canöe, Canöe en eaux vives, Kayak et Kayak en eaux vives (<em>modifié dans la version 1.1.0</em>)</p></li>
 <li><p>Chaussures : Alpinisme, Course, Marche, Padel (Extérieur), Randonnées, Tennis (Extérieur) et Trail (<em>modifié dans la version 1.0.0</em>)</p></li>
 <li><p>Skis : Ski (Alpin et Randonnée)</p></li>
 <li><p>Raquettes : Raquettes.</p></li>
@@ -1576,7 +1577,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=7c2c43b8"></script>
+</div><script src="_static/documentation_options.js?v=4bd4c9d2"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

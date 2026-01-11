@@ -240,14 +240,14 @@ Can be used if redis is not set (no dramatiq workers running).
 """"""""""""""""""""""""""
 .. versionadded:: 0.12.0
 .. versionchanged:: 1.0.0  Add ``--add-missing-geometry`` option.
-.. versionchanged:: 1.1.0  Remove ``--add-missing-geometry`` option and add ``--with-elevation`` option.
+.. versionchanged:: 1.1.0  Remove ``--add-missing-geometry`` option and add ``--with-elevation`` and ``--new-sport-id`` options.
 
 Refresh workouts by recalculating data and fetching weather data if provider is set and workout does not have weather data.
 
 Before executing the command, it is recommended to back up of all data (database and upload directory) in case a large number of workouts are refreshed.
 
 .. warning::
-   If a weather data provider is defined and the ``--with-weather`` option is provided, the rate limit may be reached, resulting in API rate limit errors when a large number of workouts is refreshed.
+   If a weather data provider is defined and the ``--with-weather`` option is provided and/or an Elevation API URL is set and ``--with-elevation`` option is provided, the rate limit may be reached, resulting in API rate limit errors when a large number of workouts is refreshed.
 
 .. cssclass:: table-bordered
 .. list-table::
@@ -258,6 +258,8 @@ Before executing the command, it is recommended to back up of all data (database
      - Description
    * - ``--sport-id INTEGER``
      - sport id
+   * - ``--new-sport-id INTEGER``
+     - sport id to which the workouts will be associated (must be provided with `--sport-id`)
    * - ``--from TEXT``
      - start date (format: ``%Y-%m-%d``)
    * - ``--to TEXT``
@@ -274,7 +276,7 @@ Before executing the command, it is recommended to back up of all data (database
      - workout file extension (valid values are: tcx, kmz, gpx, kml, fit)
    * - ``--with-weather``
      - enable weather data collection if weather provider is set and workout has no weather data. WARNING: depending on subscription, the rate limit can be reached, leading to errors and preventing weather data being collected during next uploads until the limit is reset (default: disabled)
-   * - ``----with-elevation``
+   * - ``--with-elevation``
      - enable elevation update when elevation provider is set and some elevation data are missing. If disabled, existing elevation are not removed when elevation data are missing in the original file. WARNING: depending on subscription, the rate limit can be reached, leading to errors and preventing elevation data being collected during next uploads until the limit is reset (default: disabled)
    * - ``-v, --verbose``
      - Enable verbose output log (default: disabled)

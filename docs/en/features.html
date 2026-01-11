@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Features - FitTrackee 1.1.0b1 documentation</title>
+        <title>Features - FitTrackee 1.1.0b2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 1.1.0b1
+      <a href="index.html"><div class="brand">FitTrackee 1.1.0b2
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 1.1.0b1
+  <span class="sidebar-brand-text">FitTrackee 1.1.0b2
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -298,9 +298,10 @@
 <section id="sports">
 <h3>Sports<a class="headerlink" href="#sports" title="Link to this heading">¶</a></h3>
 <ul class="simple">
-<li><p>24 sports are supported:</p>
+<li><p>27 sports are supported:</p>
 <ul>
 <li><p>Canoeing  (<em>new in 0.9.3</em>)</p></li>
+<li><p>Canoeing (Whitewater) (<em>new in 1.1.0</em>)</p></li>
 <li><p>Cycling (Sport)</p></li>
 <li><p>Cycling (Transport)</p></li>
 <li><p>Cycling (Trekking)  (<em>new in 0.7.27</em>)</p></li>
@@ -308,6 +309,7 @@
 <li><p>Halfbike  (<em>new in 0.9.7</em>)</p></li>
 <li><p>Hiking</p></li>
 <li><p>Kayaking  (<em>new in 0.9.3</em>)</p></li>
+<li><p>Kayaking (Whitewater) (<em>new in 1.1.0</em>)</p></li>
 <li><p>Mountain Biking</p></li>
 <li><p>Mountain Biking (Electric)  (<em>new in 0.5.0</em>)</p></li>
 <li><p>Mountaineering  (<em>new in 0.7.9</em>)</p></li>
@@ -356,9 +358,8 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Except the stopped speed threshold, all sports are analyzed in the same way (no specificity taken into account for the moment).</div>
 <div class="line">Swimrun is displayed as a single activity with no difference between segments for now.</div>
-<div class="line">Elevation-related data for racket sports (Outdoor Tennis and Padel) and water sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) are not stored and displayed if the file contains elevation (<em>changed in 1.0.6</em>).</div>
+<div class="line">Elevation-related data for racket sports (Outdoor Tennis and Padel) and flatwater sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) are not stored and displayed if the file contains elevation (<em>changed in 1.0.6</em>).</div>
 </div>
 </div>
 </section>
@@ -491,7 +492,7 @@
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>If a weather data provider is defined and the <code class="docutils literal notranslate"><span class="pre">--with-weather</span></code> option is provided, the rate limit may be reached, resulting in API rate limit errors when a large number of workouts is refreshed.</p>
+<p>If a weather data provider is defined and the <code class="docutils literal notranslate"><span class="pre">--with-weather</span></code> option is provided and/or an Elevation API URL is set and <code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code> option is provided, the rate limit may be reached, resulting in API rate limit errors when a large number of workouts is refreshed.</p>
 </div>
 </div>
 <ul>
@@ -1065,7 +1066,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
 <li><p>Bike: Cycling (Sport, Transport, Trekking), Halfbike, Mountain Biking and Mountain Biking (Electric) (<em>changed in 0.9.7</em>),</p></li>
 <li><p>Bike Trainer: Cycling (Virtual),</p></li>
 <li><p>Board: Standup paddleboarding (<em>new in 0.10.3</em>) and Windsurfing (<em>new in 0.9.10</em>),</p></li>
-<li><p>Kayak/Boat: Canoeing, Rowing and Kayaking (<em>changed in 0.9.3</em>),</p></li>
+<li><p>Kayak/Boat: Canoeing, Canoeing (Whitewater), Rowing, Kayaking and Kayaking (Whitewater) (<em>changed in 1.1.0</em>),</p></li>
 <li><p>Shoes: Hiking, Mountaineering, Padel (Outdoor), Running, Tennis (Outdoor), Trail and Walking (<em>changed in 1.0.0</em>),</p></li>
 <li><p>Skis: Skiing (Alpine and Cross Country),</p></li>
 <li><p>Snowshoes: Snowshoes.</p></li>
@@ -1577,7 +1578,7 @@ A user with an inactive account cannot log in. (<em>new in 0.6.0</em>).</p></li>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=f4a0afba"></script>
+</div><script src="_static/documentation_options.js?v=c35825d0"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
