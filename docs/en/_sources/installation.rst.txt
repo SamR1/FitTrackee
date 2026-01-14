@@ -956,7 +956,6 @@ Examples:
     User=<USER>
     StandardOutput=journal
     StandardError=journal
-    SyslogIdentifier=fittrackee
     Environment="APP_SECRET_KEY="
     Environment="APP_LOG="
     Environment="UPLOAD_FOLDER="
