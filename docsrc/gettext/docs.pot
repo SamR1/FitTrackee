@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FitTrackee 1.0.6\n"
 "\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 15:04+0100\n"
+"POT-Creation-Date: 2026-01-14 21:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12164,14 +12164,14 @@ msgstr ""
 #: ../source/installation.rst:680
 #: ../source/installation.rst:738
 #: ../source/installation.rst:789
-#: ../source/installation.rst:1153
+#: ../source/installation.rst:1151
 msgid "To set owner role to the newly created account, use the following command line:"
 msgstr ""
 
 #: ../source/installation.rst:687
 #: ../source/installation.rst:745
 #: ../source/installation.rst:796
-#: ../source/installation.rst:1160
+#: ../source/installation.rst:1158
 msgid "If the user account is inactive, it activates it."
 msgstr ""
 
@@ -12367,55 +12367,55 @@ msgstr ""
 msgid "for application: ``fittrackee.service``"
 msgstr ""
 
-#: ../source/installation.rst:982
+#: ../source/installation.rst:981
 msgid "To handle large files, a higher value for `timeout <https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ can be set."
 msgstr ""
 
-#: ../source/installation.rst:985
+#: ../source/installation.rst:984
 msgid "More information on deployment with Gunicorn in its `documentation <https://docs.gunicorn.org/en/stable/deploy.html>`__."
 msgstr ""
 
-#: ../source/installation.rst:987
+#: ../source/installation.rst:986
 msgid "for task queue workers: ``fittrackee_workers.service``"
 msgstr ""
 
-#: ../source/installation.rst:1025
+#: ../source/installation.rst:1023
 msgid "Command to be adapted to run queues separately"
 msgstr ""
 
-#: ../source/installation.rst:1028
+#: ../source/installation.rst:1026
 msgid "More information on **Dramatiq** CLI in its `documentation <https://dramatiq.io/guide.html#workers>`__."
 msgstr ""
 
-#: ../source/installation.rst:1030
+#: ../source/installation.rst:1028
 msgid "**Nginx** configuration:"
 msgstr ""
 
-#: ../source/installation.rst:1068
+#: ../source/installation.rst:1066
 msgid "If needed, update configuration to handle larger files (see `client_max_body_size <https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_)."
 msgstr ""
 
-#: ../source/installation.rst:1072
+#: ../source/installation.rst:1070
 msgid "Docker"
 msgstr ""
 
-#: ../source/installation.rst:1075
+#: ../source/installation.rst:1073
 msgid "add client application for development"
 msgstr ""
 
-#: ../source/installation.rst:1076
+#: ../source/installation.rst:1074
 msgid "add docker image for production"
 msgstr ""
 
-#: ../source/installation.rst:1080
+#: ../source/installation.rst:1078
 msgid "Production"
 msgstr ""
 
-#: ../source/installation.rst:1082
+#: ../source/installation.rst:1080
 msgid "Images are available on `DockerHub <https://hub.docker.com/r/fittrackee/fittrackee>`_ or `Github registry <https://github.com/SamR1/FitTrackee/packages>`_."
 msgstr ""
 
-#: ../source/installation.rst:1086
+#: ../source/installation.rst:1084
 msgid "Images are available for ``linux/amd64`` and ``linux/arm64`` platforms. Only ``linux/amd64`` image has been tested."
 msgstr ""
 
@@ -12429,68 +12429,68 @@ msgstr ""
 msgid "The workaround is to build PostGIS image locally."
 msgstr ""
 
-#: ../source/installation.rst:1093
+#: ../source/installation.rst:1091
 msgid "create a ``docker-compose.yml`` file as needed (see the `example <https://github.com/SamR1/FitTrackee/blob/main/docker-compose.yml>`__ in the repository):"
 msgstr ""
 
-#: ../source/installation.rst:1095
+#: ../source/installation.rst:1093
 msgid "the minimal set up requires at least the database and the web application"
 msgstr ""
 
-#: ../source/installation.rst:1096
+#: ../source/installation.rst:1094
 msgid "to activate the rate limit, redis is required"
 msgstr ""
 
-#: ../source/installation.rst:1097
+#: ../source/installation.rst:1095
 msgid "to send e-mails, redis and workers are required and a valid ``EMAIL_URL`` variable must be set in ``.env``"
 msgstr ""
 
-#: ../source/installation.rst:1100
+#: ../source/installation.rst:1098
 msgid "The same image is used by the web application and workers."
 msgstr ""
 
-#: ../source/installation.rst:1103
+#: ../source/installation.rst:1101
 msgid "Following directory must be writable for ``fittrackee`` user (see `docker-compose.yml example <https://github.com/SamR1/FitTrackee/blob/main/docker-compose.yml>`__):"
 msgstr ""
 
-#: ../source/installation.rst:1105
+#: ../source/installation.rst:1103
 msgid "``/usr/src/app/uploads``"
 msgstr ""
 
-#: ../source/installation.rst:1106
+#: ../source/installation.rst:1104
 msgid "``/usr/src/app/logs``"
 msgstr ""
 
-#: ../source/installation.rst:1107
+#: ../source/installation.rst:1105
 msgid "``/usr/src/app/.staticmap_cache``"
 msgstr ""
 
-#: ../source/installation.rst:1109
+#: ../source/installation.rst:1107
 msgid "create ``.env`` from example (``.env.docker.example``) and update it (see `Environment variables <installation.html#environment-variables>`__)."
 msgstr ""
 
-#: ../source/installation.rst:1111
+#: ../source/installation.rst:1109
 msgid "to start the application:"
 msgstr ""
 
-#: ../source/installation.rst:1119
+#: ../source/installation.rst:1117
 msgid "Migrations are executed at startup. Please backup data before updating FitTrackee image version."
 msgstr ""
 
-#: ../source/installation.rst:1121
+#: ../source/installation.rst:1119
 msgid "to run a CLI command, for instance to give admin rights:"
 msgstr ""
 
-#: ../source/installation.rst:1129
-#: ../source/installation.rst:1207
+#: ../source/installation.rst:1127
+#: ../source/installation.rst:1205
 msgid "Development"
 msgstr ""
 
-#: ../source/installation.rst:1131
+#: ../source/installation.rst:1129
 msgid "To install and run **FitTrackee**:"
 msgstr ""
 
-#: ../source/installation.rst:1139
+#: ../source/installation.rst:1137
 msgid "Open http://localhost:5000 and register."
 msgstr ""
 
@@ -12502,75 +12502,75 @@ msgstr ""
 msgid "For example:"
 msgstr ""
 
-#: ../source/installation.rst:1151
+#: ../source/installation.rst:1149
 msgid "Open http://localhost:8025 to access `MailHog interface <https://github.com/mailhog/MailHog>`_ (email testing tool)"
 msgstr ""
 
-#: ../source/installation.rst:1162
+#: ../source/installation.rst:1160
 msgid "To stop **Fittrackee**:"
 msgstr ""
 
-#: ../source/installation.rst:1168
+#: ../source/installation.rst:1166
 msgid "To run shell inside **Fittrackee** container:"
 msgstr ""
 
-#: ../source/installation.rst:1174
+#: ../source/installation.rst:1172
 msgid "an additional step is needed to install ``fittrackee_client``"
 msgstr ""
 
-#: ../source/installation.rst:1180
+#: ../source/installation.rst:1178
 msgid "to start **FitTrackee** with client dev tools:"
 msgstr ""
 
-#: ../source/installation.rst:1186
+#: ../source/installation.rst:1184
 msgid "Open http://localhost:3000"
 msgstr ""
 
-#: ../source/installation.rst:1189
+#: ../source/installation.rst:1187
 msgid "Some environment variables need to be updated like ``UI_URL``"
 msgstr ""
 
-#: ../source/installation.rst:1191
+#: ../source/installation.rst:1189
 msgid "to run lint or tests:"
 msgstr ""
 
-#: ../source/installation.rst:1202
+#: ../source/installation.rst:1200
 msgid "VSCode"
 msgstr ""
 
-#: ../source/installation.rst:1209
+#: ../source/installation.rst:1207
 msgid "You can use the **Dev Container** without the **debug configuration** and vice versa. Dev Container is strongly recommended on Windows because of path handling issues."
 msgstr ""
 
-#: ../source/installation.rst:1214
+#: ../source/installation.rst:1212
 msgid "Dev Container"
 msgstr ""
 
-#: ../source/installation.rst:1215
+#: ../source/installation.rst:1213
 msgid "Using a Dev Container gives you a ready-to-use environment (Python, Poetry, Node, etc.) without installing them on your host."
 msgstr ""
 
-#: ../source/installation.rst:1217
+#: ../source/installation.rst:1215
 msgid "**Prerequisites**"
 msgstr ""
 
-#: ../source/installation.rst:1219
+#: ../source/installation.rst:1217
 msgid "Docker Engine"
 msgstr ""
 
-#: ../source/installation.rst:1220
+#: ../source/installation.rst:1218
 msgid "VS Code with `Dev Containers extension <https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers>`__"
 msgstr ""
 
-#: ../source/installation.rst:1222
+#: ../source/installation.rst:1220
 msgid "**How to use**"
 msgstr ""
 
-#: ../source/installation.rst:1224
+#: ../source/installation.rst:1222
 msgid "Open the FitTrackee folder in VS Code."
 msgstr ""
 
-#: ../source/installation.rst:1225
+#: ../source/installation.rst:1223
 msgid "When prompted, choose **Reopen in Container** (or open the Command Palette and run ``Dev Containers: Reopen in Container``)."
 msgstr ""
 
@@ -12590,63 +12590,63 @@ msgstr ""
 msgid "See `Improve performance <https://code.visualstudio.com/remote/advancedcontainers/improve-performance>`__."
 msgstr ""
 
-#: ../source/installation.rst:1236
+#: ../source/installation.rst:1234
 msgid "Port 5000 (fittrackee-ui) is forwarded automatically, if you change APP_PORT you need to manually forward the new port using ``Forward a Port`` command in the Command Palette."
 msgstr ""
 
-#: ../source/installation.rst:1240
+#: ../source/installation.rst:1238
 msgid "Debug configuration & tasks"
 msgstr ""
 
-#: ../source/installation.rst:1241
+#: ../source/installation.rst:1239
 msgid "This repository includes a VS Code *launch* configuration that:"
 msgstr ""
 
-#: ../source/installation.rst:1243
+#: ../source/installation.rst:1241
 msgid "starts the full Docker Compose dev stack in the background,"
 msgstr ""
 
-#: ../source/installation.rst:1244
+#: ../source/installation.rst:1242
 msgid "waits until services are healthy,"
 msgstr ""
 
-#: ../source/installation.rst:1245
+#: ../source/installation.rst:1243
 msgid "attaches the debugger to the backend so breakpoints work immediately,"
 msgstr ""
 
-#: ../source/installation.rst:1246
+#: ../source/installation.rst:1244
 msgid "tears the stack down when you stop the debugger."
 msgstr ""
 
-#: ../source/installation.rst:1248
+#: ../source/installation.rst:1246
 msgid "**How to start debugging**"
 msgstr ""
 
-#: ../source/installation.rst:1250
+#: ../source/installation.rst:1248
 msgid "Open the Command Palette and run ``Debug: Start Debugging`` **or** press **F5**."
 msgstr ""
 
-#: ../source/installation.rst:1253
+#: ../source/installation.rst:1251
 msgid "If the debugger fails to attach, use ``Debug: Select Debug Session`` to end the session, check container logs, then run ``Tasks: Run Task`` and then **down: devcontainer-compose** before retrying."
 msgstr ""
 
-#: ../source/installation.rst:1258
+#: ../source/installation.rst:1256
 msgid "On Linux, ``host.docker.internal`` does not resolve automatically from inside containers. If the debugger fails to attach and logs show connection issues to ``host.docker.internal:5678``, ensure ``.devcontainer\\docker-compose-devcontainer.yml`` includes the host gateway mapping:"
 msgstr ""
 
-#: ../source/installation.rst:1271
+#: ../source/installation.rst:1269
 msgid "Yunohost"
 msgstr ""
 
-#: ../source/installation.rst:1273
+#: ../source/installation.rst:1271
 msgid "Thanks to contributors, a package is available, see https://github.com/YunoHost-Apps/fittrackee_ynh."
 msgstr ""
 
-#: ../source/installation.rst:1277
+#: ../source/installation.rst:1275
 msgid "NixOS"
 msgstr ""
 
-#: ../source/installation.rst:1279
+#: ../source/installation.rst:1277
 msgid "Thanks to contributors, a package is available on NixOS, see https://search.nixos.org/packages?query=fittrackee."
 msgstr ""
 

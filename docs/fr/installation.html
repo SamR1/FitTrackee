@@ -1456,9 +1456,8 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 <span class="n">Restart</span><span class="o">=</span><span class="n">always</span>
 <span class="n">RestartSec</span><span class="o">=</span><span class="mi">1</span>
 <span class="n">User</span><span class="o">=&lt;</span><span class="n">USER</span><span class="o">&gt;</span>
-<span class="n">StandardOutput</span><span class="o">=</span><span class="n">syslog</span>
-<span class="n">StandardError</span><span class="o">=</span><span class="n">syslog</span>
-<span class="n">SyslogIdentifier</span><span class="o">=</span><span class="n">fittrackee</span>
+<span class="n">StandardOutput</span><span class="o">=</span><span class="n">journal</span>
+<span class="n">StandardError</span><span class="o">=</span><span class="n">journal</span>
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;APP_SECRET_KEY=&quot;</span>
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;APP_LOG=&quot;</span>
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;UPLOAD_FOLDER=&quot;</span>
@@ -1503,9 +1502,8 @@ $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTr
 <span class="n">Restart</span><span class="o">=</span><span class="n">always</span>
 <span class="n">RestartSec</span><span class="o">=</span><span class="mi">1</span>
 <span class="n">User</span><span class="o">=&lt;</span><span class="n">USER</span><span class="o">&gt;</span>
-<span class="n">StandardOutput</span><span class="o">=</span><span class="n">syslog</span>
-<span class="n">StandardError</span><span class="o">=</span><span class="n">syslog</span>
-<span class="n">SyslogIdentifier</span><span class="o">=</span><span class="n">fittrackee_workers</span>
+<span class="n">StandardOutput</span><span class="o">=</span><span class="n">journal</span>
+<span class="n">StandardError</span><span class="o">=</span><span class="n">journal</span>
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;FLASK_APP=fittrackee&quot;</span>
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;APP_SECRET_KEY=&quot;</span>
 <span class="n">Environment</span><span class="o">=</span><span class="s2">&quot;APP_LOG=&quot;</span>
