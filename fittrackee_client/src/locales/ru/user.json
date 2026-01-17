@@ -88,6 +88,8 @@
     "CREATED_REPORTS": "Созданные жалобы",
     "DATE_FORMAT": "Формат отображения даты",
     "EDIT": "Редактировать профиль",
+    "EDIT_ACCOUNT": "Редактировать аккаунт",
+    "EDIT_MESSAGE_PREFERENCES": "Изменить настройки сообщений",
     "EDIT_NOTIFICATION_PREFERENCES": "Изменить настройки уведомлений",
     "EDIT_PREFERENCES": "Изменить настройки",
     "EDIT_SPORTS_PREFERENCES": "Изменить спортивные предпочтения",
@@ -120,6 +122,11 @@
     "LAST_NAME": "Фамилия",
     "LATEST_SANCTIONS_RECEIVED": "Последние полученные санкции",
     "LOCATION": "Местоположение",
+    "MESSAGES": {
+      "warning_about_large_number_of_workouts_on_map": "Предупредить о отображении большого количества тренировок на карте"
+    },
+    "MESSAGES_EDITION": "Изменение параметров сообщений",
+    "MESSAGES_PREFERENCES": "Параметры сообщений",
     "MONDAY": "Понедельник",
     "NOTIFICATIONS": {
       "account_creation": "Кто-то регистрируется",
