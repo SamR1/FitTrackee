@@ -2213,7 +2213,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
             "'stopped_speed_threshold' must be an integer greater then 0",
         )
 
-    def test_it_updates_pace_speed_display(
+    def test_it_updates_pace_speed_display_for_sport_with_pace(
         self, app: Flask, user_1: User, sport_2_running: Sport
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -2243,6 +2243,35 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         assert data["data"]["pace_speed_display"] == (
             PaceSpeedDisplay.PACE_AND_SPEED
         )
+
+    def test_it_updates_pace_speed_display_for_sport_without_pace(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            "/api/auth/profile/edit/sports",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    sport_id=sport_1_cycling.id,
+                    pace_speed_display=PaceSpeedDisplay.SPEED,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        preference = UserSportPreference.query.filter_by(
+            sport_id=sport_1_cycling.id, user_id=user_1.id
+        ).one()
+        assert preference.pace_speed_display == PaceSpeedDisplay.SPEED
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["message"] == "user sport preferences updated"
+        assert data["data"]["pace_speed_display"] == (PaceSpeedDisplay.SPEED)
 
     def test_it_returns_error_when_pace_speed_display_is_invalid(
         self, app: Flask, user_1: User, sport_1_cycling: Sport

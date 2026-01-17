@@ -51,6 +51,7 @@ from fittrackee.visibility_levels import (
 )
 from fittrackee.workouts.models import Sport
 
+from ..constants import PaceSpeedDisplay
 from ..workouts.constants import PACE_SPORTS
 from .exceptions import UserControlsException, UserCreationException
 from .models import (
@@ -1303,7 +1304,11 @@ def edit_user_sport_preferences(
         if stopped_speed_threshold:
             user_sport.stopped_speed_threshold = stopped_speed_threshold
         if pace_speed_display:
-            if sport.label not in PACE_SPORTS:
+            if (
+                pace_speed_display
+                in [PaceSpeedDisplay.PACE, PaceSpeedDisplay.PACE_AND_SPEED]
+                and sport.label not in PACE_SPORTS
+            ):
                 return InvalidPayloadErrorResponse(
                     f"invalid pace_speed_display for sport '{sport.label}', "
                     "only speed can be displayed."
