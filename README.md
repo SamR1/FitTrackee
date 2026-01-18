@@ -37,18 +37,18 @@ Map data from [OpenStreetMap](https://www.openstreetmap.org).
 
 ## Documentation
 
-- [Features](https://docs.fittrackee.org/en/features.html) ([screenshots](https://docs.fittrackee.org/en/features.html#screenshots))
-- [Installation instructions](https://docs.fittrackee.org/en/installation.html)
-- [Command line interface](https://docs.fittrackee.org/en/cli.html)
-- [Third-party tools](https://docs.fittrackee.org/en/third_party_tools.html)
-- [Changelog](https://docs.fittrackee.org/en/changelog.html)
-- [Troubleshooting](https://docs.fittrackee.org/en/troubleshooting/index.html)
-- [Contributing](https://docs.fittrackee.org/en/contributing.html)
+- [Features](https://next.docs.fittrackee.org/en/features/index.html)
+- [Installation instructions](https://next.docs.fittrackee.org/en/installation/index.html)
+- [Command line interface](https://next.docs.fittrackee.org/en/cli.html)
+- [Third-party tools](https://next.docs.fittrackee.org/en/third_party_tools.html)
+- [Changelog](https://next.docs.fittrackee.org/en/changelog.html)
+- [Troubleshooting](https://next.docs.fittrackee.org/en/troubleshooting/index.html)
+- [Contributing](https://next.docs.fittrackee.org/en/contributing.html)
 
 **Under heavy development (some features may be unstable).**  
-(see [provisional roadmap](https://github.com/SamR1/FitTrackee/issues/1010), [issues](https://github.com/SamR1/FitTrackee/issues) and [documentation](https://docs.fittrackee.org) for more information)  
+(see [provisional roadmap](https://github.com/SamR1/FitTrackee/issues/1010), [issues](https://github.com/SamR1/FitTrackee/issues) and [documentation](https://next.docs.fittrackee.org) for more information)  
 
-![FitTrackee Dashboard Screenshot](https://docs.fittrackee.org/en/_images/dashboard.png)
+![FitTrackee Dashboard Screenshot](https://next.docs.fittrackee.org/en/_images/dashboard.png)
 
 ## Translations
 
