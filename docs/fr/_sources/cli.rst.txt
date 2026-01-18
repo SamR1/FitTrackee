@@ -259,7 +259,7 @@ Before executing the command, it is recommended to back up of all data (database
    * - ``--sport-id INTEGER``
      - sport id
    * - ``--new-sport-id INTEGER``
-     - sport id to which the workouts will be associated (must be provided with `--sport-id`)
+     - sport id to which the workouts will be associated (must be provided with ``--sport-id``)
    * - ``--from TEXT``
      - start date (format: ``%Y-%m-%d``)
    * - ``--to TEXT``

@@ -46,3 +46,36 @@ table.no-borders th,
 table.no-borders td {
   border: none;
 }
+
+.sports-table {
+  margin: 10px 0 0 !important;
+  width: 100%;
+  td:nth-child(1), td:nth-child(2) {
+    text-align: center;
+  }
+}
+.workout-buttons-table {
+  td:nth-child(1) {
+    text-align: center;
+  }
+}
+
+
+.versionadded, .versionchanged, .versionremoved {
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+figcaption {
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+
+h3 {
+  margin-top: 1.75rem;
+}
+
+h4, h5 {
+  margin-top: 1rem;
+}
