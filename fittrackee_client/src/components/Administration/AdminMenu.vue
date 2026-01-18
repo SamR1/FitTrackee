@@ -58,14 +58,6 @@
             </dd>
             <template v-if="authUserHasAdminRights">
               <dt>
-                <router-link to="/admin/sports">
-                  {{ capitalize($t('workouts.SPORT', 0)) }}
-                </router-link>
-              </dt>
-              <dd>
-                {{ $t('admin.ENABLE_DISABLE_SPORTS') }}
-              </dd>
-              <dt>
                 <router-link to="/admin/queued-tasks">
                   {{ capitalize($t('admin.USERS_QUEUED_TASKS.LABEL', 0)) }}
                 </router-link>
@@ -75,6 +67,14 @@
                 <router-link to="/admin/queued-tasks" v-if="queuedTasksExist">
                   {{ $t('admin.APP_MODERATION.USERS_QUEUED_TASKS_EXIST') }}
                 </router-link>
+              </dd>
+              <dt>
+                <router-link to="/admin/sports">
+                  {{ capitalize($t('workouts.SPORT', 0)) }}
+                </router-link>
+              </dt>
+              <dd>
+                {{ $t('admin.ENABLE_DISABLE_SPORTS') }}
               </dd>
               <dt>
                 <router-link to="/admin/users">
