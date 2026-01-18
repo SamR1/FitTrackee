@@ -14,6 +14,7 @@
       "equipments:write_DESCRIPTION": "Предоставляет права на запись к эндпоинтам <code>equipments</code>.",
       "follow:read_DESCRIPTION": "Предоставляет права на чтение к эндпоинтам, связанным с запросами на подписку и подписчиками.",
       "follow:write_DESCRIPTION": "Предоставляет права на запись к эндпоинтам, связанным с запросами на подписку и подписчиками.",
+      "geocode:read_DESCRIPTION": "Предоставляет доступ для чтения конечных точек, связанных с геокодированием.",
       "notifications:read_DESCRIPTION": "Предоставляет права на чтение к эндпоинтам <code>notifications</code>.",
       "notifications:write_DESCRIPTION": "Предоставляет права на запись к эндпоинтам <code>notifications</code>.",
       "profile:read_DESCRIPTION": "Предоставляет права на чтение к эндпоинтам <code>auth</code>.",
