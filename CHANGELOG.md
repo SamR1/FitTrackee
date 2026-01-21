@@ -1,5 +1,30 @@
 # Change log
 
+## Version 1.1.0b3 (2026/01/21)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+**Warning**:
+- This release contains database migrations (see upgrade instructions in [documentation](https://next.docs.fittrackee.org/en/installation/upgrade.html)). 
+
+### Features and enhancements
+
+* [PR#1035](https://github.com/SamR1/FitTrackee/pull/1035) - Minor changes
+    * updated the order of the Administration menu
+    * updated the translation of the maximum speed calculation strategy in user preferences
+* [PR#1040](https://github.com/SamR1/FitTrackee/pull/1040) - Change the default value for chart display preferences
+
+### Bugs Fixed
+
+* [PR#1033](https://github.com/SamR1/FitTrackee/pull/1033) - fix pace/speed display update for sport preferences
+
+### Misc
+
+* [6385ff4](https://github.com/SamR1/FitTrackee/commit/6385ff41e2a945e9ab4ed105c39ccc51f0395545) - reorganize and complete the documentation
+
+Thanks to the beta-testers for feedbacks.
+
 ## Version 1.1.0b2 (2026/01/11)
 
 **This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
