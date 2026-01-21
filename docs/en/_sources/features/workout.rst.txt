@@ -514,7 +514,7 @@ Chart
 
 .. versionchanged:: 0.10.0 added heart rate and cadence
 .. versionchanged:: 0.11.0 added power and display preference for charts
-.. versionchanged:: 1.1.0 added pace and total calories
+.. versionchanged:: 1.1.0 added pace and total calories, change default value for charts display preference
 
 A chart is displayed for workout with a file, depending on sport and available data:
 
@@ -527,8 +527,8 @@ A chart is displayed for workout with a file, depending on sport and available d
 
 Speed/pace, elevation, heart rate, cadence and power can be displayed on one chart or split on multiple charts.
 
-.. image:: ../_images/split-charts.png
-   :alt: Pace and altitude are displayed in separate graphs.
+.. image:: ../_images/pace_elevation_on_same_chart.png
+   :alt: Pace and elevation are displayed in the same chart.
 
 The preferred display can be stored in a `user preference <account_and_preferences.html#preferences>`__.
 

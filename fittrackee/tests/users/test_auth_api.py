@@ -10,7 +10,7 @@ from sqlalchemy.dialects.postgresql import insert
 from time_machine import travel
 
 from fittrackee import db
-from fittrackee.constants import PaceSpeedDisplay
+from fittrackee.constants import ElevationDataSource, PaceSpeedDisplay
 from fittrackee.equipments.models import Equipment
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.users.models import (
@@ -328,6 +328,24 @@ class TestUserRegistration(ApiTestCaseMixin):
         assert new_user.language == "en"
         assert new_user.is_active is False
         assert new_user.role == UserRole.USER.value
+        # preferences
+        assert new_user.start_elevation_at_zero is True
+        assert new_user.use_raw_gpx_speed is False
+        assert new_user.use_dark_mode is False
+        assert new_user.manually_approves_followers is True
+        assert new_user.hide_profile_in_users_directory is True
+        assert new_user.workouts_visibility == VisibilityLevel.PRIVATE
+        assert new_user.map_visibility == VisibilityLevel.PRIVATE
+        assert new_user.analysis_visibility == VisibilityLevel.PRIVATE
+        assert new_user.notification_preferences is None
+        assert new_user.hr_visibility == VisibilityLevel.PRIVATE
+        assert new_user.segments_creation_event == "only_manual"
+        assert new_user.split_workout_charts is True
+        assert new_user.messages_preferences is None
+        assert (
+            new_user.missing_elevations_processing == ElevationDataSource.FILE
+        )
+        assert new_user.calories_visibility == VisibilityLevel.PRIVATE
 
     @pytest.mark.parametrize(
         "input_timezone,expected_timezone",

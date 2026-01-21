@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-01-21 08:27+0100\n"
+"POT-Creation-Date: 2026-01-21 09:46+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -12199,7 +12199,7 @@ msgstr ""
 msgid "added power"
 msgstr ""
 
-#: ../source/features/workout.rst:440 ../source/features/workout.rst:517
+#: ../source/features/workout.rst:440
 msgid "added pace and total calories"
 msgstr ""
 
@@ -12332,6 +12332,12 @@ msgstr ""
 msgid "added power and display preference for charts"
 msgstr ""
 
+#: ../source/features/workout.rst:517
+msgid ""
+"added pace and total calories, change default value for charts display "
+"preference"
+msgstr ""
+
 #: ../source/features/workout.rst:519
 msgid ""
 "A chart is displayed for workout with a file, depending on sport and "
@@ -12365,7 +12371,7 @@ msgid ""
 msgstr ""
 
 #: ../source/features/workout.rst:530
-msgid "Pace and altitude are displayed in separate graphs."
+msgid "Pace and elevation are displayed in the same chart."
 msgstr ""
 
 #: ../source/features/workout.rst:533

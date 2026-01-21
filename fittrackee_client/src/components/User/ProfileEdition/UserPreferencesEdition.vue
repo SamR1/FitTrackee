@@ -496,12 +496,12 @@
   ]
   const workoutChartDisplayData = [
     {
-      label: 'ONE',
-      value: false,
-    },
-    {
       label: 'MULTIPLE',
       value: true,
+    },
+    {
+      label: 'ONE',
+      value: false,
     },
   ]
   const useRawGpxSpeed = [

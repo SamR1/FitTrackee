@@ -372,7 +372,7 @@ class User(BaseModel):
         server_default="only_manual",
     )
     split_workout_charts: Mapped[bool] = mapped_column(
-        server_default="false", nullable=False
+        server_default="true", nullable=False
     )
     messages_preferences: Mapped[Optional[Dict]] = mapped_column(
         postgresql.JSONB, nullable=True
