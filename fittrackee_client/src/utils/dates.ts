@@ -113,6 +113,7 @@ export const dateStringFormats: Record<TLanguage, string> = {
   // bn: 'd MMMM, yyyy',
   ca: 'd MMM yyyy',
   cs: 'd. MMM yyyy',
+  // da: 'd. MMM yyyy',
   de: 'do MMM yyyy',
   en: 'MMM. do, yyyy',
   es: 'd MMM yyyy',
@@ -129,6 +130,7 @@ export const dateStringFormats: Record<TLanguage, string> = {
   pt: 'd MMM yyyy',
   ru: 'd MMMM yyyy',
   // sl: 'd. MMMM yyyy',
+  // sv: 'd MMM yyyy',
   tr: 'd MMMM yyyy',
   zh_Hans: 'y年M月d日',
 }
