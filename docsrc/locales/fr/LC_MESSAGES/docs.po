@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-01-21 08:27+0100\n"
+"POT-Creation-Date: 2026-01-21 09:46+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -13414,7 +13414,7 @@ msgstr "ajout de la source du fichier, de la fréquence cardiaque et de la caden
 msgid "added power"
 msgstr "ajout de la puissance"
 
-#: ../source/features/workout.rst:440 ../source/features/workout.rst:517
+#: ../source/features/workout.rst:440
 msgid "added pace and total calories"
 msgstr "ajout de l'allure et du nombre total de calories"
 
@@ -13574,6 +13574,14 @@ msgstr "ajout de la fréquence cardiaque et de la cadence"
 msgid "added power and display preference for charts"
 msgstr "ajout de la puissance et de la préférence d'affichage pour les graphiques"
 
+#: ../source/features/workout.rst:517
+msgid ""
+"added pace and total calories, change default value for charts display "
+"preference"
+msgstr ""
+"ajout de l'allure et du nombre total de calories, changement de la valeur par "
+"défaut de l'affichage des graphiques"
+
 #: ../source/features/workout.rst:519
 msgid ""
 "A chart is displayed for workout with a file, depending on sport and "
@@ -13614,8 +13622,8 @@ msgstr ""
 "plusieurs graphiques."
 
 #: ../source/features/workout.rst:530
-msgid "Pace and altitude are displayed in separate graphs."
-msgstr "L'allure et l'altitude sont affichées dans des graphiques séparés."
+msgid "Pace and elevation are displayed in the same chart."
+msgstr "L'allure et l'altitude sont affichées dans sur le même graphique."
 
 #: ../source/features/workout.rst:533
 msgid ""
