@@ -15,6 +15,7 @@ export const loadLanguagePackage = async (language: string) => {
   // - Portuguese (pt-PT)
   // - Russian
   // - Slovenian
+  // - Swedish
   // - Turkish
   // fallback to english
   switch (language) {
@@ -32,6 +33,8 @@ export const loadLanguagePackage = async (language: string) => {
       return await import('@zxcvbn-ts/language-cs')
     // case 'fi':
     //   return await import('@zxcvbn-ts/language-fi')
+    // case 'da':
+    //   return await import('@zxcvbn-ts/language-da-dk')
     default:
       return await import('@zxcvbn-ts/language-en')
   }

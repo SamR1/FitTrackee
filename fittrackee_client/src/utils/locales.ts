@@ -4,6 +4,7 @@ import {
   // bn,
   ca,
   cs,
+  // da,
   de,
   enUS,
   es,
@@ -19,6 +20,7 @@ import {
   pt,
   ru,
   // sl,
+  // sv,
   tr,
   zhCN,
 } from 'date-fns/locale'
@@ -33,6 +35,7 @@ export const isLanguageSupported = (
     // 'bn',
     'ca',
     'cs',
+    // 'da',
     'de',
     'en',
     'es',
@@ -50,6 +53,7 @@ export const isLanguageSupported = (
     'ru',
     // 'sl',
     'tr',
+    // 'sv',
     'zh_Hans',
   ].includes(language)
 }
@@ -59,6 +63,7 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
   // bn: bn,
   ca: ca,
   cs: cs,
+  // da: da,
   de: de,
   en: enUS,
   es: es,
@@ -75,6 +80,7 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
   pt: pt,
   ru: ru,
   // sl: sl,
+  // sv: sv,
   tr: tr,
   zh_Hans: zhCN,
 }
@@ -84,6 +90,7 @@ export const languageLabels: Record<TLanguage, string> = {
   // bn: 'বাংলা',  // Bengali
   ca: 'Català (26%)', // Catalan
   cs: 'Česky (48%)', // Czech
+  // da: 'Dansk', // Danish
   de: 'Deutsch (93%)', // German
   en: 'English',
   es: 'Español (71%)', // Spanish
@@ -98,6 +105,7 @@ export const languageLabels: Record<TLanguage, string> = {
   pt: 'Português (53%)', // Portuguese
   ru: 'Русский (97%)', // Russian
   // sl: 'Slovenščina', // Slovenian
+  // sv: 'Svenska', // Swedish
   // fi: 'Suomi', // Finnish
   kab: 'Taqbaylit (2%)', // Kabyle
   tr: 'Türkçe (1%)', // Turkish
