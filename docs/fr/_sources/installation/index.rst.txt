@@ -74,7 +74,7 @@ Prerequisites
   - `Redis <https://redis.io/>`__ for `task queue <tasks_processing.html>`__ (for `email <emails.html>`__ sending if enable, for data export requests, and asynchronous archive uploads if enabled) and `API rate limits <api_rate_limits.html>`__ (for installation from sources or package)
   - SMTP provider (if `email <emails.html>`__ sending is enabled)
   - API key from a `weather data provider <weather.html>`__
-  - API key from a `elevation data provider <weather.html>`__
+  - `elevation data provider <elevation.html>`__
   - `Poetry <https://python-poetry.org>`__ 1.2+ (for installation from sources only)
   - `Node <https://nodejs.org>`__ 20+ and `Yarn <https://yarnpkg.com>`__ (for development only)
 

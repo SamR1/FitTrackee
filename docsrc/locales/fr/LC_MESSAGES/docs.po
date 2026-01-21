@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-01-21 11:13+0100\n"
+"POT-Creation-Date: 2026-01-21 18:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -975,7 +975,7 @@ msgstr "appel créé"
 msgid "Returns list of available time zones"
 msgstr "Renvoie la liste des fuseaux horaires disponibles"
 
-#: ../source/api/comments.rst:2 ../source/features/interactions.rst:69
+#: ../source/api/comments.rst:2 ../source/features/interactions.rst:70
 msgid "Comments"
 msgstr "Commentaires"
 
@@ -1575,7 +1575,7 @@ msgstr ""
 
 #: ../source/api/follow_requests.rst:2
 #: ../source/features/account_and_preferences.rst:119
-#: ../source/features/interactions.rst:56
+#: ../source/features/interactions.rst:57
 msgid "Follow requests"
 msgstr "Demandes de suivi"
 
@@ -1723,7 +1723,7 @@ msgstr "Documentation de l'API"
 
 #: ../source/api/notifications.rst:2
 #: ../source/features/account_and_preferences.rst:146
-#: ../source/features/interactions.rst:101
+#: ../source/features/interactions.rst:102
 msgid "Notifications"
 msgstr "Notifications"
 
@@ -10530,7 +10530,7 @@ msgstr "Utilisateurs bloquées sur FitTrackee"
 
 #: ../source/features/account_and_preferences.rst:135
 #: ../source/features/administration.rst:72
-#: ../source/features/interactions.rst:135
+#: ../source/features/interactions.rst:136
 msgid "Moderation"
 msgstr "Modération"
 
@@ -11445,18 +11445,22 @@ msgid "User profile"
 msgstr "Profil de l'utilisateur"
 
 #: ../source/features/interactions.rst:24
+msgid "display of the last 5 sessions visible in the user profile"
+msgstr "affichage des 5 dernières séances visibles dans le profil utilisateur"
+
+#: ../source/features/interactions.rst:25
 msgid "added RSS Feed"
 msgstr "ajout du flux RSS"
 
-#: ../source/features/interactions.rst:25
+#: ../source/features/interactions.rst:26
 msgid "description added to the RSS Feed"
 msgstr "ajout de la description dans le flux"
 
-#: ../source/features/interactions.rst:27
+#: ../source/features/interactions.rst:28
 msgid "The user profile displays the last 5 visible workouts."
 msgstr "Le profil de l'utilisateur affiche les 5 dernières séances visibles."
 
-#: ../source/features/interactions.rst:28
+#: ../source/features/interactions.rst:29
 msgid ""
 "The language and imperial units are taken into account according to the "
 "user's preferences if logged in."
@@ -11464,18 +11468,18 @@ msgstr ""
 "La langue et les unités impériales sont prises en compte en fonction des "
 "préférences de l'utilisateur si celui-ci est connecté."
 
-#: ../source/features/interactions.rst:30
-#: ../source/features/interactions.rst:74
+#: ../source/features/interactions.rst:31
+#: ../source/features/interactions.rst:75
 msgid "User profile on FitTrackee"
 msgstr "Profile de l'utilisateur sur FitTrackee"
 
-#: ../source/features/interactions.rst:33
+#: ../source/features/interactions.rst:34
 msgid "On the screenshot only 4 workouts are visible to the authenticated user."
 msgstr ""
 "Sur la capture d'écran, seules les 4 dernières séances sont visibles par "
 "l'utilisateur authentifié."
 
-#: ../source/features/interactions.rst:35
+#: ../source/features/interactions.rst:36
 msgid ""
 "A RSS feed is available in the user profile with the 5 last public "
 "workouts (displayed by default in English and using the metric system)."
@@ -11484,7 +11488,7 @@ msgstr ""
 "dernières séances publiques (affiché par défault en anglais et le système"
 " métrique)"
 
-#: ../source/features/interactions.rst:37
+#: ../source/features/interactions.rst:38
 msgid ""
 "It's possible to specify language and/or imperial units display, for "
 "instance:"
@@ -11492,15 +11496,15 @@ msgstr ""
 "Il est possible de spécifier la langue et/ou l'affichage en unités "
 "impériales, par exemple :"
 
-#: ../source/features/interactions.rst:39
+#: ../source/features/interactions.rst:40
 msgid "``https://<FITTRACKEE_DOMAIN>/users/<USERNAME>/workouts.rss?lang=fr``"
 msgstr ""
 
-#: ../source/features/interactions.rst:40
+#: ../source/features/interactions.rst:41
 msgid "``https://<FITTRACKEE_DOMAIN>/users/<USERNAME>/workouts.rss?imperial_units=true``"
 msgstr ""
 
-#: ../source/features/interactions.rst:43
+#: ../source/features/interactions.rst:44
 msgid ""
 "The rendering of the description may differ from that on FitTrackee, as "
 "different libraries are used and additional styles are applied on the UI."
@@ -11509,11 +11513,11 @@ msgstr ""
 "FitTrackee, car les librairies utilisées sont différentes et des styles "
 "additionnels sont appliqués sur l'interface."
 
-#: ../source/features/interactions.rst:46
+#: ../source/features/interactions.rst:47
 msgid "No workouts are displayed when the user is suspended."
 msgstr "Aucune séance n'est affichée si l'utilisateur est suspendu."
 
-#: ../source/features/interactions.rst:48
+#: ../source/features/interactions.rst:49
 msgid ""
 "Workout description can be displayed by adding ``description`` parameter "
 "(not displayed by default):"
@@ -11521,11 +11525,11 @@ msgstr ""
 "La description de la séance peut être affichée en ajoutant le paramètre "
 "``description`` (non affichée par défaut) :"
 
-#: ../source/features/interactions.rst:50
+#: ../source/features/interactions.rst:51
 msgid "``https://<FITTRACKEE_DOMAIN>/users/<USERNAME>/workouts.rss?description=true``"
 msgstr ""
 
-#: ../source/features/interactions.rst:53
+#: ../source/features/interactions.rst:54
 msgid ""
 "The RSS feed is not autodiscoverable due to application architecture "
 "(client-side rendering)."
@@ -11533,17 +11537,17 @@ msgstr ""
 "Le flux RSS ne peut pas découvert automatiquement du fait de "
 "l'architecture de l'application (rendu côté client)."
 
-#: ../source/features/interactions.rst:58
+#: ../source/features/interactions.rst:59
 msgid "The users can send follow request to other users."
 msgstr ""
 "Les utilisateurs peuvent envoyer des demandes de suivi à d'autres "
 "utilisateurs."
 
-#: ../source/features/interactions.rst:59
+#: ../source/features/interactions.rst:60
 msgid "Follow request can be approved or rejected."
 msgstr "Une demande de suivi peut être acceptée ou rejetée."
 
-#: ../source/features/interactions.rst:60
+#: ../source/features/interactions.rst:61
 msgid ""
 "Follow request approval can be manual or automatic (manual by default, "
 "see `user preferences <account_and_preferences.html#preferences>`__)."
@@ -11552,13 +11556,13 @@ msgstr ""
 "(manuelle par défaut, cf. `préférences utilisateur "
 "<account_and_preferences.html#preferences>`__)."
 
-#: ../source/features/interactions.rst:62
+#: ../source/features/interactions.rst:63
 msgid "In order to hide unwanted content, users can block another user."
 msgstr ""
 "Afin de masquer du contenu indésirable, les utilisateurs peuvent bloquer "
 "un autre utilisateur."
 
-#: ../source/features/interactions.rst:63
+#: ../source/features/interactions.rst:64
 msgid ""
 "Blocking users hides their workouts on timeline and comments. "
 "Notifications from blocked users are not displayed."
@@ -11567,7 +11571,7 @@ msgstr ""
 "et les commentaires. Les notifications des utilisateurs bloqués ne "
 "s'affichent pas."
 
-#: ../source/features/interactions.rst:64
+#: ../source/features/interactions.rst:65
 msgid ""
 "Blocked users cannot see workouts and comments from users who have "
 "blocked them, or follow them (if they followed them, they are forced to "
@@ -11577,7 +11581,7 @@ msgstr ""
 "commentaires des utilisateurs qui les ont bloqués, ni les suivre (s'ils "
 "les suivaient, les abonnements sont automatiquement supprimés)."
 
-#: ../source/features/interactions.rst:66
+#: ../source/features/interactions.rst:67
 msgid ""
 "Users can report a user profile that violates instance rules. This will "
 "send a notification to moderators and administrators."
@@ -11586,25 +11590,25 @@ msgstr ""
 "l'instance. Une notification sera envoyée aux modérateurs et "
 "administrateurs."
 
-#: ../source/features/interactions.rst:71
+#: ../source/features/interactions.rst:72
 msgid "Depending on visibility, an authenticated user can comment on a workout."
 msgstr "Selon la visibilité, un utilisateur authentifié peut commenter une séance."
 
-#: ../source/features/interactions.rst:72 ../source/features/workout.rst:306
+#: ../source/features/interactions.rst:73 ../source/features/workout.rst:306
 msgid "A limited Markdown syntax can be used."
 msgstr "Une syntaxe Markdown limitée peut être utilisée."
 
-#: ../source/features/interactions.rst:77
+#: ../source/features/interactions.rst:78
 msgid "The visibility levels for comment are:"
 msgstr "Les niveaux de visibilité pour les commentaires sont :"
 
-#: ../source/features/interactions.rst:79
+#: ../source/features/interactions.rst:80
 msgid "private: only author and mentioned users can see the comment,"
 msgstr ""
 "privé: seul l'auteur et les utilisateurs mentionnés peuvent voir le "
 "commentaire,"
 
-#: ../source/features/interactions.rst:80
+#: ../source/features/interactions.rst:81
 msgid ""
 "followers only: only author, followers and mentioned users can see the "
 "comment,"
@@ -11612,7 +11616,7 @@ msgstr ""
 "abonnés seulement: seul l'auteur, les utilisateurs mentionnés et les "
 "abonnés peuvent voir le commentaire,"
 
-#: ../source/features/interactions.rst:81
+#: ../source/features/interactions.rst:82
 msgid "public: anyone can see the comment even unauthenticated users."
 msgstr ""
 "public: tout le monde peut voir le commentaire, même les utilisateurs non"
@@ -11635,13 +11639,13 @@ msgstr ""
 "Changer la visibilité de la séance n'affectera pas celle des commentaires"
 " existants."
 
-#: ../source/features/interactions.rst:89
+#: ../source/features/interactions.rst:90
 msgid "Comment text can be modified (visibility level cannot be changed)."
 msgstr ""
 "Le texte du commentaire peut être modifié (le niveau de visibilité ne "
 "peut pas être modifié)."
 
-#: ../source/features/interactions.rst:91
+#: ../source/features/interactions.rst:92
 msgid ""
 "Users can report a comment that violates instance rules. This will send a"
 " notification to moderators and administrators."
@@ -11650,11 +11654,11 @@ msgstr ""
 "de l'instance. Une notification sera envoyée aux modérateurs et "
 "administrateurs."
 
-#: ../source/features/interactions.rst:94
+#: ../source/features/interactions.rst:95
 msgid "Likes"
 msgstr "\"Likes\""
 
-#: ../source/features/interactions.rst:96
+#: ../source/features/interactions.rst:97
 msgid ""
 "Depending on visibility, users can like or \"unlike\" a workout or a "
 "comment."
@@ -11662,48 +11666,48 @@ msgstr ""
 "Selon la visibilité de l'instance, les utilisateurs peuvent ajouter ou "
 "supprimer \"like\" sur une séance ou un commentaire."
 
-#: ../source/features/interactions.rst:98
+#: ../source/features/interactions.rst:99
 msgid "The list of users who have liked the workout or comment is available."
 msgstr ""
 "La liste des utilisateurs ayant \"liké\" la séance ou le commentaire est "
 "disponible."
 
-#: ../source/features/interactions.rst:103
+#: ../source/features/interactions.rst:104
 msgid "Notifications are created for the following event:"
 msgstr "Des notifications sont créées pour les évènements suivants : "
 
-#: ../source/features/interactions.rst:105
-#: ../source/features/interactions.rst:127
+#: ../source/features/interactions.rst:106
+#: ../source/features/interactions.rst:128
 msgid "follow request and follow"
 msgstr "demande de suivi et suivi"
 
-#: ../source/features/interactions.rst:106
-#: ../source/features/interactions.rst:128
+#: ../source/features/interactions.rst:107
+#: ../source/features/interactions.rst:129
 msgid "follow request approval when follow request approval is manual"
 msgstr "demande d'abonnement acceptée si l'approbation des demandes est manuelle"
 
-#: ../source/features/interactions.rst:107
-#: ../source/features/interactions.rst:129
+#: ../source/features/interactions.rst:108
+#: ../source/features/interactions.rst:130
 msgid "like on comment or workout"
 msgstr "\"like\" sur un commentaire ou une séance"
 
-#: ../source/features/interactions.rst:108
-#: ../source/features/interactions.rst:130
+#: ../source/features/interactions.rst:109
+#: ../source/features/interactions.rst:131
 msgid "comment on workout"
 msgstr "commentaire sur une séance"
 
-#: ../source/features/interactions.rst:109
-#: ../source/features/interactions.rst:131
+#: ../source/features/interactions.rst:110
+#: ../source/features/interactions.rst:132
 msgid "mention on comment"
 msgstr "mention dans un commentaire"
 
-#: ../source/features/interactions.rst:110
+#: ../source/features/interactions.rst:111
 msgid "suspension or warning (an email is also sent if email sending is enabled)"
 msgstr ""
 "suspension ou avertissement (un courriel est également envoyé si l'envoi "
 "des courriels est activé)."
 
-#: ../source/features/interactions.rst:111
+#: ../source/features/interactions.rst:112
 msgid ""
 "suspension or warning lifting (an email is also sent if email sending is "
 "enabled)"
@@ -11711,25 +11715,25 @@ msgstr ""
 "levée de suspension ou d'avertissement (un courriel est également envoyé "
 "si l'envoi des courriels est activé)."
 
-#: ../source/features/interactions.rst:113
+#: ../source/features/interactions.rst:114
 msgid "FitTrackee Notifications"
 msgstr "Notifications sur FitTrackee"
 
-#: ../source/features/interactions.rst:116
+#: ../source/features/interactions.rst:117
 msgid "Users with moderation rights can also receive notifications on:"
 msgstr ""
 "Les utilisateurs avec des droits de modération peuvent également recevoir"
 " des notifications pour :"
 
-#: ../source/features/interactions.rst:118
+#: ../source/features/interactions.rst:119
 msgid "report creation"
 msgstr "la création de signalements"
 
-#: ../source/features/interactions.rst:119
+#: ../source/features/interactions.rst:120
 msgid "appeal on suspension or warning"
 msgstr "les appels sur des suspensions"
 
-#: ../source/features/interactions.rst:121
+#: ../source/features/interactions.rst:122
 msgid ""
 "Users with administration rights can also receive notifications on user "
 "creation."
@@ -11737,11 +11741,11 @@ msgstr ""
 "Les utilisateurs avec des droits d'administration peuvent également "
 "recevoir des notifications lors de l'inscription d'un utilisateur."
 
-#: ../source/features/interactions.rst:123
+#: ../source/features/interactions.rst:124
 msgid "Users can mark notifications as read or unread."
 msgstr "Les utilisateurs peuvent marquer les notifications comme lues ou non lues."
 
-#: ../source/features/interactions.rst:125
+#: ../source/features/interactions.rst:126
 msgid ""
 "Notifications can be disabled or enabled the following events in user "
 "preferences:"
@@ -11749,13 +11753,13 @@ msgstr ""
 "Les notifications peuvent être désactivées ou activées pour les "
 "évènements suivants dans les préférences de l'utilisateur :"
 
-#: ../source/features/interactions.rst:132
+#: ../source/features/interactions.rst:133
 msgid "user registration (if authenticated user has administration rights)"
 msgstr ""
 "inscription d'un utilisateur (si l'utilisateur authentifié a les droits "
 "d'administration)"
 
-#: ../source/features/interactions.rst:137
+#: ../source/features/interactions.rst:138
 msgid ""
 "Comments, workouts, or accounts may be suspended after actions by "
 "moderators or administrators, see `Moderation in user account "
@@ -15310,8 +15314,8 @@ msgid "API key from a `weather data provider <weather.html>`__"
 msgstr "Clé d'API d'un `fournisseur de données météo <weather.html>`__"
 
 #: ../source/installation/index.rst:77
-msgid "API key from a `elevation data provider <weather.html>`__"
-msgstr "Clé d'API d'un `fournisseur de données d'altitude <elevation.html>`__"
+msgid "`elevation data provider <elevation.html>`__"
+msgstr "`Fournisseur de données d'altitude <elevation.html>`__"
 
 #: ../source/installation/index.rst:78
 msgid ""

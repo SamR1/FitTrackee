@@ -21,6 +21,7 @@ Users directory
 User profile
 ============
 
+.. versionchanged:: 0.9.0 display of the last 5 sessions visible in the user profile
 .. versionchanged:: 0.12.0 added RSS Feed
 .. versionchanged:: 0.12.1 description added to the RSS Feed
 
