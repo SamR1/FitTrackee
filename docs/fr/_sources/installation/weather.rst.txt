@@ -16,3 +16,5 @@ To configure a weather provider, set the following environment variables:
 
 - ``WEATHER_API_PROVIDER``: the name of the provider (currently ``visualcrossing`` is the only choice)
 - ``WEATHER_API_KEY``: the key to the corresponding weather provider
+
+The configured weather data provider is displayed in **About** page.

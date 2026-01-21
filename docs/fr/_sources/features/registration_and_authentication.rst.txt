@@ -1,5 +1,5 @@
-Registration and authentication
-###############################
+Registration & authentication
+#############################
 
 .. versionchanged:: 0.6.0 improve registration process
 .. versionchanged:: 0.6.9 create user account with language detected from browser
@@ -17,8 +17,10 @@ Tips for strengthening password security are displayed.
 .. figure:: ../_images/user-registration.png
    :alt: User registration on FitTrackee
 
-| The user must agree to the privacy policy to register.
-| If a more recent policy is available, a message is displayed on the dashboard to review the new version.
+The user must agree to the privacy policy to register.
+
+.. note::
+  When a more recent policy is available, a message is displayed on the dashboard to review the new version.
 
 The user account is created with language if supported and time zone detected from browser.
 

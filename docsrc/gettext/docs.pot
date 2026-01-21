@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FitTrackee 1.1.0b2\n"
 "\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-18 18:38+0100\n"
+"POT-Creation-Date: 2026-01-21 08:27+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -8931,8 +8931,8 @@ msgstr ""
 #: ../source/features/statistics.rst:29
 #: ../source/features/statistics.rst:51
 #: ../source/features/workout.rst:409
-#: ../source/features/workouts_list.rst:26
-#: ../source/features/workouts_list.rst:41
+#: ../source/features/workouts_list.rst:27
+#: ../source/features/workouts_list.rst:42
 msgid "average speed"
 msgstr ""
 
@@ -8948,7 +8948,7 @@ msgstr ""
 
 #: ../source/changelog.md:3723
 #: ../source/features/workout.rst:415
-#: ../source/features/workouts_list.rst:27
+#: ../source/features/workouts_list.rst:28
 msgid "maximum speed"
 msgstr ""
 
@@ -9301,7 +9301,7 @@ msgid "Before executing the command, it is recommended to back up of all data (d
 msgstr ""
 
 #: ../source/cli.rst:250
-#: ../source/features/workout.rst:598
+#: ../source/features/workout.rst:603
 msgid "If a weather data provider is defined and the ``--with-weather`` option is provided and/or an Elevation API URL is set and ``--with-elevation`` option is provided, the rate limit may be reached, resulting in API rate limit errors when a large number of workouts is refreshed."
 msgstr ""
 
@@ -10241,7 +10241,6 @@ msgid "equipment types"
 msgstr ""
 
 #: ../source/features/administration.rst:160
-#: ../source/features/global_map.rst:9
 msgid "sports"
 msgstr ""
 
@@ -10460,13 +10459,13 @@ msgstr ""
 
 #: ../source/features/equipment.rst:45
 #: ../source/features/statistics.rst:20
-#: ../source/features/workouts_list.rst:46
+#: ../source/features/workouts_list.rst:49
 msgid "total distance"
 msgstr ""
 
 #: ../source/features/equipment.rst:46
 #: ../source/features/statistics.rst:21
-#: ../source/features/workouts_list.rst:47
+#: ../source/features/workouts_list.rst:50
 msgid "total duration"
 msgstr ""
 
@@ -10501,16 +10500,10 @@ msgid "Global map"
 msgstr ""
 
 #: ../source/features/global_map.rst:6
-msgid "User workouts can be displayed on a global map and filtered by:"
+msgid "User workouts can be displayed on a global map and filtered by date and sports."
 msgstr ""
 
 #: ../source/features/global_map.rst:8
-#: ../source/features/workouts_list.rst:16
-#: ../source/features/workouts_list.rst:38
-msgid "date"
-msgstr ""
-
-#: ../source/features/global_map.rst:11
 msgid "FitTrackee Global Map"
 msgstr ""
 
@@ -10586,37 +10579,37 @@ msgstr ""
 msgid "The user profile displays the last 5 visible workouts."
 msgstr ""
 
-#: ../source/features/interactions.rst:29
+#: ../source/features/interactions.rst:28
+msgid "The language and imperial units are taken into account according to the user's preferences if logged in."
+msgstr ""
+
+#: ../source/features/interactions.rst:30
 #: ../source/features/interactions.rst:74
 msgid "User profile on FitTrackee"
 msgstr ""
 
-#: ../source/features/interactions.rst:32
+#: ../source/features/interactions.rst:33
 msgid "On the screenshot only 4 workouts are visible to the authenticated user."
 msgstr ""
 
-#: ../source/features/interactions.rst:34
+#: ../source/features/interactions.rst:35
 msgid "A RSS feed is available in the user profile with the 5 last public workouts (displayed by default in English and using the metric system)."
 msgstr ""
 
-#: ../source/features/interactions.rst:36
+#: ../source/features/interactions.rst:37
 msgid "It's possible to specify language and/or imperial units display, for instance:"
 msgstr ""
 
-#: ../source/features/interactions.rst:38
+#: ../source/features/interactions.rst:39
 msgid "``https://<FITTRACKEE_DOMAIN>/users/<USERNAME>/workouts.rss?lang=fr``"
 msgstr ""
 
-#: ../source/features/interactions.rst:39
+#: ../source/features/interactions.rst:40
 msgid "``https://<FITTRACKEE_DOMAIN>/users/<USERNAME>/workouts.rss?imperial_units=true``"
 msgstr ""
 
-#: ../source/features/interactions.rst:42
+#: ../source/features/interactions.rst:43
 msgid "The rendering of the description may differ from that on FitTrackee, as different libraries are used and additional styles are applied on the UI."
-msgstr ""
-
-#: ../source/features/interactions.rst:44
-msgid "The language and imperial units are taken into account according to the user's preferences if logged in."
 msgstr ""
 
 #: ../source/features/interactions.rst:46
@@ -11018,75 +11011,75 @@ msgstr ""
 msgid "`Minimal example of an application interacting with FitTrackee <https://codeberg.org/SamR1/ft-oauth-client>`_ (python)"
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:2
-msgid "Registration and authentication"
+#: ../source/features/registration_and_authentication.rst:2
+msgid "Registration & authentication"
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:4
+#: ../source/features/registration_and_authentication.rst:4
 msgid "improve registration process"
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:5
+#: ../source/features/registration_and_authentication.rst:5
 msgid "create user account with language detected from browser"
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:6
+#: ../source/features/registration_and_authentication.rst:6
 msgid "create user account with time zone detected from browser"
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:7
+#: ../source/features/registration_and_authentication.rst:7
 msgid "added privacy policy"
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:9
+#: ../source/features/registration_and_authentication.rst:9
 msgid "If registration is enabled, users can register by providing:"
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:11
+#: ../source/features/registration_and_authentication.rst:11
 msgid "user name,"
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:12
+#: ../source/features/registration_and_authentication.rst:12
 msgid "email,"
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:13
+#: ../source/features/registration_and_authentication.rst:13
 msgid "password."
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:15
+#: ../source/features/registration_and_authentication.rst:15
 msgid "Tips for strengthening password security are displayed."
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:17
+#: ../source/features/registration_and_authentication.rst:17
 msgid "User registration on FitTrackee"
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:20
+#: ../source/features/registration_and_authentication.rst:20
 msgid "The user must agree to the privacy policy to register."
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:21
-msgid "If a more recent policy is available, a message is displayed on the dashboard to review the new version."
+#: ../source/features/registration_and_authentication.rst:23
+msgid "When a more recent policy is available, a message is displayed on the dashboard to review the new version."
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:23
+#: ../source/features/registration_and_authentication.rst:25
 msgid "The user account is created with language if supported and time zone detected from browser."
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:25
+#: ../source/features/registration_and_authentication.rst:27
 msgid "After registration, the user account is inactive and an email with confirmation instructions is sent to activate it."
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:26
+#: ../source/features/registration_and_authentication.rst:28
 msgid "A user with an inactive account cannot log in."
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:29
+#: ../source/features/registration_and_authentication.rst:31
 msgid "In case email sending is not configured, a `command line <../cli.html#ftcli-users-update>`__ allows to activate users account."
 msgstr ""
 
-#: ../source/features/registration_authentication.rst:31
+#: ../source/features/registration_and_authentication.rst:33
 msgid "After account activation, users can log in with email and password."
 msgstr ""
 
@@ -11123,12 +11116,12 @@ msgid "totals:"
 msgstr ""
 
 #: ../source/features/statistics.rst:23
-#: ../source/features/workouts_list.rst:49
+#: ../source/features/workouts_list.rst:52
 msgid "total ascent"
 msgstr ""
 
 #: ../source/features/statistics.rst:24
-#: ../source/features/workouts_list.rst:50
+#: ../source/features/workouts_list.rst:53
 msgid "total descent"
 msgstr ""
 
@@ -11142,12 +11135,12 @@ msgid "averages:"
 msgstr ""
 
 #: ../source/features/statistics.rst:30
-#: ../source/features/workouts_list.rst:51
+#: ../source/features/workouts_list.rst:54
 msgid "average distance"
 msgstr ""
 
 #: ../source/features/statistics.rst:31
-#: ../source/features/workouts_list.rst:52
+#: ../source/features/workouts_list.rst:55
 msgid "average duration"
 msgstr ""
 
@@ -11156,19 +11149,19 @@ msgid "average number of workouts"
 msgstr ""
 
 #: ../source/features/statistics.rst:33
-#: ../source/features/workouts_list.rst:54
+#: ../source/features/workouts_list.rst:57
 msgid "average ascent"
 msgstr ""
 
 #: ../source/features/statistics.rst:34
-#: ../source/features/workouts_list.rst:55
+#: ../source/features/workouts_list.rst:58
 msgid "average descent"
 msgstr ""
 
 #: ../source/features/statistics.rst:35
 #: ../source/features/workout.rst:410
-#: ../source/features/workouts_list.rst:30
-#: ../source/features/workouts_list.rst:58
+#: ../source/features/workouts_list.rst:31
+#: ../source/features/workouts_list.rst:61
 msgid "average pace"
 msgstr ""
 
@@ -11446,7 +11439,7 @@ msgid "A notification is displayed after task completion."
 msgstr ""
 
 #: ../source/features/workout.rst:71
-msgid "Manual addition"
+msgid "Data entry"
 msgstr ""
 
 #: ../source/features/workout.rst:73
@@ -11470,10 +11463,12 @@ msgid "Most icons for sports are made by `Freepik <https://www.freepik.com/>`__ 
 msgstr ""
 
 #: ../source/features/workout.rst:87
+#: ../source/installation/index.rst:38
 msgid "Sports icons for Canoeing, Kayaking and Rowing are made by `@Von-Birne <https://github.com/Von-Birne>`__."
 msgstr ""
 
 #: ../source/features/workout.rst:88
+#: ../source/installation/index.rst:39
 msgid "Sport icon for Halfbike is made by `@astridx <https://github.com/astridx>`__."
 msgstr ""
 
@@ -12013,7 +12008,7 @@ msgid "Elevation-related data for racket sports (Outdoor Tennis and Padel) and f
 msgstr ""
 
 #: ../source/features/workout.rst:396
-msgid "If some elevation data are missing and an elevation service is enabled by the administrators, the missing elevations can be retrieved on workout creation if the user preference is set."
+msgid "If some elevation data are missing and an `elevation service <../installation/elevation.html>`__ is enabled by the administrators (data source are displayed in **About** page), the missing elevations can be retrieved on workout creation if the user preference is set."
 msgstr ""
 
 #: ../source/features/workout.rst:397
@@ -12021,7 +12016,7 @@ msgid "In this case, all elevations are updated."
 msgstr ""
 
 #: ../source/features/workout.rst:399
-msgid "Elevation data source can also be changed after creation if an elevation service is enabled."
+msgid "Elevation data source can also be changed after creation."
 msgstr ""
 
 #: ../source/features/workout.rst:404
@@ -12037,7 +12032,7 @@ msgid "Depending on sports, following records are calculated:"
 msgstr ""
 
 #: ../source/features/workout.rst:411
-#: ../source/features/workouts_list.rst:59
+#: ../source/features/workouts_list.rst:62
 msgid "best pace"
 msgstr ""
 
@@ -12108,8 +12103,8 @@ msgid "durations (moving and total durations and pauses)"
 msgstr ""
 
 #: ../source/features/workout.rst:446
-#: ../source/features/workouts_list.rst:24
-#: ../source/features/workouts_list.rst:39
+#: ../source/features/workouts_list.rst:25
+#: ../source/features/workouts_list.rst:40
 msgid "distance"
 msgstr ""
 
@@ -12234,165 +12229,173 @@ msgid "power"
 msgstr ""
 
 #: ../source/features/workout.rst:528
-msgid "Speed/pace, elevation, heart rate, cadence and power can be displayed on one chart or split on multiple charts. The preferred display can be stored in a `user preference <account_and_preferences.html#preferences>`__."
+msgid "Speed/pace, elevation, heart rate, cadence and power can be displayed on one chart or split on multiple charts."
 msgstr ""
 
-#: ../source/features/workout.rst:531
-msgid "Workout menu"
+#: ../source/features/workout.rst:530
+msgid "Pace and altitude are displayed in separate graphs."
 msgstr ""
 
 #: ../source/features/workout.rst:533
-msgid "added button for download"
-msgstr ""
-
-#: ../source/features/workout.rst:534
-msgid "added like button"
-msgstr ""
-
-#: ../source/features/workout.rst:535
-msgid "added refresh button"
+msgid "The preferred display can be stored in a `user preference <account_and_preferences.html#preferences>`__."
 msgstr ""
 
 #: ../source/features/workout.rst:536
+msgid "Workout menu"
+msgstr ""
+
+#: ../source/features/workout.rst:538
+msgid "added button for download"
+msgstr ""
+
+#: ../source/features/workout.rst:539
+msgid "added like button"
+msgstr ""
+
+#: ../source/features/workout.rst:540
+msgid "added refresh button"
+msgstr ""
+
+#: ../source/features/workout.rst:541
 msgid "added button for elevation data source, file download updated"
 msgstr ""
 
-#: ../source/features/workout.rst:543
+#: ../source/features/workout.rst:548
 msgid "Button"
 msgstr ""
 
-#: ../source/features/workout.rst:544
+#: ../source/features/workout.rst:549
 msgid "Action"
 msgstr ""
 
-#: ../source/features/workout.rst:546
+#: ../source/features/workout.rst:551
 msgid "Like workout (only for authenticated users, depending on workout visibility)"
 msgstr ""
 
-#: ../source/features/workout.rst:548
+#: ../source/features/workout.rst:553
 msgid "Download the original workout file or the generated .gpx file (only for workout owner)"
 msgstr ""
 
-#: ../source/features/workout.rst:550
+#: ../source/features/workout.rst:555
 msgid "Edit workout (only for workout owner)"
 msgstr ""
 
-#: ../source/features/workout.rst:552
+#: ../source/features/workout.rst:557
 msgid "Refresh workout (only for workout owner)"
 msgstr ""
 
-#: ../source/features/workout.rst:554
+#: ../source/features/workout.rst:559
 msgid "Change elevation data source workout (only for workout owner)"
 msgstr ""
 
-#: ../source/features/workout.rst:556
+#: ../source/features/workout.rst:561
 msgid "Delete workout (only for workout owner)"
 msgstr ""
 
-#: ../source/features/workout.rst:558
+#: ../source/features/workout.rst:563
 msgid "Report workout (only for authenticated users except the workout owner, depending on workout visibility)"
 msgstr ""
 
-#: ../source/features/workout.rst:562
+#: ../source/features/workout.rst:567
 msgid "Edition and deletion"
 msgstr ""
 
-#: ../source/features/workout.rst:564
+#: ../source/features/workout.rst:569
 msgid "added workout refresh"
 msgstr ""
 
-#: ../source/features/workout.rst:565
+#: ../source/features/workout.rst:570
 msgid "change elevation data source"
 msgstr ""
 
-#: ../source/features/workout.rst:567
+#: ../source/features/workout.rst:572
 msgid "Workout can be edited:"
 msgstr ""
 
-#: ../source/features/workout.rst:569
+#: ../source/features/workout.rst:574
 msgid "sport"
 msgstr ""
 
-#: ../source/features/workout.rst:570
-#: ../source/features/workouts_list.rst:19
+#: ../source/features/workout.rst:575
+#: ../source/features/workouts_list.rst:20
 msgid "title"
 msgstr ""
 
-#: ../source/features/workout.rst:571
+#: ../source/features/workout.rst:576
 msgid "equipment"
 msgstr ""
 
-#: ../source/features/workout.rst:572
-#: ../source/features/workouts_list.rst:20
+#: ../source/features/workout.rst:577
+#: ../source/features/workouts_list.rst:21
 msgid "description"
 msgstr ""
 
-#: ../source/features/workout.rst:573
+#: ../source/features/workout.rst:578
 msgid "private notes"
 msgstr ""
 
-#: ../source/features/workout.rst:574
-#: ../source/features/workouts_list.rst:23
+#: ../source/features/workout.rst:579
+#: ../source/features/workouts_list.rst:24
 msgid "workout visibility"
 msgstr ""
 
-#: ../source/features/workout.rst:575
+#: ../source/features/workout.rst:580
 msgid "analysis visibility"
 msgstr ""
 
-#: ../source/features/workout.rst:576
+#: ../source/features/workout.rst:581
 msgid "map visibility"
 msgstr ""
 
-#: ../source/features/workout.rst:577
+#: ../source/features/workout.rst:582
 msgid "date (only workouts without gpx)"
 msgstr ""
 
-#: ../source/features/workout.rst:578
+#: ../source/features/workout.rst:583
 msgid "duration (only workouts without gpx)"
 msgstr ""
 
-#: ../source/features/workout.rst:579
+#: ../source/features/workout.rst:584
 msgid "distance (only workouts without gpx)"
 msgstr ""
 
-#: ../source/features/workout.rst:580
+#: ../source/features/workout.rst:585
 msgid "ascent and descent (only workouts without gpx)"
 msgstr ""
 
-#: ../source/features/workout.rst:582
+#: ../source/features/workout.rst:587
 msgid "Some values are only calculated on workout creation."
 msgstr ""
 
-#: ../source/features/workout.rst:583
+#: ../source/features/workout.rst:588
 msgid "The previously uploaded workouts are not updated in the following cases:"
 msgstr ""
 
-#: ../source/features/workout.rst:585
+#: ../source/features/workout.rst:590
 msgid "updating some preferences (\"max. speed calculation strategy\" and \"pause events triggering segment creation\"),"
 msgstr ""
 
-#: ../source/features/workout.rst:586
+#: ../source/features/workout.rst:591
 msgid "updating stopped speed threshold in sport preferences (used to calculate pauses),"
 msgstr ""
 
-#: ../source/features/workout.rst:587
+#: ../source/features/workout.rst:592
 msgid "configuring a weather data provider,"
 msgstr ""
 
-#: ../source/features/workout.rst:588
+#: ../source/features/workout.rst:593
 msgid "some new features,"
 msgstr ""
 
-#: ../source/features/workout.rst:589
+#: ../source/features/workout.rst:594
 msgid "Garmin device mappings update,"
 msgstr ""
 
-#: ../source/features/workout.rst:590
+#: ../source/features/workout.rst:595
 msgid "bug fixes on file processing."
 msgstr ""
 
-#: ../source/features/workout.rst:592
+#: ../source/features/workout.rst:597
 msgid "The calculated data can be refreshed by clicking on **Refresh** button and weather data fetched (if provider is set and the workout does not have weather data)."
 msgstr ""
 
@@ -12400,7 +12403,27 @@ msgstr ""
 msgid "A `CLI command <../cli.html#ftcli-workouts-refresh>`__ is available to refresh several workouts depending on options."
 msgstr ""
 
-#: ../source/features/workout.rst:600
+#: ../source/features/workout.rst:605
+msgid "The elevation data source can be changed if an `elevation service <../installation/elevation.html>`__ is enabled by the administrators."
+msgstr ""
+
+#: ../source/features/workout.rst:606
+msgid "In this case, the available services are displayed after clicking on the button **Change elevation data source**:"
+msgstr ""
+
+#: ../source/features/workout.rst:608
+msgid "List of available elevation sources"
+msgstr ""
+
+#: ../source/features/workout.rst:612
+msgid "It is also possible to get the elevation again from the file:"
+msgstr ""
+
+#: ../source/features/workout.rst:614
+msgid "List of available elevation sources with file"
+msgstr ""
+
+#: ../source/features/workout.rst:617
 msgid "A workout can be deleted by clicking on the **Delete** button."
 msgstr ""
 
@@ -12440,76 +12463,89 @@ msgstr ""
 msgid "added filter and sort option on pace"
 msgstr ""
 
-#: ../source/features/workouts_list.rst:14
+#: ../source/features/workouts_list.rst:13
+msgid "By default, the last 10 workouts are displayed in the list."
+msgstr ""
+
+#: ../source/features/workouts_list.rst:15
 msgid "Users can filter workouts on:"
 msgstr ""
 
 #: ../source/features/workouts_list.rst:17
-msgid "sports (only sports with workouts are displayed in sport dropdown)"
+#: ../source/features/workouts_list.rst:39
+msgid "date"
 msgstr ""
 
 #: ../source/features/workouts_list.rst:18
+msgid "sports (only sports with workouts are displayed in sport dropdown)"
+msgstr ""
+
+#: ../source/features/workouts_list.rst:19
 msgid "equipment (only equipments with workouts are displayed in equipment dropdown)"
 msgstr ""
 
-#: ../source/features/workouts_list.rst:21
+#: ../source/features/workouts_list.rst:22
 msgid "notes"
 msgstr ""
 
-#: ../source/features/workouts_list.rst:22
+#: ../source/features/workouts_list.rst:23
 msgid "location and radius"
 msgstr ""
 
-#: ../source/features/workouts_list.rst:25
-#: ../source/features/workouts_list.rst:40
+#: ../source/features/workouts_list.rst:26
+#: ../source/features/workouts_list.rst:41
 msgid "duration"
 msgstr ""
 
-#: ../source/features/workouts_list.rst:28
+#: ../source/features/workouts_list.rst:29
 msgid "when only one sport is displayed and 'pace' is set in the sport preference:"
 msgstr ""
 
-#: ../source/features/workouts_list.rst:31
+#: ../source/features/workouts_list.rst:32
 msgid "maximum pace (= best pace)"
 msgstr ""
 
-#: ../source/features/workouts_list.rst:33
+#: ../source/features/workouts_list.rst:34
 msgid "Workouts List on FitTrackee"
 msgstr ""
 
-#: ../source/features/workouts_list.rst:36
+#: ../source/features/workouts_list.rst:37
 msgid "Workouts can be sorted by:"
 msgstr ""
 
-#: ../source/features/workouts_list.rst:42
+#: ../source/features/workouts_list.rst:43
 msgid "average pace (when only one sport is displayed and 'pace' is set in the sport preference)"
 msgstr ""
 
-#: ../source/features/workouts_list.rst:44
+#: ../source/features/workouts_list.rst:45
+msgid "The number of displayed workouts can be changed (10, 25, 50 or 100 per page)."
+msgstr ""
+
+#: ../source/features/workouts_list.rst:47
 msgid "Statistics are displayed when more than one workout is displayed:"
 msgstr ""
 
-#: ../source/features/workouts_list.rst:48
+#: ../source/features/workouts_list.rst:51
 msgid "maximum speed (when workouts belong to the same sport)"
 msgstr ""
 
-#: ../source/features/workouts_list.rst:53
+#: ../source/features/workouts_list.rst:56
 msgid "average speed (when workouts belong to the same sport)"
 msgstr ""
 
-#: ../source/features/workouts_list.rst:56
+#: ../source/features/workouts_list.rst:59
 msgid "when workouts belong to the same sport and 'pace' is set in the sport preference:"
 msgstr ""
 
-#: ../source/features/workouts_list.rst:61
+#: ../source/features/workouts_list.rst:64
 msgid "When multiple pages are fetched, statistics for all pages are also displayed."
 msgstr ""
 
-#: ../source/features/workouts_list.rst:63
+#: ../source/features/workouts_list.rst:66
 msgid "Filtered workouts can be displayed on a map:"
 msgstr ""
 
-#: ../source/features/workouts_list.rst:65
+#: ../source/features/workouts_list.rst:68
 msgid "FitTrackee Workouts Map"
 msgstr ""
 
@@ -12610,7 +12646,7 @@ msgid "Deployment"
 msgstr ""
 
 #: ../source/installation/deployment.rst:6
-#: ../source/installation/index.rst:87
+#: ../source/installation/index.rst:89
 msgid "This documentation does not detail how to secure a server. Please refer to the documentation and best practices corresponding to your installation and operating system."
 msgstr ""
 
@@ -12660,6 +12696,38 @@ msgstr ""
 
 #: ../source/installation/deployment.rst:141
 msgid "If needed, update configuration to handle larger files (see `client_max_body_size <https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size>`_)."
+msgstr ""
+
+#: ../source/installation/elevation.rst:2
+msgid "Elevation data"
+msgstr ""
+
+#: ../source/installation/elevation.rst:6
+msgid "The following elevation data providers are supported by **FitTrackee**:"
+msgstr ""
+
+#: ../source/installation/elevation.rst:8
+msgid "`OpenElevation <https://open-elevation.com/>`__"
+msgstr ""
+
+#: ../source/installation/elevation.rst:9
+msgid "`Valhalla Elevation <https://valhalla.github.io/valhalla/api/elevation/api-reference/>`__"
+msgstr ""
+
+#: ../source/installation/elevation.rst:11
+msgid "To configure a provider, set the following environment variables:"
+msgstr ""
+
+#: ../source/installation/elevation.rst:13
+msgid "`OPEN_ELEVATION_API_URL <environments_variables.html#envvar-OPEN_ELEVATION_API_URL>`__: URL of OpenElevation service (public API or self-hosted instance)"
+msgstr ""
+
+#: ../source/installation/elevation.rst:14
+msgid "`VALHALLA_API_URL <environments_variables.html#envvar-VALHALLA_API_URL>`__: URL of Valhalla service (public API or self-hosted instance)"
+msgstr ""
+
+#: ../source/installation/elevation.rst:16
+msgid "The configured elevation data providers are displayed in **About** page."
 msgstr ""
 
 #: ../source/installation/emails.rst:2
@@ -13199,7 +13267,7 @@ msgid "`Leaflet <https://leafletjs.com/>`__ to display map"
 msgstr ""
 
 #: ../source/installation/index.rst:32
-msgid "`Chart.js <https://www.chartjs.org/>`__ to display charts with elevation and speed"
+msgid "`Chart.js <https://www.chartjs.org/>`__ to display charts"
 msgstr ""
 
 #: ../source/installation/index.rst:33
@@ -13218,91 +13286,95 @@ msgstr ""
 msgid "FitTrackee also uses icons from `Fork Awesome <https://forkaweso.me>`__."
 msgstr ""
 
-#: ../source/installation/index.rst:41
+#: ../source/installation/index.rst:42
 msgid "Instance types"
 msgstr ""
 
-#: ../source/installation/index.rst:44
+#: ../source/installation/index.rst:45
 msgid "Single-user instance"
 msgstr ""
 
-#: ../source/installation/index.rst:46
+#: ../source/installation/index.rst:47
 msgid "For a single-user instance, `registration <../features/administration.html#configuration>`__ can be disabled."
 msgstr ""
 
-#: ../source/installation/index.rst:47
+#: ../source/installation/index.rst:48
 msgid "So all you need is Python and PostgreSQL/PostGIS database if you want to keep the setup simple. A `CLI <../cli.html#users>`__ is available to manage user account."
 msgstr ""
 
-#: ../source/installation/index.rst:50
+#: ../source/installation/index.rst:51
 msgid "Multiple-users instance"
 msgstr ""
 
-#: ../source/installation/index.rst:52
-msgid "Registration can en enabled and maximum number of account can be set in the `Administration <../features/administration.html#configuration>`__."
+#: ../source/installation/index.rst:53
+msgid "Registration can en enabled and maximum number of accounts can be set in the `Administration <../features/administration.html#configuration>`__."
 msgstr ""
 
-#: ../source/installation/index.rst:53
+#: ../source/installation/index.rst:54
 msgid "It is recommended to set Redis and a SMTP provider for email sending and tasks processing. Alternatively, a `CLI <../cli.html#users>`__ is available to manage users account."
 msgstr ""
 
-#: ../source/installation/index.rst:56
+#: ../source/installation/index.rst:57
 msgid "Prerequisites"
 msgstr ""
 
-#: ../source/installation/index.rst:58
+#: ../source/installation/index.rst:59
 msgid "mandatory"
 msgstr ""
 
-#: ../source/installation/index.rst:60
+#: ../source/installation/index.rst:61
 msgid "installation from sources or package:"
 msgstr ""
 
-#: ../source/installation/index.rst:62
+#: ../source/installation/index.rst:63
 msgid "`Python <https://www.python.org/>`__ 3.10+"
 msgstr ""
 
-#: ../source/installation/index.rst:63
+#: ../source/installation/index.rst:64
 msgid "`PostgreSQL <https://www.postgresql.org/>`__ 14+"
 msgstr ""
 
-#: ../source/installation/index.rst:64
+#: ../source/installation/index.rst:65
 msgid "`PostGIS <https://postgis.net/>`__ 3.4+"
 msgstr ""
 
-#: ../source/installation/index.rst:65
+#: ../source/installation/index.rst:66
 msgid "`GDAL <https://gdal.org/en/stable/>`__ on the server running the application, if different from the server running the database (GDAL is installed with PostGIS)"
 msgstr ""
 
-#: ../source/installation/index.rst:67
+#: ../source/installation/index.rst:68
 msgid "installation with Docker:"
 msgstr ""
 
-#: ../source/installation/index.rst:69
+#: ../source/installation/index.rst:70
 msgid "`Docker <https://docs.docker.com/get-started/>`__ and `Docker Compose <https://docs.docker.com/compose/>`__ v2.30+"
 msgstr ""
 
-#: ../source/installation/index.rst:71
+#: ../source/installation/index.rst:72
 msgid "optional"
 msgstr ""
 
-#: ../source/installation/index.rst:73
-msgid "`Redis <https://redis.io/>`__ for `task queue <tasks_processing.html>`__ (if `email <emails.html>`__ sending is enabled and for data export requests, asynchronous archive uploads) and `API rate limits <api_rate_limits.html>`__ (for installation from sources or package)"
-msgstr ""
-
 #: ../source/installation/index.rst:74
-msgid "SMTP provider (if `email <emails.html>`__ sending is enabled)"
+msgid "`Redis <https://redis.io/>`__ for `task queue <tasks_processing.html>`__ (for `email <emails.html>`__ sending if enable, for data export requests, and asynchronous archive uploads if enabled) and `API rate limits <api_rate_limits.html>`__ (for installation from sources or package)"
 msgstr ""
 
 #: ../source/installation/index.rst:75
-msgid "API key from a `weather data provider <weather.html>`__"
+msgid "SMTP provider (if `email <emails.html>`__ sending is enabled)"
 msgstr ""
 
 #: ../source/installation/index.rst:76
-msgid "`Poetry <https://python-poetry.org>`__ 1.2+ (for installation from sources only)"
+msgid "API key from a `weather data provider <weather.html>`__"
 msgstr ""
 
 #: ../source/installation/index.rst:77
+msgid "API key from a `elevation data provider <weather.html>`__"
+msgstr ""
+
+#: ../source/installation/index.rst:78
+msgid "`Poetry <https://python-poetry.org>`__ 1.2+ (for installation from sources only)"
+msgstr ""
+
+#: ../source/installation/index.rst:79
 msgid "`Node <https://nodejs.org>`__ 20+ and `Yarn <https://yarnpkg.com>`__ (for development only)"
 msgstr ""
 
@@ -13310,7 +13382,7 @@ msgstr ""
 msgid "If registration is enabled, it is recommended to set Redis and a SMTP provider for email sending and data export requests."
 msgstr ""
 
-#: ../source/installation/index.rst:83
+#: ../source/installation/index.rst:85
 #: ../source/installation/installation.rst:18
 #: ../source/installation/upgrade.rst:18
 #: ../source/installation/upgrade.rst:161
@@ -14135,6 +14207,10 @@ msgstr ""
 
 #: ../source/installation/weather.rst:18
 msgid "``WEATHER_API_KEY``: the key to the corresponding weather provider"
+msgstr ""
+
+#: ../source/installation/weather.rst:20
+msgid "The configured weather data provider is displayed in **About** page."
 msgstr ""
 
 #: ../source/third_party_tools.rst:2

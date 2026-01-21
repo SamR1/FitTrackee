@@ -3,10 +3,7 @@ Global map
 
 .. versionadded:: 1.0.0
 
-User workouts can be displayed on a global map and filtered by:
-
-- date
-- sports
+User workouts can be displayed on a global map and filtered by date and sports.
 
 .. figure:: ../_images/global_map.png
    :alt: FitTrackee Global Map

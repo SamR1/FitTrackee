@@ -10,6 +10,7 @@ Workouts list
 .. versionchanged:: 1.0.0 added filter on location and radius, map for filtered workouts
 .. versionchanged:: 1.1.0 added filter and sort option on pace
 
+By default, the last 10 workouts are displayed in the list.
 
 Users can filter workouts on:
 
@@ -40,6 +41,8 @@ Workouts can be sorted by:
 - duration
 - average speed
 - average pace (when only one sport is displayed and 'pace' is set in the sport preference)
+
+The number of displayed workouts can be changed (10, 25, 50 or 100 per page).
 
 Statistics are displayed when more than one workout is displayed:
 

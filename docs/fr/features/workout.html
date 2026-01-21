@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Recherche" href="../search.html"><link rel="next" title="Tableau de bord" href="dashboard.html"><link rel="prev" title="Inscription et authentification" href="registration_authentication.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Recherche" href="../search.html"><link rel="next" title="Tableau de bord" href="dashboard.html"><link rel="prev" title="Inscription et authentification" href="registration_and_authentication.html">
         <link rel="prefetch" href="../_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
@@ -201,7 +201,7 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Fonctionnalités</a><input aria-label="Toggle navigation of Fonctionnalités" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="registration_authentication.html">Inscription et authentification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="registration_and_authentication.html">Inscription et authentification</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Séance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dashboard.html">Tableau de bord</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workouts_list.html">Liste des séances</a></li>
@@ -222,6 +222,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../installation/deployment.html">Déploiement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/map_tile_server.html">Serveur de tuiles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/weather.html">Données météo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/elevation.html">Données d'altitude</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/emails.html">Courriels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/api_rate_limits.html">Limitation d'accès à l'API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/tasks_processing.html">Traitement des tâches</a></li>
@@ -312,19 +313,19 @@
 <h2>Création<a class="headerlink" href="#creation" title="Lien vers cette rubrique">¶</a></h2>
 <p>Une séance peut être créée en :</p>
 <ul class="simple">
-<li><p>ajoutant manuellement un fichier ou une archive zip contenant un nombre limité de fichiers</p></li>
+<li><p>ajoutant manuellement un fichier ou une archive zip contenant un certain nombre de fichiers</p></li>
 <li><p>ou en saisissant les données de la séance (sans fichier gpx).</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Pour le moment, <strong>FitTrackee</strong> ne dispose pas d'outil d'importation, mais des <a class="reference external" href="../third_party_tools.html#importers">outils tiers</a> permettent d'importer des séances.</div>
+<div class="line">Pour le moment, <strong>FitTrackee</strong> ne dispose pas d'outil d'importation, mais des <a class="reference external" href="../third_party_tools.html#importers">outils tiers</a> permettent d'importer des séances (par example à partir d'un compte Garmin ou Strava).</div>
 </div>
 </div>
 <section id="file-upload">
-<h3>Chargement de fichier<a class="headerlink" href="#file-upload" title="Lien vers cette rubrique">¶</a></h3>
+<h3>Chargement d'un fichier<a class="headerlink" href="#file-upload" title="Lien vers cette rubrique">¶</a></h3>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 0.10.0: </span>Prise en charge des fichiers .fit, .kml/.kmz et .tcx, chargements asynchrones pour les fichiers volumineux</p>
+<p><span class="versionmodified changed">Modifié dans la version 0.10.0: </span>prise en charge des fichiers .fit, .kml/.kmz et .tcx, chargements asynchrones pour les fichiers volumineux</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 0.10.3: </span>ajout de l'évènement à l'origine de la création d'un segment pour les fichiers .fit</p>
@@ -384,8 +385,8 @@
 </div>
 <p>Une notification est affichée après le traitement de la tâche.</p>
 </section>
-<section id="manual-addition">
-<h3>Ajout manuel<a class="headerlink" href="#manual-addition" title="Lien vers cette rubrique">¶</a></h3>
+<section id="data-entry">
+<h3>Saisie des données<a class="headerlink" href="#data-entry" title="Lien vers cette rubrique">¶</a></h3>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 0.7.10: </span>ajout des dénivelés positif et négatif</p>
 </div>
@@ -405,7 +406,7 @@
 <section id="sports-available">
 <h4>Sports disponibles<a class="headerlink" href="#sports-available" title="Lien vers cette rubrique">¶</a></h4>
 <section id="cycle-sports">
-<h5>Vélo (Sport)<a class="headerlink" href="#cycle-sports" title="Lien vers cette rubrique">¶</a></h5>
+<h5>Sports cyclistes<a class="headerlink" href="#cycle-sports" title="Lien vers cette rubrique">¶</a></h5>
 <div class="versionadded">
 <p><span class="versionmodified added">Ajouté dans la version 0.7.3: </span>Vélo (Virtuel)</p>
 </div>
@@ -882,14 +883,14 @@
 <p><span class="versionmodified changed">Modifié dans la version 1.0.6: </span>l'altitude n'est pas affichée pour les sports nautiques en eaux calmes.</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 1.1.0: </span>Ajout des altitudes manquantes et de la modification de la source des données d'altitude</p>
+<p><span class="versionmodified changed">Modifié dans la version 1.1.0: </span>ajout des altitudes manquantes et de la modification de la source des données d'altitude</p>
 </div>
 <p>Les données liées à l'altitude pour les sports de raquettes (Tennis et Padel en extérieur) et les sports nautiques en eau calme (Canoë, Kayak, Aviron, Nage en eau libre et Stand up paddle) ne sont ni stockées ni affichées si le fichier en contient.</p>
 <div class="line-block">
-<div class="line">Si certaines données d'altitude sont manquantes et qu'un service d'altitude est activé par les administrateurs, les altitudes manquantes peuvent être récupérées lors de la création de la séance si l'option est activée dans les préférences utilisateurs.</div>
+<div class="line">Si certaines données d'altitude sont manquantes et qu'un <a class="reference external" href="../installation/elevation.html">service d'altitude</a> est activé par les administrateurs (les sources disponibles sont affichées dans la page <strong>À propos</strong>), les altitudes manquantes peuvent être récupérées lors de la création de la séance si l'option est activée dans les préférences utilisateurs.</div>
 <div class="line">Dans ce cas, toutes les élévations sont mises à jour.</div>
 </div>
-<p>La source des données d'altitude peut également être modifiée après la création si un service d'altitude est activé.</p>
+<p>La source des données d'altitude peut également être modifiée après la création.</p>
 </section>
 <section id="records">
 <h4>Records<a class="headerlink" href="#records" title="Lien vers cette rubrique">¶</a></h4>
@@ -905,7 +906,7 @@
 <li><p>allure moyenne</p></li>
 <li><p>meilleure allure</p></li>
 <li><p>distance la plus grande</p></li>
-<li><p>dénivelé positif le plus elévé</p></li>
+<li><p>dénivelé positif le plus élevé</p></li>
 <li><p>durée la plus longue</p></li>
 <li><p>vitesse maximale</p></li>
 </ul>
@@ -1046,7 +1047,9 @@
 <li><p>cadence</p></li>
 <li><p>puissance</p></li>
 </ul>
-<p>Ces données (vitesse/allure, altitude, fréquence cardiaque, cadence et puissance) peuvent être affichées sur un seul graphique ou réparties sur plusieurs graphiques. L'affichage préféré peut être enregistré dans les <a class="reference external" href="account_and_preferences.html#preferences">préférences utilisateur</a>.</p>
+<p>Ces données (vitesse/allure, altitude, fréquence cardiaque, cadence et puissance) peuvent être affichées sur un seul graphique ou réparties sur plusieurs graphiques.</p>
+<img alt="L'allure et l'altitude sont affichées dans des graphiques séparés." src="../_images/split-charts.png" />
+<p>L'affichage préféré peut être enregistré dans les <a class="reference external" href="account_and_preferences.html#preferences">préférences utilisateur</a>.</p>
 </section>
 <section id="workout-menu">
 <h3>Menu de la séance<a class="headerlink" href="#workout-menu" title="Lien vers cette rubrique">¶</a></h3>
@@ -1153,6 +1156,13 @@
 <p>Si un fournisseur de données météo est défini et que l'option <code class="docutils literal notranslate"><span class="pre">--with-weather</span></code> est fournie et/ou une URL d'API de données d'altitude et que l'option <code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code> ets fournie, la limite d'accès peut être atteinte, résultant en des erreurs de limite dépassée quand un nombre important de séances est actualisé.</p>
 </div>
 </div>
+<div class="line-block">
+<div class="line">La source des données d'altitude peut également être modifiée après la création si un <a class="reference external" href="../installation/elevation.html">service d'altitude</a> est activé.</div>
+<div class="line">Dans ce cas, les services disponibles s'affichent après avoir cliqué sur le bouton <strong>Modifier la source des données d'altitude</strong> :</div>
+</div>
+<img alt="Liste des sources d'élévation disponibles" src="../_images/elevations-choices.png" />
+<p>Il est également possible d'obtenir à nouveau l'altitude à partir du fichier :</p>
+<img alt="Liste des sources d'élévation disponibles avec le fichier" src="../_images/elevations-choices-with-file.png" />
 <p>Une séance peut être supprimée en cliquant sur le bouton <strong>Supprimer</strong>.</p>
 </section>
 </section>
@@ -1171,7 +1181,7 @@
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="registration_authentication.html">
+          <a class="prev-page" href="registration_and_authentication.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
@@ -1218,11 +1228,11 @@
             <ul>
 <li><a class="reference internal" href="#">Séance</a><ul>
 <li><a class="reference internal" href="#creation">Création</a><ul>
-<li><a class="reference internal" href="#file-upload">Chargement de fichier</a></li>
-<li><a class="reference internal" href="#manual-addition">Ajout manuel</a></li>
+<li><a class="reference internal" href="#file-upload">Chargement d'un fichier</a></li>
+<li><a class="reference internal" href="#data-entry">Saisie des données</a></li>
 <li><a class="reference internal" href="#sports">Sports</a><ul>
 <li><a class="reference internal" href="#sports-available">Sports disponibles</a><ul>
-<li><a class="reference internal" href="#cycle-sports">Vélo (Sport)</a></li>
+<li><a class="reference internal" href="#cycle-sports">Sports cyclistes</a></li>
 <li><a class="reference internal" href="#foot-sports">Sports pédestres</a></li>
 <li><a class="reference internal" href="#water-sports">Sports nautiques</a></li>
 <li><a class="reference internal" href="#rackets-sports">Sports de raquette</a></li>

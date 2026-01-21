@@ -67,8 +67,8 @@ In case errors are encountered, the list of error files is displayed at the end 
 
 A notification is displayed after task completion.
 
-Manual addition
-===============
+Data entry
+==========
 
 .. versionchanged:: 0.7.10 add ascent and descent
 
@@ -393,10 +393,10 @@ Elevation
 
 Elevation-related data for racket sports (Outdoor Tennis and Padel) and flatwater sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) are not stored in database and displayed if the file contains elevation
 
-| If some elevation data are missing and an elevation service is enabled by the administrators, the missing elevations can be retrieved on workout creation if the user preference is set.
+| If some elevation data are missing and an `elevation service <../installation/elevation.html>`__ is enabled by the administrators (data source are displayed in **About** page), the missing elevations can be retrieved on workout creation if the user preference is set.
 | In this case, all elevations are updated.
 
-Elevation data source can also be changed after creation if an elevation service is enabled.
+Elevation data source can also be changed after creation.
 
 Records
 -------
@@ -525,7 +525,12 @@ A chart is displayed for workout with a file, depending on sport and available d
 - cadence
 - power
 
-Speed/pace, elevation, heart rate, cadence and power can be displayed on one chart or split on multiple charts. The preferred display can be stored in a `user preference <account_and_preferences.html#preferences>`__.
+Speed/pace, elevation, heart rate, cadence and power can be displayed on one chart or split on multiple charts.
+
+.. image:: ../_images/split-charts.png
+   :alt: Pace and altitude are displayed in separate graphs.
+
+The preferred display can be stored in a `user preference <account_and_preferences.html#preferences>`__.
 
 Workout menu
 ============
@@ -596,5 +601,17 @@ The calculated data can be refreshed by clicking on **Refresh** button and weath
 
   .. warning::
      If a weather data provider is defined and the ``--with-weather`` option is provided and/or an Elevation API URL is set and ``--with-elevation`` option is provided, the rate limit may be reached, resulting in API rate limit errors when a large number of workouts is refreshed.
+
+| The elevation data source can be changed if an `elevation service <../installation/elevation.html>`__ is enabled by the administrators.
+| In this case, the available services are displayed after clicking on the button **Change elevation data source**:
+
+.. image:: ../_images/elevations-choices.png
+   :alt: List of available elevation sources
+
+
+It is also possible to get the elevation again from the file:
+
+.. image:: ../_images/elevations-choices-with-file.png
+   :alt: List of available elevation sources with file
 
 A workout can be deleted by clicking on the **Delete** button.

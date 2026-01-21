@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Dashboard" href="dashboard.html"><link rel="prev" title="Registration and authentication" href="registration_authentication.html">
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Dashboard" href="dashboard.html"><link rel="prev" title="Registration &amp; authentication" href="registration_and_authentication.html">
         <link rel="prefetch" href="../_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
@@ -201,7 +201,7 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Features</a><input aria-label="Toggle navigation of Features" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="registration_authentication.html">Registration and authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="registration_and_authentication.html">Registration &amp; authentication</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Workout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dashboard.html">Dashboard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workouts_list.html">Workouts list</a></li>
@@ -222,6 +222,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../installation/deployment.html">Deployment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/map_tile_server.html">Map tile server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/weather.html">Weather data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/elevation.html">Elevation data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/emails.html">Emails</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/api_rate_limits.html">API rate limits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/tasks_processing.html">Tasks processing</a></li>
@@ -386,8 +387,8 @@ In case errors are encountered, the list of error files is displayed at the end 
 </div>
 <p>A notification is displayed after task completion.</p>
 </section>
-<section id="manual-addition">
-<h3>Manual addition<a class="headerlink" href="#manual-addition" title="Link to this heading">¶</a></h3>
+<section id="data-entry">
+<h3>Data entry<a class="headerlink" href="#data-entry" title="Link to this heading">¶</a></h3>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.7.10: </span>add ascent and descent</p>
 </div>
@@ -888,10 +889,10 @@ In case errors are encountered, the list of error files is displayed at the end 
 </div>
 <p>Elevation-related data for racket sports (Outdoor Tennis and Padel) and flatwater sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) are not stored in database and displayed if the file contains elevation</p>
 <div class="line-block">
-<div class="line">If some elevation data are missing and an elevation service is enabled by the administrators, the missing elevations can be retrieved on workout creation if the user preference is set.</div>
+<div class="line">If some elevation data are missing and an <a class="reference external" href="../installation/elevation.html">elevation service</a> is enabled by the administrators (data source are displayed in <strong>About</strong> page), the missing elevations can be retrieved on workout creation if the user preference is set.</div>
 <div class="line">In this case, all elevations are updated.</div>
 </div>
-<p>Elevation data source can also be changed after creation if an elevation service is enabled.</p>
+<p>Elevation data source can also be changed after creation.</p>
 </section>
 <section id="records">
 <h4>Records<a class="headerlink" href="#records" title="Link to this heading">¶</a></h4>
@@ -1048,7 +1049,9 @@ In case errors are encountered, the list of error files is displayed at the end 
 <li><p>cadence</p></li>
 <li><p>power</p></li>
 </ul>
-<p>Speed/pace, elevation, heart rate, cadence and power can be displayed on one chart or split on multiple charts. The preferred display can be stored in a <a class="reference external" href="account_and_preferences.html#preferences">user preference</a>.</p>
+<p>Speed/pace, elevation, heart rate, cadence and power can be displayed on one chart or split on multiple charts.</p>
+<img alt="Pace and altitude are displayed in separate graphs." src="../_images/split-charts.png" />
+<p>The preferred display can be stored in a <a class="reference external" href="account_and_preferences.html#preferences">user preference</a>.</p>
 </section>
 <section id="workout-menu">
 <h3>Workout menu<a class="headerlink" href="#workout-menu" title="Link to this heading">¶</a></h3>
@@ -1155,6 +1158,13 @@ In case errors are encountered, the list of error files is displayed at the end 
 <p>If a weather data provider is defined and the <code class="docutils literal notranslate"><span class="pre">--with-weather</span></code> option is provided and/or an Elevation API URL is set and <code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code> option is provided, the rate limit may be reached, resulting in API rate limit errors when a large number of workouts is refreshed.</p>
 </div>
 </div>
+<div class="line-block">
+<div class="line">The elevation data source can be changed if an <a class="reference external" href="../installation/elevation.html">elevation service</a> is enabled by the administrators.</div>
+<div class="line">In this case, the available services are displayed after clicking on the button <strong>Change elevation data source</strong>:</div>
+</div>
+<img alt="List of available elevation sources" src="../_images/elevations-choices.png" />
+<p>It is also possible to get the elevation again from the file:</p>
+<img alt="List of available elevation sources with file" src="../_images/elevations-choices-with-file.png" />
 <p>A workout can be deleted by clicking on the <strong>Delete</strong> button.</p>
 </section>
 </section>
@@ -1173,14 +1183,14 @@ In case errors are encountered, the list of error files is displayed at the end 
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="registration_authentication.html">
+          <a class="prev-page" href="registration_and_authentication.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Registration and authentication</div>
+                <div class="title">Registration &amp; authentication</div>
                 
               </div>
             </a>
@@ -1221,7 +1231,7 @@ In case errors are encountered, the list of error files is displayed at the end 
 <li><a class="reference internal" href="#">Workout</a><ul>
 <li><a class="reference internal" href="#creation">Creation</a><ul>
 <li><a class="reference internal" href="#file-upload">File upload</a></li>
-<li><a class="reference internal" href="#manual-addition">Manual addition</a></li>
+<li><a class="reference internal" href="#data-entry">Data entry</a></li>
 <li><a class="reference internal" href="#sports">Sports</a><ul>
 <li><a class="reference internal" href="#sports-available">Sports available</a><ul>
 <li><a class="reference internal" href="#cycle-sports">Cycle sports</a></li>

@@ -29,13 +29,14 @@ This application is written in Python (API) and Typescript (client):
 - Client:
     - Vue3/Vuex
     - `Leaflet <https://leafletjs.com/>`__ to display map
-    - `Chart.js <https://www.chartjs.org/>`__ to display charts with elevation and speed
+    - `Chart.js <https://www.chartjs.org/>`__ to display charts
     - `heatmap.js <https://www.patrick-wied.at/static/heatmapjs/>`__ (`fork <https://github.com/SamR1/heatmap.js>`__) and `leaflet-heatmap <https://github.com/Leaflet/Leaflet.heat>`__ to display heatmap for rackets sports
     - `zxcvbn-ts <https://zxcvbn-ts.github.io/zxcvbn/>`_ for password strength estimation
 
 | Logo, most of sports icons and weather icons are made by `Freepik <https://www.freepik.com/>`__ from `Flaticon <https://www.flaticon.com/>`__.
 | FitTrackee also uses icons from `Fork Awesome <https://forkaweso.me>`__.
-
+| Sports icons for Canoeing, Kayaking and Rowing are made by `@Von-Birne <https://github.com/Von-Birne>`__.
+| Sport icon for Halfbike is made by `@astridx <https://github.com/astridx>`__.
 
 Instance types
 **************
@@ -49,7 +50,7 @@ Single-user instance
 Multiple-users instance
 =======================
 
-| Registration can en enabled and maximum number of account can be set in the `Administration <../features/administration.html#configuration>`__.
+| Registration can en enabled and maximum number of accounts can be set in the `Administration <../features/administration.html#configuration>`__.
 | It is recommended to set Redis and a SMTP provider for email sending and tasks processing. Alternatively, a `CLI <../cli.html#users>`__ is available to manage users account.
 
 Prerequisites
@@ -70,9 +71,10 @@ Prerequisites
 
 - optional
 
-  - `Redis <https://redis.io/>`__ for `task queue <tasks_processing.html>`__ (if `email <emails.html>`__ sending is enabled and for data export requests, asynchronous archive uploads) and `API rate limits <api_rate_limits.html>`__ (for installation from sources or package)
+  - `Redis <https://redis.io/>`__ for `task queue <tasks_processing.html>`__ (for `email <emails.html>`__ sending if enable, for data export requests, and asynchronous archive uploads if enabled) and `API rate limits <api_rate_limits.html>`__ (for installation from sources or package)
   - SMTP provider (if `email <emails.html>`__ sending is enabled)
   - API key from a `weather data provider <weather.html>`__
+  - API key from a `elevation data provider <weather.html>`__
   - `Poetry <https://python-poetry.org>`__ 1.2+ (for installation from sources only)
   - `Node <https://nodejs.org>`__ 20+ and `Yarn <https://yarnpkg.com>`__ (for development only)
 
@@ -96,6 +98,7 @@ Prerequisites
    deployment
    map_tile_server
    weather
+   elevation
    emails
    api_rate_limits
    tasks_processing

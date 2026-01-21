@@ -201,7 +201,7 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../features/index.html">Features</a><input aria-label="Toggle navigation of Features" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../features/registration_authentication.html">Registration and authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../features/registration_and_authentication.html">Registration &amp; authentication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../features/workout.html">Workout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../features/dashboard.html">Dashboard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../features/workouts_list.html">Workouts list</a></li>
@@ -222,6 +222,7 @@
 <li class="toctree-l2"><a class="reference internal" href="deployment.html">Deployment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="map_tile_server.html">Map tile server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="weather.html">Weather data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elevation.html">Elevation data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="emails.html">Emails</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_rate_limits.html">API rate limits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tasks_processing.html">Tasks processing</a></li>
@@ -339,7 +340,7 @@
 <dt>Client:</dt><dd><ul>
 <li><p>Vue3/Vuex</p></li>
 <li><p><a class="reference external" href="https://leafletjs.com/">Leaflet</a> to display map</p></li>
-<li><p><a class="reference external" href="https://www.chartjs.org/">Chart.js</a> to display charts with elevation and speed</p></li>
+<li><p><a class="reference external" href="https://www.chartjs.org/">Chart.js</a> to display charts</p></li>
 <li><p><a class="reference external" href="https://www.patrick-wied.at/static/heatmapjs/">heatmap.js</a> (<a class="reference external" href="https://github.com/SamR1/heatmap.js">fork</a>) and <a class="reference external" href="https://github.com/Leaflet/Leaflet.heat">leaflet-heatmap</a> to display heatmap for rackets sports</p></li>
 <li><p><a class="reference external" href="https://zxcvbn-ts.github.io/zxcvbn/">zxcvbn-ts</a> for password strength estimation</p></li>
 </ul>
@@ -350,6 +351,8 @@
 <div class="line-block">
 <div class="line">Logo, most of sports icons and weather icons are made by <a class="reference external" href="https://www.freepik.com/">Freepik</a> from <a class="reference external" href="https://www.flaticon.com/">Flaticon</a>.</div>
 <div class="line">FitTrackee also uses icons from <a class="reference external" href="https://forkaweso.me">Fork Awesome</a>.</div>
+<div class="line">Sports icons for Canoeing, Kayaking and Rowing are made by <a class="reference external" href="https://github.com/Von-Birne">&#64;Von-Birne</a>.</div>
+<div class="line">Sport icon for Halfbike is made by <a class="reference external" href="https://github.com/astridx">&#64;astridx</a>.</div>
 </div>
 </section>
 <section id="instance-types">
@@ -364,7 +367,7 @@
 <section id="multiple-users-instance">
 <h3>Multiple-users instance<a class="headerlink" href="#multiple-users-instance" title="Link to this heading">¶</a></h3>
 <div class="line-block">
-<div class="line">Registration can en enabled and maximum number of account can be set in the <a class="reference external" href="../features/administration.html#configuration">Administration</a>.</div>
+<div class="line">Registration can en enabled and maximum number of accounts can be set in the <a class="reference external" href="../features/administration.html#configuration">Administration</a>.</div>
 <div class="line">It is recommended to set Redis and a SMTP provider for email sending and tasks processing. Alternatively, a <a class="reference external" href="../cli.html#users">CLI</a> is available to manage users account.</div>
 </div>
 </section>
@@ -391,9 +394,10 @@
 </li>
 <li><p>optional</p>
 <ul>
-<li><p><a class="reference external" href="https://redis.io/">Redis</a> for <a class="reference external" href="tasks_processing.html">task queue</a> (if <a class="reference external" href="emails.html">email</a> sending is enabled and for data export requests, asynchronous archive uploads) and <a class="reference external" href="api_rate_limits.html">API rate limits</a> (for installation from sources or package)</p></li>
+<li><p><a class="reference external" href="https://redis.io/">Redis</a> for <a class="reference external" href="tasks_processing.html">task queue</a> (for <a class="reference external" href="emails.html">email</a> sending if enable, for data export requests, and asynchronous archive uploads if enabled) and <a class="reference external" href="api_rate_limits.html">API rate limits</a> (for installation from sources or package)</p></li>
 <li><p>SMTP provider (if <a class="reference external" href="emails.html">email</a> sending is enabled)</p></li>
 <li><p>API key from a <a class="reference external" href="weather.html">weather data provider</a></p></li>
+<li><p>API key from a <a class="reference external" href="weather.html">elevation data provider</a></p></li>
 <li><p><a class="reference external" href="https://python-poetry.org">Poetry</a> 1.2+ (for installation from sources only)</p></li>
 <li><p><a class="reference external" href="https://nodejs.org">Node</a> 20+ and <a class="reference external" href="https://yarnpkg.com">Yarn</a> (for development only)</p></li>
 </ul>
@@ -436,6 +440,7 @@
 <li class="toctree-l1"><a class="reference internal" href="deployment.html">Deployment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="map_tile_server.html">Map tile server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="weather.html">Weather data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="elevation.html">Elevation data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="emails.html">Emails</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_rate_limits.html">API rate limits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tasks_processing.html">Tasks processing</a></li>

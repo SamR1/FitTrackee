@@ -15,7 +15,7 @@ With the default configuration, `Open Street Map <https://www.openstreetmap.org>
 .. toctree::
    :maxdepth: 1
 
-   registration_authentication
+   registration_and_authentication
    workout
    dashboard
    workouts_list

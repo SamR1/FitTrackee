@@ -24,7 +24,8 @@ User profile
 .. versionchanged:: 0.12.0 added RSS Feed
 .. versionchanged:: 0.12.1 description added to the RSS Feed
 
-The user profile displays the last 5 visible workouts.
+| The user profile displays the last 5 visible workouts.
+| The language and imperial units are taken into account according to the user's preferences if logged in.
 
 .. figure:: ../_images/user-profile.png
    :alt: User profile on FitTrackee
@@ -41,7 +42,6 @@ It's possible to specify language and/or imperial units display, for instance:
 .. note::
   The rendering of the description may differ from that on FitTrackee, as different libraries are used and additional styles are applied on the UI.
 
-The language and imperial units are taken into account according to the user's preferences if logged in.
 
 No workouts are displayed when the user is suspended.
 

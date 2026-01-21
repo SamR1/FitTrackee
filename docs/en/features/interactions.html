@@ -201,7 +201,7 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Features</a><input aria-label="Toggle navigation of Features" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="registration_authentication.html">Registration and authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="registration_and_authentication.html">Registration &amp; authentication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workout.html">Workout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dashboard.html">Dashboard</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workouts_list.html">Workouts list</a></li>
@@ -222,6 +222,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../installation/deployment.html">Deployment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/map_tile_server.html">Map tile server</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/weather.html">Weather data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/elevation.html">Elevation data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/emails.html">Emails</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/api_rate_limits.html">API rate limits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/tasks_processing.html">Tasks processing</a></li>
@@ -335,7 +336,10 @@
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.12.1: </span>description added to the RSS Feed</p>
 </div>
-<p>The user profile displays the last 5 visible workouts.</p>
+<div class="line-block">
+<div class="line">The user profile displays the last 5 visible workouts.</div>
+<div class="line">The language and imperial units are taken into account according to the user’s preferences if logged in.</div>
+</div>
 <figure class="align-default" id="id1">
 <img alt="User profile on FitTrackee" src="../_images/user-profile.png" />
 <figcaption>
@@ -352,7 +356,6 @@
 <p class="admonition-title">Note</p>
 <p>The rendering of the description may differ from that on FitTrackee, as different libraries are used and additional styles are applied on the UI.</p>
 </div>
-<p>The language and imperial units are taken into account according to the user’s preferences if logged in.</p>
 <p>No workouts are displayed when the user is suspended.</p>
 <p>Workout description can be displayed by adding <code class="docutils literal notranslate"><span class="pre">description</span></code> parameter (not displayed by default):</p>
 <ul class="simple">

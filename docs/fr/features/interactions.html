@@ -201,7 +201,7 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
 <li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Fonctionnalités</a><input aria-label="Toggle navigation of Fonctionnalités" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="registration_authentication.html">Inscription et authentification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="registration_and_authentication.html">Inscription et authentification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workout.html">Séance</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dashboard.html">Tableau de bord</a></li>
 <li class="toctree-l2"><a class="reference internal" href="workouts_list.html">Liste des séances</a></li>
@@ -222,6 +222,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../installation/deployment.html">Déploiement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/map_tile_server.html">Serveur de tuiles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/weather.html">Données météo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/elevation.html">Données d'altitude</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/emails.html">Courriels</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/api_rate_limits.html">Limitation d'accès à l'API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../installation/tasks_processing.html">Traitement des tâches</a></li>
@@ -335,7 +336,10 @@
 <div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 0.12.1: </span>ajout de la description dans le flux</p>
 </div>
-<p>Le profil de l'utilisateur affiche les 5 dernières séances visibles.</p>
+<div class="line-block">
+<div class="line">Le profil de l'utilisateur affiche les 5 dernières séances visibles.</div>
+<div class="line">La langue et les unités impériales sont prises en compte en fonction des préférences de l'utilisateur si celui-ci est connecté.</div>
+</div>
 <figure class="align-default" id="id1">
 <img alt="Profile de l'utilisateur sur FitTrackee" src="../_images/user-profile.png" />
 <figcaption>
@@ -352,7 +356,6 @@
 <p class="admonition-title">Note</p>
 <p>Le rendu de la description peut être différent de celui affiché sur FitTrackee, car les librairies utilisées sont différentes et des styles additionnels sont appliqués sur l'interface.</p>
 </div>
-<p>La langue et les unités impériales sont prises en compte en fonction des préférences de l'utilisateur si celui-ci est connecté.</p>
 <p>Aucune séance n'est affichée si l'utilisateur est suspendu.</p>
 <p>La description de la séance peut être affichée en ajoutant le paramètre <code class="docutils literal notranslate"><span class="pre">description</span></code> (non affichée par défaut) :</p>
 <ul class="simple">
