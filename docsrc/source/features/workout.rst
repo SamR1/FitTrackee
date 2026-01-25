@@ -309,10 +309,17 @@ If present and no description is provided by the user, the description from the 
 
 An `equipment <equipment.html>`__ can be associated with a workout. For now, only one equipment can be associated.
 
-If present in .gpx, .tcx or .fit files, the total calories are extracted.
+If present in .gpx, .tcx or .fit files, the total calories are extracted
 
-If a weather provider is set by the administrator (data source is displayed in **About** page), the weather is extracted for the start and end points.
+.. note::
 
+    The calories displayed correspond to the total active calories and resting calories.
+
+If a weather provider is set by the administrator, the weather is extracted for the start and end points.
+
+.. note::
+
+    If the weather provider is enabled, it will be displayed on the **About** page.
 
 Visibility levels
 =================
@@ -391,10 +398,14 @@ Elevation
 .. versionchanged:: 1.0.6 elevation is not displayed for flatwater sports
 .. versionchanged:: 1.1.0 add missing elevation and elevation data source change
 
-Elevation-related data for racket sports (Outdoor Tennis and Padel) and flatwater sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) are not stored in database and displayed if the file contains elevation
+Elevation-related data for racket sports (Outdoor Tennis and Padel) and flatwater sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) are displayed if the file contains elevation
 
-| If some elevation data are missing and an `elevation service <../installation/elevation.html>`__ is enabled by the administrators (data source are displayed in **About** page), the missing elevations can be retrieved on workout creation if the user preference is set.
+| If some elevation data are missing and an `elevation service <../installation/elevation.html>`__ is enabled by the administrators, the missing elevations can be retrieved on workout creation if the user preference is set.
 | In this case, all elevations are updated.
+
+.. note::
+
+    The elevation services that are enabled are displayed on the **About** page.
 
 Elevation data source can also be changed after creation.
 
@@ -505,7 +516,7 @@ Map
 .. versionchanged:: 0.5.0 added full screen and reset control
 .. versionchanged:: 0.11.0 added heatmap for racket sports
 
-| A map is displayed for workout with a file with the tile server set by the administrators (OpenStreetMap by default).
+| A map is displayed for workout with a file with the tile server set by the administrators (OpenStreetMap's standard tile layer by default).
 | Controls allow full screen view and position reset.
 | If the sport is Outdoor Tennis or Padel, a heat map is also available.
 
@@ -525,9 +536,13 @@ A chart is displayed for workout with a file, depending on sport and available d
 - cadence
 - power
 
+.. note::
+
+    Extreme values for pace (greater than 1:00:00/km or 1:00:00/mi) are not displayed on chart.
+
 Speed/pace, elevation, heart rate, cadence and power can be displayed on one chart or split on multiple charts.
 
-.. image:: ../_images/pace_elevation_on_same_chart.png
+.. figure:: ../_images/pace_elevation_on_same_chart.png
    :alt: Pace and elevation are displayed in the same chart.
 
 The preferred display can be stored in a `user preference <account_and_preferences.html#preferences>`__.
@@ -567,7 +582,7 @@ Edition and deletion
 ********************
 
 .. versionchanged:: 0.12.0 added workout refresh
-.. versionchanged:: 1.1.0 change elevation data source
+.. versionchanged:: 1.1.0 added the ability to change the altitude data source, recalculating values when changing sports.
 
 Workout can be edited:
 
@@ -584,7 +599,7 @@ Workout can be edited:
 - distance (only workouts without gpx)
 - ascent and descent (only workouts without gpx)
 
-| Some values are only calculated on workout creation.
+| Some values are only calculated when creating a workout or changing sports.
 | The previously uploaded workouts are not updated in the following cases:
 
 - updating some preferences ("max. speed calculation strategy" and "pause events triggering segment creation"),
@@ -605,13 +620,12 @@ The calculated data can be refreshed by clicking on **Refresh** button and weath
 | The elevation data source can be changed if an `elevation service <../installation/elevation.html>`__ is enabled by the administrators.
 | In this case, the available services are displayed after clicking on the button **Change elevation data source**:
 
-.. image:: ../_images/elevations-choices.png
+.. figure:: ../_images/elevations-choices.png
    :alt: List of available elevation sources
-
 
 It is also possible to get the elevation again from the file:
 
-.. image:: ../_images/elevations-choices-with-file.png
+.. figure:: ../_images/elevations-choices-with-file.png
    :alt: List of available elevation sources with file
 
 A workout can be deleted by clicking on the **Delete** button.

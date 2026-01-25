@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Workout - FitTrackee 1.1.0b3 documentation</title>
+        <title>Workout - FitTrackee 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">FitTrackee 1.1.0b3
+      <a href="../index.html"><div class="brand">FitTrackee 1.1.0
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 1.1.0b3
+  <span class="sidebar-brand-text">FitTrackee 1.1.0
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -791,8 +791,16 @@ In case errors are encountered, the list of error files is displayed at the end 
 </div>
 <p>If present and no description is provided by the user, the description from the file is used as the workout description.</p>
 <p>An <a class="reference external" href="equipment.html">equipment</a> can be associated with a workout. For now, only one equipment can be associated.</p>
-<p>If present in .gpx, .tcx or .fit files, the total calories are extracted.</p>
-<p>If a weather provider is set by the administrator (data source is displayed in <strong>About</strong> page), the weather is extracted for the start and end points.</p>
+<p>If present in .gpx, .tcx or .fit files, the total calories are extracted</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The calories displayed correspond to the total active calories and resting calories.</p>
+</div>
+<p>If a weather provider is set by the administrator, the weather is extracted for the start and end points.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the weather provider is enabled, it will be displayed on the <strong>About</strong> page.</p>
+</div>
 </section>
 <section id="visibility-levels">
 <h3>Visibility levels<a class="headerlink" href="#visibility-levels" title="Link to this heading">¶</a></h3>
@@ -887,10 +895,14 @@ In case errors are encountered, the list of error files is displayed at the end 
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.1.0: </span>add missing elevation and elevation data source change</p>
 </div>
-<p>Elevation-related data for racket sports (Outdoor Tennis and Padel) and flatwater sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) are not stored in database and displayed if the file contains elevation</p>
+<p>Elevation-related data for racket sports (Outdoor Tennis and Padel) and flatwater sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) are displayed if the file contains elevation</p>
 <div class="line-block">
-<div class="line">If some elevation data are missing and an <a class="reference external" href="../installation/elevation.html">elevation service</a> is enabled by the administrators (data source are displayed in <strong>About</strong> page), the missing elevations can be retrieved on workout creation if the user preference is set.</div>
+<div class="line">If some elevation data are missing and an <a class="reference external" href="../installation/elevation.html">elevation service</a> is enabled by the administrators, the missing elevations can be retrieved on workout creation if the user preference is set.</div>
 <div class="line">In this case, all elevations are updated.</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The elevation services that are enabled are displayed on the <strong>About</strong> page.</p>
 </div>
 <p>Elevation data source can also be changed after creation.</p>
 </section>
@@ -1024,7 +1036,7 @@ In case errors are encountered, the list of error files is displayed at the end 
 <p><span class="versionmodified changed">Changed in version 0.11.0: </span>added heatmap for racket sports</p>
 </div>
 <div class="line-block">
-<div class="line">A map is displayed for workout with a file with the tile server set by the administrators (OpenStreetMap by default).</div>
+<div class="line">A map is displayed for workout with a file with the tile server set by the administrators (OpenStreetMap’s standard tile layer by default).</div>
 <div class="line">Controls allow full screen view and position reset.</div>
 <div class="line">If the sport is Outdoor Tennis or Padel, a heat map is also available.</div>
 </div>
@@ -1049,8 +1061,14 @@ In case errors are encountered, the list of error files is displayed at the end 
 <li><p>cadence</p></li>
 <li><p>power</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Extreme values for pace (greater than 1:00:00/km or 1:00:00/mi) are not displayed on chart.</p>
+</div>
 <p>Speed/pace, elevation, heart rate, cadence and power can be displayed on one chart or split on multiple charts.</p>
+<figure class="align-default">
 <img alt="Pace and elevation are displayed in the same chart." src="../_images/pace_elevation_on_same_chart.png" />
+</figure>
 <p>The preferred display can be stored in a <a class="reference external" href="account_and_preferences.html#preferences">user preference</a>.</p>
 </section>
 <section id="workout-menu">
@@ -1118,7 +1136,7 @@ In case errors are encountered, the list of error files is displayed at the end 
 <p><span class="versionmodified changed">Changed in version 0.12.0: </span>added workout refresh</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 1.1.0: </span>change elevation data source</p>
+<p><span class="versionmodified changed">Changed in version 1.1.0: </span>added the ability to change the altitude data source, recalculating values when changing sports.</p>
 </div>
 <p>Workout can be edited:</p>
 <ul class="simple">
@@ -1136,7 +1154,7 @@ In case errors are encountered, the list of error files is displayed at the end 
 <li><p>ascent and descent (only workouts without gpx)</p></li>
 </ul>
 <div class="line-block">
-<div class="line">Some values are only calculated on workout creation.</div>
+<div class="line">Some values are only calculated when creating a workout or changing sports.</div>
 <div class="line">The previously uploaded workouts are not updated in the following cases:</div>
 </div>
 <ul class="simple">
@@ -1162,9 +1180,13 @@ In case errors are encountered, the list of error files is displayed at the end 
 <div class="line">The elevation data source can be changed if an <a class="reference external" href="../installation/elevation.html">elevation service</a> is enabled by the administrators.</div>
 <div class="line">In this case, the available services are displayed after clicking on the button <strong>Change elevation data source</strong>:</div>
 </div>
+<figure class="align-default">
 <img alt="List of available elevation sources" src="../_images/elevations-choices.png" />
+</figure>
 <p>It is also possible to get the elevation again from the file:</p>
+<figure class="align-default">
 <img alt="List of available elevation sources with file" src="../_images/elevations-choices-with-file.png" />
+</figure>
 <p>A workout can be deleted by clicking on the <strong>Delete</strong> button.</p>
 </section>
 </section>
@@ -1274,7 +1296,7 @@ In case errors are encountered, the list of error files is displayed at the end 
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=6720a1c9"></script>
+</div><script src="../_static/documentation_options.js?v=fc837d61"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

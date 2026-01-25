@@ -23,7 +23,7 @@ Users can filter workouts on:
 - location and radius
 - workout visibility
 - distance
-- duration
+- duration (= moving duration)
 - average speed
 - maximum speed
 - when only one sport is displayed and 'pace' is set in the sport preference:

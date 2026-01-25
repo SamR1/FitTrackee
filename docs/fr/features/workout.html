@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Séance - Documentation FitTrackee 1.1.0b3</title>
+        <title>Séance - Documentation FitTrackee 1.1.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation FitTrackee 1.1.0b3
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 1.1.0
 </div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 1.1.0b3
+  <span class="sidebar-brand-text">Documentation FitTrackee 1.1.0
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -735,7 +735,7 @@
 <div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 1.1.0: </span>ajout de l'affichage Allure/Vitesse</p>
 </div>
-<p>La couleur du sport peut être modifiée dans les préférences utilisateur (voir <a class="reference external" href="account_and_preferences.html#sports-preferences">Compte &amp; préférences</a>).</p>
+<p>La configuration des sports peut être modifiée dans les préférences utilisateur (voir <a class="reference external" href="account_and_preferences.html#sports-preferences">Compte &amp; préférences</a>) :</p>
 <ul class="simple">
 <li><p>Couleur du sport</p></li>
 <li><p>État d'activation</p></li>
@@ -789,8 +789,16 @@
 </div>
 <p>Si présente et qu'aucune description n'est fournie par l'utilisateur, la description du fichier est utilisée comme description de la séance.</p>
 <p>Un <a class="reference external" href="equipment.html">équipement</a> peut être associé à une séance. Pour le moment, un seul équipement peut être associé.</p>
-<p>Si présent dans les fichiers .gpx, .tcx et .fit, le nombre des calories totales est extrait.</p>
-<p>Si un fournisseur de données météorologiques est défini par l'administrateur (la source des données est affichée dans la page <strong>À propos</strong>), les données météorologiques sont extraites pour les points de départ et d'arrivée.</p>
+<p>Si présent dans les fichiers .gpx, .tcx et .fit, le nombre total des calories est extrait.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Les calories affichées correspondent au total des calories actives et des calories au repos.</p>
+</div>
+<p>Si un fournisseur de données météorologiques est défini par l'administrateur, les données météorologiques sont extraites pour les points de départ et d'arrivée.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si activé, le fournisseur de données météorologiques configuré s'affiche dans la page <strong>À propos</strong>.</p>
+</div>
 </section>
 <section id="visibility-levels">
 <h3>Niveaux de visibilité<a class="headerlink" href="#visibility-levels" title="Lien vers cette rubrique">¶</a></h3>
@@ -885,10 +893,14 @@
 <div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 1.1.0: </span>ajout des altitudes manquantes et de la modification de la source des données d'altitude</p>
 </div>
-<p>Les données liées à l'altitude pour les sports de raquettes (Tennis et Padel en extérieur) et les sports nautiques en eau calme (Canoë, Kayak, Aviron, Nage en eau libre et Stand up paddle) ne sont ni stockées ni affichées si le fichier en contient.</p>
+<p>Les données liées à l'altitude pour les sports de raquettes (Tennis et Padel en extérieur) et les sports nautiques en eau calme (Canoë, Kayak, Aviron, Nage en eau libre et Stand up paddle) ne sont pas affichées si le fichier en contient.</p>
 <div class="line-block">
-<div class="line">Si certaines données d'altitude sont manquantes et qu'un <a class="reference external" href="../installation/elevation.html">service d'altitude</a> est activé par les administrateurs (les sources disponibles sont affichées dans la page <strong>À propos</strong>), les altitudes manquantes peuvent être récupérées lors de la création de la séance si l'option est activée dans les préférences utilisateurs.</div>
+<div class="line">Si certaines données d'altitude sont manquantes et qu'un <a class="reference external" href="../installation/elevation.html">service d'altitude</a> est activé par les administrateurs, les altitudes manquantes peuvent être récupérées lors de la création de la séance si l'option est activée dans les préférences utilisateurs.</div>
 <div class="line">Dans ce cas, toutes les élévations sont mises à jour.</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Les services d'altitude activés sont affichés sur la page <strong>À propos</strong>.</p>
 </div>
 <p>La source des données d'altitude peut également être modifiée après la création.</p>
 </section>
@@ -1022,7 +1034,7 @@
 <p><span class="versionmodified changed">Modifié dans la version 0.11.0: </span>ajout de la carte thermique pour les sport de raquette</p>
 </div>
 <div class="line-block">
-<div class="line">Une carte est affichée pour la séance crée à partir d'un fichier avec le serveur de tuiles est défini par les administrateurs (OpenStreetMap par défaut).</div>
+<div class="line">Une carte est affichée pour la séance crée à partir d'un fichier avec le serveur de tuiles est défini par les administrateurs (serveur standard d'OpenStreetMap par défaut).</div>
 <div class="line">Des boutons permettent une visualisation en plein écran et la réinitialisation de la position.</div>
 <div class="line">Si le sport est le tennis ou le padel en extérieur, une carte thermique (<em>heat map</em>) est également disponible.</div>
 </div>
@@ -1047,8 +1059,14 @@
 <li><p>cadence</p></li>
 <li><p>puissance</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Les valeurs extrêmes pour l'allure (supérieures à 1:00:00/km ou 1:00:00/mi) ne sont pas affichées sur le graphique.</p>
+</div>
 <p>Ces données (vitesse/allure, altitude, fréquence cardiaque, cadence et puissance) peuvent être affichées sur un seul graphique ou réparties sur plusieurs graphiques.</p>
+<figure class="align-default">
 <img alt="L'allure et l'altitude sont affichées dans sur le même graphique." src="../_images/pace_elevation_on_same_chart.png" />
+</figure>
 <p>L'affichage préféré peut être enregistré dans les <a class="reference external" href="account_and_preferences.html#preferences">préférences utilisateur</a>.</p>
 </section>
 <section id="workout-menu">
@@ -1116,7 +1134,7 @@
 <p><span class="versionmodified changed">Modifié dans la version 0.12.0: </span>ajout du rafraîchissement de la séance</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 1.1.0: </span>ajout du changement de la source des données d'altitude</p>
+<p><span class="versionmodified changed">Modifié dans la version 1.1.0: </span>added the ability to change the altitude data source, recalculating values when changing sports.</p>
 </div>
 <p>Une séance peut être modifiée :</p>
 <ul class="simple">
@@ -1134,7 +1152,7 @@
 <li><p>dénivelés positif et négatif (seulement pour les séances sans gpx)</p></li>
 </ul>
 <div class="line-block">
-<div class="line">Certains valeurs sont calculées uniquement à la création de la séance.</div>
+<div class="line">Certains valeurs ne sont calculées que lors de la création de la séance ou du changement de sport.</div>
 <div class="line">Les séances précédemment créées sont pas mises à jour dans les cas suivants :</div>
 </div>
 <ul class="simple">
@@ -1160,9 +1178,13 @@
 <div class="line">La source des données d'altitude peut également être modifiée après la création si un <a class="reference external" href="../installation/elevation.html">service d'altitude</a> est activé.</div>
 <div class="line">Dans ce cas, les services disponibles s'affichent après avoir cliqué sur le bouton <strong>Modifier la source des données d'altitude</strong> :</div>
 </div>
+<figure class="align-default">
 <img alt="Liste des sources d'élévation disponibles" src="../_images/elevations-choices.png" />
+</figure>
 <p>Il est également possible d'obtenir à nouveau l'altitude à partir du fichier :</p>
+<figure class="align-default">
 <img alt="Liste des sources d'élévation disponibles avec le fichier" src="../_images/elevations-choices-with-file.png" />
+</figure>
 <p>Une séance peut être supprimée en cliquant sur le bouton <strong>Supprimer</strong>.</p>
 </section>
 </section>
@@ -1272,7 +1294,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=efac4dcb"></script>
+</div><script src="../_static/documentation_options.js?v=740f9163"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

@@ -249,6 +249,9 @@ Before executing the command, it is recommended to back up of all data (database
 .. warning::
    If a weather data provider is defined and the ``--with-weather`` option is provided and/or an Elevation API URL is set and ``--with-elevation`` option is provided, the rate limit may be reached, resulting in API rate limit errors when a large number of workouts is refreshed.
 
+.. note::
+   The missing elevations are updated only when `--with-elevation` is provided.
+
 .. cssclass:: table-bordered
 .. list-table::
    :widths: 25 50
