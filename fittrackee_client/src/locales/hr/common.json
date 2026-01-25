@@ -26,6 +26,7 @@
   "LAST_UPDATED_ON": "Zadnji put ažurirano",
   "MINUTES": "minuta|minuta",
   "NEXT": "sljedeće",
+  "NO": "Ne",
   "NO_DESCRIPTION": "Bez opisa",
   "NO_NOTES": "Bez bilješki",
   "PREVIOUS": "prethodno",
@@ -50,5 +51,6 @@
   },
   "TOTAL": "Ukupno",
   "TOTAL_DURATION_WITH_PAUSES": "ukupno vrijeme s pauzama",
-  "TYPE": "vrsta"
+  "TYPE": "vrsta",
+  "YES": "Da"
 }

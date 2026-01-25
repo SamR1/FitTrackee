@@ -536,7 +536,8 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
     ) -> None:
         runner = CliRunner()
 
-        result = runner.invoke(cli, ["workouts", "refresh"])
+        with patch("click.confirm"):
+            result = runner.invoke(cli, ["workouts", "refresh"])
 
         assert result.exit_code == 0
         assert caplog.messages == ["No workouts to refresh.", "\nDone."]
@@ -546,7 +547,8 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
     ) -> None:
         runner = CliRunner()
 
-        result = runner.invoke(cli, ["workouts", "refresh", "--verbose"])
+        with patch("click.confirm"):
+            result = runner.invoke(cli, ["workouts", "refresh", "--verbose"])
 
         assert result.exit_code == 0
         assert caplog.messages == ["No workouts to refresh.", "\nDone."]
@@ -646,18 +648,43 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
         assert result.exit_code == 2
         assert "Invalid value for '--extension'" in result.output
 
+    def test_it_raises_error_when_new_sport_id_not_provided_with_sport_id(
+        self, app: "Flask", sport_1_cycling: "Sport"
+    ) -> None:
+        runner = CliRunner()
+
+        result = runner.invoke(
+            cli,
+            [
+                "workouts",
+                "refresh",
+                "--new-sport-id",
+                "1",
+            ],
+        )
+
+        assert result.exit_code == 2
+        assert (
+            "'--new-sport-id' must be provided with '--sport-id'"
+            in result.output
+        )
+
     def test_it_calls_workouts_refresh_service_whit_default_values(
         self, app: "Flask"
     ) -> None:
         runner = CliRunner()
 
-        with patch(
-            "fittrackee.workouts.commands.WorkoutsFromFileRefreshService"
-        ) as service_mock:
+        with (
+            patch("click.confirm"),
+            patch(
+                "fittrackee.workouts.commands.WorkoutsFromFileRefreshService"
+            ) as service_mock,
+        ):
             runner.invoke(cli, ["workouts", "refresh"])
 
         service_mock.assert_called_once_with(
             sport_id=None,
+            new_sport_id=None,
             date_from=None,
             date_to=None,
             per_page=10,
@@ -666,18 +693,23 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
             user=None,
             extension=None,
             with_weather=False,
-            add_geometry=False,
+            with_elevation=False,
             logger=logger,
             verbose=False,
         )
         service_mock.return_value.refresh.assert_called_once()
 
     def test_it_calls_workouts_refresh_service_with_all_values(
-        self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        user_1: "User",
     ) -> None:
         runner = CliRunner()
 
         with (
+            patch("click.confirm"),
             patch(
                 "fittrackee.workouts.commands.WorkoutsFromFileRefreshService"
             ) as service_mock,
@@ -689,6 +721,8 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
                     "refresh",
                     "--sport-id",
                     f"{sport_1_cycling.id}",
+                    "--new-sport-id",
+                    f"{sport_2_running.id}",
                     "--user",
                     user_1.username,
                     "--from",
@@ -704,13 +738,14 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
                     "--extension",
                     "fit",
                     "--with-weather",
-                    "--add-missing-geometry",
+                    "--with-elevation",
                     "--verbose",
                 ],
             )
 
         service_mock.assert_called_once_with(
-            sport_id=1,
+            sport_id=sport_1_cycling.id,
+            new_sport_id=sport_2_running.id,
             date_from=datetime(2025, 1, 1, 0, 0, tzinfo=timezone.utc),
             date_to=datetime(2025, 6, 1, 0, 0, tzinfo=timezone.utc),
             per_page=100,
@@ -719,7 +754,7 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
             user=user_1.username,
             extension="fit",
             with_weather=True,
-            add_geometry=True,
+            with_elevation=True,
             logger=logger,
             verbose=True,
         )
@@ -732,6 +767,7 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
         runner = CliRunner()
 
         with (
+            patch("click.confirm"),
             patch(
                 "fittrackee.workouts.commands.WorkoutsFromFileRefreshService"
             ) as service_mock,

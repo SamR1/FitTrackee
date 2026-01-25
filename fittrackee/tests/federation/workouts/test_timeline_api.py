@@ -83,11 +83,11 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
         user_1: User,
         remote_user: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
+        remote_cycling_workout: Workout,
         follow_request_from_user_1_to_remote_user: FollowRequest,
     ) -> None:
         remote_user.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = input_workout_visibility
+        remote_cycling_workout.workout_visibility = input_workout_visibility
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )
@@ -97,7 +97,7 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_workout_returned(response, workout_cycling_user_2)
+        self.assert_workout_returned(response, remote_cycling_workout)
 
     @pytest.mark.parametrize(
         "input_desc,input_workout_visibility",
@@ -151,14 +151,14 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
         user_1: User,
         remote_user: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
+        remote_cycling_workout: Workout,
         follow_request_from_user_1_to_remote_user: FollowRequest,
     ) -> None:
         remote_user.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_2.map_visibility = input_map_visibility
-        workout_cycling_user_2.map_id = self.random_string()
-        workout_cycling_user_2.map = self.random_string()
+        remote_cycling_workout.workout_visibility = VisibilityLevel.PUBLIC
+        remote_cycling_workout.map_visibility = input_map_visibility
+        remote_cycling_workout.map_id = self.random_string()
+        remote_cycling_workout.map = self.random_string()
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )
@@ -193,16 +193,16 @@ class TestFederationGetUserTimeline(ApiTestCaseMixin):
         user_1: User,
         remote_user: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
+        remote_cycling_workout: Workout,
         follow_request_from_user_1_to_remote_user: FollowRequest,
     ) -> None:
         remote_user.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = input_visibility
-        workout_cycling_user_2.analysis_visibility = input_visibility
-        workout_cycling_user_2.map_visibility = input_visibility
+        remote_cycling_workout.workout_visibility = input_visibility
+        remote_cycling_workout.analysis_visibility = input_visibility
+        remote_cycling_workout.map_visibility = input_visibility
         map_id = self.random_string()
-        workout_cycling_user_2.map_id = map_id
-        workout_cycling_user_2.map = self.random_string()
+        remote_cycling_workout.map_id = map_id
+        remote_cycling_workout.map = self.random_string()
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_federation, user_1.email
         )

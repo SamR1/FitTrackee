@@ -4,6 +4,7 @@ import {
   // bn,
   ca,
   cs,
+  // da,
   de,
   enUS,
   es,
@@ -19,6 +20,7 @@ import {
   pt,
   ru,
   // sl,
+  // sv,
   tr,
   zhCN,
 } from 'date-fns/locale'
@@ -33,6 +35,7 @@ export const isLanguageSupported = (
     // 'bn',
     'ca',
     'cs',
+    // 'da',
     'de',
     'en',
     'es',
@@ -50,6 +53,7 @@ export const isLanguageSupported = (
     'ru',
     // 'sl',
     'tr',
+    // 'sv',
     'zh_Hans',
   ].includes(language)
 }
@@ -59,6 +63,7 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
   // bn: bn,
   ca: ca,
   cs: cs,
+  // da: da,
   de: de,
   en: enUS,
   es: es,
@@ -75,33 +80,36 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
   pt: pt,
   ru: ru,
   // sl: sl,
+  // sv: sv,
   tr: tr,
   zh_Hans: zhCN,
 }
 
 export const languageLabels: Record<TLanguage, string> = {
-  bg: 'български (54%)', // Bulgarian
+  bg: 'български (52%)', // Bulgarian
   // bn: 'বাংলা',  // Bengali
-  ca: 'Català (26%)', // Catalan
-  cs: 'Česky (48%)', // Czech
-  de: 'Deutsch (93%)', // German
+  ca: 'Català (25%)', // Catalan
+  cs: 'Česky (46%)', // Czech
+  // da: 'Dansk', // Danish
+  de: 'Deutsch (90%)', // German
   en: 'English',
-  es: 'Español (71%)', // Spanish
-  eu: 'Euskara', // Basque
+  es: 'Español (68%)', // Spanish
+  eu: 'Euskara (96%)', // Basque
   fr: 'Français', // French
-  gl: 'Galego', // Galician
-  hr: 'Hrvatski', // Croatian
-  it: 'Italiano (99%)', // Italian
-  nl: 'Nederlands (99%)', // Dutch
-  nb: 'Norsk bokmål (45%)', // Norwegian Bokmål
-  pl: 'Polski (98%)', // Polish
-  pt: 'Português (53%)', // Portuguese
-  ru: 'Русский (97%)', // Russian
+  gl: 'Galego (96%)', // Galician
+  hr: 'Hrvatski (96%)', // Croatian
+  it: 'Italiano (96%)', // Italian
+  nl: 'Nederlands (95%)', // Dutch
+  nb: 'Norsk bokmål (43%)', // Norwegian Bokmål
+  pl: 'Polski (94%)', // Polish
+  pt: 'Português (51%)', // Portuguese
+  ru: 'Русский (96%)', // Russian
   // sl: 'Slovenščina', // Slovenian
+  // sv: 'Svenska', // Swedish
   // fi: 'Suomi', // Finnish
-  kab: 'Taqbaylit (2%)', // Kabyle
+  kab: 'Taqbaylit (5%)', // Kabyle
   tr: 'Türkçe (1%)', // Turkish
-  zh_Hans: '中文（简体）(98%)', // Chinese (Simplified Han script)
+  zh_Hans: '中文（简体）(94%)', // Chinese (Simplified Han script)
 }
 
 export const availableLanguages = Object.keys(languageLabels).map((l) => {

@@ -1,10 +1,15 @@
 <template>
-  <div id="workouts" v-if="authUser.username" class="view items-list-view">
+  <div
+    id="workouts"
+    v-if="authUser.username && translatedSports.length > 0"
+    class="view items-list-view"
+  >
     <div class="container items-list-container">
       <div class="filters-container" :class="{ hidden: hiddenFilters }">
         <WorkoutsFilters
           :translatedSports="translatedSports"
           :authUser="authUser"
+          :displayPace="displayPace"
           @filter="toggleFilters"
         />
       </div>
@@ -20,7 +25,12 @@
         </div>
       </div>
       <div class="list-container">
-        <WorkoutsList :user="authUser" :translatedSports="translatedSports" />
+        <WorkoutsList
+          :authUser="authUser"
+          :displayPace="displayPace"
+          :translatedSports="translatedSports"
+          :workouts="workouts"
+        />
       </div>
     </div>
   </div>
@@ -33,11 +43,16 @@
 
   import WorkoutsFilters from '@/components/Workouts/WorkoutsFilters.vue'
   import WorkoutsList from '@/components/Workouts/WorkoutsList.vue'
-  import { AUTH_USER_STORE, SPORTS_STORE } from '@/store/constants'
+  import {
+    AUTH_USER_STORE,
+    SPORTS_STORE,
+    WORKOUTS_STORE,
+  } from '@/store/constants'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
+  import type { IWorkout } from '@/types/workouts.ts'
   import { useStore } from '@/use/useStore'
-  import { translateSports } from '@/utils/sports'
+  import { getDisplayPace, translateSports } from '@/utils/sports'
 
   const { t } = useI18n()
   const store = useStore()
@@ -52,6 +67,24 @@
     translateSports(sports.value, t)
   )
   const hiddenFilters = ref(true)
+
+  const workouts: ComputedRef<IWorkout[]> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS]
+  )
+  const displayPace: ComputedRef<boolean> = computed(() => {
+    const sport_ids = [...new Set(workouts.value.map((w) => w.sport_id))]
+    if (sport_ids.length === 0) {
+      return false
+    }
+    if (sport_ids.length === 1) {
+      return getDisplayPace(sport_ids[0], translatedSports.value)
+    }
+    return translatedSports.value
+      .filter((s) => sport_ids.includes(s.id))
+      .every(
+        (s) => s.pace_speed_display && s.pace_speed_display.startsWith('pace')
+      )
+  })
 
   function toggleFilters() {
     hiddenFilters.value = !hiddenFilters.value

@@ -48,7 +48,10 @@ def get_application_config() -> Union[Dict, HttpResponse]:
         "data": {
           "about": null,
           "admin_contact": "admin@example.com",
-          "enable_geospatial_features": false,
+          "elevation_services":	{
+            "open_elevation": false,
+            "valhalla": false
+          },
           "federation_enabled": false,
           "file_sync_limit_import": 10,
           "file_limit_import": 10,
@@ -62,7 +65,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "privacy_policy": null,
           "privacy_policy_date": null,
           "stats_workouts_limit": 10000,
-          "version": "1.0.6",
+          "version": "1.1.0",
           "weather_provider": null
         },
         "status": "success"
@@ -109,7 +112,10 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         "data": {
           "about": null,
           "admin_contact": "admin@example.com",
-          "enable_geospatial_features": false,
+          "elevation_services":	{
+            "open_elevation": false,
+            "valhalla": false
+          },
           "federation_enabled": true,
           "file_sync_limit_import": 10,
           "file_limit_import": 10,
@@ -123,7 +129,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
           "privacy_policy": null,
           "privacy_policy_date": null,
           "stats_workouts_limit": 10000,
-          "version": "1.0.6",
+          "version": "1.1.0",
           "weather_provider": null
         },
         "status": "success"

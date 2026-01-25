@@ -1,6 +1,6 @@
 {
   "Canoeing": {
-    "LABEL": "Piragüismo (canoa)"
+    "LABEL": "Piragüismo (C)"
   },
   "Cycling (Sport)": {
     "LABEL": "Ciclismo (Deportivo)"
@@ -21,7 +21,7 @@
     "LABEL": "Sendeirismo"
   },
   "Kayaking": {
-    "LABEL": "Piragüismo (caiac)"
+    "LABEL": "Piragüismo (K)"
   },
   "Mountain Biking": {
     "LABEL": "Ciclismo por Montaña"
@@ -33,7 +33,7 @@
     "LABEL": "Montañismo"
   },
   "Open Water Swimming": {
-    "LABEL": "Natación Auga Aberta"
+    "LABEL": "Natación Augas Abertas"
   },
   "Padel (Outdoor)": {
     "LABEL": "Pádel (Exterior)"

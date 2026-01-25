@@ -164,6 +164,15 @@ def process_queued_archive_upload(task_short_id: str, verbose: bool) -> None:
     callback=validate_sport_id,
 )
 @click.option(
+    "--new-sport-id",
+    help=(
+        "sport id to which the workouts will be associated "
+        "(must be provided with '--sport-id')"
+    ),
+    type=int,
+    callback=validate_sport_id,
+)
+@click.option(
     "--from",
     "date_from",
     help="start date (format: %Y-%m-%d)",
@@ -225,12 +234,15 @@ def process_queued_archive_upload(task_short_id: str, verbose: bool) -> None:
     default=False,
 )
 @click.option(
-    "--add-missing-geometry",
+    "--with-elevation",
     help=(
-        "if provided, it refreshes only workouts without geometry in database "
-        "to add geometry and points. This option is provided to update "
-        "workouts created before v1.x and will be removed in a future version "
-        "when all workouts must have geometry."
+        "enable elevation update when elevation provider is set and "
+        "some elevation data are missing. "
+        "If disabled, existing elevation are not removed when elevation data "
+        "are missing in the original file. "
+        "WARNING: depending on subscription, the rate limit can be reached, "
+        "leading to errors and preventing elevation data being collected "
+        "during next uploads until the limit is reset (default: disabled)"
     ),
     is_flag=True,
     show_default=True,
@@ -246,6 +258,7 @@ def process_queued_archive_upload(task_short_id: str, verbose: bool) -> None:
 )
 def refresh_workouts(
     sport_id: Optional[int] = None,
+    new_sport_id: Optional[int] = None,
     date_from: Optional[datetime] = None,
     date_to: Optional[datetime] = None,
     per_page: int = 10,
@@ -254,7 +267,7 @@ def refresh_workouts(
     user: Optional[str] = None,
     extension: Optional[str] = None,
     with_weather: bool = False,
-    add_missing_geometry: bool = False,
+    with_elevation: bool = False,
     verbose: bool = False,
 ) -> None:
     """
@@ -262,9 +275,45 @@ def refresh_workouts(
     """
     with app.app_context():
         logger.setLevel(logging.DEBUG if verbose else logging.INFO)
+
+        if with_elevation:
+            if (
+                app.config["OPEN_ELEVATION_API_URL"]
+                or app.config["VALHALLA_API_URL"]
+            ):
+                click.secho(
+                    "\nWarning: Open Elevation and/or Valhalla API "
+                    "are set.\n"
+                    "If users have enabled missing elevation processing, "
+                    "multiple calls will be made to the elevation services "
+                    "depending on the number of workouts to be refreshed, "
+                    "which may result in rate limit errors.\n"
+                    "Adjust the number of workouts to refresh with "
+                    "'--per-page' option if necessary "
+                    f"(current value: {per_page}).",
+                    fg="yellow",
+                    bold=True,
+                )
+                if not click.confirm("Do you want to continue?"):
+                    click.echo("Aborted!")
+                    sys.exit(0)
+            else:
+                click.secho(
+                    "\nWarning: '--with-elevation' is provided but "
+                    "no elevation API URL is set.\n",
+                    fg="yellow",
+                )
+
+        if new_sport_id and not sport_id:
+            raise click.BadOptionUsage(
+                "--new-sport-id",
+                "'--new-sport-id' must be provided with '--sport-id'",
+            )
+
         try:
             service = WorkoutsFromFileRefreshService(
                 sport_id=sport_id,
+                new_sport_id=new_sport_id,
                 date_from=date_from,
                 date_to=date_to,
                 per_page=per_page,
@@ -274,7 +323,7 @@ def refresh_workouts(
                 extension=extension,
                 with_weather=with_weather,
                 verbose=verbose,
-                add_geometry=add_missing_geometry,
+                with_elevation=with_elevation,
                 logger=logger,
             )
             service.refresh()

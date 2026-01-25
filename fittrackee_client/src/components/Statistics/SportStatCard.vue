@@ -2,7 +2,13 @@
   <div class="sport-stat-card">
     <div class="stat-content">
       <div class="stat-icon">
-        <i class="fa" :class="`fa-${icon}`" />
+        <img
+          v-if="icon === 'chronometer'"
+          class="chronometer"
+          src="/img/workouts/chronometer.svg"
+          :alt="$t('workouts.PACE')"
+        />
+        <i v-else class="fa" :class="`fa-${icon}`" />
       </div>
       <div class="stat-details">
         <div class="stat-label">{{ label }}</div>
@@ -64,6 +70,12 @@
           font-size: 2em;
           @media screen and (max-width: $medium-limit) {
             font-size: 1.5em;
+          }
+        }
+        .chronometer {
+          height: 28px;
+          @media screen and (max-width: $medium-limit) {
+            height: 24px;
           }
         }
       }

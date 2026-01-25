@@ -1,8 +1,14 @@
 {
+  "CURRENT_PASSWORD": "Awal n uɛeddi amiran",
   "EMAIL": "Imayl",
+  "ENTER_PASSWORD": "Sekcem-d awal n uɛeddi",
+  "HIDE_PASSWORD": "ffer awal n uɛeddi",
   "LOGIN": "Qqen",
   "LOGOUT": "Senser tuqqna",
+  "NEW_PASSWORD": "Awal n uɛeddi amaynut",
   "PASSWORD": "Awal n uɛeddi",
+  "PASSWORD_FORGOTTEN": "Tettuḍ awal n uɛeddi?",
+  "PASSWORD_RESET": "Awennez n wawal n uɛeddi",
   "PROFILE": {
     "INTERFACE": "Agrudem",
     "LANGUAGE": "Tutlayt",
@@ -10,5 +16,7 @@
     "MONDAY": "Arim",
     "PICTURE": "Tugna",
     "SUNDAY": "Acer"
-  }
+  },
+  "SHOW_PASSWORD": "beqqeḍ awal n uɛeddi",
+  "USERNAME": "Isem n useqdac"
 }

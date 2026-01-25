@@ -2,7 +2,7 @@ import os
 import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Set
 from unittest.mock import Mock, patch
 
 import pytest
@@ -13,6 +13,7 @@ from sqlalchemy.exc import IntegrityError
 from time_machine import travel
 
 from fittrackee import db
+from fittrackee.constants import ElevationDataSource, PaceSpeedDisplay
 from fittrackee.equipments.models import Equipment
 from fittrackee.federation.exceptions import FederationDisabledException
 from fittrackee.files import get_absolute_file_path
@@ -218,6 +219,11 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             == user_1.split_workout_charts
         )
         assert serialized_user["messages_preferences"] == {}
+        assert serialized_user["missing_elevations_processing"] == "file"
+        assert (
+            serialized_user["calories_visibility"]
+            == user_1.calories_visibility
+        )
 
     def test_it_returns_empty_dict_when_notification_preferences_are_none(
         self, app: Flask, user_1: User
@@ -312,6 +318,50 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         assert serialized_user["reported_count"] == 0
         assert serialized_user["sanctions_count"] == 0
 
+    @pytest.mark.parametrize(
+        "input_preference",
+        [
+            ElevationDataSource.OPEN_ELEVATION,
+            ElevationDataSource.OPEN_ELEVATION_SMOOTH,
+            ElevationDataSource.VALHALLA,
+        ],
+    )
+    def test_it_returns_missing_elevations_processing_as_none_when_no_elevation_service_set(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        input_preference: "ElevationDataSource",
+    ) -> None:
+        user_1.missing_elevations_processing = input_preference
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
+
+        assert (
+            serialized_user["missing_elevations_processing"]
+            == ElevationDataSource.FILE
+        )
+
+    @pytest.mark.parametrize(
+        "input_preference",
+        [
+            ElevationDataSource.OPEN_ELEVATION,
+            ElevationDataSource.OPEN_ELEVATION_SMOOTH,
+            ElevationDataSource.VALHALLA,
+        ],
+    )
+    def test_it_returns_missing_elevations_processing_when_elevation_service_set(  # noqa
+        self,
+        app_with_open_elevation_and_valhalla_url: Flask,
+        user_1: User,
+        input_preference: "ElevationDataSource",
+    ) -> None:
+        user_1.missing_elevations_processing = input_preference
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
+
+        assert (
+            serialized_user["missing_elevations_processing"]
+            == input_preference
+        )
+
 
 class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
     def test_it_returns_user_account_infos(
@@ -359,6 +409,9 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
         assert "segments_creation_event" not in serialized_user
         assert "split_workout_charts" not in serialized_user
         assert "messages_preferences" not in serialized_user
+        assert "display_ascent" not in serialized_user
+        assert "missing_elevations_processing" not in serialized_user
+        assert "calories_visibility" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -449,6 +502,9 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
         assert "segments_creation_event" not in serialized_user
         assert "split_workout_charts" not in serialized_user
         assert "messages_preferences" not in serialized_user
+        assert "display_ascent" not in serialized_user
+        assert "missing_elevations_processing" not in serialized_user
+        assert "calories_visibility" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_moderator: User, user_2: User
@@ -532,6 +588,9 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert "segments_creation_event" not in serialized_user
         assert "split_workout_charts" not in serialized_user
         assert "messages_preferences" not in serialized_user
+        assert "display_ascent" not in serialized_user
+        assert "missing_elevations_processing" not in serialized_user
+        assert "calories_visibility" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1: User, user_2: User
@@ -604,28 +663,24 @@ class TestUserRecords(UserModelAssertMixin, WorkoutMixin):
         self,
         app: Flask,
         user_1: User,
-        user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert len(serialized_user["records"]) == 4
-        records = sorted(
-            serialized_user["records"], key=lambda r: r["record_type"]
-        )
-        assert records[0]["record_type"] == "AS"
-        assert records[0]["sport_id"] == sport_1_cycling.id
-        assert records[0]["user"] == user_1.username
-        assert records[0]["value"] > 0
-        assert records[0]["workout_id"] == workout_cycling_user_1.short_id
-        assert records[0]["workout_date"]
+        record = serialized_user["records"][0]
+        assert record["record_type"] == "AS"
+        assert record["sport_id"] == sport_1_cycling.id
+        assert record["user"] == user_1.username
+        assert record["value"] > 0
+        assert record["workout_id"] == workout_cycling_user_1.short_id
+        assert record["workout_date"]
 
-    def test_it_returns_user_records_when_workout_has_elevation_data(
+    def test_it_does_not_return_pace_records_when_sport_is_cycling(
         self,
         app: Flask,
         user_1: User,
-        user_2: User,
         sport_1_cycling: Sport,
         workout_cycling_user_1: Workout,
     ) -> None:
@@ -633,26 +688,74 @@ class TestUserRecords(UserModelAssertMixin, WorkoutMixin):
 
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
-        assert len(serialized_user["records"]) == 5
-        records = sorted(
-            serialized_user["records"], key=lambda r: r["record_type"]
-        )
-        assert records[2]["record_type"] == "HA"
+        assert set(
+            record["record_type"] for record in serialized_user["records"]
+        ) == {"AS", "FD", "HA", "LD", "MS"}
 
-    def test_it_does_not_return_HA_records_when_sport_is_outdoor_tennis(
+    def test_it_does_not_return_HA_and_pace_records_when_sport_is_outdoor_tennis(  # noqa
         self,
         app: Flask,
         user_1: User,
-        user_2: User,
         workout_outdoor_tennis_user_1_with_elevation_data: Workout,
     ) -> None:
+        self.update_workout_with_file_data(
+            workout_outdoor_tennis_user_1_with_elevation_data
+        )
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
-        assert len(serialized_user["records"]) == 4
-        assert "HA" not in [
+        assert set(
             record["record_type"] for record in serialized_user["records"]
-        ]
+        ) == {"AS", "FD", "LD", "MS"}
 
+    def test_it_returns_pace_records_without_speed_record_when_sport_is_running(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,
+    ) -> None:
+        """no user sport preference"""
+        self.update_workout_with_file_data(workout_running_user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
+
+        assert set(
+            record["record_type"] for record in serialized_user["records"]
+        ) == {"AP", "BP", "FD", "HA", "LD"}
+
+    @pytest.mark.parametrize(
+        "input_pace_speed_display,expected_record_types",
+        [
+            (PaceSpeedDisplay.PACE, {"AP", "BP", "FD", "HA", "LD"}),
+            (PaceSpeedDisplay.SPEED, {"AS", "FD", "HA", "LD", "MS"}),
+            (
+                PaceSpeedDisplay.PACE_AND_SPEED,
+                {"AP", "AS", "BP", "FD", "HA", "LD", "MS"},
+            ),
+        ],
+    )
+    def test_it_returns_records_depending_on_pace_speed_display_preference(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        workout_running_user_1: Workout,
+        user_1_sport_2_preference: UserSportPreference,
+        input_pace_speed_display: PaceSpeedDisplay,
+        expected_record_types: Set[str],
+    ) -> None:
+        user_1_sport_2_preference.pace_speed_display = input_pace_speed_display
+        self.update_workout_with_file_data(workout_running_user_1)
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
+
+        assert (
+            set(record["record_type"] for record in serialized_user["records"])
+            == expected_record_types
+        )
+
+
+class TestUserTotals(UserModelAssertMixin):
     def test_it_returns_totals_when_workout_has_pauses(
         self,
         app: Flask,
@@ -817,8 +920,49 @@ class TestUserModelToken(RandomMixin):
         )
 
 
-class TestUserSportModel:
-    def test_user_sport_preferences_model(
+class TestUserSportPreferenceModel:
+    def test_user_sports_preferences_model_with_default_pace_speed_display(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+    ) -> None:
+        preference = UserSportPreference(
+            user_id=user_1.id,
+            sport_id=sport_1_cycling.id,
+            stopped_speed_threshold=1.0,
+        )
+        db.session.commit()
+
+        assert preference.user_id == user_1.id
+        assert preference.sport_id == sport_1_cycling.id
+        assert preference.color is None
+        assert preference.is_active is True
+        assert preference.stopped_speed_threshold == 1.0
+        assert preference.pace_speed_display == PaceSpeedDisplay.SPEED
+
+    def test_user_sports_preferences_model_with_provided_pace_speed_display(
+        self,
+        app: "Flask",
+        sport_2_running: "Sport",
+        user_1: "User",
+    ) -> None:
+        preference = UserSportPreference(
+            user_id=user_1.id,
+            sport_id=sport_2_running.id,
+            stopped_speed_threshold=0.1,
+            pace_speed_display=PaceSpeedDisplay.PACE,
+        )
+        db.session.commit()
+
+        assert preference.user_id == user_1.id
+        assert preference.sport_id == sport_2_running.id
+        assert preference.color is None
+        assert preference.is_active is True
+        assert preference.stopped_speed_threshold == 0.1
+        assert preference.pace_speed_display == PaceSpeedDisplay.PACE
+
+    def test_it_serializes_user_sport_preferences(
         self,
         app: Flask,
         user_1: User,
@@ -827,14 +971,19 @@ class TestUserSportModel:
     ) -> None:
         serialized_user_sport = user_1_sport_1_preference.serialize()
 
-        assert serialized_user_sport["user_id"] == user_1.id
-        assert serialized_user_sport["sport_id"] == sport_1_cycling.id
-        assert serialized_user_sport["color"] is None
-        assert serialized_user_sport["is_active"]
-        assert serialized_user_sport["stopped_speed_threshold"] == 1
-        assert serialized_user_sport["default_equipments"] == []
+        assert serialized_user_sport == {
+            "user_id": user_1.id,
+            "sport_id": sport_1_cycling.id,
+            "color": None,
+            "pace_speed_display": user_1_sport_1_preference.pace_speed_display,
+            "is_active": True,
+            "stopped_speed_threshold": (
+                user_1_sport_1_preference.stopped_speed_threshold
+            ),
+            "default_equipments": [],
+        }
 
-    def test_user_sport_preferences_model_with_default_equipments(
+    def test_it_serializes_user_sport_preferences_with_default_equipments(
         self,
         app: Flask,
         user_1: User,

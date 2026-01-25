@@ -21,6 +21,7 @@ from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, appLog, bcrypt, db
 from fittrackee.comments.models import Comment
+from fittrackee.constants import ElevationDataSource, PaceSpeedDisplay
 from fittrackee.database import TZDateTime
 from fittrackee.dates import aware_utc_now
 from fittrackee.federation.decorators import federation_required
@@ -31,8 +32,8 @@ from fittrackee.federation.tasks.inbox import send_to_remote_inbox
 from fittrackee.files import get_absolute_file_path
 from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import VisibilityLevel
-from fittrackee.workouts.constants import SPORTS_WITHOUT_ELEVATION_DATA
 from fittrackee.workouts.models import Workout
+from fittrackee.workouts.utils.sports import get_sport_displayed_data
 
 from .constants import (
     MESSAGE_PREFERENCES_SCHEMA,
@@ -404,10 +405,20 @@ class User(BaseModel):
         server_default="only_manual",
     )
     split_workout_charts: Mapped[bool] = mapped_column(
-        server_default="false", nullable=False
+        server_default="true", nullable=False
     )
     messages_preferences: Mapped[Optional[Dict]] = mapped_column(
         postgresql.JSONB, nullable=True
+    )
+    missing_elevations_processing: Mapped[ElevationDataSource] = mapped_column(
+        Enum(ElevationDataSource, name="elevation_data_source"),
+        server_default="FILE",
+        nullable=False,
+    )
+    calories_visibility: Mapped[VisibilityLevel] = mapped_column(
+        Enum(VisibilityLevel, name="visibility_levels"),
+        server_default="PRIVATE",
+        nullable=False,
     )
     is_remote: Mapped[bool] = mapped_column(
         db.Boolean, default=False, nullable=False
@@ -930,6 +941,56 @@ class User(BaseModel):
             return True
         return self.notification_preferences.get(notification_type, True)
 
+    def _get_records(self) -> List[Dict]:
+        records = []
+        sports_displayed_data = {}
+        for record in self.records:
+            if record.sport.id not in sports_displayed_data:
+                sports_displayed_data[record.sport.id] = (
+                    get_sport_displayed_data(record.sport, self)
+                )
+            sport_displayed_data = sports_displayed_data[record.sport.id]
+
+            if (
+                record.record_type == "HA"
+                and not sport_displayed_data.display_elevation
+            ):
+                continue
+            if (
+                record.record_type in ["AP", "BP"]
+                and not sport_displayed_data.display_pace
+            ):
+                continue
+            if (
+                record.record_type in ["AS", "MS"]
+                and not sport_displayed_data.display_speed
+            ):
+                continue
+            records.append(record.serialize())
+        return records
+
+    @property
+    def calculated_missing_elevations_processing(
+        self,
+    ) -> "ElevationDataSource":
+        if (
+            self.missing_elevations_processing
+            in [
+                ElevationDataSource.OPEN_ELEVATION,
+                ElevationDataSource.OPEN_ELEVATION_SMOOTH,
+            ]
+            and not current_app.config["OPEN_ELEVATION_API_URL"]
+        ):
+            return ElevationDataSource.FILE
+
+        if (
+            self.missing_elevations_processing == ElevationDataSource.VALHALLA
+            and not current_app.config["VALHALLA_API_URL"]
+        ):
+            return ElevationDataSource.FILE
+
+        return self.missing_elevations_processing
+
     def serialize(
         self,
         *,
@@ -1018,14 +1079,7 @@ class User(BaseModel):
                 )
 
             serialized_user["nb_sports"] = len(sports)
-            serialized_user["records"] = [
-                record.serialize()
-                for record in self.records
-                if (
-                    record.sport.label not in SPORTS_WITHOUT_ELEVATION_DATA
-                    or record.record_type != "HA"
-                )
-            ]
+            serialized_user["records"] = self._get_records()
             serialized_user["sports_list"] = [
                 sport for sportslist in sports for sport in sportslist
             ]
@@ -1090,6 +1144,10 @@ class User(BaseModel):
                     if self.messages_preferences
                     else {}
                 ),
+                "missing_elevations_processing": (
+                    self.calculated_missing_elevations_processing
+                ),
+                "calories_visibility": self.calories_visibility.value,
             }
 
         return serialized_user
@@ -1134,6 +1192,11 @@ class UserSportPreference(BaseModel):
     stopped_speed_threshold: Mapped[float] = mapped_column(
         default=1.0, nullable=False
     )
+    pace_speed_display: Mapped[PaceSpeedDisplay] = mapped_column(
+        Enum(PaceSpeedDisplay, name="pace_speed_display"),
+        server_default="SPEED",
+        nullable=False,
+    )
 
     default_equipments = relationship(
         "Equipment",
@@ -1153,11 +1216,13 @@ class UserSportPreference(BaseModel):
         user_id: int,
         sport_id: int,
         stopped_speed_threshold: float,
+        pace_speed_display: "PaceSpeedDisplay" = PaceSpeedDisplay.SPEED,
     ) -> None:
         self.user_id = user_id
         self.sport_id = sport_id
         self.is_active = True
         self.stopped_speed_threshold = stopped_speed_threshold
+        self.pace_speed_display = pace_speed_display
 
     def serialize(self) -> Dict:
         return {
@@ -1165,6 +1230,7 @@ class UserSportPreference(BaseModel):
             "sport_id": self.sport_id,
             "color": self.color,
             "is_active": self.is_active,
+            "pace_speed_display": self.pace_speed_display,
             "stopped_speed_threshold": self.stopped_speed_threshold,
             "default_equipments": [
                 equipment.serialize(current_user=self.user)

@@ -30,6 +30,7 @@ export const workoutsState: IWorkoutsState = {
     currentCommentEdition: <ICurrentCommentEdition>{},
     currentReporting: false,
     refreshLoading: false,
+    elevationLoading: false,
   },
   workoutContent: {
     loading: false,

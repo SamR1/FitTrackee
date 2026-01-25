@@ -85,6 +85,7 @@
             </template>
           </SportStatCard>
           <SportStatCard
+            v-if="sportStatistics?.average_speed"
             icon="tachometer"
             :loading="loading"
             :total-value="
@@ -92,6 +93,16 @@
             "
             :text="`${distanceUnitTo}/h`"
             :label="$t('workouts.AVE_SPEED')"
+          />
+          <SportStatCard
+            v-else-if="sportStatistics?.average_pace"
+            icon="chronometer"
+            :loading="loading"
+            :total-value="
+              getPace(sportStatistics?.average_pace, authUser.imperial_units)
+            "
+            :text="`min/${distanceUnitTo}`"
+            :label="$t('workouts.AVERAGE_PACE')"
           />
           <SportStatCard
             v-if="sportStatistics?.total_ascent !== null"
@@ -131,7 +142,37 @@
               />
             </template>
           </SportStatCard>
+          <SportStatCard
+            v-if="
+              sportStatistics?.average_pace && sportStatistics?.average_speed
+            "
+            icon="chronometer"
+            :loading="loading"
+            :total-value="
+              getPace(sportStatistics?.average_pace, authUser.imperial_units)
+            "
+            :text="`min/${distanceUnitTo}`"
+            :label="$t('workouts.AVERAGE_PACE')"
+          />
+          <SportStatCard
+            v-if="sportStatistics?.total_calories"
+            icon="fire"
+            :loading="loading"
+            :total-value="sportStatistics?.total_calories"
+            :text="t(`workouts.UNITS.kcal.UNIT`)"
+            :label="$t('workouts.CALORIES')"
+          />
         </div>
+      </div>
+      <div v-if="sportStatistics?.total_calories" class="calories-help">
+        <span class="info-box">
+          <i class="fa fa-info-circle" aria-hidden="true" />
+          {{
+            $t(
+              'workouts.TOTAL_CALORIES_MAY_BE_INCOMPLETE_IF_FILES_DO_NOT_CONTAIN_DATA'
+            )
+          }}
+        </span>
       </div>
       <div class="records">
         <div class="label">
@@ -172,7 +213,7 @@
   import { getDuration, getTotalDuration } from '@/utils/duration'
   import { getRecordsBySports, sortRecords } from '@/utils/records'
   import { translateSports } from '@/utils/sports'
-  import { convertDistance, units } from '@/utils/units'
+  import { convertDistance, getPace, units } from '@/utils/units'
   interface Props {
     sports: ISport[]
     authUser: IAuthUserProfile
@@ -326,6 +367,10 @@
     .records {
       width: 425px;
     }
+    .calories-help {
+      display: flex;
+      margin: $default-margin 0;
+    }
 
     @media screen and (max-width: $x-small-limit) {
       .sport-statistics {
@@ -342,6 +387,9 @@
         .records {
           font-size: 0.9em;
           width: 100%;
+        }
+        .calories-help {
+          margin: 0;
         }
       }
     }

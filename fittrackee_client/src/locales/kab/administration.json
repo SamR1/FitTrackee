@@ -1,11 +1,16 @@
 {
+  "ACTIVATE_USER_ACCOUNT": "Rmed amiḍan",
   "ACTIVE": "D urmid",
   "ADMIN": "Anedbal",
   "ADMINISTRATION": "Tadbelt",
   "APPLICATION": "Asnas",
+  "APP_CONFIG": {
+    "TITLE": "Tawila n usnas"
+  },
   "APP_MODERATION": {
     "REASON": "Taɣẓint"
   },
+  "DELETE_USER": "Kkes aseqdac",
   "EQUIPMENT_TYPES": {
     "TABLE": {
       "ACTIVE": "D urmid",
@@ -18,6 +23,14 @@
       "ACTIVE": "D urmid",
       "IMAGE": "Tugna",
       "LABEL": "Tabzimt"
+    }
+  },
+  "USERS": {
+    "SELECTS": {
+      "ORDER_BY": {
+        "ROLE": "tamlilt",
+        "USERNAME": "isem n useqdac"
+      }
     }
   }
 }

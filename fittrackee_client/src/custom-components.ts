@@ -9,6 +9,7 @@ import EquipmentTypeImage from '@/components/Common/Images/EquipmentTypeImage/in
 import SportImage from '@/components/Common/Images/SportImage/index.vue'
 import Loader from '@/components/Common/Loader.vue'
 import Modal from '@/components/Common/Modal.vue'
+import Pace from '@/components/Common/Pace.vue'
 import VisibilityIcon from '@/components/Common/VisibilityIcon.vue'
 
 export const customComponents = [
@@ -24,4 +25,5 @@ export const customComponents = [
   { target: EquipmentTypeImage, name: 'EquipmentTypeImage' },
   { target: VisibilityIcon, name: 'VisibilityIcon' },
   { target: Comment, name: 'Comment' },
+  { target: Pace, name: 'Pace' },
 ]

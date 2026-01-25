@@ -53,8 +53,10 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
                 "ascent": null,
                 "ave_cadence": null,
                 "ave_hr": null,
+                "ave_pace": null,
                 "ave_power": null,
                 "ave_speed": 10.0,
+                "best_pace": null,
                 "bounds": [],
                 "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
                 "descent": null,
@@ -129,7 +131,7 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
                 "user": "admin",
                 "weather_end": null,
                 "weather_start": null,
-                "with_gpx": false,
+                "with_file": false,
                 "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT"
               }
             ]

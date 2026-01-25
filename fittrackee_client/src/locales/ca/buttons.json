@@ -17,7 +17,6 @@
   "FOLLOW": "Segueix",
   "HIDE": "Amaga",
   "LOGIN": "Inicia Sessió",
-  "NO": "No",
   "READ_MORE": "Llegir més",
   "REFRESH_TOTALS": "Refresca els totals",
   "REGISTER": "Registrar-se",
@@ -27,6 +26,5 @@
   "SEARCH": "Cerca",
   "SUBMIT": "Envia",
   "UNBLOCK": "Desbloqueja",
-  "UNFOLLOW": "Deixa de seguir",
-  "YES": "Sí"
+  "UNFOLLOW": "Deixa de seguir"
 }

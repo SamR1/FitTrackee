@@ -30,6 +30,9 @@ check-client: lint-client type-check-client test-client
 
 check-python: bandit lint-python type-check test-python
 
+create-db-dev:
+	sh db/create-databases.sh
+
 clean:
 	rm -rf .mypy_cache
 	rm -rf .pytest_cache
@@ -165,8 +168,7 @@ install-db:
 	psql -U postgres -d fittrackee -c 'CREATE EXTENSION IF NOT EXISTS postgis;'
 	$(FTCLI) db upgrade
 
-install-db-dev:
-	sh db/create-databases.sh
+install-db-dev: create-db-dev
 	$(FTCLI) db upgrade
 
 init-db:

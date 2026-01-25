@@ -47,9 +47,6 @@ class UserDataExporter:
                 self.user, additional_data=True, light=False
             )
             workout_data["sport_label"] = workout.sport.label
-            workout_data["gpx"] = (
-                workout.gpx.split("/")[-1] if workout.gpx else None
-            )
             workout_data["original_file"] = (
                 workout.original_file.split("/")[-1]
                 if workout.original_file

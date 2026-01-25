@@ -4,6 +4,7 @@ import bgMessages from '@/locales/bg/bg'
 // import bnMessages from '@/locales/bn/bn'
 import caMessages from '@/locales/ca/ca'
 import csMessages from '@/locales/cs/cs'
+// import daMessages from '@/locales/da/da'
 import deMessages from '@/locales/de/de'
 import enMessages from '@/locales/en/en'
 import esMessages from '@/locales/es/es'
@@ -20,6 +21,7 @@ import plMessages from '@/locales/pl/pl'
 import ptMessages from '@/locales/pt/pt'
 import ruMessages from '@/locales/ru/ru'
 // import slMessages from '@/locales/sl/sl'
+// import svMessages from '@/locales/sv/sv'
 import trMessages from '@/locales/tr/tr'
 import zhHansMessages from '@/locales/zh_Hans/zh_Hans'
 
@@ -33,6 +35,7 @@ export default createI18n({
     // bn: bnMessages,
     ca: caMessages,
     cs: csMessages,
+    // da: daMessages,
     de: deMessages,
     en: enMessages,
     es: esMessages,
@@ -49,6 +52,7 @@ export default createI18n({
     pt: ptMessages,
     ru: ruMessages,
     // sl: slMessages,
+    // sv: svMessages,
     tr: trMessages,
     zh_Hans: zhHansMessages,
   },

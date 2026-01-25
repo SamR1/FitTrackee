@@ -1866,7 +1866,7 @@ def get_user_latest_workouts(
                 },
                 "weather_end": null,
                 "weather_start": null,
-                "with_gpx": false,
+                "with_file": false,
                 "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
                 "workout_visibility": "private"
               }

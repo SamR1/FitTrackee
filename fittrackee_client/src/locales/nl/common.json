@@ -26,6 +26,7 @@
   "LAST_UPDATED_ON": "Laatste wijziging op",
   "MINUTES": "minuut|minuten",
   "NEXT": "volgende",
+  "NO": "Nee",
   "NO_DESCRIPTION": "Geen beschrijving",
   "NO_NOTES": "Geen notities",
   "PREVIOUS": "vorige",
@@ -50,5 +51,6 @@
   },
   "TOTAL": "Totaal",
   "TOTAL_DURATION_WITH_PAUSES": "totale duur inclusief pauzes",
-  "TYPE": "type"
+  "TYPE": "type",
+  "YES": "Ja"
 }

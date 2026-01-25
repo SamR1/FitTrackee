@@ -24,6 +24,7 @@
   "LAST_UPDATED_ON": "最后更新于",
   "MINUTES": "分钟",
   "NEXT": "下一个",
+  "NO": "否",
   "NO_DESCRIPTION": "无描述",
   "NO_NOTES": "无备注",
   "PREVIOUS": "上一个",
@@ -48,5 +49,6 @@
   },
   "TOTAL": "总计",
   "TOTAL_DURATION_WITH_PAUSES": "总持续时间（包括暂停）",
-  "TYPE": "类型"
+  "TYPE": "类型",
+  "YES": "是"
 }

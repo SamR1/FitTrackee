@@ -2,6 +2,19 @@
 
 First off, thank you for your interest in contributing!
 
+## Philosophy
+
+FitTrackee was created specifically to completely avoid proprietary web platforms for tracking sports activities.  
+Workout files contain sensitive data relating to location and health.
+
+This is one of the reasons why, for example, automatic synchronization of an account hosted on proprietary web platform is not integrated into FitTrackee.  
+For the time being, files must therefore be added manually or [third-party tools](https://docs.fittrackee.org/en/third_party_tools.html) must be used (or developed) for this type of synchronization.
+
+The other important point is that FitTrackee must be easy to install, particularly for use by a single user and without interaction, for which Python and a PostgreSQL/PostGIS database are sufficient.   
+Ideally, it should be possible to install it on low-resource servers such as the Raspberry Pi 4.
+
+Pull requests or feature requests must therefore take these points into account.
+
 ## Report issues, ask for features
 
 * If a bug is a **security vulnerability**, please refer to [security policy](https://github.com/SamR1/FitTrackee/blob/master/SECURITY.md).
@@ -47,7 +60,7 @@ On the other hand, bug reports or PRs generated entirely by AI/LLM tools or with
 
 ### How to install FitTrackee
 
-see [Installations instructions](https://docs.fittrackee.org/en/installation.html)
+see [Installations instructions](https://docs.fittrackee.org/en/installation/index.html)
 
 ### Pull Requests
 

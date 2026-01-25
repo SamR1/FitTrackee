@@ -21,6 +21,7 @@
   "LAST_UPDATED_ON": "Actualitzat per última vegada",
   "MINUTES": "minut | minuts",
   "NEXT": "següent",
+  "NO": "No",
   "NO_DESCRIPTION": "Cap descripció",
   "NO_NOTES": "Cap nota",
   "PREVIOUS": "anterior",
@@ -45,5 +46,6 @@
   },
   "TOTAL": "Total",
   "TOTAL_DURATION_WITH_PAUSES": "duració total amb pauses",
-  "TYPE": "tipus"
+  "TYPE": "tipus",
+  "YES": "Sí"
 }

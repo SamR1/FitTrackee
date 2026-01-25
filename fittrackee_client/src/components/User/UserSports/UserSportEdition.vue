@@ -44,6 +44,28 @@
             @invalid="invalidateForm"
           />
         </div>
+        <template v-if="sportsWithPace.includes(sport.label)">
+          <div class="form-item">
+            <label for="sport-pace-speed-display">
+              {{
+                capitalize($t('user.PROFILE.SPORT.PACE_SPEED_DISPLAY.LABEL'))
+              }}
+            </label>
+            <select
+              id="sport-pace-speed-display"
+              name="sport-pace-speed-display"
+              v-model="sportPayload.pace_speed_display"
+            >
+              <option
+                v-for="item in paceSpeedDisplatValues"
+                :value="item"
+                :key="item"
+              >
+                {{ $t(`user.PROFILE.SPORT.PACE_SPEED_DISPLAY.${item}`) }}
+              </option>
+            </select>
+          </div>
+        </template>
         <div class="form-item-checkbox">
           <label for="equipment-active">
             {{ capitalize($t('common.ACTIVE')) }}
@@ -110,10 +132,15 @@
   import useSports from '@/composables/useSports'
   import { EQUIPMENTS_STORE } from '@/store/constants'
   import type { IEquipment } from '@/types/equipments'
-  import type { ISport, ITranslatedSport } from '@/types/sports'
+  import type {
+    ISport,
+    ITranslatedSport,
+    TPaceSpeedDisplay,
+  } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getEquipments } from '@/utils/equipments'
+  import { sportsWithPace } from '@/utils/sports.ts'
   import { convertDistance } from '@/utils/units'
 
   interface Props {
@@ -137,6 +164,12 @@
     updateSport,
   } = useSports()
   const { authUserLoading } = useAuthUser()
+
+  const paceSpeedDisplatValues: TPaceSpeedDisplay[] = [
+    'pace',
+    'speed',
+    'pace_and_speed',
+  ]
 
   const formErrors: Ref<boolean> = ref(false)
 
@@ -184,6 +217,7 @@
           ? convertDistance(sport.stopped_speed_threshold, 'km', 'mi', 2)
           : parseFloat(sport.stopped_speed_threshold.toFixed(2))
       }`
+      sportPayload.pace_speed_display = sport.pace_speed_display
       sportPayload.fromSport = true
       if (withEquipments) {
         defaultEquipmentId.value =

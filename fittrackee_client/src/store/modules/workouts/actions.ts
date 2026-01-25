@@ -26,6 +26,7 @@ import type {
   IAppealPayload,
   ILikesPayload,
   TWorkoutsMapPayload,
+  IWorkoutElevationSourceDataPayload,
 } from '@/types/workouts'
 import { handleError } from '@/utils'
 
@@ -215,7 +216,9 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
           if (
             payload.segmentId &&
             (workout.segments.length === 0 ||
-              !workout.segments[+payload.segmentId - 1])
+              !workout.segments.find(
+                (segment) => segment.segment_id === payload.segmentId
+              ))
           ) {
             throw new Error('WORKOUT_NOT_FOUND')
           }
@@ -256,17 +259,6 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                   context.commit(
                     WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON,
                     res.data.data.geojson
-                  )
-                }
-              })
-          } else if (workout.with_gpx) {
-            authApi
-              .get(`workouts/${payload.workoutId}/gpx${segmentUrl}`)
-              .then((res) => {
-                if (res.data.status === 'success') {
-                  context.commit(
-                    WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX,
-                    res.data.data.gpx
                   )
                 }
               })
@@ -689,12 +681,12 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                 )
               })
           }
-          if (workout.with_gpx) {
-            authApi.get(`workouts/${workoutId}/gpx`).then((res) => {
+          if (workout.with_geometry) {
+            authApi.get(`workouts/${workoutId}/geojson`).then((res) => {
               if (res.data.status === 'success') {
                 context.commit(
-                  WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX,
-                  res.data.data.gpx
+                  WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON,
+                  res.data.data.geojson
                 )
               }
             })
@@ -709,7 +701,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
         }
       })
       .catch((error) => {
-        context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
+        context.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, { workoutId })
         handleError(context, error)
       })
       .finally(() =>
@@ -757,6 +749,33 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       })
       .finally(() =>
         context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, false)
+      )
+  },
+
+  [WORKOUTS_STORE.ACTIONS.UPDATE_ELEVATION_DATA_SOURCES](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IWorkoutElevationSourceDataPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_ELEVATION_DATA_LOADING, true)
+    authApi
+      .patch(`workouts/${payload.workoutId}`, {
+        elevation_data_source: payload.elevationDataSource,
+      })
+      .then(() => {
+        context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
+        context.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
+          workoutId: payload.workoutId,
+        })
+      })
+      .catch(() => {
+        handleError(context, null, 'Error when updating elevation data source')
+      })
+      .finally(() =>
+        context.commit(
+          WORKOUTS_STORE.MUTATIONS.SET_ELEVATION_DATA_LOADING,
+          false
+        )
       )
   },
 }

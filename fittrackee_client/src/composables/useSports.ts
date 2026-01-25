@@ -36,6 +36,7 @@ export default function useSports() {
     color: null,
     is_active: true,
     stopped_speed_threshold: 1,
+    pace_speed_display: 'speed',
     fromSport: false,
   })
 

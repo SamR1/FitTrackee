@@ -29,6 +29,8 @@ def get_sports(auth_user: User) -> Dict:
     """
     Get all sports.
 
+    For Hiking, Running, Trail and Walking, ``pace_speed_display`` is returned.
+
     Suspended user can access this endpoint.
 
     **Scope**: ``workouts:read``
@@ -74,6 +76,7 @@ def get_sports(auth_user: User) -> Dict:
               "is_active": true,
               "is_active_for_user": true,
               "label": "Hiking",
+              "pace_speed_display": "pace",
               "stopped_speed_threshold": 0.1
             },
             {
@@ -90,6 +93,7 @@ def get_sports(auth_user: User) -> Dict:
               "is_active": true,
               "is_active_for_user": true,
               "label": "Running",
+              "pace_speed_display": "pace",
               "stopped_speed_threshold": 0.1
             },
             {
@@ -98,6 +102,7 @@ def get_sports(auth_user: User) -> Dict:
               "is_active": true,
               "is_active_for_user": true,
               "label": "Walking",
+              "pace_speed_display": "pace",
               "stopped_speed_threshold": 0.1
             }
           ]
@@ -140,6 +145,7 @@ def get_sports(auth_user: User) -> Dict:
               "is_active": true,
               "is_active_for_user": true,
               "label": "Hiking",
+              "pace_speed_display": "pace",
               "stopped_speed_threshold": 0.1
             },
             {
@@ -158,6 +164,7 @@ def get_sports(auth_user: User) -> Dict:
               "is_active": true,
               "is_active_for_user": true,
               "label": "Running",
+              "pace_speed_display": "pace",
               "stopped_speed_threshold": 0.1
             },
             {
@@ -167,6 +174,7 @@ def get_sports(auth_user: User) -> Dict:
               "is_active": true,
               "is_active_for_user": true,
               "label": "Walking",
+              "pace_speed_display": "pace",
               "stopped_speed_threshold": 0.1
             }
           ]
@@ -223,7 +231,9 @@ def get_sports(auth_user: User) -> Dict:
 @require_auth(scopes=["workouts:read"])
 def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
-    Get a sport
+    Get a sport.
+
+    For Hiking, Running, Trail and Walking, ``pace_speed_display`` is returned.
 
     **Scope**: ``workouts:read``
 
@@ -314,6 +324,8 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
 def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
     """
     Update a sport.
+
+    For Hiking, Running, Trail and Walking, ``pace_speed_display`` is returned.
 
     Authenticated user must be an admin.
 

@@ -14,6 +14,7 @@ from ..models import (
     NOTES_MAX_CHARACTERS,
     Workout,
 )
+from ..utils.convert import convert_speed_into_pace_duration
 from .base_workout_service import BaseWorkoutService
 from .mixins import CheckWorkoutMixin
 
@@ -120,7 +121,13 @@ class WorkoutCreationService(CheckWorkoutMixin, BaseWorkoutService):
             if duration.seconds == 0
             else float(distance) / (duration.seconds / 3600)
         )
+        new_workout.ave_pace = convert_speed_into_pace_duration(
+            new_workout.ave_speed
+        )
         new_workout.max_speed = new_workout.ave_speed
+        new_workout.best_pace = convert_speed_into_pace_duration(
+            new_workout.max_speed
+        )
         new_workout.ascent = ascent
         new_workout.descent = descent
 

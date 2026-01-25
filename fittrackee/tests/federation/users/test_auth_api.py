@@ -123,6 +123,8 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     hr_visibility="followers_only",
                     segments_creation_event="none",
                     split_workout_charts=False,
+                    missing_elevations_processing="open_elevation",
+                    calories_visibility="followers_only",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),

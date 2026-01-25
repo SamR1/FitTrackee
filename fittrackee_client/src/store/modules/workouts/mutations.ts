@@ -90,12 +90,6 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
   ) {
     state.workoutData.chartDataLoading = loading
   },
-  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX](
-    state: IWorkoutsState,
-    gpx: string
-  ) {
-    state.workoutData.gpx = gpx
-  },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON](
     state: IWorkoutsState,
     geojson: GeoJSON
@@ -147,6 +141,7 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
       currentCommentEdition: <ICurrentCommentEdition>{},
       currentReporting: false,
       refreshLoading: false,
+      elevationLoading: false,
     }
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_COMMENTS](
@@ -196,5 +191,11 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     mapLoading: boolean
   ) {
     state.mapLoading = mapLoading
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_ELEVATION_DATA_LOADING](
+    state: IWorkoutsState,
+    elevationLoading: boolean
+  ) {
+    state.workoutData.elevationLoading = elevationLoading
   },
 }

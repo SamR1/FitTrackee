@@ -3,6 +3,7 @@ export const formatDuration = (
   options: {
     formatWithUnits?: boolean
     withHours?: boolean
+    notPadded?: boolean
   } = {}
 ): string => {
   let days = '0'
@@ -10,16 +11,22 @@ export const formatDuration = (
     days = String(Math.floor(totalSeconds / 86400))
     totalSeconds %= 86400
   }
-  const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0')
+  const hoursValue = Math.floor(totalSeconds / 3600)
+  const hours = options.notPadded
+    ? String(hoursValue)
+    : String(hoursValue).padStart(2, '0')
   totalSeconds %= 3600
-  const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0')
+  const minutes =
+    options.notPadded && !options.withHours && !hoursValue
+      ? String(Math.floor(totalSeconds / 60))
+      : String(Math.floor(totalSeconds / 60)).padStart(2, '0')
   const seconds = String(Math.floor(totalSeconds) % 60).padStart(2, '0')
   if (options.formatWithUnits) {
     return `${days === '0' ? '' : `${days}d `}${
       hours === '00' && !options.withHours ? '' : `${hours}h `
     }${minutes}m ${seconds}s`
   }
-  return `${hours === '00' && !options.withHours ? '' : `${hours}:`}${minutes}:${seconds}`
+  return `${!hoursValue && !options.withHours ? '' : `${hours}:`}${minutes}:${seconds}`
 }
 
 export const getDuration = (total_duration: string, t: CallableFunction) => {

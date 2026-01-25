@@ -12,11 +12,11 @@
       <template #title>
         <WorkoutCardTitle
           v-if="sport"
-          :authUser="authUser"
           :sport="sport"
           :workoutObject="workoutObject"
           :isWorkoutOwner="isWorkoutOwner"
           :refreshLoading="workoutData.refreshLoading"
+          :elevationLoading="workoutData.elevationLoading"
           @displayModal="updateDisplayModal(true)"
         />
         <ReportForm
@@ -124,13 +124,18 @@
   const workout: ComputedRef<IWorkout> = computed(
     () => props.workoutData.workout
   )
-  const segmentId: Ref<number | null> = ref(
-    route.params.workoutId ? +route.params.segmentId : null
+  const segmentId: Ref<string | null> = ref(
+    route.params.workoutId ? (route.params.segmentId as string) : null
   )
-  const segment: ComputedRef<IWorkoutSegment | null> = computed(() =>
+  const segment: ComputedRef<IWorkoutSegment | undefined> = computed(() =>
     workout.value.segments.length > 0 && segmentId.value
-      ? workout.value.segments[+segmentId.value - 1]
-      : null
+      ? workout.value.segments.find(
+          (segment) => segment.segment_id === segmentId.value
+        )
+      : undefined
+  )
+  const segmentNumber: ComputedRef<number | null> = computed(() =>
+    segment.value ? segment.value.segment_number : null
   )
   const displayModal: Ref<boolean> = ref(false)
   const displayOptions: ComputedRef<IDisplayOptions> = computed(
@@ -159,20 +164,28 @@
   function getWorkoutObjectUrl(
     workout: IWorkout,
     displaySegment: boolean,
-    segmentId: number | null
+    segmentNumber: number | null
   ): Record<string, string | null> {
-    const previousUrl =
-      displaySegment && segmentId && segmentId !== 1
-        ? `/workouts/${workout.id}/segment/${segmentId - 1}`
-        : !displaySegment && workout.previous_workout
-          ? `/workouts/${workout.previous_workout}`
-          : null
-    const nextUrl =
-      displaySegment && segmentId && segmentId < workout.segments.length
-        ? `/workouts/${workout.id}/segment/${segmentId + 1}`
-        : !displaySegment && workout.next_workout
-          ? `/workouts/${workout.next_workout}`
-          : null
+    const previousSegment: IWorkoutSegment | undefined =
+      displaySegment && segmentNumber !== null && segmentNumber !== 1
+        ? workout.segments[segmentNumber - 2]
+        : undefined
+    const previousUrl = previousSegment
+      ? `/workouts/${workout.id}/segment/${previousSegment.segment_id}`
+      : !displaySegment && workout.previous_workout
+        ? `/workouts/${workout.previous_workout}`
+        : null
+    const nextSegment: IWorkoutSegment | undefined =
+      displaySegment &&
+      segmentNumber !== null &&
+      segmentNumber < workout.segments.length
+        ? workout.segments[segmentNumber]
+        : undefined
+    const nextUrl = nextSegment
+      ? `/workouts/${workout.id}/segment/${nextSegment.segment_id}`
+      : !displaySegment && workout.next_workout
+        ? `/workouts/${workout.next_workout}`
+        : null
     return {
       previousUrl,
       nextUrl,
@@ -180,12 +193,12 @@
   }
   function getWorkoutObject(
     workout: IWorkout,
-    segment: IWorkoutSegment | null
+    segment: IWorkoutSegment | undefined
   ): IWorkoutObject {
     const urls = getWorkoutObjectUrl(
       workout,
       props.displaySegment,
-      segmentId.value ? +segmentId.value : null
+      segmentNumber.value
     )
     const workoutDate = formatWorkoutDate(
       getDateWithTZ(
@@ -199,12 +212,14 @@
       ascent: segment ? segment.ascent : workout.ascent,
       aveCadence: segment ? segment.ave_cadence : workout.ave_cadence,
       aveHr: segment ? segment.ave_hr : workout.ave_hr,
+      avePace: segment ? segment.ave_pace : workout.ave_pace,
       avePower: segment ? segment.ave_power : workout.ave_power,
       aveSpeed: segment ? segment.ave_speed : workout.ave_speed,
-      source: segment ? null : workout.source || null,
+      calories: segment ? null : workout.calories,
       distance: segment ? segment.distance : workout.distance,
       descent: segment ? segment.descent : workout.descent,
       duration: segment ? segment.duration : workout.duration,
+      elevationDataSource: segment ? null : workout.elevation_data_source,
       equipments: segment ? null : workout.equipments,
       liked: workout.liked,
       likes_count: workout.likes_count,
@@ -212,6 +227,7 @@
       maxAlt: segment ? segment.max_alt : workout.max_alt,
       maxCadence: segment ? segment.max_cadence : workout.max_cadence,
       maxHr: segment ? segment.max_hr : workout.max_hr,
+      maxPace: segment ? segment.best_pace : workout.best_pace,
       maxPower: segment ? segment.max_power : workout.max_power,
       maxSpeed: segment ? segment.max_speed : workout.max_speed,
       minAlt: segment ? segment.min_alt : workout.min_alt,
@@ -223,7 +239,9 @@
       records: segment ? [] : workout.records,
       remoteUrl: workout.remote_url,
       segmentId: segment ? segment.segment_id : null,
-      suspended: workout.suspended !== undefined ? workout.suspended : false,
+      segmentNumber: segment ? segment.segment_number : null,
+      source: segment ? null : workout.source || null,
+      suspended: workout.suspended === undefined ? false : workout.suspended,
       title: workout.title,
       type: props.displaySegment ? 'SEGMENT' : 'WORKOUT',
       workoutDate: workoutDate.workout_date,
@@ -235,7 +253,7 @@
       ),
       weatherStart: segment ? null : workout.weather_start,
       with_analysis: workout.with_analysis,
-      with_gpx: workout.with_gpx,
+      with_file: workout.with_file,
       workoutId: workout.id,
       workoutTime: workoutDate.workout_time,
       workoutVisibility: workout.workout_visibility,
@@ -248,7 +266,6 @@
     updateDisplayModal(false)
   }
   function deleteWorkout(workoutId: string) {
-    updateDisplayModal(false)
     store.dispatch(WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT, {
       workoutId: workoutId,
     })
@@ -273,7 +290,7 @@
   watch(
     () => route.params.segmentId,
     async (newSegmentId) => {
-      segmentId.value = newSegmentId ? +newSegmentId : null
+      segmentId.value = newSegmentId as string
       scrollToTop()
     }
   )

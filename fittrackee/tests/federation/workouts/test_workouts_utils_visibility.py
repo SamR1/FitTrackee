@@ -62,14 +62,14 @@ class TestFederationCanViewWorkout:
         user_1: User,
         remote_user: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
+        remote_cycling_workout: Workout,
         follow_request_from_user_1_to_remote_user: FollowRequest,
     ) -> None:
         remote_user.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = input_workout_visibility
+        remote_cycling_workout.workout_visibility = input_workout_visibility
 
         assert (
-            can_view(workout_cycling_user_2, "workout_visibility", user_1)
+            can_view(remote_cycling_workout, "workout_visibility", user_1)
             is True
         )
 
@@ -165,15 +165,15 @@ class TestFederationCanViewWorkoutMap:
         user_1: User,
         remote_user: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_2: Workout,
+        remote_cycling_workout: Workout,
         follow_request_from_user_1_to_remote_user: FollowRequest,
     ) -> None:
         remote_user.approves_follow_request_from(user_1)
-        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
-        workout_cycling_user_2.map_visibility = input_map_visibility
+        remote_cycling_workout.workout_visibility = VisibilityLevel.PUBLIC
+        remote_cycling_workout.map_visibility = input_map_visibility
 
         assert (
-            can_view(workout_cycling_user_2, "map_visibility", user_1) is True
+            can_view(remote_cycling_workout, "map_visibility", user_1) is True
         )
 
     def test_local_follower_can_not_view_workout_map_when_follower_and_remote_only(  # noqa

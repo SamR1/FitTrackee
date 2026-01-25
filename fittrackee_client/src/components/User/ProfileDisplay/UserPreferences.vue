@@ -47,7 +47,7 @@
         }}
       </dd>
       <dt>{{ $t('user.PROFILE.ASCENT_DATA') }}:</dt>
-      <dd>{{ $t(`common.${display_ascent}`) }}</dd>
+      <dd>{{ $t(`common.${displayAscent}`) }}</dd>
       <dt>{{ $t('user.PROFILE.WORKOUT_CHARTS_DISPLAY.LABEL') }}:</dt>
       <dd>
         {{
@@ -68,7 +68,7 @@
           )
         }}
       </dd>
-      <dt>{{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}:</dt>
+      <dt>{{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}<sup>1</sup>:</dt>
       <dd>
         {{
           $t(
@@ -86,7 +86,31 @@
       </div>
     </dl>
     <dl>
-      <dt>{{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}:</dt>
+      <dt>
+        {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING_LABEL')
+        }}<sup>2</sup>:
+      </dt>
+      <dd>
+        {{
+          $t(
+            `workouts.ELEVATION_DATA_SOURCE.${
+              user.missing_elevations_processing === 'file'
+                ? 'none'
+                : user.missing_elevations_processing
+            }`
+          )
+        }}
+      </dd>
+      <div
+        v-if="elevationServices.length === 0"
+        class="info-box missing-elevations-help"
+      >
+        <span>
+          <i class="fa fa-info-circle" aria-hidden="true" />
+          {{ $t('user.PROFILE.NO_ELEVATION_SERVICE_AVAILABLE') }}
+        </span>
+      </div>
+      <dt>{{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}<sup>3</sup>:</dt>
       <dd>
         {{
           $t(
@@ -97,11 +121,11 @@
           )
         }}
       </dd>
-      <dt>{{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}:</dt>
+      <dt>{{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>3</sup>:</dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.analysis_visibility}`) }}
       </dd>
-      <dt>{{ $t('visibility_levels.MAP_VISIBILITY') }}:</dt>
+      <dt>{{ $t('visibility_levels.MAP_VISIBILITY') }}<sup>3</sup>:</dt>
       <dd>
         {{
           $t(
@@ -116,7 +140,13 @@
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.hr_visibility}`) }}
       </dd>
-      <dt>{{ $t('user.PROFILE.SEGMENTS_CREATION_EVENT.LABEL') }}:</dt>
+      <dt>{{ $t('visibility_levels.CALORIES_VISIBILITY') }}:</dt>
+      <dd>
+        {{ $t(`visibility_levels.LEVELS.${user.calories_visibility}`) }}
+      </dd>
+      <dt>
+        {{ $t('user.PROFILE.SEGMENTS_CREATION_EVENT.LABEL') }}<sup>1</sup>:
+      </dt>
       <dd>
         {{
           $t(
@@ -125,6 +155,15 @@
         }}
       </dd>
     </dl>
+    <div class="info-box changes-help">
+      <div>
+        1. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS') }}
+      </div>
+      <div>
+        2. {{ $t('user.PROFILE.CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI') }}
+      </div>
+      <div>3. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_WORKOUTS') }}</div>
+    </div>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">
         {{ $t('user.PROFILE.EDIT_PREFERENCES') }}
@@ -150,7 +189,7 @@
   const props = defineProps<Props>()
   const { user } = toRefs(props)
 
-  const { appConfig } = useApp()
+  const { appConfig, elevationServices } = useApp()
   const { dateFormat, timezone } = useAuthUser()
 
   const userLanguage: ComputedRef<string> = computed(() =>
@@ -159,7 +198,7 @@
       : languageLabels['en']
   )
   const fistDayOfWeek = computed(() => (user.value.weekm ? 'MONDAY' : 'SUNDAY'))
-  const display_ascent = computed(() =>
+  const displayAscent = computed(() =>
     user.value.display_ascent ? 'DISPLAYED' : 'HIDDEN'
   )
   const darkMode = computed(() =>
@@ -180,8 +219,13 @@
       text-transform: uppercase;
       border-bottom: 1px solid var(--card-border-color);
     }
-    .raw-speed-help {
+    .raw-speed-help,
+    .missing-elevations-help {
       margin-top: -$default-margin * 0.5;
+    }
+    .changes-help,
+    .missing-elevations-help {
+      margin-bottom: $default-margin;
     }
   }
 </style>

@@ -2,15 +2,17 @@
   <svg
     version="1.1"
     id="Capa_1"
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
     x="0px"
     y="0px"
     viewBox="0 0 534.51 534.51"
     style="enable-background: new 0 0 534.51 534.51"
     xml:space="preserve"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:svg="http://www.w3.org/2000/svg"
   >
-    <desc id="kayakingDescription">silhouette of a person kayaking</desc>
+    <desc id="kayakingDescription">
+      silhouette of a person kayaking in flatwater
+    </desc>
     <g id="g2" transform="translate(62.974591,-11.519038)">
       <g id="g1">
         <ellipse
@@ -48,6 +50,13 @@
         />
       </g>
     </g>
+    <path
+      d="m 523.99786,450.19864 c -14.32537,-0.57898 -501.400709,-0.60005 -514.4299732,-3e-4 -6.7959217,8.2628
+      -6.7959217,21.6598 0.017096,29.91095 15.4052322,-1.71203 500.6576172,-1.76704 514.3980172,0.001 6.80551,-8.25117
+      6.80551,-21.64817 0.0149,-29.91097 z"
+      id="path3"
+      style="stroke-width: 1.17325"
+    />
   </svg>
 </template>
 

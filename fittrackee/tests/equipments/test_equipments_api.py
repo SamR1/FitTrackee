@@ -639,6 +639,46 @@ class TestPostEquipment(ApiTestCaseMixin):
             equipment
         ]
 
+    def test_it_creates_sport_preference(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_2_running: Sport,
+        equipment_type_1_shoe: EquipmentType,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "label": "Test shoe",
+                "equipment_type_id": equipment_type_1_shoe.id,
+                "default_for_sport_ids": [sport_2_running.id],
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        assert data["data"]["equipments"][0]["default_for_sport_ids"] == [
+            sport_2_running.id
+        ]
+        sport_2_running_pref = UserSportPreference.query.filter_by(
+            user_id=user_1.id, sport_id=sport_2_running.id
+        ).one()
+        assert (
+            sport_2_running_pref.stopped_speed_threshold
+            == sport_2_running.stopped_speed_threshold
+        )
+        assert (
+            sport_2_running_pref.pace_speed_display
+            == sport_2_running.pace_speed_display
+        )
+
     def test_it_replaces_existing_default_equipment_on_creation(
         self,
         app: Flask,

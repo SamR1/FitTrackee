@@ -89,7 +89,7 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
 
         assert serialized_workout["map"] is None
         assert serialized_workout["bounds"] == []
-        assert serialized_workout["with_gpx"] is False
+        assert serialized_workout["with_file"] is False
         assert serialized_workout["map_visibility"] == VisibilityLevel.PRIVATE
         assert (
             serialized_workout["analysis_visibility"]
@@ -100,7 +100,10 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
             == input_workout_visibility
         )
         assert serialized_workout["segments"] == [
-            workout_cycling_user_1_segment.serialize()
+            {
+                **workout_cycling_user_1_segment.serialize(),
+                "segment_number": 1,
+            }
         ]
 
     @pytest.mark.parametrize(
@@ -136,7 +139,7 @@ class TestWorkoutModelAsRemoteFollower(WorkoutModelTestCase):
 
         assert serialized_workout["map"] is None
         assert serialized_workout["bounds"] == []
-        assert serialized_workout["with_gpx"] is False
+        assert serialized_workout["with_file"] is False
         assert serialized_workout["map_visibility"] == VisibilityLevel.PRIVATE
         assert (
             serialized_workout["analysis_visibility"]

@@ -44,7 +44,7 @@
       </div>
       <div class="workout-map">
         <StaticMap
-          v-if="workout.with_gpx"
+          v-if="workout.with_file"
           :workout="workout"
           @workoutLinkClicked="$emit('workoutLinkClicked')"
         />
@@ -173,7 +173,7 @@
 
   function hasElevation(workout: IWorkout): boolean {
     return (
-      workout.with_gpx && workout.min_alt !== null && workout.max_alt !== null
+      workout.with_file && workout.min_alt !== null && workout.max_alt !== null
     )
   }
   function hasUphillValue(workout: IWorkout): boolean {

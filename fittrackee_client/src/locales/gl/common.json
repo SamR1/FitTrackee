@@ -26,6 +26,7 @@
   "LAST_UPDATED_ON": "Última actualización",
   "MINUTES": "minuto|minutos",
   "NEXT": "seguinte",
+  "NO": "Non",
   "NO_DESCRIPTION": "Sen descrición",
   "NO_NOTES": "Sen notas",
   "PREVIOUS": "anterior",
@@ -50,5 +51,6 @@
   },
   "TOTAL": "Total",
   "TOTAL_DURATION_WITH_PAUSES": "duración total con pausas",
-  "TYPE": "tipo"
+  "TYPE": "tipo",
+  "YES": "Si"
 }

@@ -45,6 +45,18 @@
           :useImperialUnits="authUser.imperial_units"
         />
       </dd>
+      <template v-if="sportsWithPace.includes(sport.label)">
+        <dt>
+          {{ capitalize($t('user.PROFILE.SPORT.PACE_SPEED_DISPLAY.LABEL')) }}
+        </dt>
+        <dd>
+          {{
+            $t(
+              `user.PROFILE.SPORT.PACE_SPEED_DISPLAY.${sport.pace_speed_display}`
+            )
+          }}
+        </dd>
+      </template>
       <dt>{{ capitalize($t('common.ACTIVE', 0)) }}</dt>
       <dd>
         <i
@@ -112,6 +124,7 @@
   import useSports from '@/composables/useSports'
   import type { ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
+  import { sportsWithPace } from '@/utils/sports.ts'
 
   interface Props {
     authUser: IAuthUserProfile
