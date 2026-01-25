@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FitTrackee 1.1.0\n"
 "\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-25 17:47+0100\n"
+"POT-Creation-Date: 2026-01-25 20:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3153,7 +3153,7 @@ msgid "Starting with this version, ENABLE_GEOSPATIAL_FEATURES is no longer used 
 msgstr ""
 
 #: ../source/changelog.md:14
-msgid "Endpoints associated with the gpx file now return the status code 410 Gone.<br />And the POST method for the endpoint that allows to modify the sports configuration is deprecated and will be removed in a newt version."
+msgid "Endpoints associated with the gpx file now return the status code 410 Gone.<br />And the POST method for the endpoint that allows to modify the sports configuration is deprecated and will be removed in a next version."
 msgstr ""
 
 #: ../source/changelog.md:17
@@ -3982,7 +3982,7 @@ msgid "Eduard"
 msgstr ""
 
 #: ../source/changelog.md:108
-msgid "And thanks to the beta-testers for feedbacks."
+msgid "And thanks to the beta-testers for feedback."
 msgstr ""
 
 #: ../source/changelog.md:110
@@ -4012,7 +4012,7 @@ msgstr ""
 
 #: ../source/changelog.md:133
 #: ../source/changelog.md:160
-msgid "Thanks to the beta-testers for feedbacks."
+msgid "Thanks to the beta-testers for feedback."
 msgstr ""
 
 #: ../source/changelog.md:135

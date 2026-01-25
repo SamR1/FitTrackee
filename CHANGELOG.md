@@ -12,7 +12,7 @@ A new option has also been added to the Workouts CLI (`--with-elevation`) to all
 Starting with this version, [`ENABLE_GEOSPATIAL_FEATURES`](https://docs.fittrackee.org/en/installation/environments_variables.html#envvar-ENABLE_GEOSPATIAL_FEATURES) is no longer used and can be removed. In addition, the `--add-missing-geometry` has also been removed from the Workouts CLI.
 
 Endpoints associated with the gpx file now return the status code `410 Gone`.  
-And the `POST` method for the endpoint that allows to modify the sports configuration is deprecated and will be removed in a newt version.
+And the `POST` method for the endpoint that allows to modify the sports configuration is deprecated and will be removed in a next version.
 
 **Warning**:
 - **PostgreSQL 13** is no longer supported.
@@ -105,7 +105,7 @@ Thanks to the contributors:
 - ButterflyOfFire
 - Eduard
 
-And thanks to the beta-testers for feedbacks.
+And thanks to the beta-testers for feedback.
 
 ## Version 1.1.0b3 (2026/01/21)
 
@@ -130,7 +130,7 @@ If you find bugs, please report them.
 
 * [6385ff4](https://github.com/SamR1/FitTrackee/commit/6385ff41e2a945e9ab4ed105c39ccc51f0395545) - reorganize and complete the documentation
 
-Thanks to the beta-testers for feedbacks.
+Thanks to the beta-testers for feedback.
 
 ## Version 1.1.0b2 (2026/01/11)
 
@@ -157,7 +157,7 @@ If you find bugs, please report them.
   * fix stopped speed threshold update when value is invalid
   * fix getting weather when last segment has only one point
 
-Thanks to the beta-testers for feedbacks.
+Thanks to the beta-testers for feedback.
 
 
 ## Version 1.1.0b1 (2026/01/04)

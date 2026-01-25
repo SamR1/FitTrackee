@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-01-25 17:47+0100\n"
+"POT-Creation-Date: 2026-01-25 20:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -3747,12 +3747,12 @@ msgstr ""
 msgid ""
 "Endpoints associated with the gpx file now return the status code 410 "
 "Gone.<br />And the POST method for the endpoint that allows to modify the"
-" sports configuration is deprecated and will be removed in a newt "
+" sports configuration is deprecated and will be removed in a next "
 "version."
 msgstr ""
 "Les _endpoints_ associés au fichier gpx renvoient désormais le code `410 "
 "Gone`.<br />Et la méthode `POST` du _endpoint_ qui permet de modifier la "
-"configuration des sports est obsolète et sera supprimée dans une nouvelle"
+"configuration des sports est obsolète et sera supprimée dans une prochaine"
 " version."
 
 #: ../source/changelog.md:17 ../source/changelog.md:115
@@ -4291,7 +4291,7 @@ msgid "Eduard"
 msgstr ""
 
 #: ../source/changelog.md:108
-msgid "And thanks to the beta-testers for feedbacks."
+msgid "And thanks to the beta-testers for feedback."
 msgstr "Et merci aux bêta-testeurs pour leurs retours."
 
 #: ../source/changelog.md:110
@@ -4320,7 +4320,7 @@ msgid "PR#1033 - fix pace/speed display update for sport preferences"
 msgstr ""
 
 #: ../source/changelog.md:133 ../source/changelog.md:160
-msgid "Thanks to the beta-testers for feedbacks."
+msgid "Thanks to the beta-testers for feedback."
 msgstr "Merci aux bêta-testeurs pour leurs retours."
 
 #: ../source/changelog.md:135
