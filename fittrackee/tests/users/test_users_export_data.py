@@ -78,7 +78,6 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "ascent": None,
                 "max_speed": workout_cycling_user_1.max_speed,
                 "ave_speed": workout_cycling_user_1.ave_speed,
-                "gpx": None,
                 "original_file": None,
                 "records": [
                     record.serialize()
@@ -109,6 +108,9 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "ave_power": None,
                 "max_power": None,
                 "with_geometry": False,
+                "ave_pace": None,
+                "best_pace": None,
+                "calories": None,
             }
         ]
 
@@ -117,9 +119,11 @@ class TestUserDataExporterGetUserWorkoutsData:
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        gpx_file: str,
+        gpx_file_with_ns3_extensions: str,
     ) -> None:
-        workout = create_a_workout_with_file(user_1, gpx_file)
+        workout = create_a_workout_with_file(
+            user_1, gpx_file_with_ns3_extensions, sport_id=sport_1_cycling.id
+        )
         exporter = UserDataExporter(user_1)
 
         workouts_data = exporter.get_user_workouts_data()
@@ -143,11 +147,16 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "ascent": float(workout.ascent),  # type: ignore[arg-type]
                 "max_speed": float(workout.max_speed),  # type: ignore[arg-type]
                 "ave_speed": float(workout.ave_speed),  # type: ignore[arg-type]
-                "gpx": workout.gpx.split("/")[-1],  # type: ignore[union-attr]
                 "original_file": workout.original_file.split("/")[-1],  # type: ignore[union-attr]
                 "records": [record.serialize() for record in workout.records],
                 "segments": [
-                    segment.serialize() for segment in workout.segments
+                    {
+                        **segment.serialize(
+                            user=user_1, can_see_heart_rate=True
+                        ),
+                        "segment_number": number,
+                    }
+                    for number, segment in enumerate(workout.segments, start=1)
                 ],
                 "source": workout.source,
                 "weather_start": None,
@@ -162,13 +171,90 @@ class TestUserDataExporterGetUserWorkoutsData:
                 ),
                 "map_visibility": workout.calculated_map_visibility.value,
                 "workout_visibility": workout.workout_visibility.value,
-                "ave_cadence": None,
-                "max_cadence": None,
-                "ave_hr": None,
-                "max_hr": None,
+                "ave_cadence": workout.ave_cadence,
+                "max_cadence": workout.max_cadence,
+                "ave_hr": workout.ave_hr,
+                "max_hr": workout.max_hr,
+                "ave_power": workout.ave_power,
+                "max_power": workout.max_power,
+                "with_geometry": True,
+                "ave_pace": None,
+                "best_pace": None,
+                "calories": None,
+            }
+        ]
+
+    def test_it_returns_data_for_workout_when_sport_is_running(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_2_running: Sport,
+        gpx_file_with_ns3_extensions: str,
+    ) -> None:
+        workout = create_a_workout_with_file(
+            user_1, gpx_file_with_ns3_extensions, sport_id=sport_2_running.id
+        )
+        exporter = UserDataExporter(user_1)
+
+        workouts_data = exporter.get_user_workouts_data()
+
+        assert workouts_data == [
+            {
+                "id": workout.short_id,
+                "sport_id": sport_2_running.id,
+                "sport_label": sport_2_running.label,
+                "title": workout.title,
+                "creation_date": workout.creation_date,
+                "modification_date": workout.modification_date,
+                "workout_date": workout.workout_date,
+                "duration": str(workout.duration),
+                "pauses": None,
+                "moving": str(workout.moving),
+                "distance": float(workout.distance),  # type: ignore[arg-type]
+                "min_alt": float(workout.min_alt),  # type: ignore[arg-type]
+                "max_alt": float(workout.max_alt),  # type: ignore[arg-type]
+                "descent": float(workout.descent),  # type: ignore[arg-type]
+                "ascent": float(workout.ascent),  # type: ignore[arg-type]
+                "max_speed": None,
+                "ave_speed": None,
+                "original_file": workout.original_file.split("/")[-1],  # type: ignore[union-attr]
+                "records": [
+                    record.serialize()
+                    for record in workout.records
+                    if record.record_type not in ["AS", "MS"]
+                ],
+                "segments": [
+                    {
+                        **segment.serialize(
+                            user=user_1, can_see_heart_rate=True
+                        ),
+                        "segment_number": number,
+                    }
+                    for number, segment in enumerate(workout.segments, start=1)
+                ],
+                "source": workout.source,
+                "weather_start": None,
+                "weather_end": None,
+                "notes": workout.notes,
+                "equipments": [],
+                "description": None,
+                "liked": workout.liked_by(user_1),
+                "likes_count": workout.likes.count(),
+                "analysis_visibility": (
+                    workout.calculated_analysis_visibility.value
+                ),
+                "map_visibility": workout.calculated_map_visibility.value,
+                "workout_visibility": workout.workout_visibility.value,
+                "ave_cadence": workout.ave_cadence * 2,  # type: ignore[operator]
+                "max_cadence": workout.max_cadence * 2,  # type: ignore[operator]
+                "ave_hr": workout.ave_hr,
+                "max_hr": workout.max_hr,
                 "ave_power": None,
                 "max_power": None,
                 "with_geometry": True,
+                "ave_pace": str(workout.ave_pace),
+                "best_pace": str(workout.best_pace),
+                "calories": None,
             }
         ]
 
@@ -416,7 +502,7 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
     @patch.object(secrets, "token_urlsafe", return_value="AOqFRRet8p4")
     @patch.object(UserDataExporter, "export_data")
     @patch("fittrackee.users.export_data.ZipFile")
-    def test_it_calls_zipfile_for_gpx_file(
+    def test_it_calls_zipfile_for_workout_file(
         self,
         zipfile_mock: Mock,
         export_data: Mock,
@@ -448,55 +534,10 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
             )
         # fmt: on
 
-    @patch.object(secrets, "token_urlsafe", return_value="AOqFRRet8p4")
-    @patch.object(UserDataExporter, "export_data")
-    @patch("fittrackee.users.export_data.ZipFile")
-    def test_it_calls_zipfile_for_file_different_than_gpx(
-        self,
-        zipfile_mock: Mock,
-        export_data: Mock,
-        secrets_mock: Mock,
-        app: Flask,
-        user_1: User,
-        user_2: User,
-        sport_1_cycling: Sport,
-        kml_2_3_with_two_tracks: str,
-    ) -> None:
-        workout = create_a_workout_with_file(
-            user_1, kml_2_3_with_two_tracks, extension="kml"
-        )
-        kml_expected_path = os.path.join(
-            app.config["UPLOAD_FOLDER"],
-            workout.original_file,  # type: ignore[arg-type]
-        )
-        gpx_expected_path = os.path.join(
-            app.config["UPLOAD_FOLDER"],
-            workout.gpx,  # type: ignore[arg-type]
-        )
-        exporter = UserDataExporter(user_1)
-
-        exporter.generate_archive()
-
-        # fmt: off
-        zipfile_mock.return_value.__enter__.\
-            return_value.write.assert_has_calls(
-                [
-                    call(
-                        kml_expected_path,
-                        f"workout_files/{workout.original_file.split('/')[-1]}"  # type: ignore[union-attr]
-                    ),
-                    call(
-                        gpx_expected_path,
-                        f"workout_files/{workout.gpx.split('/')[-1]}"  # type: ignore[union-attr]
-                    ),
-                ], any_order=True
-            )
-        # fmt: on
-
     @patch.object(secrets, "token_urlsafe")
     @patch.object(UserDataExporter, "export_data")
     @patch("fittrackee.users.export_data.ZipFile")
-    def test_it_does_not_call_zipfile_for_another_user_gpx_file(
+    def test_it_does_not_call_zipfile_for_another_user_workout_file(
         self,
         zipfile_mock: Mock,
         export_data: Mock,
@@ -510,7 +551,7 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
         workout = create_a_workout_with_file(user_1, gpx_file)
         expected_path = os.path.join(
             app.config["UPLOAD_FOLDER"],
-            workout.gpx,  # type: ignore[arg-type]
+            workout.original_file,  # type: ignore[arg-type]
         )
         exporter = UserDataExporter(user_2)
 
@@ -518,7 +559,7 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
 
         # fmt: off
         assert (
-            call(expected_path, f"gpx/{workout.gpx.split('/')[-1]}")# type: ignore[union-attr]
+            call(expected_path, f"gpx/{workout.original_file.split('/')[-1]}")# type: ignore[union-attr]
             not in zipfile_mock.return_value.__enter__.
             return_value.write.call_args_list
         )

@@ -1,7 +1,15 @@
 import { describe, it, expect } from 'vitest'
 
+import { convertPaceToMetric } from '../../../src/utils/units'
+
 import { TUnit } from '@/types/units'
-import { convertDistance, getTemperature, getWindSpeed } from '@/utils/units'
+import {
+  convertDistance,
+  getTemperature,
+  getWindSpeed,
+  getPace,
+  convertPaceInMinutes,
+} from '@/utils/units'
 
 describe('convertDistance', () => {
   const testsParams: [number, TUnit, TUnit, number][] = [
@@ -83,6 +91,56 @@ describe('getWindSpeed', () => {
   testsParams.map((testParams) => {
     it(`get wind speed for input: ${testParams[0]} and imperialUnits: ${testParams[1]}`, () => {
       expect(getWindSpeed(testParams[0], testParams[1])).toBe(testParams[2])
+    })
+  })
+})
+
+describe('getPace', () => {
+  const testsParams: [string, boolean, string][] = [
+    ['00:00:00', false, '0:00'],
+    ['00:06:00', false, '6:00'],
+    ['00:08:13', false, '8:13'],
+    ['00:00:00', true, '0:00'],
+    ['00:06:00', true, '9:39'],
+    ['00:08:13', true, '13:13'],
+  ]
+
+  testsParams.map((testParams) => {
+    it(`convert ${testParams[0]} (imperial units: ${testParams[1]}) into ${testParams[2]}}`, () => {
+      expect(getPace(testParams[0], testParams[1])).toBe(testParams[2])
+    })
+  })
+})
+
+describe('convertPaceInMinutes', () => {
+  const testsParams: [number, boolean, number][] = [
+    [0, false, 0],
+    [1.3953488372, false, 1395.35],
+    [6, false, 3600], // exceeds max value (i.e 1:00:00/km)
+    [0, true, 0],
+    [1.3953488372, true, 2245.6],
+    [6, true, 3600], // exceeds max value (i.e 1:00:00/mi)
+  ]
+
+  testsParams.map((testParams) => {
+    it(`convert ${testParams[0]} (imperial units: ${testParams[1]}) into ${testParams[2]}}`, () => {
+      expect(convertPaceInMinutes(testParams[0], testParams[1])).toBe(
+        testParams[2]
+      )
+    })
+  })
+})
+
+describe('convertPaceToMetric', () => {
+  const testsParams: [string, string][] = [
+    ['0:00', '0:00'],
+    ['10:00', '6:12'],
+    ['20:15', '12:34'],
+  ]
+
+  testsParams.map((testParams) => {
+    it(`convert ${testParams[0]} into imperial units ${testParams[1]}}`, () => {
+      expect(convertPaceToMetric(testParams[0])).toBe(testParams[1])
     })
   })
 })

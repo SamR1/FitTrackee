@@ -56,14 +56,21 @@ class AppConfig(BaseModel):
     def map_attribution(self) -> str:
         return current_app.config["TILE_SERVER"]["ATTRIBUTION"]
 
+    @property
+    def elevation_services(self) -> Dict:
+        return {
+            "open_elevation": (
+                current_app.config["OPEN_ELEVATION_API_URL"] != ""
+            ),
+            "valhalla": current_app.config["VALHALLA_API_URL"] != "",
+        }
+
     def serialize(self) -> Dict:
         weather_provider = os.getenv("WEATHER_API_PROVIDER", "").lower()
         return {
             "about": self.about,
             "admin_contact": self.admin_contact,
-            "enable_geospatial_features": current_app.config[
-                "ENABLE_GEOSPATIAL_FEATURES"
-            ],
+            "elevation_services": self.elevation_services,
             "file_limit_import": self.file_limit_import,
             "file_sync_limit_import": self.file_sync_limit_import,
             "is_email_sending_enabled": current_app.config["CAN_SEND_EMAILS"],

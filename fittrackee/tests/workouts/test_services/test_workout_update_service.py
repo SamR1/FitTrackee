@@ -121,7 +121,7 @@ class TestWorkoutUpdateServiceInitForWorkoutWithoutFile(RandomMixin):
         with pytest.raises(
             WorkoutException,
             match=re.escape(
-                "invalid key ('analysis_visibility') for workout without gpx"
+                "invalid key ('analysis_visibility') for workout without file"
             ),
         ):
             WorkoutUpdateService(user_1, workout_cycling_user_1, workout_data)
@@ -288,7 +288,7 @@ class TestWorkoutUpdateServiceInitForWorkoutWithFile:
         user_1: "User",
         workout_cycling_user_1: "Workout",
     ) -> None:
-        workout_cycling_user_1.gpx = "some path"
+        workout_cycling_user_1.original_file = "some path"
         # only one key
         workout_data = {"notes": "some notes"}
         service = WorkoutUpdateService(
@@ -311,7 +311,7 @@ class TestWorkoutUpdateServiceInitForWorkoutWithFile:
         workout_cycling_user_1: "Workout",
         equipment_shoes_user_1: "Equipment",
     ) -> None:
-        workout_cycling_user_1.gpx = "some path"
+        workout_cycling_user_1.original_file = "some path"
         workout_data = {
             "analysis_visibility": VisibilityLevel.PUBLIC,
             "description": "just a description",
@@ -342,7 +342,7 @@ class TestWorkoutUpdateServiceInitForWorkoutWithFile:
         workout_cycling_user_1: "Workout",
         equipment_shoes_user_1: "Equipment",
     ) -> None:
-        workout_cycling_user_1.gpx = "some path"
+        workout_cycling_user_1.original_file = "some path"
         sport_id = 999
         with pytest.raises(
             WorkoutException,
@@ -361,7 +361,7 @@ class TestWorkoutUpdateServiceInitForWorkoutWithFile:
         workout_cycling_user_1: "Workout",
         equipment_shoes_user_1: "Equipment",
     ) -> None:
-        workout_cycling_user_1.gpx = "some path"
+        workout_cycling_user_1.original_file = "some path"
         workout_data = {
             "analysis_visibility": VisibilityLevel.PUBLIC,
             "distance": 10,
@@ -376,7 +376,7 @@ class TestWorkoutUpdateServiceInitForWorkoutWithFile:
         with pytest.raises(
             WorkoutException,
             match=re.escape(
-                "invalid keys ('distance', 'duration') for workout with gpx"
+                "invalid keys ('distance', 'duration') for workout with file"
             ),
         ):
             WorkoutUpdateService(user_1, workout_cycling_user_1, workout_data)
@@ -409,7 +409,14 @@ class TestWorkoutUpdateServiceUpdate(RandomMixin):
         db.session.refresh(workout_cycling_user_1)
         assert workout_cycling_user_1.get_workout_data(
             user=user_1, additional_data=True
-        ) == {**initial_data, **updated_data}
+        ) == {
+            **initial_data,
+            **updated_data,
+            "ave_pace": "0:06:00",
+            "best_pace": "0:06:00",
+            "ave_speed": None,
+            "max_speed": None,
+        }
         assert workout_cycling_user_1.equipments == []
 
     @pytest.mark.parametrize(
@@ -631,7 +638,7 @@ class TestWorkoutUpdateServiceUpdateForWorkoutWithoutFile(RandomMixin):
         assert workout_cycling_user_1.ascent is None
         assert workout_cycling_user_1.descent is None
         assert Record.query.filter_by(record_type="HA").first() is None
-        assert Record.query.count() == 4
+        assert Record.query.count() == 6
 
     def test_it_updates_workout_date_when_no_timezone_set(
         self,
@@ -737,7 +744,7 @@ class TestWorkoutUpdateServiceUpdateForWorkoutWithFile(RandomMixin):
         user_1: "User",
         workout_cycling_user_1: "Workout",
     ) -> None:
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.original_file"
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.map_visibility = VisibilityLevel.PUBLIC
@@ -771,7 +778,7 @@ class TestWorkoutUpdateServiceUpdateForWorkoutWithFile(RandomMixin):
         input_map_visibility: "VisibilityLevel",
         input_analysis_visibility: "VisibilityLevel",
     ) -> None:
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.original_file"
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.analysis_visibility = input_analysis_visibility
         service = WorkoutUpdateService(
@@ -795,7 +802,7 @@ class TestWorkoutUpdateServiceUpdateForWorkoutWithFile(RandomMixin):
         user_1: "User",
         workout_cycling_user_1: "Workout",
     ) -> None:
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.original_file"
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
         workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
         service = WorkoutUpdateService(
@@ -829,7 +836,7 @@ class TestWorkoutUpdateServiceUpdateForWorkoutWithFile(RandomMixin):
         input_analysis_visibility: "VisibilityLevel",
         input_workout_visibility: "VisibilityLevel",
     ) -> None:
-        workout_cycling_user_1.gpx = "file.gpx"
+        workout_cycling_user_1.original_file = "file.original_file"
         workout_cycling_user_1.workout_visibility = input_workout_visibility
         service = WorkoutUpdateService(
             user_1,

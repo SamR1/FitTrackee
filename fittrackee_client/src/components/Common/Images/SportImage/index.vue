@@ -6,6 +6,7 @@
     :title="title ? title : $t(`sports.${sportLabel}.LABEL`)"
   >
     <Canoeing v-if="sportLabel === 'Canoeing'" />
+    <CanoeingWhiteWater v-if="sportLabel === 'Canoeing (Whitewater)'" />
     <CyclingSport v-if="sportLabel === 'Cycling (Sport)'" />
     <CyclingTrekking v-if="sportLabel === 'Cycling (Trekking)'" />
     <CyclingTransport v-if="sportLabel === 'Cycling (Transport)'" />
@@ -13,6 +14,7 @@
     <Halfbike v-if="sportLabel === 'Halfbike'" />
     <Hiking v-if="sportLabel === 'Hiking'" />
     <Kayaking v-if="sportLabel === 'Kayaking'" />
+    <KayakingWhiteWater v-if="sportLabel === 'Kayaking (Whitewater)'" />
     <MountainBiking v-if="sportLabel === 'Mountain Biking'" />
     <MountainBikingElectric
       v-if="sportLabel === 'Mountain Biking (Electric)'"
@@ -39,6 +41,7 @@
   import { toRefs } from 'vue'
 
   import Canoeing from '@/components/Common/Images/SportImage/Canoeing.vue'
+  import CanoeingWhiteWater from '@/components/Common/Images/SportImage/CanoeingWhiteWater.vue'
   import CyclingSport from '@/components/Common/Images/SportImage/CyclingSport.vue'
   import CyclingTransport from '@/components/Common/Images/SportImage/CyclingTransport.vue'
   import CyclingTrekking from '@/components/Common/Images/SportImage/CyclingTrekking.vue'
@@ -46,6 +49,7 @@
   import Halfbike from '@/components/Common/Images/SportImage/Halfbike.vue'
   import Hiking from '@/components/Common/Images/SportImage/Hiking.vue'
   import Kayaking from '@/components/Common/Images/SportImage/Kayaking.vue'
+  import KayakingWhiteWater from '@/components/Common/Images/SportImage/KayakingWhiteWater.vue'
   import MountainBiking from '@/components/Common/Images/SportImage/MountainBiking.vue'
   import MountainBikingElectric from '@/components/Common/Images/SportImage/MountainBikingElectric.vue'
   import Mountaineering from '@/components/Common/Images/SportImage/Mountaineering.vue'

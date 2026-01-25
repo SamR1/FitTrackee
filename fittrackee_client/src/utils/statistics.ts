@@ -63,12 +63,14 @@ export const datasetKeys: TStatisticsDatasetKeys[] = [
   'average_descent',
   'average_distance',
   'average_duration',
+  'average_pace',
   'average_speed',
-  'total_workouts',
-  'total_duration',
-  'total_distance',
   'total_ascent',
+  'total_calories',
   'total_descent',
+  'total_distance',
+  'total_duration',
+  'total_workouts',
 ]
 
 export const getDateKeys = (
@@ -112,13 +114,15 @@ export const getDatasets = (displayedSports: ISport[]): TStatisticsDatasets => {
     average_descent: [],
     average_distance: [],
     average_duration: [],
+    average_pace: [],
     average_speed: [],
     average_workouts: [],
-    total_workouts: [],
+    total_ascent: [],
+    total_calories: [],
+    total_descent: [],
     total_distance: [],
     total_duration: [],
-    total_ascent: [],
-    total_descent: [],
+    total_workouts: [],
   }
   displayedSports.forEach((sport) => {
     const color = sport.color ? sport.color : sportColors[sport.label]
@@ -137,11 +141,15 @@ export const getDatasets = (displayedSports: ISport[]): TStatisticsDatasets => {
     datasets.average_speed.push(
       getStatisticsChartDataset(sport.label, color, true)
     )
+    datasets.average_pace.push(
+      getStatisticsChartDataset(sport.label, color, true)
+    )
     datasets.total_workouts.push(getStatisticsChartDataset(sport.label, color))
     datasets.total_distance.push(getStatisticsChartDataset(sport.label, color))
     datasets.total_duration.push(getStatisticsChartDataset(sport.label, color))
     datasets.total_ascent.push(getStatisticsChartDataset(sport.label, color))
     datasets.total_descent.push(getStatisticsChartDataset(sport.label, color))
+    datasets.total_calories.push(getStatisticsChartDataset(sport.label, color))
   })
   return datasets
 }
@@ -169,6 +177,9 @@ export const convertStatsValue = (
         value,
         useImperialUnits
       )
+    case 'total_calories':
+      return value ?? 0
+    case 'average_pace':
     case 'total_workouts':
     case 'total_duration':
     case 'average_duration':

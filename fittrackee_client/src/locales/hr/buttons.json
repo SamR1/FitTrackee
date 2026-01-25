@@ -18,7 +18,6 @@
   "FOLLOW": "Prati",
   "HIDE": "Sakrij",
   "LOGIN": "Prijavi se",
-  "NO": "Ne",
   "READ_MORE": "Pročitaj više",
   "REFRESH": "Osvježi",
   "REFRESH_TOTALS": "Osvježi ukupne rezultate",
@@ -30,6 +29,5 @@
   "SEE_DETAIL": "Pogledaj detalje",
   "SUBMIT": "Pošalji",
   "UNBLOCK": "Deblokiraj",
-  "UNFOLLOW": "Prestani pratiti",
-  "YES": "Da"
+  "UNFOLLOW": "Prestani pratiti"
 }

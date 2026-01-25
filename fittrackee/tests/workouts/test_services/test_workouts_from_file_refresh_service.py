@@ -8,7 +8,11 @@ from unittest.mock import MagicMock, call, mock_open, patch
 import pytest
 
 from fittrackee import db
+from fittrackee.constants import ElevationDataSource
 from fittrackee.files import get_absolute_file_path
+from fittrackee.tests.fixtures.fixtures_workouts import (
+    VALHALLA_VALUES,
+)
 from fittrackee.tests.workouts.mixins import (
     WorkoutAssertMixin,
 )
@@ -16,7 +20,13 @@ from fittrackee.workouts.exceptions import (
     WorkoutFileException,
     WorkoutRefreshException,
 )
-from fittrackee.workouts.models import Record, Workout
+from fittrackee.workouts.models import Record, Workout, WorkoutSegment
+from fittrackee.workouts.services.elevation.open_elevation_service import (
+    OpenElevationService,
+)
+from fittrackee.workouts.services.elevation.valhalla_elevation_service import (
+    ValhallaElevationService,
+)
 from fittrackee.workouts.services.weather.base_weather import BaseWeather
 from fittrackee.workouts.services.workouts_from_file_refresh_service import (
     WorkoutFromFileRefreshService,
@@ -28,7 +38,7 @@ if TYPE_CHECKING:
 
     from fittrackee.equipments.models import Equipment
     from fittrackee.users.models import User, UserSportPreference
-    from fittrackee.workouts.models import Sport, WorkoutSegment
+    from fittrackee.workouts.models import Sport
 
 # files from gpx_test.zip
 TEST_FILES_LIST = ["test_1.gpx", "test_2.gpx", "test_3.gpx"]
@@ -69,6 +79,7 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
             == sport_1_cycling.stopped_speed_threshold
         )
         assert service.update_weather is False
+        assert service.get_elevation_on_refresh is True
 
     def test_it_instantiates_service_when_user_has_sport_preferences(
         self,
@@ -90,6 +101,7 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
             == user_1_sport_1_preference.stopped_speed_threshold
         )
         assert service.update_weather is False
+        assert service.get_elevation_on_refresh is True
 
     def test_it_instantiates_service_when_update_weather_is_true(
         self,
@@ -112,6 +124,58 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
             == sport_1_cycling.stopped_speed_threshold
         )
         assert service.update_weather is True
+        assert service.get_elevation_on_refresh is True
+
+    def test_it_instantiates_service_when_get_elevation_on_refresh_is_false(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+    ) -> None:
+        service = WorkoutFromFileRefreshService(
+            workout=workout_cycling_user_1, get_elevation_on_refresh=False
+        )
+
+        assert service.workout == workout_cycling_user_1
+        assert service.user == user_1
+        assert service.sport == sport_1_cycling
+        assert service.sport_preferences is None
+        assert (
+            service.stopped_speed_threshold
+            == sport_1_cycling.stopped_speed_threshold
+        )
+        assert service.update_weather is False
+        assert service.get_elevation_on_refresh is False
+
+    def test_it_instantiates_service_when_change_elevation_source_is_provided(
+        self,
+        app_with_open_elevation_url: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+    ) -> None:
+        service = WorkoutFromFileRefreshService(
+            workout=workout_cycling_user_1,
+            change_elevation_source=ElevationDataSource.OPEN_ELEVATION,
+        )
+
+        assert service.workout == workout_cycling_user_1
+        assert service.user == user_1
+        assert service.sport == sport_1_cycling
+        assert service.sport_preferences is None
+        assert (
+            service.stopped_speed_threshold
+            == sport_1_cycling.stopped_speed_threshold
+        )
+        assert service.update_weather is False
+        assert service.get_elevation_on_refresh is True
+        assert (
+            service.change_elevation_source
+            == ElevationDataSource.OPEN_ELEVATION
+        )
 
 
 class TestWorkoutFromFileRefreshServiceGetFileContent:
@@ -247,9 +311,18 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
         )
         self.assert_workout_segment(workout_cycling_user_1)
         records = Record.query.order_by(Record.record_type.asc()).all()
-        assert len(records) == 5
+        assert len(records) == 7
         assert records[0].serialize() == {
             "id": 1,
+            "record_type": "AP",
+            "sport_id": workout_cycling_user_1.sport_id,
+            "user": workout_cycling_user_1.user.username,
+            "value": str(workout_cycling_user_1.ave_pace),
+            "workout_date": workout_cycling_user_1.workout_date,
+            "workout_id": workout_cycling_user_1.short_id,
+        }
+        assert records[1].serialize() == {
+            "id": 2,
             "record_type": "AS",
             "sport_id": workout_cycling_user_1.sport_id,
             "user": workout_cycling_user_1.user.username,
@@ -257,8 +330,17 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
             "workout_date": workout_cycling_user_1.workout_date,
             "workout_id": workout_cycling_user_1.short_id,
         }
-        assert records[1].serialize() == {
-            "id": 2,
+        assert records[2].serialize() == {
+            "id": 3,
+            "record_type": "BP",
+            "sport_id": workout_cycling_user_1.sport_id,
+            "user": workout_cycling_user_1.user.username,
+            "value": str(workout_cycling_user_1.best_pace),
+            "workout_date": workout_cycling_user_1.workout_date,
+            "workout_id": workout_cycling_user_1.short_id,
+        }
+        assert records[3].serialize() == {
+            "id": 4,
             "record_type": "FD",
             "sport_id": workout_cycling_user_1.sport_id,
             "user": workout_cycling_user_1.user.username,
@@ -266,8 +348,8 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
             "workout_date": workout_cycling_user_1.workout_date,
             "workout_id": workout_cycling_user_1.short_id,
         }
-        assert records[2].serialize() == {
-            "id": 5,
+        assert records[4].serialize() == {
+            "id": 7,
             "record_type": "HA",
             "sport_id": workout_cycling_user_1.sport_id,
             "user": workout_cycling_user_1.user.username,
@@ -275,8 +357,8 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
             "workout_date": workout_cycling_user_1.workout_date,
             "workout_id": workout_cycling_user_1.short_id,
         }
-        assert records[3].serialize() == {
-            "id": 3,
+        assert records[5].serialize() == {
+            "id": 5,
             "record_type": "LD",
             "sport_id": workout_cycling_user_1.sport_id,
             "user": workout_cycling_user_1.user.username,
@@ -284,8 +366,8 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
             "workout_date": workout_cycling_user_1.workout_date,
             "workout_id": workout_cycling_user_1.short_id,
         }
-        assert records[4].serialize() == {
-            "id": 4,
+        assert records[6].serialize() == {
+            "id": 6,
             "record_type": "MS",
             "sport_id": workout_cycling_user_1.sport_id,
             "user": workout_cycling_user_1.user.username,
@@ -393,51 +475,100 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
         assert workout_cycling_user_1.weather_start == weather_start
         assert workout_cycling_user_1.weather_end == weather_end
 
-    def test_it_does_not_store_new_gpx_file_when_file_extensions_is_gpx(
+    def test_it_calls_elevation_service_when_get_elevation_on_refresh_is_true(
         self,
-        app: "Flask",
+        app_with_open_elevation_url: "Flask",
         user_1: "User",
         sport_1_cycling: "Sport",
         workout_cycling_user_1: "Workout",
         workout_cycling_user_1_segment: "WorkoutSegment",
-        gpx_file_with_gpxtpx_extensions_and_power: str,
+        gpx_file_without_elevation: str,
+        default_weather_service: MagicMock,
+    ) -> None:
+        user_1.missing_elevations_processing = (
+            ElevationDataSource.OPEN_ELEVATION
+        )
+        workout_cycling_user_1.original_file = "workouts/1/example.gpx"
+        service = WorkoutFromFileRefreshService(
+            workout=workout_cycling_user_1, get_elevation_on_refresh=True
+        )
+
+        with (
+            patch(
+                "builtins.open",
+                new_callable=mock_open,
+                read_data=gpx_file_without_elevation,
+            ),
+            patch.object(
+                OpenElevationService, "get_elevations", return_value=[]
+            ) as elevation_service_mock,
+        ):
+            service.refresh()
+
+        elevation_service_mock.assert_called_once()
+
+    def test_it_does_not_call_elevation_service_when_get_elevation_on_refresh_is_false(  # noqa
+        self,
+        app_with_open_elevation_url: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        gpx_file_without_elevation: str,
+        default_weather_service: MagicMock,
+    ) -> None:
+        user_1.missing_elevations_processing = (
+            ElevationDataSource.OPEN_ELEVATION
+        )
+        workout_cycling_user_1.original_file = "workouts/1/example.gpx"
+        service = WorkoutFromFileRefreshService(
+            workout=workout_cycling_user_1, get_elevation_on_refresh=False
+        )
+
+        with (
+            patch(
+                "builtins.open",
+                new_callable=mock_open,
+                read_data=gpx_file_without_elevation,
+            ),
+            patch.object(
+                OpenElevationService, "get_elevations", return_value=[]
+            ) as elevation_service_mock,
+        ):
+            service.refresh()
+
+        elevation_service_mock.assert_not_called()
+
+    def test_it_calls_elevation_service_when_change_elevation_source_is_provided(  # noqa
+        self,
+        app_with_valhalla_url: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        gpx_file: str,
+        default_weather_service: MagicMock,
     ) -> None:
         workout_cycling_user_1.original_file = "workouts/1/example.gpx"
-        service = WorkoutFromFileRefreshService(workout=workout_cycling_user_1)
-
-        with patch(
-            "builtins.open",
-            new_callable=mock_open,
-            read_data=gpx_file_with_gpxtpx_extensions_and_power,
-        ) as open_mock:
-            service.refresh()
-
-        open_mock.assert_called_once()
-
-    def test_it_stores_new_gpx_file_when_file_extensions_is_not_gpx(
-        self,
-        app: "Flask",
-        user_1: "User",
-        sport_1_cycling: "Sport",
-        workout_cycling_user_1: "Workout",
-        workout_cycling_user_1_segment: "WorkoutSegment",
-        tcx_with_one_lap_and_one_track: str,
-        gpx_file_from_tcx_with_one_lap_and_one_track: str,
-    ) -> None:
-        workout_cycling_user_1.original_file = "workouts/1/example.tcx"
-        workout_cycling_user_1.gpx = "workouts/1/example.gpx"
-        service = WorkoutFromFileRefreshService(workout=workout_cycling_user_1)
-        open_mock = mock_open(read_data=tcx_with_one_lap_and_one_track)
-
-        with patch("builtins.open", open_mock):
-            service.refresh()
-
-        open_mock.assert_called_with(
-            get_absolute_file_path(workout_cycling_user_1.gpx), "w"
+        service = WorkoutFromFileRefreshService(
+            workout=workout_cycling_user_1,
+            change_elevation_source=ElevationDataSource.VALHALLA,
         )
-        handle = open_mock()
-        handle.write.assert_called_once_with(
-            gpx_file_from_tcx_with_one_lap_and_one_track
+
+        with (
+            patch("builtins.open", new_callable=mock_open, read_data=gpx_file),
+            patch.object(
+                ValhallaElevationService,
+                "get_elevations",
+                return_value=VALHALLA_VALUES,
+            ) as elevation_service_mock,
+        ):
+            service.refresh()
+
+        elevation_service_mock.assert_called_once()
+        assert (
+            workout_cycling_user_1.elevation_data_source
+            == ElevationDataSource.VALHALLA
         )
 
     def test_it_returns_workout(
@@ -451,7 +582,6 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
         gpx_file_from_tcx_with_one_lap_and_one_track: str,
     ) -> None:
         workout_cycling_user_1.original_file = "workouts/1/example.tcx"
-        workout_cycling_user_1.gpx = "workouts/1/example.gpx"
         service = WorkoutFromFileRefreshService(workout=workout_cycling_user_1)
         open_mock = mock_open(read_data=tcx_with_one_lap_and_one_track)
 
@@ -472,7 +602,6 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
         equipment_bike_user_1: "Equipment",
     ) -> None:
         workout_cycling_user_1.original_file = "workouts/1/example.tcx"
-        workout_cycling_user_1.gpx = "workouts/1/example.gpx"
         workout_cycling_user_1.equipments = [equipment_bike_user_1]
         service = WorkoutFromFileRefreshService(workout=workout_cycling_user_1)
         open_mock = mock_open(read_data=tcx_with_one_lap_and_one_track)
@@ -507,11 +636,12 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
         assert service.username is None
         assert service.extension is None
         assert service.sport_id is None
+        assert service.new_sport_id is None
         assert service.date_from is None
         assert service.date_to is None
         assert service.logger == test_logger
         assert service.with_weather is False
-        assert service.add_geometry is False
+        assert service.with_elevation is False
 
     def test_it_instantiates_service_with_given_values(
         self, app: "Flask"
@@ -526,10 +656,11 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
             user="Test",
             extension=".fit",
             sport_id=1,
+            new_sport_id=2,
             date_from=date_from,
             date_to=date_to,
             with_weather=True,
-            add_geometry=True,
+            with_elevation=True,
         )
 
         assert service.per_page == 50
@@ -538,14 +669,44 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
         assert service.username == "Test"
         assert service.extension == ".fit"
         assert service.sport_id == 1
+        assert service.new_sport_id == 2
         assert service.date_from == date_from
         assert service.date_to == date_to
         assert service.logger == test_logger
         assert service.with_weather is True
-        assert service.add_geometry is True
+        assert service.with_elevation is True
 
 
 class TestWorkoutsFromFileRefreshServiceRefresh:
+    @pytest.mark.parametrize("input_with_elevation", [True, False])
+    @pytest.mark.parametrize("input_with_weather", [True, False])
+    def test_it_instantiates_workout_from_file_refresh_service(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        input_with_elevation: bool,
+        input_with_weather: bool,
+    ) -> None:
+        service = WorkoutsFromFileRefreshService(
+            logger=test_logger,
+            with_weather=input_with_weather,
+            with_elevation=input_with_elevation,
+        )
+
+        with patch.object(
+            WorkoutFromFileRefreshService, "__init__", return_value=None
+        ) as service_init_mock:
+            service.refresh()
+
+        service_init_mock.assert_called_once_with(
+            workout_cycling_user_1,
+            update_weather=input_with_weather,
+            get_elevation_on_refresh=input_with_elevation,
+        )
+
     def test_it_returns_0_when_no_workouts_with_file(
         self,
         app: "Flask",
@@ -605,6 +766,9 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
 
         assert count == 1
         db.session.refresh(workout_cycling_user_1)
+        assert (
+            workout_cycling_user_1.sport_id == sport_1_cycling.id
+        )  # unchanged
         assert float(workout_cycling_user_1.distance) == 0.112  # type: ignore[arg-type]
 
     def test_it_refreshes_only_workout_with_given_extension(
@@ -620,7 +784,7 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         workout_running_user_1_segment: "WorkoutSegment",
         tcx_with_one_lap_and_one_track: str,
     ) -> None:
-        workout_cycling_user_1.original_file = workout_cycling_user_1.gpx
+        workout_cycling_user_1.original_file = "file.gpx"
         service = WorkoutsFromFileRefreshService(
             logger=test_logger, extension=".tcx"
         )
@@ -661,7 +825,49 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
 
         assert count == 1
         db.session.refresh(workout_running_user_1)
+        assert (
+            workout_cycling_user_1.sport_id == sport_1_cycling.id
+        )  # unchanged
         assert float(workout_running_user_1.distance) == 0.318  # type: ignore[arg-type]
+
+    def test_it_updates_sport_and_refreshes_workout(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_5_outdoor_tennis: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        workout_running_user_1: "Workout",
+        tcx_with_one_lap_and_one_track: str,
+    ) -> None:
+        service = WorkoutsFromFileRefreshService(
+            logger=test_logger, new_sport_id=sport_5_outdoor_tennis.id
+        )
+
+        with patch(
+            "builtins.open",
+            new_callable=mock_open,
+            read_data=tcx_with_one_lap_and_one_track,
+        ):
+            count = service.refresh()
+        db.session.commit()
+
+        assert count == 1
+        db.session.refresh(workout_cycling_user_1)
+        assert workout_cycling_user_1.sport_id == sport_5_outdoor_tennis.id
+        segment = WorkoutSegment.query.filter_by(
+            workout_id=workout_cycling_user_1.id
+        ).one()
+        assert segment.points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": None,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "pace": None,
+            "speed": 0.0,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
 
     def test_it_refreshes_workout_date_from_given_date(
         self,
@@ -718,63 +924,6 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
         assert count == 1
         db.session.refresh(workout_cycling_user_1)
         assert float(workout_cycling_user_1.distance) == 0.318  # type: ignore[arg-type]
-
-    def test_it_refreshes_only_workout_without_geometry_and_points(
-        self,
-        app: "Flask",
-        user_1: "User",
-        sport_1_cycling: "Sport",
-        sport_2_running: "Sport",
-        workout_cycling_user_1: "Workout",
-        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
-        workout_running_user_1: "Workout",
-        workout_running_user_1_segment: "WorkoutSegment",
-        tcx_with_one_lap_and_one_track: str,
-    ) -> None:
-        workout_cycling_user_1.gpx = "workouts/1/example.gpx"
-        workout_cycling_user_1.original_file = "workouts/1/example.tcx"
-        service = WorkoutsFromFileRefreshService(
-            logger=test_logger, add_geometry=True
-        )
-
-        with patch(
-            "builtins.open",
-            new_callable=mock_open,
-            read_data=tcx_with_one_lap_and_one_track,
-        ):
-            count = service.refresh()
-
-        assert count == 1
-        db.session.refresh(workout_running_user_1)
-        assert float(workout_running_user_1.distance) == 0.318  # type: ignore[arg-type]
-
-    def test_it_refreshes_only_workout_without_start_point_geometry(
-        self,
-        app: "Flask",
-        user_1: "User",
-        sport_1_cycling: "Sport",
-        sport_2_running: "Sport",
-        workout_cycling_user_1: "Workout",
-        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
-        workout_running_user_1_with_coordinates: "Workout",
-        workout_running_user_1_segment_with_coordinates: "WorkoutSegment",
-        tcx_with_one_lap_and_one_track: str,
-    ) -> None:
-        workout_running_user_1_with_coordinates.start_point_geom = None
-        service = WorkoutsFromFileRefreshService(
-            logger=test_logger, add_geometry=True
-        )
-
-        with patch(
-            "builtins.open",
-            new_callable=mock_open,
-            read_data=tcx_with_one_lap_and_one_track,
-        ):
-            count = service.refresh()
-
-        assert count == 1
-        db.session.refresh(workout_running_user_1_with_coordinates)
-        assert float(workout_running_user_1_with_coordinates.distance) == 0.318  # type: ignore[arg-type]
 
     @pytest.mark.parametrize(
         "input_params",

@@ -21,6 +21,7 @@ SPM_CADENCE_SPORTS = [
     "Trail",
     "Walking",
 ]
+CADENCE_SPORTS = [*RPM_CADENCE_SPORTS, *SPM_CADENCE_SPORTS]
 POWER_SPORTS = [
     "Cycling (Sport)",
     "Cycling (Trekking)",
@@ -30,13 +31,19 @@ POWER_SPORTS = [
     "Mountain Biking",
     "Mountain Biking (Electric)",
 ]
+PACE_SPORTS = [
+    "Hiking",
+    "Running",
+    "Trail",
+    "Walking",
+]
 # elevation data (ascent, descent, min and max alt), if present, are not
 # stored and/or displayed
 SPORTS_WITHOUT_ELEVATION_DATA = [
     # racket sports
     "Padel (Outdoor)",
     "Tennis (Outdoor)",
-    # water sports
+    # flatwater sports
     "Canoeing",
     "Kayaking",
     "Open Water Swimming",
@@ -52,5 +59,11 @@ WORKOUT_FILE_MIMETYPES = {
     "tcx": "application/vnd.garmin.tcx+xml",
 }
 
+NSMAP = {
+    "gpxtpx": "http://www.garmin.com/xmlschemas/TrackPointExtension/v1",
+}
+TRACK_EXTENSION_NSMAP = {
+    "gpxtrkx": "http://www.garmin.com/xmlschemas/TrackStatsExtension/v1"
+}
 
 WGS84_CRS = 4326  # World Geodetic System 1984, in degrees

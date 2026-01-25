@@ -1,5 +1,4 @@
 import json
-import re
 from datetime import timedelta
 from decimal import Decimal
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
@@ -11,6 +10,7 @@ from flask import (
     Blueprint,
     Response,
     current_app,
+    make_response,
     request,
     send_from_directory,
 )
@@ -25,13 +25,13 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentsException,
 )
 from fittrackee.equipments.models import Equipment, WorkoutEquipment
-from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.responses import (
     DataNotFoundErrorResponse,
     EquipmentInvalidPayloadErrorResponse,
     ExceedingValueErrorResponse,
+    GoneResponse,
     HttpResponse,
     InternalServerErrorResponse,
     InvalidPayloadErrorResponse,
@@ -45,9 +45,13 @@ from fittrackee.utils import decode_short_id, encode_uuid
 from fittrackee.visibility_levels import (
     VisibilityLevel,
     can_view,
-    can_view_heart_rate,
+    can_view_workout_data,
+)
+from fittrackee.workouts.services.elevation.elevation_service import (
+    ElevationService,
 )
 
+from ..constants import ElevationDataSource, PaceSpeedDisplay
 from .constants import (
     SPORTS_WITHOUT_ELEVATION_DATA,
     WORKOUT_FILE_MIMETYPES,
@@ -60,6 +64,7 @@ from .exceptions import (
     WorkoutExceedingValueException,
     WorkoutException,
     WorkoutFileException,
+    WorkoutGPXException,
     WorkoutRefreshException,
 )
 from .models import Sport, Workout, WorkoutLike, WorkoutSegment
@@ -68,25 +73,30 @@ from .services import (
     WorkoutsFromFileCreationService,
     WorkoutUpdateService,
 )
+from .services.workout_from_file.workout_gpx_service import remove_microseconds
 from .services.workouts_from_file_refresh_service import (
     WorkoutFromFileRefreshService,
 )
 from .utils.chart import get_chart_data
-from .utils.convert import convert_in_duration
+from .utils.convert import convert_in_duration, convert_pace_in_duration
 from .utils.geometry import (
     get_buffered_location,
     get_geojson_from_segments,
 )
-from .utils.gpx import (
-    WorkoutGPXException,
-    extract_segment_from_gpx_file,
-    get_file_extension,
+from .utils.gpx import generate_gpx, get_file_extension
+from .utils.sports import (
+    get_elevation_data,
+    get_pace,
+    get_speed,
+    get_sport_displayed_data,
 )
 from .utils.workouts import get_datetime_from_request_args
 
 if TYPE_CHECKING:
     from flask_sqlalchemy.query import Query
     from sqlalchemy.sql.selectable import Subquery
+
+    from fittrackee.workouts.utils.sports import SportDisplayedData
 
 workouts_blueprint = Blueprint("workouts", __name__)
 
@@ -99,8 +109,10 @@ NO_STATISTICS = {
     "average_descent": None,
     "average_distance": None,
     "average_duration": None,
+    "average_pace": None,
     "average_speed": None,
     "count": 0,
+    "best_pace": None,
     "max_speed": None,
     "total_ascent": None,
     "total_descent": None,
@@ -124,8 +136,15 @@ def get_string_duration_value(row_value: Optional[timedelta]) -> Optional[str]:
 
 
 def get_statistics(
-    workouts_subquery: "Subquery", *, get_speeds: bool = True
+    workouts_subquery: "Subquery",
+    sport_data_visibility: Optional["SportDisplayedData"],
 ) -> Dict:
+    get_speeds = (
+        sport_data_visibility.display_speed if sport_data_visibility else True
+    )
+    get_paces = (
+        sport_data_visibility.display_pace if sport_data_visibility else False
+    )
     columns: List = [
         func.sum(
             case(
@@ -176,6 +195,12 @@ def get_statistics(
             func.avg(workouts_subquery.c.ave_speed),
             func.max(workouts_subquery.c.max_speed),
         ]
+    if get_paces:
+        columns = [
+            *columns,
+            func.avg(workouts_subquery.c.ave_pace),
+            func.min(workouts_subquery.c.best_pace),
+        ]
     stats_query = (
         db.session.query(*columns)
         .join(Sport, Sport.id == workouts_subquery.c.sport_id)
@@ -186,13 +211,25 @@ def get_statistics(
 
     total_sports = stats_query[9]
     return_speeds = total_sports == 1 and get_speeds
+    ave_pace_raw = 12 if get_speeds else 10
+    max_pace_raw = 13 if get_speeds else 11
     return {
         "average_ascent": get_rounded_float_value(stats_query[4]),
         "average_descent": get_rounded_float_value(stats_query[5]),
         "average_distance": get_rounded_float_value(stats_query[6]),
         "average_duration": get_string_duration_value(stats_query[7]),
+        "average_pace": (
+            str(remove_microseconds(stats_query[ave_pace_raw]))
+            if get_paces and stats_query[ave_pace_raw]
+            else None
+        ),
         "average_speed": (
             get_rounded_float_value(stats_query[10]) if return_speeds else None
+        ),
+        "best_pace": (
+            str(remove_microseconds(stats_query[max_pace_raw]))
+            if get_paces and stats_query[max_pace_raw]
+            else None
         ),
         "count": stats_query[8],
         "max_speed": (
@@ -207,7 +244,7 @@ def get_statistics(
 
 
 def download_workout_file(
-    workout_short_id: str, auth_user_id: int, original_file: bool
+    workout_short_id: str, auth_user_id: int, as_gpx: bool = False
 ) -> Union[HttpResponse, Response]:
     workout_uuid = decode_short_id(workout_short_id)
     workout = Workout.query.filter_by(
@@ -219,27 +256,33 @@ def download_workout_file(
             message=f"workout not found (id: {workout_short_id})",
         )
 
-    if (original_file and workout.original_file is None) or (
-        not original_file and workout.gpx is None
-    ):
+    if not workout.original_file:
         return DataNotFoundErrorResponse(
-            data_type="original_file" if original_file else "gpx",
-            message=(
-                f"no {'original' if original_file else 'gpx'} "
-                f"file for workout (id: {workout_short_id})"
-            ),
+            data_type="original_file",
+            message=f"no original file for workout (id: {workout_short_id})",
         )
 
-    return send_from_directory(
-        current_app.config["UPLOAD_FOLDER"],
-        workout.original_file if original_file else workout.gpx,
-        mimetype=WORKOUT_FILE_MIMETYPES[
-            get_file_extension(workout.original_file)
-            if original_file
-            else "gpx"
-        ],
-        as_attachment=True,
+    file_extension = get_file_extension(workout.original_file)
+
+    if not as_gpx or file_extension == "gpx":
+        return send_from_directory(
+            current_app.config["UPLOAD_FOLDER"],
+            workout.original_file,
+            mimetype=WORKOUT_FILE_MIMETYPES[file_extension],
+            as_attachment=True,
+        )
+
+    try:
+        gpx_xml = generate_gpx(workout)
+    except WorkoutGPXException as e:
+        return InternalServerErrorResponse(message=str(e))
+    filename = workout.original_file.replace(file_extension, "gpx")
+    response = make_response(gpx_xml)
+    response.mimetype = WORKOUT_FILE_MIMETYPES["gpx"]
+    response.headers["Content-Disposition"] = (
+        f"attachment; filename={filename}"
     )
+    return response
 
 
 def get_user_workouts_query(
@@ -251,8 +294,12 @@ def get_user_workouts_query(
     distance_to = params.get("distance_to")
     duration_from = params.get("duration_from")
     duration_to = params.get("duration_to")
+    ave_pace_from = params.get("ave_pace_from")
+    ave_pace_to = params.get("ave_pace_to")
     ave_speed_from = params.get("ave_speed_from")
     ave_speed_to = params.get("ave_speed_to")
+    max_pace_from = params.get("max_pace_from")
+    max_pace_to = params.get("max_pace_to")
     max_speed_from = params.get("max_speed_from")
     max_speed_to = params.get("max_speed_to")
     order_by = params.get("order_by", "workout_date")
@@ -326,6 +373,22 @@ def get_user_workouts_query(
         filters.append(Workout.moving >= convert_in_duration(duration_from))
     if duration_to:
         filters.append(Workout.moving <= convert_in_duration(duration_to))
+    if ave_pace_from:
+        filters.append(
+            Workout.ave_pace >= convert_pace_in_duration(ave_pace_from)
+        )
+    if ave_pace_to:
+        filters.append(
+            Workout.ave_pace <= convert_pace_in_duration(ave_pace_to)
+        )
+    if max_pace_from:
+        filters.append(
+            Workout.best_pace >= convert_pace_in_duration(max_pace_from)
+        )
+    if max_pace_to:
+        filters.append(
+            Workout.best_pace <= convert_pace_in_duration(max_pace_to)
+        )
     if ave_speed_from:
         filters.append(Workout.ave_speed >= float(ave_speed_from))
     if ave_speed_to:
@@ -407,13 +470,16 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "ascent": null,
                 "ave_cadence": null,
                 "ave_hr": null,
+                "ave_pace": null,
                 "ave_power": null,
                 "ave_speed": 18.0,
+                "best_pace": null,
                 "bounds": [],
                 "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
                 "descent": null,
                 "distance": 18.0,
                 "duration": "1:00:00",
+                "elevation_data_source": "file",
                 "equipments": [],
                 "id": "kjxavSTUrJvoAh2wvCeGEF",
                 "liked": false,
@@ -451,7 +517,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "weather_end": null,
                 "weather_start": null,
                 "with_analysis": false,
-                "with_gpx": false,
+                "with_file": false,
                 "workout_date": "Mon, 01 Jan 2018 07:00:00 GMT",
                 "workout_visibility": "private"
               }
@@ -598,8 +664,21 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
             params.get("return_equipments", "false").lower() == "true"
         )
 
+        force_display_speed = False
+        if (
+            workouts_pagination.total
+            and workouts_pagination.total > 1
+            and "sport_id" not in params
+        ):
+            workouts_sports = {workout.sport for workout in workouts}
+            force_display_speed = any(
+                sport.pace_speed_display == PaceSpeedDisplay.SPEED
+                for sport in workouts_sports
+            )
+
         statistics = {}
         if params.get("with_statistics", "false").lower() == "true":
+            # no workouts returned
             if workouts_pagination.total == 0:
                 statistics = {
                     "statistics": {
@@ -607,20 +686,17 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                         "all": {**NO_STATISTICS},
                     }
                 }
+            # only one workout returned
             elif workouts_pagination.total == 1:
                 workout = workouts[0]
-                return_elevation_data = (
-                    workout.sport.label not in SPORTS_WITHOUT_ELEVATION_DATA
+                sport_data_visibility = get_sport_displayed_data(
+                    workout.sport, auth_user
                 )
-                ascent = (
-                    None
-                    if workout.ascent is None or not return_elevation_data
-                    else float(workout.ascent)
+                ascent = get_elevation_data(
+                    workout.ascent, True, sport_data_visibility
                 )
-                descent = (
-                    None
-                    if workout.descent is None or not return_elevation_data
-                    else float(workout.descent)
+                descent = get_elevation_data(
+                    workout.descent, True, sport_data_visibility
                 )
                 distance = (
                     None
@@ -635,16 +711,22 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                     "average_descent": descent,
                     "average_distance": distance,
                     "average_duration": duration,
-                    "average_speed": (
-                        None
-                        if workout.ave_speed is None
-                        else float(workout.ave_speed)
+                    "average_pace": get_pace(
+                        workout.ave_pace, sport_data_visibility
+                    ),
+                    "average_speed": get_speed(
+                        workout.ave_speed,
+                        sport_data_visibility,
+                        workout.ave_pace,
                     ),
                     "count": 1,
-                    "max_speed": (
-                        None
-                        if workout.max_speed is None
-                        else float(workout.max_speed)
+                    "max_speed": get_speed(
+                        workout.max_speed,
+                        sport_data_visibility,
+                        workout.best_pace,
+                    ),
+                    "best_pace": get_pace(
+                        workout.best_pace, sport_data_visibility
                     ),
                     "total_ascent": ascent,
                     "total_descent": descent,
@@ -658,21 +740,31 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                         "all": {**workout_total},
                     }
                 }
+            # more than one workout is returned
             else:
                 workouts_subquery = (
                     workouts_query.offset((page - 1) * per_page)
                     .limit(per_page)
                     .subquery()
                 )
-                get_speeds = True
-                if workouts_pagination.pages == 1:
-                    sport_ids = {workout.sport_id for workout in workouts}
-                    # do not get speeds when workouts with different sport
-                    # are fetched
-                    get_speeds = len(sport_ids) == 1
+                # if sport id is provided, get pace and speed visibility
+                # depending on sport
+                sport_data_visibility = None
+                if "sport_id" in params:
+                    sport_data_visibility = get_sport_displayed_data(
+                        workouts[0].sport, auth_user
+                    )
+                # if only one page is returned and all workouts are associated
+                # with the same sport, get pace and speed visibility depending
+                # on this sport
+                elif workouts_pagination.pages == 1:
+                    sports = {workout.sport for workout in workouts}
+                    if len(sports) == 1:
+                        sport_data_visibility = get_sport_displayed_data(
+                            workouts[0].sport, auth_user
+                        )
                 current_page_stats = get_statistics(
-                    workouts_subquery,
-                    get_speeds=get_speeds,
+                    workouts_subquery, sport_data_visibility
                 )
                 statistics = {
                     "statistics": {"current_page": current_page_stats}
@@ -691,7 +783,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                         )
                     workouts_subquery = all_workouts_subquery.subquery()
                     statistics["statistics"]["all"] = get_statistics(
-                        workouts_subquery,
+                        workouts_subquery, sport_data_visibility
                     )
 
         return {
@@ -702,6 +794,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                         user=auth_user,
                         params=params,
                         with_equipments=with_equipments,
+                        force_display_speed=force_display_speed,
                     )
                     for workout in workouts
                 ],
@@ -1268,14 +1361,17 @@ def get_workout(
                 "ascent": null,
                 "ave_cadence": null,
                 "ave_hr": null,
+                "ave_pace": null,
                 "ave_power": null,
                 "ave_speed": 16,
+                "best_pace": null,
                 "bounds": [],
                 "creation_date": "Sun, 14 Jul 2019 18:57:14 GMT",
                 "descent": null,
                 "description": null,
                 "distance": 12,
                 "duration": "0:45:00",
+                "elevation_data_source": "file",
                 "equipments": [],
                 "id": "kjxavSTUrJvoAh2wvCeGEF",
                 "liked": false,
@@ -1313,7 +1409,7 @@ def get_workout(
                 "weather_end": null,
                 "weather_start": null,
                 "with_analysis": false,
-                "with_gpx": false,
+                "with_file": false,
                 "workout_date": "Sun, 07 Jul 2019 07:00:00 GMT",
                 "workout_visibility": "private"
               }
@@ -1362,7 +1458,7 @@ def get_workout_data(
     auth_user: Optional[User],
     workout_short_id: str,
     data_type: str,
-    segment_id: Optional[int] = None,
+    segment_short_id: Optional[str] = None,
 ) -> Union[Dict, HttpResponse]:
     """Get data from workout gpx file"""
     not_found_response = DataNotFoundErrorResponse(
@@ -1383,46 +1479,32 @@ def get_workout_data(
     ):
         return not_found_response
 
-    if not workout.gpx or workout.gpx == "":
+    if not workout.original_file or workout.original_file == "":
         return NotFoundErrorResponse(
-            f"no gpx file for this workout (id: {workout_short_id})"
+            f"no file for this workout (id: {workout_short_id})"
         )
 
     try:
-        can_see_heart_rate = can_view_heart_rate(workout.user, auth_user)
+        can_see_heart_rate = can_view_workout_data(
+            "hr", workout.user, auth_user
+        )
         if data_type == "chart_data":
             data: "Dict" = {
                 "chart_data": get_chart_data(
                     workout,
+                    user=auth_user,
                     can_see_heart_rate=can_see_heart_rate,
-                    segment_id=segment_id,
+                    segment_short_id=segment_short_id,
                 )
             }
-        elif data_type == "geojson":
-            geojson = get_geojson_from_segments(workout, segment_id=segment_id)
+        else:  # data_type == "geojson"
+            geojson = get_geojson_from_segments(
+                workout, segment_short_id=segment_short_id
+            )
             # Handle error differently when using workout segment uuid
             if not geojson:
                 return NotFoundErrorResponse("geojson not found")
             data = {"geojson": geojson}
-        else:  # data_type == 'gpx'
-            absolute_gpx_filepath = get_absolute_file_path(workout.gpx)
-            with open(absolute_gpx_filepath, encoding="utf-8") as f:
-                gpx_content = f.read()
-                if segment_id is not None:
-                    gpx_segment_content = extract_segment_from_gpx_file(
-                        gpx_content, segment_id
-                    )
-            file_content = (
-                gpx_content if segment_id is None else gpx_segment_content
-            )
-            if file_content and not can_see_heart_rate:
-                file_content = re.sub(
-                    r"<(.*):hr>([\r\n\d]*)</(.*):hr>",
-                    "",
-                    file_content,
-                )
-
-            data = {"gpx": file_content}
     except (WorkoutException, WorkoutGPXException) as e:
         appLog.error(e.message)
         if e.status == "not found":
@@ -1446,7 +1528,7 @@ def get_workout_gpx(
     auth_user: Optional[User], workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get gpx file for a workout displayed on map with Leaflet.
+    [REMOVED] Get gpx file for a workout displayed on map with Leaflet
 
     **Example request**:
 
@@ -1459,37 +1541,17 @@ def get_workout_gpx(
 
     .. sourcecode:: http
 
-      HTTP/1.1 200 OK
+      HTTP/1.1 410 GONE
       Content-Type: application/json
-
-      {
-        "data": {
-          "gpx": "gpx file content"
-        },
-        "message": "",
-        "status": "success"
-      }
 
     :param string workout_short_id: workout short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
                ``private`` or ``followers_only`` map visibility
 
-    :statuscode 200: ``success``
-    :statuscode 401:
-        - ``provide a valid auth token``
-        - ``signature expired, please log in again``
-        - ``invalid token, please log in again``
-    :statuscode 403:
-        - ``you do not have permissions``
-        - ``you do not have permissions, your account is suspended``
-    :statuscode 404:
-        - ``workout not found``
-        - ``no gpx file for this workout``
-    :statuscode 500: ``error, please try again or contact the administrator``
-
+    :statuscode 410: GONE
     """
-    return get_workout_data(auth_user, workout_short_id, "gpx")
+    return GoneResponse()
 
 
 @workouts_blueprint.route(
@@ -1500,7 +1562,7 @@ def get_workout_chart_data(
     auth_user: Optional[User], workout_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
-    Get chart data from a workout gpx file, to display it with Chart.js.
+    Get chart data to display it with Chart.js.
 
     **Example request**:
 
@@ -1574,7 +1636,7 @@ def get_segment_gpx(
     auth_user: Optional[User], workout_short_id: str, segment_id: int
 ) -> Union[Dict, HttpResponse]:
     """
-    Get gpx file for a workout segment displayed on map with Leaflet.
+    [REMOVED] Get gpx file for a workout segment displayed on map with Leaflet.
 
     **Example request**:
 
@@ -1587,16 +1649,8 @@ def get_segment_gpx(
 
     .. sourcecode:: http
 
-      HTTP/1.1 200 OK
+      HTTP/1.1 410 GONE
       Content-Type: application/json
-
-      {
-        "data": {
-          "gpx": "gpx file content"
-        },
-        "message": "",
-        "status": "success"
-      }
 
     :param string workout_short_id: workout short id
     :param integer segment_id: segment id
@@ -1604,29 +1658,18 @@ def get_segment_gpx(
     :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
                ``private`` or ``followers_only`` map visibility
 
-    :statuscode 200: ``success``
-    :statuscode 400: ``no gpx file for this workout``
-    :statuscode 401:
-        - ``provide a valid auth token``
-        - ``signature expired, please log in again``
-        - ``invalid token, please log in again``
-    :statuscode 403:
-        - ``you do not have permissions``
-        - ``you do not have permissions, your account is suspended``
-    :statuscode 404: ``workout not found``
-    :statuscode 500: ``error, please try again or contact the administrator``
-
+    :statuscode 410: GONE
     """
-    return get_workout_data(auth_user, workout_short_id, "gpx", segment_id)
+    return GoneResponse()
 
 
 @workouts_blueprint.route(
-    "/workouts/<string:workout_short_id>/chart_data/segment/<int:segment_id>",
+    "/workouts/<string:workout_short_id>/chart_data/segment/<string:segment_short_id>",
     methods=["GET"],
 )
 @require_auth(scopes=["workouts:read"], optional_auth_user=True)
 def get_segment_chart_data(
-    auth_user: Optional[User], workout_short_id: str, segment_id: int
+    auth_user: Optional[User], workout_short_id: str, segment_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get chart data from a workout gpx file, to display it with Chart.js.
@@ -1635,7 +1678,7 @@ def get_segment_chart_data(
 
     .. sourcecode:: http
 
-      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart/segment/1 HTTP/1.1
+      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/chart/segment/C4asMMbRJsxTirSjTVWeWU HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1673,7 +1716,7 @@ def get_segment_chart_data(
       }
 
     :param string workout_short_id: workout short id
-    :param integer segment_id: segment id
+    :param string segment_short_id: segment short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
                ``private`` or ``followers_only`` map visibility
@@ -1692,7 +1735,7 @@ def get_segment_chart_data(
 
     """
     return get_workout_data(
-        auth_user, workout_short_id, "chart_data", segment_id
+        auth_user, workout_short_id, "chart_data", segment_short_id
     )
 
 
@@ -1767,12 +1810,12 @@ def get_workout_geojson(
 
 
 @workouts_blueprint.route(
-    "/workouts/<string:workout_short_id>/geojson/segment/<int:segment_id>",
+    "/workouts/<string:workout_short_id>/geojson/segment/<string:segment_short_id>",
     methods=["GET"],
 )
 @require_auth(scopes=["workouts:read"], optional_auth_user=True)
 def get_segment_geojson(
-    auth_user: Optional[User], workout_short_id: str, segment_id: int
+    auth_user: Optional[User], workout_short_id: str, segment_short_id: str
 ) -> Union[Dict, HttpResponse]:
     """
     Get workout segment GeoJSON, when segment has geometry
@@ -1781,7 +1824,7 @@ def get_segment_geojson(
 
     .. sourcecode:: http
 
-      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/gpx/segment/1 HTTP/1.1
+      GET /api/workouts/kjxavSTUrJvoAh2wvCeGEF/geojson/segment/C4asMMbRJsxTirSjTVWeWU HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1808,7 +1851,7 @@ def get_segment_geojson(
       }
 
     :param string workout_short_id: workout short id
-    :param integer segment_id: segment id
+    :param string segment_short_id: segment short id
 
     :reqheader Authorization: OAuth 2.0 Bearer Token for workout with
                ``private`` or ``followers_only`` map visibility
@@ -1827,7 +1870,9 @@ def get_segment_geojson(
         - ``geojson not found``
     :statuscode 500: ``error, please try again or contact the administrator``
     """
-    return get_workout_data(auth_user, workout_short_id, "geojson", segment_id)
+    return get_workout_data(
+        auth_user, workout_short_id, "geojson", segment_short_id
+    )
 
 
 @workouts_blueprint.route(
@@ -1866,11 +1911,9 @@ def download_workout_gpx(
         - ``you do not have permissions, your account is suspended``
     :statuscode 404:
         - ``workout not found``
-        - ``no gpx file for workout``
+        - ``no file for workout``
     """
-    return download_workout_file(
-        workout_short_id, auth_user.id, original_file=False
-    )
+    return download_workout_file(workout_short_id, auth_user.id, as_gpx=True)
 
 
 @workouts_blueprint.route(
@@ -1912,9 +1955,7 @@ def download_workout_original_file(
         - ``workout not found``
         - ``no original file for workout``
     """
-    return download_workout_file(
-        workout_short_id, auth_user.id, original_file=True
-    )
+    return download_workout_file(workout_short_id, auth_user.id)
 
 
 @workouts_blueprint.route("/workouts/map/<map_id>", methods=["GET"])
@@ -2043,8 +2084,10 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 "ascent": 435.621,
                 "ave_cadence": null,
                 "ave_hr": null,
+                "ave_pace": null,
                 "ave_power": null,
                 "ave_speed": 13.14,
+                "best_pace": null,
                 "bounds": [
                   43.93706,
                   4.517587,
@@ -2056,6 +2099,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 "description": null,
                 "distance": 23.478,
                 "duration": "2:08:35",
+                "elevation_data_source": "file",
                 "equipments": [],
                 "id": "PsjeeXbJZ2JJNQcTCPxVvF",
                 "liked": false,
@@ -2126,6 +2170,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                     "ascent": 435.621,
                     "ave_cadence": null,
                     "ave_hr": null,
+                    "ave_pace": null,
                     "ave_power": null,
                     "ave_speed": 13.14,
                     "descent": 427.499,
@@ -2134,6 +2179,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                     "max_alt": 158.41,
                     "max_cadence": null,
                     "max_hr": null,
+                    "best_pace": null,
                     "max_power": null,
                     "max_speed": 25.59,
                     "min_alt": 55.03,
@@ -2160,7 +2206,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 "weather_end": null,
                 "weather_start": null,
                 "with_analysis": false,
-                "with_gpx": true,
+                "with_file": true,
                 "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
                 "workout_visibility": "private"
               }
@@ -2349,8 +2395,10 @@ def post_workout_no_gpx(
                 "ascent": null,
                 "ave_cadence": null,
                 "ave_hr": null,
+                "ave_pace": null,
                 "ave_power": null,
                 "ave_speed": 10.0,
+                "best_pace": null,
                 "bounds": [],
                 "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
                 "descent": null,
@@ -2360,6 +2408,7 @@ def post_workout_no_gpx(
                 "id": "Kd5wyhwLtVozw6o3AU5M4J",
                 "liked": false,
                 "likes_count": 0,
+                "elevation_data_source": "file",
                 "equipments": [],
                 "map": null,
                 "map_visibility": "private",
@@ -2432,7 +2481,7 @@ def post_workout_no_gpx(
                 "weather_end": null,
                 "weather_start": null,
                 "with_analysis": false,
-                "with_gpx": false,
+                "with_file": false,
                 "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
                 "workout_visibility": "private"
               }
@@ -2571,14 +2620,17 @@ def update_workout(
                 "ascent": null,
                 "ave_cadence": null,
                 "ave_hr": null,
+                "ave_pace": null,
                 "ave_power": null,
                 "ave_speed": 10.0,
+                "best_pace": null,
                 "bounds": [],
                 "creation_date": "Sun, 14 Jul 2019 13:51:01 GMT",
                 "descent": null,
                 "description": null,
                 "distance": 10.0,
                 "duration": "0:17:04",
+                "elevation_data_source": "file",
                 "equipments": [],
                 "id": "2oRDfncv6vpRkfp3yrCYHt",
                 "liked": false,
@@ -2654,7 +2706,7 @@ def update_workout(
                 "weather_end": null,
                 "weather_start": null,
                 "with_analysis": false,
-                "with_gpx": false,
+                "with_file": false,
                 "workout_date": "Mon, 01 Jan 2018 00:00:00 GMT",
                 "workout_visibility": "private"
               }
@@ -2677,6 +2729,10 @@ def update_workout(
         (only for workout without gpx)
     :<json integer duration: workout duration in seconds
         (only for workout without gpx)
+    :<json string elevation_data_source: source and method for elevations,
+              depending on application configuration
+              (``file``, ``open_elevation``, ``open_elevation_smooth``,
+              ``valhalla``)
     :<json array of strings equipment_ids:
         the id of the equipment to associate with this workout (any existing
         equipment for this workout will be replaced).
@@ -2706,6 +2762,8 @@ def update_workout(
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``
         - ``one or more values, entered or calculated, exceed the limits``
+        - ``'elevation_data_source' can not be provided for workout without file``
+        - ``'<ELEVATION_DATA_SOURCE>' as elevation data source is not valid``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -2719,10 +2777,51 @@ def update_workout(
     workout_data = request.get_json()
     if not workout_data:
         return InvalidPayloadErrorResponse()
-
+    if "elevation_data_source" in workout_data and not workout.original_file:
+        return InvalidPayloadErrorResponse(
+            "'elevation_data_source' can not be provided "
+            "for workout without file"
+        )
     try:
+        old_sport_id = workout.sport_id
+        new_sport_id = workout_data.get("sport_id")
         service = WorkoutUpdateService(auth_user, workout, workout_data)
         service.update()
+
+        if "elevation_data_source" in workout_data:
+            elevation_service = ElevationService(
+                workout_data["elevation_data_source"]
+            )
+            if (
+                workout_data["elevation_data_source"]
+                != ElevationDataSource.FILE
+                and not elevation_service.elevation_service
+            ):
+                return InvalidPayloadErrorResponse(
+                    f"'{workout_data['elevation_data_source']}' as elevation data source is not valid"
+                )
+            db.session.flush()
+            refresh_service = WorkoutFromFileRefreshService(
+                workout,
+                update_weather=False,
+                get_elevation_on_refresh=True,
+                change_elevation_source=workout_data["elevation_data_source"],
+            )
+            refresh_service.refresh()
+        elif (
+            workout.original_file
+            and new_sport_id is not None
+            and new_sport_id != old_sport_id
+        ):
+            db.session.flush()
+            db.session.refresh(workout)
+            refresh_service = WorkoutFromFileRefreshService(
+                workout,
+                update_weather=False,
+                get_elevation_on_refresh=False,
+            )
+            refresh_service.refresh()
+
         db.session.commit()
 
         return {
@@ -2845,14 +2944,17 @@ def like_workout(
                 "ascent": 231.208,
                 "ave_cadence": null,
                 "ave_hr": null,
+                "ave_pace": null,
                 "ave_power": null,
                 "ave_speed": 13.12,
+                "best_pace": null,
                 "bounds": [],
                 "creation_date": "Wed, 04 Dec 2024 09:18:26 GMT",
                 "descent": 234.208,
                 "description": null,
                 "distance": 23.41,
                 "duration": "3:32:27",
+                "elevation_data_source": "file",
                 "equipments": [],
                 "id": "HgzYFXgvWKCEpdq3vYk67q",
                 "liked": true,
@@ -2889,7 +2991,7 @@ def like_workout(
                 "weather_end": null,
                 "weather_start": null,
                 "with_analysis": false,
-                "with_gpx": false,
+                "with_file": false,
                 "workout_date": "Tue, 26 Apr 2016 14:42:27 GMT",
                 "workout_visibility": "public"
               }
@@ -2960,14 +3062,17 @@ def undo_workout_like(
                 "ascent": 231.208,
                 "ave_cadence": null,
                 "ave_hr": null,
+                "ave_pace": null,
                 "ave_power": null,
                 "ave_speed": 13.12,
+                "best_pace": null,
                 "bounds": [],
                 "creation_date": "Wed, 04 Dec 2024 09:18:26 GMT",
                 "descent": 234.208,
                 "description": null,
                 "distance": 23.41,
                 "duration": "3:32:27",
+                "elevation_data_source": "file",
                 "equipments": [],
                 "id": "HgzYFXgvWKCEpdq3vYk67q",
                 "liked": false,
@@ -3004,7 +3109,7 @@ def undo_workout_like(
                 "weather_end": null,
                 "weather_start": null,
                 "with_analysis": false,
-                "with_gpx": false,
+                "with_file": false,
                 "workout_date": "Tue, 26 Apr 2016 14:42:27 GMT",
                 "workout_visibility": "public"
               }
@@ -3529,7 +3634,6 @@ def refresh_workout(
     Refresh a workout (created by uploading a file):
 
     - recalculate workout data like max. speed, pauses...
-    - regenerate gpx file if original file is not a gpx
     - update weather if weather provided is set and workout does not have
       weather data
 
@@ -3543,7 +3647,6 @@ def refresh_workout(
       Content-Type: application/json
 
     **Example response**:
-
 
     .. sourcecode:: http
 
@@ -3559,8 +3662,10 @@ def refresh_workout(
                 "ascent": 435.621,
                 "ave_cadence": null,
                 "ave_hr": null,
+                "ave_pace": null,
                 "ave_power": null,
                 "ave_speed": 13.14,
+                "best_pace": null,
                 "bounds": [
                   43.93706,
                   4.517587,
@@ -3584,6 +3689,7 @@ def refresh_workout(
                 "max_power": null,
                 "max_speed": 25.59,
                 "min_alt": 55.03,
+                "elevation_data_source": "file",
                 "modification_date": null,
                 "moving": "1:47:11",
                 "next_workout": "Kd5wyhwLtVozw6o3AU5M4J",
@@ -3642,6 +3748,7 @@ def refresh_workout(
                     "ascent": 435.621,
                     "ave_cadence": null,
                     "ave_hr": null,
+                    "ave_pace": null,
                     "ave_power": null,
                     "ave_speed": 13.14,
                     "descent": 427.499,
@@ -3650,6 +3757,7 @@ def refresh_workout(
                     "max_alt": 158.41,
                     "max_cadence": null,
                     "max_hr": null,
+                    "best_pace": null,
                     "max_power": null,
                     "max_speed": 25.59,
                     "min_alt": 55.03,
@@ -3676,7 +3784,7 @@ def refresh_workout(
                 "weather_end": null,
                 "weather_start": null,
                 "with_analysis": false,
-                "with_gpx": true,
+                "with_file": true,
                 "workout_date": "Tue, 26 Apr 2016 14:42:30 GMT",
                 "workout_visibility": "private"
               }
@@ -3708,7 +3816,9 @@ def refresh_workout(
 
     """
     try:
-        service = WorkoutFromFileRefreshService(workout, update_weather=True)
+        service = WorkoutFromFileRefreshService(
+            workout, update_weather=True, get_elevation_on_refresh=False
+        )
         updated_workout = service.refresh()
     except WorkoutExceedingValueException as e:
         appLog.error(e.detail)
@@ -3723,6 +3833,8 @@ def refresh_workout(
             appLog.exception("Error when refreshing workout")
             return InternalServerErrorResponse(e.message)
         return InvalidPayloadErrorResponse(e.message, e.status)
+    except Exception as e:
+        return handle_error_and_return_response(e, db=db)
     return {
         "status": "success",
         "data": {

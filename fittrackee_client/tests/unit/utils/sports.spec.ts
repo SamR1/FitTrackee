@@ -4,7 +4,7 @@ import { sports } from './fixtures'
 
 import createI18n from '@/i18n'
 import { ISport, TActiveStatus } from '@/types/sports'
-import { translateSports } from '@/utils/sports'
+import { getDisplayPace, translateSports } from '@/utils/sports'
 
 const { t, locale } = createI18n.global
 
@@ -21,6 +21,43 @@ interface ITestParameter {
   expected: Record<never, never>[]
 }
 
+const translatedSports = [
+  {
+    color: null,
+    has_workouts: false,
+    id: 1,
+    img: '/img/sports/cycling-sport.png',
+    is_active: true,
+    is_active_for_user: true,
+    label: 'Cycling (Sport)',
+    stopped_speed_threshold: 1,
+    translatedLabel: 'Cycling (Sport)',
+  },
+  {
+    color: '#000000',
+    has_workouts: true,
+    id: 2,
+    img: '/img/sports/cycling-transport.png',
+    is_active: false,
+    is_active_for_user: false,
+    label: 'Cycling (Transport)',
+    stopped_speed_threshold: 1,
+    translatedLabel: 'Cycling (Transport)',
+  },
+  {
+    color: null,
+    has_workouts: true,
+    id: 3,
+    img: '/img/sports/hiking.png',
+    is_active: true,
+    is_active_for_user: false,
+    label: 'Hiking',
+    pace_speed_display: 'pace',
+    stopped_speed_threshold: 0.1,
+    translatedLabel: 'Hiking',
+  },
+]
+
 describe('translateSports', () => {
   const testsParams: ITestParameter[] = [
     {
@@ -31,41 +68,7 @@ describe('translateSports', () => {
         activeStatus: 'all',
         sportsToInclude: [],
       },
-      expected: [
-        {
-          color: null,
-          has_workouts: false,
-          id: 1,
-          img: '/img/sports/cycling-sport.png',
-          is_active: true,
-          is_active_for_user: true,
-          label: 'Cycling (Sport)',
-          stopped_speed_threshold: 1,
-          translatedLabel: 'Cycling (Sport)',
-        },
-        {
-          color: '#000000',
-          has_workouts: true,
-          id: 2,
-          img: '/img/sports/cycling-transport.png',
-          is_active: false,
-          is_active_for_user: false,
-          label: 'Cycling (Transport)',
-          stopped_speed_threshold: 1,
-          translatedLabel: 'Cycling (Transport)',
-        },
-        {
-          color: null,
-          has_workouts: true,
-          id: 3,
-          img: '/img/sports/hiking.png',
-          is_active: true,
-          is_active_for_user: false,
-          label: 'Hiking',
-          stopped_speed_threshold: 0.1,
-          translatedLabel: 'Hiking',
-        },
-      ],
+      expected: translatedSports,
     },
     {
       description:
@@ -96,6 +99,7 @@ describe('translateSports', () => {
           is_active: true,
           is_active_for_user: false,
           label: 'Hiking',
+          pace_speed_display: 'pace',
           stopped_speed_threshold: 0.1,
           translatedLabel: 'Hiking',
         },
@@ -151,6 +155,7 @@ describe('translateSports', () => {
           is_active: true,
           is_active_for_user: false,
           label: 'Hiking',
+          pace_speed_display: 'pace',
           stopped_speed_threshold: 0.1,
           translatedLabel: 'Randonnée',
         },
@@ -196,6 +201,7 @@ describe('translateSports', () => {
           is_active: true,
           is_active_for_user: false,
           label: 'Hiking',
+          pace_speed_display: 'pace',
           stopped_speed_threshold: 0.1,
           translatedLabel: 'Randonnée',
         },
@@ -285,6 +291,7 @@ describe('translateSports', () => {
           is_active: true,
           is_active_for_user: false,
           label: 'Hiking',
+          pace_speed_display: 'pace',
           stopped_speed_threshold: 0.1,
           translatedLabel: 'Hiking',
         },
@@ -330,6 +337,7 @@ describe('translateSports', () => {
           is_active: true,
           is_active_for_user: false,
           label: 'Hiking',
+          pace_speed_display: 'pace',
           stopped_speed_threshold: 0.1,
           translatedLabel: 'Hiking',
         },
@@ -364,6 +372,7 @@ describe('translateSports', () => {
           is_active: true,
           is_active_for_user: false,
           label: 'Hiking',
+          pace_speed_display: 'pace',
           stopped_speed_threshold: 0.1,
           translatedLabel: 'Randonnée',
         },
@@ -409,6 +418,7 @@ describe('translateSports', () => {
           is_active: true,
           is_active_for_user: false,
           label: 'Hiking',
+          pace_speed_display: 'pace',
           stopped_speed_threshold: 0.1,
           translatedLabel: 'Randonnée',
         },
@@ -460,5 +470,76 @@ describe('translateSports', () => {
         )
       ).toStrictEqual(testParams.expected)
     })
+  })
+})
+
+describe('getDisplayPace', () => {
+  it('it returns false when sport_id is undefined', () => {
+    expect(getDisplayPace(undefined, translatedSports)).toBe(false)
+  })
+  it('it returns false when translated sports are an empty list', () => {
+    expect(getDisplayPace(1, [])).toBe(false)
+  })
+  it('it returns false when sport has no pace_speed_display property', () => {
+    expect(getDisplayPace(1, translatedSports)).toBe(false)
+  })
+  it('it returns true when pace_speed_display is pace', () => {
+    expect(getDisplayPace(3, translatedSports)).toBe(true)
+  })
+  it('it returns true when pace_speed_display is pace_and_speed', () => {
+    const sports = [
+      {
+        color: '#000000',
+        has_workouts: true,
+        id: 2,
+        img: '/img/sports/cycling-transport.png',
+        is_active: false,
+        is_active_for_user: false,
+        label: 'Cycling (Transport)',
+        stopped_speed_threshold: 1,
+        translatedLabel: 'Cycling (Transport)',
+      },
+      {
+        color: null,
+        has_workouts: true,
+        id: 3,
+        img: '/img/sports/hiking.png',
+        is_active: true,
+        is_active_for_user: false,
+        label: 'Hiking',
+        pace_speed_display: 'pace_and_speed',
+        stopped_speed_threshold: 0.1,
+        translatedLabel: 'Hiking',
+      },
+    ]
+    expect(getDisplayPace(3, sports)).toBe(true)
+  })
+  it('it returns false when pace_speed_display is speed', () => {
+    const sports = [
+      {
+        color: '#000000',
+        has_workouts: true,
+        id: 2,
+        img: '/img/sports/cycling-transport.png',
+        is_active: false,
+        is_active_for_user: false,
+        label: 'Cycling (Transport)',
+        stopped_speed_threshold: 1,
+        translatedLabel: 'Cycling (Transport)',
+      },
+      {
+        color: null,
+        has_workouts: true,
+        id: 3,
+        img: '/img/sports/hiking.png',
+        is_active: true,
+        is_active_for_user: false,
+        label: 'Hiking',
+        pace_speed_display: 'speed',
+        stopped_speed_threshold: 0.1,
+        translatedLabel: 'Hiking',
+      },
+    ]
+    expect(getDisplayPace(3, sports)).toBe(false)
   })
 })

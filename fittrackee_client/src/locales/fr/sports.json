@@ -2,6 +2,9 @@
   "Canoeing": {
     "LABEL": "Canoë"
   },
+  "Canoeing (Whitewater)": {
+    "LABEL": "Canoë en eaux vives"
+  },
   "Cycling (Sport)": {
     "LABEL": "Vélo (Sport)"
   },
@@ -22,6 +25,9 @@
   },
   "Kayaking": {
     "LABEL": "Kayak"
+  },
+  "Kayaking (Whitewater)": {
+    "LABEL": "Kayaking en eaux vives"
   },
   "Mountain Biking": {
     "LABEL": "VTT"

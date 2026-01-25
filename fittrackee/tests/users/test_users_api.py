@@ -2774,7 +2774,7 @@ class TestDeleteUser(ReportMixin, ApiTestCaseMixin):
         user_1_admin: User,
         user_2: User,
         user_3: User,
-        user_1_paris: User,
+        user_4: User,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_3_users_max, user_1_admin.email

@@ -29,6 +29,7 @@ import type {
   ILikesPayload,
   TWorkoutsStatistics,
   TWorkoutsMapPayload,
+  IWorkoutElevationSourceDataPayload,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
@@ -152,6 +153,10 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     workoutId: string
   ): void
+  [WORKOUTS_STORE.ACTIONS.UPDATE_ELEVATION_DATA_SOURCES](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IWorkoutElevationSourceDataPayload
+  ): void
 }
 
 export interface IWorkoutsGetters {
@@ -227,7 +232,6 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     state: S,
     contentType: IWorkoutContentType | ''
   ): void
-  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GPX](state: S, gpx: string): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON](
     state: S,
     geojson: GeoJSON | null
@@ -279,6 +283,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.SET_MAP_LOADING](
     state: S,
     mapLoading: boolean
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_ELEVATION_DATA_LOADING](
+    state: S,
+    elevationLoading: boolean
   ): void
 }
 

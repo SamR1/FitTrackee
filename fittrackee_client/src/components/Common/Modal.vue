@@ -37,7 +37,7 @@
               v-if="!errorMessages"
               @click="confirmAction()"
             >
-              {{ $t('buttons.YES') }}
+              {{ $t('common.YES') }}
             </button>
             <button
               tabindex="0"
@@ -45,7 +45,7 @@
               class="cancel"
               @click="emit('cancelAction')"
             >
-              {{ $t(`buttons.${errorMessages ? 'CANCEL' : 'NO'}`) }}
+              {{ $t(errorMessages ? 'buttons.CANCEL' : 'common.NO') }}
             </button>
           </div>
         </template>
@@ -59,6 +59,8 @@
   import type { Ref } from 'vue'
 
   import useApp from '@/composables/useApp'
+  import { ROOT_STORE } from '@/store/constants.ts'
+  import { useStore } from '@/use/useStore.ts'
 
   interface Props {
     title: string
@@ -77,6 +79,8 @@
     additionalActionText: '',
   })
   const { additionalActionText, title, message, strongMessage } = toRefs(props)
+
+  const store = useStore()
 
   const emit = defineEmits<{
     cancelAction: []
@@ -108,6 +112,7 @@
   }
 
   onMounted(() => {
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     previousFocusedElement = document.activeElement as HTMLInputElement | null
     cancelButton = document.getElementById('cancel-button')
     confirmButton = document.getElementById('confirm-button')

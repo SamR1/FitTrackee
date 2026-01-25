@@ -52,6 +52,9 @@ class BaseConfig:
         "STATICMAP_SUBDOMAINS": os.environ.get("STATICMAP_SUBDOMAINS", ""),
     }
 
+    OPEN_ELEVATION_API_URL = os.environ.get("OPEN_ELEVATION_API_URL", "")
+    VALHALLA_API_URL = os.environ.get("VALHALLA_API_URL", "")
+
     DRAMATIQ_BROKER = broker
 
     LANGUAGES = SUPPORTED_LANGUAGES
@@ -78,12 +81,6 @@ class BaseConfig:
     DATA_EXPORT_EXPIRATION = 24  # hours
     VERSION = VERSION
     DEFAULT_PRIVACY_POLICY_DATA = DEFAULT_PRIVACY_POLICY_DATA
-
-    # Enable geospatial features on User Interface
-    # (temporary setting)
-    ENABLE_GEOSPATIAL_FEATURES = (
-        os.environ.get("ENABLE_GEOSPATIAL_FEATURES", "false").lower() == "true"
-    )
 
 
 class DevelopmentConfig(BaseConfig):

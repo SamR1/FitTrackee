@@ -1,0 +1,611 @@
+<!doctype html>
+<html class="no-js" lang="fr" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Recherche" href="../search.html"><link rel="next" title="Traductions" href="translations.html"><link rel="prev" title="OAuth 2.0" href="oauth.html">
+        <link rel="prefetch" href="../_static/ft-logo.png" as="image">
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+        <title>Administration - Documentation FitTrackee 1.1.0</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/fork-awesome.min.css?v=876feb3b" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=c3914d4b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 1.1.0
+</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Documentation FitTrackee 1.1.0
+</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Recherche" name="q" aria-label="Recherche">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Fonctionnalités</a><input aria-label="Toggle navigation of Fonctionnalités" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="registration_and_authentication.html">Inscription et authentification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workout.html">Séance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dashboard.html">Tableau de bord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workouts_list.html">Liste des séances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistics.html">Statistiques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_map.html">Carte Globale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interactions.html">Interactions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="account_and_preferences.html">Compte et préférences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="equipment.html">Équipements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="oauth.html">OAuth 2.0</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="translations.html">Traductions</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../installation/index.html">Installation</a><input aria-label="Toggle navigation of Installation" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation/environments_variables.html">Variables d'environnement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/upgrade.html">Mise à jour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/deployment.html">Déploiement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/map_tile_server.html">Serveur de tuiles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/weather.html">Données météo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/elevation.html">Données d'altitude</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/emails.html">Courriels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/api_rate_limits.html">Limitation d'accès à l'API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/tasks_processing.html">Traitement des tâches</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">Interface de ligne de commande</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../third_party_tools.html">Outils tiers</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">Documentation de l'API</a><input aria-label="Toggle navigation of Documentation de l'API" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/auth.html">Authentification et compte</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/comments.html">Commentaires</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/equipments.html">Équipements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/equipment_types.html">Types d'équipement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/follow_requests.html">Demandes de suivi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/geocode.html">Geocoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/oauth2.html">OAuth2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/notifications.html">Notifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/queued_tasks.html">Tâches en attente</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/records.html">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/reports.html">Signalements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/rss_feeds.html">Flux RSS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/sports.html">Sports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/stats.html">Statistiques</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/timeline.html">Flux de séances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/users.html">Utilisateurs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/workouts.html">Séances</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../troubleshooting/index.html">Dépannage</a><input aria-label="Toggle navigation of Dépannage" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting/administrator.html">Administrateur</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting/user.html">Utilisateur</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contribuer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Historique des modifications</a></li>
+</ul>
+
+</div>
+</div><div id="furo-languages" tabindex="0">
+  <span class="languages-label">
+    <i class="fa fa-language"></i>
+  </span>
+  <div class="languages-list">
+    <a href="../../en/features/administration.html" hreflang=en lang=en>
+      English
+    </a>
+    <a href="../../fr/features/administration.html" hreflang=fr lang=fr>
+      Français
+    </a>
+  </div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/features/administration.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="administration">
+<h1>Administration<a class="headerlink" href="#administration" title="Lien vers cette rubrique">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 0.3.0.</span></p>
+</div>
+<figure class="align-default">
+<img alt="Administration de FitTrackee" src="../_images/administration-menu.png" />
+</figure>
+<section id="application">
+<h2>Application<a class="headerlink" href="#application" title="Lien vers cette rubrique">¶</a></h2>
+<p>Seuls les utilisateurs disposant de droits d'administration peuvent accéder à l'administration de l'application.</p>
+<section id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Lien vers cette rubrique">¶</a></h3>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.6.0: </span>ajout de l'adresse électronique pour contacter l'administrateur</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.7.4: </span>ajout de la taille maximale du fichier et du nombre maximale de fichiers dans une archive</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.8.5: </span>ajout du nombre maximum de séances pour les statistiques d'un sport</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.10.0: </span>ajout du nombre maximal de fichier pour l'ajout synchrone de fichiers et du nombre maximal des séances affichées sur la carte globale</p>
+</div>
+<p>Les paramètres suivants peuvent être définis :</p>
+<ul class="simple">
+<li><p>limite d'utilisateurs actifs (valeur par défaut : 0). Si la valeur est égale  à 0, l'inscription est activée (aucune limite n'est définie).</p></li>
+<li><p>taille maximale du fichier (ajouté unitairement ou dans une archive zip, valeur par défaut : 1 Mo)</p></li>
+<li><p>taille maximale de l'archive zip (valeur par défaut : 10 Mo)</p></li>
+<li><p>nombre maximum de fichiers dans l'archive zip (valeur par défaut : 10)</p></li>
+<li><p>nombre maximum de fichiers pour le traitement synchrone (valeur par défaut : 10). Si le nombre maximum de fichiers dans l'archive zip est égal à celui des fichiers traités en synchrone, le chargement asynchrone est désactivé.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Lors de la mise à jour vers la version 0.10.0, le téléchargement asynchrone est désactivé, puisque les deux valeurs sont égales.</p>
+</div>
+<ul class="simple">
+<li><p>nombre maximum de séances pour les statistiques d'un sport (par défaut : 10000). S'il est égal à 0, toutes les séances sont récupérées pour calculer les statistiques</p></li>
+<li><p>nombre maximum de séances affichées sur la carte globale (par défaut : 10000), cette valeur ne peut pas dépasser 50000</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Le nombre maximal de séances pour les statistiques ou la carte globale doit être défini en fonction des capacités du serveur.</div>
+<div class="line">Dans le cas de la carte globale, cette valeur a également un impact sur les performances de rendu côté client (en fonction du navigateur et des capacités de l'appareil affichant la carte).</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>adresse électronique pour contacter l'administrateur</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<div class="line-block">
+<div class="line">Si plusieurs <em>workers</em> pour l'application sont lancés (voir la <a class="reference external" href="../installation/environments_variables.html#envvar-APP_WORKERS">variables d'environnement</a>), il peut être nécessaire de tous les redémarrer pour prendre en compte les changements.</div>
+<div class="line">La mise à jour du <em>timeout</em> (voir la <a class="reference external" href="../installation/environments_variables.html#envvar-APP_TIMEOUT">variable d'environnement</a>) ou de la configuration du serveur peut être nécessaire pour gérer des fichiers volumineux (comme <a class="reference external" href="https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size">nginx</a> par exemple).</div>
+<div class="line">Des valeurs trop élevées pour la taille ou le nombre de fichiers peuvent être entraîner des erreurs.</div>
+<div class="line">Si un fournisseur de données météo est configuré, des erreurs liées à la limitation de l'API peuvent être rencontrées.</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si l'envoi de courriels est désactivé, un avertissement s'affiche.</p>
+</div>
+</section>
+<section id="about">
+<h3>À propos<a class="headerlink" href="#about" title="Lien vers cette rubrique">¶</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 0.7.13.</span></p>
+</div>
+<div class="line-block">
+<div class="line">Il est possible d'afficher des informations supplémentaires qui peuvent être utiles aux utilisateurs dans la page <strong>À propos</strong> (comme les règles de l'instance).</div>
+<div class="line">La syntaxe Markdown peut être utilisée.</div>
+</div>
+</section>
+<section id="privacy-policy">
+<h3>Politique de confidentialité<a class="headerlink" href="#privacy-policy" title="Lien vers cette rubrique">¶</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 0.7.13.</span></p>
+</div>
+<div class="line-block">
+<div class="line">Une politique de confidentialité par défaut est disponible (adaptée de la <a class="reference external" href="https://github.com/discourse/discourse">Politique de confidentialité de Discourse</a>).</div>
+<div class="line">Une politique de confidentialité personnalisée peut être définie si nécessaire (la syntaxe Markdown peut être utilisée). Une mise à jour de la politique affichera un message sur le tableau de bord des utilisateurs pour qu'ils puissent en prendre connaissance.</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Seule la politique de confidentialité par défaut est traduite (si la traduction est disponible).</p>
+</div>
+</section>
+</section>
+<section id="moderation">
+<h2>Modération<a class="headerlink" href="#moderation" title="Lien vers cette rubrique">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 0.9.0.</span></p>
+</div>
+<p>Seul les utilisateurs ayant des droits d'administration ou de modération peuvent accéder à la modération.</p>
+<p>Cette page affiche la liste des signalements, qui peuvent être filtrés.</p>
+<p>Les administrateurs et les modérateurs peuvent gérer un signalement :</p>
+<ul class="simple">
+<li><p>ajouter un commentaire</p></li>
+<li><p>envoyer un avertissement</p></li>
+<li><p>suspendre ou réactiver une séance ou un commentaire</p></li>
+<li><p>suspendre ou réactiver le compte d'un utilisateur</p></li>
+<li><p>marquer un signalement comme résolu ou non résolu</p></li>
+</ul>
+<figure class="align-default">
+<img alt="Signalement sur FitTrackee" src="../_images/report-in-administration.png" />
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Le contenu signalé est visible quelque soit le niveau de visibilité.</p>
+</div>
+<div class="line-block">
+<div class="line">Les utilisateurs peuvent faire appel de la suspension ou de l'avertissement.</div>
+<div class="line">L'utilisateur suspendu peut uniquement accéder à son compte, faire appel de la suspension du compte, demander l'export de données ou supprimer son compte. Ses séances et commentaires ne sont plus visibles.</div>
+</div>
+</section>
+<section id="equipment-types">
+<h2>Types d'équipement<a class="headerlink" href="#equipment-types" title="Lien vers cette rubrique">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 0.8.0.</span></p>
+</div>
+<p>Seuls les utilisateurs disposant de droits d'administration peuvent accéder l'administration des types d'équipement.</p>
+<figure class="align-default">
+<img alt="Administration du type d'équipement sur FitTrackee" src="../_images/equipment-types-in-administration.png" />
+</figure>
+<p>Il est possible d'activer ou désactiver un type d'équipement afin de correspondre aux sports désactivés (un type d'équipement peut être désactivé même si un équipement pour ce type existe).</p>
+</section>
+<section id="queued-tasks">
+<h2>Tâches en attente<a class="headerlink" href="#queued-tasks" title="Lien vers cette rubrique">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">Ajouté dans la version 0.10.0.</span></p>
+</div>
+<p>Seuls les utilisateurs ayant des droits d'administration peuvent accéder aux tâches en attente pour les exports des données utilisateurs ou le chargement des archives de séances.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Si aucun <em>worker</em> n'est lancé, une <a class="reference external" href="../cli.html">interface de ligne de commandes</a> permet de traiter les tâches en attente.</p>
+</div>
+</section>
+<section id="sports">
+<h2>Sports<a class="headerlink" href="#sports" title="Lien vers cette rubrique">¶</a></h2>
+<div class="line-block">
+<div class="line">Seuls les utilisateurs ayant des droits d'administration peuvent accéder à l'administration des sports.</div>
+</div>
+<figure class="align-default">
+<img alt="Administration des sports sur FitTrackee" src="../_images/sports-administration.png" />
+</figure>
+<div class="line-block">
+<div class="line">Il est possible d'activer ou désactiver un sport (un sport peut être désactivé même si une séance avec ce sport existe).</div>
+</div>
+</section>
+<section id="users">
+<h2>Utilisateurs<a class="headerlink" href="#users" title="Lien vers cette rubrique">¶</a></h2>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.6.0: </span>ajout de l'activation d'un compte utilisateur et de la mise à jour de l'adresse électronique et du mot de passe</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 0.9.0: </span>ajout des rôles de modérateur et propriétaire, mise à jour du rôle d'administrateur</p>
+</div>
+<p>Seuls les utilisateurs ayant des droits d'administration peuvent accéder à l'administration des utilisateurs.</p>
+<p>Les rôles suivants sont disponibles :</p>
+<ul class="simple">
+<li><p>utilisateur</p>
+<ul>
+<li><p>pas de droits de modération ou d'administration</p></li>
+</ul>
+</li>
+<li><p>modérateur</p>
+<ul>
+<li><p>peut seulement accéder à l'entrée modération dans l'administration</p></li>
+<li><p>peut voir les signalements</p></li>
+<li><p>effectuer des actions liées aux signalements</p></li>
+</ul>
+</li>
+<li><p>administrateur</p>
+<ul>
+<li><p>a les droits de modération</p></li>
+<li><p>peut accéder à toutes les entrées de l'administration :</p>
+<ul>
+<li><p>application</p></li>
+<li><p>modération</p></li>
+<li><p>types d'équipement</p></li>
+<li><p>sports</p></li>
+<li><p>utilisateurs</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>propriétaire</p>
+<ul>
+<li><p>a les droits d'administration</p></li>
+<li><p>ce rôle ne peut pas être modifié par un autre administrateur ou propriétaire dans l'application</p></li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Les rôles définis avant la version 0.9.0 restent inchangés.</p>
+</div>
+<p>L'administration des utilisateurs affiche la liste des utilisateurs, qui peut être filtrée.</p>
+<p>Il est possible de modifier un utilisateur afin de :</p>
+<ul class="simple">
+<li><p>mettre à jour le rôle. Un utilisateur avec un rôle de propriétaire ne peut pas être modifié par un autre utilisateur. Le rôle de propriétaire ne peut être assigné ou retiré qu'avec la CLI de <strong>FitTrackee</strong>.</p></li>
+<li><p>activer son compte</p></li>
+<li><p>mettre à jour son adresse électronique (au cas où son compte serait bloqué)</p></li>
+<li><p>réinitialiser son mot de passe (dans le cas où son compte est verrouillé).Si l'envoi des courriels est désactivé, cela n'est possible que via <a class="reference external" href="../cli.html">l'interface de ligne de commande (CLI)</a>.</p></li>
+</ul>
+<p>Il est également possible le compte d'un utilisateur.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="translations.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Traductions</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="oauth.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">OAuth 2.0</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2017 - 2026, SamR1
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link fa fa-github fa-lg" href="https://github.com/SamR1/FitTrackee" aria-label="GitHub"></a>
+              <a class="muted-link fa fa-mastodon fa-lg" rel="me" href="https://fosstodon.org/@FitTrackee" aria-label="Mastodon"></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Administration</a><ul>
+<li><a class="reference internal" href="#application">Application</a><ul>
+<li><a class="reference internal" href="#configuration">Configuration</a></li>
+<li><a class="reference internal" href="#about">À propos</a></li>
+<li><a class="reference internal" href="#privacy-policy">Politique de confidentialité</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#moderation">Modération</a></li>
+<li><a class="reference internal" href="#equipment-types">Types d'équipement</a></li>
+<li><a class="reference internal" href="#queued-tasks">Tâches en attente</a></li>
+<li><a class="reference internal" href="#sports">Sports</a></li>
+<li><a class="reference internal" href="#users">Utilisateurs</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=740f9163"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/translations.js?v=e6b791cb"></script>
+    </body>
+</html>

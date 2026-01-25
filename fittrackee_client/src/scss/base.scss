@@ -46,6 +46,10 @@ body {
   min-height: 100vh;
 }
 
+sup {
+  font-size: 0.65em;
+}
+
 a {
   color: var(--app-a-color);
   text-decoration-color: var(--app-a-text-decoration-color);
@@ -118,6 +122,10 @@ button {
     &.confirm:disabled {
       border-color: var(--disabled-border-color);
       color: var(--disabled-color);
+
+      img {
+        filter: invert(1) brightness(1.5) contrast(0.1);
+      }
     }
   }
   &.icon-button {
@@ -241,9 +249,25 @@ button {
 }
 
 .mountains,
+.cadence,
+.chronometer {
+  height: 16px;
+  filter: var(--icon-svg-filter);
+}
+.mountains,
 .cadence {
   margin-bottom: -3px;
-  height: 16px;
+}
+.cadence,
+.chronometer {
+  margin-left: -2px;
+}
+.chronometer {
+  margin-bottom: -1px;
+  margin-right: 2px;
+}
+.elevation-edition {
+  height: 14px;
   filter: var(--icon-svg-filter);
 }
 
@@ -489,7 +513,7 @@ button {
     }
 
     .filters-container {
-      width: 25%;
+      width: 20%;
       @media screen and (max-width: $medium-limit) {
         width: 100%;
 
@@ -523,7 +547,7 @@ button {
     }
 
     .list-container {
-      width: 75%;
+      width: 80%;
       @media screen and (max-width: $medium-limit) {
         width: 100%;
       }

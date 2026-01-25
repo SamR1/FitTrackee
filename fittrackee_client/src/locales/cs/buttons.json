@@ -14,11 +14,9 @@
   "ENABLE": "Povolit",
   "FILTER": "Filtr",
   "LOGIN": "Přihlášení",
-  "NO": "Ne",
   "REFRESH_TOTALS": "Obnovit součty",
   "REGISTER": "Registrace",
   "REQUEST_DATA_EXPORT": "Požádat o export dat",
   "RESET": "Resetovat",
-  "SUBMIT": "Odeslat",
-  "YES": "Ano"
+  "SUBMIT": "Odeslat"
 }

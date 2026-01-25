@@ -1,7 +1,3 @@
-NSMAP = {
-    "gpxtpx": "http://www.garmin.com/xmlschemas/TrackPointExtension/v1",
-}
-
 GARMIN_DEVICES = {
     473: "Forerunner 301",
     474: "Forerunner 301",

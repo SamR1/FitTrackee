@@ -18,8 +18,8 @@ from fittrackee.responses import (
 from fittrackee.users.models import User
 from fittrackee.users.roles import UserRole
 
-from .constants import SPORTS_WITHOUT_ELEVATION_DATA
 from .models import Sport, Workout
+from .utils.sports import get_sports_displayed_data
 from .utils.uploads import get_upload_dir_size
 from .utils.workouts import get_average_speed, get_datetime_from_request_args
 
@@ -27,7 +27,11 @@ stats_blueprint = Blueprint("stats", __name__)
 
 
 def get_stats_from_row(
-    row: List, stats_type: str, with_elevation_data: bool
+    row: List,
+    stats_type: str,
+    with_elevation_data: bool,
+    with_pace_data: bool,
+    with_speed_data: bool,
 ) -> Dict:
     row_stats = {
         "total_workouts": row[2],
@@ -45,7 +49,13 @@ def get_stats_from_row(
         ),
     }
     if stats_type == "average":
-        row_stats["average_speed"] = round(float(row[1]), 2)
+        if with_speed_data and row[1]:
+            row_stats["average_speed"] = round(float(row[1]), 2)
+        if with_pace_data and row[8]:
+            row_stats["average_pace"] = int(row[8].total_seconds())
+    if stats_type == "total":
+        row_stats["total_calories"] = row[9]
+
     return row_stats
 
 
@@ -57,6 +67,8 @@ def get_workouts_by_time(
     """
     Get workouts statistics for a user by time.
     For now only authenticated users can access their statistics.
+    Average speed is returned for Hiking, Running, Trail and Walking only if
+    user preferences allow it.
 
     **Scope**: ``workouts:read``
 
@@ -89,27 +101,30 @@ def get_workouts_by_time(
           "statistics": {
             "2017": {
               "3": {
-                "total_workouts": 2,
                 "total_ascent": 203.0,
+                "total_calories": null,
                 "total_ascent": 156.0,
                 "total_distance": 15.282,
                 "total_duration": 12341
+                "total_workouts": 2
               }
             },
             "2019": {
               "1": {
-                "total_workouts": 3,
                 "total_ascent": 150.0,
+                "total_calories": 1300,
                 "total_ascent": 178.0,
                 "total_distance": 47,
                 "total_duration": 9960
+                "total_workouts": 3
               },
               "2": {
-                "total_workouts": 1,
                 "total_ascent": 46.0,
+                "total_calories": 250,
                 "total_ascent": 78.0,
                 "total_distance": 5.613,
                 "total_duration": 1267
+                "total_workouts": 1
               }
             }
           }
@@ -133,6 +148,7 @@ def get_workouts_by_time(
                 "average_ascent": 78.0,
                 "average_distance": 15.282,
                 "average_duration": 7641,
+                "average_pace": 701,
                 "average_speed": 4.48,
                 "total_workouts": 2
               }
@@ -272,11 +288,19 @@ def get_workouts_by_time(
                 calculation_method(Workout.ascent),
                 calculation_method(Workout.descent),
                 stats_key,
-                Sport.label,
+                (
+                    func.avg(Workout.ave_pace)  # type: ignore
+                    if stats_type == "average"
+                    else True
+                ),
+                (
+                    func.sum(Workout.calories)  # type: ignore
+                    if stats_type == "total"
+                    else True
+                ),
             )
-            .join(Sport, Sport.id == Workout.sport_id)
             .filter(*filters)
-            .group_by(stats_key, Workout.sport_id, Sport.label)
+            .group_by(stats_key, Workout.sport_id)
         )
 
         if current_app.config["stats_workouts_limit"]:
@@ -293,6 +317,9 @@ def get_workouts_by_time(
             )
         results = workouts_query.all()
 
+        sports = Sport.query.filter().all()
+        sports_displayed_data = get_sports_displayed_data(sports, auth_user)
+
         statistics = {}
         for row in results:
             date_key = row[7]
@@ -301,20 +328,33 @@ def get_workouts_by_time(
                     get_datetime_in_utc(date_key + "-1", "%G-%V-%u") - delta
                 ).strftime("%Y-%m-%d")
             sport_key = row[0]
-            with_elevation_data = row[8] not in SPORTS_WITHOUT_ELEVATION_DATA
+            with_elevation_data = sports_displayed_data[
+                sport_key
+            ].display_elevation
+            with_pace_data = sports_displayed_data[sport_key].display_pace
+            with_speed_data = sports_displayed_data[sport_key].display_speed
+
             if date_key not in statistics:
                 statistics[date_key] = {
                     sport_key: get_stats_from_row(
-                        list(row), stats_type, with_elevation_data
+                        list(row),
+                        stats_type,
+                        with_elevation_data,
+                        with_pace_data,
+                        with_speed_data,
                     )
                 }
             elif sport_key not in statistics[date_key]:
                 statistics[date_key][sport_key] = get_stats_from_row(
-                    list(row), stats_type, with_elevation_data
+                    list(row),
+                    stats_type,
+                    with_elevation_data,
+                    with_pace_data,
+                    with_speed_data,
                 )
             else:
                 statistics[date_key][sport_key]["total_workouts"] += row[2]
-                if stats_type == "average":
+                if stats_type == "average" and with_speed_data:
                     statistics[date_key][sport_key]["average_speed"] = (
                         get_average_speed(
                             statistics[date_key][sport_key]["total_workouts"],
@@ -322,6 +362,10 @@ def get_workouts_by_time(
                             row[1],
                         )
                     )
+                    if with_pace_data and row[8]:
+                        statistics[date_key][sport_key]["average_pace"] = int(
+                            row[8].total_seconds()
+                        )
                 statistics[date_key][sport_key][f"{stats_type}_distance"] += (
                     round(float(row[3]), 2)
                 )
@@ -336,6 +380,8 @@ def get_workouts_by_time(
                     statistics[date_key][sport_key][
                         f"{stats_type}_ascent"
                     ] += round(float(row[6]), 2)
+                if stats_type == "total":
+                    statistics[date_key][sport_key]["total_calories"] = row[9]
 
         return {
             "status": "success",
@@ -353,6 +399,8 @@ def get_workouts_by_sport(
     """
     Get workouts statistics for a user by sport.
     For now only authenticated users can access their statistics.
+    Average speed is returned for Hiking, Running, Trail and Walking only if
+    user preferences allow it.
 
     **Scope**: ``workouts:read``
 
@@ -387,10 +435,12 @@ def get_workouts_by_sport(
               "average_descent": 59.33,
               "average_distance": 15.67,
               "average_duration": 3320,
+              "average_pace": null,
               "average_speed": 16.99,
               "total_workouts": 3,
               "total_ascent": 150.0,
-              "total_ascent": 178.0,
+              "total_calories": 1354,
+              "total_descent": 178.0,
               "total_distance": 47,
               "total_duration": 9960
             },
@@ -399,10 +449,12 @@ def get_workouts_by_sport(
               "average_descent": 78.0,
               "average_distance": 5.613,
               "average_duration": 1267,
+              "average_pace": null,
               "average_speed": 15.95,
               "total_workouts": 1,
               "total_ascent": 46.0,
-              "total_ascent": 78.0,
+              "total_calories": null,
+              "total_descent": 78.0,
               "total_distance": 5.613,
               "total_duration": 1267
             },
@@ -411,10 +463,12 @@ def get_workouts_by_sport(
               "average_ascent": 78.0,
               "average_distance": 15.282,
               "average_duration": 7641,
-              "average_speed": 4.48,
+              "average_pace": "0:13:24",
+              "average_speed": null,
               "total_workouts": 2,
               "total_ascent": 203.0,
-              "total_ascent": 156.0,
+              "total_calories": 540,
+              "total_descent": 156.0,
               "total_distance": 15.282,
               "total_duration": 12341
             }
@@ -438,6 +492,7 @@ def get_workouts_by_sport(
               "average_descent": 78.0,
               "average_distance": 5.613,
               "average_duration": 1267,
+              "average_pace": null,
               "average_speed": 15.95,
               "total_workouts": 1,
               "total_ascent": 46.0,
@@ -494,7 +549,6 @@ def get_workouts_by_sport(
 
         params = request.args.copy()
         sport_id = params.get("sport_id")
-        sport_ids_without_elevation_data = []
         filters = [Workout.user_id == user.id]
 
         if sport_id:
@@ -502,15 +556,10 @@ def get_workouts_by_sport(
             if not sport:
                 return NotFoundErrorResponse("sport does not exist")
             filters.append(Workout.sport_id == sport_id)
-            if sport.label in SPORTS_WITHOUT_ELEVATION_DATA:
-                sport_ids_without_elevation_data = [sport.id]
+            sports = [sport]
         else:
-            sports_without_elevation_data = Sport.query.filter(
-                Sport.label.in_(SPORTS_WITHOUT_ELEVATION_DATA)
-            ).all()
-            sport_ids_without_elevation_data = [
-                sport.id for sport in sports_without_elevation_data
-            ]
+            sports = Sport.query.filter().all()
+        sports_displayed_data = get_sports_displayed_data(sports, auth_user)
 
         workouts_query = Workout.query.filter(*filters)
         total_workouts = workouts_query.count()
@@ -533,6 +582,8 @@ def get_workouts_by_sport(
                 func.sum(workouts_subquery.c.descent),
                 func.sum(workouts_subquery.c.distance),
                 func.sum(workouts_subquery.c.moving),
+                func.avg(workouts_subquery.c.ave_pace),
+                func.sum(workouts_subquery.c.calories),
                 func.count(workouts_subquery.c.id),
             )
             .group_by(workouts_subquery.c.sport_id)
@@ -541,11 +592,15 @@ def get_workouts_by_sport(
 
         statistics = {}
         for row in results:
-            return_elevation_data = (
-                row[0] not in sport_ids_without_elevation_data
-            )
+            return_elevation_data = sports_displayed_data[
+                row[0]
+            ].display_elevation
+            return_pace_data = sports_displayed_data[row[0]].display_pace
+            return_pace_speed = sports_displayed_data[row[0]].display_speed
             statistics[row[0]] = {
-                "average_speed": round(float(row[1]), 2),
+                "average_speed": (
+                    round(float(row[1]), 2) if return_pace_speed else None
+                ),
                 "average_ascent": (
                     None
                     if row[2] is None or not return_elevation_data
@@ -570,7 +625,13 @@ def get_workouts_by_sport(
                 ),
                 "total_distance": round(float(row[8]), 2),
                 "total_duration": str(row[9]).split(".")[0],
-                "total_workouts": row[10],
+                "average_pace": (
+                    None
+                    if row[10] is None or not return_pace_data
+                    else str(row[10]).split(".")[0]
+                ),
+                "total_calories": row[11],
+                "total_workouts": row[12],
             }
 
         return {

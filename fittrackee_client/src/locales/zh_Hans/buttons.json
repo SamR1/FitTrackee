@@ -18,7 +18,6 @@
   "FOLLOW": "关注",
   "HIDE": "隐藏",
   "LOGIN": "登录",
-  "NO": "否",
   "READ_MORE": "查看更多",
   "REFRESH": "刷新",
   "REFRESH_TOTALS": "刷新总计",
@@ -30,6 +29,5 @@
   "SEE_DETAIL": "查看详情",
   "SUBMIT": "提交",
   "UNBLOCK": "取消屏蔽",
-  "UNFOLLOW": "取消关注",
-  "YES": "是"
+  "UNFOLLOW": "取消关注"
 }

@@ -10,11 +10,12 @@
                 name: 'WorkoutSegment',
                 params: {
                   workoutId: segment.workout_id,
-                  segmentId: index + 1,
+                  segmentId: segment.segment_id,
                 },
               }"
-              >{{ $t('workouts.SEGMENT', 1) }} {{ index + 1 }}</router-link
             >
+              {{ $t('workouts.SEGMENT', 1) }} {{ index + 1 }}
+            </router-link>
             ({{ $t('workouts.DISTANCE') }}:
             <Distance
               :distance="segment.distance"

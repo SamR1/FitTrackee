@@ -49,6 +49,28 @@
           />
           {{ $t('workouts.SPEED') }}
         </label>
+        <label v-if="fullStats && statsType === 'total'">
+          <input
+            type="radio"
+            name="value_type"
+            value="total_calories"
+            :checked="displayedData === 'total_calories'"
+            :disabled="isDisabled"
+            @click="updateDisplayData"
+          />
+          {{ $t('workouts.CALORIES') }}
+        </label>
+        <label v-if="fullStats && statsType === 'average'">
+          <input
+            type="radio"
+            name="value_type"
+            value="average_pace"
+            :checked="displayedData === 'average_pace'"
+            :disabled="isDisabled"
+            @click="updateDisplayData"
+          />
+          {{ $t('workouts.PACE') }}
+        </label>
         <label v-if="fullStats">
           <input
             type="radio"
@@ -105,6 +127,16 @@
             $t(`statistics.TIME_FRAMES.${selectedTimeFrame}`)
           }}
         </div>
+      </div>
+      <div v-if="displayedData === 'total_calories'" class="calories-help">
+        <span class="info-box">
+          <i class="fa fa-info-circle" aria-hidden="true" />
+          {{
+            $t(
+              'workouts.TOTAL_CALORIES_MAY_BE_INCOMPLETE_IF_FILES_DO_NOT_CONTAIN_DATA'
+            )
+          }}
+        </span>
       </div>
     </div>
   </div>
@@ -245,6 +277,21 @@
       type: statsType.value,
     }
   }
+  function getDisplayedData(newStatsType: TStatisticsType) {
+    if (
+      newStatsType === 'total' &&
+      ['average_speed', 'average_pace'].includes(displayedData.value)
+    ) {
+      return 'total_distance'
+    }
+    if (
+      newStatsType === 'average' &&
+      displayedData.value === 'total_calories'
+    ) {
+      return 'average_distance'
+    }
+    return `${newStatsType}_${displayedData.value.split('_')[1]}` as TStatisticsDatasetKeys
+  }
 
   watch(
     () => chartParams.value,
@@ -255,10 +302,7 @@
   watch(
     () => statsType.value,
     async (newStatsType) => {
-      displayedData.value =
-        newStatsType === 'total' && displayedData.value === 'average_speed'
-          ? 'total_distance'
-          : (`${statsType.value}_${displayedData.value.split('_')[1]}` as TStatisticsDatasetKeys)
+      displayedData.value = getDisplayedData(newStatsType)
     }
   )
 
@@ -286,7 +330,8 @@
       }
     }
 
-    .workouts-average {
+    .workouts-average,
+    .calories-help {
       display: flex;
       margin: $default-padding 0 0 $default-padding * 2.5;
       min-height: 20px;

@@ -3,6 +3,7 @@ export type TLanguage =
   // | 'bn'  //disabled for now
   | 'ca'
   | 'cs'
+  // | 'da' //disabled for now
   | 'de'
   | 'en'
   | 'es'
@@ -19,5 +20,6 @@ export type TLanguage =
   | 'pt'
   | 'ru'
   // | 'sl' //disabled for now
+  // | 'sv' //disabled for now
   | 'tr'
   | 'zh_Hans'

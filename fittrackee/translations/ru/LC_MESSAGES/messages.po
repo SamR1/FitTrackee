@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-10-01 18:53+0200\n"
-"PO-Revision-Date: 2025-10-01 08:39+0000\n"
-"Last-Translator: Leo <lsp11@users.noreply.hosted.weblate.org>\n"
+"POT-Creation-Date: 2026-01-25 10:38+0100\n"
+"PO-Revision-Date: 2026-01-18 03:02+0000\n"
+"Last-Translator: Eduard <eduard.krimmel@gmail.com>\n"
 "Language: ru\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/fittrackee"
 "/fittrackee-api-emails/ru/>\n"
@@ -472,98 +472,106 @@ msgid "Canoeing"
 msgstr "Гребля на каноэ"
 
 #: fittrackee/feeds/feeds/constants.py:6
+msgid "Canoeing (Whitewater)"
+msgstr ""
+
+#: fittrackee/feeds/feeds/constants.py:7
 msgid "Cycling (Sport)"
 msgstr "Велосипед (спорт)"
 
-#: fittrackee/feeds/feeds/constants.py:7
+#: fittrackee/feeds/feeds/constants.py:8
 msgid "Cycling (Transport)"
 msgstr "Велосипед (транспорт)"
 
-#: fittrackee/feeds/feeds/constants.py:8
+#: fittrackee/feeds/feeds/constants.py:9
 msgid "Cycling (Trekking)"
 msgstr "Велосипед (треккинг)"
 
-#: fittrackee/feeds/feeds/constants.py:9
+#: fittrackee/feeds/feeds/constants.py:10
 msgid "Cycling (Virtual)"
 msgstr "Велосипед (виртуальный)"
 
-#: fittrackee/feeds/feeds/constants.py:10
+#: fittrackee/feeds/feeds/constants.py:11
 msgid "Halfbike"
 msgstr "Халфбайк"
 
-#: fittrackee/feeds/feeds/constants.py:11
+#: fittrackee/feeds/feeds/constants.py:12
 msgid "Hiking"
 msgstr "Хайкинг"
 
-#: fittrackee/feeds/feeds/constants.py:12
+#: fittrackee/feeds/feeds/constants.py:13
 msgid "Kayaking"
 msgstr "Гребля на каяке"
 
-#: fittrackee/feeds/feeds/constants.py:13
+#: fittrackee/feeds/feeds/constants.py:14
+msgid "Kayaking (Whitewater)"
+msgstr ""
+
+#: fittrackee/feeds/feeds/constants.py:15
 msgid "Mountain Biking"
 msgstr "Горный велосипед"
 
-#: fittrackee/feeds/feeds/constants.py:14
+#: fittrackee/feeds/feeds/constants.py:16
 msgid "Mountain Biking (Electric)"
 msgstr "Горный велосипед (электро)"
 
-#: fittrackee/feeds/feeds/constants.py:15
+#: fittrackee/feeds/feeds/constants.py:17
 msgid "Mountaineering"
 msgstr "Альпинизм"
 
-#: fittrackee/feeds/feeds/constants.py:16
+#: fittrackee/feeds/feeds/constants.py:18
 msgid "Open Water Swimming"
 msgstr "Плавание на открытой воде"
 
-#: fittrackee/feeds/feeds/constants.py:17
+#: fittrackee/feeds/feeds/constants.py:19
 msgid "Padel (Outdoor)"
-msgstr ""
+msgstr "Падел (на открытом воздухе)"
 
-#: fittrackee/feeds/feeds/constants.py:18
+#: fittrackee/feeds/feeds/constants.py:20
 msgid "Paragliding"
 msgstr "Парапланеризм"
 
-#: fittrackee/feeds/feeds/constants.py:19
+#: fittrackee/feeds/feeds/constants.py:21
 msgid "Rowing"
 msgstr "Гребля"
 
-#: fittrackee/feeds/feeds/constants.py:20
+#: fittrackee/feeds/feeds/constants.py:22
 msgid "Running"
 msgstr "Бег"
 
-#: fittrackee/feeds/feeds/constants.py:21
+#: fittrackee/feeds/feeds/constants.py:23
 msgid "Skiing (Alpine)"
 msgstr "Горные лыжи"
 
-#: fittrackee/feeds/feeds/constants.py:22
+#: fittrackee/feeds/feeds/constants.py:24
 msgid "Skiing (Cross Country)"
 msgstr "Лыжные гонки"
 
-#: fittrackee/feeds/feeds/constants.py:23
+#: fittrackee/feeds/feeds/constants.py:25
 msgid "Snowshoes"
 msgstr "Снегоступы"
 
-#: fittrackee/feeds/feeds/constants.py:24
+#: fittrackee/feeds/feeds/constants.py:26
 msgid "Standup Paddleboarding"
 msgstr "Сапсёрфинг"
 
-#: fittrackee/feeds/feeds/constants.py:25
+#: fittrackee/feeds/feeds/constants.py:27
 msgid "Swimrun"
 msgstr "Свимран"
 
-#: fittrackee/feeds/feeds/constants.py:26
+#: fittrackee/feeds/feeds/constants.py:28
 msgid "Tennis (Outdoor)"
 msgstr "Теннис (на улице)"
 
-#: fittrackee/feeds/feeds/constants.py:27
+#: fittrackee/feeds/feeds/constants.py:29
 msgid "Trail"
 msgstr "Трейл"
 
-#: fittrackee/feeds/feeds/constants.py:28
+#: fittrackee/feeds/feeds/constants.py:30
 msgid "Walking"
 msgstr "Ходьба"
 
-#: fittrackee/feeds/feeds/constants.py:29
+#: fittrackee/feeds/feeds/constants.py:31
 msgid "Windsurfing"
 msgstr "Виндсёрфинг"
 

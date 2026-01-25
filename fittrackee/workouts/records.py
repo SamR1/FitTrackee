@@ -1,13 +1,15 @@
 from typing import Dict
 
 from flask import Blueprint
-from sqlalchemy import and_, or_
+from sqlalchemy.sql import select
+from sqlalchemy.sql import text as sql_text
 
+from fittrackee import db
 from fittrackee.oauth2.server import require_auth
 from fittrackee.users.models import User
 
 from .constants import SPORTS_WITHOUT_ELEVATION_DATA
-from .models import Record, Sport
+from .models import Record
 
 records_blueprint = Blueprint("records", __name__)
 
@@ -18,8 +20,10 @@ def get_records(auth_user: User) -> Dict:
     """
     Get all records for authenticated user.
 
-    Following types of records are available:
+    Following types of records are available, depending en sport:
+        - average pace (record_type: ``AP``)
         - average speed (record_type: ``AS``)
+        - best pace (record_type: ``BP``)
         - farthest distance (record_type: ``FD``)
         - highest ascent (record_type: ``HA``)
         - longest duration (record_type: ``LD``)
@@ -47,47 +51,65 @@ def get_records(auth_user: User) -> Dict:
         "data": {
           "records": [
             {
+              "id": 14,
+              "record_type": "AP",
+              "sport_id": 5,
+              "user": "admin",
+              "value": "0:07:01",
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
               "id": 9,
               "record_type": "AS",
-              "sport_id": 1,
+              "sport_id": 5,
               "user": "admin",
-              "value": 18,
+              "value": 8.55,
+              "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
+              "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
+            },
+            {
+              "id": 15,
+              "record_type": "BP",
+              "sport_id": 5,
+              "user": "admin",
+              "value": "0:05:58",
               "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },
             {
               "id": 10,
               "record_type": "FD",
-              "sport_id": 1,
+              "sport_id": 5,
               "user": "admin",
-              "value": 18,
+              "value": 2.858,
               "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },
             {
               "id": 13,
               "record_type": "HA",
-              "sport_id": 1,
+              "sport_id": 5,
               "user": "Sam",
-              "value": 43.97,
+              "value": 7.029,
               "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },
             {
               "id": 11,
               "record_type": "LD",
-              "sport_id": 1,
+              "sport_id": 5,
               "user": "admin",
-              "value": "1:01:00",
+              "value": "0:20:24",
               "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             },
             {
               "id": 12,
               "record_type": "MS",
-              "sport_id": 1,
+              "sport_id": 5,
               "user": "admin",
-              "value": 18,
+              "value": 10.06,
               "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
               "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
             }
@@ -121,21 +143,46 @@ def get_records(auth_user: User) -> Dict:
         - ``you do not have permissions, your account is suspended``
 
     """
-    records = (
-        Record.query.join(Sport)
-        .filter(
-            Record.user_id == auth_user.id,
-            or_(
-                Sport.label.not_in(SPORTS_WITHOUT_ELEVATION_DATA),
-                and_(
-                    Sport.label.in_(SPORTS_WITHOUT_ELEVATION_DATA),
-                    Record.record_type != "HA",
-                ),
-            ),
-        )
-        .order_by(Record.sport_id.asc(), Record.record_type.asc())
-        .all()
-    )
+    params = {
+        "user_id": auth_user.id,
+        "sports_without_elevation_data": tuple(SPORTS_WITHOUT_ELEVATION_DATA),
+    }
+    sql = """
+          SELECT records.*
+          FROM records
+          JOIN sports ON records.sport_id = sports.id
+          LEFT OUTER JOIN users_sports_preferences usp 
+                       ON usp.sport_id = records.sport_id AND
+                          usp.user_id = records.user_id
+          WHERE records.user_id = :user_id AND
+            (
+              records.record_type IN ('FD', 'LD') OR ( 
+                records.record_type = 'HA' AND
+                sports.label NOT IN :sports_without_elevation_data
+              ) OR (
+                records.record_type IN ('AS', 'MS') AND
+                (
+                  usp.pace_speed_display <> 'PACE' OR ( 
+                    usp.pace_speed_display IS NULL AND
+                    sports.pace_speed_display <> 'PACE'
+                  )
+                )
+              ) OR (
+                records.record_type IN ('AP', 'BP') AND
+                (
+                  usp.pace_speed_display <> 'SPEED' OR (
+                    usp.pace_speed_display IS NULL AND
+                    sports.pace_speed_display <> 'SPEED'
+                  )
+                )
+              )
+            )
+          ORDER BY records.sport_id, records.record_type;"""
+
+    records = db.session.scalars(  # type: ignore
+        select(Record).from_statement(sql_text(sql)).params(**params)
+    ).all()
+
     return {
         "status": "success",
         "data": {"records": [record.serialize() for record in records]},

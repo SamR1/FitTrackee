@@ -227,7 +227,7 @@
         </div>
         <div class="form-items form-checkboxes">
           <span class="checkboxes-label">
-            {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}
+            {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}<sup>1</sup>
           </span>
           <div class="checkboxes">
             <label v-for="status in useRawGpxSpeed" :key="status.label">
@@ -252,7 +252,43 @@
           </div>
         </div>
         <label class="form-items">
-          {{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}
+          <span>
+            {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING_LABEL')
+            }}<sup>2</sup>
+          </span>
+          <select
+            id="missing_elevations_processing"
+            v-model="userForm.missing_elevations_processing"
+            :disabled="elevationServices.length === 0 || authUserLoading"
+          >
+            <option
+              v-for="item in elevationsProcessingItems"
+              :value="item"
+              :key="item"
+            >
+              {{
+                $t(
+                  `workouts.ELEVATION_DATA_SOURCE.${
+                    item === 'file' ? 'none' : item
+                  }`
+                )
+              }}
+            </option>
+          </select>
+        </label>
+        <div
+          v-if="elevationServices.length === 0"
+          class="info-box missing-elevations-help"
+        >
+          <span>
+            <i class="fa fa-info-circle" aria-hidden="true" />
+            {{ $t('user.PROFILE.NO_ELEVATION_SERVICE_AVAILABLE') }}
+          </span>
+        </div>
+        <label class="form-items">
+          <span>
+            {{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}<sup>3</sup>
+          </span>
           <select
             id="workouts_visibility"
             v-model="userForm.workouts_visibility"
@@ -269,7 +305,9 @@
           </select>
         </label>
         <label class="form-items">
-          {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}
+          <span>
+            {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>3</sup>
+          </span>
           <select
             id="analysis_visibility"
             v-model="userForm.analysis_visibility"
@@ -286,7 +324,9 @@
           </select>
         </label>
         <label class="form-items">
-          {{ $t('visibility_levels.MAP_VISIBILITY') }}
+          <span>
+            {{ $t('visibility_levels.MAP_VISIBILITY') }}<sup>3</sup>
+          </span>
           <select
             id="map_visibility"
             v-model="userForm.map_visibility"
@@ -318,7 +358,25 @@
           </select>
         </label>
         <label class="form-items">
-          {{ $t('user.PROFILE.SEGMENTS_CREATION_EVENT.LABEL') }}
+          {{ $t('visibility_levels.CALORIES_VISIBILITY') }}
+          <select
+            id="calories_visibility"
+            v-model="userForm.calories_visibility"
+            :disabled="authUserLoading"
+          >
+            <option
+              v-for="level in visibilityLevels"
+              :value="level"
+              :key="level"
+            >
+              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+            </option>
+          </select>
+        </label>
+        <label class="form-items">
+          <span>
+            {{ $t('user.PROFILE.SEGMENTS_CREATION_EVENT.LABEL') }}<sup>1</sup>
+          </span>
           <select
             id="segments_creation_event"
             v-model="userForm.segments_creation_event"
@@ -333,6 +391,19 @@
             </option>
           </select>
         </label>
+        <div class="info-box changes-help">
+          <div>
+            1.
+            {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS') }}
+          </div>
+          <div>
+            2.
+            {{
+              $t('user.PROFILE.CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI')
+            }}
+          </div>
+          <div>3. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_WORKOUTS') }}</div>
+        </div>
         <div class="form-buttons">
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
@@ -379,7 +450,8 @@
 
   const store = useStore()
 
-  const { errorMessages } = useApp()
+  const { elevationServices, elevationsProcessingItems, errorMessages } =
+    useApp()
   const { authUserLoading } = useAuthUser()
 
   const weekStart = [
@@ -424,12 +496,12 @@
   ]
   const workoutChartDisplayData = [
     {
-      label: 'ONE',
-      value: false,
-    },
-    {
       label: 'MULTIPLE',
       value: true,
+    },
+    {
+      label: 'ONE',
+      value: false,
     },
   ]
   const useRawGpxSpeed = [
@@ -480,6 +552,7 @@
 
   const userForm: Reactive<IUserPreferencesPayload> = reactive({
     analysis_visibility: 'private',
+    calories_visibility: 'private',
     date_format: 'dd/MM/yyyy',
     display_ascent: true,
     hide_profile_in_users_directory: true,
@@ -488,6 +561,7 @@
     language: 'en',
     manually_approves_followers: true,
     map_visibility: 'private',
+    missing_elevations_processing: 'file',
     split_workout_charts: false,
     segments_creation_event: 'only_manual',
     start_elevation_at_zero: false,
@@ -540,6 +614,7 @@
     userForm.segments_creation_event =
       user.segments_creation_event ?? 'only_manual'
     userForm.split_workout_charts = user.split_workout_charts
+    userForm.missing_elevations_processing = user.missing_elevations_processing
   }
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES, userForm)
@@ -612,8 +687,18 @@
     #analysis_visibility,
     #workouts_visibility,
     #hr_visibility,
-    #segments_creation_event {
+    #calories_visibility,
+    #segments_creation_event,
+    #missing_elevations_processing {
       padding: $default-padding * 0.5;
+    }
+
+    .missing-elevations-help {
+      margin-top: $default-margin * 0.5;
+    }
+    .changes-help {
+      margin-top: $default-margin * 2.5;
+      margin-bottom: -$default-margin;
     }
   }
 </style>

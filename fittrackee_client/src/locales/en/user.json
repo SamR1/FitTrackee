@@ -85,6 +85,9 @@
     "BACK_TO_PROFILE": "Back to profile",
     "BIO": "Bio",
     "BIRTH_DATE": "Birth date",
+    "CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI": "The changes can be applied when a refresh is performed with the Command Line Interface (CLI).",
+    "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "The changes apply only to new or refreshed workouts.",
+    "CHANGES_ONLY_TO_NEW_WORKOUTS": "The changes apply only to new workouts.",
     "CREATED_REPORTS": "Created reports",
     "DATE_FORMAT": "Date display format",
     "EDIT": "Edit profile",
@@ -122,11 +125,12 @@
     "LAST_NAME": "Last name",
     "LATEST_SANCTIONS_RECEIVED": "Latest sanctions received",
     "LOCATION": "Location",
-    "MESSAGES_PREFERENCES": "Messages preferences",
-    "MESSAGES_EDITION": "Message preferences edition",
     "MESSAGES": {
       "warning_about_large_number_of_workouts_on_map": "Display a warning about displaying a large number of workouts on map"
     },
+    "MESSAGES_EDITION": "Message preferences edition",
+    "MESSAGES_PREFERENCES": "Messages preferences",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Missing elevations processing on creation",
     "MONDAY": "Monday",
     "NOTIFICATIONS": {
       "account_creation": "Someone registers",
@@ -141,6 +145,7 @@
     "NOTIFICATIONS_EDITION": "Notification preferences edition",
     "NOTIFICATION_PREFERENCES": "Notification preferences",
     "NO_ARCHIVE_UPLOADS": "No archive uploads",
+    "NO_ELEVATION_SERVICE_AVAILABLE": "No service available for missing elevations",
     "NO_SANCTIONS": "No sanctions",
     "PICTURE": "Picture",
     "PICTURE_EDITION": "Picture edition",
@@ -183,6 +188,12 @@
       "DISABLED_BY_ADMIN": "disabled by admin",
       "IS_ACTIVE": "active",
       "LABEL": "label",
+      "PACE_SPEED_DISPLAY": {
+        "LABEL": "Pace/Speed display",
+        "pace": "Pace",
+        "pace_and_speed": "Pace and speed",
+        "speed": "Speed"
+      },
       "STOPPED_SPEED_THRESHOLD": "stopped speed threshold"
     },
     "SPORTS_EDITION": "Sports preferences edition",
@@ -198,8 +209,8 @@
       "BLOCKED-USERS": "blocked users",
       "EQUIPMENTS": "equipments",
       "FOLLOW-REQUESTS": "follow requests",
-      "MODERATION": "moderation",
       "MESSAGES": "messages",
+      "MODERATION": "moderation",
       "NOTIFICATIONS": "notifications",
       "PICTURE": "picture",
       "PREFERENCES": "preferences",
@@ -225,7 +236,7 @@
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Filtered",
       "HELP": "If filtered, it excludes extreme values (which may be GPS errors) when calculating the maximum speed.",
-      "LABEL": "GPX max speed strategy",
+      "LABEL": "Max. speed calculation strategy",
       "RAW_SPEED": "Raw"
     },
     "WORKOUT_CHARTS_DISPLAY": {
