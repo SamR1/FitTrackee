@@ -31,7 +31,7 @@ User profile
 .. figure:: ../_images/user-profile.png
    :alt: User profile on FitTrackee
 
-   On the screenshot only 4 workouts are visible to the authenticated user.
+   On the screenshot only 3 workouts are visible to the authenticated user.
 
 A RSS feed is available in the user profile with the 5 last public workouts (displayed by default in English and using the metric system).
 

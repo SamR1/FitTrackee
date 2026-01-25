@@ -26,3 +26,7 @@ FitTrackee is available in the following languages (which can be saved in the us
 Application translations status on `Weblate <https://hosted.weblate.org/engage/fittrackee/>`__ (development branch, may differ from the released version):
 
 .. figure:: https://hosted.weblate.org/widgets/fittrackee/-/multi-auto.svg
+
+
+.. note::
+    There may be more languages set in Weblate than are available in the application. A language is only available if at least one string is translated.
