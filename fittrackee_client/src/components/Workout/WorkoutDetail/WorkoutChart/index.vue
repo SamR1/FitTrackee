@@ -3,17 +3,36 @@
     <Card>
       <template #title>{{ $t('workouts.ANALYSIS') }} </template>
       <template #content>
-        <div class="split-charts" v-if="displayedDatasets.length > 1">
-          <label for="split-chart">
-            {{ $t('workouts.DISPLAY_MULTIPLE_CHARTS') }}:
-          </label>
-          <input
-            id="split-chart"
-            type="checkbox"
-            :checked="splitCharts"
-            :disabled="workoutData.refreshLoading"
-            @click="splitCharts = !splitCharts"
-          />
+        <div class="chart-display">
+          <div class="chart-options">
+            <div class="split-charts" v-if="displayedDatasets.length > 1">
+              <label for="split-chart">
+                {{ $t('workouts.DISPLAY_MULTIPLE_CHARTS') }}:
+              </label>
+              <input
+                id="split-chart"
+                type="checkbox"
+                :checked="splitCharts"
+                :disabled="isRefreshing"
+                @click="splitCharts = !splitCharts"
+              />
+            </div>
+            <div
+              class="display-speed"
+              v-if="hasPace && displaySpeedWithPacePreferences"
+            >
+              <label for="display-speed">
+                {{ $t('workouts.SPEED_INSTEAD_OF_PACE') }}:
+              </label>
+              <input
+                id="display-speed"
+                type="checkbox"
+                :checked="displaySpeed"
+                :disabled="isRefreshing"
+                @click="displaySpeed = !displaySpeed"
+              />
+            </div>
+          </div>
         </div>
         <div class="chart-radio">
           <label>
@@ -21,7 +40,7 @@
               type="radio"
               name="distance"
               :checked="displayDistance"
-              :disabled="loading || workoutData.refreshLoading"
+              :disabled="loading || isRefreshing"
               @click="updateDisplayDistance"
             />
             {{ $t('workouts.DISTANCE') }}
@@ -30,7 +49,7 @@
             <input
               type="radio"
               name="duration"
-              :disabled="loading || workoutData.refreshLoading"
+              :disabled="loading || isRefreshing"
               :checked="!displayDistance"
               @click="updateDisplayDistance"
             />
@@ -42,13 +61,11 @@
           class="chart-loader"
           :class="{ multiple: multipleCharts }"
         />
-        <div v-for="(data, index) in chartData" :key="data.label">
+        <div v-for="(data, index) in chartData" :key="data.id">
           <div
-            :id="`chart-legend-${data.label}`"
+            :id="`chart-legend-${data.id}`"
             class="chart-legend"
-            :class="{
-              loading,
-            }"
+            :class="{ loading }"
           />
           <div
             class="line-chart"
@@ -56,10 +73,10 @@
               loading,
               multiple: multipleCharts,
             }"
-            :ref="`line-chart-${data.label}`"
+            :ref="`line-chart-${data.id}`"
           >
             <Line
-              :id="`line-chart-${data.label}`"
+              :id="`line-chart-${data.id}`"
               :ref="
                 (element) => {
                   displayedCharts[index] = element as HTMLElement
@@ -72,19 +89,37 @@
               :aria-label="$t('workouts.WORKOUT_CHART')"
             />
           </div>
+          <div class="chart-info" v-if="data.id === 'pace' && splitCharts">
+            <div class="data-info">
+              {{ $t('workouts.EXTREME_VALUES_FOR_PACE_ARE_NOT_DISPLAYED') }}
+            </div>
+          </div>
         </div>
         <div class="chart-info">
-          <div class="data-info"></div>
+          <div class="data-info">
+            <span v-if="elevationsSource !== 'file'">
+              {{ $t('workouts.ELEVATION_DATA_SOURCE.LABEL') }}
+              {{ $t(`workouts.ELEVATION_DATA_SOURCE.${elevationsSource}`) }}
+            </span>
+          </div>
           <div class="elevation-start" v-if="hasElevation">
             <label>
               <input
                 type="checkbox"
                 :checked="beginElevationAtZero"
-                :disabled="workoutData.refreshLoading"
+                :disabled="isRefreshing"
                 @click="beginElevationAtZero = !beginElevationAtZero"
               />
               {{ $t('workouts.START_ELEVATION_AT_ZERO') }}
             </label>
+          </div>
+        </div>
+        <div class="chart-info" v-if="!splitCharts && paceDisplayed">
+          <div class="data-info">
+            {{ $t('workouts.EXTREME_VALUES_FOR_PACE_ARE_NOT_DISPLAYED') }}
+            <template v-if="!onlyPaceDisplayed">
+              {{ $t('workouts.VERTICAL_AXIS_FOR_PACE_IS_REVERSED') }}
+            </template>
           </div>
         </div>
       </template>
@@ -116,7 +151,7 @@
   import type { TCoordinates } from '@/types/map'
   import type { ISport } from '@/types/sports.ts'
   import type { TUnit } from '@/types/units'
-  import type { IAuthUserProfile } from '@/types/user'
+  import type { IAuthUserProfile, TElevationDataSource } from '@/types/user'
   import type { IWorkoutChartData, IWorkoutData } from '@/types/workouts'
   import { formatDuration } from '@/utils/duration.ts'
   import { units } from '@/utils/units'
@@ -126,9 +161,11 @@
     authUser: IAuthUserProfile
     workoutData: IWorkoutData
     sport: ISport | null
+    isWorkoutOwner: boolean
+    isRefreshing: boolean
   }
   const props = defineProps<Props>()
-  const { authUser, sport, workoutData } = toRefs(props)
+  const { authUser, isRefreshing, sport, workoutData } = toRefs(props)
 
   const emit = defineEmits(['getCoordinates'])
 
@@ -136,21 +173,30 @@
   const store = useStore()
 
   const { darkTheme } = useApp()
+  const { displayOptions } = useApp()
 
   const plugins = [htmlLegendPlugin, verticalHoverLine] as Plugin<'line'>[]
   const fromKmUnit = getUnitTo('km')
   const fromMUnit = getUnitTo('m')
 
+  const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
+  const loading: Ref<boolean> = ref(false)
   const displayDistance: Ref<boolean> = ref(true)
   const beginElevationAtZero: Ref<boolean> = ref(
     authUser.value.username ? authUser.value.start_elevation_at_zero : false
   )
-  const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
-  const loading: Ref<boolean> = ref(false)
   const displayedCharts: Ref<HTMLElement[]> = ref([])
   const splitCharts: Ref<boolean> = ref(
     authUser.value.username ? authUser.value.split_workout_charts : false
   )
+  const displaySpeedWithPacePreferences: Ref<boolean> = ref(
+    sport.value?.id
+      ? sport.value.pace_speed_display === 'pace_and_speed'
+      : false
+  )
+  const paceDisplayed = ref(false)
+  const onlyPaceDisplayed = ref(false)
+  const displaySpeed = ref(false)
 
   const currentDataPoint: Reactive<IHoverPoint> = reactive({
     dataIndex: 0,
@@ -160,36 +206,49 @@
     y: 0,
   })
 
-  const hasElevation: ComputedRef<boolean> = computed(
-    () => datasets.value && datasets.value.datasets.elevation?.data.length > 0
+  const elevationsSource: ComputedRef<TElevationDataSource> = computed(() =>
+    workoutData.value.workout.elevation_data_source
+      ? workoutData.value.workout.elevation_data_source
+      : 'file'
   )
   const chartLoading: ComputedRef<boolean> = computed(
     () => workoutData.value.chartDataLoading
   )
-  const coordinates: ComputedRef<TCoordinates[]> = computed(
-    () => datasets.value.coordinates
-  )
   const lineColors: ComputedRef<{ color: string }> = computed(() => ({
     color: darkTheme.value
       ? chartsColors.darkMode.line
-      : chartsColors.ligthMode.line,
+      : chartsColors.lightMode.line,
   }))
   const textColors: ComputedRef<{ color: string }> = computed(() => ({
     color: darkTheme.value
       ? chartsColors.darkMode.text
-      : chartsColors.ligthMode.text,
+      : chartsColors.lightMode.text,
   }))
+
   const datasets: ComputedRef<IWorkoutChartData> = computed(() =>
     getDatasets(
       workoutData.value.chartData,
       t,
-      authUser.value.imperial_units,
+      displayOptions.value.useImperialUnits,
       darkTheme.value,
       splitCharts.value
     )
   )
+  const coordinates: ComputedRef<TCoordinates[]> = computed(
+    () => datasets.value.coordinates
+  )
+  const hasElevation: ComputedRef<boolean> = computed(
+    () => datasets.value && datasets.value.datasets.elevation?.data.length > 0
+  )
+  const hasPace: ComputedRef<boolean> = computed(
+    () => datasets.value && datasets.value.datasets.pace?.data.length > 0
+  )
   const displayedDatasets = computed(() => {
-    const displayedDatasets = [datasets.value.datasets.speed]
+    const displayedDatasets = [
+      hasPace.value && !displaySpeed.value
+        ? datasets.value.datasets.pace
+        : datasets.value.datasets.speed,
+    ]
     if (datasets.value.datasets.hr.data.length > 0) {
       displayedDatasets.push(datasets.value.datasets.hr)
     }
@@ -209,6 +268,7 @@
   )
   const chartData: ComputedRef<
     {
+      id: string
       label: string
       chartData: ChartData<'line'>
       config: ChartOptions<'line'>
@@ -217,6 +277,7 @@
     if (splitCharts.value) {
       return displayedDatasets.value.map((displayedDataset) => {
         return {
+          id: displayedDataset.id as string,
           label: displayedDataset.label,
           chartData: {
             labels: displayDistance.value
@@ -225,7 +286,7 @@
             datasets: JSON.parse(JSON.stringify([displayedDataset])),
           },
           config: getChartOptions(
-            displayedDataset.label,
+            displayedDataset.id as string,
             beginElevationAtZero.value
           ),
         }
@@ -233,6 +294,7 @@
     }
     return [
       {
+        id: 'all',
         label: 'all',
         chartData: {
           labels: displayDistance.value
@@ -246,7 +308,7 @@
   })
 
   function getChartOptions(
-    label: string,
+    id: string,
     elevationStartAtZero: boolean
   ): ChartOptions<'line'> {
     return {
@@ -291,7 +353,17 @@
           },
         },
         yLeft: {
-          beginAtZero: label === 'elevation' ? elevationStartAtZero : false,
+          beginAtZero: id === 'elevation' ? elevationStartAtZero : false,
+          // @ts-expect-error  @typescript-eslint/ban-ts-comment
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          max: (context: any): number | undefined => {
+            if (context.type !== 'scale') {
+              return undefined
+            }
+            // When the pace is displayed, extreme values (i.e. greater than
+            // 1 hour) are not shown.
+            return isPaceOnlyDisplayed(context) ? 3600 : undefined
+          },
           display: true,
           grid: {
             drawOnChartArea: false,
@@ -301,6 +373,11 @@
             ...lineColors.value,
           },
           position: 'left',
+          // @ts-expect-error  @typescript-eslint/ban-ts-comment
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          reverse: (context: any): boolean => {
+            return isPaceOnlyDisplayed(context)
+          },
           title: {
             display: true,
             // @ts-expect-error  @typescript-eslint/ban-ts-comment
@@ -320,13 +397,27 @@
             // @ts-expect-error  @typescript-eslint/ban-ts-comment
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             display: (context: any): boolean => {
-              const displayedDatasets = getDisplayedDatasets(context, 'yLeft')
-              return displayedDatasets.length === 1
+              const displayedDatasetIds = getDisplayedDatasets(
+                context,
+                'yLeft'
+              ).map(({ id }) => id)
+              paceDisplayed.value = displayedDatasetIds.includes('pace')
+              onlyPaceDisplayed.value =
+                displayedDatasetIds.length === 1 &&
+                displayedDatasetIds[0] === 'pace'
+              return displayedDatasetIds.length === 1
+            },
+            callback: function (value) {
+              return id === 'pace' || onlyPaceDisplayed.value
+                ? formatDuration(+value, {
+                    notPadded: true,
+                  })
+                : value
             },
             ...textColors.value,
           },
           afterFit: function (scale: LayoutItem) {
-            scale.width = 65
+            scale.width = 67
           },
         },
         yRight: {
@@ -400,7 +491,7 @@
           display: false,
         },
         htmlLegend: {
-          containerID: `chart-legend-${label}`,
+          containerID: `chart-legend-${id}`,
           displayElevation: hasElevation.value,
         },
       },
@@ -424,7 +515,7 @@
     handleTooltipOnAllCharts()
   }
   function getUnitTo(unitFrom: TUnit): TUnit {
-    return props.authUser.imperial_units
+    return displayOptions.value.useImperialUnits
       ? units[unitFrom].defaultTarget
       : unitFrom
   }
@@ -440,6 +531,8 @@
         return ` (${fromKmUnit}/h)`
       case 'power':
         return ` (W)`
+      case 'pace':
+        return ` (min/${fromKmUnit})`
       default:
         return ''
     }
@@ -453,6 +546,14 @@
     return chart.data.datasets.filter(
       (dataset: IChartDataset, index: number) =>
         dataset.yAxisID === yaxisID && !chart.getDatasetMeta(index).hidden
+    )
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function isPaceOnlyDisplayed(context: any) {
+    const displayedDatasets = getDisplayedDatasets(context, 'yLeft')
+    return (
+      context.chart.canvas.id === 'line-chart-pace' ||
+      (displayedDatasets.length === 1 && displayedDatasets[0].id === 'pace')
     )
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -471,10 +572,17 @@
   function getTooltipLabel(context: any) {
     currentDataPoint.dataIndex = context.dataIndex
     currentDataPoint.datasetIndex = context.datasetIndex
-    currentDataPoint.datasetLabel = `line-chart-${context.dataset.label}`
+    currentDataPoint.datasetLabel = `line-chart-${context.dataset.id}`
     currentDataPoint.x = context.parsed.x
     currentDataPoint.y = context.parsed.y
 
+    if (context.dataset.id === 'pace') {
+      const formattedValue = formatDuration(context.raw, {
+        notPadded: true,
+      })
+      const unit = displayOptions.value.useImperialUnits ? 'min/mi' : 'min/km'
+      return ` ${context.dataset.label}: ${formattedValue} ${unit}`
+    }
     const label = ` ${context.dataset.label}: ${context.formattedValue}`
     if (context.dataset.id === 'elevation') {
       return label + ` ${fromMUnit}`
@@ -633,6 +741,17 @@
             }
           }
         }
+        .chart-display {
+          display: flex;
+          gap: $default-margin;
+          margin-bottom: $default-margin * 0.5;
+          font-weight: bold;
+
+          .chart-options {
+            display: flex;
+            gap: $default-margin;
+          }
+        }
         .line-chart {
           height: 400px;
 
@@ -670,7 +789,7 @@
               padding: $default-padding $default-padding * 1.5 0;
             }
             .data-info {
-              display: none;
+              padding: 0 $default-padding * 2;
             }
           }
           .split-charts {
@@ -682,6 +801,21 @@
           }
           .chart-loader {
             margin-left: 40%;
+          }
+        }
+      }
+
+      @media screen and (max-width: $x-small-limit) {
+        .chart-display {
+          .chart-options {
+            flex-direction: column;
+            gap: 0 !important;
+            margin-bottom: $default-margin;
+            .split-charts,
+            .display-speed {
+              margin: 0;
+              padding: 0;
+            }
           }
         }
       }

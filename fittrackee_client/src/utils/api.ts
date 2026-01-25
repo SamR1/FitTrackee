@@ -91,11 +91,22 @@ export const getQuery = (
   } else {
     delete query.radius
   }
+  ;['ave_pace_from', 'ave_pace_to', 'max_pace_from', 'max_pace_to'].forEach(
+    (key) => {
+      if (typeof locationQuery[key] === 'string') {
+        query[key] = locationQuery[key]
+      } else {
+        delete query[key]
+      }
+    }
+  )
 
   return query
 }
 
 export const workoutsPayloadKeys = [
+  'ave_pace_from',
+  'ave_pace_to',
   'ave_speed_from',
   'ave_speed_to',
   'description',
@@ -105,6 +116,8 @@ export const workoutsPayloadKeys = [
   'duration_to',
   'equipment_id',
   'from',
+  'max_pace_from',
+  'max_pace_to',
   'max_speed_from',
   'max_speed_to',
   'notes',
@@ -112,9 +125,6 @@ export const workoutsPayloadKeys = [
   'to',
   'title',
   'workout_visibility',
-]
-export const workoutsPayloadKeysWithGeospatial = [
-  ...workoutsPayloadKeys,
   'coordinates',
   'osm_id',
   'radius',

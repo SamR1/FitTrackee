@@ -1,6 +1,7 @@
 {
   "ERROR": {
     "<time> is missing in gpx file": "Elément <time> manquant dans le fichier .gpx.",
+    "Error when updating elevation data source": "Erreur lors de la mise à jour de la source de données d'altitude",
     "Network Error": "Erreur réseau.",
     "UNKNOWN": "Erreur. Veuillez réessayer ou contacter l'administrateur.",
     "a report already exists": "Vous avez déjà soumis un signalement.",
@@ -22,6 +23,7 @@
     "error when parsing kml file": "Erreur lors de l'analyse du fichier .kml.",
     "error when parsing kmz file": "Erreur lors de l'analyse du fichier .kmz.",
     "error when parsing tcx file": "Erreur lors de l'analyse du fichier .tcx.",
+    "error when processing workout": "Erreur lors du traitement de la séance.",
     "error when saving workout": "Erreur lors de l'enregistrement de la séance.",
     "error when updating configuration": "Erreur lors de la mise à jour de la configuration.",
     "error while fetching comments": "Erreur lors de la récupération des commentaires.",

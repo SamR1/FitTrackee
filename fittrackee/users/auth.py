@@ -51,6 +51,8 @@ from fittrackee.visibility_levels import (
 )
 from fittrackee.workouts.models import Sport
 
+from ..constants import PaceSpeedDisplay
+from ..workouts.constants import PACE_SPORTS
 from .exceptions import UserControlsException, UserCreationException
 from .models import (
     BlacklistedToken,
@@ -348,6 +350,7 @@ def get_authenticated_user_profile(
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
+          "missing_elevations_processing": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -492,6 +495,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
+          "missing_elevations_processing": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -684,6 +688,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
+          "missing_elevations_processing": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -942,6 +947,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
+          "missing_elevations_processing": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -1038,6 +1044,10 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
                   are automatically approved
     :<json string map_visibility: workout map visibility
                   (``public``, ``followers_only``, ``private``)
+    :<json string missing_elevations_processing: source and method for missing
+                  elevations, depending on application configuration
+                  (``file`` (missing elevation are not processed),
+                  ``open_elevation``, ``open_elevation_smooth``, ``valhalla``)
     :<json string segments_creation_event: event triggering a segment creation
                   for .fit files (``all``, ``only_manual``, ``none``)
     :<json boolean split_workout_charts: if ``true``, multiple charts are
@@ -1067,6 +1077,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     post_data = request.get_json()
     user_mandatory_data = {
         "analysis_visibility",
+        "calories_visibility",
         "date_format",
         "display_ascent",
         "hide_profile_in_users_directory",
@@ -1075,6 +1086,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "language",
         "manually_approves_followers",
         "map_visibility",
+        "missing_elevations_processing",
         "segments_creation_event",
         "split_workout_charts",
         "start_elevation_at_zero",
@@ -1106,6 +1118,10 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     hr_visibility = post_data.get("hr_visibility")
     segments_creation_event = post_data.get("segments_creation_event")
     split_workout_charts = post_data.get("split_workout_charts")
+    missing_elevations_processing = post_data.get(
+        "missing_elevations_processing"
+    )
+    calories_visibility = post_data.get("calories_visibility")
 
     try:
         auth_user.date_format = date_format
@@ -1133,6 +1149,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.hr_visibility = VisibilityLevel(hr_visibility)
         auth_user.segments_creation_event = segments_creation_event
         auth_user.split_workout_charts = split_workout_charts
+        auth_user.missing_elevations_processing = missing_elevations_processing
+        auth_user.calories_visibility = VisibilityLevel(calories_visibility)
         db.session.commit()
 
         return {
@@ -1146,7 +1164,13 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         return handle_error_and_return_response(e, db=db)
 
 
-@auth_blueprint.route("/auth/profile/edit/sports", methods=["POST"])
+@auth_blueprint.route(
+    "/auth/profile/edit/sports",
+    methods=[
+        "POST",  # deprecated
+        "PATCH",
+    ],
+)
 @require_auth(scopes=["profile:write"])
 def edit_user_sport_preferences(
     auth_user: User,
@@ -1154,13 +1178,16 @@ def edit_user_sport_preferences(
     """
     Edit authenticated user sport preferences.
 
+    **Notes**: ``POST`` method is deprecated and will be removed in a future
+    version.
+
     **Scope**: ``profile:write``
 
     **Example request**:
 
     .. sourcecode:: http
 
-      POST /api/auth/profile/edit/sports HTTP/1.1
+      PATCH /api/auth/profile/edit/sports HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1175,6 +1202,7 @@ def edit_user_sport_preferences(
           "color": "#000000",
           "default_equipment_ids": [],
           "is_active": true,
+          "pace_speed_display": "speed",
           "sport_id": 1,
           "stopped_speed_threshold": 1,
           "user_id": 1
@@ -1188,6 +1216,9 @@ def edit_user_sport_preferences(
     :<json string color: valid hexadecimal color
     :<json boolean is_active: is sport available when adding a workout
     :<json float stopped_speed_threshold: stopped speed threshold used by gpxpy
+    :<json string pace_speed_display: Pace/Speed display in workout detail,
+           sport statistics and records for following sports: Hiking, Running,
+           Trail and Walking (``pace``, ``speed``, ``pace_and_speed``)
     :<json array of strings default_equipment_ids: the default equipment id
            to use for this sport.
            **Note**: for now only one equipment can be associated.
@@ -1207,11 +1238,18 @@ def edit_user_sport_preferences(
         - ``equipment with id <equipment_id> does not exist``
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``
+        - ``invalid pace_speed_display for sport '<sport_label>', only speed can be displayed."``
     :statuscode 403:
         - ``you do not have permissions, your account is suspended``
     :statuscode 404: ``sport does not exist``
     :statuscode 500: ``error, please try again or contact the administrator``
     """
+    if request.method == "POST":
+        appLog.warning(
+            f"'POST' method is deprecated for {request.path}, "
+            "please use 'PATCH' instead."
+        )
+
     post_data = request.get_json()
     if (
         not post_data
@@ -1227,8 +1265,21 @@ def edit_user_sport_preferences(
 
     color = post_data.get("color")
     is_active = post_data.get("is_active")
-    stopped_speed_threshold = post_data.get("stopped_speed_threshold")
+    if "stopped_speed_threshold" in post_data:
+        stopped_speed_threshold = post_data["stopped_speed_threshold"]
+        if (
+            not isinstance(stopped_speed_threshold, (int, float))
+            # gpxpy ignores value when equals 0
+            or stopped_speed_threshold <= 0
+        ):
+            return InvalidPayloadErrorResponse(
+                "'stopped_speed_threshold' must be an integer greater then 0"
+            )
+    else:
+        stopped_speed_threshold = None
+
     default_equipment_ids = post_data.get("default_equipment_ids")
+    pace_speed_display = post_data.get("pace_speed_display")
 
     try:
         user_sport = UserSportPreference.query.filter_by(
@@ -1240,6 +1291,7 @@ def edit_user_sport_preferences(
                 user_id=auth_user.id,
                 sport_id=sport_id,
                 stopped_speed_threshold=sport.stopped_speed_threshold,
+                pace_speed_display=sport.pace_speed_display,
             )
             db.session.add(user_sport)
             db.session.flush()
@@ -1251,6 +1303,17 @@ def edit_user_sport_preferences(
             user_sport.is_active = is_active
         if stopped_speed_threshold:
             user_sport.stopped_speed_threshold = stopped_speed_threshold
+        if pace_speed_display:
+            if (
+                pace_speed_display
+                in [PaceSpeedDisplay.PACE, PaceSpeedDisplay.PACE_AND_SPEED]
+                and sport.label not in PACE_SPORTS
+            ):
+                return InvalidPayloadErrorResponse(
+                    f"invalid pace_speed_display for sport '{sport.label}', "
+                    "only speed can be displayed."
+                )
+            user_sport.pace_speed_display = pace_speed_display
 
         if default_equipment_ids is not None:
             existing_default_equipments = user_sport.default_equipments.all()
@@ -1365,6 +1428,7 @@ def edit_user_notifications_preferences(
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
+          "missing_elevations_processing": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -1545,6 +1609,7 @@ def edit_user_messages_preferences(
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
+          "missing_elevations_processing": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {

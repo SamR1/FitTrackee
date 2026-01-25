@@ -11,11 +11,9 @@
   "ENABLE": "Ativar",
   "FILTER": "Filtro",
   "LOGIN": "Fazer login",
-  "NO": "Não",
   "REFRESH_TOTALS": "Atualizar totais",
   "REGISTER": "Criar uma conta",
   "REQUEST_DATA_EXPORT": "Solicitar exportação de dados",
   "RESET": "Restaurar",
-  "SUBMIT": "Enviar",
-  "YES": "Sim"
+  "SUBMIT": "Enviar"
 }

@@ -3,8 +3,9 @@ from typing import IO, Optional
 import fitdecode
 import gpxpy.gpx
 
+from ...constants import NSMAP
 from ...exceptions import WorkoutFileException
-from .constants import GARMIN_DEVICES, NSMAP
+from .constants import GARMIN_DEVICES
 from .workout_gpx_service import WorkoutGpxService
 
 
@@ -46,10 +47,13 @@ class WorkoutFitService(WorkoutGpxService):
         gpx_track = gpxpy.gpx.GPXTrack()
         gpx_segment = gpxpy.gpx.GPXTrackSegment()
         creator: Optional[str] = None
+        calories: Optional[str] = None
         try:
-            data_frames = filter(
-                lambda frame: frame.frame_type == fitdecode.FIT_FRAME_DATA,
-                fit_file,
+            data_frames = list(
+                filter(
+                    lambda frame: frame.frame_type == fitdecode.FIT_FRAME_DATA,
+                    fit_file,
+                )
             )
 
             # Handle device metadata from file_id
@@ -58,8 +62,16 @@ class WorkoutFitService(WorkoutGpxService):
             )
             frame = next(file_id_frames, None)
             if frame and frame.has_field("manufacturer"):
-                creator = frame.get_value("manufacturer")
-                if frame.has_field("product") and frame.get_value("product"):
+                creator = (
+                    frame.get_value("manufacturer")
+                    if isinstance(frame.get_value("manufacturer"), str)
+                    else None
+                )
+                if (
+                    creator
+                    and frame.has_field("product")
+                    and frame.get_value("product")
+                ):
                     product = frame.get_raw_value("product")
                     if (
                         creator.lower() == "garmin"
@@ -67,6 +79,16 @@ class WorkoutFitService(WorkoutGpxService):
                     ):
                         product = GARMIN_DEVICES[product]
                     creator = f"{creator} {product}"
+
+            # Get total calories from session
+            # - total calories = resting + active calories
+            # - units: kcal
+            session_frames = filter(
+                lambda frame: frame.name == "session", data_frames
+            )
+            frame = next(session_frames, None)
+            if frame and frame.has_field("total_calories"):
+                calories = frame.get_value("total_calories")
 
             # Handle the actual data frames. We sort them by timestamp
             # to handle devices that list events and records separately.
@@ -169,6 +191,10 @@ class WorkoutFitService(WorkoutGpxService):
             raise WorkoutFileException(
                 "error", "no valid segments with GPS found in fit file"
             ) from None
+
+        if calories:
+            extension = cls._get_track_extensions(calories)
+            gpx_track.extensions.append(extension)
 
         gpx = gpxpy.gpx.GPX()
         gpx.creator = creator

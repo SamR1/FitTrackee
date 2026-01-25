@@ -618,16 +618,22 @@ class WorkoutMixin:
         descent: Optional[int] = 12,
         max_alt: Optional[int] = 260,
         min_alt: Optional[int] = 236,
+        ave_pace_seconds: int = 781,
+        max_pace_seconds: int = 704,
     ) -> Workout:
         workout.map_id = map_id
         workout.map = random_string() if map_id is None else map_id
-        workout.gpx = random_string() if gpx_path is None else gpx_path
+        workout.original_file = (
+            random_string() if gpx_path is None else gpx_path
+        )
         workout.bounds = [1.0, 2.0, 3.0, 4.0] if bounds is None else bounds
         workout.pauses = timedelta(minutes=15)
         workout.ascent = ascent
         workout.descent = descent
         workout.max_alt = max_alt
         workout.min_alt = min_alt
+        workout.ave_pace = timedelta(seconds=ave_pace_seconds)
+        workout.best_pace = timedelta(seconds=max_pace_seconds)
         return workout
 
 

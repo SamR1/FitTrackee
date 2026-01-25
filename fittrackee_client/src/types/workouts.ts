@@ -9,6 +9,7 @@ import type {
   IUserLightProfile,
   IUserProfile,
   TVisibilityLevels,
+  TElevationDataSource,
 } from '@/types/user'
 
 export type TFileExtension = 'fit' | 'gpx' | 'kml' | 'tcx'
@@ -17,6 +18,7 @@ export interface IWorkoutSegment {
   ascent: number
   ave_cadence: number | null
   ave_hr: number | null
+  ave_pace: string | null
   ave_power: number | null
   ave_speed: number
   descent: number
@@ -25,12 +27,14 @@ export interface IWorkoutSegment {
   max_alt: number
   max_cadence: number | null
   max_hr: number | null
+  best_pace: string | null
   max_power: number | null
   max_speed: number
   min_alt: number
   moving: string
   pauses: string
-  segment_id: number
+  segment_id: string
+  segment_number: number
   workout_id: string
 }
 
@@ -41,9 +45,12 @@ export interface ICardRecord {
   workout_id: string
   label: string
 }
+
+export type TRecordType = 'AP' | 'AS' | 'BP' | 'FD' | 'HA' | 'LD' | 'MS'
+
 export interface IRecord {
   id: number
-  record_type: string
+  record_type: TRecordType
   sport_id: number
   user: string
   value: number | string
@@ -85,14 +92,17 @@ export interface IWorkout {
   ascent: number | null
   ave_cadence: number | null
   ave_hr: number | null
+  ave_pace: string | null
   ave_power: number | null
   ave_speed: number | null
   bounds: number[]
+  calories: number | null
   creation_date: string | null
   descent: number | null
   description: string
   distance: number | null
   duration: string | null
+  elevation_data_source?: TElevationDataSource
   equipments: IEquipment[] | ILightEquipment[]
   id: string
   liked: boolean
@@ -102,6 +112,7 @@ export interface IWorkout {
   max_alt: number | null
   max_cadence: number | null
   max_hr: number | null
+  best_pace: string | null
   max_power: number | null
   max_speed: number | null
   min_alt: number | null
@@ -124,7 +135,7 @@ export interface IWorkout {
   weather_end: IWeather | null
   weather_start: IWeather | null
   with_analysis: boolean
-  with_gpx: boolean
+  with_file: boolean
   with_geometry?: boolean
   workout_date: string
   workout_visibility?: TVisibilityLevels
@@ -136,16 +147,20 @@ export interface IWorkoutObject {
   aveCadence: number | null
   aveHr: number | null
   avePower: number | null
+  avePace: string | null
   aveSpeed: number | null
+  calories: number | null
   descent: number | null
   distance: number | null
   duration: string | null
+  elevationDataSource: TElevationDataSource | null | undefined
   equipments: IEquipment[] | ILightEquipment[] | null
   liked: boolean
   likes_count: number
   maxAlt: number | null
   maxCadence: number | null
   maxHr: number | null
+  maxPace: string | null
   maxPower: number | null
   maxSpeed: number | null
   mapVisibility: TVisibilityLevels | null | undefined
@@ -156,7 +171,8 @@ export interface IWorkoutObject {
   pauses: string | null
   previousUrl: string | null
   records: IRecord[]
-  segmentId: number | null
+  segmentId: string | null
+  segmentNumber: number | null
   source: string | null
   suspended: boolean
   title: string
@@ -166,7 +182,7 @@ export interface IWorkoutObject {
   workoutFullDate: string
   weatherStart: IWeather | null
   with_analysis: boolean
-  with_gpx: boolean
+  with_file: boolean
   workoutId: string
   workoutTime: string
   workoutVisibility: TVisibilityLevels | null | undefined
@@ -187,6 +203,11 @@ export interface IWorkoutForm {
   analysis_visibility?: TVisibilityLevels
   map_visibility?: TVisibilityLevels
   workout_visibility: TVisibilityLevels
+}
+
+export interface IWorkoutElevationSourceDataPayload {
+  workoutId: string
+  elevationDataSource: TElevationDataSource
 }
 
 export interface IWorkoutPayload {
@@ -235,6 +256,7 @@ export interface IWorkoutApiChartData {
   hr?: number
   latitude: number
   longitude: number
+  pace?: number
   power?: number
   speed: number
   time: string
@@ -257,6 +279,7 @@ export interface IWorkoutData {
   currentCommentEdition: ICurrentCommentEdition
   currentReporting: boolean
   refreshLoading: boolean
+  elevationLoading: boolean
 }
 
 export type TWorkoutDatasetKeys =
@@ -265,6 +288,7 @@ export type TWorkoutDatasetKeys =
   | 'hr'
   | 'cadence'
   | 'power'
+  | 'pace'
 
 export type TWorkoutDatasets = {
   [key in TWorkoutDatasetKeys]: IChartDataset
@@ -328,8 +352,10 @@ export interface TWorkoutsStatistic {
   average_descent: number | null
   average_distance: number | null
   average_duration: string | null
+  average_pace: string | null
   average_speed: number | null
   count: number
+  best_pace: string | null
   max_speed: number | null
   total_ascent: number | null
   total_descent: number | null

@@ -60,7 +60,6 @@
               {{ $t('statistics.STATISTICS') }}
             </router-link>
             <router-link
-              v-if="appConfig.enable_geospatial_features"
               class="nav-item"
               to="/workouts/map"
               @click="closeMenu()"
@@ -194,7 +193,7 @@
 
   const store = useStore()
 
-  const { appConfig, appLanguage, darkTheme } = useApp()
+  const { appLanguage, darkTheme } = useApp()
   const {
     authUser,
     isAuthenticated,

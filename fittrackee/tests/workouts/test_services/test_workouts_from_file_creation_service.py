@@ -1,4 +1,5 @@
 import os
+import re
 import zipfile
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
@@ -10,6 +11,7 @@ from sqlalchemy.dialects.postgresql import insert
 from werkzeug.datastructures import FileStorage
 
 from fittrackee import db
+from fittrackee.constants import ElevationDataSource
 from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
@@ -33,6 +35,9 @@ from fittrackee.workouts.models import (
 from fittrackee.workouts.services import (
     WorkoutGpxService,
     WorkoutsFromFileCreationService,
+)
+from fittrackee.workouts.services.elevation.open_elevation_service import (
+    OpenElevationService,
 )
 from fittrackee.workouts.services.workouts_from_file_creation_service import (
     WorkoutsData,
@@ -294,6 +299,10 @@ class TestWorkoutsFromFileCreationServiceGetFilePath:
 class TestWorkoutsFromFileCreationServiceCreateWorkout(
     RandomMixin, WorkoutFileMixin
 ):
+    @staticmethod
+    def assert_file_extension(file: str, expected_extension: str) -> None:
+        assert file.split(".")[-1] == expected_extension
+
     def test_it_raises_error_when_no_file_provided(
         self,
         app: "Flask",
@@ -359,7 +368,6 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert new_workout.description is None
         assert float(new_workout.distance) == 0.32  # type: ignore
         assert new_workout.duration == timedelta(minutes=4, seconds=10)
-        assert new_workout.gpx is not None
         assert new_workout.map is not None
         assert new_workout.map_visibility == VisibilityLevel.PRIVATE
         assert new_workout.map_id is not None
@@ -368,7 +376,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert float(new_workout.min_alt) == 975.0  # type: ignore
         assert new_workout.moving == timedelta(minutes=4, seconds=10)
         assert new_workout.notes is None
-        assert new_workout.original_file == new_workout.gpx
+        self.assert_file_extension(new_workout.original_file, "gpx")
         assert new_workout.pauses == timedelta(seconds=0)
         assert new_workout.suspended_at is None
         assert new_workout.title == "just a workout"
@@ -527,11 +535,11 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         db.session.commit()
 
         new_workout = Workout.query.one()
-        assert new_workout.gpx == (
+        assert new_workout.original_file == (
             f"workouts/{user_1.id}/2018-03-13_12-44-45_"
             f"{sport_1_cycling.id}_{expected_token}.gpx"
         )
-        with open(get_absolute_file_path(new_workout.gpx)) as f:
+        with open(get_absolute_file_path(new_workout.original_file)) as f:
             assert f.read() == gpx_file
 
     def test_it_creates_map_image_in_user_directory(
@@ -801,11 +809,11 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         db.session.commit()
 
         assert new_workout == Workout.query.one()
-        assert new_workout.gpx == (
+        assert new_workout.original_file == (
             f"workouts/{user_1.id}/2018-03-13_12-44-45_"
             f"{sport_1_cycling.id}_{expected_token}.gpx"
         )
-        with open(get_absolute_file_path(new_workout.gpx)) as f:
+        with open(get_absolute_file_path(new_workout.original_file)) as f:
             assert f.read() == gpx_file
 
     def test_it_creates_workout_when_extension_is_kml(
@@ -843,7 +851,6 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert new_workout.description == "some description"
         assert float(new_workout.distance) == 0.32  # type: ignore
         assert new_workout.duration == timedelta(minutes=4, seconds=10)
-        assert new_workout.gpx is not None
         assert new_workout.map is not None
         assert new_workout.map_visibility == VisibilityLevel.PRIVATE
         assert new_workout.map_id is not None
@@ -851,9 +858,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert float(new_workout.max_speed) == 5.25  # type: ignore
         assert float(new_workout.min_alt) == 975.0  # type: ignore
         assert new_workout.moving == timedelta(minutes=4, seconds=10)
-        assert new_workout.original_file == new_workout.gpx.replace(
-            "gpx", "kml"
-        )
+        self.assert_file_extension(new_workout.original_file, "kml")
         assert new_workout.notes is None
         assert new_workout.pauses == timedelta(seconds=0)
         assert new_workout.suspended_at is None
@@ -888,13 +893,6 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         db.session.commit()
 
         new_workout = Workout.query.one()
-        assert new_workout.gpx == (
-            f"workouts/{user_1.id}/2018-03-13_12-44-45_"
-            f"{sport_1_cycling.id}_{expected_token}.gpx"
-        )
-        with open(get_absolute_file_path(new_workout.gpx)) as f:
-            assert '<gpx xmlns="http://www.topografix.com/GPX/1/1"' in f.read()
-
         assert new_workout.original_file == (
             f"workouts/{user_1.id}/2018-03-13_12-44-45_"
             f"{sport_1_cycling.id}_{expected_token}.kml"
@@ -937,7 +935,6 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert new_workout.description == "some description"
         assert float(new_workout.distance) == 0.299  # type: ignore
         assert new_workout.duration == timedelta(minutes=4, seconds=10)
-        assert new_workout.gpx is not None
         assert new_workout.map is not None
         assert new_workout.map_visibility == VisibilityLevel.PRIVATE
         assert new_workout.map_id is not None
@@ -946,9 +943,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert float(new_workout.min_alt) == 975.0  # type: ignore
         assert new_workout.moving == timedelta(minutes=3, seconds=55)
         assert new_workout.notes is None
-        assert new_workout.original_file == new_workout.gpx.replace(
-            "gpx", "kmz"
-        )
+        self.assert_file_extension(new_workout.original_file, "kmz")
         assert new_workout.pauses == timedelta(seconds=15)
         assert new_workout.suspended_at is None
         assert new_workout.title == "just a workout"
@@ -983,13 +978,6 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         db.session.commit()
 
         new_workout = Workout.query.one()
-        assert new_workout.gpx == (
-            f"workouts/{user_1.id}/2018-03-13_12-44-45_"
-            f"{sport_1_cycling.id}_{expected_token}.gpx"
-        )
-        with open(get_absolute_file_path(new_workout.gpx)) as f:
-            assert '<gpx xmlns="http://www.topografix.com/GPX/1/1"' in f.read()
-
         assert new_workout.original_file == (
             f"workouts/{user_1.id}/2018-03-13_12-44-45_"
             f"{sport_1_cycling.id}_{expected_token}.kmz"
@@ -1006,13 +994,13 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         tcx_with_one_lap_and_one_track: str,
         sport_1_cycling: "Sport",
     ) -> None:
-        kml_file_storage = FileStorage(
+        tcx_file_storage = FileStorage(
             filename="file.tcx",
             stream=BytesIO(str.encode(tcx_with_one_lap_and_one_track)),
         )
         service = WorkoutsFromFileCreationService(
             auth_user=user_1,
-            file=kml_file_storage,
+            file=tcx_file_storage,
             workouts_data={"sport_id": sport_1_cycling.id},
         )
 
@@ -1034,7 +1022,6 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert new_workout.description is None
         assert float(new_workout.distance) == 0.318  # type: ignore
         assert new_workout.duration == timedelta(minutes=4, seconds=10)
-        assert new_workout.gpx is not None
         assert new_workout.map is not None
         assert new_workout.map_visibility == VisibilityLevel.PRIVATE
         assert new_workout.map_id is not None
@@ -1043,6 +1030,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert float(new_workout.min_alt) == 976.0  # type: ignore
         assert new_workout.moving == timedelta(minutes=4, seconds=10)
         assert new_workout.notes is None
+        self.assert_file_extension(new_workout.original_file, "tcx")
         assert new_workout.pauses == timedelta(seconds=0)
         assert new_workout.suspended_at is None
         assert new_workout.title is not None
@@ -1121,19 +1109,47 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         db.session.commit()
 
         new_workout = Workout.query.one()
-        assert new_workout.gpx == (
-            f"workouts/{user_1.id}/2018-03-13_12-44-45_"
-            f"{sport_1_cycling.id}_{expected_token}.gpx"
-        )
-        with open(get_absolute_file_path(new_workout.gpx)) as f:
-            assert '<gpx xmlns="http://www.topografix.com/GPX/1/1"' in f.read()
-
         assert new_workout.original_file == (
             f"workouts/{user_1.id}/2018-03-13_12-44-45_"
             f"{sport_1_cycling.id}_{expected_token}.tcx"
         )
         with open(get_absolute_file_path(new_workout.original_file)) as f:
             assert f.read() == tcx_with_one_lap_and_one_track
+
+    def test_it_calls_open_elevation_when_elevations_are_missing_in_file_other_than_gpx(  # noqa
+        self,
+        app_with_open_elevation_url: "Flask",
+        user_1: "User",
+        tcx_with_one_lap_and_one_track: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        user_1.missing_elevations_processing = (
+            ElevationDataSource.OPEN_ELEVATION
+        )
+        regex = re.compile("<AltitudeMeters>(.*)</AltitudeMeters>")
+        tcx_without_elevation = regex.sub("", tcx_with_one_lap_and_one_track)
+        kml_file_storage = FileStorage(
+            filename="file.tcx",
+            stream=BytesIO(str.encode(tcx_without_elevation)),
+        )
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            file=kml_file_storage,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+
+        with (
+            patch.object(
+                OpenElevationService,
+                "get_elevations",
+                return_value=[],
+            ) as get_elevations_mock,
+        ):
+            service.create_workout_from_file(extension="tcx", equipments=None)
+        db.session.commit()
+
+        assert Workout.query.one() is not None
+        get_elevations_mock.assert_called_once()
 
     def test_it_creates_workout_when_extension_is_fit(
         self,
@@ -1176,7 +1192,6 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert new_workout.description is None
         assert float(new_workout.distance) == 0.318  # type: ignore
         assert new_workout.duration == timedelta(minutes=4, seconds=10)
-        assert new_workout.gpx is not None
         assert new_workout.map is not None
         assert new_workout.map_visibility == VisibilityLevel.PRIVATE
         assert new_workout.map_id is not None
@@ -1185,6 +1200,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert float(new_workout.min_alt) == 976.0  # type: ignore
         assert new_workout.moving == timedelta(minutes=4, seconds=10)
         assert new_workout.notes is None
+        self.assert_file_extension(new_workout.original_file, "fit")
         assert new_workout.pauses == timedelta(seconds=0)
         assert new_workout.suspended_at is None
         assert new_workout.title is not None
@@ -1218,13 +1234,6 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         db.session.commit()
 
         new_workout = Workout.query.one()
-        assert new_workout.gpx == (
-            f"workouts/{user_1.id}/2018-03-13_12-44-45_"
-            f"{sport_1_cycling.id}_{expected_token}.gpx"
-        )
-        with open(get_absolute_file_path(new_workout.gpx)) as f:
-            assert '<gpx xmlns="http://www.topografix.com/GPX/1/1"' in f.read()
-
         assert new_workout.original_file == (
             f"workouts/{user_1.id}/2018-03-13_12-44-45_"
             f"{sport_1_cycling.id}_{expected_token}.fit"

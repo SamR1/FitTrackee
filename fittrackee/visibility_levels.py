@@ -79,14 +79,19 @@ def can_view(
     return False
 
 
-def can_view_heart_rate(
+def can_view_workout_data(
+    data_type: str,
     target_user: "User",
     user: Optional["User"] = None,
 ) -> bool:
+    if data_type not in ["calories", "hr"]:
+        return False
+
     if user and (user.id == target_user.id):
         return True
 
-    if target_user.hr_visibility == VisibilityLevel.PUBLIC and (
+    attribute = f"{data_type}_visibility"
+    if getattr(target_user, attribute) == VisibilityLevel.PUBLIC and (
         not user or not user.is_blocked_by(target_user)
     ):
         return True
@@ -95,7 +100,7 @@ def can_view_heart_rate(
         return False
 
     if (
-        target_user.hr_visibility == VisibilityLevel.FOLLOWERS
+        getattr(target_user, attribute) == VisibilityLevel.FOLLOWERS
         and user in target_user.followers.all()
     ):
         return True

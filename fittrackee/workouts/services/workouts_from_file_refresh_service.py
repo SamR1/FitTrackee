@@ -2,12 +2,12 @@ import zipfile
 from datetime import datetime
 from typing import IO, TYPE_CHECKING, Optional, Union
 
-from sqlalchemy import asc, desc, or_
+from sqlalchemy import asc, desc
 
 from fittrackee import appLog, db
 from fittrackee.files import get_absolute_file_path
 from fittrackee.users.models import User, UserSportPreference
-from fittrackee.workouts.models import Workout, WorkoutSegment
+from fittrackee.workouts.models import Workout
 
 from ..exceptions import (
     WorkoutExceedingValueException,
@@ -21,6 +21,7 @@ from .workout_from_file.services import WORKOUT_FROM_FILE_SERVICES
 if TYPE_CHECKING:
     from logging import Logger
 
+    from fittrackee.constants import ElevationDataSource
     from fittrackee.workouts.models import Sport
 
 
@@ -29,7 +30,13 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
     recalculate values ang regenerate geometry and points
     """
 
-    def __init__(self, workout: "Workout", update_weather: bool = False):
+    def __init__(
+        self,
+        workout: "Workout",
+        update_weather: bool = False,
+        get_elevation_on_refresh: bool = True,
+        change_elevation_source: Optional["ElevationDataSource"] = None,
+    ):
         if not workout.original_file:
             raise WorkoutRefreshException(
                 "error", "workout without original file"
@@ -48,6 +55,8 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
             else self.sport_preferences.stopped_speed_threshold
         )
         self.update_weather = update_weather
+        self.get_elevation_on_refresh = get_elevation_on_refresh
+        self.change_elevation_source = change_elevation_source
 
     def get_file_content(self, file_extension: str) -> Union[bytes, IO[bytes]]:
         try:
@@ -78,6 +87,8 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
             sport=self.sport,
             stopped_speed_threshold=self.stopped_speed_threshold,
             get_weather=self.update_weather,
+            get_elevation_on_refresh=self.get_elevation_on_refresh,
+            change_elevation_source=self.change_elevation_source,
         )
 
         # extract and calculate data from provided file
@@ -94,18 +105,6 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
             raise WorkoutException(
                 "error", "error when processing workout"
             ) from e
-
-        db.session.flush()
-
-        # if original file is not a gpx, store the newly generated gpx file
-        if file_extension != "gpx":
-            gpx_file = (
-                self.workout.gpx
-                if self.workout.gpx
-                else self.original_file.replace(file_extension, "gpx")
-            )
-            with open(get_absolute_file_path(gpx_file), "w") as f:
-                f.write(workout_service.gpx.to_xml())
 
         db.session.commit()
         db.session.refresh(self.workout)
@@ -126,10 +125,11 @@ class WorkoutsFromFileRefreshService:
         user: Optional[str] = None,
         extension: Optional[str] = None,
         sport_id: Optional[int] = None,
+        new_sport_id: Optional[int] = None,
         date_from: Optional[datetime] = None,
         date_to: Optional[datetime] = None,
         with_weather: bool = False,
-        add_geometry: bool = False,
+        with_elevation: bool = False,
         verbose: bool = False,
     ) -> None:
         self.per_page: Optional[int] = per_page
@@ -138,10 +138,11 @@ class WorkoutsFromFileRefreshService:
         self.username: Optional[str] = user
         self.extension: Optional[str] = extension if extension else None
         self.sport_id: Optional[int] = sport_id
+        self.new_sport_id: Optional[int] = new_sport_id
         self.date_from: Optional["datetime"] = date_from
         self.date_to: Optional["datetime"] = date_to
         self.with_weather: bool = with_weather
-        self.add_geometry: bool = add_geometry
+        self.with_elevation: bool = with_elevation
         self.logger: "Logger" = logger
         self.verbose: bool = verbose
 
@@ -152,7 +153,7 @@ class WorkoutsFromFileRefreshService:
 
     def refresh(self) -> int:
         workouts_to_refresh_query = Workout.query
-        filters = [Workout.gpx != None]  # noqa
+        filters = [Workout.original_file != None]  # noqa
         if self.username:
             workouts_to_refresh_query = workouts_to_refresh_query.join(
                 User, User.id == Workout.user_id
@@ -166,18 +167,6 @@ class WorkoutsFromFileRefreshService:
             filters.extend([Workout.workout_date >= self.date_from])
         if self.date_to:
             filters.extend([Workout.workout_date <= self.date_to])
-        if self.add_geometry:
-            workouts_to_refresh_query = workouts_to_refresh_query.join(
-                WorkoutSegment
-            )
-            filters.extend(
-                [
-                    or_(
-                        Workout.start_point_geom == None,  # noqa
-                        WorkoutSegment.geom == None,  # noqa
-                    )
-                ]
-            )
 
         updated_workouts = 0
         workouts_to_refresh = (
@@ -201,8 +190,14 @@ class WorkoutsFromFileRefreshService:
             self._log_if_verbose(f"Refreshing workout {index}/{total}...")
 
             try:
+                if self.new_sport_id:
+                    workout.sport_id = self.new_sport_id
+                    db.session.flush()
+                    db.session.refresh(workout)
                 service = WorkoutFromFileRefreshService(
-                    workout, update_weather=self.with_weather
+                    workout,
+                    update_weather=self.with_weather,
+                    get_elevation_on_refresh=self.with_elevation,
                 )
                 service.refresh()
                 updated_workouts += 1

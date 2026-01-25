@@ -6,6 +6,7 @@ import type {
   TMessagePreferences,
   TNotificationPreferences,
 } from '@/types/notifications.ts'
+import type { TPaceSpeedDisplay } from '@/types/sports.ts'
 import type { IComment, IRecord, IWorkout } from '@/types/workouts'
 
 export type TRelationshipAction = 'follow' | 'unfollow' | 'block' | 'unblock'
@@ -14,6 +15,11 @@ export type TFollowRequestAction = 'accept' | 'reject'
 export type TUserRole = 'user' | 'moderator' | 'admin' | 'owner'
 export type TVisibilityLevels = 'private' | 'followers_only' | 'public'
 export type TSegmentsCreationEvent = 'all' | 'none' | 'only_manual'
+export type TElevationDataSource =
+  | 'file'
+  | 'open_elevation'
+  | 'open_elevation_smooth'
+  | 'valhalla'
 
 export interface IUserLightProfile {
   blocked: boolean
@@ -54,6 +60,7 @@ export interface IUserProfile extends IUserLightProfile {
 export interface IAuthUserProfile extends IUserProfile {
   analysis_visibility: TVisibilityLevels
   accepted_privacy_policy: boolean | null
+  calories_visibility: TVisibilityLevels
   date_format: string
   display_ascent: boolean
   email: string
@@ -64,6 +71,7 @@ export interface IAuthUserProfile extends IUserProfile {
   manually_approves_followers: boolean
   map_visibility: TVisibilityLevels
   messages_preferences: TMessagePreferences
+  missing_elevations_processing: TElevationDataSource
   nb_sports: number
   notification_preferences: TNotificationPreferences
   records: IRecord[]
@@ -119,6 +127,7 @@ export interface IUserRelationshipActionPayload {
 
 export interface IUserPreferencesPayload {
   analysis_visibility: TVisibilityLevels
+  calories_visibility: TVisibilityLevels
   date_format: string
   display_ascent: boolean
   hide_profile_in_users_directory: boolean
@@ -127,6 +136,7 @@ export interface IUserPreferencesPayload {
   language: TLanguage
   manually_approves_followers: boolean
   map_visibility: TVisibilityLevels
+  missing_elevations_processing: TElevationDataSource
   segments_creation_event: TSegmentsCreationEvent
   split_workout_charts: boolean
   start_elevation_at_zero: boolean
@@ -146,6 +156,7 @@ export interface IUserSportPreferencesPayload {
   sport_id: number
   color: string | null
   is_active: boolean
+  pace_speed_display: TPaceSpeedDisplay
   stopped_speed_threshold: number
   fromSport: boolean
   default_equipment_ids?: string[]

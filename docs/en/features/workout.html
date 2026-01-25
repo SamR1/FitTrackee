@@ -1,0 +1,1284 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Dashboard" href="dashboard.html"><link rel="prev" title="Registration &amp; authentication" href="registration_and_authentication.html">
+        <link rel="prefetch" href="../_static/ft-logo.png" as="image">
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+        <title>Workout - FitTrackee 1.1.0b3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/fork-awesome.min.css?v=876feb3b" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=c3914d4b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">FitTrackee 1.1.0b3
+ documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">FitTrackee 1.1.0b3
+ documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Features</a><input aria-label="Toggle navigation of Features" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="registration_and_authentication.html">Registration &amp; authentication</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Workout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dashboard.html">Dashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workouts_list.html">Workouts list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="statistics.html">Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="global_map.html">Global map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interactions.html">Interactions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="account_and_preferences.html">Account &amp; preferences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="equipment.html">Equipment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="oauth.html">OAuth 2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="administration.html">Administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="translations.html">Translations</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../installation/index.html">Installation</a><input aria-label="Toggle navigation of Installation" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation/environments_variables.html">Environment variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/installation.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/upgrade.html">Upgrade</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/deployment.html">Deployment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/map_tile_server.html">Map tile server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/weather.html">Weather data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/elevation.html">Elevation data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/emails.html">Emails</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/api_rate_limits.html">API rate limits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/tasks_processing.html">Tasks processing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cli.html">Command line interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../third_party_tools.html">Third-party tools</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/index.html">API documentation</a><input aria-label="Toggle navigation of API documentation" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/auth.html">Authentication and account</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/configuration.html">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/comments.html">Comments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/equipments.html">Equipments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/equipment_types.html">Equipment Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/follow_requests.html">Follow requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/geocode.html">Geocoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/oauth2.html">OAuth2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/notifications.html">Notifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/queued_tasks.html">Queued Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/records.html">Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/reports.html">Reports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/rss_feeds.html">RSS Feeds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/sports.html">Sports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/stats.html">Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/timeline.html">Timeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/users.html">Users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/workouts.html">Workouts</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../troubleshooting/index.html">Troubleshooting</a><input aria-label="Toggle navigation of Troubleshooting" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting/administrator.html">Administrator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting/user.html">User</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Change log</a></li>
+</ul>
+
+</div>
+</div><div id="furo-languages" tabindex="0">
+  <span class="languages-label">
+    <i class="fa fa-language"></i>
+  </span>
+  <div class="languages-list">
+    <a href="../../en/features/workout.html" hreflang=en lang=en>
+      English
+    </a>
+    <a href="../../fr/features/workout.html" hreflang=fr lang=fr>
+      Français
+    </a>
+  </div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/features/workout.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="workout">
+<h1>Workout<a class="headerlink" href="#workout" title="Link to this heading">¶</a></h1>
+<section id="creation">
+<h2>Creation<a class="headerlink" href="#creation" title="Link to this heading">¶</a></h2>
+<p>A workout can be created by:</p>
+<ul class="simple">
+<li><p>uploading manually a file or a zip archive containing a limited number of files,</p></li>
+<li><p>or entering workout data (without file).</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">For now, <strong>FitTrackee</strong> has no importer, but some <a class="reference external" href="../third_party_tools.html#importers">third-party tools</a> allow you to import workouts (for instance from Garmin or Strava accounts).</div>
+</div>
+</div>
+<section id="file-upload">
+<h3>File upload<a class="headerlink" href="#file-upload" title="Link to this heading">¶</a></h3>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.10.0: </span>support for .fit, .kml/.kmz and .tcx files, asynchronous uploads for larger files</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.10.3: </span>pause events triggering segment creation (.fit files only)</p>
+</div>
+<p>Supported files extensions are:</p>
+<ul class="simple">
+<li><p>.gpx</p></li>
+<li><p>.fit</p></li>
+<li><p>.kml and .kmz</p>
+<ul>
+<li><p>versions supported: 2.2.0 and 2.3.0</p></li>
+<li><p>only files with <code class="docutils literal notranslate"><span class="pre">Placemark</span></code>/<code class="docutils literal notranslate"><span class="pre">MultiTrack</span></code>/<code class="docutils literal notranslate"><span class="pre">Tracks</span></code> are supported.</p></li>
+<li><p>files with folders or multiple <code class="docutils literal notranslate"><span class="pre">Placemark</span></code> are not supported for now.</p></li>
+</ul>
+</li>
+<li><p>.tcx</p></li>
+<li><p>.zip archive containing files with one of the supported extensions</p></li>
+</ul>
+<p>The maximum file size and number can be modified by administrators.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Only files containing at least time and coordinates are supported (otherwise, errors may occur on upload).</p>
+</div>
+<figure class="align-default" id="id1">
+<img alt="Form for file upload" src="../_images/workout-creation-with-file.png" />
+<figcaption>
+<p><span class="caption-text">Form for file upload</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<div class="admonition-technical-notes admonition">
+<p class="admonition-title">Technical notes</p>
+<p>For extensions other than .gpx, files are converted to .gpx:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>.fit: generated .gpx file contains one track (<code class="docutils literal notranslate"><span class="pre">&lt;trk&gt;</span></code>). Depending on user preferences, a new segment (<code class="docutils literal notranslate"><span class="pre">&lt;trkseg&gt;</span></code>) can be created after pause events:</dt><dd><ul>
+<li><p>all pause events,</p></li>
+<li><p>only manual pause event.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>.kml: generated .gpx file contains one track (<code class="docutils literal notranslate"><span class="pre">&lt;trk&gt;</span></code>) corresponding to <code class="docutils literal notranslate"><span class="pre">&lt;MultiTrack&gt;</span></code>, containing one segment (<code class="docutils literal notranslate"><span class="pre">&lt;trkseg&gt;</span></code>) per kml track (<code class="docutils literal notranslate"><span class="pre">&lt;Track&gt;</span></code>)</p></li>
+<li><p>.tcx: generated .gpx file contains one track (<code class="docutils literal notranslate"><span class="pre">&lt;trk&gt;</span></code>) containing one segment (<code class="docutils literal notranslate"><span class="pre">&lt;trkseg&gt;</span></code>) per activity (<code class="docutils literal notranslate"><span class="pre">&lt;Activity&gt;</span></code>)</p></li>
+</ul>
+</div>
+<p>Archive files (.zip) upload can be asynchronous when enabled by the administrators.
+Asynchronous uploads can be displayed in user account and can be interrupted by the user.
+In case errors are encountered, the list of error files is displayed at the end of the upload.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Weather data are not collected during asynchronous uploads to avoid hitting API rate limit.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<div class="line-block">
+<div class="line">A timeout is set to prevent long-running uploads.</div>
+<div class="line">Errored or aborted uploads are not reprocessed.</div>
+</div>
+</div>
+<p>A notification is displayed after task completion.</p>
+</section>
+<section id="data-entry">
+<h3>Data entry<a class="headerlink" href="#data-entry" title="Link to this heading">¶</a></h3>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.10: </span>add ascent and descent</p>
+</div>
+<p>Users can create a workout without file by entering date, time, duration, distance, ascent and descent.</p>
+<figure class="align-default">
+<img alt="Form for workout creation without a file" src="../_images/workout-creation-without-file.png" />
+</figure>
+</section>
+<section id="sports">
+<h3>Sports<a class="headerlink" href="#sports" title="Link to this heading">¶</a></h3>
+<p>27 sports are available.</p>
+<div class="line-block">
+<div class="line">Most icons for sports are made by <a class="reference external" href="https://www.freepik.com/">Freepik</a> from <a class="reference external" href="https://www.flaticon.com/">Flaticon</a>.</div>
+<div class="line">Sports icons for Canoeing, Kayaking and Rowing are made by <a class="reference external" href="https://github.com/Von-Birne">&#64;Von-Birne</a>.</div>
+<div class="line">Sport icon for Halfbike is made by <a class="reference external" href="https://github.com/astridx">&#64;astridx</a>.</div>
+</div>
+<section id="sports-available">
+<h4>Sports available<a class="headerlink" href="#sports-available" title="Link to this heading">¶</a></h4>
+<section id="cycle-sports">
+<h5>Cycle sports<a class="headerlink" href="#cycle-sports" title="Link to this heading">¶</a></h5>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.7.3: </span>Cycling (Virtual)</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.7.27: </span>Cycling (Trekking)</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.9.3: </span>Halfbike</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.5.0: </span>Mountain Biking (Electric)</p>
+</div>
+<div class="table-wrapper colwidths-given sports-table docutils container">
+<table class="sports-table docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Id</p></th>
+<th class="head"><p>Icon</p></th>
+<th class="head"><p>Name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><img alt="../_images/cycling_sport.png" src="../_images/cycling_sport.png" />
+</td>
+<td><p>Cycling (Sport)</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><img alt="../_images/cycling_transport.png" src="../_images/cycling_transport.png" />
+</td>
+<td><p>Cycling (Transport)</p></td>
+</tr>
+<tr class="row-even"><td><p>17</p></td>
+<td><img alt="../_images/cycling_trekking.png" src="../_images/cycling_trekking.png" />
+</td>
+<td><p>Cycling (Trekking)</p></td>
+</tr>
+<tr class="row-odd"><td><p>13</p></td>
+<td><img alt="../_images/cycling_virtual.png" src="../_images/cycling_virtual.png" />
+</td>
+<td><p>Cycling (Virtual)</p></td>
+</tr>
+<tr class="row-even"><td><p>21</p></td>
+<td><img alt="../_images/halfbike.png" src="../_images/halfbike.png" />
+</td>
+<td><p>Halfbike</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><img alt="../_images/mountain_biking.png" src="../_images/mountain_biking.png" />
+</td>
+<td><p>Mountain Biking</p></td>
+</tr>
+<tr class="row-even"><td><p>7</p></td>
+<td><img alt="../_images/mountain_biking_electric.png" src="../_images/mountain_biking_electric.png" />
+</td>
+<td><p>Mountain Biking (Electric)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="foot-sports">
+<h5>Foot sports<a class="headerlink" href="#foot-sports" title="Link to this heading">¶</a></h5>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.5.0: </span>Trail</p>
+</div>
+<div class="table-wrapper colwidths-given sports-table docutils container">
+<table class="sports-table docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Id</p></th>
+<th class="head"><p>Icon</p></th>
+<th class="head"><p>Name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>3</p></td>
+<td><img alt="../_images/hiking.png" src="../_images/hiking.png" />
+</td>
+<td><p>Hiking</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><img alt="../_images/running.png" src="../_images/running.png" />
+</td>
+<td><p>Running</p></td>
+</tr>
+<tr class="row-even"><td><p>8</p></td>
+<td><img alt="../_images/trail.png" src="../_images/trail.png" />
+</td>
+<td><p>Trail</p></td>
+</tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td><img alt="../_images/walking.png" src="../_images/walking.png" />
+</td>
+<td><p>Walking</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="water-sports">
+<h5>Water sports<a class="headerlink" href="#water-sports" title="Link to this heading">¶</a></h5>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.5.0: </span>Rowing</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.7.20: </span>Open Water Swimming</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.9.3: </span>Canoeing and Kayaking</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.9.3: </span>Modified Rowing image</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.9.10: </span>Windsurfing</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.10.3: </span>Standup paddleboarding</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.1.0: </span>Canoeing (Whitewater) and Kayaking (Whitewater)</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.1.0: </span>Modified Canoeing and Kayaking images</p>
+</div>
+<div class="table-wrapper colwidths-given sports-table docutils container">
+<table class="sports-table docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Id</p></th>
+<th class="head"><p>Icon</p></th>
+<th class="head"><p>Name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>20</p></td>
+<td><img alt="../_images/canoeing.png" src="../_images/canoeing.png" />
+</td>
+<td><p>Canoeing</p></td>
+</tr>
+<tr class="row-odd"><td><p>26</p></td>
+<td><img alt="../_images/canoeing_whitewater.png" src="../_images/canoeing_whitewater.png" />
+</td>
+<td><p>Canoeing (Whitewater)</p></td>
+</tr>
+<tr class="row-even"><td><p>19</p></td>
+<td><img alt="../_images/kayaking.png" src="../_images/kayaking.png" />
+</td>
+<td><p>Kayaking</p></td>
+</tr>
+<tr class="row-odd"><td><p>27</p></td>
+<td><img alt="../_images/kayaking_whitewater.png" src="../_images/kayaking_whitewater.png" />
+</td>
+<td><p>Kayaking (Whitewater)</p></td>
+</tr>
+<tr class="row-even"><td><p>16</p></td>
+<td><img alt="../_images/open_water_swimming.png" src="../_images/open_water_swimming.png" />
+</td>
+<td><p>Open Water Swimming</p></td>
+</tr>
+<tr class="row-odd"><td><p>11</p></td>
+<td><img alt="../_images/rowing.png" src="../_images/rowing.png" />
+</td>
+<td><p>Rowing</p></td>
+</tr>
+<tr class="row-even"><td><p>23</p></td>
+<td><img alt="../_images/standup_paddleboarding.png" src="../_images/standup_paddleboarding.png" />
+</td>
+<td><p>Standup Paddleboarding</p></td>
+</tr>
+<tr class="row-odd"><td><p>22</p></td>
+<td><img alt="../_images/windsurfing.png" src="../_images/windsurfing.png" />
+</td>
+<td><p>Windsurfing</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="rackets-sports">
+<h5>Rackets sports<a class="headerlink" href="#rackets-sports" title="Link to this heading">¶</a></h5>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.11.0: </span>Tennis (Outdoor)</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 1.0.0: </span>Padel (Outdoor)</p>
+</div>
+<div class="table-wrapper colwidths-given sports-table docutils container">
+<table class="sports-table docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Id</p></th>
+<th class="head"><p>Icon</p></th>
+<th class="head"><p>Name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>25</p></td>
+<td><img alt="../_images/padel_outdoor.png" src="../_images/padel_outdoor.png" />
+</td>
+<td><p>Padel (Outdoor)</p></td>
+</tr>
+<tr class="row-odd"><td><p>24</p></td>
+<td><img alt="../_images/tennis_outdoor.png" src="../_images/tennis_outdoor.png" />
+</td>
+<td><p>Tennis (Outdoor)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="winter-sports-and-mountain-sports">
+<h5>Winter sports and mountain sports<a class="headerlink" href="#winter-sports-and-mountain-sports" title="Link to this heading">¶</a></h5>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.5.0: </span>Skiing (Alpine) and Skiing (Cross Country)</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.5.2: </span>Snowshoes</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.7.3: </span>Mountaineering</p>
+</div>
+<div class="table-wrapper colwidths-given sports-table docutils container">
+<table class="sports-table docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Id</p></th>
+<th class="head"><p>Icon</p></th>
+<th class="head"><p>Name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>14</p></td>
+<td><img alt="../_images/mountaineering.png" src="../_images/mountaineering.png" />
+</td>
+<td><p>Mountaineering</p></td>
+</tr>
+<tr class="row-odd"><td><p>9</p></td>
+<td><img alt="../_images/skiing_alpine.png" src="../_images/skiing_alpine.png" />
+</td>
+<td><p>Skiing (Alpine)</p></td>
+</tr>
+<tr class="row-even"><td><p>10</p></td>
+<td><img alt="../_images/skiing_cross_country.png" src="../_images/skiing_cross_country.png" />
+</td>
+<td><p>Skiing (Cross Country)</p></td>
+</tr>
+<tr class="row-odd"><td><p>10</p></td>
+<td><img alt="../_images/snowshoes.png" src="../_images/snowshoes.png" />
+</td>
+<td><p>Snowshoes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="other-sports">
+<h5>Other sports<a class="headerlink" href="#other-sports" title="Link to this heading">¶</a></h5>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.7.19: </span>Paragliding</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.8.7: </span>Swimrun</p>
+</div>
+<div class="table-wrapper colwidths-given sports-table docutils container">
+<table class="sports-table docutils align-default">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 15.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Id</p></th>
+<th class="head"><p>Icon</p></th>
+<th class="head"><p>Name</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>15</p></td>
+<td><img alt="../_images/paragliding.png" src="../_images/paragliding.png" />
+</td>
+<td><p>Paragliding</p></td>
+</tr>
+<tr class="row-odd"><td><p>18</p></td>
+<td><img alt="../_images/swimrun.png" src="../_images/swimrun.png" />
+</td>
+<td><p>Swimrun</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Swimrun is displayed as a single activity with no difference between segments for now.</div>
+</div>
+</div>
+</section>
+</section>
+<section id="sports-configuration">
+<h4>Sports configuration<a class="headerlink" href="#sports-configuration" title="Link to this heading">¶</a></h4>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.8.0: </span>added default equipment</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.1.0: </span>added pace/speed display</p>
+</div>
+<p>It is possible to configure sport in user preferences (see <a class="reference external" href="account_and_preferences.html#sports-preferences">Account &amp; preferences</a>) :</p>
+<ul class="simple">
+<li><p>Sport color</p></li>
+<li><p>Active status</p></li>
+<li><p>Stopped speed threshold</p></li>
+<li><p>Default equipment</p></li>
+<li><p>Pace/Speed display</p></li>
+</ul>
+</section>
+</section>
+<section id="data-entered-and-extracted">
+<h3>Data entered and extracted<a class="headerlink" href="#data-entered-and-extracted" title="Link to this heading">¶</a></h3>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.11: </span>added Visual Crossing as weather provider</p>
+</div>
+<div class="versionremoved">
+<p><span class="versionmodified removed">Removed in version 0.7.23: </span>removed DarkSky as weather provider</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.8.0: </span>added equipment</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.8.9: </span>added workout description</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.8.9: </span>added extraction of description from file</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.8.10: </span>title can be entered when creation workout with file</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.9.0: </span>added Markdown syntax for descriptions and private notes</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>Garmin mapping updated</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.1.0: </span>added extraction of total calories from file, missing elevations</p>
+</div>
+<p>If present in .gpx, .tcx and .fit files, the source (application or device) is displayed.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>.fit files from Garmin devices may contain product id instead of product name. The mapping between the product id and the product name allows the product name to be displayed instead, if available.</p>
+</div>
+<div class="line-block">
+<div class="line">If the name is present in the file, it is used as the workout title. Otherwise, a title is generated from the sport and workout date.</div>
+<div class="line">Users can provide title while uploading file.</div>
+</div>
+<div class="line-block">
+<div class="line">Users can add description and private notes.</div>
+<div class="line">A limited Markdown syntax can be used.</div>
+</div>
+<p>If present and no description is provided by the user, the description from the file is used as the workout description.</p>
+<p>An <a class="reference external" href="equipment.html">equipment</a> can be associated with a workout. For now, only one equipment can be associated.</p>
+<p>If present in .gpx, .tcx or .fit files, the total calories are extracted.</p>
+<p>If a weather provider is set by the administrator (data source is displayed in <strong>About</strong> page), the weather is extracted for the start and end points.</p>
+</section>
+<section id="visibility-levels">
+<h3>Visibility levels<a class="headerlink" href="#visibility-levels" title="Link to this heading">¶</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.9.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.10.0: </span>added visibility levels for heart rate</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.1.0: </span>added visibility levels for total calories</p>
+</div>
+<p>Visibility level can be set separately for workout data, analysis and map:</p>
+<ul class="simple">
+<li><p>private: only owner can see data,</p></li>
+<li><p>followers only: only owner and followers can see data,</p></li>
+<li><p>public: anyone can see data even unauthenticated users.</p></li>
+</ul>
+<div class="line-block">
+<div class="line">Workout visibility applies to title, description, records and workout data except elevation.</div>
+<div class="line">Analysis visibility applies to chart data, elevation and segments, if workout is associated with a file.</div>
+<div class="line">Map visibility applies to the map, if workout is associated with a file.</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Default visibility is private. All workouts created before <strong>FitTrackee</strong> 0.9.0 are private.</div>
+</div>
+</div>
+<p>In addition, the visibility level can be set for all workouts for heart rate (average and max values and values displayed in chart) and total calories (value displayed in the workout detail).</p>
+<p>Default visibility can be set in the <a class="reference external" href="account_and_preferences.html#preferences">user preferences</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">A workout with a file whose visibility for map and analysis data does not allow them to be viewed appears as a workout without a file.</div>
+<div class="line">Max. speed and ascent/descent are returned regardless analysis visibility.</div>
+</div>
+</div>
+<p>Users can report a workout that violates instance rules. This will send a notification to moderators and administrators.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<div class="line-block">
+<div class="line">Please keep in mind that the server operating team or the moderation team may view content with restricted visibility.</div>
+</div>
+</div>
+</section>
+<section id="calculated-data">
+<h3>Calculated data<a class="headerlink" href="#calculated-data" title="Link to this heading">¶</a></h3>
+<div class="admonition-technical-notes admonition">
+<p class="admonition-title">Technical notes</p>
+<p>Related data are stored in database in metric system.</p>
+</div>
+<p>Calculated values may differ from values calculated by the application or device that originally generated the files, in particular the maximum speed or the duration of pauses.</p>
+<p>By default, extreme speed values (which may be related to GPS errors) are excluded, which also affects the maximum speed (and pace).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A user preference allows this behavior to be disabled (see <a class="reference external" href="account_and_preferences.html#preferences">Account &amp; preferences</a>).</p>
+</div>
+<section id="stopped-speed-threshold">
+<h4>Stopped speed threshold<a class="headerlink" href="#stopped-speed-threshold" title="Link to this heading">¶</a></h4>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5.0: </span>added configuration</p>
+</div>
+<p>Stopped speed threshold affects speeds and durations calculation.</p>
+<p>The value used by <a class="reference external" href="https://github.com/tkrajina/gpxpy">gpxpy</a> is not the default one for the following sports (0.1 km/h instead of 1 km/h):</p>
+<ul class="simple">
+<li><p>Hiking</p></li>
+<li><p>Mountaineering</p></li>
+<li><p>Open Water Swimming</p></li>
+<li><p>Padel (Outdoor)</p></li>
+<li><p>Paragliding</p></li>
+<li><p>Skiing (Cross Country)</p></li>
+<li><p>Snowshoes</p></li>
+<li><p>Swimrun</p></li>
+<li><p>Tennis (Outdoor)</p></li>
+<li><p>Trail</p></li>
+<li><p>Walking</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Stopped speed threshold can be overridden in user preferences (see <a class="reference external" href="account_and_preferences.html#sports-preferences">Account &amp; preferences</a>).</div>
+<div class="line">It is not possible to enter 0 as stopped speed threshold, as gpxpy ignores it when it is equal to 0.</div>
+</div>
+</div>
+</section>
+<section id="elevation">
+<h4>Elevation<a class="headerlink" href="#elevation" title="Link to this heading">¶</a></h4>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.0.6: </span>elevation is not displayed for flatwater sports</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.1.0: </span>add missing elevation and elevation data source change</p>
+</div>
+<p>Elevation-related data for racket sports (Outdoor Tennis and Padel) and flatwater sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) are not stored in database and displayed if the file contains elevation</p>
+<div class="line-block">
+<div class="line">If some elevation data are missing and an <a class="reference external" href="../installation/elevation.html">elevation service</a> is enabled by the administrators (data source are displayed in <strong>About</strong> page), the missing elevations can be retrieved on workout creation if the user preference is set.</div>
+<div class="line">In this case, all elevations are updated.</div>
+</div>
+<p>Elevation data source can also be changed after creation.</p>
+</section>
+<section id="records">
+<h4>Records<a class="headerlink" href="#records" title="Link to this heading">¶</a></h4>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.6.11: </span>added highest ascent record</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.1.0: </span>added pace records</p>
+</div>
+<p>Depending on sports, following records are calculated:</p>
+<ul class="simple">
+<li><p>average speed</p></li>
+<li><p>average pace</p></li>
+<li><p>best pace</p></li>
+<li><p>farthest distance</p></li>
+<li><p>highest ascent</p></li>
+<li><p>longest duration</p></li>
+<li><p>maximum speed</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Records may differ from records displayed by the application that originally generated the files.</p>
+</div>
+</section>
+</section>
+</section>
+<section id="display">
+<h2>Display<a class="headerlink" href="#display" title="Link to this heading">¶</a></h2>
+<p>Once created, the workout is displayed with the calculated data and, in the case of workouts created from a file, with a map and chart.</p>
+<p>Example for a workout created with a .gpx file:</p>
+<figure class="align-default">
+<img alt="Workout Detail on FitTrackee" src="../_images/workout-detail.png" />
+</figure>
+<p>If the file contains multiple segments, each of them can be displayed.</p>
+<p>Depending on preferences, data is displayed using the metric or imperial system.</p>
+<section id="displayed-data">
+<h3>Displayed data<a class="headerlink" href="#displayed-data" title="Link to this heading">¶</a></h3>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5.5: </span>added wind direction</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5.5: </span>added equipment</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.10.0: </span>added file source, heart rate, and cadence</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>added power</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.1.0: </span>added pace and total calories</p>
+</div>
+<p>Depending on the sport and the method used to create the workout, the following data are displayed:</p>
+<ul>
+<li><p>if present, file source</p></li>
+<li><p>durations (moving and total durations and pauses)</p></li>
+<li><p>distance</p></li>
+<li><p>average and max. speeds (depending on sport or pace/display preference)</p></li>
+<li><p>average and best paces for the following sports (depending on pace/display preference):</p>
+<ul class="simple">
+<li><p>Hiking</p></li>
+<li><p>Running</p></li>
+<li><p>Trail</p></li>
+<li><p>Walking</p></li>
+</ul>
+</li>
+<li><p>if present, min. and max. altitudes</p></li>
+<li><p>if present, ascent and descent</p></li>
+<li><p>if present, average and max. heart rate</p></li>
+<li><p>if present, average and max. cadence for the following sports:</p>
+<ul class="simple">
+<li><p>Cycling (Sport)</p></li>
+<li><p>Cycling (Trekking)</p></li>
+<li><p>Cycling (Transport)</p></li>
+<li><p>Cycling (Virtual)</p></li>
+<li><p>Halfbike</p></li>
+<li><p>Mountain Biking</p></li>
+<li><p>Mountain Biking (Electric)</p></li>
+<li><p>Hiking</p></li>
+<li><p>Mountaineering</p></li>
+<li><p>Snowshoes</p></li>
+<li><p>Running</p></li>
+<li><p>Trail</p></li>
+<li><p>Walking</p></li>
+<li><p>Open Water Swimming</p></li>
+</ul>
+</li>
+<li><p>if present, average and max. power for the following sports:</p>
+<ul class="simple">
+<li><p>Cycling (Sport)</p></li>
+<li><p>Cycling (Trekking)</p></li>
+<li><p>Cycling (Transport)</p></li>
+<li><p>Cycling (Virtual)</p></li>
+<li><p>Halfbike</p></li>
+<li><p>Mountain Biking</p></li>
+<li><p>Mountain Biking (Electric)</p></li>
+</ul>
+</li>
+<li><p>if present, total calories</p></li>
+<li><div class="line-block">
+<div class="line">if present, weather data</div>
+<div class="line">Wind is displayed, with an arrow indicating the direction (a tooltip can be displayed with the direction that the wind is coming <strong>from</strong>).</div>
+</div>
+</li>
+<li><p>records</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Records may differ from records displayed by the application that originally generated the files.</p>
+</div>
+</li>
+<li><p>associated equipment, according to its visibility (equipment details are only visible to its owner)</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Source and average and max values for heart rate and cadence are not displayed for workouts created before v0.10.0.</div>
+<div class="line">Average and max values for power are not displayed for workouts created before v0.11.0.</div>
+<div class="line">Pace and total calories are not displayed for workouts created before v1.1.0.</div>
+<div class="line">Refreshing the workout allows these values to be calculated.</div>
+</div>
+</div>
+</section>
+<section id="map">
+<h3>Map<a class="headerlink" href="#map" title="Link to this heading">¶</a></h3>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5.0: </span>added full screen and reset control</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>added heatmap for racket sports</p>
+</div>
+<div class="line-block">
+<div class="line">A map is displayed for workout with a file with the tile server set by the administrators (OpenStreetMap by default).</div>
+<div class="line">Controls allow full screen view and position reset.</div>
+<div class="line">If the sport is Outdoor Tennis or Padel, a heat map is also available.</div>
+</div>
+</section>
+<section id="chart">
+<h3>Chart<a class="headerlink" href="#chart" title="Link to this heading">¶</a></h3>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.10.0: </span>added heart rate and cadence</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.11.0: </span>added power and display preference for charts</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.1.0: </span>added pace and total calories, change default value for charts display preference</p>
+</div>
+<p>A chart is displayed for workout with a file, depending on sport and available data:</p>
+<ul class="simple">
+<li><p>speed (by default, speed is not displayed when pace is displayed)</p></li>
+<li><p>pace</p></li>
+<li><p>elevation</p></li>
+<li><p>heart rate</p></li>
+<li><p>cadence</p></li>
+<li><p>power</p></li>
+</ul>
+<p>Speed/pace, elevation, heart rate, cadence and power can be displayed on one chart or split on multiple charts.</p>
+<img alt="Pace and elevation are displayed in the same chart." src="../_images/pace_elevation_on_same_chart.png" />
+<p>The preferred display can be stored in a <a class="reference external" href="account_and_preferences.html#preferences">user preference</a>.</p>
+</section>
+<section id="workout-menu">
+<h3>Workout menu<a class="headerlink" href="#workout-menu" title="Link to this heading">¶</a></h3>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.5.1: </span>added button for download</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.9.0: </span>added like button</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.12.0: </span>added refresh button</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.1.0: </span>added button for elevation data source, file download updated</p>
+</div>
+<div class="table-wrapper colwidths-given workout-buttons-table docutils container">
+<table class="workout-buttons-table docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Button</p></th>
+<th class="head"><p>Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><img alt="../_images/workout_like.png" src="../_images/workout_like.png" />
+</td>
+<td><p>Like workout (only for authenticated users, depending on workout visibility)</p></td>
+</tr>
+<tr class="row-odd"><td><img alt="../_images/workout_download.png" src="../_images/workout_download.png" />
+</td>
+<td><p>Download the original workout file or the generated .gpx file (only for workout owner)</p></td>
+</tr>
+<tr class="row-even"><td><img alt="../_images/workout_edition.png" src="../_images/workout_edition.png" />
+</td>
+<td><p>Edit workout (only for workout owner)</p></td>
+</tr>
+<tr class="row-odd"><td><img alt="../_images/workout_refresh.png" src="../_images/workout_refresh.png" />
+</td>
+<td><p>Refresh workout (only for workout owner)</p></td>
+</tr>
+<tr class="row-even"><td><img alt="../_images/workout_elevation_data_source.png" src="../_images/workout_elevation_data_source.png" />
+</td>
+<td><p>Change elevation data source workout (only for workout owner)</p></td>
+</tr>
+<tr class="row-odd"><td><img alt="../_images/workout_delete.png" src="../_images/workout_delete.png" />
+</td>
+<td><p>Delete workout (only for workout owner)</p></td>
+</tr>
+<tr class="row-even"><td><img alt="../_images/workout_report.png" src="../_images/workout_report.png" />
+</td>
+<td><p>Report workout (only for authenticated users except the workout owner, depending on workout visibility)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="edition-and-deletion">
+<h2>Edition and deletion<a class="headerlink" href="#edition-and-deletion" title="Link to this heading">¶</a></h2>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.12.0: </span>added workout refresh</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.1.0: </span>change elevation data source</p>
+</div>
+<p>Workout can be edited:</p>
+<ul class="simple">
+<li><p>sport</p></li>
+<li><p>title</p></li>
+<li><p>equipment</p></li>
+<li><p>description</p></li>
+<li><p>private notes</p></li>
+<li><p>workout visibility</p></li>
+<li><p>analysis visibility</p></li>
+<li><p>map visibility</p></li>
+<li><p>date (only workouts without gpx)</p></li>
+<li><p>duration (only workouts without gpx)</p></li>
+<li><p>distance (only workouts without gpx)</p></li>
+<li><p>ascent and descent (only workouts without gpx)</p></li>
+</ul>
+<div class="line-block">
+<div class="line">Some values are only calculated on workout creation.</div>
+<div class="line">The previously uploaded workouts are not updated in the following cases:</div>
+</div>
+<ul class="simple">
+<li><p>updating some preferences (“max. speed calculation strategy” and “pause events triggering segment creation”),</p></li>
+<li><p>updating stopped speed threshold in sport preferences (used to calculate pauses),</p></li>
+<li><p>configuring a weather data provider,</p></li>
+<li><p>some new features,</p></li>
+<li><p>Garmin device mappings update,</p></li>
+<li><p>bug fixes on file processing.</p></li>
+</ul>
+<p>The calculated data can be refreshed by clicking on <strong>Refresh</strong> button and weather data fetched (if provider is set and the workout does not have weather data).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">A <a class="reference external" href="../cli.html#ftcli-workouts-refresh">CLI command</a> is available to refresh several workouts depending on options.</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If a weather data provider is defined and the <code class="docutils literal notranslate"><span class="pre">--with-weather</span></code> option is provided and/or an Elevation API URL is set and <code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code> option is provided, the rate limit may be reached, resulting in API rate limit errors when a large number of workouts is refreshed.</p>
+</div>
+</div>
+<div class="line-block">
+<div class="line">The elevation data source can be changed if an <a class="reference external" href="../installation/elevation.html">elevation service</a> is enabled by the administrators.</div>
+<div class="line">In this case, the available services are displayed after clicking on the button <strong>Change elevation data source</strong>:</div>
+</div>
+<img alt="List of available elevation sources" src="../_images/elevations-choices.png" />
+<p>It is also possible to get the elevation again from the file:</p>
+<img alt="List of available elevation sources with file" src="../_images/elevations-choices-with-file.png" />
+<p>A workout can be deleted by clicking on the <strong>Delete</strong> button.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="dashboard.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Dashboard</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="registration_and_authentication.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Registration &amp; authentication</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2017 - 2026, SamR1
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link fa fa-github fa-lg" href="https://github.com/SamR1/FitTrackee" aria-label="GitHub"></a>
+              <a class="muted-link fa fa-mastodon fa-lg" rel="me" href="https://fosstodon.org/@FitTrackee" aria-label="Mastodon"></a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Workout</a><ul>
+<li><a class="reference internal" href="#creation">Creation</a><ul>
+<li><a class="reference internal" href="#file-upload">File upload</a></li>
+<li><a class="reference internal" href="#data-entry">Data entry</a></li>
+<li><a class="reference internal" href="#sports">Sports</a><ul>
+<li><a class="reference internal" href="#sports-available">Sports available</a><ul>
+<li><a class="reference internal" href="#cycle-sports">Cycle sports</a></li>
+<li><a class="reference internal" href="#foot-sports">Foot sports</a></li>
+<li><a class="reference internal" href="#water-sports">Water sports</a></li>
+<li><a class="reference internal" href="#rackets-sports">Rackets sports</a></li>
+<li><a class="reference internal" href="#winter-sports-and-mountain-sports">Winter sports and mountain sports</a></li>
+<li><a class="reference internal" href="#other-sports">Other sports</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sports-configuration">Sports configuration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#data-entered-and-extracted">Data entered and extracted</a></li>
+<li><a class="reference internal" href="#visibility-levels">Visibility levels</a></li>
+<li><a class="reference internal" href="#calculated-data">Calculated data</a><ul>
+<li><a class="reference internal" href="#stopped-speed-threshold">Stopped speed threshold</a></li>
+<li><a class="reference internal" href="#elevation">Elevation</a></li>
+<li><a class="reference internal" href="#records">Records</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#display">Display</a><ul>
+<li><a class="reference internal" href="#displayed-data">Displayed data</a></li>
+<li><a class="reference internal" href="#map">Map</a></li>
+<li><a class="reference internal" href="#chart">Chart</a></li>
+<li><a class="reference internal" href="#workout-menu">Workout menu</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#edition-and-deletion">Edition and deletion</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=6720a1c9"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    </body>
+</html>

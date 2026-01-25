@@ -6,42 +6,38 @@ from shapely import Point
 from sqlalchemy import func, select
 
 from fittrackee import db
+from fittrackee.utils import decode_short_id
 from fittrackee.workouts.constants import (
-    POWER_SPORTS,
-    RPM_CADENCE_SPORTS,
-    SPM_CADENCE_SPORTS,
-    SPORTS_WITHOUT_ELEVATION_DATA,
     WGS84_CRS,
 )
 from fittrackee.workouts.exceptions import (
     InvalidCoordinatesException,
     InvalidRadiusException,
-    WorkoutException,
 )
 from fittrackee.workouts.models import WorkoutSegment
+from fittrackee.workouts.utils.sports import get_sport_displayed_data
 
 if TYPE_CHECKING:
-    from fittrackee.workouts.models import Workout
+    from fittrackee.users.models import User
+    from fittrackee.workouts.models import Sport, Workout
 
 
 def get_geojson_from_segments(
     workout: "Workout",
     *,
-    segment_id: Optional[int] = None,
+    segment_short_id: Optional[str] = None,
 ) -> Optional[Dict]:
     """
     To refactor when using segment uuid
     """
     filters = [WorkoutSegment.workout_id == workout.id]
-    if segment_id is not None:
-        segment_index = segment_id - 1
-        if segment_index < 0:
-            raise WorkoutException("error", "Incorrect segment id", None)
-        filters.append(WorkoutSegment.segment_id == segment_id - 1)
+    if segment_short_id is not None:
+        segment_uuid = decode_short_id(segment_short_id)
+        filters.append(WorkoutSegment.uuid == segment_uuid)
     geom_subquery = select(WorkoutSegment.geom).filter(*filters).subquery()
     subquery = (
         func.ST_Collect(geom_subquery.c.geom)
-        if segment_id is None
+        if segment_short_id is None
         else geom_subquery.c.geom
     )
     geojson = db.session.scalar(func.ST_AsGeoJSON(subquery))
@@ -52,30 +48,26 @@ def get_geojson_from_segments(
 
 def get_chart_data_from_segment_points(
     segments_points: List[List[Dict]],
-    sport_label: str,
+    sport: "Sport",
     *,
+    user: Optional["User"],
     workout_ave_cadence: Optional[int],
     can_see_heart_rate: bool,
 ) -> List:
     """
     Return data needed to generate chart with:
-    - speed
+    - speed depending on sport and user sport preferences
+    - pace depending on sport and user sport preferences
     - elevation (if available)
     - heart rate (if available)
     - cadence (if available)
     - power (if available)
     """
     chart_data = []
-    # elevation
-    return_elevation_data = sport_label not in SPORTS_WITHOUT_ELEVATION_DATA
-    # from extension: cadence
+    sport_data_visibility = get_sport_displayed_data(sport, user)
     return_cadence = (
-        workout_ave_cadence
-        and sport_label in RPM_CADENCE_SPORTS + SPM_CADENCE_SPORTS
+        workout_ave_cadence and sport_data_visibility.display_cadence
     )
-    cadence_in_spm = sport_label in SPM_CADENCE_SPORTS
-    # from extension: power
-    return_power = sport_label in POWER_SPORTS
     total_distance = 0
 
     for segment_points in segments_points:
@@ -95,21 +87,26 @@ def get_chart_data_from_segment_points(
                 "duration": point["duration"] - first_point_duration,
                 "latitude": point["latitude"],
                 "longitude": point["longitude"],
-                "speed": point["speed"],
                 "time": point["time"],
             }
-            if return_elevation_data and point.get("elevation"):
+            if sport_data_visibility.display_elevation and point.get(
+                "elevation"
+            ):
                 data["elevation"] = point["elevation"]
+            if sport_data_visibility.display_pace and "pace" in point:
+                data["pace"] = point["pace"]
+            if sport_data_visibility.display_speed and "speed" in point:
+                data["speed"] = point["speed"]
             if return_cadence and "cadence" in point:
                 data["cadence"] = (
                     point["cadence"] * 2
-                    if cadence_in_spm
+                    if sport_data_visibility.display_spm_cadence
                     else point["cadence"]
                 )
+            if sport_data_visibility.display_power and "power" in point:
+                data["power"] = point["power"]
             if can_see_heart_rate and "heart_rate" in point:
                 data["hr"] = point["heart_rate"]
-            if return_power and "power" in point:
-                data["power"] = point["power"]
 
             if index == points_count:
                 total_distance = distance

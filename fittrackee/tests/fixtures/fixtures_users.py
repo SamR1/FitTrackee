@@ -33,96 +33,57 @@ def user_1_upper() -> User:
 
 
 @pytest.fixture()
-def user_1_admin() -> User:
-    admin = User(
-        username="admin", email="admin@example.com", password="12345678"
-    )
-    admin.role = UserRole.ADMIN.value
-    admin.hide_profile_in_users_directory = False
-    admin.is_active = True
-    admin.accepted_policy_date = datetime.now(timezone.utc)
-    db.session.add(admin)
+def user_1_admin(user_1: User) -> User:
+    user_1.username = "admin"
+    user_1.email = "admin@example.com"
+    user_1.role = UserRole.ADMIN.value
     db.session.commit()
-    return admin
+    return user_1
 
 
 @pytest.fixture()
-def user_1_moderator() -> User:
-    moderator = User(
-        username="moderator",
-        email="moderator@example.com",
-        password="12345678",
-    )
-    moderator.role = UserRole.MODERATOR.value
-    moderator.hide_profile_in_users_directory = False
-    moderator.is_active = True
-    moderator.accepted_policy_date = datetime.now(timezone.utc)
-    db.session.add(moderator)
+def user_1_moderator(user_1: User) -> User:
+    user_1.username = "moderator"
+    user_1.email = "moderator@example.com"
+    user_1.role = UserRole.MODERATOR.value
     db.session.commit()
-    return moderator
+    return user_1
 
 
 @pytest.fixture()
-def user_1_owner() -> User:
-    owner = User(
-        username="owner", email="owner@example.com", password="12345678"
-    )
-    owner.role = UserRole.OWNER.value
-    owner.hide_profile_in_users_directory = False
-    owner.is_active = True
-    owner.accepted_policy_date = datetime.now(timezone.utc)
-    db.session.add(owner)
+def user_1_owner(user_1: User) -> User:
+    user_1.username = "owner"
+    user_1.email = "owner@example.com"
+    user_1.role = UserRole.OWNER.value
     db.session.commit()
-    return owner
+    return user_1
 
 
 @pytest.fixture()
-def user_1_full() -> User:
-    user = User(username="test", email="test@test.com", password="12345678")
-    user.first_name = "John"
-    user.last_name = "Doe"
-    user.bio = "just a random guy"
-    user.location = "somewhere"
-    user.language = "en"
-    user.timezone = "America/New_York"
-    user.birth_date = datetime(1980, 1, 1, tzinfo=timezone.utc)
-    user.is_active = True
-    user.hide_profile_in_users_directory = False
-    user.accepted_policy_date = datetime.now(timezone.utc)
-    db.session.add(user)
+def user_1_full(user_1: User) -> User:
+    user_1.first_name = "John"
+    user_1.last_name = "Doe"
+    user_1.bio = "just a random guy"
+    user_1.location = "somewhere"
+    user_1.language = "en"
+    user_1.timezone = "America/New_York"
+    user_1.birth_date = datetime(1980, 1, 1, tzinfo=timezone.utc)
     db.session.commit()
-    return user
+    return user_1
 
 
 @pytest.fixture()
-def user_1_raw_speed() -> User:
-    user = User(username="test", email="test@test.com", password="12345678")
-    user.first_name = "John"
-    user.last_name = "Doe"
-    user.bio = "just a random guy"
-    user.location = "somewhere"
-    user.language = "en"
-    user.timezone = "America/New_York"
-    user.birth_date = datetime(1980, 1, 1, tzinfo=timezone.utc)
-    user.is_active = True
-    user.hide_profile_in_users_directory = False
-    user.use_raw_gpx_speed = True
-    user.accepted_policy_date = datetime.now(timezone.utc)
-    db.session.add(user)
+def user_1_raw_speed(user_1_full: User) -> User:
+    user_1_full.use_raw_gpx_speed = True
     db.session.commit()
-    return user
+    return user_1_full
 
 
 @pytest.fixture()
-def user_1_paris() -> User:
-    user = User(username="test", email="test@test.com", password="12345678")
-    user.timezone = "Europe/Paris"
-    user.is_active = True
-    user.hide_profile_in_users_directory = False
-    user.accepted_policy_date = datetime.now(timezone.utc)
-    db.session.add(user)
+def user_1_paris(user_1: User) -> User:
+    user_1.timezone = "Europe/Paris"
     db.session.commit()
-    return user
+    return user_1
 
 
 @pytest.fixture()
@@ -137,39 +98,24 @@ def user_2() -> User:
 
 
 @pytest.fixture()
-def user_2_owner() -> User:
-    user = User(username="toto", email="toto@toto.com", password="12345678")
-    user.is_active = True
-    user.hide_profile_in_users_directory = False
-    user.role = UserRole.OWNER.value
-    user.accepted_policy_date = datetime.now(timezone.utc)
-    db.session.add(user)
+def user_2_owner(user_2: User) -> User:
+    user_2.role = UserRole.OWNER.value
     db.session.commit()
-    return user
+    return user_2
 
 
 @pytest.fixture()
-def user_2_admin() -> User:
-    user = User(username="toto", email="toto@toto.com", password="12345678")
-    user.is_active = True
-    user.hide_profile_in_users_directory = False
-    user.role = UserRole.ADMIN.value
-    user.accepted_policy_date = datetime.now(timezone.utc)
-    db.session.add(user)
+def user_2_admin(user_2: User) -> User:
+    user_2.role = UserRole.ADMIN.value
     db.session.commit()
-    return user
+    return user_2
 
 
 @pytest.fixture()
-def user_2_moderator() -> User:
-    user = User(username="toto", email="toto@toto.com", password="12345678")
-    user.is_active = True
-    user.hide_profile_in_users_directory = False
-    user.role = UserRole.MODERATOR.value
-    user.accepted_policy_date = datetime.now(timezone.utc)
-    db.session.add(user)
+def user_2_moderator(user_2: User) -> User:
+    user_2.role = UserRole.MODERATOR.value
     db.session.commit()
-    return user
+    return user_2
 
 
 @pytest.fixture()
@@ -185,16 +131,10 @@ def user_3() -> User:
 
 
 @pytest.fixture()
-def user_3_admin() -> User:
-    user = User(username="sam", email="sam@test.com", password="12345678")
-    user.is_active = True
-    user.hide_profile_in_users_directory = False
-    user.role = UserRole.ADMIN.value
-    user.weekm = True
-    user.accepted_policy_date = datetime.now(timezone.utc)
-    db.session.add(user)
+def user_3_admin(user_3: User) -> User:
+    user_3.role = UserRole.ADMIN.value
     db.session.commit()
-    return user
+    return user_3
 
 
 @pytest.fixture()

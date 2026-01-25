@@ -85,6 +85,9 @@
     "BACK_TO_PROFILE": "Revenir au profil",
     "BIO": "Bio",
     "BIRTH_DATE": "Date de naissance",
+    "CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI": "Les changements peuvent être appliqués lorsqu'une actualisation est effectué à l'aide de l'interface de ligne de commande (CLI).",
+    "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "Les changements ne s'appliquent seulement aux nouvelles séances ou aux séances actualisées.",
+    "CHANGES_ONLY_TO_NEW_WORKOUTS": "Les changements ne s'appliquent seulement aux nouvelles séances.",
     "CREATED_REPORTS": "Signalements créés",
     "DATE_FORMAT": "Format d'affichage de la date",
     "EDIT": "Modifier le profil",
@@ -127,6 +130,7 @@
     },
     "MESSAGES_EDITION": "Edition des préférences des messages",
     "MESSAGES_PREFERENCES": "Preferences des messages",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Traitement des altitudes manquantes lors de la création",
     "MONDAY": "Lundi",
     "NOTIFICATIONS": {
       "account_creation": "Quelqu'un s'est enregistré",
@@ -141,6 +145,7 @@
     "NOTIFICATIONS_EDITION": "Edition des préférences de notification",
     "NOTIFICATION_PREFERENCES": "Préférences de notification",
     "NO_ARCHIVE_UPLOADS": "Pas de chargement d'archives",
+    "NO_ELEVATION_SERVICE_AVAILABLE": "Aucun service disponible pour les altitudes manquantes",
     "NO_SANCTIONS": "Pas de sanctions",
     "PICTURE": "Image de profil",
     "PICTURE_EDITION": "Mise à jour de l'image de profil",
@@ -183,6 +188,12 @@
       "DISABLED_BY_ADMIN": "désactivé par l'administrateur",
       "IS_ACTIVE": "actif",
       "LABEL": "label",
+      "PACE_SPEED_DISPLAY": {
+        "LABEL": "Affichage de l'allure et/ou de la vitesse",
+        "pace": "Allure",
+        "pace_and_speed": "Allure et vitesse",
+        "speed": "Vitesse"
+      },
       "STOPPED_SPEED_THRESHOLD": "seuil de vitesse arrêtée"
     },
     "SPORTS_EDITION": "Mise à jour des préférences des sports",
@@ -225,7 +236,7 @@
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Filtré",
       "HELP": "Si filtré, les valeurs extrêmes (qui peuvent être des erreurs GPS) sont exclues lors du calcul de la vitesse maximale.",
-      "LABEL": "Calcul de la vitesse maximale",
+      "LABEL": "Stratégie de calcul de la vitesse maximale",
       "RAW_SPEED": "Brut"
     },
     "WORKOUT_CHARTS_DISPLAY": {

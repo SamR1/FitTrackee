@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "1.0.6"
+version = "1.1.0b3"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0-only"
@@ -8,7 +8,7 @@ readme = "README.md"
 homepage = "https://github.com/SamR1/FitTrackee"
 documentation = "https://docs.fittrackee.org"
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 4 - Beta",
     "Environment :: Web Environment",
     "Framework :: Flask",
     "License :: OSI Approved :: GNU Affero General Public License v3",
@@ -132,6 +132,8 @@ quote-style = "double"
 "fittrackee/tests/test_email.py" = ["E501"]
 "fittrackee/tests/test_email_template_password_request.py" = ["E501"]
 "fittrackee/tests/fixtures/fixtures_workouts.py" = ["E501"]
+"fittrackee/users/auth.py" = ["E501"]
+"fittrackee/workouts/workouts.py" = ["E501"]
 
 [tool.pytest.ini_options]
 markers = [
@@ -157,7 +159,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.codespell]
 # Ref: https://github.com/codespell-project/codespell#using-a-config-file
-skip = '.git*,*.svg,*.lock,*.css,*.min.*,dist,fr,locales,translations,*.map,emails,searchindex.js,language_data.js,.idea,.venv,.mypy_cache,./fittrackee_client/node_modules'
+skip = '.git*,*.svg,*.lock,*.css,*.min.*,dist,fr,locales,translations,*.map,emails,searchindex.js,language_data.js,.idea,.venv,.mypy_cache,.pytest_cache,./fittrackee_client/node_modules'
 check-hidden = true
 ignore-regex = '\b(Gard|Nome)\b'
 # Unfortunate choices for words which are not correct but too many by now

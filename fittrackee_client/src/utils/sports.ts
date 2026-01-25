@@ -3,6 +3,7 @@ import type { IWorkout, IMapWorkout } from '@/types/workouts'
 
 export const sportColors: Record<string, string> = {
   Canoeing: '#75b3be',
+  'Canoeing (Whitewater)': '#4f8c96',
   'Cycling (Sport)': '#4c9792',
   'Cycling (Trekking)': '#a8af88',
   'Cycling (Transport)': '#88af98',
@@ -10,6 +11,7 @@ export const sportColors: Record<string, string> = {
   Halfbike: '#d3638a',
   Hiking: '#bb757c',
   Kayaking: '#4978c4',
+  'Kayaking (Whitewater)': '#2f62aa',
   'Mountain Biking': '#d4b371',
   'Mountain Biking (Electric)': '#fc9d6f',
   Mountaineering: '#48b3b7',
@@ -28,6 +30,24 @@ export const sportColors: Record<string, string> = {
   Walking: '#838383',
   Windsurfing: '#856ece',
 }
+
+export const sportsWithPace: string[] = [
+  'Hiking',
+  'Running',
+  'Trail',
+  'Walking',
+]
+export const sportsWithoutElevation: string[] = [
+  // racket sports
+  'Padel (Outdoor)',
+  'Tennis (Outdoor)',
+  // water sports
+  'Canoeing',
+  'Kayaking',
+  'Open Water Swimming',
+  'Rowing',
+  'Standup Paddleboarding',
+]
 
 export const sportIdColors = (sports: ISport[]): Record<number, string> => {
   const colors: Record<number, string> = {}
@@ -80,4 +100,21 @@ export const getSportColor = (
   return sports
     .filter((sport) => sport.id === workout.sport_id)
     .map((sport) => sport.color)[0]
+}
+
+export const getDisplayPace = (
+  sportId: number | string | undefined,
+  sports: ITranslatedSport[]
+) => {
+  let sportWithPace = false
+  if (sportId !== undefined && sportId !== '') {
+    const selectedSport = sports.find((sport) => sport.id === +sportId)
+    if (
+      selectedSport &&
+      ['pace', 'pace_and_speed'].includes(selectedSport.pace_speed_display)
+    ) {
+      sportWithPace = true
+    }
+  }
+  return sportWithPace
 }

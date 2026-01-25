@@ -15,6 +15,7 @@
   "LABEL": "popisek",
   "MINUTES": "minuta|minuty",
   "NEXT": "další",
+  "NO": "Ne",
   "NO_DESCRIPTION": "Bez popisu",
   "NO_NOTES": "Žádné poznámky",
   "PREVIOUS": "předchozí",
@@ -33,5 +34,6 @@
     }
   },
   "TOTAL": "Celkem",
-  "TOTAL_DURATION_WITH_PAUSES": "Celková doba včetně přestávek"
+  "TOTAL_DURATION_WITH_PAUSES": "Celková doba včetně přestávek",
+  "YES": "Ano"
 }

@@ -50,7 +50,7 @@ jobs:
     uses: ./.github/workflows/.workflow-python.yml
     strategy:
       matrix:
-        postgis-version:  [ "13-3.5", "14-3.5", "15-3.5", "16-3.5", "17-3.4", "17-3.6", "18-3.6" ]
+        postgis-version:  [ "14-3.5", "15-3.5", "16-3.5", "17-3.4", "17-3.6", "18-3.6" ]
     with:
       ubuntu-version: "ubuntu-latest"
       python-version: "3.10"

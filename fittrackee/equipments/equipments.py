@@ -61,6 +61,7 @@ def handle_default_sports(
                 user_id=auth_user.id,
                 sport_id=sport_id,
                 stopped_speed_threshold=sport.stopped_speed_threshold,
+                pace_speed_display=sport.pace_speed_display,
             )
             db.session.add(user_sport_preference)
             db.session.flush()

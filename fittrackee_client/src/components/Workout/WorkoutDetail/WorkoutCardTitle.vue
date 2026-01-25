@@ -4,7 +4,7 @@
       v-if="isWorkoutOwner || workoutObject.segmentId !== null"
       class="workout-previous workout-arrow transparent"
       :class="{ inactive: !workoutObject.previousUrl }"
-      :disabled="!workoutObject.previousUrl || refreshLoading"
+      :disabled="!workoutObject.previousUrl || isRefreshing"
       :title="
         workoutObject.previousUrl
           ? $t(`workouts.PREVIOUS_${workoutObject.type}`)
@@ -29,7 +29,7 @@
           <div v-if="isAuthenticated" class="workout-buttons">
             <button
               class="transparent icon-button likes"
-              :disabled="refreshLoading"
+              :disabled="isRefreshing"
               @click="updateLike(workoutObject)"
               :title="
                 $t(
@@ -58,26 +58,13 @@
             >
               {{ workoutObject.likes_count }}
             </router-link>
-            <button
-              class="transparent icon-button"
-              :disabled="refreshLoading"
-              v-if="isWorkoutOwner"
-              @click="
-                $router.push({
-                  name: 'EditWorkout',
-                  params: { workoutId: workoutObject.workoutId },
-                })
-              "
-              :title="$t(`workouts.EDIT_WORKOUT`)"
-            >
-              <i class="fa fa-edit" aria-hidden="true" />
-            </button>
+
             <div class="download-files">
               <button
                 id="download-workout"
-                v-if="isWorkoutOwner && workoutObject.with_gpx"
+                v-if="isWorkoutOwner && workoutObject.with_file"
                 class="transparent icon-button"
-                :disabled="refreshLoading"
+                :disabled="isRefreshing"
                 @click.prevent="toggleDownloadButtons()"
                 :title="$t(`workouts.DOWNLOAD_WORKOUT`)"
               >
@@ -94,7 +81,7 @@
               >
                 <button
                   class="transparent icon-button"
-                  :disabled="refreshLoading"
+                  :disabled="isRefreshing"
                   @click.prevent="downloadWorkoutFile(workoutObject.workoutId)"
                   :title="
                     workoutObject.originalFile === 'gpx'
@@ -109,7 +96,7 @@
                 </button>
                 <button
                   class="transparent icon-button"
-                  :disabled="refreshLoading"
+                  :disabled="isRefreshing"
                   @click.prevent="
                     downloadWorkoutFile(workoutObject.workoutId, {
                       original: true,
@@ -127,10 +114,26 @@
                 </button>
               </div>
             </div>
+
             <button
-              v-if="workoutObject.with_gpx && isWorkoutOwner"
               class="transparent icon-button"
-              :disabled="refreshLoading"
+              :disabled="isRefreshing"
+              v-if="isWorkoutOwner"
+              @click="
+                $router.push({
+                  name: 'EditWorkout',
+                  params: { workoutId: workoutObject.workoutId },
+                })
+              "
+              :title="$t(`workouts.EDIT_WORKOUT`)"
+            >
+              <i class="fa fa-edit" aria-hidden="true" />
+            </button>
+
+            <button
+              v-if="workoutObject.with_file && isWorkoutOwner"
+              class="transparent icon-button"
+              :disabled="isRefreshing"
               @click.prevent="refreshGpx(workoutObject.workoutId)"
               :title="$t(`workouts.REFRESH_WORKOUT`)"
             >
@@ -140,11 +143,56 @@
                 aria-hidden="true"
               />
             </button>
+
+            <div
+              class="change-elevation-source"
+              v-if="displayChangeElevationSource"
+            >
+              <button
+                id="change-elevation-source-button"
+                class="transparent icon-button"
+                @click="toggleChangeElevationSourceButtons"
+                :disabled="isRefreshing"
+                :title="$t('workouts.ELEVATION_DATA_SOURCE.CHANGE_SOURCE')"
+              >
+                <img
+                  id="change-elevation-source-icon"
+                  class="elevation-edition"
+                  src="/img/workouts/elevation_edition.svg"
+                  :alt="$t('workouts.ELEVATION')"
+                />
+              </button>
+              <div
+                class="change-elevation-source-buttons"
+                v-if="displayChangeElevationSourceButtons"
+                v-click-outside="hideChangeElevationSourceButtons"
+              >
+                <span class="change-elevation-source-label">
+                  {{ $t('workouts.ELEVATION_DATA_SOURCE.CHANGE_SOURCE') }}:
+                </span>
+                <button
+                  v-for="item in elevationsProcessingItems.filter(
+                    (i) => i !== workoutObject.elevationDataSource
+                  )"
+                  :key="item"
+                  class="transparent icon-button"
+                  :disabled="isRefreshing"
+                  @click.prevent="
+                    updateElevationDataSource(
+                      workoutObject.workoutId,
+                      item as TElevationDataSource
+                    )
+                  "
+                >
+                  {{ $t(`workouts.ELEVATION_DATA_SOURCE.${item}`) }}
+                </button>
+              </div>
+            </div>
             <button
               v-if="isWorkoutOwner"
               id="delete-workout-button"
               class="transparent icon-button"
-              :disabled="refreshLoading"
+              :disabled="isRefreshing"
               @click.prevent="displayDeleteModal"
               :title="$t(`workouts.DELETE_WORKOUT`)"
             >
@@ -157,7 +205,7 @@
                 reportStatus !== `workout-${workoutObject.workoutId}-created`
               "
               class="transparent icon-button"
-              :disabled="refreshLoading"
+              :disabled="isRefreshing"
               @click.prevent="displayReportForm"
               :title="$t('workouts.REPORT_WORKOUT')"
             >
@@ -187,7 +235,7 @@
               {{ workoutObject.likes_count }}
             </router-link>
           </div>
-          <div v-if="refreshLoading" class="refresh-message">
+          <div v-if="isRefreshing" class="refresh-message">
             {{ $t('workouts.REFRESHING_WORKOUT') }}
           </div>
         </div>
@@ -197,7 +245,7 @@
             —
             <i class="fa fa-map-marker" aria-hidden="true" />
             {{ $t('workouts.SEGMENT') }}
-            {{ workoutObject.segmentId + 1 }}
+            {{ workoutObject.segmentNumber }}
           </span>
         </div>
         <div class="workout-date">
@@ -222,7 +270,7 @@
       v-if="isWorkoutOwner || workoutObject.segmentId !== null"
       class="workout-next workout-arrow transparent"
       :class="{ inactive: !workoutObject.nextUrl }"
-      :disabled="!workoutObject.nextUrl || refreshLoading"
+      :disabled="!workoutObject.nextUrl || isRefreshing"
       :title="
         workoutObject.nextUrl
           ? $t(`workouts.NEXT_${workoutObject.type}`)
@@ -235,6 +283,14 @@
       <i class="fa fa-chevron-right" aria-hidden="true" />
     </button>
   </div>
+  <div
+    v-if="
+      errorMessages === 'api.ERROR.Error when updating elevation data source'
+    "
+    class="refresh-error"
+  >
+    <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -242,25 +298,36 @@
   import type { ComputedRef, Ref } from 'vue'
 
   import authApi from '@/api/authApi'
+  import useApp from '@/composables/useApp.ts'
   import useAuthUser from '@/composables/useAuthUser'
   import { REPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { ISport } from '@/types/sports'
+  import type { TElevationDataSource } from '@/types/user.ts'
   import type { IWorkoutObject } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
+  import { sportsWithoutElevation } from '@/utils/sports.ts'
 
   interface Props {
     sport: ISport
     workoutObject: IWorkoutObject
     isWorkoutOwner: boolean
     refreshLoading: boolean
+    elevationLoading: boolean
   }
   const props = defineProps<Props>()
-  const { isWorkoutOwner, refreshLoading, sport, workoutObject } = toRefs(props)
+  const {
+    elevationLoading,
+    isWorkoutOwner,
+    refreshLoading,
+    sport,
+    workoutObject,
+  } = toRefs(props)
 
   const emit = defineEmits(['displayModal'])
 
   const store = useStore()
 
+  const { elevationsProcessingItems, errorMessages } = useApp()
   const { isAuthenticated } = useAuthUser()
 
   const workoutFileMimetypes = {
@@ -269,6 +336,9 @@
     kml: 'application/vnd.google-earth.kml+xml',
     tcx: 'application/vnd.garmin.tcx+xml',
   }
+  const isRefreshing: ComputedRef<boolean> = computed(
+    () => refreshLoading.value || elevationLoading.value
+  )
   const currentlyReporting: ComputedRef<boolean> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.CURRENT_REPORTING]
   )
@@ -276,6 +346,16 @@
     () => store.getters[REPORTS_STORE.GETTERS.REPORT_STATUS]
   )
   const displayDownloadButtons: Ref<boolean> = ref(false)
+  const displayChangeElevationSource: ComputedRef<boolean> = computed(() => {
+    return !(
+      !isWorkoutOwner.value ||
+      !workoutObject.value.with_file ||
+      sportsWithoutElevation.includes(sport.value.label) ||
+      (elevationsProcessingItems.value.length === 1 &&
+        elevationsProcessingItems.value[0] == 'file')
+    )
+  })
+  const displayChangeElevationSourceButtons: Ref<boolean> = ref(false)
 
   async function downloadWorkoutFile(
     workoutId: string,
@@ -337,6 +417,35 @@
       return
     }
     displayDownloadButtons.value = false
+  }
+
+  function toggleChangeElevationSourceButtons() {
+    displayChangeElevationSourceButtons.value =
+      !displayChangeElevationSourceButtons.value
+  }
+  function hideChangeElevationSourceButtons(event: Event) {
+    event.stopPropagation()
+    if (
+      (event.target as Element).id !== null &&
+      [
+        'change-elevation-source',
+        'change-elevation-source-icon',
+        'change-elevation-source-button',
+      ].includes((event.target as Element).id)
+    ) {
+      return
+    }
+    displayChangeElevationSourceButtons.value = false
+  }
+  async function updateElevationDataSource(
+    workoutId: string,
+    elevationDataSource: TElevationDataSource
+  ) {
+    store.dispatch(WORKOUTS_STORE.ACTIONS.UPDATE_ELEVATION_DATA_SOURCES, {
+      workoutId,
+      elevationDataSource,
+    })
+    displayChangeElevationSourceButtons.value = false
   }
 
   watch(
@@ -402,7 +511,13 @@
 
       .workout-buttons {
         display: flex;
+        .elevation-edition {
+          min-width: 22px;
+        }
+
+        .change-elevation-source,
         .download-files {
+          .change-elevation-source-buttons,
           .download-files-buttons {
             position: absolute;
             z-index: 1010;
@@ -430,6 +545,16 @@
               }
             }
           }
+
+          .change-elevation-source-buttons {
+            font-size: 0.9em;
+            .change-elevation-source-label {
+              padding: $default-padding;
+              font-weight: normal;
+              font-style: italic;
+              cursor: pointer;
+            }
+          }
         }
       }
 
@@ -455,14 +580,24 @@
         padding: $default-padding * 0.5;
       }
       .workout-card-title {
-        @media screen and (max-width: $small-limit) {
-          .fa-download,
-          .fa-trash,
-          .fa-edit {
-            padding: 0 $default-padding * 0.7;
+        .fa-download,
+        .fa-trash,
+        .fa-edit {
+          padding: 0 $default-padding * 0.7;
+        }
+        .workout-buttons {
+          .change-elevation-source {
+            .change-elevation-source-buttons {
+              margin-left: -30px;
+            }
           }
         }
       }
     }
+  }
+
+  .refresh-error {
+    font-weight: normal;
+    display: flex;
   }
 </style>

@@ -43,12 +43,12 @@
   const lineColors: ComputedRef<{ color: string }> = computed(() => ({
     color: darkTheme.value
       ? chartsColors.darkMode.line
-      : chartsColors.ligthMode.line,
+      : chartsColors.lightMode.line,
   }))
   const textColors: ComputedRef<{ color: string }> = computed(() => ({
     color: darkTheme.value
       ? chartsColors.darkMode.text
-      : chartsColors.ligthMode.text,
+      : chartsColors.lightMode.text,
   }))
   const isLineChart: ComputedRef<boolean> = computed(
     () =>
@@ -87,6 +87,8 @@
       },
       y: {
         stacked: !displayedData.value.startsWith('average'),
+        reverse: displayedData.value === 'average_pace',
+        beginAtZero: displayedData.value !== 'average_pace',
         grid: {
           drawOnChartArea: false,
           ...lineColors.value,
@@ -229,6 +231,9 @@
     return getNumber(total) + getNumber(value)
   }
   function getUnit(displayedData: string) {
+    if (displayedData === 'total_calories') {
+      return t(`workouts.UNITS.kcal.UNIT`)
+    }
     // returns meters for ascent and descent
     return displayedData.includes('scent') ? 'm' : 'km'
   }
