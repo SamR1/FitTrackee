@@ -277,6 +277,21 @@
       type: statsType.value,
     }
   }
+  function getDisplayedData(newStatsType: TStatisticsType) {
+    if (
+      newStatsType === 'total' &&
+      ['average_speed', 'average_pace'].includes(displayedData.value)
+    ) {
+      return 'total_distance'
+    }
+    if (
+      newStatsType === 'average' &&
+      displayedData.value === 'total_calories'
+    ) {
+      return 'average_distance'
+    }
+    return `${newStatsType}_${displayedData.value.split('_')[1]}` as TStatisticsDatasetKeys
+  }
 
   watch(
     () => chartParams.value,
@@ -287,10 +302,7 @@
   watch(
     () => statsType.value,
     async (newStatsType) => {
-      displayedData.value =
-        newStatsType === 'total' && displayedData.value === 'average_speed'
-          ? 'total_distance'
-          : (`${statsType.value}_${displayedData.value.split('_')[1]}` as TStatisticsDatasetKeys)
+      displayedData.value = getDisplayedData(newStatsType)
     }
   )
 
