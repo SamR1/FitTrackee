@@ -19,6 +19,7 @@ from fittrackee.workouts.tasks import (
 from fittrackee.workouts.utils.workouts import get_workout_datetime
 
 WORKOUT_VALID_EXTENSIONS = ", ".join(WORKOUT_ALLOWED_EXTENSIONS)
+VALID_ON_ERROR_CHOICES = ["remove-references", "delete-workout"]
 
 logger = logging.getLogger("fittrackee_workouts_cli")
 logger.setLevel(logging.INFO)
@@ -87,6 +88,16 @@ def validate_date(
             raise click.BadParameter(
                 f"'{value}' does not match format '%Y-%m-%d'"
             ) from e
+    return value
+
+
+def validate_on_file_error(
+    ctx: click.core.Context, param: click.core.Option, value: Optional[str]
+) -> Optional[str]:
+    if value and value not in VALID_ON_ERROR_CHOICES:
+        raise click.BadParameter(
+            f"valid choices are: {', '.join(VALID_ON_ERROR_CHOICES)}"
+        )
     return value
 
 
@@ -237,6 +248,17 @@ def process_queued_archive_upload(task_short_id: str, verbose: bool) -> None:
     default=False,
 )
 @click.option(
+    "--on-file-error",
+    help=(
+        "action to perform when workout file is not found. If not provided, "
+        "an error will be raised. Valid actions are: 'remove-references' ("
+        "all files references will be removed and workout preserved but not "
+        "updated since no file found) and 'delete-workout'."
+    ),
+    type=str,
+    callback=validate_on_file_error,
+)
+@click.option(
     "--verbose",
     "-v",
     "verbose",
@@ -255,6 +277,7 @@ def refresh_workouts(
     extension: Optional[str] = None,
     with_weather: bool = False,
     add_missing_geometry: bool = False,
+    on_file_error: Optional[str] = None,
     verbose: bool = False,
 ) -> None:
     """
@@ -275,6 +298,7 @@ def refresh_workouts(
                 with_weather=with_weather,
                 verbose=verbose,
                 add_geometry=add_missing_geometry,
+                on_file_error=on_file_error,
                 logger=logger,
             )
             service.refresh()

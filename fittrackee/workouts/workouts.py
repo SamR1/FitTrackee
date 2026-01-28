@@ -109,6 +109,7 @@ NO_STATISTICS = {
     "total_sports": 0,
 }
 DEFAULT_TASKS_PER_PAGE = 5
+ERROR_MESSAGE_ON_REFRESH = "Error when refreshing workout"
 
 
 def get_rounded_float_value(row_value: Optional[Decimal]) -> Optional[float]:
@@ -3720,9 +3721,14 @@ def refresh_workout(
     ) as e:
         db.session.rollback()
         if e.status == "error":
-            appLog.exception("Error when refreshing workout")
+            appLog.exception(ERROR_MESSAGE_ON_REFRESH)
             return InternalServerErrorResponse(e.message)
         return InvalidPayloadErrorResponse(e.message, e.status)
+    if not updated_workout:
+        # This should not happen when refreshing from the UI.
+        # If no workout is returned, this is due to the file not being found,
+        # and an error will be raised.
+        return InternalServerErrorResponse(ERROR_MESSAGE_ON_REFRESH)
     return {
         "status": "success",
         "data": {
