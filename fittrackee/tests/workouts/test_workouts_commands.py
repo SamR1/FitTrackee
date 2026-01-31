@@ -669,6 +669,24 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
             in result.output
         )
 
+    def test_it_raises_error_when_on_file_error_is_invalid(
+        self, app: "Flask"
+    ) -> None:
+        runner = CliRunner()
+
+        result = runner.invoke(
+            cli,
+            [
+                "workouts",
+                "refresh",
+                "--on-file-error",
+                "invalid",
+            ],
+        )
+
+        assert result.exit_code == 2
+        assert "Invalid value for '--on-file-error'" in result.output
+
     def test_it_calls_workouts_refresh_service_whit_default_values(
         self, app: "Flask"
     ) -> None:
@@ -694,6 +712,7 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
             extension=None,
             with_weather=False,
             with_elevation=False,
+            on_file_error=None,
             logger=logger,
             verbose=False,
         )
@@ -739,6 +758,8 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
                     "fit",
                     "--with-weather",
                     "--with-elevation",
+                    "--on-file-error",
+                    "delete-workout",
                     "--verbose",
                 ],
             )
@@ -755,6 +776,7 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
             extension="fit",
             with_weather=True,
             with_elevation=True,
+            on_file_error="delete-workout",
             logger=logger,
             verbose=True,
         )

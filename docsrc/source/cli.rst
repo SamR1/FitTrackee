@@ -240,9 +240,10 @@ Can be used if redis is not set (no dramatiq workers running).
 """"""""""""""""""""""""""
 .. versionadded:: 0.12.0
 .. versionchanged:: 1.0.0  Add ``--add-missing-geometry`` option.
+.. versionchanged:: 1.0.7  Add ``--on-file-error`` option.
 .. versionchanged:: 1.1.0  Remove ``--add-missing-geometry`` option and add ``--with-elevation`` and ``--new-sport-id`` options.
 
-Refresh workouts by recalculating data and fetching weather data if provider is set and workout does not have weather data.
+Refresh workouts from file by recalculating data and fetching weather data if provider is set and workout does not have weather data.
 
 Before executing the command, it is recommended to back up of all data (database and upload directory) in case a large number of workouts are refreshed.
 
@@ -279,6 +280,8 @@ Before executing the command, it is recommended to back up of all data (database
      - workout file extension (valid values are: tcx, kmz, gpx, kml, fit)
    * - ``--with-weather``
      - enable weather data collection if weather provider is set and workout has no weather data. WARNING: depending on subscription, the rate limit can be reached, leading to errors and preventing weather data being collected during next uploads until the limit is reset (default: disabled)
+   * - ``--on-file-error``
+     - action to perform when workout file is not found. If not provided, an error will be raised. Valid actions are: ``remove-references`` (all files references will be removed and workout preserved but not updated since no file found) and ``delete-workout``.
    * - ``--with-elevation``
      - enable elevation update when elevation provider is set and some elevation data are missing. If disabled, existing elevation are not removed when elevation data are missing in the original file. WARNING: depending on subscription, the rate limit can be reached, leading to errors and preventing elevation data being collected during next uploads until the limit is reset (default: disabled)
    * - ``-v, --verbose``
