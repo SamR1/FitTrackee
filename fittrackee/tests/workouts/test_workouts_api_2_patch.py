@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING
 from unittest.mock import patch
 
@@ -791,7 +791,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
 
 
 class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
-    def test_it_updates_a_workout_wo_gpx(
+    def test_it_updates_a_workout_without_file(
         self,
         app: "Flask",
         user_1: "User",
@@ -822,6 +822,17 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
 
         data = json.loads(response.data.decode())
 
+        db.session.refresh(workout_cycling_user_1)
+        assert workout_cycling_user_1.duration == timedelta(seconds=3600)
+        assert workout_cycling_user_1.distance == 8
+        assert workout_cycling_user_1.ave_speed == 8.0
+        assert workout_cycling_user_1.max_speed == 8.0
+        assert workout_cycling_user_1.ave_pace == timedelta(
+            minutes=7, seconds=30
+        )
+        assert workout_cycling_user_1.best_pace == timedelta(
+            minutes=7, seconds=30
+        )
         refresh_mock.assert_not_called()
         assert response.status_code == 200
         assert "success" in data["status"]
@@ -838,7 +849,9 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["duration"] == "1:00:00"
         assert data["data"]["workouts"][0]["title"] == "Workout test"
         assert data["data"]["workouts"][0]["ascent"] is None
+        assert data["data"]["workouts"][0]["ave_pace"] == "0:07:30"
         assert data["data"]["workouts"][0]["ave_speed"] is None
+        assert data["data"]["workouts"][0]["best_pace"] == "0:07:30"
         assert data["data"]["workouts"][0]["descent"] is None
         assert data["data"]["workouts"][0]["description"] is None
         assert data["data"]["workouts"][0]["distance"] == 8.0
@@ -860,9 +873,9 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
             assert record["workout_id"] == workout_short_id
             assert record["workout_date"] == "Tue, 15 May 2018 15:05:00 GMT"
         assert records[0]["record_type"] == "AP"
-        assert records[0]["value"] == "0:06:00"
+        assert records[0]["value"] == "0:07:30"
         assert records[1]["record_type"] == "BP"
-        assert records[1]["value"] == "0:06:00"
+        assert records[1]["value"] == "0:07:30"
         assert records[2]["record_type"] == "FD"
         assert records[2]["value"] == 8.0
         assert records[3]["record_type"] == "LD"
