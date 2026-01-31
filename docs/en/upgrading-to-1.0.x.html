@@ -377,6 +377,9 @@ CREATE<span class="w"> </span>EXTENSION
 </section>
 <section id="workouts-data-update">
 <h2>Workouts data update<a class="headerlink" href="#workouts-data-update" title="Link to this heading">¶</a></h2>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.0.7: </span>handle workouts with missing files.</p>
+</div>
 <p>An new CLI option (<code class="docutils literal notranslate"><span class="pre">--add-missing-geometry</span></code>) allows to refresh workouts without geometry and chart data.</p>
 <p>After upgrading <strong>fittrackee</strong>, run this command with other options depending on the number of workouts to update and the server capability, before enabling geospatial features on UI.</p>
 <p>For instance to update the first 1,000 workouts created with a file:</p>
@@ -391,6 +394,21 @@ CREATE<span class="w"> </span>EXTENSION
 <p class="admonition-title">Important</p>
 <p>The version 1.1.0 will require all workouts to be updated.</p>
 </div>
+<p>If you encountered issues refreshing workouts due to missing files, you can run the refresh command with the option <code class="docutils literal notranslate"><span class="pre">--on-file-error</span></code>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">remove-references</span></code>: it empties columns related to files and delete segments. The workout is kept and can be displayed as a workout originally created without a file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Other data extracted from the file (such as source, heart rate, etc.) are preserved.</p>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delete-workout</span></code>: it deletes workout.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Warnings are displayed during deletion, due to files not found.</p>
+</div>
+</li>
+</ul>
 </section>
 </section>
 
