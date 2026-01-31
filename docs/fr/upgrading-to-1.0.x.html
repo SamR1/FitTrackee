@@ -376,6 +376,9 @@ CREATE<span class="w"> </span>EXTENSION
 </section>
 <section id="workouts-data-update">
 <h2>Mise à jour des séances<a class="headerlink" href="#workouts-data-update" title="Lien vers cette rubrique">¶</a></h2>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 1.0.7: </span>gestion des séances ayant des fichiers manquants.</p>
+</div>
 <p>Une nouvelle option de l'interface de lignes de commande (<code class="docutils literal notranslate"><span class="pre">--add-missing-geometry</span></code>) permet de réactualiser toutes les séances sans géométries et données du graphique.</p>
 <p>Après avoir mis à jour <strong>fittrackee</strong>, exécuter la commande suivante avec éventuellement d'autres options selon le nombre de séances à mettre à jour et les capacités du serveur, avant d'activer les fonctionnalités géospatiales.</p>
 <p>Par exemple pour les 1000 premières séances créées avec un fichier :</p>
@@ -390,6 +393,21 @@ CREATE<span class="w"> </span>EXTENSION
 <p class="admonition-title">Important</p>
 <p>La version 1.1.0 nécessitera que toutes les séances soient mises à jour.</p>
 </div>
+<p>Si vous rencontrez des problèmes pour actualiser les séances en raison de fichiers manquants, vous pouvez exécuter la commande d'actualisation avec l'option <code class="docutils literal notranslate"><span class="pre">--on-file-error</span></code> :</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">remove-references</span></code>: vide les colonnes liées aux fichiers et supprime les segments. La séance est conservée et peut être affichée comme une séance créée à l'origine sans fichier.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Les autres données extraites du fichier (telles que la source, la fréquence cardiaque, etc.) sont conservées.</p>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delete-workout</span></code>: supprime la séance.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Des avertissements s'affichent pendant la suppression, du fait des fichiers introuvables.</p>
+</div>
+</li>
+</ul>
 </section>
 </section>
 

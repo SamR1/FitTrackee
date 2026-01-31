@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-01-04 08:57+0100\n"
+"POT-Creation-Date: 2026-01-31 10:51+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -532,7 +532,7 @@ msgstr ""
 msgid "Parameters"
 msgstr "Paramètres"
 
-#: ../../<autoflask>:1 ../source/cli.rst:259
+#: ../../<autoflask>:1 ../source/cli.rst:260
 msgid "sport id"
 msgstr "identifiant du sport"
 
@@ -2378,12 +2378,12 @@ msgstr "pas de séances :"
 msgid "username"
 msgstr "nom d'utilisateur"
 
-#: ../../<autoflask>:1 ../source/cli.rst:261
+#: ../../<autoflask>:1 ../source/cli.rst:262
 #, python-format
 msgid "start date (format: ``%Y-%m-%d``)"
 msgstr "date de début (format : ``%Y-%m-%d``)"
 
-#: ../../<autoflask>:1 ../source/cli.rst:263
+#: ../../<autoflask>:1 ../source/cli.rst:264
 #, python-format
 msgid "end date (format: ``%Y-%m-%d``)"
 msgstr "date de fin (format : ``%Y-%m-%d``)"
@@ -4479,7 +4479,7 @@ msgstr ""
 "Parmi les autres changements et améliorations, cette version apporte "
 "également un nouveau sport (le Padel en extérieur)."
 
-#: ../source/changelog.md:306 ../source/upgrading-to-1.0.x.rst:113
+#: ../source/changelog.md:306 ../source/upgrading-to-1.0.x.rst:114
 msgid "The version 1.1.0 will require all workouts to be updated."
 msgstr "La version 1.1.0 nécessitera que toutes les séances soient mises à jour."
 
@@ -9076,14 +9076,14 @@ msgstr "Supprimer les jetons expirés depuis plus d'un certain nombre de jours"
 
 #: ../source/cli.rst:54 ../source/cli.rst:75 ../source/cli.rst:92
 #: ../source/cli.rst:146 ../source/cli.rst:165 ../source/cli.rst:214
-#: ../source/cli.rst:233 ../source/cli.rst:256
+#: ../source/cli.rst:233 ../source/cli.rst:257
 msgid "Options"
 msgstr "Options"
 
 #: ../source/cli.rst:55 ../source/cli.rst:76 ../source/cli.rst:93
 #: ../source/cli.rst:118 ../source/cli.rst:147 ../source/cli.rst:166
 #: ../source/cli.rst:185 ../source/cli.rst:215 ../source/cli.rst:234
-#: ../source/cli.rst:257
+#: ../source/cli.rst:258
 msgid "Description"
 msgstr "Description"
 
@@ -9343,16 +9343,20 @@ msgstr ""
 msgid "Add ``--add-missing-geometry`` option."
 msgstr "Ajout de l'option ``--add-missing-geometry``"
 
-#: ../source/cli.rst:244
-msgid ""
-"Refresh workouts by recalculating data and fetching weather data if "
-"provider is set and workout does not have weather data."
-msgstr ""
-"Actualiser les séances en recalculant les données de la séance et en "
-"récupérant les données météo si un fournisseur est configuré et que la "
-"séance n'a pas de données météo"
+#: ../source/cli.rst:243
+msgid "Add ``--on-file-error`` option."
+msgstr "Ajout de l'option ``--on-file-error``"
 
-#: ../source/cli.rst:246
+#: ../source/cli.rst:245
+msgid ""
+"Refresh workouts from file by recalculating data and fetching weather "
+"data if provider is set and workout does not have weather data."
+msgstr ""
+"Actualiser les séances à partir des fichiers en recalculant les données "
+"de la séance et en récupérant les données météo si un fournisseur est "
+"configuré et que la séance n'a pas de données météo."
+
+#: ../source/cli.rst:247
 msgid ""
 "Before executing the command, it is recommended to back up of all data "
 "(database and upload directory) in case a large number of workouts are "
@@ -9362,7 +9366,7 @@ msgstr ""
 " données (base de données et répertoire des fichiers téléversé) dans le "
 "cas  où un grand nombre d'entraînements serait mis à jour."
 
-#: ../source/cli.rst:249 ../source/features.rst:152
+#: ../source/cli.rst:250 ../source/features.rst:152
 msgid ""
 "If a weather data provider is defined and the ``--with-weather`` option "
 "is provided, the rate limit may be reached, resulting in API rate limit "
@@ -9373,65 +9377,65 @@ msgstr ""
 " des erreurs de limite dépassée quand un nombre important de séances est "
 "actualisé."
 
-#: ../source/cli.rst:258
+#: ../source/cli.rst:259
 msgid "``--sport-id INTEGER``"
 msgstr ""
 
-#: ../source/cli.rst:260
+#: ../source/cli.rst:261
 msgid "``--from TEXT``"
 msgstr ""
 
-#: ../source/cli.rst:262
+#: ../source/cli.rst:263
 msgid "``--to TEXT``"
 msgstr ""
 
-#: ../source/cli.rst:264
+#: ../source/cli.rst:265
 msgid "``--per-page INTEGER``"
 msgstr ""
 
-#: ../source/cli.rst:265
+#: ../source/cli.rst:266
 msgid "number of workouts per page (default: 10)"
 msgstr "nombre de séances par page (par défaut : 10)"
 
-#: ../source/cli.rst:266
+#: ../source/cli.rst:267
 msgid "``--page INTEGER``"
 msgstr ""
 
-#: ../source/cli.rst:267
+#: ../source/cli.rst:268
 msgid "page number (default: 1)"
 msgstr "page pour la pagination (par défaut : 1)"
 
-#: ../source/cli.rst:268
+#: ../source/cli.rst:269
 msgid "``--order TEXT``"
 msgstr ""
 
-#: ../source/cli.rst:269
+#: ../source/cli.rst:270
 msgid "workout date order: 'asc' or 'desc' (default: 'asc')"
 msgstr "ordre de tri des séances : 'asc' ou 'desc' (par défaut : 'asc')"
 
-#: ../source/cli.rst:270
+#: ../source/cli.rst:271
 msgid "``--user TEXT``"
 msgstr ""
 
-#: ../source/cli.rst:271
+#: ../source/cli.rst:272
 msgid "username of workouts owner"
 msgstr "nom de l'utilisateur des séances à mettre à jour"
 
-#: ../source/cli.rst:272
+#: ../source/cli.rst:273
 msgid "``--extension TEXT``"
 msgstr ""
 
-#: ../source/cli.rst:273
+#: ../source/cli.rst:274
 msgid "workout file extension (valid values are: tcx, kmz, gpx, kml, fit)"
 msgstr ""
 "extension du fichier de la séance (valeurs possibles: tcx, kmz, gpx, kml,"
 " fit)"
 
-#: ../source/cli.rst:274
+#: ../source/cli.rst:275
 msgid "``--with-weather``"
 msgstr ""
 
-#: ../source/cli.rst:275
+#: ../source/cli.rst:276
 msgid ""
 "enable weather data collection if weather provider is set and workout has"
 " no weather data. WARNING: depending on subscription, the rate limit can "
@@ -9445,11 +9449,11 @@ msgstr ""
 "prochains chargements de fichiers, le temps que la limite soit "
 "réinitialisée (défaut: désactivé)"
 
-#: ../source/cli.rst:276
+#: ../source/cli.rst:277
 msgid "``--add-missing-geometry``"
 msgstr ""
 
-#: ../source/cli.rst:277
+#: ../source/cli.rst:278
 msgid ""
 "if provided, it refreshes only workouts without geometry in database to "
 "add geometry and points. This option is provided to update workouts "
@@ -9461,11 +9465,23 @@ msgstr ""
 "jour les séances créées avant la version v1.x et sera supprimée dans une "
 "prochaine version quand toutes les séances devront avoir une géométrie."
 
-#: ../source/cli.rst:278
+#: ../source/cli.rst:279
+msgid "``--on-file-error``"
+msgstr ""
+
+#: ../source/cli.rst:280
+msgid ""
+"action to perform when workout file is not found. If not provided, an "
+"error will be raised. Valid actions are: ``remove-references`` (all files"
+" references will be removed and workout preserved but not updated since "
+"no file found) and ``delete-workout``."
+msgstr ""
+
+#: ../source/cli.rst:281
 msgid "``-v, --verbose``"
 msgstr ""
 
-#: ../source/cli.rst:279
+#: ../source/cli.rst:282
 msgid "Enable verbose output log (default: disabled)"
 msgstr "Active les logs verbeux (défaut: désactivé)"
 
@@ -10010,9 +10026,9 @@ msgid ""
 "contains elevation (*changed in 1.0.6*)."
 msgstr ""
 "Les données liées à l'altitude pour les sports de raquettes (Tennis et "
-"Padel en extérieur) et les sports nautiques (Canoë, Kayak, Aviron, Nage en eau "
-"libre et Stand up paddle) ne sont ni stockées ni affichées si le fichier "
-"en contient (*modifié dans la version 1.0.6*)."
+"Padel en extérieur) et les sports nautiques (Canoë, Kayak, Aviron, Nage "
+"en eau libre et Stand up paddle) ne sont ni stockées ni affichées si le "
+"fichier en contient (*modifié dans la version 1.0.6*)."
 
 #: ../source/features.rst:77
 msgid "A workout can be created by:"
@@ -15342,7 +15358,11 @@ msgstr "redémarrer l'application, les migration devraient s'exécuter sans erre
 msgid "Workouts data update"
 msgstr "Mise à jour des séances"
 
-#: ../source/upgrading-to-1.0.x.rst:99
+#: ../source/upgrading-to-1.0.x.rst:98
+msgid "handle workouts with missing files."
+msgstr "gestion des séances ayant des fichiers manquants."
+
+#: ../source/upgrading-to-1.0.x.rst:100
 msgid ""
 "An new CLI option (``--add-missing-geometry``) allows to refresh workouts"
 " without geometry and chart data."
@@ -15351,7 +15371,7 @@ msgstr ""
 "missing-geometry``) permet de réactualiser toutes les séances sans "
 "géométries et données du graphique."
 
-#: ../source/upgrading-to-1.0.x.rst:101
+#: ../source/upgrading-to-1.0.x.rst:102
 msgid ""
 "After upgrading **fittrackee**, run this command with other options "
 "depending on the number of workouts to update and the server capability, "
@@ -15362,11 +15382,11 @@ msgstr ""
 "jour et les capacités du serveur, avant d'activer les fonctionnalités "
 "géospatiales."
 
-#: ../source/upgrading-to-1.0.x.rst:103
+#: ../source/upgrading-to-1.0.x.rst:104
 msgid "For instance to update the first 1,000 workouts created with a file:"
 msgstr "Par exemple pour les 1000 premières séances créées avec un fichier :"
 
-#: ../source/upgrading-to-1.0.x.rst:109
+#: ../source/upgrading-to-1.0.x.rst:110
 msgid ""
 "This command can be re-executed until there are no more workouts to "
 "update."
@@ -15374,7 +15394,7 @@ msgstr ""
 "Cette commande peut être ré-exécuter autant de fois que nécessaire, "
 "jusqu'à ce qu'il ne reste plus de séances à mettre à jour."
 
-#: ../source/upgrading-to-1.0.x.rst:110
+#: ../source/upgrading-to-1.0.x.rst:111
 msgid ""
 "Once all workouts have been updated, enable geospatial features on the "
 "interface by setting the environment variable `ENABLE_GEOSPATIAL_FEATURES"
@@ -15385,4 +15405,41 @@ msgstr ""
 "fonctionnalités géospatiales sur l'interface en configurant la variable "
 "d'environnement `ENABLE_GEOSPATIAL_FEATURES <installation.html#envvar-"
 "ENABLE_GEOSPATIAL_FEATURES>`_ à ``True`` dans le fichier ``.env``."
+
+#: ../source/upgrading-to-1.0.x.rst:116
+msgid ""
+"If you encountered issues refreshing workouts due to missing files, you "
+"can run the refresh command with the option ``--on-file-error``:"
+msgstr ""
+"Si vous rencontrez des problèmes pour actualiser les séances en raison de"
+" fichiers manquants, vous pouvez exécuter la commande d'actualisation "
+"avec l'option ``--on-file-error`` :"
+
+#: ../source/upgrading-to-1.0.x.rst:118
+msgid ""
+"``remove-references``: it empties columns related to files and delete "
+"segments. The workout is kept and can be displayed as a workout "
+"originally created without a file."
+msgstr ""
+"``remove-references``: vide les colonnes liées aux fichiers et supprime "
+"les segments. La séance est conservée et peut être affichée comme une "
+"séance créée à l'origine sans fichier."
+
+#: ../source/upgrading-to-1.0.x.rst:121
+msgid ""
+"Other data extracted from the file (such as source, heart rate, etc.) are"
+" preserved."
+msgstr ""
+"Les autres données extraites du fichier (telles que la source, la "
+"fréquence cardiaque, etc.) sont conservées."
+
+#: ../source/upgrading-to-1.0.x.rst:123
+msgid "``delete-workout``: it deletes workout."
+msgstr "``delete-workout``: supprime la séance."
+
+#: ../source/upgrading-to-1.0.x.rst:126
+msgid "Warnings are displayed during deletion, due to files not found."
+msgstr ""
+"Des avertissements s'affichent pendant la suppression, du fait des "
+"fichiers introuvables."
 

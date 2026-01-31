@@ -612,7 +612,10 @@ Commands:
 <div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 1.0.0: </span>Ajout de l'option <code class="docutils literal notranslate"><span class="pre">--add-missing-geometry</span></code></p>
 </div>
-<p>Actualiser les séances en recalculant les données de la séance et en récupérant les données météo si un fournisseur est configuré et que la séance n'a pas de données météo</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 1.0.7: </span>Ajout de l'option <code class="docutils literal notranslate"><span class="pre">--on-file-error</span></code></p>
+</div>
+<p>Actualiser les séances à partir des fichiers en recalculant les données de la séance et en récupérant les données météo si un fournisseur est configuré et que la séance n'a pas de données météo.</p>
 <p>Avant d'exécuter la commande, il est recommandé de sauvegarder toutes les données (base de données et répertoire des fichiers téléversé) dans le cas  où un grand nombre d'entraînements serait mis à jour.</p>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
@@ -660,7 +663,10 @@ Commands:
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--add-missing-geometry</span></code></p></td>
 <td><p>si fourni, seules les séances sans géométrie sont mises à jour pour ajouter les géométries et points. Cette option est fournie pour mettre à jour les séances créées avant la version v1.x et sera supprimée dans une prochaine version quand toutes les séances devront avoir une géométrie.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--on-file-error</span></code></p></td>
+<td><p>action to perform when workout file is not found. If not provided, an error will be raised. Valid actions are: <code class="docutils literal notranslate"><span class="pre">remove-references</span></code> (all files references will be removed and workout preserved but not updated since no file found) and <code class="docutils literal notranslate"><span class="pre">delete-workout</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></p></td>
 <td><p>Active les logs verbeux (défaut: désactivé)</p></td>
 </tr>
 </tbody>

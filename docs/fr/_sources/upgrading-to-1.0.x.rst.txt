@@ -95,6 +95,7 @@ With Docker
 
 Workouts data update
 ~~~~~~~~~~~~~~~~~~~~
+.. versionchanged:: 1.0.7  handle workouts with missing files.
 
 An new CLI option (``--add-missing-geometry``) allows to refresh workouts without geometry and chart data.
 
@@ -111,3 +112,15 @@ For instance to update the first 1,000 workouts created with a file:
 
 .. important::
     The version 1.1.0 will require all workouts to be updated.
+
+If you encountered issues refreshing workouts due to missing files, you can run the refresh command with the option ``--on-file-error``:
+
+- ``remove-references``: it empties columns related to files and delete segments. The workout is kept and can be displayed as a workout originally created without a file.
+
+  .. note::
+    Other data extracted from the file (such as source, heart rate, etc.) are preserved.
+
+- ``delete-workout``: it deletes workout.
+
+  .. note::
+    Warnings are displayed during deletion, due to files not found.
