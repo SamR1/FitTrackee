@@ -637,9 +637,12 @@ Commands:
 <p><span class="versionmodified changed">Modifié dans la version 1.0.0: </span>Ajout de l'option <code class="docutils literal notranslate"><span class="pre">--add-missing-geometry</span></code></p>
 </div>
 <div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 1.0.7: </span>Ajout de l'option <code class="docutils literal notranslate"><span class="pre">---on-file-error</span></code></p>
+</div>
+<div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 1.1.0: </span>Suppression de l'option <code class="docutils literal notranslate"><span class="pre">--add-missing-geometry</span></code> et ajout des options <code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code> et <code class="docutils literal notranslate"><span class="pre">--new-sport-id</span></code>.</p>
 </div>
-<p>Actualiser les séances en recalculant les données de la séance et en récupérant les données météo si un fournisseur est configuré et que la séance n'a pas de données météo</p>
+<p>Actualiser les séances à partir des fichiers en recalculant les données de la séance et en récupérant les données météo si un fournisseur est configuré et que la séance n'a pas de données météo.</p>
 <p>Avant d'exécuter la commande, il est recommandé de sauvegarder toutes les données (base de données et répertoire des fichiers téléversé) dans le cas où un grand nombre de séances serait mis à jour.</p>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
@@ -691,10 +694,13 @@ Commands:
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--with-weather</span></code></p></td>
 <td><p>active la récupération des données météo si un fournisseur de données est configuré et que la séance n'a pas données météo. ATTENTION: selon la souscription, la limite d'accès peut être atteinte, résultant en des erreurs et empêchant les données météo d'être récupérées pour les prochains chargements de fichiers, le temps que la limite soit réinitialisée (défaut: désactivé)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--on-file-error</span></code></p></td>
+<td><p>Action à effectuer lorsque le fichier de la séance est introuvable. Si aucune action n'est spécifiée, une erreur sera générée. Les actions valides sont : <code class="docutils literal notranslate"><span class="pre">remove-references</span></code> (toutes les références aux fichiers seront supprimées et le séance sera conservée mais non mise à jour puisqu'aucun fichier n'a été trouvé et <code class="docutils literal notranslate"><span class="pre">delete-workout</span></code> (suppression de la séance).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code></p></td>
 <td><p>active la mise à jour des données d'altitude si un fournisseur de données est configuré et que des données sont manquantes. ATTENTION: selon la souscription, la limite d'accès peut être atteinte, résultant en des erreurs et empêchant les données d'altitude d'être récupérées pour les prochains chargements de fichiers, le temps que la limite soit réinitialisée (défaut: désactivé)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></p></td>
 <td><p>Active les logs verbeux (défaut: désactivé)</p></td>
 </tr>
 </tbody>

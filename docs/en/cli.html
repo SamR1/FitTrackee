@@ -637,9 +637,12 @@ Commands:
 <p><span class="versionmodified changed">Changed in version 1.0.0: </span>Add <code class="docutils literal notranslate"><span class="pre">--add-missing-geometry</span></code> option.</p>
 </div>
 <div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.0.7: </span>Add <code class="docutils literal notranslate"><span class="pre">--on-file-error</span></code> option.</p>
+</div>
+<div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.1.0: </span>Remove <code class="docutils literal notranslate"><span class="pre">--add-missing-geometry</span></code> option and add <code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code> and <code class="docutils literal notranslate"><span class="pre">--new-sport-id</span></code> options.</p>
 </div>
-<p>Refresh workouts by recalculating data and fetching weather data if provider is set and workout does not have weather data.</p>
+<p>Refresh workouts from file by recalculating data and fetching weather data if provider is set and workout does not have weather data.</p>
 <p>Before executing the command, it is recommended to back up of all data (database and upload directory) in case a large number of workouts are refreshed.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -691,10 +694,13 @@ Commands:
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--with-weather</span></code></p></td>
 <td><p>enable weather data collection if weather provider is set and workout has no weather data. WARNING: depending on subscription, the rate limit can be reached, leading to errors and preventing weather data being collected during next uploads until the limit is reset (default: disabled)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--on-file-error</span></code></p></td>
+<td><p>action to perform when workout file is not found. If not provided, an error will be raised. Valid actions are: <code class="docutils literal notranslate"><span class="pre">remove-references</span></code> (all files references will be removed and workout preserved but not updated since no file found) and <code class="docutils literal notranslate"><span class="pre">delete-workout</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code></p></td>
 <td><p>enable elevation update when elevation provider is set and some elevation data are missing. If disabled, existing elevation are not removed when elevation data are missing in the original file. WARNING: depending on subscription, the rate limit can be reached, leading to errors and preventing elevation data being collected during next uploads until the limit is reset (default: disabled)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></p></td>
 <td><p>Enable verbose output log (default: disabled)</p></td>
 </tr>
 </tbody>
