@@ -426,8 +426,8 @@ def refresh_workouts(
         if without_file:
             if extension is not None or with_weather or with_elevation:
                 click.secho(
-                    "\nWarning: when 'without_file' is provided, following "
-                    "options are ignored: 'extension', 'with_weather' and "
+                    "\nWarning: when '--without_file' is provided, following "
+                    "options are ignored: '--extension', '--with_weather' and "
                     "'--with-elevation'.\n",
                     fg="yellow",
                 )
