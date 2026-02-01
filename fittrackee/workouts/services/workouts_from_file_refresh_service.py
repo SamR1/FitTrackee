@@ -2,8 +2,6 @@ import zipfile
 from datetime import datetime
 from typing import IO, TYPE_CHECKING, Optional, Union
 
-from sqlalchemy import asc, desc
-
 from fittrackee import appLog, db
 from fittrackee.files import get_absolute_file_path
 from fittrackee.users.models import User, UserSportPreference
@@ -15,6 +13,7 @@ from ..exceptions import (
     WorkoutFileException,
     WorkoutRefreshException,
 )
+from .abstract_workouts_refresh_service import AbstractWorkoutsRefreshService
 from .mixins import WorkoutFileMixin
 from .workout_from_file.services import WORKOUT_FROM_FILE_SERVICES
 
@@ -147,7 +146,7 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
         return self.workout
 
 
-class WorkoutsFromFileRefreshService:
+class WorkoutsFromFileRefreshService(AbstractWorkoutsRefreshService):
     """
     All checks on parameters are made by the CLI command.
     """
@@ -169,62 +168,34 @@ class WorkoutsFromFileRefreshService:
         on_file_error: Optional[str] = None,
         verbose: bool = False,
     ) -> None:
-        self.per_page: Optional[int] = per_page
-        self.page: Optional[int] = page
-        self.order: Optional[str] = order
-        self.username: Optional[str] = user
+        super().__init__(
+            logger,
+            per_page,
+            page,
+            order,
+            user,
+            sport_id,
+            new_sport_id,
+            date_from,
+            date_to,
+            verbose,
+        )
         self.extension: Optional[str] = extension if extension else None
-        self.sport_id: Optional[int] = sport_id
-        self.new_sport_id: Optional[int] = new_sport_id
-        self.date_from: Optional["datetime"] = date_from
-        self.date_to: Optional["datetime"] = date_to
         self.with_weather: bool = with_weather
         self.with_elevation: bool = with_elevation
         self.on_file_error: Optional[str] = on_file_error
-        self.logger: "Logger" = logger
-        self.verbose: bool = verbose
-
-    def _log_if_verbose(self, message: str) -> None:
-        if not self.verbose:
-            return
-        self.logger.info(message)
 
     def refresh(self) -> int:
-        workouts_to_refresh_query = Workout.query
         filters = [Workout.original_file != None]  # noqa
-        if self.username:
-            workouts_to_refresh_query = workouts_to_refresh_query.join(
-                User, User.id == Workout.user_id
-            )
-            filters.extend([User.username == self.username])
         if self.extension:
             filters.extend([Workout.original_file.like(f"%{self.extension}")])
-        if self.sport_id:
-            filters.extend([Workout.sport_id == self.sport_id])
-        if self.date_from:
-            filters.extend([Workout.workout_date >= self.date_from])
-        if self.date_to:
-            filters.extend([Workout.workout_date <= self.date_to])
+
+        workouts_to_refresh, total = self._get_workouts(filters)
+        if not total:
+            return 0
 
         updated_workouts = 0
         deleted_workouts = 0
-        workouts_to_refresh = (
-            workouts_to_refresh_query.filter(*filters)
-            .order_by(
-                asc(Workout.workout_date)
-                if self.order == "asc"
-                else desc(Workout.workout_date)
-            )
-            .paginate(page=self.page, per_page=self.per_page, error_out=False)
-            .items
-        )
-
-        total = len(workouts_to_refresh)
-        if not total:
-            self.logger.info("No workouts to refresh.")
-            return 0
-
-        self.logger.info(f"Number of workouts to refresh: {total}")
         for index, workout in enumerate(workouts_to_refresh, start=1):
             self._log_if_verbose(f"Refreshing workout {index}/{total}...")
 
@@ -240,8 +211,8 @@ class WorkoutsFromFileRefreshService:
                     on_file_error=self.on_file_error,
                     logger=self.logger,
                 )
-                workout = service.refresh()
-                if workout:
+                refreshed_workout = service.refresh()
+                if refreshed_workout:
                     updated_workouts += 1
                 else:
                     deleted_workouts += 1
