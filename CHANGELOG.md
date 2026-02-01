@@ -1,5 +1,14 @@
 # Change log
 
+## Version 1.0.7 (2026/02/01)
+
+If you encountered issues refreshing workouts before installing v1.1.0, due to missing files, you can run the refresh command with the following option: `--on-file-error`, see [PR#1046](https://github.com/SamR1/FitTrackee/pull/1046) for details.
+
+### Bugs Fixed
+
+* [PR#1046](https://github.com/SamR1/FitTrackee/pull/1046) - CLI - add an option to handle workouts for which files are not available 
+
+
 ## Version 1.1.0 (2026/01/25)
 
 This version includes pace display, elevation correction from **OpenElevation API** or **Valhalla Elevation API**, and total calories from the file.\
