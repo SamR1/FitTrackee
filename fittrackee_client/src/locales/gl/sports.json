@@ -2,6 +2,9 @@
   "Canoeing": {
     "LABEL": "Piragüismo (C)"
   },
+  "Canoeing (Whitewater)": {
+    "LABEL": "Canoa (Augas brancas)"
+  },
   "Cycling (Sport)": {
     "LABEL": "Ciclismo (Deportivo)"
   },
@@ -22,6 +25,9 @@
   },
   "Kayaking": {
     "LABEL": "Piragüismo (K)"
+  },
+  "Kayaking (Whitewater)": {
+    "LABEL": "Caiac (Augas brancas)"
   },
   "Mountain Biking": {
     "LABEL": "Ciclismo por Montaña"

@@ -240,9 +240,16 @@ Can be used if redis is not set (no dramatiq workers running).
 """"""""""""""""""""""""""
 .. versionadded:: 0.12.0
 .. versionchanged:: 1.0.0  Add ``--add-missing-geometry`` option.
+.. versionchanged:: 1.0.7  Add ``--on-file-error`` option.
 .. versionchanged:: 1.1.0  Remove ``--add-missing-geometry`` option and add ``--with-elevation`` and ``--new-sport-id`` options.
+.. versionchanged:: 1.1.1  Add ``--without-file`` option.
 
-Refresh workouts by recalculating data and fetching weather data if provider is set and workout does not have weather data.
+This command allows to refresh:
+
+- workouts with file, by recalculating data from original file, fetching weather data if weather provider is set and workout does not have weather data and fetching missing elevation if elevation provider is set.
+- workouts without file, by recalculating pace values for workouts created before `v1.1.0 <changelog.html#version-1-1-0-2026-01-25>`_.
+
+By default, it only refreshes workouts with file.
 
 Before executing the command, it is recommended to back up of all data (database and upload directory) in case a large number of workouts are refreshed.
 
@@ -281,5 +288,9 @@ Before executing the command, it is recommended to back up of all data (database
      - enable weather data collection if weather provider is set and workout has no weather data. WARNING: depending on subscription, the rate limit can be reached, leading to errors and preventing weather data being collected during next uploads until the limit is reset (default: disabled)
    * - ``--with-elevation``
      - enable elevation update when elevation provider is set and some elevation data are missing. If disabled, existing elevation are not removed when elevation data are missing in the original file. WARNING: depending on subscription, the rate limit can be reached, leading to errors and preventing elevation data being collected during next uploads until the limit is reset (default: disabled)
+   * - ``--on-file-error``
+     - action to perform when workout file is not found. If not provided, an error will be raised. Valid actions are: ``remove-references`` (all files references will be removed and workout preserved but not updated since no file found) and ``delete-workout``.
+   * - ``--without-file``
+     - allow to refresh workouts without a file and created before v1.1.0 to recalculate pace values (by default refresh command only refreshes workouts created with a file). When provided only workouts without file and without paces are refreshed (in this case '--extension', '--with-weather', '--with-elevation' and '--on-file-error' options are ignored). When not provided, only workouts with file are refreshed
    * - ``-v, --verbose``
-     - Enable verbose output log (default: disabled)
+     - enable verbose output log (default: disabled)

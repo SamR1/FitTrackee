@@ -85,6 +85,9 @@
     "BACK_TO_PROFILE": "Volver ao perfil",
     "BIO": "Bio",
     "BIRTH_DATE": "Data de nacemento",
+    "CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI": "Os cambios pódense aplicar cando a actualización se realiza coa Interface de Ordes (CLI).",
+    "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "Os cambios só se aplican ás actividades novas ou actualizadas.",
+    "CHANGES_ONLY_TO_NEW_WORKOUTS": "Os cambios só se aplican ás novas actividades.",
     "CREATED_REPORTS": "Denuncias creadas",
     "DATE_FORMAT": "Formato para as datas",
     "EDIT": "Editar perfil",
@@ -127,6 +130,7 @@
     },
     "MESSAGES_EDITION": "Edición das preferencias das mensaxes",
     "MESSAGES_PREFERENCES": "Preferencias das mensaxes",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Proceso da elevación ausente ao crear",
     "MONDAY": "Luns",
     "NOTIFICATIONS": {
       "account_creation": "Alguén creou unha conta",
@@ -141,6 +145,7 @@
     "NOTIFICATIONS_EDITION": "Edición das preferencias das notificacións",
     "NOTIFICATION_PREFERENCES": "Preferencias das notificacións",
     "NO_ARCHIVE_UPLOADS": "Sen subidas de arquivos",
+    "NO_ELEVATION_SERVICE_AVAILABLE": "Sen servizo dispoñible para elevacións ausentes",
     "NO_SANCTIONS": "Sen sancións",
     "PICTURE": "Fotografía",
     "PICTURE_EDITION": "Edición da foto",
@@ -183,6 +188,12 @@
       "DISABLED_BY_ADMIN": "desactivado por admin",
       "IS_ACTIVE": "activa",
       "LABEL": "etiqueta",
+      "PACE_SPEED_DISPLAY": {
+        "LABEL": "Mostrar Ritmo/Velocidade",
+        "pace": "Ritmo",
+        "pace_and_speed": "Ritmo e velocidade",
+        "speed": "Velocidade"
+      },
       "STOPPED_SPEED_THRESHOLD": "limiar para detectar pausa"
     },
     "SPORTS_EDITION": "Edición das preferencias do deporte",
@@ -225,7 +236,7 @@
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Filtrado",
       "HELP": "Se filtras, excluirá os valores extremos (que poderían deberse a erros do GPS) ao calcular a velocidade máxima.",
-      "LABEL": "Estratexia para velocidade máx. GPX",
+      "LABEL": "Estratexia de cálculo para Velocidade máx.",
       "RAW_SPEED": "En bruto"
     },
     "WORKOUT_CHARTS_DISPLAY": {
