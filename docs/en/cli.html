@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Command line interface - FitTrackee 1.1.0 documentation</title>
+        <title>Command line interface - FitTrackee 1.1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">FitTrackee 1.1.0
+      <a href="index.html"><div class="brand">FitTrackee 1.1.1
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 1.1.0
+  <span class="sidebar-brand-text">FitTrackee 1.1.1
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -642,7 +642,15 @@ Commands:
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 1.1.0: </span>Remove <code class="docutils literal notranslate"><span class="pre">--add-missing-geometry</span></code> option and add <code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code> and <code class="docutils literal notranslate"><span class="pre">--new-sport-id</span></code> options.</p>
 </div>
-<p>Refresh workouts from file by recalculating data and fetching weather data if provider is set and workout does not have weather data.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.1.1: </span>Add <code class="docutils literal notranslate"><span class="pre">--without-file</span></code> option.</p>
+</div>
+<p>This command allows to refresh:</p>
+<ul class="simple">
+<li><p>workouts with file, by recalculating data from original file, fetching weather data if weather provider is set and workout does not have weather data and fetching missing elevation if elevation provider is set.</p></li>
+<li><p>workouts without file, by recalculating pace values for workouts created before <a class="reference external" href="changelog.html#version-1-1-0-2026-01-25">v1.1.0</a>.</p></li>
+</ul>
+<p>By default, it only refreshes workouts with file.</p>
 <p>Before executing the command, it is recommended to back up of all data (database and upload directory) in case a large number of workouts are refreshed.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -694,14 +702,17 @@ Commands:
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--with-weather</span></code></p></td>
 <td><p>enable weather data collection if weather provider is set and workout has no weather data. WARNING: depending on subscription, the rate limit can be reached, leading to errors and preventing weather data being collected during next uploads until the limit is reset (default: disabled)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--on-file-error</span></code></p></td>
-<td><p>action to perform when workout file is not found. If not provided, an error will be raised. Valid actions are: <code class="docutils literal notranslate"><span class="pre">remove-references</span></code> (all files references will be removed and workout preserved but not updated since no file found) and <code class="docutils literal notranslate"><span class="pre">delete-workout</span></code>.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code></p></td>
 <td><p>enable elevation update when elevation provider is set and some elevation data are missing. If disabled, existing elevation are not removed when elevation data are missing in the original file. WARNING: depending on subscription, the rate limit can be reached, leading to errors and preventing elevation data being collected during next uploads until the limit is reset (default: disabled)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></p></td>
-<td><p>Enable verbose output log (default: disabled)</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--on-file-error</span></code></p></td>
+<td><p>action to perform when workout file is not found. If not provided, an error will be raised. Valid actions are: <code class="docutils literal notranslate"><span class="pre">remove-references</span></code> (all files references will be removed and workout preserved but not updated since no file found) and <code class="docutils literal notranslate"><span class="pre">delete-workout</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--without-file</span></code></p></td>
+<td><p>allow to refresh workouts without a file and created before v1.1.0 to recalculate pace values (by default refresh command only refreshes workouts created with a file). When provided only workouts without file and without paces are refreshed (in this case ‘–extension’, ‘–with-weather’, ‘–with-elevation’ and ‘–on-file-error’ options are ignored). When not provided, only workouts with file are refreshed</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></p></td>
+<td><p>enable verbose output log (default: disabled)</p></td>
 </tr>
 </tbody>
 </table>
@@ -805,7 +816,7 @@ Commands:
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=fc837d61"></script>
+</div><script src="_static/documentation_options.js?v=58fbf978"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>
