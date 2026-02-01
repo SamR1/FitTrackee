@@ -7,7 +7,7 @@
         <link rel="prefetch" href="_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Interface de ligne de commande - Documentation FitTrackee 1.1.0</title>
+        <title>Interface de ligne de commande - Documentation FitTrackee 1.1.1</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Documentation FitTrackee 1.1.0
+      <a href="index.html"><div class="brand">Documentation FitTrackee 1.1.1
 </div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 1.1.0
+  <span class="sidebar-brand-text">Documentation FitTrackee 1.1.1
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
@@ -637,16 +637,24 @@ Commands:
 <p><span class="versionmodified changed">Modifié dans la version 1.0.0: </span>Ajout de l'option <code class="docutils literal notranslate"><span class="pre">--add-missing-geometry</span></code></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Modifié dans la version 1.0.7: </span>Ajout de l'option <code class="docutils literal notranslate"><span class="pre">---on-file-error</span></code></p>
+<p><span class="versionmodified changed">Modifié dans la version 1.0.7: </span>Ajout de l'option <code class="docutils literal notranslate"><span class="pre">--on-file-error</span></code></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Modifié dans la version 1.1.0: </span>Suppression de l'option <code class="docutils literal notranslate"><span class="pre">--add-missing-geometry</span></code> et ajout des options <code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code> et <code class="docutils literal notranslate"><span class="pre">--new-sport-id</span></code>.</p>
 </div>
-<p>Actualiser les séances à partir des fichiers en recalculant les données de la séance et en récupérant les données météo si un fournisseur est configuré et que la séance n'a pas de données météo.</p>
-<p>Avant d'exécuter la commande, il est recommandé de sauvegarder toutes les données (base de données et répertoire des fichiers téléversé) dans le cas où un grand nombre de séances serait mis à jour.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 1.1.1: </span>Ajout de l'option <code class="docutils literal notranslate"><span class="pre">--without-file</span></code></p>
+</div>
+<p>Cette commande permet d'actualiser :</p>
+<ul class="simple">
+<li><p>les séances créées à partir d'un fichier, en recalculant les données de la séance et en récupérant les données météo si un fournisseur est configuré et que la séance n'a pas de données météo et les données d'altitude manquantes si un fournisseur de données d'altitude est configuré.</p></li>
+<li><p>les séances sans fichier, en recalculant les valeurs d'allure pour les séances créées avant la <a class="reference external" href="changelog.html#version-1-1-0-2026-01-25">v1.1.0</a>.</p></li>
+</ul>
+<p>Par défaut, cette commande ne rafraîchit que les séances avec fichier.</p>
+<p>Avant d'exécuter la commande, il est recommandé de sauvegarder toutes les données (base de données et répertoire des fichiers téléversés) dans le cas où un grand nombre de séances serait mis à jour.</p>
 <div class="admonition warning">
 <p class="admonition-title">Avertissement</p>
-<p>Si un fournisseur de données météo est défini et que l'option <code class="docutils literal notranslate"><span class="pre">--with-weather</span></code> est fournie et/ou une URL d'API de données d'altitude et que l'option <code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code> ets fournie, la limite d'accès peut être atteinte, résultant en des erreurs de limite dépassée quand un nombre important de séances est actualisé.</p>
+<p>Si un fournisseur de données météo est défini et que l'option <code class="docutils literal notranslate"><span class="pre">--with-weather</span></code> est fournie et/ou un fournisseur de données d'altitude et que l'option <code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code> est fournie, la limite d'accès peut être atteinte, résultant en des erreurs de limite dépassée quand un nombre important de séances est actualisé.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -694,14 +702,17 @@ Commands:
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--with-weather</span></code></p></td>
 <td><p>active la récupération des données météo si un fournisseur de données est configuré et que la séance n'a pas données météo. ATTENTION: selon la souscription, la limite d'accès peut être atteinte, résultant en des erreurs et empêchant les données météo d'être récupérées pour les prochains chargements de fichiers, le temps que la limite soit réinitialisée (défaut: désactivé)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--on-file-error</span></code></p></td>
-<td><p>Action à effectuer lorsque le fichier de la séance est introuvable. Si aucune action n'est spécifiée, une erreur sera générée. Les actions valides sont : <code class="docutils literal notranslate"><span class="pre">remove-references</span></code> (toutes les références aux fichiers seront supprimées et le séance sera conservée mais non mise à jour puisqu'aucun fichier n'a été trouvé et <code class="docutils literal notranslate"><span class="pre">delete-workout</span></code> (suppression de la séance).</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code></p></td>
 <td><p>active la mise à jour des données d'altitude si un fournisseur de données est configuré et que des données sont manquantes. ATTENTION: selon la souscription, la limite d'accès peut être atteinte, résultant en des erreurs et empêchant les données d'altitude d'être récupérées pour les prochains chargements de fichiers, le temps que la limite soit réinitialisée (défaut: désactivé)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></p></td>
-<td><p>Active les logs verbeux (défaut: désactivé)</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--on-file-error</span></code></p></td>
+<td><p>action à effectuer lorsque le fichier de la séance est introuvable. Si aucune action n'est spécifiée, une erreur sera générée. Les actions valides sont : <code class="docutils literal notranslate"><span class="pre">remove-references</span></code> (toutes les références aux fichiers seront supprimées et le séance sera conservée mais non mise à jour puisqu'aucun fichier n'a été trouvé) et <code class="docutils literal notranslate"><span class="pre">delete-workout</span></code> (suppression de la séance).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--without-file</span></code></p></td>
+<td><p>permet d'actualiser les séances sans fichier et créées avant la version 1.1.0 afin de recalculer les valeurs d'allure (par défaut, la commande d'actualisation ne rafraîchit que les séances créées avec un fichier). Lorsque cette option est fournie, seuls les séances sans fichier et sans allure sont actualisées (dans ce cas, les options <code class="docutils literal notranslate"><span class="pre">--extension</span></code>, <code class="docutils literal notranslate"><span class="pre">--with-weather</span></code>, <code class="docutils literal notranslate"><span class="pre">--with-elevation</span></code> et <code class="docutils literal notranslate"><span class="pre">--on-file-error</span></code> sont ignorées). Lorsqu'elle n'est pas fournie, seuls les séances avec fichier sont actualisées (par défaut : désactivé)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></p></td>
+<td><p>active les logs verbeux (défaut: désactivé)</p></td>
 </tr>
 </tbody>
 </table>
@@ -805,7 +816,7 @@ Commands:
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=740f9163"></script>
+</div><script src="_static/documentation_options.js?v=d077157a"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

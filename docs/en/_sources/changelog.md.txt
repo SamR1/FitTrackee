@@ -1,8 +1,50 @@
 # Change log
 
+## Version 1.1.1 (2026/02/01)
+
+The CLI now allows to refresh workouts without file in order to calculate pace values for sessions created prior to version 1.1.0, see [documentation](https://docs.fittrackee.org/en/cli.html#ftcli-workouts-refresh).
+
+### Bugs Fixed
+
+* [PR#1048](https://github.com/SamR1/FitTrackee/pull/1048) - fix the update and refresh of workouts without file 
+
+from v1.0.7
+* [PR#1046](https://github.com/SamR1/FitTrackee/pull/1046) - CLI - add an option to handle workouts for which files are not available 
+
+### Translations
+
+* [PR#1043](https://github.com/SamR1/FitTrackee/pull/1043) - Translations update from Hosted Weblate (Galician)
+* [PR#1050](https://github.com/SamR1/FitTrackee/pull/1050) - Translations update from Hosted Weblate (Croatian)
+
+Translation status for languages available on the interface:
+- Basque: 96%
+- Bulgarian: 52%
+- Catalan: 25%
+- Chinese (Simplified): 94%
+- Croatian: 96%
+- Czech: 46%
+- Dutch: 95%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 90%
+- Italian: 96%
+- Kabyle: 5%
+- Norwegian Bokmål: 43%
+- Polish: 94%
+- Portuguese: 51%
+- Russian: 96%
+- Spanish: 68%
+- Turkish: 1%
+
+Thanks to the contributors:
+- @iggydev
+- @xmgz
+
+
 ## Version 1.0.7 (2026/02/01)
 
-If you encountered issues refreshing workouts before installing v1.1.0, due to missing files, you can run the refresh command with the following option: `--on-file-error`, see [PR#1046](https://github.com/SamR1/FitTrackee/pull/1046) for details.
+If you encountered issues refreshing workouts before installing v1.1.0, due to missing files, you can run the refresh command with the following option: `--on-file-error`, see [documentation](https://docs.fittrackee.org/en/installation/upgrade.html#workouts-data-update).
 
 ### Bugs Fixed
 
