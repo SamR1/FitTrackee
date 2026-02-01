@@ -1,6 +1,7 @@
 import logging
 import sys
 from datetime import datetime
+from logging import Logger
 from typing import Optional
 
 import click
@@ -11,6 +12,9 @@ from fittrackee.workouts.constants import WORKOUT_ALLOWED_EXTENSIONS
 from fittrackee.workouts.models import Sport
 from fittrackee.workouts.services.workouts_from_file_refresh_service import (
     WorkoutsFromFileRefreshService,
+)
+from fittrackee.workouts.services.workouts_without_file_refresh_service import (  # noqa
+    WorkoutsWithoutFileRefreshService,
 )
 from fittrackee.workouts.tasks import (
     process_workouts_archive_upload,
@@ -167,6 +171,103 @@ def process_queued_archive_upload(task_short_id: str, verbose: bool) -> None:
         logger.info("\nDone.")
 
 
+def refresh_workouts_with_file(
+    logger_: "Logger",
+    sport_id: Optional[int] = None,
+    new_sport_id: Optional[int] = None,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+    per_page: int = 10,
+    page: int = 1,
+    order: str = "asc",
+    user: Optional[str] = None,
+    extension: Optional[str] = None,
+    with_weather: bool = False,
+    with_elevation: bool = False,
+    on_file_error: Optional[str] = None,
+    verbose: bool = False,
+) -> None:
+    if with_elevation:
+        if (
+            app.config["OPEN_ELEVATION_API_URL"]
+            or app.config["VALHALLA_API_URL"]
+        ):
+            click.secho(
+                "\nWarning: Open Elevation and/or Valhalla API "
+                "are set.\n"
+                "If users have enabled missing elevation processing, "
+                "multiple calls will be made to the elevation services "
+                "depending on the number of workouts to be refreshed, "
+                "which may result in rate limit errors.\n"
+                "Adjust the number of workouts to refresh with "
+                "'--per-page' option if necessary "
+                f"(current value: {per_page}).",
+                fg="yellow",
+                bold=True,
+            )
+            if not click.confirm("Do you want to continue?"):
+                click.echo("Aborted!")
+                sys.exit(0)
+        else:
+            click.secho(
+                "\nWarning: '--with-elevation' is provided but "
+                "no elevation API URL is set.\n",
+                fg="yellow",
+            )
+    try:
+        service = WorkoutsFromFileRefreshService(
+            sport_id=sport_id,
+            new_sport_id=new_sport_id,
+            date_from=date_from,
+            date_to=date_to,
+            per_page=per_page,
+            page=page,
+            order=order,
+            user=user,
+            extension=extension,
+            with_weather=with_weather,
+            verbose=verbose,
+            with_elevation=with_elevation,
+            on_file_error=on_file_error,
+            logger=logger_,
+        )
+        service.refresh()
+    except Exception as e:
+        logger.error(str(e))
+        sys.exit(1)
+
+
+def refresh_workouts_without_file(
+    logger_: "Logger",
+    sport_id: Optional[int] = None,
+    new_sport_id: Optional[int] = None,
+    date_from: Optional[datetime] = None,
+    date_to: Optional[datetime] = None,
+    per_page: int = 10,
+    page: int = 1,
+    order: str = "asc",
+    user: Optional[str] = None,
+    verbose: bool = False,
+) -> None:
+    try:
+        service = WorkoutsWithoutFileRefreshService(
+            logger=logger_,
+            sport_id=sport_id,
+            new_sport_id=new_sport_id,
+            date_from=date_from,
+            date_to=date_to,
+            per_page=per_page,
+            page=page,
+            order=order,
+            user=user,
+            verbose=verbose,
+        )
+        service.refresh()
+    except Exception as e:
+        logger.error(str(e))
+        sys.exit(1)
+
+
 @workouts_cli.command("refresh")
 @click.option(
     "--sport-id",
@@ -271,6 +372,22 @@ def process_queued_archive_upload(task_short_id: str, verbose: bool) -> None:
     callback=validate_on_file_error,
 )
 @click.option(
+    "--without-file",
+    help=(
+        "allow to refresh workouts without a file and created before v1.1.0 "
+        "to recalculate pace values (by default refresh command only "
+        "refreshes workouts created with a file). "
+        "When provided only workouts without file and without paces are "
+        "refreshed (in this case '--extension', '--with-weather' and "
+        "'--with-elevation' options are ignored). "
+        "When not provided, only workouts with file are refreshed "
+        "(default: disabled)"
+    ),
+    is_flag=True,
+    show_default=True,
+    default=False,
+)
+@click.option(
     "--verbose",
     "-v",
     "verbose",
@@ -291,6 +408,7 @@ def refresh_workouts(
     with_weather: bool = False,
     with_elevation: bool = False,
     on_file_error: Optional[str] = None,
+    without_file: bool = False,
     verbose: bool = False,
 ) -> None:
     """
@@ -299,42 +417,36 @@ def refresh_workouts(
     with app.app_context():
         logger.setLevel(logging.DEBUG if verbose else logging.INFO)
 
-        if with_elevation:
-            if (
-                app.config["OPEN_ELEVATION_API_URL"]
-                or app.config["VALHALLA_API_URL"]
-            ):
-                click.secho(
-                    "\nWarning: Open Elevation and/or Valhalla API "
-                    "are set.\n"
-                    "If users have enabled missing elevation processing, "
-                    "multiple calls will be made to the elevation services "
-                    "depending on the number of workouts to be refreshed, "
-                    "which may result in rate limit errors.\n"
-                    "Adjust the number of workouts to refresh with "
-                    "'--per-page' option if necessary "
-                    f"(current value: {per_page}).",
-                    fg="yellow",
-                    bold=True,
-                )
-                if not click.confirm("Do you want to continue?"):
-                    click.echo("Aborted!")
-                    sys.exit(0)
-            else:
-                click.secho(
-                    "\nWarning: '--with-elevation' is provided but "
-                    "no elevation API URL is set.\n",
-                    fg="yellow",
-                )
-
         if new_sport_id and not sport_id:
             raise click.BadOptionUsage(
                 "--new-sport-id",
                 "'--new-sport-id' must be provided with '--sport-id'",
             )
 
-        try:
-            service = WorkoutsFromFileRefreshService(
+        if without_file:
+            if extension is not None or with_weather or with_elevation:
+                click.secho(
+                    "\nWarning: when '--without_file' is provided, following "
+                    "options are ignored: '--extension', '--with_weather' and "
+                    "'--with-elevation'.\n",
+                    fg="yellow",
+                )
+
+            refresh_workouts_without_file(
+                logger_=logger,
+                sport_id=sport_id,
+                new_sport_id=new_sport_id,
+                date_from=date_from,
+                date_to=date_to,
+                per_page=per_page,
+                page=page,
+                order=order,
+                user=user,
+                verbose=verbose,
+            )
+        else:
+            refresh_workouts_with_file(
+                logger_=logger,
                 sport_id=sport_id,
                 new_sport_id=new_sport_id,
                 date_from=date_from,
@@ -348,11 +460,6 @@ def refresh_workouts(
                 verbose=verbose,
                 with_elevation=with_elevation,
                 on_file_error=on_file_error,
-                logger=logger,
             )
-            service.refresh()
-        except Exception as e:
-            logger.error(str(e))
-            sys.exit(1)
 
         logger.info("\nDone.")

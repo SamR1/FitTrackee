@@ -42,7 +42,7 @@ class TestWorkoutUpdateServiceInitForWorkoutWithoutFile(RandomMixin):
             user_1, workout_cycling_user_1, workout_data
         )
 
-        assert service.auth_user == user_1
+        assert service.user == user_1
         assert service.equipments_list is None
         assert service.sport is None
         assert service.with_file is False
@@ -73,7 +73,7 @@ class TestWorkoutUpdateServiceInitForWorkoutWithoutFile(RandomMixin):
             user_1, workout_cycling_user_1, workout_data
         )
 
-        assert service.auth_user == user_1
+        assert service.user == user_1
         assert service.equipments_list == [equipment_shoes_user_1]
         assert service.sport == sport_2_running
         assert service.with_file is False
@@ -295,7 +295,7 @@ class TestWorkoutUpdateServiceInitForWorkoutWithFile:
             user_1, workout_cycling_user_1, workout_data
         )
 
-        assert service.auth_user == user_1
+        assert service.user == user_1
         assert service.equipments_list is None
         assert service.sport is None
         assert service.with_file is True
@@ -326,7 +326,7 @@ class TestWorkoutUpdateServiceInitForWorkoutWithFile:
             user_1, workout_cycling_user_1, workout_data
         )
 
-        assert service.auth_user == user_1
+        assert service.user == user_1
         assert service.equipments_list == [equipment_shoes_user_1]
         assert service.sport == sport_2_running
         assert service.with_file is True
@@ -614,8 +614,7 @@ class TestWorkoutUpdateServiceUpdateForWorkoutWithoutFile(RandomMixin):
         db.session.refresh(workout_cycling_user_1)
         assert workout_cycling_user_1.ascent == 10
         assert workout_cycling_user_1.descent == 30
-        ha_record = Record.query.filter_by(record_type="HA").one()
-        assert ha_record.value == 10
+        assert Record.query.filter_by(record_type="HA").one().value == 10
 
     def test_it_empties_elevation_data(
         self,
@@ -689,7 +688,6 @@ class TestWorkoutUpdateServiceUpdateForWorkoutWithoutFile(RandomMixin):
         self,
         app: "Flask",
         sport_1_cycling: "Sport",
-        sport_2_running: "Sport",
         user_1: "User",
         workout_cycling_user_1: "Workout",
     ) -> None:
@@ -706,6 +704,8 @@ class TestWorkoutUpdateServiceUpdateForWorkoutWithoutFile(RandomMixin):
         assert workout_cycling_user_1.moving == timedelta(seconds=duration)
         assert float(workout_cycling_user_1.max_speed) == 5.0  # type: ignore
         assert float(workout_cycling_user_1.ave_speed) == 5.0  # type: ignore
+        assert workout_cycling_user_1.ave_pace == timedelta(minutes=12)
+        assert workout_cycling_user_1.best_pace == timedelta(minutes=12)
         assert Record.query.filter_by(record_type="AS").one().value == 5.0
         assert Record.query.filter_by(
             record_type="LD"
@@ -716,7 +716,6 @@ class TestWorkoutUpdateServiceUpdateForWorkoutWithoutFile(RandomMixin):
         self,
         app: "Flask",
         sport_1_cycling: "Sport",
-        sport_2_running: "Sport",
         user_1: "User",
         workout_cycling_user_1: "Workout",
     ) -> None:
@@ -732,8 +731,71 @@ class TestWorkoutUpdateServiceUpdateForWorkoutWithoutFile(RandomMixin):
         assert float(workout_cycling_user_1.distance) == distance  # type: ignore
         assert float(workout_cycling_user_1.max_speed) == 15.0  # type: ignore
         assert float(workout_cycling_user_1.ave_speed) == 15.0  # type: ignore
+        assert workout_cycling_user_1.ave_pace == timedelta(minutes=4)
+        assert workout_cycling_user_1.best_pace == timedelta(minutes=4)
         assert Record.query.filter_by(record_type="AS").one().value == 15.0
         assert Record.query.filter_by(record_type="MS").one().value == 15.0
+        assert Record.query.filter_by(record_type="FD").one().value == distance
+        assert Record.query.filter_by(
+            record_type="AP"
+        ).one().value == timedelta(minutes=4)
+        assert Record.query.filter_by(
+            record_type="BP"
+        ).one().value == timedelta(minutes=4)
+
+    def test_it_recalculates_paces_when_no_workout_data_is_an_empty_dict(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        user_1: "User",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        # workout created before v1.1.0
+        workout_cycling_user_1.ave_pace = None
+        workout_cycling_user_1.best_pace = None
+        db.session.commit()
+        service = WorkoutUpdateService(user_1, workout_cycling_user_1, {})
+
+        service.update()
+        db.session.commit()
+
+        db.session.refresh(workout_cycling_user_1)
+        # values unchanged
+        assert float(workout_cycling_user_1.max_speed) == 10.0  # type: ignore
+        assert float(workout_cycling_user_1.ave_speed) == 10.0  # type: ignore
+        # values recalculated
+        assert workout_cycling_user_1.ave_pace == timedelta(minutes=6)
+        assert workout_cycling_user_1.best_pace == timedelta(minutes=6)
+        assert Record.query.filter_by(record_type="AS").one().value == 10.0
+        assert Record.query.filter_by(record_type="MS").one().value == 10.0
+        assert Record.query.filter_by(
+            record_type="AP"
+        ).one().value == timedelta(minutes=6)
+        assert Record.query.filter_by(
+            record_type="BP"
+        ).one().value == timedelta(minutes=6)
+
+    def test_it_keeps_workout_unchanged_when_it_has_paces(
+        self,
+        app: "Flask",
+        user_1: "User",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        modification_date = workout_cycling_user_1.modification_date
+        db.session.commit()
+        service = WorkoutUpdateService(user_1, workout_cycling_user_1, {})
+
+        service.update()
+        db.session.commit()
+
+        db.session.refresh(workout_cycling_user_1)
+        # values unchanged
+        assert workout_cycling_user_1.modification_date == modification_date
+        assert float(workout_cycling_user_1.max_speed) == 10.0  # type: ignore
+        assert float(workout_cycling_user_1.ave_speed) == 10.0  # type: ignore
+        assert workout_cycling_user_1.ave_pace == timedelta(minutes=6)
+        assert workout_cycling_user_1.best_pace == timedelta(minutes=6)
 
 
 class TestWorkoutUpdateServiceUpdateForWorkoutWithFile(RandomMixin):
