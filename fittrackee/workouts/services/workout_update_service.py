@@ -18,6 +18,7 @@ from fittrackee.workouts.models import (
 
 from ..constants import WORKOUT_DATE_FORMAT
 from ..exceptions import WorkoutException
+from ..utils.convert import convert_speed_into_pace_duration
 from ..utils.workouts import get_workout_datetime
 from .mixins import CheckWorkoutMixin
 
@@ -55,14 +56,12 @@ WITHOUT_FILE_KEYS = {
 
 
 class WorkoutUpdateService(CheckWorkoutMixin):
-    def __init__(
-        self, auth_user: "User", workout: "Workout", workout_data: Dict
-    ):
+    def __init__(self, user: "User", workout: "Workout", workout_data: Dict):
         self.with_file = workout.original_file is not None
         self.workout_data = WorkoutUpdateData(**workout_data)
         self._check_workout_data()
         self.sport = self._get_sport()
-        self.auth_user = auth_user
+        self.user = user
         self.workout = workout
         self.equipments_list = self._get_equipments_list()
 
@@ -143,7 +142,7 @@ class WorkoutUpdateService(CheckWorkoutMixin):
             )
             return handle_equipments(
                 self.workout_data["equipment_ids"],
-                self.auth_user,
+                self.user,
                 sport_id,
                 self.workout.equipments,
             )
@@ -169,7 +168,7 @@ class WorkoutUpdateService(CheckWorkoutMixin):
             self.workout.workout_date, _ = get_workout_datetime(
                 workout_date=self.workout_data["workout_date"],
                 date_str_format=WORKOUT_DATE_FORMAT,
-                user_timezone=self.auth_user.timezone,
+                user_timezone=self.user.timezone,
             )
 
         update_speeds = False
@@ -196,6 +195,24 @@ class WorkoutUpdateService(CheckWorkoutMixin):
                 / (self.workout.duration.seconds / 3600)
             )
             self.workout.max_speed = self.workout.ave_speed
+
+        if (
+            self.workout.ave_speed is not None
+            and self.workout.max_speed is not None
+            and (
+                # to recalculated workouts created before v1.1.0
+                self.workout.ave_pace is None
+                or self.workout.best_pace is None
+                # to recalculated pace when speeds have been updated
+                or update_speeds
+            )
+        ):
+            self.workout.ave_pace = convert_speed_into_pace_duration(
+                float(self.workout.ave_speed)
+            )
+            self.workout.best_pace = convert_speed_into_pace_duration(
+                float(self.workout.max_speed)
+            )
 
         self._check_workout(self.workout)
 

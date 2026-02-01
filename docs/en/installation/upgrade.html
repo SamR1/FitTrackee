@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Upgrade - FitTrackee 1.1.0 documentation</title>
+        <title>Upgrade - FitTrackee 1.1.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">FitTrackee 1.1.0
+      <a href="../index.html"><div class="brand">FitTrackee 1.1.1
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 1.1.0
+  <span class="sidebar-brand-text">FitTrackee 1.1.1
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -374,11 +374,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <ul class="simple">
 <li><p>Stop the application</p></li>
 <li><p>Change to the directory where FitTrackee directory is located</p></li>
-<li><p>Download the last release (for now, it is the release v1.1.0) and overwrite existing files:</p></li>
+<li><p>Download the last release (for now, it is the release v1.1.1) and overwrite existing files:</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v1.1.0.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.1.0.tar.gz
-$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-1.1.0/*<span class="w"> </span>FitTrackee/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/v1.1.1.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.1.1.tar.gz
+$<span class="w"> </span>cp<span class="w"> </span>-R<span class="w"> </span>FitTrackee-1.1.1/*<span class="w"> </span>FitTrackee/
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -539,6 +539,9 @@ CREATE<span class="w"> </span>EXTENSION
 </section>
 <section id="workouts-data-update">
 <h3>Workouts data update<a class="headerlink" href="#workouts-data-update" title="Link to this heading">¶</a></h3>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.0.7: </span>handle workouts with missing files.</p>
+</div>
 <p>An new CLI option (<code class="docutils literal notranslate"><span class="pre">--add-missing-geometry</span></code>) allows to refresh workouts without geometry and chart data.</p>
 <p>After upgrading <strong>fittrackee</strong>, run this command with other options depending on the number of workouts to update and the server capability, before enabling geospatial features on UI.</p>
 <p>For instance to update the first 1,000 workouts created with a file:</p>
@@ -553,6 +556,21 @@ CREATE<span class="w"> </span>EXTENSION
 <p class="admonition-title">Important</p>
 <p>The version 1.1.0 requires all workouts to be updated (<code class="docutils literal notranslate"><span class="pre">--add-missing-geometry</span></code> option is removed in v1.1.0).</p>
 </div>
+<p>If you encountered issues refreshing workouts due to missing files, you can run the refresh command with the option <code class="docutils literal notranslate"><span class="pre">--on-file-error</span></code>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">remove-references</span></code>: it empties columns related to files and delete segments. The workout is kept and can be displayed as a workout originally created without a file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Other data extracted from the file (such as source, heart rate, etc.) are preserved.</p>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">delete-workout</span></code>: it deletes workout.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Warnings are displayed during deletion, due to files not found.</p>
+</div>
+</li>
+</ul>
 </section>
 </section>
 </section>
@@ -643,7 +661,7 @@ CREATE<span class="w"> </span>EXTENSION
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=fc837d61"></script>
+</div><script src="../_static/documentation_options.js?v=58fbf978"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

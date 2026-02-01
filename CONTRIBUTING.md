@@ -5,7 +5,7 @@ First off, thank you for your interest in contributing!
 ## Philosophy
 
 FitTrackee was created specifically to completely avoid proprietary web platforms for tracking sports activities.  
-Workout files contain sensitive data relating to location and health.
+Workout files contain sensitive data related to location and health.
 
 This is one of the reasons why, for example, automatic synchronization of an account hosted on proprietary web platform is not integrated into FitTrackee.  
 For the time being, files must therefore be added manually or [third-party tools](https://docs.fittrackee.org/en/third_party_tools.html) must be used (or developed) for this type of synchronization.

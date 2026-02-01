@@ -1,6 +1,7 @@
 {
   "ERROR": {
     "<time> is missing in gpx file": "falta o elemento <time> no ficheiro .gpx.",
+    "Error when updating elevation data source": "Erro ao actualizar a orixe dos datos de elevación",
     "Network Error": "Erro na rede.",
     "UNKNOWN": "Erro. Inténtao outra vez ou contacta coa administración.",
     "a report already exists": "Xa enviaches unha denuncia.",
@@ -22,6 +23,7 @@
     "error when parsing kml file": "Erro ao procesar o ficheiro .kml.",
     "error when parsing kmz file": "Erro ao procesar o ficheiro .kmz.",
     "error when parsing tcx file": "Erro ao procesar o ficheiro .tcx.",
+    "error when processing workout": "Erro ao procesar a actividade",
     "error when saving workout": "Erro ao gardar o adestramento.",
     "error when updating configuration": "Erro ao actualizar a configuración.",
     "error while fetching comments": "Erro ao obter os comentarios.",

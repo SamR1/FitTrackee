@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Dict
 from unittest.mock import MagicMock, call, mock_open, patch
 
 import pytest
+from time_machine import travel
 
 from fittrackee import db
 from fittrackee.constants import ElevationDataSource
@@ -80,6 +81,8 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         )
         assert service.update_weather is False
         assert service.get_elevation_on_refresh is True
+        assert service.on_file_error is None
+        assert service.logger is None
 
     def test_it_instantiates_service_when_user_has_sport_preferences(
         self,
@@ -102,6 +105,8 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         )
         assert service.update_weather is False
         assert service.get_elevation_on_refresh is True
+        assert service.on_file_error is None
+        assert service.logger is None
 
     def test_it_instantiates_service_when_update_weather_is_true(
         self,
@@ -125,6 +130,8 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         )
         assert service.update_weather is True
         assert service.get_elevation_on_refresh is True
+        assert service.on_file_error is None
+        assert service.logger is None
 
     def test_it_instantiates_service_when_get_elevation_on_refresh_is_false(
         self,
@@ -176,6 +183,55 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
             service.change_elevation_source
             == ElevationDataSource.OPEN_ELEVATION
         )
+
+    def test_it_instantiates_service_when_on_file_error_is_provided(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+    ) -> None:
+        service = WorkoutFromFileRefreshService(
+            workout=workout_cycling_user_1,
+            on_file_error="delete_workout",
+        )
+
+        assert service.workout == workout_cycling_user_1
+        assert service.user == user_1
+        assert service.sport == sport_1_cycling
+        assert service.sport_preferences is None
+        assert (
+            service.stopped_speed_threshold
+            == sport_1_cycling.stopped_speed_threshold
+        )
+        assert service.update_weather is False
+        assert service.on_file_error == "delete_workout"
+        assert service.logger is None
+
+    def test_it_instantiates_service_when_logger_is_provided(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+    ) -> None:
+        service = WorkoutFromFileRefreshService(
+            workout=workout_cycling_user_1, logger=test_logger
+        )
+
+        assert service.workout == workout_cycling_user_1
+        assert service.user == user_1
+        assert service.sport == sport_1_cycling
+        assert service.sport_preferences is None
+        assert (
+            service.stopped_speed_threshold
+            == sport_1_cycling.stopped_speed_threshold
+        )
+        assert service.update_weather is False
+        assert service.on_file_error is None
+        assert service.logger == test_logger
 
 
 class TestWorkoutFromFileRefreshServiceGetFileContent:
@@ -623,6 +679,68 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
         )
         assert equipment_bike_user_1.total_workouts == 1
 
+    def test_it_deletes_workout_when_on_file_error_is_delete_workout(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+    ) -> None:
+        workout_id = workout_cycling_user_1.id
+        workout_cycling_user_1.original_file = "workouts/1/example.tcx"
+        service = WorkoutFromFileRefreshService(
+            workout=workout_cycling_user_1,
+            on_file_error="delete-workout",
+        )
+
+        service.refresh()
+
+        assert Workout.query.filter_by(id=workout_id).first() is None
+
+    def test_it_deletes_segments_and_remove_references_when_on_file_error_is_remove_references(  # noqa
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+    ) -> None:
+        workout_cycling_user_1.original_file = "workouts/1/example.tcx"
+        workout_cycling_user_1.map = "workouts/1/example.png"
+        workout_cycling_user_1.map_id = "5598e576af277ed9c62776aacc627086"
+        workout_data = workout_cycling_user_1.serialize(
+            user=user_1, light=False
+        )
+        service = WorkoutFromFileRefreshService(
+            workout=workout_cycling_user_1,
+            on_file_error="remove-references",
+        )
+        now = datetime.now(timezone.utc)
+
+        with travel(now, tick=False):
+            service.refresh()
+
+        db.session.refresh(workout_cycling_user_1)
+        assert workout_cycling_user_1.original_file is None
+        assert workout_cycling_user_1.map is None
+        assert workout_cycling_user_1.map_id is None
+        assert (
+            WorkoutSegment.query.filter_by(
+                workout_id=workout_cycling_user_1.id
+            ).count()
+            == 0
+        )
+        assert workout_cycling_user_1.serialize(user=user_1, light=False) == {
+            **workout_data,
+            "map": None,
+            "modification_date": now,
+            "original_file": None,
+            "segments": [],
+            "with_analysis": False,
+            "with_file": False,
+        }
+
 
 class TestWorkoutsFromFileRefreshServiceInstantiation:
     def test_it_instantiates_service_when_no_values_provided(
@@ -642,6 +760,7 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
         assert service.logger == test_logger
         assert service.with_weather is False
         assert service.with_elevation is False
+        assert service.on_file_error is None
 
     def test_it_instantiates_service_with_given_values(
         self, app: "Flask"
@@ -661,6 +780,7 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
             date_to=date_to,
             with_weather=True,
             with_elevation=True,
+            on_file_error="delete-workout",
         )
 
         assert service.per_page == 50
@@ -675,6 +795,7 @@ class TestWorkoutsFromFileRefreshServiceInstantiation:
         assert service.logger == test_logger
         assert service.with_weather is True
         assert service.with_elevation is True
+        assert service.on_file_error == "delete-workout"
 
 
 class TestWorkoutsFromFileRefreshServiceRefresh:
@@ -705,6 +826,8 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
             workout_cycling_user_1,
             update_weather=input_with_weather,
             get_elevation_on_refresh=input_with_elevation,
+            on_file_error=None,
+            logger=test_logger,
         )
 
     def test_it_returns_0_when_no_workouts_with_file(
@@ -1111,3 +1234,113 @@ class TestWorkoutsFromFileRefreshServiceRefresh:
                 )
             ]
         )
+
+    def test_it_continues_when_in_file_error_is_delete_workout(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        workout_running_user_1: "Workout",
+        workout_running_user_1_segment: "WorkoutSegment",
+        tcx_with_one_lap_and_one_track: str,
+        gpx_file_from_tcx_with_one_lap_and_one_track: str,
+    ) -> None:
+        workout_id = workout_cycling_user_1.short_id
+        logger_mock = MagicMock()
+        open_mock = MagicMock()
+        mock_files = [
+            Exception(),
+            mock_open(read_data=tcx_with_one_lap_and_one_track).return_value,
+            mock_open(
+                read_data=gpx_file_from_tcx_with_one_lap_and_one_track
+            ).return_value,
+        ]
+        service = WorkoutsFromFileRefreshService(
+            logger=logger_mock, verbose=True, on_file_error="delete-workout"
+        )
+
+        with patch(
+            "builtins.open", return_value=open_mock, side_effect=mock_files
+        ):
+            count = service.refresh()
+
+        assert Workout.query.count() == 1
+        assert count == 1
+        assert logger_mock.info.call_count == 5
+        logger_mock.info.assert_has_calls(
+            [
+                call("Number of workouts to refresh: 2"),
+                call("Refreshing workout 1/2..."),
+                call(
+                    f"No file found for workout '{workout_id}' (user: "
+                    f"{user_1.username}), workout deleted."
+                ),
+                call("Refreshing workout 2/2..."),
+                call(
+                    "\nRefresh done:\n"
+                    "- updated workouts: 1\n"
+                    "- deleted workouts: 1\n"
+                    "- errored workouts: 0"
+                ),
+            ]
+        )
+        logger_mock.error.assert_not_called()
+
+    def test_it_continues_when_in_file_error_is_remove_references(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_1_segment: "WorkoutSegment",
+        workout_running_user_1: "Workout",
+        workout_running_user_1_segment: "WorkoutSegment",
+        tcx_with_one_lap_and_one_track: str,
+        gpx_file_from_tcx_with_one_lap_and_one_track: str,
+    ) -> None:
+        workout_id = workout_cycling_user_1.short_id
+        logger_mock = MagicMock()
+        open_mock = MagicMock()
+        mock_files = [
+            Exception(),
+            mock_open(read_data=tcx_with_one_lap_and_one_track).return_value,
+            mock_open(
+                read_data=gpx_file_from_tcx_with_one_lap_and_one_track
+            ).return_value,
+        ]
+        service = WorkoutsFromFileRefreshService(
+            logger=logger_mock,
+            verbose=True,
+            on_file_error="remove-references",
+        )
+
+        with patch(
+            "builtins.open", return_value=open_mock, side_effect=mock_files
+        ):
+            count = service.refresh()
+
+        assert Workout.query.count() == 2
+        assert count == 2
+        assert logger_mock.info.call_count == 5
+        logger_mock.info.assert_has_calls(
+            [
+                call("Number of workouts to refresh: 2"),
+                call("Refreshing workout 1/2..."),
+                call(
+                    f"No file found for workout '{workout_id}' (user: "
+                    f"{user_1.username}), segments deleted and files "
+                    f"references removed."
+                ),
+                call("Refreshing workout 2/2..."),
+                call(
+                    "\nRefresh done:\n"
+                    "- updated workouts: 2\n"
+                    "- errored workouts: 0"
+                ),
+            ]
+        )
+        logger_mock.error.assert_not_called()
