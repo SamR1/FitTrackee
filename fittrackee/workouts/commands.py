@@ -378,8 +378,8 @@ def refresh_workouts_without_file(
         "to recalculate pace values (by default refresh command only "
         "refreshes workouts created with a file). "
         "When provided only workouts without file and without paces are "
-        "refreshed (in this case '--extension', '--with-weather' and "
-        "'--with-elevation' options are ignored). "
+        "refreshed (in this case '--extension', '--with-weather', "
+        "'--with-elevation' and '--on-file-error' options are ignored). "
         "When not provided, only workouts with file are refreshed "
         "(default: disabled)"
     ),
@@ -393,7 +393,7 @@ def refresh_workouts_without_file(
     "verbose",
     is_flag=True,
     default=False,
-    help="Enable verbose output log (default: disabled)",
+    help="enable verbose output log (default: disabled)",
 )
 def refresh_workouts(
     sport_id: Optional[int] = None,
@@ -424,11 +424,16 @@ def refresh_workouts(
             )
 
         if without_file:
-            if extension is not None or with_weather or with_elevation:
+            if (
+                extension is not None
+                or with_weather
+                or with_elevation
+                or on_file_error
+            ):
                 click.secho(
-                    "\nWarning: when '--without_file' is provided, following "
-                    "options are ignored: '--extension', '--with_weather' and "
-                    "'--with-elevation'.\n",
+                    "\nWarning: when '--without-file' is provided, following "
+                    "options are ignored: '--extension', '--with-weather', "
+                    "'--with-elevation' and '--on-file-error'.\n",
                     fg="yellow",
                 )
 
