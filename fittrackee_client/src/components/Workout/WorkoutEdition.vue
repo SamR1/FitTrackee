@@ -287,7 +287,7 @@
                       min="0"
                       step="0.001"
                       @invalid="invalidateForm"
-                      :disabled="loading"
+                      :disabled="loading || withoutElevation"
                       v-model="workoutForm.workoutAscent"
                     />
                   </div>
@@ -305,7 +305,7 @@
                       min="0"
                       step="0.001"
                       @invalid="invalidateForm"
-                      :disabled="loading"
+                      :disabled="loading || withoutElevation"
                       v-model="workoutForm.workoutDescent"
                     />
                   </div>
@@ -463,6 +463,7 @@
   import { getEquipments } from '@/utils/equipments'
   import { getReadableFileSizeAsText } from '@/utils/files'
   import { translateSports } from '@/utils/sports'
+  import { sportsWithoutElevation } from '@/utils/sports'
   import { convertDistance } from '@/utils/units'
   import {
     getAllVisibilityLevels,
@@ -553,6 +554,11 @@
     workoutForm.sport_id
       ? translatedSports.value.filter((s) => s.id === +workoutForm.sport_id)[0]
       : null
+  )
+  const withoutElevation: ComputedRef<boolean> = computed(() =>
+    selectedSport.value?.label
+      ? sportsWithoutElevation.includes(selectedSport.value.label)
+      : false
   )
   const equipmentsForSelect: ComputedRef<IEquipment[]> = computed(() =>
     equipments.value
@@ -812,6 +818,15 @@
           newSport?.default_equipments.length > 0
             ? `${newSport.default_equipments[0].id}`
             : ''
+      }
+    }
+  )
+  watch(
+    () => withoutElevation.value,
+    (newValue: boolean) => {
+      if (newValue) {
+        workoutForm.workoutAscent = ''
+        workoutForm.workoutDescent = ''
       }
     }
   )
