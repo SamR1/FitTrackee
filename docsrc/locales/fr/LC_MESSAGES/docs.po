@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-02-08 16:17+0100\n"
+"POT-Creation-Date: 2026-02-08 18:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -12997,8 +12997,8 @@ msgid ""
 "added total calories to workout without file, elevation related inputs "
 "disabled for workout for sports without elevation"
 msgstr ""
-"ajout des calories totales aux séances créées sans fichier, désactivation "
-"des champs relatifs à l'altitude pour les sports sans altitude."
+"ajout des calories totales aux séances créées sans fichier, désactivation"
+" des champs relatifs à l'altitude pour les sports sans altitude."
 
 #: ../source/features/workout.rst:76
 msgid ""
@@ -13006,8 +13006,8 @@ msgid ""
 " distance, ascent, descent and calories."
 msgstr ""
 "Les utilisateurs peuvent créer une séance sans fichier en saisissant la "
-"date, l'heure, la durée, la distance, les dénivelés positif et négatif et "
-"les calories."
+"date, l'heure, la durée, la distance, les dénivelés positif et négatif et"
+" les calories."
 
 #: ../source/features/workout.rst:78
 msgid "Form for workout creation without a file"
@@ -13284,13 +13284,17 @@ msgstr ""
 msgid "Skiing (Alpine)"
 msgstr "Ski (Alpin)"
 
-#: ../source/features/workout.rst:241 ../source/features/workout.rst:244
+#: ../source/features/workout.rst:241
 msgid "10"
 msgstr ""
 
 #: ../source/features/workout.rst:243 ../source/features/workout.rst:386
 msgid "Skiing (Cross Country)"
 msgstr "Ski (Randonnée)"
+
+#: ../source/features/workout.rst:244
+msgid "12"
+msgstr ""
 
 #: ../source/features/workout.rst:250
 msgid "Other sports"
