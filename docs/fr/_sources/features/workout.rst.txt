@@ -241,7 +241,7 @@ Winter sports and mountain sports
    * - 10
      - .. image:: ../_images/sports/skiing_cross_country.png
      - Skiing (Cross Country)
-   * - 10
+   * - 12
      - .. image:: ../_images/sports/snowshoes.png
      - Snowshoes
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-02-08 16:17+0100\n"
+"POT-Creation-Date: 2026-02-08 18:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -12118,12 +12118,16 @@ msgstr ""
 msgid "Skiing (Alpine)"
 msgstr ""
 
-#: ../source/features/workout.rst:241 ../source/features/workout.rst:244
+#: ../source/features/workout.rst:241
 msgid "10"
 msgstr ""
 
 #: ../source/features/workout.rst:243 ../source/features/workout.rst:386
 msgid "Skiing (Cross Country)"
+msgstr ""
+
+#: ../source/features/workout.rst:244
+msgid "12"
 msgstr ""
 
 #: ../source/features/workout.rst:250
