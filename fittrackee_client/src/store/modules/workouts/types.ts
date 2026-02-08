@@ -93,7 +93,7 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IWorkoutForm
   ): void
-  [WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_WITHOUT_GPX](
+  [WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_WITHOUT_FILE](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IWorkoutForm
   ): void

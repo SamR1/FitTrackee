@@ -871,7 +871,7 @@ class TestPostWorkoutWithFit(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["map"] is not None
 
 
-class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
+class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: "Flask", sport_1_cycling: "Sport", gpx_file: str
     ) -> None:
@@ -893,7 +893,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
 
         self.assert_401(response)
 
-    def test_it_adds_a_workout_without_gpx(
+    def test_it_adds_a_workout_without_file(
         self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -972,7 +972,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
             ),
         )
 
-    def test_it_adds_a_workout_without_gpx_and_title(
+    def test_it_adds_a_workout_without_file_and_title(
         self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1803,7 +1803,7 @@ class TestPostWorkoutWithZipArchive(UserTaskMixin, WorkoutApiTestCaseMixin):
         assert Workout.query.count() == 3
 
 
-class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
+class TestPostAndGetWorkoutWithFile(WorkoutApiTestCaseMixin):
     def workout_assertion(
         self, app: "Flask", user_1: "User", gpx_file: str, with_segments: bool
     ) -> None:
@@ -2096,7 +2096,7 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
         assert "data" not in data
 
 
-class TestPostAndGetWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
+class TestPostAndGetWorkoutWithoutFile(WorkoutApiTestCaseMixin):
     def test_it_add_and_gets_a_workout_wo_gpx(
         self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:

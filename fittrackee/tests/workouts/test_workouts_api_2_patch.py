@@ -383,7 +383,7 @@ class TestEditWorkout(WorkoutApiTestCaseMixin):
         )
 
 
-class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
+class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
     def test_it_returns_400_if_payload_is_invalid(
         self,
         app: "Flask",
@@ -790,7 +790,7 @@ class TestEditWorkoutWithGpx(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["elevation_data_source"] == "file"
 
 
-class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
+class TestEditWorkoutWithoutFile(WorkoutApiTestCaseMixin):
     def test_it_updates_a_workout_without_file(
         self,
         app: "Flask",
@@ -1052,7 +1052,7 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
 
         self.assert_400(response, "invalid ascent or descent", "invalid")
 
-    def test_it_returns_400_when_values_are_invalid_for_workout_without_gpx(
+    def test_it_returns_400_when_values_are_invalid_for_workout_without_file(
         self,
         app: "Flask",
         user_1: "User",
@@ -1081,7 +1081,7 @@ class TestEditWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
             "invalid",
         )
 
-    def test_it_updates_workout_visibility_for_workout_without_gpx(
+    def test_it_updates_workout_visibility_for_workout_without_file(
         self,
         app: "Flask",
         user_1: "User",
