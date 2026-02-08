@@ -1,6 +1,7 @@
 {
   "ERROR": {
     "<time> is missing in gpx file": "Element <time> nedostaje u .gpx datoteci.",
+    "Error when updating elevation data source": "Pogreška prilikom ažuriranja izvora podataka o elevaciji",
     "Network Error": "Mrežna pogreška.",
     "UNKNOWN": "Greška. Pokušajte ponovno ili kontaktirajte administratora.",
     "a report already exists": "Već ste podnijeli izvješće.",
@@ -22,6 +23,7 @@
     "error when parsing kml file": "Pogreška tijekom parsiranja .kml datoteke.",
     "error when parsing kmz file": "Pogreška tijekom parsiranja .kmz datoteke.",
     "error when parsing tcx file": "Pogreška tijekom parsiranja .tcx datoteke.",
+    "error when processing workout": "Pogreška prilikom obrade aktivnosti",
     "error when saving workout": "Greška prilikom spremanja aktivnosti.",
     "error when updating configuration": "Pogreška prilikom ažuriranja konfiguracije.",
     "error while fetching comments": "Pogreška prilikom dohvaćanja komentara.",

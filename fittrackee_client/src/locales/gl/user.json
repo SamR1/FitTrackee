@@ -51,7 +51,7 @@
     "STRONG": "forte",
     "SUGGESTIONS": {
       "allUppercase": "Inclúe algunha letra maiúscula, non todas.",
-      "anotherWord": "Engade máis palabras pouco comúns.",
+      "anotherWord": "Engade outras palabras que sexan menos habituais.",
       "associatedYears": "Evita os anos que teñan relación contigo.",
       "capitalization": "Usa máis maiúsculas que só na primeira letra.",
       "dates": "Evita datas e anos que teñan relación contigo.",
@@ -140,7 +140,7 @@
       "follow_request_approved": "Aprobouse a túa solicitude de seguimento",
       "mention": "Mencionáronte",
       "workout_comment": "Alguén comentou a túa actividade",
-      "workout_like": "Algún gustou da túa actividade"
+      "workout_like": "Alguén gustou da túa actividade"
     },
     "NOTIFICATIONS_EDITION": "Edición das preferencias das notificacións",
     "NOTIFICATION_PREFERENCES": "Preferencias das notificacións",

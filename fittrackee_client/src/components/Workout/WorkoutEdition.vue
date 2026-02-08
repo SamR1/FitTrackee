@@ -18,21 +18,21 @@
               <div class="form-item-radio" v-if="isCreation">
                 <div>
                   <input
-                    id="withGpx"
+                    id="withFile"
                     type="radio"
-                    :checked="withGpx"
+                    :checked="withFile"
                     :disabled="loading"
-                    @click="updateWithGpx"
+                    @click="updateWithFile"
                   />
-                  <label for="withGpx">{{ $t('workouts.WITH_FILE') }}</label>
+                  <label for="withFile">{{ $t('workouts.WITH_FILE') }}</label>
                 </div>
                 <div>
                   <input
                     id="withoutGpx"
                     type="radio"
-                    :checked="!withGpx"
+                    :checked="!withFile"
                     :disabled="loading"
-                    @click="updateWithGpx"
+                    @click="updateWithFile"
                   />
                   <label for="withoutGpx">
                     {{ $t('workouts.WITHOUT_FILE') }}
@@ -57,14 +57,14 @@
                   </option>
                 </select>
               </div>
-              <div class="form-item" v-if="isCreation && withGpx">
-                <label for="gpxFile">
+              <div class="form-item" v-if="isCreation && withFile">
+                <label for="workoutFile">
                   {{ $t('workouts.WORKOUT_FILE') }}
                   {{ $t('workouts.ZIP_ARCHIVE_DESCRIPTION') }}*:
                 </label>
                 <input
-                  id="gpxFile"
-                  name="gpxFile"
+                  id="workoutFile"
+                  name="workoutFile"
                   type="file"
                   accept=".gpx, .fit, .kml, .kmz, .tcx, .zip"
                   :disabled="loading"
@@ -128,14 +128,14 @@
                   v-model="workoutForm.title"
                   maxlength="255"
                 />
-                <div class="field-help" v-if="withGpx && isCreation">
+                <div class="field-help" v-if="withFile && isCreation">
                   <span class="info-box">
                     <i class="fa fa-info-circle" aria-hidden="true" />
                     {{ $t('workouts.TITLE_FIELD_HELP') }}
                   </span>
                 </div>
               </div>
-              <div v-if="!withGpx">
+              <div v-if="!withFile">
                 <div class="workout-date-duration">
                   <div class="form-item">
                     <label>{{ $t('workouts.WORKOUT_DATE') }}*:</label>
@@ -234,6 +234,24 @@
                       />
                     </div>
                   </div>
+                  <div class="form-item">
+                    <label for="workout-calories">
+                      {{ $t('workouts.CALORIES') }} ({{
+                        t(`workouts.UNITS.kcal.UNIT`)
+                      }}):
+                    </label>
+                    <div class="workout-calories">
+                      <input
+                        id="workout-calories"
+                        name="workout-calories"
+                        type="number"
+                        min="0"
+                        @invalid="invalidateForm"
+                        :disabled="loading"
+                        v-model="workoutForm.workoutCalories"
+                      />
+                    </div>
+                  </div>
                 </div>
                 <div class="workout-data">
                   <div class="form-item">
@@ -269,7 +287,7 @@
                       min="0"
                       step="0.001"
                       @invalid="invalidateForm"
-                      :disabled="loading"
+                      :disabled="loading || withoutElevation"
                       v-model="workoutForm.workoutAscent"
                     />
                   </div>
@@ -287,7 +305,7 @@
                       min="0"
                       step="0.001"
                       @invalid="invalidateForm"
-                      :disabled="loading"
+                      :disabled="loading || withoutElevation"
                       v-model="workoutForm.workoutDescent"
                     />
                   </div>
@@ -339,7 +357,7 @@
                   </option>
                 </select>
               </div>
-              <div class="form-item" v-if="withGpx">
+              <div class="form-item" v-if="withFile">
                 <label for="analysis_visibility">
                   {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}:
                 </label>
@@ -365,7 +383,7 @@
                   </option>
                 </select>
               </div>
-              <div class="form-item" v-if="withGpx">
+              <div class="form-item" v-if="withFile">
                 <label for="map_visibility">
                   {{ $t('visibility_levels.MAP_VISIBILITY') }}:
                 </label>
@@ -402,7 +420,7 @@
                   :rows="5"
                   @updateValue="updateDescription"
                 />
-                <div class="field-help" v-if="withGpx && isCreation">
+                <div class="field-help" v-if="withFile && isCreation">
                   <span class="info-box">
                     <i class="fa fa-info-circle" aria-hidden="true" />
                     {{ $t('workouts.DESCRIPTION_FIELD_HELP') }}
@@ -466,6 +484,7 @@
   import { getEquipments } from '@/utils/equipments'
   import { getReadableFileSizeAsText } from '@/utils/files'
   import { translateSports } from '@/utils/sports'
+  import { sportsWithoutElevation } from '@/utils/sports'
   import { convertDistance } from '@/utils/units'
   import {
     getAllVisibilityLevels,
@@ -494,7 +513,7 @@
 
   const { appConfig, errorMessages } = useApp()
 
-  let gpxFile: File | null = null
+  let workoutFile: File | null = null
 
   const workoutForm = reactive({
     sport_id: '',
@@ -513,8 +532,9 @@
     mapVisibility: authUser.value.map_visibility,
     analysisVisibility: authUser.value.analysis_visibility,
     workoutVisibility: authUser.value.workouts_visibility,
+    workoutCalories: '',
   })
-  const withGpx: Ref<boolean> = ref(
+  const withFile: Ref<boolean> = ref(
     workout.value.id && workout.value.with_file ? true : isCreation.value
   )
   const formErrors: Ref<boolean> = ref(false)
@@ -557,6 +577,11 @@
       ? translatedSports.value.filter((s) => s.id === +workoutForm.sport_id)[0]
       : null
   )
+  const withoutElevation: ComputedRef<boolean> = computed(() =>
+    selectedSport.value?.label
+      ? sportsWithoutElevation.includes(selectedSport.value.label)
+      : false
+  )
   const equipmentsForSelect: ComputedRef<IEquipment[]> = computed(() =>
     equipments.value
       ? getEquipments(
@@ -588,13 +613,13 @@
   function updateDescription(textareaData: ICustomTextareaData) {
     workoutForm.description = textareaData.value
   }
-  function updateWithGpx() {
-    withGpx.value = !withGpx.value
+  function updateWithFile() {
+    withFile.value = !withFile.value
     formErrors.value = false
   }
   function updateFile(event: Event) {
     if ((event.target as HTMLInputElement).files) {
-      gpxFile = ((event.target as HTMLInputElement).files as FileList)[0]
+      workoutFile = ((event.target as HTMLInputElement).files as FileList)[0]
     }
   }
   function formatWorkoutForm(workout: IWorkout) {
@@ -651,6 +676,9 @@
                 ? convertDistance(workout.descent, 'm', 'ft', 2)
                 : parseFloat(workout.descent.toFixed(2))
             }`
+      workoutForm.workoutCalories = workout.calories
+        ? `${workout.calories}`
+        : ''
     }
   }
   function isDistanceInvalid() {
@@ -699,6 +727,11 @@
       payloadErrorMessages.value.push('workouts.INVALID_ASCENT_OR_DESCENT')
     }
     payload.workout_visibility = workoutForm.workoutVisibility
+    if (!withFile.value) {
+      payload.calories = workoutForm.workoutCalories
+        ? +workoutForm.workoutCalories
+        : null
+    }
   }
   function updateWorkout() {
     const payload: IWorkoutForm = {
@@ -732,13 +765,13 @@
         })
       }
     } else {
-      if (withGpx.value) {
-        if (!gpxFile) {
+      if (withFile.value) {
+        if (!workoutFile) {
           const errorMessage = 'workouts.NO_FILE_PROVIDED'
           store.commit(ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES, errorMessage)
           return
         }
-        payload.file = gpxFile
+        payload.file = workoutFile
         payload.analysis_visibility = workoutForm.analysisVisibility
         payload.map_visibility = workoutForm.mapVisibility
         store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_WORKOUT, payload)
@@ -751,7 +784,7 @@
           )
         } else {
           store.dispatch(
-            WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_WITHOUT_GPX,
+            WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_WITHOUT_FILE,
             payload
           )
         }
@@ -811,6 +844,15 @@
     }
   )
   watch(
+    () => withoutElevation.value,
+    (newValue: boolean) => {
+      if (newValue) {
+        workoutForm.workoutAscent = ''
+        workoutForm.workoutDescent = ''
+      }
+    }
+  )
+  watch(
     () => authUser.value,
     (newAuthUser: IAuthUserProfile) => {
       if (newAuthUser && isCreation) {
@@ -827,7 +869,7 @@
       formatWorkoutForm(props.workout)
       element = document.getElementById('sport')
     } else {
-      element = document.getElementById('withGpx')
+      element = document.getElementById('withFile')
     }
     if (element) {
       element.focus()
@@ -869,6 +911,19 @@
 
               @media screen and (max-width: $medium-limit) {
                 flex-direction: column;
+              }
+            }
+
+            .workout-calories {
+              display: flex;
+              input {
+                width: 100px;
+              }
+              @media screen and (max-width: $medium-limit) {
+                width: initial;
+                input {
+                  width: 100%;
+                }
               }
             }
 

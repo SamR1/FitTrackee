@@ -523,6 +523,72 @@ class TestGetChartDataFromSegmentPoints:
             "time": last_point["time"],
         }
 
+    def test_it_returns_speed_when_sport_is_associated_with_pace_but_only_speed_is_available(  # noqa
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        user_1: "User",
+    ) -> None:
+        segments_points = [
+            {
+                "cadence": 0,
+                "distance": 0.0,
+                "duration": 0,
+                "elevation": 998.0,
+                "heart_rate": 92,
+                "latitude": 44.68095,
+                "longitude": 6.07367,
+                "power": 0,
+                "speed": 0,
+                "time": "2018-03-13 12:44:45+00:00",
+            },
+            {
+                "cadence": 50,
+                "distance": 4.4527796323533435,
+                "duration": 5,
+                "elevation": 998.0,
+                "heart_rate": 87,
+                "latitude": 44.68091,
+                "longitude": 6.07367,
+                "power": 305,
+                "speed": 3.96,
+                "time": "2018-03-13 12:44:50+00:00",
+            },
+            {
+                "cadence": 51,
+                "distance": 17.551714568218248,
+                "duration": 15,
+                "elevation": 994.0,
+                "heart_rate": 88,
+                "latitude": 44.6808,
+                "longitude": 6.07364,
+                "power": 326,
+                "speed": 4.36,
+                "time": "2018-03-13 12:45:00+00:00",
+            },
+        ]
+        chart_data = get_chart_data_from_segment_points(
+            [segments_points],
+            sport_2_running,  # sport with pace
+            user=None,
+            workout_ave_cadence=110,
+            can_see_heart_rate=True,
+        )
+
+        first_point = segments_points[0]
+        assert chart_data[0] == {
+            "cadence": first_point["cadence"],
+            "distance": first_point["distance"],
+            "duration": 0,
+            "elevation": first_point["elevation"],
+            "hr": first_point["heart_rate"],
+            "latitude": first_point["latitude"],
+            "longitude": first_point["longitude"],
+            "speed": first_point["speed"],
+            "time": first_point["time"],
+        }
+
 
 class TestGetBufferedLocation(GeometryMixin):
     @pytest.mark.parametrize("input_radius", ["invalid", "", "0", "-1"])

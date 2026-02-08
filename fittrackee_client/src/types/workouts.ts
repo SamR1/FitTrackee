@@ -199,6 +199,7 @@ export interface IWorkoutForm {
   duration?: number
   file?: Blob
   ascent?: number | null
+  calories?: number | null
   descent?: number | null
   equipment_ids: string[]
   description: string

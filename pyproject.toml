@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "1.1.1"
+version = "1.1.2"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0-only"
@@ -31,7 +31,7 @@ Changelog = "https://docs.fittrackee.org/en/changelog.html"
 [tool.poetry.dependencies]
 python = "^3.10"
 authlib = "=1.6.6"
-babel = "^2.11.0"
+babel = "=2.18.0"
 click = "^8.3.1"
 dramatiq = {version = "^1.15.0", extras = ["redis"]}
 dramatiq-abort = {extras = ["redis"], version = "^1.2.1"}
@@ -45,9 +45,9 @@ flask-limiter = {version = "^4.0.0", extras = ["redis"]}
 flask-migrate = "4.1.0"
 flask-sqlalchemy = "3.1.1"
 geoalchemy2 = {extras = ["shapely"], version = "^0.18.1"}
-geopandas = "=1.1.1"
+geopandas = "=1.1.2"
 gpxpy = "=1.6.2"
-gunicorn = "^23.0.0"
+gunicorn = "^25.0.3"
 humanize = "^4.15.0"
 jsonschema = "^4.26.0"
 lxml = "^6.0.2"
@@ -57,20 +57,20 @@ numpy = "=2.2.6" # numpy 2.3+ requires python 3.11+. geoalchemy2 dependency.
 pandas = "=2.3.2" # temporary workaround to enable installation on RHEL 7, installation of 2.3.3 generates an error
 psycopg2-binary = "^2.9.11"
 pycryptodome = "^3.15"
-pyjwt = "^2.10.1"
+pyjwt = "=2.11.0"
 pyproj = "=3.7.1" # pyproj 3.7.2+ requires python 3.11+ and installation may generates an error on RHEL
 pyopenssl = "^25.3.0"
 pytz = "^2025.2"
 shortuuid = "^1.0.13"
-sqlalchemy = "=2.0.45"
+sqlalchemy = "=2.0.46"
 staticmap3 = {extras = ["filecache"], version = "^0.1.0"}
 ua-parser = "^1.0.0"
 xmltodict = "^1.0.2"
 
 [tool.poetry.group.dev.dependencies]
-bandit = "^1.9.2"
+bandit = "=1.9.3"
 codespell = "^2.4.1"
-debugpy = "=1.8.19"
+debugpy = "=1.8.20"
 furo = "^2025.12.19"
 mypy = "^1.19.1"
 pytest = "^9.0.2"

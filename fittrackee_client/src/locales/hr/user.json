@@ -85,6 +85,9 @@
     "BACK_TO_PROFILE": "Povratak na profil",
     "BIO": "Biografija",
     "BIRTH_DATE": "Datum rođenja",
+    "CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI": "Promjene se mogu primijeniti kada se izvede osvježavanje putem sučelja naredbenog retka (CLI).",
+    "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "Promjene se odnose samo na nove ili osvježene aktivnosti.",
+    "CHANGES_ONLY_TO_NEW_WORKOUTS": "Promjene se odnose samo na nove aktivnosti.",
     "CREATED_REPORTS": "Izrađena izvješća",
     "DATE_FORMAT": "Format prikaza datuma",
     "EDIT": "Uredite profil",
@@ -127,6 +130,7 @@
     },
     "MESSAGES_EDITION": "Uređivanje postavki poruka",
     "MESSAGES_PREFERENCES": "Postavke poruka",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Nedostaje obrada podataka o elevaciji prilikom stvaranja",
     "MONDAY": "Ponedjeljak",
     "NOTIFICATIONS": {
       "account_creation": "Netko se registrira",
@@ -141,6 +145,7 @@
     "NOTIFICATIONS_EDITION": "Uređivanje postavki obavijesti",
     "NOTIFICATION_PREFERENCES": "Postavke obavijesti",
     "NO_ARCHIVE_UPLOADS": "Nema prijenosa arhiva",
+    "NO_ELEVATION_SERVICE_AVAILABLE": "Nije dostupna usluga za podatke o elevaciji koji nedostaju",
     "NO_SANCTIONS": "Bez sankcija",
     "PICTURE": "Slika",
     "PICTURE_EDITION": "Uređivanje profilne slike",
@@ -171,7 +176,7 @@
     "SEGMENTS_CREATION_EVENT": {
       "LABEL": "Pauzirajte događaje koji pokreću stvaranje segmenta (samo .fit datoteke)",
       "all": "Svi pauzirani događaji",
-      "none": "NIšta",
+      "none": "Nema",
       "only_manual": "Samo ručno pauzirano"
     },
     "SPORT": {
@@ -183,6 +188,12 @@
       "DISABLED_BY_ADMIN": "onemogućio administrator",
       "IS_ACTIVE": "aktivno",
       "LABEL": "specifikacija",
+      "PACE_SPEED_DISPLAY": {
+        "LABEL": "Prikaz tempo/brzina",
+        "pace": "Tempo",
+        "pace_and_speed": "Tempo i brzina",
+        "speed": "Brzina"
+      },
       "STOPPED_SPEED_THRESHOLD": "prag kretanja"
     },
     "SPORTS_EDITION": "Uređivanje sportova",
@@ -225,7 +236,7 @@
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Filtrirano",
       "HELP": "Ako se filtrira, uklanja ekstremne vrijednosti (koje mogu biti GPS pogreške) prilikom izračuna maksimalne brzine.",
-      "LABEL": "GPX strategija maksimalne brzine",
+      "LABEL": "Strategija izračuna maksimalne brzine",
       "RAW_SPEED": "Originalno"
     },
     "WORKOUT_CHARTS_DISPLAY": {

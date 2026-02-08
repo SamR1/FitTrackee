@@ -2,6 +2,9 @@
   "Canoeing": {
     "LABEL": "Vožnja kanuom"
   },
+  "Canoeing (Whitewater)": {
+    "LABEL": "Vožnja kanuom (brzaci)"
+  },
   "Cycling (Sport)": {
     "LABEL": "Biciklizam (sport)"
   },
@@ -22,6 +25,9 @@
   },
   "Kayaking": {
     "LABEL": "Vožnja kajakom"
+  },
+  "Kayaking (Whitewater)": {
+    "LABEL": "Vožnja kajakom (brzaci)"
   },
   "Mountain Biking": {
     "LABEL": "Brdski biciklizam"

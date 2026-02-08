@@ -409,7 +409,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
         context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, false)
       )
   },
-  [WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_WITHOUT_GPX](
+  [WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_WITHOUT_FILE](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IWorkoutForm
   ): void {
