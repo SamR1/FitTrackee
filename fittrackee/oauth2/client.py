@@ -63,7 +63,7 @@ def create_oauth2_client(metadata: Dict, user: User) -> OAuth2Client:
         "scope": check_scope(metadata["scope"]),
         "grant_types": ["authorization_code", "refresh_token"],
         "response_types": ["code"],
-        "token_endpoint_auth_method": "client_secret_post",
+        "token_endpoint_auth_method": "client_secret_post",  # nosec
     }
     client_id = gen_salt(24)
     client_id_issued_at = int(time())

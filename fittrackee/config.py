@@ -74,7 +74,7 @@ class BaseConfig:
 
     UI_URL = os.environ["UI_URL"]
     OAUTH2_TOKEN_EXPIRES_IN = {
-        "authorization_code": 864000,  # 10 days
+        "authorization_code": 864000,  # 10 days  # nosec
         "refresh_token": 864000,  # 10 days
     }
     OAUTH2_REFRESH_TOKEN_GENERATOR = True
@@ -109,7 +109,7 @@ class TestingConfig(BaseConfig):
     UI_URL = "https://example.com"
     SENDER_EMAIL = "fittrackee@example.com"
     OAUTH2_TOKEN_EXPIRES_IN = {
-        "authorization_code": 60,
+        "authorization_code": 60,  # nosec
         "refresh_token": 60,
     }
 
