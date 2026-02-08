@@ -95,7 +95,11 @@ def get_chart_data_from_segment_points(
                 data["elevation"] = point["elevation"]
             if sport_data_visibility.display_pace and "pace" in point:
                 data["pace"] = point["pace"]
-            if sport_data_visibility.display_speed and "speed" in point:
+            if "speed" in point and (
+                sport_data_visibility.display_speed
+                # in case pace has not yet been recalculated
+                or (sport_data_visibility.display_pace and "pace" not in point)
+            ):
                 data["speed"] = point["speed"]
             if return_cadence and "cadence" in point:
                 data["cadence"] = (
