@@ -1,6 +1,6 @@
 import re
 from datetime import timedelta
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING, Dict, Optional
 
 import pytest
 
@@ -62,6 +62,7 @@ class TestWorkoutUpdateServiceInitForWorkoutWithoutFile(RandomMixin):
             "sport_id": sport_2_running.id,
             "workout_date": "2025-02-08 09:00",
             "ascent": 10,
+            "calories": 650,
             "descent": 35,
             "description": "just a description",
             "equipment_ids": [equipment_shoes_user_1.short_id],
@@ -364,6 +365,7 @@ class TestWorkoutUpdateServiceInitForWorkoutWithFile:
         workout_cycling_user_1.original_file = "some path"
         workout_data = {
             "analysis_visibility": VisibilityLevel.PUBLIC,
+            "calories": 1000,
             "distance": 10,
             "duration": 3600,
             "description": "just a description",
@@ -376,7 +378,8 @@ class TestWorkoutUpdateServiceInitForWorkoutWithFile:
         with pytest.raises(
             WorkoutException,
             match=re.escape(
-                "invalid keys ('distance', 'duration') for workout with file"
+                "invalid keys ('calories', 'distance', 'duration') "
+                "for workout with file"
             ),
         ):
             WorkoutUpdateService(user_1, workout_cycling_user_1, workout_data)
@@ -796,6 +799,44 @@ class TestWorkoutUpdateServiceUpdateForWorkoutWithoutFile(RandomMixin):
         assert float(workout_cycling_user_1.ave_speed) == 10.0  # type: ignore
         assert workout_cycling_user_1.ave_pace == timedelta(minutes=6)
         assert workout_cycling_user_1.best_pace == timedelta(minutes=6)
+
+    def test_it_updates_calories(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        service = WorkoutUpdateService(
+            user_1, workout_cycling_user_1, {"calories": 350}
+        )
+
+        service.update()
+        db.session.commit()
+
+        db.session.refresh(workout_cycling_user_1)
+        assert workout_cycling_user_1.calories == 350
+
+    @pytest.mark.parametrize("input_calories", [0, None])
+    def test_it_empties_calories(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+        workout_cycling_user_1: "Workout",
+        input_calories: Optional[int],
+    ) -> None:
+        workout_cycling_user_1.calories = 600
+        db.session.commit()
+        service = WorkoutUpdateService(
+            user_1, workout_cycling_user_1, {"calories": input_calories}
+        )
+
+        service.update()
+        db.session.commit()
+
+        db.session.refresh(workout_cycling_user_1)
+        assert workout_cycling_user_1.calories is None
 
 
 class TestWorkoutUpdateServiceUpdateForWorkoutWithFile(RandomMixin):

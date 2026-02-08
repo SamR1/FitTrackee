@@ -91,6 +91,7 @@ WORKOUT_VALUES_LIMIT = {
     "max_speed": 9999.99,
     "min_alt": 9999.99,
     "moving_time": PSQL_INTEGER_LIMIT,
+    "calories": PSQL_INTEGER_LIMIT,
 }
 
 RECORD_TYPES_COLUMNS_MATCHING = {

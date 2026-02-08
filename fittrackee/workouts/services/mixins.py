@@ -22,7 +22,7 @@ class CheckWorkoutMixin:
                 f"'duration' exceeds max value ({PSQL_INTEGER_LIMIT})"
             )
 
-        for key in ["ascent", "descent", "max_speed"]:
+        for key in ["ascent", "descent", "max_speed", "calories"]:
             workout_value = getattr(workout, key)
             max_value = WORKOUT_VALUES_LIMIT[key]
             if workout_value and workout_value > max_value:

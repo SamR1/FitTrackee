@@ -74,6 +74,7 @@ class TestWorkoutCreationServiceInit:
             "notes": "some notes",
             "title": "workout title",
             "workout_visibility": VisibilityLevel.PUBLIC,
+            "calories": 550,
         }
         service = WorkoutCreationService(user_1, workout_data)
 
@@ -159,6 +160,7 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         assert float(workout.ave_speed) == 18.0
         assert str(workout.best_pace) == "0:03:20"
         assert workout.bounds is None
+        assert workout.calories is None
         assert workout.creation_date is not None
         assert workout.descent is None
         assert workout.description is None
@@ -278,6 +280,7 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         assert float(workout.ave_speed) == 7.0
         assert str(workout.best_pace) == "0:08:34"
         assert workout.bounds is None
+        assert workout.calories is None
         assert workout.creation_date is not None
         assert workout.descent is None
         assert workout.description is None
@@ -858,3 +861,41 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         assert equipment_bike_user_1.total_distance == 0.0
         assert equipment_bike_user_1.total_duration == timedelta()
         assert equipment_bike_user_1.total_moving == timedelta()
+
+    def test_it_creates_workout_when_calories_are_provided(
+        self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
+    ) -> None:
+        workout_data = {
+            "distance": 15,
+            "duration": 3000,
+            "sport_id": sport_1_cycling.id,
+            "workout_date": "2025-02-08 09:00",
+            "calories": 653,
+        }
+        service = WorkoutCreationService(user_1, workout_data)
+
+        service.process()
+        db.session.commit()
+
+        workout = Workout.query.one()
+        assert workout.calories == 653
+
+    def test_it_raises_error_when_calories_value_is_invalid(
+        self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
+    ) -> None:
+        workout_data = {
+            "distance": 15,
+            "duration": 3000,
+            "sport_id": sport_1_cycling.id,
+            "workout_date": "2025-02-08 09:00",
+            "calories": PSQL_INTEGER_LIMIT + 1,
+        }
+        service = WorkoutCreationService(user_1, workout_data)
+
+        with pytest.raises(
+            WorkoutExceedingValueException,
+            match=(
+                "one or more values, entered or calculated, exceed the limits"
+            ),
+        ):
+            service.process()
