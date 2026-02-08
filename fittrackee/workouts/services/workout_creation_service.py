@@ -35,6 +35,7 @@ class WorkoutData:
     notes: Optional[str] = None
     title: Optional[str] = None
     workout_visibility: Optional[VisibilityLevel] = None
+    calories: Optional[int] = None
 
 
 class WorkoutCreationService(CheckWorkoutMixin, BaseWorkoutService):
@@ -118,6 +119,7 @@ class WorkoutCreationService(CheckWorkoutMixin, BaseWorkoutService):
         )
         new_workout.ascent = ascent
         new_workout.descent = descent
+        new_workout.calories = self.workout_data.calories
 
         self._check_workout(new_workout)
         new_workout.title = self._get_workout_title(workout_date)

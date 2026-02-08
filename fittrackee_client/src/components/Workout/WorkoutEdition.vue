@@ -234,6 +234,24 @@
                       />
                     </div>
                   </div>
+                  <div class="form-item">
+                    <label for="workout-calories">
+                      {{ $t('workouts.CALORIES') }} ({{
+                        t(`workouts.UNITS.kcal.UNIT`)
+                      }}):
+                    </label>
+                    <div class="workout-calories">
+                      <input
+                        id="workout-calories"
+                        name="workout-calories"
+                        type="number"
+                        min="0"
+                        @invalid="invalidateForm"
+                        :disabled="loading"
+                        v-model="workoutForm.workoutCalories"
+                      />
+                    </div>
+                  </div>
                 </div>
                 <div class="workout-data">
                   <div class="form-item">
@@ -491,6 +509,7 @@
     mapVisibility: authUser.value.map_visibility,
     analysisVisibility: authUser.value.analysis_visibility,
     workoutVisibility: authUser.value.workouts_visibility,
+    workoutCalories: '',
   })
   const withFile: Ref<boolean> = ref(
     workout.value.id && workout.value.with_file ? true : isCreation.value
@@ -629,6 +648,9 @@
                 ? convertDistance(workout.descent, 'm', 'ft', 2)
                 : parseFloat(workout.descent.toFixed(2))
             }`
+      workoutForm.workoutCalories = workout.calories
+        ? `${workout.calories}`
+        : ''
     }
   }
   function isDistanceInvalid() {
@@ -677,6 +699,11 @@
       payloadErrorMessages.value.push('workouts.INVALID_ASCENT_OR_DESCENT')
     }
     payload.workout_visibility = workoutForm.workoutVisibility
+    if (!withFile.value) {
+      payload.calories = workoutForm.workoutCalories
+        ? +workoutForm.workoutCalories
+        : null
+    }
   }
   function updateWorkout() {
     const payload: IWorkoutForm = {
@@ -847,6 +874,19 @@
 
               @media screen and (max-width: $medium-limit) {
                 flex-direction: column;
+              }
+            }
+
+            .workout-calories {
+              display: flex;
+              input {
+                width: 100px;
+              }
+              @media screen and (max-width: $medium-limit) {
+                width: initial;
+                input {
+                  width: 100%;
+                }
               }
             }
 

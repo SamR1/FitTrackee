@@ -968,6 +968,58 @@ class TestEditWorkoutWithoutFile(WorkoutApiTestCaseMixin):
         assert len(records) == 4
         assert "HA" not in [record["record_type"] for record in records]
 
+    def test_it_updates_calories(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        workout_short_id = workout_cycling_user_1.short_id
+        calories = 650
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/workouts/{workout_short_id}",
+            content_type="application/json",
+            json={"calories": calories},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["calories"] == calories
+
+    def test_it_empties_calories(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        workout_short_id = workout_cycling_user_1.short_id
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        workout_cycling_user_1.calories = 650
+
+        response = client.patch(
+            f"/api/workouts/{workout_short_id}",
+            content_type="application/json",
+            json={"calories": None},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["calories"] is None
+
     def test_it_returns_400_if_payload_is_empty(
         self,
         app: "Flask",

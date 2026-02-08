@@ -174,6 +174,8 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
     @staticmethod
     def check_gpx_info(gpx_info: "GpxInfo") -> None:
         for key, value in WORKOUT_VALUES_LIMIT.items():
+            if key == "calories":
+                continue
             gpx_info_value = getattr(gpx_info, key)
             if gpx_info_value and gpx_info_value > value:
                 raise WorkoutExceedingValueException(

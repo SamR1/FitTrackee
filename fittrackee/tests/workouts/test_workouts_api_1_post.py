@@ -1390,6 +1390,39 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin):
 
         self.assert_400(response, "only one equipment can be added")
 
+    @pytest.mark.parametrize("input_calories", [651, 0])
+    def test_it_adds_a_workout_with_calories(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        input_calories: int,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/workouts/no_gpx",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date="2018-05-15 14:05",
+                    distance=10,
+                    calories=input_calories,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert "created" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["calories"] == input_calories
+
     def test_expected_scope_is_workouts_write(
         self, app: "Flask", user_1: "User"
     ) -> None:
