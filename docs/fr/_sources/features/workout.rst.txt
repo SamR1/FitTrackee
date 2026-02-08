@@ -71,8 +71,9 @@ Data entry
 ==========
 
 .. versionchanged:: 0.7.10 add ascent and descent
+.. versionchanged:: 1.1.2 added total calories to workout without file, elevation related inputs disabled for workout for sports without elevation
 
-Users can create a workout without file by entering date, time, duration, distance, ascent and descent.
+Users can create a workout without file by entering date, time, duration, distance, ascent, descent and calories.
 
 .. figure:: ../_images/workout-creation-without-file.png
    :alt: Form for workout creation without a file
