@@ -1,5 +1,6 @@
 {
   "ANALYSIS_VISIBILITY": "Vidljivost analize",
+  "CALORIES_VISIBILITY": "Vidljivost kalorija",
   "COMMENT_LEVELS": {
     "followers_only": "Samo pratitelji",
     "private": "Privatno (samo spomenuti korisnici)",

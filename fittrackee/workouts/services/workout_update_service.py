@@ -32,6 +32,7 @@ if TYPE_CHECKING:
 class WorkoutUpdateData(TypedDict, total=False):
     analysis_visibility: VisibilityLevel
     ascent: float
+    calories: int
     descent: float
     description: str
     distance: float
@@ -48,6 +49,7 @@ class WorkoutUpdateData(TypedDict, total=False):
 WITH_FILE_KEYS = {"analysis_visibility", "map_visibility"}
 WITHOUT_FILE_KEYS = {
     "ascent",
+    "calories",
     "descent",
     "distance",
     "duration",
@@ -213,6 +215,9 @@ class WorkoutUpdateService(CheckWorkoutMixin):
             self.workout.best_pace = convert_speed_into_pace_duration(
                 float(self.workout.max_speed)
             )
+
+        if "calories" in self.workout_data:
+            self.workout.calories = self.workout_data["calories"] or None
 
         self._check_workout(self.workout)
 

@@ -871,7 +871,7 @@ class TestPostWorkoutWithFit(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["map"] is not None
 
 
-class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
+class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: "Flask", sport_1_cycling: "Sport", gpx_file: str
     ) -> None:
@@ -893,7 +893,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
 
         self.assert_401(response)
 
-    def test_it_adds_a_workout_without_gpx(
+    def test_it_adds_a_workout_without_file(
         self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -972,7 +972,7 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
             ),
         )
 
-    def test_it_adds_a_workout_without_gpx_and_title(
+    def test_it_adds_a_workout_without_file_and_title(
         self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1390,6 +1390,39 @@ class TestPostWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
 
         self.assert_400(response, "only one equipment can be added")
 
+    @pytest.mark.parametrize("input_calories", [651, 0])
+    def test_it_adds_a_workout_with_calories(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        input_calories: int,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/workouts/no_gpx",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date="2018-05-15 14:05",
+                    distance=10,
+                    calories=input_calories,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert "created" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["calories"] == input_calories
+
     def test_expected_scope_is_workouts_write(
         self, app: "Flask", user_1: "User"
     ) -> None:
@@ -1803,7 +1836,7 @@ class TestPostWorkoutWithZipArchive(UserTaskMixin, WorkoutApiTestCaseMixin):
         assert Workout.query.count() == 3
 
 
-class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
+class TestPostAndGetWorkoutWithFile(WorkoutApiTestCaseMixin):
     def workout_assertion(
         self, app: "Flask", user_1: "User", gpx_file: str, with_segments: bool
     ) -> None:
@@ -2096,7 +2129,7 @@ class TestPostAndGetWorkoutWithGpx(WorkoutApiTestCaseMixin):
         assert "data" not in data
 
 
-class TestPostAndGetWorkoutWithoutGpx(WorkoutApiTestCaseMixin):
+class TestPostAndGetWorkoutWithoutFile(WorkoutApiTestCaseMixin):
     def test_it_add_and_gets_a_workout_wo_gpx(
         self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:

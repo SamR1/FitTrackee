@@ -1,5 +1,46 @@
 # Change log
 
+## Version 1.1.2 (2026/02/08)
+
+### Features and enhancements
+
+* [#1053](https://github.com/SamR1/FitTrackee/issues/1053) - Add calories to workouts without a file
+
+### Bugs Fixed
+
+* [PR#1055](https://github.com/SamR1/FitTrackee/pull/1055) - Display speed in chart for sports with pace, when no pace data is available yet
+* [70a9095](https://github.com/SamR1/FitTrackee/commit/70a909587869ff0bbc0b467bf4bba1832c8f9575) - disable ascent/descent inputs for sports without elevation
+
+### Translations
+
+* [PR#1051](https://github.com/SamR1/FitTrackee/pull/1051) - Translations update from Hosted Weblate (Croatian and Galician)
+
+Translation status for languages available on the interface:
+- Basque: 96%
+- Bulgarian: 52%
+- Catalan: 25%
+- Chinese (Simplified): 94%
+- Croatian: 100%
+- Czech: 46%
+- Dutch: 95%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 90%
+- Italian: 96%
+- Kabyle: 5%
+- Norwegian Bokmål: 43%
+- Polish: 94%
+- Portuguese: 51%
+- Russian: 96%
+- Spanish: 68%
+- Turkish: 1%
+
+Thanks to the contributors:
+- @iggydev
+- @xmgz
+
+
 ## Version 1.1.1 (2026/02/01)
 
 The CLI now allows to refresh workouts without file in order to calculate pace values for sessions created prior to version 1.1.0, see [documentation](https://docs.fittrackee.org/en/cli.html#ftcli-workouts-refresh).
