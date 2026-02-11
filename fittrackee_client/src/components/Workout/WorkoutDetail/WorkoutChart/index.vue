@@ -89,9 +89,14 @@
               :aria-label="$t('workouts.WORKOUT_CHART')"
             />
           </div>
-          <div class="chart-info" v-if="data.id === 'pace' && splitCharts">
-            <div class="data-info">
-              {{ $t('workouts.EXTREME_VALUES_FOR_PACE_ARE_NOT_DISPLAYED') }}
+          <div class="chart-button-info">
+            <button class="transparent zoom-btn" @click="resetZoom(data.id)">
+              {{ $t('workouts.RESET_ZOOM') }}
+            </button>
+            <div class="chart-info" v-if="data.id === 'pace' && splitCharts">
+              <div class="data-info">
+                {{ $t('workouts.EXTREME_VALUES_FOR_PACE_ARE_NOT_DISPLAYED') }}
+              </div>
             </div>
           </div>
         </div>
@@ -412,7 +417,7 @@
                 ? formatDuration(+value, {
                     notPadded: true,
                   })
-                : value
+                : Math.round(+value)
             },
             ...textColors.value,
           },
@@ -493,6 +498,21 @@
         htmlLegend: {
           containerID: `chart-legend-${id}`,
           displayElevation: hasElevation.value,
+        },
+        zoom: {
+          zoom: {
+            mode: 'y',
+            drag: {
+              enabled: true,
+              backgroundColor: 'rgba(225,225,225,0.4)',
+            },
+            pinch: {
+              enabled: true,
+            },
+            wheel: {
+              enabled: false,
+            },
+          },
         },
       },
     }
@@ -642,6 +662,18 @@
       }
     })
   }
+  function resetZoom(chartId: string) {
+    displayedCharts.value.forEach((element: HTMLElement) => {
+      if (
+        element &&
+        'chart' in element &&
+        (element.chart as Chart).canvas.id.includes(chartId)
+      ) {
+        ;(element.chart as Chart).resetZoom()
+        return true
+      }
+    })
+  }
 
   watch(
     () => chartLoading.value,
@@ -775,6 +807,17 @@
         .split-charts {
           label {
             font-weight: bold;
+          }
+        }
+        .chart-button-info {
+          display: flex;
+          gap: $default-padding;
+          align-items: center;
+
+          .zoom-btn {
+            font-size: 0.8em;
+            padding: $default-padding * 0.5 $default-padding;
+            box-shadow: 1px 1px 3px var(--app-shadow-color);
           }
         }
       }
