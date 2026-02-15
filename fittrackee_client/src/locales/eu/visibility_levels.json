@@ -1,5 +1,6 @@
 {
   "ANALYSIS_VISIBILITY": "Analisien ikusgaitasuna",
+  "CALORIES_VISIBILITY": "Kaloriak erakutsi",
   "COMMENT_LEVELS": {
     "followers_only": "Jarraitzaileek bakarrik",
     "private": "Pribatu (izendatutako erabiltzaileek bakarrik)",
