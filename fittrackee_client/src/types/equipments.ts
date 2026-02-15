@@ -58,3 +58,8 @@ export interface IEquipmentError {
   equipmentLabel: string | null
   status: string
 }
+
+export interface IEquipmentMultiselectItemsGroup {
+  type: IEquipmentType
+  items: IEquipment[]
+}

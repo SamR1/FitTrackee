@@ -57,7 +57,7 @@
               v-model="sportPayload.pace_speed_display"
             >
               <option
-                v-for="item in paceSpeedDisplatValues"
+                v-for="item in paceSpeedDisplayValues"
                 :value="item"
                 :key="item"
               >
@@ -83,21 +83,13 @@
           <label for="sport-default-equipment">
             {{ $t('user.PROFILE.SPORT.DEFAULT_EQUIPMENTS', 1) }}
           </label>
-          <select
-            id="sport-default-equipment"
-            @invalid="invalidateForm"
+          <EquipmentMultiSelect
+            :equipment-list="equipmentsForSelect"
             :disabled="authUserLoading"
-            v-model="defaultEquipmentId"
-          >
-            <option value="">{{ $t('equipments.NO_EQUIPMENTS') }}</option>
-            <option
-              v-for="equipment in equipmentsForSelect"
-              :value="equipment.id"
-              :key="equipment.id"
-            >
-              {{ equipment.label }}
-            </option>
-          </select>
+            :name="'sport-default-equipment'"
+            :existing-equipment-list="defaultEquipmentList"
+            @updatedValues="updateSelectedEquipmentPieces"
+          />
         </div>
       </div>
       <ErrorMessage
@@ -127,11 +119,15 @@
   import { useI18n } from 'vue-i18n'
   import { useRoute } from 'vue-router'
 
+  import EquipmentMultiSelect from '@/components/User/UserEquipments/EquipmentMultiSelect.vue'
   import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser'
   import useSports from '@/composables/useSports'
   import { EQUIPMENTS_STORE } from '@/store/constants'
-  import type { IEquipment } from '@/types/equipments'
+  import type {
+    IEquipment,
+    IEquipmentMultiselectItemsGroup,
+  } from '@/types/equipments'
   import type {
     ISport,
     ITranslatedSport,
@@ -157,7 +153,7 @@
   const { errorMessages } = useApp()
   const {
     defaultColor,
-    defaultEquipmentId,
+    defaultEquipmentList,
     sportColors,
     sportPayload,
     updateIsActive,
@@ -165,7 +161,7 @@
   } = useSports()
   const { authUserLoading } = useAuthUser()
 
-  const paceSpeedDisplatValues: TPaceSpeedDisplay[] = [
+  const paceSpeedDisplayValues: TPaceSpeedDisplay[] = [
     'pace',
     'speed',
     'pace_and_speed',
@@ -179,17 +175,18 @@
   const equipments: ComputedRef<IEquipment[]> = computed(
     () => store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
   )
-  const equipmentsForSelect: ComputedRef<IEquipment[]> = computed(() =>
-    equipments.value && sport.value
-      ? getEquipments(
-          equipments.value,
-          t,
-          'withIncludedIds',
-          sport.value,
-          sport.value.default_equipments.map((e) => e.id)
-        )
-      : []
-  )
+  const equipmentsForSelect: ComputedRef<IEquipmentMultiselectItemsGroup[]> =
+    computed(() =>
+      equipments.value && sport.value
+        ? getEquipments(
+            equipments.value,
+            t,
+            'withIncludedIds',
+            sport.value,
+            sport.value.default_equipments.map((e) => e.id)
+          )
+        : []
+    )
 
   function getSport(sportsList: ITranslatedSport[]) {
     if (!route.params.id) {
@@ -203,7 +200,7 @@
     }
     return filteredSportList[0]
   }
-  function formatSportForm(sport: ISport | null, withEquipments = false) {
+  function formatSportForm(sport: ISport | null) {
     if (sport !== null) {
       sportPayload.sport_id = sport.id
       sportPayload.color = sport.color
@@ -219,18 +216,13 @@
       }`
       sportPayload.pace_speed_display = sport.pace_speed_display
       sportPayload.fromSport = true
-      if (withEquipments) {
-        defaultEquipmentId.value =
-          sport.default_equipments.length > 0
-            ? sport.default_equipments[0].id
-            : ''
-      }
+      defaultEquipmentList.value = sport.default_equipments
     }
   }
+  function updateSelectedEquipmentPieces(selectedIds: string[]) {
+    sportPayload.default_equipment_ids = selectedIds
+  }
   function updateSportPreferences() {
-    sportPayload.default_equipment_ids = defaultEquipmentId.value
-      ? [defaultEquipmentId.value]
-      : []
     updateSport(authUser.value)
   }
   function invalidateForm() {
@@ -241,7 +233,7 @@
     () => sport.value,
     (sport) => {
       if (route.params.id && sport?.id) {
-        formatSportForm(sport, true)
+        formatSportForm(sport)
       }
     }
   )
@@ -253,7 +245,7 @@
       return
     }
     if (route.params.id && sport.value?.id) {
-      formatSportForm(sport.value, true)
+      formatSportForm(sport.value)
     }
   })
 </script>
