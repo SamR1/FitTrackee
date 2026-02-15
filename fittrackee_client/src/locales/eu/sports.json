@@ -2,6 +2,9 @@
   "Canoeing": {
     "LABEL": "Kanoa"
   },
+  "Canoeing (Whitewater)": {
+    "LABEL": "Kanoa (ur-zuriak)"
+  },
   "Cycling (Sport)": {
     "LABEL": "Txirrindularitza (Kirola)"
   },
@@ -22,6 +25,9 @@
   },
   "Kayaking": {
     "LABEL": "Kayak"
+  },
+  "Kayaking (Whitewater)": {
+    "LABEL": "Kayak (ur-zuriak)"
   },
   "Mountain Biking": {
     "LABEL": "Mendiko bizikleta"
