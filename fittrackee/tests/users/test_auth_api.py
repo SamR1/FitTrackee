@@ -6,7 +6,6 @@ from unittest.mock import ANY, MagicMock, Mock, call, patch
 
 import pytest
 from flask import Flask
-from sqlalchemy.dialects.postgresql import insert
 from time_machine import travel
 
 from fittrackee import db
@@ -18,7 +17,6 @@ from fittrackee.users.models import (
     Notification,
     User,
     UserSportPreference,
-    UserSportPreferenceEquipment,
     UserTask,
 )
 from fittrackee.users.roles import UserRole
@@ -28,7 +26,12 @@ from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..comments.mixins import CommentMixin
-from ..mixins import ApiTestCaseMixin, ReportMixin, UserTaskMixin
+from ..mixins import (
+    ApiTestCaseMixin,
+    EquipmentMixin,
+    ReportMixin,
+    UserTaskMixin,
+)
 from ..utils import jsonify_dict
 
 USER_AGENT = (
@@ -1724,7 +1727,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         )
 
 
-class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
+class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
     def test_it_returns_error_if_payload_is_empty(
         self, app: Flask, user_1: User
     ) -> None:
@@ -1952,21 +1955,9 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         equipment_shoes_user_1: Equipment,
         user_1_sport_1_preference: UserSportPreference,
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    },
-                    {
-                        "equipment_id": equipment_shoes_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    },
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_shoes_user_1, equipment_bike_user_1],
+            user_1_sport_1_preference,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2007,16 +1998,8 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin):
         equipment_shoes_user_1: Equipment,
         user_1_sport_1_preference: UserSportPreference,
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         stopped_speed_threshold = 10
         client, auth_token = self.get_test_client_and_auth_token(

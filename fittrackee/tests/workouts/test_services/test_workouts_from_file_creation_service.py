@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING, Dict, List, Optional
 from unittest.mock import MagicMock, patch
 
 import pytest
-from sqlalchemy.dialects.postgresql import insert
 from werkzeug.datastructures import FileStorage
 
 from fittrackee import db
@@ -17,8 +16,8 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentsException,
 )
 from fittrackee.files import get_absolute_file_path
-from fittrackee.tests.mixins import RandomMixin
-from fittrackee.users.models import UserSportPreferenceEquipment, UserTask
+from fittrackee.tests.mixins import EquipmentMixin, RandomMixin
+from fittrackee.users.models import UserTask
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import (
     WorkoutException,
@@ -172,7 +171,9 @@ class TestWorkoutsFromFileCreationServiceInstantiation:
         assert service.stopped_speed_threshold == 12
 
 
-class TestWorkoutsFromFileCreationServiceGetEquipments(RandomMixin):
+class TestWorkoutsFromFileCreationServiceGetEquipments(
+    RandomMixin, EquipmentMixin
+):
     def test_equipments_is_none_when_no_equipment_ids_and_no_default_equipments(  # noqa
         self,
         app: "Flask",
@@ -245,16 +246,8 @@ class TestWorkoutsFromFileCreationServiceGetEquipments(RandomMixin):
         equipment_bike_user_1: "Equipment",
         user_1_sport_1_preference: "UserSportPreference",
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         db.session.commit()
         service = WorkoutsFromFileCreationService(
@@ -2036,7 +2029,7 @@ class TestWorkoutsFromFileCreationServiceProcessZipArchive(
 
 
 class TestWorkoutsFromFileCreationServiceProcessForOneFile(
-    WorkoutsFromFileCreationServiceTestCase
+    WorkoutsFromFileCreationServiceTestCase, EquipmentMixin
 ):
     def test_it_raises_when_no_file_is_provided(
         self,
@@ -2129,16 +2122,8 @@ class TestWorkoutsFromFileCreationServiceProcessForOneFile(
         equipment_bike_user_1: "Equipment",
         user_1_sport_1_preference: "UserSportPreference",
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         db.session.commit()
         gpx_file_storage = FileStorage(
@@ -2169,16 +2154,8 @@ class TestWorkoutsFromFileCreationServiceProcessForOneFile(
         equipment_bike_user_1: "Equipment",
         user_1_sport_1_preference: "UserSportPreference",
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         db.session.commit()
         gpx_file_storage = FileStorage(
@@ -2339,7 +2316,7 @@ class TestWorkoutsFromFileCreationServiceProcessForOneFile(
 
 
 class TestWorkoutsFromFileCreationServiceProcessForSyncArchiveUpload(
-    WorkoutsFromFileCreationServiceTestCase
+    WorkoutsFromFileCreationServiceTestCase, EquipmentMixin
 ):
     def test_it_returns_created_workouts_and_processing_data(
         self,
@@ -2385,16 +2362,8 @@ class TestWorkoutsFromFileCreationServiceProcessForSyncArchiveUpload(
         equipment_bike_user_1: "Equipment",
         user_1_sport_1_preference: "UserSportPreference",
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         db.session.commit()
         service = self.get_service(

@@ -15,6 +15,7 @@ from flask.testing import FlaskClient
 from geoalchemy2.shape import to_shape
 from shapely import to_geojson
 from shapely.geometry.multilinestring import MultiLineString
+from sqlalchemy.dialects.postgresql import insert
 from urllib3.util import parse_url
 from werkzeug.test import TestResponse
 
@@ -25,7 +26,11 @@ from fittrackee.oauth2.client import create_oauth2_client
 from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
 from fittrackee.oauth2.server import CustomResourceProtector
 from fittrackee.reports.models import Report, ReportAction, ReportActionAppeal
-from fittrackee.users.models import User, UserTask
+from fittrackee.users.models import (
+    User,
+    UserSportPreferenceEquipment,
+    UserTask,
+)
 from fittrackee.utils import encode_uuid
 from fittrackee.workouts.models import Workout
 
@@ -43,6 +48,9 @@ from .utils import (
 
 if TYPE_CHECKING:
     from geoalchemy2.elements import WKBElement
+
+    from fittrackee.equipments.models import Equipment
+    from fittrackee.users.models import UserSportPreference
 
 
 class RandomMixin:
@@ -635,6 +643,30 @@ class WorkoutMixin:
         workout.ave_pace = timedelta(seconds=ave_pace_seconds)
         workout.best_pace = timedelta(seconds=max_pace_seconds)
         return workout
+
+
+class EquipmentMixin:
+    @staticmethod
+    def add_user_sport_preference_equipement(
+        equipement_list: List["Equipment"],
+        user_sport_preference: "UserSportPreference",
+    ) -> None:
+        user_sport_preference_equipement = []
+        for equipement in equipement_list:
+            user_sport_preference_equipement.append(
+                {
+                    "equipment_id": equipement.id,
+                    "equipment_type_id": equipement.equipment_type_id,
+                    "sport_id": user_sport_preference.sport_id,
+                    "user_id": user_sport_preference.user_id,
+                }
+            )
+        if user_sport_preference_equipement:
+            db.session.execute(
+                insert(UserSportPreferenceEquipment).values(
+                    user_sport_preference_equipement
+                )
+            )
 
 
 class GeometryMixin:

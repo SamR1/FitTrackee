@@ -1330,6 +1330,7 @@ def edit_user_sport_preferences(
                         [
                             {
                                 "equipment_id": equipment.id,
+                                "equipment_type_id": equipment.equipment_type_id,
                                 "sport_id": user_sport.sport_id,
                                 "user_id": auth_user.id,
                             }

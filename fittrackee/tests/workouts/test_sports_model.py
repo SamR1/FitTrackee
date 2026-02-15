@@ -1,20 +1,16 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy.dialects.postgresql import insert
-
 from fittrackee import db
 from fittrackee.constants import PaceSpeedDisplay
-from fittrackee.users.models import (
-    User,
-    UserSportPreference,
-    UserSportPreferenceEquipment,
-)
 from fittrackee.workouts.models import Sport, Workout
+
+from ..mixins import EquipmentMixin
 
 if TYPE_CHECKING:
     from flask import Flask
 
     from fittrackee.equipments.models import Equipment
+    from fittrackee.users.models import User, UserSportPreference
 
 
 class TestSportModel:
@@ -107,7 +103,7 @@ class TestSportModel:
         }
 
 
-class TestSportModelWithPreferences:
+class TestSportModelWithPreferences(EquipmentMixin):
     def test_sport_model_with_color_preference(
         self,
         app: "Flask",
@@ -211,21 +207,9 @@ class TestSportModelWithPreferences:
         equipment_bike_user_1: "Equipment",
         equipment_shoes_user_1: "Equipment",
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    },
-                    {
-                        "equipment_id": equipment_shoes_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    },
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1, equipment_shoes_user_1],
+            user_1_sport_1_preference,
         )
 
         serialized_sport = sport_1_cycling.serialize(

@@ -2,14 +2,12 @@ from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING, Dict
 
 import pytest
-from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
 from fittrackee.constants import ElevationDataSource
 from fittrackee.database import PSQL_INTEGER_LIMIT
 from fittrackee.equipments.exceptions import InvalidEquipmentsException
-from fittrackee.tests.mixins import RandomMixin
-from fittrackee.users.models import UserSportPreferenceEquipment
+from fittrackee.tests.mixins import EquipmentMixin, RandomMixin
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import (
     WorkoutExceedingValueException,
@@ -131,7 +129,7 @@ class TestWorkoutCreationServiceGetWorkoutDate(RandomMixin):
 
 
 @pytest.mark.disable_autouse_update_records_patch
-class TestWorkoutCreationServiceProcess(RandomMixin):
+class TestWorkoutCreationServiceProcess(RandomMixin, EquipmentMixin):
     def test_it_creates_workout_with_minimal_data(
         self,
         app: "Flask",
@@ -735,16 +733,8 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         equipment_bike_user_1: "Equipment",
         user_1_sport_1_preference: "UserSportPreference",
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         db.session.commit()
         workout_data = {
@@ -769,16 +759,8 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         equipment_bike_user_1: "Equipment",
         user_1_sport_1_preference: "UserSportPreference",
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         db.session.commit()
         workout_data = {
@@ -831,16 +813,8 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         equipment_bike_user_1: "Equipment",
         user_1_sport_1_preference: "UserSportPreference",
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         equipment_bike_user_1.is_active = False
         db.session.commit()

@@ -3,7 +3,6 @@ from typing import Dict
 
 import pytest
 from flask import Flask
-from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
 from fittrackee.equipments.exceptions import EquipmentForbiddenException
@@ -12,13 +11,14 @@ from fittrackee.users.models import (
     FollowRequest,
     User,
     UserSportPreference,
-    UserSportPreferenceEquipment,
 )
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
+from ..mixins import EquipmentMixin
 
-class TestEquipmentModelForOwner:
+
+class TestEquipmentModelForOwner(EquipmentMixin):
     @staticmethod
     def assert_equipment_model(equip: Equipment) -> Dict:
         assert 1 == equip.id
@@ -158,16 +158,8 @@ class TestEquipmentModelForOwner:
         user_1_sport_1_preference: UserSportPreference,
         equipment_bike_user_1: Equipment,
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         db.session.add(equipment_bike_user_1)
         db.session.commit()

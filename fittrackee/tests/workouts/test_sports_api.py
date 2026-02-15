@@ -2,22 +2,20 @@ import json
 
 import pytest
 from flask import Flask
-from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import (
     User,
     UserSportPreference,
-    UserSportPreferenceEquipment,
 )
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin, EquipmentMixin
 from ..utils import jsonify_dict
 
 
-class TestGetSports(ApiTestCaseMixin):
+class TestGetSports(ApiTestCaseMixin, EquipmentMixin):
     def test_test_it_gets_all_sports_when_not_authenticated(
         self,
         app: Flask,
@@ -166,16 +164,8 @@ class TestGetSports(ApiTestCaseMixin):
         user_1_sport_1_preference: UserSportPreference,
         equipment_bike_user_1: Equipment,
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         db.session.commit()
 

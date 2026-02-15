@@ -1024,6 +1024,12 @@ UserSportPreferenceEquipment = db.Table(
         db.ForeignKey("equipments.id", ondelete="CASCADE"),
         primary_key=True,
     ),
+    db.Column(
+        "equipment_type_id",
+        db.Integer,
+        db.ForeignKey("equipment_types.id", ondelete="CASCADE"),
+        nullable=False,
+    ),
 )
 
 

@@ -436,6 +436,9 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                     [
                         {
                             "equipment_id": new_equipment.id,
+                            "equipment_type_id": (
+                                new_equipment.equipment_type_id
+                            ),
                             "sport_id": sport.sport_id,
                             "user_id": auth_user.id,
                         }
@@ -737,6 +740,9 @@ def update_equipment(
                         [
                             {
                                 "equipment_id": equipment.id,
+                                "equipment_type_id": (
+                                    equipment.equipment_type_id
+                                ),
                                 "sport_id": sport.sport_id,
                                 "user_id": auth_user.id,
                             }
