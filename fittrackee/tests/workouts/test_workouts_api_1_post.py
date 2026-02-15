@@ -1254,7 +1254,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin):
         assert len(data["data"]["workouts"]) == 1
         assert data["data"]["workouts"][0]["description"] == description
 
-    def test_it_adds_a_workout_with_equipments(
+    def test_it_adds_a_workout_with_one_piece_of_equipment(
         self,
         app: "Flask",
         user_1: "User",
@@ -1297,8 +1297,8 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin):
         self,
         app: "Flask",
         user_1: "User",
-        sport_1_cycling: "Sport",
-        equipment_shoes_user_1: "Equipment",
+        sport_2_running: "Sport",
+        equipment_bike_user_1: "Equipment",
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1307,12 +1307,12 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin):
         response = client.post(
             "/api/workouts/no_gpx",
             json={
-                "sport_id": sport_1_cycling.id,
+                "sport_id": sport_2_running.id,
                 "duration": 3600,
                 "workout_date": "2018-05-15 14:05",
                 "distance": 10,
                 "equipment_ids": [
-                    equipment_shoes_user_1.short_id,
+                    equipment_bike_user_1.short_id,
                 ],
             },
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1320,10 +1320,10 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin):
 
         assert response.status_code == 400
         data = json.loads(response.data.decode())
-        assert data["equipment_id"] == equipment_shoes_user_1.short_id
+        assert data["equipment_id"] == equipment_bike_user_1.short_id
         assert data["message"] == (
-            f"invalid equipment id {equipment_shoes_user_1.short_id} "
-            f"for sport {sport_1_cycling.label}"
+            f"invalid equipment id {equipment_bike_user_1.short_id} "
+            f"for sport {sport_2_running.label}"
         )
         assert data["status"] == "invalid"
 
@@ -1360,7 +1360,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin):
         )
         assert data["status"] == "inactive"
 
-    def test_it_returns_400_when_multiple_equipments_are_provided(
+    def test_it_returns_400_when_multiple_pirce_of_equipment_with_same_type_are_provided(  # noqa
         self,
         app: "Flask",
         user_1: "User",

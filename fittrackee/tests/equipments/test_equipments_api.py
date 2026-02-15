@@ -760,7 +760,7 @@ class TestPostEquipment(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        equipment_type_1_shoe: EquipmentType,
+        equipment_type_2_bike: EquipmentType,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -770,7 +770,7 @@ class TestPostEquipment(ApiTestCaseMixin):
             "/api/equipments",
             json={
                 "description": self.random_short_id(),
-                "equipment_type_id": equipment_type_1_shoe.id,
+                "equipment_type_id": equipment_type_2_bike.id,
                 "label": self.random_string(),
                 "default_for_sport_ids": [
                     sport_1_cycling.id,
@@ -782,8 +782,8 @@ class TestPostEquipment(ApiTestCaseMixin):
 
         self.assert_400(
             response,
-            f"invalid sport '{sport_1_cycling.label}' for "
-            f"equipment type '{equipment_type_1_shoe.label}'",
+            f"invalid sport '{sport_2_running.label}' for "
+            f"equipment type '{equipment_type_2_bike.label}'",
         )
 
     def test_it_returns_400_when_visibility_is_invalid(
@@ -1072,8 +1072,8 @@ class TestPatchEquipment(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        equipment_type_1_shoe: EquipmentType,
         equipment_type_2_bike: EquipmentType,
+        equipment_type_3_kayak: EquipmentType,
         user_1_sport_1_preference: UserSportPreference,
         equipment_bike_user_1: Equipment,
         equipment_shoes_user_1: Equipment,
@@ -1102,7 +1102,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
 
         response = client.patch(
             f"/api/equipments/{equipment_bike_user_1.short_id}",
-            json={"equipment_type_id": equipment_type_1_shoe.id},
+            json={"equipment_type_id": equipment_type_3_kayak.id},
             headers={"Authorization": f"Bearer {auth_token}"},
         )
 
@@ -1111,7 +1111,9 @@ class TestPatchEquipment(ApiTestCaseMixin):
         assert "success" in data["status"]
         assert len(data["data"]["equipments"]) == 1
         equipment = data["data"]["equipments"][0]
-        assert equipment["equipment_type"] == equipment_type_1_shoe.serialize()
+        assert (
+            equipment["equipment_type"] == equipment_type_3_kayak.serialize()
+        )
         assert equipment["default_for_sport_ids"] == []
         assert equipment_bike_user_1.total_distance == 0.0
         assert equipment_bike_user_1.total_duration == timedelta()
