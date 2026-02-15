@@ -90,7 +90,11 @@
             />
           </div>
           <div class="chart-button-info">
-            <button class="transparent zoom-btn" @click="resetZoom(data.id)">
+            <button
+              v-if="zoomedCharts.includes(`line-chart-${data.id}`)"
+              class="transparent zoom-btn"
+              @click="resetZoom(`line-chart-${data.id}`)"
+            >
               {{ $t('workouts.RESET_ZOOM') }}
             </button>
             <div class="chart-info" v-if="data.id === 'pace' && splitCharts">
@@ -202,6 +206,7 @@
   const paceDisplayed = ref(false)
   const onlyPaceDisplayed = ref(false)
   const displaySpeed = ref(false)
+  const zoomedCharts: Ref<string[]> = ref([])
 
   const currentDataPoint: Reactive<IHoverPoint> = reactive({
     dataIndex: 0,
@@ -417,7 +422,7 @@
                 ? formatDuration(+value, {
                     notPadded: true,
                   })
-                : Math.round(+value)
+                : Math.round(+value * 100) / 100
             },
             ...textColors.value,
           },
@@ -507,10 +512,16 @@
               backgroundColor: 'rgba(225,225,225,0.4)',
             },
             pinch: {
-              enabled: true,
+              enabled: false,
             },
             wheel: {
               enabled: false,
+            },
+            onZoom: ({ chart }) => {
+              const chartId = chart.canvas.id
+              if (!zoomedCharts.value.includes(chartId)) {
+                zoomedCharts.value.push(chartId)
+              }
             },
           },
         },
@@ -667,9 +678,12 @@
       if (
         element &&
         'chart' in element &&
-        (element.chart as Chart).canvas.id.includes(chartId)
+        (element.chart as Chart).canvas.id === chartId
       ) {
         ;(element.chart as Chart).resetZoom()
+        zoomedCharts.value = zoomedCharts.value.filter(
+          (zoomedChart) => zoomedChart !== chartId
+        )
         return true
       }
     })
@@ -813,6 +827,7 @@
           display: flex;
           gap: $default-padding;
           align-items: center;
+          min-height: 30px;
 
           .zoom-btn {
             font-size: 0.8em;
@@ -849,16 +864,21 @@
       }
 
       @media screen and (max-width: $x-small-limit) {
-        .chart-display {
-          .chart-options {
-            flex-direction: column;
-            gap: 0 !important;
-            margin-bottom: $default-margin;
-            .split-charts,
-            .display-speed {
-              margin: 0;
-              padding: 0;
+        .card-content {
+          .chart-display {
+            .chart-options {
+              flex-direction: column;
+              gap: 0 !important;
+              margin-bottom: $default-margin;
+              .split-charts,
+              .display-speed {
+                margin: 0;
+                padding: 0;
+              }
             }
+          }
+          .chart-button-info {
+            min-height: initial;
           }
         }
       }
