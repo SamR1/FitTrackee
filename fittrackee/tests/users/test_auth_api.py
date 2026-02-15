@@ -2068,8 +2068,8 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
         self,
         app: Flask,
         user_1: User,
-        sport_1_cycling: Sport,
-        equipment_shoes_user_1: Equipment,
+        sport_2_running: Sport,
+        equipment_bike_user_1: Equipment,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -2080,8 +2080,8 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
             content_type="application/json",
             data=json.dumps(
                 dict(
-                    sport_id=sport_1_cycling.id,
-                    default_equipment_ids=[equipment_shoes_user_1.short_id],
+                    sport_id=sport_2_running.id,
+                    default_equipment_ids=[equipment_bike_user_1.short_id],
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -2089,14 +2089,14 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
 
         assert response.status_code == 400
         data = json.loads(response.data.decode())
-        assert data["equipment_id"] == equipment_shoes_user_1.short_id
+        assert data["equipment_id"] == equipment_bike_user_1.short_id
         assert data["message"] == (
-            f"invalid equipment id {equipment_shoes_user_1.short_id} "
-            f"for sport {sport_1_cycling.label}"
+            f"invalid equipment id {equipment_bike_user_1.short_id} "
+            f"for sport {sport_2_running.label}"
         )
         assert data["status"] == "invalid"
 
-    def test_it_returns_400_when_multiple_equipments_are_provided(
+    def test_it_returns_400_when_multiple_pieces_of_equipment_with_same_type_are_provided(  # noqa
         self,
         app: Flask,
         user_1: User,
@@ -2123,7 +2123,49 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_400(response, "only one equipment can be added")
+        self.assert_400(
+            response, "only one piece of equipment per type can be provided"
+        )
+
+    def test_it_creates_preference_with_multiple_pieces_of_equipment(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        equipment_shoes_user_1: Equipment,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            "/api/auth/profile/edit/sports",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    sport_id=sport_1_cycling.id,
+                    default_equipment_ids=[
+                        equipment_shoes_user_1.short_id,
+                        equipment_bike_user_1.short_id,
+                    ],
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        preference = UserSportPreference.query.filter_by(
+            sport_id=sport_1_cycling.id, user_id=user_1.id
+        ).one()
+        assert set(preference.default_equipments) == {
+            equipment_shoes_user_1,
+            equipment_bike_user_1,
+        }
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["message"] == "user sport preferences updated"
+        assert len(data["data"]["default_equipments"]) == 2
 
     def test_it_disables_sport_for_auth_user(
         self, app: Flask, user_1: User, sport_1_cycling: Sport

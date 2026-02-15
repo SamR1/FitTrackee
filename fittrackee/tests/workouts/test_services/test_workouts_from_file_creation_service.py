@@ -385,6 +385,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         gpx_file_storage: "FileStorage",  # gpx file
         sport_1_cycling: "Sport",
         equipment_bike_user_1: "Equipment",
+        equipment_shoes_user_1: "Equipment",
     ) -> None:
         workouts_data = {
             "analysis_visibility": VisibilityLevel.PUBLIC,
@@ -403,7 +404,8 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         )
 
         service.create_workout_from_file(
-            extension="gpx", equipments=[equipment_bike_user_1]
+            extension="gpx",
+            equipments=[equipment_bike_user_1, equipment_shoes_user_1],
         )
         db.session.commit()
 
@@ -413,7 +415,10 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         )
         assert new_workout.analysis_visibility == VisibilityLevel.PUBLIC
         assert new_workout.description == workouts_data["description"]
-        assert new_workout.equipments == [equipment_bike_user_1]
+        assert set(new_workout.equipments) == {
+            equipment_bike_user_1,
+            equipment_shoes_user_1,
+        }
         assert new_workout.map_visibility == VisibilityLevel.PUBLIC
         assert new_workout.notes == workouts_data["notes"]
         assert new_workout.sport_id == sport_1_cycling.id
@@ -2176,7 +2181,7 @@ class TestWorkoutsFromFileCreationServiceProcessForOneFile(
         new_workout = Workout.query.one()
         assert new_workout.equipments == []
 
-    def test_it_raises_exception_when_multiple_equipments_are_provided(
+    def test_it_raises_exception_when_multiple_pieces_of_equipment_with_same_type_are_provided(  # noqa
         self,
         app: "Flask",
         user_1: "User",
@@ -2201,7 +2206,8 @@ class TestWorkoutsFromFileCreationServiceProcessForOneFile(
         )
 
         with pytest.raises(
-            InvalidEquipmentsException, match="only one equipment can be added"
+            InvalidEquipmentsException,
+            match="only one piece of equipment per type can be provided",
         ):
             service.process()
 

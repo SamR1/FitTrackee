@@ -1,3 +1,4 @@
+import re
 from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING, Dict
 
@@ -6,7 +7,9 @@ import pytest
 from fittrackee import db
 from fittrackee.constants import ElevationDataSource
 from fittrackee.database import PSQL_INTEGER_LIMIT
-from fittrackee.equipments.exceptions import InvalidEquipmentsException
+from fittrackee.equipments.exceptions import (
+    InvalidEquipmentException,
+)
 from fittrackee.tests.mixins import EquipmentMixin, RandomMixin
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import (
@@ -703,6 +706,31 @@ class TestWorkoutCreationServiceProcess(RandomMixin, EquipmentMixin):
         workout = Workout.query.one()
         assert workout.workout_visibility == VisibilityLevel.FOLLOWERS
 
+    def test_it_raises_error_when_equipment_is_invalid_for_sport(
+        self,
+        app: "Flask",
+        sport_2_running: "Sport",
+        user_1: "User",
+        equipment_bike_user_1: "Equipment",
+    ) -> None:
+        workout_data = {
+            "distance": 15,
+            "duration": 3000,
+            "sport_id": sport_2_running.id,
+            "workout_date": "2025-02-08 09:00",
+            "equipment_ids": [equipment_bike_user_1.short_id],
+        }
+        service = WorkoutCreationService(user_1, workout_data)
+
+        with pytest.raises(
+            InvalidEquipmentException,
+            match=re.escape(
+                f"invalid equipment id {equipment_bike_user_1.short_id} "
+                f"for sport {sport_2_running.label}"
+            ),
+        ):
+            service.process()
+
     def test_it_creates_workout_with_given_equipment(
         self,
         app: "Flask",
@@ -778,38 +806,39 @@ class TestWorkoutCreationServiceProcess(RandomMixin, EquipmentMixin):
         workout = Workout.query.one()
         assert workout.equipments == []
 
-    def test_it_raises_exception_when_multiple_equipments_are_provided(
+    def test_it_creates_with_multiple_pieces_of_equipment(
         self,
         app: "Flask",
         user_1: "User",
-        sport_2_running: "Sport",
-        gpx_file: str,
+        sport_1_cycling: "Sport",
         equipment_shoes_user_1: "Equipment",
-        equipment_another_shoes_user_1: "Equipment",
+        equipment_bike_user_1: "Equipment",
     ) -> None:
         workout_data = {
             "distance": 15,
             "duration": 3000,
-            "sport_id": sport_2_running.id,
+            "sport_id": sport_1_cycling.id,
             "workout_date": "2025-02-08 09:00",
             "equipment_ids": [
                 equipment_shoes_user_1.short_id,
-                equipment_another_shoes_user_1.short_id,
+                equipment_bike_user_1.short_id,
             ],
         }
         service = WorkoutCreationService(user_1, workout_data)
+        service.process()
+        db.session.commit()
 
-        with pytest.raises(
-            InvalidEquipmentsException, match="only one equipment can be added"
-        ):
-            service.process()
+        workout = Workout.query.one()
+        assert set(workout.equipments) == {
+            equipment_bike_user_1,
+            equipment_shoes_user_1,
+        }
 
     def test_it_does_not_add_inactive_default_equipment(
         self,
         app: "Flask",
         user_1: "User",
         sport_1_cycling: "Sport",
-        gpx_file: str,
         equipment_bike_user_1: "Equipment",
         user_1_sport_1_preference: "UserSportPreference",
     ) -> None:

@@ -1,5 +1,5 @@
 from datetime import timedelta
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from flask import Blueprint, request
 from sqlalchemy import exc, func
@@ -67,6 +67,40 @@ def handle_default_sports(
             db.session.flush()
         user_sport_preferences.append(user_sport_preference)
     return user_sport_preferences
+
+
+def update_user_sport_preferences_if_exist(
+    equipment: "Equipment",
+    user_sport_preferences: Optional[List["UserSportPreference"]],
+    auth_user: "User",
+    default_for_sport_ids: list[int],
+) -> None:
+    if user_sport_preferences:
+        # remove existing pieces of equipment with the same equipment type
+        db.session.query(UserSportPreferenceEquipment).filter(
+            UserSportPreferenceEquipment.c.user_id == auth_user.id,
+            UserSportPreferenceEquipment.c.sport_id.in_(default_for_sport_ids),
+            (
+                UserSportPreferenceEquipment.c.equipment_type_id
+                == equipment.equipment_type_id
+            ),
+        ).delete()
+
+        db.session.execute(
+            insert(UserSportPreferenceEquipment)
+            .values(
+                [
+                    {
+                        "equipment_id": equipment.id,
+                        "equipment_type_id": equipment.equipment_type_id,
+                        "sport_id": sport.sport_id,
+                        "user_id": auth_user.id,
+                    }
+                    for sport in user_sport_preferences
+                ]
+            )
+            .on_conflict_do_nothing()
+        )
 
 
 @equipments_blueprint.route("/equipments", methods=["GET"])
@@ -421,31 +455,12 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         if visibility:
             new_equipment.visibility = visibility
 
-        if user_sport_preferences:
-            # remove existing equipments for default sports
-            # (for now only one default equipment/sport)
-            db.session.query(UserSportPreferenceEquipment).filter(
-                UserSportPreferenceEquipment.c.user_id == auth_user.id,
-                UserSportPreferenceEquipment.c.sport_id.in_(
-                    default_for_sport_ids
-                ),
-            ).delete()
-
-            db.session.execute(
-                insert(UserSportPreferenceEquipment).values(
-                    [
-                        {
-                            "equipment_id": new_equipment.id,
-                            "equipment_type_id": (
-                                new_equipment.equipment_type_id
-                            ),
-                            "sport_id": sport.sport_id,
-                            "user_id": auth_user.id,
-                        }
-                        for sport in user_sport_preferences
-                    ]
-                )
-            )
+        update_user_sport_preferences_if_exist(
+            new_equipment,
+            user_sport_preferences,
+            auth_user,
+            default_for_sport_ids,
+        )
         db.session.commit()
 
         return (
@@ -724,33 +739,12 @@ def update_equipment(
                     ),
                 ).delete()
 
-            if user_sport_preferences:
-                # remove existing equipments for default sports
-                # (for now only one default equipment/sport)
-                db.session.query(UserSportPreferenceEquipment).filter(
-                    UserSportPreferenceEquipment.c.user_id == auth_user.id,
-                    UserSportPreferenceEquipment.c.sport_id.in_(
-                        new_default_for_sport_ids
-                    ),
-                ).delete()
-
-                db.session.execute(
-                    insert(UserSportPreferenceEquipment)
-                    .values(
-                        [
-                            {
-                                "equipment_id": equipment.id,
-                                "equipment_type_id": (
-                                    equipment.equipment_type_id
-                                ),
-                                "sport_id": sport.sport_id,
-                                "user_id": auth_user.id,
-                            }
-                            for sport in user_sport_preferences
-                        ]
-                    )
-                    .on_conflict_do_nothing()
-                )
+            update_user_sport_preferences_if_exist(
+                equipment,
+                user_sport_preferences,
+                auth_user,
+                new_default_for_sport_ids,
+            )
         db.session.commit()
 
         return {

@@ -7,7 +7,7 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
 )
-from fittrackee.equipments.utils import handle_equipments
+from fittrackee.equipments.utils import handle_pieces_of_equipment
 
 from ..mixins import RandomMixin
 
@@ -27,7 +27,7 @@ class TestHandleEquipments(RandomMixin):
             InvalidEquipmentsException,
             match="equipment_ids must be an array of strings",
         ):
-            handle_equipments(
+            handle_pieces_of_equipment(
                 equipment_short_ids=[1],  # type: ignore
                 auth_user=user_1,
                 sport_id=sport_1_cycling.id,
@@ -44,7 +44,7 @@ class TestHandleEquipments(RandomMixin):
             InvalidEquipmentsException,
             match="equipment_ids must be an array of strings",
         ):
-            handle_equipments(
+            handle_pieces_of_equipment(
                 equipment_short_ids=(  # type: ignore
                     equipment_bike_user_1.short_id  # type: ignore
                 ),
@@ -60,7 +60,7 @@ class TestHandleEquipments(RandomMixin):
             InvalidEquipmentException,
             match=f"equipment with id {equipment_id} does not exist",
         ):
-            handle_equipments(
+            handle_pieces_of_equipment(
                 equipment_short_ids=[equipment_id],
                 auth_user=user_1,
                 sport_id=sport_1_cycling.id,
@@ -80,7 +80,7 @@ class TestHandleEquipments(RandomMixin):
                 " does not exist"
             ),
         ):
-            handle_equipments(
+            handle_pieces_of_equipment(
                 equipment_short_ids=[equipment_shoes_user_2.short_id],
                 auth_user=user_1,
                 sport_id=sport_1_cycling.id,
@@ -100,7 +100,7 @@ class TestHandleEquipments(RandomMixin):
                 "is inactive"
             ),
         ):
-            handle_equipments(
+            handle_pieces_of_equipment(
                 equipment_short_ids=[equipment_bike_user_1_inactive.short_id],
                 auth_user=user_1,
                 sport_id=sport_1_cycling.id,
@@ -118,7 +118,7 @@ class TestHandleEquipments(RandomMixin):
             InvalidEquipmentsException,
             match=f"sport id {sport_id} not found",
         ):
-            handle_equipments(
+            handle_pieces_of_equipment(
                 equipment_short_ids=[equipment_bike_user_1.short_id],
                 auth_user=user_1,
                 sport_id=sport_id,
@@ -138,7 +138,7 @@ class TestHandleEquipments(RandomMixin):
                 f"for sport {sport_2_running.label}"
             ),
         ):
-            handle_equipments(
+            handle_pieces_of_equipment(
                 equipment_short_ids=[equipment_bike_user_1.short_id],
                 auth_user=user_1,
                 sport_id=sport_2_running.id,
@@ -147,7 +147,7 @@ class TestHandleEquipments(RandomMixin):
     def test_it_returns_empty_list_when_no_equipment_ids(
         self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
-        equipments_list = handle_equipments(
+        equipments_list = handle_pieces_of_equipment(
             equipment_short_ids=[],
             auth_user=user_1,
             sport_id=sport_1_cycling.id,
@@ -158,7 +158,7 @@ class TestHandleEquipments(RandomMixin):
     def test_it_returns_none_when_provided_equipments_is_none(
         self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
-        equipments_list = handle_equipments(
+        equipments_list = handle_pieces_of_equipment(
             equipment_short_ids=None,
             auth_user=user_1,
             sport_id=sport_1_cycling.id,
@@ -173,7 +173,7 @@ class TestHandleEquipments(RandomMixin):
         sport_1_cycling: "Sport",
         equipment_bike_user_1: "Equipment",
     ) -> None:
-        equipments_list = handle_equipments(
+        equipments_list = handle_pieces_of_equipment(
             equipment_short_ids=[],
             auth_user=user_1,
             sport_id=sport_1_cycling.id,
@@ -189,7 +189,7 @@ class TestHandleEquipments(RandomMixin):
         sport_1_cycling: "Sport",
         equipment_bike_user_1: "Equipment",
     ) -> None:
-        equipments_list = handle_equipments(
+        equipments_list = handle_pieces_of_equipment(
             equipment_short_ids=[equipment_bike_user_1.short_id],
             auth_user=user_1,
             sport_id=sport_1_cycling.id,
@@ -205,7 +205,7 @@ class TestHandleEquipments(RandomMixin):
         sport_1_cycling: "Sport",
         equipment_bike_user_1: "Equipment",
     ) -> None:
-        equipments_list = handle_equipments(
+        equipments_list = handle_pieces_of_equipment(
             equipment_short_ids=[equipment_bike_user_1.short_id],
             auth_user=user_1,
             sport_id=sport_1_cycling.id,
@@ -221,7 +221,7 @@ class TestHandleEquipments(RandomMixin):
         sport_1_cycling: "Sport",
         equipment_bike_user_1_inactive: "Equipment",
     ) -> None:
-        equipments_list = handle_equipments(
+        equipments_list = handle_pieces_of_equipment(
             equipment_short_ids=[
                 equipment_bike_user_1_inactive.short_id,
             ],
@@ -231,3 +231,99 @@ class TestHandleEquipments(RandomMixin):
         )
 
         assert equipments_list == [equipment_bike_user_1_inactive]
+
+    def test_it_returns_equipment_ids_list_when_multiple_pieces_are_provided(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        equipment_bike_user_1: "Equipment",
+        equipment_shoes_user_1: "Equipment",
+    ) -> None:
+        equipments_list = handle_pieces_of_equipment(
+            equipment_short_ids=[
+                equipment_bike_user_1.short_id,
+                equipment_shoes_user_1.short_id,
+            ],
+            auth_user=user_1,
+            sport_id=sport_1_cycling.id,
+            existing_equipments=[],
+        )
+
+        assert set(equipments_list) == {  # type: ignore[arg-type]
+            equipment_bike_user_1,
+            equipment_shoes_user_1,
+        }
+
+    def test_it_returns_multiple_pieces_when_existing_equipments_are_provided(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        equipment_bike_user_1: "Equipment",
+        equipment_shoes_user_1: "Equipment",
+        equipment_another_shoes_user_1: "Equipment",
+    ) -> None:
+        equipments_list = handle_pieces_of_equipment(
+            equipment_short_ids=[
+                equipment_bike_user_1.short_id,
+                equipment_another_shoes_user_1.short_id,
+            ],
+            auth_user=user_1,
+            sport_id=sport_1_cycling.id,
+            existing_equipments=[equipment_shoes_user_1],
+        )
+
+        assert set(equipments_list) == {  # type: ignore[arg-type]
+            equipment_bike_user_1,
+            equipment_another_shoes_user_1,
+        }
+
+    def test_it_raises_error_when_one_piece_is_invalid_for_sport(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_2_running: "Sport",
+        equipment_bike_user_1: "Equipment",
+        equipment_shoes_user_1: "Equipment",
+    ) -> None:
+        with pytest.raises(
+            InvalidEquipmentException,
+            match=re.escape(
+                f"invalid equipment id {equipment_bike_user_1.short_id} "
+                f"for sport {sport_2_running.label}"
+            ),
+        ):
+            handle_pieces_of_equipment(
+                equipment_short_ids=[
+                    equipment_bike_user_1.short_id,
+                    equipment_shoes_user_1.short_id,
+                ],
+                auth_user=user_1,
+                sport_id=sport_2_running.id,
+                existing_equipments=[],
+            )
+
+    def test_it_raises_error_when_multiple_pieces_with_same_type_are_provided(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_2_running: "Sport",
+        equipment_shoes_user_1: "Equipment",
+        equipment_another_shoes_user_1: "Equipment",
+    ) -> None:
+        with pytest.raises(
+            InvalidEquipmentsException,
+            match=re.escape(
+                "only one piece of equipment per type can be provided"
+            ),
+        ):
+            handle_pieces_of_equipment(
+                equipment_short_ids=[
+                    equipment_another_shoes_user_1.short_id,
+                    equipment_shoes_user_1.short_id,
+                ],
+                auth_user=user_1,
+                sport_id=sport_2_running.id,
+                existing_equipments=[],
+            )

@@ -637,6 +637,117 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
             equipment
         ]
 
+    def test_it_adds_a_piece_of_equipment_when_default_equipement_with_same_type_exists(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_2_bike: EquipmentType,
+        sport_1_cycling: Sport,
+        sport_3_cycling_transport: Sport,
+        user_1_sport_1_preference: UserSportPreference,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        # in this case, existing piece is removed
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "equipment_type_id": equipment_type_2_bike.id,
+                "label": "My New Bike",
+                "default_for_sport_ids": [
+                    sport_1_cycling.id,
+                    sport_3_cycling_transport.id,
+                ],
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert "My New Bike" == equipment["label"]
+        assert set(equipment["default_for_sport_ids"]) == {
+            sport_1_cycling.id,
+            sport_3_cycling_transport.id,
+        }
+        equipment = Equipment.query.filter_by(
+            uuid=decode_short_id(equipment["id"])
+        ).first()
+        assert user_1_sport_1_preference.default_equipments.all() == [
+            equipment
+        ]
+        sport_3_cycling_transport_pref = UserSportPreference.query.filter_by(
+            user_id=user_1.id, sport_id=sport_3_cycling_transport.id
+        ).one()
+        assert sport_3_cycling_transport_pref.default_equipments.all() == [
+            equipment
+        ]
+
+    def test_it_adds_a_piece_of_equipment_when_default_equipement_with_different_type_exists(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_2_bike: EquipmentType,
+        sport_1_cycling: Sport,
+        sport_3_cycling_transport: Sport,
+        user_1_sport_1_preference: UserSportPreference,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        # in this case, existing piece is not removed
+        self.add_user_sport_preference_equipement(
+            [equipment_shoes_user_1], user_1_sport_1_preference
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "equipment_type_id": equipment_type_2_bike.id,
+                "label": "My New Bike",
+                "default_for_sport_ids": [
+                    sport_1_cycling.id,
+                    sport_3_cycling_transport.id,
+                ],
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert "My New Bike" == equipment["label"]
+        assert set(equipment["default_for_sport_ids"]) == {
+            sport_1_cycling.id,
+            sport_3_cycling_transport.id,
+        }
+        equipment = Equipment.query.filter_by(
+            uuid=decode_short_id(equipment["id"])
+        ).first()
+        assert set(user_1_sport_1_preference.default_equipments.all()) == {
+            equipment,
+            equipment_shoes_user_1,
+        }
+        sport_3_cycling_transport_pref = UserSportPreference.query.filter_by(
+            user_id=user_1.id, sport_id=sport_3_cycling_transport.id
+        ).one()
+        assert sport_3_cycling_transport_pref.default_equipments.all() == [
+            equipment
+        ]
+
     def test_it_creates_sport_preference(
         self,
         app: Flask,
@@ -1395,6 +1506,44 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         assert sport_3_cycling_transport_pref.default_equipments.all() == [
             equipment_bike_user_1
         ]
+
+    def test_it_updates_default_sports_when_piece_exists_with_another_type(
+        self,
+        app: "Flask",
+        user_1: "User",
+        equipment_type_1_shoe: "EquipmentType",
+        equipment_type_2_bike: "EquipmentType",
+        sport_1_cycling: "Sport",
+        user_1_sport_1_preference: "UserSportPreference",
+        equipment_bike_user_1: "Equipment",
+        equipment_shoes_user_1: "Equipment",
+    ) -> None:
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
+            json={
+                "default_for_sport_ids": [sport_1_cycling.id],
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert equipment["default_for_sport_ids"] == [sport_1_cycling.id]
+        assert set(user_1_sport_1_preference.default_equipments.all()) == {
+            equipment_bike_user_1,
+            equipment_shoes_user_1,
+        }
 
     def test_it_removes_existing_default_sport(
         self,

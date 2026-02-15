@@ -25,7 +25,7 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
 )
-from fittrackee.equipments.utils import handle_equipments
+from fittrackee.equipments.utils import handle_pieces_of_equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
 from fittrackee.reports.models import ReportAction, ReportActionAppeal
@@ -1234,7 +1234,7 @@ def edit_user_sport_preferences(
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
         - ``equipment_ids must be an array of strings``
-        - ``only one equipment can be added``
+        - ``only one piece of equipment per type can be provided``
         - ``equipment with id <equipment_id> does not exist``
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``
@@ -1317,7 +1317,7 @@ def edit_user_sport_preferences(
 
         if default_equipment_ids is not None:
             existing_default_equipments = user_sport.default_equipments.all()
-            default_equipments = handle_equipments(
+            default_equipments = handle_pieces_of_equipment(
                 default_equipment_ids,
                 auth_user,
                 sport_id,
