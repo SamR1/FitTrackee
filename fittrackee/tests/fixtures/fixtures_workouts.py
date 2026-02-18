@@ -125,6 +125,15 @@ def sport_6_hiking() -> Sport:
     return sport
 
 
+@pytest.fixture()
+def sport_7_kayaking() -> Sport:
+    sport = Sport(label="Kayaking")
+    sport.stopped_speed_threshold = 1
+    db.session.add(sport)
+    db.session.commit()
+    return sport
+
+
 def update_workout(target: Union[Workout, WorkoutSegment]) -> None:
     distance = target.distance if target.distance else 0
     target.ave_speed = float(distance) / (target.duration.seconds / 3600)

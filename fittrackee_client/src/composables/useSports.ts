@@ -3,6 +3,7 @@ import type { Reactive, ComputedRef, Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { AUTH_USER_STORE, SPORTS_STORE } from '@/store/constants'
+import type { IEquipment } from '@/types/equipments.ts'
 import type { ISport, ITranslatedSport } from '@/types/sports'
 import type {
   IAuthUserProfile,
@@ -22,7 +23,7 @@ export default function useSports() {
   const defaultColor = '#838383'
 
   const displayModal: Ref<boolean> = ref(false)
-  const defaultEquipmentId: Ref<string> = ref('')
+  const defaultEquipmentList: Ref<IEquipment[]> = ref([])
 
   const sports: ComputedRef<ISport[]> = computed(
     () => store.getters[SPORTS_STORE.GETTERS.SPORTS]
@@ -70,7 +71,7 @@ export default function useSports() {
 
   return {
     defaultColor,
-    defaultEquipmentId,
+    defaultEquipmentList,
     displayModal,
     sportColors,
     sportPayload,

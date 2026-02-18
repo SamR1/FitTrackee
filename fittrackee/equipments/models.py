@@ -139,6 +139,13 @@ class Equipment(BaseModel):
     def short_id(self) -> str:
         return encode_uuid(self.uuid)
 
+    def get_distance(self) -> Optional[float]:
+        if self.equipment_type.label == "Racket":
+            return None
+        return (
+            0.0 if self.total_distance is None else float(self.total_distance)
+        )
+
     def serialize(self, *, current_user: Optional["User"]) -> Dict:
         if not can_view(self, "visibility", current_user):
             raise EquipmentForbiddenException()
@@ -162,20 +169,11 @@ class Equipment(BaseModel):
                 for sport_preference in self.default_for_sports
             ],
             "creation_date": self.creation_date,
-            "total_distance": (
-                0.0
-                if self.total_distance is None
-                else float(self.total_distance)
-            ),
-            "total_duration": (
-                "0:00:00"
-                if self.total_duration is None
-                else str(self.total_duration)
-            ),
-            "total_moving": (
-                "0:00:00"
+            "total_distance": self.get_distance(),
+            "total_duration_in_hours": (
+                0
                 if self.total_moving is None
-                else str(self.total_moving)
+                else round(self.total_moving.total_seconds() / 3600, 1)
             ),
             "visibility": self.visibility,
             "workouts_count": (
