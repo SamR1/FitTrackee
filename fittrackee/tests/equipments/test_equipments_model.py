@@ -52,8 +52,7 @@ class TestEquipmentModelForOwner(EquipmentMixin):
         serialized_equip = self.assert_equipment_model(equipment_bike_user_1)
         assert serialized_equip["workouts_count"] == 0
         assert serialized_equip["total_distance"] == 0
-        assert serialized_equip["total_duration"] == "0:00:00"
-        assert serialized_equip["total_moving"] == "0:00:00"
+        assert serialized_equip["total_duration_in_hours"] == 0
         assert serialized_equip["visibility"] == VisibilityLevel.PRIVATE
 
     def test_equipment_model_with_workouts(
@@ -91,12 +90,7 @@ class TestEquipmentModelForOwner(EquipmentMixin):
             serialized_equip["total_distance"]
             == equipment_bike_user_1.total_distance
         )
-        assert serialized_equip["total_duration"] == str(
-            equipment_bike_user_1.total_duration
-        )
-        assert serialized_equip["total_moving"] == str(
-            equipment_bike_user_1.total_moving
-        )
+        assert serialized_equip["total_duration_in_hours"] == 2
         assert (
             serialized_equip["workouts_count"]
             == equipment_bike_user_1.total_workouts
@@ -116,12 +110,7 @@ class TestEquipmentModelForOwner(EquipmentMixin):
             serialized_equip["total_distance"]
             == equipment_bike_user_1.total_distance
         )
-        assert serialized_equip["total_duration"] == str(
-            equipment_bike_user_1.total_duration
-        )
-        assert serialized_equip["total_moving"] == str(
-            equipment_bike_user_1.total_moving
-        )
+        assert serialized_equip["total_duration_in_hours"] == 1
         assert (
             serialized_equip["workouts_count"]
             == equipment_bike_user_1.total_workouts
@@ -139,12 +128,7 @@ class TestEquipmentModelForOwner(EquipmentMixin):
             serialized_equip["total_distance"]
             == equipment_bike_user_1.total_distance
         )
-        assert serialized_equip["total_duration"] == str(
-            equipment_bike_user_1.total_duration
-        )
-        assert serialized_equip["total_moving"] == str(
-            equipment_bike_user_1.total_moving
-        )
+        assert serialized_equip["total_duration_in_hours"] == 0
         assert (
             serialized_equip["workouts_count"]
             == equipment_bike_user_1.total_workouts
@@ -169,6 +153,33 @@ class TestEquipmentModelForOwner(EquipmentMixin):
         assert serialized_equip["default_for_sport_ids"] == [
             sport_1_cycling.id
         ]
+
+    def test_serializer_does_not_return_distance_when_equipment_type_is_racket(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_4_racket: EquipmentType,
+    ) -> None:
+        racket = Equipment(
+            label="My new racket",
+            description="",
+            equipment_type_id=equipment_type_4_racket.id,
+            user_id=user_1.id,
+            is_active=True,
+        )
+        racket.total_distance = 4.0
+        racket.total_duration = timedelta(hours=1)
+        racket.total_moving = timedelta(hours=1)
+        racket.total_workouts = 0
+        db.session.add(racket)
+        db.session.commit()
+
+        serialized_equip = racket.serialize(current_user=user_1)
+
+        assert serialized_equip["workouts_count"] == 0
+        assert serialized_equip["total_distance"] is None
+        assert serialized_equip["total_duration_in_hours"] == 1
+        assert serialized_equip["visibility"] == VisibilityLevel.PRIVATE
 
 
 class TestEquipmentModelForFollower:

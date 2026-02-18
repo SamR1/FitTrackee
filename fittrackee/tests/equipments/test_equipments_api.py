@@ -933,6 +933,45 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
         assert "Test shoes" == equipment["label"]
         assert equipment["visibility"] == VisibilityLevel.PUBLIC.value
 
+    def test_it_adds_racket_as_equipment(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_5_outdoor_tennis: "Sport",
+        equipment_type_4_racket: EquipmentType,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        equipment_label = "My new racket"
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "equipment_type_id": equipment_type_4_racket.id,
+                "label": equipment_label,
+                "default_for_sport_ids": [sport_5_outdoor_tennis.id],
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert equipment["label"] == equipment_label
+        assert set(equipment["default_for_sport_ids"]) == {
+            sport_5_outdoor_tennis.id
+        }
+        assert Equipment.query.filter_by(label=equipment_label).count() == 1
+        assert (
+            UserSportPreference.query.filter_by(
+                sport_id=sport_5_outdoor_tennis.id
+            ).count()
+            == 1
+        )
+
     def test_expected_scope_is_equipments_write(
         self, app: Flask, user_1: User
     ) -> None:

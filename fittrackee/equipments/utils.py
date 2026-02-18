@@ -42,6 +42,7 @@ SPORT_EQUIPMENT_TYPES = {
         "Rowing",
     ],
     "Skis": ["Skiing (Alpine)", "Skiing (Cross Country)"],
+    "Racket": ["Padel (Outdoor)", "Tennis (Outdoor)"],
     "Snowshoes": ["Snowshoes"],
 }
 

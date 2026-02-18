@@ -71,6 +71,7 @@ export const SPORT_EQUIPMENT_TYPES: Record<string, string[]> = {
     'Kayaking (Whitewater)',
     'Rowing',
   ],
+  Racket: ['Padel (Outdoor)', 'Tennis (Outdoor)'],
   Skis: ['Skiing (Alpine)', 'Skiing (Cross Country)'],
   Snowshoes: ['Snowshoes'],
 }

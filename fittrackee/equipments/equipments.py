@@ -150,8 +150,7 @@ def get_equipments(auth_user: User) -> Dict:
               "is_active": true,
               "label": "My shoes",
               "total_distance": 0.0,
-              "total_duration": "0:00:00",
-              "total_moving": "0:00:00",
+              "total_duration_in_hours": 0,
               "user_id": 1,
               "workouts_count": 0
           },
@@ -168,8 +167,7 @@ def get_equipments(auth_user: User) -> Dict:
               "is_active": true,
               "label": "My shoes 2",
               "total_distance": 0.0,
-              "total_duration": "0:00:00",
-              "total_moving": "0:00:00",
+              "total_duration_in_hours": 0,
               "user_id": ,
               "workouts_count": 0
               }
@@ -259,8 +257,7 @@ def get_equipment_by_id(
               "is_active": true,
               "label": "Other user Equipment",
               "total_distance": 0.0,
-              "total_duration": "0:00:00",
-              "total_moving": "0:00:00",
+              "total_duration_in_hours": 0,
               "user_id": 2,
               "workouts_count": 0
             }
@@ -350,8 +347,7 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
               "is_active": true,
               "label": "New equipment from API",
               "total_distance": 0.0,
-              "total_duration": "0:00:00",
-              "total_moving": "0:00:00",
+              "total_duration_in_hours": 0,
               "user_id": 1,
               "workouts_count": 0
             }
@@ -532,8 +528,7 @@ def update_equipment(
                 "is_active": true,
                 "label": "Updated bike",
                 "total_distance": 0.0,
-                "total_duration": "0:00:00",
-                "total_moving": "0:00:00",
+                "total_duration_in_hours": 0,
                 "user_id": 1,
                 "workouts_count": 0
               }
@@ -805,8 +800,7 @@ def refresh_equipment(
                 "is_active": true,
                 "label": "Updated bike",
                 "total_distance": 6.0,
-                "total_duration": "1:10:00",
-                "total_moving": "1:00:00",
+                "total_duration_in_hours": 1,
                 "user_id": 1,
                 "workouts_count": 1
               }

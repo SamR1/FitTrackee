@@ -41,6 +41,14 @@ def equipment_type_3_kayak() -> EquipmentType:
 
 
 @pytest.fixture()
+def equipment_type_4_racket() -> EquipmentType:
+    equip_type = EquipmentType(label="Racket", is_active=True)
+    db.session.add(equip_type)
+    db.session.commit()
+    return equip_type
+
+
+@pytest.fixture()
 def equipment_bike_user_1(
     equipment_type_2_bike: EquipmentType, user_1: User
 ) -> Equipment:

@@ -27,9 +27,8 @@ export interface IEquipment extends ILightEquipment {
   default_for_sport_ids: number[]
   description: string | null
   id: string
-  total_distance: number
-  total_duration: string
-  total_moving: string
+  total_distance: number | null
+  total_duration_in_hours: number
   user_id: number
   visibility: TVisibilityLevels
   workouts_count: number

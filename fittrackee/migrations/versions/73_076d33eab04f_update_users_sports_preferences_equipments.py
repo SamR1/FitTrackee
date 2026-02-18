@@ -53,8 +53,22 @@ def upgrade():
         nullable=False,
     )
 
+    op.execute(
+        """
+        INSERT INTO equipment_types (label, is_active)
+        VALUES ('Racket', True);
+        """
+    )
+
 
 def downgrade():
+    op.execute(
+        """
+        DELETE FROM equipment_types
+        WHERE label = 'Racket';
+        """
+    )
+
     with op.batch_alter_table(
         "users_sports_preferences_equipments", schema=None
     ) as batch_op:
