@@ -972,6 +972,43 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
             == 1
         )
 
+    def test_it_adds_paddle_as_equipment(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_7_kayaking: Sport,
+        equipment_type_5_paddle: EquipmentType,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        equipment_label = "My new paddle"
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "equipment_type_id": equipment_type_5_paddle.id,
+                "label": equipment_label,
+                "default_for_sport_ids": [sport_7_kayaking.id],
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert equipment["label"] == equipment_label
+        assert set(equipment["default_for_sport_ids"]) == {sport_7_kayaking.id}
+        assert Equipment.query.filter_by(label=equipment_label).count() == 1
+        assert (
+            UserSportPreference.query.filter_by(
+                sport_id=sport_7_kayaking.id
+            ).count()
+            == 1
+        )
+
     def test_expected_scope_is_equipments_write(
         self, app: Flask, user_1: User
     ) -> None:
