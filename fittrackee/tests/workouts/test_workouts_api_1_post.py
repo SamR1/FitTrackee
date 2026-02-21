@@ -742,6 +742,49 @@ class TestPostWorkoutWithKmz(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["notes"] is None
         assert len(data["data"]["workouts"][0]["segments"]) == 2
 
+    @pytest.mark.parametrize(
+        "input_map_visibility,input_workout_visibility",
+        [
+            (VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.FOLLOWERS),
+            (VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS_AND_REMOTE),
+        ],
+    )
+    def test_it_returns_400_when_privacy_level_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
+    ) -> None:
+        """
+        when workout visibility is stricter, map visibility is initialised
+        with workout visibility value
+        """
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/workouts",
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
+                data=(
+                    f'{{"sport_id": 1, "map_visibility": '
+                    f'"{input_map_visibility.value}", '
+                    f'"workout_visibility": '
+                    f'"{input_workout_visibility.value}"}}'
+                ),
+            ),
+            headers=dict(
+                content_type="multipart/form-data",
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        self.assert_400(response)
+
 
 class TestPostWorkoutWithTcx(WorkoutApiTestCaseMixin):
     def test_it_adds_a_workout_with_tcx_file(
@@ -1422,6 +1465,144 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin):
         assert "created" in data["status"]
         assert len(data["data"]["workouts"]) == 1
         assert data["data"]["workouts"][0]["calories"] == input_calories
+
+    @pytest.mark.parametrize(
+        "input_desc,input_visibility",
+        [
+            ("private", VisibilityLevel.PRIVATE),
+            ("followers_only", VisibilityLevel.FOLLOWERS),
+            ("public", VisibilityLevel.PUBLIC),
+        ],
+    )
+    def test_workout_is_created_with_user_privacy_parameters_when_no_provided(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        input_desc: str,
+        input_visibility: VisibilityLevel,
+    ) -> None:
+        user_1.map_visibility = input_visibility
+        user_1.analysis_visibility = input_visibility
+        user_1.workouts_visibility = input_visibility
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/workouts/no_gpx",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date="2018-05-15 14:05",
+                    distance=10,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert "created" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert (
+            data["data"]["workouts"][0]["map_visibility"]
+            == VisibilityLevel.PRIVATE.value
+        )
+        assert (
+            data["data"]["workouts"][0]["analysis_visibility"]
+            == VisibilityLevel.PRIVATE.value
+        )
+        assert (
+            data["data"]["workouts"][0]["workout_visibility"]
+            == user_1.workouts_visibility.value
+        )
+
+    @pytest.mark.parametrize(
+        "input_workout_visibility",
+        [
+            VisibilityLevel.PUBLIC,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
+        ],
+    )
+    def test_workout_is_created_with_provided_privacy_parameters(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+        input_workout_visibility: VisibilityLevel,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/workouts/no_gpx",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date="2018-05-15 14:05",
+                    distance=10,
+                    workout_visibility=input_workout_visibility.value,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert "created" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert (
+            data["data"]["workouts"][0]["map_visibility"]
+            == VisibilityLevel.PRIVATE.value
+        )
+        assert (
+            data["data"]["workouts"][0]["analysis_visibility"]
+            == VisibilityLevel.PRIVATE.value
+        )
+        assert (
+            data["data"]["workouts"][0]["workout_visibility"]
+            == input_workout_visibility.value
+        )
+
+    def test_it_returns_400_when_privacy_level_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        gpx_file: str,
+    ) -> None:
+        """
+        'FOLLOWERS_AND_REMOTE' is not available on un-federated instances
+        """
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/workouts/no_gpx",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date="2018-05-15 14:05",
+                    distance=10,
+                    workout_visibility=VisibilityLevel.FOLLOWERS_AND_REMOTE.value,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response)
 
     def test_expected_scope_is_workouts_write(
         self, app: "Flask", user_1: "User"

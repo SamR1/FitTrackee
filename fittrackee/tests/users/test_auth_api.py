@@ -28,6 +28,7 @@ from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..comments.mixins import CommentMixin
+from ..federation.users.test_auth_api import assert_actor_is_created
 from ..mixins import ApiTestCaseMixin, ReportMixin, UserTaskMixin
 from ..utils import jsonify_dict
 
@@ -424,6 +425,10 @@ class TestUserRegistration(ApiTestCaseMixin):
         new_user = User.query.filter_by(username=username).one()
         assert new_user.language == expected_language
 
+    def test_it_creates_actor_on_user_registration(self, app: Flask) -> None:
+        """it must create actor even if federation is disabled"""
+        assert_actor_is_created(app=app)
+
     @pytest.mark.parametrize(
         "input_language,expected_language",
         [("en", "en"), ("fr", "fr"), ("invalid", "en"), (None, "en")],
@@ -514,9 +519,9 @@ class TestUserRegistration(ApiTestCaseMixin):
                 dict(
                     username=self.random_string(),
                     email=(
-                        user_1.email.upper()
+                        user_1.email.upper()  # type: ignore
                         if text_transformation == "upper"
-                        else user_1.email.lower()
+                        else user_1.email.lower()  # type: ignore
                     ),
                     password=self.random_string(),
                     accepted_policy=True,
@@ -692,9 +697,9 @@ class TestUserLogin(ApiTestCaseMixin):
             data=json.dumps(
                 dict(
                     email=(
-                        user_1.email.upper()
+                        user_1.email.upper()  # type: ignore
                         if text_transformation == "upper"
-                        else user_1.email.lower()
+                        else user_1.email.lower()  # type: ignore
                     ),
                     password="12345678",
                 )
@@ -1710,6 +1715,44 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert (
             data["data"]["workouts_visibility"] == VisibilityLevel.PUBLIC.value
         )
+
+    @pytest.mark.parametrize(
+        "input_map_visibility,input_workout_visibility",
+        [
+            (VisibilityLevel.FOLLOWERS_AND_REMOTE, VisibilityLevel.FOLLOWERS),
+            (VisibilityLevel.PRIVATE, VisibilityLevel.FOLLOWERS_AND_REMOTE),
+        ],
+    )
+    def test_it_returns_400_when_privacy_level_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        input_map_visibility: VisibilityLevel,
+        input_workout_visibility: VisibilityLevel,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/auth/profile/edit/preferences",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    timezone="America/New_York",
+                    weekm=True,
+                    language="fr",
+                    imperial_units=True,
+                    display_ascent=True,
+                    date_format="MM/dd/yyyy",
+                    map_visibility=input_map_visibility.value,
+                    workouts_visibility=input_workout_visibility.value,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response)
 
     def test_expected_scope_is_profile_write(
         self, app: Flask, user_1: User

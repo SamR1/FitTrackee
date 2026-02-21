@@ -13,6 +13,8 @@ from werkzeug.datastructures import FileStorage
 
 from fittrackee import VERSION, db
 from fittrackee.constants import PaceSpeedDisplay
+from fittrackee.tests.utils import random_short_id
+from fittrackee.users.models import User
 from fittrackee.workouts.models import (
     TITLE_MAX_CHARACTERS,
     Sport,
@@ -1429,6 +1431,28 @@ def workout_cycling_user_2_segment(
     workout_cycling_user_2.original_file = "workouts/1/example.tcx"
     db.session.commit()
     return workout_segment
+
+
+@pytest.fixture()
+def remote_cycling_workout(remote_user: "User") -> "Workout":
+    workout = Workout(
+        user_id=remote_user.id,
+        sport_id=1,
+        workout_date=datetime(2022, 1, 1, tzinfo=timezone.utc),
+        distance=10,
+        duration=timedelta(seconds=3600),
+    )
+    update_workout(workout)
+    remote_domain = remote_user.actor.domain.name
+    remote_id = random_short_id()
+    workout.ap_id = (
+        f"https://{remote_domain}/federation/user/{remote_user.username}/"
+        f"workouts/{remote_id}"
+    )
+    workout.remote_url = f"https://{remote_domain}/workouts/{remote_id}"
+    db.session.add(workout)
+    db.session.commit()
+    return workout
 
 
 @pytest.fixture()

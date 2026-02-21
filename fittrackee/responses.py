@@ -181,6 +181,12 @@ class InternalServerErrorResponse(GenericErrorResponse):
         super().__init__(status_code=500, message=message, status=status)
 
 
+class DisabledFederationErrorResponse(ForbiddenErrorResponse):
+    def __init__(self) -> None:
+        message = "error, federation is disabled for this instance"
+        super().__init__(message=message)
+
+
 def handle_error_and_return_response(
     error: Exception,
     message: Optional[str] = None,

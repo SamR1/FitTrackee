@@ -135,6 +135,7 @@
     "NOTIFICATIONS": {
       "account_creation": "Quelqu'un s'est enregistré",
       "comment_like": "Quelqu'un aime votre commentaire",
+      "comment_reply": "Quelqu'un a répondu à votre commentaire",
       "follow": "Quelqu'un vous suit",
       "follow_request": "Quelqu'un vous a envoyé une demande d'abonnement",
       "follow_request_approved": "Votre demande d'abonnement a été approuvé",

@@ -3,6 +3,7 @@ import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Dict, Set
+from unittest.mock import Mock, patch
 
 import pytest
 from flask import Flask
@@ -14,6 +15,7 @@ from time_machine import travel
 from fittrackee import db
 from fittrackee.constants import ElevationDataSource, PaceSpeedDisplay
 from fittrackee.equipments.models import Equipment
+from fittrackee.federation.exceptions import FederationDisabledException
 from fittrackee.files import get_absolute_file_path
 from fittrackee.reports.models import ReportAction
 from fittrackee.tests.comments.mixins import CommentMixin
@@ -624,6 +626,7 @@ class TestUserSerializeAsUnauthenticatedUser(UserModelAssertMixin):
             "created_at": user_1.created_at,
             "followers": user_1.followers.count(),
             "following": user_1.following.count(),
+            "is_remote": False,
             "nb_workouts": user_1.workouts_count,
             "picture": user_1.picture is not None,
             "role": UserRole(user_1.role).name.lower(),
@@ -1670,6 +1673,17 @@ class TestFollowRequestModel:
         assert serialized_follow_request["from_user"] == user_1.serialize()
         assert serialized_follow_request["to_user"] == user_2.serialize()
 
+    def test_it_raises_error_if_getting_activity_object_when_federation_is_disabled(  # noqa
+        self,
+        app: Flask,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        with pytest.raises(
+            FederationDisabledException,
+            match=re.escape("Federation is disabled."),
+        ):
+            follow_request_from_user_1_to_user_2.get_activity()
+
     def test_it_deletes_follow_request_on_followed_user_delete(
         self,
         app: Flask,
@@ -1719,6 +1733,18 @@ class TestUserFollowingModel:
         follow_request = user_2.send_follow_request_to(user_1)
 
         assert follow_request in user_2.sent_follow_requests.all()
+
+    @patch("fittrackee.users.models.send_to_remote_inbox")
+    def test_it_does_not_call_send_to_user_inbox_when_federation_is_disabled(
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        user_2.send_follow_request_to(user_1)
+
+        send_to_remote_inbox_mock.send.assert_not_called()
 
     def test_user_1_receives_follow_requests_from_user_2(
         self,
@@ -1854,6 +1880,24 @@ class TestUserUnfollowModel:
 
         assert user_1.sent_follow_requests.all() == []
 
+    @patch("fittrackee.users.models.send_to_remote_inbox")
+    def test_it_does_not_call_send_to_user_inbox_when_federation_is_disabled(
+        self,
+        send_to_remote_inbox_mock: Mock,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        follow_request_from_user_1_to_user_2.is_approved = True
+        follow_request_from_user_1_to_user_2.updated_at = datetime.now(
+            timezone.utc
+        )
+
+        user_1.unfollows(user_2)
+
+        send_to_remote_inbox_mock.send.assert_not_called()
+
 
 class TestUserFollowers:
     def test_it_returns_empty_list_if_no_followers(
@@ -1947,6 +1991,23 @@ class TestUserFollowing:
         assert user_1.following.all() == []
 
 
+class TestUserGetRecipientsSharedInbox:
+    def test_it_raises_exception_if_federation_disabled(
+        self, app: Flask, user_1: User
+    ) -> None:
+        with pytest.raises(FederationDisabledException):
+            user_1.get_followers_shared_inboxes()
+
+
+class TestUserFullname:
+    def test_it_returns_user_actor_fullname(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        assert user_1.fullname == user_1.actor.fullname
+
+
 class TestUserFollowRequestStatus(UserModelAssertMixin):
     def test_it_returns_user_1_and_user_2_dont_not_follow_each_other(
         self,
@@ -2031,9 +2092,19 @@ class TestUserLinkifyMention:
         app: Flask,
         user_1: User,
     ) -> None:
-        assert user_1.linkify_mention() == (
+        assert user_1.linkify_mention(with_domain=False) == (
             f'<a href="{user_1.get_user_url()}" target="_blank" '
             f'rel="noopener noreferrer">@{user_1.username}</a>'
+        )
+
+    def test_it_returns_linkified_mention_with_fullname(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        assert user_1.linkify_mention(with_domain=True) == (
+            f'<a href="{user_1.get_user_url()}" target="_blank" '
+            f'rel="noopener noreferrer">@{user_1.fullname}</a>'
         )
 
 
@@ -2393,6 +2464,7 @@ class TestUserLightSerializer(UserModelAssertMixin):
             "follows": user_2.follows(user_1_admin),
             "is_active": True,
             "is_followed_by": user_2.is_followed_by(user_1_admin),
+            "is_remote": user_2.is_remote,
             "nb_workouts": user_2.workouts_count,
             "picture": user_2.picture is not None,
             "role": UserRole(user_2.role).name.lower(),
@@ -2416,6 +2488,7 @@ class TestUserLightSerializer(UserModelAssertMixin):
             "follows": user_2.follows(user_1_admin),
             "is_active": True,
             "is_followed_by": user_2.is_followed_by(user_1_admin),
+            "is_remote": user_2.is_remote,
             "nb_workouts": user_2.workouts_count,
             "picture": user_2.picture is not None,
             "role": UserRole(user_2.role).name.lower(),
@@ -2435,6 +2508,7 @@ class TestUserLightSerializer(UserModelAssertMixin):
             "following": user_2.following.count(),
             "follows": user_2.follows(user_1),
             "is_followed_by": user_2.is_followed_by(user_1),
+            "is_remote": user_2.is_remote,
             "nb_workouts": user_2.workouts_count,
             "picture": user_2.picture is not None,
             "role": UserRole(user_2.role).name.lower(),
@@ -2451,6 +2525,7 @@ class TestUserLightSerializer(UserModelAssertMixin):
             "created_at": user_2.created_at,
             "followers": user_2.followers.count(),
             "following": user_2.following.count(),
+            "is_remote": user_2.is_remote,
             "nb_workouts": user_2.workouts_count,
             "picture": user_2.picture is not None,
             "role": UserRole(user_2.role).name.lower(),

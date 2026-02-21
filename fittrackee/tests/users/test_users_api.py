@@ -11,6 +11,7 @@ from sqlalchemy.dialects.postgresql import insert
 from fittrackee import db
 from fittrackee.dates import get_readable_duration
 from fittrackee.equipments.models import Equipment
+from fittrackee.federation.models import Actor
 from fittrackee.reports.models import Report, ReportAction
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import (
@@ -1775,6 +1776,27 @@ class TestGetUsersAsUnauthenticatedUser(ApiTestCaseMixin):
         self.assert_401(response)
 
 
+class TestGetRemoteUsers(ApiTestCaseMixin):
+    def test_it_returns_error_when_federation_is_disabled(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/users/remote",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_403(
+            response, "error, federation is disabled for this instance"
+        )
+
+
 class TestGetUserPicture(ApiTestCaseMixin):
     def test_it_return_error_if_user_has_no_picture(
         self, app: Flask, user_1: User
@@ -2172,7 +2194,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
-        new_email = "new." + user_2.email
+        new_email = f"new.{user_2.email}"
         user_2_email = user_2.email
         user_2_confirmation_token = user_2.confirmation_token
 
@@ -2194,7 +2216,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app_wo_email_activation, user_1_admin.email
         )
-        new_email = "new." + user_2.email
+        new_email = f"new.{user_2.email}"
 
         response = client.patch(
             f"/api/users/{user_2.username}",
@@ -2218,7 +2240,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1_admin.email
         )
-        new_email = "new." + user_2.email
+        new_email = f"new.{user_2.email}"
         expected_token = self.random_string()
 
         with patch("secrets.token_urlsafe", return_value=expected_token):
@@ -2256,7 +2278,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app_wo_email_activation, user_1_admin.email
         )
-        new_email = "new." + user_2.email
+        new_email = f"new.{user_2.email}"
 
         response = client.patch(
             f"/api/users/{user_2.username}",
@@ -2799,6 +2821,21 @@ class TestDeleteUser(ReportMixin, ApiTestCaseMixin):
         )
 
         self.assert_403(response, "error, registration is disabled")
+
+    def test_it_deletes_actor_when_deleting_user(
+        self, app: Flask, user_1_admin: User, user_2: User
+    ) -> None:
+        actor_id = user_2.actor_id
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        client.delete(
+            f"/api/users/{user_2.username}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert Actor.query.filter_by(id=actor_id).first() is None
 
     def test_expected_scope_is_users_write(
         self, app: Flask, user_1_admin: User

@@ -14,7 +14,12 @@
       />
       <span class="visibility-label">
         ({{
-          $t(`visibility_levels.LEVELS.${workoutObject.workoutVisibility}`)
+          $t(
+            `visibility_levels.LEVELS.${getVisibilityLevelForLabel(
+              workoutObject.workoutVisibility,
+              appConfig.federation_enabled
+            )}`
+          )
         }})
       </span>
     </div>
@@ -43,29 +48,47 @@
         :title="$t(`visibility_levels.LEVELS.${workoutObject.mapVisibility}`)"
       />
       <span class="visibility-label">
-        ({{ $t(`visibility_levels.LEVELS.${workoutObject.mapVisibility}`) }})
+        ({{
+          $t(
+            `visibility_levels.LEVELS.${getVisibilityLevelForLabel(
+              workoutObject.mapVisibility,
+              appConfig.federation_enabled
+            )}`
+          )
+        }})
       </span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
+  import { ROOT_STORE } from '@/store/constants'
+  import type { TAppConfig } from '@/types/application'
   import type { TVisibilityLevels } from '@/types/user'
   import type { IWorkoutObject } from '@/types/workouts'
+  import { useStore } from '@/use/useStore'
+  import { getVisibilityLevelForLabel } from '@/utils/visibility_levels'
   interface Props {
     workoutObject: IWorkoutObject
   }
   const props = defineProps<Props>()
   const { workoutObject } = toRefs(props)
 
+  const store = useStore()
+
+  const appConfig: ComputedRef<TAppConfig> = computed(
+    () => store.getters[ROOT_STORE.GETTERS.APP_CONFIG]
+  )
   function getVisibilityIcon(
     visibilityLevel: TVisibilityLevels | null | undefined
   ): string {
     switch (visibilityLevel) {
       case 'public':
         return 'globe'
+      case 'followers_and_remote_only':
       case 'followers_only':
         return 'users'
       default:

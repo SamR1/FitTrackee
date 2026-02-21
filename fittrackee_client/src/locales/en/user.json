@@ -135,6 +135,7 @@
     "NOTIFICATIONS": {
       "account_creation": "Someone registers",
       "comment_like": "Someone likes your comment",
+      "comment_reply": "Someone reply to your comment",
       "follow": "Someone follows you",
       "follow_request": "Someone sends a follow request",
       "follow_request_approved": "Your follow request is approved",
