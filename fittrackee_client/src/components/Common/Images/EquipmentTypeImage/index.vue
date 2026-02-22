@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="equipmentTypeLabel !== 'Misc'"
     class="equipment-type-img"
     :style="{ fill: darkTheme ? '#cfd0d0' : '#2c3e50' }"
     :title="title"

@@ -56,7 +56,7 @@ def upgrade():
     op.execute(
         """
         INSERT INTO equipment_types (label, is_active)
-        VALUES ('Racket', True), ('Paddle', True);
+        VALUES ('Racket', True), ('Paddle', True), ('Misc', True);
         """
     )
 
@@ -65,7 +65,7 @@ def downgrade():
     op.execute(
         """
         DELETE FROM equipment_types
-        WHERE label IN ('Racket', 'Paddle');
+        WHERE label IN ('Racket', 'Paddle', 'Misc');
         """
     )
 

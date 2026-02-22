@@ -11,6 +11,9 @@
   "Kayak_Boat": {
     "LABEL": "Kayak/Bateau"
   },
+  "Misc": {
+    "LABEL": "Autres"
+  },
   "Paddle": {
     "LABEL": "Pagaie"
   },

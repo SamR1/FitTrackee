@@ -44,8 +44,10 @@ def handle_default_sports(
             )
 
         # check if sport is valid for equipment type
-        if sport.label not in SPORT_EQUIPMENT_TYPES.get(
-            equipment_type.label, []
+        if (
+            equipment_type.label != "Misc"
+            and sport.label
+            not in SPORT_EQUIPMENT_TYPES.get(equipment_type.label, [])
         ):
             raise InvalidEquipmentsException(
                 f"invalid sport '{sport.label}' for equipment "

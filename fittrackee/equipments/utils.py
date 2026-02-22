@@ -53,7 +53,7 @@ SPORT_EQUIPMENT_TYPES = {
     "Racket": ["Padel (Outdoor)", "Tennis (Outdoor)"],
     "Snowshoes": ["Snowshoes"],
 }
-
+MAX_MISC_LIMIT = 5
 TYPE_ERROR_MESSAGE = "equipment_ids must be an array of strings"
 
 
@@ -78,6 +78,7 @@ def handle_pieces_of_equipment(
         raise InvalidEquipmentsException(f"sport id {sport_id} not found")
 
     equipment_types = []
+    misc_count = 0
     for equipment_short_id in equipment_short_ids:
         if not isinstance(equipment_short_id, str):
             raise InvalidEquipmentsException(TYPE_ERROR_MESSAGE)
@@ -94,18 +95,6 @@ def handle_pieces_of_equipment(
                 equipment_short_id=equipment_short_id,
             )
 
-        if sport.label not in SPORT_EQUIPMENT_TYPES.get(
-            equipment.equipment_type.label, []
-        ):
-            raise InvalidEquipmentException(
-                status="invalid",
-                message=(
-                    f"invalid equipment id {equipment.short_id} "
-                    f"for sport {sport.label}"
-                ),
-                equipment_short_id=equipment_short_id,
-            )
-
         if not equipment.is_active and (
             not existing_equipments or equipment not in existing_equipments
         ):
@@ -117,12 +106,32 @@ def handle_pieces_of_equipment(
                 equipment_short_id=equipment_short_id,
             )
 
-        if equipment.equipment_type in equipment_types:
-            raise InvalidEquipmentsException(
-                "only one piece of equipment per type can be provided"
-            )
+        if equipment.equipment_type.label == "Misc":
+            misc_count += 1
+            if misc_count > MAX_MISC_LIMIT:
+                raise InvalidEquipmentsException(
+                    f"a maximum of {MAX_MISC_LIMIT} pieces of equipment "
+                    "can be added"
+                )
+        else:
+            if sport.label not in SPORT_EQUIPMENT_TYPES.get(
+                equipment.equipment_type.label, []
+            ):
+                raise InvalidEquipmentException(
+                    status="invalid",
+                    message=(
+                        f"invalid equipment id {equipment.short_id} "
+                        f"for sport {sport.label}"
+                    ),
+                    equipment_short_id=equipment_short_id,
+                )
+
+            if equipment.equipment_type in equipment_types:
+                raise InvalidEquipmentsException(
+                    "only one piece of equipment per type can be provided"
+                )
+            equipment_types.append(equipment.equipment_type)
 
         equipments_list.append(equipment)
-        equipment_types.append(equipment.equipment_type)
 
     return equipments_list

@@ -558,7 +558,8 @@
       ? selectedSport.value?.default_equipments || []
       : workout.value.equipments.filter((e) =>
           selectedSport.value
-            ? SPORT_EQUIPMENT_TYPES[
+            ? (e as IEquipment).equipment_type.label === 'Misc' ||
+              SPORT_EQUIPMENT_TYPES[
                 (e as IEquipment).equipment_type.label
               ].includes(selectedSport.value.label)
             : []

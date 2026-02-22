@@ -209,10 +209,12 @@
   )
   const filteredSports: ComputedRef<ITranslatedSport[]> = computed(() =>
     selectedEquipmentTypes.value.length > 0
-      ? translatedSports.value.filter((s) =>
-          SPORT_EQUIPMENT_TYPES[selectedEquipmentTypes.value[0].label].includes(
-            s.label
-          )
+      ? translatedSports.value.filter(
+          (s) =>
+            selectedEquipmentTypes.value[0].label === 'Misc' ||
+            SPORT_EQUIPMENT_TYPES[
+              selectedEquipmentTypes.value[0].label
+            ].includes(s.label)
         )
       : []
   )

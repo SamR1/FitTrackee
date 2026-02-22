@@ -1,5 +1,6 @@
 import re
 from typing import TYPE_CHECKING
+from unittest.mock import patch
 
 import pytest
 
@@ -322,6 +323,56 @@ class TestHandleEquipments(RandomMixin):
                 equipment_short_ids=[
                     equipment_another_shoes_user_1.short_id,
                     equipment_shoes_user_1.short_id,
+                ],
+                auth_user=user_1,
+                sport_id=sport_2_running.id,
+                existing_equipments=[],
+            )
+
+    def test_it_returns_misc_equipement(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        equipment_misc_1_user_1: "Equipment",
+        equipment_misc_2_user_1: "Equipment",
+        equipment_bike_user_1: "Equipment",
+        equipment_shoes_user_1: "Equipment",
+    ) -> None:
+        equipments_list = handle_pieces_of_equipment(
+            equipment_short_ids=[
+                equipment_misc_1_user_1.short_id,
+                equipment_misc_2_user_1.short_id,
+            ],
+            auth_user=user_1,
+            sport_id=sport_1_cycling.id,
+            existing_equipments=[],
+        )
+
+        assert set(equipments_list) == {  # type: ignore[arg-type]
+            equipment_misc_1_user_1,
+            equipment_misc_2_user_1,
+        }
+
+    @patch("fittrackee.equipments.utils.MAX_MISC_LIMIT", 2)
+    def test_it_raises_error_when_multiple_misc_exceed_max_limit(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_2_running: "Sport",
+        equipment_misc_1_user_1: "Equipment",
+        equipment_misc_2_user_1: "Equipment",
+        equipment_misc_3_user_1: "Equipment",
+    ) -> None:
+        with pytest.raises(
+            InvalidEquipmentsException,
+            match=re.escape("a maximum of 2 pieces of equipment can be added"),
+        ):
+            handle_pieces_of_equipment(
+                equipment_short_ids=[
+                    equipment_misc_1_user_1.short_id,
+                    equipment_misc_2_user_1.short_id,
+                    equipment_misc_3_user_1.short_id,
                 ],
                 auth_user=user_1,
                 sport_id=sport_2_running.id,

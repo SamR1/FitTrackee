@@ -21,7 +21,7 @@
     deselectGroupLabel=""
     @select="addSelectedEquipmentItems"
     @remove="removeSelectedEquipmentItems()"
-    @update:model-value="test"
+    @update:model-value="updateItems"
   />
 </template>
 
@@ -52,20 +52,19 @@
   const selectedPieces: Ref<IEquipment[]> = ref([])
   const validSelectedPieces: Ref<IEquipment[]> = ref([])
 
-  function test(selectValues: IEquipment[]) {
+  function updateItems(selectValues: IEquipment[]) {
     if (selectValues.length > 1) {
-      // prevent selecting all group items (only one piece of equipment per
-      // equipment type is allowed)
+      // prevent selecting all group items
       selectedPieces.value = [...validSelectedPieces.value]
     }
   }
   function addSelectedEquipmentItems(selectValue: IEquipment | IEquipment[]) {
-    // prevent selecting all group items (only one piece of equipment per
-    // equipment type is allowed)
+    // prevent selecting all group items
     if (!Array.isArray(selectValue)) {
       selectedPieces.value = [...validSelectedPieces.value, selectValue]
       selectedPieces.value = selectedPieces.value.filter(
         (e) =>
+          e.equipment_type.label === 'Misc' ||
           e.equipment_type.id !== selectValue.equipment_type.id ||
           e.id === selectValue.id
       )

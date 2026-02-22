@@ -111,10 +111,12 @@ export const getEquipments = (
   }
 
   const validEquipmentPieces = equipments
-    .filter((equipment) =>
-      SPORT_EQUIPMENT_TYPES[equipment.equipment_type.label].includes(
-        sport.label
-      )
+    .filter(
+      (equipment) =>
+        equipment.equipment_type.label === 'Misc' ||
+        SPORT_EQUIPMENT_TYPES[equipment.equipment_type.label].includes(
+          sport.label
+        )
     )
     .filter((equipment) =>
       activeStatus == 'all'
