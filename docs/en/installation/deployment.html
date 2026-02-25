@@ -360,6 +360,13 @@
 <span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">Since <strong>gunicorn</strong> 25.1.0, a <a class="reference external" href="https://gunicorn.org/guides/gunicornc/">control interface</a> is started by default and that may interfere with <strong>prometheus</strong> middleware (used by <strong>dramatiq</strong>).</div>
+<div class="line">A workaround for now is to disable this interface by adding <cite>–no-control-socket</cite> option to <strong>gunicorn</strong> command.</div>
+</div>
+</div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p>To handle large files, a higher value for <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#timeout">timeout</a> can be set.</p>

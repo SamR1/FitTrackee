@@ -371,6 +371,16 @@
 </li>
 </ul>
 </section>
+<section id="permissionerror-errno-13-permission-denied-usr-src-app-fittrackee-uploads">
+<h2><code class="docutils literal notranslate"><span class="pre">PermissionError:</span> <span class="pre">[Errno</span> <span class="pre">13]</span> <span class="pre">Permission</span> <span class="pre">denied:</span> <span class="pre">'/usr/src/app/fittrackee/uploads'</span></code><a class="headerlink" href="#permissionerror-errno-13-permission-denied-usr-src-app-fittrackee-uploads" title="Lien vers cette rubrique">¶</a></h2>
+<ul>
+<li><p>Cette erreur se produit quand la variable d'environnement <a class="reference external" href="../installation/environments_variables.html#envvar-UPLOAD_FOLDER">UPLOAD_FOLDER</a> n'est pas configurée dans le fichier <code class="docutils literal notranslate"><span class="pre">.env</span></code> utilisé par le container docker, cf. <a class="reference external" href="https://github.com/SamR1/FitTrackee/blob/main/.env.docker.example">.env.docker.example</a>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">export UPLOAD_FOLDER=/usr/src/app/uploads</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
 <section id="psycopg2-errors-undefinedobject-error-type-geometry-does-not-exist">
 <h2><code class="docutils literal notranslate"><span class="pre">psycopg2.errors.UndefinedObject:</span> <span class="pre">ERROR:</span>&#160; <span class="pre">type</span> <span class="pre">&quot;geometry&quot;</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code><a class="headerlink" href="#psycopg2-errors-undefinedobject-error-type-geometry-does-not-exist" title="Lien vers cette rubrique">¶</a></h2>
 <ul>
@@ -387,6 +397,16 @@
 <li><div class="line-block">
 <div class="line">Si une séance a été créée avant la version 1.0.0 de <strong>FitTrackee</strong>, il est nécessaire de l'actualiser pour générer la géométrie utilisée pour afficher la carte</div>
 <div class="line">Voir <a class="reference external" href="../upgrading-to-1.0.0.html">Mettre à jour vers la version 1.x</a> pour les instructions permettant de réactualiser toutes les séances avec l'interface de lignes de commande.</div>
+</div>
+</li>
+</ul>
+</section>
+<section id="oserror-errno-98-address-already-in-use">
+<h2><code class="docutils literal notranslate"><span class="pre">OSError:</span> <span class="pre">[Errno</span> <span class="pre">98]</span> <span class="pre">Address</span> <span class="pre">already</span> <span class="pre">in</span> <span class="pre">use</span></code><a class="headerlink" href="#oserror-errno-98-address-already-in-use" title="Lien vers cette rubrique">¶</a></h2>
+<ul>
+<li><div class="line-block">
+<div class="line">A partir de la version 25.1.0 de <strong>gunicorn</strong>, une <a class="reference external" href="https://gunicorn.org/guides/gunicornc/">interface de contrôle</a> est démarrée par défaut et peut interférer avec le <em>middleware</em> <strong>prometheus</strong> (utilisé par <strong>dramatiq</strong>).</div>
+<div class="line">A workaround for now is to disable this interface by adding <code class="docutils literal notranslate"><span class="pre">--no-control-socket</span></code> option to <strong>gunicorn</strong> command.</div>
 </div>
 </li>
 </ul>
@@ -458,8 +478,10 @@
 <li><a class="reference internal" href="#failed-to-upload-or-download-files">Échec du chargement ou du téléchargement de fichiers</a></li>
 <li><a class="reference internal" href="#runtimeerror-thread-already-started"><code class="docutils literal notranslate"><span class="pre">RuntimeError:</span> <span class="pre">thread</span> <span class="pre">already</span> <span class="pre">started</span></code></a></li>
 <li><a class="reference internal" href="#staticmap3-staticmap-error-request-failed-none-or-error-when-generating-map-image"><code class="docutils literal notranslate"><span class="pre">staticmap3.staticmap</span> <span class="pre">-</span> <span class="pre">ERROR</span> <span class="pre">-</span> <span class="pre">request</span> <span class="pre">failed</span> <span class="pre">[None]</span></code> ou &quot;Erreur lors de la génération de l'image de la carte&quot;</a></li>
+<li><a class="reference internal" href="#permissionerror-errno-13-permission-denied-usr-src-app-fittrackee-uploads"><code class="docutils literal notranslate"><span class="pre">PermissionError:</span> <span class="pre">[Errno</span> <span class="pre">13]</span> <span class="pre">Permission</span> <span class="pre">denied:</span> <span class="pre">'/usr/src/app/fittrackee/uploads'</span></code></a></li>
 <li><a class="reference internal" href="#psycopg2-errors-undefinedobject-error-type-geometry-does-not-exist"><code class="docutils literal notranslate"><span class="pre">psycopg2.errors.UndefinedObject:</span> <span class="pre">ERROR:</span>&#160; <span class="pre">type</span> <span class="pre">&quot;geometry&quot;</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></code></a></li>
 <li><a class="reference internal" href="#workouts-created-with-a-file-are-not-displayed-on-the-workouts-map">Des séances créées à partir de fichiers ne sont pas affichées sur la carte</a></li>
+<li><a class="reference internal" href="#oserror-errno-98-address-already-in-use"><code class="docutils literal notranslate"><span class="pre">OSError:</span> <span class="pre">[Errno</span> <span class="pre">98]</span> <span class="pre">Address</span> <span class="pre">already</span> <span class="pre">in</span> <span class="pre">use</span></code></a></li>
 </ul>
 </li>
 </ul>

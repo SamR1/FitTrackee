@@ -63,6 +63,17 @@ Failed to upload or download files
       - command: chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/logs /usr/src/app/.staticmap_cache
         user: root
 
+
+``PermissionError: [Errno 13] Permission denied: '/usr/src/app/fittrackee/uploads'``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- This error occurs when `UPLOAD_FOLDER <../installation/environments_variables.html#envvar-UPLOAD_FOLDER>`__ is not set in ``.env`` used by the docker container, see `.env.docker.example <https://github.com/SamR1/FitTrackee/blob/main/.env.docker.example>`__:
+
+  .. code:: yaml
+
+    export UPLOAD_FOLDER=/usr/src/app/uploads
+
+
 ``psycopg2.errors.UndefinedObject: ERROR:  type "geometry" does not exist``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -76,3 +87,9 @@ Workouts created with a file are not displayed on the workouts map
 - | If a workout has be created before **FitTrackee** 1.0.0, it needs to be refreshed to generate the geometry used to display the map.
   | See `Upgrading to 1.x <../upgrading-to-1.0.0.html>`__ for instructions to recalculate all workouts with a CLI command.
 
+
+``OSError: [Errno 98] Address already in use``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- | Since **gunicorn** 25.1.0, a `control interface <https://gunicorn.org/guides/gunicornc/>`__ is started by default and that may interfere with **prometheus** middleware (used by **dramatiq**).
+  | A workaround for now is to disable this interface by adding ``--no-control-socket`` option to **gunicorn** command.
