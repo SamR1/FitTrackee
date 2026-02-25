@@ -51,6 +51,9 @@ Examples:
     [Install]
     WantedBy=multi-user.target
 
+.. note::
+    | Since **gunicorn** 25.1.0, a `control interface <https://gunicorn.org/guides/gunicornc/>`__ is started by default and that may interfere with **prometheus** middleware (used by **dramatiq**).
+    | A workaround for now is to disable this interface by adding `--no-control-socket` option to **gunicorn** command.
 
 .. seealso::
     To handle large files, a higher value for `timeout <https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ can be set.

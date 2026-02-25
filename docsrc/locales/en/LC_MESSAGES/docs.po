@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-02-08 18:21+0100\n"
+"POT-Creation-Date: 2026-02-25 20:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -13225,38 +13225,52 @@ msgstr ""
 msgid "for application: ``fittrackee.service``"
 msgstr ""
 
-#: ../source/installation/deployment.rst:56
+#: ../source/installation/deployment.rst
+#: ../source/troubleshooting/administrator.rst
+msgid ""
+"Since **gunicorn** 25.1.0, a `control interface "
+"<https://gunicorn.org/guides/gunicornc/>`__ is started by default and "
+"that may interfere with **prometheus** middleware (used by **dramatiq**)."
+msgstr ""
+
+#: ../source/installation/deployment.rst
+msgid ""
+"A workaround for now is to disable this interface by adding `--no-"
+"control-socket` option to **gunicorn** command."
+msgstr ""
+
+#: ../source/installation/deployment.rst:59
 msgid ""
 "To handle large files, a higher value for `timeout "
 "<https://docs.gunicorn.org/en/stable/settings.html#timeout>`__ can be "
 "set."
 msgstr ""
 
-#: ../source/installation/deployment.rst:59
+#: ../source/installation/deployment.rst:62
 msgid ""
 "More information on deployment with Gunicorn in its `documentation "
 "<https://docs.gunicorn.org/en/stable/deploy.html>`__."
 msgstr ""
 
-#: ../source/installation/deployment.rst:61
+#: ../source/installation/deployment.rst:64
 msgid "for task queue workers: ``fittrackee_workers.service``"
 msgstr ""
 
-#: ../source/installation/deployment.rst:98
+#: ../source/installation/deployment.rst:101
 msgid "Command to be adapted to run queues separately."
 msgstr ""
 
-#: ../source/installation/deployment.rst:101
+#: ../source/installation/deployment.rst:104
 msgid ""
 "More information on **Dramatiq** CLI in its `documentation "
 "<https://dramatiq.io/guide.html#workers>`__."
 msgstr ""
 
-#: ../source/installation/deployment.rst:103
+#: ../source/installation/deployment.rst:106
 msgid "**Nginx** configuration:"
 msgstr ""
 
-#: ../source/installation/deployment.rst:141
+#: ../source/installation/deployment.rst:144
 msgid ""
 "If needed, update configuration to handle larger files (see "
 "`client_max_body_size "
@@ -15292,7 +15306,22 @@ msgid ""
 "compose.yml>`__:"
 msgstr ""
 
-#: ../source/troubleshooting/administrator.rst:67
+#: ../source/troubleshooting/administrator.rst:68
+msgid ""
+"``PermissionError: [Errno 13] Permission denied: "
+"'/usr/src/app/fittrackee/uploads'``"
+msgstr ""
+
+#: ../source/troubleshooting/administrator.rst:70
+msgid ""
+"This error occurs when `UPLOAD_FOLDER "
+"<../installation/environments_variables.html#envvar-UPLOAD_FOLDER>`__ is "
+"not set in ``.env`` used by the docker container, see "
+"`.env.docker.example "
+"<https://github.com/SamR1/FitTrackee/blob/main/.env.docker.example>`__:"
+msgstr ""
+
+#: ../source/troubleshooting/administrator.rst:78
 msgid ""
 "``psycopg2.errors.UndefinedObject: ERROR:  type \"geometry\" does not "
 "exist``"
@@ -15311,7 +15340,7 @@ msgid ""
 "to-1.0.0.html>`__"
 msgstr ""
 
-#: ../source/troubleshooting/administrator.rst:74
+#: ../source/troubleshooting/administrator.rst:85
 msgid "Workouts created with a file are not displayed on the workouts map"
 msgstr ""
 
@@ -15325,6 +15354,16 @@ msgstr ""
 msgid ""
 "See `Upgrading to 1.x <../upgrading-to-1.0.0.html>`__ for instructions to"
 " recalculate all workouts with a CLI command."
+msgstr ""
+
+#: ../source/troubleshooting/administrator.rst:92
+msgid "``OSError: [Errno 98] Address already in use``"
+msgstr ""
+
+#: ../source/troubleshooting/administrator.rst
+msgid ""
+"A workaround for now is to disable this interface by adding ``--no-"
+"control-socket`` option to **gunicorn** command."
 msgstr ""
 
 #: ../source/troubleshooting/index.rst:2

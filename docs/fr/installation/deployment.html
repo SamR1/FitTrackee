@@ -360,6 +360,13 @@
 <span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<div class="line-block">
+<div class="line">A partir de la version 25.1.0 de <strong>gunicorn</strong>, une <a class="reference external" href="https://gunicorn.org/guides/gunicornc/">interface de contrôle</a> est démarrée par défaut et peut interférer avec le <em>middleware</em> <strong>prometheus</strong> (utilisé par <strong>dramatiq</strong>).</div>
+<div class="line">Une solution provisoire consiste à désactiver cette interface en ajoutant l'option <code class="docutils literal notranslate"><span class="pre">--no-control-socket</span></code> à la commande <strong>gunicorn</strong>.</div>
+</div>
+</div>
 <div class="admonition seealso">
 <p class="admonition-title">Voir aussi</p>
 <p>Pour gérer les fichiers de taille importante, une valeur plus importante pour le <a class="reference external" href="https://docs.gunicorn.org/en/stable/settings.html#timeout">timeout</a> peut être configurée.</p>
