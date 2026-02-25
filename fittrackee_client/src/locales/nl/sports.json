@@ -1,6 +1,9 @@
 {
   "Canoeing": {
-    "LABEL": "Kanoing"
+    "LABEL": "Kanoën"
+  },
+  "Canoeing (Whitewater)": {
+    "LABEL": "Kanoën (Wildwater)"
   },
   "Cycling (Sport)": {
     "LABEL": "Fietsen (Sport)"
@@ -21,7 +24,10 @@
     "LABEL": "Trektocht"
   },
   "Kayaking": {
-    "LABEL": "Kayakken"
+    "LABEL": "Kajakken"
+  },
+  "Kayaking (Whitewater)": {
+    "LABEL": "Kajakken (Wildwater)"
   },
   "Mountain Biking": {
     "LABEL": "Mountainbiken"
@@ -36,7 +42,7 @@
     "LABEL": "Zwemmen (open water)"
   },
   "Padel (Outdoor)": {
-    "LABEL": "Padel (Buten)"
+    "LABEL": "Padel (Buiten)"
   },
   "Paragliding": {
     "LABEL": "Paragliden"
@@ -45,7 +51,7 @@
     "LABEL": "Roeien"
   },
   "Running": {
-    "LABEL": "Lopen"
+    "LABEL": "Hardlopen"
   },
   "Skiing (Alpine)": {
     "LABEL": "Skiën (Alpine)"
