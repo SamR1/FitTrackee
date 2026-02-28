@@ -42,22 +42,6 @@ export const sortEquipments = (
 }
 
 export const SPORT_EQUIPMENT_TYPES: Record<string, string[]> = {
-  Shoes: [
-    'Hiking',
-    'Mountaineering',
-    'Padel (Outdoor)',
-    'Running',
-    'Swimrun',
-    'Tennis (Outdoor)',
-    'Trail',
-    'Walking',
-    'Cycling (Sport)',
-    'Cycling (Transport)',
-    'Cycling (Trekking)',
-    'Halfbike',
-    'Mountain Biking',
-    'Mountain Biking (Electric)',
-  ],
   Bike: [
     'Cycling (Sport)',
     'Cycling (Transport)',
@@ -85,6 +69,22 @@ export const SPORT_EQUIPMENT_TYPES: Record<string, string[]> = {
   ],
   Racket: ['Padel (Outdoor)', 'Tennis (Outdoor)'],
   Skis: ['Skiing (Alpine)', 'Skiing (Cross Country)'],
+  Shoes: [
+    'Hiking',
+    'Mountaineering',
+    'Padel (Outdoor)',
+    'Running',
+    'Swimrun',
+    'Tennis (Outdoor)',
+    'Trail',
+    'Walking',
+    'Cycling (Sport)',
+    'Cycling (Transport)',
+    'Cycling (Trekking)',
+    'Halfbike',
+    'Mountain Biking',
+    'Mountain Biking (Electric)',
+  ],
   Snowshoes: ['Snowshoes'],
 }
 

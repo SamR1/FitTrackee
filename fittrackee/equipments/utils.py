@@ -8,22 +8,6 @@ from fittrackee.workouts.models import Sport
 from .exceptions import InvalidEquipmentException, InvalidEquipmentsException
 
 SPORT_EQUIPMENT_TYPES = {
-    "Shoes": [
-        "Hiking",
-        "Mountaineering",
-        "Padel (Outdoor)",
-        "Running",
-        "Swimrun",
-        "Tennis (Outdoor)",
-        "Trail",
-        "Walking",
-        "Cycling (Sport)",
-        "Cycling (Transport)",
-        "Cycling (Trekking)",
-        "Halfbike",
-        "Mountain Biking",
-        "Mountain Biking (Electric)",
-    ],
     "Bike": [
         "Cycling (Sport)",
         "Cycling (Transport)",
@@ -49,8 +33,24 @@ SPORT_EQUIPMENT_TYPES = {
         "Rowing",
         "Standup Paddleboarding",
     ],
-    "Skis": ["Skiing (Alpine)", "Skiing (Cross Country)"],
     "Racket": ["Padel (Outdoor)", "Tennis (Outdoor)"],
+    "Skis": ["Skiing (Alpine)", "Skiing (Cross Country)"],
+    "Shoes": [
+        "Hiking",
+        "Mountaineering",
+        "Padel (Outdoor)",
+        "Running",
+        "Swimrun",
+        "Tennis (Outdoor)",
+        "Trail",
+        "Walking",
+        "Cycling (Sport)",
+        "Cycling (Transport)",
+        "Cycling (Trekking)",
+        "Halfbike",
+        "Mountain Biking",
+        "Mountain Biking (Electric)",
+    ],
     "Snowshoes": ["Snowshoes"],
 }
 MAX_MISC_LIMIT = 5
