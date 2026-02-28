@@ -22,7 +22,25 @@
     @select="addSelectedEquipmentItems"
     @remove="removeSelectedEquipmentItems"
     @update:model-value="updateItems"
-  />
+  >
+    <template #tag="{ option, remove }">
+      <span class="multiselect__tag">
+        <span class="multiselect__tag_equipment">
+          <EquipmentTypeImage
+            :title="$t(`equipment_types.${option.equipment_type.label}.LABEL`)"
+            :equipment-type-label="option.equipment_type.label"
+          />
+          <span>{{ option.label }}</span>
+          <i
+            tabindex="1"
+            @keydown.enter.prevent="remove(option)"
+            @mousedown.prevent="remove(option)"
+            class="multiselect__tag-icon"
+          />
+        </span>
+      </span>
+    </template>
+  </Multiselect>
 </template>
 
 <script setup lang="ts">
@@ -107,13 +125,24 @@
 </script>
 
 <style scoped lang="scss">
+  @use '~@/scss/vars.scss' as *;
   @use '~@/scss/multiselect.scss' as *;
   ::v-deep(.multiselect__option) {
-    padding-left: 20px;
+    padding-left: $default-padding * 2;
   }
   ::v-deep(.multiselect__option--group) {
-    padding-left: 10px;
+    padding-left: $default-padding;
     font-weight: bold;
     cursor: default;
+  }
+  .multiselect__tag {
+    padding-left: $default-padding * 0.5;
+    .multiselect__tag_equipment {
+      display: flex;
+      .equipment-type-img {
+        height: 18px;
+        width: 20px;
+      }
+    }
   }
 </style>
