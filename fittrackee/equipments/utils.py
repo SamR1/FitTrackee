@@ -110,7 +110,7 @@ def handle_pieces_of_equipment(
             misc_count += 1
             if misc_count > MAX_MISC_LIMIT:
                 raise InvalidEquipmentsException(
-                    f"a maximum of {MAX_MISC_LIMIT} pieces of equipment "
+                    f"a maximum of {MAX_MISC_LIMIT} pieces of Misc equipment "
                     "can be added"
                 )
         else:

@@ -4,6 +4,7 @@
     "Error when updating elevation data source": "Erreur lors de la mise à jour de la source de données d'altitude",
     "Network Error": "Erreur réseau.",
     "UNKNOWN": "Erreur. Veuillez réessayer ou contacter l'administrateur.",
+    "a maximum of 5 pieces of Misc equipment can be added": "Un maximum de 5 équipements \"Autres\" peut être ajouté.",
     "a report already exists": "Vous avez déjà soumis un signalement.",
     "at least one file in zip archive exceeds size limit, please check the archive": "Au moins un fichier de l'archive zip dépasse la taille maximale, veuillez vérifier l'archive.",
     "comment already reactivated": "Le commentaire est déjà réactivé, veuillez rafraîchir la page.",

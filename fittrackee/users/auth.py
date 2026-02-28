@@ -1235,6 +1235,7 @@ def edit_user_sport_preferences(
         - ``invalid token, please log in again``
         - ``equipment_ids must be an array of strings``
         - ``only one piece of equipment per type can be provided``
+        - ``a maximum of 5 pieces of 'Misc' equipment can be added``
         - ``equipment with id <equipment_id> does not exist``
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``

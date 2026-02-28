@@ -2282,6 +2282,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``no valid segments with GPS found in fit file``
         - ``equipment_ids must be an array of strings``
         - ``only one piece of equipment per type can be provided``
+        - ``a maximum of 5 pieces of 'Misc' equipment can be added``
         - ``equipment with id <equipment_id> does not exist``
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``
@@ -2522,6 +2523,7 @@ def post_workout_no_gpx(
         - ``invalid payload``
         - ``equipment_ids must be an array of strings``
         - ``only one piece of equipment per type can be provided``
+        - ``a maximum of 5 pieces of 'Misc' equipment can be added``
         - ``equipment with id <equipment_id> does not exist``
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``
@@ -2759,6 +2761,7 @@ def update_workout(
         - ``invalid payload``
         - ``equipment_ids must be an array of strings``
         - ``only one piece of equipment per type can be provided``
+        - ``a maximum of 5 pieces of 'Misc' equipment can be added``
         - ``equipment with id <equipment_id> does not exist``
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``

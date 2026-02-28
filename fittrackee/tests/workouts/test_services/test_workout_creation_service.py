@@ -9,6 +9,7 @@ from fittrackee.constants import ElevationDataSource
 from fittrackee.database import PSQL_INTEGER_LIMIT
 from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
+    InvalidEquipmentsException,
 )
 from fittrackee.tests.mixins import EquipmentMixin, RandomMixin
 from fittrackee.visibility_levels import VisibilityLevel
@@ -833,6 +834,33 @@ class TestWorkoutCreationServiceProcess(RandomMixin, EquipmentMixin):
             equipment_bike_user_1,
             equipment_shoes_user_1,
         }
+
+    def test_it_raises_exception_when_multiple_pieces_of_equipment_with_same_type_are_provided(  # noqa
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_2_running: "Sport",
+        gpx_file: str,
+        equipment_shoes_user_1: "Equipment",
+        equipment_another_shoes_user_1: "Equipment",
+    ) -> None:
+        workout_data = {
+            "distance": 15,
+            "duration": 3000,
+            "sport_id": sport_2_running.id,
+            "workout_date": "2025-02-08 09:00",
+            "equipment_ids": [
+                equipment_shoes_user_1.short_id,
+                equipment_another_shoes_user_1.short_id,
+            ],
+        }
+        service = WorkoutCreationService(user_1, workout_data)
+
+        with pytest.raises(
+            InvalidEquipmentsException,
+            match="only one piece of equipment per type can be provided",
+        ):
+            service.process()
 
     def test_it_does_not_add_inactive_default_equipment(
         self,

@@ -366,7 +366,9 @@ class TestHandleEquipments(RandomMixin):
     ) -> None:
         with pytest.raises(
             InvalidEquipmentsException,
-            match=re.escape("a maximum of 2 pieces of equipment can be added"),
+            match=re.escape(
+                "a maximum of 2 pieces of Misc equipment can be added"
+            ),
         ):
             handle_pieces_of_equipment(
                 equipment_short_ids=[
