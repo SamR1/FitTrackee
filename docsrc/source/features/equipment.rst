@@ -10,6 +10,7 @@ Equipment
 .. versionchanged:: 0.11.0 added Tennis (Outdoor) to Shoes
 .. versionchanged:: 1.0.0 added Padel (Outdoor) to Shoes
 .. versionchanged:: 1.1.0 added Canoeing (Whitewater) and Kayaking (Whitewater) to Boat
+.. versionchanged:: 1.2.0 added Misc, Paddle and Racket equipment types
 
 Users can create equipment that can be associated with workouts.
 
@@ -19,13 +20,46 @@ Users can create equipment that can be associated with workouts.
 
 The following equipment types are available, depending on the sport:
 
-- Bike: Cycling (Sport, Transport, Trekking), Halfbike, Mountain Biking and Mountain Biking (Electric),
-- Bike Trainer: Cycling (Virtual),
-- Board: Standup paddleboarding and Windsurfing,
-- Kayak/Boat: Canoeing, Canoeing (Whitewater), Rowing, Kayaking and Kayaking (Whitewater),
-- Shoes: Hiking, Mountaineering, Padel (Outdoor), Running, Tennis (Outdoor), Trail and Walking,
-- Skis: Skiing (Alpine and Cross Country),
-- Snowshoes: Snowshoes.
+.. cssclass:: sports-table
+.. list-table::
+   :header-rows: 1
+   :widths: 15 25 60
+
+   * - Icon
+     - Name
+     - Sports
+   * - .. image:: ../_images/equipment_type/bike.png
+     - Bike
+     - Cycling (Sport, Transport, Trekking), Halfbike, Mountain Biking and Mountain Biking (Electric)
+   * - .. image:: ../_images/equipment_type/bike_trainer.png
+     - Bike Trainer
+     - Cycling (Virtual)
+   * - .. image:: ../_images/equipment_type/board.png
+     - Board
+     - Standup paddleboarding and Windsurfing
+   * - .. image:: ../_images/equipment_type/kayak_boat.png
+     - Kayak/Boat
+     - Canoeing, Canoeing (Whitewater), Rowing, Kayaking and Kayaking (Whitewater)
+   * - .. image:: ../_images/equipment_type/paddle.png
+     - Paddle
+     - Canoeing, Canoeing (Whitewater), Rowing, Kayaking and Kayaking (Whitewater), and Standup Paddleboarding
+   * - .. image:: ../_images/equipment_type/racket.png
+     - Racket
+     - Padel (Outdoor) and Tennis (Outdoor)
+   * - .. image:: ../_images/equipment_type/shoes.png
+     - Shoes
+     - Cycling (Sport, Transport, Trekking), Halfbike, Hiking, Mountain Biking and Mountain Biking (Electric), Mountaineering, Padel (Outdoor), Running, Tennis (Outdoor), Trail and Walking
+   * - .. image:: ../_images/equipment_type/skis.png
+     - Skis
+     - Skiing (Alpine and Cross Country)
+   * - .. image:: ../_images/equipment_type/snowshoes_equip.png
+     - Snowshoes
+     - Snowshoes
+   * - .. image:: ../_images/equipment_type/misc.png
+     - Misc
+     - All sports
+
+Only one piece of equipment per type can be added, with the exception of the "Misc" type, for which up to 5 pieces of equipment can be added.
 
 Users can define equipment visibility:
 
