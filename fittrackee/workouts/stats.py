@@ -650,6 +650,7 @@ def get_workouts_by_sport(
 def get_application_stats(auth_user: User) -> Dict:
     """
     Get all application statistics.
+    Users count is local users count when federation is enabled.
 
     **Scope**: ``workouts:read``
 
@@ -692,7 +693,10 @@ def get_application_stats(auth_user: User) -> Dict:
     """
 
     total_workouts = Workout.query.filter().count()
-    nb_users = User.query.filter(User.is_active == True).count()  # noqa
+    nb_users = User.query.filter(
+        User.is_remote == False,  # noqa
+        User.is_active == True,  # noqa
+    ).count()
     nb_sports = (
         db.session.query(func.count(Workout.sport_id))
         .group_by(Workout.sport_id)

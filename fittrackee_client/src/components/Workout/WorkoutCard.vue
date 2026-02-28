@@ -38,6 +38,9 @@
             />
           </div>
         </div>
+        <div v-if="user.is_remote" class="user-remote-fullname">
+          {{ user.fullname }}
+        </div>
       </div>
       <div class="workout-map">
         <StaticMap
@@ -243,6 +246,13 @@
             display: none;
           }
         }
+      }
+
+      .user-remote-fullname {
+        font-size: 0.8em;
+        font-style: italic;
+        margin-top: -0.5 * $default-padding;
+        padding-left: $default-padding;
       }
 
       .workout-map {

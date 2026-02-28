@@ -24,8 +24,8 @@
               v-for="user in matchingUsers"
               :key="user.username"
               tabindex="0"
-              @click="(e) => selectUser(e, user, comment)"
-              @keydown.enter="(e) => selectUser(e, user, comment)"
+              @click="(e) => selectUser(e, user, comment, replyTo)"
+              @keydown.enter="(e) => selectUser(e, user, comment, replyTo)"
             >
               <UserPicture :user="user" />
               <span>{{ user.username }}</span>
@@ -44,12 +44,20 @@
           <select id="text_visibility" v-model="commentTextVisibility">
             <option
               v-for="level in getCommentVisibilityLevels(
-                workout.workout_visibility
+                workout.workout_visibility,
+                appConfig.federation_enabled
               )"
               :value="level"
               :key="level"
             >
-              {{ $t(`visibility_levels.COMMENT_LEVELS.${level}`) }}
+              {{
+                $t(
+                  `visibility_levels.COMMENT_LEVELS.${getVisibilityLevelForLabel(
+                    level,
+                    appConfig.federation_enabled
+                  )}`
+                )
+              }}
             </option>
           </select>
         </div>
@@ -88,7 +96,10 @@
   import type { IComment, ICommentForm, IWorkout } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getUsernameQuery, replaceUsername } from '@/utils/inputs'
-  import { getCommentVisibilityLevels } from '@/utils/visibility_levels'
+  import {
+    getCommentVisibilityLevels,
+    getVisibilityLevelForLabel,
+  } from '@/utils/visibility_levels'
 
   interface ISuggestion {
     position: number | null
@@ -100,22 +111,31 @@
     commentsLoading: string | null
     authUser: IAuthUserProfile
     comment?: IComment | null
+    replyTo?: IComment | null
     name?: string | null
     mentions?: IUserLightProfile[]
     disabled?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     comment: null,
+    replyTo: null,
     name: 'text',
     mentions: () => [],
     disabled: false,
   })
-  const { authUser, comment, commentsLoading, mentions, name, workout } =
-    toRefs(props)
+  const {
+    authUser,
+    comment,
+    commentsLoading,
+    mentions,
+    name,
+    replyTo,
+    workout,
+  } = toRefs(props)
 
   const store = useStore()
 
-  const { errorMessages } = useApp()
+  const { appConfig, errorMessages } = useApp()
 
   let suggestion: ISuggestion = { position: null, usernameQuery: null }
 
@@ -123,13 +143,16 @@
   const commentTextVisibility: Ref<TVisibilityLevels | undefined> = ref(
     comment?.value
       ? comment.value.text_visibility
-      : workout.value?.workout_visibility
+      : replyTo.value
+        ? replyTo.value.text_visibility
+        : workout.value?.workout_visibility
   )
 
   const isLoading: ComputedRef<boolean> = computed(() =>
     comment.value
       ? comment.value.id === commentsLoading.value
-      : commentsLoading.value === 'new'
+      : commentsLoading.value ===
+        `new${replyTo.value ? `_${replyTo.value}` : ''}`
   )
   const matchingUsers: ComputedRef<IUserProfile[]> = computed(
     () => store.getters[USERS_STORE.GETTERS.USERS]
@@ -140,23 +163,36 @@
     if (comment?.value) {
       return comment.value.text || ''
     }
-    // comment w/ mention
+    // reply w/ mention
     if (mentions.value.length > 0) {
       const filteredMentions = mentions.value.filter(
         (m) => m.username !== authUser.value.username
       )
+      if (
+        replyTo.value &&
+        replyTo.value.user.username !== authUser.value.username
+      ) {
+        filteredMentions.push(replyTo.value.user)
+      }
       if (filteredMentions.length > 0) {
         return filteredMentions.map((m) => `@${m.username}`).join(' ') + ' '
       }
     }
+    if (
+      replyTo.value &&
+      replyTo.value.user.username !== authUser.value.username
+    ) {
+      return `@${replyTo.value.user.username} `
+    }
     // add workout owner as mention
     if (
+      !replyTo.value &&
       workout.value?.user &&
       workout.value?.user.username !== authUser.value.username
     ) {
       return `@${workout.value?.user.username} `
     }
-    // no mentions in comment
+    // no mentions in reply
     return ''
   }
   function searchUsers(usernameQuery: string) {
@@ -178,11 +214,14 @@
   function selectUser(
     event: Event,
     user: IUserProfile,
-    comment: IComment | null
+    comment: IComment | null,
+    replyTo: IComment | null
   ) {
     event.preventDefault()
     event.stopPropagation()
-    const textAreaId = `text${comment ? `-${comment.id}` : ''}`
+    const textAreaId = `text${
+      comment ? `-${comment.id}` : replyTo ? `-${replyTo.id}` : ''
+    }`
     if (suggestion.position !== null && suggestion.usernameQuery) {
       const updatedText = replaceUsername(
         commentText.value,
@@ -218,6 +257,9 @@
           text: commentText.value,
           text_visibility: commentTextVisibility.value,
           workout_id: workout.value.id,
+        }
+        if (replyTo?.value) {
+          payload.reply_to = replyTo.value.id
         }
         store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_COMMENT, payload)
         updateText({ value: '', selectionStart: 0 })

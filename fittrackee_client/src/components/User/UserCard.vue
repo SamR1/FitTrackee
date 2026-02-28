@@ -7,13 +7,20 @@
           class="user-name"
           :to="
             $route.path.startsWith('/admin')
-              ? `/admin/users/${user.username}`
-              : `/users/${user.username}?from=users`
+              ? `/admin/users/${getUserName(user)}`
+              : `/users/${getUserName(user)}?from=users`
           "
           :title="user.username"
         >
           {{ user.username }}
         </router-link>
+        <div
+          class="remote-user-account"
+          v-if="user.is_remote"
+          :title="user.fullname"
+        >
+          {{ user.fullname }}
+        </div>
       </div>
       <div class="stats-role">
         <UserStats :user="user" />
@@ -69,6 +76,7 @@
   import useAuthUser from '@/composables/useAuthUser'
   import type { IAuthUserProfile, IUserLightProfile } from '@/types/user'
   import { formatDate } from '@/utils/dates'
+  import { getUserName } from '@/utils/user'
 
   interface Props {
     authUser: IAuthUserProfile
@@ -140,6 +148,7 @@
           }
         }
 
+        .remote-user-account,
         .user-name {
           max-width: 170px;
           overflow: hidden;
@@ -151,6 +160,12 @@
           @media screen and (max-width: $x-small-limit) {
             max-width: 170px;
           }
+        }
+
+        .remote-user-account {
+          font-size: 0.8em;
+          font-style: italic;
+          margin-top: -10px;
         }
       }
       .stats-role {

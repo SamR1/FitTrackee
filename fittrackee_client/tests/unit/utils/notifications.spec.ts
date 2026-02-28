@@ -15,6 +15,7 @@ describe('getNotificationTypes', () => {
         'follow_request_approved',
         'workout_like',
         'workout_comment',
+        'comment_reply',
         'comment_like',
         'mention',
       ])
@@ -30,6 +31,7 @@ describe('getNotificationTypes', () => {
         'follow_request_approved',
         'workout_like',
         'workout_comment',
+        'comment_reply',
         'comment_like',
         'mention',
         'account_creation',

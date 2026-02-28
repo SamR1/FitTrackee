@@ -26,6 +26,18 @@
       >
         <div class="workout-title" v-if="workoutObject.type === 'WORKOUT'">
           <span>{{ workoutObject.title }}</span>
+          <div v-if="isAuthenticated">
+            <a
+              class="remote-link"
+              v-if="workoutObject.remoteUrl"
+              :href="workoutObject.remoteUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ $t('workouts.VIEW_ON_REMOTE_INSTANCE') }}
+              <i class="fa fa-external-link-square" aria-hidden="true"></i>
+            </a>
+          </div>
           <div v-if="isAuthenticated" class="workout-buttons">
             <button
               class="transparent icon-button likes"
@@ -493,6 +505,16 @@
         span {
           margin-right: $default-margin * 0.5;
         }
+        .remote-link {
+          font-size: 0.85em;
+          font-style: italic;
+          font-weight: normal;
+
+          .fa-external-link-square {
+            font-size: 0.85em;
+            padding: 0;
+          }
+        }
       }
       .likes-count {
         font-weight: normal;
@@ -517,6 +539,7 @@
 
         .change-elevation-source,
         .download-files {
+          display: flex;
           .change-elevation-source-buttons,
           .download-files-buttons {
             position: absolute;

@@ -9,6 +9,7 @@ from flask import current_app
 from fittrackee import create_app, db, limiter
 from fittrackee.application.models import AppConfig
 from fittrackee.application.utils import update_app_config_from_database
+from fittrackee.federation.models import Domain
 from fittrackee.workouts.services.workout_from_file.base_workout_with_segment_service import (  # noqa
     weather_service,
 )
@@ -68,6 +69,7 @@ def get_app(
     max_zip_file_size: Optional[Union[int, float]] = None,
     max_users: Optional[int] = None,
     global_map_workouts_limit: Optional[int] = None,
+    with_domain: Optional[bool] = True,
 ) -> Generator:
     app = create_app()
     limiter.enabled = False
@@ -84,6 +86,14 @@ def get_app(
                     global_map_workouts_limit,
                 )
                 update_app_config_from_database(app, app_db_config)
+            if with_domain:
+                domain = Domain.query.one_or_none()
+                if not domain:
+                    domain = Domain(
+                        name=app.config["AP_DOMAIN"],
+                        software_name="fittrackee",
+                    )
+                    db.session.add(domain)
             yield app
         except Exception as e:
             print(f"Error with app configuration: {e}")  # noqa: T201
@@ -103,6 +113,7 @@ def get_app(
 
 @pytest.fixture
 def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv("FEDERATION_ENABLED", "False")
     monkeypatch.setenv("EMAIL_URL", "smtp://none:none@0.0.0.0:1025")
     if os.getenv("TILE_SERVER_URL"):
         monkeypatch.delenv("TILE_SERVER_URL")
@@ -127,6 +138,7 @@ def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 @pytest.fixture
 def app_default_static_map(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv("FEDERATION_ENABLED", "False")
     monkeypatch.setenv(
         "TILE_SERVER_URL", "https://tile.openstreetmap.de/{z}/{x}/{y}.png"
     )
@@ -136,6 +148,7 @@ def app_default_static_map(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 @pytest.fixture
 def app_with_max_workouts(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv("FEDERATION_ENABLED", "False")
     monkeypatch.setenv("EMAIL_URL", "smtp://none:none@0.0.0.0:1025")
     yield from get_app(with_config=True, max_sync_workouts=1, max_workouts=2)
 
@@ -144,35 +157,41 @@ def app_with_max_workouts(monkeypatch: pytest.MonkeyPatch) -> Generator:
 def app_with_max_file_size_equals_0(
     monkeypatch: pytest.MonkeyPatch,
 ) -> Generator:
+    monkeypatch.setenv("FEDERATION_ENABLED", "False")
     monkeypatch.setenv("EMAIL_URL", "smtp://none:none@0.0.0.0:1025")
     yield from get_app(with_config=True, max_single_file_size=0)
 
 
 @pytest.fixture
 def app_with_max_file_size(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv("FEDERATION_ENABLED", "False")
     monkeypatch.setenv("EMAIL_URL", "smtp://none:none@0.0.0.0:1025")
     yield from get_app(with_config=True, max_single_file_size=0.001)
 
 
 @pytest.fixture
 def app_with_max_zip_file_size(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv("FEDERATION_ENABLED", "False")
     monkeypatch.setenv("EMAIL_URL", "smtp://none:none@0.0.0.0:1025")
     yield from get_app(with_config=True, max_zip_file_size=0.001)
 
 
 @pytest.fixture
 def app_with_3_users_max(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv("FEDERATION_ENABLED", "False")
     monkeypatch.setenv("EMAIL_URL", "smtp://none:none@0.0.0.0:1025")
     yield from get_app(with_config=True, max_users=3)
 
 
 @pytest.fixture
 def app_no_config(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv("FEDERATION_ENABLED", "False")
     yield from get_app(with_config=False)
 
 
 @pytest.fixture
 def app_ssl(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv("FEDERATION_ENABLED", "False")
     monkeypatch.setenv(
         "EMAIL_URL", "smtp://username:password@0.0.0.0:1025?ssl=True"
     )
@@ -181,6 +200,7 @@ def app_ssl(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 @pytest.fixture
 def app_tls(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv("FEDERATION_ENABLED", "False")
     monkeypatch.setenv(
         "EMAIL_URL", "smtp://username:password@0.0.0.0:1025?tls=True"
     )
@@ -189,12 +209,14 @@ def app_tls(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 @pytest.fixture
 def app_wo_email_auth(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv("FEDERATION_ENABLED", "False")
     monkeypatch.setenv("EMAIL_URL", "smtp://0.0.0.0:1025")
     yield from get_app(with_config=True)
 
 
 @pytest.fixture
 def app_wo_email_activation(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv("FEDERATION_ENABLED", "False")
     monkeypatch.setenv("EMAIL_URL", "")
     yield from get_app(with_config=True)
 
@@ -248,6 +270,18 @@ def app_with_global_map_workouts_limit_equal_to_1(
     monkeypatch: pytest.MonkeyPatch,
 ) -> Generator:
     yield from get_app(with_config=True, global_map_workouts_limit=1)
+
+
+@pytest.fixture
+def app_with_federation(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv("FEDERATION_ENABLED", "True")
+    yield from get_app(with_config=True)
+
+
+@pytest.fixture
+def app_wo_domain(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv("FEDERATION_ENABLED", "True")
+    yield from get_app(with_config=True, with_domain=False)
 
 
 @pytest.fixture()

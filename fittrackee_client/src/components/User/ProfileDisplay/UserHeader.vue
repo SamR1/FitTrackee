@@ -16,6 +16,14 @@
       <UserPicture :user="user" />
       <div class="user-details">
         <div class="user-name">{{ user.username }}</div>
+        <a
+          class="remote-user-account"
+          v-if="user.is_remote"
+          :href="user.profile_link"
+          target="_blank"
+        >
+          {{ user.fullname }}
+        </a>
         <UserStats :user="user" />
       </div>
       <div class="user-role" v-if="role">

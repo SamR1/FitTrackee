@@ -16,6 +16,8 @@ import type {
 } from '@/types/user'
 import { handleError } from '@/utils'
 
+const ACCOUNT_REGEX = /^@([\w_\-.]+)@([\w_\-.]+\.[a-z]{2,})$/g
+
 export const deleteUserAccount = (
   context:
     | ActionContext<IAuthUserState, IRootState>
@@ -50,13 +52,14 @@ const getUsers = (
 ): void => {
   context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS_LOADING, true)
+  const isRemote = payload.q && payload.q.match(ACCOUNT_REGEX) ? '/remote' : ''
   if (forAdmin) {
     payload.with_inactive = 'true'
     payload.with_hidden = 'true'
     payload.with_suspended = 'true'
   }
   authApi
-    .get('users', { params: payload })
+    .get(`users${isRemote}`, { params: payload })
     .then((res) => {
       if (res.data.status === 'success') {
         context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS, res.data.data.users)

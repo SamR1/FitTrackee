@@ -54,7 +54,7 @@ class TestCliUserCreate(RandomMixin):
                 "create",
                 self.random_string(),
                 "--email",
-                user_1.email,
+                user_1.email,  # type: ignore
                 "--password",
                 self.random_string(),
             ],
@@ -292,7 +292,7 @@ class TestCliUserCreate(RandomMixin):
                 "create",
                 self.random_string(),
                 "--email",
-                user_1.email,
+                user_1.email,  # type: ignore
                 "--role",
                 "invalid",
             ],

@@ -17,6 +17,8 @@ def user_1() -> User:
     user.hide_profile_in_users_directory = False
     user.accepted_policy_date = datetime.now(timezone.utc)
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 
@@ -28,6 +30,8 @@ def user_1_upper() -> User:
     user.hide_profile_in_users_directory = False
     user.accepted_policy_date = datetime.now(timezone.utc)
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 
@@ -93,6 +97,8 @@ def user_2() -> User:
     user.hide_profile_in_users_directory = False
     user.accepted_policy_date = datetime.now(timezone.utc)
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 
@@ -126,6 +132,8 @@ def user_3() -> User:
     user.weekm = True
     user.accepted_policy_date = datetime.now(timezone.utc)
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 
@@ -144,6 +152,8 @@ def user_4() -> User:
     user.hide_profile_in_users_directory = False
     user.weekm = True
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 
@@ -156,6 +166,8 @@ def inactive_user() -> User:
     user.confirmation_token = random_string()
     user.accepted_policy_date = datetime.now(timezone.utc)
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 
@@ -172,6 +184,8 @@ def suspended_user() -> User:
     user.accepted_policy_date = datetime.now(timezone.utc)
     user.suspended_at = datetime.now(timezone.utc)
     db.session.add(user)
+    db.session.flush()
+    user.create_actor()
     db.session.commit()
     return user
 

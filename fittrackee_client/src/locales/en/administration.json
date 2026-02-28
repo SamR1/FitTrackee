@@ -13,6 +13,7 @@
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Administrator email for contact",
     "ASYNCHRONOUS_UPLOAD_DISABLED": "Asynchronous zip archive upload is disabled.",
+    "FEDERATION_ENABLED": "Federation enabled",
     "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "This value cannot exceed 50,000 workouts.",
     "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Max. workouts displayed on global map",
     "MAX_FILES_IN_ZIP_LABEL": "Max. files of zip archive",
@@ -54,6 +55,8 @@
     },
     "REASON": "Reason",
     "REPORT": "report | reports",
+    "REPORT_COMMENT_PLACEHOLDER": "Add comment, action taken or any other useful information",
+    "REPORT_NOTE": "Note by",
     "REPORTED_BY": "Reported by",
     "REPORTED_CONTENT": "Reported content",
     "REPORTED_USER": "Reported user",
@@ -115,6 +118,8 @@
     },
     "TITLE": "Equipments administration"
   },
+  "FEDERATION_DISABLED": "Federation is currently disabled.",
+  "FEDERATION_ENABLED": "Federation is currently enabled.",
   "NEW_EMAIL": "New email",
   "NO_TEXT_ENTERED": "No text entered",
   "PASSWORD_RESET_SUCCESSFUL": "The password has been reset.",

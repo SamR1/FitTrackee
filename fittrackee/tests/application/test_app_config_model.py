@@ -25,6 +25,7 @@ class TestConfigModel:
 
         serialized_app_config = config.serialize()
         assert serialized_app_config["admin_contact"] == config.admin_contact
+        assert serialized_app_config["federation_enabled"] is False
         assert (
             serialized_app_config["elevation_services"]
             == config.elevation_services

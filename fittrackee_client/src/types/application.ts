@@ -16,6 +16,7 @@ export type TAppConfig = {
   about: string | null
   admin_contact: string
   elevation_services: IElevationService
+  federation_enabled: boolean
   file_limit_import: number
   file_sync_limit_import: number
   is_email_sending_enabled: boolean
@@ -47,6 +48,7 @@ export type TAppConfigForm = {
   [key: string]: number | string | boolean
   about: string
   admin_contact: string
+  federation_enabled: boolean
   file_limit_import: number
   file_sync_limit_import: number
   max_single_file_size: number

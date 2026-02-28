@@ -2,13 +2,17 @@
   "ANALYSIS_VISIBILITY": "Analysis visibility",
   "CALORIES_VISIBILITY": "Calories visibility",
   "COMMENT_LEVELS": {
+    "followers_and_remote_only": "Local and remote followers only",
     "followers_only": "Followers only",
+    "local_followers_only": "Local followers only",
     "private": "Private (only mentioned users)",
     "public": "Public (everyone)"
   },
   "HR_VISIBILITY": "Heart rate visibility",
   "LEVELS": {
+    "followers_and_remote_only": "Local and remote followers only",
     "followers_only": "Followers only",
+    "local_followers_only": "Local followers only",
     "private": "Private (only me)",
     "public": "Public (everyone)"
   },

@@ -13,6 +13,7 @@ from sqlalchemy.exc import IntegrityError
 from fittrackee import db
 from fittrackee.constants import ElevationDataSource, PaceSpeedDisplay
 from fittrackee.equipments.models import Equipment
+from fittrackee.federation.exceptions import FederationDisabledException
 from fittrackee.files import get_absolute_file_path
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.tests.fixtures.fixtures_workouts import update_workout
@@ -1449,6 +1450,30 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         assert (
             serialized_workout["elevation_data_source"]
             == ElevationDataSource.FILE
+        )
+
+    def test_it_gets_workout_ap_id(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        assert workout_cycling_user_1.get_ap_id() == (
+            f"{user_1.actor.activitypub_id}/"
+            f"workouts/{workout_cycling_user_1.short_id}"
+        )
+
+    def test_it_gets_workout_remote_url(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        assert workout_cycling_user_1.get_remote_url() == (
+            f"https://{user_1.actor.domain.name}/"
+            f"workouts/{workout_cycling_user_1.short_id}"
         )
 
 
@@ -4046,3 +4071,15 @@ class TestWorkoutSegmentModel:
         assert to_shape(workout_cycling_user_1_segment.geom) == LineString(
             segments_coordinates
         )
+
+
+class TestWorkoutModelGetActivity:
+    def test_it_raises_error_if_federation_is_disabled(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        with pytest.raises(FederationDisabledException):
+            workout_cycling_user_1.get_activities(activity_type="Create")

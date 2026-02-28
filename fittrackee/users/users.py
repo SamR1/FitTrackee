@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
@@ -9,6 +10,12 @@ from fittrackee import appLog, db, limiter
 from fittrackee.dates import get_readable_duration
 from fittrackee.emails.tasks import send_email
 from fittrackee.equipments.models import Equipment
+from fittrackee.federation.decorators import federation_required_for_route
+from fittrackee.federation.models import Domain
+from fittrackee.federation.utils.user import (
+    FULL_NAME_REGEX,
+    get_user_from_username,
+)
 from fittrackee.files import get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
 from fittrackee.reports.models import ReportAction
@@ -27,6 +34,7 @@ from .exceptions import (
     BlockUserException,
     FollowRequestAlreadyRejectedError,
     InvalidEmailException,
+    InvalidUserException,
     InvalidUserRole,
     NotExistingFollowRequestError,
     OwnerException,
@@ -71,10 +79,31 @@ def _get_value_depending_on_user_rights(
     return value
 
 
-def get_users_list(auth_user: User) -> Dict:
+def get_users_list(auth_user: User, remote: bool = False) -> Dict:
     params = request.args.copy()
 
     query = params.get("q")
+    if remote and query and re.match(FULL_NAME_REGEX, query):
+        try:
+            user = get_user_from_username(query, with_action="creation")
+        except Exception as e:
+            appLog.error(f"Error when searching user '{query}': {e}")
+            return EMPTY_USERS_RESPONSE
+        if user:
+            if not user.is_active and not auth_user.has_admin_rights:
+                return EMPTY_USERS_RESPONSE
+            return {
+                "status": "success",
+                "data": {"users": [user.serialize(current_user=auth_user)]},
+                "pagination": {
+                    "has_next": False,
+                    "has_prev": False,
+                    "page": 1,
+                    "pages": 1,
+                    "total": 1,
+                },
+            }
+
     page = int(params.get("page", 1))
     per_page = int(params.get("per_page", USERS_PER_PAGE))
     if per_page > 50:
@@ -100,21 +129,26 @@ def get_users_list(auth_user: User) -> Dict:
     )
     with_following = params.get("with_following", "false").lower()
     following_user_ids = (
-        auth_user.get_following_user_ids() if with_following == "true" else []
+        auth_user.get_following_user_ids()
+        if with_following == "true"
+        else ([], [])
     )
 
-    filters: List[Union["ColumnElement", "BinaryExpression"]] = []
+    filters: List[Union["ColumnElement", "BinaryExpression"]] = [
+        User.is_remote == remote,
+    ]
     if query:
         filters.append(User.username.ilike("%" + query + "%"))
     if with_inactive != "true":
         filters.append(User.is_active == True)  # noqa
-    if with_hidden_users != "true":
+    if with_hidden_users != "true" and not remote:
         filters.append(
             (
                 or_(
                     User.hide_profile_in_users_directory == False,  # noqa
+                    # TODO: handle remote users?
                     and_(
-                        User.id.in_(following_user_ids),
+                        User.id.in_(following_user_ids[0]),
                         User.hide_profile_in_users_directory == True,  # noqa
                     ),
                 )
@@ -147,7 +181,7 @@ def get_users_list(auth_user: User) -> Dict:
 @require_auth(scopes=["users:read"])
 def get_users(auth_user: User) -> Dict:
     """
-    Get all users.
+    Get all users (it returns only local users if federation is enabled).
     If authenticated user has admin rights, users email is returned.
 
     It returns user preferences only for authenticated user.
@@ -191,6 +225,7 @@ def get_users(auth_user: User) -> Dict:
               "following": 0,
               "follows": "false",
               "is_followed_by": "false",
+              "is_remote": false,
               "last_name": null,
               "location": null,
               "map_visibility": "private",
@@ -265,6 +300,7 @@ def get_users(auth_user: User) -> Dict:
               "following": 0,
               "follows": "false",
               "is_followed_by": "false",
+              "is_remote": false,
               "last_name": null,
               "location": null,
               "map_visibility": "private",
@@ -316,6 +352,98 @@ def get_users(auth_user: User) -> Dict:
     return get_users_list(auth_user)
 
 
+@users_blueprint.route("/users/remote", methods=["GET"])
+@federation_required_for_route
+@require_auth(scopes=["users:read"])
+def get_remote_users(
+    auth_user: User,
+    app_domain: Domain,
+) -> Dict:
+    """
+    Get all remote existing users (only if federation is enabled).
+    If a full account is provided in query, if creates remote user if it
+    doesn't exist.
+
+    **Scope**: ``users:read``
+
+    **Example request**:
+
+    - without parameters
+
+    .. sourcecode:: http
+
+      GET /api/users/remote HTTP/1.1
+      Content-Type: application/json
+
+    - with some query parameters
+
+    .. sourcecode:: http
+
+      GET /api/users/remote?order_by=username  HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "users": [
+            {
+              "admin": false,
+              "bio": null,
+              "birth_date": null,
+              "created_at": "Sat, 20 Jul 2019 11:27:03 GMT",
+              "first_name": null,
+              "followers": 0,
+              "following": 0,
+              "follows": "false",
+              "fullname": "@sam@example.com",
+              "is_followed_by": "false",
+              "is_remote": true,
+              "last_name": null,
+              "location": null,
+              "map_visibility": "private",
+              "nb_sports": 0,
+              "nb_workouts": 0,
+              "picture": false,
+              "profile_link": "https://example.com/@sam"
+              "records": [],
+              "sports_list": [],
+              "total_distance": 0,
+              "total_duration": "0:00:00",
+              "username": "sam",
+              "workouts_visibility": "private"
+            }
+          ]
+        },
+        "status": "success"
+      }
+
+    :query integer page: page if using pagination (default: 1)
+    :query integer per_page: number of users per page (default: 10, max: 50)
+    :query string q: query on username or account
+    :query string order_by: sorting criteria (``username``, ``created_at``,
+                            ``workouts_count``, ``admin``,
+                            default: ``username``)
+    :query string order: sorting order (``asc``, ``desc``, default: ``asc``)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: success
+    :statuscode 401:
+        - provide a valid auth token
+        - signature expired, please log in again
+        - invalid token, please log in again
+    :statuscode 403: Error. Federation is disabled for this instance.
+
+    """
+    return get_users_list(auth_user, remote=True)
+
+
 @users_blueprint.route("/users/<user_name>", methods=["GET"])
 @require_auth(scopes=["users:read"], optional_auth_user=True)
 def get_single_user(
@@ -323,6 +451,7 @@ def get_single_user(
 ) -> Union[Dict, HttpResponse]:
     """
     Get single user details.
+    If username is a remote user account, it returns remote user if exists.
     If a user is authenticated, it returns relationships.
     If authenticated user has admin rights, user email is returned.
 
@@ -359,6 +488,7 @@ def get_single_user(
             "following": 0,
             "follows": "false",
             "is_followed_by": "false",
+            "is_remote": false,
             "last_name": null,
             "location": null,
             "map_visibility": "private",
@@ -446,6 +576,7 @@ def get_single_user(
             "following": 0,
             "follows": "false",
             "is_followed_by": "false",
+            "is_remote": false,
             "last_name": null,
             "location": null,
             "map_visibility": "private",
@@ -473,9 +604,7 @@ def get_single_user(
         - ``user does not exist``
     """
     try:
-        user = User.query.filter(
-            func.lower(User.username) == func.lower(user_name),
-        ).first()
+        user = get_user_from_username(user_name, with_action="refresh")
         if user:
             if (
                 not auth_user or not auth_user.has_admin_rights
@@ -522,11 +651,7 @@ def get_picture(user_name: str) -> Any:
 
     """
     try:
-        user = User.query.filter(
-            func.lower(User.username) == func.lower(user_name),
-        ).first()
-        if not user:
-            return UserNotFoundErrorResponse()
+        user = get_user_from_username(user_name)
         if user.picture is not None:
             picture_path = get_absolute_file_path(user.picture)
             return send_file(picture_path)
@@ -581,6 +706,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
             "following": 0,
             "follows": "false",
             "is_followed_by": "false",
+            "is_remote": false,
             "last_name": null,
             "location": null,
             "map_visibility": "private",
@@ -767,6 +893,8 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
         }
     except UserNotFoundException:
         return UserNotFoundErrorResponse()
+    except InvalidUserException:
+        return InvalidPayloadErrorResponse()
     except (InvalidEmailException, InvalidUserRole, OwnerException) as e:
         return InvalidPayloadErrorResponse(str(e))
     except (TypeError, exc.StatementError) as e:
@@ -823,13 +951,16 @@ def delete_user(
 
     """
     try:
-        user = User.query.filter(
-            func.lower(User.username) == func.lower(user_name),
-        ).first()
-        if not user:
+        try:
+            user = get_user_from_username(user_name)
+        except UserNotFoundException:
             return UserNotFoundErrorResponse()
         if user.id != auth_user.id and user.role == UserRole.OWNER.value:
             return ForbiddenErrorResponse("you can not delete owner account")
+
+        if user.is_remote:
+            # TODO: handle properly remote user deletion
+            return InvalidPayloadErrorResponse()
 
         if user.id != auth_user.id and not auth_user.has_admin_rights:
             return ForbiddenErrorResponse()
@@ -859,9 +990,10 @@ def delete_user(
         db.session.flush()
         user_picture = user.picture
         db.session.delete(user)
+        db.session.delete(user.actor)
         db.session.commit()
         if user_picture:
-            picture_path = get_absolute_file_path(user.picture)
+            picture_path = get_absolute_file_path(user_picture)
             if os.path.isfile(picture_path):
                 os.remove(picture_path)
         shutil.rmtree(
@@ -891,14 +1023,25 @@ def delete_user(
 def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
     """
     Send a follow request to a user.
+    If federation is enabled, it sends a follow request to remote instance
+    if the targeted user is a remote user.
 
     **Scope**: ``follow:write``
 
     **Example request**:
 
+    - follow local user
+
     .. sourcecode:: http
 
       POST /api/users/john_doe/follow HTTP/1.1
+      Content-Type: application/json
+
+    - follow remote user
+
+    .. sourcecode:: http
+
+      POST /api/users/sam@remote-instance.net/follow HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -935,13 +1078,10 @@ def follow_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
         "message": f"Follow request to user '{user_name}' is sent.",
     }
 
-    target_user = User.query.filter(
-        func.lower(User.username) == func.lower(user_name),
-    ).first()
-    if not target_user:
-        appLog.error(
-            f"Error when following a user: user {user_name} not found"
-        )
+    try:
+        target_user = get_user_from_username(user_name)
+    except UserNotFoundException as e:
+        appLog.error(f"Error when following a user: {e}")
         return UserNotFoundErrorResponse()
 
     if auth_user.is_blocked_by(target_user):
@@ -961,14 +1101,25 @@ def unfollow_user(
 ) -> Union[Dict, HttpResponse]:
     """
     Unfollow a user.
+    If federation is enabled, it sends a Undo activity to the remote instance
+    if the targeted user is a remote user.
 
     **Scope**: ``follow:write``
 
     **Example request**:
 
+    - unfollow local user
+
     .. sourcecode:: http
 
       POST /api/users/john_doe/unfollow HTTP/1.1
+      Content-Type: application/json
+
+    - unfollow remote user
+
+    .. sourcecode:: http
+
+      POST /api/users/sam@remote-instance.net/unfollow HTTP/1.1
       Content-Type: application/json
 
     **Example response**:
@@ -1006,13 +1157,10 @@ def unfollow_user(
         "message": f"Undo for a follow request to user '{user_name}' is sent.",
     }
 
-    target_user = User.query.filter(
-        func.lower(User.username) == func.lower(user_name),
-    ).first()
-    if not target_user:
-        appLog.error(
-            f"Error when following a user: user {user_name} not found"
-        )
+    try:
+        target_user = get_user_from_username(user_name)
+    except UserNotFoundException as e:
+        appLog.error(f"Error when following a user: {e}")
         return UserNotFoundErrorResponse()
 
     try:
@@ -1031,10 +1179,9 @@ def get_user_relationships(
     except ValueError:
         page = 1
 
-    user = User.query.filter(
-        func.lower(User.username) == func.lower(user_name),
-    ).first()
-    if not user:
+    try:
+        user = get_user_from_username(user_name)
+    except UserNotFoundException:
         return UserNotFoundErrorResponse()
 
     relations_object = (
@@ -1111,6 +1258,7 @@ def get_followers(
               "following": 1,
               "follows": "true",
               "is_followed_by": "false",
+              "is_remote": false,
               "last_name": null,
               "location": null,
               "map_visibility": "followers_only",
@@ -1205,6 +1353,7 @@ def get_following(
               "following": 1,
               "follows": "false",
               "is_followed_by": "true",
+              "is_remote": false,
               "last_name": null,
               "location": null,
               "map_visibility": "followers_only",

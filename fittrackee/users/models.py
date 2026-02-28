@@ -1,6 +1,6 @@
 import os
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 from uuid import UUID, uuid4
 
 import jwt
@@ -24,6 +24,11 @@ from fittrackee.comments.models import Comment
 from fittrackee.constants import ElevationDataSource, PaceSpeedDisplay
 from fittrackee.database import TZDateTime
 from fittrackee.dates import aware_utc_now
+from fittrackee.federation.decorators import federation_required
+from fittrackee.federation.enums import ActivityType
+from fittrackee.federation.models import Actor, Domain
+from fittrackee.federation.objects.follow_request import FollowRequestObject
+from fittrackee.federation.tasks.inbox import send_to_remote_inbox
 from fittrackee.files import get_absolute_file_path
 from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import VisibilityLevel
@@ -122,6 +127,24 @@ class FollowRequest(BaseModel):
             "from_user": self.from_user.serialize(),
             "to_user": self.to_user.serialize(),
         }
+
+    def _get_activity_type(self, undo: bool) -> ActivityType:
+        if self.updated_at is None:
+            return ActivityType.FOLLOW
+        if undo:
+            return ActivityType.UNDO
+        if self.is_approved:
+            return ActivityType.ACCEPT
+        return ActivityType.REJECT
+
+    @federation_required
+    def get_activity(self, undo: bool = False) -> Dict:
+        follow_request_object = FollowRequestObject(
+            from_actor=self.from_user.actor,
+            to_actor=self.to_user.actor,
+            activity_type=self._get_activity_type(undo),
+        )
+        return follow_request_object.get_activity()
 
 
 @listens_for(FollowRequest, "after_insert")
@@ -270,14 +293,24 @@ class BlockedUser(BaseModel):
 
 class User(BaseModel):
     __tablename__ = "users"
+    __table_args__ = (
+        db.UniqueConstraint(
+            "username", "actor_id", name="username_actor_id_unique"
+        ),
+    )
+    actor_id: Mapped[Optional[int]] = mapped_column(
+        db.ForeignKey("actors.id"), unique=True, nullable=True
+    )
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    username: Mapped[str] = mapped_column(
-        db.String(255), unique=True, nullable=False
+    username: Mapped[str] = mapped_column(db.String(255), nullable=False)
+    # Note: Null values are not considered equal
+    # source: https://www.postgresql.org/docs/current/indexes-unique.html
+    email: Mapped[Optional[str]] = mapped_column(
+        db.String(255), unique=True, nullable=True
     )
-    email: Mapped[str] = mapped_column(
-        db.String(255), unique=True, nullable=False
+    password: Mapped[Optional[str]] = mapped_column(
+        db.String(255), nullable=True
     )
-    password: Mapped[str] = mapped_column(db.String(255), nullable=False)
     created_at: Mapped[datetime] = mapped_column(TZDateTime, nullable=False)
     first_name: Mapped[Optional[str]] = mapped_column(
         db.String(80), nullable=True
@@ -387,6 +420,9 @@ class User(BaseModel):
         server_default="PRIVATE",
         nullable=False,
     )
+    is_remote: Mapped[bool] = mapped_column(
+        db.Boolean, default=False, nullable=False
+    )
 
     workouts: Mapped[List["Workout"]] = relationship(
         "Workout", lazy=True, back_populates="user"
@@ -457,6 +493,7 @@ class User(BaseModel):
         lazy="dynamic",
         viewonly=True,
     )
+    actor: Mapped["Actor"] = relationship(Actor, back_populates="user")
 
     def __repr__(self) -> str:
         return f"<User {self.username!r}>"
@@ -464,18 +501,24 @@ class User(BaseModel):
     def __init__(
         self,
         username: str,
-        email: str,
-        password: str,
+        email: Optional[str],
+        password: Optional[str],
         created_at: Optional[datetime] = None,
+        is_remote: bool = False,
     ) -> None:
         self.username = username
-        self.email = email
-        self.password = bcrypt.generate_password_hash(
-            password, current_app.config.get("BCRYPT_LOG_ROUNDS")
-        ).decode()
+        self.email = email  # email is None for remote actor
+        self.password = (
+            bcrypt.generate_password_hash(
+                password, current_app.config.get("BCRYPT_LOG_ROUNDS")
+            ).decode()
+            if email
+            else None  # no password for remote actor
+        )
         self.created_at = (
             datetime.now(timezone.utc) if created_at is None else created_at
         )
+        self.is_remote = is_remote
 
     @staticmethod
     def encode_auth_token(user_id: int) -> str:
@@ -567,6 +610,24 @@ class User(BaseModel):
             follow_request.updated_at = datetime.now(timezone.utc)
         db.session.commit()
 
+        if current_app.config["FEDERATION_ENABLED"]:
+            # send Follow activity to remote followed user
+            if target.actor.is_remote:
+                send_to_remote_inbox.send(
+                    sender_id=self.actor.id,
+                    activity=follow_request.get_activity(),
+                    recipients=[target.actor.inbox_url],
+                )
+
+            # send Accept activity to remote follower user if local followed
+            # user accepts follow requests automatically
+            if self.actor.is_remote and not target.manually_approves_followers:
+                send_to_remote_inbox.send(
+                    sender_id=target.actor.id,
+                    activity=follow_request.get_activity(),
+                    recipients=[self.actor.inbox_url],
+                )
+
         return follow_request
 
     def unfollows(self, target: "User") -> None:
@@ -575,6 +636,17 @@ class User(BaseModel):
         ).first()
         if not existing_follow_request:
             raise NotExistingFollowRequestError()
+
+        if current_app.config["FEDERATION_ENABLED"]:
+            undo_activity = existing_follow_request.get_activity(undo=True)
+
+            # send Undo activity to remote followed user
+            if target.actor.is_remote:
+                send_to_remote_inbox.send(
+                    sender_id=self.actor.id,
+                    activity=undo_activity,
+                    recipients=[target.actor.inbox_url],
+                )
 
         db.session.delete(existing_follow_request)
         db.session.commit()
@@ -603,6 +675,14 @@ class User(BaseModel):
         follow_request.is_approved = approved
         follow_request.updated_at = datetime.now(timezone.utc)
         db.session.commit()
+
+        if current_app.config["FEDERATION_ENABLED"] and user.actor.is_remote:
+            send_to_remote_inbox.send(
+                sender_id=self.actor.id,
+                activity=follow_request.get_activity(),
+                recipients=[user.actor.inbox_url],
+            )
+
         return follow_request
 
     def approves_follow_request_from(self, user: "User") -> FollowRequest:
@@ -637,19 +717,80 @@ class User(BaseModel):
         ).first()
         return self.follow_request_status(follow_request)
 
-    def get_following_user_ids(self) -> List:
-        return [following.id for following in self.following]
+    def get_following_user_ids(self) -> Tuple[List, List]:
+        local_following_ids = []
+        remote_following_ids = []
+        for following in self.following:
+            if following.is_remote is True:
+                remote_following_ids.append(following.id)
+            else:
+                local_following_ids.append(following.id)
+        return local_following_ids, remote_following_ids
 
     def get_followers_user_ids(self) -> List:
         return [followers.id for followers in self.followers]
+
+    @federation_required
+    def get_followers_shared_inboxes(self) -> Dict[str, List[str]]:
+        """
+        returns a dict with 2 distinct lists:
+        - followers for remote FitTrackee instances
+        - followers for remote non-FitTrackee instances
+        """
+        fittrackee_shared_inboxes = set()
+        other_shared_inboxes = set()
+        for follower in self.followers.all():
+            if follower.actor.is_remote:
+                if follower.actor.domain.software_name == "fittrackee":
+                    fittrackee_shared_inboxes.add(
+                        follower.actor.shared_inbox_url
+                    )
+                else:
+                    other_shared_inboxes.add(follower.actor.shared_inbox_url)
+        return {
+            "fittrackee": list(fittrackee_shared_inboxes),
+            "others": list(other_shared_inboxes),
+        }
+
+    def get_followers_shared_inboxes_as_list(self) -> List[str]:
+        """
+        returns all remote followers regardless instances application
+        (FitTrackee or non-FitTrackee)
+        """
+        return list(
+            set(
+                follower.actor.shared_inbox_url
+                for follower in self.followers.all()
+                if follower.actor.is_remote
+            )
+        )
 
     def get_user_url(self) -> str:
         """Return user url on user interface"""
         return f"{current_app.config['UI_URL']}/users/{self.username}"
 
-    def linkify_mention(self) -> str:
+    def create_actor(self) -> None:
+        app_domain = Domain.query.filter_by(
+            name=current_app.config["AP_DOMAIN"]
+        ).one()
+        actor = Actor(
+            preferred_username=self.username, domain_id=app_domain.id
+        )
+        db.session.add(actor)
+        db.session.flush()
+        self.actor_id = actor.id
+        db.session.commit()
+
+    @property
+    def fullname(self) -> Optional[str]:
+        return self.actor.fullname
+
+    def linkify_mention(self, with_domain: bool) -> str:
+        mention = f"@{self.username}"
+        if with_domain:
+            mention += f"@{self.actor.domain.name}"
         return USER_LINK_TEMPLATE.format(
-            profile_url=self.get_user_url(), username=f"@{self.username}"
+            profile_url=self.actor.profile_url, username=mention
         )
 
     def blocks_user(self, user: "User") -> None:
@@ -867,14 +1008,22 @@ class User(BaseModel):
 
         serialized_user: Dict = {
             "created_at": self.created_at,
-            "followers": self.followers.count(),
-            "following": self.following.count(),
+            "is_remote": self.is_remote,
             "nb_workouts": self.workouts_count,
             "picture": self.picture is not None,
             "role": UserRole(self.role).name.lower(),
             "suspended_at": self.suspended_at,
             "username": self.username,
         }
+        if self.is_remote:
+            serialized_user["fullname"] = f"@{self.fullname}"
+            serialized_user["followers"] = self.actor.stats.followers
+            serialized_user["following"] = self.actor.stats.following
+            serialized_user["profile_link"] = self.actor.profile_url
+        else:
+            serialized_user["followers"] = self.followers.count()
+            serialized_user["following"] = self.following.count()
+
         if is_auth_user(role) or has_moderator_rights(role):
             serialized_user["is_active"] = self.is_active
             serialized_user["email"] = self.email
@@ -1416,6 +1565,7 @@ class Notification(BaseModel):
 
         if self.event_type in [
             "comment_like",
+            "comment_reply",
             "mention",
             "workout_comment",
         ]:

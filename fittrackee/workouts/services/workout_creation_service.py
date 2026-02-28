@@ -36,6 +36,18 @@ class WorkoutData:
     title: Optional[str] = None
     workout_visibility: Optional[VisibilityLevel] = None
     calories: Optional[int] = None
+    # TODO: to refacto
+    # remote content
+    id: Optional[str] = None
+    type: Optional[str] = None
+    published: Optional[str] = None
+    url: Optional[str] = None
+    attributedTo: Optional[str] = None
+    to: Optional[str] = None
+    cc: Optional[str] = None
+    ave_speed: Optional[int] = None
+    max_speed: Optional[int] = None
+    moving: Optional[int] = None
 
 
 class WorkoutCreationService(CheckWorkoutMixin, BaseWorkoutService):
@@ -143,6 +155,10 @@ class WorkoutCreationService(CheckWorkoutMixin, BaseWorkoutService):
             if self.workout_data.workout_visibility
             else self.auth_user.workouts_visibility
         )
+
+        # for remote workout
+        new_workout.ap_id = self.workout_data.id
+        new_workout.remote_url = self.workout_data.url
 
         db.session.flush()
         return [new_workout], {}

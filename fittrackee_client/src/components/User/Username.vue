@@ -4,7 +4,7 @@
     class="user-name"
     :to="{
       name: $route.path.startsWith('/admin') ? 'UserFromAdmin' : 'User',
-      params: { username: user.username },
+      params: { username: getUserName(user) },
     }"
     :title="user.username"
   >
@@ -16,6 +16,7 @@
   import { toRefs } from 'vue'
 
   import type { IUserLightProfile, IUserProfile } from '@/types/user'
+  import { getUserName } from '@/utils/user'
 
   interface Props {
     user: IUserProfile | IUserLightProfile

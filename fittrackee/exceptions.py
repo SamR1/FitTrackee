@@ -13,3 +13,7 @@ class GenericException(Exception):
 
 class TaskException(Exception):
     pass
+
+
+class InvalidVisibilityException(Exception):
+    pass

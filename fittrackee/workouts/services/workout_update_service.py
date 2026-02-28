@@ -221,7 +221,7 @@ class WorkoutUpdateService(CheckWorkoutMixin):
 
         self._check_workout(self.workout)
 
-    def update(self) -> None:
+    def update(self) -> "Workout":
         if "sport_id" in self.workout_data:
             self.workout.sport_id = self.workout_data["sport_id"]
         if self.equipments_list is not None:
@@ -262,6 +262,7 @@ class WorkoutUpdateService(CheckWorkoutMixin):
                     visibility=map_visibility,
                     parent_visibility=self.workout.analysis_visibility,
                 )
-            return
+            return self.workout
 
         self._update_workout_without_file()
+        return self.workout

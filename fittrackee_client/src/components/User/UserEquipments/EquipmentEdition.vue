@@ -185,7 +185,7 @@
   const route = useRoute()
   const { t } = useI18n()
 
-  const { errorMessages } = useApp()
+  const { appConfig, errorMessages } = useApp()
   const { equipment } = useEquipments()
 
   const equipmentForm = reactive({
@@ -224,7 +224,7 @@
       )
     )
   const visibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
-    getAllVisibilityLevels()
+    getAllVisibilityLevels(appConfig.value.federation_enabled)
   )
 
   function setEquipmentSports(equipment: IEquipment) {

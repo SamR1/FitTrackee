@@ -5,6 +5,7 @@ import {
   getCommentVisibilityLevels,
   getVisibilityLevels,
   getUpdatedVisibility,
+  getVisibilityLevelForLabel,
 } from '@/utils/visibility_levels'
 
 describe('getUpdatedVisibility', () => {
@@ -13,23 +14,57 @@ describe('getUpdatedVisibility', () => {
     TVisibilityLevels,
     TVisibilityLevels,
   ][] = [
-    // input map visibility, input workout visibility, excepted map visibility
+    // input visibility, input parent visibility, excepted updated visibility
     ['private', 'private', 'private'],
     ['private', 'followers_only', 'private'],
+    ['private', 'followers_and_remote_only', 'private'],
     ['private', 'public', 'private'],
     ['followers_only', 'private', 'private'],
     ['followers_only', 'followers_only', 'followers_only'],
+    ['followers_only', 'followers_and_remote_only', 'followers_only'],
     ['followers_only', 'public', 'followers_only'],
+    ['followers_and_remote_only', 'private', 'private'],
+    ['followers_and_remote_only', 'followers_only', 'followers_only'],
+    [
+      'followers_and_remote_only',
+      'followers_and_remote_only',
+      'followers_and_remote_only',
+    ],
+    ['followers_and_remote_only', 'public', 'followers_and_remote_only'],
     ['public', 'private', 'private'],
     ['public', 'followers_only', 'followers_only'],
+    ['public', 'followers_and_remote_only', 'followers_and_remote_only'],
     ['public', 'public', 'public'],
   ]
 
   testsParams.map((testParams) => {
-    it(`get map visibility (input value: '${testParams[0]}') when workout visibility is '${testParams[1]}'`, () => {
+    it(`get visibility (input value: '${testParams[0]}') when parent visibility is '${testParams[1]}'`, () => {
       expect(getUpdatedVisibility(testParams[0], testParams[1])).toStrictEqual(
         testParams[2]
       )
+    })
+  })
+})
+
+describe('getVisibilityLevelForLabel', () => {
+  const testsParams: [string, boolean, string][] = [
+    ['private', true, 'private'],
+    ['followers_only', true, 'local_followers_only'],
+    ['followers_and_remote_only', true, 'followers_and_remote_only'],
+    ['private', true, 'private'],
+    ['private', false, 'private'],
+    ['followers_only', false, 'followers_only'],
+    ['followers_and_remote_only', false, 'followers_and_remote_only'],
+    ['private', false, 'private'],
+  ]
+
+  testsParams.map((testParams) => {
+    it(`get privacy level label for ${testParams[0]} and federation ${
+      testParams[1] ? 'enabled' : ' disabled'
+    }`, () => {
+      expect(
+        getVisibilityLevelForLabel(testParams[0], testParams[1])
+      ).toStrictEqual(testParams[2])
     })
   })
 })
@@ -38,6 +73,7 @@ describe('getVisibilityLevels', () => {
   const testsParams: [TVisibilityLevels, TVisibilityLevels[]][] = [
     ['private', ['private']],
     ['followers_only', ['private', 'followers_only']],
+    ['followers_and_remote_only', ['private', 'followers_only']],
     ['public', ['private', 'followers_only', 'public']],
   ]
 
@@ -49,17 +85,33 @@ describe('getVisibilityLevels', () => {
 })
 
 describe('getCommentVisibilityLevels', () => {
-  const testsParams: [TVisibilityLevels, TVisibilityLevels[]][] = [
-    ['private', ['private']],
-    ['followers_only', ['private', 'followers_only']],
-    ['public', ['private', 'followers_only', 'public']],
+  const testsParams: [boolean, TVisibilityLevels, TVisibilityLevels[]][] = [
+    // should not be displayed in UI
+    [false, 'private', ['private']],
+    [false, 'followers_only', ['private', 'followers_only']],
+    // should not be displayed in UI
+    [false, 'followers_and_remote_only', ['private', 'followers_only']],
+    [false, 'public', ['private', 'followers_only', 'public']],
+    // should not be displayed in UI
+    [true, 'private', ['private']],
+    [true, 'followers_only', ['private', 'followers_only']],
+    [
+      true,
+      'followers_and_remote_only',
+      ['private', 'followers_only', 'followers_and_remote_only'],
+    ],
+    [
+      true,
+      'public',
+      ['private', 'followers_only', 'followers_and_remote_only', 'public'],
+    ],
   ]
 
   testsParams.map((testParams) => {
-    it(`get visibility levels depending on workout visibility',input value: '${testParams[1]}')`, () => {
-      expect(getCommentVisibilityLevels(testParams[0])).toStrictEqual(
-        testParams[1]
-      )
+    it(`get visibility levels depending on workout visibility (federation enable: '${testParams[0]}',input value: '${testParams[1]}')`, () => {
+      expect(
+        getCommentVisibilityLevels(testParams[1], testParams[0])
+      ).toStrictEqual(testParams[2])
     })
   })
 })

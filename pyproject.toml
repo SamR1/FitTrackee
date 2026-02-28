@@ -56,6 +56,7 @@ nh3 = "^0.3.2"
 numpy = "=2.2.6" # numpy 2.3+ requires python 3.11+. geoalchemy2 dependency.
 pandas = "=2.3.2" # temporary workaround to enable installation on RHEL 7, installation of 2.3.3 generates an error
 psycopg2-binary = "^2.9.11"
+pycryptodome = "^3.15"
 pyjwt = "=2.11.0"
 pyproj = "=3.7.1" # pyproj 3.7.2+ requires python 3.11+ and installation may generates an error on RHEL
 pyopenssl = "^25.3.0"
@@ -132,11 +133,14 @@ quote-style = "double"
 "fittrackee/tests/test_email.py" = ["E501"]
 "fittrackee/tests/test_email_template_password_request.py" = ["E501"]
 "fittrackee/tests/fixtures/fixtures_workouts.py" = ["E501"]
+"fittrackee/federation/objects/templates/workout_note.py" = ["E501"]
+"fittrackee/tests/federation/federation/test_federation_objects_workout.py" = ["E501"]
 "fittrackee/users/auth.py" = ["E501"]
 "fittrackee/workouts/workouts.py" = ["E501"]
 
 [tool.pytest.ini_options]
 markers = [
+    "disable_autouse_generate_keys: disable patch for keys generation",
     "disable_autouse_update_records_patch: disable records update",
     "disable_autouse_default_weather_service: disable weather service",
 ]

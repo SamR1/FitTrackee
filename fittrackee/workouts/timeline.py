@@ -171,7 +171,10 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
     try:
         params = request.args.copy()
         page = int(params.get("page", 1))
-        following_ids = auth_user.get_following_user_ids()
+        (
+            local_following_ids,
+            remote_following_ids,
+        ) = auth_user.get_following_user_ids()
         blocked_users = auth_user.get_blocked_user_ids()
         blocked_by_users = auth_user.get_blocked_by_user_ids()
         workouts_pagination = (
@@ -187,16 +190,34 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
                     # and user is not blocked
                     and_(
                         Workout.suspended_at == None,  # noqa
-                        and_(
-                            Workout.user_id.in_(following_ids),
-                            Workout.user_id.not_in(
-                                blocked_users + blocked_by_users
+                        Workout.user_id.not_in(
+                            blocked_users + blocked_by_users
+                        ),
+                        or_(
+                            and_(
+                                Workout.user_id.in_(local_following_ids),
+                                Workout.user_id.not_in(
+                                    blocked_users + blocked_by_users
+                                ),
+                                Workout.workout_visibility.in_(
+                                    [
+                                        VisibilityLevel.FOLLOWERS_AND_REMOTE,
+                                        VisibilityLevel.FOLLOWERS,
+                                        VisibilityLevel.PUBLIC,
+                                    ]
+                                ),
                             ),
-                            Workout.workout_visibility.in_(
-                                [
-                                    VisibilityLevel.FOLLOWERS,
-                                    VisibilityLevel.PUBLIC,
-                                ]
+                            and_(
+                                Workout.user_id.in_(remote_following_ids),
+                                Workout.user_id.not_in(
+                                    blocked_users + blocked_by_users
+                                ),
+                                Workout.workout_visibility.in_(
+                                    [
+                                        VisibilityLevel.FOLLOWERS_AND_REMOTE,
+                                        VisibilityLevel.PUBLIC,
+                                    ]
+                                ),
                             ),
                         ),
                     ),

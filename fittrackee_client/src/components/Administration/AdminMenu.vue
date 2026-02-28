@@ -25,6 +25,15 @@
                     )
                   }}
                 </span>
+                <span class="federation-status">
+                  {{
+                    $t(
+                      `admin.FEDERATION_${
+                        appConfig.federation_enabled ? 'ENABLED' : 'DISABLED'
+                      }`
+                    )
+                  }}
+                </span>
                 <span
                   class="email-sending-status"
                   v-if="!appConfig.is_email_sending_enabled"
@@ -180,6 +189,7 @@
           display: flex;
           flex-direction: column;
           .email-sending-status,
+          .federation-status,
           .registration-status {
             font-weight: bold;
           }
