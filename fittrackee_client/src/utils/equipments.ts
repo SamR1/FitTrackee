@@ -2,6 +2,7 @@ import type {
   IEquipment,
   IEquipmentMultiselectItemsGroup,
   IEquipmentType,
+  ILightEquipment,
   ITranslatedEquipmentType,
 } from '@/types/equipments'
 import type { ITranslatedSport } from '@/types/sports'
@@ -28,7 +29,10 @@ export const translateEquipmentTypes = (
     }))
     .sort(sortEquipmentTypes)
 
-export const sortEquipments = (a: IEquipment, b: IEquipment): number => {
+export const sortEquipments = (
+  a: IEquipment | ILightEquipment,
+  b: IEquipment | ILightEquipment
+): number => {
   const equipmentALabel = a.label.toLowerCase()
   const equipmentBLabel = b.label.toLowerCase()
   if (equipmentALabel > equipmentBLabel) {

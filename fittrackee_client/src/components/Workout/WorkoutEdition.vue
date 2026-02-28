@@ -456,7 +456,11 @@
   import type { IWorkout, IWorkoutForm } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
-  import { getEquipments, SPORT_EQUIPMENT_TYPES } from '@/utils/equipments'
+  import {
+    getEquipments,
+    sortEquipments,
+    SPORT_EQUIPMENT_TYPES,
+  } from '@/utils/equipments'
   import { getReadableFileSizeAsText } from '@/utils/files'
   import { translateSports } from '@/utils/sports'
   import { sportsWithoutElevation } from '@/utils/sports'
@@ -616,9 +620,9 @@
     workoutForm.title = workout.title
     workoutForm.description = workout.description
     workoutForm.notes = workout.notes
-    workoutForm.equipment_ids = (workout.equipments as IEquipment[]).map(
-      (e) => e.id
-    )
+    workoutForm.equipment_ids = (workout.equipments as IEquipment[])
+      .sort(sortEquipments)
+      .map((e) => e.id)
     workoutForm.workoutVisibility = workout.workout_visibility
       ? workout.workout_visibility
       : 'private'
