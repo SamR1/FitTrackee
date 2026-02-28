@@ -20,7 +20,7 @@
     selectGroupLabel=""
     deselectGroupLabel=""
     @select="addSelectedEquipmentItems"
-    @remove="removeSelectedEquipmentItems()"
+    @remove="removeSelectedEquipmentItems"
     @update:model-value="updateItems"
   />
 </template>
@@ -75,7 +75,10 @@
       selectedPieces.value.map((e) => e.id)
     )
   }
-  function removeSelectedEquipmentItems() {
+  function removeSelectedEquipmentItems(selectValue: IEquipment) {
+    selectedPieces.value = selectedPieces.value.filter(
+      (e) => e.id !== selectValue.id
+    )
     validSelectedPieces.value = selectedPieces.value
     emit(
       'updatedValues',
