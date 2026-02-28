@@ -1,5 +1,6 @@
 {
   "ANALYSIS_VISIBILITY": "Zichtbaarheid Analyse",
+  "CALORIES_VISIBILITY": "Zichtbaarheid calorieën",
   "COMMENT_LEVELS": {
     "followers_only": "Enkel volgers",
     "private": "Privé (enkel vermelde gebruikers)",
