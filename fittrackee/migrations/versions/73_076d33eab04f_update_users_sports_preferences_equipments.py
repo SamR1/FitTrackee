@@ -1,4 +1,4 @@
-"""update 'users_sports_preferences_equipments' table
+"""update 'users_sports_preferences_equipments' table and add new equipment types
 
 Revision ID: 076d33eab04f
 Revises: ff53544547cd
