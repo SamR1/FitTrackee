@@ -7,7 +7,6 @@ from typing import Dict, Set
 import pytest
 from flask import Flask
 from jsonschema import ValidationError
-from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError
 from time_machine import travel
 
@@ -31,13 +30,18 @@ from fittrackee.users.models import (
     Notification,
     User,
     UserSportPreference,
-    UserSportPreferenceEquipment,
     UserTask,
 )
 from fittrackee.users.roles import UserRole
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import RandomMixin, ReportMixin, UserTaskMixin, WorkoutMixin
+from ..mixins import (
+    EquipmentMixin,
+    RandomMixin,
+    ReportMixin,
+    UserTaskMixin,
+    WorkoutMixin,
+)
 
 NOTIFICATION_TYPES_FOR_PREFERENCES = [
     "account_creation",
@@ -917,7 +921,7 @@ class TestUserModelToken(RandomMixin):
         )
 
 
-class TestUserSportPreferenceModel:
+class TestUserSportPreferenceModel(EquipmentMixin):
     def test_user_sports_preferences_model_with_default_pace_speed_display(
         self,
         app: "Flask",
@@ -989,21 +993,9 @@ class TestUserSportPreferenceModel:
         equipment_bike_user_1: Equipment,
         equipment_shoes_user_1: Equipment,
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    },
-                    {
-                        "equipment_id": equipment_shoes_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    },
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_shoes_user_1, equipment_bike_user_1],
+            user_1_sport_1_preference,
         )
 
         serialized_user_sport = user_1_sport_1_preference.serialize()

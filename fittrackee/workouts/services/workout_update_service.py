@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Dict, List, TypedDict, Union
 
 from fittrackee.equipments.utils import (
     SPORT_EQUIPMENT_TYPES,
-    handle_equipments,
+    handle_pieces_of_equipment,
 )
 from fittrackee.visibility_levels import (
     VisibilityLevel,
@@ -142,7 +142,7 @@ class WorkoutUpdateService(CheckWorkoutMixin):
                 if self.workout_data.get("sport_id")
                 else self.workout.sport_id
             )
-            return handle_equipments(
+            return handle_pieces_of_equipment(
                 self.workout_data["equipment_ids"],
                 self.user,
                 sport_id,
@@ -150,13 +150,14 @@ class WorkoutUpdateService(CheckWorkoutMixin):
             )
         elif self.sport:
             # remove equipment if invalid for new sport
-            # Note: for now only one equipment can be added
+            # Note: only one piece of equipment per type can be provided
+            equipment_list = []
             for equipment in self.workout.equipments:
-                if self.sport.label not in SPORT_EQUIPMENT_TYPES.get(
+                if self.sport.label in SPORT_EQUIPMENT_TYPES.get(
                     equipment.equipment_type.label, []
                 ):
-                    return []
-
+                    equipment_list.append(equipment)
+            return equipment_list
         return None
 
     def _update_workout_without_file(self) -> None:

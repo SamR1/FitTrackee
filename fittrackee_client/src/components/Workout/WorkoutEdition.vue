@@ -315,21 +315,13 @@
                 <label for="workout-equipment">
                   {{ $t('equipments.EQUIPMENT', 1) }}:
                 </label>
-                <select
-                  id="workout-equipment"
-                  @invalid="invalidateForm"
-                  :disabled="loading"
-                  v-model="workoutForm.equipment_id"
-                >
-                  <option value="">{{ $t('equipments.NO_EQUIPMENTS') }}</option>
-                  <option
-                    v-for="equipment in equipmentsForSelect"
-                    :value="equipment.id"
-                    :key="equipment.id"
-                  >
-                    {{ equipment.label }}
-                  </option>
-                </select>
+                <EquipmentMultiSelect
+                  :equipment-list="equipmentsForSelect"
+                  :disabled="loading || !selectedSport"
+                  :name="'sport-default-equipment'"
+                  :existing-equipment-list="existingWorkoutEquipments"
+                  @updatedValues="updateSelectedEquipmentPieces"
+                />
               </div>
               <div class="form-item">
                 <label for="workout_visibility">
@@ -447,20 +439,28 @@
   import { useI18n } from 'vue-i18n'
   import { useRouter } from 'vue-router'
 
+  import EquipmentMultiSelect from '@/components/User/UserEquipments/EquipmentMultiSelect.vue'
   import useApp from '@/composables/useApp'
   import {
     EQUIPMENTS_STORE,
     ROOT_STORE,
     WORKOUTS_STORE,
   } from '@/store/constants'
-  import type { IEquipment } from '@/types/equipments'
+  import type {
+    IEquipment,
+    IEquipmentMultiselectItemsGroup,
+  } from '@/types/equipments'
   import type { ICustomTextareaData } from '@/types/forms'
   import type { ISport, ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile, TVisibilityLevels } from '@/types/user'
   import type { IWorkout, IWorkoutForm } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
-  import { getEquipments } from '@/utils/equipments'
+  import {
+    getEquipments,
+    sortEquipments,
+    SPORT_EQUIPMENT_TYPES,
+  } from '@/utils/equipments'
   import { getReadableFileSizeAsText } from '@/utils/files'
   import { translateSports } from '@/utils/sports'
   import { sportsWithoutElevation } from '@/utils/sports'
@@ -505,7 +505,7 @@
     workoutDistance: '',
     workoutAscent: '',
     workoutDescent: '',
-    equipment_id: '',
+    equipment_ids: [] as string[],
     description: '',
     mapVisibility: authUser.value.map_visibility,
     analysisVisibility: authUser.value.analysis_visibility,
@@ -555,25 +555,40 @@
       ? translatedSports.value.filter((s) => s.id === +workoutForm.sport_id)[0]
       : null
   )
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const existingWorkoutEquipments: ComputedRef<IEquipment[]> = computed(() =>
+    isCreation.value
+      ? selectedSport.value?.default_equipments || []
+      : workout.value.equipments.filter((e) =>
+          selectedSport.value
+            ? (e as IEquipment).equipment_type.label === 'Misc' ||
+              SPORT_EQUIPMENT_TYPES[
+                (e as IEquipment).equipment_type.label
+              ].includes(selectedSport.value.label)
+            : []
+        )
+  )
+  const equipmentsForSelect: ComputedRef<IEquipmentMultiselectItemsGroup[]> =
+    computed(() =>
+      equipments.value
+        ? getEquipments(
+            equipments.value,
+            t,
+            isCreation.value ? 'is_active' : 'withIncludedIds',
+            selectedSport.value,
+            isCreation.value
+              ? []
+              : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                workout.value.equipments.map((e) => e.id)
+          )
+        : []
+    )
   const withoutElevation: ComputedRef<boolean> = computed(() =>
     selectedSport.value?.label
       ? sportsWithoutElevation.includes(selectedSport.value.label)
       : false
-  )
-  const equipmentsForSelect: ComputedRef<IEquipment[]> = computed(() =>
-    equipments.value
-      ? getEquipments(
-          equipments.value,
-          t,
-          isCreation.value ? 'is_active' : 'withIncludedIds',
-          selectedSport.value,
-          isCreation.value
-            ? []
-            : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              workout.value.equipments.map((e) => e.id)
-        )
-      : []
   )
   const visibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
     getAllVisibilityLevels()
@@ -605,10 +620,9 @@
     workoutForm.title = workout.title
     workoutForm.description = workout.description
     workoutForm.notes = workout.notes
-    workoutForm.equipment_id =
-      workout.equipments.length > 0 && 'id' in workout.equipments[0]
-        ? `${workout.equipments[0].id}`
-        : ''
+    workoutForm.equipment_ids = (workout.equipments as IEquipment[])
+      .sort(sortEquipments)
+      .map((e) => e.id)
     workoutForm.workoutVisibility = workout.workout_visibility
       ? workout.workout_visibility
       : 'private'
@@ -716,11 +730,7 @@
       sport_id: +workoutForm.sport_id,
       description: workoutForm.description,
       notes: workoutForm.notes,
-      equipment_ids:
-        workoutForm.equipment_id &&
-        equipmentsForSelect.value.find((e) => e.id === workoutForm.equipment_id)
-          ? [workoutForm.equipment_id]
-          : [],
+      equipment_ids: workoutForm.equipment_ids,
       title: workoutForm.title,
       workout_visibility: workoutForm.workoutVisibility,
     }
@@ -797,7 +807,9 @@
       workoutForm.analysisVisibility
     )
   }
-
+  function updateSelectedEquipmentPieces(selectedIds: string[]) {
+    workoutForm.equipment_ids = selectedIds
+  }
   watch(
     () => props.workout,
     async (
@@ -813,11 +825,9 @@
     () => selectedSport.value,
     (newSport: ISport | null) => {
       if (isCreation.value) {
-        workoutForm.equipment_id =
-          newSport?.default_equipments &&
-          newSport?.default_equipments.length > 0
-            ? `${newSport.default_equipments[0].id}`
-            : ''
+        workoutForm.equipment_ids = newSport
+          ? newSport.default_equipments.map((e) => e.id)
+          : []
       }
     }
   )

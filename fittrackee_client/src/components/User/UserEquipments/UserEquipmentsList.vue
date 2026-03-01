@@ -54,7 +54,10 @@
                   <th class="text-left">
                     {{ $t('workouts.WORKOUT', 0) }}
                   </th>
-                  <th class="text-left">
+                  <th class="text-left" v-if="equipmentType.label === 'Racket'">
+                    {{ capitalize($t('workouts.TOTAL_DURATION')) }}
+                  </th>
+                  <th class="text-left" v-else>
                     {{ capitalize($t('workouts.TOTAL_DISTANCE')) }}
                   </th>
                   <th class="text-left">
@@ -95,7 +98,16 @@
                     </router-link>
                     <template v-else>{{ equipment.workouts_count }}</template>
                   </td>
-                  <td class="column">
+                  <td class="column" v-if="equipmentType.label === 'Racket'">
+                    <span class="cell-heading">
+                      {{ $t('workouts.TOTAL_DURATION', 0) }}
+                    </span>
+                    {{ equipment.total_duration_in_hours }}
+                    {{
+                      $t('common.HOURS', equipment.total_duration_in_hours || 0)
+                    }}
+                  </td>
+                  <td class="column" v-else>
                     <span class="cell-heading">
                       {{ $t('workouts.TOTAL_DISTANCE', 0) }}
                     </span>

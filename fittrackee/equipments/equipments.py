@@ -1,5 +1,5 @@
 from datetime import timedelta
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from flask import Blueprint, request
 from sqlalchemy import exc, func
@@ -44,8 +44,10 @@ def handle_default_sports(
             )
 
         # check if sport is valid for equipment type
-        if sport.label not in SPORT_EQUIPMENT_TYPES.get(
-            equipment_type.label, []
+        if (
+            equipment_type.label != "Misc"
+            and sport.label
+            not in SPORT_EQUIPMENT_TYPES.get(equipment_type.label, [])
         ):
             raise InvalidEquipmentsException(
                 f"invalid sport '{sport.label}' for equipment "
@@ -67,6 +69,40 @@ def handle_default_sports(
             db.session.flush()
         user_sport_preferences.append(user_sport_preference)
     return user_sport_preferences
+
+
+def update_user_sport_preferences_if_exist(
+    equipment: "Equipment",
+    user_sport_preferences: Optional[List["UserSportPreference"]],
+    auth_user: "User",
+    default_for_sport_ids: list[int],
+) -> None:
+    if user_sport_preferences:
+        # remove existing pieces of equipment with the same equipment type
+        db.session.query(UserSportPreferenceEquipment).filter(
+            UserSportPreferenceEquipment.c.user_id == auth_user.id,
+            UserSportPreferenceEquipment.c.sport_id.in_(default_for_sport_ids),
+            (
+                UserSportPreferenceEquipment.c.equipment_type_id
+                == equipment.equipment_type_id
+            ),
+        ).delete()
+
+        db.session.execute(
+            insert(UserSportPreferenceEquipment)
+            .values(
+                [
+                    {
+                        "equipment_id": equipment.id,
+                        "equipment_type_id": equipment.equipment_type_id,
+                        "sport_id": sport.sport_id,
+                        "user_id": auth_user.id,
+                    }
+                    for sport in user_sport_preferences
+                ]
+            )
+            .on_conflict_do_nothing()
+        )
 
 
 @equipments_blueprint.route("/equipments", methods=["GET"])
@@ -116,8 +152,7 @@ def get_equipments(auth_user: User) -> Dict:
               "is_active": true,
               "label": "My shoes",
               "total_distance": 0.0,
-              "total_duration": "0:00:00",
-              "total_moving": "0:00:00",
+              "total_duration_in_hours": 0,
               "user_id": 1,
               "workouts_count": 0
           },
@@ -134,8 +169,7 @@ def get_equipments(auth_user: User) -> Dict:
               "is_active": true,
               "label": "My shoes 2",
               "total_distance": 0.0,
-              "total_duration": "0:00:00",
-              "total_moving": "0:00:00",
+              "total_duration_in_hours": 0,
               "user_id": ,
               "workouts_count": 0
               }
@@ -225,8 +259,7 @@ def get_equipment_by_id(
               "is_active": true,
               "label": "Other user Equipment",
               "total_distance": 0.0,
-              "total_duration": "0:00:00",
-              "total_moving": "0:00:00",
+              "total_duration_in_hours": 0,
               "user_id": 2,
               "workouts_count": 0
             }
@@ -316,8 +349,7 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
               "is_active": true,
               "label": "New equipment from API",
               "total_distance": 0.0,
-              "total_duration": "0:00:00",
-              "total_moving": "0:00:00",
+              "total_duration_in_hours": 0,
               "user_id": 1,
               "workouts_count": 0
             }
@@ -421,28 +453,12 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         if visibility:
             new_equipment.visibility = visibility
 
-        if user_sport_preferences:
-            # remove existing equipments for default sports
-            # (for now only one default equipment/sport)
-            db.session.query(UserSportPreferenceEquipment).filter(
-                UserSportPreferenceEquipment.c.user_id == auth_user.id,
-                UserSportPreferenceEquipment.c.sport_id.in_(
-                    default_for_sport_ids
-                ),
-            ).delete()
-
-            db.session.execute(
-                insert(UserSportPreferenceEquipment).values(
-                    [
-                        {
-                            "equipment_id": new_equipment.id,
-                            "sport_id": sport.sport_id,
-                            "user_id": auth_user.id,
-                        }
-                        for sport in user_sport_preferences
-                    ]
-                )
-            )
+        update_user_sport_preferences_if_exist(
+            new_equipment,
+            user_sport_preferences,
+            auth_user,
+            default_for_sport_ids,
+        )
         db.session.commit()
 
         return (
@@ -514,8 +530,7 @@ def update_equipment(
                 "is_active": true,
                 "label": "Updated bike",
                 "total_distance": 0.0,
-                "total_duration": "0:00:00",
-                "total_moving": "0:00:00",
+                "total_duration_in_hours": 0,
                 "user_id": 1,
                 "workouts_count": 0
               }
@@ -721,30 +736,12 @@ def update_equipment(
                     ),
                 ).delete()
 
-            if user_sport_preferences:
-                # remove existing equipments for default sports
-                # (for now only one default equipment/sport)
-                db.session.query(UserSportPreferenceEquipment).filter(
-                    UserSportPreferenceEquipment.c.user_id == auth_user.id,
-                    UserSportPreferenceEquipment.c.sport_id.in_(
-                        new_default_for_sport_ids
-                    ),
-                ).delete()
-
-                db.session.execute(
-                    insert(UserSportPreferenceEquipment)
-                    .values(
-                        [
-                            {
-                                "equipment_id": equipment.id,
-                                "sport_id": sport.sport_id,
-                                "user_id": auth_user.id,
-                            }
-                            for sport in user_sport_preferences
-                        ]
-                    )
-                    .on_conflict_do_nothing()
-                )
+            update_user_sport_preferences_if_exist(
+                equipment,
+                user_sport_preferences,
+                auth_user,
+                new_default_for_sport_ids,
+            )
         db.session.commit()
 
         return {
@@ -805,8 +802,7 @@ def refresh_equipment(
                 "is_active": true,
                 "label": "Updated bike",
                 "total_distance": 6.0,
-                "total_duration": "1:10:00",
-                "total_moving": "1:00:00",
+                "total_duration_in_hours": 1,
                 "user_id": 1,
                 "workouts_count": 1
               }

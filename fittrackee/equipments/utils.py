@@ -8,16 +8,6 @@ from fittrackee.workouts.models import Sport
 from .exceptions import InvalidEquipmentException, InvalidEquipmentsException
 
 SPORT_EQUIPMENT_TYPES = {
-    "Shoes": [
-        "Hiking",
-        "Mountaineering",
-        "Padel (Outdoor)",
-        "Running",
-        "Swimrun",
-        "Tennis (Outdoor)",
-        "Trail",
-        "Walking",
-    ],
     "Bike": [
         "Cycling (Sport)",
         "Cycling (Transport)",
@@ -35,52 +25,95 @@ SPORT_EQUIPMENT_TYPES = {
         "Kayaking (Whitewater)",
         "Rowing",
     ],
+    "Paddle": [
+        "Canoeing",
+        "Canoeing (Whitewater)",
+        "Kayaking",
+        "Kayaking (Whitewater)",
+        "Rowing",
+        "Standup Paddleboarding",
+    ],
+    "Racket": ["Padel (Outdoor)", "Tennis (Outdoor)"],
     "Skis": ["Skiing (Alpine)", "Skiing (Cross Country)"],
+    "Shoes": [
+        "Hiking",
+        "Mountaineering",
+        "Padel (Outdoor)",
+        "Running",
+        "Swimrun",
+        "Tennis (Outdoor)",
+        "Trail",
+        "Walking",
+        "Cycling (Sport)",
+        "Cycling (Transport)",
+        "Cycling (Trekking)",
+        "Halfbike",
+        "Mountain Biking",
+        "Mountain Biking (Electric)",
+    ],
     "Snowshoes": ["Snowshoes"],
 }
+MAX_MISC_LIMIT = 5
+TYPE_ERROR_MESSAGE = "equipment_ids must be an array of strings"
 
 
-def handle_equipments(
+def handle_pieces_of_equipment(
     equipment_short_ids: Optional[List[str]],
     auth_user: User,
     sport_id: int,
     existing_equipments: Optional[List[Equipment]] = None,
 ) -> Union[List[Equipment], None]:
-    equipments_list: Optional[List[Equipment]] = None
+    if equipment_short_ids is None:
+        return equipment_short_ids
 
-    if equipment_short_ids is not None:
-        sport = Sport.query.filter_by(id=sport_id).first()
-        if not sport:
-            raise InvalidEquipmentsException(f"sport id {sport_id} not found")
+    equipments_list: List[Equipment] = []
+    if not equipment_short_ids:
+        return equipments_list
 
-        equipments_list = []
-        if not isinstance(equipment_short_ids, list):
-            raise InvalidEquipmentsException(
-                "equipment_ids must be an array of strings"
+    if not isinstance(equipment_short_ids, list):
+        raise InvalidEquipmentsException(TYPE_ERROR_MESSAGE)
+
+    sport = Sport.query.filter_by(id=sport_id).first()
+    if not sport:
+        raise InvalidEquipmentsException(f"sport id {sport_id} not found")
+
+    equipment_types = []
+    misc_count = 0
+    for equipment_short_id in equipment_short_ids:
+        if not isinstance(equipment_short_id, str):
+            raise InvalidEquipmentsException(TYPE_ERROR_MESSAGE)
+
+        equipment = Equipment.query.filter_by(
+            uuid=decode_short_id(equipment_short_id), user_id=auth_user.id
+        ).first()
+        if not equipment:
+            raise InvalidEquipmentException(
+                status="not_found",
+                message=(
+                    f"equipment with id {equipment_short_id} does not exist"
+                ),
+                equipment_short_id=equipment_short_id,
             )
 
-        # for now only one equipment par sport or workout
-        if len(equipment_short_ids) > 1:
-            raise InvalidEquipmentsException("only one equipment can be added")
+        if not equipment.is_active and (
+            not existing_equipments or equipment not in existing_equipments
+        ):
+            raise InvalidEquipmentException(
+                status="inactive",
+                message=(
+                    f"equipment with id {equipment_short_id} is inactive"
+                ),
+                equipment_short_id=equipment_short_id,
+            )
 
-        for equipment_short_id in equipment_short_ids:
-            if not isinstance(equipment_short_id, str):
+        if equipment.equipment_type.label == "Misc":
+            misc_count += 1
+            if misc_count > MAX_MISC_LIMIT:
                 raise InvalidEquipmentsException(
-                    "equipment_ids must be an array of strings"
+                    f"a maximum of {MAX_MISC_LIMIT} pieces of Misc equipment "
+                    "can be added"
                 )
-            equipment = Equipment.query.filter_by(
-                uuid=decode_short_id(equipment_short_id), user_id=auth_user.id
-            ).first()
-            if not equipment:
-                raise InvalidEquipmentException(
-                    status="not_found",
-                    message=(
-                        f"equipment with id {equipment_short_id} "
-                        "does not exist"
-                    ),
-                    equipment_short_id=equipment_short_id,
-                )
-
+        else:
             if sport.label not in SPORT_EQUIPMENT_TYPES.get(
                 equipment.equipment_type.label, []
             ):
@@ -93,15 +126,12 @@ def handle_equipments(
                     equipment_short_id=equipment_short_id,
                 )
 
-            if not equipment.is_active and (
-                not existing_equipments or equipment not in existing_equipments
-            ):
-                raise InvalidEquipmentException(
-                    status="inactive",
-                    message=(
-                        f"equipment with id {equipment_short_id} is inactive"
-                    ),
-                    equipment_short_id=equipment_short_id,
+            if equipment.equipment_type in equipment_types:
+                raise InvalidEquipmentsException(
+                    "only one piece of equipment per type can be provided"
                 )
-            equipments_list.append(equipment)
+            equipment_types.append(equipment.equipment_type)
+
+        equipments_list.append(equipment)
+
     return equipments_list

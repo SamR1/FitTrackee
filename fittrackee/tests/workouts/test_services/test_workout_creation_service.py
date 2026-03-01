@@ -1,15 +1,17 @@
+import re
 from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING, Dict
 
 import pytest
-from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
 from fittrackee.constants import ElevationDataSource
 from fittrackee.database import PSQL_INTEGER_LIMIT
-from fittrackee.equipments.exceptions import InvalidEquipmentsException
-from fittrackee.tests.mixins import RandomMixin
-from fittrackee.users.models import UserSportPreferenceEquipment
+from fittrackee.equipments.exceptions import (
+    InvalidEquipmentException,
+    InvalidEquipmentsException,
+)
+from fittrackee.tests.mixins import EquipmentMixin, RandomMixin
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import (
     WorkoutExceedingValueException,
@@ -131,7 +133,7 @@ class TestWorkoutCreationServiceGetWorkoutDate(RandomMixin):
 
 
 @pytest.mark.disable_autouse_update_records_patch
-class TestWorkoutCreationServiceProcess(RandomMixin):
+class TestWorkoutCreationServiceProcess(RandomMixin, EquipmentMixin):
     def test_it_creates_workout_with_minimal_data(
         self,
         app: "Flask",
@@ -705,6 +707,31 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         workout = Workout.query.one()
         assert workout.workout_visibility == VisibilityLevel.FOLLOWERS
 
+    def test_it_raises_error_when_equipment_is_invalid_for_sport(
+        self,
+        app: "Flask",
+        sport_2_running: "Sport",
+        user_1: "User",
+        equipment_bike_user_1: "Equipment",
+    ) -> None:
+        workout_data = {
+            "distance": 15,
+            "duration": 3000,
+            "sport_id": sport_2_running.id,
+            "workout_date": "2025-02-08 09:00",
+            "equipment_ids": [equipment_bike_user_1.short_id],
+        }
+        service = WorkoutCreationService(user_1, workout_data)
+
+        with pytest.raises(
+            InvalidEquipmentException,
+            match=re.escape(
+                f"invalid equipment id {equipment_bike_user_1.short_id} "
+                f"for sport {sport_2_running.label}"
+            ),
+        ):
+            service.process()
+
     def test_it_creates_workout_with_given_equipment(
         self,
         app: "Flask",
@@ -735,16 +762,8 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         equipment_bike_user_1: "Equipment",
         user_1_sport_1_preference: "UserSportPreference",
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         db.session.commit()
         workout_data = {
@@ -769,16 +788,8 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         equipment_bike_user_1: "Equipment",
         user_1_sport_1_preference: "UserSportPreference",
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         db.session.commit()
         workout_data = {
@@ -796,7 +807,35 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         workout = Workout.query.one()
         assert workout.equipments == []
 
-    def test_it_raises_exception_when_multiple_equipments_are_provided(
+    def test_it_creates_with_multiple_pieces_of_equipment(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        equipment_shoes_user_1: "Equipment",
+        equipment_bike_user_1: "Equipment",
+    ) -> None:
+        workout_data = {
+            "distance": 15,
+            "duration": 3000,
+            "sport_id": sport_1_cycling.id,
+            "workout_date": "2025-02-08 09:00",
+            "equipment_ids": [
+                equipment_shoes_user_1.short_id,
+                equipment_bike_user_1.short_id,
+            ],
+        }
+        service = WorkoutCreationService(user_1, workout_data)
+        service.process()
+        db.session.commit()
+
+        workout = Workout.query.one()
+        assert set(workout.equipments) == {
+            equipment_bike_user_1,
+            equipment_shoes_user_1,
+        }
+
+    def test_it_raises_exception_when_multiple_pieces_of_equipment_with_same_type_are_provided(  # noqa
         self,
         app: "Flask",
         user_1: "User",
@@ -818,7 +857,8 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         service = WorkoutCreationService(user_1, workout_data)
 
         with pytest.raises(
-            InvalidEquipmentsException, match="only one equipment can be added"
+            InvalidEquipmentsException,
+            match="only one piece of equipment per type can be provided",
         ):
             service.process()
 
@@ -827,20 +867,11 @@ class TestWorkoutCreationServiceProcess(RandomMixin):
         app: "Flask",
         user_1: "User",
         sport_1_cycling: "Sport",
-        gpx_file: str,
         equipment_bike_user_1: "Equipment",
         user_1_sport_1_preference: "UserSportPreference",
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         equipment_bike_user_1.is_active = False
         db.session.commit()

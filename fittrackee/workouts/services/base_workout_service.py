@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 import pytz
 
-from fittrackee.equipments.utils import handle_equipments
+from fittrackee.equipments.utils import handle_pieces_of_equipment
 from fittrackee.users.models import UserSportPreference
 from fittrackee.workouts.models import Sport
 
@@ -51,7 +51,7 @@ class BaseWorkoutService(ABC):
                 for equipment in self.sport_preferences.default_equipments.all()  # noqa
                 if equipment.is_active is True
             ]
-        return handle_equipments(
+        return handle_pieces_of_equipment(
             self.equipment_ids,
             self.auth_user,
             self.sport.id,

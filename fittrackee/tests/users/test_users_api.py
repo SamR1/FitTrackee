@@ -6,7 +6,6 @@ from unittest.mock import MagicMock, call, patch
 
 import pytest
 from flask import Flask
-from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
 from fittrackee.dates import get_readable_duration
@@ -18,14 +17,13 @@ from fittrackee.users.models import (
     Notification,
     User,
     UserSportPreference,
-    UserSportPreferenceEquipment,
     UserTask,
 )
 from fittrackee.users.roles import UserRole
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import ApiTestCaseMixin, ReportMixin
+from ..mixins import ApiTestCaseMixin, EquipmentMixin, ReportMixin
 from ..utils import jsonify_dict
 
 
@@ -2342,7 +2340,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         )
 
 
-class TestDeleteUser(ReportMixin, ApiTestCaseMixin):
+class TestDeleteUser(ApiTestCaseMixin, ReportMixin, EquipmentMixin):
     def test_user_can_delete_its_own_account(
         self, app: Flask, user_1: User
     ) -> None:
@@ -2444,16 +2442,8 @@ class TestDeleteUser(ReportMixin, ApiTestCaseMixin):
         user_1_sport_1_preference: UserSportPreference,
         equipment_bike_user_1: Equipment,
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(

@@ -8,6 +8,9 @@
     <BikeTrainer v-if="equipmentTypeLabel === 'Bike Trainer'" />
     <Board v-if="equipmentTypeLabel === 'Board'" />
     <Kayak_Boat v-if="equipmentTypeLabel === 'Kayak_Boat'" />
+    <Misc v-if="equipmentTypeLabel === 'Misc'" />
+    <Paddle v-if="equipmentTypeLabel === 'Paddle'" />
+    <Racket v-if="equipmentTypeLabel === 'Racket'" />
     <Shoes v-if="equipmentTypeLabel === 'Shoes'" />
     <Skis v-if="equipmentTypeLabel === 'Skis'" />
     <Snowshoes v-if="equipmentTypeLabel === 'Snowshoes'" />
@@ -21,6 +24,9 @@
   import BikeTrainer from '@/components/Common/Images/EquipmentTypeImage/BikeTrainer.vue'
   import Board from '@/components/Common/Images/EquipmentTypeImage/Board.vue'
   import Kayak_Boat from '@/components/Common/Images/EquipmentTypeImage/Kayak_Boat.vue'
+  import Misc from '@/components/Common/Images/EquipmentTypeImage/Misc.vue'
+  import Paddle from '@/components/Common/Images/EquipmentTypeImage/Paddle.vue'
+  import Racket from '@/components/Common/Images/EquipmentTypeImage/Racket.vue'
   import Shoes from '@/components/Common/Images/EquipmentTypeImage/Shoes.vue'
   import Skis from '@/components/Common/Images/EquipmentTypeImage/Skis.vue'
   import Snowshoes from '@/components/Common/Images/EquipmentTypeImage/Snowshoes.vue'

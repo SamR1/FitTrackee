@@ -1,10 +1,11 @@
 import type {
   IEquipment,
+  IEquipmentMultiselectItemsGroup,
   IEquipmentType,
+  ILightEquipment,
   ITranslatedEquipmentType,
 } from '@/types/equipments'
 import type { ITranslatedSport } from '@/types/sports'
-
 const sortEquipmentTypes = (
   a: ITranslatedEquipmentType,
   b: ITranslatedEquipmentType
@@ -28,7 +29,10 @@ export const translateEquipmentTypes = (
     }))
     .sort(sortEquipmentTypes)
 
-export const sortEquipments = (a: IEquipment, b: IEquipment): number => {
+export const sortEquipments = (
+  a: IEquipment | ILightEquipment,
+  b: IEquipment | ILightEquipment
+): number => {
   const equipmentALabel = a.label.toLowerCase()
   const equipmentBLabel = b.label.toLowerCase()
   if (equipmentALabel > equipmentBLabel) {
@@ -38,16 +42,6 @@ export const sortEquipments = (a: IEquipment, b: IEquipment): number => {
 }
 
 export const SPORT_EQUIPMENT_TYPES: Record<string, string[]> = {
-  Shoes: [
-    'Hiking',
-    'Mountaineering',
-    'Padel (Outdoor)',
-    'Running',
-    'Swimrun',
-    'Tennis (Outdoor)',
-    'Trail',
-    'Walking',
-  ],
   Bike: [
     'Cycling (Sport)',
     'Cycling (Transport)',
@@ -65,8 +59,47 @@ export const SPORT_EQUIPMENT_TYPES: Record<string, string[]> = {
     'Kayaking (Whitewater)',
     'Rowing',
   ],
+  Paddle: [
+    'Canoeing',
+    'Canoeing (Whitewater)',
+    'Kayaking',
+    'Kayaking (Whitewater)',
+    'Rowing',
+    'Standup Paddleboarding',
+  ],
+  Racket: ['Padel (Outdoor)', 'Tennis (Outdoor)'],
   Skis: ['Skiing (Alpine)', 'Skiing (Cross Country)'],
+  Shoes: [
+    'Hiking',
+    'Mountaineering',
+    'Padel (Outdoor)',
+    'Running',
+    'Swimrun',
+    'Tennis (Outdoor)',
+    'Trail',
+    'Walking',
+    'Cycling (Sport)',
+    'Cycling (Transport)',
+    'Cycling (Trekking)',
+    'Halfbike',
+    'Mountain Biking',
+    'Mountain Biking (Electric)',
+  ],
   Snowshoes: ['Snowshoes'],
+}
+
+function groupByEquipmentType(list: IEquipment[]) {
+  const map = new Map<string, IEquipment[]>()
+  list.forEach((item) => {
+    const key = item.equipment_type.label
+    const collection = map.get(key)
+    if (collection) {
+      collection.push(item)
+    } else {
+      map.set(key, [item])
+    }
+  })
+  return map
 }
 
 export const getEquipments = (
@@ -75,15 +108,19 @@ export const getEquipments = (
   activeStatus: 'all' | 'withIncludedIds' | 'is_active' = 'all',
   sport: ITranslatedSport | null = null,
   equipmentToIncludeIds: string[] = []
-): IEquipment[] => {
+) => {
+  const equipmentMultiSelectList: IEquipmentMultiselectItemsGroup[] = []
   if (!sport) {
-    return []
+    return equipmentMultiSelectList
   }
-  return equipments
-    .filter((equipment) =>
-      SPORT_EQUIPMENT_TYPES[equipment.equipment_type.label].includes(
-        sport.label
-      )
+
+  const validEquipmentPieces = equipments
+    .filter(
+      (equipment) =>
+        equipment.equipment_type.label === 'Misc' ||
+        SPORT_EQUIPMENT_TYPES[equipment.equipment_type.label].includes(
+          sport.label
+        )
     )
     .filter((equipment) =>
       activeStatus == 'all'
@@ -100,5 +137,15 @@ export const getEquipments = (
           : `${equipment.label} (${t('common.INACTIVE')})`,
       }
     })
-    .sort(sortEquipments)
+
+  const equipmentList = groupByEquipmentType(validEquipmentPieces)
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  for (const [key, value] of equipmentList) {
+    equipmentMultiSelectList.push({
+      type: t(`equipment_types.${key}.LABEL`),
+      items: value.sort(sortEquipments),
+    })
+  }
+  return equipmentMultiSelectList
 }

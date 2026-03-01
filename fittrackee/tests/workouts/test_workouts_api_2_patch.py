@@ -271,7 +271,7 @@ class TestEditWorkout(WorkoutApiTestCaseMixin):
             jsonify_dict(equipment_bike_user_1.serialize(current_user=user_1))
         ]
 
-    def test_it_updates_equipments(
+    def test_it_updates_workout_equipment(
         self,
         app: "Flask",
         user_1: "User",
@@ -317,6 +317,38 @@ class TestEditWorkout(WorkoutApiTestCaseMixin):
             == workout_running_user_1.moving
         )
 
+    def test_it_updates_workout_equipment_with_multiple_pieces(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
+        equipment_shoes_user_1: "Equipment",
+        equipment_bike_user_1: "Equipment",
+    ) -> None:
+        workout = create_a_workout_with_file(user_1, gpx_file)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/workouts/{workout.short_id}",
+            content_type="application/json",
+            json={
+                "equipment_ids": [
+                    equipment_shoes_user_1.short_id,
+                    equipment_bike_user_1.short_id,
+                ]
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert len(data["data"]["workouts"][0]["equipments"]) == 2
+
     def test_it_returns_400_when_equipment_ids_are_invalid(
         self,
         app: "Flask",
@@ -341,34 +373,6 @@ class TestEditWorkout(WorkoutApiTestCaseMixin):
             response,
             "equipment_ids must be an array of strings",
         )
-
-    def test_it_returns_400_when_multiple_equipments_are_provided(
-        self,
-        app: "Flask",
-        user_1: "User",
-        sport_2_running: "Sport",
-        gpx_file: str,
-        equipment_shoes_user_1: "Equipment",
-        equipment_another_shoes_user_1: "Equipment",
-    ) -> None:
-        workout = create_a_workout_with_file(user_1, gpx_file)
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.patch(
-            f"/api/workouts/{workout.short_id}",
-            content_type="application/json",
-            json={
-                "equipment_ids": [
-                    equipment_shoes_user_1.short_id,
-                    equipment_another_shoes_user_1.short_id,
-                ]
-            },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        self.assert_400(response, "only one equipment can be added")
 
     def test_expected_scope_is_workouts_write(
         self, app: "Flask", user_1: "User"

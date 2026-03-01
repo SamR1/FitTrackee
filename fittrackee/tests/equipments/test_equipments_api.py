@@ -4,21 +4,19 @@ from typing import Tuple
 
 import pytest
 from flask import Flask
-from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment, EquipmentType
 from fittrackee.users.models import (
     User,
     UserSportPreference,
-    UserSportPreferenceEquipment,
 )
 from fittrackee.users.roles import UserRole
 from fittrackee.utils import decode_short_id
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin, EquipmentMixin
 from ..utils import jsonify_dict
 
 
@@ -314,7 +312,7 @@ class TestGetEquipment(ApiTestCaseMixin):
         )
 
 
-class TestPostEquipment(ApiTestCaseMixin):
+class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, equipment_bike_user_1: Equipment
     ) -> None:
@@ -639,6 +637,117 @@ class TestPostEquipment(ApiTestCaseMixin):
             equipment
         ]
 
+    def test_it_adds_a_piece_of_equipment_when_default_equipement_with_same_type_exists(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_2_bike: EquipmentType,
+        sport_1_cycling: Sport,
+        sport_3_cycling_transport: Sport,
+        user_1_sport_1_preference: UserSportPreference,
+        equipment_bike_user_1: Equipment,
+    ) -> None:
+        # in this case, existing piece is removed
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "equipment_type_id": equipment_type_2_bike.id,
+                "label": "My New Bike",
+                "default_for_sport_ids": [
+                    sport_1_cycling.id,
+                    sport_3_cycling_transport.id,
+                ],
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert "My New Bike" == equipment["label"]
+        assert set(equipment["default_for_sport_ids"]) == {
+            sport_1_cycling.id,
+            sport_3_cycling_transport.id,
+        }
+        equipment = Equipment.query.filter_by(
+            uuid=decode_short_id(equipment["id"])
+        ).first()
+        assert user_1_sport_1_preference.default_equipments.all() == [
+            equipment
+        ]
+        sport_3_cycling_transport_pref = UserSportPreference.query.filter_by(
+            user_id=user_1.id, sport_id=sport_3_cycling_transport.id
+        ).one()
+        assert sport_3_cycling_transport_pref.default_equipments.all() == [
+            equipment
+        ]
+
+    def test_it_adds_a_piece_of_equipment_when_default_equipement_with_different_type_exists(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_2_bike: EquipmentType,
+        sport_1_cycling: Sport,
+        sport_3_cycling_transport: Sport,
+        user_1_sport_1_preference: UserSportPreference,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        # in this case, existing piece is not removed
+        self.add_user_sport_preference_equipement(
+            [equipment_shoes_user_1], user_1_sport_1_preference
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "equipment_type_id": equipment_type_2_bike.id,
+                "label": "My New Bike",
+                "default_for_sport_ids": [
+                    sport_1_cycling.id,
+                    sport_3_cycling_transport.id,
+                ],
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert "My New Bike" == equipment["label"]
+        assert set(equipment["default_for_sport_ids"]) == {
+            sport_1_cycling.id,
+            sport_3_cycling_transport.id,
+        }
+        equipment = Equipment.query.filter_by(
+            uuid=decode_short_id(equipment["id"])
+        ).first()
+        assert set(user_1_sport_1_preference.default_equipments.all()) == {
+            equipment,
+            equipment_shoes_user_1,
+        }
+        sport_3_cycling_transport_pref = UserSportPreference.query.filter_by(
+            user_id=user_1.id, sport_id=sport_3_cycling_transport.id
+        ).one()
+        assert sport_3_cycling_transport_pref.default_equipments.all() == [
+            equipment
+        ]
+
     def test_it_creates_sport_preference(
         self,
         app: Flask,
@@ -694,26 +803,14 @@ class TestPostEquipment(ApiTestCaseMixin):
         equipment_shoes_user_1: Equipment,
         equipment_shoes_user_2: Equipment,
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_shoes_user_1.id,
-                        "sport_id": user_1_sport_2_preference.sport_id,
-                        "user_id": user_1_sport_2_preference.user_id,
-                    },
-                    {
-                        "equipment_id": equipment_shoes_user_2.id,
-                        "sport_id": user_2_sport_2_preference.sport_id,
-                        "user_id": user_2_sport_2_preference.user_id,
-                    },
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    },
-                ],
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_shoes_user_1], user_1_sport_2_preference
+        )
+        self.add_user_sport_preference_equipement(
+            [equipment_shoes_user_2], user_2_sport_2_preference
+        )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -760,7 +857,7 @@ class TestPostEquipment(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        equipment_type_1_shoe: EquipmentType,
+        equipment_type_2_bike: EquipmentType,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -770,7 +867,7 @@ class TestPostEquipment(ApiTestCaseMixin):
             "/api/equipments",
             json={
                 "description": self.random_short_id(),
-                "equipment_type_id": equipment_type_1_shoe.id,
+                "equipment_type_id": equipment_type_2_bike.id,
                 "label": self.random_string(),
                 "default_for_sport_ids": [
                     sport_1_cycling.id,
@@ -782,8 +879,8 @@ class TestPostEquipment(ApiTestCaseMixin):
 
         self.assert_400(
             response,
-            f"invalid sport '{sport_1_cycling.label}' for "
-            f"equipment type '{equipment_type_1_shoe.label}'",
+            f"invalid sport '{sport_2_running.label}' for "
+            f"equipment type '{equipment_type_2_bike.label}'",
         )
 
     def test_it_returns_400_when_visibility_is_invalid(
@@ -836,6 +933,119 @@ class TestPostEquipment(ApiTestCaseMixin):
         assert "Test shoes" == equipment["label"]
         assert equipment["visibility"] == VisibilityLevel.PUBLIC.value
 
+    def test_it_adds_racket_as_equipment(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_5_outdoor_tennis: "Sport",
+        equipment_type_4_racket: EquipmentType,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        equipment_label = "My new racket"
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "equipment_type_id": equipment_type_4_racket.id,
+                "label": equipment_label,
+                "default_for_sport_ids": [sport_5_outdoor_tennis.id],
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert equipment["label"] == equipment_label
+        assert set(equipment["default_for_sport_ids"]) == {
+            sport_5_outdoor_tennis.id
+        }
+        assert Equipment.query.filter_by(label=equipment_label).count() == 1
+        assert (
+            UserSportPreference.query.filter_by(
+                sport_id=sport_5_outdoor_tennis.id
+            ).count()
+            == 1
+        )
+
+    def test_it_adds_paddle_as_equipment(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_7_kayaking: Sport,
+        equipment_type_5_paddle: EquipmentType,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        equipment_label = "My new paddle"
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "equipment_type_id": equipment_type_5_paddle.id,
+                "label": equipment_label,
+                "default_for_sport_ids": [sport_7_kayaking.id],
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert equipment["label"] == equipment_label
+        assert set(equipment["default_for_sport_ids"]) == {sport_7_kayaking.id}
+        assert Equipment.query.filter_by(label=equipment_label).count() == 1
+        assert (
+            UserSportPreference.query.filter_by(
+                sport_id=sport_7_kayaking.id
+            ).count()
+            == 1
+        )
+
+    def test_it_adds_misc_as_equipment(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        equipment_type_6_misc: "Equipment",
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        equipment_label = "HR monitor"
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "equipment_type_id": equipment_type_6_misc.id,
+                "label": equipment_label,
+                "default_for_sport_ids": [sport_1_cycling.id],
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert equipment["label"] == equipment_label
+        assert set(equipment["default_for_sport_ids"]) == {sport_1_cycling.id}
+        assert Equipment.query.filter_by(label=equipment_label).count() == 1
+        assert (
+            UserSportPreference.query.filter_by(
+                sport_id=sport_1_cycling.id
+            ).count()
+            == 1
+        )
+
     def test_expected_scope_is_equipments_write(
         self, app: Flask, user_1: User
     ) -> None:
@@ -849,7 +1059,7 @@ class TestPostEquipment(ApiTestCaseMixin):
         )
 
 
-class TestPatchEquipment(ApiTestCaseMixin):
+class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, equipment_bike_user_1: Equipment
     ) -> None:
@@ -1072,8 +1282,8 @@ class TestPatchEquipment(ApiTestCaseMixin):
         user_1: User,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
-        equipment_type_1_shoe: EquipmentType,
         equipment_type_2_bike: EquipmentType,
+        equipment_type_3_kayak: EquipmentType,
         user_1_sport_1_preference: UserSportPreference,
         equipment_bike_user_1: Equipment,
         equipment_shoes_user_1: Equipment,
@@ -1081,16 +1291,8 @@ class TestPatchEquipment(ApiTestCaseMixin):
         another_workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         workout_cycling_user_1.equipments = [equipment_bike_user_1]
         another_workout_cycling_user_1.equipments = [equipment_bike_user_1]
@@ -1102,7 +1304,7 @@ class TestPatchEquipment(ApiTestCaseMixin):
 
         response = client.patch(
             f"/api/equipments/{equipment_bike_user_1.short_id}",
-            json={"equipment_type_id": equipment_type_1_shoe.id},
+            json={"equipment_type_id": equipment_type_3_kayak.id},
             headers={"Authorization": f"Bearer {auth_token}"},
         )
 
@@ -1111,7 +1313,9 @@ class TestPatchEquipment(ApiTestCaseMixin):
         assert "success" in data["status"]
         assert len(data["data"]["equipments"]) == 1
         equipment = data["data"]["equipments"][0]
-        assert equipment["equipment_type"] == equipment_type_1_shoe.serialize()
+        assert (
+            equipment["equipment_type"] == equipment_type_3_kayak.serialize()
+        )
         assert equipment["default_for_sport_ids"] == []
         assert equipment_bike_user_1.total_distance == 0.0
         assert equipment_bike_user_1.total_duration == timedelta()
@@ -1149,16 +1353,8 @@ class TestPatchEquipment(ApiTestCaseMixin):
         workout_cycling_user_1: Workout,
         workout_running_user_1: Workout,
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         workout_cycling_user_1.equipments = [equipment_bike_user_1]
         workout_running_user_1.equipments = [equipment_shoes_user_1]
@@ -1232,16 +1428,8 @@ class TestPatchEquipment(ApiTestCaseMixin):
         workout_running_user_1: Workout,
     ) -> None:
         # bike equipment, with 'Cycling (sport)' as default sport
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         workout_cycling_user_1.equipments = [equipment_bike_user_1]
         another_workout_cycling_user_1.equipments = [equipment_bike_user_1]
@@ -1395,16 +1583,8 @@ class TestPatchEquipment(ApiTestCaseMixin):
         user_1_sport_1_preference: UserSportPreference,
         equipment_bike_user_1: Equipment,
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1440,6 +1620,44 @@ class TestPatchEquipment(ApiTestCaseMixin):
             equipment_bike_user_1
         ]
 
+    def test_it_updates_default_sports_when_piece_exists_with_another_type(
+        self,
+        app: "Flask",
+        user_1: "User",
+        equipment_type_1_shoe: "EquipmentType",
+        equipment_type_2_bike: "EquipmentType",
+        sport_1_cycling: "Sport",
+        user_1_sport_1_preference: "UserSportPreference",
+        equipment_bike_user_1: "Equipment",
+        equipment_shoes_user_1: "Equipment",
+    ) -> None:
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
+            json={
+                "default_for_sport_ids": [sport_1_cycling.id],
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert equipment["default_for_sport_ids"] == [sport_1_cycling.id]
+        assert set(user_1_sport_1_preference.default_equipments.all()) == {
+            equipment_bike_user_1,
+            equipment_shoes_user_1,
+        }
+
     def test_it_removes_existing_default_sport(
         self,
         app: Flask,
@@ -1450,16 +1668,8 @@ class TestPatchEquipment(ApiTestCaseMixin):
         user_1_sport_1_preference: UserSportPreference,
         equipment_bike_user_1: Equipment,
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -1500,16 +1710,8 @@ class TestPatchEquipment(ApiTestCaseMixin):
         user_1_sport_1_preference: UserSportPreference,
         equipment_bike_user_1: Equipment,
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1545,26 +1747,14 @@ class TestPatchEquipment(ApiTestCaseMixin):
         equipment_another_shoes_user_1: Equipment,
         equipment_shoes_user_2: Equipment,
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_shoes_user_1.id,
-                        "sport_id": user_1_sport_2_preference.sport_id,
-                        "user_id": user_1_sport_2_preference.user_id,
-                    },
-                    {
-                        "equipment_id": equipment_shoes_user_2.id,
-                        "sport_id": user_2_sport_2_preference.sport_id,
-                        "user_id": user_2_sport_2_preference.user_id,
-                    },
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    },
-                ],
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_shoes_user_1], user_1_sport_2_preference
+        )
+        self.add_user_sport_preference_equipement(
+            [equipment_shoes_user_2], user_2_sport_2_preference
+        )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1606,16 +1796,8 @@ class TestPatchEquipment(ApiTestCaseMixin):
         user_1_sport_1_preference: UserSportPreference,
         equipment_bike_user_1: Equipment,
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1855,7 +2037,7 @@ class TestRefreshEquipment(ApiTestCaseMixin):
         assert equipment_shoes_user_1.total_workouts == 1
 
 
-class TestDeleteEquipment(ApiTestCaseMixin):
+class TestDeleteEquipment(ApiTestCaseMixin, EquipmentMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: Flask, equipment_bike_user_1: Equipment
     ) -> None:
@@ -1993,16 +2175,8 @@ class TestDeleteEquipment(ApiTestCaseMixin):
         user_1_sport_1_preference: UserSportPreference,
         equipment_bike_user_1: Equipment,
     ) -> None:
-        db.session.execute(
-            insert(UserSportPreferenceEquipment).values(
-                [
-                    {
-                        "equipment_id": equipment_bike_user_1.id,
-                        "sport_id": user_1_sport_1_preference.sport_id,
-                        "user_id": user_1_sport_1_preference.user_id,
-                    }
-                ]
-            )
+        self.add_user_sport_preference_equipement(
+            [equipment_bike_user_1], user_1_sport_1_preference
         )
         db.session.commit()
         client, auth_token = self.get_test_client_and_auth_token(
