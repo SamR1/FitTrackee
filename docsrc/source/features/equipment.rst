@@ -76,7 +76,7 @@ For now only, only one piece of equipment can be associated with a workout.
 
 Following totals are displayed for each piece of equipment:
 
-- total distance
+- total distance (= total moving duration), except for Racket
 - total duration
 - total workouts
 
