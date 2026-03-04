@@ -2,7 +2,7 @@
   "ADD_A_NEW_APP": "Aggiungi una nuova applicazione OAuth2",
   "APP": {
     "CLIENT_ID": "Id",
-    "CLIENT_SECRET": "Secret",
+    "CLIENT_SECRET": "Segreto",
     "DESCRIPTION": "Descrizione applicazione",
     "ISSUE_AT": "Issue at",
     "NAME": "Nome applicazione",

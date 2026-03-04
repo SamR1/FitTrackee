@@ -2,6 +2,9 @@
   "Canoeing": {
     "LABEL": "Canottaggio"
   },
+  "Canoeing (Whitewater)": {
+    "LABEL": "Canoa"
+  },
   "Cycling (Sport)": {
     "LABEL": "Ciclismo (Sport)"
   },
@@ -9,7 +12,7 @@
     "LABEL": "Ciclismo (Trasporto)"
   },
   "Cycling (Trekking)": {
-    "LABEL": "CIclismo (Trekking)"
+    "LABEL": "Ciclismo (Trekking)"
   },
   "Cycling (Virtual)": {
     "LABEL": "Cicliscmo (Virtuale)"
@@ -21,6 +24,9 @@
     "LABEL": "Escursioni"
   },
   "Kayaking": {
+    "LABEL": "Kayak"
+  },
+  "Kayaking (Whitewater)": {
     "LABEL": "Kayak"
   },
   "Mountain Biking": {
