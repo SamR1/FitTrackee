@@ -11,7 +11,7 @@ from lxml import etree as ET
 from fittrackee import appLog, db
 from fittrackee.constants import ElevationDataSource
 
-from ...constants import SPORTS_WITHOUT_ELEVATION_DATA, TRACK_EXTENSION_NSMAP
+from ...constants import SPORTS_WITHOUT_ELEVATION_DATA
 from ...exceptions import (
     WorkoutExceedingValueException,
     WorkoutException,
@@ -22,6 +22,7 @@ from ...utils.convert import (
     convert_speed_into_pace_duration,
     convert_speed_into_pace_in_sec_per_meter,
 )
+from ...utils.gpx import get_track_extension
 from ..elevation.elevation_service import ElevationService
 from .base_workout_with_segment_service import (
     BaseWorkoutWithSegmentsCreationService,
@@ -82,16 +83,8 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         self.powers: List[int] = []
 
     @staticmethod
-    def _get_track_extensions(calories: str) -> "ET.Element":
-        track_point_extension = ET.Element(
-            "{gpxtrkx}TrackStatsExtension",
-            nsmap=TRACK_EXTENSION_NSMAP,
-        )
-        calories_element = ET.SubElement(
-            track_point_extension, "{gpxtrkx}Calories"
-        )
-        calories_element.text = str(calories)
-        return track_point_extension
+    def _get_track_extension(calories: Union[int, str]) -> "ET.Element":
+        return get_track_extension(calories)
 
     @staticmethod
     def _get_extensions(
