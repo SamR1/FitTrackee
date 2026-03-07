@@ -26,8 +26,8 @@ def get_file_extension(filename: str) -> str:
 
 
 VALID_EXTENSIONS = {
-    "cadence": "{gpxtpx}hr",
-    "heart_rate": "{gpxtpx}cad",
+    "cadence": "{gpxtpx}cad",
+    "heart_rate": "{gpxtpx}hr",
     "power": "{gpxtpx}power",
 }
 
