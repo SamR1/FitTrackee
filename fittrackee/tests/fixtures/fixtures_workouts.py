@@ -3754,8 +3754,13 @@ def gpx_file_with_first_segment_empty() -> str:
 @pytest.fixture()
 def workout_cycling_user_1_generated_gpx() -> str:
     return f"""<?xml version="1.0" encoding="UTF-8"?>
-<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="FitTrackee v{VERSION}">
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxtrkx="http://www.garmin.com/xmlschemas/TrackStatsExtension/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="FitTrackee v{VERSION}">
   <trk>
+    <extensions>
+      <gpxtrkx:TrackStatsExtension>
+        <gpxtrkx:Calories>93</gpxtrkx:Calories>
+      </gpxtrkx:TrackStatsExtension>
+    </extensions>
     <trkseg>
       <trkpt lat="44.68095" lon="6.07367">
         <ele>998.0</ele>

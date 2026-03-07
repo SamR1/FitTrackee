@@ -869,6 +869,7 @@ class TestPostWorkoutWithFit(WorkoutApiTestCaseMixin):
         assert data["data"]["workouts"][0]["duration"] == "0:05:35"
         assert data["data"]["workouts"][0]["with_file"] is True
         assert data["data"]["workouts"][0]["map"] is not None
+        assert data["data"]["workouts"][0]["calories"] == 32
 
 
 class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin):
