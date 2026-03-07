@@ -11,6 +11,8 @@ AVAILABLE_SPORTS = [
     _("Halfbike"),
     _("Hiking"),
     _("Kayaking"),
+    _("Ice Skating"),
+    _("Inline Skating"),
     _("Kayaking (Whitewater)"),
     _("Mountain Biking"),
     _("Mountain Biking (Electric)"),

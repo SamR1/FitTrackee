@@ -40,6 +40,7 @@ PACE_SPORTS = [
 # elevation data (ascent, descent, min and max alt), if present, are not
 # stored and/or displayed
 SPORTS_WITHOUT_ELEVATION_DATA = [
+    "Ice Skating",
     # racket sports
     "Padel (Outdoor)",
     "Tennis (Outdoor)",

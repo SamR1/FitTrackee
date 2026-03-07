@@ -13,6 +13,8 @@
     <CyclingVirtual v-if="sportLabel === 'Cycling (Virtual)'" />
     <Halfbike v-if="sportLabel === 'Halfbike'" />
     <Hiking v-if="sportLabel === 'Hiking'" />
+    <IceSkating v-if="sportLabel === 'Ice Skating'" />
+    <InlineSkating v-if="sportLabel === 'Inline Skating'" />
     <Kayaking v-if="sportLabel === 'Kayaking'" />
     <KayakingWhiteWater v-if="sportLabel === 'Kayaking (Whitewater)'" />
     <MountainBiking v-if="sportLabel === 'Mountain Biking'" />
@@ -48,6 +50,8 @@
   import CyclingVirtual from '@/components/Common/Images/SportImage/CyclingVirtual.vue'
   import Halfbike from '@/components/Common/Images/SportImage/Halfbike.vue'
   import Hiking from '@/components/Common/Images/SportImage/Hiking.vue'
+  import IceSkating from '@/components/Common/Images/SportImage/IceSkating.vue'
+  import InlineSkating from '@/components/Common/Images/SportImage/InlineSkating.vue'
   import Kayaking from '@/components/Common/Images/SportImage/Kayaking.vue'
   import KayakingWhiteWater from '@/components/Common/Images/SportImage/KayakingWhiteWater.vue'
   import MountainBiking from '@/components/Common/Images/SportImage/MountainBiking.vue'

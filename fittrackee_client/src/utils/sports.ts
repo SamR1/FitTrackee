@@ -12,6 +12,8 @@ export const sportColors: Record<string, string> = {
   Hiking: '#bb757c',
   Kayaking: '#4978c4',
   'Kayaking (Whitewater)': '#2f62aa',
+  'Ice Skating': '#9743c4',
+  'Inline Skating': '#ad436d',
   'Mountain Biking': '#d4b371',
   'Mountain Biking (Electric)': '#fc9d6f',
   Mountaineering: '#48b3b7',
