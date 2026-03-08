@@ -223,6 +223,7 @@ Winter sports and mountain sports
 .. versionadded:: 0.5.0 Skiing (Alpine) and Skiing (Cross Country)
 .. versionadded:: 0.5.2 Snowshoes
 .. versionadded:: 0.7.3 Mountaineering
+.. versionadded:: 1.2.0 Ice Skating
 
 .. cssclass:: sports-table
 .. list-table::
@@ -232,6 +233,9 @@ Winter sports and mountain sports
    * - Id
      - Icon
      - Name
+   * - 28
+     - .. image:: ../_images/sports/ice_skating.png
+     - Ice skating
    * - 14
      - .. image:: ../_images/sports/mountaineering.png
      - Mountaineering
@@ -250,6 +254,7 @@ Other sports
 ~~~~~~~~~~~~
 .. versionadded:: 0.7.19 Paragliding
 .. versionadded:: 0.8.7 Swimrun
+.. versionadded:: 1.2.0 Inline Skating
 
 .. cssclass:: sports-table
 .. list-table::
@@ -259,6 +264,9 @@ Other sports
    * - Id
      - Icon
      - Name
+   * - 29
+     - .. image:: ../_images/sports/inline_skating.png
+     - Inline Skating
    * - 15
      - .. image:: ../_images/sports/paragliding.png
      - Paragliding
@@ -399,7 +407,7 @@ Elevation
 .. versionchanged:: 1.0.6 elevation is not displayed for flatwater sports
 .. versionchanged:: 1.1.0 add missing elevation and elevation data source change
 
-Elevation-related data for racket sports (Outdoor Tennis and Padel) and flatwater sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) are displayed if the file contains elevation
+Elevation-related data for racket sports (Outdoor Tennis and Padel), flatwater sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) and Ice Skating are not displayed if the file contains elevation
 
 | If some elevation data are missing and an `elevation service <../installation/elevation.html>`__ is enabled by the administrators, the missing elevations can be retrieved on workout creation if the user preference is set.
 | In this case, all elevations are updated.

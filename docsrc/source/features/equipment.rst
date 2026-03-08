@@ -10,7 +10,7 @@ Equipment
 .. versionchanged:: 0.11.0 added Tennis (Outdoor) to Shoes
 .. versionchanged:: 1.0.0 added Padel (Outdoor) to Shoes
 .. versionchanged:: 1.1.0 added Canoeing (Whitewater) and Kayaking (Whitewater) to Boat
-.. versionchanged:: 1.2.0 added Misc, Paddle and Racket equipment types
+.. versionchanged:: 1.2.0 added Skates, Misc, Paddle and Racket equipment types
 
 Users can create equipment that can be associated with workouts.
 
@@ -40,6 +40,9 @@ The following equipment types are available, depending on the sport:
    * - .. image:: ../_images/equipment_type/kayak_boat.png
      - Kayak/Boat
      - Canoeing, Canoeing (Whitewater), Rowing, Kayaking and Kayaking (Whitewater)
+   * - .. image:: ../_images/equipment_type/skates.png
+     - Ice skates
+     - Ice skating and Inline skating
    * - .. image:: ../_images/equipment_type/paddle.png
      - Paddle
      - Canoeing, Canoeing (Whitewater), Rowing, Kayaking and Kayaking (Whitewater), and Standup Paddleboarding

@@ -25,6 +25,7 @@ SPORT_EQUIPMENT_TYPES = {
         "Kayaking (Whitewater)",
         "Rowing",
     ],
+    "Skates": ["Ice Skating", "Inline Skating"],
     "Paddle": [
         "Canoeing",
         "Canoeing (Whitewater)",
