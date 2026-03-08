@@ -197,7 +197,7 @@ class TestProcessWorkoutsArchivesUploads(UserTaskMixin):
                 ) as update_task_and_clean_mock,
             ):
                 process_workouts_archives_uploads(max_count=1, logger=logger)
-        except Exception:
+        except Exception:  # noqa: S110
             pass
 
         update_task_and_clean_mock.assert_called_once_with(

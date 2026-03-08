@@ -79,7 +79,8 @@ def register_valid_user_and_logout(selenium):
 def confirm_account(selenium, user):
     time.sleep(1)
     response = requests.get(
-        f"{EMAIL_API_URL}/api/v2/search?kind=to&query={user['email']}"
+        f"{EMAIL_API_URL}/api/v2/search?kind=to&query={user['email']}",
+        timeout=60,
     )
     response.raise_for_status()
     results = response.json()

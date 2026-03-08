@@ -55,10 +55,6 @@ jobs:
       - name: Create test databases
         run: python db/create_ci_test_db.py
 
-      - name: Bandit
-        if: ${{ inputs.with-additional-check && inputs.python-version == '3.13' }}
-        run: bandit -r fittrackee -c pyproject.toml
-
       - name: Lint
         if: ${{ inputs.with-additional-check && inputs.python-version == '3.13' }}
         run: |

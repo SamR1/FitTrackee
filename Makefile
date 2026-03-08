@@ -18,17 +18,14 @@ babel-compile:
 babel-update:
 	$(PYBABEL) update -i messages.pot -d fittrackee/translations
 
-bandit:
-	$(BANDIT) -r fittrackee -c pyproject.toml
-
 build-client: lint-client
 	cd fittrackee_client && $(NPM) build
 
-check-all: bandit lint-all type-check-all test-all
+check-all: lint-all type-check-all test-all
 
 check-client: lint-client type-check-client test-client
 
-check-python: bandit lint-python type-check test-python
+check-python: lint-python type-check test-python
 
 create-db-dev:
 	sh db/create-databases.sh
@@ -50,9 +47,6 @@ codespell:
 	$(CODESPELL)
 
 ## Docker commands for evaluation purposes
-docker-bandit:
-	docker compose -f docker-compose-dev.yml exec fittrackee bandit -r fittrackee -c pyproject.toml
-
 docker-build:
 	docker compose -f docker-compose-dev.yml build fittrackee
 
@@ -61,7 +55,7 @@ docker-build-all: docker-build docker-build-client
 docker-build-client:
 	docker compose -f docker-compose-dev.yml build fittrackee_client
 
-docker-check-all: docker-run docker-bandit docker-lint-all docker-type-check docker-test-client docker-test-python
+docker-check-all: docker-run docker-lint-all docker-type-check docker-test-client docker-test-python
 
 docker-downgrade-db:
 	docker compose -f docker-compose-dev.yml exec fittrackee flask db downgrade --directory $(DOCKER_MIGRATIONS)
