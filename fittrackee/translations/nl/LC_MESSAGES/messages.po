@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2026-03-04 23:57+0100\n"
-"PO-Revision-Date: 2025-10-03 03:02+0000\n"
-"Last-Translator: Stephan Paternotte <stephan@paternottes.net>\n"
+"PO-Revision-Date: 2026-03-10 06:09+0000\n"
+"Last-Translator: wetenschaap <weblate@swnkls.nl>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/fittrackee/"
+"fittrackee-api-emails/nl/>\n"
 "Language: nl\n"
-"Language-Team: Dutch <https://hosted.weblate.org/projects/fittrackee"
-"/fittrackee-api-emails/nl/>\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.17-dev\n"
 "Generated-By: Babel 2.18.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
@@ -474,7 +475,7 @@ msgstr "Kanoing"
 
 #: fittrackee/feeds/feeds/constants.py:6
 msgid "Canoeing (Whitewater)"
-msgstr ""
+msgstr "Kanoën (Wildwater)"
 
 #: fittrackee/feeds/feeds/constants.py:7
 msgid "Cycling (Sport)"
@@ -506,15 +507,15 @@ msgstr "Kayakken"
 
 #: fittrackee/feeds/feeds/constants.py:14
 msgid "Ice Skating"
-msgstr ""
+msgstr "Schaatsen"
 
 #: fittrackee/feeds/feeds/constants.py:15
 msgid "Inline Skating"
-msgstr ""
+msgstr "Skaten"
 
 #: fittrackee/feeds/feeds/constants.py:16
 msgid "Kayaking (Whitewater)"
-msgstr ""
+msgstr "Kajakken (Wildwater)"
 
 #: fittrackee/feeds/feeds/constants.py:17
 msgid "Mountain Biking"
@@ -625,4 +626,3 @@ msgstr "Gedaald"
 #: fittrackee/feeds/templates/workout/body.html:4
 msgid "Description"
 msgstr "Beschrijving"
-
