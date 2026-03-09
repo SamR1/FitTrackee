@@ -23,6 +23,12 @@
   "Hiking": {
     "LABEL": "Trektocht"
   },
+  "Ice Skating": {
+    "LABEL": "Schaatsen"
+  },
+  "Inline Skating": {
+    "LABEL": "Skaten"
+  },
   "Kayaking": {
     "LABEL": "Kajakken"
   },
