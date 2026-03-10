@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2026-03-04 23:57+0100\n"
-"PO-Revision-Date: 2026-03-03 10:10+0000\n"
+"PO-Revision-Date: 2026-03-11 09:09+0000\n"
 "Last-Translator: Davide Gualano <ildave@gmail.com>\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/fittrackee/"
+"fittrackee-api-emails/it/>\n"
 "Language: it\n"
-"Language-Team: Italian <https://hosted.weblate.org/projects/fittrackee"
-"/fittrackee-api-emails/it/>\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.17-dev\n"
 "Generated-By: Babel 2.18.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
@@ -503,11 +504,11 @@ msgstr "Kayak"
 
 #: fittrackee/feeds/feeds/constants.py:14
 msgid "Ice Skating"
-msgstr ""
+msgstr "Pattinaggio su ghiaccio"
 
 #: fittrackee/feeds/feeds/constants.py:15
 msgid "Inline Skating"
-msgstr ""
+msgstr "Pattinaggio in linea"
 
 #: fittrackee/feeds/feeds/constants.py:16
 msgid "Kayaking (Whitewater)"
@@ -622,4 +623,3 @@ msgstr "Discesa"
 #: fittrackee/feeds/templates/workout/body.html:4
 msgid "Description"
 msgstr "Descrizione"
-
