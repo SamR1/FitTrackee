@@ -383,7 +383,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 and not existing_elevations.empty
             ):
                 try:
-                    previous_value = existing_elevations.at[
+                    previous_value = existing_elevations.at[  # noqa: PD008
                         f"{point.time}|{point.latitude}|{point.longitude}",
                         "elevation",
                     ]

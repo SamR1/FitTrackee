@@ -116,10 +116,14 @@ select = [
     "T20",
     # flake8-bugbear
     "B",
+    # flake8-bandit
+    "S",
     # Ruff-specific rules
     "RUF",
-    # Bandit
-    "S",
+    # Pandas-vet
+    "PD",
+    # NumPy specific rules
+    "NPY",
 ]
 ignore = ["RUF012"]
 
@@ -129,11 +133,11 @@ ignore = ["RUF012"]
     "S105",  # Possible hardcoded password
     "S106",  # Possible hardcoded password
     "S108",  # Probable insecure usage of temporary file or directory
-    "S311", # Standard pseudo-random generators are not suitable for cryptographic purposes
+    "S311",  # Standard pseudo-random generators are not suitable for cryptographic purposes
 ]
 "e2e/**/*.py" = [
     "S101",  # Use of assert detected
-    "S311", # Standard pseudo-random generators are not suitable for cryptographic purposes
+    "S311",  # Standard pseudo-random generators are not suitable for cryptographic purposes
 ]
 [tool.ruff.format]
 quote-style = "double"
