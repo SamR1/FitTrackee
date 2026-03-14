@@ -47,7 +47,9 @@ jobs:
       UI_URL: https://0.0.0.0:5000
     steps:
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Install Poetry and Dependencies
         run: |
@@ -57,7 +59,7 @@ jobs:
           poetry install --no-interaction --quiet
 
       - name: Use Node.js ${{ inputs.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ inputs.node-version}}
 

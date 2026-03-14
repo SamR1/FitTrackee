@@ -37,7 +37,9 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Install libgdal-dev in order to build numpy with python 3.14
         if: inputs.python-version == '3.14'
