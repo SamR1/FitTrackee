@@ -980,21 +980,6 @@ bcrypt = ">=3.1.1"
 Flask = "*"
 
 [[package]]
-name = "flask-dramatiq"
-version = "0.6.0"
-description = "Adds Dramatiq support to your Flask application"
-optional = false
-python-versions = ">=3.6,<4.0"
-groups = ["main"]
-files = [
-    {file = "flask-dramatiq-0.6.0.tar.gz", hash = "sha256:63709e73d7c8d2e5d9bc554d1e859d91c5c5c9a4ebc9461752655bf1e0b87420"},
-    {file = "flask_dramatiq-0.6.0-py3-none-any.whl", hash = "sha256:7d4a9289721577f726183f7c44c6713a16bbdff54b946f27abc2ffcc65768adf"},
-]
-
-[package.dependencies]
-dramatiq = ">=1.5,<2.0"
-
-[[package]]
 name = "flask-limiter"
 version = "4.1.1"
 description = "Rate limiting for flask applications"
@@ -4078,4 +4063,4 @@ test = ["pytest", "pytest-cov"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "b2ed36da517296a0510a523e9fce6ed4c3eb351894bdde754a32eadd26e63615"
+content-hash = "cbf39736c9e54c3821510784c73a11371a8519beafb5590f412da2172680d6db"

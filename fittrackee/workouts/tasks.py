@@ -3,11 +3,12 @@ from datetime import datetime, timezone
 from logging import Logger
 from typing import Optional
 
+import dramatiq
 from dramatiq.middleware import Shutdown, TimeLimitExceeded
 from dramatiq_abort import Abort
 from humanize import naturalsize
 
-from fittrackee import db, dramatiq
+from fittrackee import db
 from fittrackee.constants import TASKS_TIME_LIMIT, TaskPriority
 from fittrackee.exceptions import TaskException
 from fittrackee.users.models import Notification, UserTask

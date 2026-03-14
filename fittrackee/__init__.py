@@ -15,7 +15,6 @@ from flask import (
 )
 from flask_babel import Babel
 from flask_bcrypt import Bcrypt
-from flask_dramatiq import Dramatiq
 from flask_limiter import Limiter
 from flask_limiter.errors import RateLimitExceeded
 from flask_limiter.util import get_remote_address
@@ -25,6 +24,7 @@ from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+from fittrackee.dramatiq_broker import init_dramatiq_broker
 from fittrackee.emails.emails import EmailService
 from fittrackee.request import CustomRequest
 
@@ -75,7 +75,6 @@ babel = Babel()
 bcrypt = Bcrypt()
 migrate = Migrate()
 email_service = EmailService()
-dramatiq = Dramatiq()
 redis_client = redis.from_url(REDIS_URL)
 
 limiter = Limiter(
@@ -132,9 +131,9 @@ def create_app(init_email: bool = True) -> Flask:
     db.init_app(app)
     bcrypt.init_app(app)
     migrate.init_app(app, db)
-    dramatiq.init_app(app)
-    dramatiq.broker.add_middleware(abortable)
     limiter.init_app(app)
+
+    init_dramatiq_broker(app, abortable, REDIS_URL)
 
     # set oauth2
     from fittrackee.oauth2.config import config_oauth
