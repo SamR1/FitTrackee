@@ -22,7 +22,7 @@ This application is written in Python (API) and Typescript (client):
     - `fitdecode <https://github.com/polyvertex/fitdecode>`_ to parse fit files
     - `GeoPandas <https://geopandas.org>`_ to work with geospatial data
     - `Static Map 3 <https://github.com/SamR1/staticmap>`_, a fork of `Static Map <https://github.com/komoot/staticmap>`_ to generate a static map image from file coordinates
-    - `Dramatiq <https://dramatiq.io/>`_ and `Flask-Dramatiq <https://flask-dramatiq.readthedocs.io>`_ for task queue
+    - `Dramatiq <https://dramatiq.io/>`_ for task queue
     - `Authlib <https://docs.authlib.org/en/latest/>`_ for OAuth 2.0 Authorization support
     - `Flask-Limiter <https://flask-limiter.readthedocs.io/en/stable>`_ for API rate limits
     - `gunicorn <https://gunicorn.org/>`_ to serve application

@@ -20,6 +20,8 @@ Installation
 From PyPI
 *********
 
+.. versionchanged:: 1.2.0 **Flask-Dramatiq** command removal
+
 - Create and activate a `virtualenv <https://docs.python.org/3/library/venv.html>`__
 
 - Install **FitTrackee** with pip
@@ -79,15 +81,6 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 .. code-block:: bash
 
     $ dramatiq fittrackee.tasks:broker --processes=$WORKERS_PROCESSES --log-file=$DRAMATIQ_LOG
-
-.. note::
-    | It is also possible to start task queue workers with **Flask-Dramatiq** CLI:
-
-    .. code-block:: bash
-
-        $ flask worker --processes 2
-
-    | But running **Flask-Dramatiq** CLI on Python 3.13+ raises errors. Emails and user data export are sent, but the `middleware <https://dramatiq.io/reference.html#dramatiq.middleware.TimeLimit>`__ preventing actors from running too long is not active. Please use **Dramatiq** CLI instead for now.
 
 .. note::
     | To start application and workers with **systemd** service, see `Deployment <deployment.html>`__.

@@ -3,6 +3,7 @@ Tasks processing
 
 .. versionadded:: 0.3.0
 .. versionchanged:: 0.10.0 Add ``TASKS_TIME_LIMIT`` variable
+.. versionchanged:: 1.2.0 **Flask-Dramatiq** removal
 
 Tasks processing is done using `Dramatiq <https://dramatiq.io/>`_. It requires Redis and is used for email sending, user data exports and workouts archives uploads.
 
@@ -24,9 +25,6 @@ To start task queue workers, run the following command after virtual environment
 .. code-block:: bash
 
     $ dramatiq fittrackee.tasks:broker --processes=$WORKERS_PROCESSES --log-file=$DRAMATIQ_LOG
-
-.. note::
-    | It is also possible to start task queue workers with **Flask-Dramatiq** CLI, but it is recommended to use **Dramatiq** CLI instead for now.
 
 It is possible to run queues independently, for instance for workouts archive uploads:
 
