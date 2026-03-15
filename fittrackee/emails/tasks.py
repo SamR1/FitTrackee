@@ -1,6 +1,8 @@
 from typing import Dict
 
-from fittrackee import dramatiq, email_service
+import dramatiq
+
+from fittrackee import email_service
 
 
 @dramatiq.actor(queue_name="fittrackee_emails")

@@ -46,6 +46,10 @@ Failed to upload or download files
 
     $ dramatiq fittrackee.tasks:broker --processes=2 --log-file=dramatiq.log
 
+  .. note::
+
+    Flask-dramatiq dependency has been removed in v1.2.0.
+
 
 ``staticmap3.staticmap - ERROR - request failed [None]`` or "error when generating map image"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
