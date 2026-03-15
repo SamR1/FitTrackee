@@ -57,6 +57,7 @@ class BaseConfig:
     VALHALLA_API_URL = os.environ.get("VALHALLA_API_URL", "")
 
     DRAMATIQ_BROKER = broker
+    TASKS_PROCESSING_AVAILABLE = False
 
     LANGUAGES = SUPPORTED_LANGUAGES
     BABEL_DEFAULT_LOCALE = "en"

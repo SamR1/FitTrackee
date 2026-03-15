@@ -5,6 +5,7 @@ from importlib import import_module, reload
 from typing import TYPE_CHECKING, Any, Dict, Tuple
 
 import redis
+from dramatiq.brokers.stub import StubBroker
 from dramatiq_abort import Abortable, backends
 from flask import (
     Flask,
@@ -26,6 +27,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 from fittrackee.dramatiq_broker import init_dramatiq_broker
 from fittrackee.emails.emails import EmailService
+from fittrackee.exceptions import EmailConfigException
 from fittrackee.request import CustomRequest
 
 VERSION = __version__ = "1.1.2"
@@ -76,6 +78,11 @@ bcrypt = Bcrypt()
 migrate = Migrate()
 email_service = EmailService()
 redis_client = redis.from_url(REDIS_URL)
+redis_available = True
+try:
+    redis_client.ping()
+except redis.exceptions.ConnectionError:
+    redis_available = False
 
 limiter = Limiter(
     key_func=get_remote_address,
@@ -91,13 +98,9 @@ limiter = Limiter(
 )
 if not API_RATE_LIMITS:
     limiter.enabled = False
-else:
-    # if redis is not available, disable the rate limiter
-    try:
-        redis_client.ping()
-    except redis.exceptions.ConnectionError:
-        limiter.enabled = False
-        appLog.warning("Redis not available, API rate limits are disabled.")
+elif not redis_available:
+    limiter.enabled = False
+    appLog.warning("Redis not available, API rate limits are disabled.")
 
 backend = backends.RedisBackend(client=redis_client)
 abortable = Abortable(backend=backend)
@@ -140,9 +143,20 @@ def create_app(init_email: bool = True) -> Flask:
 
     config_oauth(app)
 
-    # set up email if 'EMAIL_URL' is initialized
+    # check if dramatiq broker is available
+    app.config["TASKS_PROCESSING_AVAILABLE"] = (
+        issubclass(app.config["DRAMATIQ_BROKER"], StubBroker)  # tests
+        or redis_available  # dev/prod
+    )
+
+    # set up email if 'EMAIL_URL' is initialized and redis available
     if init_email:
         if app.config["EMAIL_URL"]:
+            if not app.config["TASKS_PROCESSING_AVAILABLE"]:
+                raise EmailConfigException(
+                    "EMAIL_URL is set, but Redis is not available. Please "
+                    "check application configuration or Redis status."
+                )
             email_service.init_email(app)
             app.config["CAN_SEND_EMAILS"] = True
         else:
