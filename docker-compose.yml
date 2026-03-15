@@ -88,6 +88,8 @@ services:
 #    depends_on:
 #      fittrackee:
 #        condition: service_healthy
+#      fittrackee-redis:
+#        condition: service_healthy
 #    networks:
 #      - internal_network
 #      - external_network
