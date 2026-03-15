@@ -3544,9 +3544,6 @@ def abort_workouts_upload_task(
     if not task or task.task_type != "workouts_archive_upload":
         return NotFoundErrorResponse("no task found")
 
-    if not task.message_id:
-        return InternalServerErrorResponse("error when aborting task")
-
     if task.status not in [
         "in_progress",
         "queued",
@@ -3556,7 +3553,8 @@ def abort_workouts_upload_task(
         )
 
     try:
-        abort(message_id=task.message_id, middleware=abortable)
+        if task.message_id:
+            abort(message_id=task.message_id, middleware=abortable)
         task.aborted = True
         db.session.commit()
     except Exception as e:
