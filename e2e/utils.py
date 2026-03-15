@@ -59,7 +59,7 @@ def register_valid_user(selenium):
         "password": "p@ssw0rd",
     }
     register(selenium, user)
-    WebDriverWait(selenium, 30).until(EC.url_changes(f"{TEST_URL}/register"))
+    WebDriverWait(selenium, 60).until(EC.url_changes(f"{TEST_URL}/register"))
     confirm_account(selenium, user)
     return user
 

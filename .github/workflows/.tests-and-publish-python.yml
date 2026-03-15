@@ -100,7 +100,7 @@ jobs:
       run: yarn build
 
     - name: Set up Python 3.13
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: 3.13
 
@@ -115,7 +115,7 @@ jobs:
       run: poetry build
 
     - name: Store the distribution packages
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: python-package-distributions
         path: dist/
