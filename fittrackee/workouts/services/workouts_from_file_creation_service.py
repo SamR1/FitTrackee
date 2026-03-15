@@ -438,9 +438,10 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
         db.session.add(upload_task)
         db.session.commit()
 
-        message = upload_workouts_archive.send(task_id=upload_task.id)
-        upload_task.message_id = message.message_id
-        db.session.commit()
+        if current_app.config["TASKS_PROCESSING_AVAILABLE"]:
+            message = upload_workouts_archive.send(task_id=upload_task.id)
+            upload_task.message_id = message.message_id
+            db.session.commit()
 
         return upload_task.short_id
 

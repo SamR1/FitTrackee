@@ -3834,6 +3834,25 @@ class TestPostUserTaskRequest(ApiUserTaskRequestMixin):
             data_export_request.serialize(current_user=suspended_user)
         )
 
+    def test_it_does_not_calls_export_data_tasks_when_tasks_processing_is_disabled(  # noqa
+        self,
+        export_data_mock: Mock,
+        app_with_task_processing_disabled: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_task_processing_disabled, user_1.email
+        )
+
+        client.post(
+            "/api/auth/account/export/request",
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert UserTask.query.filter_by(user_id=user_1.id).first() is not None
+        export_data_mock.send.assert_not_called()
+
 
 class TestGetUserTaskRequest(ApiUserTaskRequestMixin):
     def test_it_returns_none_if_no_request(
