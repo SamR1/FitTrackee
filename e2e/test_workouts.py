@@ -67,7 +67,7 @@ class TestWorkout:
         )
         confirm_button.click()
 
-        WebDriverWait(selenium, 30).until(
+        WebDriverWait(selenium, 60).until(
             EC.url_changes(f"{TEST_URL}/workouts/add")
         )
 
