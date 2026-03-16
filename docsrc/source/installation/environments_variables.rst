@@ -36,7 +36,8 @@ deployment method.
     **FitTrackee** secret key, must be initialized in production environment.
 
     .. warning::
-        Use a strong secret key. This key is used in JWT generation.
+        | Use a strong secret key. This key is used in JWT generation.
+        | A warning is displayed in logs when the key is too short.
 
 .. envvar:: APP_SETTINGS
 
@@ -117,6 +118,11 @@ deployment method.
 
     .. warning::
         If the email URL is invalid, the application may not start.
+
+    .. versionchanged:: 1.2.0
+
+    .. warning::
+        If the email URL not empty and Redis not available, the application will not start, and an error message will be displayed at startup.
 
 .. envvar:: ENABLE_GEOSPATIAL_FEATURES
 
