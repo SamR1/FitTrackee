@@ -43,10 +43,12 @@ services:
 #    build: .
     volumes:
       - ${HOST_UPLOAD_DIR:-./data/uploads}:/usr/src/app/uploads
-      - ${HOST_LOG_DIR:-./data/logs}:/usr/src/app/logs
       - ${HOST_STATICMAP_CACHE_DIR:-./data/staticmap_cache}:/usr/src/app/.staticmap_cache
+# Comment the following line when logging to stdout
+      - ${HOST_LOG_DIR:-./data/logs}:/usr/src/app/logs
     post_start:
-      - command: chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/logs /usr/src/app/.staticmap_cache
+# Remove '/usr/src/app/logs' directory when logging to stdout
+      - command: chown -R fittrackee:fittrackee /usr/src/app/uploads /usr/src/app/.staticmap_cache /usr/src/app/logs
         user: root
     ports:
       - "${HOST_APP_PORT:-5000}:5000"

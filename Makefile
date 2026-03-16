@@ -216,9 +216,10 @@ revision:
 run:
 	$(MAKE) P="run-server run-workers" make-p
 
+GUNICORN_LOG := gunicorn.log
 run-server:
 	echo 'Running on http://$(HOST):$(PORT)'
-	cd fittrackee && $(GUNICORN) -b $(HOST):$(PORT) "fittrackee:create_app()" --error-logfile ../gunicorn.log
+	$(GUNICORN) -b $(HOST):$(PORT) "fittrackee:create_app()" --error-logfile $(GUNICORN_LOG)
 
 run-workers:
 	$(DRAMATIQ) fittrackee.tasks:broker --processes=$(WORKERS_PROCESSES) --log-file=$(DRAMATIQ_LOG)
