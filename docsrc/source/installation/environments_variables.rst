@@ -145,6 +145,14 @@ deployment method.
     | ``FLASK_APP`` should contain ``$(PWD)/fittrackee/__main__.py`` with installation from sources, else ``fittrackee``.
 
 
+.. envvar:: GUNICORN_LOG
+
+    .. versionadded:: 1.2.0
+
+    | Path to **Gunicorn** log file.
+    | To disable logging to file, set ``GUNICORN_LOG`` to ``-``, see `Gunicorn documentation <https://gunicorn.org/reference/settings/#errorlog>`__.
+
+
 .. envvar:: HOST
 
     **FitTrackee** host.

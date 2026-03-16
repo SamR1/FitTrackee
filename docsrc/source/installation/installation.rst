@@ -245,6 +245,8 @@ Images are available on `DockerHub <https://hub.docker.com/r/fittrackee/fittrack
     - ``/usr/src/app/logs``
     - ``/usr/src/app/.staticmap_cache``
 
+    To disable logging to file, set ``GUNICORN_LOG`` to ``-`` and do not set ``APP_LOG``. In this case, ``/usr/src/app/logs`` directory is not necessary, see comments in docker-compose.yml example.
+
 - create ``.env`` from example (``.env.docker.example``) and update it (see `Environment variables <environments_variables.html>`__).
 
 - to start the application:
