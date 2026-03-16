@@ -90,7 +90,6 @@ class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
     SECRET_KEY = uuid4().hex
     BCRYPT_LOG_ROUNDS = 4
-    DRAMATIQ_BROKER_URL = os.getenv("REDIS_URL", "redis://")
 
 
 class TestingConfig(BaseConfig):
@@ -117,12 +116,12 @@ class TestingConfig(BaseConfig):
 
 
 class End2EndTestingConfig(TestingConfig):
-    DRAMATIQ_BROKER_URL = os.getenv("REDIS_URL", "redis://")
     UI_URL = "http://0.0.0.0:5000"
+    TOKEN_EXPIRATION_SECONDS = 300
+    PASSWORD_TOKEN_EXPIRATION_SECONDS = 300
 
 
 class ProductionConfig(BaseConfig):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
     SECRET_KEY = os.getenv("APP_SECRET_KEY")
-    DRAMATIQ_BROKER_URL = os.getenv("REDIS_URL", "redis://")
