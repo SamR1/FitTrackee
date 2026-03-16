@@ -88,7 +88,7 @@ class BaseConfig:
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
-    SECRET_KEY = uuid4().hex
+    SECRET_KEY = os.getenv("APP_SECRET_KEY")
     BCRYPT_LOG_ROUNDS = 4
 
 
