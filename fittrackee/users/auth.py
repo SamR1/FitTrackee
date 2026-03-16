@@ -2453,7 +2453,8 @@ def request_user_data_export(auth_user: User) -> Union[Dict, HttpResponse]:
         db.session.add(export_request)
         db.session.commit()
 
-        export_data.send(task_id=export_request.id)
+        if current_app.config["TASKS_PROCESSING_AVAILABLE"]:
+            export_data.send(task_id=export_request.id)
 
         return {
             "status": "success",

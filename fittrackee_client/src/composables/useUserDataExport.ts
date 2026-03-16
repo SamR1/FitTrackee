@@ -13,12 +13,15 @@ export default function useUserDataExport() {
   )
 
   function canRequestExport() {
-    return exportRequest.value?.created_at
-      ? isBefore(
+    if (!exportRequest.value) {
+      return true
+    }
+    return ['in_progress', 'queued'].includes(exportRequest.value.status)
+      ? false
+      : isBefore(
           new Date(exportRequest.value.created_at),
           subDays(new Date(), 1)
         )
-      : true
   }
   function requestExport() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.REQUEST_DATA_EXPORT)

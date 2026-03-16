@@ -1868,6 +1868,36 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
         # file cleanup
         os.remove(archive_absolute_path)
 
+    def test_it_does_not_call_upload_workouts_archive_when_tasks_processing_is_disabled(  # noqa
+        self,
+        app_with_task_processing_disabled: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        upload_workouts_archive_mock: MagicMock,
+    ) -> None:
+        service = self.get_service(
+            app_with_task_processing_disabled,
+            user_1,
+            sport_1_cycling,
+            "tests/files/gpx_test.zip",
+        )
+        expected_token = "some_token"
+        archive_absolute_path = get_absolute_file_path(
+            f"workouts/{user_1.id}/archive_{expected_token}.zip"
+        )
+
+        with patch("secrets.token_urlsafe", return_value=expected_token):
+            service.add_workouts_upload_task(
+                files_to_process=TEST_FILES_LIST,
+                equipments=None,
+            )
+
+        assert UserTask.query.filter_by(user_id=user_1.id).first() is not None
+        upload_workouts_archive_mock.send.assert_not_called()
+
+        # file cleanup
+        os.remove(archive_absolute_path)
+
     def test_it_store_archive_content_in_temporary_file(
         self,
         app: "Flask",

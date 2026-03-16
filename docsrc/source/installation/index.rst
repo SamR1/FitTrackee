@@ -45,13 +45,13 @@ Single-user instance
 ====================
 
 | For a single-user instance, `registration <../features/administration.html#configuration>`__ can be disabled.
-| So all you need is Python and PostgreSQL/PostGIS database if you want to keep the setup simple. A `CLI <../cli.html#users>`__ is available to manage user account.
+| So all you need is Python and PostgreSQL/PostGIS database if you want to keep the setup simple. A `CLI <../cli.html>`__ is available to manage user account, user data exports and workouts archives uploads.
 
 Multiple-users instance
 =======================
 
-| Registration can en enabled and maximum number of accounts can be set in the `Administration <../features/administration.html#configuration>`__.
-| It is recommended to set Redis and a SMTP provider for email sending and tasks processing. Alternatively, a `CLI <../cli.html#users>`__ is available to manage users account.
+| Registration can be enabled and maximum number of accounts can be set in the `Administration <../features/administration.html#configuration>`__.
+| It is recommended to set Redis and a SMTP provider for email sending and tasks processing. Alternatively, a `CLI <../cli.html>`__ is available to manage user accounts, user data exports and workouts archives uploads.
 
 Prerequisites
 *************
@@ -71,7 +71,7 @@ Prerequisites
 
 - optional
 
-  - `Redis <https://redis.io/>`__ for `task queue <tasks_processing.html>`__ (for `email <emails.html>`__ sending if enable, for data export requests, and asynchronous archive uploads if enabled) and `API rate limits <api_rate_limits.html>`__ (for installation from sources or package)
+  - `Redis <https://redis.io/>`__ for `task queue <tasks_processing.html>`__ (for `email <emails.html>`__ sending if enabled, for data export requests, and asynchronous archive uploads if enabled) and `API rate limits <api_rate_limits.html>`__ (for installation from sources or package)
   - SMTP provider (if `email <emails.html>`__ sending is enabled)
   - API key from a `weather data provider <weather.html>`__
   - `elevation data provider <elevation.html>`__
