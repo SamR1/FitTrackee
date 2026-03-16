@@ -61,7 +61,7 @@ pyopenssl = "25.3.0"
 pytz = "2025.2"
 shortuuid = "1.0.13"
 sqlalchemy = "2.0.47"
-staticmap3 = {extras = ["filecache"], version = "0.1.0"}
+staticmap3 = {extras = ["filecache"], version = "0.2.0"}
 ua-parser = "1.0.1"
 xmltodict = "1.0.4"
 
