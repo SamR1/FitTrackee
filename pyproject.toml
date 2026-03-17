@@ -55,7 +55,7 @@ nh3 = "0.3.3"
 numpy = "=2.2.6" # numpy 2.3+ requires python 3.11+. geoalchemy2 dependency.
 pandas = "=2.3.2" # temporary workaround to enable installation on RHEL 7, installation of 2.3.3 generates an error
 psycopg2-binary = "2.9.11"
-pycryptodome = "^3.15"
+pycryptodome = "3.23.0"
 pyjwt = "2.12.1"
 pyproj = "=3.7.1" # pyproj 3.7.2+ requires python 3.11+ and installation may generates an error on RHEL
 pyopenssl = "26.0.0"
