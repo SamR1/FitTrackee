@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FitTrackee 1.2.0\n"
 "\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-17 17:23+0100\n"
+"POT-Creation-Date: 2026-03-17 17:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -10790,7 +10790,7 @@ msgid "a timeline with the workouts visible to the authenticated user (their own
 msgstr ""
 
 #: ../source/features/dashboard.rst:14
-#: ../source/index.rst:29
+#: ../source/index.rst:30
 msgid "FitTrackee Dashboard"
 msgstr ""
 
@@ -13158,7 +13158,7 @@ msgid "Examples for Android applications (non-exhaustive list):"
 msgstr ""
 
 #: ../source/index.rst:15
-msgid "\\- `Runner Up <https://github.com/jonasoreland/runnerup>`_ (GPL v3)"
+msgid "\\- `FitoTrack <https://codeberg.org/jannis/FitoTrack>`_ (GPL v3)"
 msgstr ""
 
 #: ../source/index.rst:16
@@ -13166,7 +13166,7 @@ msgid "\\- `OpenTracks <https://codeberg.org/OpenTracksApp/OpenTracks>`_ (Apache
 msgstr ""
 
 #: ../source/index.rst:17
-msgid "\\- `FitoTrack <https://codeberg.org/jannis/FitoTrack>`_ (GPL v3)"
+msgid "\\- `Runner Up <https://github.com/jonasoreland/runnerup>`_ (GPL v3)"
 msgstr ""
 
 #: ../source/index.rst:19
@@ -13174,26 +13174,30 @@ msgid "To get workouts from devices like smartwatches:"
 msgstr ""
 
 #: ../source/index.rst:20
-msgid "\\- `Gadgetbridge <https://codeberg.org/Freeyourgadget/Gadgetbridge>`_ (Android, GPL v3)"
+msgid "\\- `Amazfish <https://amazfish.github.io/>`_ (Sailfish OS, GPLv3, integration with FitTrackee from v2.9.0)"
 msgstr ""
 
-#: ../source/index.rst:23
-msgid "Maps are displayed using `Open Street Map <https://www.openstreetmap.org>`__."
+#: ../source/index.rst:21
+msgid "\\- `Gadgetbridge <https://gadgetbridge.org>`_ (Android, GPLv3, no integration)"
 msgstr ""
 
 #: ../source/index.rst:24
+msgid "Maps are displayed using `Open Street Map <https://www.openstreetmap.org>`__."
+msgstr ""
+
+#: ../source/index.rst:25
 msgid "It is also possible to add a workout without a file."
 msgstr ""
 
-#: ../source/index.rst:26
+#: ../source/index.rst:27
 msgid "**Still under heavy development (some features may be unstable).**"
 msgstr ""
 
-#: ../source/index.rst:27
+#: ../source/index.rst:28
 msgid "(see `issues <https://github.com/SamR1/FitTrackee/issues>`__ for more information)"
 msgstr ""
 
-#: ../source/index.rst:34
+#: ../source/index.rst:35
 msgid "Table of contents"
 msgstr ""
 

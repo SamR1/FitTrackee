@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-03-17 17:23+0100\n"
+"POT-Creation-Date: 2026-03-17 17:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -11566,7 +11566,7 @@ msgstr ""
 "un flux d'activités avec les séances visibles par l'utilisateur "
 "authentifié (ses propres séances et celles des utilisateurs suivis) "
 
-#: ../source/features/dashboard.rst:14 ../source/index.rst:29
+#: ../source/features/dashboard.rst:14 ../source/index.rst:30
 msgid "FitTrackee Dashboard"
 msgstr "Tableau de bord sur FitTrackee"
 
@@ -14700,7 +14700,7 @@ msgid "Examples for Android applications (non-exhaustive list):"
 msgstr "Exemples d'applications Android (liste non exhaustive) :"
 
 #: ../source/index.rst:15
-msgid "\\- `Runner Up <https://github.com/jonasoreland/runnerup>`_ (GPL v3)"
+msgid "\\- `FitoTrack <https://codeberg.org/jannis/FitoTrack>`_ (GPL v3)"
 msgstr ""
 
 #: ../source/index.rst:16
@@ -14710,7 +14710,7 @@ msgid ""
 msgstr ""
 
 #: ../source/index.rst:17
-msgid "\\- `FitoTrack <https://codeberg.org/jannis/FitoTrack>`_ (GPL v3)"
+msgid "\\- `Runner Up <https://github.com/jonasoreland/runnerup>`_ (GPL v3)"
 msgstr ""
 
 #: ../source/index.rst:19
@@ -14721,11 +14721,21 @@ msgstr ""
 
 #: ../source/index.rst:20
 msgid ""
-"\\- `Gadgetbridge <https://codeberg.org/Freeyourgadget/Gadgetbridge>`_ "
-"(Android, GPL v3)"
+"\\- `Amazfish <https://amazfish.github.io/>`_ (Sailfish OS, GPLv3, "
+"integration with FitTrackee from v2.9.0)"
 msgstr ""
+"\\- `Amazfish <https://amazfish.github.io/>`_ (Sailfish OS, GPLv3, "
+"intégration avec FitTrackee à partir de la v2.9.0)"
 
-#: ../source/index.rst:23
+#: ../source/index.rst:21
+msgid ""
+"\\- `Gadgetbridge <https://gadgetbridge.org>`_ (Android, GPLv3, no "
+"integration)"
+msgstr ""
+"\\- `Gadgetbridge <https://gadgetbridge.org>`_ (Android, GPLv3, pas "
+"d'intégration)"
+
+#: ../source/index.rst:24
 msgid ""
 "Maps are displayed using `Open Street Map "
 "<https://www.openstreetmap.org>`__."
@@ -14733,17 +14743,17 @@ msgstr ""
 "Les cartes sont affichées à l'aide de `Open Street Map "
 "<https://www.openstreetmap.org>`__."
 
-#: ../source/index.rst:24
+#: ../source/index.rst:25
 msgid "It is also possible to add a workout without a file."
 msgstr "Il est également possible d'ajouter une séance sans fichier."
 
-#: ../source/index.rst:26
+#: ../source/index.rst:27
 msgid "**Still under heavy development (some features may be unstable).**"
 msgstr ""
 "**En cours de développement (certaines fonctionnalités peuvent être "
 "instables).**"
 
-#: ../source/index.rst:27
+#: ../source/index.rst:28
 msgid ""
 "(see `issues <https://github.com/SamR1/FitTrackee/issues>`__ for more "
 "information)"
@@ -14751,7 +14761,7 @@ msgstr ""
 "(cf. `tickets <https://github.com/SamR1/FitTrackee/issues>`__ pour plus "
 "d'informations)"
 
-#: ../source/index.rst:34
+#: ../source/index.rst:35
 msgid "Table of contents"
 msgstr "Table des matières"
 
@@ -17357,13 +17367,15 @@ msgstr ""
 "`Amazfish <https://amazfish.github.io/>`_ (application compagnon pour "
 "montre connectée, integration avec FitTrackee à partir de la v2.9.0)"
 
+#: ../source/third_party_tools.rst:9
 msgid ""
 "`FitTrackee Uploader <https://github.com/ebrithiljonas/fittrackee-"
 "uploader>`_ (companion application for FitTrackee to upload workout "
 "files)"
 msgstr ""
 "`FitTrackee Uploader <https://github.com/ebrithiljonas/fittrackee-"
-"uploader>`_ (application compagnon pour FitTrackee pour charger les fichiers des séances)"
+"uploader>`_ (application compagnon pour FitTrackee pour charger les "
+"fichiers des séances)"
 
 #: ../source/third_party_tools.rst:10
 msgid ""
@@ -17380,8 +17392,8 @@ msgid ""
 "FitTrackee instance)"
 msgstr ""
 "`strava-to-fittrackee <https://github.com/jat255/strava-to-fittrackee>`_ "
-"(connecteur permettant d'extraire les séances d'un compte Strava et de les "
-"charger sur une instance FitTrackee)"
+"(connecteur permettant d'extraire les séances d'un compte Strava et de "
+"les charger sur une instance FitTrackee)"
 
 #: ../source/third_party_tools.rst:14
 msgid "Installation scripts"
