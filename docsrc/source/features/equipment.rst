@@ -10,7 +10,7 @@ Equipment
 .. versionchanged:: 0.11.0 added Tennis (Outdoor) to Shoes
 .. versionchanged:: 1.0.0 added Padel (Outdoor) to Shoes
 .. versionchanged:: 1.1.0 added Canoeing (Whitewater) and Kayaking (Whitewater) to Boat
-.. versionchanged:: 1.2.0 added Skates, Misc, Paddle and Racket equipment types
+.. versionchanged:: 1.2.0 added Skates, Misc, Paddle and Racket
 
 Users can create equipment that can be associated with workouts.
 
@@ -62,8 +62,6 @@ The following equipment types are available, depending on the sport:
      - Misc
      - All sports
 
-Only one piece of equipment per type can be added, with the exception of the "Misc" type, for which up to 5 pieces of equipment can be added.
-
 Users can define equipment visibility:
 
 - private: only owner can see the equipment in workout detail,
@@ -75,7 +73,7 @@ Users can define equipment visibility:
 
 The equipment details are only visible to its owner.
 
-For now only, only one piece of equipment can be associated with a workout.
+Only one piece of equipment per type can be added to a workout, with the exception of the "Misc" type, for which up to 5 pieces of equipment can be added.
 
 Following totals are displayed for each piece of equipment:
 

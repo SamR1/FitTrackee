@@ -36,7 +36,8 @@ deployment method.
     **FitTrackee** secret key, must be initialized in production environment.
 
     .. warning::
-        Use a strong secret key. This key is used in JWT generation.
+        | Use a strong secret key. This key is used in JWT generation.
+        | A warning is displayed in logs when the key is too short.
 
 .. envvar:: APP_SETTINGS
 
@@ -118,6 +119,11 @@ deployment method.
     .. warning::
         If the email URL is invalid, the application may not start.
 
+    .. versionchanged:: 1.2.0
+
+    .. warning::
+        If the email URL not empty and Redis not available, the application will not start, and an error message will be displayed at startup.
+
 .. envvar:: ENABLE_GEOSPATIAL_FEATURES
 
     .. versionadded:: 1.0.0
@@ -137,6 +143,14 @@ deployment method.
 
     | Name of the module to import at flask run.
     | ``FLASK_APP`` should contain ``$(PWD)/fittrackee/__main__.py`` with installation from sources, else ``fittrackee``.
+
+
+.. envvar:: GUNICORN_LOG
+
+    .. versionadded:: 1.2.0
+
+    | Path to **Gunicorn** log file.
+    | To disable logging to file, set ``GUNICORN_LOG`` to ``-``, see `Gunicorn documentation <https://gunicorn.org/reference/settings/#errorlog>`__.
 
 
 .. envvar:: HOST

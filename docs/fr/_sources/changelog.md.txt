@@ -1,5 +1,77 @@
 # Change log
 
+## Version 1.2.0 (2026/03/17)
+
+This version introduces new sports, the ability to add multiple pieces of equipment to workouts, and the option to zoom in on workout charts.
+
+Docker files have been updated to enable logging to stdout. A new environment variable has been added: [`GUNICORN_LOG`](https://docs.fittrackee.org/en/installation/environments_variables.html#envvar-GUNICORN_LOG).
+
+To prevent errors when sending emails in case Redis is not available, a check on Redis is performed on startup when `EMAIL_URL` is set. If Redis is not available, an error is logged and the application does not start.
+
+**Warning**:
+- This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html)). 
+- **Flask-Dramatiq** CLI is no longer available. Please use **Dramatiq** CLI instead, see [documentation](https://docs.fittrackee.org/en/installation/tasks_processing.html).
+
+
+### Features and enhancements
+
+* [#871](https://github.com/SamR1/FitTrackee/issues/871) - [FR] multiple equipments
+* [#974](https://github.com/SamR1/FitTrackee/issues/974) - Add racket as equipment type
+* [PR#1059](https://github.com/SamR1/FitTrackee/pull/1059) - add ability to zoom in on workout charts
+* [#1066](https://github.com/SamR1/FitTrackee/issues/1066) - New Sport: (Ice) skating
+
+### Bugs Fixed
+
+* [PR#1072](https://github.com/SamR1/FitTrackee/pull/1072) - Fix gpx file generation
+* [1076](https://github.com/SamR1/FitTrackee/issues/1076) - Gunicorn log to stdout 
+* [PR#1079](https://github.com/SamR1/FitTrackee/pull/1079) - Fix and improve tasks processing
+
+### Translations
+
+* [PR#1057](https://github.com/SamR1/FitTrackee/pull/1057) - Translations update from Hosted Weblate (German)
+* [PR#1062](https://github.com/SamR1/FitTrackee/pull/1062) - Translations update from Hosted Weblate (Basque and Chinese (Simplified))
+* [PR#1068](https://github.com/SamR1/FitTrackee/pull/1068) - Translations update from Hosted Weblate (Dutch)
+* [PR#1071](https://github.com/SamR1/FitTrackee/pull/1071) - Translations update from Hosted Weblate (Galician and Italian)
+* [PR#1074](https://github.com/SamR1/FitTrackee/pull/1074) - Translations update from Hosted Weblate (Dutch, Galician and Italian)
+* [PR#1077](https://github.com/SamR1/FitTrackee/pull/1077) - Translations update from Hosted Weblate (Galician)
+
+Translation status for languages available on the interface:
+- Basque: 99%
+- Bulgarian: 51%
+- Catalan: 25%
+- Chinese (Simplified): 97%
+- Croatian: 99%
+- Czech: 46%
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 89%
+- Italian: 99%
+- Kabyle: 5%
+- Norwegian Bokmål: 43%
+- Polish: 94%
+- Portuguese: 50%
+- Russian: 95%
+- Spanish: 68%
+- Turkish: 1%
+
+### Misc
+
+* [PR#1078](https://github.com/SamR1/FitTrackee/pull/1078) - Remove Flask-dramatiq dependency and update Dramatiq to 2.1.0
+* [eedff73](https://github.com/SamR1/FitTrackee/commit/eedff73bfb528b1d009b68446abaf2eafb55257f) - Docker - update node version to 24
+* [ed32c86](https://github.com/SamR1/FitTrackee/commit/ed32c867f21842da983d02cf878a3f7c04f1d601) - update staticmap3 to 0.2.0
+
+
+Thanks to the contributors:
+- @erral
+- @femoto
+- @ildave
+- @wetenschaap
+- @xmgz
+- Poesty Li
+
+
 ## Version 1.1.2 (2026/02/08)
 
 ### Features and enhancements
