@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-03-17 11:45+0100\n"
+"POT-Creation-Date: 2026-03-17 17:23+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -3722,9 +3722,9 @@ msgid ""
 " not available, an error is logged and the application does not start."
 msgstr ""
 "Afin d'éviter des erreurs lors de l'envoi d'e-mails si Redis n'est pas "
-"disponible, une vérification de Redis est effectuée au démarrage lorsque la "
-"variable `EMAIL_URL` est définie. Si Redis n'est pas disponible, une erreur est "
-"affichée et l'application ne démarre pas."
+"disponible, une vérification de Redis est effectuée au démarrage lorsque "
+"la variable `EMAIL_URL` est définie. Si Redis n'est pas disponible, une "
+"erreur est affichée et l'application ne démarre pas."
 
 #: ../source/changelog.md:11 ../source/changelog.md:181
 #: ../source/changelog.md:279 ../source/changelog.md:341
@@ -17338,28 +17338,32 @@ msgid "Third-party tools"
 msgstr "Outils tiers"
 
 #: ../source/third_party_tools.rst:4
-msgid "Thanks to the contributors, the following tools are available:"
-msgstr "Grâce aux contributeurs, les outils suivants sont disponibles :"
+msgid ""
+"Thanks to the contributors, the following tools and integrations are "
+"available:"
+msgstr ""
+"Grâce aux contributeurs, les outils et intégrations suivants sont "
+"disponibles :"
 
 #: ../source/third_party_tools.rst:7
-msgid "Import tools"
-msgstr "Outils d'importation"
+msgid "Import tools and integration"
+msgstr "Outils d'importation et intégration"
 
 #: ../source/third_party_tools.rst:8
 msgid ""
-"`strava-to-fittrackee <https://github.com/jat255/strava-to-fittrackee>`_ "
-"(import workouts from a Strava account)"
+"`Amazfish <https://amazfish.github.io/>`_ (companion application for "
+"smartwatch, integration with FitTrackee from v2.9.0)"
 msgstr ""
-"`strava-to-fittrackee <https://github.com/jat255/strava-to-fittrackee>`_ "
-"(import des séances à partir d'un compte Strava)"
+"`Amazfish <https://amazfish.github.io/>`_ (application compagnon pour "
+"montre connectée, integration avec FitTrackee à partir de la v2.9.0)"
 
-#: ../source/third_party_tools.rst:9
 msgid ""
 "`FitTrackee Uploader <https://github.com/ebrithiljonas/fittrackee-"
-"uploader>`_ (upload .gpx and .fit files)"
+"uploader>`_ (companion application for FitTrackee to upload workout "
+"files)"
 msgstr ""
 "`FitTrackee Uploader <https://github.com/ebrithiljonas/fittrackee-"
-"uploader>`_ (ajout de fichiers .gpx et .fit)"
+"uploader>`_ (application compagnon pour FitTrackee pour charger les fichiers des séances)"
 
 #: ../source/third_party_tools.rst:10
 msgid ""
@@ -17369,11 +17373,21 @@ msgstr ""
 "`garmin-to-fittrackee <https://git.dryusdan.fr/Dryusdan/garmin-to-"
 "fittrackee>`_ (script pour synchroniser fittrackee à partir de garmin)"
 
-#: ../source/third_party_tools.rst:13
+#: ../source/third_party_tools.rst:11
+msgid ""
+"`strava-to-fittrackee <https://github.com/jat255/strava-to-fittrackee>`_ "
+"(connector to pull workouts from a Strava account and upload them to a "
+"FitTrackee instance)"
+msgstr ""
+"`strava-to-fittrackee <https://github.com/jat255/strava-to-fittrackee>`_ "
+"(connecteur permettant d'extraire les séances d'un compte Strava et de les "
+"charger sur une instance FitTrackee)"
+
+#: ../source/third_party_tools.rst:14
 msgid "Installation scripts"
 msgstr "Scripts d'installation"
 
-#: ../source/third_party_tools.rst:14
+#: ../source/third_party_tools.rst:15
 msgid ""
 "`fittrackee_installer.sh "
 "<https://github.com/speefak/fittrackee_installer.sh>`_ (install "

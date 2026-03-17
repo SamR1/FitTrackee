@@ -24,12 +24,13 @@ with data on your own server.
 
 Several mobile apps or devices can store workouts data locally and export them into a file.  
 Examples for Android (non-exhaustive list):  
-* [Runner Up](https://github.com/jonasoreland/runnerup) (GPLv3)  
-* [OpenTracks](https://codeberg.org/OpenTracksApp/OpenTracks) (Apache License)  
 * [FitoTrack](https://codeberg.org/jannis/FitoTrack) (GPLv3)  
+* [OpenTracks](https://codeberg.org/OpenTracksApp/OpenTracks) (Apache License)  
+* [Runner Up](https://github.com/jonasoreland/runnerup) (GPLv3)  
 
 To get workouts from devices like smartwatches:
-* [Gadgetbridge](https://gadgetbridge.org) (Android, GPLv3)
+* [Amazfish](https://amazfish.github.io/) (Sailfish OS, GPLv3, integration with FitTrackee from v2.9.0)
+* [Gadgetbridge](https://gadgetbridge.org) (Android, GPLv3, no integration)
 
 It is also possible to add a workout without a file.
 
