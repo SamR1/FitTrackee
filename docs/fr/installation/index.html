@@ -6,8 +6,8 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Recherche" href="../search.html"><link rel="next" title="Variables d&#39;environnement" href="environments_variables.html"><link rel="prev" title="Traductions" href="../features/translations.html">
         <link rel="prefetch" href="../_static/ft-logo.png" as="image">
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Installation - Documentation FitTrackee 1.1.2</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>Installation - Documentation FitTrackee 1.2.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation FitTrackee 1.1.2
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 1.2.0
 </div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 1.1.2
+  <span class="sidebar-brand-text">Documentation FitTrackee 1.2.0
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -328,7 +328,7 @@
 <li><p><a class="reference external" href="https://github.com/polyvertex/fitdecode">fitdecode</a> pour lire les fichiers fit</p></li>
 <li><p><a class="reference external" href="https://geopandas.org">GeoPandas</a> pour manipuler les données spatiales</p></li>
 <li><p><a class="reference external" href="https://github.com/SamR1/staticmap">Static Map 3</a>, un <em>fork</em> de <a class="reference external" href="https://github.com/komoot/staticmap">Static Map</a> pour générer une image de la trace à partir des données du fichier</p></li>
-<li><p><a class="reference external" href="https://dramatiq.io/">Dramatiq</a> et <a class="reference external" href="https://flask-dramatiq.readthedocs.io">Flask-Dramatiq</a> pour la file d'attente des tâches</p></li>
+<li><p><a class="reference external" href="https://dramatiq.io/">Dramatiq</a> pour la file d'attente des tâches</p></li>
 <li><p><a class="reference external" href="https://docs.authlib.org/en/latest/">Authlib</a> pour le support de l'autorisation OAuth 2.0</p></li>
 <li><p><a class="reference external" href="https://flask-limiter.readthedocs.io/en/stable">Flask-Limiter</a> pour les limitations d'accès à l'API</p></li>
 <li><p><a class="reference external" href="https://gunicorn.org/">gunicorn</a> pour servir l'application</p></li>
@@ -361,14 +361,14 @@
 <h3>Instance mono-utilisateur<a class="headerlink" href="#single-user-instance" title="Lien vers cette rubrique">¶</a></h3>
 <div class="line-block">
 <div class="line">Pour une instance mono-utilisateur, l'<a class="reference external" href="../features/administration.html#configuration">inscription</a> peut être désactivée.</div>
-<div class="line">Ainsi, seuls Python et PostgreSQL/PostGIS sont nécessaires. Une <a class="reference external" href="../cli.html#users">interface de ligne de commande</a> est disponible pour gérer le compte utilisateur.</div>
+<div class="line">Ainsi, seuls Python et PostgreSQL/PostGIS sont nécessaires. Une <a class="reference external" href="../cli.html">interface de ligne de commande</a> est disponible pour gérer le compte utilisateur, les exports de données et le chargement des archives de séances.</div>
 </div>
 </section>
 <section id="multiple-users-instance">
 <h3>Instance multi-utilisateurs<a class="headerlink" href="#multiple-users-instance" title="Lien vers cette rubrique">¶</a></h3>
 <div class="line-block">
 <div class="line">L'inscription peut être activée et le nombre maximum de comptes peut être défini dans l'<a class="reference external" href="../features/administration.html#configuration">Administration</a>.</div>
-<div class="line">Il est recommandé de configurer Redis et un fournisseur SMTP pour l'envoi d'e-mails et le traitement des tâches. Il est également possible d'utiliser l'interface en ligne de commande (<a class="reference external" href="../cli.html#users">CLI</a>) pour gérer les comptes utilisateurs.</div>
+<div class="line">Il est recommandé de configurer Redis et un fournisseur SMTP pour l'envoi d'e-mails et le traitement des tâches. Il est également possible d'utiliser l'interface en ligne de commande (<a class="reference external" href="../cli.html">CLI</a>) pour gérer les comptes utilisateurs, les exports de données et le chargement des archives de séances.</div>
 </div>
 </section>
 </section>
@@ -394,7 +394,7 @@
 </li>
 <li><p>optionnels</p>
 <ul>
-<li><p><a class="reference external" href="https://redis.io/">Redis</a> pour la <a class="reference external" href="tasks_processing.html">file d'attente de tâches</a> (si l'envoi des courriels est activé et pour les demandes d'export de données et le tâches asyncrhones) et les <a class="reference external" href="api_rate_limits.html">limitations d'accès à l'API</a> (pour l'installation à partir des sources ou du paquet)</p></li>
+<li><p><a class="reference external" href="https://redis.io/">Redis</a> pour la <a class="reference external" href="tasks_processing.html">file d'attente de tâches</a> (si l'envoi des courriels est activé et pour les demandes d'export de données et le tâches asynchrones) et les <a class="reference external" href="api_rate_limits.html">limitations d'accès à l'API</a> (pour l'installation à partir des sources ou du paquet)</p></li>
 <li><p>Fournisseur SMTP (si l'envoi des <a class="reference external" href="emails.html">courriels</a> est activé)</p></li>
 <li><p>Clé d'API d'un <a class="reference external" href="weather.html">fournisseur de données météo</a></p></li>
 <li><p><a class="reference external" href="elevation.html">Fournisseur de données d'altitude</a></p></li>
@@ -527,7 +527,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e78f9f10"></script>
+</div><script src="../_static/documentation_options.js?v=e6704f88"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

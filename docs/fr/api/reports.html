@@ -6,8 +6,8 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Recherche" href="../search.html"><link rel="next" title="Flux RSS" href="rss_feeds.html"><link rel="prev" title="Records" href="records.html">
         <link rel="prefetch" href="../_static/ft-logo.png" as="image">
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Signalements - Documentation FitTrackee 1.1.2</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>Signalements - Documentation FitTrackee 1.2.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation FitTrackee 1.1.2
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 1.2.0
 </div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 1.1.2
+  <span class="sidebar-brand-text">Documentation FitTrackee 1.2.0
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -409,7 +409,7 @@
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Paramètres de requête<span class="colon">:</span></dt>
+<dt class="field-odd">Paramètres de la requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>object_type</strong> (<em>integer</em>) -- type de contenu signalé (<code class="docutils literal notranslate"><span class="pre">comment</span></code>, <code class="docutils literal notranslate"><span class="pre">user</span></code> ou <code class="docutils literal notranslate"><span class="pre">workout</span></code>)</p></li>
 <li><p><strong>order</strong> (<em>string</em>) -- ordre de tri : <code class="docutils literal notranslate"><span class="pre">asc</span></code>, <code class="docutils literal notranslate"><span class="pre">desc</span></code> (par défaut : <code class="docutils literal notranslate"><span class="pre">desc</span></code>)</p></li>
@@ -419,20 +419,20 @@
 <li><p><strong>resolved</strong> (<em>boolean</em>) -- filtrer sur le status des signalements</p></li>
 </ul>
 </dd>
-<dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
+<dt class="field-even">Entêtes de la requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> -- <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/400">400 Bad Request</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">'order_by'</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/401">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
@@ -505,21 +505,21 @@
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
+<dt class="field-odd">Entêtes de la requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
 <dt class="field-even">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> -- <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/401">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">report</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 </ul>
 </p></li>
@@ -549,21 +549,21 @@
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
+<dt class="field-odd">Entêtes de la requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
 <dt class="field-even">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> -- <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/401">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/403">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 </ul>
 </p></li>
@@ -588,46 +588,46 @@
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Objet JSON de requête<span class="colon">:</span></dt>
+<dt class="field-odd">Object JSON de requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>note</strong> (<em>string</em>) -- note décrivant le signalement</p></li>
 <li><p><strong>object_id</strong> (<em>string</em>) -- identifiant du contenu signalé</p></li>
 <li><p><strong>object_type</strong> (<em>string</em>) -- type du content signalé (<code class="docutils literal notranslate"><span class="pre">comment</span></code>, <code class="docutils literal notranslate"><span class="pre">workout</span></code> ou <code class="docutils literal notranslate"><span class="pre">user</span></code>)</p></li>
 </ul>
 </dd>
-<dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
+<dt class="field-even">Entêtes de la requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a></span> -- signalement créé</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/201">201 Created</a></span> -- signalement créé</p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/400">400 Bad Request</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">users</span> <span class="pre">can</span> <span class="pre">not</span> <span class="pre">report</span> <span class="pre">their</span> <span class="pre">own</span> <span class="pre">comment</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">users</span> <span class="pre">can</span> <span class="pre">not</span> <span class="pre">report</span> <span class="pre">their</span> <span class="pre">own</span> <span class="pre">profile</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">users</span> <span class="pre">can</span> <span class="pre">not</span> <span class="pre">report</span> <span class="pre">their</span> <span class="pre">own</span> <span class="pre">workout</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/401">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/403">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">comment</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> -- <code class="docutils literal notranslate"><span class="pre">Error</span> <span class="pre">during</span> <span class="pre">comment</span> <span class="pre">save.</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/500">500 Internal Server Error</a></span> -- <code class="docutils literal notranslate"><span class="pre">Error</span> <span class="pre">during</span> <span class="pre">comment</span> <span class="pre">save.</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -719,35 +719,35 @@
 <li><p><strong>report_id</strong> (<em>string</em>) -- identifiant du signalement</p></li>
 </ul>
 </dd>
-<dt class="field-even">Objet JSON de requête<span class="colon">:</span></dt>
+<dt class="field-even">Object JSON de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>notes</strong> (<em>string</em>) -- commentaire du signalement (obligatoire)</p></li>
 <li><p><strong>resolved</strong> (<em>boolean</em>) -- état du signalement</p></li>
 </ul>
 </dd>
-<dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
+<dt class="field-odd">Entêtes de la requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
 <dt class="field-even">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> -- <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/400">400 Bad Request</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/401">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/403">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">report</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 </ul>
 </p></li>
@@ -878,7 +878,7 @@
 <li><p><strong>report_id</strong> (<em>string</em>) -- identifiant du signalement</p></li>
 </ul>
 </dd>
-<dt class="field-even">Objet JSON de requête<span class="colon">:</span></dt>
+<dt class="field-even">Object JSON de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>action_type</strong> (<em>string</em>) -- action type (expected value:
 <code class="docutils literal notranslate"><span class="pre">user_suspension</span></code>, <code class="docutils literal notranslate"><span class="pre">user_unsuspension</span></code>, <code class="docutils literal notranslate"><span class="pre">user_warning</span></code>,
@@ -890,34 +890,34 @@
 <li><p><strong>workout_id</strong> (<em>string</em>) -- identifiant de la séance concernée par l'action (type: <code class="docutils literal notranslate"><span class="pre">comment_suspension</span></code>, <code class="docutils literal notranslate"><span class="pre">comment_suspension</span></code>)</p></li>
 </ul>
 </dd>
-<dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
+<dt class="field-odd">Entêtes de la requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
 <dt class="field-even">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> -- <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/400">400 Bad Request</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">'action_type'</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/401">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/403">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">report</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/500">500 Internal Server Error</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">Error</span> <span class="pre">during</span> <span class="pre">report</span> <span class="pre">save.</span></code></p></li>
 </ul>
 </p></li>
@@ -986,42 +986,42 @@
 <li><p><strong>appeal_id</strong> (<em>string</em>) -- identifiant de l'appel</p></li>
 </ul>
 </dd>
-<dt class="field-even">Objet JSON de requête<span class="colon">:</span></dt>
+<dt class="field-even">Object JSON de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>approved</strong> (<em>boolean</em>) -- <code class="docutils literal notranslate"><span class="pre">true</span></code> si l'appel est accepté, <code class="docutils literal notranslate"><span class="pre">false</span></code> si rejeté</p></li>
 <li><p><strong>reason</strong> (<em>string</em>) -- text expliquant pourquoi l'appel est accepté ou rejeté</p></li>
 </ul>
 </dd>
-<dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
+<dt class="field-odd">Entêtes de la requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
 <dt class="field-even">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> -- <code class="docutils literal notranslate"><span class="pre">success</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/400">400 Bad Request</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">payload</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">comment</span> <span class="pre">already</span> <span class="pre">reactivated</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">user</span> <span class="pre">account</span> <span class="pre">has</span> <span class="pre">already</span> <span class="pre">been</span> <span class="pre">reactivated</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">workout</span> <span class="pre">already</span> <span class="pre">reactivated</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/401">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/403">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404">404 Not Found</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">appeal</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/500">500 Internal Server Error</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">Error</span> <span class="pre">during</span> <span class="pre">report</span> <span class="pre">save.</span></code></p></li>
 </ul>
 </p></li>
@@ -1085,7 +1085,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e78f9f10"></script>
+</div><script src="../_static/documentation_options.js?v=e6704f88"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

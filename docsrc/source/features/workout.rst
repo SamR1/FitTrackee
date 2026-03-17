@@ -235,7 +235,7 @@ Winter sports and mountain sports
      - Name
    * - 28
      - .. image:: ../_images/sports/ice_skating.png
-     - Ice skating
+     - Ice Skating
    * - 14
      - .. image:: ../_images/sports/mountaineering.png
      - Mountaineering
@@ -535,6 +535,7 @@ Chart
 .. versionchanged:: 0.10.0 added heart rate and cadence
 .. versionchanged:: 0.11.0 added power and display preference for charts
 .. versionchanged:: 1.1.0 added pace and total calories, change default value for charts display preference
+.. versionchanged:: 1.2.0 zoom in and zoom reset added
 
 A chart is displayed for workout with a file, depending on sport and available data:
 
@@ -548,6 +549,15 @@ A chart is displayed for workout with a file, depending on sport and available d
 .. note::
 
     Extreme values for pace (greater than 1:00:00/km or 1:00:00/mi) are not displayed on chart.
+
+It is possible to zoom in and reset zoom:
+
+.. figure:: ../_images/workout-chart-zoom-in.gif
+   :alt: Zoom in and reset zoom on pace chart (animation)
+
+.. note::
+
+    On mobile devices, zoom is currently not enabled for now. The layout on mobile needs to be redesigned before this feature can be enabled.
 
 Speed/pace, elevation, heart rate, cadence and power can be displayed on one chart or split on multiple charts.
 
@@ -580,7 +590,7 @@ Workout menu
    * - .. image:: ../_images/workout_buttons/workout_refresh.png
      - Refresh workout (only for workout owner)
    * - .. image:: ../_images/workout_buttons/workout_elevation_data_source.png
-     - Change elevation data source workout (only for workout owner)
+     - Change elevation data source workout (only for workout owner, if elevation service is set)
    * - .. image:: ../_images/workout_buttons/workout_delete.png
      - Delete workout (only for workout owner)
    * - .. image:: ../_images/workout_buttons/workout_report.png
