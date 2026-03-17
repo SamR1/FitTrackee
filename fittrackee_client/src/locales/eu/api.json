@@ -1,6 +1,7 @@
 {
   "ERROR": {
     "<time> is missing in gpx file": ".gpx fitxategian <time> elementua falta da.",
+    "Error when updating elevation data source": "Errorea altueraren datuak eguneratzean",
     "Network Error": "Sareko errorea.",
     "UNKNOWN": "Errorea. Saiatu berriz edo jarri kontaktuan kudeatzailearekin.",
     "a report already exists": "Bidali duzu jada salaketa bat.",
@@ -22,6 +23,7 @@
     "error when parsing kml file": "Errorea .kml fitxategia parseatzean.",
     "error when parsing kmz file": "Errorea .kmz fitxategia parseatzean.",
     "error when parsing tcx file": "Errorea .tcx fitxategia parseatzean.",
+    "error when processing workout": "Errorea ariketa prozesatzean",
     "error when saving workout": "Errorea entrenamendua gordetzean.",
     "error when updating configuration": "Errorea konfigurazioa eguneratzean.",
     "error while fetching comments": "Errorea iruzkinak ekartzean.",

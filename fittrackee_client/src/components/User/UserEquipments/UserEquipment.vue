@@ -51,28 +51,25 @@
         </router-link>
         <template v-else>{{ equipment.workouts_count }}</template>
       </dd>
-      <dt>{{ capitalize($t('workouts.TOTAL_DISTANCE', 0)) }}</dt>
-      <dd>
-        <Distance
-          :distance="equipment.total_distance"
-          unitFrom="km"
-          :digits="2"
-          :displayUnit="false"
-          :useImperialUnits="authUser.imperial_units"
-        />
-        <span>
-          {{ authUser.imperial_units ? 'miles' : 'km' }}
-        </span>
-      </dd>
+      <template v-if="equipment.total_distance !== null">
+        <dt>{{ capitalize($t('workouts.TOTAL_DISTANCE', 0)) }}</dt>
+        <dd>
+          <Distance
+            :distance="equipment.total_distance"
+            unitFrom="km"
+            :digits="2"
+            :displayUnit="false"
+            :useImperialUnits="authUser.imperial_units"
+          />
+          <span>
+            {{ authUser.imperial_units ? 'miles' : 'km' }}
+          </span>
+        </dd>
+      </template>
       <dt>{{ capitalize($t('workouts.TOTAL_DURATION', 0)) }}</dt>
       <dd>
-        {{ getTotalDuration(equipment.total_moving, $t) }}
-        <template v-if="equipment.total_duration !== equipment.total_moving">
-          (<span class="duration-detail">
-            {{ $t('common.TOTAL_DURATION_WITH_PAUSES') }}:
-          </span>
-          {{ getTotalDuration(equipment.total_duration, $t) }})
-        </template>
+        {{ equipment.total_duration_in_hours }}
+        {{ $t('common.HOURS', equipment.total_duration_in_hours || 0) }}
       </dd>
       <dt>{{ capitalize($t('visibility_levels.VISIBILITY')) }}</dt>
       <dd>
@@ -161,7 +158,6 @@
   import type { ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
-  import { getTotalDuration } from '@/utils/duration'
   import { translateSports } from '@/utils/sports'
 
   interface Props {

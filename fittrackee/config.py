@@ -1,5 +1,6 @@
 import os
 from typing import Type, Union
+from uuid import uuid4
 
 from dramatiq.brokers.redis import RedisBroker
 from dramatiq.brokers.stub import StubBroker
@@ -56,6 +57,7 @@ class BaseConfig:
     VALHALLA_API_URL = os.environ.get("VALHALLA_API_URL", "")
 
     DRAMATIQ_BROKER = broker
+    TASKS_PROCESSING_AVAILABLE = False
 
     LANGUAGES = SUPPORTED_LANGUAGES
     BABEL_DEFAULT_LOCALE = "en"
@@ -74,7 +76,7 @@ class BaseConfig:
 
     UI_URL = os.environ["UI_URL"]
     OAUTH2_TOKEN_EXPIRES_IN = {
-        "authorization_code": 864000,  # 10 days  # nosec
+        "authorization_code": 864000,  # 10 days
         "refresh_token": 864000,  # 10 days
     }
     OAUTH2_REFRESH_TOKEN_GENERATOR = True
@@ -86,9 +88,8 @@ class BaseConfig:
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
-    SECRET_KEY = "development key"  # nosec
+    SECRET_KEY = os.getenv("APP_SECRET_KEY")
     BCRYPT_LOG_ROUNDS = 4
-    DRAMATIQ_BROKER_URL = os.getenv("REDIS_URL", "redis://")
 
 
 class TestingConfig(BaseConfig):
@@ -101,7 +102,7 @@ class TestingConfig(BaseConfig):
         os.getenv("UPLOAD_FOLDER", current_app.root_path),
         "uploads" + XDIST_WORKER,
     )
-    SECRET_KEY = "test key"  # nosec
+    SECRET_KEY = uuid4().hex
     BCRYPT_LOG_ROUNDS = 4
     TOKEN_EXPIRATION_DAYS = 0
     TOKEN_EXPIRATION_SECONDS = 60
@@ -109,18 +110,18 @@ class TestingConfig(BaseConfig):
     UI_URL = "https://example.com"
     SENDER_EMAIL = "fittrackee@example.com"
     OAUTH2_TOKEN_EXPIRES_IN = {
-        "authorization_code": 60,  # nosec
+        "authorization_code": 60,
         "refresh_token": 60,
     }
 
 
 class End2EndTestingConfig(TestingConfig):
-    DRAMATIQ_BROKER_URL = os.getenv("REDIS_URL", "redis://")
     UI_URL = "http://0.0.0.0:5000"
+    TOKEN_EXPIRATION_SECONDS = 300
+    PASSWORD_TOKEN_EXPIRATION_SECONDS = 300
 
 
 class ProductionConfig(BaseConfig):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
     SECRET_KEY = os.getenv("APP_SECRET_KEY")
-    DRAMATIQ_BROKER_URL = os.getenv("REDIS_URL", "redis://")

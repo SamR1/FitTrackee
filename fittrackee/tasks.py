@@ -1,4 +1,6 @@
-from fittrackee import create_app, dramatiq
+import dramatiq
+
+from fittrackee import create_app
 
 app = create_app()
-broker = dramatiq.broker
+broker = dramatiq.get_broker()

@@ -21,8 +21,11 @@ elevations_processing = postgresql.ENUM(
     'NONE', 'OPEN_ELEVATION', 'OPEN_ELEVATION_SMOOTH',
     name="elevations_processing"
 )
-elevations_processing.create(op.get_bind(), checkfirst=True)
-
+try:
+    elevations_processing.create(op.get_bind(), checkfirst=True)
+except NameError:
+    # workaround to avoid error when generating revision (empty migration)
+    pass
 
 def upgrade():
     with op.batch_alter_table("users", schema=None) as batch_op:

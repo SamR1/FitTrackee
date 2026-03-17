@@ -532,8 +532,8 @@ def get_picture(user_name: str) -> Any:
             return send_file(picture_path)
     except UserNotFoundException:
         return UserNotFoundErrorResponse()
-    except Exception:  # nosec
-        pass
+    except Exception:
+        appLog.error("error when getting user picture")
     return NotFoundErrorResponse("No picture.")
 
 

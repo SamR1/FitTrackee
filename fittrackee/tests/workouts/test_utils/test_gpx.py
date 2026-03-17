@@ -34,6 +34,7 @@ class TestGenerateGpx:
         workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
         workout_cycling_user_1_generated_gpx: str,
     ) -> None:
+        workout_cycling_user_1_with_coordinates.calories = 93
         gpx_xml = generate_gpx(workout_cycling_user_1_with_coordinates)
 
         assert gpx_xml == workout_cycling_user_1_generated_gpx

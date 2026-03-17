@@ -485,23 +485,6 @@ class TestWorkoutsTasksAbortTask(UserTaskMixin, ApiTestCaseMixin):
             response, "only queued and ongoing tasks can be aborted"
         )
 
-    def test_it_returns_500_when_message_id_is_none(
-        self,
-        app: "Flask",
-        user_1: "User",
-    ) -> None:
-        export_data_task = self.create_workouts_upload_task(user_1)
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.post(
-            self.route.format(task_id=export_data_task.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        self.assert_500(response, "error when aborting task")
-
     def test_it_calls_dramatiq_abort_when_task_is_valid(
         self,
         app: "Flask",
@@ -570,6 +553,27 @@ class TestWorkoutsTasksAbortTask(UserTaskMixin, ApiTestCaseMixin):
         assert data["task"] == jsonify_dict(
             workouts_upload_task.serialize(current_user=user_1)
         )
+        db.session.refresh(workouts_upload_task)
+        assert workouts_upload_task.aborted is True
+
+    def test_it_does_not_calls_dramatiq_abort_when_message_id_is_none(
+        self,
+        app: "Flask",
+        user_1: "User",
+    ) -> None:
+        workouts_upload_task = self.create_workouts_upload_task(user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        with patch("fittrackee.workouts.workouts.abort") as abort_mock:
+            response = client.post(
+                self.route.format(task_id=workouts_upload_task.short_id),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        abort_mock.assert_not_called()
+        assert response.status_code == 200
         db.session.refresh(workouts_upload_task)
         assert workouts_upload_task.aborted is True
 

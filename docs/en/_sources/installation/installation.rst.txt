@@ -20,6 +20,8 @@ Installation
 From PyPI
 *********
 
+.. versionchanged:: 1.2.0 **Flask-Dramatiq** command removal
+
 - Create and activate a `virtualenv <https://docs.python.org/3/library/venv.html>`__
 
 - Install **FitTrackee** with pip
@@ -81,15 +83,6 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
     $ dramatiq fittrackee.tasks:broker --processes=$WORKERS_PROCESSES --log-file=$DRAMATIQ_LOG
 
 .. note::
-    | It is also possible to start task queue workers with **Flask-Dramatiq** CLI:
-
-    .. code-block:: bash
-
-        $ flask worker --processes 2
-
-    | But running **Flask-Dramatiq** CLI on Python 3.13+ raises errors. Emails and user data export are sent, but the `middleware <https://dramatiq.io/reference.html#dramatiq.middleware.TimeLimit>`__ preventing actors from running too long is not active. Please use **Dramatiq** CLI instead for now.
-
-.. note::
     | To start application and workers with **systemd** service, see `Deployment <deployment.html>`__.
 
 - Open http://localhost:5000 and register
@@ -123,13 +116,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v1.1.2):
+-  Download the last release (for now, it is the release v1.2.0):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/1.1.2.tar.gz
-   $ tar -xzf v1.1.2.tar.gz
-   $ mv FitTrackee-1.1.2 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/1.2.0.tar.gz
+   $ tar -xzf v1.2.0.tar.gz
+   $ mv FitTrackee-1.2.0 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
@@ -251,6 +244,8 @@ Images are available on `DockerHub <https://hub.docker.com/r/fittrackee/fittrack
     - ``/usr/src/app/uploads``
     - ``/usr/src/app/logs``
     - ``/usr/src/app/.staticmap_cache``
+
+    To disable logging to file, set ``GUNICORN_LOG`` to ``-`` and do not set ``APP_LOG``. In this case, ``/usr/src/app/logs`` directory is not necessary, see comments in docker-compose.yml example.
 
 - create ``.env`` from example (``.env.docker.example``) and update it (see `Environment variables <environments_variables.html>`__).
 

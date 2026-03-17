@@ -5,6 +5,7 @@ from importlib import import_module, reload
 from typing import TYPE_CHECKING, Any, Dict, Tuple
 
 import redis
+from dramatiq.brokers.stub import StubBroker
 from dramatiq_abort import Abortable, backends
 from flask import (
     Flask,
@@ -15,7 +16,6 @@ from flask import (
 )
 from flask_babel import Babel
 from flask_bcrypt import Bcrypt
-from flask_dramatiq import Dramatiq
 from flask_limiter import Limiter
 from flask_limiter.errors import RateLimitExceeded
 from flask_limiter.util import get_remote_address
@@ -25,10 +25,12 @@ from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 
+from fittrackee.dramatiq_broker import init_dramatiq_broker
 from fittrackee.emails.emails import EmailService
+from fittrackee.exceptions import EmailConfigException
 from fittrackee.request import CustomRequest
 
-VERSION = __version__ = "1.1.2"
+VERSION = __version__ = "1.2.0"
 DEFAULT_PRIVACY_POLICY_DATA = "2024-12-23 19:00:00"
 REDIS_URL = os.getenv("REDIS_URL", "redis://")
 API_RATE_LIMITS = os.environ.get("API_RATE_LIMITS")
@@ -75,8 +77,12 @@ babel = Babel()
 bcrypt = Bcrypt()
 migrate = Migrate()
 email_service = EmailService()
-dramatiq = Dramatiq()
 redis_client = redis.from_url(REDIS_URL)
+redis_available = True
+try:
+    redis_client.ping()
+except redis.exceptions.ConnectionError:
+    redis_available = False
 
 limiter = Limiter(
     key_func=get_remote_address,
@@ -92,13 +98,9 @@ limiter = Limiter(
 )
 if not API_RATE_LIMITS:
     limiter.enabled = False
-else:
-    # if redis is not available, disable the rate limiter
-    try:
-        redis_client.ping()
-    except redis.exceptions.ConnectionError:
-        limiter.enabled = False
-        appLog.warning("Redis not available, API rate limits are disabled.")
+elif not redis_available:
+    limiter.enabled = False
+    appLog.warning("Redis not available, API rate limits are disabled.")
 
 backend = backends.RedisBackend(client=redis_client)
 abortable = Abortable(backend=backend)
@@ -132,18 +134,29 @@ def create_app(init_email: bool = True) -> Flask:
     db.init_app(app)
     bcrypt.init_app(app)
     migrate.init_app(app, db)
-    dramatiq.init_app(app)
-    dramatiq.broker.add_middleware(abortable)
     limiter.init_app(app)
+
+    init_dramatiq_broker(app, abortable, REDIS_URL)
 
     # set oauth2
     from fittrackee.oauth2.config import config_oauth
 
     config_oauth(app)
 
-    # set up email if 'EMAIL_URL' is initialized
+    # check if dramatiq broker is available
+    app.config["TASKS_PROCESSING_AVAILABLE"] = (
+        issubclass(app.config["DRAMATIQ_BROKER"], StubBroker)  # tests
+        or redis_available  # dev/prod
+    )
+
+    # set up email if 'EMAIL_URL' is initialized and redis available
     if init_email:
         if app.config["EMAIL_URL"]:
+            if not app.config["TASKS_PROCESSING_AVAILABLE"]:
+                raise EmailConfigException(
+                    "EMAIL_URL is set, but Redis is not available. Please "
+                    "check application configuration or Redis status."
+                )
             email_service.init_email(app)
             app.config["CAN_SEND_EMAILS"] = True
         else:

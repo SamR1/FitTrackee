@@ -68,8 +68,10 @@ def get_app(
     max_zip_file_size: Optional[Union[int, float]] = None,
     max_users: Optional[int] = None,
     global_map_workouts_limit: Optional[int] = None,
+    tasks_processing_available: bool = True,
 ) -> Generator:
     app = create_app()
+    app.config["TASKS_PROCESSING_AVAILABLE"] = tasks_processing_available
     limiter.enabled = False
     with app.app_context():
         try:
@@ -248,6 +250,13 @@ def app_with_global_map_workouts_limit_equal_to_1(
     monkeypatch: pytest.MonkeyPatch,
 ) -> Generator:
     yield from get_app(with_config=True, global_map_workouts_limit=1)
+
+
+@pytest.fixture
+def app_with_task_processing_disabled(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Generator:
+    yield from get_app(with_config=True, tasks_processing_available=False)
 
 
 @pytest.fixture()

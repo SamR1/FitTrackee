@@ -101,6 +101,7 @@
   } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatDate, formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
+  import { sortEquipments } from '@/utils/equipments.ts'
   import { isSportWithHeatmap } from '@/utils/workouts.ts'
 
   interface Props {
@@ -220,7 +221,7 @@
       descent: segment ? segment.descent : workout.descent,
       duration: segment ? segment.duration : workout.duration,
       elevationDataSource: segment ? null : workout.elevation_data_source,
-      equipments: segment ? null : workout.equipments,
+      equipments: segment ? null : workout.equipments.sort(sortEquipments),
       liked: workout.liked,
       likes_count: workout.likes_count,
       mapVisibility: workout.map_visibility,

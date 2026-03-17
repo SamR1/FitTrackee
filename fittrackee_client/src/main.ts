@@ -13,6 +13,7 @@ import {
   LinearScale,
 } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
+import zoomPlugin from 'chartjs-plugin-zoom'
 import { createApp } from 'vue'
 import VueFullscreen from 'vue-fullscreen'
 
@@ -36,7 +37,8 @@ Chart.register(
   CategoryScale,
   LineController,
   LinearScale,
-  ChartDataLabels
+  ChartDataLabels,
+  zoomPlugin
 )
 
 const app = createApp(App)

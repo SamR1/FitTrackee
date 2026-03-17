@@ -400,14 +400,14 @@ class User(BaseModel):
     received_follow_requests = relationship(
         FollowRequest,
         back_populates="to_user",
-        primaryjoin=id == FollowRequest.followed_user_id,
+        primaryjoin=id == FollowRequest.followed_user_id,  # noqa: A003
         lazy="dynamic",
         cascade="all, delete-orphan",
     )
     sent_follow_requests = relationship(
         FollowRequest,
         back_populates="from_user",
-        primaryjoin=id == FollowRequest.follower_user_id,
+        primaryjoin=id == FollowRequest.follower_user_id,  # noqa: A003
         lazy="dynamic",
         cascade="all, delete-orphan",
     )
@@ -415,12 +415,12 @@ class User(BaseModel):
         "User",
         secondary="follow_requests",
         primaryjoin=and_(
-            id == FollowRequest.followed_user_id,
-            FollowRequest.is_approved == True,  # noqa
+            id == FollowRequest.followed_user_id,  # noqa: A003
+            FollowRequest.is_approved == True,  # noqa: E712
         ),
         secondaryjoin=and_(
-            id == FollowRequest.follower_user_id,
-            suspended_at == None,  # noqa
+            id == FollowRequest.follower_user_id,  # noqa: A003
+            suspended_at == None,  # noqa: E711
         ),
         lazy="dynamic",
         viewonly=True,
@@ -429,12 +429,12 @@ class User(BaseModel):
         "User",
         secondary="follow_requests",
         primaryjoin=and_(
-            id == FollowRequest.follower_user_id,
-            FollowRequest.is_approved == True,  # noqa
+            id == FollowRequest.follower_user_id,  # noqa: A003
+            FollowRequest.is_approved == True,  # noqa: E712
         ),
         secondaryjoin=and_(
-            id == FollowRequest.followed_user_id,
-            suspended_at == None,  # noqa
+            id == FollowRequest.followed_user_id,  # noqa: A003
+            suspended_at == None,  # noqa: E711
         ),
         lazy="dynamic",
         viewonly=True,
@@ -447,13 +447,13 @@ class User(BaseModel):
     )
     blocked_users = relationship(
         "BlockedUser",
-        primaryjoin=id == BlockedUser.by_user_id,
+        primaryjoin=id == BlockedUser.by_user_id,  # noqa: A003
         lazy="dynamic",
         viewonly=True,
     )
     blocked_by_users = relationship(
         "BlockedUser",
-        primaryjoin=id == BlockedUser.user_id,
+        primaryjoin=id == BlockedUser.user_id,  # noqa: A003
         lazy="dynamic",
         viewonly=True,
     )
@@ -1023,6 +1023,12 @@ UserSportPreferenceEquipment = db.Table(
         db.Integer,
         db.ForeignKey("equipments.id", ondelete="CASCADE"),
         primary_key=True,
+    ),
+    db.Column(
+        "equipment_type_id",
+        db.Integer,
+        db.ForeignKey("equipment_types.id", ondelete="CASCADE"),
+        nullable=False,
     ),
 )
 

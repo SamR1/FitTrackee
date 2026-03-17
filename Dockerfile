@@ -1,4 +1,4 @@
-FROM node:23-alpine AS node-builder
+FROM node:24-alpine AS node-builder
 
 RUN mkdir -p /usr/src/app/fittrackee_client /usr/src/app/fittrackee
 WORKDIR /usr/src/app/fittrackee_client

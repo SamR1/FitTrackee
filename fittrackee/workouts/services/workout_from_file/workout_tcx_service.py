@@ -167,7 +167,7 @@ class WorkoutTcxService(WorkoutGpxService):
             ) from None
 
         if calories:
-            extension = cls._get_track_extensions(calories)
+            extension = cls._get_track_extension(calories)
             gpx_track.extensions.append(extension)
 
         gpx = gpxpy.gpx.GPX()

@@ -85,9 +85,13 @@
     "BACK_TO_PROFILE": "Terug naar profiel",
     "BIO": "Bio",
     "BIRTH_DATE": "Geboortedatum",
+    "CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI": "The verandering kunnen worden toegepast wanneer een verversing wordt uitgevoerd met de Command Line Interface (CLI).",
+    "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "De verandering worden alleen toegepast op nieuwe en ververste training.",
+    "CHANGES_ONLY_TO_NEW_WORKOUTS": "De verandering worden alleen toegepast op nieuwe trainingen.",
     "CREATED_REPORTS": "Aangemaakte meldingen",
     "DATE_FORMAT": "Weergaveformaat datum",
     "EDIT": "Profiel aanpassen",
+    "EDIT_ACCOUNT": "Account bewerken",
     "EDIT_MESSAGE_PREFERENCES": "Berichtvoorkeuren bewerken",
     "EDIT_NOTIFICATION_PREFERENCES": "Wijzig meldingen",
     "EDIT_PREFERENCES": "Voorkeuren wijzigen",
@@ -126,6 +130,7 @@
     },
     "MESSAGES_EDITION": "Berichtvoorkeuren editie",
     "MESSAGES_PREFERENCES": "Berichtvoorkeuren",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Missende hoogtebwerking bij aanmaken",
     "MONDAY": "Maandag",
     "NOTIFICATIONS": {
       "account_creation": "Iemand is geregistreerd",
@@ -140,6 +145,7 @@
     "NOTIFICATIONS_EDITION": "Meldingseditie",
     "NOTIFICATION_PREFERENCES": "Meldingsvoorkeuren",
     "NO_ARCHIVE_UPLOADS": "Geen archief uploads",
+    "NO_ELEVATION_SERVICE_AVAILABLE": "Geen dienst beschikbaar voor missende hoogtedata",
     "NO_SANCTIONS": "Geen sanctie",
     "PICTURE": "Afbeelding",
     "PICTURE_EDITION": "Afbeelding aanpassen",
@@ -182,6 +188,12 @@
       "DISABLED_BY_ADMIN": "uitgeschakeld door admin",
       "IS_ACTIVE": "actief",
       "LABEL": "label",
+      "PACE_SPEED_DISPLAY": {
+        "LABEL": "Tempo/Snelheidsweergave",
+        "pace": "Tempo",
+        "pace_and_speed": "Tempo en snelheid",
+        "speed": "Snelheid"
+      },
       "STOPPED_SPEED_THRESHOLD": "snelheidsgrens voor stilstand"
     },
     "SPORTS_EDITION": "Sport voorkeuren aanpassen",
@@ -224,7 +236,7 @@
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Gefilterd",
       "HELP": "Bij filteren worden extreme waarden (dewelke mogelijk GPS fouten zijn) niet gebruikt om de maximum snelheid te berekenen.",
-      "LABEL": "Strategie voor maximale snelheid",
+      "LABEL": "Strategie voor maximale snelheidsberekening",
       "RAW_SPEED": "Rauw"
     },
     "WORKOUT_CHARTS_DISPLAY": {
