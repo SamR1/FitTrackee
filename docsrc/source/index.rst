@@ -12,12 +12,13 @@ FitTrackee
   devices can store workouts data locally and export them into a file.
 
 | Examples for Android applications (non-exhaustive list):
-| \- `Runner Up <https://github.com/jonasoreland/runnerup>`_ (GPL v3)
-| \- `OpenTracks <https://codeberg.org/OpenTracksApp/OpenTracks>`_ (Apache License)
 | \- `FitoTrack <https://codeberg.org/jannis/FitoTrack>`_ (GPL v3)
+| \- `OpenTracks <https://codeberg.org/OpenTracksApp/OpenTracks>`_ (Apache License)
+| \- `Runner Up <https://github.com/jonasoreland/runnerup>`_ (GPL v3)
 
 | To get workouts from devices like smartwatches:
-| \- `Gadgetbridge <https://codeberg.org/Freeyourgadget/Gadgetbridge>`_ (Android, GPL v3)
+| \- `Amazfish <https://amazfish.github.io/>`_ (Sailfish OS, GPLv3, integration with FitTrackee from v2.9.0)
+| \- `Gadgetbridge <https://gadgetbridge.org>`_ (Android, GPLv3, no integration)
 
 | Maps are displayed using `Open Street
   Map <https://www.openstreetmap.org>`__.
