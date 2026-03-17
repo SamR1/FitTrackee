@@ -223,6 +223,7 @@ Winter sports and mountain sports
 .. versionadded:: 0.5.0 Skiing (Alpine) and Skiing (Cross Country)
 .. versionadded:: 0.5.2 Snowshoes
 .. versionadded:: 0.7.3 Mountaineering
+.. versionadded:: 1.2.0 Ice Skating
 
 .. cssclass:: sports-table
 .. list-table::
@@ -232,6 +233,9 @@ Winter sports and mountain sports
    * - Id
      - Icon
      - Name
+   * - 28
+     - .. image:: ../_images/sports/ice_skating.png
+     - Ice Skating
    * - 14
      - .. image:: ../_images/sports/mountaineering.png
      - Mountaineering
@@ -241,7 +245,7 @@ Winter sports and mountain sports
    * - 10
      - .. image:: ../_images/sports/skiing_cross_country.png
      - Skiing (Cross Country)
-   * - 10
+   * - 12
      - .. image:: ../_images/sports/snowshoes.png
      - Snowshoes
 
@@ -250,6 +254,7 @@ Other sports
 ~~~~~~~~~~~~
 .. versionadded:: 0.7.19 Paragliding
 .. versionadded:: 0.8.7 Swimrun
+.. versionadded:: 1.2.0 Inline Skating
 
 .. cssclass:: sports-table
 .. list-table::
@@ -259,6 +264,9 @@ Other sports
    * - Id
      - Icon
      - Name
+   * - 29
+     - .. image:: ../_images/sports/inline_skating.png
+     - Inline Skating
    * - 15
      - .. image:: ../_images/sports/paragliding.png
      - Paragliding
@@ -399,7 +407,7 @@ Elevation
 .. versionchanged:: 1.0.6 elevation is not displayed for flatwater sports
 .. versionchanged:: 1.1.0 add missing elevation and elevation data source change
 
-Elevation-related data for racket sports (Outdoor Tennis and Padel) and flatwater sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) are displayed if the file contains elevation
+Elevation-related data for racket sports (Outdoor Tennis and Padel), flatwater sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) and Ice Skating are not displayed if the file contains elevation
 
 | If some elevation data are missing and an `elevation service <../installation/elevation.html>`__ is enabled by the administrators, the missing elevations can be retrieved on workout creation if the user preference is set.
 | In this case, all elevations are updated.
@@ -527,6 +535,7 @@ Chart
 .. versionchanged:: 0.10.0 added heart rate and cadence
 .. versionchanged:: 0.11.0 added power and display preference for charts
 .. versionchanged:: 1.1.0 added pace and total calories, change default value for charts display preference
+.. versionchanged:: 1.2.0 zoom in and zoom reset added
 
 A chart is displayed for workout with a file, depending on sport and available data:
 
@@ -540,6 +549,15 @@ A chart is displayed for workout with a file, depending on sport and available d
 .. note::
 
     Extreme values for pace (greater than 1:00:00/km or 1:00:00/mi) are not displayed on chart.
+
+It is possible to zoom in and reset zoom:
+
+.. figure:: ../_images/workout-chart-zoom-in.gif
+   :alt: Zoom in and reset zoom on pace chart (animation)
+
+.. note::
+
+    On mobile devices, zoom is currently not enabled for now. The layout on mobile needs to be redesigned before this feature can be enabled.
 
 Speed/pace, elevation, heart rate, cadence and power can be displayed on one chart or split on multiple charts.
 
@@ -572,7 +590,7 @@ Workout menu
    * - .. image:: ../_images/workout_buttons/workout_refresh.png
      - Refresh workout (only for workout owner)
    * - .. image:: ../_images/workout_buttons/workout_elevation_data_source.png
-     - Change elevation data source workout (only for workout owner)
+     - Change elevation data source workout (only for workout owner, if elevation service is set)
    * - .. image:: ../_images/workout_buttons/workout_delete.png
      - Delete workout (only for workout owner)
    * - .. image:: ../_images/workout_buttons/workout_report.png

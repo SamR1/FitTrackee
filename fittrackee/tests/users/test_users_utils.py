@@ -291,7 +291,7 @@ class TestDecodeUserToken:
                 "iat": now,
                 "sub": 1,
             },
-            random_string(),
+            random_string(length=32),
             algorithm="HS256",
         )
         with pytest.raises(

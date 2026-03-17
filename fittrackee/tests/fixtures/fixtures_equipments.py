@@ -33,6 +33,38 @@ def equipment_type_2_bike() -> EquipmentType:
 
 
 @pytest.fixture()
+def equipment_type_3_kayak() -> EquipmentType:
+    equip_type = EquipmentType(label="Kayak_Boat", is_active=True)
+    db.session.add(equip_type)
+    db.session.commit()
+    return equip_type
+
+
+@pytest.fixture()
+def equipment_type_4_racket() -> EquipmentType:
+    equip_type = EquipmentType(label="Racket", is_active=True)
+    db.session.add(equip_type)
+    db.session.commit()
+    return equip_type
+
+
+@pytest.fixture()
+def equipment_type_5_paddle() -> EquipmentType:
+    equip_type = EquipmentType(label="Paddle", is_active=True)
+    db.session.add(equip_type)
+    db.session.commit()
+    return equip_type
+
+
+@pytest.fixture()
+def equipment_type_6_misc() -> EquipmentType:
+    equip_type = EquipmentType(label="Misc", is_active=True)
+    db.session.add(equip_type)
+    db.session.commit()
+    return equip_type
+
+
+@pytest.fixture()
 def equipment_bike_user_1(
     equipment_type_2_bike: EquipmentType, user_1: User
 ) -> Equipment:
@@ -104,6 +136,54 @@ def equipment_another_shoes_user_1(
         label="Another shoe equipment",
         equipment_type_id=equipment_type_1_shoe.id,
         description="An shoe equipment for testing purposes",
+        user_id=user_1.id,
+        is_active=True,
+    )
+    db.session.add(equip)
+    db.session.commit()
+    return equip
+
+
+@pytest.fixture()
+def equipment_misc_1_user_1(
+    equipment_type_6_misc: EquipmentType, user_1: User
+) -> Equipment:
+    equip = Equipment(
+        label="Misc 1",
+        equipment_type_id=equipment_type_6_misc.id,
+        description="",
+        user_id=user_1.id,
+        is_active=True,
+    )
+    db.session.add(equip)
+    db.session.commit()
+    return equip
+
+
+@pytest.fixture()
+def equipment_misc_2_user_1(
+    equipment_type_6_misc: EquipmentType, user_1: User
+) -> Equipment:
+    equip = Equipment(
+        label="Misc 2",
+        equipment_type_id=equipment_type_6_misc.id,
+        description="",
+        user_id=user_1.id,
+        is_active=True,
+    )
+    db.session.add(equip)
+    db.session.commit()
+    return equip
+
+
+@pytest.fixture()
+def equipment_misc_3_user_1(
+    equipment_type_6_misc: EquipmentType, user_1: User
+) -> Equipment:
+    equip = Equipment(
+        label="Misc 3",
+        equipment_type_id=equipment_type_6_misc.id,
+        description="",
         user_id=user_1.id,
         is_active=True,
     )

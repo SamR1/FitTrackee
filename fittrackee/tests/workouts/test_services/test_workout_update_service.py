@@ -175,47 +175,22 @@ class TestWorkoutUpdateServiceInitForWorkoutWithoutFile(RandomMixin):
     def test_it_raises_error_when_equipment_is_invalid_for_sport(
         self,
         app: "Flask",
-        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
         user_1: "User",
-        workout_cycling_user_1: "Workout",
-        equipment_shoes_user_1: "Equipment",
+        workout_running_user_1: "Workout",
+        equipment_bike_user_1: "Equipment",
     ) -> None:
         with pytest.raises(
             InvalidEquipmentException,
             match=re.escape(
-                f"invalid equipment id {equipment_shoes_user_1.short_id} "
-                f"for sport {sport_1_cycling.label}"
+                f"invalid equipment id {equipment_bike_user_1.short_id} "
+                f"for sport {sport_2_running.label}"
             ),
         ):
             WorkoutUpdateService(
                 user_1,
-                workout_cycling_user_1,
-                {"equipment_ids": [equipment_shoes_user_1.short_id]},
-            )
-
-    def test_it_raises_error_when_multiple_equipments_are_provided(
-        self,
-        app: "Flask",
-        sport_1_cycling: "Sport",
-        sport_2_running: "Sport",
-        user_1: "User",
-        workout_running_user_1: "Workout",
-        equipment_shoes_user_1: "Equipment",
-        equipment_another_shoes_user_1: "Equipment",
-    ) -> None:
-        with pytest.raises(
-            InvalidEquipmentsException,
-            match="only one equipment can be added",
-        ):
-            WorkoutUpdateService(
-                user_1,
                 workout_running_user_1,
-                {
-                    "equipment_ids": [
-                        equipment_shoes_user_1.short_id,
-                        equipment_another_shoes_user_1.short_id,
-                    ]
-                },
+                {"equipment_ids": [equipment_bike_user_1.short_id]},
             )
 
     def test_it_raises_error_when_equipment_belongs_to_another_user(
@@ -599,7 +574,7 @@ class TestWorkoutUpdateServiceUpdate(RandomMixin):
 
 
 @pytest.mark.disable_autouse_update_records_patch
-class TestWorkoutUpdateServiceUpdateForWorkoutWithoutFile(RandomMixin):
+class TestWorkoutUpdateServiceUpdateForWorkout(RandomMixin):
     def test_it_updates_elevation_data(
         self,
         app: "Flask",
@@ -837,6 +812,82 @@ class TestWorkoutUpdateServiceUpdateForWorkoutWithoutFile(RandomMixin):
 
         db.session.refresh(workout_cycling_user_1)
         assert workout_cycling_user_1.calories is None
+
+    def test_it_updates_equipments(
+        self,
+        app: "Flask",
+        user_1: "User",
+        workout_cycling_user_1: "Workout",
+        equipment_bike_user_1: "Equipment",
+        equipment_shoes_user_1: "Equipment",
+    ) -> None:
+        service = WorkoutUpdateService(
+            user_1,
+            workout_cycling_user_1,
+            {
+                "equipment_ids": [
+                    equipment_bike_user_1.short_id,
+                    equipment_shoes_user_1.short_id,
+                ]
+            },
+        )
+
+        service.update()
+        db.session.commit()
+
+        db.session.refresh(workout_cycling_user_1)
+        assert set(workout_cycling_user_1.equipments) == {
+            equipment_bike_user_1,
+            equipment_shoes_user_1,
+        }
+
+    def test_it_raises_error_when_pieces_of_equipment_have_same_type(
+        self,
+        app: "Flask",
+        user_1: "User",
+        workout_cycling_user_1: "Workout",
+        equipment_another_shoes_user_1: "Equipment",
+        equipment_shoes_user_1: "Equipment",
+    ) -> None:
+        with pytest.raises(InvalidEquipmentsException):
+            WorkoutUpdateService(
+                user_1,
+                workout_cycling_user_1,
+                {
+                    "equipment_ids": [
+                        equipment_another_shoes_user_1.short_id,
+                        equipment_shoes_user_1.short_id,
+                    ]
+                },
+            )
+
+    def test_it_removes_invalid_equipment_on_sport_change(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        workout_cycling_user_1: "Workout",
+        equipment_bike_user_1: "Equipment",
+        equipment_shoes_user_1: "Equipment",
+    ) -> None:
+        workout_cycling_user_1.equipments = [
+            equipment_bike_user_1,
+            equipment_shoes_user_1,
+        ]
+        service = WorkoutUpdateService(
+            user_1,
+            workout_cycling_user_1,
+            {"sport_id": sport_2_running.id},
+        )
+
+        service.update()
+        db.session.commit()
+
+        db.session.refresh(workout_cycling_user_1)
+        assert workout_cycling_user_1.equipments == [
+            equipment_shoes_user_1,
+        ]
 
 
 class TestWorkoutUpdateServiceUpdateForWorkoutWithFile(RandomMixin):

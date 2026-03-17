@@ -85,9 +85,14 @@
     "BACK_TO_PROFILE": "返回个人资料",
     "BIO": "个人简介",
     "BIRTH_DATE": "出生日期",
+    "CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI": "这些更改将在使用命令行界面（CLI）执行刷新时生效。",
+    "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "这些更改仅适用于新的或已刷新的锻炼。",
+    "CHANGES_ONLY_TO_NEW_WORKOUTS": "这些更改仅适用于新的锻炼。",
     "CREATED_REPORTS": "创建的报告",
     "DATE_FORMAT": "日期显示格式",
     "EDIT": "编辑个人资料",
+    "EDIT_ACCOUNT": "编辑账号",
+    "EDIT_MESSAGE_PREFERENCES": "编辑消息偏好",
     "EDIT_NOTIFICATION_PREFERENCES": "编辑通知偏好",
     "EDIT_PREFERENCES": "编辑偏好",
     "EDIT_SPORTS_PREFERENCES": "编辑运动偏好",
@@ -120,6 +125,12 @@
     "LAST_NAME": "姓氏",
     "LATEST_SANCTIONS_RECEIVED": "最新收到的处罚",
     "LOCATION": "位置",
+    "MESSAGES": {
+      "warning_about_large_number_of_workouts_on_map": "在地图上显示大量锻炼时显示警告"
+    },
+    "MESSAGES_EDITION": "消息偏好编辑",
+    "MESSAGES_PREFERENCES": "消息偏好",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "创建时处理缺失的海拔数据",
     "MONDAY": "星期一",
     "NOTIFICATIONS": {
       "account_creation": "有人注册",
@@ -134,6 +145,7 @@
     "NOTIFICATIONS_EDITION": "通知偏好编辑",
     "NOTIFICATION_PREFERENCES": "通知偏好",
     "NO_ARCHIVE_UPLOADS": "没有归档上传",
+    "NO_ELEVATION_SERVICE_AVAILABLE": "没有可用于处理缺失海拔数据的服务",
     "NO_SANCTIONS": "没有处罚",
     "PICTURE": "图片",
     "PICTURE_EDITION": "图片编辑",
@@ -151,7 +163,7 @@
     "REPORTS_FROM_OTHER_USERS": "来自其他用户的报告",
     "SANCTIONS": {
       "comment_suspension": "评论暂停（{date}）",
-      "user_suspension": "账户暂停（{date}）",
+      "user_suspension": "账号暂停（{date}）",
       "user_warning": "警告（{date}）",
       "workout_suspension": "锻炼暂停（{date}）"
     },
@@ -176,13 +188,19 @@
       "DISABLED_BY_ADMIN": "被管理员禁用",
       "IS_ACTIVE": "活跃",
       "LABEL": "标签",
+      "PACE_SPEED_DISPLAY": {
+        "LABEL": "配速/速度显示",
+        "pace": "配速",
+        "pace_and_speed": "配速和速度",
+        "speed": "速度"
+      },
       "STOPPED_SPEED_THRESHOLD": "停止速度阈值"
     },
     "SPORTS_EDITION": "运动偏好编辑",
-    "SUCCESSFUL_EMAIL_UPDATE": "您的账户已成功更新。请检查您的电子邮件以确认您的新电子邮件地址。",
-    "SUCCESSFUL_REGISTRATION": "您的账户已成功创建。",
-    "SUCCESSFUL_REGISTRATION_WITH_EMAIL": "激活您账户的链接已发送到提供的地址。",
-    "SUCCESSFUL_UPDATE": "您的账户已成功更新。",
+    "SUCCESSFUL_EMAIL_UPDATE": "您的账号已成功更新。请检查您的电子邮件以确认您的新电子邮件地址。",
+    "SUCCESSFUL_REGISTRATION": "您的账号已成功创建。",
+    "SUCCESSFUL_REGISTRATION_WITH_EMAIL": "激活您账号的链接已发送到提供的地址。",
+    "SUCCESSFUL_UPDATE": "您的账号已成功更新。",
     "SUNDAY": "星期日",
     "TABS": {
       "ACCOUNT": "账号",
@@ -191,6 +209,7 @@
       "BLOCKED-USERS": "已屏蔽用户",
       "EQUIPMENTS": "设备",
       "FOLLOW-REQUESTS": "关注请求",
+      "MESSAGES": "消息",
       "MODERATION": "审核",
       "NOTIFICATIONS": "通知",
       "PICTURE": "图片",
@@ -217,7 +236,7 @@
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "已过滤",
       "HELP": "如果过滤，在计算最大速度时将排除极端值（可能是 GPS 错误）。",
-      "LABEL": "GPX 最大速度策略",
+      "LABEL": "最大速度计算策略",
       "RAW_SPEED": "原始"
     },
     "WORKOUT_CHARTS_DISPLAY": {

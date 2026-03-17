@@ -1,4 +1,4 @@
-FROM node:23-slim
+FROM node:24-slim
 
 # set working directory
 RUN mkdir /usr/src/app

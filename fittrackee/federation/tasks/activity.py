@@ -1,7 +1,7 @@
 from importlib import import_module
 from typing import Callable, Dict
 
-from fittrackee import dramatiq
+import dramatiq
 
 from ..exceptions import UnsupportedActivityException
 

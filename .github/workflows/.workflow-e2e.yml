@@ -48,7 +48,7 @@ jobs:
       UI_URL: https://0.0.0.0:5000
     steps:
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
 
@@ -92,3 +92,11 @@ jobs:
           sleep 5
           nohup dramatiq fittrackee.tasks:broker --processes=1 >> nohup.out 2>&1 &
           pytest e2e --driver Remote --capability browserName firefox --selenium-host selenium --selenium-port 4444 --maxfail=1
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v6
+        if: ${{ failure() }}
+        with:
+          name: log-with${{ inputs.python-version.previous-version && '' || 'out' }}-update.out
+          path: nohup.out
+          retention-days: 2

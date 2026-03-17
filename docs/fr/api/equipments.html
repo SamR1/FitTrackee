@@ -6,8 +6,8 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Recherche" href="../search.html"><link rel="next" title="Types d&#39;équipement" href="equipment_types.html"><link rel="prev" title="Commentaires" href="comments.html">
         <link rel="prefetch" href="../_static/ft-logo.png" as="image">
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Équipements - Documentation FitTrackee 1.1.2</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>Équipements - Documentation FitTrackee 1.2.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation FitTrackee 1.1.2
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 1.2.0
 </div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 1.1.2
+  <span class="sidebar-brand-text">Documentation FitTrackee 1.2.0
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -346,8 +346,7 @@
 <span class="w">        </span><span class="nt">&quot;is_active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;label&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;My shoes&quot;</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:00:00&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;total_moving&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:00:00&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;total_duration_in_hours&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;user_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;workouts_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">    </span><span class="p">},</span>
@@ -364,8 +363,7 @@
 <span class="w">        </span><span class="nt">&quot;is_active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;label&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;My shoes 2&quot;</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:00:00&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;total_moving&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:00:00&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;total_duration_in_hours&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;user_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;workouts_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">        </span><span class="p">}</span>
@@ -377,26 +375,26 @@
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Paramètres de requête<span class="colon">:</span></dt>
+<dt class="field-odd">Paramètres de la requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>equipment_type_id</strong> (<em>integer</em>) -- id du type d'équipement</p></li>
 </ul>
 </dd>
-<dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
+<dt class="field-even">Entêtes de la requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- succès</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> -- succès</p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/401">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/403">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 </ul>
 </p></li>
@@ -439,8 +437,7 @@
 <span class="w">        </span><span class="nt">&quot;is_active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;label&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Other user Equipment&quot;</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:00:00&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;total_moving&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:00:00&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;total_duration_in_hours&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;user_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;workouts_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">      </span><span class="p">}</span>
@@ -470,25 +467,25 @@
 <li><p><strong>equipment_short_id</strong> (<em>string</em>) -- id court de l'équipement</p></li>
 </ul>
 </dd>
-<dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
+<dt class="field-even">Entêtes de la requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- succès</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> -- succès</p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/401">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/403">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404">404 Not Found</a></span> -- <code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -524,8 +521,7 @@
 <span class="w">        </span><span class="nt">&quot;is_active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;label&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;New equipment from API&quot;</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:00:00&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;total_moving&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:00:00&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;total_duration_in_hours&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;user_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;workouts_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">      </span><span class="p">}</span>
@@ -536,7 +532,7 @@
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Objet JSON de requête<span class="colon">:</span></dt>
+<dt class="field-odd">Object JSON de requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>label</strong> (<em>string</em>) -- un label bref (moins de 50 caractères) pour l'équipement</p></li>
 <li><p><strong>equipment_type</strong> (<em>integer</em>) -- l'id d'un type d'équipement (il doit être actif)</p></li>
@@ -546,15 +542,15 @@
 <li><p><strong>visibility</strong> (<em>string</em>) -- niveau de visibilité (<code class="docutils literal notranslate"><span class="pre">public</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code>, <code class="docutils literal notranslate"><span class="pre">private</span></code>), optionnel (valeur par défaut : <code class="docutils literal notranslate"><span class="pre">private</span></code>)</p></li>
 </ul>
 </dd>
-<dt class="field-even">En-têtes de requête<span class="colon">:</span></dt>
+<dt class="field-even">Entêtes de la requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
 <dt class="field-odd">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a></span> -- équipement créé</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/201">201 Created</a></span> -- équipement créé</p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/400">400 Bad Request</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">the</span> <span class="pre">'label'</span> <span class="pre">and</span> <span class="pre">'equipment_type_id'</span> <span class="pre">parameters</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">provided</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">already</span> <span class="pre">exists</span> <span class="pre">with</span> <span class="pre">the</span> <span class="pre">same</span> <span class="pre">label</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">label</span> <span class="pre">exceeds</span> <span class="pre">50</span> <span class="pre">characters</span></code></p></li>
@@ -565,19 +561,19 @@
 <span class="pre">type</span> <span class="pre">'&lt;equipment_type_label&gt;'</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/401">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/403">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> -- <code class="docutils literal notranslate"><span class="pre">Error</span> <span class="pre">during</span> <span class="pre">equipment</span> <span class="pre">save</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404">404 Not Found</a></span> -- <code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/500">500 Internal Server Error</a></span> -- <code class="docutils literal notranslate"><span class="pre">Error</span> <span class="pre">during</span> <span class="pre">equipment</span> <span class="pre">save</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -617,8 +613,7 @@
 <span class="w">          </span><span class="nt">&quot;is_active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;label&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Updated bike&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:00:00&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;total_moving&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0:00:00&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;total_duration_in_hours&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;user_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;workouts_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">        </span><span class="p">}</span>
@@ -648,7 +643,7 @@
 <li><p><strong>equipment_short_id</strong> (<em>string</em>) -- id court de l'équipement</p></li>
 </ul>
 </dd>
-<dt class="field-even">Objet JSON de requête<span class="colon">:</span></dt>
+<dt class="field-even">Object JSON de requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>label</strong> (<em>string</em>) -- un label bref (moins de 50 caractères) pour l'équipement</p></li>
 <li><p><strong>equipment_type_id</strong> (<em>int</em>) -- l'id d'un type d'équipement (il doit être actif)</p></li>
@@ -658,15 +653,15 @@
 <li><p><strong>visibility</strong> (<em>string</em>) -- niveau de visibilité (<code class="docutils literal notranslate"><span class="pre">public</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code>, <code class="docutils literal notranslate"><span class="pre">private</span></code>)</p></li>
 </ul>
 </dd>
-<dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
+<dt class="field-odd">Entêtes de la requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
 <dt class="field-even">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- équipement mis à jour</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> -- équipement mis à jour</p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/400">400 Bad Request</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">request</span> <span class="pre">data</span> <span class="pre">was</span> <span class="pre">supplied</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">no</span> <span class="pre">valid</span> <span class="pre">parameters</span> <span class="pre">supplied</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">already</span> <span class="pre">exists</span> <span class="pre">with</span> <span class="pre">the</span> <span class="pre">same</span> <span class="pre">label</span></code></p></li>
@@ -678,19 +673,19 @@
 <span class="pre">type</span> <span class="pre">'&lt;equipment_type_label&gt;'</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/401">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/403">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> -- <code class="docutils literal notranslate"><span class="pre">Error</span> <span class="pre">during</span> <span class="pre">equipment</span> <span class="pre">update</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404">404 Not Found</a></span> -- <code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/500">500 Internal Server Error</a></span> -- <code class="docutils literal notranslate"><span class="pre">Error</span> <span class="pre">during</span> <span class="pre">equipment</span> <span class="pre">update</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -726,8 +721,7 @@
 <span class="w">          </span><span class="nt">&quot;is_active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;label&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Updated bike&quot;</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;total_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">6.0</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1:10:00&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;total_moving&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1:00:00&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;total_duration_in_hours&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;user_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">          </span><span class="nt">&quot;workouts_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">        </span><span class="p">}</span>
@@ -738,27 +732,27 @@
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
+<dt class="field-odd">Entêtes de la requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
 <dt class="field-even">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> -- équipement mis à jour</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/200">200 OK</a></span> -- équipement mis à jour</p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/401">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/403">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> -- <code class="docutils literal notranslate"><span class="pre">Error</span> <span class="pre">during</span> <span class="pre">equipment</span> <span class="pre">save</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404">404 Not Found</a></span> -- <code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/500">500 Internal Server Error</a></span> -- <code class="docutils literal notranslate"><span class="pre">Error</span> <span class="pre">during</span> <span class="pre">equipment</span> <span class="pre">save</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -786,34 +780,34 @@
 <li><p><strong>equipment_short_id</strong> (<em>string</em>) -- id court de l'équipement</p></li>
 </ul>
 </dd>
-<dt class="field-even">Paramètres de requête<span class="colon">:</span></dt>
+<dt class="field-even">Paramètres de la requête<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><strong>force</strong> -- si fourni en tant qu'argument (aucune valeur requise), cela forcera la suppression de l'équipement et l'enlèvera des séances associées</p></li>
 </ul>
 </dd>
-<dt class="field-odd">En-têtes de requête<span class="colon">:</span></dt>
+<dt class="field-odd">Entêtes de la requête<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><span><a class="reference external" href="https://www.rfc-editor.org/rfc/rfc7235#section-4.2">Authorization</a></span> -- Jeton 'OAuth 2.0 Bearer'</p></li>
 </ul>
 </dd>
 <dt class="field-even">Codes d'état<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.5">204 No Content</a></span> -- équipement supprimé</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2">401 Unauthorized</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/204">204 No Content</a></span> -- équipement supprimé</p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/401">401 Unauthorized</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">provide</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">auth</span> <span class="pre">token</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">signature</span> <span class="pre">expired,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">invalid</span> <span class="pre">token,</span> <span class="pre">please</span> <span class="pre">log</span> <span class="pre">in</span> <span class="pre">again</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4">403 Forbidden</a></span> -- <ul>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/403">403 Forbidden</a></span> -- <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">do</span> <span class="pre">not</span> <span class="pre">have</span> <span class="pre">permissions,</span> <span class="pre">your</span> <span class="pre">account</span> <span class="pre">is</span> <span class="pre">suspended</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">you</span> <span class="pre">cannot</span> <span class="pre">delete</span> <span class="pre">equipment</span> <span class="pre">that</span> <span class="pre">has</span> <span class="pre">workouts</span> <span class="pre">associated</span> <span class="pre">with</span> <span class="pre">it</span>
 <span class="pre">without</span> <span class="pre">'force'</span> <span class="pre">parameter</span></code></p></li>
 </ul>
 </p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404 Not Found</a></span> -- <code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.5.1">500 Internal Server Error</a></span> -- <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/404">404 Not Found</a></span> -- <code class="docutils literal notranslate"><span class="pre">equipment</span> <span class="pre">not</span> <span class="pre">found</span></code></p></li>
+<li><p><span><a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/500">500 Internal Server Error</a></span> -- <code class="docutils literal notranslate"><span class="pre">error,</span> <span class="pre">please</span> <span class="pre">try</span> <span class="pre">again</span> <span class="pre">or</span> <span class="pre">contact</span> <span class="pre">the</span> <span class="pre">administrator</span></code></p></li>
 </ul>
 </dd>
 </dl>
@@ -874,7 +868,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e78f9f10"></script>
+</div><script src="../_static/documentation_options.js?v=e6704f88"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

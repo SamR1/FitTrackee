@@ -79,7 +79,7 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
     def get_static_map_tile_server_url(cls, tile_server_config: Dict) -> str:
         if tile_server_config["STATICMAP_SUBDOMAINS"]:
             subdomains = tile_server_config["STATICMAP_SUBDOMAINS"].split(",")
-            subdomain = f"{random.choice(subdomains)}."  # nosec
+            subdomain = f"{random.choice(subdomains)}."  # noqa:S311
         else:
             subdomain = ""
         return tile_server_config["URL"].replace("{s}.", subdomain)

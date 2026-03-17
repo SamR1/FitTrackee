@@ -6,8 +6,8 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Upgrade" href="upgrade.html"><link rel="prev" title="Environment variables" href="environments_variables.html">
         <link rel="prefetch" href="../_static/ft-logo.png" as="image">
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Installation - FitTrackee 1.1.2 documentation</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>Installation - FitTrackee 1.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">FitTrackee 1.1.2
+      <a href="../index.html"><div class="brand">FitTrackee 1.2.0
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 1.1.2
+  <span class="sidebar-brand-text">FitTrackee 1.2.0
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -333,6 +333,9 @@
 </div>
 <section id="from-pypi">
 <h2>From PyPI<a class="headerlink" href="#from-pypi" title="Link to this heading">¶</a></h2>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 1.2.0: </span><strong>Flask-Dramatiq</strong> command removal</p>
+</div>
 <ul class="simple">
 <li><p>Create and activate a <a class="reference external" href="https://docs.python.org/3/library/venv.html">virtualenv</a></p></li>
 <li><p>Install <strong>FitTrackee</strong> with pip</p></li>
@@ -398,18 +401,6 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">It is also possible to start task queue workers with <strong>Flask-Dramatiq</strong> CLI:</div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>flask<span class="w"> </span>worker<span class="w"> </span>--processes<span class="w"> </span><span class="m">2</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line">But running <strong>Flask-Dramatiq</strong> CLI on Python 3.13+ raises errors. Emails and user data export are sent, but the <a class="reference external" href="https://dramatiq.io/reference.html#dramatiq.middleware.TimeLimit">middleware</a> preventing actors from running too long is not active. Please use <strong>Dramatiq</strong> CLI instead for now.</div>
-</div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<div class="line-block">
 <div class="line">To start application and workers with <strong>systemd</strong> service, see <a class="reference external" href="deployment.html">Deployment</a>.</div>
 </div>
 </div>
@@ -452,11 +443,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v1.1.2):</p></li>
+<li><p>Download the last release (for now, it is the release v1.2.0):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/1.1.2.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.1.2.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-1.1.2<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/1.2.0.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.2.0.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-1.2.0<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -587,6 +578,7 @@ $<span class="w"> </span>make<span class="w"> </span>install-db-dev
 <li><p><code class="docutils literal notranslate"><span class="pre">/usr/src/app/logs</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">/usr/src/app/.staticmap_cache</span></code></p></li>
 </ul>
+<p>To disable logging to file, set <code class="docutils literal notranslate"><span class="pre">GUNICORN_LOG</span></code> to <code class="docutils literal notranslate"><span class="pre">-</span></code> and do not set <code class="docutils literal notranslate"><span class="pre">APP_LOG</span></code>. In this case, <code class="docutils literal notranslate"><span class="pre">/usr/src/app/logs</span></code> directory is not necessary, see comments in docker-compose.yml example.</p>
 </div>
 <ul class="simple">
 <li><p>create <code class="docutils literal notranslate"><span class="pre">.env</span></code> from example (<code class="docutils literal notranslate"><span class="pre">.env.docker.example</span></code>) and update it (see <a class="reference external" href="environments_variables.html">Environment variables</a>).</p></li>
@@ -842,7 +834,7 @@ ensure <code class="docutils literal notranslate"><span class="pre">.devcontaine
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=6f037312"></script>
+</div><script src="../_static/documentation_options.js?v=6efca38a"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

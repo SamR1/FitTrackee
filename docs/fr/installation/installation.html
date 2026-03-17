@@ -6,8 +6,8 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Recherche" href="../search.html"><link rel="next" title="Mise à jour" href="upgrade.html"><link rel="prev" title="Variables d&#39;environnement" href="environments_variables.html">
         <link rel="prefetch" href="../_static/ft-logo.png" as="image">
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>Installation - Documentation FitTrackee 1.1.2</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
+        <title>Installation - Documentation FitTrackee 1.2.0</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Documentation FitTrackee 1.1.2
+      <a href="../index.html"><div class="brand">Documentation FitTrackee 1.2.0
 </div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Documentation FitTrackee 1.1.2
+  <span class="sidebar-brand-text">Documentation FitTrackee 1.2.0
 </span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -333,6 +333,9 @@
 </div>
 <section id="from-pypi">
 <h2>A partir de PyPI<a class="headerlink" href="#from-pypi" title="Lien vers cette rubrique">¶</a></h2>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 1.2.0: </span>Suppression de la commande de <strong>Flask-Dramatiq</strong></p>
+</div>
 <ul class="simple">
 <li><p>Créer et activer l'<a class="reference external" href="https://docs.python.org/3/library/venv.html">environnement virtuel</a></p></li>
 <li><p>Installer <strong>FitTrackee</strong> avec pip</p></li>
@@ -398,18 +401,6 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <div class="line-block">
-<div class="line">Il est également possible de démarrer les <em>workers</em> de la file d'attente des tâches avec l'interface de ligne de commandes de <strong>Flask-dramatiq</strong> :</div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>flask<span class="w"> </span>worker<span class="w"> </span>--processes<span class="w"> </span><span class="m">2</span>
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line">Mais lancer l'interface de ligne de commandes de <strong>Flask-Dramatiq</strong> génère des erreurs sur Python 3.13+. Les emails et les exports de données de l'utilisateur sont bien envoyés, mais le <a class="reference external" href="https://dramatiq.io/reference.html#dramatiq.middleware.TimeLimit">middleware</a> évitant que les acteurs de fonctionner trop longtemps n'est pas actif. Veuillez utiliser l'interface de ligne de commandes de <strong>Dramatiq</strong> à la place pour le moment.</div>
-</div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<div class="line-block">
 <div class="line">Pour démarrer l'application et les <em>workers</em> avec le service <strong>systemd</strong>, cf. <a class="reference external" href="deployment.html">Déploiement</a></div>
 </div>
 </div>
@@ -452,11 +443,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </div>
 </div>
 <ul class="simple">
-<li><p>Télécharger la dernière version (à ce jour, la version v1.1.2) :</p></li>
+<li><p>Télécharger la dernière version (à ce jour, la version v1.2.0) :</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/1.1.2.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.1.2.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-1.1.2<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/1.2.0.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.2.0.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-1.2.0<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -583,6 +574,7 @@ $<span class="w"> </span>make<span class="w"> </span>install-db-dev
 <li><p><code class="docutils literal notranslate"><span class="pre">/usr/src/app/logs</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">/usr/src/app/.staticmap_cache</span></code></p></li>
 </ul>
+<p>Pour désactiver la journalisation dans un fichier, définissez la variable <code class="docutils literal notranslate"><span class="pre">GUNICORN_LOG</span></code> sur <code class="docutils literal notranslate"><span class="pre">-</span></code> et ne définissez pas la variable <code class="docutils literal notranslate"><span class="pre">APP_LOG</span></code>. Dans ce cas, le répertoire  <code class="docutils literal notranslate"><span class="pre">/usr/src/app/logs</span></code> n'est pas nécessaire, voir les commentaires dans l'exemple docker-compose.yml.</p>
 </div>
 <ul class="simple">
 <li><p>Créer le fichier <code class="docutils literal notranslate"><span class="pre">.env</span></code> à partir de l'exemple  (<code class="docutils literal notranslate"><span class="pre">.env.docker.example</span></code>) et le mettre à jour (cf. <a class="reference external" href="environments_variables.html">Variables d'environnement</a>).</p></li>
@@ -833,7 +825,7 @@ $<span class="w"> </span>make<span class="w"> </span>docker-test-python<span cla
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=e78f9f10"></script>
+</div><script src="../_static/documentation_options.js?v=e6704f88"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

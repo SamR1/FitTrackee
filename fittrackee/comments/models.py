@@ -161,7 +161,9 @@ class Comment(BaseModel):
         "Workout", lazy="select", single_parent=True
     )
     parent_comment = db.relationship(
-        "Comment", remote_side=[id], lazy="joined"
+        "Comment",
+        remote_side=[id],  # noqa: A003
+        lazy="joined",
     )
     mentions: Mapped[List["Mention"]] = relationship(
         "Mention",

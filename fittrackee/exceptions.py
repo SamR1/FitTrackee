@@ -15,5 +15,9 @@ class TaskException(Exception):
     pass
 
 
+class EmailConfigException(Exception):
+    pass
+
+
 class InvalidVisibilityException(Exception):
     pass

@@ -1,5 +1,6 @@
 {
   "ANALYSIS_VISIBILITY": "Analyse-Sichtbarkeit",
+  "CALORIES_VISIBILITY": "Kalorien-Sichtbarkeit",
   "COMMENT_LEVELS": {
     "followers_only": "Nur Follower",
     "private": "Privat (nur erwähnte Nutzer)",

@@ -85,9 +85,13 @@
     "BACK_TO_PROFILE": "Ritorna al profilo",
     "BIO": "Bio",
     "BIRTH_DATE": "Data di nascita",
+    "CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI": "Le modifiche possono essere applicate quando un aggiornamento viene eseguito dall'interfaccia da linea di comando (CLI).",
+    "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "Le modifiche vengono applicate solo ai workout nuovi o aggiornati.",
+    "CHANGES_ONLY_TO_NEW_WORKOUTS": "Le modifiche vengono applicate solo ai nuovi workout.",
     "CREATED_REPORTS": "Report creati",
     "DATE_FORMAT": "Formato data",
     "EDIT": "Modifica profilo",
+    "EDIT_ACCOUNT": "Modifica account",
     "EDIT_MESSAGE_PREFERENCES": "Modifica le preferenze dei messaggi",
     "EDIT_NOTIFICATION_PREFERENCES": "Modifica le preferenze delle notifiche",
     "EDIT_PREFERENCES": "Modifica preferenze",
@@ -126,6 +130,7 @@
     },
     "MESSAGES_EDITION": "Modifica delle preferenze dei messaggi",
     "MESSAGES_PREFERENCES": "Preferenze sui messaggi",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Mancanza del processamento del dislivello in fase di creazione",
     "MONDAY": "Lunedì",
     "NOTIFICATIONS": {
       "account_creation": "Qualcuno si registra",
@@ -140,6 +145,7 @@
     "NOTIFICATIONS_EDITION": "Modifica delle preferenze sullo notifiche",
     "NOTIFICATION_PREFERENCES": "Preferenze sulle notifiche",
     "NO_ARCHIVE_UPLOADS": "Nessun upload di archivi",
+    "NO_ELEVATION_SERVICE_AVAILABLE": "Nessun servizio disponibile per il dislivello mancante",
     "NO_SANCTIONS": "Nessuna sanzione",
     "PICTURE": "Foto",
     "PICTURE_EDITION": "Foto",
@@ -182,6 +188,12 @@
       "DISABLED_BY_ADMIN": "disattivato dall'amministratore",
       "IS_ACTIVE": "attivo",
       "LABEL": "etichetta",
+      "PACE_SPEED_DISPLAY": {
+        "LABEL": "Visualizzazione Ritmo/Velocità",
+        "pace": "Ritmo",
+        "pace_and_speed": "Ritmo e velocità",
+        "speed": "Velocità"
+      },
       "STOPPED_SPEED_THRESHOLD": "Limite minimo di velocità"
     },
     "SPORTS_EDITION": "Preferenze sport",
@@ -224,7 +236,7 @@
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Filtrato",
       "HELP": "Se filtrato, esclude i valori estremi (che possono essere errori del GPS) quando si calcola la velocità massima.",
-      "LABEL": "Strategia di massima velocità",
+      "LABEL": "Strategia del calcolo della velocità massima",
       "RAW_SPEED": "Greggio"
     },
     "WORKOUT_CHARTS_DISPLAY": {

@@ -23,6 +23,12 @@
   "Hiking": {
     "LABEL": "Sendeirismo"
   },
+  "Ice Skating": {
+    "LABEL": "Patinaxe sobre xeo"
+  },
+  "Inline Skating": {
+    "LABEL": "Patinaxe en liña"
+  },
   "Kayaking": {
     "LABEL": "Piragüismo (K)"
   },

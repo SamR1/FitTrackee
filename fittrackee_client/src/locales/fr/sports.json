@@ -23,6 +23,12 @@
   "Hiking": {
     "LABEL": "Randonnée"
   },
+  "Ice Skating": {
+    "LABEL": "Patinage sur glace"
+  },
+  "Inline Skating": {
+    "LABEL": "Roller en ligne"
+  },
   "Kayaking": {
     "LABEL": "Kayak"
   },

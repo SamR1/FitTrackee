@@ -127,6 +127,15 @@ def sport_6_hiking() -> Sport:
     return sport
 
 
+@pytest.fixture()
+def sport_7_kayaking() -> Sport:
+    sport = Sport(label="Kayaking")
+    sport.stopped_speed_threshold = 1
+    db.session.add(sport)
+    db.session.commit()
+    return sport
+
+
 def update_workout(target: Union[Workout, WorkoutSegment]) -> None:
     distance = target.distance if target.distance else 0
     target.ave_speed = float(distance) / (target.duration.seconds / 3600)
@@ -3769,16 +3778,21 @@ def gpx_file_with_first_segment_empty() -> str:
 @pytest.fixture()
 def workout_cycling_user_1_generated_gpx() -> str:
     return f"""<?xml version="1.0" encoding="UTF-8"?>
-<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="FitTrackee v{VERSION}">
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1" xmlns:gpxtrkx="http://www.garmin.com/xmlschemas/TrackStatsExtension/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="FitTrackee v{VERSION}">
   <trk>
+    <extensions>
+      <gpxtrkx:TrackStatsExtension>
+        <gpxtrkx:Calories>93</gpxtrkx:Calories>
+      </gpxtrkx:TrackStatsExtension>
+    </extensions>
     <trkseg>
       <trkpt lat="44.68095" lon="6.07367">
         <ele>998.0</ele>
         <time>2018-03-13T12:44:45Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>0</gpxtpx:hr>
-            <gpxtpx:cad>92</gpxtpx:cad>
+            <gpxtpx:cad>0</gpxtpx:cad>
+            <gpxtpx:hr>92</gpxtpx:hr>
             <gpxtpx:power>0</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3788,8 +3802,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:44:50Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>50</gpxtpx:hr>
-            <gpxtpx:cad>87</gpxtpx:cad>
+            <gpxtpx:cad>50</gpxtpx:cad>
+            <gpxtpx:hr>87</gpxtpx:hr>
             <gpxtpx:power>305</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3799,8 +3813,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:45:00Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>51</gpxtpx:hr>
-            <gpxtpx:cad>88</gpxtpx:cad>
+            <gpxtpx:cad>51</gpxtpx:cad>
+            <gpxtpx:hr>88</gpxtpx:hr>
             <gpxtpx:power>326</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3810,8 +3824,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:45:05Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>54</gpxtpx:hr>
-            <gpxtpx:cad>90</gpxtpx:cad>
+            <gpxtpx:cad>54</gpxtpx:cad>
+            <gpxtpx:hr>90</gpxtpx:hr>
             <gpxtpx:power>287</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3821,8 +3835,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:45:10Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>53</gpxtpx:hr>
-            <gpxtpx:cad>87</gpxtpx:cad>
+            <gpxtpx:cad>53</gpxtpx:cad>
+            <gpxtpx:hr>87</gpxtpx:hr>
             <gpxtpx:power>251</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3832,8 +3846,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:45:30Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>54</gpxtpx:hr>
-            <gpxtpx:cad>85</gpxtpx:cad>
+            <gpxtpx:cad>54</gpxtpx:cad>
+            <gpxtpx:hr>85</gpxtpx:hr>
             <gpxtpx:power>248</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3843,8 +3857,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:45:55Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>54</gpxtpx:hr>
-            <gpxtpx:cad>86</gpxtpx:cad>
+            <gpxtpx:cad>54</gpxtpx:cad>
+            <gpxtpx:hr>86</gpxtpx:hr>
             <gpxtpx:power>246</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3854,8 +3868,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:46:00Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>55</gpxtpx:hr>
-            <gpxtpx:cad>84</gpxtpx:cad>
+            <gpxtpx:cad>55</gpxtpx:cad>
+            <gpxtpx:hr>84</gpxtpx:hr>
             <gpxtpx:power>216</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3865,8 +3879,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:46:15Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>53</gpxtpx:hr>
-            <gpxtpx:cad>86</gpxtpx:cad>
+            <gpxtpx:cad>53</gpxtpx:cad>
+            <gpxtpx:hr>86</gpxtpx:hr>
             <gpxtpx:power>243</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3878,8 +3892,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:46:30Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>56</gpxtpx:hr>
-            <gpxtpx:cad>88</gpxtpx:cad>
+            <gpxtpx:cad>56</gpxtpx:cad>
+            <gpxtpx:hr>88</gpxtpx:hr>
             <gpxtpx:power>267</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3889,8 +3903,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:46:35Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>56</gpxtpx:hr>
-            <gpxtpx:cad>86</gpxtpx:cad>
+            <gpxtpx:cad>56</gpxtpx:cad>
+            <gpxtpx:hr>86</gpxtpx:hr>
             <gpxtpx:power>278</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3900,8 +3914,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:46:40Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>55</gpxtpx:hr>
-            <gpxtpx:cad>83</gpxtpx:cad>
+            <gpxtpx:cad>55</gpxtpx:cad>
+            <gpxtpx:hr>83</gpxtpx:hr>
             <gpxtpx:power>290</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3911,8 +3925,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:46:45Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>56</gpxtpx:hr>
-            <gpxtpx:cad>83</gpxtpx:cad>
+            <gpxtpx:cad>56</gpxtpx:cad>
+            <gpxtpx:hr>83</gpxtpx:hr>
             <gpxtpx:power>228</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3922,8 +3936,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:47:05Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>54</gpxtpx:hr>
-            <gpxtpx:cad>85</gpxtpx:cad>
+            <gpxtpx:cad>54</gpxtpx:cad>
+            <gpxtpx:hr>85</gpxtpx:hr>
             <gpxtpx:power>280</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3933,8 +3947,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:47:10Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>56</gpxtpx:hr>
-            <gpxtpx:cad>86</gpxtpx:cad>
+            <gpxtpx:cad>56</gpxtpx:cad>
+            <gpxtpx:hr>86</gpxtpx:hr>
             <gpxtpx:power>269</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3944,8 +3958,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:47:20Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>53</gpxtpx:hr>
-            <gpxtpx:cad>85</gpxtpx:cad>
+            <gpxtpx:cad>53</gpxtpx:cad>
+            <gpxtpx:hr>85</gpxtpx:hr>
             <gpxtpx:power>280</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3955,8 +3969,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:47:30Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>56</gpxtpx:hr>
-            <gpxtpx:cad>84</gpxtpx:cad>
+            <gpxtpx:cad>56</gpxtpx:cad>
+            <gpxtpx:hr>84</gpxtpx:hr>
             <gpxtpx:power>256</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3966,8 +3980,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:47:40Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>55</gpxtpx:hr>
-            <gpxtpx:cad>86</gpxtpx:cad>
+            <gpxtpx:cad>55</gpxtpx:cad>
+            <gpxtpx:hr>86</gpxtpx:hr>
             <gpxtpx:power>234</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3977,8 +3991,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:47:45Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>55</gpxtpx:hr>
-            <gpxtpx:cad>83</gpxtpx:cad>
+            <gpxtpx:cad>55</gpxtpx:cad>
+            <gpxtpx:hr>83</gpxtpx:hr>
             <gpxtpx:power>241</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3988,8 +4002,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:47:55Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>55</gpxtpx:hr>
-            <gpxtpx:cad>83</gpxtpx:cad>
+            <gpxtpx:cad>55</gpxtpx:cad>
+            <gpxtpx:hr>83</gpxtpx:hr>
             <gpxtpx:power>264</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -3999,8 +4013,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:48:15Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>54</gpxtpx:hr>
-            <gpxtpx:cad>82</gpxtpx:cad>
+            <gpxtpx:cad>54</gpxtpx:cad>
+            <gpxtpx:hr>82</gpxtpx:hr>
             <gpxtpx:power>256</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -4010,8 +4024,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:48:20Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>57</gpxtpx:hr>
-            <gpxtpx:cad>85</gpxtpx:cad>
+            <gpxtpx:cad>57</gpxtpx:cad>
+            <gpxtpx:hr>85</gpxtpx:hr>
             <gpxtpx:power>267</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -4021,8 +4035,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:48:35Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>57</gpxtpx:hr>
-            <gpxtpx:cad>84</gpxtpx:cad>
+            <gpxtpx:cad>57</gpxtpx:cad>
+            <gpxtpx:hr>84</gpxtpx:hr>
             <gpxtpx:power>234</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -4032,8 +4046,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:48:40Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>52</gpxtpx:hr>
-            <gpxtpx:cad>84</gpxtpx:cad>
+            <gpxtpx:cad>52</gpxtpx:cad>
+            <gpxtpx:hr>84</gpxtpx:hr>
             <gpxtpx:power>225</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>
@@ -4043,8 +4057,8 @@ def workout_cycling_user_1_generated_gpx() -> str:
         <time>2018-03-13T12:48:55Z</time>
         <extensions>
           <gpxtpx:TrackPointExtension>
-            <gpxtpx:hr>50</gpxtpx:hr>
-            <gpxtpx:cad>81</gpxtpx:cad>
+            <gpxtpx:cad>50</gpxtpx:cad>
+            <gpxtpx:hr>81</gpxtpx:hr>
             <gpxtpx:power>218</gpxtpx:power>
           </gpxtpx:TrackPointExtension>
         </extensions>

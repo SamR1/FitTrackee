@@ -1,6 +1,8 @@
 from typing import Dict, List
 
-from fittrackee import appLog, dramatiq
+import dramatiq
+
+from fittrackee import appLog
 from fittrackee.federation.exceptions import SenderNotFoundException
 from fittrackee.federation.inbox import send_to_inbox
 from fittrackee.federation.models import Actor

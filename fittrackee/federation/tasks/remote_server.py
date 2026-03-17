@@ -1,4 +1,6 @@
-from fittrackee import appLog, db, dramatiq
+import dramatiq
+
+from fittrackee import appLog, db
 from fittrackee.federation.models import Domain
 from fittrackee.federation.utils.remote_domain import (
     get_remote_server_node_info_data,

@@ -85,6 +85,9 @@
     "BACK_TO_PROFILE": "Itzuli profilera",
     "BIO": "Biografia",
     "BIRTH_DATE": "Jaiotze-data",
+    "CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI": "Aldaketak, komando lerrotik eguneraketa egitean aplikatu daitezke.",
+    "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "Aldaketak ariketa berri edo eguneratuetan bakarrik aplikatzen dira.",
+    "CHANGES_ONLY_TO_NEW_WORKOUTS": "Aldaketak ariketa berriei bakarrik aplikatzen zaizkie.",
     "CREATED_REPORTS": "Sortutako txostenak",
     "DATE_FORMAT": "Data erakusteko formatua",
     "EDIT": "Editatu profila",
@@ -127,6 +130,7 @@
     },
     "MESSAGES_EDITION": "Mezuen lehentasunen edizioa",
     "MESSAGES_PREFERENCES": "Mezuen lehentasunak",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Falta diren altueren informazioa sortzean prozesatu",
     "MONDAY": "Astelehena",
     "NOTIFICATIONS": {
       "account_creation": "Norbait erregistratzen da",
@@ -141,6 +145,7 @@
     "NOTIFICATIONS_EDITION": "Jakinarazpenen hobespenak",
     "NOTIFICATION_PREFERENCES": "Jakinarazpenen hobespenak",
     "NO_ARCHIVE_UPLOADS": "Ez dago kargatzeko fitxategirik",
+    "NO_ELEVATION_SERVICE_AVAILABLE": "Ez dago altuerak falta direnerako zerbitzurik",
     "NO_SANCTIONS": "Zigorrik ez",
     "PICTURE": "Argazkia",
     "PICTURE_EDITION": "Editatu argazkia",
@@ -183,6 +188,12 @@
       "DISABLED_BY_ADMIN": "kudeatzaileak desaktibatuta",
       "IS_ACTIVE": "aktibo",
       "LABEL": "etiketa",
+      "PACE_SPEED_DISPLAY": {
+        "LABEL": "Erritmoa/abiadura erakutsi",
+        "pace": "Erritmoa",
+        "pace_and_speed": "Erritmoa eta abiadura",
+        "speed": "Abiadura"
+      },
       "STOPPED_SPEED_THRESHOLD": "gelditzeko abiaduraren muga"
     },
     "SPORTS_EDITION": "Editatu kirolek ezarpenak",
@@ -273,7 +284,7 @@
   },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Erabiltzaile honen kontua desaktibatuta dago.",
   "TOGGLE_THEME": "Aldatu itxura (argia edo iluna)",
-  "USER": "erabiltzaile | erabiltzaile",
+  "USER": "erabiltzaileak | erabiltzaileak",
   "USERNAME": "Erabiltzaile-izena",
   "USERNAME_INFO": "3 eta 30 karaktere artekoa, hizkiak, zenbakiak eta \"_\" karakterea bakarrik erabili daitezke.",
   "USER_PICTURE": "erabiltzailearen argazkia",
