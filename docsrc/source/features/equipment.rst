@@ -73,7 +73,7 @@ Users can define equipment visibility:
 
 The equipment details are only visible to its owner.
 
-Only one piece of equipment per type can be added to a workout, with the exception of the "Misc" type, for which up to 5 pieces of equipment can be added.
+Only one piece of equipment per type can be added to a workout or a sport, with the exception of the "Misc" type, for which up to 5 pieces of equipment can be added.
 
 Following totals are displayed for each piece of equipment:
 

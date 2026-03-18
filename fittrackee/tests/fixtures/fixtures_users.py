@@ -222,6 +222,21 @@ def user_1_sport_2_preference(
 
 
 @pytest.fixture()
+def user_1_sport_3_preference(
+    user_1: User,
+    sport_3_cycling_transport: Sport,
+) -> UserSportPreference:
+    user_sport = UserSportPreference(
+        user_id=user_1.id,
+        sport_id=sport_3_cycling_transport.id,
+        stopped_speed_threshold=sport_3_cycling_transport.stopped_speed_threshold,
+    )
+    db.session.add(user_sport)
+    db.session.commit()
+    return user_sport
+
+
+@pytest.fixture()
 def user_2_sport_2_preference(
     user_1: User,
     user_2: User,

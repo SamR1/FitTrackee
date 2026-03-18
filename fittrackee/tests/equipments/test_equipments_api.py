@@ -1,6 +1,7 @@
 import json
 from datetime import datetime, timedelta, timezone
 from typing import Tuple
+from unittest.mock import patch
 
 import pytest
 from flask import Flask
@@ -691,6 +692,108 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
         assert sport_3_cycling_transport_pref.default_equipments.all() == [
             equipment
         ]
+
+    @patch("fittrackee.equipments.equipments.MAX_MISC_LIMIT", 2)
+    def test_it_adds_a_piece_of_equipment_when_default_equipement_with_misc_type_already_exists(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_6_misc: EquipmentType,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        sport_3_cycling_transport: Sport,
+        user_1_sport_1_preference: UserSportPreference,
+        user_1_sport_2_preference: UserSportPreference,
+        user_1_sport_3_preference: UserSportPreference,
+        equipment_misc_1_user_1: Equipment,
+    ) -> None:
+        self.add_user_sport_preference_equipement(
+            [equipment_misc_1_user_1], user_1_sport_1_preference
+        )
+        self.add_user_sport_preference_equipement(
+            [equipment_misc_1_user_1], user_1_sport_2_preference
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "equipment_type_id": equipment_type_6_misc.id,
+                "label": "Another Misc equipment",
+                "default_for_sport_ids": [
+                    sport_1_cycling.id,
+                    sport_3_cycling_transport.id,
+                ],
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        assert response.status_code == 201
+        data = json.loads(response.data.decode())
+        assert "created" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert "Another Misc equipment" == equipment["label"]
+        assert set(equipment["default_for_sport_ids"]) == {
+            sport_1_cycling.id,
+            sport_3_cycling_transport.id,
+        }
+        equipment = Equipment.query.filter_by(
+            uuid=decode_short_id(equipment["id"])
+        ).first()
+        assert set(user_1_sport_1_preference.default_equipments.all()) == {
+            equipment,
+            equipment_misc_1_user_1,
+        }
+        assert user_1_sport_2_preference.default_equipments.all() == [
+            equipment_misc_1_user_1
+        ]
+        assert user_1_sport_3_preference.default_equipments.all() == [
+            equipment
+        ]
+
+    @patch("fittrackee.equipments.equipments.MAX_MISC_LIMIT", 2)
+    def test_it_returns_error_when_with_misc_equipments_exceed_limit(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_6_misc: EquipmentType,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        user_1_sport_1_preference: UserSportPreference,
+        equipment_misc_1_user_1: Equipment,
+        equipment_misc_2_user_1: Equipment,
+    ) -> None:
+        self.add_user_sport_preference_equipement(
+            [equipment_misc_1_user_1, equipment_misc_2_user_1],
+            user_1_sport_1_preference,
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "equipment_type_id": equipment_type_6_misc.id,
+                "label": "Another Misc equipment",
+                "default_for_sport_ids": [
+                    sport_1_cycling.id,
+                    sport_2_running.id,
+                ],
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        self.assert_400(
+            response,
+            "a maximum of 2 pieces of Misc equipment can be added",
+            status="limit_exceeded",
+        )
 
     def test_it_adds_a_piece_of_equipment_when_default_equipement_with_different_type_exists(  # noqa
         self,
@@ -1657,6 +1760,86 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
             equipment_bike_user_1,
             equipment_shoes_user_1,
         }
+
+    @patch("fittrackee.equipments.equipments.MAX_MISC_LIMIT", 2)
+    def test_it_updates_equipment_when_default_misc_equipment_exists(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_6_misc: EquipmentType,
+        sport_1_cycling: Sport,
+        user_1_sport_1_preference: UserSportPreference,
+        equipment_misc_1_user_1: Equipment,
+        equipment_misc_2_user_1: Equipment,
+    ) -> None:
+        self.add_user_sport_preference_equipement(
+            [equipment_misc_1_user_1, equipment_misc_2_user_1],
+            user_1_sport_1_preference,
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/equipments/{equipment_misc_2_user_1.short_id}",
+            json={
+                "label": "updated_label",
+                "default_for_sport_ids": [sport_1_cycling.id],
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert len(data["data"]["equipments"]) == 1
+        equipment = data["data"]["equipments"][0]
+        assert equipment["label"] == "updated_label"
+        assert equipment["default_for_sport_ids"] == [sport_1_cycling.id]
+        assert set(user_1_sport_1_preference.default_equipments.all()) == {
+            equipment_misc_1_user_1,
+            equipment_misc_2_user_1,
+        }
+
+    @patch("fittrackee.equipments.equipments.MAX_MISC_LIMIT", 2)
+    def test_it_returns_error_when_with_misc_equipments_exceed_limit(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_6_misc: EquipmentType,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+        user_1_sport_1_preference: UserSportPreference,
+        equipment_misc_1_user_1: Equipment,
+        equipment_misc_2_user_1: Equipment,
+        equipment_misc_3_user_1: Equipment,
+    ) -> None:
+        self.add_user_sport_preference_equipement(
+            [equipment_misc_1_user_1, equipment_misc_2_user_1],
+            user_1_sport_1_preference,
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/equipments/{equipment_misc_3_user_1.short_id}",
+            json={
+                "default_for_sport_ids": [
+                    sport_1_cycling.id,
+                    sport_2_running.id,
+                ],
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        self.assert_400(
+            response,
+            "a maximum of 2 pieces of Misc equipment can be added",
+            status="limit_exceeded",
+        )
 
     def test_it_removes_existing_default_sport(
         self,
