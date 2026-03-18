@@ -25,7 +25,7 @@ from fittrackee.workouts.models import Sport, Workout
 
 from .exceptions import InvalidEquipmentsException
 from .models import Equipment, EquipmentType, WorkoutEquipment
-from .utils import SPORT_EQUIPMENT_TYPES
+from .utils import MAX_MISC_LIMIT, SPORT_EQUIPMENT_TYPES
 
 equipments_blueprint = Blueprint("equipments", __name__)
 
@@ -78,15 +78,38 @@ def update_user_sport_preferences_if_exist(
     default_for_sport_ids: list[int],
 ) -> None:
     if user_sport_preferences:
-        # remove existing pieces of equipment with the same equipment type
-        db.session.query(UserSportPreferenceEquipment).filter(
-            UserSportPreferenceEquipment.c.user_id == auth_user.id,
-            UserSportPreferenceEquipment.c.sport_id.in_(default_for_sport_ids),
-            (
-                UserSportPreferenceEquipment.c.equipment_type_id
-                == equipment.equipment_type_id
-            ),
-        ).delete()
+        if equipment.equipment_type.label == "Misc":
+            # can not exceeds max limit for Misc type
+            for sport_id in default_for_sport_ids:
+                query = db.session.query(UserSportPreferenceEquipment).filter(
+                    UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                    UserSportPreferenceEquipment.c.sport_id == sport_id,
+                    (
+                        UserSportPreferenceEquipment.c.equipment_id
+                        != equipment.id
+                    ),
+                    (
+                        UserSportPreferenceEquipment.c.equipment_type_id
+                        == equipment.equipment_type_id
+                    ),
+                )
+                if query.count() >= MAX_MISC_LIMIT:
+                    raise InvalidEquipmentsException(
+                        f"a maximum of {MAX_MISC_LIMIT} pieces of Misc "
+                        f"equipment can be added"
+                    )
+        else:
+            # remove existing pieces of equipment with the same equipment type
+            db.session.query(UserSportPreferenceEquipment).filter(
+                UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                UserSportPreferenceEquipment.c.sport_id.in_(
+                    default_for_sport_ids
+                ),
+                (
+                    UserSportPreferenceEquipment.c.equipment_type_id
+                    == equipment.equipment_type_id
+                ),
+            ).delete()
 
         db.session.execute(
             insert(UserSportPreferenceEquipment)
@@ -472,7 +495,8 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             },
             201,
         )
-
+    except InvalidEquipmentsException as e:
+        return InvalidPayloadErrorResponse(str(e))
     except (exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(
             error=e,
@@ -750,7 +774,8 @@ def update_equipment(
                 "equipments": [equipment.serialize(current_user=auth_user)]
             },
         }
-
+    except InvalidEquipmentsException as e:
+        return InvalidPayloadErrorResponse(str(e))
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(
             error=e,
