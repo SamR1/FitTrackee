@@ -4,6 +4,7 @@
     "Error when updating elevation data source": "Pogreška prilikom ažuriranja izvora podataka o elevaciji",
     "Network Error": "Mrežna pogreška.",
     "UNKNOWN": "Greška. Pokušajte ponovno ili kontaktirajte administratora.",
+    "a maximum of 5 pieces of Misc equipment can be added": "Moguće je dodati najviše 5 komada 'Razne' opreme.",
     "a report already exists": "Već ste podnijeli izvješće.",
     "at least one file in zip archive exceeds size limit, please check the archive": "Najmanje jedna datoteka u zip arhivi premašuje ograničenje veličine, provjerite arhivu.",
     "comment already reactivated": "Komentar je već ponovno aktiviran, molimo osvježite ovu stranicu.",
