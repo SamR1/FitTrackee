@@ -399,7 +399,11 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     :<json boolean is_active: whether or not this equipment is currently
         active (default: ``true``)
     :<json array of integers default_for_sport_ids: the default sport ids
-        to use for this equipment, not mandatory
+        to use for this equipment, not mandatory.
+        **Note**: If sport has already a default equipment, it replaces it,
+        with the exception of the "Misc" type, in which case it is added.
+        If the sport already has 5 pieces of "Misc" equipment, an error is
+        returned.
     :<json string visibility: visibility level (``public``, ``followers_only``,
         ``private``), not mandatory (default value: ``private``)
 
@@ -415,6 +419,7 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``sport (id <sport_id>) does not exist``
         - ``invalid sport '<sport_label>' for equipment
           type '<equipment_type_label>'``
+        - ``a maximum of 5 pieces of Misc equipment can be added``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -599,7 +604,11 @@ def update_equipment(
     :<json boolean is_active: whether or not this equipment is currently
         active (default: ``true``)
     :<json array of integers default_for_sport_ids: the default sport ids
-        to use for this equipment
+        to use for this equipment.
+        **Note**: If sport has already a default equipment, it replaces it,
+        with the exception of the "Misc" type, in which case it is added.
+        If the sport already has 5 pieces of "Misc" equipment, an error is
+        returned.
     :<json string visibility: visibility level (``public``, ``followers_only``,
         ``private``)
 
@@ -616,6 +625,7 @@ def update_equipment(
         - ``sport (id <sport_id>) does not exist``
         - ``invalid sport '<sport_label>' for equipment
           type '<equipment_type_label>'``
+        - ``a maximum of 5 pieces of Misc equipment can be added``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``

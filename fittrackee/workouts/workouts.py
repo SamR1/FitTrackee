@@ -2247,7 +2247,9 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
        For `equipment_ids`, the id of the equipment to associate with
        this workout.
-       **Note**: for now only one equipment can be associated.
+       **Note**: Only one piece of equipment per type can be added to a
+       workout, with the exception of the "Misc" type, for which up to 5
+       pieces of equipment can be added.
        If not provided and default equipment exists for sport,
        default equipment will be associated.
 
@@ -2502,7 +2504,9 @@ def post_workout_no_gpx(
     :<json integer duration: workout duration in seconds
     :<json array of strings equipment_ids:
         the id of the equipment to associate with this workout.
-        **Note**: for now only one equipment can be associated.
+        **Note**: Only one piece of equipment per type can be added to a
+        workout, with the exception of the "Misc" type, for which up to 5
+        pieces of equipment can be added.
         If not provided and default equipment exists for sport,
         default equipment will be associated.
     :<json string notes: notes (not mandatory, max length: 500
@@ -2739,7 +2743,9 @@ def update_workout(
     :<json array of strings equipment_ids:
         the id of the equipment to associate with this workout (any existing
         equipment for this workout will be replaced).
-        **Note**: for now only one equipment can be associated.
+        **Note**: Only one piece of equipment per type can be added to a
+        workout, with the exception of the "Misc" type, for which up to 5
+        pieces of equipment can be added.
         If an empty array, equipment for this workout will be removed.
     :<json string map_visibility: map visibility
         (``private``, ``followers_only`` or ``public``)
