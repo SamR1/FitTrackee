@@ -12,6 +12,7 @@ from fittrackee.responses import (
     ForbiddenErrorResponse,
     HttpResponse,
     InvalidPayloadErrorResponse,
+    MiscEquipmentInvalidPayloadErrorResponse,
     handle_error_and_return_response,
 )
 from fittrackee.users.models import (
@@ -23,7 +24,10 @@ from fittrackee.utils import decode_short_id
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
-from .exceptions import InvalidEquipmentsException
+from .exceptions import (
+    InvalidEquipmentsException,
+    MiscEquipmentLimitExceededException,
+)
 from .models import Equipment, EquipmentType, WorkoutEquipment
 from .utils import MAX_MISC_LIMIT, SPORT_EQUIPMENT_TYPES
 
@@ -80,6 +84,7 @@ def update_user_sport_preferences_if_exist(
     if user_sport_preferences:
         if equipment.equipment_type.label == "Misc":
             # can not exceeds max limit for Misc type
+            sport_ids = []
             for sport_id in default_for_sport_ids:
                 query = db.session.query(UserSportPreferenceEquipment).filter(
                     UserSportPreferenceEquipment.c.user_id == auth_user.id,
@@ -94,10 +99,14 @@ def update_user_sport_preferences_if_exist(
                     ),
                 )
                 if query.count() >= MAX_MISC_LIMIT:
-                    raise InvalidEquipmentsException(
-                        f"a maximum of {MAX_MISC_LIMIT} pieces of Misc "
-                        f"equipment can be added"
-                    )
+                    sport_ids.append(sport_id)
+
+            if sport_ids:
+                raise MiscEquipmentLimitExceededException(
+                    message=f"a maximum of {MAX_MISC_LIMIT} pieces of Misc "
+                    f"equipment can be added",
+                    sport_ids=sport_ids,
+                )
         else:
             # remove existing pieces of equipment with the same equipment type
             db.session.query(UserSportPreferenceEquipment).filter(
@@ -495,8 +504,10 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
             },
             201,
         )
-    except InvalidEquipmentsException as e:
-        return InvalidPayloadErrorResponse(str(e))
+    except MiscEquipmentLimitExceededException as e:
+        return MiscEquipmentInvalidPayloadErrorResponse(
+            message=e.message, sport_ids=e.sport_ids
+        )
     except (exc.IntegrityError, ValueError) as e:
         return handle_error_and_return_response(
             error=e,
@@ -774,8 +785,10 @@ def update_equipment(
                 "equipments": [equipment.serialize(current_user=auth_user)]
             },
         }
-    except InvalidEquipmentsException as e:
-        return InvalidPayloadErrorResponse(str(e))
+    except MiscEquipmentLimitExceededException as e:
+        return MiscEquipmentInvalidPayloadErrorResponse(
+            message=e.message, sport_ids=e.sport_ids
+        )
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
         return handle_error_and_return_response(
             error=e,

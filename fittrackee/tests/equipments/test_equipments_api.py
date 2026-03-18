@@ -790,7 +790,9 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
         )
 
         self.assert_400(
-            response, "a maximum of 2 pieces of Misc equipment can be added"
+            response,
+            "a maximum of 2 pieces of Misc equipment can be added",
+            status="limit_exceeded",
         )
 
     def test_it_adds_a_piece_of_equipment_when_default_equipement_with_different_type_exists(  # noqa
@@ -1834,7 +1836,9 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         )
 
         self.assert_400(
-            response, "a maximum of 2 pieces of Misc equipment can be added"
+            response,
+            "a maximum of 2 pieces of Misc equipment can be added",
+            status="limit_exceeded",
         )
 
     def test_it_removes_existing_default_sport(
