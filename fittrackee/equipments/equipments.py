@@ -360,6 +360,8 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     **Example response**:
 
+    - success
+
     .. sourcecode:: http
 
       HTTP/1.1 201 CREATED
@@ -389,6 +391,21 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         },
         "status": "created"
       }
+
+    - 'misc' equipment exceeding the max limit, when other equipment items
+      are already associated with sports
+
+    .. sourcecode:: http
+
+      HTTP/1.1 400 BAD REQUEST
+      Content-Type: application/json
+
+      {
+        "message": "a maximum of 5 pieces of Misc equipment can be added",
+        "sport_ids": [1],
+        "status": "limit_exceeded"
+      }
+
 
     :<json string label: a brief (less than 50 characters) label for
         the piece of equipment
@@ -592,6 +609,21 @@ def update_equipment(
         },
         "status": "not found"
       }
+
+    - 'misc' equipment exceeding the max limit, when other equipment items
+      are already associated with sports
+
+    .. sourcecode:: http
+
+      HTTP/1.1 400 BAD REQUEST
+      Content-Type: application/json
+
+      {
+        "message": "a maximum of 5 pieces of Misc equipment can be added",
+        "sport_ids": [1],
+        "status": "limit_exceeded"
+      }
+
 
     :param string equipment_short_id: equipment short id
 
