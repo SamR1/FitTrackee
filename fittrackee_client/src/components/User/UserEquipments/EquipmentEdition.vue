@@ -51,7 +51,10 @@
             class="equipment-warning"
             v-if="
               equipment?.workouts_count &&
-              equipmentForm.equipmentTypeId !== equipment?.equipment_type.id
+              equipmentForm.equipmentTypeId !== equipment?.equipment_type.id &&
+              translatedEquipmentTypes.find(
+                (et) => et.id == equipmentForm.equipmentTypeId
+              )?.label !== 'Misc'
             "
           >
             <span class="info-box">
