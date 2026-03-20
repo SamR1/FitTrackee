@@ -5,6 +5,7 @@ import {
   AUTH_USER_STORE,
   EQUIPMENTS_STORE,
   ROOT_STORE,
+  SPORTS_STORE,
 } from '@/store/constants'
 import type { IAuthUserState } from '@/store/modules/authUser/types'
 import type { IEquipmentTypesState } from '@/store/modules/equipments/types'
@@ -17,7 +18,12 @@ import type { IStatisticsState } from '@/store/modules/statistics/types'
 import type { IUsersState } from '@/store/modules/users/types'
 import type { IWorkoutsState } from '@/store/modules/workouts/types'
 import type { IApiErrorMessage } from '@/types/api'
-import type { IEquipment, IEquipmentError } from '@/types/equipments'
+import type {
+  IEquipment,
+  IEquipmentError,
+  IMiscEquipmentError,
+} from '@/types/equipments'
+import type { ISport } from '@/types/sports.ts'
 
 export const getApiUrl = (): string => {
   return import.meta.env.PROD
@@ -73,6 +79,11 @@ export const handleError = (
     context.commit(ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES, equipmentError)
     return
   }
+  const miscEquipmentError = getMiscEquipmentError(error, context)
+  if (miscEquipmentError) {
+    context.commit(ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES, miscEquipmentError)
+    return
+  }
 
   const errorMessages = !error
     ? msg
@@ -123,6 +134,39 @@ const getEquipmentError = (
         equipmentId: data.equipment_id,
         equipmentLabel: equipments.length === 0 ? null : equipments[0].label,
         status: data.status,
+      }
+    }
+  }
+  return null
+}
+
+const getMiscEquipmentError = (
+  error: AxiosError | null,
+  context:
+    | ActionContext<IRootState, IRootState>
+    | ActionContext<IAuthUserState, IRootState>
+    | ActionContext<IEquipmentTypesState, IRootState>
+    | ActionContext<INotificationsState, IRootState>
+    | ActionContext<IReportsState, IRootState>
+    | ActionContext<IOAuth2State, IRootState>
+    | ActionContext<IStatisticsState, IRootState>
+    | ActionContext<ISportsState, IRootState>
+    | ActionContext<IUsersState, IRootState>
+    | ActionContext<IWorkoutsState, IRootState>
+): IMiscEquipmentError | null => {
+  if (error?.response?.data) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const data: { sport_ids: number[]; message: string } = {
+      ...error.response.data,
+    }
+    if ('sport_ids' in data) {
+      const sportLabels: string[] = context.getters[SPORTS_STORE.GETTERS.SPORTS]
+        .filter((sport: ISport) => data.sport_ids.includes(sport.id))
+        .map((sport: ISport) => sport.label)
+      return {
+        sportLabels: sportLabels,
+        message: data.message,
       }
     }
   }

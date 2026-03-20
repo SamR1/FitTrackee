@@ -98,7 +98,7 @@ The following sport preferences can be set:
 - change sport color (used for sport image and charts)
 - can override stopped speed threshold (for next uploaded gpx files)
 - disable/enable a sport
-- define default `equipment <equipment.html>`__.
+- define default `equipment <equipment.html>`__. Only one piece of equipment per type can be set, with the exception of the "Misc" type, for which up to 5 pieces of equipment can be set. If the sport is already associated with an equipment item with a type different than "Misc", the new item will replace it.
 - set pace/speed display for Hiking, Running, Trail and Walking:
 
   - pace

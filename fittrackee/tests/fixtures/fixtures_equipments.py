@@ -145,6 +145,22 @@ def equipment_another_shoes_user_1(
 
 
 @pytest.fixture()
+def equipment_racket_user_1(
+    equipment_type_4_racket: EquipmentType, user_1: User
+) -> Equipment:
+    equip = Equipment(
+        label="Test racket",
+        equipment_type_id=equipment_type_4_racket.id,
+        description="",
+        user_id=user_1.id,
+        is_active=True,
+    )
+    db.session.add(equip)
+    db.session.commit()
+    return equip
+
+
+@pytest.fixture()
 def equipment_misc_1_user_1(
     equipment_type_6_misc: EquipmentType, user_1: User
 ) -> Equipment:

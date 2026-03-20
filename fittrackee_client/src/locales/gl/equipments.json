@@ -9,6 +9,7 @@
   "ERRORS": {
     "inactive": "O equipamento '{equipmentLabel}' non está en uso.",
     "invalid": "O equipamento '{equipmentLabel}' non é válido para este deporte.",
+    "limit_exceeded": "Esta peza de equipamento supera o límite de 5 elementos para o deporte {sportLabels}. | Esta peza de equipamento supera o límite de 5 elementos para os seguintes deportes: {sportLabels}.",
     "not_found": "Non hai equipamento."
   },
   "NEW_EQUIPMENT": "Novo equipamento",

@@ -62,3 +62,8 @@ export interface IEquipmentMultiselectItemsGroup {
   type: IEquipmentType
   items: IEquipment[]
 }
+
+export interface IMiscEquipmentError {
+  sportLabels: string[]
+  message: string
+}

@@ -11,8 +11,20 @@
   "Kayak_Boat": {
     "LABEL": "Kajak/čamac"
   },
+  "Misc": {
+    "LABEL": "Razno"
+  },
+  "Paddle": {
+    "LABEL": "Veslo"
+  },
+  "Racket": {
+    "LABEL": "Reket"
+  },
   "Shoes": {
     "LABEL": "Obuća"
+  },
+  "Skates": {
+    "LABEL": "Klizaljke"
   },
   "Skis": {
     "LABEL": "Skije"

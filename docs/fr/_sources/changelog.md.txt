@@ -1,5 +1,45 @@
 # Change log
 
+## Version 1.2.1 (2026/03/20)
+
+### Bugs Fixed
+
+* [PR#1083](https://github.com/SamR1/FitTrackee/pull/1083) - fix misc equipment creation/update when a default item exists + documentation
+* [PR#1085](https://github.com/SamR1/FitTrackee/pull/1085) - fix equipment update + other fixes and improvements
+
+### Translations
+
+* [PR#1082](https://github.com/SamR1/FitTrackee/pull/1082) - Translations update from Hosted Weblate (Croatian)
+* [PR#1084](https://github.com/SamR1/FitTrackee/pull/1084) - Translations update from Hosted Weblate (Galician)
+* [PR#1086](https://github.com/SamR1/FitTrackee/pull/1086) - Translations update from Hosted Weblate (Kabyle)
+
+Translation status for languages available on the interface:
+- Basque: 98%
+- Bulgarian: 51%
+- Catalan: 24%
+- Chinese (Simplified): 97%
+- Croatian: 99%
+- Czech: 46%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 89%
+- Italian: 99%
+- Kabyle: 5%
+- Norwegian Bokmål: 42%
+- Polish: 94%
+- Portuguese: 50%
+- Russian: 95%
+- Spanish: 68%
+- Turkish: 1%
+
+Thanks to the contributors:
+- @iggydev
+- @xmgz
+- ButterflyOfFire
+
+
 ## Version 1.2.0 (2026/03/17)
 
 This version introduces new sports, the ability to add multiple pieces of equipment to workouts, and the option to zoom in on workout charts.

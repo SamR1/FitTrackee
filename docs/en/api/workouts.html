@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
-        <title>Workouts - FitTrackee 1.2.0 documentation</title>
+        <title>Workouts - FitTrackee 1.2.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">FitTrackee 1.2.0
+      <a href="../index.html"><div class="brand">FitTrackee 1.2.1
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 1.2.0
+  <span class="sidebar-brand-text">FitTrackee 1.2.1
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -1767,7 +1767,9 @@ When description and title are provided, they replace the description
 and title from gpx file.</p>
 <p>For <cite>equipment_ids</cite>, the id of the equipment to associate with
 this workout.
-<strong>Note</strong>: for now only one equipment can be associated.
+<strong>Note</strong>: Only one piece of equipment per type can be added to a
+workout, with the exception of the “Misc” type, for which up to 5
+pieces of equipment can be added.
 If not provided and default equipment exists for sport,
 default equipment will be associated.</p>
 <p>Notes, description, title, equipment ids and visibility
@@ -1962,7 +1964,9 @@ max length: 10000 characters, otherwise it will be truncated)</p></li>
 <li><p><strong>distance</strong> (<em>float</em>) – workout distance in km</p></li>
 <li><p><strong>duration</strong> (<em>integer</em>) – workout duration in seconds</p></li>
 <li><p><strong>equipment_ids</strong> (<em>array of strings</em>) – the id of the equipment to associate with this workout.
-<strong>Note</strong>: for now only one equipment can be associated.
+<strong>Note</strong>: Only one piece of equipment per type can be added to a
+workout, with the exception of the “Misc” type, for which up to 5
+pieces of equipment can be added.
 If not provided and default equipment exists for sport,
 default equipment will be associated.</p></li>
 <li><p><strong>notes</strong> (<em>string</em>) – notes (not mandatory, max length: 500
@@ -2156,7 +2160,9 @@ depending on application configuration
 <code class="docutils literal notranslate"><span class="pre">valhalla</span></code>)</p></li>
 <li><p><strong>equipment_ids</strong> (<em>array of strings</em>) – the id of the equipment to associate with this workout (any existing
 equipment for this workout will be replaced).
-<strong>Note</strong>: for now only one equipment can be associated.
+<strong>Note</strong>: Only one piece of equipment per type can be added to a
+workout, with the exception of the “Misc” type, for which up to 5
+pieces of equipment can be added.
 If an empty array, equipment for this workout will be removed.</p></li>
 <li><p><strong>map_visibility</strong> (<em>string</em>) – map visibility
 (<code class="docutils literal notranslate"><span class="pre">private</span></code>, <code class="docutils literal notranslate"><span class="pre">followers_only</span></code> or <code class="docutils literal notranslate"><span class="pre">public</span></code>)</p></li>
@@ -3097,7 +3103,7 @@ weather data</p></li>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=6efca38a"></script>
+</div><script src="../_static/documentation_options.js?v=ca842793"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

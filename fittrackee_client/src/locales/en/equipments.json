@@ -9,7 +9,8 @@
   "ERRORS": {
     "inactive": "Equipment '{equipmentLabel}' inactive.",
     "invalid": "Equipment '{equipmentLabel}' invalid for this sport.",
-    "not_found": "Equipment not found."
+    "not_found": "Equipment not found.",
+    "limit_exceeded": "This piece of equipment exceeds the maximum limit of 5 items for sport {sportLabels}. | This piece of equipment exceeds the maximum limit of 5 items for the following sports: {sportLabels}."
   },
   "NEW_EQUIPMENT": "New equipment",
   "NO_EQUIPMENT": "No equipment found.",

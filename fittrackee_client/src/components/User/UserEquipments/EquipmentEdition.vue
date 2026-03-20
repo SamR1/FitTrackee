@@ -51,7 +51,10 @@
             class="equipment-warning"
             v-if="
               equipment?.workouts_count &&
-              equipmentForm.equipmentTypeId !== equipment?.equipment_type.id
+              equipmentForm.equipmentTypeId !== equipment?.equipment_type.id &&
+              translatedEquipmentTypes.find(
+                (et) => et.id == equipmentForm.equipmentTypeId
+              )?.label !== 'Misc'
             "
           >
             <span class="info-box">
@@ -229,12 +232,23 @@
     getAllVisibilityLevels()
   )
 
-  function setEquipmentSports(equipment: IEquipment) {
-    equipmentTranslatedSports.value = translateSports(
-      translatedSports.value,
-      t,
-      'all'
-    ).filter((s) => equipment.default_for_sport_ids.includes(s.id))
+  function setEquipmentSports(
+    equipment: IEquipment,
+    newEquipmentType: ITranslatedEquipmentType | undefined = undefined
+  ) {
+    const sports = translateSports(translatedSports.value, t, 'all')
+    if (newEquipmentType) {
+      equipmentTranslatedSports.value = sports.filter(
+        (s) =>
+          equipment.default_for_sport_ids.includes(s.id) &&
+          (newEquipmentType.label === 'Misc' ||
+            SPORT_EQUIPMENT_TYPES[newEquipmentType.label]?.includes(s.label))
+      )
+      return
+    }
+    equipmentTranslatedSports.value = sports.filter((s) =>
+      equipment.default_for_sport_ids.includes(s.id)
+    )
   }
   function formatForm(equipment: IEquipment) {
     equipmentForm.id = equipment.id
@@ -276,11 +290,11 @@
   watch(
     () => equipmentForm.equipmentTypeId,
     (newEquipmentTypeId: number) => {
-      if (
-        equipment.value &&
-        newEquipmentTypeId === equipment.value.equipment_type.id
-      ) {
-        setEquipmentSports(equipment.value)
+      if (equipment.value) {
+        const newEquipmentType = filteredEquipmentTypes.value.find(
+          (et) => et.id === newEquipmentTypeId
+        )
+        setEquipmentSports(equipment.value, newEquipmentType)
       } else {
         equipmentTranslatedSports.value = []
       }
