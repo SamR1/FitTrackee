@@ -1,11 +1,22 @@
-from typing import List, Optional, Union
+from typing import List, Optional, Set, Union
 
-from fittrackee.equipments.models import Equipment
-from fittrackee.users.models import User
+from sqlalchemy.dialects.postgresql import insert
+
+from fittrackee.equipments.models import Equipment, EquipmentType
+from fittrackee.users.models import (
+    User,
+    UserSportPreference,
+    UserSportPreferenceEquipment,
+)
 from fittrackee.utils import decode_short_id
 from fittrackee.workouts.models import Sport
 
-from .exceptions import InvalidEquipmentException, InvalidEquipmentsException
+from .. import db
+from .exceptions import (
+    InvalidEquipmentException,
+    InvalidEquipmentsException,
+    MiscEquipmentLimitExceededException,
+)
 
 SPORT_EQUIPMENT_TYPES = {
     "Bike": [
@@ -136,3 +147,159 @@ def handle_pieces_of_equipment(
         equipments_list.append(equipment)
 
     return equipments_list
+
+
+def handle_default_sports(
+    default_for_sport_ids: List[int],
+    auth_user: User,
+    equipment_type: EquipmentType,
+) -> List[UserSportPreference]:
+    user_sport_preferences = []
+    for sport_id in default_for_sport_ids:
+        sport = Sport.query.filter_by(id=sport_id).first()
+        if not sport:
+            raise InvalidEquipmentsException(
+                f"sport (id {sport_id}) does not exist"
+            )
+
+        # check if sport is valid for equipment type
+        if (
+            equipment_type.label != "Misc"
+            and sport.label
+            not in SPORT_EQUIPMENT_TYPES.get(equipment_type.label, [])
+        ):
+            raise InvalidEquipmentsException(
+                f"invalid sport '{sport.label}' for equipment "
+                f"type '{equipment_type.label}'"
+            )
+
+        user_sport_preference = UserSportPreference.query.filter_by(
+            user_id=auth_user.id,
+            sport_id=sport_id,
+        ).first()
+        if not user_sport_preference:
+            user_sport_preference = UserSportPreference(
+                user_id=auth_user.id,
+                sport_id=sport_id,
+                stopped_speed_threshold=sport.stopped_speed_threshold,
+                pace_speed_display=sport.pace_speed_display,
+            )
+            db.session.add(user_sport_preference)
+            db.session.flush()
+        user_sport_preferences.append(user_sport_preference)
+    return user_sport_preferences
+
+
+def update_user_sport_equipment_preferences_for_misc_if_exist(
+    equipment: "Equipment",
+    user_sport_preferences: Optional[List["UserSportPreference"]],
+    auth_user: "User",
+    default_for_sport_ids: list[int],
+) -> None:
+    if not user_sport_preferences:
+        return
+
+    # can not exceeds max limit for Misc type
+    sport_ids = []
+    for sport_id in default_for_sport_ids:
+        query = db.session.query(UserSportPreferenceEquipment).filter(
+            UserSportPreferenceEquipment.c.user_id == auth_user.id,
+            UserSportPreferenceEquipment.c.sport_id == sport_id,
+            UserSportPreferenceEquipment.c.equipment_id != equipment.id,
+            (
+                UserSportPreferenceEquipment.c.equipment_type_id
+                == equipment.equipment_type_id
+            ),
+        )
+        if query.count() >= MAX_MISC_LIMIT:
+            sport_ids.append(sport_id)
+
+    if sport_ids:
+        raise MiscEquipmentLimitExceededException(
+            message=f"a maximum of {MAX_MISC_LIMIT} pieces of Misc "
+            f"equipment can be added",
+            sport_ids=sport_ids,
+        )
+    db.session.execute(
+        insert(UserSportPreferenceEquipment)
+        .values(
+            [
+                {
+                    "equipment_id": equipment.id,
+                    "equipment_type_id": equipment.equipment_type_id,
+                    "sport_id": sport.sport_id,
+                    "user_id": auth_user.id,
+                }
+                for sport in user_sport_preferences
+            ]
+        )
+        .on_conflict_do_nothing()
+    )
+
+
+def update_user_sport_equipment_preferences_for_non_misc_if_exist(
+    equipment: "Equipment",
+    user_sport_preferences: Optional[List["UserSportPreference"]],
+    auth_user: "User",
+    default_for_sport_ids: list[int],
+    skip_default_sports_update: Set[int],
+) -> None:
+    if not user_sport_preferences:
+        return
+
+    # remove existing default sports for equipment items with the same
+    # equipment type
+    db.session.query(UserSportPreferenceEquipment).filter(
+        UserSportPreferenceEquipment.c.user_id == auth_user.id,
+        UserSportPreferenceEquipment.c.sport_id.in_(
+            list(set(default_for_sport_ids) - skip_default_sports_update)
+        ),
+        (
+            UserSportPreferenceEquipment.c.equipment_type_id
+            == equipment.equipment_type_id
+        ),
+    ).delete()
+
+    # create new default sports for equipment item
+    values = [
+        {
+            "equipment_id": equipment.id,
+            "equipment_type_id": equipment.equipment_type_id,
+            "sport_id": sport.sport_id,
+            "user_id": auth_user.id,
+        }
+        for sport in user_sport_preferences
+        if sport.sport_id not in skip_default_sports_update
+    ]
+    if values:
+        db.session.execute(
+            insert(UserSportPreferenceEquipment)
+            .values(values)
+            .on_conflict_do_nothing()
+        )
+
+
+def update_user_sport_equipment_preferences_if_exist(
+    equipment: "Equipment",
+    user_sport_preferences: Optional[List["UserSportPreference"]],
+    auth_user: "User",
+    default_for_sport_ids: list[int],
+    skip_default_sports_update: Optional[Set[int]] = None,
+) -> None:
+    if equipment.equipment_type.label == "Misc":
+        update_user_sport_equipment_preferences_for_misc_if_exist(
+            equipment,
+            user_sport_preferences,
+            auth_user,
+            default_for_sport_ids,
+        )
+    else:
+        if skip_default_sports_update is None:
+            skip_default_sports_update = set()
+        update_user_sport_equipment_preferences_for_non_misc_if_exist(
+            equipment,
+            user_sport_preferences,
+            auth_user,
+            default_for_sport_ids,
+            skip_default_sports_update,
+        )

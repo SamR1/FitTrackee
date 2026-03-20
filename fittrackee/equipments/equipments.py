@@ -1,9 +1,8 @@
 from datetime import timedelta
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, Tuple, Union
 
 from flask import Blueprint, request
 from sqlalchemy import exc, func
-from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee import db
 from fittrackee.oauth2.server import require_auth
@@ -17,7 +16,6 @@ from fittrackee.responses import (
 )
 from fittrackee.users.models import (
     User,
-    UserSportPreference,
     UserSportPreferenceEquipment,
 )
 from fittrackee.utils import decode_short_id
@@ -29,112 +27,13 @@ from .exceptions import (
     MiscEquipmentLimitExceededException,
 )
 from .models import Equipment, EquipmentType, WorkoutEquipment
-from .utils import MAX_MISC_LIMIT, SPORT_EQUIPMENT_TYPES
+from .utils import (
+    SPORT_EQUIPMENT_TYPES,
+    handle_default_sports,
+    update_user_sport_equipment_preferences_if_exist,
+)
 
 equipments_blueprint = Blueprint("equipments", __name__)
-
-
-def handle_default_sports(
-    default_for_sport_ids: List[int],
-    auth_user: User,
-    equipment_type: EquipmentType,
-) -> List[UserSportPreference]:
-    user_sport_preferences = []
-    for sport_id in default_for_sport_ids:
-        sport = Sport.query.filter_by(id=sport_id).first()
-        if not sport:
-            raise InvalidEquipmentsException(
-                f"sport (id {sport_id}) does not exist"
-            )
-
-        # check if sport is valid for equipment type
-        if (
-            equipment_type.label != "Misc"
-            and sport.label
-            not in SPORT_EQUIPMENT_TYPES.get(equipment_type.label, [])
-        ):
-            raise InvalidEquipmentsException(
-                f"invalid sport '{sport.label}' for equipment "
-                f"type '{equipment_type.label}'"
-            )
-
-        user_sport_preference = UserSportPreference.query.filter_by(
-            user_id=auth_user.id,
-            sport_id=sport_id,
-        ).first()
-        if not user_sport_preference:
-            user_sport_preference = UserSportPreference(
-                user_id=auth_user.id,
-                sport_id=sport_id,
-                stopped_speed_threshold=sport.stopped_speed_threshold,
-                pace_speed_display=sport.pace_speed_display,
-            )
-            db.session.add(user_sport_preference)
-            db.session.flush()
-        user_sport_preferences.append(user_sport_preference)
-    return user_sport_preferences
-
-
-def update_user_sport_preferences_if_exist(
-    equipment: "Equipment",
-    user_sport_preferences: Optional[List["UserSportPreference"]],
-    auth_user: "User",
-    default_for_sport_ids: list[int],
-) -> None:
-    if user_sport_preferences:
-        if equipment.equipment_type.label == "Misc":
-            # can not exceeds max limit for Misc type
-            sport_ids = []
-            for sport_id in default_for_sport_ids:
-                query = db.session.query(UserSportPreferenceEquipment).filter(
-                    UserSportPreferenceEquipment.c.user_id == auth_user.id,
-                    UserSportPreferenceEquipment.c.sport_id == sport_id,
-                    (
-                        UserSportPreferenceEquipment.c.equipment_id
-                        != equipment.id
-                    ),
-                    (
-                        UserSportPreferenceEquipment.c.equipment_type_id
-                        == equipment.equipment_type_id
-                    ),
-                )
-                if query.count() >= MAX_MISC_LIMIT:
-                    sport_ids.append(sport_id)
-
-            if sport_ids:
-                raise MiscEquipmentLimitExceededException(
-                    message=f"a maximum of {MAX_MISC_LIMIT} pieces of Misc "
-                    f"equipment can be added",
-                    sport_ids=sport_ids,
-                )
-        else:
-            # remove existing pieces of equipment with the same equipment type
-            db.session.query(UserSportPreferenceEquipment).filter(
-                UserSportPreferenceEquipment.c.user_id == auth_user.id,
-                UserSportPreferenceEquipment.c.sport_id.in_(
-                    default_for_sport_ids
-                ),
-                (
-                    UserSportPreferenceEquipment.c.equipment_type_id
-                    == equipment.equipment_type_id
-                ),
-            ).delete()
-
-        db.session.execute(
-            insert(UserSportPreferenceEquipment)
-            .values(
-                [
-                    {
-                        "equipment_id": equipment.id,
-                        "equipment_type_id": equipment.equipment_type_id,
-                        "sport_id": sport.sport_id,
-                        "user_id": auth_user.id,
-                    }
-                    for sport in user_sport_preferences
-                ]
-            )
-            .on_conflict_do_nothing()
-        )
 
 
 @equipments_blueprint.route("/equipments", methods=["GET"])
@@ -507,7 +406,7 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         if visibility:
             new_equipment.visibility = visibility
 
-        update_user_sport_preferences_if_exist(
+        update_user_sport_equipment_preferences_if_exist(
             new_equipment,
             user_sport_preferences,
             auth_user,
@@ -690,7 +589,8 @@ def update_equipment(
     new_default_for_sport_ids = equipment_data.get(
         "default_for_sport_ids", None
     )
-    user_sport_preferences = None
+    skip_default_sports_update = set()
+
     try:
         equipment = Equipment.query.filter_by(
             uuid=decode_short_id(equipment_short_id), user_id=auth_user.id
@@ -698,8 +598,11 @@ def update_equipment(
         if not equipment:
             return DataNotFoundErrorResponse("equipments")
 
-        check_default_sports = True
-        equipment_type = equipment.equipment_type
+        old_equipment_type = equipment.equipment_type
+        old_default_sport_ids = [
+            sport_preference.sport_id
+            for sport_preference in equipment.default_for_sports
+        ]
 
         # set new values if they were in the request
         if "is_active" in equipment_data:
@@ -724,7 +627,6 @@ def update_equipment(
             equipment.label = label
         if "description" in equipment_data:
             equipment.description = equipment_data.get("description")
-
         if "visibility" in equipment_data:
             visibility = equipment_data["visibility"]
             try:
@@ -734,60 +636,107 @@ def update_equipment(
             equipment.visibility = visibility
 
         if "equipment_type_id" in equipment_data:
-            equipment_type_id = equipment_data.get("equipment_type_id")
-            equipment_type = EquipmentType.query.filter_by(
-                id=equipment_type_id
+            new_equipment_type_id = equipment_data.get("equipment_type_id")
+            new_equipment_type = EquipmentType.query.filter_by(
+                id=new_equipment_type_id
             ).first()
-            if not equipment_type:
+
+            if not new_equipment_type:
                 return InvalidPayloadErrorResponse("invalid equipment type id")
-            if equipment_type.id != equipment.equipment_type_id:
-                if not equipment_type.is_active:
-                    return InvalidPayloadErrorResponse(
-                        "equipment type is inactive"
+
+            if new_equipment_type.id != old_equipment_type.id:
+                if new_equipment_type.label == "Misc":
+                    # in order to check if max limit is exceeding
+                    new_default_for_sport_ids = (
+                        [
+                            sport_preference.sport_id
+                            for sport_preference in equipment.default_for_sports  # noqa: E501
+                        ]
+                        if new_default_for_sport_ids is None
+                        else new_default_for_sport_ids
                     )
 
-                # remove workouts association on type change
-                db.session.query(WorkoutEquipment).filter(
-                    WorkoutEquipment.c.equipment_id == equipment.id
-                ).delete()
-                equipment.total_distance = 0.0
-                equipment.total_duration = timedelta()
-                equipment.total_moving = timedelta()
-                equipment.total_workouts = 0
+                else:
+                    if not new_equipment_type.is_active:
+                        return InvalidPayloadErrorResponse(
+                            "equipment type is inactive"
+                        )
 
-                # remove default sports
-                db.session.query(UserSportPreferenceEquipment).filter(
-                    UserSportPreferenceEquipment.c.user_id == auth_user.id,
-                    UserSportPreferenceEquipment.c.equipment_id
-                    == equipment.id,
-                ).all()
+                    # remove workouts association on type change
+                    db.session.query(WorkoutEquipment).filter(
+                        WorkoutEquipment.c.equipment_id == equipment.id
+                    ).delete()
+                    equipment.total_distance = 0.0
+                    equipment.total_duration = timedelta()
+                    equipment.total_moving = timedelta()
+                    equipment.total_workouts = 0
 
-                # with changes on equipments but no changes on default sports,
-                # the default sports are removed.
-                if new_default_for_sport_ids is None or (
-                    new_default_for_sport_ids
-                    == [
-                        sport_preference.sport_id
-                        for sport_preference in equipment.default_for_sports
-                    ]
-                ):
-                    new_default_for_sport_ids = []
-                    check_default_sports = False
+                    # remove all default sports for equipment
+                    # (new new_equipment_type will be created later if needed)
+                    db.session.query(UserSportPreferenceEquipment).filter(
+                        UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                        UserSportPreferenceEquipment.c.equipment_id
+                        == equipment.id,
+                    ).delete()
 
-            equipment.equipment_type_id = equipment_type_id
+                    # with changes on equipment but no changes on default
+                    # sports, store the default sport id in order to recreated
+                    # only the valid ones
+                    if new_default_for_sport_ids is None or (
+                        new_default_for_sport_ids == old_default_sport_ids
+                    ):
+                        valid_sport_ids = [
+                            sport.id
+                            for sport in Sport.query.filter(
+                                Sport.label.in_(
+                                    SPORT_EQUIPMENT_TYPES[
+                                        new_equipment_type.label
+                                    ]
+                                )
+                            ).all()
+                        ]
+                        # keep only the valid default sport ids
+                        new_default_for_sport_ids = [
+                            sport_id
+                            for sport_id in old_default_sport_ids
+                            if sport_id in valid_sport_ids
+                        ]
 
-        if check_default_sports and new_default_for_sport_ids is not None:
+                    # For non-misc equipment items, default sports are
+                    # recreated only if there is not already a default item
+                    # associated with them
+                    if not equipment_data.get("default_for_sport_ids", None):
+                        skip_default_sports_update = {
+                            uspe[1]
+                            for uspe in db.session.query(
+                                UserSportPreferenceEquipment
+                            )
+                            .filter(
+                                UserSportPreferenceEquipment.c.user_id
+                                == auth_user.id,
+                                UserSportPreferenceEquipment.c.equipment_id
+                                != equipment.id,
+                                UserSportPreferenceEquipment.c.equipment_type_id
+                                == new_equipment_type_id,
+                            )
+                            .all()
+                        }
+
+            equipment.equipment_type_id = new_equipment_type_id
+            equipment.equipment_type = new_equipment_type
+
+        if new_default_for_sport_ids is not None:
             try:
                 user_sport_preferences = handle_default_sports(
                     new_default_for_sport_ids,
                     auth_user,
-                    equipment_type,
+                    equipment.equipment_type,
                 )
             except InvalidEquipmentsException as e:
                 return InvalidPayloadErrorResponse(str(e))
 
-        if new_default_for_sport_ids is not None:
-            existing_sports = (
+            # get existing default sports for equipment item
+            existing_sport_equipment_preferences = (
                 db.session.query(UserSportPreferenceEquipment)
                 .filter(
                     UserSportPreferenceEquipment.c.user_id == auth_user.id,
@@ -797,27 +746,22 @@ def update_equipment(
                 .all()
             )
 
-            sport_ids_to_remove = {s[1] for s in existing_sports} - set(
-                new_default_for_sport_ids
-            )
+            # remove invalid default sports for item type
+            db.session.query(UserSportPreferenceEquipment).filter(
+                UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                (UserSportPreferenceEquipment.c.equipment_id == equipment.id),
+                UserSportPreferenceEquipment.c.sport_id.in_(
+                    {s[1] for s in existing_sport_equipment_preferences}
+                    - set(new_default_for_sport_ids)
+                ),
+            ).delete()
 
-            if sport_ids_to_remove:
-                db.session.query(UserSportPreferenceEquipment).filter(
-                    UserSportPreferenceEquipment.c.user_id == auth_user.id,
-                    (
-                        UserSportPreferenceEquipment.c.equipment_id
-                        == equipment.id
-                    ),
-                    UserSportPreferenceEquipment.c.sport_id.in_(
-                        sport_ids_to_remove
-                    ),
-                ).delete()
-
-            update_user_sport_preferences_if_exist(
+            update_user_sport_equipment_preferences_if_exist(
                 equipment,
                 user_sport_preferences,
                 auth_user,
                 new_default_for_sport_ids,
+                skip_default_sports_update,
             )
         db.session.commit()
 
