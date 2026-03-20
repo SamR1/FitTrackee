@@ -1,1 +1,15 @@
-{}
+{
+  "AVERAGE": "Mitjana",
+  "DATES": "Dates",
+  "STATISTICS": "Estadístiques",
+  "STATISTICS_CHARTS": {
+    "day": "Estadístiques diàries",
+    "month": "Estadístiques mensuals",
+    "week": "Estadístiques mensuals",
+    "year": "Estadístiques anuals"
+  },
+  "TIME_FRAMES": {
+    "year": "any"
+  },
+  "WORKOUTS_AVERAGE": "nombre mitjà d'entrenaments"
+}
