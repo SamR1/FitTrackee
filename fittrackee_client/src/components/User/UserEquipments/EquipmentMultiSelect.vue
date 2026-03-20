@@ -30,7 +30,10 @@
             :title="$t(`equipment_types.${option.equipment_type.label}.LABEL`)"
             :equipment-type-label="option.equipment_type.label"
           />
-          <span>{{ option.label }}</span>
+          <span>
+            {{ option.label }}
+            {{ option.is_active ? '' : `(${$t('common.INACTIVE')})` }}
+          </span>
           <i
             tabindex="1"
             @keydown.enter.prevent="remove(option)"

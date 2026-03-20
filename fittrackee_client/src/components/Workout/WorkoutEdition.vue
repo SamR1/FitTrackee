@@ -581,7 +581,7 @@
   // @ts-ignore
   const existingWorkoutEquipments: ComputedRef<IEquipment[]> = computed(() =>
     isCreation.value
-      ? selectedSport.value?.default_equipments || []
+      ? selectedSport.value?.default_equipments.filter((e) => e.is_active) || []
       : workout.value.equipments.filter((e) =>
           selectedSport.value
             ? (e as IEquipment).equipment_type.label === 'Misc' ||

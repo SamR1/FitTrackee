@@ -110,6 +110,16 @@ class EquipmentInvalidPayloadErrorResponse(HttpResponse):
         super().__init__(response=response, status_code=400)
 
 
+class MiscEquipmentInvalidPayloadErrorResponse(HttpResponse):
+    def __init__(self, sport_ids: List[int], message: str) -> None:
+        response = {
+            "status": "limit_exceeded",
+            "sport_ids": sport_ids,
+            "message": message,
+        }
+        super().__init__(response=response, status_code=400)
+
+
 class UnauthorizedErrorResponse(GenericErrorResponse):
     def __init__(self, message: Optional[str] = None) -> None:
         message = (

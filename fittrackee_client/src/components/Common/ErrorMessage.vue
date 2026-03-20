@@ -45,17 +45,32 @@
         })
       }}
     </div>
+    <div v-else-if="'sportLabels' in message">
+      {{
+        $t('equipments.ERRORS.limit_exceeded', {
+          count: message.sportLabels.length,
+          sportLabels: message.sportLabels
+            .map((label) => `'${$t(`sports.${label}.LABEL`)}'`)
+            .join(', '),
+        })
+      }}
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
-  import type { IEquipmentError } from '@/types/equipments'
+  import type { IEquipmentError, IMiscEquipmentError } from '@/types/equipments'
   import type { IWorkoutFilesError } from '@/types/workouts'
 
   interface Props {
-    message: string | string[] | IEquipmentError | IWorkoutFilesError
+    message:
+      | string
+      | string[]
+      | IEquipmentError
+      | IWorkoutFilesError
+      | IMiscEquipmentError
     noMargin?: boolean
   }
   const props = withDefaults(defineProps<Props>(), { noMargin: false })

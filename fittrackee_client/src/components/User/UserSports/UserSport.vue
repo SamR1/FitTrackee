@@ -67,7 +67,7 @@
       <dt>{{ $t('user.PROFILE.SPORT.DEFAULT_EQUIPMENTS', 1) }}</dt>
       <dd class="sport-equipments">
         <EquipmentBadge
-          v-for="equipment in sport.default_equipments"
+          v-for="equipment in sport.default_equipments.sort(sortEquipments)"
           :equipment="equipment"
           :sport-id="sport.id"
           :key="equipment.label"
@@ -124,6 +124,7 @@
   import useSports from '@/composables/useSports'
   import type { ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
+  import { sortEquipments } from '@/utils/equipments.ts'
   import { sportsWithPace } from '@/utils/sports.ts'
 
   interface Props {

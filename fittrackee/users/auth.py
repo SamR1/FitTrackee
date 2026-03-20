@@ -1233,7 +1233,9 @@ def edit_user_sport_preferences(
            Trail and Walking (``pace``, ``speed``, ``pace_and_speed``)
     :<json array of strings default_equipment_ids: the default equipment id
            to use for this sport.
-           **Note**: for now only one equipment can be associated.
+           **Note**: Only one piece of equipment per type can be added to a
+           sport, with the exception of the "Misc" type, for which up to 5
+           pieces of equipment can be added.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
