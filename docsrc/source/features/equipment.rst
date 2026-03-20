@@ -89,7 +89,7 @@ It is possible to define default equipment for sports: when adding a workout, th
 An equipment can be edited (label, equipment type, description, visibility, active status and default sports).
 
 .. warning::
-  | Changing equipment type will remove all existing workouts associations for that piece of equipment and default sports.
+  | Changing equipment type will remove all existing workouts associations for that piece of equipment and default sports, except when changing type to 'Misc'.
 
 Deactivated equipment will not appear in dropdown when **a workout is added**. It remains displayed in the details of the workout, to which it was associated before being deactivated.
 
