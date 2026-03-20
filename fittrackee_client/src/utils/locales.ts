@@ -88,19 +88,19 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
 export const languageLabels: Record<TLanguage, string> = {
   bg: 'български (51%)', // Bulgarian
   // bn: 'বাংলা',  // Bengali
-  ca: 'Català (25%)', // Catalan
+  ca: 'Català (24%)', // Catalan
   cs: 'Česky (46%)', // Czech
   // da: 'Dansk', // Danish
   de: 'Deutsch (89%)', // German
   en: 'English',
   es: 'Español (68%)', // Spanish
-  eu: 'Euskara (99%)', // Basque
+  eu: 'Euskara (98%)', // Basque
   fr: 'Français', // French
   gl: 'Galego', // Galician
   hr: 'Hrvatski (99%)', // Croatian
   it: 'Italiano (99%)', // Italian
-  nl: 'Nederlands', // Dutch
-  nb: 'Norsk bokmål (43%)', // Norwegian Bokmål
+  nl: 'Nederlands (99%)', // Dutch
+  nb: 'Norsk bokmål (42%)', // Norwegian Bokmål
   pl: 'Polski (94%)', // Polish
   pt: 'Português (50%)', // Portuguese
   ru: 'Русский (95%)', // Russian
