@@ -11,6 +11,7 @@ from fittrackee.equipments.models import Equipment, EquipmentType
 from fittrackee.users.models import (
     User,
     UserSportPreference,
+    UserSportPreferenceEquipment,
 )
 from fittrackee.users.roles import UserRole
 from fittrackee.utils import decode_short_id
@@ -627,16 +628,38 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
         }
         equipment = Equipment.query.filter_by(
             uuid=decode_short_id(equipment["id"])
-        ).first()
+        ).one()
         assert user_1_sport_1_preference.default_equipments.all() == [
             equipment
         ]
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment.id,
+                equipment_type_id=equipment_type_2_bike.id,  # check type
+            )
+            .first()
+            is not None
+        )
         sport_3_cycling_transport_pref = UserSportPreference.query.filter_by(
             user_id=user_1.id, sport_id=sport_3_cycling_transport.id
         ).one()
         assert sport_3_cycling_transport_pref.default_equipments.all() == [
             equipment
         ]
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_3_cycling_transport.id,
+                equipment_id=equipment.id,
+                equipment_type_id=equipment_type_2_bike.id,  # check type
+            )
+            .first()
+            is not None
+        )
 
     def test_it_adds_a_piece_of_equipment_when_default_equipement_with_same_type_exists(  # noqa
         self,
@@ -682,22 +705,45 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
         }
         equipment = Equipment.query.filter_by(
             uuid=decode_short_id(equipment["id"])
-        ).first()
+        ).one()
         assert user_1_sport_1_preference.default_equipments.all() == [
             equipment
         ]
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment.id,
+                equipment_type_id=equipment_type_2_bike.id,  # check type
+            )
+            .first()
+            is not None
+        )
         sport_3_cycling_transport_pref = UserSportPreference.query.filter_by(
             user_id=user_1.id, sport_id=sport_3_cycling_transport.id
         ).one()
         assert sport_3_cycling_transport_pref.default_equipments.all() == [
             equipment
         ]
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_3_cycling_transport.id,
+                equipment_id=equipment.id,
+                equipment_type_id=equipment_type_2_bike.id,  # check type
+            )
+            .first()
+            is not None
+        )
 
     @patch("fittrackee.equipments.utils.MAX_MISC_LIMIT", 2)
     def test_it_adds_a_piece_of_equipment_when_default_equipement_with_misc_type_already_exists(  # noqa
         self,
         app: Flask,
         user_1: User,
+        equipment_type_2_bike: EquipmentType,
         equipment_type_6_misc: EquipmentType,
         sport_1_cycling: Sport,
         sport_2_running: Sport,
@@ -745,18 +791,62 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
         }
         equipment = Equipment.query.filter_by(
             uuid=decode_short_id(equipment["id"])
-        ).first()
+        ).one()
         assert set(user_1_sport_1_preference.default_equipments.all()) == {
             equipment_bike_user_1,
             equipment,
             equipment_misc_1_user_1,
         }
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_bike_user_1.id,
+                equipment_type_id=equipment_type_2_bike.id,  # check type
+            )
+            .first()
+            is not None
+        )
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_misc_1_user_1.id,
+                equipment_type_id=equipment_type_6_misc.id,  # check type
+            )
+            .first()
+            is not None
+        )
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment.id,
+                equipment_type_id=equipment_type_6_misc.id,  # check type
+            )
+            .first()
+            is not None
+        )
         assert user_1_sport_2_preference.default_equipments.all() == [
             equipment_misc_1_user_1
         ]
         assert user_1_sport_3_preference.default_equipments.all() == [
             equipment
         ]
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_3_cycling_transport.id,
+                equipment_id=equipment.id,
+                equipment_type_id=equipment_type_6_misc.id,  # check type
+            )
+            .first()
+            is not None
+        )
 
     @patch("fittrackee.equipments.utils.MAX_MISC_LIMIT", 2)
     def test_it_returns_error_when_with_misc_equipments_exceed_limit_regardless_active_status(  # noqa
@@ -1568,6 +1658,17 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         assert user_1_sport_1_preference.default_equipments.all() == [
             equipment_from_bike_to_shoes_user_1
         ]
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_from_bike_to_shoes_user_1.id,
+                equipment_type_id=equipment_type_1_shoe.id,  # check type
+            )
+            .first()
+            is not None
+        )
         assert workout_cycling_user_1.equipments == []
         assert another_workout_cycling_user_1.equipments == []
 
@@ -1631,6 +1732,17 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         ]
         assert user_1_sport_2_preference.default_equipments.all() == []
         assert workout_cycling_user_1.equipments == [equipment_bike_user_1]
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_bike_user_1.id,
+                equipment_type_id=equipment_type_2_bike.id,
+            )
+            .first()
+            is not None
+        )
         assert another_workout_cycling_user_1.equipments == [
             equipment_bike_user_1
         ]
@@ -1689,6 +1801,17 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         assert user_1_sport_1_preference.default_equipments.all() == [
             equipment_from_bike_to_misc_user_1
         ]
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_from_bike_to_misc_user_1.id,
+                equipment_type_id=equipment_type_6_misc.id,  # check type
+            )
+            .first()
+            is not None
+        )
         assert workout_cycling_user_1.equipments == [
             equipment_from_bike_to_misc_user_1
         ]
@@ -1737,6 +1860,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         app: Flask,
         user_1: User,
         sport_2_running: Sport,
+        equipment_type_1_shoe: EquipmentType,
         equipment_shoes_user_1: Equipment,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -1759,6 +1883,17 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         assert sport_preferences.default_equipments.all() == [
             equipment_shoes_user_1
         ]
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_2_running.id,
+                equipment_id=equipment_shoes_user_1.id,
+                equipment_type_id=equipment_type_1_shoe.id,  # check type
+            )
+            .first()
+            is not None
+        )
 
     def test_it_returns_400_when_default_sport_id_is_invalid(
         self,
@@ -1831,18 +1966,40 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         assert user_1_sport_1_preference.default_equipments.all() == [
             equipment_bike_user_1
         ]
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_bike_user_1.id,
+                equipment_type_id=equipment_type_2_bike.id,  # check type
+            )
+            .first()
+            is not None
+        )
         sport_3_cycling_transport_pref = UserSportPreference.query.filter_by(
             user_id=user_1.id, sport_id=sport_3_cycling_transport.id
         ).one()
         assert sport_3_cycling_transport_pref.default_equipments.all() == [
             equipment_bike_user_1
         ]
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_3_cycling_transport.id,
+                equipment_id=equipment_bike_user_1.id,
+                equipment_type_id=equipment_type_2_bike.id,  # check type
+            )
+            .first()
+            is not None
+        )
 
     def test_it_replaces_default_sports_when_sport_preference_exists_with_same_type(  # noqa
         self,
         app: Flask,
         user_1: User,
-        equipment_type_2_bike: EquipmentType,
+        equipment_type_1_shoe: EquipmentType,
         sport_2_running: Sport,
         user_1_sport_2_preference: UserSportPreference,
         equipment_shoes_user_1: Equipment,
@@ -1876,6 +2033,17 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         assert user_1_sport_2_preference.default_equipments.all() == [
             equipment_another_shoes_user_1
         ]
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_2_running.id,
+                equipment_id=equipment_another_shoes_user_1.id,
+                equipment_type_id=equipment_type_1_shoe.id,  # check type
+            )
+            .first()
+            is not None
+        )
 
     def test_it_updates_default_sports_when_sport_preference_exists_with_different_type(  # noqa
         self,
@@ -1914,6 +2082,28 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
             equipment_bike_user_1,
             equipment_shoes_user_1,
         }
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_bike_user_1.id,
+                equipment_type_id=equipment_type_2_bike.id,  # check type
+            )
+            .first()
+            is not None
+        )
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_shoes_user_1.id,
+                equipment_type_id=equipment_type_1_shoe.id,  # check type
+            )
+            .first()
+            is not None
+        )
 
     @patch("fittrackee.equipments.utils.MAX_MISC_LIMIT", 2)
     def test_it_updates_default_sports_when_sport_preference_already_exists_with_misc_type(  # noqa
@@ -1953,6 +2143,28 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
             equipment_misc_1_user_1,
             equipment_misc_2_user_1,
         }
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_misc_1_user_1.id,
+                equipment_type_id=equipment_type_6_misc.id,  # check type
+            )
+            .first()
+            is not None
+        )
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_misc_2_user_1.id,
+                equipment_type_id=equipment_type_6_misc.id,  # check type
+            )
+            .first()
+            is not None
+        )
 
     @patch("fittrackee.equipments.utils.MAX_MISC_LIMIT", 2)
     def test_it_returns_error_when_updating_default_sports_and_misc_equipments_exceed_limit(  # noqa
@@ -2023,6 +2235,16 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         equipment = data["data"]["equipments"][0]
         assert equipment["default_for_sport_ids"] == []
         assert user_1_sport_1_preference.default_equipments.all() == []
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_bike_user_1.id,
+            )
+            .first()
+            is None
+        )
 
     def test_it_does_not_remove_existing_default_sport_when_modifying_another_value(  # noqa
         self,
@@ -2058,6 +2280,17 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         assert user_1_sport_1_preference.default_equipments.all() == [
             equipment_bike_user_1
         ]
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_bike_user_1.id,
+                equipment_type_id=equipment_type_2_bike.id,  # check type
+            )
+            .first()
+            is not None
+        )
 
     def test_it_keeps_default_sports_ids_when_changing_from_not_misc_to_misc_type(  # noqa
         self,
@@ -2094,6 +2327,17 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         assert user_1_sport_1_preference.default_equipments.all() == [
             equipment_from_bike_to_misc_user_1
         ]
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_from_bike_to_misc_user_1.id,
+                equipment_type_id=equipment_type_6_misc.id,  # check type
+            )
+            .first()
+            is not None
+        )
 
     def test_it_keeps_default_sports_ids_when_changing_from_misc_to_not_misc_type(  # noqa
         self,
@@ -2101,7 +2345,6 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         user_1: User,
         sport_1_cycling: Sport,
         equipment_type_2_bike: EquipmentType,
-        equipment_type_6_misc: EquipmentType,
         user_1_sport_1_preference: UserSportPreference,
         equipment_misc_1_user_1: Equipment,
     ) -> None:
@@ -2130,6 +2373,17 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         assert user_1_sport_1_preference.default_equipments.all() == [
             equipment_from_misc_to_bike_user_1
         ]
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_from_misc_to_bike_user_1.id,
+                equipment_type_id=equipment_type_2_bike.id,  # check type
+            )
+            .first()
+            is not None
+        )
 
     def test_it_removes_default_sports_ids_when_invalid_and_changing_from_misc_to_not_misc_type(  # noqa
         self,
@@ -2145,13 +2399,13 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
             [equipment_misc_1_user_1], user_1_sport_1_preference
         )
         db.session.commit()
-        equipment_from_misc_to_shoes_user_1 = equipment_misc_1_user_1
+        equipment_from_misc_to_racket_user_1 = equipment_misc_1_user_1
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
 
         response = client.patch(
-            f"/api/equipments/{equipment_from_misc_to_shoes_user_1.short_id}",
+            f"/api/equipments/{equipment_from_misc_to_racket_user_1.short_id}",
             json={"equipment_type_id": equipment_type_4_racket.id},
             headers={"Authorization": f"Bearer {auth_token}"},
         )
@@ -2167,6 +2421,15 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         # racket type is invalid for cycling
         assert equipment["default_for_sport_ids"] == []
         assert user_1_sport_1_preference.default_equipments.all() == []
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                equipment_id=equipment_from_misc_to_racket_user_1.id,
+            )
+            .first()
+            is None
+        )
 
     def test_it_adds_sports_ids_and_changes_type_from_misc_to_not_misc_type(
         self,
@@ -2208,6 +2471,28 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
             equipment_misc_2_user_1,
             equipment_from_misc_to_bike_user_1,
         }
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_misc_2_user_1.id,
+                equipment_type_id=equipment_type_6_misc.id,  # check type
+            )
+            .first()
+            is not None
+        )
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_from_misc_to_bike_user_1.id,
+                equipment_type_id=equipment_type_2_bike.id,  # check type
+            )
+            .first()
+            is not None
+        )
 
     def test_it_keeps_default_sports_ids_when_provided_and_changing_from_not_misc_to_misc_type(  # noqa
         self,
@@ -2247,6 +2532,17 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         assert user_1_sport_1_preference.default_equipments.all() == [
             equipment_from_bike_to_misc_user_1
         ]
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_from_bike_to_misc_user_1.id,
+                equipment_type_id=equipment_type_6_misc.id,  # check type
+            )
+            .first()
+            is not None
+        )
 
     def test_it_keeps_default_sports_ids_when_provided_and_changing_from_misc_to_not_misc_type(  # noqa
         self,
@@ -2289,6 +2585,28 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
             equipment_from_misc_to_bike_user_1,
             equipment_misc_2_user_1,
         }
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_from_misc_to_bike_user_1.id,
+                equipment_type_id=equipment_type_2_bike.id,  # check type
+            )
+            .first()
+            is not None
+        )
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_misc_2_user_1.id,
+                equipment_type_id=equipment_type_6_misc.id,  # check type
+            )
+            .first()
+            is not None
+        )
 
     def test_it_updates_default_for_sport_ids_when_changing_from_non_misc_to_misc_type(  # noqa
         self,
@@ -2325,6 +2643,17 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         assert sport_1_cycling_pref.default_equipments.all() == [
             equipment_from_racket_to_misc_user_1
         ]
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_from_racket_to_misc_user_1.id,
+                equipment_type_id=equipment_type_6_misc.id,  # check type
+            )
+            .first()
+            is not None
+        )
 
     def test_it_removes_invalid_default_for_sport_ids_when_provided_and_invalid_with_type_change(  # noqa
         self,
@@ -2364,6 +2693,15 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         )
         assert equipment["default_for_sport_ids"] == []
         assert user_1_sport_1_preference.default_equipments.all() == []
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                equipment_id=equipment_from_misc_to_racket_user_1.id,
+            )
+            .first()
+            is None
+        )
 
     def test_it_replaces_default_sports_on_change_from_misc_to_non_misc_type(
         self,
@@ -2371,6 +2709,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         user_1: User,
         sport_1_cycling: Sport,
         equipment_type_2_bike: EquipmentType,
+        equipment_type_6_misc: EquipmentType,
         user_1_sport_1_preference: UserSportPreference,
         equipment_bike_user_1: Equipment,
         equipment_misc_1_user_1: Equipment,
@@ -2406,6 +2745,28 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
             equipment_misc_1_user_1,
             equipment_from_misc_to_bike_user_1,
         }
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_misc_1_user_1.id,
+                equipment_type_id=equipment_type_6_misc.id,  # check type
+            )
+            .first()
+            is not None
+        )
+        assert (
+            db.session.query(UserSportPreferenceEquipment)
+            .filter_by(
+                user_id=user_1.id,
+                sport_id=sport_1_cycling.id,
+                equipment_id=equipment_from_misc_to_bike_user_1.id,
+                equipment_type_id=equipment_type_2_bike.id,  # check type
+            )
+            .first()
+            is not None
+        )
 
     def test_expected_scope_is_equipments_write(
         self, app: Flask, user_1: User

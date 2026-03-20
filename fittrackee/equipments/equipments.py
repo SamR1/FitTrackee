@@ -645,6 +645,14 @@ def update_equipment(
                 return InvalidPayloadErrorResponse("invalid equipment type id")
 
             if new_equipment_type.id != old_equipment_type.id:
+                # remove all default sports for equipment
+                # (new new_equipment_type will be created later if needed)
+                db.session.query(UserSportPreferenceEquipment).filter(
+                    UserSportPreferenceEquipment.c.user_id == auth_user.id,
+                    UserSportPreferenceEquipment.c.equipment_id
+                    == equipment.id,
+                ).delete()
+
                 if new_equipment_type.label == "Misc":
                     # in order to check if max limit is exceeding
                     new_default_for_sport_ids = (
@@ -670,14 +678,6 @@ def update_equipment(
                     equipment.total_duration = timedelta()
                     equipment.total_moving = timedelta()
                     equipment.total_workouts = 0
-
-                    # remove all default sports for equipment
-                    # (new new_equipment_type will be created later if needed)
-                    db.session.query(UserSportPreferenceEquipment).filter(
-                        UserSportPreferenceEquipment.c.user_id == auth_user.id,
-                        UserSportPreferenceEquipment.c.equipment_id
-                        == equipment.id,
-                    ).delete()
 
                     # with changes on equipment but no changes on default
                     # sports, store the default sport id in order to recreated
