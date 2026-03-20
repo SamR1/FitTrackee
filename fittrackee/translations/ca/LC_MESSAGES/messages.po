@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2026-03-04 23:57+0100\n"
-"PO-Revision-Date: 2025-05-22 14:01+0000\n"
-"Last-Translator: Arnyminer Z <arnyminer.z@gmail.com>\n"
+"PO-Revision-Date: 2026-03-21 17:09+0000\n"
+"Last-Translator: Arnau Mora <arnyminer.z@gmail.com>\n"
+"Language-Team: Catalan <https://hosted.weblate.org/projects/fittrackee/"
+"fittrackee-api-emails/ca/>\n"
 "Language: ca\n"
-"Language-Team: Catalan <https://hosted.weblate.org/projects/fittrackee"
-"/fittrackee-api-emails/ca/>\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.17-dev\n"
 "Generated-By: Babel 2.18.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
@@ -141,7 +142,7 @@ msgstr ""
 #: fittrackee/emails/templates/user_warning_lifting/body.html:6
 #: fittrackee/emails/templates/user_warning_lifting/body.txt:3
 msgid "Comment:"
-msgstr ""
+msgstr "Comentari:"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:22
 #: fittrackee/emails/templates/appeal_rejected/body.txt:7
@@ -152,7 +153,7 @@ msgstr ""
 #: fittrackee/emails/templates/workout_suspension/body.txt:5
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:5
 msgid "Workout:"
-msgstr ""
+msgstr "Entrenament:"
 
 #: fittrackee/emails/templates/appeal_rejected/body.txt:5
 #: fittrackee/emails/templates/appeal_rejected/body.txt:9
@@ -163,22 +164,22 @@ msgstr ""
 #: fittrackee/emails/templates/user_warning_lifting/body.txt:9
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:7
 msgid "Link:"
-msgstr ""
+msgstr "Enllaç:"
 
 #: fittrackee/emails/templates/appeal_rejected/subject.txt:1
 msgid "Appeal rejected"
-msgstr ""
+msgstr "Apel·lació denegada"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:2
 #: fittrackee/emails/templates/comment_suspension/subject.txt:1
 msgid "Your comment has been suspended"
-msgstr ""
+msgstr "El teu comentari ha sigut suspès"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:3
 #: fittrackee/emails/templates/comment_suspension/body.html:4
 #: fittrackee/emails/templates/comment_suspension/body.txt:1
 msgid "Your comment has been suspended, it is no longer visible"
-msgstr ""
+msgstr "El teu comentari ha sigut suspès, ja no és visible"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:5
 #: fittrackee/emails/templates/comment_suspension/body.txt:3
@@ -195,7 +196,7 @@ msgstr ""
 #: fittrackee/emails/templates/workout_unsuspension/body.html:5
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:3
 msgid "Reason:"
-msgstr ""
+msgstr "Motiu:"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:20
 #: fittrackee/emails/templates/comment_suspension/body.txt:7
@@ -206,49 +207,49 @@ msgstr ""
 #: fittrackee/emails/templates/workout_suspension/body.html:23
 #: fittrackee/emails/templates/workout_suspension/body.txt:7
 msgid "If you think this is an error, you can appeal:"
-msgstr ""
+msgstr "Si creus que això és un error, pots apel·lar:"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:27
 #: fittrackee/emails/templates/user_suspension/body.html:14
 #: fittrackee/emails/templates/user_warning/body.html:48
 #: fittrackee/emails/templates/workout_suspension/body.html:30
 msgid "Appeal"
-msgstr ""
+msgstr "Apel·lar"
 
 #: fittrackee/emails/templates/comment_unsuspension/body.html:2
 #: fittrackee/emails/templates/comment_unsuspension/subject.txt:1
 msgid "The suspension on your comment has been lifted"
-msgstr ""
+msgstr "S'ha alçat la suspensió del teu comentari"
 
 #: fittrackee/emails/templates/comment_unsuspension/body.html:3
 #: fittrackee/emails/templates/comment_unsuspension/body.html:4
 #: fittrackee/emails/templates/comment_unsuspension/body.txt:1
 msgid "The suspension on your comment has been lifted, it is visible again"
-msgstr ""
+msgstr "S'ha alçat la suspensió del teu comentari, torna a ser visible"
 
 #: fittrackee/emails/templates/data_export_ready/body.html:2
 #: fittrackee/emails/templates/data_export_ready/subject.txt:1
 msgid "Your archive is ready to be downloaded"
-msgstr ""
+msgstr "El teu arxiu està llest per a descarregar"
 
 #: fittrackee/emails/templates/data_export_ready/body.html:3
 msgid "A download link is available in your account."
-msgstr ""
+msgstr "Un enllaç de descàrrega està disponible al teu compte."
 
 #: fittrackee/emails/templates/data_export_ready/body.html:4
 #: fittrackee/emails/templates/data_export_ready/body.txt:1
 msgid "You have requested an export of your account on FitTrackee."
-msgstr ""
+msgstr "Has sol·licitat la exportació del teu compte a FitTrackee."
 
 #: fittrackee/emails/templates/data_export_ready/body.html:4
 #: fittrackee/emails/templates/data_export_ready/body.txt:2
 msgid "The archive is now ready to be downloaded from your account."
-msgstr ""
+msgstr "L'arxiu ja està a punt per ser descarregat del vostre compte."
 
 #: fittrackee/emails/templates/data_export_ready/body.html:11
 #: fittrackee/emails/templates/data_export_ready/body.txt:4
 msgid "Download your archive"
-msgstr ""
+msgstr "Descarrega el teu arxiu"
 
 #: fittrackee/emails/templates/data_export_ready/body.html:18
 #: fittrackee/emails/templates/data_export_ready/body.txt:5
@@ -256,15 +257,18 @@ msgid ""
 "If you did not request the export, please change your password "
 "immediately or contact your administrator if your account is locked."
 msgstr ""
+"Si no heu sol·licitat l'exportació, canvieu la contrasenya immediatament o "
+"poseu-vos en contacte amb un administrador si el vostre compte està "
+"bloquejat."
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_current_email/subject.txt:1
 msgid "Email changed"
-msgstr ""
+msgstr "Correu electrònic canviat"
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:3
 msgid "Your email is being updated."
-msgstr ""
+msgstr "El teu correu electrònic s'està actualitzant."
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:4
 #: fittrackee/emails/templates/email_update_to_current_email/body.txt:1
@@ -606,4 +610,3 @@ msgstr "Descens"
 #: fittrackee/feeds/templates/workout/body.html:4
 msgid "Description"
 msgstr "Descripció"
-
