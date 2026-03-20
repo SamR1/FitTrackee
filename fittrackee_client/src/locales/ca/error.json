@@ -1,5 +1,6 @@
 {
   "APP_ERROR": "Sembla que s'ha trobat algun problema.<br />Per favor, torna-ho a intentar més tard o contacta amb l'administrador.",
+  "ERRORS_ENCOUNTERED": "S'han trobat errors",
   "NOT_FOUND": {
     "COMMENT": "No s'ha trobat el comentari",
     "PAGE": "No s'ha trobat la pàgina",
