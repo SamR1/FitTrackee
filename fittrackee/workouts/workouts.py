@@ -52,6 +52,7 @@ from fittrackee.workouts.services.elevation.elevation_service import (
 )
 
 from ..constants import ElevationDataSource, PaceSpeedDisplay
+from ..files import get_file_extension
 from .constants import (
     SPORTS_WITHOUT_ELEVATION_DATA,
     WORKOUT_FILE_MIMETYPES,
@@ -83,7 +84,7 @@ from .utils.geometry import (
     get_buffered_location,
     get_geojson_from_segments,
 )
-from .utils.gpx import generate_gpx, get_file_extension
+from .utils.gpx import generate_gpx
 from .utils.sports import (
     get_elevation_data,
     get_pace,

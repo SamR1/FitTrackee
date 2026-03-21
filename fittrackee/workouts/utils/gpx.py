@@ -21,10 +21,6 @@ def open_gpx_file(gpx_file: str) -> Optional["gpxpy.gpx.GPX"]:
     return gpx
 
 
-def get_file_extension(filename: str) -> str:
-    return filename.rsplit(".", 1)[-1].lower()
-
-
 VALID_EXTENSIONS = {
     "cadence": "{gpxtpx}cad",
     "heart_rate": "{gpxtpx}hr",

@@ -2,9 +2,9 @@ from typing import TYPE_CHECKING
 
 from flask import current_app
 
+from ...files import get_file_extension
 from ..exceptions import WorkoutExceedingValueException
 from ..models import PSQL_INTEGER_LIMIT, WORKOUT_VALUES_LIMIT
-from ..utils.gpx import get_file_extension
 
 if TYPE_CHECKING:
     from fittrackee.workouts.models import Workout

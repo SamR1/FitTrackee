@@ -21,3 +21,7 @@ def display_readable_file_size(size_in_bytes: Union[float, int]) -> str:
 
 def get_absolute_file_path(relative_path: str) -> str:
     return os.path.join(current_app.config["UPLOAD_FOLDER"], relative_path)
+
+
+def get_file_extension(filename: str) -> str:
+    return filename.rsplit(".", 1)[-1].lower()
