@@ -11,6 +11,14 @@
     "DATA_COLLECTED": {
       "CONTENT": "Es recol·lecta la següent informació:\n- Informació sobre el compte (nom d'usuari, correu electrònic i contrasenya). També pots introduir informació addicional tal com nom, cognoms, data de naixement, ubicació, biografia, i carregar una imatge de perfil.\n- Fitxers [GPX](https://en.wikipedia.org/wiki/GPS_Exchange_Format). Aquests contenen informació relacionada a la teva activitat (coordenades geogràfiques, data, distància, duració, velocitats màxima i mínima, elevació, títol, descripció, ritme cardíac...). Si no vols exposar alguna dada, elimina-la abans de carregar els arxius, o crea entrenaments sense fitxers GPX.\n- Dades d'entrenaments (esport, títol, descripció, data, duració, distància, ascens, descens, notes).\n- Seguidors i seguits.\n- Comentaris i m'agrada.\n- Informació tècnica (nom del navegador i sistema operatiu).",
       "TITLE": "Quina informació recol·lectem?"
+    },
+    "INFORMATION_DISCLOSURE": {
+      "CONTENT": "No venem, comercialitzem ni transferim de cap altra manera a tercers la seva informació d'identificació personal.\nAixò no inclou tercers de confiança que ens ajudin a operar el nostre lloc i a servir-vos, sempre que aquestes parts acceptin mantenir aquesta informació confidencial.\nTambé podem publicar la vostra informació quan creiem que l'alliberament és adequat per complir amb la llei, fer complir les polítiques del nostre lloc, o protegir els nostres drets, la propietat o la seguretat.\nQuan autoritzeu una aplicació de tercers a utilitzar el vostre compte, depenent de l'abast dels permisos que aproveu, pot accedir a la informació del vostre perfil o als vostres entrenaments. Les aplicacions no poden accedir mai a la contrasenya.",
+      "TITLE": "Divulguem informació a tercers?"
+    },
+    "YOUR_CONSENT": {
+      "TITLE": "El teu Consentiment"
     }
-  }
+  },
+  "TITLE": "política de privacitat"
 }
