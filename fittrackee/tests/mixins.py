@@ -697,8 +697,10 @@ class MediaMixin:
     @staticmethod
     def create_media(
         user: "User",
+        *,
         file_name: Optional[str] = None,
         file_size: int = 1000,
+        workout_id: Optional[int] = None,
     ) -> "Media":
         media = Media(
             user_id=user.id,
@@ -706,5 +708,6 @@ class MediaMixin:
             file_size=file_size,
         )
         db.session.add(media)
+        media.workout_id = workout_id
         db.session.commit()
         return media

@@ -22,6 +22,7 @@ from fittrackee.database import PSQL_INTEGER_LIMIT, TZDateTime
 from fittrackee.dates import aware_utc_now
 from fittrackee.equipments.models import WorkoutEquipment
 from fittrackee.files import get_absolute_file_path, get_file_extension
+from fittrackee.media.models import Media
 from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import (
     VisibilityLevel,
@@ -384,6 +385,11 @@ class Workout(BaseModel):
         nullable=False,
     )
     calories: Mapped[Optional[int]] = mapped_column(nullable=True)  # kcal
+    media_visibility: Mapped[VisibilityLevel] = mapped_column(
+        Enum(VisibilityLevel, name="visibility_levels"),
+        server_default="PRIVATE",
+        nullable=False,
+    )
 
     user: Mapped["User"] = relationship(
         "User", lazy="select", single_parent=True
@@ -461,6 +467,13 @@ class Workout(BaseModel):
             parent_visibility=self.analysis_visibility,
         )
 
+    @property
+    def calculated_media_visibility(self) -> VisibilityLevel:
+        return get_calculated_visibility(
+            visibility=self.media_visibility,
+            parent_visibility=self.workout_visibility,
+        )
+
     def liked_by(self, user: "User") -> bool:
         return user in self.likes.all()
 
@@ -514,6 +527,18 @@ class Workout(BaseModel):
         from fittrackee.reports.models import Report
 
         return Report.query.filter_by(reported_workout_id=self.id).all()
+
+    def get_media_attachments(self, user: Optional["User"]) -> List["Media"]:
+        can_see_media = can_view(
+            self, "calculated_media_visibility", user=user
+        )
+        if can_see_media:
+            return (
+                Media.query.filter_by(workout_id=self.id)
+                .order_by(Media.created_at.asc())
+                .all()
+            )
+        return []
 
     def get_workout_data(
         self,
@@ -776,6 +801,7 @@ class Workout(BaseModel):
             workout["next_workout"] = None
             workout["previous_workout"] = None
             workout["bounds"] = []
+            workout["media_attachments"] = []
             return workout
 
         if is_owner:
@@ -864,6 +890,9 @@ class Workout(BaseModel):
             if self.bounds and can_see_map_data and additional_data
             else []
         )
+        workout["media_attachments"] = [
+            media.serialize() for media in self.get_media_attachments(user)
+        ]
         return workout
 
     @classmethod

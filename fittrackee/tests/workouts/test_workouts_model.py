@@ -28,13 +28,13 @@ from fittrackee.workouts.models import (
     WorkoutSegment,
 )
 
-from ..mixins import ReportMixin, WorkoutMixin
+from ..mixins import MediaMixin, ReportMixin, WorkoutMixin
 from ..utils import random_string
 from .utils import add_follower
 
 
 @pytest.mark.disable_autouse_update_records_patch
-class WorkoutModelTestCase(WorkoutMixin, ReportMixin):
+class WorkoutModelTestCase(WorkoutMixin, ReportMixin, MediaMixin):
     pass
 
 
@@ -132,6 +132,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "description": None,
             "distance": workout.distance,
             "duration": str(workout.duration),
+            "elevation_data_source": workout.elevation_data_source,
             "equipments": [],
             "id": workout.short_id,
             "liked": False,
@@ -143,8 +144,8 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_hr": None,
             "max_power": None,
             "max_speed": workout.max_speed,
+            "media_attachments": [],
             "min_alt": None,
-            "elevation_data_source": workout.elevation_data_source,
             "modification_date": None,
             "moving": str(workout.moving),
             "next_workout": None,
@@ -203,6 +204,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "description": None,
             "distance": workout.distance,
             "duration": str(workout.duration),
+            "elevation_data_source": workout.elevation_data_source,
             "equipments": [],
             "id": workout.short_id,
             "liked": False,
@@ -214,8 +216,8 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_hr": None,
             "max_power": None,
             "max_speed": workout.max_speed,
+            "media_attachments": [],
             "min_alt": None,
-            "elevation_data_source": workout.elevation_data_source,
             "modification_date": workout.modification_date,
             "moving": str(workout.moving),
             "next_workout": None,
@@ -284,6 +286,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "description": None,
             "distance": float(workout.distance),  # type: ignore[arg-type]
             "duration": str(workout.duration),
+            "elevation_data_source": workout.elevation_data_source,
             "equipments": [],
             "id": workout.short_id,
             "liked": False,
@@ -295,8 +298,8 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_hr": workout.max_hr,
             "max_power": workout.max_power,
             "max_speed": float(workout.max_speed),  # type: ignore[arg-type]
+            "media_attachments": [],
             "min_alt": float(workout.min_alt),  # type: ignore[arg-type]
-            "elevation_data_source": workout.elevation_data_source,
             "modification_date": workout.modification_date,
             "moving": str(workout.moving),
             "next_workout": None,
@@ -367,6 +370,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "description": None,
             "distance": float(workout.distance),  # type: ignore
             "duration": str(workout.duration),
+            "elevation_data_source": workout.elevation_data_source,
             "equipments": [],
             "id": workout.short_id,
             "liked": False,
@@ -378,10 +382,10 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_hr": workout.max_hr,
             "max_power": None,
             "max_speed": float(workout.max_speed),  # type: ignore
+            "media_attachments": [],
             "min_alt": None,
             "modification_date": workout.modification_date,
             "moving": str(workout.moving),
-            "elevation_data_source": workout.elevation_data_source,
             "next_workout": None,
             "notes": None,
             "original_file": "gpx",
@@ -462,6 +466,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_hr": workout.max_hr,
             "max_power": None,
             "max_speed": None,
+            "media_attachments": [],
             "min_alt": workout.min_alt,
             "elevation_data_source": workout.elevation_data_source,
             "modification_date": workout.modification_date,
@@ -625,6 +630,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "description": None,
             "distance": workout.distance,
             "duration": str(workout.duration),
+            "elevation_data_source": workout.elevation_data_source,
             "equipments": [],
             "id": workout.short_id,
             "liked": False,
@@ -637,7 +643,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_power": None,
             "max_speed": float(workout.max_speed),  # type: ignore [arg-type]
             "min_alt": workout.min_alt,
-            "elevation_data_source": workout.elevation_data_source,
+            "media_attachments": [],
             "modification_date": workout.modification_date,
             "moving": str(workout.moving),
             "next_workout": None,
@@ -706,6 +712,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "description": None,
             "distance": workout.distance,
             "duration": str(workout.duration),
+            "elevation_data_source": workout.elevation_data_source,
             "equipments": [],
             "id": workout.short_id,
             "liked": False,
@@ -717,8 +724,8 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_hr": workout.max_hr,
             "max_power": None,
             "max_speed": float(workout.max_speed),  # type: ignore [arg-type]
+            "media_attachments": [],
             "min_alt": workout.min_alt,
-            "elevation_data_source": workout.elevation_data_source,
             "modification_date": workout.modification_date,
             "moving": str(workout.moving),
             "next_workout": None,
@@ -887,6 +894,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_hr": None,
             "max_power": None,
             "max_speed": workout_cycling_user_1.max_speed,
+            "media_attachments": [],
             "min_alt": None,
             "elevation_data_source": (
                 workout_cycling_user_1.elevation_data_source
@@ -961,6 +969,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_hr": None,
             "max_power": None,
             "max_speed": workout_cycling_user_1.max_speed,
+            "media_attachments": [],
             "min_alt": None,
             "modification_date": workout_cycling_user_1.modification_date,
             "moving": str(workout_cycling_user_1.moving),
@@ -1034,6 +1043,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_hr": workout_cycling_user_1.max_hr,
             "max_power": None,
             "max_speed": float(workout_cycling_user_1.max_speed),  # type: ignore[arg-type]
+            "media_attachments": [],
             "min_alt": float(workout_cycling_user_1.min_alt),  # type: ignore[arg-type]
             "modification_date": None,
             "moving": str(workout_cycling_user_1.moving),
@@ -1108,6 +1118,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "max_hr": None,
             "max_power": None,
             "max_speed": workout_cycling_user_1.max_speed,
+            "media_attachments": [],
             "min_alt": None,
             "modification_date": None,
             "moving": str(workout_cycling_user_1.moving),
@@ -1450,6 +1461,54 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             serialized_workout["elevation_data_source"]
             == ElevationDataSource.FILE
         )
+
+    def test_it_does_not_return_media_attachments_when_light_is_true(
+        self, app: Flask, user_1: User, workout_cycling_user_1: Workout
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.media_visibility = VisibilityLevel.PUBLIC
+        self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_1, light=True
+        )
+
+        assert serialized_workout["media_attachments"] == []
+
+    @pytest.mark.parametrize(
+        "input_media_visibility",
+        [
+            VisibilityLevel.PRIVATE,
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PUBLIC,
+        ],
+    )
+    def test_it_returns_media_attachments_regardless_media_visibility(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        input_media_visibility: VisibilityLevel,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.media_visibility = input_media_visibility
+        media_user_1_1 = self.create_media(
+            user_1, workout_id=workout_cycling_user_1.id
+        )
+        media_user_1_2 = self.create_media(
+            user_1, workout_id=workout_cycling_user_1.id
+        )
+        self.create_media(user_2)
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_1, light=False
+        )
+
+        assert serialized_workout["media_attachments"] == [
+            media_user_1_1.serialize(),
+            media_user_1_2.serialize(),
+        ]
 
 
 class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
@@ -1996,6 +2055,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             "map": None,
             "map_visibility": None,
             "max_alt": None,
+            "media_attachments": [],
             "min_alt": None,
             "modification_date": None,
             "moving": None,
@@ -2066,6 +2126,50 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             equipment_bike_user_1.serialize(current_user=user_2)
         ]
 
+    @pytest.mark.parametrize(
+        "input_media_visibility",
+        [
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PUBLIC,
+        ],
+    )
+    def test_it_returns_media_attachments(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        input_media_visibility: VisibilityLevel,
+    ) -> None:
+        add_follower(user_1, user_2)
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.media_visibility = input_media_visibility
+        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_2, light=False
+        )
+
+        assert serialized_workout["media_attachments"] == [media.serialize()]
+
+    def test_it_does_not_return_media_attachments(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        add_follower(user_1, user_2)
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.media_visibility = VisibilityLevel.PRIVATE
+        self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_2, light=False
+        )
+
+        assert serialized_workout["media_attachments"] == []
+
     def test_it_serializes_minimal_workout(
         self,
         app: Flask,
@@ -2115,6 +2219,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             "max_hr": workout_cycling_user_1.max_hr,
             "max_power": workout_cycling_user_1.max_power,
             "max_speed": workout_cycling_user_1.max_speed,
+            "media_attachments": [],
             "min_alt": None,
             "modification_date": None,
             "moving": str(workout_cycling_user_1.moving),
@@ -2621,6 +2726,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             "map": None,
             "map_visibility": None,
             "max_alt": None,
+            "media_attachments": [],
             "min_alt": None,
             "modification_date": None,
             "moving": None,
@@ -2687,6 +2793,48 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             equipment_bike_user_1.serialize(current_user=user_2)
         ]
 
+    def test_it_returns_media_attachments(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.media_visibility = VisibilityLevel.PUBLIC
+        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_2, light=False
+        )
+
+        assert serialized_workout["media_attachments"] == [media.serialize()]
+
+    @pytest.mark.parametrize(
+        "input_media_visibility",
+        [
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
+        ],
+    )
+    def test_it_does_not_return_media_attachments(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        input_media_visibility: VisibilityLevel,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.media_visibility = input_media_visibility
+        self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_2, light=False
+        )
+
+        assert serialized_workout["media_attachments"] == []
+
     def test_it_serializes_minimal_workout(
         self,
         app: Flask,
@@ -2735,6 +2883,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             "max_hr": workout_cycling_user_1.max_hr,
             "max_power": workout_cycling_user_1.max_power,
             "max_speed": workout_cycling_user_1.max_speed,
+            "media_attachments": [],
             "min_alt": None,
             "modification_date": None,
             "moving": str(workout_cycling_user_1.moving),
@@ -3249,6 +3398,42 @@ class TestWorkoutModelAsUnauthenticatedUser(
             equipment_bike_user_1.serialize(current_user=None)
         ]
 
+    def test_it_returns_media_attachments(
+        self,
+        app: Flask,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.media_visibility = VisibilityLevel.PUBLIC
+        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+
+        serialized_workout = workout_cycling_user_1.serialize(light=False)
+
+        assert serialized_workout["media_attachments"] == [media.serialize()]
+
+    @pytest.mark.parametrize(
+        "input_media_visibility",
+        [
+            VisibilityLevel.FOLLOWERS,
+            VisibilityLevel.PRIVATE,
+        ],
+    )
+    def test_it_does_not_return_media_attachments(
+        self,
+        app: Flask,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        input_media_visibility: VisibilityLevel,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.media_visibility = input_media_visibility
+        self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+
+        serialized_workout = workout_cycling_user_1.serialize(light=False)
+
+        assert serialized_workout["media_attachments"] == []
+
     def test_it_serializes_minimal_workout(
         self,
         app: Flask,
@@ -3295,6 +3480,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
             "max_hr": None,
             "max_power": None,
             "max_speed": workout_cycling_user_1.max_speed,
+            "media_attachments": [],
             "min_alt": None,
             "modification_date": None,
             "moving": str(workout_cycling_user_1.moving),
@@ -3401,6 +3587,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "max_hr": None,
             "max_power": None,
             "max_speed": workout_cycling_user_2.max_speed,
+            "media_attachments": [],
             "min_alt": None,
             "modification_date": workout_cycling_user_2.modification_date,
             "moving": str(workout_cycling_user_2.moving),
@@ -3487,6 +3674,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "max_hr": None,
             "max_power": None,
             "max_speed": workout_cycling_user_2.max_speed,
+            "media_attachments": [],
             "min_alt": workout_cycling_user_2.min_alt,
             "modification_date": workout_cycling_user_2.modification_date,
             "moving": str(workout_cycling_user_2.moving),
@@ -3617,6 +3805,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "max_hr": None,
             "max_power": None,
             "max_speed": workout_cycling_user_2.max_speed,
+            "media_attachments": [],
             "min_alt": None,
             "modification_date": None,
             "moving": str(workout_cycling_user_2.moving),
@@ -3700,6 +3889,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "max_hr": None,
             "max_power": None,
             "max_speed": workout_cycling_user_2.max_speed,
+            "media_attachments": [],
             "min_alt": None,
             "modification_date": workout_cycling_user_2.modification_date,
             "moving": str(workout_cycling_user_2.moving),
@@ -3777,6 +3967,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "max_hr": None,
             "max_power": None,
             "max_speed": workout_cycling_user_2.max_speed,
+            "media_attachments": [],
             "min_alt": workout_cycling_user_2.min_alt,
             "modification_date": workout_cycling_user_2.modification_date,
             "moving": str(workout_cycling_user_2.moving),

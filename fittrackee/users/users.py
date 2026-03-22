@@ -181,102 +181,30 @@ def get_users(auth_user: User) -> Dict:
         "data": {
           "users": [
             {
-              "admin": true,
-              "bio": null,
-              "birth_date": null,
+              "blocked": false,
               "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
-              "email": "admin@example.com",
-              "first_name": null,
               "followers": 0,
               "following": 0,
               "follows": "false",
               "is_followed_by": "false",
-              "last_name": null,
-              "location": null,
-              "map_visibility": "private",
-              "nb_sports": 3,
               "nb_workouts": 6,
               "picture": false,
-              "records": [
-                {
-                  "id": 9,
-                  "record_type": "AS",
-                  "sport_id": 1,
-                  "user": "admin",
-                  "value": 18,
-                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
-                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
-                },
-                {
-                  "id": 10,
-                  "record_type": "FD",
-                  "sport_id": 1,
-                  "user": "admin",
-                  "value": 18,
-                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
-                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
-                },
-                {
-                  "id": 13,
-                  "record_type": "HA",
-                  "sport_id": 1,
-                  "user": "Sam",
-                  "value": 43.97,
-                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
-                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
-                },
-                {
-                  "id": 11,
-                  "record_type": "LD",
-                  "sport_id": 1,
-                  "user": "admin",
-                  "value": "1:01:00",
-                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
-                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
-                },
-                {
-                  "id": 12,
-                  "record_type": "MS",
-                  "sport_id": 1,
-                  "user": "admin",
-                  "value": 18,
-                  "workout_date": "Sun, 07 Jul 2019 08:00:00 GMT",
-                  "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
-                }
-              ],
-              "sports_list": [
-                  1,
-                  4,
-                  6
-              ],
-              "total_distance": 67.895,
-              "total_duration": "6:50:27",
-              "username": "admin",
-              "workouts_visibility": "private"
+              "role": "admin",
+              "suspended_at": null,
+              "username": "admin"
             },
             {
-              "admin": false,
-              "bio": null,
-              "birth_date": null,
+              "blocked": false,
               "created_at": "Sat, 20 Jul 2019 11:27:03 GMT",
-              "email": "sam@example.com",
-              "first_name": null,
               "followers": 0,
               "following": 0,
               "follows": "false",
               "is_followed_by": "false",
-              "last_name": null,
-              "location": null,
-              "map_visibility": "private",
-              "nb_sports": 0,
               "nb_workouts": 0,
               "picture": false,
-              "records": [],
-              "sports_list": [],
-              "total_distance": 0,
-              "total_duration": "0:00:00",
-              "username": "sam",
-              "workouts_visibility": "private"
+              "role": "user",
+              "suspended_at": null,
+              "username": "sam"
             }
           ]
         },
@@ -349,11 +277,10 @@ def get_single_user(
       {
         "data": [
           {
-            "admin": true,
             "bio": null,
             "birth_date": null,
+            "blocked": false,
             "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
-            "email": "admin@example.com",
             "first_name": null,
             "followers": 0,
             "following": 0,
@@ -417,10 +344,11 @@ def get_single_user(
                 4,
                 6
             ],
+            "suspended_at": null,
+            "total_ascent": 720.35,
             "total_distance": 67.895,
             "total_duration": "6:50:27",
-            "username": "admin",
-            "workouts_visibility": "private"
+            "username": "admin"
           }
         ],
         "status": "success"
@@ -436,23 +364,14 @@ def get_single_user(
       {
         "data": [
           {
-            "admin": true,
-            "bio": null,
-            "birth_date": null,
             "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
-            "email": "admin@example.com",
-            "first_name": null,
             "followers": 0,
             "following": 0,
-            "follows": "false",
-            "is_followed_by": "false",
-            "last_name": null,
-            "location": null,
-            "map_visibility": "private",
             "nb_workouts": 6,
             "picture": false,
-            "username": "admin",
-            "workouts_visibility": "private"
+            "role": "user",
+            "suspended_at": null,
+            "username": "admin"
           }
         ],
         "status": "success"
@@ -571,19 +490,21 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
       {
         "data": [
           {
-            "admin": true,
             "bio": null,
             "birth_date": null,
+            "blocked": false,
             "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
+            "created_reports_count": 0,
             "email": "admin@example.com",
+            "email_to_confirm": null,
             "first_name": null,
             "followers": 0,
             "following": 0,
             "follows": "false",
+            "is_active": True,
             "is_followed_by": "false",
             "last_name": null,
             "location": null,
-            "map_visibility": "private",
             "nb_workouts": 6,
             "nb_sports": 3,
             "picture": false,
@@ -634,15 +555,18 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
                 "workout_id": "hvYBqYBRa7wwXpaStWR4V2"
               }
             ],
+            "reported_count": 0,
+            "role": "user"
             "sports_list": [
                 1,
                 4,
                 6
             ],
+            "suspended_at": null,
+            "total_ascent": 720.35,
             "total_distance": 67.895,
             "total_duration": "6:50:27",
-            "username": "admin",
-            "workouts_visibility": "private"
+            "username": "admin"
           }
         ],
         "status": "success"
@@ -1102,27 +1026,17 @@ def get_followers(
         "data": {
           "followers": [
             {
-              "admin": false,
-              "bio": null,
-              "birth_date": null,
+              "blocked": false,
               "created_at": "Thu, 02 Dec 2021 17:50:48 GMT",
-              "first_name": null,
               "followers": 1,
               "following": 1,
               "follows": "true",
               "is_followed_by": "false",
-              "last_name": null,
-              "location": null,
-              "map_visibility": "followers_only",
-              "nb_sports": 0,
               "nb_workouts": 0,
               "picture": false,
-              "records": [],
-              "sports_list": [],
-              "total_distance": 0.0,
-              "total_duration": "0:00:00",
-              "username": "JohnDoe",
-              "workouts_visibility": "followers_only"
+              "role": "user",
+              "suspended_at": null,
+              "username": "JohnDoe"
             }
           ]
         },
@@ -1196,27 +1110,17 @@ def get_following(
         "data": {
           "following": [
             {
-              "admin": false,
-              "bio": null,
-              "birth_date": null,
+              "blocked": false,
               "created_at": "Thu, 02 Dec 2021 17:50:48 GMT",
-              "first_name": null,
               "followers": 1,
               "following": 1,
               "follows": "false",
               "is_followed_by": "true",
-              "last_name": null,
-              "location": null,
-              "map_visibility": "followers_only",
-              "nb_sports": 0,
               "nb_workouts": 0,
               "picture": false,
-              "records": [],
-              "sports_list": [],
-              "total_distance": 0.0,
-              "total_duration": "0:00:00",
-              "username": "JohnDoe",
-              "workouts_visibility": "followers_only"
+              "role": "user",
+              "suspended_at": null,
+              "username": "JohnDoe"
             }
           ]
         },
