@@ -11,7 +11,7 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
 )
-from fittrackee.tests.mixins import EquipmentMixin, RandomMixin
+from fittrackee.tests.mixins import EquipmentMixin, MediaMixin, RandomMixin
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import (
     WorkoutExceedingValueException,
@@ -39,7 +39,7 @@ if TYPE_CHECKING:
     from fittrackee.users.models import User, UserSportPreference
 
 
-class TestWorkoutCreationServiceInit:
+class TestWorkoutCreationServiceInit(MediaMixin):
     def test_it_instantiates_service_with_minimal_data(
         self,
         app: "Flask",
@@ -55,6 +55,12 @@ class TestWorkoutCreationServiceInit:
         service = WorkoutCreationService(user_1, workout_data)
 
         assert service.auth_user == user_1
+        assert service.equipment_ids is None
+        assert service.sport_preferences is None
+        assert (
+            service.stopped_speed_threshold
+            == sport_1_cycling.stopped_speed_threshold
+        )
         assert service.workout_data == WorkoutData(**workout_data)  # type: ignore
 
     def test_it_instantiates_service_with_all_data(
@@ -64,6 +70,7 @@ class TestWorkoutCreationServiceInit:
         user_1: "User",
         equipment_bike_user_1: "Equipment",
     ) -> None:
+        media = self.create_media(user_1)
         workout_data = {
             "distance": 18,
             "duration": 3600,
@@ -77,10 +84,17 @@ class TestWorkoutCreationServiceInit:
             "title": "workout title",
             "workout_visibility": VisibilityLevel.PUBLIC,
             "calories": 550,
+            "media_attachment_ids": [media.short_id],
         }
         service = WorkoutCreationService(user_1, workout_data)
 
         assert service.auth_user == user_1
+        assert service.equipment_ids == [equipment_bike_user_1.short_id]
+        assert service.sport_preferences is None
+        assert (
+            service.stopped_speed_threshold
+            == sport_1_cycling.stopped_speed_threshold
+        )
         assert service.workout_data == WorkoutData(**workout_data)  # type: ignore
 
 
@@ -133,7 +147,9 @@ class TestWorkoutCreationServiceGetWorkoutDate(RandomMixin):
 
 
 @pytest.mark.disable_autouse_update_records_patch
-class TestWorkoutCreationServiceProcess(RandomMixin, EquipmentMixin):
+class TestWorkoutCreationServiceProcess(
+    RandomMixin, EquipmentMixin, MediaMixin
+):
     def test_it_creates_workout_with_minimal_data(
         self,
         app: "Flask",
@@ -177,6 +193,7 @@ class TestWorkoutCreationServiceProcess(RandomMixin, EquipmentMixin):
         assert workout.max_hr is None
         assert workout.max_power is None
         assert workout.max_speed == 18.0
+        assert workout.media_visibility == VisibilityLevel.PRIVATE
         assert workout.min_alt is None
         assert workout.modification_date is None
         assert workout.moving == timedelta(minutes=50)
@@ -297,6 +314,7 @@ class TestWorkoutCreationServiceProcess(RandomMixin, EquipmentMixin):
         assert workout.max_hr is None
         assert workout.max_power is None
         assert workout.max_speed == 7.0
+        assert workout.media_visibility == VisibilityLevel.PRIVATE
         assert workout.min_alt is None
         assert workout.modification_date is None
         assert workout.moving == timedelta(hours=1)
@@ -671,12 +689,13 @@ class TestWorkoutCreationServiceProcess(RandomMixin, EquipmentMixin):
         workout = Workout.query.one()
         assert workout.notes == (notes[:NOTES_MAX_CHARACTERS])
 
-    def test_it_creates_workout_with_given_workout_visibility(
+    def test_it_creates_workout_with_given_visibilities(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
     ) -> None:
         workout_data = {
             "distance": 15,
             "duration": 3000,
+            "media_visibility": VisibilityLevel.FOLLOWERS,
             "sport_id": sport_1_cycling.id,
             "workout_date": "2025-02-08 09:00",
             "workout_visibility": VisibilityLevel.PUBLIC,
@@ -687,11 +706,33 @@ class TestWorkoutCreationServiceProcess(RandomMixin, EquipmentMixin):
         db.session.commit()
 
         workout = Workout.query.one()
+        assert workout.media_visibility == VisibilityLevel.FOLLOWERS
         assert workout.workout_visibility == VisibilityLevel.PUBLIC
+
+    def test_it_creates_workout_with_valid_media_visibility(
+        self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
+    ) -> None:
+        workout_data = {
+            "distance": 15,
+            "duration": 3000,
+            "media_visibility": VisibilityLevel.PUBLIC,
+            "sport_id": sport_1_cycling.id,
+            "workout_date": "2025-02-08 09:00",
+            "workout_visibility": VisibilityLevel.FOLLOWERS,
+        }
+        service = WorkoutCreationService(user_1, workout_data)
+
+        service.process()
+        db.session.commit()
+
+        workout = Workout.query.one()
+        assert workout.media_visibility == VisibilityLevel.FOLLOWERS
+        assert workout.workout_visibility == VisibilityLevel.FOLLOWERS
 
     def test_it_creates_workout_with_user_visibility(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
     ) -> None:
+        user_1.media_visibility = VisibilityLevel.PRIVATE
         user_1.workouts_visibility = VisibilityLevel.FOLLOWERS
         workout_data = {
             "distance": 15,
@@ -705,6 +746,7 @@ class TestWorkoutCreationServiceProcess(RandomMixin, EquipmentMixin):
         db.session.commit()
 
         workout = Workout.query.one()
+        assert workout.media_visibility == VisibilityLevel.PRIVATE
         assert workout.workout_visibility == VisibilityLevel.FOLLOWERS
 
     def test_it_raises_error_when_equipment_is_invalid_for_sport(
@@ -930,3 +972,76 @@ class TestWorkoutCreationServiceProcess(RandomMixin, EquipmentMixin):
             ),
         ):
             service.process()
+
+    def test_it_creates_workout_with_given_media_attachments(
+        self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
+    ) -> None:
+        media_1 = self.create_media(user_1)
+        media_2 = self.create_media(user_1)
+        workout_data = {
+            "distance": 15,
+            "duration": 3000,
+            "sport_id": sport_1_cycling.id,
+            "workout_date": "2025-02-08 09:00",
+            "media_attachment_ids": [media_1.short_id, media_2.short_id],
+        }
+        service = WorkoutCreationService(user_1, workout_data)
+
+        service.process()
+        db.session.commit()
+
+        workout = Workout.query.one()
+        assert workout.get_media_attachments(user_1) == [media_1, media_2]
+
+    def test_it_ignores_not_found_media(
+        self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
+    ) -> None:
+        media = self.create_media(user_1)
+        workout_data = {
+            "distance": 15,
+            "duration": 3000,
+            "sport_id": sport_1_cycling.id,
+            "workout_date": "2025-02-08 09:00",
+            "media_attachment_ids": [self.random_short_id(), media.short_id],
+        }
+        service = WorkoutCreationService(user_1, workout_data)
+
+        service.process()
+        db.session.commit()
+
+        workout = Workout.query.one()
+        assert workout.get_media_attachments(user_1) == [media]
+
+    def test_it_ignores_media_belonging_to_another_user(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+        user_2: "User",
+    ) -> None:
+        media_user_1_1 = self.create_media(user_1)
+        media_user_1_2 = self.create_media(user_1)
+        media_user_2 = self.create_media(user_2)
+        workout_data = {
+            "distance": 15,
+            "duration": 3000,
+            "sport_id": sport_1_cycling.id,
+            "workout_date": "2025-02-08 09:00",
+            "media_attachment_ids": [
+                media_user_1_1.short_id,
+                media_user_2.short_id,
+                media_user_1_2.short_id,
+            ],
+        }
+        service = WorkoutCreationService(user_1, workout_data)
+
+        service.process()
+        db.session.commit()
+
+        workout = Workout.query.one()
+        assert workout.get_media_attachments(user_1) == [
+            media_user_1_1,
+            media_user_1_2,
+        ]
+        db.session.refresh(media_user_2)
+        assert media_user_2.workout_id is None

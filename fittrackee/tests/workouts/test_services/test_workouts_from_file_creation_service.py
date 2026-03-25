@@ -43,7 +43,7 @@ from fittrackee.workouts.services.workouts_from_file_creation_service import (
 )
 
 from ...fixtures.fixtures_workouts import MESSAGE_ID
-from ...mixins import UserTaskMixin
+from ...mixins import MediaMixin, UserTaskMixin
 from ..mixins import WorkoutFileMixin
 
 if TYPE_CHECKING:
@@ -57,7 +57,7 @@ if TYPE_CHECKING:
 TEST_FILES_LIST = ["test_1.gpx", "test_2.gpx", "test_3.gpx"]
 
 
-class TestWorkoutsFromFileCreationServiceInstantiation:
+class TestWorkoutsFromFileCreationServiceInstantiation(MediaMixin):
     def test_it_raises_error_when_sport_id_is_not_provided(
         self,
         app: "Flask",
@@ -119,11 +119,14 @@ class TestWorkoutsFromFileCreationServiceInstantiation:
         sport_1_cycling: "Sport",
         equipment_bike_user_1: "Equipment",
     ) -> None:
+        media = self.create_media(user_1)
         workouts_data = {
             "analysis_visibility": VisibilityLevel.PUBLIC,
             "description": "just a description",
             "equipment_ids": [equipment_bike_user_1.short_id],
             "map_visibility": VisibilityLevel.PUBLIC,
+            "media_attachment_ids": [media.short_id],
+            "media_visibility": VisibilityLevel.PUBLIC,
             "notes": "some notes",
             "sport_id": sport_1_cycling.id,
             "title": "workout title",
@@ -290,7 +293,7 @@ class TestWorkoutsFromFileCreationServiceGetFilePath:
 
 
 class TestWorkoutsFromFileCreationServiceCreateWorkout(
-    RandomMixin, WorkoutFileMixin
+    RandomMixin, WorkoutFileMixin, MediaMixin
 ):
     @staticmethod
     def assert_file_extension(file: str, expected_extension: str) -> None:
@@ -366,6 +369,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert new_workout.map_id is not None
         assert float(new_workout.max_alt) == 998.0  # type: ignore
         assert float(new_workout.max_speed) == 5.12  # type: ignore
+        assert new_workout.media_visibility == VisibilityLevel.PRIVATE
         assert float(new_workout.min_alt) == 975.0  # type: ignore
         assert new_workout.moving == timedelta(minutes=4, seconds=10)
         assert new_workout.notes is None
@@ -387,10 +391,13 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         equipment_bike_user_1: "Equipment",
         equipment_shoes_user_1: "Equipment",
     ) -> None:
+        media = self.create_media(user_1)
         workouts_data = {
             "analysis_visibility": VisibilityLevel.PUBLIC,
             "description": self.random_string(),
             "equipment_ids": [equipment_bike_user_1.short_id],
+            "media_attachment_ids": [media.short_id],
+            "media_visibility": VisibilityLevel.FOLLOWERS,
             "map_visibility": VisibilityLevel.PUBLIC,
             "notes": self.random_string(),
             "sport_id": sport_1_cycling.id,
@@ -406,6 +413,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         service.create_workout_from_file(
             extension="gpx",
             equipments=[equipment_bike_user_1, equipment_shoes_user_1],
+            is_single_workout=True,
         )
         db.session.commit()
 
@@ -420,21 +428,26 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
             equipment_shoes_user_1,
         }
         assert new_workout.map_visibility == VisibilityLevel.PUBLIC
+        assert new_workout.media_visibility == VisibilityLevel.FOLLOWERS
         assert new_workout.notes == workouts_data["notes"]
         assert new_workout.sport_id == sport_1_cycling.id
         assert new_workout.workout_visibility == VisibilityLevel.PUBLIC
+        assert new_workout.get_media_attachments(user_1) == [media]
 
     @pytest.mark.parametrize(
         "input_map_visibility,input_analysis_visibility,"
-        "input_workout_visibility,expected_map_visibility,"
-        "expected_analysis_visibility",
+        "input_media_visibility,input_workout_visibility,"
+        "expected_map_visibility,expected_analysis_visibility,"
+        "expected_media_visibility",
         [
             (
                 VisibilityLevel.FOLLOWERS,
                 VisibilityLevel.PRIVATE,
                 VisibilityLevel.PUBLIC,
+                VisibilityLevel.PUBLIC,
                 VisibilityLevel.PRIVATE,
                 VisibilityLevel.PRIVATE,
+                VisibilityLevel.PUBLIC,
             ),
             (
                 VisibilityLevel.PUBLIC,
@@ -442,10 +455,14 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
                 VisibilityLevel.FOLLOWERS,
                 VisibilityLevel.FOLLOWERS,
                 VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
             ),
             (
                 VisibilityLevel.PUBLIC,
                 VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.PRIVATE,
                 VisibilityLevel.PRIVATE,
                 VisibilityLevel.PRIVATE,
                 VisibilityLevel.PRIVATE,
@@ -460,9 +477,11 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         gpx_file_storage: "FileStorage",  # gpx file
         input_analysis_visibility: "VisibilityLevel",
         input_map_visibility: "VisibilityLevel",
+        input_media_visibility: "VisibilityLevel",
         input_workout_visibility: "VisibilityLevel",
         expected_analysis_visibility: "VisibilityLevel",
         expected_map_visibility: "VisibilityLevel",
+        expected_media_visibility: "VisibilityLevel",
     ) -> None:
         """
         when workout visibility is stricter, map visibility is initialised
@@ -471,6 +490,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         workouts_data = {
             "analysis_visibility": input_analysis_visibility,
             "map_visibility": input_map_visibility,
+            "media_visibility": input_media_visibility,
             "sport_id": sport_1_cycling.id,
             "workout_visibility": input_workout_visibility,
         }
@@ -486,6 +506,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         new_workout = Workout.query.one()
         assert new_workout.analysis_visibility == expected_analysis_visibility
         assert new_workout.map_visibility == expected_map_visibility
+        assert new_workout.media_visibility == expected_media_visibility
         assert new_workout.workout_visibility == input_workout_visibility
 
     def test_it_creates_workout_with_user_visibility(
@@ -497,6 +518,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
     ) -> None:
         user_1.analysis_visibility = VisibilityLevel.FOLLOWERS
         user_1.map_visibility = VisibilityLevel.FOLLOWERS
+        user_1.media_visibility = VisibilityLevel.FOLLOWERS
         user_1.workouts_visibility = VisibilityLevel.PUBLIC
         service = WorkoutsFromFileCreationService(
             auth_user=user_1,
@@ -510,6 +532,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         new_workout = Workout.query.one()
         assert new_workout.analysis_visibility == user_1.analysis_visibility
         assert new_workout.map_visibility == user_1.map_visibility
+        assert new_workout.media_visibility == user_1.media_visibility
         assert new_workout.workout_visibility == user_1.workouts_visibility
 
     def test_it_creates_file_in_user_directory_when_original_file_is_a_gpx(
@@ -1242,7 +1265,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
             assert f.read() == fit_file_content
 
 
-class WorkoutsFromFileCreationServiceTestCase:
+class WorkoutsFromFileCreationServiceTestCase(MediaMixin):
     @staticmethod
     def get_service(
         app: "Flask",
@@ -1565,9 +1588,46 @@ class TestWorkoutsFromFileCreationServiceProcessArchiveContent(
         assert upload_task.progress == 100
         assert upload_task.data.get("new_workouts_count") == 1
 
+    def test_it_ignores_media_attachments(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        media = self.create_media(user_1)
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            workouts_data={
+                "sport_id": sport_1_cycling.id,
+                "media_attachment_ids": [media.short_id],
+            },
+        )
+        file_path = os.path.join(app.root_path, "tests/files/gpx_test.zip")
+        with open(file_path, "rb") as zip_file:
+            archive_file_storage = FileStorage(
+                filename="workouts.zip", stream=BytesIO(zip_file.read())
+            )
+
+        service.process_archive_content(
+            archive_content=archive_file_storage.stream,
+            files_to_process=["test_1.gpx", "test_2.gpx"],
+            equipments=None,
+        )
+        db.session.commit()
+
+        workouts = Workout.query.all()
+        assert len(workouts) == 2
+        assert workouts[0].sport_id == sport_1_cycling.id
+        assert workouts[0].get_media_attachments(user_1) == []
+        assert workouts[1].sport_id == sport_1_cycling.id
+        assert workouts[1].get_media_attachments(user_1) == []
+        assert WorkoutSegment.query.count() == 2
+        db.session.refresh(media)
+        assert media.workout_id is None
+
 
 class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
-    UserTaskMixin, WorkoutsFromFileCreationServiceTestCase
+    UserTaskMixin, WorkoutsFromFileCreationServiceTestCase, MediaMixin
 ):
     def test_it_raises_error_when_no_file_provided(
         self,
@@ -1713,6 +1773,8 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
                 "description": None,
                 "equipment_ids": None,
                 "map_visibility": None,
+                "media_attachment_ids": None,
+                "media_visibility": None,
                 "notes": None,
                 "title": None,
                 "workout_visibility": None,
@@ -1750,6 +1812,8 @@ class TestWorkoutsFromFileCreationServiceAddWorkoutsUploadTask(
             "description": "some description",
             "equipment_ids": [equipment_bike_user_1.short_id],
             "map_visibility": VisibilityLevel.PRIVATE,
+            "media_attachment_ids": [],
+            "media_visibility": VisibilityLevel.FOLLOWERS,
             "notes": "some notes",
             "title": "some title",
             "workout_visibility": VisibilityLevel.PUBLIC,
@@ -2062,6 +2126,27 @@ class TestWorkoutsFromFileCreationServiceProcessZipArchive(
         )
         process_archive_content_mock.assert_not_called()
 
+    def test_it_ignores_media_attachments(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+    ) -> None:
+        media = self.create_media(user_1)
+        service = self.get_service(
+            app,
+            user_1,
+            sport_1_cycling,
+            "tests/files/gpx_test.zip",
+            {"media_attachment_ids": [media.short_id]},
+        )
+
+        new_workouts, _ = service.process_zip_archive(equipments=None)
+
+        assert new_workouts[0].get_media_attachments(user_1) == []
+        assert new_workouts[1].get_media_attachments(user_1) == []
+        assert new_workouts[2].get_media_attachments(user_1) == []
+
 
 class TestWorkoutsFromFileCreationServiceProcessForOneFile(
     WorkoutsFromFileCreationServiceTestCase, EquipmentMixin
@@ -2240,6 +2325,36 @@ class TestWorkoutsFromFileCreationServiceProcessForOneFile(
             match="only one piece of equipment per type can be provided",
         ):
             service.process()
+
+    def test_it_creates_workout_with_provided_media(
+        self,
+        app: "Flask",
+        user_1: "User",
+        gpx_file: str,
+        sport_1_cycling: "Sport",
+    ) -> None:
+        media = self.create_media(user_1)
+        gpx_file_storage = FileStorage(
+            filename="file.gpx", stream=BytesIO(str.encode(gpx_file))
+        )
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            file=gpx_file_storage,
+            workouts_data={
+                "sport_id": sport_1_cycling.id,
+                "media_attachment_ids": [media.short_id],
+            },
+        )
+
+        service.process()
+        db.session.commit()
+
+        new_workout = Workout.query.one()
+        assert new_workout.sport_id == sport_1_cycling.id
+        assert new_workout.map is not None
+        assert new_workout.get_media_attachments(user_1) == [media]
+        assert WorkoutSegment.query.count() == 1
+        assert media.workout_id == new_workout.id
 
     def test_it_deletes_workout_files_on_error(
         self,

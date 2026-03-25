@@ -5,7 +5,10 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 import pytz
 
 from fittrackee import db
-from fittrackee.visibility_levels import VisibilityLevel
+from fittrackee.visibility_levels import (
+    VisibilityLevel,
+    get_calculated_visibility,
+)
 
 from ..constants import WORKOUT_DATE_FORMAT
 from ..exceptions import WorkoutException
@@ -36,6 +39,8 @@ class WorkoutData:
     title: Optional[str] = None
     workout_visibility: Optional[VisibilityLevel] = None
     calories: Optional[int] = None
+    media_visibility: Optional[VisibilityLevel] = None
+    media_attachment_ids: Optional[List[str]] = None
 
 
 class WorkoutCreationService(CheckWorkoutMixin, BaseWorkoutService):
@@ -143,6 +148,20 @@ class WorkoutCreationService(CheckWorkoutMixin, BaseWorkoutService):
             if self.workout_data.workout_visibility
             else self.auth_user.workouts_visibility
         )
+        new_workout.media_visibility = get_calculated_visibility(
+            visibility=(
+                self.workout_data.media_visibility
+                if self.workout_data.media_visibility
+                else self.auth_user.media_visibility
+            ),
+            parent_visibility=new_workout.workout_visibility,
+        )
 
         db.session.flush()
+
+        self.update_media_attachments_if_provided(
+            self.workout_data.media_attachment_ids,
+            new_workout.id,
+        )
+
         return [new_workout], {}

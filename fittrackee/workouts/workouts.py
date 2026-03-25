@@ -2059,6 +2059,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Post a workout with a file.
 
+    **Notes**: Media attachments are ignored when provided with an archive.
+
     **Scope**: ``workouts:write``
 
     **Example request**:
@@ -2234,11 +2236,12 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     :form file: workout file or archive (allowed extensions: .gpx, .kml, .kmz,
        .fit, .tcx, .zip)
     :form data: sport id, equipment id, description, title, notes, visibility
-       for workout, analysis and map
+       for workout, analysis and map, media attachments ids
        for example:
        ``{"sport_id": 1, "notes": "", "title": "", "description": "",
        "analysis_visibility": "private", "map_visibility": "private",
-       "workout_visibility": "private", "equipment_ids": []}``.
+       "workout_visibility": "private", "equipment_ids": [],
+       "media_attachment_ids": []}``.
        Double quotes in notes, description and title must be escaped.
 
        The maximum length is 500 characters for notes, 10000 characters for
@@ -2510,6 +2513,8 @@ def post_workout_no_gpx(
         pieces of equipment can be added.
         If not provided and default equipment exists for sport,
         default equipment will be associated.
+    :<json array of strings media_attachment_ids: the id of uploaded media
+        attachments
     :<json string notes: notes (not mandatory, max length: 500
         characters, otherwise they will be truncated)
     :<json integer sport_id: workout sport id
