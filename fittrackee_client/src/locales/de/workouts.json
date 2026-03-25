@@ -14,8 +14,9 @@
   "BACK_TO_COMMENT": "zurück zum Kommentar",
   "BACK_TO_WORKOUT": "zurück zum Training",
   "CADENCE": "Trittfrequenz",
+  "CALORIES": "Kalorien",
   "COMMENTS": {
-    "ADD": "einen Kommentar hinzufügen",
+    "ADD": "Kommentar hinzufügen",
     "COMMENT": "Kommentar | Kommentare",
     "DELETE": "Kommentar löschen",
     "DELETION_CONFIRMATION": "Bist Du sicher, dass Du diesen Kommentar löschen möchtest?",
@@ -33,6 +34,7 @@
   "DESCRIPTION": "Beschreibung",
   "DESCRIPTION_FIELD_HELP": "Wenn gegeben, ersetzt die Beschreibung die der Datei.",
   "DISPLAY_FILTERS": "zeige Filter",
+  "DISPLAY_MORE_FILTERS": "mehr Filter anzeigen",
   "DISPLAY_MULTIPLE_CHARTS": "mehrere Diagramme anzeigen",
   "DISTANCE": "Entfernung",
   "DOWNLOAD_GPX_FILE": "Herunterladen der .gpx-Datei",
