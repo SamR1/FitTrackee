@@ -22,6 +22,7 @@ from werkzeug.test import TestResponse
 from fittrackee import db
 from fittrackee.comments.models import Comment
 from fittrackee.files import get_absolute_file_path
+from fittrackee.media.models import Media
 from fittrackee.oauth2.client import create_oauth2_client
 from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
 from fittrackee.oauth2.server import CustomResourceProtector
@@ -690,3 +691,20 @@ class ResponseMockMixin:
         response_mock.json = Mock()
         response_mock.json.return_value = response
         return response_mock
+
+
+class MediaMixin:
+    @staticmethod
+    def create_media(
+        user: "User",
+        file_name: Optional[str] = None,
+        file_size: int = 1000,
+    ) -> "Media":
+        media = Media(
+            user_id=user.id,
+            file_name=file_name if file_name else f"{uuid4().hex}.jpg",
+            file_size=file_size,
+        )
+        db.session.add(media)
+        db.session.commit()
+        return media

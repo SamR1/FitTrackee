@@ -216,7 +216,7 @@ def get_error_response_if_file_is_invalid(
     allowed_extensions = (
         "WORKOUT_ALLOWED_EXTENSIONS"
         if file_type == "workout"
-        else "PICTURE_ALLOWED_EXTENSIONS"
+        else "PICTURE_ALLOWED_EXTENSIONS"  # user picture or workouts media
     )
 
     file_extension = (
@@ -233,6 +233,9 @@ def get_error_response_if_file_is_invalid(
         return InvalidPayloadErrorResponse(
             "file extension not allowed", "fail"
         )
+
+    if file_type == "media":
+        return None
 
     if (
         file_extension != "zip"

@@ -34,7 +34,7 @@ class BaseConfig:
     UPLOAD_FOLDER = os.path.join(
         os.getenv("UPLOAD_FOLDER", current_app.root_path), "uploads"
     )
-    PICTURE_ALLOWED_EXTENSIONS = {"jpg", "png", "gif"}
+    PICTURE_ALLOWED_EXTENSIONS = {"jpeg", "jpg", "png", "gif", "webp"}
     WORKOUT_ALLOWED_EXTENSIONS = {"zip"}.union(WORKOUT_ALLOWED_EXTENSIONS)
     TILE_SERVER = {
         "URL": os.environ.get(
