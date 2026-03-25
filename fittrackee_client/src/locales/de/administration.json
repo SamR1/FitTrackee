@@ -12,7 +12,7 @@
   "APPLICATION": "Anwendung",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Kontakt-E-Mail des Administrators",
-    "ASYNCHRONOUS_UPLOAD_DISABLED": "Das asynchrone hochladen von ZIP Archiven ist ausgeschaltet.",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "Das asynchrone Hochladen von ZIP Archiven ist ausgeschaltet.",
     "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "Dieser Wert darf 50.000 Workouts nicht überschreiten.",
     "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Max. angezeigte Workouts auf der Weltkarte",
     "MAX_FILES_IN_ZIP_LABEL": "Max. Dateianzahl im zip Archiv",
