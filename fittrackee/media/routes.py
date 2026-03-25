@@ -202,7 +202,7 @@ def update_media_description(
     media.description = (
         data["description"][:MEDIA_DESCRIPTION_MAX_CHARACTERS]
         if data.get("description")
-        else None
+        else ""
     )
     db.session.commit()
     return media.serialize()

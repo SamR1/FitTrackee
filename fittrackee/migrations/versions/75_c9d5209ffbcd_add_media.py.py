@@ -25,7 +25,7 @@ def upgrade():
     sa.Column('created_at', TZDateTime(), nullable=False),
     sa.Column('file_name', sa.String(length=255), nullable=False),
     sa.Column('file_size', sa.Integer(), nullable=False),
-    sa.Column('description', sa.String(length=1500), nullable=True),
+    sa.Column('description', sa.String(length=1500), server_default=sa.text("''"), nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['workout_id'], ['workouts.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('uuid')

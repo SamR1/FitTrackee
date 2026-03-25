@@ -35,7 +35,7 @@ class TestMediaModel(MediaMixin, RandomMixin):
         db.session.commit()
 
         assert media.created_at == now
-        assert media.description is None
+        assert media.description == ""
         assert media.file_size == 1024
         assert media.user_id == user_1.id
         assert media.workout_id is None
@@ -56,7 +56,7 @@ class TestMediaModel(MediaMixin, RandomMixin):
         db.session.commit()
 
         assert media.created_at == now
-        assert media.description is None
+        assert media.description == ""
         assert media.file_size == 1024
         assert media.user_id == user_1.id
         assert media.workout_id == workout_cycling_user_1.id

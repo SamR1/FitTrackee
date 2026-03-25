@@ -48,7 +48,9 @@ class Media(BaseModel):
     )
     file_size: Mapped[int] = mapped_column()
     description: Mapped[Optional[str]] = mapped_column(
-        db.String(MEDIA_DESCRIPTION_MAX_CHARACTERS), nullable=True
+        db.String(MEDIA_DESCRIPTION_MAX_CHARACTERS),
+        nullable=False,
+        server_default=text("''"),
     )
 
     def __init__(
