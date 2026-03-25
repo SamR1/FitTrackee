@@ -213,7 +213,8 @@ export const formatStats = (
   displayedSportsId: number[],
   apiStats: TStatisticsFromApi,
   useImperialUnits: boolean,
-  userDateFormat: string
+  userDateFormat: string,
+  monthStart: boolean = false
 ): IStatisticsChartData => {
   const dayKeys = getDateKeys(params, weekStartingMonday)
   const dateFormat = dateFormats[params.duration]
@@ -227,10 +228,14 @@ export const formatStats = (
     (displayedSport) => (sportsId[displayedSport.label] = displayedSport.id)
   )
 
-  dayKeys.forEach((key) => {
+  dayKeys.forEach((key, index) => {
     const date: string = format(key, dateFormat.api)
+    const labelKey =
+      index === 0 && monthStart && params.duration === 'week'
+        ? params.start
+        : key
     const label: string = formatDateLabel(
-      key,
+      labelKey,
       params.duration,
       userDateFormat,
       dateFormat.chart

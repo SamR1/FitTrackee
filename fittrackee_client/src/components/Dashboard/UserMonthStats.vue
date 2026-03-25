@@ -11,6 +11,7 @@
         :chart-params="chartParams"
         :displayed-sport-ids="selectedSportIds"
         :hide-chart-if-no-data="true"
+        :month-start="true"
       />
     </div>
   </div>
