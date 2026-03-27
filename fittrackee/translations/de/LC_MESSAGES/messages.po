@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2026-03-04 23:57+0100\n"
-"PO-Revision-Date: 2025-03-09 14:28+0000\n"
-"Last-Translator: LordSexy <jonas@kunigkeit.eu>\n"
+"PO-Revision-Date: 2026-03-27 12:22+0000\n"
+"Last-Translator: Peter Auer <mail@peter-auer.de>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/fittrackee/"
+"fittrackee-api-emails/de/>\n"
 "Language: de\n"
-"Language-Team: German <https://hosted.weblate.org/projects/fittrackee"
-"/fittrackee-api-emails/de/>\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.17-dev\n"
 "Generated-By: Babel 2.18.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
@@ -497,7 +498,7 @@ msgstr "Radfahren (Virtuell)"
 
 #: fittrackee/feeds/feeds/constants.py:11
 msgid "Halfbike"
-msgstr ""
+msgstr "Halfbike"
 
 #: fittrackee/feeds/feeds/constants.py:12
 msgid "Hiking"
@@ -628,4 +629,3 @@ msgstr "Abstieg"
 #: fittrackee/feeds/templates/workout/body.html:4
 msgid "Description"
 msgstr "Beschreibung"
-
