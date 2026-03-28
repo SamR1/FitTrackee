@@ -493,6 +493,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "max_hr": null,
                 "max_power": null,
                 "max_speed": 18.0,
+                "media_attachments": [],
+                "media_visibility": "private",
                 "min_alt": null,
                 "modification_date": null,
                 "moving": "1:00:00",
@@ -1385,6 +1387,8 @@ def get_workout(
                 "max_hr": null,
                 "max_power": null,
                 "max_speed": 16,
+                "media_attachments": [],
+                "media_visibility": "private",
                 "min_alt": null,
                 "modification_date": "Sun, 14 Jul 2019 18:57:22 GMT",
                 "moving": "0:45:00",
@@ -2115,6 +2119,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 "max_hr": null,
                 "max_power": null,
                 "max_speed": 25.59,
+                "media_attachments": [],
+                "media_visibility": "private",
                 "min_alt": 55.03,
                 "modification_date": null,
                 "moving": "1:47:11",
@@ -2241,7 +2247,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
        ``{"sport_id": 1, "notes": "", "title": "", "description": "",
        "analysis_visibility": "private", "map_visibility": "private",
        "workout_visibility": "private", "equipment_ids": [],
-       "media_attachment_ids": []}``.
+       "media_visibility": "private", "media_attachment_ids": []}``.
        Double quotes in notes, description and title must be escaped.
 
        The maximum length is 500 characters for notes, 10000 characters for
@@ -2425,6 +2431,8 @@ def post_workout_no_gpx(
                 "max_hr": null,
                 "max_power": null,
                 "max_speed": 10.0,
+                "media_attachments": [],
+                "media_visibility": "private",
                 "min_alt": null,
                 "modification_date": null,
                 "moving": "0:17:04",
@@ -2515,6 +2523,9 @@ def post_workout_no_gpx(
         default equipment will be associated.
     :<json array of strings media_attachment_ids: the id of uploaded media
         attachments
+    :<json string media_visibility: media visibility (``private``,
+        ``followers_only`` or ``public``). Not mandatory,
+        defaults to user preferences.
     :<json string notes: notes (not mandatory, max length: 500
         characters, otherwise they will be truncated)
     :<json integer sport_id: workout sport id
@@ -2655,6 +2666,8 @@ def update_workout(
                 "max_hr": null,
                 "max_power": null,
                 "max_speed": 10.0,
+                "media_attachments": [],
+                "media_visibility": "private",
                 "min_alt": null,
                 "modification_date": null,
                 "moving": "0:17:04",
@@ -2982,6 +2995,8 @@ def like_workout(
                 "max_hr": null,
                 "max_power": null,
                 "max_speed": 25.59,
+                "media_attachments": [],
+                "media_visibility": "private",
                 "min_alt": 19.0,
                 "modification_date": "Wed, 04 Dec 2024 16:45:14 GMT",
                 "moving": "1:47:04",
@@ -3100,6 +3115,8 @@ def undo_workout_like(
                 "max_hr": null,
                 "max_power": null,
                 "max_speed": 25.59,
+                "media_attachments": [],
+                "media_visibility": "private",
                 "min_alt": 19.0,
                 "modification_date": "Wed, 04 Dec 2024 16:45:14 GMT",
                 "moving": "1:47:04",
@@ -3702,6 +3719,8 @@ def refresh_workout(
                 "max_hr": null,
                 "max_power": null,
                 "max_speed": 25.59,
+                "media_attachments": [],
+                "media_visibility": "private",
                 "min_alt": 55.03,
                 "elevation_data_source": "file",
                 "modification_date": null,

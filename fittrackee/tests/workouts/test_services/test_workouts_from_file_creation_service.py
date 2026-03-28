@@ -2143,9 +2143,9 @@ class TestWorkoutsFromFileCreationServiceProcessZipArchive(
 
         new_workouts, _ = service.process_zip_archive(equipments=None)
 
-        assert new_workouts[0].get_media_attachments(user_1) == []
-        assert new_workouts[1].get_media_attachments(user_1) == []
-        assert new_workouts[2].get_media_attachments(user_1) == []
+        assert new_workouts[0].get_media_attachments(True) == []
+        assert new_workouts[1].get_media_attachments(True) == []
+        assert new_workouts[2].get_media_attachments(True) == []
 
 
 class TestWorkoutsFromFileCreationServiceProcessForOneFile(

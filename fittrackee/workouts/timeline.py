@@ -71,6 +71,8 @@ def get_user_timeline(auth_user: User) -> Union[Dict, HttpResponse]:
                 "max_hr": null,
                 "max_power": null,
                 "max_speed": 10.0,
+                "media_attachments": [],
+                "media_visibility": "private",
                 "min_alt": null,
                 "modification_date": null,
                 "moving": "0:17:04",

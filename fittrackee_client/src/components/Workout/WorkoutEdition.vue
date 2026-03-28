@@ -331,7 +331,7 @@
                   id="workout_visibility"
                   v-model="workoutForm.workoutVisibility"
                   :disabled="disabled"
-                  @change="updateAnalysisAndMapVisibility"
+                  @change="updateAnalysisMapAndMediaVisibility"
                 >
                   <option
                     v-for="level in visibilityLevels"
@@ -412,6 +412,24 @@
                     {{ $t('workouts.PRIVATE_NOTES_FIELD_HELP') }}
                   </span>
                 </div>
+              </div>
+              <div class="form-item" v-if="isCreation">
+                <label for="media_visibility">
+                  {{ $t('visibility_levels.MEDIA_VISIBILITY') }}:
+                </label>
+                <select
+                  id="media_visibility"
+                  v-model="workoutForm.mediaVisibility"
+                  :disabled="disabled"
+                >
+                  <option
+                    v-for="level in mediaVisibilityLevels"
+                    :value="level"
+                    :key="level"
+                  >
+                    {{ $t(`visibility_levels.LEVELS.${level}`) }}
+                  </option>
+                </select>
               </div>
               <WorkoutMediaAttachementsUpload
                 v-if="isCreation"
@@ -523,6 +541,7 @@
     mapVisibility: authUser.value.map_visibility,
     analysisVisibility: authUser.value.analysis_visibility,
     workoutVisibility: authUser.value.workouts_visibility,
+    mediaVisibility: authUser.value.media_visibility,
     workoutCalories: '',
   })
   const withFile: Ref<boolean> = ref(
@@ -612,6 +631,9 @@
   const mapVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
     getVisibilityLevels(workoutForm.analysisVisibility)
   )
+  const mediaVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
+    getVisibilityLevels(workoutForm.workoutVisibility)
+  )
   const disabled: ComputedRef<boolean> = computed(
     () =>
       loading.value ||
@@ -654,6 +676,9 @@
       : 'private'
     workoutForm.mapVisibility = workout.map_visibility
       ? workout.map_visibility
+      : 'private'
+    workoutForm.mediaVisibility = workout.media_visibility
+      ? workout.media_visibility
       : 'private'
     if (!workout.with_file) {
       const workoutDateTime = formatWorkoutDate(
@@ -757,6 +782,7 @@
       title: workoutForm.title,
       workout_visibility: workoutForm.workoutVisibility,
       media_attachment_ids: [],
+      media_visibility: workoutForm.mediaVisibility,
     }
     if (props.workout.id) {
       if (props.workout.with_file) {
@@ -819,9 +845,13 @@
   function invalidateForm() {
     formErrors.value = true
   }
-  function updateAnalysisAndMapVisibility() {
+  function updateAnalysisMapAndMediaVisibility() {
     workoutForm.analysisVisibility = getUpdatedVisibility(
       workoutForm.analysisVisibility,
+      workoutForm.workoutVisibility
+    )
+    workoutForm.mediaVisibility = getUpdatedVisibility(
+      workoutForm.mediaVisibility,
       workoutForm.workoutVisibility
     )
     updateMapVisibility()

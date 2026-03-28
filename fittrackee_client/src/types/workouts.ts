@@ -95,6 +95,7 @@ export interface IWorkout {
   ave_pace: string | null
   ave_power: number | null
   ave_speed: number | null
+  best_pace: string | null
   bounds: number[]
   calories: number | null
   creation_date: string | null
@@ -112,9 +113,10 @@ export interface IWorkout {
   max_alt: number | null
   max_cadence: number | null
   max_hr: number | null
-  best_pace: string | null
   max_power: number | null
   max_speed: number | null
+  media_attachments: IMediaAttachment[]
+  media_visibility?: TVisibilityLevels
   min_alt: number | null
   modification_date: string | null
   moving: string | null
@@ -205,6 +207,7 @@ export interface IWorkoutForm {
   map_visibility?: TVisibilityLevels
   workout_visibility: TVisibilityLevels
   media_attachment_ids: string[]
+  media_visibility: TVisibilityLevels
 }
 
 export interface IWorkoutElevationSourceDataPayload {

@@ -384,7 +384,8 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
         ` "workout_visibility": "${payload.workout_visibility}",` +
         ` "analysis_visibility": "${payload.analysis_visibility}",` +
         ` "map_visibility": "${payload.map_visibility}", ` +
-        ` "media_attachment_ids": [${payload.media_attachment_ids.map((m) => `"${m}"`).join(',')}]}`
+        ` "media_attachment_ids": [${payload.media_attachment_ids.map((m) => `"${m}"`).join(',')}], ` +
+        ` "media_visibility": "${payload.media_visibility}"}`
     )
     authApi
       .post('workouts', form, {

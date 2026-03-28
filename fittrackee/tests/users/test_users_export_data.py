@@ -111,6 +111,9 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "ave_pace": None,
                 "best_pace": None,
                 "calories": None,
+                "media_visibility": (
+                    workout_cycling_user_1.calculated_media_visibility.value
+                ),
             }
         ]
 
@@ -181,6 +184,9 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "ave_pace": None,
                 "best_pace": None,
                 "calories": None,
+                "media_visibility": (
+                    workout.calculated_media_visibility.value
+                ),
             }
         ]
 
@@ -255,6 +261,9 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "ave_pace": str(workout.ave_pace),
                 "best_pace": str(workout.best_pace),
                 "calories": None,
+                "media_visibility": (
+                    workout.calculated_media_visibility.value
+                ),
             }
         ]
 

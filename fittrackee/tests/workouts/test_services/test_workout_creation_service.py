@@ -85,6 +85,7 @@ class TestWorkoutCreationServiceInit(MediaMixin):
             "workout_visibility": VisibilityLevel.PUBLIC,
             "calories": 550,
             "media_attachment_ids": [media.short_id],
+            "media_visibility": VisibilityLevel.FOLLOWERS,
         }
         service = WorkoutCreationService(user_1, workout_data)
 

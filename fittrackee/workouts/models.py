@@ -68,7 +68,9 @@ EMPTY_MINIMAL_WORKOUT_VALUES: Dict = {
     "max_alt": None,
     "descent": None,
     "ascent": None,
+    "analysis_visibility": None,
     "map_visibility": None,
+    "media_visibility": None,
 }
 EMPTY_WORKOUT_VALUES: Dict = {
     "creation_date": None,
@@ -528,11 +530,10 @@ class Workout(BaseModel):
 
         return Report.query.filter_by(reported_workout_id=self.id).all()
 
-    def get_media_attachments(self, user: Optional["User"]) -> List["Media"]:
-        can_see_media = can_view(
-            self, "calculated_media_visibility", user=user
-        )
-        if can_see_media:
+    def get_media_attachments(
+        self, can_see_media_attachments: bool
+    ) -> List["Media"]:
+        if can_see_media_attachments:
             return (
                 Media.query.filter_by(workout_id=self.id)
                 .order_by(Media.created_at.asc())
@@ -546,6 +547,7 @@ class Workout(BaseModel):
         *,
         can_see_analysis_data: Optional[bool] = None,
         can_see_map_data: Optional[bool] = None,
+        can_see_media_attachments: Optional[bool] = None,
         for_report: bool = False,
         additional_data: bool = False,
         light: bool = True,
@@ -558,6 +560,7 @@ class Workout(BaseModel):
 
         - can_see_analysis_data: if user can see charts
         - can_see_map_data: if user can see map
+        - can_see_media_attachments: if user can see media attachments
         - for_report: privacy levels are overridden on report
         - additional_data is False when:
           - workout is not suspended
@@ -586,6 +589,13 @@ class Workout(BaseModel):
             can_see_map_data = can_view(
                 self,
                 "calculated_map_visibility",
+                user=user,
+                for_report=for_report,
+            )
+        if can_see_media_attachments is None:
+            can_see_media_attachments = can_view(
+                self,
+                "calculated_media_visibility",
                 user=user,
                 for_report=for_report,
             )
@@ -667,6 +677,11 @@ class Workout(BaseModel):
             "ave_pace": get_pace(self.ave_pace, sport_data_visibility),
             "best_pace": get_pace(self.best_pace, sport_data_visibility),
             "calories": self.calories if can_see_calories else None,
+            "media_visibility": (
+                self.calculated_media_visibility.value
+                if can_see_media_attachments
+                else VisibilityLevel.PRIVATE
+            ),
         }
 
         if not light or with_equipments:
@@ -752,6 +767,12 @@ class Workout(BaseModel):
         can_see_map_data = can_view(
             self, "calculated_map_visibility", user=user, for_report=for_report
         )
+        can_see_media_attachments = can_view(
+            self,
+            "calculated_media_visibility",
+            user=user,
+            for_report=for_report,
+        )
         is_owner = user is not None and user.id == self.user_id
         is_workout_suspended = self.suspended_at is not None
         additional_data = not is_workout_suspended or for_report or is_owner
@@ -763,6 +784,7 @@ class Workout(BaseModel):
             user,
             can_see_analysis_data=can_see_analysis_data,
             can_see_map_data=can_see_map_data,
+            can_see_media_attachments=can_see_media_attachments,
             for_report=for_report,
             additional_data=additional_data,
             light=light,
@@ -891,7 +913,8 @@ class Workout(BaseModel):
             else []
         )
         workout["media_attachments"] = [
-            media.serialize() for media in self.get_media_attachments(user)
+            media.serialize()
+            for media in self.get_media_attachments(can_see_media_attachments)
         ]
         return workout
 
