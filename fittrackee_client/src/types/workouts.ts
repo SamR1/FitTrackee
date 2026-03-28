@@ -204,6 +204,7 @@ export interface IWorkoutForm {
   analysis_visibility?: TVisibilityLevels
   map_visibility?: TVisibilityLevels
   workout_visibility: TVisibilityLevels
+  media_attachment_ids: string[]
 }
 
 export interface IWorkoutElevationSourceDataPayload {
@@ -281,6 +282,8 @@ export interface IWorkoutData {
   currentReporting: boolean
   refreshLoading: boolean
   elevationLoading: boolean
+  mediaAttachments: IMediaAttachment[]
+  mediaLoading: string
 }
 
 export type TWorkoutDatasetKeys =
@@ -382,4 +385,18 @@ export interface ILocation {
   display_name: string
   name: string
   osm_id: string
+}
+
+export interface IMediaAttachment {
+  id: string
+  description: null | string
+  url: string
+}
+
+export interface IMediaCreatePayload {
+  file: Blob
+}
+export interface IMediaUpdatePayload {
+  id: string
+  description: string
 }

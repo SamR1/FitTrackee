@@ -31,6 +31,8 @@ export const workoutsState: IWorkoutsState = {
     currentReporting: false,
     refreshLoading: false,
     elevationLoading: false,
+    mediaAttachments: [],
+    mediaLoading: '',
   },
   workoutContent: {
     loading: false,

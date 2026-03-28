@@ -27,6 +27,8 @@ import type {
   ILikesPayload,
   TWorkoutsMapPayload,
   IWorkoutElevationSourceDataPayload,
+  IMediaCreatePayload,
+  IMediaUpdatePayload,
 } from '@/types/workouts'
 import { handleError } from '@/utils'
 
@@ -381,7 +383,8 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
         ` "equipment_ids": [${payload.equipment_ids.map((e) => `"${e}"`).join(',')}],` +
         ` "workout_visibility": "${payload.workout_visibility}",` +
         ` "analysis_visibility": "${payload.analysis_visibility}",` +
-        ` "map_visibility": "${payload.map_visibility}"}`
+        ` "map_visibility": "${payload.map_visibility}", ` +
+        ` "media_attachment_ids": [${payload.media_attachment_ids.map((m) => `"${m}"`).join(',')}]}`
     )
     authApi
       .post('workouts', form, {
@@ -401,6 +404,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
               : '/'
           )
         }
+        context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT_MEDIA_ATTACHMENTS)
       })
       .catch((error) => {
         handleError(context, error)
@@ -421,6 +425,9 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
         if (res.data.status === 'created') {
           context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
           const workout: IWorkout = res.data.data.workouts[0]
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT_MEDIA_ATTACHMENTS
+          )
           router.push(`/workouts/${workout.id}`)
         }
       })
@@ -772,6 +779,66 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
           WORKOUTS_STORE.MUTATIONS.SET_ELEVATION_DATA_LOADING,
           false
         )
+      )
+  },
+  [WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_MEDIA_ATTACHMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IMediaCreatePayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_MEDIA_LOADING, 'new')
+    if (!payload.file) {
+      throw new Error('No file part')
+    }
+    const form = new FormData()
+    form.append('file', payload.file)
+    authApi
+      .post('media', form, {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then((res) => {
+        if (res.data.id) {
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.ADD_WORKOUT_MEDIA_ATTACHMENT,
+            res.data
+          )
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_MEDIA_LOADING, '')
+      )
+  },
+  [WORKOUTS_STORE.ACTIONS.UPDATE_WORKOUT_MEDIA_ATTACHMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IMediaUpdatePayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(
+      WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_MEDIA_LOADING,
+      payload.id
+    )
+    authApi
+      .patch(`media/${payload.id}`, {
+        description: payload.description,
+      })
+      .then((res) => {
+        if (res.data.id) {
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.UPDATE_WORKOUT_MEDIA_ATTACHMENT,
+            res.data
+          )
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_MEDIA_LOADING, '')
       )
   },
 }

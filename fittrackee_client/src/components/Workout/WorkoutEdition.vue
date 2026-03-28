@@ -21,7 +21,7 @@
                     id="withFile"
                     type="radio"
                     :checked="withFile"
-                    :disabled="loading"
+                    :disabled="disabled"
                     @click="updateWithFile"
                   />
                   <label for="withFile">{{ $t('workouts.WITH_FILE') }}</label>
@@ -31,7 +31,7 @@
                     id="withoutGpx"
                     type="radio"
                     :checked="!withFile"
-                    :disabled="loading"
+                    :disabled="disabled"
                     @click="updateWithFile"
                   />
                   <label for="withoutGpx">
@@ -45,7 +45,7 @@
                   id="sport"
                   required
                   @invalid="invalidateForm"
-                  :disabled="loading"
+                  :disabled="disabled"
                   v-model="workoutForm.sport_id"
                 >
                   <option
@@ -67,7 +67,7 @@
                   name="workoutFile"
                   type="file"
                   accept=".gpx, .fit, .kml, .kmz, .tcx, .zip"
-                  :disabled="loading"
+                  :disabled="disabled"
                   required
                   @invalid="invalidateForm"
                   @input="updateFile"
@@ -124,7 +124,7 @@
                   type="text"
                   :required="!isCreation"
                   @invalid="invalidateForm"
-                  :disabled="loading"
+                  :disabled="disabled"
                   v-model="workoutForm.title"
                   maxlength="255"
                 />
@@ -146,7 +146,7 @@
                         type="date"
                         required
                         @invalid="invalidateForm"
-                        :disabled="loading"
+                        :disabled="disabled"
                         v-model="workoutForm.workoutDate"
                       />
                       <input
@@ -156,7 +156,7 @@
                         type="time"
                         required
                         @invalid="invalidateForm"
-                        :disabled="loading"
+                        :disabled="disabled"
                         v-model="workoutForm.workoutTime"
                       />
                     </div>
@@ -183,7 +183,7 @@
                         pattern="^([0-1]?[0-9]|2[0-3])$"
                         required
                         @invalid="invalidateForm"
-                        :disabled="loading"
+                        :disabled="disabled"
                         v-model="workoutForm.workoutDurationHours"
                       />
                       :
@@ -206,7 +206,7 @@
                         placeholder="MM"
                         required
                         @invalid="invalidateForm"
-                        :disabled="loading"
+                        :disabled="disabled"
                         v-model="workoutForm.workoutDurationMinutes"
                       />
                       :
@@ -229,7 +229,7 @@
                         placeholder="SS"
                         required
                         @invalid="invalidateForm"
-                        :disabled="loading"
+                        :disabled="disabled"
                         v-model="workoutForm.workoutDurationSeconds"
                       />
                     </div>
@@ -247,7 +247,7 @@
                         type="number"
                         min="0"
                         @invalid="invalidateForm"
-                        :disabled="loading"
+                        :disabled="disabled"
                         v-model="workoutForm.workoutCalories"
                       />
                     </div>
@@ -269,7 +269,7 @@
                       step="0.001"
                       required
                       @invalid="invalidateForm"
-                      :disabled="loading"
+                      :disabled="disabled"
                       v-model="workoutForm.workoutDistance"
                     />
                   </div>
@@ -287,7 +287,7 @@
                       min="0"
                       step="0.001"
                       @invalid="invalidateForm"
-                      :disabled="loading || withoutElevation"
+                      :disabled="disabled || withoutElevation"
                       v-model="workoutForm.workoutAscent"
                     />
                   </div>
@@ -305,7 +305,7 @@
                       min="0"
                       step="0.001"
                       @invalid="invalidateForm"
-                      :disabled="loading || withoutElevation"
+                      :disabled="disabled || withoutElevation"
                       v-model="workoutForm.workoutDescent"
                     />
                   </div>
@@ -317,7 +317,7 @@
                 </label>
                 <EquipmentMultiSelect
                   :equipment-list="equipmentsForSelect"
-                  :disabled="loading || !selectedSport"
+                  :disabled="disabled || !selectedSport"
                   :name="'sport-default-equipment'"
                   :existing-equipment-list="existingWorkoutEquipments"
                   @updatedValues="updateSelectedEquipmentPieces"
@@ -330,7 +330,7 @@
                 <select
                   id="workout_visibility"
                   v-model="workoutForm.workoutVisibility"
-                  :disabled="loading"
+                  :disabled="disabled"
                   @change="updateAnalysisAndMapVisibility"
                 >
                   <option
@@ -350,7 +350,7 @@
                   id="analysis_visibility"
                   v-model="workoutForm.analysisVisibility"
                   @change="updateMapVisibility"
-                  :disabled="loading"
+                  :disabled="disabled"
                 >
                   <option
                     v-for="level in analysisVisibilityLevels"
@@ -368,7 +368,7 @@
                 <select
                   id="map_visibility"
                   v-model="workoutForm.mapVisibility"
-                  :disabled="loading"
+                  :disabled="disabled"
                 >
                   <option
                     v-for="level in mapVisibilityLevels"
@@ -386,7 +386,7 @@
                 <CustomTextArea
                   name="description"
                   :input="workoutForm.description"
-                  :disabled="loading"
+                  :disabled="disabled"
                   :charLimit="10000"
                   :rows="5"
                   @updateValue="updateDescription"
@@ -403,7 +403,7 @@
                 <CustomTextArea
                   name="notes"
                   :input="workoutForm.notes"
-                  :disabled="loading"
+                  :disabled="disabled"
                   @updateValue="updateNotes"
                 />
                 <div class="field-help" v-if="isCreation">
@@ -413,13 +413,17 @@
                   </span>
                 </div>
               </div>
+              <WorkoutMediaAttachementsUpload
+                v-if="isCreation"
+                :loading="loading"
+              />
             </div>
             <ErrorMessage :message="errorMessages" v-if="errorMessages" />
             <div v-if="loading">
               <Loader />
             </div>
             <div v-else class="form-buttons">
-              <button class="confirm" type="submit" :disabled="loading">
+              <button class="confirm" type="submit" :disabled="disabled">
                 {{ $t('buttons.SUBMIT') }}
               </button>
               <button class="cancel" @click.prevent="onCancel">
@@ -434,12 +438,21 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, reactive, ref, toRefs, watch, onMounted } from 'vue'
+  import {
+    computed,
+    onMounted,
+    onUnmounted,
+    reactive,
+    ref,
+    toRefs,
+    watch,
+  } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRouter } from 'vue-router'
 
   import EquipmentMultiSelect from '@/components/User/UserEquipments/EquipmentMultiSelect.vue'
+  import WorkoutMediaAttachementsUpload from '@/components/Workout/WorkoutMediaAttachementsUpload.vue'
   import useApp from '@/composables/useApp'
   import {
     EQUIPMENTS_STORE,
@@ -599,6 +612,16 @@
   const mapVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
     getVisibilityLevels(workoutForm.analysisVisibility)
   )
+  const disabled: ComputedRef<boolean> = computed(
+    () =>
+      loading.value ||
+      store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_MEDIA_LOADING] === 'new'
+  )
+  const mediaAttachementIds: ComputedRef<string[]> = computed(() =>
+    store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_MEDIA_ATTACHMENTS].map(
+      (m) => m.id
+    )
+  )
 
   function updateNotes(textareaData: ICustomTextareaData) {
     workoutForm.notes = textareaData.value
@@ -733,6 +756,7 @@
       equipment_ids: workoutForm.equipment_ids,
       title: workoutForm.title,
       workout_visibility: workoutForm.workoutVisibility,
+      media_attachment_ids: [],
     }
     if (props.workout.id) {
       if (props.workout.with_file) {
@@ -753,6 +777,7 @@
         })
       }
     } else {
+      payload.media_attachment_ids = mediaAttachementIds.value
       if (withFile.value) {
         if (!workoutFile) {
           const errorMessage = 'workouts.NO_FILE_PROVIDED'
@@ -862,6 +887,9 @@
     if (element) {
       element.focus()
     }
+  })
+  onUnmounted(() => {
+    store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT_MEDIA_ATTACHMENTS)
   })
 </script>
 

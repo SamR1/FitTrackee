@@ -30,6 +30,9 @@ import type {
   TWorkoutsStatistics,
   TWorkoutsMapPayload,
   IWorkoutElevationSourceDataPayload,
+  IMediaCreatePayload,
+  IMediaAttachment,
+  IMediaUpdatePayload,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
@@ -157,6 +160,14 @@ export interface IWorkoutsActions {
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IWorkoutElevationSourceDataPayload
   ): void
+  [WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_MEDIA_ATTACHMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IMediaCreatePayload
+  ): void
+  [WORKOUTS_STORE.ACTIONS.UPDATE_WORKOUT_MEDIA_ATTACHMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IMediaUpdatePayload
+  ): void
 }
 
 export interface IWorkoutsGetters {
@@ -184,6 +195,10 @@ export interface IWorkoutsGetters {
   ): TWorkoutsStatistics
   [WORKOUTS_STORE.GETTERS.GEOCODE_LOADING](state: IWorkoutsState): boolean
   [WORKOUTS_STORE.GETTERS.MAP_LOADING](state: IWorkoutsState): boolean
+  [WORKOUTS_STORE.GETTERS.WORKOUT_MEDIA_LOADING](state: IWorkoutsState): string
+  [WORKOUTS_STORE.GETTERS.WORKOUT_MEDIA_ATTACHMENTS](
+    state: IWorkoutsState
+  ): IMediaAttachment[]
 }
 
 export type TWorkoutsMutations<S = IWorkoutsState> = {
@@ -288,6 +303,19 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     state: S,
     elevationLoading: boolean
   ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_MEDIA_LOADING](
+    state: S,
+    mediaLoading: string
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.ADD_WORKOUT_MEDIA_ATTACHMENT](
+    state: S,
+    mediaAttachment: IMediaAttachment
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.UPDATE_WORKOUT_MEDIA_ATTACHMENT](
+    state: S,
+    mediaAttachment: IMediaAttachment
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT_MEDIA_ATTACHMENTS](state: S): void
 }
 
 export type TWorkoutsStoreModule<S = IWorkoutsState> = Omit<
