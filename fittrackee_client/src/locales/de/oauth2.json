@@ -9,7 +9,7 @@
     "REDIRECT_URL": "Weiterleitungs-URL",
     "SCOPE": {
       "LABEL": "Geltungsbereich",
-      "application:write_DESCRIPTION": "erlaubt Schreibzugriff auf die Anwendungskonfiguration",
+      "application:write_DESCRIPTION": "erlaubt Schreibzugriff auf die Anwendungskonfiguration.",
       "equipments:read_DESCRIPTION": "erlaubt Lesezugriff auf <code>equipments</code>-Endpunkte.",
       "equipments:write_DESCRIPTION": "erlaubt Schreibzugriff auf <code>equipments</code>-Endpunkte.",
       "follow:read_DESCRIPTION": "gewährt Lesezugriff auf Endpunkte, die sich auf Follow-Anfragen und Follower beziehen.",
