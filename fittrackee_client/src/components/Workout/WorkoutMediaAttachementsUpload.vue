@@ -50,6 +50,13 @@
             <span>{{ $t('common.LOADING') }}</span>
           </div>
           <button
+            class="danger"
+            @click.prevent="deleteMediaAttachment(media.id)"
+            :disabled="loading"
+          >
+            {{ $t('buttons.DELETE') }}
+          </button>
+          <button
             class="confirm"
             @click.prevent="saveMediaDescription(media.id)"
             :disabled="
@@ -67,7 +74,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, toRefs, watch } from 'vue'
+  import { computed, onBeforeMount, onUnmounted, ref, toRefs, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
 
   import { WORKOUTS_STORE } from '@/store/constants.ts'
@@ -77,9 +84,10 @@
 
   interface Props {
     loading: boolean
+    workoutMediaAttachments: IMediaAttachment[]
   }
   const props = defineProps<Props>()
-  const { loading } = toRefs(props)
+  const { loading, workoutMediaAttachments } = toRefs(props)
 
   const store = useStore()
 
@@ -114,6 +122,11 @@
       description: mediaDescriptions.value[mediaAttachmentId],
     })
   }
+  function deleteMediaAttachment(mediaAttachmentId: string) {
+    store.dispatch(WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT_MEDIA_ATTACHMENT, {
+      id: mediaAttachmentId,
+    })
+  }
 
   watch(
     () => mediaLoading.value,
@@ -122,6 +135,16 @@
         mediaAttachmentFile.value.value = ''
       }
     }
+  )
+
+  onBeforeMount(() => {
+    store.commit(
+      WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_MEDIA_ATTACHMENTS,
+      workoutMediaAttachments.value
+    )
+  })
+  onUnmounted(() =>
+    store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT_MEDIA_ATTACHMENTS)
   )
 </script>
 

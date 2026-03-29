@@ -413,7 +413,7 @@
                   </span>
                 </div>
               </div>
-              <div class="form-item" v-if="isCreation">
+              <div class="form-item">
                 <label for="media_visibility">
                   {{ $t('visibility_levels.MEDIA_VISIBILITY') }}:
                 </label>
@@ -432,8 +432,10 @@
                 </select>
               </div>
               <WorkoutMediaAttachementsUpload
-                v-if="isCreation"
                 :loading="loading"
+                :workout-media-attachments="
+                  workout?.media_attachments ? workout.media_attachments : []
+                "
               />
             </div>
             <ErrorMessage :message="errorMessages" v-if="errorMessages" />
@@ -456,15 +458,7 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    computed,
-    onMounted,
-    onUnmounted,
-    reactive,
-    ref,
-    toRefs,
-    watch,
-  } from 'vue'
+  import { computed, onMounted, reactive, ref, toRefs, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRouter } from 'vue-router'
@@ -781,7 +775,7 @@
       equipment_ids: workoutForm.equipment_ids,
       title: workoutForm.title,
       workout_visibility: workoutForm.workoutVisibility,
-      media_attachment_ids: [],
+      media_attachment_ids: mediaAttachementIds.value,
       media_visibility: workoutForm.mediaVisibility,
     }
     if (props.workout.id) {
@@ -803,7 +797,6 @@
         })
       }
     } else {
-      payload.media_attachment_ids = mediaAttachementIds.value
       if (withFile.value) {
         if (!workoutFile) {
           const errorMessage = 'workouts.NO_FILE_PROVIDED'
@@ -917,9 +910,6 @@
     if (element) {
       element.focus()
     }
-  })
-  onUnmounted(() => {
-    store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT_MEDIA_ATTACHMENTS)
   })
 </script>
 

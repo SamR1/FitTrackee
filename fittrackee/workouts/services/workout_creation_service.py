@@ -160,6 +160,7 @@ class WorkoutCreationService(CheckWorkoutMixin, BaseWorkoutService):
         db.session.flush()
 
         self.update_media_attachments_if_provided(
+            self.auth_user.id,
             self.workout_data.media_attachment_ids,
             new_workout.id,
         )

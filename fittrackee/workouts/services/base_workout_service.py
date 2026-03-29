@@ -3,17 +3,14 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 import pytz
-from sqlalchemy import bindparam, update
 
-from fittrackee import db
 from fittrackee.equipments.utils import handle_pieces_of_equipment
-from fittrackee.media.models import Media
 from fittrackee.users.models import UserSportPreference
-from fittrackee.utils import decode_short_id
 from fittrackee.workouts.models import Sport
 
 from ..exceptions import WorkoutException
 from ..models import TITLE_MAX_CHARACTERS
+from .mixins import WorkoutMediaAttachmentsMixin
 
 if TYPE_CHECKING:
     from fittrackee.equipments.models import Equipment
@@ -21,7 +18,7 @@ if TYPE_CHECKING:
     from fittrackee.workouts.models import Workout
 
 
-class BaseWorkoutService(ABC):
+class BaseWorkoutService(ABC, WorkoutMediaAttachmentsMixin):
     def __init__(
         self,
         auth_user: "User",
@@ -71,30 +68,6 @@ class BaseWorkoutService(ABC):
             else workout_date
         ).strftime("%Y-%m-%d %H:%M:%S")
         return f"{self.sport.label} - {workout_datetime}"
-
-    def update_media_attachments_if_provided(
-        self, media_attachment_ids: Union[list[str], None], workout_id: int
-    ) -> None:
-        if not media_attachment_ids:
-            return
-
-        update_data = []
-        for media_short_id in media_attachment_ids:
-            update_data.append(
-                {
-                    "m_uuid": decode_short_id(media_short_id),
-                    "workout_id": workout_id,
-                }
-            )
-
-        if update_data:
-            db.session.connection().execute(
-                update(Media).where(
-                    Media.uuid == bindparam("m_uuid"),
-                    Media.user_id == self.auth_user.id,
-                ),
-                update_data,
-            )
 
     @abstractmethod
     def process(self) -> Tuple[List["Workout"], Dict]:

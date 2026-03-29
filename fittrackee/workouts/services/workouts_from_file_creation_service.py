@@ -296,6 +296,7 @@ class AbstractWorkoutsCreationService(BaseWorkoutService, WorkoutFileMixin):
         # no media attachments added when file is an archive
         if is_single_workout:
             self.update_media_attachments_if_provided(
+                self.auth_user.id,
                 self.workouts_data.media_attachment_ids,
                 new_workout.id,
             )

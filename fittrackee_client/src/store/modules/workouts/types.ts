@@ -33,6 +33,7 @@ import type {
   IMediaCreatePayload,
   IMediaAttachment,
   IMediaUpdatePayload,
+  IMediaDeletePayload,
 } from '@/types/workouts'
 
 export interface IWorkoutsState {
@@ -167,6 +168,10 @@ export interface IWorkoutsActions {
   [WORKOUTS_STORE.ACTIONS.UPDATE_WORKOUT_MEDIA_ATTACHMENT](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: IMediaUpdatePayload
+  ): void
+  [WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT_MEDIA_ATTACHMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IMediaDeletePayload
   ): void
 }
 
@@ -310,6 +315,14 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.ADD_WORKOUT_MEDIA_ATTACHMENT](
     state: S,
     mediaAttachment: IMediaAttachment
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_MEDIA_ATTACHMENTS](
+    state: S,
+    mediaAttachments: IMediaAttachment[]
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.REMOVE_WORKOUT_MEDIA_ATTACHMENT](
+    state: S,
+    mediaAttachmentId: string
   ): void
   [WORKOUTS_STORE.MUTATIONS.UPDATE_WORKOUT_MEDIA_ATTACHMENT](
     state: S,

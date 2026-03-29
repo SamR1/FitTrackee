@@ -29,6 +29,7 @@ import type {
   IWorkoutElevationSourceDataPayload,
   IMediaCreatePayload,
   IMediaUpdatePayload,
+  IMediaDeletePayload,
 } from '@/types/workouts'
 import { handleError } from '@/utils'
 
@@ -829,9 +830,45 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
       })
       .then((res) => {
         if (res.data.id) {
+          if (payload.workoutId) {
+            context.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
+              workoutId: payload.workoutId,
+            })
+          } else {
+            context.commit(
+              WORKOUTS_STORE.MUTATIONS.UPDATE_WORKOUT_MEDIA_ATTACHMENT,
+              res.data
+            )
+          }
+        }
+      })
+      .catch((error) => {
+        handleError(context, error)
+      })
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_MEDIA_LOADING, '')
+      )
+  },
+  [WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT_MEDIA_ATTACHMENT](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: IMediaDeletePayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(
+      WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_MEDIA_LOADING,
+      payload.id
+    )
+    authApi
+      .delete(`media/${payload.id}`)
+      .then(() => {
+        if (payload.workoutId) {
+          context.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
+            workoutId: payload.workoutId,
+          })
+        } else {
           context.commit(
-            WORKOUTS_STORE.MUTATIONS.UPDATE_WORKOUT_MEDIA_ATTACHMENT,
-            res.data
+            WORKOUTS_STORE.MUTATIONS.REMOVE_WORKOUT_MEDIA_ATTACHMENT,
+            payload.id
           )
         }
       })

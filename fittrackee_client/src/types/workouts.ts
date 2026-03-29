@@ -392,7 +392,7 @@ export interface ILocation {
 
 export interface IMediaAttachment {
   id: string
-  description: null | string
+  description: string
   url: string
 }
 
@@ -402,4 +402,9 @@ export interface IMediaCreatePayload {
 export interface IMediaUpdatePayload {
   id: string
   description: string
+  workoutId?: string
+}
+export interface IMediaDeletePayload {
+  id: string
+  workoutId?: string
 }

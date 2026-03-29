@@ -226,6 +226,21 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
       }
     )
   },
+  [WORKOUTS_STORE.MUTATIONS.REMOVE_WORKOUT_MEDIA_ATTACHMENT](
+    state: IWorkoutsState,
+    mediaAttachmentId: string
+  ) {
+    state.workoutData.mediaAttachments =
+      state.workoutData.mediaAttachments.filter(
+        (media) => media.id !== mediaAttachmentId
+      )
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_MEDIA_ATTACHMENTS](
+    state: IWorkoutsState,
+    mediaAttachments: IMediaAttachment[]
+  ) {
+    state.workoutData.mediaAttachments = mediaAttachments
+  },
   [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT_MEDIA_ATTACHMENTS](
     state: IWorkoutsState
   ) {

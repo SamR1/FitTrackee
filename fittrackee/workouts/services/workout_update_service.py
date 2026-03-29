@@ -20,7 +20,7 @@ from ..constants import WORKOUT_DATE_FORMAT
 from ..exceptions import WorkoutException
 from ..utils.convert import convert_speed_into_pace_duration
 from ..utils.workouts import get_workout_datetime
-from .mixins import CheckWorkoutMixin
+from .mixins import CheckWorkoutMixin, WorkoutMediaAttachmentsMixin
 
 if TYPE_CHECKING:
     from fittrackee.equipments.models import Equipment
@@ -39,6 +39,8 @@ class WorkoutUpdateData(TypedDict, total=False):
     duration: int
     equipment_ids: List[str]
     map_visibility: VisibilityLevel
+    media_attachment_ids: List[str]
+    media_visibility: VisibilityLevel
     notes: str
     sport_id: int
     title: str
@@ -57,7 +59,7 @@ WITHOUT_FILE_KEYS = {
 }
 
 
-class WorkoutUpdateService(CheckWorkoutMixin):
+class WorkoutUpdateService(CheckWorkoutMixin, WorkoutMediaAttachmentsMixin):
     def __init__(self, user: "User", workout: "Workout", workout_data: Dict):
         self.with_file = workout.original_file is not None
         self.workout_data = WorkoutUpdateData(**workout_data)
@@ -244,6 +246,17 @@ class WorkoutUpdateService(CheckWorkoutMixin):
         if "workout_visibility" in self.workout_data:
             self.workout.workout_visibility = self.workout_data[
                 "workout_visibility"
+            ]
+
+        if "media_attachment_ids" in self.workout_data:
+            self.update_media_attachments_if_provided(
+                self.workout.user_id,
+                self.workout_data["media_attachment_ids"],
+                self.workout.id,
+            )
+        if "media_visibility" in self.workout_data:
+            self.workout.media_visibility = self.workout_data[
+                "media_visibility"
             ]
 
         if self.with_file:

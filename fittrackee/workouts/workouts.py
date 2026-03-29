@@ -2768,6 +2768,10 @@ def update_workout(
         If an empty array, equipment for this workout will be removed.
     :<json string map_visibility: map visibility
         (``private``, ``followers_only`` or ``public``)
+    :<json array of strings media_attachment_ids: the id of uploaded media
+        attachments
+    :<json string media_visibility: media visibility (``private``,
+        ``followers_only`` or ``public``)
     :<json string notes: notes (max length: 500 characters, otherwise they
         will be truncated)
     :<json integer sport_id: workout sport id

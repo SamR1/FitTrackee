@@ -32,6 +32,13 @@
             :isWorkoutOwner="isWorkoutOwner"
             @getCoordinates="updateCoordinates"
           />
+          <WorkoutMediaGallery
+            v-if="workoutData.workout.media_attachments.length > 0"
+            :media-attachments="workoutData.workout.media_attachments"
+            :media-visibility="workoutData.workout.media_visibility"
+            :is-workout-owner="isWorkoutOwner"
+            :workout-id="workoutData.workout.id"
+          />
           <WorkoutContent
             v-if="!displaySegment"
             :workout-id="workoutData.workout.id"
@@ -83,6 +90,7 @@
   import WorkoutDetail from '@/components/Workout/WorkoutDetail/index.vue'
   import WorkoutChart from '@/components/Workout/WorkoutDetail/WorkoutChart/index.vue'
   import WorkoutContent from '@/components/Workout/WorkoutDetail/WorkoutContent.vue'
+  import WorkoutMediaGallery from '@/components/Workout/WorkoutDetail/WorkoutMediaGallery.vue'
   import WorkoutSegments from '@/components/Workout/WorkoutDetail/WorkoutSegments.vue'
   import WorkoutUser from '@/components/Workout/WorkoutDetail/WorkoutUser.vue'
   import useApp from '@/composables/useApp.ts'
