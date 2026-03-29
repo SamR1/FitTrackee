@@ -8,7 +8,7 @@
   "ACTIVE": "Aktiv",
   "ADMIN": "Admin",
   "ADMINISTRATION": "Administration",
-  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Hinzufügen/Entfernen von Administratorrechten, Lösche Nutzerkonto.",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Hinzufügen/Entfernen von Administratorrechten, Benutzerkonto löschen.",
   "APPLICATION": "Anwendung",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Kontakt-E-Mail des Administrators",
@@ -16,7 +16,7 @@
     "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "Dieser Wert darf 50.000 Workouts nicht überschreiten.",
     "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Max. angezeigte Workouts auf der Weltkarte",
     "MAX_FILES_IN_ZIP_LABEL": "Max. Dateianzahl im zip Archiv",
-    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Max. Dateien für synchrone Verarbeitung",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Max. Dateianzahl für synchrone Verarbeitung",
     "MAX_USERS_HELP": "Wenn 0, gibt es keine Registrierungslimitierung..",
     "MAX_USERS_LABEL": "Max. Anzahl aktiver Nutzer",
     "NO_CONTACT_EMAIL": "keine Kontakt-E-Mail",
@@ -31,7 +31,7 @@
       "ADD_COMMENT": "Einen Kommmentar hinzufügen",
       "MARK_AS_RESOLVED": "Als gelöst markieren",
       "MARK_AS_UNRESOLVED": "Als ungelöst markieren",
-      "SEND_WARNING_EMAIL": "Eine Warnung senden",
+      "SEND_WARNING_EMAIL": "Warnung senden",
       "SUSPEND_ACCOUNT": "Benutzerkonto deaktivieren",
       "SUSPEND_CONTENT": "Inhalt deaktivieren",
       "UNSUSPEND_ACCOUNT": "Benutzerkonto reaktivieren",
@@ -138,7 +138,7 @@
     "SELECTS": {
       "ORDER_BY": {
         "CREATED_AT": "Registrierungsdatum",
-        "IS_ACTIVE": "Accountstatus",
+        "IS_ACTIVE": "Kontostatus",
         "ROLE": "Rolle",
         "USERNAME": "Nutzername",
         "WORKOUTS_COUNT": "Trainingsanzahl"
