@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2026-03-04 23:57+0100\n"
-"PO-Revision-Date: 2026-03-29 08:09+0000\n"
+"PO-Revision-Date: 2026-03-30 17:09+0000\n"
 "Last-Translator: Peter Auer <mail@peter-auer.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/fittrackee/"
 "fittrackee-api-emails/de/>\n"
@@ -57,7 +57,7 @@ msgstr "Bestätige dein Konto"
 
 #: fittrackee/emails/templates/account_confirmation/body.html:3
 msgid "Use this link to confirm your account."
-msgstr "Verwendet diesen Link, um Dden Konto zu bestätigen."
+msgstr "Verwendet diesen Link, um dein Konto zu bestätigen."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:4
 #: fittrackee/emails/templates/account_confirmation/body.txt:1
@@ -96,8 +96,8 @@ msgid ""
 "If you're having trouble with the button above, copy and paste the URL "
 "below into your web browser."
 msgstr ""
-"Falls du Probleme mit der oberen Schaltfläche hast, kopiere diese URL und"
-" gebe sie in deinen Webbrowser ein."
+"Falls Du Probleme mit der oberen Schaltfläche hast, kopiere diese URL und "
+"gebe sie in deinen Webbrowser ein."
 
 #: fittrackee/emails/templates/account_confirmation/body.txt:2
 msgid "Use the link below to confirm your address email."
@@ -117,7 +117,7 @@ msgstr "Dein Einspruch wurde abgelehnt"
 #: fittrackee/emails/templates/appeal_rejected/body.html:4
 #: fittrackee/emails/templates/appeal_rejected/body.txt:1
 msgid "Your appeal on your account suspension has been rejected"
-msgstr "Ihr Einspruch in Bezug auf die Sperrung Ihres Kontos wurde abgelehnt"
+msgstr "Dein Einspruch in Bezug auf die Sperrung deines Kontos wurde abgelehnt"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:4
 #: fittrackee/emails/templates/appeal_rejected/body.txt:1
@@ -205,7 +205,7 @@ msgstr "Grund:"
 #: fittrackee/emails/templates/workout_suspension/body.html:23
 #: fittrackee/emails/templates/workout_suspension/body.txt:7
 msgid "If you think this is an error, you can appeal:"
-msgstr "Wenn Sie dies für einen Fehler halten, können Sie Einspruch einlegen:"
+msgstr "Wenn Du dies für einen Fehler hältst, kannst Du Einspruch einlegen:"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:27
 #: fittrackee/emails/templates/user_suspension/body.html:14
@@ -232,17 +232,17 @@ msgstr "Dein Archiv ist bereit zum Download"
 
 #: fittrackee/emails/templates/data_export_ready/body.html:3
 msgid "A download link is available in your account."
-msgstr "Ein Download-Link ist auf deinem Account verfügbar."
+msgstr "Ein Download-Link ist in deinem Konto verfügbar."
 
 #: fittrackee/emails/templates/data_export_ready/body.html:4
 #: fittrackee/emails/templates/data_export_ready/body.txt:1
 msgid "You have requested an export of your account on FitTrackee."
-msgstr "Du hast eine Anfrage zum Export deines FitTrackee-Accounts gestellt."
+msgstr "Du hast eine Anfrage zum Export deines FitTrackee-Kontos gestellt."
 
 #: fittrackee/emails/templates/data_export_ready/body.html:4
 #: fittrackee/emails/templates/data_export_ready/body.txt:2
 msgid "The archive is now ready to be downloaded from your account."
-msgstr "Das Archiv kann jetzt von deinem Account heruntergeladen werden."
+msgstr "Das Archiv kann jetzt von deinem Konto heruntergeladen werden."
 
 #: fittrackee/emails/templates/data_export_ready/body.html:11
 #: fittrackee/emails/templates/data_export_ready/body.txt:4
@@ -255,8 +255,8 @@ msgid ""
 "If you did not request the export, please change your password "
 "immediately or contact your administrator if your account is locked."
 msgstr ""
-"Wenn du den Export nicht angefragt hast, ändere dein Passwort sofort oder"
-" frage deinen Administrator, ob dein Account gesperrt ist."
+"Wenn du den Export nicht angefragt hast, ändere dein Passwort sofort oder "
+"frage deinen Administrator, ob dein Konto gesperrt ist."
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_current_email/subject.txt:1
@@ -424,7 +424,7 @@ msgstr ""
 #: fittrackee/emails/templates/user_unsuspension/body.txt:1
 #: fittrackee/emails/templates/user_unsuspension/subject.txt:1
 msgid "Your account has been reactivated"
-msgstr "Dein Account wurde wieder aktiviert"
+msgstr "Dein Konto wurde wieder aktiviert"
 
 #: fittrackee/emails/templates/user_unsuspension/body.html:3
 #: fittrackee/emails/templates/user_unsuspension/body.html:4
@@ -591,12 +591,12 @@ msgstr "Windsurfen"
 #: fittrackee/feeds/feeds/workouts_feed_service.py:61
 #, python-format
 msgid "Latest public workouts on FitTrackee from %(username)s"
-msgstr ""
+msgstr "Neuestes öffentliches Training auf FitTrackee von %(username)s"
 
 #: fittrackee/feeds/feeds/workouts_feed_service.py:70
 #, python-format
 msgid "%(username)s's workouts feed"
-msgstr ""
+msgstr "Trainingsfeed von %(username)s"
 
 #: fittrackee/feeds/templates/workout/body.html:1
 msgid "Workout map"
