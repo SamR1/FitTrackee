@@ -12,7 +12,7 @@
   "APPLICATION": "Anwendung",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Kontakt-E-Mail des Administrators",
-    "ASYNCHRONOUS_UPLOAD_DISABLED": "Das asynchrone Hochladen von ZIP Archiven ist ausgeschaltet.",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "Das asynchrone Hochladen von ZIP-Archiven ist ausgeschaltet.",
     "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "Dieser Wert darf 50.000 Workouts nicht überschreiten.",
     "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Max. angezeigte Workouts auf der Weltkarte",
     "MAX_FILES_IN_ZIP_LABEL": "Max. Dateianzahl im zip Archiv",
@@ -131,7 +131,7 @@
     },
     "TITLE": "Sportarten Administration"
   },
-  "UPDATE_APPLICATION_DESCRIPTION": "Aktualisiere Anwendungskonfiguration.",
+  "UPDATE_APPLICATION_DESCRIPTION": "Anwendungskonfiguration aktualisieren.",
   "UPDATE_USER_EMAIL": "Aktualisiere E-Mail",
   "USER": "Nutzer",
   "USERS": {
@@ -151,6 +151,18 @@
       "CHANGE_TO_USER": "Als Nutzer festlegen"
     },
     "TITLE": "Administration - Benutzer"
+  },
+  "USERS_QUEUED_TASKS": {
+    "DESCRIPTION": "Zeige Aufgaben in der Warteschlange",
+    "LABEL": "Aufgaben in der Warteschlange",
+    "LIST_DESCRIPTION": "Wenn keine Workerprozesse laufen, bitte die CLI verwenden.",
+    "NO_USERS_QUEUED_TASKS": "Keine Aufgaben in der Warteschlange",
+    "TASK_TYPES": {
+      "LABEL": "Aufgabenart",
+      "user_data_export": "Export der Benutzerdaten",
+      "workouts_archive_upload": "Uploads der Trainingsarchive"
+    },
+    "VIEW_OTHER_TASKS": "Andere Aufgaben in der Warteschlange anzeigen"
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "Die E-Mail Adresse wurde aktualisiert."
 }
