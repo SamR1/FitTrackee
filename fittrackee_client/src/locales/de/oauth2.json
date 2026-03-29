@@ -32,7 +32,7 @@
   "APP_CREATED_SUCCESSFULLY": "Anwendung erfolgreich erstellt. Stelle sicher, dass du das Geheimnis kopierst, du kannst es nicht erneut anzeigen.",
   "APP_DELETION_CONFIRMATION": "Bist sicher, dass du diese App löschen willst?",
   "APP_REQUESTING_ACCESS": "Die Anwendung {0} fragt an:",
-  "AUTHORIZE_APP": "{0} den Zugriff auf deinen Account erlauben?",
+  "AUTHORIZE_APP": "{0} den Zugriff auf dein Konto erlauben?",
   "COPY_TO_CLIPBOARD": "in Zwischenablage kopieren",
   "DELETE_APP": "Anwendung löschen",
   "NEW_APP": "Anwendung hinzufügen",
