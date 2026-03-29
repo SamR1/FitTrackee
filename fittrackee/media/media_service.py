@@ -3,7 +3,7 @@ import uuid
 from typing import TYPE_CHECKING
 
 from flask import current_app
-from PIL import Image
+from PIL import Image, ImageOps
 
 from fittrackee import db
 from fittrackee.files import get_absolute_file_path, get_file_extension
@@ -49,6 +49,11 @@ class MediaService:
             raise MediaException(
                 "error", "error when reading media file"
             ) from e
+
+        # rotate image based on EXIF tags
+        updated_image = ImageOps.exif_transpose(image)
+        if updated_image:
+            image = updated_image  # type: ignore[assignment]
 
         image_without_exif = self.get_image_without_exif(image)
         new_filename = f"{uuid.uuid4().hex}.{extension}"
