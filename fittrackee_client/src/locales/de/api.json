@@ -72,8 +72,8 @@
     "workout already suspended": "Dieses Workout ist bereits gesperrt, bitte lade diese Seite erneut.",
     "workout has been reactivated after appeal": "Dieses Workout wurde nach erfolgreichem Einspruch reaktiviert.",
     "you can appeal only once": "Du kannst nur einen Einspruch einreichen.",
-    "you can not delete your account, no other user has admin rights": "Du kannst Dein Konto nicht löschen, da kein anderer Nutzer Administratorrechte besitzt.",
+    "you can not delete your account, no other user has admin rights": "Du kannst dein Konto nicht löschen, da kein anderer Nutzer Administratorrechte besitzt.",
     "you do not have permissions": "Du hast keine Berechtigung.",
-    "you do not have permissions, your account is suspended": "Du hast keine Berechtigung, da Dein Benutzerkonto gesperrt wurde."
+    "you do not have permissions, your account is suspended": "Du hast keine Berechtigung, da dein Konto gesperrt wurde."
   }
 }
