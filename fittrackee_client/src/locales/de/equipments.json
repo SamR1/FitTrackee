@@ -9,6 +9,7 @@
   "ERRORS": {
     "inactive": "Equipment \"{equipmentLabel}\" ist inaktiv.",
     "invalid": "Equipment \"{equipmentLabel}\" ist für diesen Sport ungültig.",
+    "limit_exceeded": "Dieses Equipment überschreitet den maximalen Wert von 5 Geräten für die Sportart {sportLabels}. | Dieses Equipment überschreitet die maximale Grenze von 5 Geräten für die folgenden Sportarten: {sportLabels}.",
     "not_found": "Equipment wurde nicht gefunden."
   },
   "NEW_EQUIPMENT": "Neues Equipment",
