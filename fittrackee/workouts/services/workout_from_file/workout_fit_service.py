@@ -114,6 +114,7 @@ class WorkoutFitService(WorkoutGpxService):
                 ):
                     if (
                         segments_creation_event == "only_manual"
+                        and frame.has_field("timer_trigger")
                         and frame.get_value("timer_trigger") != "manual"
                     ):
                         continue
