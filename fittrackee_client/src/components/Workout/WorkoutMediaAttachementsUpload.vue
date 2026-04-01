@@ -1,6 +1,9 @@
 <template>
   <div class="form-item">
-    <label for="mediaAttachmentFile"> {{ $t('common.PHOTOS') }}: </label>
+    <label for="mediaAttachmentFile">
+      {{ $t('common.PHOTOS') }} (<span> {{ mediaAttachments.length }}/20</span
+      >):
+    </label>
     <input
       ref="mediaAttachmentFile"
       id="mediaAttachmentFile"
@@ -8,7 +11,7 @@
       type="file"
       :multiple="false"
       accept=".jpeg, .jpg, .gif, .png, .webp"
-      :disabled="loading"
+      :disabled="loading || mediaAttachments.length === 20"
       @change="uploadMediaAttachment"
     />
   </div>

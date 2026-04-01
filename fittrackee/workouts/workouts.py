@@ -123,6 +123,7 @@ NO_STATISTICS = {
 }
 DEFAULT_TASKS_PER_PAGE = 5
 ERROR_MESSAGE_ON_REFRESH = "Error when refreshing workout"
+MAX_MEDIA_ATTACHMENTS = 20
 
 
 def get_rounded_float_value(row_value: Optional[Decimal]) -> Optional[float]:
@@ -135,6 +136,20 @@ def get_string_duration_value(row_value: Optional[timedelta]) -> Optional[str]:
     if row_value is None:
         return None
     return str(row_value).split(".")[0]
+
+
+def check_media_attachments(
+    workout_data: dict,
+) -> Optional["InvalidPayloadErrorResponse"]:
+    if (
+        len(workout_data.get("media_attachment_ids", []))
+        > MAX_MEDIA_ATTACHMENTS
+    ):
+        return InvalidPayloadErrorResponse(
+            f"up to {MAX_MEDIA_ATTACHMENTS} media attachments can be "
+            f"associated with a workout"
+        )
+    return None
 
 
 def get_statistics(
@@ -2263,8 +2278,10 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
        If not provided and default equipment exists for sport,
        default equipment will be associated.
 
-       Notes, description, title, equipment ids and visibility
-       for workout, analysis and map are not mandatory.
+       Up to 20 media items can be associated.
+
+       Notes, description, title, equipment ids, media attachment ids and
+       visibility for workout, analysis, map and media are not mandatory.
        Visibility levels default to user preferences.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -2299,6 +2316,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``
         - ``one or more values, entered or calculated, exceed the limits``
+        - ``up to 20 media attachments can be associated with a workout``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -2330,8 +2348,12 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     if not workout_data or workout_data.get("sport_id") is None:
         return InvalidPayloadErrorResponse()
-    workout_file = request.files["file"]
 
+    error_response = check_media_attachments(workout_data)
+    if error_response:
+        return error_response
+
+    workout_file = request.files["file"]
     try:
         service = WorkoutsFromFileCreationService(
             auth_user, workout_data, workout_file
@@ -2522,7 +2544,7 @@ def post_workout_no_gpx(
         If not provided and default equipment exists for sport,
         default equipment will be associated.
     :<json array of strings media_attachment_ids: the id of uploaded media
-        attachments
+        attachments. Up to 20 media items can be associated.
     :<json string media_visibility: media visibility (``private``,
         ``followers_only`` or ``public``). Not mandatory,
         defaults to user preferences.
@@ -2549,6 +2571,7 @@ def post_workout_no_gpx(
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``
         - ``one or more values, entered or calculated, exceed the limits``
+        - ``up to 20 media attachments can be associated with a workout``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -2567,6 +2590,10 @@ def post_workout_no_gpx(
         or not workout_data.get("workout_date")
     ):
         return InvalidPayloadErrorResponse()
+
+    error_response = check_media_attachments(workout_data)
+    if error_response:
+        return error_response
 
     try:
         service = WorkoutCreationService(auth_user, workout_data)
@@ -2769,7 +2796,7 @@ def update_workout(
     :<json string map_visibility: map visibility
         (``private``, ``followers_only`` or ``public``)
     :<json array of strings media_attachment_ids: the id of uploaded media
-        attachments
+        attachments. Up to 20 media items can be associated.
     :<json string media_visibility: media visibility (``private``,
         ``followers_only`` or ``public``)
     :<json string notes: notes (max length: 500 characters, otherwise they
@@ -2797,6 +2824,7 @@ def update_workout(
         - ``one or more values, entered or calculated, exceed the limits``
         - ``'elevation_data_source' can not be provided for workout without file``
         - ``'<ELEVATION_DATA_SOURCE>' as elevation data source is not valid``
+        - ``up to 20 media attachments can be associated with a workout``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -2815,6 +2843,11 @@ def update_workout(
             "'elevation_data_source' can not be provided "
             "for workout without file"
         )
+
+    error_response = check_media_attachments(workout_data)
+    if error_response:
+        return error_response
+
     try:
         old_sport_id = workout.sport_id
         new_sport_id = workout_data.get("sport_id")
