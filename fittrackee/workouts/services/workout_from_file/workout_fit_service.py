@@ -64,6 +64,8 @@ class WorkoutFitService(WorkoutGpxService):
             if frame:
                 if frame.has_field("product_name"):
                     creator = frame.get_value("product_name")
+                    if isinstance(creator, str):
+                        creator = creator.capitalize()
                 elif frame.has_field("manufacturer"):
                     creator = (
                         frame.get_value("manufacturer")
