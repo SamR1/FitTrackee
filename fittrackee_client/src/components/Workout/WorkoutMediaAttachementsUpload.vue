@@ -15,6 +15,10 @@
       @change="uploadMediaAttachment"
     />
   </div>
+  <div v-if="isArchive" class="attachments-info-box info-box">
+    <i class="fa fa-info-circle" aria-hidden="true" />
+    <div>{{ $t('workouts.MEDIA_INFORMATION') }}</div>
+  </div>
   <div class="loading-media">
     <i
       v-if="mediaLoading === 'new'"
@@ -24,7 +28,7 @@
     {{ ' ' }}
     <span v-if="mediaLoading === 'new'">{{ $t('common.LOADING') }}</span>
   </div>
-  <div class="media-attachments">
+  <div class="media-attachments" v-if="!isArchive">
     <div
       v-for="media in mediaAttachments"
       :key="media.id"
@@ -88,9 +92,10 @@
   interface Props {
     loading: boolean
     workoutMediaAttachments: IMediaAttachment[]
+    isArchive: boolean
   }
   const props = defineProps<Props>()
-  const { loading, workoutMediaAttachments } = toRefs(props)
+  const { isArchive, loading, workoutMediaAttachments } = toRefs(props)
 
   const store = useStore()
 
@@ -153,6 +158,15 @@
 
 <style scoped lang="scss">
   @use '~@/scss/vars.scss' as *;
+
+  .attachments-info-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: $default-padding * 0.5;
+    margin: $default-margin $default-margin 0;
+  }
+
   .media-attachments {
     display: flex;
     flex-direction: column;

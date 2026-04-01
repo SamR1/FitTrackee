@@ -436,6 +436,7 @@
                 :workout-media-attachments="
                   workout?.media_attachments ? workout.media_attachments : []
                 "
+                :is-archive="isArchive"
               />
             </div>
             <ErrorMessage :message="errorMessages" v-if="errorMessages" />
@@ -516,7 +517,7 @@
 
   const { appConfig, errorMessages } = useApp()
 
-  let workoutFile: File | null = null
+  const workoutFile: Ref<File | undefined> = ref(undefined)
 
   const workoutForm = reactive({
     sport_id: '',
@@ -572,6 +573,13 @@
     () =>
       appConfig.value.file_sync_limit_import !=
       appConfig.value.file_limit_import
+  )
+  const isArchive: ComputedRef<boolean> = computed(
+    () =>
+      isCreation.value &&
+      withFile.value &&
+      workoutFile.value !== undefined &&
+      workoutFile.value.name.endsWith('.zip')
   )
   const equipments: ComputedRef<IEquipment[]> = computed(
     () => store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS]
@@ -651,7 +659,9 @@
   }
   function updateFile(event: Event) {
     if ((event.target as HTMLInputElement).files) {
-      workoutFile = ((event.target as HTMLInputElement).files as FileList)[0]
+      workoutFile.value = (
+        (event.target as HTMLInputElement).files as FileList
+      )[0]
     }
   }
   function formatWorkoutForm(workout: IWorkout) {
@@ -775,7 +785,7 @@
       equipment_ids: workoutForm.equipment_ids,
       title: workoutForm.title,
       workout_visibility: workoutForm.workoutVisibility,
-      media_attachment_ids: mediaAttachementIds.value,
+      media_attachment_ids: isArchive.value ? [] : mediaAttachementIds.value,
       media_visibility: workoutForm.mediaVisibility,
     }
     if (props.workout.id) {
@@ -798,12 +808,12 @@
       }
     } else {
       if (withFile.value) {
-        if (!workoutFile) {
+        if (!workoutFile.value) {
           const errorMessage = 'workouts.NO_FILE_PROVIDED'
           store.commit(ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES, errorMessage)
           return
         }
-        payload.file = workoutFile
+        payload.file = workoutFile.value
         payload.analysis_visibility = workoutForm.analysisVisibility
         payload.map_visibility = workoutForm.mapVisibility
         store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_WORKOUT, payload)
@@ -858,6 +868,7 @@
   function updateSelectedEquipmentPieces(selectedIds: string[]) {
     workoutForm.equipment_ids = selectedIds
   }
+
   watch(
     () => props.workout,
     async (
@@ -895,6 +906,14 @@
         workoutForm.workoutVisibility = newAuthUser.workouts_visibility
         workoutForm.analysisVisibility = newAuthUser.analysis_visibility
         workoutForm.mapVisibility = newAuthUser.map_visibility
+      }
+    }
+  )
+  watch(
+    () => withFile.value,
+    async (newValue: boolean) => {
+      if (!newValue) {
+        workoutFile.value = undefined
       }
     }
   )

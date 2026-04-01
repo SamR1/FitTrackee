@@ -139,12 +139,16 @@ def get_string_duration_value(row_value: Optional[timedelta]) -> Optional[str]:
 
 
 def check_media_attachments(
-    workout_data: dict,
+    workout_data: dict, is_zip_archive: bool = False
 ) -> Optional["InvalidPayloadErrorResponse"]:
-    if (
-        len(workout_data.get("media_attachment_ids", []))
-        > MAX_MEDIA_ATTACHMENTS
-    ):
+    media_count = len(workout_data.get("media_attachment_ids", []))
+
+    if media_count > 0 and is_zip_archive:
+        return InvalidPayloadErrorResponse(
+            "media attachments can not be associated with a .zip archive"
+        )
+
+    if media_count > MAX_MEDIA_ATTACHMENTS:
         return InvalidPayloadErrorResponse(
             f"up to {MAX_MEDIA_ATTACHMENTS} media attachments can be "
             f"associated with a workout"
@@ -2317,6 +2321,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``equipment with id <equipment_id> is inactive``
         - ``one or more values, entered or calculated, exceed the limits``
         - ``up to 20 media attachments can be associated with a workout``
+        - ``media attachments can not be associated with a .zip archive``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -2349,11 +2354,16 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     if not workout_data or workout_data.get("sport_id") is None:
         return InvalidPayloadErrorResponse()
 
-    error_response = check_media_attachments(workout_data)
+    workout_file = request.files["file"]
+    is_zip_archive = (
+        workout_file is not None
+        and workout_file.filename is not None
+        and workout_file.filename.endswith(".zip")
+    )
+    error_response = check_media_attachments(workout_data, is_zip_archive)
     if error_response:
         return error_response
 
-    workout_file = request.files["file"]
     try:
         service = WorkoutsFromFileCreationService(
             auth_user, workout_data, workout_file
