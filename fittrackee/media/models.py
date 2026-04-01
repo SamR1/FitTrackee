@@ -52,6 +52,9 @@ class Media(BaseModel):
         nullable=False,
         server_default=text("''"),
     )
+    meta: Mapped[Dict] = mapped_column(
+        postgresql.JSONB, nullable=False, server_default="{}"
+    )
 
     def __init__(
         self,
@@ -81,10 +84,15 @@ class Media(BaseModel):
     def file_path(self) -> str:
         return os.path.join("media", str(self.user_id), self.file_name)
 
-    def serialize(self) -> Dict:
+    def serialize(self, can_see_map_data: bool = False) -> Dict:
         return {
             "id": self.short_id,
             "description": self.description,
+            "meta": {
+                "coordinates": self.meta.get("coordinates", None)
+                if can_see_map_data
+                else None
+            },
             "url": self.url,
         }
 

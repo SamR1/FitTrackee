@@ -287,6 +287,7 @@ export interface IWorkoutData {
   elevationLoading: boolean
   mediaAttachments: IMediaAttachment[]
   mediaLoading: string
+  displayedMediaIndex: number | undefined
 }
 
 export type TWorkoutDatasetKeys =
@@ -393,6 +394,10 @@ export interface ILocation {
 export interface IMediaAttachment {
   id: string
   description: string
+  meta: {
+    coordinates: TCoordinates | null
+    size: { width: number; height: number }
+  }
   url: string
 }
 

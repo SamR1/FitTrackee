@@ -5,7 +5,7 @@
       :media-attachments="mediaAttachments"
       :displayed-media-index="displayedMediaIndex"
       :is-workout-owner="isWorkoutOwner"
-      @closeModal="displayedMediaIndex = undefined"
+      @closeModal="setDisplayedMediaIndex(undefined)"
       @deleteMedia="deleteMediaAttachment"
       @displayPreviousMedia="updateMediaIndex('prev')"
       @displayNextMedia="updateMediaIndex('next')"
@@ -21,8 +21,8 @@
             v-for="(media, index) in mediaAttachments"
             :key="media.id"
             class="media-attachment"
-            @click="displayedMediaIndex = index"
-            @keydown.enter="displayedMediaIndex = index"
+            @click="setDisplayedMediaIndex(index)"
+            @keydown.enter="setDisplayedMediaIndex(index)"
             role="button"
             tabindex="0"
             :title="media.description"
@@ -47,8 +47,8 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, toRefs } from 'vue'
-  import type { Ref } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import type { ComputedRef } from 'vue'
 
   import GalleryModal from '@/components/Common/GalleryModal.vue'
   import useApp from '@/composables/useApp.ts'
@@ -71,20 +71,25 @@
 
   const { errorMessages } = useApp()
 
-  const displayedMediaIndex: Ref<number | undefined> = ref(undefined)
+  const displayedMediaIndex: ComputedRef<number | undefined> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.DISPLAYED_MEDIA_INDEX]
+  )
 
+  function setDisplayedMediaIndex(index: number | undefined) {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_DISPLAYED_MEDIA_INDEX, index)
+  }
   function updateMediaIndex(value: 'prev' | 'next') {
     if (displayedMediaIndex.value === undefined) {
       return
     }
     if (value === 'prev' && displayedMediaIndex.value > 0) {
-      displayedMediaIndex.value -= 1
+      setDisplayedMediaIndex(displayedMediaIndex.value - 1)
     }
     if (
       value === 'next' &&
       displayedMediaIndex.value < mediaAttachments.value.length - 1
     ) {
-      displayedMediaIndex.value += 1
+      setDisplayedMediaIndex(displayedMediaIndex.value + 1)
     }
   }
   function deleteMediaAttachment(mediaAttachmentId: string) {
@@ -92,7 +97,7 @@
       id: mediaAttachmentId,
       workoutId: workoutId.value,
     })
-    displayedMediaIndex.value = undefined
+    setDisplayedMediaIndex(undefined)
   }
   function updateMediaDescription(payload: {
     description: string

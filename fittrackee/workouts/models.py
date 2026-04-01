@@ -913,7 +913,7 @@ class Workout(BaseModel):
             else []
         )
         workout["media_attachments"] = [
-            media.serialize()
+            media.serialize(can_see_map_data)
             for media in self.get_media_attachments(can_see_media_attachments)
         ]
         return workout

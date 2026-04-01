@@ -1,8 +1,9 @@
 import os
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict
 from uuid import UUID
 
+import pytest
 from time_machine import travel
 
 from fittrackee import db
@@ -96,16 +97,57 @@ class TestMediaModel(MediaMixin, RandomMixin):
 
         assert os.path.isfile(absolute_path) is False
 
-    def test_serialize_returns_serialized_media(
-        self, app: "Flask", user_1: "User"
-    ) -> None:
-        media = self.create_media(user_1)
-        media.description = self.random_string()
 
-        serialized_media = media.serialize()
+class TestMediaModelSerializer(MediaMixin, RandomMixin):
+    @pytest.mark.parametrize(
+        "input_args",
+        [{}, {"can_see_map_data": False}, {"can_see_map_data": True}],
+    )
+    def test_serialize_returns_serialized_media(
+        self, app: "Flask", user_1: "User", input_args: Dict
+    ) -> None:
+        media = self.create_media(
+            user_1, description=self.random_string(), with_coordinates=False
+        )
+
+        serialized_media = media.serialize(**input_args)
 
         assert serialized_media == {
             "id": media.short_id,
             "description": media.description,
+            "meta": media.meta,
+            "url": media.url,
+        }
+
+    def test_it_serializes_media_with_coordinates_when_can_see_map_data_is_true(  # noqa
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        media = self.create_media(
+            user_1, description=self.random_string(), with_coordinates=True
+        )
+
+        serialized_media = media.serialize(can_see_map_data=True)
+
+        assert serialized_media == {
+            "id": media.short_id,
+            "description": media.description,
+            "meta": media.meta,
+            "url": media.url,
+        }
+
+    @pytest.mark.parametrize("input_args", [{}, {"can_see_map_data": False}])
+    def test_it_serializes_media_with_coordinates_when_can_see_map_data_is_false(  # noqa
+        self, app: "Flask", user_1: "User", input_args: Dict
+    ) -> None:
+        media = self.create_media(
+            user_1, description=self.random_string(), with_coordinates=True
+        )
+
+        serialized_media = media.serialize(**input_args)
+
+        assert serialized_media == {
+            "id": media.short_id,
+            "description": media.description,
+            "meta": {"coordinates": None},
             "url": media.url,
         }

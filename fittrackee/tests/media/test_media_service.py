@@ -112,6 +112,30 @@ class TestMediaServiceCreateImageMedia(MediaServiceTestCase):
         assert media.file_path == f"media/{user_1.id}/12z3e4.png"
         assert media.file_size == 138
         assert media.user_id == user_1.id
+        assert media.meta == {"coordinates": None}
+
+    def test_it_creates_image_media_when_image_has_gps_exif(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        service = MediaService(
+            user_1,
+            self.create_media_file(app, filename="image_with_gps_exif.jpg"),
+        )
+
+        with patch.object(uuid, "uuid4") as uuid4_mock:
+            uuid4_mock.return_value.hex = "12z3e4"
+            service.create_image_media()
+
+        media = Media.query.one()
+        assert media.file_path == f"media/{user_1.id}/12z3e4.jpg"
+        assert media.file_size == 1173
+        assert media.user_id == user_1.id
+        assert media.meta == {
+            "coordinates": {
+                "latitude": 45.755833333333335,
+                "longitude": 4.8308333333333335,
+            }
+        }
 
     def test_it_returns_media(self, app: "Flask", user_1: "User") -> None:
         service = MediaService(user_1, self.create_media_file(app))

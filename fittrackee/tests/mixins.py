@@ -701,6 +701,8 @@ class MediaMixin:
         file_name: Optional[str] = None,
         file_size: int = 1000,
         workout_id: Optional[int] = None,
+        description: str = "",
+        with_coordinates: bool = False,
     ) -> "Media":
         media = Media(
             user_id=user.id,
@@ -709,5 +711,14 @@ class MediaMixin:
         )
         db.session.add(media)
         media.workout_id = workout_id
+        media.description = description
+        media.meta = {
+            "coordinates": {
+                "latitude": 45.755833333333335,
+                "longitude": 4.8308333333333335,
+            }
+            if with_coordinates
+            else None,
+        }
         db.session.commit()
         return media

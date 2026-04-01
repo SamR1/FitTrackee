@@ -204,6 +204,9 @@ export interface IWorkoutsGetters {
   [WORKOUTS_STORE.GETTERS.WORKOUT_MEDIA_ATTACHMENTS](
     state: IWorkoutsState
   ): IMediaAttachment[]
+  [WORKOUTS_STORE.GETTERS.DISPLAYED_MEDIA_INDEX](
+    state: IWorkoutsState
+  ): number | undefined
 }
 
 export type TWorkoutsMutations<S = IWorkoutsState> = {
@@ -329,6 +332,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
     mediaAttachment: IMediaAttachment
   ): void
   [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT_MEDIA_ATTACHMENTS](state: S): void
+  [WORKOUTS_STORE.MUTATIONS.SET_DISPLAYED_MEDIA_INDEX](
+    state: S,
+    index: number | undefined
+  ): void
 }
 
 export type TWorkoutsStoreModule<S = IWorkoutsState> = Omit<

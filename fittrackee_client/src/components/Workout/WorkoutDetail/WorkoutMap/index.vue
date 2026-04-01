@@ -104,6 +104,24 @@
                 :isStart="false"
               />
             </LLayerGroup>
+            <LLayerGroup
+              v-if="workoutMedia.length > 0"
+              :name="$t('common.PHOTOS')"
+              layer-type="overlay"
+            >
+              <LMarkerClusterGroup :chunk-interval="1" :chunked-loading="false">
+                <CustomPhotosMarker
+                  v-for="media in workoutMedia"
+                  :key="media.id"
+                  :marker-coordinates="media.meta.coordinates"
+                >
+                  <PhotoPopup
+                    :media="media"
+                    @displayMediaModal="setDisplayedMediaIndex(media.id)"
+                  />
+                </CustomPhotosMarker>
+              </LMarkerClusterGroup>
+            </LLayerGroup>
           </LMap>
         </div>
       </VFullscreen>
@@ -129,16 +147,21 @@
   import { computed, onUnmounted, ref, toRefs, watch } from 'vue'
   import type { Ref, ComputedRef } from 'vue'
   import 'leaflet/dist/leaflet.css'
+  import { LMarkerClusterGroup } from 'vue-leaflet-markercluster'
 
   import CustomMarker from '@/components/Workout/WorkoutDetail/WorkoutMap/CustomMarker.vue'
+  import CustomPhotosMarker from '@/components/Workout/WorkoutDetail/WorkoutMap/CustomPhotosMarker.vue'
+  import PhotoPopup from '@/components/Workout/WorkoutDetail/WorkoutMap/PhotoPopup.vue'
   import useApp from '@/composables/useApp'
+  import { WORKOUTS_STORE } from '@/store/constants.ts'
   import type { IHeatmapData, IHeatmapOverlay } from '@/types/heatmap.ts'
   import type {
     IGeoJsonOptions,
     ILeafletObject,
     TCoordinates,
   } from '@/types/map'
-  import type { IWorkoutData } from '@/types/workouts'
+  import type { IMediaAttachment, IWorkoutData } from '@/types/workouts'
+  import { useStore } from '@/use/useStore.ts'
   import { getApiUrl } from '@/utils'
 
   interface Props {
@@ -156,6 +179,8 @@
     toRefs(props)
 
   const { appConfig } = useApp()
+
+  const store = useStore()
 
   const isFullscreen: Ref<boolean> = ref(false)
   const workoutMap: Ref<ILeafletObject | null> = ref(null)
@@ -179,7 +204,19 @@
   const heatmapData: ComputedRef<IHeatmapData> = computed(() =>
     getHeatmapData()
   )
+  const workoutMedia: ComputedRef<IMediaAttachment[]> = computed(() =>
+    workoutData.value.workout.media_attachments.filter(
+      (media) => media.meta.coordinates
+    )
+  )
 
+  function setDisplayedMediaIndex(mediaId: string) {
+    const mediaIndex = workoutMedia.value.findIndex((m) => m.id === mediaId)
+    store.commit(
+      WORKOUTS_STORE.MUTATIONS.SET_DISPLAYED_MEDIA_INDEX,
+      mediaIndex === -1 ? undefined : mediaIndex
+    )
+  }
   function getGeoJson(gpxContent: string): GeoJSON | null {
     if (gpxContent !== '') {
       try {

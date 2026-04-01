@@ -145,6 +145,7 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
       elevationLoading: false,
       mediaAttachments: [],
       mediaLoading: '',
+      displayedMediaIndex: undefined,
     }
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_COMMENTS](
@@ -245,5 +246,11 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     state: IWorkoutsState
   ) {
     state.workoutData.mediaAttachments = []
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_DISPLAYED_MEDIA_INDEX](
+    state: IWorkoutsState,
+    index: number | undefined
+  ) {
+    state.workoutData.displayedMediaIndex = index
   },
 }

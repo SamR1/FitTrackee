@@ -1494,7 +1494,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             VisibilityLevel.PUBLIC,
         ],
     )
-    def test_it_returns_media_attachments_regardless_media_visibility(
+    def test_it_returns_media_attachments_regardless_map_and_media_visibilities(  # noqa
         self,
         app: Flask,
         user_1: User,
@@ -1503,12 +1503,13 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         input_media_visibility: VisibilityLevel,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.map_visibility = VisibilityLevel.PRIVATE
         workout_cycling_user_1.media_visibility = input_media_visibility
         media_user_1_1 = self.create_media(
-            user_1, workout_id=workout_cycling_user_1.id
+            user_1, workout_id=workout_cycling_user_1.id, with_coordinates=True
         )
         media_user_1_2 = self.create_media(
-            user_1, workout_id=workout_cycling_user_1.id
+            user_1, workout_id=workout_cycling_user_1.id, with_coordinates=True
         )
         self.create_media(user_2)
 
@@ -1517,8 +1518,8 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         )
 
         assert serialized_workout["media_attachments"] == [
-            media_user_1_1.serialize(),
-            media_user_1_2.serialize(),
+            media_user_1_1.serialize(can_see_map_data=True),
+            media_user_1_2.serialize(can_see_map_data=True),
         ]
 
 
@@ -2146,7 +2147,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             VisibilityLevel.PUBLIC,
         ],
     )
-    def test_it_returns_media_attachments(
+    def test_it_returns_media_attachments_with_coordinates(
         self,
         app: Flask,
         user_1: User,
@@ -2156,14 +2157,44 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
     ) -> None:
         add_follower(user_1, user_2)
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.FOLLOWERS
+        workout_cycling_user_1.map_visibility = VisibilityLevel.FOLLOWERS
         workout_cycling_user_1.media_visibility = input_media_visibility
-        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+        media = self.create_media(
+            user_1, workout_id=workout_cycling_user_1.id, with_coordinates=True
+        )
 
         serialized_workout = workout_cycling_user_1.serialize(
             user=user_2, light=False
         )
 
-        assert serialized_workout["media_attachments"] == [media.serialize()]
+        assert serialized_workout["media_attachments"] == [
+            media.serialize(can_see_map_data=True)
+        ]
+
+    def test_it_does_not_return_media_attachments_with_coordinates_when_user_can_not_see_map_data(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        add_follower(user_1, user_2)
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.FOLLOWERS
+        workout_cycling_user_1.map_visibility = VisibilityLevel.PRIVATE
+        workout_cycling_user_1.media_visibility = VisibilityLevel.FOLLOWERS
+        media = self.create_media(
+            user_1, workout_id=workout_cycling_user_1.id, with_coordinates=True
+        )
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_2, light=False
+        )
+
+        assert serialized_workout["media_attachments"] == [
+            media.serialize(can_see_map_data=False)
+        ]
 
     def test_it_does_not_return_media_attachments(
         self,
@@ -2811,22 +2842,34 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             equipment_bike_user_1.serialize(current_user=user_2)
         ]
 
+    @pytest.mark.parametrize(
+        "input_map_visibility,expected_can_see_map_data",
+        [(VisibilityLevel.FOLLOWERS, False), (VisibilityLevel.PUBLIC, True)],
+    )
     def test_it_returns_media_attachments(
         self,
         app: Flask,
         user_1: User,
         user_2: User,
         workout_cycling_user_1: Workout,
+        input_map_visibility: VisibilityLevel,
+        expected_can_see_map_data: bool,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.map_visibility = input_map_visibility
         workout_cycling_user_1.media_visibility = VisibilityLevel.PUBLIC
-        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+        media = self.create_media(
+            user_1, workout_id=workout_cycling_user_1.id, with_coordinates=True
+        )
 
         serialized_workout = workout_cycling_user_1.serialize(
             user=user_2, light=False
         )
 
-        assert serialized_workout["media_attachments"] == [media.serialize()]
+        assert serialized_workout["media_attachments"] == [
+            media.serialize(can_see_map_data=expected_can_see_map_data)
+        ]
 
     @pytest.mark.parametrize(
         "input_media_visibility",
@@ -3419,19 +3462,31 @@ class TestWorkoutModelAsUnauthenticatedUser(
             equipment_bike_user_1.serialize(current_user=None)
         ]
 
+    @pytest.mark.parametrize(
+        "input_map_visibility,expected_can_see_map_data",
+        [(VisibilityLevel.FOLLOWERS, False), (VisibilityLevel.PUBLIC, True)],
+    )
     def test_it_returns_media_attachments(
         self,
         app: Flask,
         user_1: User,
         workout_cycling_user_1: Workout,
+        input_map_visibility: VisibilityLevel,
+        expected_can_see_map_data: bool,
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.map_visibility = input_map_visibility
         workout_cycling_user_1.media_visibility = VisibilityLevel.PUBLIC
-        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+        media = self.create_media(
+            user_1, workout_id=workout_cycling_user_1.id, with_coordinates=True
+        )
 
         serialized_workout = workout_cycling_user_1.serialize(light=False)
 
-        assert serialized_workout["media_attachments"] == [media.serialize()]
+        assert serialized_workout["media_attachments"] == [
+            media.serialize(can_see_map_data=expected_can_see_map_data)
+        ]
 
     @pytest.mark.parametrize(
         "input_media_visibility",
@@ -3754,7 +3809,9 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
         workout_cycling_user_2.workout_visibility = input_workout_visibility
         workout_cycling_user_2.media_visibility = input_workout_visibility
         workout_cycling_user_2.original_file = "file.tcx"
-        media = self.create_media(user_2, workout_id=workout_cycling_user_2.id)
+        media = self.create_media(
+            user_2, workout_id=workout_cycling_user_2.id, with_coordinates=True
+        )
         map_id = random_string()
         workout_cycling_user_2 = self.update_workout_with_file_data(
             workout_cycling_user_2, map_id=map_id
@@ -3764,7 +3821,9 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             user=user_1_moderator, for_report=True, light=False
         )
 
-        assert serialized_workout["media_attachments"] == [media.serialize()]
+        assert serialized_workout["media_attachments"] == [
+            media.serialize(can_see_map_data=True)
+        ]
 
     @pytest.mark.parametrize(
         "input_workout_visibility",
@@ -4090,7 +4149,9 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
         workout_cycling_user_2.workout_visibility = input_workout_visibility
         workout_cycling_user_2.media_visibility = input_workout_visibility
         workout_cycling_user_2.original_file = "file.tcx"
-        media = self.create_media(user_2, workout_id=workout_cycling_user_2.id)
+        media = self.create_media(
+            user_2, workout_id=workout_cycling_user_2.id, with_coordinates=True
+        )
         map_id = random_string()
         workout_cycling_user_2 = self.update_workout_with_file_data(
             workout_cycling_user_2, map_id=map_id
@@ -4100,7 +4161,9 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             user=user_1_admin, for_report=True, light=False
         )
 
-        assert serialized_workout["media_attachments"] == [media.serialize()]
+        assert serialized_workout["media_attachments"] == [
+            media.serialize(can_see_map_data=True)
+        ]
 
 
 class TestWorkoutModel(WorkoutModelTestCase):

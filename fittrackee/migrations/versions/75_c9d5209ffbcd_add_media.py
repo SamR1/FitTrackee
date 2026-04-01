@@ -8,6 +8,7 @@ Create Date: 2026-03-22 11:55:27.024018
 from alembic import op
 import sqlalchemy as sa
 from fittrackee.database import TZDateTime
+from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision = 'c9d5209ffbcd'
@@ -26,6 +27,7 @@ def upgrade():
     sa.Column('file_name', sa.String(length=255), nullable=False),
     sa.Column('file_size', sa.Integer(), nullable=False),
     sa.Column('description', sa.String(length=1500), server_default=sa.text("''"), nullable=False),
+    sa.Column('meta', postgresql.JSONB(astext_type=sa.Text()), server_default='{}', nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['workout_id'], ['workouts.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('uuid')
