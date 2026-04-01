@@ -154,6 +154,11 @@ class WorkoutFitService(WorkoutGpxService):
                     if frame.has_field("enhanced_altitude")
                     else None
                 )
+                # some devices store elevation as a tuple instead of a float
+                if isinstance(elevation, tuple):
+                    elevation = (
+                        elevation[0] if elevation[0] is not None else None
+                    )
                 heart_rate = (
                     frame.get_value("heart_rate")
                     if frame.has_field("heart_rate")
