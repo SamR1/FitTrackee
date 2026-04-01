@@ -61,24 +61,29 @@ class WorkoutFitService(WorkoutGpxService):
                 lambda frame: frame.name == "file_id", data_frames
             )
             frame = next(file_id_frames, None)
-            if frame and frame.has_field("manufacturer"):
-                creator = (
-                    frame.get_value("manufacturer")
-                    if isinstance(frame.get_value("manufacturer"), str)
-                    else None
-                )
-                if (
-                    creator
-                    and frame.has_field("product")
-                    and frame.get_value("product")
-                ):
-                    product = frame.get_raw_value("product")
+            if frame:
+                if frame.has_field("product_name"):
+                    creator = frame.get_value("product_name")
+                    if isinstance(creator, str):
+                        creator = creator.capitalize()
+                elif frame.has_field("manufacturer"):
+                    creator = (
+                        frame.get_value("manufacturer")
+                        if isinstance(frame.get_value("manufacturer"), str)
+                        else None
+                    )
                     if (
-                        creator.lower() == "garmin"
-                        and product in GARMIN_DEVICES.keys()
+                        creator
+                        and frame.has_field("product")
+                        and frame.get_value("product")
                     ):
-                        product = GARMIN_DEVICES[product]
-                    creator = f"{creator} {product}"
+                        product = frame.get_raw_value("product")
+                        if (
+                            creator.lower() == "garmin"
+                            and product in GARMIN_DEVICES.keys()
+                        ):
+                            product = GARMIN_DEVICES[product]
+                        creator = f"{creator} {product}"
 
             # Get total calories from session
             # - total calories = resting + active calories
@@ -114,6 +119,7 @@ class WorkoutFitService(WorkoutGpxService):
                 ):
                     if (
                         segments_creation_event == "only_manual"
+                        and frame.has_field("timer_trigger")
                         and frame.get_value("timer_trigger") != "manual"
                     ):
                         continue
