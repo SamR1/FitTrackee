@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Dict, Tuple, Union
 
+import nh3
 from flask import Blueprint, current_app, request, send_from_directory
 from werkzeug.exceptions import RequestEntityTooLarge
 
@@ -200,7 +201,9 @@ def update_media_description(
         return ForbiddenErrorResponse()
 
     media.description = (
-        data["description"][:MEDIA_DESCRIPTION_MAX_CHARACTERS]
+        nh3.clean(
+            data["description"][:MEDIA_DESCRIPTION_MAX_CHARACTERS], tags=set()
+        )
         if data.get("description")
         else ""
     )

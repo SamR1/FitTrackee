@@ -278,11 +278,13 @@ class TestMediaApiPatch(ApiTestCaseMixin, MediaMixin):
 
         self.assert_400(response, "invalid payload")
 
-    def test_it_updates_media_description(
+    def test_it_updates_media_description_with_sanitized_value(
         self, app: "Flask", user_1: "User"
     ) -> None:
         media = self.create_media(user_1)
-        new_description = self.random_string()
+        new_description = (
+            "my <span>description</span> <script>alert('evil!')</script>"
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -297,7 +299,7 @@ class TestMediaApiPatch(ApiTestCaseMixin, MediaMixin):
 
         assert response.status_code == 200
         db.session.refresh(media)
-        assert media.description == new_description
+        assert media.description == "my description "
         data = json.loads(response.data.decode())
         assert data == media.serialize()
 
