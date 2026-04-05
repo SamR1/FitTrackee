@@ -724,9 +724,9 @@ class MediaMixin:
         return media
 
     def create_and_store_media(
-        self, app: "Flask", user: "User"
+        self, app: "Flask", user: "User", workout_id: Optional[int] = None
     ) -> Tuple["Media", str]:
-        media = self.create_media(user)
+        media = self.create_media(user, workout_id=workout_id)
         expected_path = os.path.join(
             app.config["UPLOAD_FOLDER"], media.file_path
         )
