@@ -722,3 +722,18 @@ class MediaMixin:
         }
         db.session.commit()
         return media
+
+    def create_and_store_media(
+        self, app: "Flask", user: "User"
+    ) -> Tuple["Media", str]:
+        media = self.create_media(user)
+        expected_path = os.path.join(
+            app.config["UPLOAD_FOLDER"], media.file_path
+        )
+        os.makedirs(
+            os.path.join(app.config["UPLOAD_FOLDER"], "media", str(user.id)),
+            exist_ok=True,
+        )
+        with open(expected_path, "w") as f:
+            f.write("image_content")
+        return media, expected_path
