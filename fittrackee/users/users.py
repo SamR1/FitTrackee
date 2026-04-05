@@ -800,6 +800,10 @@ def delete_user(
             get_absolute_file_path(f"pictures/{user.id}"),
             ignore_errors=True,
         )
+        shutil.rmtree(
+            get_absolute_file_path(f"media/{user.id}"),
+            ignore_errors=True,
+        )
         return {"status": "no content"}, 204
     except (
         exc.IntegrityError,
