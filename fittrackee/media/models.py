@@ -47,6 +47,9 @@ class Media(BaseModel):
         db.String(255), nullable=False, index=True, unique=True
     )
     file_size: Mapped[int] = mapped_column()
+    file_content_type: Mapped[str] = mapped_column(
+        db.String(10), nullable=False
+    )
     description: Mapped[Optional[str]] = mapped_column(
         db.String(MEDIA_DESCRIPTION_MAX_CHARACTERS),
         nullable=False,
@@ -61,12 +64,14 @@ class Media(BaseModel):
         user_id: int,
         file_name: str,
         file_size: int,
+        file_content_type: str,
         created_at: Optional[datetime] = None,
         workout_id: Optional[int] = None,
     ):
         self.user_id = user_id
         self.file_name = file_name
         self.file_size = file_size
+        self.file_content_type = file_content_type
         self.created_at = (
             created_at if created_at else datetime.now(timezone.utc)
         )

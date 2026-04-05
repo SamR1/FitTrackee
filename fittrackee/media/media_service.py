@@ -8,6 +8,7 @@ from flask import current_app
 from PIL import Image, ImageOps
 
 from fittrackee import db
+from fittrackee.constants import IMAGE_CONTENT_TYPES
 from fittrackee.files import get_absolute_file_path, get_file_extension
 
 from .exceptions import MediaException
@@ -108,6 +109,7 @@ class MediaService:
             user_id=self.auth_user.id,
             file_name=new_filename,
             file_size=self.media_file.stream.tell(),
+            file_content_type=IMAGE_CONTENT_TYPES[extension],
         )
         media.meta = {
             "coordinates": gps_info,

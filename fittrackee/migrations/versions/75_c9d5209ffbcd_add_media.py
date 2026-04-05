@@ -26,6 +26,7 @@ def upgrade():
     sa.Column('created_at', TZDateTime(), nullable=False),
     sa.Column('file_name', sa.String(length=255), nullable=False),
     sa.Column('file_size', sa.Integer(), nullable=False),
+    sa.Column('file_content_type', sa.String(length=10), nullable=False),
     sa.Column('description', sa.String(length=1500), server_default=sa.text("''"), nullable=False),
     sa.Column('meta', postgresql.JSONB(astext_type=sa.Text()), server_default='{}', nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),

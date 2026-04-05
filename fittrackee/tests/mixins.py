@@ -708,6 +708,7 @@ class MediaMixin:
             user_id=user.id,
             file_name=file_name if file_name else f"{uuid4().hex}.jpg",
             file_size=file_size,
+            file_content_type="image/jpeg",
         )
         db.session.add(media)
         media.workout_id = workout_id

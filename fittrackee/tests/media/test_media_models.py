@@ -31,12 +31,14 @@ class TestMediaModel(MediaMixin, RandomMixin):
                 user_id=user_1.id,
                 file_name="img.jpg",
                 file_size=1024,
+                file_content_type="image/jpeg",
             )
         db.session.add(media)
         db.session.commit()
 
         assert media.created_at == now
         assert media.description == ""
+        assert media.file_content_type == "image/jpeg"
         assert media.file_size == 1024
         assert media.user_id == user_1.id
         assert media.workout_id is None
@@ -50,6 +52,7 @@ class TestMediaModel(MediaMixin, RandomMixin):
             user_id=user_1.id,
             file_name="img.gif",
             file_size=1024,
+            file_content_type="image/jpeg",
             created_at=now,
             workout_id=workout_cycling_user_1.id,
         )
@@ -58,6 +61,7 @@ class TestMediaModel(MediaMixin, RandomMixin):
 
         assert media.created_at == now
         assert media.description == ""
+        assert media.file_content_type == "image/jpeg"
         assert media.file_size == 1024
         assert media.user_id == user_1.id
         assert media.workout_id == workout_cycling_user_1.id

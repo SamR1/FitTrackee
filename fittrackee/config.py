@@ -7,6 +7,7 @@ from dramatiq.brokers.stub import StubBroker
 from flask import current_app
 
 from fittrackee import DEFAULT_PRIVACY_POLICY_DATA, VERSION
+from fittrackee.constants import IMAGE_CONTENT_TYPES
 from fittrackee.languages import SUPPORTED_LANGUAGES
 from fittrackee.workouts.constants import WORKOUT_ALLOWED_EXTENSIONS
 
@@ -34,7 +35,7 @@ class BaseConfig:
     UPLOAD_FOLDER = os.path.join(
         os.getenv("UPLOAD_FOLDER", current_app.root_path), "uploads"
     )
-    PICTURE_ALLOWED_EXTENSIONS = {"jpeg", "jpg", "png", "gif", "webp"}
+    PICTURE_ALLOWED_EXTENSIONS = set(IMAGE_CONTENT_TYPES.keys())
     WORKOUT_ALLOWED_EXTENSIONS = {"zip"}.union(WORKOUT_ALLOWED_EXTENSIONS)
     TILE_SERVER = {
         "URL": os.environ.get(
