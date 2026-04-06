@@ -139,10 +139,24 @@ class UserWorkoutsFeedService:
                 if self.with_description and workout.description
                 else ""
             )
+            media_attachments = workout.get_media_attachments(
+                can_view(
+                    workout,
+                    "calculated_media_visibility",
+                )
+            )
             self.feed.add_item(
                 title=item_data["title.txt"],
                 link=f"{self.fittrackee_url}/workouts/{workout.short_id}",
                 pubdate=workout.workout_date,
                 description=item_data["body.html"] + workout_description,
+                enclosures=[
+                    feedgenerator.Enclosure(
+                        f"{current_app.config['UI_URL']}/media/{attachment.file_name}",
+                        str(attachment.file_size),
+                        attachment.file_content_type,
+                    )
+                    for attachment in media_attachments
+                ],
             )
         return self.feed.writeString("UTF-8")
