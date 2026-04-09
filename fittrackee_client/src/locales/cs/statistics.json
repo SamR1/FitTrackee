@@ -2,12 +2,23 @@
   "AVERAGE": "Průměr",
   "STATISTICS": "Statistiky",
   "STATISTICS_CHARTS": {
+    "day": "den",
     "month": "Měsíční statistika",
-    "week": "Týdenní statistika"
+    "week": "Týdenní statistika",
+    "year": "Roční statistika"
+  },
+  "STATISTICS_ON_ALL_WORKOUTS": "Statistiky všech cvičení:",
+  "STATISTICS_ON_LAST_WORKOUTS": "Statistika pro posledních {count} cvičení:",
+  "STATISTICS_TYPE": "Typ statistikly",
+  "STATISTICS_TYPES": {
+    "by_sport": "podle sportu",
+    "by_time": "za dané období"
   },
   "TIME_FRAMES": {
+    "day": "den",
     "month": "měsíc",
     "week": "týden",
     "year": "rok"
-  }
+  },
+  "WORKOUTS_AVERAGE": "průměrné množství cvičení"
 }
