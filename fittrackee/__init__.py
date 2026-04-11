@@ -60,7 +60,11 @@ class Base(DeclarativeBase):
 
 db = SQLAlchemy(
     model_class=Base,
-    engine_options={"future": True},
+    engine_options={
+        "future": True,
+        # to avoid errors due to stale connections
+        "pool_pre_ping": True,
+    },
     session_options={"future": True},
 )
 
