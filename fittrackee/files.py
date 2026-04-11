@@ -1,8 +1,10 @@
 import os
 from typing import IO, TYPE_CHECKING, Dict, Union
+from uuid import uuid4
 
 import magic
 from flask import current_app
+from PIL import Image
 from werkzeug.utils import secure_filename
 
 from fittrackee.workouts.constants import OCTET_STREAM_MIMETYPE
@@ -98,3 +100,14 @@ def check_file(file: "FileStorage", valid_content_types: Dict) -> str:
     check_mime_type(extension, file, valid_content_types)
 
     return extension
+
+
+def generate_filename(extension: str) -> str:
+    return f"{uuid4().hex}.{extension}"
+
+
+def get_image_without_exif(file: "FileStorage") -> "Image.Image":
+    image = Image.open(file.stream)
+    image_without_exif = Image.new(image.mode, image.size)
+    image_without_exif.putdata(image.get_flattened_data())
+    return image_without_exif

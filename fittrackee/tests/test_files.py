@@ -1,12 +1,18 @@
+import os
 from io import BytesIO
 from typing import TYPE_CHECKING
 
 import pytest
+from PIL import Image, ImageChops
 from werkzeug.datastructures import FileStorage
 
 from fittrackee.constants import IMAGE_CONTENT_TYPES
 from fittrackee.exceptions import FileException
-from fittrackee.files import check_file, get_file_extension
+from fittrackee.files import (
+    check_file,
+    get_file_extension,
+    get_image_without_exif,
+)
 from fittrackee.tests.workouts.mixins import WorkoutFileMixin
 from fittrackee.workouts.constants import WORKOUT_FILE_MAGIC_MIMETYPES
 
@@ -150,3 +156,23 @@ class TestCheckFile(ImageMixin, WorkoutFileMixin):
         extension = check_file(file, WORKOUT_FILE_MAGIC_MIMETYPES)
 
         assert extension == "zip"
+
+
+class TestGetImageWithoutExif(ImageMixin):
+    def test_it_creates_new_image_without_exif_data(
+        self, app: "Flask"
+    ) -> None:
+        image_file_name = "image_with_gps_exif.jpg"
+        image = self.get_image_file_storage(app, image_file_name)
+
+        new_image = get_image_without_exif(image)
+
+        # exif data is removed
+        assert dict(new_image.getexif()) == {}
+        # new image is the same
+        assert not ImageChops.difference(
+            Image.open(
+                os.path.join(app.root_path, f"tests/files/{image_file_name}")
+            ),
+            new_image,
+        ).getbbox()

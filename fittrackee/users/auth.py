@@ -16,7 +16,6 @@ from jsonschema.exceptions import ValidationError
 from sqlalchemy import exc, func
 from sqlalchemy.dialects.postgresql import insert
 from werkzeug.exceptions import RequestEntityTooLarge
-from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
 from fittrackee.dates import get_datetime_in_utc, get_readable_duration
@@ -27,7 +26,12 @@ from fittrackee.equipments.exceptions import (
 )
 from fittrackee.equipments.utils import handle_pieces_of_equipment
 from fittrackee.exceptions import FileException
-from fittrackee.files import check_file, get_absolute_file_path
+from fittrackee.files import (
+    check_file,
+    generate_filename,
+    get_absolute_file_path,
+    get_image_without_exif,
+)
 from fittrackee.oauth2.server import require_auth
 from fittrackee.reports.models import ReportAction, ReportActionAppeal
 from fittrackee.responses import (
@@ -1852,10 +1856,11 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
 
     file = request.files["file"]
     try:
-        check_file(file, IMAGE_CONTENT_TYPES)
+        extension = check_file(file, IMAGE_CONTENT_TYPES)
     except FileException as e:
         return InvalidPayloadErrorResponse(str(e))
-    filename = secure_filename(file.filename)  # type: ignore
+    filename = generate_filename(extension)
+    image = get_image_without_exif(file)
     dirpath = os.path.join(
         current_app.config["UPLOAD_FOLDER"], "pictures", str(auth_user.id)
     )
@@ -1871,7 +1876,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
             old_picture_path = get_absolute_file_path(auth_user.picture)
             if os.path.isfile(get_absolute_file_path(old_picture_path)):
                 os.remove(old_picture_path)
-        file.save(absolute_picture_path)
+        image.save(absolute_picture_path)
         auth_user.picture = relative_picture_path
         db.session.commit()
         return {

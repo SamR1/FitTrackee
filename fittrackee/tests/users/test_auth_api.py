@@ -2568,39 +2568,26 @@ class TestUserPicture(ApiTestCaseMixin, ImageMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
+        filename = "27dc1a4e6f0246b.png"
 
-        response = client.post(
-            "/api/auth/picture",
-            data=dict(file=(self.get_image_content(app), "avatar.png")),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
-        )
-
-        data = json.loads(response.data.decode())
-        assert data["status"] == "success"
-        assert data["message"] == "user picture updated"
-        assert response.status_code == 200
-        assert user_1.picture is not None
-        assert "avatar.png" in user_1.picture
-
-        response = client.post(
-            "/api/auth/picture",
-            data=dict(file=(self.get_image_content(app), "avatar2.png")),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
-        )
+        with patch(
+            "fittrackee.users.auth.generate_filename", return_value=filename
+        ):
+            response = client.post(
+                "/api/auth/picture",
+                data=dict(file=(self.get_image_content(app), "avatar.png")),
+                headers=dict(
+                    content_type="multipart/form-data",
+                    Authorization=f"Bearer {auth_token}",
+                ),
+            )
 
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["message"] == "user picture updated"
         assert response.status_code == 200
         assert user_1.picture is not None
-        assert "avatar.png" not in user_1.picture
-        assert "avatar2.png" in user_1.picture
+        assert filename in user_1.picture
 
     def test_suspended_user_can_update_picture(
         self, app: Flask, suspended_user: User
@@ -2623,7 +2610,6 @@ class TestUserPicture(ApiTestCaseMixin, ImageMixin):
         assert data["message"] == "user picture updated"
         assert response.status_code == 200
         assert suspended_user.picture is not None
-        assert "avatar.png" in suspended_user.picture
 
     def test_expected_scope_is_profile_write(
         self, app: Flask, user_1: User
@@ -2658,7 +2644,6 @@ class TestUserDeletePicture(ApiTestCaseMixin, ImageMixin):
         assert data["message"] == "user picture updated"
         assert response.status_code == 200
         assert user_1.picture is not None
-        assert "avatar.png" in user_1.picture
 
         response = client.delete(
             "/api/auth/picture",
@@ -2704,7 +2689,6 @@ class TestUserDeletePicture(ApiTestCaseMixin, ImageMixin):
         assert data["message"] == "user picture updated"
         assert response.status_code == 200
         assert suspended_user.picture is not None
-        assert "avatar.png" in suspended_user.picture
 
         response = client.delete(
             "/api/auth/picture",
