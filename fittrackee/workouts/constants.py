@@ -1,4 +1,3 @@
-WORKOUT_ALLOWED_EXTENSIONS = {"gpx", "fit", "kml", "kmz", "tcx"}
 WORKOUT_DATE_FORMAT = "%Y-%m-%d %H:%M"
 
 # sports with cadence displayed in revolutions per minute
@@ -59,6 +58,19 @@ WORKOUT_FILE_MIMETYPES = {
     "kmz": "application/vnd.google-earth.kmz",
     "tcx": "application/vnd.garmin.tcx+xml",
 }
+WORKOUT_ALLOWED_EXTENSIONS = set(WORKOUT_FILE_MIMETYPES.keys())
+XML_MIMETYPE = "text/xml"
+OCTET_STREAM_MIMETYPE = "application/octet-stream"
+ZIP_MIMETYPE = "application/zip"
+WORKOUT_FILE_MAGIC_MIMETYPES = {
+    "fit": [OCTET_STREAM_MIMETYPE],
+    "gpx": [XML_MIMETYPE],
+    "kml": [XML_MIMETYPE],
+    "kmz": [WORKOUT_FILE_MIMETYPES["kmz"], ZIP_MIMETYPE],
+    "tcx": [XML_MIMETYPE],
+    "zip": [OCTET_STREAM_MIMETYPE, ZIP_MIMETYPE],
+}
+WORKOUT_ALL_ALLOWED_EXTENSIONS = set(WORKOUT_FILE_MAGIC_MIMETYPES.keys())
 
 NSMAP = {
     "gpxtpx": "http://www.garmin.com/xmlschemas/TrackPointExtension/v1",

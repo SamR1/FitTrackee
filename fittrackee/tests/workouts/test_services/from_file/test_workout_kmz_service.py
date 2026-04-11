@@ -1,12 +1,11 @@
 import os
 import zipfile
-from io import BytesIO
-from typing import IO, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import gpxpy
 import pytest
-from werkzeug.datastructures import FileStorage
 
+from fittrackee.tests.workouts.mixins import WorkoutFileMixin
 from fittrackee.workouts.exceptions import WorkoutFileException
 from fittrackee.workouts.services import WorkoutKmzService
 
@@ -17,18 +16,7 @@ if TYPE_CHECKING:
     from fittrackee.workouts.models import Sport
 
 
-class WorkoutKmzServiceTestCase:
-    @staticmethod
-    def get_kmz_content(app: "Flask", file_name: str) -> IO[bytes]:
-        file_path = os.path.join(app.root_path, "tests/files", file_name)
-        with open(file_path, "rb") as kmz_file:
-            content = FileStorage(
-                filename=file_name, stream=BytesIO(kmz_file.read())
-            )
-        return content.stream
-
-
-class TestWorkoutKmzServiceParseFile(WorkoutKmzServiceTestCase):
+class TestWorkoutKmzServiceParseFile(WorkoutFileMixin):
     @staticmethod
     def assert_gpx(gpx: "gpxpy.gpx.GPX") -> None:
         assert len(gpx.tracks) == 1
@@ -46,7 +34,7 @@ class TestWorkoutKmzServiceParseFile(WorkoutKmzServiceTestCase):
             ),
         ):
             WorkoutKmzService.parse_file(
-                self.get_kmz_content(app, file_name="gpx_test.zip"),
+                self.get_kmz_file_content(app, file_name="gpx_test.zip"),
                 segments_creation_event="none",
             )
 
@@ -54,7 +42,7 @@ class TestWorkoutKmzServiceParseFile(WorkoutKmzServiceTestCase):
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
     ) -> None:
         gpx = WorkoutKmzService.parse_file(
-            self.get_kmz_content(app, file_name="example.kmz"),
+            self.get_kmz_file_content(app, file_name="example.kmz"),
             segments_creation_event="none",
         )
 
@@ -73,13 +61,13 @@ class TestWorkoutKmzServiceParseFile(WorkoutKmzServiceTestCase):
         self.assert_gpx(gpx)
 
 
-class TestWorkoutKmzServiceInstantiation(WorkoutKmzServiceTestCase):
+class TestWorkoutKmzServiceInstantiation(WorkoutFileMixin):
     def test_it_instantiates_service(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
     ) -> None:
         service = WorkoutKmzService(
             user_1,
-            self.get_kmz_content(app, file_name="example.kmz"),
+            self.get_kmz_file_content(app, file_name="example.kmz"),
             sport_1_cycling,
             sport_1_cycling.stopped_speed_threshold,
         )

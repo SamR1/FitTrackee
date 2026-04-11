@@ -26,7 +26,8 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentsException,
 )
 from fittrackee.equipments.utils import handle_pieces_of_equipment
-from fittrackee.files import get_absolute_file_path
+from fittrackee.exceptions import FileException
+from fittrackee.files import check_file, get_absolute_file_path
 from fittrackee.oauth2.server import require_auth
 from fittrackee.reports.models import ReportAction, ReportActionAppeal
 from fittrackee.responses import (
@@ -51,7 +52,7 @@ from fittrackee.visibility_levels import (
 )
 from fittrackee.workouts.models import Sport
 
-from ..constants import PaceSpeedDisplay
+from ..constants import IMAGE_CONTENT_TYPES, PaceSpeedDisplay
 from ..workouts.constants import PACE_SPORTS
 from .exceptions import UserControlsException, UserCreationException
 from .models import (
@@ -1817,7 +1818,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
         "status": "success"
       }
 
-    :form file: image file (allowed extensions: .jpg, .png, .gif)
+    :form file: image file (allowed extensions: .jpeg, .jpg, .png, .gif)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1827,6 +1828,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
         - ``no file part``
         - ``no selected file``
         - ``file extension not allowed``
+        - ``invalid file``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -1849,6 +1851,10 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
         return response_object
 
     file = request.files["file"]
+    try:
+        check_file(file, IMAGE_CONTENT_TYPES)
+    except FileException as e:
+        return InvalidPayloadErrorResponse(str(e))
     filename = secure_filename(file.filename)  # type: ignore
     dirpath = os.path.join(
         current_app.config["UPLOAD_FOLDER"], "pictures", str(auth_user.id)

@@ -1,11 +1,9 @@
-import os
-from io import BytesIO
-from typing import IO, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 import gpxpy
 import pytest
-from werkzeug.datastructures import FileStorage
 
+from fittrackee.tests.workouts.mixins import WorkoutFileMixin
 from fittrackee.workouts.exceptions import WorkoutFileException
 from fittrackee.workouts.services import WorkoutFitService
 
@@ -16,18 +14,7 @@ if TYPE_CHECKING:
     from fittrackee.workouts.models import Sport
 
 
-class WorkoutFitServiceTestCase:
-    @staticmethod
-    def get_fit_content(app: "Flask", file_name: str) -> IO[bytes]:
-        file_path = os.path.join(app.root_path, "tests/files", file_name)
-        with open(file_path, "rb") as fit_file:
-            content = FileStorage(
-                filename=file_name, stream=BytesIO(fit_file.read())
-            )
-        return content.stream
-
-
-class TestWorkoutFitServiceGetCoordinate(WorkoutFitServiceTestCase):
+class TestWorkoutFitServiceGetCoordinate(WorkoutFileMixin):
     @pytest.mark.parametrize(
         "input_value,expected_coordinate",
         [
@@ -43,7 +30,7 @@ class TestWorkoutFitServiceGetCoordinate(WorkoutFitServiceTestCase):
         assert coordinate == expected_coordinate
 
 
-class TestWorkoutFitServiceParseFile(WorkoutFitServiceTestCase):
+class TestWorkoutFitServiceParseFile(WorkoutFileMixin):
     def test_it_raises_error_when_file_is_not_fit(
         self, app: "Flask", invalid_kml_file: str
     ) -> None:
@@ -53,7 +40,7 @@ class TestWorkoutFitServiceParseFile(WorkoutFitServiceTestCase):
             ),
         ):
             WorkoutFitService.parse_file(
-                self.get_fit_content(app, file_name="example.kmz"),
+                self.get_fit_file_content(app, file_name="example.kmz"),
                 segments_creation_event="none",
             )
 
@@ -61,7 +48,7 @@ class TestWorkoutFitServiceParseFile(WorkoutFitServiceTestCase):
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
     ) -> None:
         gpx = WorkoutFitService.parse_file(
-            self.get_fit_content(app, file_name="example.fit"),
+            self.get_fit_file_content(app, file_name="example.fit"),
             segments_creation_event="none",
         )
 
@@ -73,13 +60,13 @@ class TestWorkoutFitServiceParseFile(WorkoutFitServiceTestCase):
 
 
 #
-class TestWorkoutFitServiceInstantiation(WorkoutFitServiceTestCase):
+class TestWorkoutFitServiceInstantiation(WorkoutFileMixin):
     def test_it_instantiates_service(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
     ) -> None:
         service = WorkoutFitService(
             user_1,
-            self.get_fit_content(app, file_name="example.fit"),
+            self.get_fit_file_content(app, file_name="example.fit"),
             sport_1_cycling,
             sport_1_cycling.stopped_speed_threshold,
         )

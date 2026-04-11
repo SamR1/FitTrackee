@@ -21,3 +21,11 @@ class PaceSpeedDisplay(str, Enum):
     PACE = "pace"  # min/km
     SPEED = "speed"
     PACE_AND_SPEED = "pace_and_speed"
+
+
+IMAGE_CONTENT_TYPES = {
+    "gif": ["image/gif"],
+    "jpeg": ["image/jpeg"],
+    "jpg": ["image/jpeg"],
+    "png": ["image/png"],
+}

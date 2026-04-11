@@ -4,6 +4,7 @@ import shutil
 import tempfile
 import time
 from datetime import datetime, timedelta, timezone
+from io import BytesIO
 from pathlib import Path
 from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 from unittest.mock import Mock, patch
@@ -17,6 +18,7 @@ from shapely import to_geojson
 from shapely.geometry.multilinestring import MultiLineString
 from sqlalchemy.dialects.postgresql import insert
 from urllib3.util import parse_url
+from werkzeug.datastructures import FileStorage
 from werkzeug.test import TestResponse
 
 from fittrackee import db
@@ -643,6 +645,24 @@ class WorkoutMixin:
         workout.ave_pace = timedelta(seconds=ave_pace_seconds)
         workout.best_pace = timedelta(seconds=max_pace_seconds)
         return workout
+
+
+class ImageMixin:
+    @staticmethod
+    def get_image_content(
+        app: "Flask", file_name: str = "image_without_exif.png"
+    ) -> BytesIO:
+        file_path = os.path.join(app.root_path, f"tests/files/{file_name}")
+        with open(file_path, "rb") as image_file:
+            return BytesIO(image_file.read())
+
+    def get_image_file_storage(
+        self, app: "Flask", file_name: str = "image_without_exif.png"
+    ) -> "FileStorage":
+        return FileStorage(
+            filename="profile.png",
+            stream=self.get_image_content(app, file_name),
+        )
 
 
 class EquipmentMixin:
