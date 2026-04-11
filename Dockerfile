@@ -31,13 +31,13 @@ RUN apk add --no-cache g++ gdal-dev && \
     rm -rf /var/cache/apk/* && \
     python3 -m venv "$VIRTUAL_ENV" && \
     pip install --upgrade pip wheel && \
-    pip install poetry==2.1.3 && \
+    pip install poetry==2.3.3 && \
     . "$VIRTUAL_ENV/bin/activate" && \
     poetry install --only main --no-interaction --quiet
 
 FROM python:3.13-alpine AS runtime
 
-RUN apk add --no-cache tini && \
+RUN apk add --no-cache tini libmagic && \
     addgroup -g 1000 -S fittrackee && \
     adduser -H -D -u 1000 -S fittrackee -G fittrackee
 

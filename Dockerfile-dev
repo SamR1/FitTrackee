@@ -1,7 +1,7 @@
 FROM python:3.13-slim
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends gdal-bin && \
+    apt-get install -y --no-install-recommends gdal-bin libmagic1 && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
