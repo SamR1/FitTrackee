@@ -253,31 +253,3 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         return handle_error_and_return_response(
             e, message="error when updating configuration"
         )
-
-
-@config_blueprint.route("/ping", methods=["GET"])
-def health_check() -> Union[Dict, HttpResponse]:
-    """health check endpoint
-
-    **Example request**:
-
-    .. sourcecode:: http
-
-      GET /api/ping HTTP/1.1
-      Content-Type: application/json
-
-    **Example response**:
-
-    .. sourcecode:: http
-
-      HTTP/1.1 200 OK
-      Content-Type: application/json
-
-      {
-        "message": "pong!",
-        "status": "success"
-      }
-
-    :statuscode 200: ``success``
-    """
-    return {"status": "success", "message": "pong!"}
