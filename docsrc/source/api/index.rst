@@ -12,6 +12,7 @@ API documentation
    equipment_types
    follow_requests
    geocode
+   health_check
    oauth2
    notifications
    queued_tasks
