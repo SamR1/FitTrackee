@@ -706,7 +706,9 @@ class TestUserDataExporterGenerateArchive(RandomMixin, MediaMixin):
         user_2: User,
         sport_1_cycling: Sport,
     ) -> None:
-        media, expected_path = self.create_and_store_media(app, user_1)
+        media, expected_path, expected_thumbnail_path = (
+            self.create_and_store_media(app, user_1)
+        )
         exporter = UserDataExporter(user_1)
 
         exporter.generate_archive()
@@ -714,7 +716,12 @@ class TestUserDataExporterGenerateArchive(RandomMixin, MediaMixin):
         zipfile_mock.return_value.__enter__.return_value.write.assert_has_calls(
             [
                 call(expected_path, f"media_attachments/{media.file_name}"),
-            ]
+                call(
+                    expected_thumbnail_path,
+                    f"media_attachments/{media.thumbnail}",
+                ),
+            ],
+            any_order=True,
         )
 
     @patch.object(secrets, "token_urlsafe")
@@ -729,7 +736,7 @@ class TestUserDataExporterGenerateArchive(RandomMixin, MediaMixin):
         user_1: User,
         user_2: User,
     ) -> None:
-        media, expected_path = self.create_and_store_media(app, user_1)
+        media, expected_path, _ = self.create_and_store_media(app, user_1)
         exporter = UserDataExporter(user_2)
 
         exporter.generate_archive()

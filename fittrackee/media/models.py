@@ -86,17 +86,36 @@ class Media(BaseModel):
         return f"{current_app.config['UI_URL']}/media/{self.file_name}"
 
     @property
+    def thumbnail(self) -> str:
+        return self.meta["thumbnail"]["file_name"]
+
+    @property
+    def thumbnail_file_size(self) -> int:
+        return self.meta["thumbnail"]["file_size"]
+
+    @property
+    def thumbnail_url(self) -> str:
+        return f"{current_app.config['UI_URL']}/media/{self.thumbnail}"
+
+    @property
     def file_path(self) -> str:
         return os.path.join("media", str(self.user_id), self.file_name)
+
+    @property
+    def thumbnail_file_path(self) -> str:
+        return os.path.join("media", str(self.user_id), self.thumbnail)
 
     def serialize(self, can_see_map_data: bool = False) -> Dict:
         return {
             "id": self.short_id,
             "description": self.description,
             "meta": {
-                "coordinates": self.meta.get("coordinates", None)
-                if can_see_map_data
-                else None
+                "coordinates": (
+                    self.meta.get("coordinates", None)
+                    if can_see_map_data
+                    else None
+                ),
+                "thumbnail_url": self.thumbnail_url,
             },
             "url": self.url,
         }
@@ -118,3 +137,17 @@ def on_media_delete(
             )
         except OSError:
             appLog.error("file not found when deleting media")
+
+        if old_media.meta.get("thumbnail", {}).get("file_name"):
+            try:
+                os.remove(
+                    get_absolute_file_path(
+                        os.path.join(
+                            "media",
+                            str(old_media.user_id),
+                            old_media.meta["thumbnail"]["file_name"],
+                        )
+                    )
+                )
+            except OSError:
+                appLog.error("thumbnail file not found when deleting media")

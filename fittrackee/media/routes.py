@@ -35,7 +35,7 @@ NOT_FOUND_MESSAGE = "media not found"
 
 @media_blueprint.route("/media/<media_file_name>", methods=["GET"])
 @limiter.exempt
-def create_media(media_file_name: str) -> Union["Response", "HttpResponse"]:
+def get_media(media_file_name: str) -> Union["Response", "HttpResponse"]:
     """
     Get media.
 
@@ -63,13 +63,19 @@ def create_media(media_file_name: str) -> Union["Response", "HttpResponse"]:
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """
+    is_thumbnail = ".thumbnail." in media_file_name
+    file_name = (
+        media_file_name.replace(".thumbnail.", ".")
+        if is_thumbnail
+        else media_file_name
+    )
     try:
-        media = Media.query.filter_by(file_name=media_file_name).first()
+        media = Media.query.filter_by(file_name=file_name).first()
         if not media:
             return NotFoundErrorResponse(NOT_FOUND_MESSAGE)
         return send_from_directory(
             current_app.config["UPLOAD_FOLDER"],
-            media.file_path,
+            media.thumbnail_file_path if is_thumbnail else media.file_path,
         )
     except Exception as e:
         return handle_error_and_return_response(e)

@@ -396,7 +396,7 @@ export interface IMediaAttachment {
   description: string
   meta: {
     coordinates: TCoordinates | null
-    size: { width: number; height: number }
+    thumbnail_url: string
   }
   url: string
 }

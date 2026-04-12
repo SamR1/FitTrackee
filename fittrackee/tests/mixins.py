@@ -704,9 +704,16 @@ class MediaMixin:
         description: str = "",
         with_coordinates: bool = False,
     ) -> "Media":
+        if not file_name:
+            image_name = uuid4().hex
+            file_name = f"{image_name}.jpg"
+            thumbnail = f"{image_name}.thumbnail.jpg"
+        else:
+            image_name, extension = file_name.split()
+            thumbnail = f"{image_name}.thumbnail.{extension}"
         media = Media(
             user_id=user.id,
-            file_name=file_name if file_name else f"{uuid4().hex}.jpg",
+            file_name=file_name,
             file_size=file_size,
             file_content_type="image/jpeg",
         )
@@ -720,21 +727,23 @@ class MediaMixin:
             }
             if with_coordinates
             else None,
+            "thumbnail": {"file_name": thumbnail, "file_size": 10},
         }
         db.session.commit()
         return media
 
     def create_and_store_media(
         self, app: "Flask", user: "User", workout_id: Optional[int] = None
-    ) -> Tuple["Media", str]:
+    ) -> Tuple["Media", str, str]:
         media = self.create_media(user, workout_id=workout_id)
-        expected_path = os.path.join(
-            app.config["UPLOAD_FOLDER"], media.file_path
-        )
         os.makedirs(
             os.path.join(app.config["UPLOAD_FOLDER"], "media", str(user.id)),
             exist_ok=True,
         )
-        with open(expected_path, "w") as f:
-            f.write("image_content")
-        return media, expected_path
+        expected_paths = []
+        for path in [media.file_path, media.thumbnail_file_path]:
+            expected_path = os.path.join(app.config["UPLOAD_FOLDER"], path)
+            with open(expected_path, "w") as f:
+                f.write("image_content")
+            expected_paths.append(expected_path)
+        return media, expected_paths[0], expected_paths[1]

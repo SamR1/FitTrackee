@@ -44,6 +44,25 @@ class TestMediaGet(ApiTestCaseMixin, MediaMixin):
             app.config["UPLOAD_FOLDER"], f"media/{user_1.id}/{media.file_name}"
         )
 
+    def test_it_calls_send_from_directory_if_thumbnail_exists(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        media = self.create_media(user_1)
+        client = app.test_client()
+        with patch(
+            "fittrackee.media.routes.send_from_directory",
+            return_value="file",
+        ) as mock:
+            response = client.get(
+                self.route.format(filename=media.thumbnail),
+            )
+
+        assert response.status_code == 200
+        mock.assert_called_once_with(
+            app.config["UPLOAD_FOLDER"],
+            f"media/{user_1.id}/{media.thumbnail}",
+        )
+
 
 class TestMediaApiPost(ApiTestCaseMixin):
     route = "/api/media"

@@ -85,7 +85,7 @@ class TestMediaModel(MediaMixin, RandomMixin):
 
         assert media.url == f"{app.config['UI_URL']}/media/{media.file_name}"
 
-    def test_it_deletes_image_on_media_delete(
+    def test_it_deletes_images_on_media_delete(
         self, app: "Flask", user_1: "User"
     ) -> None:
         os.makedirs(
@@ -95,11 +95,16 @@ class TestMediaModel(MediaMixin, RandomMixin):
         media = self.create_media(user_1)
         absolute_path = get_absolute_file_path(media.file_path)
         open(absolute_path, "x")
+        thumbnail_absolute_path = get_absolute_file_path(
+            media.thumbnail_file_path
+        )
+        open(thumbnail_absolute_path, "x")
 
         db.session.delete(media)
         db.session.commit()
 
         assert os.path.isfile(absolute_path) is False
+        assert os.path.isfile(thumbnail_absolute_path) is False
 
 
 class TestMediaModelSerializer(MediaMixin, RandomMixin):
@@ -119,7 +124,10 @@ class TestMediaModelSerializer(MediaMixin, RandomMixin):
         assert serialized_media == {
             "id": media.short_id,
             "description": media.description,
-            "meta": media.meta,
+            "meta": {
+                "coordinates": None,
+                "thumbnail_url": media.url.replace(".jpg", ".thumbnail.jpg"),
+            },
             "url": media.url,
         }
 
@@ -135,7 +143,10 @@ class TestMediaModelSerializer(MediaMixin, RandomMixin):
         assert serialized_media == {
             "id": media.short_id,
             "description": media.description,
-            "meta": media.meta,
+            "meta": {
+                "coordinates": media.meta["coordinates"],
+                "thumbnail_url": media.url.replace(".jpg", ".thumbnail.jpg"),
+            },
             "url": media.url,
         }
 
@@ -152,6 +163,9 @@ class TestMediaModelSerializer(MediaMixin, RandomMixin):
         assert serialized_media == {
             "id": media.short_id,
             "description": media.description,
-            "meta": {"coordinates": None},
+            "meta": {
+                "coordinates": None,
+                "thumbnail_url": media.url.replace(".jpg", ".thumbnail.jpg"),
+            },
             "url": media.url,
         }

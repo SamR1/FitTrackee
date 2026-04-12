@@ -27,7 +27,7 @@
             tabindex="0"
             :title="media.description"
           >
-            <img :alt="media.description" :src="media.url" />
+            <img :alt="media.description" :src="media.meta.thumbnail_url" />
           </div>
         </div>
         <div class="media-visibility-level">

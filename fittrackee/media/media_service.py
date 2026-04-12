@@ -19,6 +19,8 @@ if TYPE_CHECKING:
 
     from fittrackee.users.models import User
 
+THUMBNAIL_MAX_SIZE = (350, 350)
+
 
 class MediaService:
     def __init__(self, auth_user: "User", media_file: "FileStorage"):
@@ -99,11 +101,21 @@ class MediaService:
             image = updated_image  # type: ignore[assignment]
 
         image_without_exif = self.get_image_without_exif(image)
-        new_filename = f"{uuid.uuid4().hex}.{extension}"
-        absolute_workout_filepath = get_absolute_file_path(
-            os.path.join(self._get_user_path(), new_filename)
+        image_name = uuid.uuid4().hex
+        new_filename = f"{image_name}.{extension}"
+        image_without_exif.save(
+            get_absolute_file_path(
+                os.path.join(self._get_user_path(), new_filename)
+            )
         )
-        image_without_exif.save(absolute_workout_filepath)
+
+        # generate image thumbnail
+        image_without_exif.thumbnail(size=THUMBNAIL_MAX_SIZE)
+        thumbnail_filename = f"{image_name}.thumbnail.{extension}"
+        thumbnail_absolute_file_path = get_absolute_file_path(
+            os.path.join(self._get_user_path(), thumbnail_filename)
+        )
+        image_without_exif.save(thumbnail_absolute_file_path)
 
         media = Media(
             user_id=self.auth_user.id,
@@ -113,6 +125,10 @@ class MediaService:
         )
         media.meta = {
             "coordinates": gps_info,
+            "thumbnail": {
+                "file_name": thumbnail_filename,
+                "file_size": os.path.getsize(thumbnail_absolute_file_path),
+            },
         }
 
         db.session.add(media)

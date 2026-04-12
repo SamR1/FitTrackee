@@ -112,7 +112,13 @@ class TestMediaServiceCreateImageMedia(MediaServiceTestCase):
         assert media.file_path == f"media/{user_1.id}/12z3e4.png"
         assert media.file_size == 138
         assert media.user_id == user_1.id
-        assert media.meta == {"coordinates": None}
+        assert media.meta == {
+            "coordinates": None,
+            "thumbnail": {
+                "file_name": "12z3e4.thumbnail.png",
+                "file_size": 69,
+            },
+        }
 
     def test_it_creates_image_media_when_image_has_gps_exif(
         self, app: "Flask", user_1: "User"
@@ -134,7 +140,11 @@ class TestMediaServiceCreateImageMedia(MediaServiceTestCase):
             "coordinates": {
                 "latitude": 45.755833333333335,
                 "longitude": 4.8308333333333335,
-            }
+            },
+            "thumbnail": {
+                "file_name": "12z3e4.thumbnail.jpg",
+                "file_size": 631,
+            },
         }
 
     def test_it_returns_media(self, app: "Flask", user_1: "User") -> None:
@@ -152,4 +162,14 @@ class TestMediaServiceCreateImageMedia(MediaServiceTestCase):
         media = service.create_image_media()
 
         image = Image.open(get_absolute_file_path(media.file_path))
+        assert dict(image.getexif()) == {}
+
+    def test_it_stores_thumbnail_file_without_exif(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        service = MediaService(user_1, self.create_media_file(app))
+
+        media = service.create_image_media()
+
+        image = Image.open(get_absolute_file_path(media.thumbnail_file_path))
         assert dict(image.getexif()) == {}

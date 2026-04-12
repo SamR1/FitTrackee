@@ -23,7 +23,9 @@ def clean_orphan_media_attachments(days: int) -> Dict:
         if os.path.exists(
             os.path.join(current_app.config["UPLOAD_FOLDER"], media.file_path)
         ):
-            counts["freed_space"] += media.file_size
+            counts["freed_space"] += (
+                media.file_size + media.thumbnail_file_size
+            )
         # Media is deleted when row is deleted
         db.session.delete(media)
         counts["deleted_media_attachments"] += 1

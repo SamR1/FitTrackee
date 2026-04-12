@@ -34,8 +34,11 @@
       :key="media.id"
       class="media-attachment"
     >
-      <div class="media-img" :style="`background-image: url(${media.url})`">
-        <img :alt="media.description || ''" :src="media.url" />
+      <div
+        class="media-img"
+        :style="`background-image: url(${media.meta.thumbnail_url})`"
+      >
+        <img :alt="media.description || ''" :src="media.meta.thumbnail_url" />
       </div>
       <div class="media-alt">
         <label :for="`media-description-${media.id}`">
