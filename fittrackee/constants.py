@@ -23,6 +23,7 @@ class PaceSpeedDisplay(str, Enum):
     PACE_AND_SPEED = "pace_and_speed"
 
 
+IMAGE_MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
 IMAGE_CONTENT_TYPES = {
     "gif": "image/gif",
     "jpeg": "image/jpeg",

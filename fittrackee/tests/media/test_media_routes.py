@@ -130,27 +130,30 @@ class TestMediaApiPost(ApiTestCaseMixin):
 
         self.assert_400(response, "file extension not allowed", "fail")
 
-    def test_it_returns_400_if_image_size_exceeds_file_limit(
-        self, app_with_max_zip_file_size: "Flask", user_1: "User"
+    @patch("fittrackee.responses.IMAGE_MAX_FILE_SIZE", 1_024)
+    def test_it_returns_413_if_image_size_exceeds_file_limit(
+        self, app: "Flask", user_1: "User"
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_max_zip_file_size, user_1.email
+            app, user_1.email
         )
 
-        response = client.post(
-            self.route,
-            data=dict(
-                file=(BytesIO(b"test_file_for_image" * 50), "image.jpg")
-            ),
-            headers={
-                "content_type": "multipart/form-data",
-                "Authorization": f"Bearer {auth_token}",
-            },
+        file_path = os.path.join(
+            app.root_path, "tests/files/image_with_gps_exif.jpg"
         )
+        with open(file_path, "rb") as image_file:
+            response = client.post(
+                self.route,
+                data=dict(file=(BytesIO(image_file.read()), "image.jpg")),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "Authorization": f"Bearer {auth_token}",
+                },
+            )
 
         data = self.assert_413(
             response,
-            "Error during media upload, file size (1.2KB) exceeds 1.0KB.",
+            "Error during picture upload, file size (1.4KB) exceeds 1.0KB.",
         )
         assert "data" not in data
 

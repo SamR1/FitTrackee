@@ -2341,7 +2341,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         return PayloadTooLargeErrorResponse(
             file_type="workout",
             file_size=request.content_length,
-            max_size=current_app.config["MAX_CONTENT_LENGTH"],
+            max_size=current_app.config["max_zip_file_size"],
         )
     if error_response:
         return error_response

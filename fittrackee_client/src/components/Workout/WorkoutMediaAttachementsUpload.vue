@@ -15,8 +15,17 @@
       @change="uploadMediaAttachment"
     />
   </div>
-  <div v-if="isArchive" class="attachments-info-box info-box">
+  <div class="attachments-info-box info-box">
     <i class="fa fa-info-circle" aria-hidden="true" />
+    <div>
+      {{ $t('workouts.MAX_SIZE') }}:
+      {{ getReadableFileSizeAsText(5 * 1024 * 1024) }},
+      {{ $t('workouts.SUPPORTED_FILE_EXTENSIONS') }}: gif, .jpeg, .jpg, .png,
+      .webp.
+    </div>
+  </div>
+  <div v-if="isArchive" class="attachments-info-box info-box">
+    <i class="fa fa-warning" aria-hidden="true" />
     <div>{{ $t('workouts.MEDIA_INFORMATION') }}</div>
   </div>
   <div class="loading-media">
@@ -91,6 +100,7 @@
   import type { ICustomTextareaData } from '@/types/forms.ts'
   import type { IMediaAttachment } from '@/types/workouts'
   import { useStore } from '@/use/useStore.ts'
+  import { getReadableFileSizeAsText } from '@/utils/files.ts'
 
   interface Props {
     loading: boolean

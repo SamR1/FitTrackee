@@ -1857,7 +1857,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
         return PayloadTooLargeErrorResponse(
             file_type="picture",
             file_size=request.content_length,
-            max_size=current_app.config["MAX_CONTENT_LENGTH"],
+            max_size=current_app.config["PICTURE_ALLOWED_EXTENSIONS"],
         )
     if response_object:
         return response_object

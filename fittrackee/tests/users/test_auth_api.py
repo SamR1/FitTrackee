@@ -2592,6 +2592,7 @@ class TestUserPicture(ApiTestCaseMixin):
 
         self.assert_400(response, "file extension not allowed", "fail")
 
+    @patch("fittrackee.responses.IMAGE_MAX_FILE_SIZE", 1_024)
     def test_it_returns_error_if_image_size_exceeds_file_limit(
         self,
         app_with_max_file_size: Flask,
@@ -2601,34 +2602,6 @@ class TestUserPicture(ApiTestCaseMixin):
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_max_file_size, user_1.email
-        )
-
-        response = client.post(
-            "/api/auth/picture",
-            data=dict(
-                file=(BytesIO(b"test_file_for_avatar" * 50), "avatar.jpg")
-            ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
-        )
-
-        data = self.assert_413(
-            response,
-            "Error during picture upload, file size (1.2KB) exceeds 1.0KB.",
-        )
-        assert "data" not in data
-
-    def test_it_returns_error_if_image_size_exceeds_archive_limit(
-        self,
-        app_with_max_zip_file_size: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        gpx_file: str,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app_with_max_zip_file_size, user_1.email
         )
 
         response = client.post(
