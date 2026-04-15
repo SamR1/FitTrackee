@@ -2,9 +2,8 @@ import secrets
 from datetime import datetime, timezone
 from typing import Optional, Tuple
 
-from sqlalchemy import func
-
 from flask import current_app
+from sqlalchemy import func
 
 from fittrackee import db
 from fittrackee.reports.models import ReportAction
@@ -198,7 +197,7 @@ class UserManagerService:
         new_user.timezone = USER_TIMEZONE
         new_user.date_format = USER_DATE_FORMAT
 
-        if current_app.config.get("CAN_SEND_EMAILS"):
+        if current_app.config["CAN_SEND_EMAILS"]:
             new_user.confirmation_token = secrets.token_urlsafe(30)
         else:
             new_user.is_active = True
