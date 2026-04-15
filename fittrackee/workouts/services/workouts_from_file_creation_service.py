@@ -22,7 +22,7 @@ from fittrackee.workouts.models import (
 
 from ..constants import (
     WORKOUT_ALLOWED_EXTENSIONS,
-    WORKOUT_FILE_MAGIC_MIMETYPES,
+    WORKOUT_FILE_DETECTED_MIMETYPES,
 )
 from ..exceptions import (
     WorkoutExceedingValueException,
@@ -315,7 +315,9 @@ class AbstractWorkoutsCreationService(BaseWorkoutService, WorkoutFileMixin):
                 try:
                     file_content = zip_ref.open(file)
                     check_mime_type(
-                        extension, file_content, WORKOUT_FILE_MAGIC_MIMETYPES
+                        extension,
+                        file_content,
+                        WORKOUT_FILE_DETECTED_MIMETYPES,
                     )
                     new_workout = self.create_workout_from_file(
                         extension, equipments, file_content, get_weather

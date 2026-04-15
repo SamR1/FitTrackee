@@ -7,8 +7,6 @@ from flask import current_app
 from PIL import Image
 from werkzeug.utils import secure_filename
 
-from fittrackee.workouts.constants import OCTET_STREAM_MIMETYPE
-
 from .exceptions import FileException
 
 if TYPE_CHECKING:
@@ -76,13 +74,11 @@ def check_mime_type(
 
     # python-magic return default mime type ('application/octet-stream') for
     # archives, check magic numbers instead
-    if (
-        mime_type == OCTET_STREAM_MIMETYPE
-        and extension in ["zip", "kmz"]
-        and not check_zip_archive(buffer)
-    ):
-        raise FileException(INVALID_FILE_ERROR_MESSAGE)
+    if extension in ["zip", "kmz"]:
+        if not check_zip_archive(buffer):
+            raise FileException(INVALID_FILE_ERROR_MESSAGE)
 
+    # image files extensions and other extensions for workout files
     elif mime_type not in valid_content_types.get(extension, ""):
         raise FileException(INVALID_FILE_ERROR_MESSAGE)
 
@@ -94,7 +90,7 @@ def check_file(file: "FileStorage", valid_content_types: Dict) -> str:
         raise FileException("invalid file name")
 
     extension = get_file_extension(file.filename)
-    if extension not in valid_content_types.keys():
+    if extension not in valid_content_types:
         raise FileException("file extension not allowed")
 
     check_mime_type(extension, file, valid_content_types)

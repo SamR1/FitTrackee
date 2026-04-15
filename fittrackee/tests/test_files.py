@@ -14,7 +14,7 @@ from fittrackee.files import (
     get_image_without_exif,
 )
 from fittrackee.tests.workouts.mixins import WorkoutFileMixin
-from fittrackee.workouts.constants import WORKOUT_FILE_MAGIC_MIMETYPES
+from fittrackee.workouts.constants import WORKOUT_FILE_DETECTED_MIMETYPES
 
 from .mixins import ImageMixin
 
@@ -60,7 +60,7 @@ class TestCheckFile(ImageMixin, WorkoutFileMixin):
         )
 
         with pytest.raises(FileException, match="invalid file"):
-            check_file(file, WORKOUT_FILE_MAGIC_MIMETYPES)
+            check_file(file, WORKOUT_FILE_DETECTED_MIMETYPES)
 
     def test_it_raises_error_when_image_can_not_be_read(self) -> None:
         file = FileStorage(filename="image.jpg", stream=BytesIO())
@@ -82,7 +82,7 @@ class TestCheckFile(ImageMixin, WorkoutFileMixin):
     ) -> None:
         file = self.get_text_file_storage(content=gpx_file)
 
-        extension = check_file(file, WORKOUT_FILE_MAGIC_MIMETYPES)
+        extension = check_file(file, WORKOUT_FILE_DETECTED_MIMETYPES)
 
         assert extension == "gpx"
 
@@ -93,7 +93,7 @@ class TestCheckFile(ImageMixin, WorkoutFileMixin):
             content=tcx_with_one_lap_and_one_track, file_name="workout.tcx"
         )
 
-        extension = check_file(file, WORKOUT_FILE_MAGIC_MIMETYPES)
+        extension = check_file(file, WORKOUT_FILE_DETECTED_MIMETYPES)
 
         assert extension == "tcx"
 
@@ -104,7 +104,7 @@ class TestCheckFile(ImageMixin, WorkoutFileMixin):
             content=kml_2_3_with_one_track, file_name="workout.kml"
         )
 
-        extension = check_file(file, WORKOUT_FILE_MAGIC_MIMETYPES)
+        extension = check_file(file, WORKOUT_FILE_DETECTED_MIMETYPES)
 
         assert extension == "kml"
 
@@ -113,7 +113,7 @@ class TestCheckFile(ImageMixin, WorkoutFileMixin):
     ) -> None:
         file = self.get_file_storage(app, file_name="example.kmz")
 
-        extension = check_file(file, WORKOUT_FILE_MAGIC_MIMETYPES)
+        extension = check_file(file, WORKOUT_FILE_DETECTED_MIMETYPES)
 
         assert extension == "kmz"
 
@@ -125,14 +125,14 @@ class TestCheckFile(ImageMixin, WorkoutFileMixin):
         )
 
         with pytest.raises(FileException, match="invalid file"):
-            check_file(file, WORKOUT_FILE_MAGIC_MIMETYPES)
+            check_file(file, WORKOUT_FILE_DETECTED_MIMETYPES)
 
     def test_it_returns_extension_when_fit_file_is_valid(
         self, app: "Flask"
     ) -> None:
         file = self.get_file_storage(app, file_name="example.fit")
 
-        extension = check_file(file, WORKOUT_FILE_MAGIC_MIMETYPES)
+        extension = check_file(file, WORKOUT_FILE_DETECTED_MIMETYPES)
 
         assert extension == "fit"
 
@@ -144,7 +144,7 @@ class TestCheckFile(ImageMixin, WorkoutFileMixin):
         )
 
         with pytest.raises(FileException, match="invalid file"):
-            check_file(file, WORKOUT_FILE_MAGIC_MIMETYPES)
+            check_file(file, WORKOUT_FILE_DETECTED_MIMETYPES)
 
     def test_it_returns_extension_when_zip_file_is_valid(
         self, app: "Flask"
@@ -153,7 +153,7 @@ class TestCheckFile(ImageMixin, WorkoutFileMixin):
             app, file_name="gpx_multiple_extensions.zip"
         )
 
-        extension = check_file(file, WORKOUT_FILE_MAGIC_MIMETYPES)
+        extension = check_file(file, WORKOUT_FILE_DETECTED_MIMETYPES)
 
         assert extension == "zip"
 

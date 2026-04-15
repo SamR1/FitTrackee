@@ -51,6 +51,7 @@ SPORTS_WITHOUT_ELEVATION_DATA = [
     "Standup Paddleboarding",
 ]
 
+# for file download
 WORKOUT_FILE_MIMETYPES = {
     "fit": "application/vnd.ant.fit",
     "gpx": "application/gpx+xml",
@@ -59,18 +60,23 @@ WORKOUT_FILE_MIMETYPES = {
     "tcx": "application/vnd.garmin.tcx+xml",
 }
 WORKOUT_ALLOWED_EXTENSIONS = set(WORKOUT_FILE_MIMETYPES.keys())
+# detected mime types on file upload
 XML_MIMETYPE = "text/xml"
 OCTET_STREAM_MIMETYPE = "application/octet-stream"
 ZIP_MIMETYPE = "application/zip"
-WORKOUT_FILE_MAGIC_MIMETYPES = {
+WORKOUT_FILE_DETECTED_MIMETYPES = {
     "fit": [OCTET_STREAM_MIMETYPE],
     "gpx": [XML_MIMETYPE],
     "kml": [XML_MIMETYPE],
-    "kmz": [WORKOUT_FILE_MIMETYPES["kmz"], ZIP_MIMETYPE],
+    "kmz": [
+        WORKOUT_FILE_MIMETYPES["kmz"],
+        OCTET_STREAM_MIMETYPE,
+        ZIP_MIMETYPE,
+    ],
     "tcx": [XML_MIMETYPE],
     "zip": [OCTET_STREAM_MIMETYPE, ZIP_MIMETYPE],
 }
-WORKOUT_ALL_ALLOWED_EXTENSIONS = set(WORKOUT_FILE_MAGIC_MIMETYPES.keys())
+WORKOUT_ALL_ALLOWED_EXTENSIONS = set(WORKOUT_FILE_DETECTED_MIMETYPES.keys())
 
 NSMAP = {
     "gpxtpx": "http://www.garmin.com/xmlschemas/TrackPointExtension/v1",

@@ -57,7 +57,7 @@ from ..constants import ElevationDataSource, PaceSpeedDisplay
 from ..files import get_file_extension
 from .constants import (
     SPORTS_WITHOUT_ELEVATION_DATA,
-    WORKOUT_FILE_MAGIC_MIMETYPES,
+    WORKOUT_FILE_DETECTED_MIMETYPES,
     WORKOUT_FILE_MIMETYPES,
 )
 from .decorators import check_workout
@@ -2328,7 +2328,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     workout_file = request.files["file"]
 
     try:
-        check_file(workout_file, WORKOUT_FILE_MAGIC_MIMETYPES)
+        check_file(workout_file, WORKOUT_FILE_DETECTED_MIMETYPES)
 
         service = WorkoutsFromFileCreationService(
             auth_user, workout_data, workout_file
