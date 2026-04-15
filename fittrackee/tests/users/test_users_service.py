@@ -775,7 +775,9 @@ class TestUserManagerServiceUserCreation:
         assert new_user.email == email
         assert bcrypt.check_password_hash(new_user.password, user_password)
 
-    def test_created_user_is_inactive(self, app: Flask) -> None:
+    def test_created_user_is_inactive_when_email_enabled(
+        self, app: Flask
+    ) -> None:
         username = random_string()
         user_manager_service = UserManagerService(username=username)
 
@@ -784,6 +786,18 @@ class TestUserManagerServiceUserCreation:
         assert new_user
         assert new_user.is_active is False
         assert new_user.confirmation_token is not None
+
+    def test_created_user_is_active_when_email_disabled(
+        self, app_wo_email: Flask
+    ) -> None:
+        username = random_string()
+        user_manager_service = UserManagerService(username=username)
+
+        new_user, _ = user_manager_service.create(email=random_email())
+
+        assert new_user
+        assert new_user.is_active is True
+        assert new_user.confirmation_token is None
 
     @pytest.mark.parametrize("input_role", [{}, {"role": "user"}])
     def test_created_user_has_user_role_when_role_not_provided(

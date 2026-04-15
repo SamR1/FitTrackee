@@ -4,6 +4,8 @@ from typing import Optional, Tuple
 
 from sqlalchemy import func
 
+from flask import current_app
+
 from fittrackee import db
 from fittrackee.reports.models import ReportAction
 from fittrackee.users.constants import (
@@ -195,7 +197,11 @@ class UserManagerService:
         new_user = User(username=self.username, email=email, password=password)
         new_user.timezone = USER_TIMEZONE
         new_user.date_format = USER_DATE_FORMAT
-        new_user.confirmation_token = secrets.token_urlsafe(30)
+
+        if current_app.config.get("CAN_SEND_EMAILS"):
+            new_user.confirmation_token = secrets.token_urlsafe(30)
+        else:
+            new_user.is_active = True
 
         if role is not None:
             if role not in UserRole.db_choices():
