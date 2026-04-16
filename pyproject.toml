@@ -53,7 +53,7 @@ lxml = "6.0.2"
 mistune = "3.2.0"
 nh3 = "0.3.3"
 numpy = "=2.2.6" # numpy 2.3+ requires python 3.11+. geoalchemy2 dependency.
-pandas = "=2.3.2" # temporary workaround to enable installation on RHEL 7, installation of 2.3.3 generates an error
+pandas = "=2.3.2" # temporary workaround to enable installation on RHEL 7, installation of 2.3.3 generates an error. With python 3.14, install with --build-constraint to avoid error, see documentation.
 psycopg2-binary = "2.9.11"
 pyjwt = "2.12.1"
 python-magic = "0.4.27"

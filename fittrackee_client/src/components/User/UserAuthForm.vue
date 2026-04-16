@@ -35,6 +35,9 @@
               }`
             )
           }}
+          <template v-if="!appConfig.is_email_sending_enabled">
+            {{ $t('user.ADMIN_WILL_REVIEW_AND_ACTIVATE_ACCOUNT') }}
+          </template>
         </div>
         <form
           :class="{ errors: formErrors }"
