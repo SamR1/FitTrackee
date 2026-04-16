@@ -6,7 +6,7 @@ import pytest
 from PIL import Image, ImageChops
 from werkzeug.datastructures import FileStorage
 
-from fittrackee.constants import IMAGE_CONTENT_TYPES
+from fittrackee.constants import IMAGE_MIMETYPES
 from fittrackee.exceptions import FileException
 from fittrackee.files import (
     check_file,
@@ -46,13 +46,13 @@ class TestCheckFile(ImageMixin, WorkoutFileMixin):
         file = FileStorage(stream=BytesIO())
 
         with pytest.raises(FileException, match="invalid file name"):
-            check_file(file, IMAGE_CONTENT_TYPES)
+            check_file(file, IMAGE_MIMETYPES)
 
     def test_it_raises_error_if_extension_is_invalid(self) -> None:
         file = FileStorage(filename="invalid.bmp", stream=BytesIO())
 
         with pytest.raises(FileException, match="file extension not allowed"):
-            check_file(file, IMAGE_CONTENT_TYPES)
+            check_file(file, IMAGE_MIMETYPES)
 
     def test_it_raises_error_if_content_is_invalid(self) -> None:
         file = FileStorage(
@@ -66,14 +66,14 @@ class TestCheckFile(ImageMixin, WorkoutFileMixin):
         file = FileStorage(filename="image.jpg", stream=BytesIO())
 
         with pytest.raises(FileException, match="invalid file"):
-            check_file(file, IMAGE_CONTENT_TYPES)
+            check_file(file, IMAGE_MIMETYPES)
 
     def test_it_returns_extension_when_image_file_is_valid(
         self, app: "Flask"
     ) -> None:
         file = self.get_image_file_storage(app)
 
-        extension = check_file(file, IMAGE_CONTENT_TYPES)
+        extension = check_file(file, IMAGE_MIMETYPES)
 
         assert extension == "png"
 

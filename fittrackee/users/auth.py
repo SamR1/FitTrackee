@@ -56,7 +56,7 @@ from fittrackee.visibility_levels import (
 )
 from fittrackee.workouts.models import Sport
 
-from ..constants import IMAGE_CONTENT_TYPES, PaceSpeedDisplay
+from ..constants import IMAGE_MIMETYPES, PaceSpeedDisplay
 from ..workouts.constants import PACE_SPORTS
 from .exceptions import UserControlsException, UserCreationException
 from .models import (
@@ -1856,7 +1856,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
 
     file = request.files["file"]
     try:
-        extension = check_file(file, IMAGE_CONTENT_TYPES)
+        extension = check_file(file, IMAGE_MIMETYPES)
     except FileException as e:
         return InvalidPayloadErrorResponse(str(e))
     filename = generate_filename(extension)

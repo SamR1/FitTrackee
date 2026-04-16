@@ -23,7 +23,7 @@ class PaceSpeedDisplay(str, Enum):
     PACE_AND_SPEED = "pace_and_speed"
 
 
-IMAGE_CONTENT_TYPES = {
+IMAGE_MIMETYPES = {
     "gif": ["image/gif"],
     "jpeg": ["image/jpeg"],
     "jpg": ["image/jpeg"],

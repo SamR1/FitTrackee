@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
-from ...files import get_file_extension
+from fittrackee.files import get_file_extension
+
 from ..constants import WORKOUT_ALLOWED_EXTENSIONS
 from ..exceptions import WorkoutExceedingValueException
 from ..models import PSQL_INTEGER_LIMIT, WORKOUT_VALUES_LIMIT
