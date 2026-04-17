@@ -82,7 +82,7 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
             self.logger.info(message)
 
     def refresh(self) -> Optional["Workout"]:
-        file_extension = self._get_extension(self.original_file)
+        file_extension = self._get_file_extension(self.original_file)
         if not self._is_valid_workout_file_extension(file_extension):
             raise WorkoutRefreshException("error", "invalid file extension")
 

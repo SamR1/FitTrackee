@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING
 
-from flask import current_app
+from fittrackee.files import get_file_extension
 
+from ..constants import WORKOUT_ALLOWED_EXTENSIONS
 from ..exceptions import WorkoutExceedingValueException
 from ..models import PSQL_INTEGER_LIMIT, WORKOUT_VALUES_LIMIT
-from ..utils.gpx import get_file_extension
 
 if TYPE_CHECKING:
     from fittrackee.workouts.models import Workout
@@ -33,16 +33,13 @@ class CheckWorkoutMixin:
 
 class WorkoutFileMixin:
     @staticmethod
-    def _get_extension(filename: str) -> str:
+    def _get_file_extension(filename: str) -> str:
         return get_file_extension(filename)
 
     @staticmethod
     def _is_valid_workout_file_extension(extension: str) -> bool:
-        return (
-            extension in current_app.config["WORKOUT_ALLOWED_EXTENSIONS"]
-            and extension != "zip"
-        )
+        return extension in WORKOUT_ALLOWED_EXTENSIONS
 
     def _is_workout_file(self, filename: str) -> bool:
-        extension = self._get_extension(filename)
+        extension = self._get_file_extension(filename)
         return self._is_valid_workout_file_extension(extension)
