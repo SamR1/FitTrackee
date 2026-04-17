@@ -1,13 +1,24 @@
 {
+  "DATES": "Datas",
   "STATISTICS": "Estatisticas",
   "STATISTICS_CHARTS": {
+    "day": "Estatisticas Diárias",
     "month": "Estatistica do mês",
     "week": "Estatistica da semana",
-    "year": "Estatistica do anual"
+    "year": "Estatistica Anual"
+  },
+  "STATISTICS_ON_ALL_WORKOUTS": "Estatísticas de todos exercícios:",
+  "STATISTICS_ON_LAST_WORKOUTS": "Estatísticas dos últimos {count} exercícios:",
+  "STATISTICS_TYPE": "Tipo de estatística",
+  "STATISTICS_TYPES": {
+    "by_sport": "por esporte",
+    "by_time": "por período"
   },
   "TIME_FRAMES": {
+    "day": "dia",
     "month": "mês",
     "week": "semana",
     "year": "ano"
-  }
+  },
+  "WORKOUTS_AVERAGE": "número médio de exercícios"
 }

@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from typing import IO, TYPE_CHECKING, Dict, Optional
@@ -15,6 +16,8 @@ from fittrackee.workouts.services.workout_from_file import GpxInfo
 from ..mixins import ApiTestCaseMixin
 
 if TYPE_CHECKING:
+    from flask import Flask
+
     from fittrackee.users.models import User
     from fittrackee.workouts.models import Sport, Workout
 
@@ -46,16 +49,33 @@ class WorkoutGpxInfoMixin:
 
 class WorkoutFileMixin:
     @staticmethod
-    def get_file_storage(
-        content: str, file_name: str = "file.gpx"
+    def get_file_content(content: str) -> IO[bytes]:
+        return BytesIO(str.encode(content))
+
+    def get_text_file_storage(
+        self, content: str, file_name: str = "file.gpx"
     ) -> "FileStorage":
         return FileStorage(
-            filename=file_name, stream=BytesIO(str.encode(content))
+            filename=file_name, stream=self.get_file_content(content)
         )
 
     @staticmethod
-    def get_file_content(content: str) -> IO[bytes]:
-        return BytesIO(str.encode(content))
+    def get_file_storage(app: "Flask", file_name: str) -> "FileStorage":
+        file_path = os.path.join(app.root_path, "tests/files", file_name)
+        with open(file_path, "rb") as file:
+            return FileStorage(filename=file_name, stream=BytesIO(file.read()))
+
+    def get_fit_file_content(
+        self, app: "Flask", file_name: str = "example.fit"
+    ) -> IO[bytes]:
+        file = self.get_file_storage(app, file_name)
+        return file.stream
+
+    def get_kmz_file_content(
+        self, app: "Flask", file_name: str = "example.kmz"
+    ) -> IO[bytes]:
+        file = self.get_file_storage(app, file_name)
+        return file.stream
 
 
 class WorkoutAssertMixin:

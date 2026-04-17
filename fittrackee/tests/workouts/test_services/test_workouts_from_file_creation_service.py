@@ -322,7 +322,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         sport_1_cycling: "Sport",
         gpx_file_with_duplicated_segments: str,
     ) -> None:
-        file = self.get_file_storage(gpx_file_with_duplicated_segments)
+        file = self.get_text_file_storage(gpx_file_with_duplicated_segments)
         service = WorkoutsFromFileCreationService(
             auth_user=user_1,
             workouts_data={"sport_id": sport_1_cycling.id},
@@ -1477,14 +1477,14 @@ class TestWorkoutsFromFileCreationServiceProcessArchiveContent(
 
         new_workouts, processing_output = service.process_archive_content(
             archive_content=archive_file_storage.stream,
-            files_to_process=["invalid.txt"],
+            files_to_process=["missing.gpx"],
             equipments=None,
         )
 
         assert new_workouts == []
         assert processing_output == {
-            "invalid.txt": (
-                "There is no item named 'invalid.txt' in the archive"
+            "missing.gpx": (
+                "There is no item named 'missing.gpx' in the archive"
             )
         }
 

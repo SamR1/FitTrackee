@@ -25,6 +25,8 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentsException,
 )
 from fittrackee.equipments.models import Equipment, WorkoutEquipment
+from fittrackee.exceptions import FileException
+from fittrackee.files import check_file
 from fittrackee.oauth2.server import require_auth
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.responses import (
@@ -55,6 +57,7 @@ from ..constants import ElevationDataSource, PaceSpeedDisplay
 from ..files import get_file_extension
 from .constants import (
     SPORTS_WITHOUT_ELEVATION_DATA,
+    WORKOUT_FILE_DETECTED_MIMETYPES,
     WORKOUT_FILE_MIMETYPES,
 )
 from .decorators import check_workout
@@ -2297,6 +2300,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``no file part``
         - ``no selected file``
         - ``file extension not allowed``
+        - ``invalid file``
         - ``error when parsing fit file``
         - ``error when parsing gpx file``
         - ``error when parsing kml file``
@@ -2365,6 +2369,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         return error_response
 
     try:
+        check_file(workout_file, WORKOUT_FILE_DETECTED_MIMETYPES)
+
         service = WorkoutsFromFileCreationService(
             auth_user, workout_data, workout_file
         )
@@ -2391,6 +2397,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 "new_workouts": len(new_workouts),
                 "errored_workouts": processing_output["errored_workouts"],
             }, 400
+    except FileException as e:
+        return InvalidPayloadErrorResponse(str(e))
     except WorkoutExceedingValueException as e:
         appLog.error(e.detail)
         return ExceedingValueErrorResponse()

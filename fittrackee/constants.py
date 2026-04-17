@@ -24,10 +24,10 @@ class PaceSpeedDisplay(str, Enum):
 
 
 IMAGE_MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
-IMAGE_CONTENT_TYPES = {
-    "gif": "image/gif",
-    "jpeg": "image/jpeg",
-    "jpg": "image/jpeg",
-    "png": "image/png",
-    "webp": "image/webp",
+IMAGE_MIMETYPES = {
+    "gif": ["image/gif"],
+    "jpeg": ["image/jpeg"],
+    "jpg": ["image/jpeg"],
+    "png": ["image/png"],
+    "webp": ["image/webp"],
 }

@@ -24,7 +24,11 @@ from fittrackee.workouts.services.workout_from_file import (
 
 from ..mixins import MediaMixin, ReportMixin, UserTaskMixin
 from ..utils import jsonify_dict
-from .mixins import WorkoutApiTestCaseMixin, WorkoutGpxInfoMixin
+from .mixins import (
+    WorkoutApiTestCaseMixin,
+    WorkoutFileMixin,
+    WorkoutGpxInfoMixin,
+)
 
 if TYPE_CHECKING:
     from fittrackee.equipments.models import Equipment
@@ -878,26 +882,28 @@ class TestPostWorkoutWithTcx(WorkoutApiTestCaseMixin):
         assert len(data["data"]["workouts"][0]["segments"]) == 1
 
 
-class TestPostWorkoutWithFit(WorkoutApiTestCaseMixin):
+class TestPostWorkoutWithFit(WorkoutApiTestCaseMixin, WorkoutFileMixin):
     def test_it_adds_a_workout_with_fit_file(
         self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
-        file_path = os.path.join(app.root_path, "tests/files/example.fit")
-        with open(file_path, "rb") as fit_file:
-            client, auth_token = self.get_test_client_and_auth_token(
-                app, user_1.email
-            )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
-            response = client.post(
-                "/api/workouts",
-                data=dict(
-                    file=(fit_file, "example.fit"), data='{"sport_id": 1}'
+        response = client.post(
+            "/api/workouts",
+            data=dict(
+                file=(
+                    self.get_fit_file_content(app, "example.fit"),
+                    "example.fit",
                 ),
-                headers=dict(
-                    content_type="multipart/form-data",
-                    Authorization=f"Bearer {auth_token}",
-                ),
-            )
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type="multipart/form-data",
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
 
         assert response.status_code == 201
         data = json.loads(response.data.decode())
@@ -926,22 +932,24 @@ class TestPostWorkoutWithFit(WorkoutApiTestCaseMixin):
     def test_it_adds_a_workout_with_apple_watch_fit_file(
         self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
-        file_path = os.path.join(app.root_path, "tests/files/apple_watch.fit")
-        with open(file_path, "rb") as fit_file:
-            client, auth_token = self.get_test_client_and_auth_token(
-                app, user_1.email
-            )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
 
-            response = client.post(
-                "/api/workouts",
-                data=dict(
-                    file=(fit_file, "apple_watch.fit"), data='{"sport_id": 1}'
+        response = client.post(
+            "/api/workouts",
+            data=dict(
+                file=(
+                    self.get_fit_file_content(app, "apple_watch.fit"),
+                    "apple_watch.fit",
                 ),
-                headers=dict(
-                    content_type="multipart/form-data",
-                    Authorization=f"Bearer {auth_token}",
-                ),
-            )
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type="multipart/form-data",
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
 
         assert response.status_code == 201
         data = json.loads(response.data.decode())

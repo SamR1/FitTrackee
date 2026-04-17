@@ -46,20 +46,6 @@ class TestMediaServiceInstantiation(MediaServiceTestCase):
         assert service.media_file == media_file
 
 
-class TestMediaServiceGetImageWithoutExif(MediaServiceTestCase):
-    def test_it_creates_new_image_without_exif_data(
-        self, app: "Flask", user_1: "User"
-    ) -> None:
-        service = MediaService(user_1, self.create_media_file(app))
-        image = Image.open(
-            os.path.join(app.root_path, "tests/files/image_with_gps_exif.jpg")
-        )
-
-        new_image = service.get_image_without_exif(image)
-
-        assert dict(new_image.getexif()) == {}
-
-
 class TestMediaServiceCreateImageMedia(MediaServiceTestCase):
     def test_it_raises_error_if_file_storage_has_no_filename(
         self, app: "Flask", user_1: "User"

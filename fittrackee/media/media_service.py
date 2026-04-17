@@ -8,8 +8,12 @@ from flask import current_app
 from PIL import Image, ImageOps
 
 from fittrackee import db
-from fittrackee.constants import IMAGE_CONTENT_TYPES
-from fittrackee.files import get_absolute_file_path, get_file_extension
+from fittrackee.constants import IMAGE_MIMETYPES
+from fittrackee.files import (
+    get_absolute_file_path,
+    get_file_extension,
+    get_image_without_exif,
+)
 
 from .exceptions import MediaException
 from .models import Media
@@ -33,12 +37,6 @@ class MediaService:
         if not os.path.exists(absolute_user_path):
             os.makedirs(absolute_user_path)
         return user_path
-
-    @staticmethod
-    def get_image_without_exif(image: "Image.Image") -> "Image.Image":
-        image_without_exif = Image.new(image.mode, image.size)
-        image_without_exif.putdata(image.get_flattened_data())
-        return image_without_exif
 
     @staticmethod
     def convert_to_degrees(value: Tuple) -> float:
@@ -100,7 +98,7 @@ class MediaService:
         if updated_image:
             image = updated_image  # type: ignore[assignment]
 
-        image_without_exif = self.get_image_without_exif(image)
+        image_without_exif = get_image_without_exif(image)
         image_name = uuid.uuid4().hex
         new_filename = f"{image_name}.{extension}"
         image_without_exif.save(
@@ -121,7 +119,7 @@ class MediaService:
             user_id=self.auth_user.id,
             file_name=new_filename,
             file_size=self.media_file.stream.tell(),
-            file_content_type=IMAGE_CONTENT_TYPES[extension],
+            file_content_type=IMAGE_MIMETYPES[extension][0],
         )
         media.meta = {
             "coordinates": gps_info,

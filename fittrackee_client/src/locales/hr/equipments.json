@@ -9,6 +9,7 @@
   "ERRORS": {
     "inactive": "Oprema '{equipmentLabel}' je neaktivna.",
     "invalid": "Oprema '{equipmentLabel}' nevažeća je za ovaj sport.",
+    "limit_exceeded": "Ovaj dio opreme premašuje maksimalno ograničenje od 5 stavki za sport {sportLabels}. | Ovaj dio opreme premašuje maksimalno ograničenje od 5 stavki za sljedeće sportove: {sportLabels}.",
     "not_found": "Oprema nije pronađena."
   },
   "NEW_EQUIPMENT": "Nova oprema",
