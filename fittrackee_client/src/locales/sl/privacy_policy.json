@@ -1,1 +1,37 @@
-{}
+{
+  "CONTENT": {
+    "ACCOUNT_DELETION": {
+      "CONTENT": "",
+      "TITLE": ""
+    },
+    "CHANGES_TO_OUR_PRIVACY_POLICY": {
+      "CONTENT": "",
+      "TITLE": ""
+    },
+    "DATA_COLLECTED": {
+      "CONTENT": "",
+      "TITLE": ""
+    },
+    "INFORMATION_DISCLOSURE": {
+      "CONTENT": "",
+      "TITLE": ""
+    },
+    "INFORMATION_PROTECTION": {
+      "CONTENT": "",
+      "TITLE": ""
+    },
+    "INFORMATION_USAGE": {
+      "CONTENT": "",
+      "TITLE": ""
+    },
+    "SITE_USAGE_BY_CHILDREN": {
+      "CONTENT": "",
+      "TITLE": ""
+    },
+    "YOUR_CONSENT": {
+      "CONTENT": "",
+      "TITLE": ""
+    }
+  },
+  "TITLE": ""
+}
