@@ -4,6 +4,9 @@
   "NOT_FOUND": {
     "COMMENT": "Komentář nenalezen",
     "PAGE": "Stránka nenalezena",
+    "REPORT": "",
+    "SEGMENT": "",
+    "USER": "",
     "WORKOUT": "Cvičení nenalezeno"
   },
   "SOMETHING_WRONG": "Něco se pokazilo",
