@@ -5,6 +5,7 @@
   "ACCOUNT_SUSPENDED_AT": "Аккаунт заблокирован в {0}.",
   "ACTIVE_ACCOUNT": "Аккаунт активен",
   "ACTIVE_USER": "активный пользователь | активных пользователей",
+  "ADMIN_WILL_REVIEW_AND_ACTIVATE_ACCOUNT": "",
   "ALREADY_HAVE_ACCOUNT": "Уже есть аккаунт?",
   "APPEAL": "Апелляция",
   "APPEAL_APPROVED": "Апелляция одобрена.",
@@ -85,6 +86,9 @@
     "BACK_TO_PROFILE": "Назад к профилю",
     "BIO": "Биография",
     "BIRTH_DATE": "Дата рождения",
+    "CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI": "",
+    "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "",
+    "CHANGES_ONLY_TO_NEW_WORKOUTS": "",
     "CREATED_REPORTS": "Созданные жалобы",
     "DATE_FORMAT": "Формат отображения даты",
     "EDIT": "Редактировать профиль",
@@ -127,6 +131,7 @@
     },
     "MESSAGES_EDITION": "Изменение параметров сообщений",
     "MESSAGES_PREFERENCES": "Параметры сообщений",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "",
     "MONDAY": "Понедельник",
     "NOTIFICATIONS": {
       "account_creation": "Кто-то регистрируется",
@@ -141,6 +146,7 @@
     "NOTIFICATIONS_EDITION": "Редактирование настроек уведомлений",
     "NOTIFICATION_PREFERENCES": "Настройки уведомлений",
     "NO_ARCHIVE_UPLOADS": "Нет загрузок архивов",
+    "NO_ELEVATION_SERVICE_AVAILABLE": "",
     "NO_SANCTIONS": "Без санкций",
     "PICTURE": "Изображение",
     "PICTURE_EDITION": "Редактирование изображения",
@@ -183,6 +189,12 @@
       "DISABLED_BY_ADMIN": "Отключено администратором",
       "IS_ACTIVE": "активный",
       "LABEL": "название",
+      "PACE_SPEED_DISPLAY": {
+        "LABEL": "",
+        "pace": "",
+        "pace_and_speed": "",
+        "speed": ""
+      },
       "STOPPED_SPEED_THRESHOLD": "порог скорости остановки"
     },
     "SPORTS_EDITION": "Редактирование спортивных предпочтений",
