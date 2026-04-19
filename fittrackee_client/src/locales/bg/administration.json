@@ -12,7 +12,11 @@
   "APPLICATION": "Приложение",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Администраторски имейл за контакт",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "",
     "MAX_FILES_IN_ZIP_LABEL": "Макс. файлове в zip архив",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "",
     "MAX_USERS_HELP": "0 - без лимит за регистрация.",
     "MAX_USERS_LABEL": "Макс. брой активни потребители",
     "NO_CONTACT_EMAIL": "без имейл за връзка",
@@ -22,10 +26,82 @@
     "TITLE": "Конфигурация на приложението",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Макс. размер на zip архива (в Mb)"
   },
+  "APP_MODERATION": {
+    "ACTIONS": {
+      "ADD_COMMENT": "",
+      "MARK_AS_RESOLVED": "",
+      "MARK_AS_UNRESOLVED": "",
+      "SEND_WARNING_EMAIL": "",
+      "SUSPEND_ACCOUNT": "",
+      "SUSPEND_CONTENT": "",
+      "UNSUSPEND_ACCOUNT": "",
+      "UNSUSPEND_CONTENT": ""
+    },
+    "APPEAL": {
+      "APPROVED": "",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "",
+      "HIDE": "",
+      "REASON_IS": "",
+      "REJECTED": "",
+      "SEE": ""
+    },
+    "DESCRIPTION": "",
+    "NOTES_AND_ACTIONS": "",
+    "NO_REPORTS_FOUND": "",
+    "ORDER_BY": {
+      "CREATED_AT": "",
+      "UPDATED_AT": ""
+    },
+    "REASON": "",
+    "REPORT": "",
+    "REPORTED_BY": "",
+    "REPORTED_CONTENT": "",
+    "REPORTED_USER": "",
+    "REPORTER": "",
+    "REPORT_ACTIONS": {
+      "comment_suspension": "",
+      "comment_unsuspension": "",
+      "report_reopening": "",
+      "report_resolution": "",
+      "user_suspension": "",
+      "user_unsuspension": "",
+      "user_warning": "",
+      "user_warning_lifting": "",
+      "workout_suspension": "",
+      "workout_unsuspension": ""
+    },
+    "REPORT_NOTE": "",
+    "RESOLVED": {
+      "FALSE": "",
+      "TRUE": ""
+    },
+    "RESOLVED_AT": "",
+    "RESOLVED_BY": "",
+    "STATUS": "",
+    "TEXTAREA_PLACEHOLDER": {
+      "ADD_COMMENT": "",
+      "INFORMATION_VISIBLE_TO_USER": "",
+      "MARK_AS_RESOLVED": "",
+      "MARK_AS_UNRESOLVED": "",
+      "SEND_WARNING_EMAIL": "",
+      "SUSPEND": "",
+      "UNSUSPEND": "",
+      "UPDATE_APPEAL": ""
+    },
+    "TITLE": "",
+    "UNRESOLVED_REPORTS_EXIST": "",
+    "USERS_QUEUED_TASKS_EXIST": "",
+    "VIEW_REPORT": ""
+  },
   "BACK_TO_ADMIN": "Обратно към администрациата",
+  "CONFIRM_SUSPEND_ACCOUNT": "",
+  "CONFIRM_SUSPEND_CONTENT": "",
   "CONFIRM_USER_ACCOUNT_DELETION": "Сигурни ли сте, че искате да изтриете {0} акаунтa? Всички данни ще бъдат изтрити, и няма да могат да бъдат възстановени.",
   "CONFIRM_USER_PASSWORD_RESET": "Сигурни ли сте, че искате да зададете нова парола за {0}?",
   "CURRENT_EMAIL": "Текущ имейл",
+  "DELETED_COMMENT": "",
+  "DELETED_USER": "",
+  "DELETED_WORKOUT": "",
   "DELETE_USER": "Изтрий потребител",
   "EMAIL_SENDING_DISABLED": "Изпращането на имейли е забранено.",
   "ENABLE_DISABLE_EQUIPMENT_TYPES": "Позволи/забрани видеве оборудвания.",
@@ -63,11 +139,30 @@
       "ORDER_BY": {
         "CREATED_AT": "регистриран на",
         "IS_ACTIVE": "статус на акаунт",
+        "ROLE": "",
         "USERNAME": "потребителско име",
         "WORKOUTS_COUNT": "брой тренировки"
       }
     },
+    "TABLE": {
+      "CHANGE_ROLE": "",
+      "CHANGE_TO_ADMIN": "",
+      "CHANGE_TO_MODERATOR": "",
+      "CHANGE_TO_USER": ""
+    },
     "TITLE": "Администриране - Потребители"
+  },
+  "USERS_QUEUED_TASKS": {
+    "DESCRIPTION": "",
+    "LABEL": "",
+    "LIST_DESCRIPTION": "",
+    "NO_USERS_QUEUED_TASKS": "",
+    "TASK_TYPES": {
+      "LABEL": "",
+      "user_data_export": "",
+      "workouts_archive_upload": ""
+    },
+    "VIEW_OTHER_TASKS": ""
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "Имейл адресът бе променен."
 }
