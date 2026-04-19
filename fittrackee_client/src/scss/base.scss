@@ -34,6 +34,10 @@ body {
   }
 }
 
+body:has(div#modal) {
+  overflow: hidden;
+}
+
 #app {
   font-family: 'PT Sans', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

@@ -11,7 +11,7 @@
           <i class="fa fa-edit" aria-hidden="true" />
         </button>
         <button
-          v-if="isWorkoutOwner"
+          v-if="isWorkoutOwner && !isEditing"
           class="transparent"
           id="delete-button"
           @click="emit('deleteMedia', mediaAttachment.id)"
@@ -30,61 +30,55 @@
         :alt="mediaAttachment.description || ''"
         :src="mediaAttachment.url"
       />
-      <div class="navigation-bar">
+      <div v-if="isEditing" class="description-edition">
+        <CustomTextArea
+          name="media-description"
+          :input="mediaAttachment.description || ''"
+          :charLimit="1500"
+          :rows="2"
+          @updateValue="(e: ICustomTextareaData) => updateMediaDescription(e)"
+        />
+        <div class="buttons">
+          <button class="cancel" @click="cancelEdition()">
+            {{ $t('buttons.CANCEL') }}
+          </button>
+          <button
+            class="confirm"
+            :disabled="
+              mediaLoading !== '' ||
+              mediaAttachment.description === mediaDescription
+            "
+            @click="
+              emit('updateDescriptionMedia', {
+                id: mediaAttachment.id,
+                description: mediaDescription,
+              })
+            "
+          >
+            {{ $t('buttons.SAVE') }}
+          </button>
+        </div>
+      </div>
+      <div v-else class="navigation-bar">
         <button
           class="transparent"
           id="prev-button"
           :disabled="displayedMediaIndex === 0"
-          @click="emit('displayPreviousMedia')"
+          @click="navigate('displayPreviousMedia')"
         >
           <i class="fa fa-chevron-left" aria-hidden="true" />
         </button>
-        <div class="media-description">
-          <div v-if="isEditing" class="description-edition">
-            <CustomTextArea
-              name="media-description"
-              :input="mediaAttachment.description || ''"
-              :charLimit="1500"
-              :rows="2"
-              @updateValue="
-                (e: ICustomTextareaData) => updateMediaDescription(e)
-              "
-            />
-            <div class="buttons">
-              <button class="cancel" @click="cancelEdition()">
-                {{ $t('buttons.CANCEL') }}
-              </button>
-              <button
-                class="confirm"
-                :disabled="
-                  mediaLoading !== '' ||
-                  mediaAttachment.description === mediaDescription
-                "
-                @click="
-                  emit('updateDescriptionMedia', {
-                    id: mediaAttachment.id,
-                    description: mediaDescription,
-                  })
-                "
-              >
-                {{ $t('buttons.SAVE') }}
-              </button>
-            </div>
+        <div class="media-description-container">
+          <div class="media-description" v-if="mediaAttachment.description">
+            {{ mediaAttachment.description }}
           </div>
-          <span v-else>
-            {{
-              mediaAttachment.description
-                ? mediaAttachment.description
-                : $t('common.NO_DESCRIPTION')
-            }}
-          </span>
           <ErrorMessage :message="errorMessages" v-if="errorMessages" />
         </div>
         <button
           class="transparent"
           id="next-button"
           :disabled="displayedMediaIndex === mediaAttachments.length - 1"
-          @click="emit('displayNextMedia')"
+          @click="navigate('displayNextMedia')"
         >
           <i class="fa fa-chevron-right" aria-hidden="true" />
         </button>
@@ -152,6 +146,12 @@
   }
   function updateMediaDescription(textareaData: ICustomTextareaData) {
     mediaDescription.value = textareaData.value
+  }
+  function navigate(event: 'displayNextMedia' | 'displayPreviousMedia') {
+    isEditing.value = false
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    emit(event)
   }
   function focusTrap(e: KeyboardEvent) {
     if (e.key === 'Escape' || e.keyCode === 27) {
@@ -227,6 +227,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow-y: scroll;
 
     .custom-gallery-modal {
       display: flex;
@@ -246,30 +247,37 @@
       }
 
       img {
-        max-height: calc(100vh - 80px);
+        max-height: calc(100vh - 160px);
+      }
+
+      .description-edition {
+        margin: $default-margin;
+
+        .buttons {
+          display: flex;
+          gap: $default-padding;
+          justify-content: flex-end;
+        }
       }
 
       .navigation-bar {
         display: flex;
         align-items: center;
 
-        .description-edition {
+        .media-description-container {
           display: flex;
           flex-direction: column;
-          padding: $default-padding 0;
-
-          .buttons {
-            display: flex;
-            gap: $default-padding;
-            justify-content: flex-end;
-          }
-        }
-
-        .media-description {
           flex-grow: 1;
-          font-style: italic;
-          text-align: center;
-          white-space: pre-wrap;
+
+          .media-description {
+            font-style: italic;
+            text-align: center;
+            white-space: pre-wrap;
+            max-height: 90px;
+            overflow-y: scroll;
+            padding: $default-padding * 0.5 0;
+            width: 100%;
+          }
         }
       }
     }
