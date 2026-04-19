@@ -14,7 +14,6 @@ classifiers = [
     "License :: OSI Approved :: GNU Affero General Public License v3",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -29,7 +28,7 @@ Changelog = "https://docs.fittrackee.org/en/changelog.html"
 "Release Notes" = "https://github.com/SamR1/FitTrackee/releases"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"
 authlib = "1.6.9"
 babel = "2.18.0"
 click = "8.3.2"
@@ -160,7 +159,7 @@ markers = [
 
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.11"
 disallow_untyped_defs = true
 ignore_missing_imports = true
 # mypy per-module options

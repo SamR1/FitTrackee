@@ -36,7 +36,7 @@ jobs:
     uses: ./.github/workflows/.workflow-python.yml
     strategy:
       matrix:
-        python-version:  [ "3.10", "3.11", "3.12", "3.13", "3.14" ]
+        python-version:  [ "3.11", "3.12", "3.13", "3.14" ]
     with:
       ubuntu-version: "ubuntu-latest"
       python-version: ${{ matrix.python-version }}
@@ -46,14 +46,14 @@ jobs:
 
   postgis:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
-    name: postgis ${{ matrix.postgis-version }} (python 3.10)
+    name: postgis ${{ matrix.postgis-version }} (python 3.13)
     uses: ./.github/workflows/.workflow-python.yml
     strategy:
       matrix:
         postgis-version:  [ "14-3.5", "15-3.5", "16-3.5", "17-3.4", "17-3.6", "18-3.6" ]
     with:
       ubuntu-version: "ubuntu-latest"
-      python-version: "3.10"
+      python-version: "3.13"
       postgis-version: ${{ matrix.postgis-version }}
       with-additional-check: false
       with-coverage: false

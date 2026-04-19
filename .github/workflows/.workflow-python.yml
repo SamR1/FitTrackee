@@ -77,15 +77,15 @@ jobs:
         run: mypy fittrackee
 
       - name: Pytest
-        if: ${{ !inputs.with-coverage || inputs.python-version != '3.10'  }}
+        if: ${{ !inputs.with-coverage || inputs.python-version != '3.13'  }}
         run: pytest fittrackee -n auto --maxprocesses=2  -p no:warnings --maxfail=1
 
       - name: Pytest with coverage
-        if: ${{ inputs.with-coverage && inputs.python-version == '3.10' }}
+        if: ${{ inputs.with-coverage && inputs.python-version == '3.13' }}
         run: pytest fittrackee -n auto --maxprocesses=2  -p no:warnings --cov fittrackee --cov-report term-missing --maxfail=1
 
       - name: Coveralls
-        if: ${{ inputs.with-coverage && inputs.python-version == '3.10' && github.repository == 'SamR1/FitTrackee' }}
+        if: ${{ inputs.with-coverage && inputs.python-version == '3.13' && github.repository == 'SamR1/FitTrackee' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
