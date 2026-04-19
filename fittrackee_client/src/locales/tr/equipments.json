@@ -1,3 +1,19 @@
 {
-  "50_CHARACTERS_MAX": "En fazla 50 karakter"
+  "50_CHARACTERS_MAX": "En fazla 50 karakter",
+  "ADD_A_NEW_EQUIPMENT": "",
+  "ALL_WORKOUTS_ASSOCIATIONS_REMOVED": "",
+  "DEFAULT_FOR_SPORTS": "",
+  "EDIT_EQUIPMENTS": "",
+  "EQUIPMENT": "",
+  "EQUIPMENT_TYPE": "",
+  "ERRORS": {
+    "inactive": "",
+    "invalid": "",
+    "limit_exceeded": "",
+    "not_found": ""
+  },
+  "NEW_EQUIPMENT": "",
+  "NO_EQUIPMENT": "",
+  "NO_EQUIPMENTS": "",
+  "WITHOUT_EQUIPMENTS": ""
 }
