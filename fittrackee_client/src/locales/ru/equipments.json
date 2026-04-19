@@ -9,6 +9,7 @@
   "ERRORS": {
     "inactive": "Снаряжение '{equipmentLabel}' не активно.",
     "invalid": "Снаряжение '{equipmentLabel}' недействительно для этого вида спорта.",
+    "limit_exceeded": "",
     "not_found": "Снаряжение не найдено."
   },
   "NEW_EQUIPMENT": "Новое снаряжение",
