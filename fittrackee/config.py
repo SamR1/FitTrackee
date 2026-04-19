@@ -7,9 +7,10 @@ from dramatiq.brokers.stub import StubBroker
 from flask import current_app
 
 from fittrackee import DEFAULT_PRIVACY_POLICY_DATA, VERSION
+from fittrackee.constants import IMAGE_MIMETYPES
 from fittrackee.federation.utils import remove_url_scheme
 from fittrackee.languages import SUPPORTED_LANGUAGES
-from fittrackee.workouts.constants import WORKOUT_ALLOWED_EXTENSIONS
+from fittrackee.workouts.constants import WORKOUT_ALL_ALLOWED_EXTENSIONS
 
 broker: Union[Type["RedisBroker"], Type["StubBroker"]] = (
     StubBroker
@@ -35,8 +36,8 @@ class BaseConfig:
     UPLOAD_FOLDER = os.path.join(
         os.getenv("UPLOAD_FOLDER", current_app.root_path), "uploads"
     )
-    PICTURE_ALLOWED_EXTENSIONS = {"jpg", "png", "gif"}
-    WORKOUT_ALLOWED_EXTENSIONS = {"zip"}.union(WORKOUT_ALLOWED_EXTENSIONS)
+    PICTURE_ALLOWED_EXTENSIONS = set(IMAGE_MIMETYPES.keys())
+    WORKOUT_ALLOWED_EXTENSIONS = WORKOUT_ALL_ALLOWED_EXTENSIONS
     TILE_SERVER = {
         "URL": os.environ.get(
             "TILE_SERVER_URL",

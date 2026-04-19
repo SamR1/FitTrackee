@@ -11,8 +11,17 @@
   "Kayak_Boat": {
     "LABEL": "Kayak/Vaixell"
   },
+  "Misc": {
+    "LABEL": "Misc"
+  },
+  "Paddle": {
+    "LABEL": "Pàdel"
+  },
   "Shoes": {
     "LABEL": "Sabates"
+  },
+  "Skates": {
+    "LABEL": "Patins"
   },
   "Skis": {
     "LABEL": "Esquís"

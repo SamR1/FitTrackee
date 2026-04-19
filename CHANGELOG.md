@@ -1,5 +1,68 @@
 # Change log
 
+## Version 1.2.2 (2026/04/19)
+
+Adding MIME type checking requires the libmagic C library. If not present, a warning will appear in the application logs and files will be uploaded without mime type verification.  
+**Warning**: This library will be mandatory in version 1.3.0.  
+**Notes**: Docker images already include libmagic.  
+
+Additionally, if you encounter errors when installing pandas with Python 3.14, a workaround is to install pandas with `--build-constraint` option, see [documentation](https://docs.fittrackee.org/en/troubleshooting/administrator.html#error-when-installing-pandas-using-python-3-14).
+
+### Improvements
+
+* [PR#1105](https://github.com/SamR1/FitTrackee/pull/1105) - Update message displayed after registration when email sending is disabled
+* [PR#1110](https://github.com/SamR1/FitTrackee/pull/1110) - Improve file upload
+
+### Bugs Fixed
+
+* [PR#1092](https://github.com/SamR1/FitTrackee/pull/1092) - Display 1st day of month instead of 1st of week in 'This month' chart
+* [#1094](https://github.com/SamR1/FitTrackee/issues/1094) - [bug] Suunto fit file import
+* [PR#1096](https://github.com/SamR1/FitTrackee/pull/1096) - Get product name from .fit file if exists + fix on pause events
+* [PR#1099](https://github.com/SamR1/FitTrackee/pull/1099) - After a database restart, the first database transaction fails
+
+### Translations
+
+* [PR#1087](https://github.com/SamR1/FitTrackee/pull/1087) - Translations update from Hosted Weblate (Catalan)
+* [PR#1089](https://github.com/SamR1/FitTrackee/pull/1089) - Translations update from Hosted Weblate (German)
+* [PR#1091](https://github.com/SamR1/FitTrackee/pull/1091) - Translations update from Hosted Weblate (Croatian)
+* [PR#1093](https://github.com/SamR1/FitTrackee/pull/1093) - Translations update from Hosted Weblate (German)
+* [PR#1098](https://github.com/SamR1/FitTrackee/pull/1098) - Translations update from Hosted Weblate (Portuguese)
+* [PR#1101](https://github.com/SamR1/FitTrackee/pull/1101) - Translations update from Hosted Weblate (Czech)
+
+Translation status for languages available on the interface:
+- Basque: 98%
+- Bulgarian: 51%
+- Catalan: 33%
+- Chinese (Simplified): 96%
+- Croatian: 99%
+- Czech: 49%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 99%
+- Italian: 99%
+- Kabyle: 5%
+- Norwegian Bokmål: 42%
+- Polish: 93%
+- Portuguese: 51%
+- Russian: 95%
+- Spanish: 68%
+- Turkish: 1%
+
+### Misc
+
+* [PR#1108](https://github.com/SamR1/FitTrackee/pull/1108) - fix pandas installation using Python 3.14 on CI
+
+Thanks to the contributors:
+- @ArnyminerZ
+- @hyp1989
+- @iggydev
+- @PeterAuer
+- Guilherme Wilson
+- Radek Smid
+
+
 ## Version 1.2.1 (2026/03/20)
 
 ### Bugs Fixed

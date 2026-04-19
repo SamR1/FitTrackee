@@ -5,6 +5,7 @@
   "ACCOUNT_SUSPENDED_AT": "Account suspended at {0}.",
   "ACTIVE_ACCOUNT": "The account is active",
   "ACTIVE_USER": "active user | active users",
+  "ADMIN_WILL_REVIEW_AND_ACTIVATE_ACCOUNT": "An administrator will review and activate your account if eligible.",
   "ALREADY_HAVE_ACCOUNT": "Already have an account?",
   "APPEAL": "Appeal",
   "APPEAL_APPROVED": "Appeal approved.",

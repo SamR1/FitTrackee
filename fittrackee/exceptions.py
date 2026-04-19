@@ -19,5 +19,9 @@ class EmailConfigException(Exception):
     pass
 
 
+class FileException(Exception):
+    pass
+
+
 class InvalidVisibilityException(Exception):
     pass

@@ -25,7 +25,7 @@ from fittrackee.federation.decorators import federation_required
 from fittrackee.federation.objects.like import LikeObject
 from fittrackee.federation.objects.tombstone import TombstoneObject
 from fittrackee.federation.objects.workout import WorkoutObject
-from fittrackee.files import get_absolute_file_path
+from fittrackee.files import get_absolute_file_path, get_file_extension
 from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import (
     VisibilityLevel,
@@ -43,7 +43,6 @@ from .utils.convert import (
     convert_in_duration,
     convert_value_to_integer,
 )
-from .utils.gpx import get_file_extension
 from .utils.sports import (
     get_cadence,
     get_elevation_data,

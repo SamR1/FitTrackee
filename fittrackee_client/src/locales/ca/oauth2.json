@@ -1,1 +1,14 @@
-{}
+{
+  "ADD_A_NEW_APP": "Afegeix una nova aplicació OAuth2",
+  "APP": {
+    "CLIENT_ID": "Id",
+    "CLIENT_SECRET": "Secret",
+    "DESCRIPTION": "Descripció de l'aplicació",
+    "NAME": "Nom de l'aplicació",
+    "REDIRECT_URL": "URL de redirecció",
+    "SCOPE": {
+      "notifications:write_DESCRIPTION": "concedeix accés d'escriptura als endpoints <code>notifications</code>.",
+      "profile:read_DESCRIPTION": "dona accés de lectura als endpoints <code>auth</code>."
+    }
+  }
+}

@@ -2,6 +2,9 @@
   "Canoeing": {
     "LABEL": "Kanufahren"
   },
+  "Canoeing (Whitewater)": {
+    "LABEL": "Kanufahren (Wildwasser)"
+  },
   "Cycling (Sport)": {
     "LABEL": "Radfahren (Sport)"
   },
@@ -20,8 +23,17 @@
   "Hiking": {
     "LABEL": "Wandern"
   },
+  "Ice Skating": {
+    "LABEL": "Eislaufen"
+  },
+  "Inline Skating": {
+    "LABEL": "Inline-Skaten"
+  },
   "Kayaking": {
     "LABEL": "Kajakfahren"
+  },
+  "Kayaking (Whitewater)": {
+    "LABEL": "Kajakfahren (Wildwasser)"
   },
   "Mountain Biking": {
     "LABEL": "Mountainbiken"

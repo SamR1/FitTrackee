@@ -1,1 +1,11 @@
-{}
+{
+  "ACCOUNT_CONFIRMATION": "Confirmació del compte",
+  "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "No has rebut instruccions?",
+  "ACCOUNT_CONFIRMATION_SENT": "Comprova el teu correu electrònic. Un nou correu de confirmació s'ha enviat a l'adreça proporcionada.",
+  "ACCOUNT_SUSPENDED_AT": "Compte suspès el {0}.",
+  "ACTIVE_ACCOUNT": "El compte està actiu",
+  "ACTIVE_USER": "usuari actiu | usuaris actius",
+  "ALREADY_HAVE_ACCOUNT": "Ja tens un compte?",
+  "EMAIL_INFO": "Introdueix una adreça de correu electrònic vàlida.",
+  "EMAIL_UPDATE": "Actualitzar correu electrònic"
+}

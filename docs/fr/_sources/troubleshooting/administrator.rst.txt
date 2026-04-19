@@ -97,3 +97,24 @@ Workouts created with a file are not displayed on the workouts map
 
 - | Since **gunicorn** 25.1.0, a `control interface <https://gunicorn.org/guides/gunicornc/>`__ is started by default and that may interfere with **prometheus** middleware (used by **dramatiq**).
   | A workaround for now is to disable this interface by adding ``--no-control-socket`` option to **gunicorn** command.
+
+
+Error when installing pandas using Python 3.14
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- | The following error can occur during **pandas** installation (version 2.3.2) using Python 3.14:
+
+  .. code-block::
+
+    ../pandas/_libs/tslibs/meson.build:32:7: ERROR: python.extension_module keyword argument 'dependencies' was of type array[str] but should have been array[Dependency | InternalDependency]
+
+  | The error is linked to the latest version of **meson** (see `Github issue <https://github.com/pandas-dev/pandas/issues/65213>`__). The temporary workaround is to install **pandas** with ``--build-constraint``, before installing **fittrackee**.
+  |
+  | After **libgdal-dev** installation if not present and virtualenv activation:
+
+  .. code-block:: bash
+
+     $ echo "meson<1.11.0" > build-constraint.txt
+     $ pip install numpy==2.2.6
+     $ pip install --build-constraint build-constraint.txt pandas==2.3.2
+     $ pip install fittrackee

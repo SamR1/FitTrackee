@@ -1,1 +1,11 @@
-{}
+{
+  "ACCEPTED_FOLLOW_REQUEST": "ha acceptat la teva petició de seguiment",
+  "ALL": "Tots",
+  "APPEALED_SUSPENSION": "ha apel·lat la suspensió",
+  "APPEALED_USER_WARNING": "ha apel·lat l'advertència",
+  "COMMENTED_YOUR_WORKOUT": "ha comentat al teu entrenament",
+  "LIKED_YOUR_COMMENT": "li ha agradat el teu comentari",
+  "LIKED_YOUR_WORKOUT": "li ha agradat el teu entrenament",
+  "REPORTED_USER_COMMENT": "s'ha reportat aquest comentari:",
+  "REPORTED_USER_WORKOUT": "reportat aquest entrenament:"
+}
