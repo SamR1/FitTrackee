@@ -5,11 +5,26 @@
   "Bike Trainer": {
     "LABEL": "Bicicleta treino"
   },
+  "Board": {
+    "LABEL": ""
+  },
   "Kayak_Boat": {
     "LABEL": "Kayak"
   },
+  "Misc": {
+    "LABEL": ""
+  },
+  "Paddle": {
+    "LABEL": ""
+  },
+  "Racket": {
+    "LABEL": ""
+  },
   "Shoes": {
     "LABEL": "Sapatilhas"
+  },
+  "Skates": {
+    "LABEL": ""
   },
   "Skis": {
     "LABEL": "Esquis"
