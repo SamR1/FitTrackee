@@ -9,6 +9,7 @@
   "ERRORS": {
     "inactive": "Materiaal '{equipmentLabel}' inactief.",
     "invalid": "Materiaal '{equipmentLabel}' is ongeldig voor deze sport.",
+    "limit_exceeded": "",
     "not_found": "Materiaal niet gevonden."
   },
   "NEW_EQUIPMENT": "Nieuw materiaal",
