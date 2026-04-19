@@ -1,1 +1,25 @@
-{}
+{
+  "AVERAGE": "",
+  "DATES": "",
+  "STATISTICS": "",
+  "STATISTICS_CHARTS": {
+    "day": "",
+    "month": "",
+    "week": "",
+    "year": ""
+  },
+  "STATISTICS_ON_ALL_WORKOUTS": "",
+  "STATISTICS_ON_LAST_WORKOUTS": "",
+  "STATISTICS_TYPE": "",
+  "STATISTICS_TYPES": {
+    "by_sport": "",
+    "by_time": ""
+  },
+  "TIME_FRAMES": {
+    "day": "",
+    "month": "",
+    "week": "",
+    "year": ""
+  },
+  "WORKOUTS_AVERAGE": ""
+}
