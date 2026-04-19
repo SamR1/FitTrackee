@@ -8,16 +8,17 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2026-03-04 23:57+0100\n"
-"PO-Revision-Date: 2025-09-03 04:02+0000\n"
-"Last-Translator: easytiger <999178+easytigrrr@users.noreply.github.com>\n"
+"PO-Revision-Date: 2026-04-19 09:38+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Language-Team: Polish <https://hosted.weblate.org/projects/fittrackee/"
+"fittrackee-api-emails/pl/>\n"
 "Language: pl\n"
-"Language-Team: Polish <https://hosted.weblate.org/projects/fittrackee"
-"/fittrackee-api-emails/pl/>\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && "
-"(n%100<10 || n%100>=20) ? 1 : 2);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.17.1-dev\n"
 "Generated-By: Babel 2.18.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
@@ -94,8 +95,8 @@ msgid ""
 "If you're having trouble with the button above, copy and paste the URL "
 "below into your web browser."
 msgstr ""
-"Jeśli masz problem z powyższym przyciskiem, skopiuj i wklej poniższy "
-"adres do swojej przeglądarki."
+"Jeśli masz problem z powyższym przyciskiem, skopiuj i wklej poniższy adres "
+"do swojej przeglądarki."
 
 #: fittrackee/emails/templates/account_confirmation/body.txt:2
 msgid "Use the link below to confirm your address email."
@@ -269,8 +270,7 @@ msgid ""
 "You recently requested to change your email address for your FitTrackee "
 "account to:"
 msgstr ""
-"Zleciłeś(-aś) niedawno zmianę swojego adresu e-mail do konta FitTrackee "
-"na:"
+"Zleciłeś(-aś) niedawno zmianę swojego adresu e-mail do konta FitTrackee na:"
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:18
 #: fittrackee/emails/templates/email_update_to_current_email/body.txt:4
@@ -278,9 +278,8 @@ msgid ""
 "If this email change wasn't initiated by you, please change your password"
 " immediately or contact your administrator if your account is locked."
 msgstr ""
-"Jeśli nie zlecałeś(-aś) zmiany adresu e-mail, zmień hasło do swojego "
-"konta lub skontaktuj się z administratorem, jeśli twoje konto jest "
-"zablokowane."
+"Jeśli nie zlecałeś(-aś) zmiany adresu e-mail, zmień hasło do swojego konta "
+"lub skontaktuj się z administratorem, jeśli twoje konto jest zablokowane."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_new_email/subject.txt:1
@@ -296,7 +295,8 @@ msgstr "Użyj tego linku aby potwierdzić zmianę adresu e-mail."
 msgid ""
 "You recently requested to change your email address for your FitTrackee "
 "account."
-msgstr "Zleciłeś(-aś) niedawno zmianę swojego adresu e-mail do konta FitTrackee."
+msgstr ""
+"Zleciłeś(-aś) niedawno zmianę swojego adresu e-mail do konta FitTrackee."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:4
 msgid "Use the button below to confirm this address."
@@ -306,8 +306,7 @@ msgstr "Użyj poniższego przycisku aby potwierdzić ten adres."
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:7
 msgid "If this email change wasn't initiated by you, please ignore this email."
 msgstr ""
-"Jeśli nie zlecałeś(-aś) zmiany adresu e-mail, zignoruj proszę tę "
-"wiadomość."
+"Jeśli nie zlecałeś(-aś) zmiany adresu e-mail, zignoruj proszę tę wiadomość."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:2
 msgid "Use the link below to confirm this address."
@@ -348,8 +347,8 @@ msgid ""
 "Use this link to reset your password. The link is only valid for "
 "%(expiration_delay)s."
 msgstr ""
-"Użyj tego linku aby zresetować hasło. Ten link jest ważny tylko "
-"%(expiration_delay)s."
+"Użyj tego linku aby zresetować hasło. Ten link jest ważny tylko %"
+"(expiration_delay)s."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:4
 #: fittrackee/emails/templates/password_reset_request/body.txt:1
@@ -395,15 +394,16 @@ msgid ""
 "You can no longer use your account and your profile is no longer "
 "accessible"
 msgstr ""
-"Nie możesz dłużej używać swojego konta i twój profil nie jest nie jest "
-"już dostępny"
+"Nie możesz dłużej używać swojego konta i twój profil nie jest nie jest już "
+"dostępny"
 
 #: fittrackee/emails/templates/user_suspension/body.html:5
 #: fittrackee/emails/templates/user_suspension/body.txt:2
 msgid ""
 "You can still log in to request an export of your data or delete your "
 "account"
-msgstr "Nadal możesz zalogować się by wyeksportować swoje dane i/lub usunąć konto"
+msgstr ""
+"Nadal możesz zalogować się by wyeksportować swoje dane i/lub usunąć konto"
 
 #: fittrackee/emails/templates/user_unsuspension/body.html:2
 #: fittrackee/emails/templates/user_unsuspension/body.html:3
@@ -616,4 +616,3 @@ msgstr "Zejście"
 #: fittrackee/feeds/templates/workout/body.html:4
 msgid "Description"
 msgstr "Opis"
-
