@@ -71,10 +71,10 @@ Prerequisites
 
 - optional
 
-  - [recommended] libmagic C library to check mime type on file upload with `python-magic <https://github.com/ahupp/python-magic?tab=readme-ov-file#installation>`_. This library may not be installed by default on some operating systems. If not present, a warning will appear in the application logs and files will be uploaded without mime type verification.
+  - (recommended) libmagic C library to check mime type on file upload with `python-magic <https://github.com/ahupp/python-magic?tab=readme-ov-file#installation>`_. This library may not be installed by default on some operating systems. If not present, a warning will appear in the application logs and files will be uploaded without mime type verification.
 
     .. warning::
-       This library may become required in the next version. **Note**: Docker images already include libmagic.
+       This library will be mandatory in version 1.3.0. **Note**: Docker images already include libmagic.
 
   - `Redis <https://redis.io/>`__ for `task queue <tasks_processing.html>`__ (for `email <emails.html>`__ sending if enabled, for data export requests, and asynchronous archive uploads if enabled) and `API rate limits <api_rate_limits.html>`__ (for installation from sources or package)
   - SMTP provider (if `email <emails.html>`__ sending is enabled)

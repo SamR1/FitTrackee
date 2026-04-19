@@ -38,7 +38,7 @@ services:
     env_file:
       - .env
 # Image from Docker Hub
-    image: fittrackee/fittrackee:v1.2.1
+    image: fittrackee/fittrackee:v1.2.2
 # Uncomment following line to build image instead of using pre-built image
 #    build: .
     volumes:
@@ -60,7 +60,7 @@ services:
 #      fittrackee-redis:
 #        condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget --spider http://127.0.0.1:5000/api/ping || exit 1"]
+      test: ["CMD-SHELL", "wget --spider http://127.0.0.1:5000/api/check-db || exit 1"]
       interval: 5s
       timeout: 15s
       retries: 3
@@ -75,7 +75,7 @@ services:
 #    env_file:
 #      - .env
 ## Image from Docker Hub
-#    image: fittrackee/fittrackee:v1.2.1
+#    image: fittrackee/fittrackee:v1.2.2
 ## Uncomment following line to build image instead of using pre-built image
 ##    build: .
 #    volumes:

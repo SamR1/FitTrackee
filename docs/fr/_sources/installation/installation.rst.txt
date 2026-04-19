@@ -15,7 +15,10 @@ Installation
     | Note that **FitTrackee** is under heavy development, some features may be unstable.
 
 .. note::
-    Depending on the operating system and the version of Python installed, additional dependencies may be required, such as **gcc** or **libgdal-dev**.
+    Depending on the operating system and the version of Python installed, additional dependencies may be required, such as **gcc** or **libgdal-dev** for numpy.
+
+.. note::
+    Errors can occurred when installing pandas with Python 3.14, see workaround in `troubleshooting <../troubleshooting/administrator.html#error-when-installing-pandas-using-python-3-14>`_.
 
 From PyPI
 *********
@@ -116,13 +119,13 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v1.2.0):
+-  Download the last release (for now, it is the release v1.2.2):
 
 .. code:: bash
 
-   $ wget https://github.com/SamR1/FitTrackee/archive/1.2.0.tar.gz
-   $ tar -xzf v1.2.0.tar.gz
-   $ mv FitTrackee-1.2.0 FitTrackee
+   $ wget https://github.com/SamR1/FitTrackee/archive/1.2.2.tar.gz
+   $ tar -xzf v1.2.2.tar.gz
+   $ mv FitTrackee-1.2.2 FitTrackee
    $ cd FitTrackee
 
 -  Create **.env** from example and update it
