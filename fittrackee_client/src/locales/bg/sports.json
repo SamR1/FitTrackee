@@ -1,4 +1,10 @@
 {
+  "Canoeing": {
+    "LABEL": ""
+  },
+  "Canoeing (Whitewater)": {
+    "LABEL": ""
+  },
   "Cycling (Sport)": {
     "LABEL": "Колоездене (спорт)"
   },
@@ -11,8 +17,23 @@
   "Cycling (Virtual)": {
     "LABEL": "Колоездене (виртуално)"
   },
+  "Halfbike": {
+    "LABEL": ""
+  },
   "Hiking": {
     "LABEL": "Туризъм"
+  },
+  "Ice Skating": {
+    "LABEL": ""
+  },
+  "Inline Skating": {
+    "LABEL": ""
+  },
+  "Kayaking": {
+    "LABEL": ""
+  },
+  "Kayaking (Whitewater)": {
+    "LABEL": ""
   },
   "Mountain Biking": {
     "LABEL": "Планинско колоездене"
@@ -25,6 +46,9 @@
   },
   "Open Water Swimming": {
     "LABEL": "Плуване в открити води"
+  },
+  "Padel (Outdoor)": {
+    "LABEL": ""
   },
   "Paragliding": {
     "LABEL": "Парапланеризъм"
@@ -44,13 +68,22 @@
   "Snowshoes": {
     "LABEL": "Снегоходки"
   },
+  "Standup Paddleboarding": {
+    "LABEL": ""
+  },
   "Swimrun": {
     "LABEL": "Суимрън"
+  },
+  "Tennis (Outdoor)": {
+    "LABEL": ""
   },
   "Trail": {
     "LABEL": "Трейл"
   },
   "Walking": {
     "LABEL": "Ходене"
+  },
+  "Windsurfing": {
+    "LABEL": ""
   }
 }
