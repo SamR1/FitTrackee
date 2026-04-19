@@ -11,7 +11,8 @@ health_check_blueprint = Blueprint("health_check", __name__)
 
 @health_check_blueprint.route("/ping", methods=["GET"])
 def health_check() -> Dict:
-    """health check endpoint
+    """
+    API health check endpoint
 
     **Example request**:
 
@@ -39,7 +40,8 @@ def health_check() -> Dict:
 
 @health_check_blueprint.route("/check-db", methods=["GET"])
 def db_health_check() -> Union[Dict, HttpResponse]:
-    """database health check endpoint
+    """
+    Database health check endpoint
 
     **Example request**:
 
