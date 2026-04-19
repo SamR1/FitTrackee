@@ -1,7 +1,12 @@
 {
   "APP_ERROR": "Parece haver algo errado com o aplicativo.<br />Tente novamente mais tarde ou entre em contato com o administrador.",
+  "ERRORS_ENCOUNTERED": "",
   "NOT_FOUND": {
+    "COMMENT": "",
     "PAGE": "página não encontrada",
+    "REPORT": "",
+    "SEGMENT": "",
+    "USER": "",
     "WORKOUT": "Treino não encontrado"
   },
   "SOMETHING_WRONG": "Ocorreu um erro",
