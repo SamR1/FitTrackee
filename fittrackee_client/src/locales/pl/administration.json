@@ -13,6 +13,8 @@
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Kontaktowy e-mail administratora",
     "ASYNCHRONOUS_UPLOAD_DISABLED": "Asynchroniczne przesyłanie archiwów zip jest wyłączone.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "",
     "MAX_FILES_IN_ZIP_LABEL": "Maks. plików archiwum zip",
     "MAX_SYNC_FILES_IN_ZIP_LABEL": "Maks. liczba plików do przetwarzania synchronicznego",
     "MAX_USERS_HELP": "Jeśli 0, to nie ma limitu rejestracji.",
