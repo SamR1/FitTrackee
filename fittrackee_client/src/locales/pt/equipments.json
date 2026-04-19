@@ -9,6 +9,7 @@
   "ERRORS": {
     "inactive": "Equipamento '{equipmentLabel}' inativo.",
     "invalid": "O equipamento '{equipmentLabel}' não é correto para este desporto.",
+    "limit_exceeded": "",
     "not_found": "Equipamento não encontrado."
   },
   "NEW_EQUIPMENT": "Equipamento novo",
