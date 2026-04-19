@@ -1,1 +1,14 @@
-{}
+{
+  "APP_ERROR": "",
+  "ERRORS_ENCOUNTERED": "",
+  "NOT_FOUND": {
+    "COMMENT": "",
+    "PAGE": "",
+    "REPORT": "",
+    "SEGMENT": "",
+    "USER": "",
+    "WORKOUT": ""
+  },
+  "SOMETHING_WRONG": "",
+  "UNKNOWN": ""
+}
