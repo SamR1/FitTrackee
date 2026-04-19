@@ -2,6 +2,9 @@
   "Canoeing": {
     "LABEL": "Padling"
   },
+  "Canoeing (Whitewater)": {
+    "LABEL": ""
+  },
   "Cycling (Sport)": {
     "LABEL": "Sykling (sport)"
   },
@@ -20,14 +23,32 @@
   "Hiking": {
     "LABEL": "Fottur"
   },
+  "Ice Skating": {
+    "LABEL": ""
+  },
+  "Inline Skating": {
+    "LABEL": ""
+  },
   "Kayaking": {
     "LABEL": "Kajakkpadling"
+  },
+  "Kayaking (Whitewater)": {
+    "LABEL": ""
   },
   "Mountain Biking": {
     "LABEL": "Terrengsykling"
   },
   "Mountain Biking (Electric)": {
     "LABEL": "Fjellsykling (elektrisk)"
+  },
+  "Mountaineering": {
+    "LABEL": ""
+  },
+  "Open Water Swimming": {
+    "LABEL": ""
+  },
+  "Padel (Outdoor)": {
+    "LABEL": ""
   },
   "Paragliding": {
     "LABEL": "Paragliding"
@@ -38,7 +59,31 @@
   "Running": {
     "LABEL": "Løping"
   },
+  "Skiing (Alpine)": {
+    "LABEL": ""
+  },
+  "Skiing (Cross Country)": {
+    "LABEL": ""
+  },
   "Snowshoes": {
     "LABEL": "Truger"
+  },
+  "Standup Paddleboarding": {
+    "LABEL": ""
+  },
+  "Swimrun": {
+    "LABEL": ""
+  },
+  "Tennis (Outdoor)": {
+    "LABEL": ""
+  },
+  "Trail": {
+    "LABEL": ""
+  },
+  "Walking": {
+    "LABEL": ""
+  },
+  "Windsurfing": {
+    "LABEL": ""
   }
 }
