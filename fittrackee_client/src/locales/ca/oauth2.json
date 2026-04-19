@@ -4,11 +4,41 @@
     "CLIENT_ID": "Id",
     "CLIENT_SECRET": "Secret",
     "DESCRIPTION": "Descripció de l'aplicació",
+    "ISSUE_AT": "",
     "NAME": "Nom de l'aplicació",
     "REDIRECT_URL": "URL de redirecció",
     "SCOPE": {
+      "LABEL": "",
+      "application:write_DESCRIPTION": "",
+      "equipments:read_DESCRIPTION": "",
+      "equipments:write_DESCRIPTION": "",
+      "follow:read_DESCRIPTION": "",
+      "follow:write_DESCRIPTION": "",
+      "geocode:read_DESCRIPTION": "",
+      "notifications:read_DESCRIPTION": "",
       "notifications:write_DESCRIPTION": "concedeix accés d'escriptura als endpoints <code>notifications</code>.",
-      "profile:read_DESCRIPTION": "dona accés de lectura als endpoints <code>auth</code>."
-    }
-  }
+      "profile:read_DESCRIPTION": "dona accés de lectura als endpoints <code>auth</code>.",
+      "profile:write_DESCRIPTION": "",
+      "reports:read_DESCRIPTION": "",
+      "reports:write_DESCRIPTION": "",
+      "users:read_DESCRIPTION": "",
+      "users:write_DESCRIPTION": "",
+      "workouts:read_DESCRIPTION": "",
+      "workouts:write_DESCRIPTION": ""
+    },
+    "URL": ""
+  },
+  "APPS_LIST": "",
+  "APP_CREATED_SUCCESSFULLY": "",
+  "APP_DELETION_CONFIRMATION": "",
+  "APP_REQUESTING_ACCESS": "",
+  "AUTHORIZE_APP": "",
+  "COPY_TO_CLIPBOARD": "",
+  "DELETE_APP": "",
+  "NEW_APP": "",
+  "NO_APP": "",
+  "NO_APPS": "",
+  "REVOKE_ALL_TOKENS": "",
+  "TOKENS_REVOCATION_CONFIRMATION": "",
+  "TOKENS_REVOKED": ""
 }
