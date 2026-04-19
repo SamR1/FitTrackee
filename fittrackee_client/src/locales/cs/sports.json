@@ -17,8 +17,23 @@
   "Cycling (Virtual)": {
     "LABEL": "Jízda na kole (Virtuální)"
   },
+  "Halfbike": {
+    "LABEL": ""
+  },
   "Hiking": {
     "LABEL": "Turistika"
+  },
+  "Ice Skating": {
+    "LABEL": ""
+  },
+  "Inline Skating": {
+    "LABEL": ""
+  },
+  "Kayaking": {
+    "LABEL": ""
+  },
+  "Kayaking (Whitewater)": {
+    "LABEL": ""
   },
   "Mountain Biking": {
     "LABEL": "Horská cyklistika"
@@ -31,6 +46,9 @@
   },
   "Open Water Swimming": {
     "LABEL": "Plavání na otevřené vodě"
+  },
+  "Padel (Outdoor)": {
+    "LABEL": ""
   },
   "Paragliding": {
     "LABEL": "Paragliding"
@@ -50,10 +68,22 @@
   "Snowshoes": {
     "LABEL": "Sněžnice"
   },
+  "Standup Paddleboarding": {
+    "LABEL": ""
+  },
+  "Swimrun": {
+    "LABEL": ""
+  },
+  "Tennis (Outdoor)": {
+    "LABEL": ""
+  },
   "Trail": {
     "LABEL": "Trail"
   },
   "Walking": {
     "LABEL": "Chůze"
+  },
+  "Windsurfing": {
+    "LABEL": ""
   }
 }
