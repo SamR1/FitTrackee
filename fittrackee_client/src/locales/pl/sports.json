@@ -2,6 +2,9 @@
   "Canoeing": {
     "LABEL": "Kanadyjkarstwo"
   },
+  "Canoeing (Whitewater)": {
+    "LABEL": ""
+  },
   "Cycling (Sport)": {
     "LABEL": "Kolarstwo (Sport)"
   },
@@ -20,8 +23,17 @@
   "Hiking": {
     "LABEL": "Piesza wycieczka"
   },
+  "Ice Skating": {
+    "LABEL": ""
+  },
+  "Inline Skating": {
+    "LABEL": ""
+  },
   "Kayaking": {
     "LABEL": "Kajakarstwo"
+  },
+  "Kayaking (Whitewater)": {
+    "LABEL": ""
   },
   "Mountain Biking": {
     "LABEL": "Kolarstwo górskie"
@@ -34,6 +46,9 @@
   },
   "Open Water Swimming": {
     "LABEL": "Pływanie na wodach otwartych"
+  },
+  "Padel (Outdoor)": {
+    "LABEL": ""
   },
   "Paragliding": {
     "LABEL": "Paralotniarstwo"
