@@ -1,6 +1,7 @@
 {
   "ABOUT_THIS_INSTANCE": "Об этом сервере",
   "CONTACT_ADMIN": "Свяжитесь с администратором",
+  "ELEVATION_DATA_FROM": "",
   "FITTRACKEE_DESCRIPTION": "<strong>FitTrackee</strong> - это автономный трекер для отслеживания активностей на открытом воздухе.",
   "FITTRACKEE_LICENSE": "Лицензия {0} ",
   "SOURCE_CODE": "Исходный код",
