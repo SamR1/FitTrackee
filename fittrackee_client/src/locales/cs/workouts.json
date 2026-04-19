@@ -52,7 +52,8 @@
     "file": "Ze souboru",
     "none": "",
     "open_elevation": "",
-    "open_elevation_smooth": ""
+    "open_elevation_smooth": "",
+    "valhalla": ""
   },
   "END": "konec",
   "EXIT_FULLSCREEN": "Opustit celou obrazovku",
