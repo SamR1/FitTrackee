@@ -11,8 +11,20 @@
   "Kayak_Boat": {
     "LABEL": "Kajakk/Båt"
   },
+  "Misc": {
+    "LABEL": ""
+  },
+  "Paddle": {
+    "LABEL": ""
+  },
+  "Racket": {
+    "LABEL": ""
+  },
   "Shoes": {
     "LABEL": "Sko"
+  },
+  "Skates": {
+    "LABEL": ""
   },
   "Skis": {
     "LABEL": "Ski"
