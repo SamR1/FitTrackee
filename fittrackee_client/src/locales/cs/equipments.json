@@ -9,6 +9,7 @@
   "ERRORS": {
     "inactive": "Vybavení '{equipmentLabel}' není aktivní.",
     "invalid": "Vybavení '{equipmentLabel}' není platné pro tento sport.",
+    "limit_exceeded": "",
     "not_found": "Vybavení nebylo nalezeno."
   },
   "NEW_EQUIPMENT": "Nové vybavení",
