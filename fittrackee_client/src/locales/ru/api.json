@@ -1,8 +1,10 @@
 {
   "ERROR": {
     "<time> is missing in gpx file": "<time> элемент отсутствует в .gpx файле.",
+    "Error when updating elevation data source": "",
     "Network Error": "Ошибка сети.",
     "UNKNOWN": "Ошибка. Пожалуйста, попробуйте снова или свяжитесь с администратором.",
+    "a maximum of 5 pieces of Misc equipment can be added": "",
     "a report already exists": "Вы уже отправили жалобу.",
     "at least one file in zip archive exceeds size limit, please check the archive": "По крайней мере один файл в zip архиве превышает допустимый размер, пожалуйста, проверьте архив.",
     "comment already reactivated": "Комментарий уже восстановлен, пожалуйста, обновите эту страницу.",
@@ -22,6 +24,7 @@
     "error when parsing kml file": "Ошибка при разборе .kml файла.",
     "error when parsing kmz file": "Ошибка при разборе .kmz файла.",
     "error when parsing tcx file": "Ошибка при разборе .tcx файла.",
+    "error when processing workout": "",
     "error when saving workout": "Ошибка при сохранении тренировки.",
     "error when updating configuration": "Ошибка при обновлении конфигурации.",
     "error while fetching comments": "Ошибка при получении комментариев.",
