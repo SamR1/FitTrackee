@@ -5,43 +5,61 @@
   "ACCOUNT_SUSPENDED_AT": "Konto suspendert {0}.",
   "ACTIVE_ACCOUNT": "Kontoen er aktiv",
   "ACTIVE_USER": "aktiv bruker | aktive brukere",
+  "ADMIN_WILL_REVIEW_AND_ACTIVATE_ACCOUNT": "",
   "ALREADY_HAVE_ACCOUNT": "Har du allerede en konto?",
   "APPEAL": "Anke",
   "APPEAL_APPROVED": "Anke godkjent.",
+  "APPEAL_IN_PROGRESS": "",
+  "APPEAL_REJECTED": "",
+  "APPEAL_SUBMITTED": "",
+  "CONFIRM_ACCOUNT_DELETION": "",
   "CURRENT_PASSWORD": "Nåværende passord",
   "EMAIL": "E-post",
   "EMAIL_INFO": "Skriv inn en gyldig e-postadresse.",
+  "EMAIL_UPDATE": "",
   "ENTER_PASSWORD": "Skriv inn et passord",
   "EXPORT_REQUEST": {
     "DATA_EXPORT": "Dataeksport",
     "DOWNLOAD_ARCHIVE": "Last ned arkiv",
-    "GENERATING_LINK": "genererer lenke…"
+    "GENERATING_LINK": "genererer lenke…",
+    "ONLY_ONE_EXPORT_PER_DAY": "",
+    "REQUEST_ANOTHER_EXPORT": ""
   },
   "FILTER_ON_USERNAME": "Filtrer på brukernavn",
   "HIDE_PASSWORD": "skjul passord",
   "INVALID_TOKEN": "Ugyldig symbol. Forespør ny tilbakestilling av passord.",
   "I_WANT_TO_DELETE_MY_ACCOUNT": "Jeg vil slette kontoen min",
   "LANGUAGE": "Språk | Språk",
+  "LAST_PRIVACY_POLICY_TO_VALIDATE": "",
   "LOGIN": "Logg inn",
   "LOGOUT": "Logg ut",
   "LOGOUT_CONFIRMATION": "Vil du logge ut?",
   "LOG_IN": "logg inn",
   "NEW_PASSWORD": "Nytt passord",
+  "NO_SPORT_FOUND": "",
   "NO_USERS_FOUND": "Fant ingen brukere.",
+  "NO_WARNING_FOUND": "",
+  "ONLY_USERS_FROM_THIS_INSTANCE_ARE_DISPLAYED": "",
   "PASSWORD": "Passord",
   "PASSWORD_FORGOTTEN": "Glemt passordet?",
   "PASSWORD_INFO": "Minst åtte tegn.",
   "PASSWORD_RESET": "Passordtilbakestilling",
+  "PASSWORD_SENT_EMAIL_TEXT": "",
   "PASSWORD_STRENGTH": {
     "AVERAGE": "gjen.",
     "GOOD": "bra",
     "LABEL": "passordstyrke",
     "STRONG": "sterkt",
     "SUGGESTIONS": {
+      "allUppercase": "",
       "anotherWord": "Legg til flere sjeldnere ord",
       "associatedYears": "Unngå årstall du har tilknytning til.",
       "capitalization": "Bruk stor bokstav i mer enn første bokstav.",
+      "dates": "",
       "l33t": "Unngå forutsigbare bytter, som «{'@'}» for «a».",
+      "longerKeyboardPattern": "",
+      "noNeed": "",
+      "pwned": "",
       "recentYears": "Unngå nylige årstall.",
       "repeated": "Unngå gjentatte ord og tegn.",
       "reverseWords": "Unngå omvendte stavelser av vanlige ord.",
@@ -51,74 +69,230 @@
     "WEAK": "svakt"
   },
   "PASSWORD_UPDATED": "Passord oppdatert. Klikk {0} for å logge inn.",
+  "PRIVACY_POLICY_TO_VALIDATE": "",
   "PROFILE": {
     "ACCOUNT_EDITION": "Kontoredigering",
+    "ARCHIVE_UPLOADS": {
+      "ARCHIVE": "",
+      "CONFIRM_TASK_ABORT": "",
+      "CONFIRM_TASK_DELETION": "",
+      "CREATED_WORKOUTS": "",
+      "ERRORED_FILES": "",
+      "FILES_COUNT": "",
+      "NOT_FOUND": "",
+      "PROGRESS": ""
+    },
+    "ASCENT_DATA": "",
     "BACK_TO_PROFILE": "Tilbake til profil",
     "BIO": "Biografi",
     "BIRTH_DATE": "Fødselsdag",
+    "CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI": "",
+    "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "",
+    "CHANGES_ONLY_TO_NEW_WORKOUTS": "",
+    "CREATED_REPORTS": "",
     "DATE_FORMAT": "Datovisningsformat",
     "EDIT": "Rediger profil",
+    "EDIT_ACCOUNT": "",
+    "EDIT_MESSAGE_PREFERENCES": "",
+    "EDIT_NOTIFICATION_PREFERENCES": "",
     "EDIT_PREFERENCES": "Rediger innstillinger",
     "EDIT_SPORTS_PREFERENCES": "Rediger sportsinnstillinger",
     "ELEVATION_CHART_START": {
+      "LABEL": "",
       "MIN_ALT": "Minste høyde",
       "ZERO": "Null"
     },
+    "EQUIPMENTS": {
+      "ACTION": "",
+      "CONFIRM_EQUIPMENT_DELETION": "",
+      "DESCRIPTION": "",
+      "DISABLED_BY_ADMIN": "",
+      "EQUIPMENT_ASSOCIATED_WITH_WORKOUTS": "",
+      "IS_ACTIVE": "",
+      "LABEL": "",
+      "YOUR_EQUIPMENTS": ""
+    },
+    "EQUIPMENTS_EDITION": "",
+    "ERRORED_EMAIL_UPDATE": "",
     "FIRST_DAY_OF_WEEK": "Ukestart",
     "FIRST_NAME": "Fornavn",
+    "FOLLOW_REQUESTS_APPROVAL": {
+      "AUTOMATICALLY": "",
+      "LABEL": "",
+      "MANUALLY": ""
+    },
+    "INTERFACE": "",
     "LANGUAGE": "Språk",
     "LAST_NAME": "Etternavn",
+    "LATEST_SANCTIONS_RECEIVED": "",
+    "LOCATION": "",
+    "MESSAGES": {
+      "warning_about_large_number_of_workouts_on_map": ""
+    },
+    "MESSAGES_EDITION": "",
+    "MESSAGES_PREFERENCES": "",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "",
     "MONDAY": "Mandag",
+    "NOTIFICATIONS": {
+      "account_creation": "",
+      "comment_like": "",
+      "follow": "",
+      "follow_request": "",
+      "follow_request_approved": "",
+      "mention": "",
+      "workout_comment": "",
+      "workout_like": ""
+    },
+    "NOTIFICATIONS_EDITION": "",
+    "NOTIFICATION_PREFERENCES": "",
+    "NO_ARCHIVE_UPLOADS": "",
+    "NO_ELEVATION_SERVICE_AVAILABLE": "",
+    "NO_SANCTIONS": "",
     "PICTURE": "Bilde",
+    "PICTURE_EDITION": "",
     "PICTURE_REMOVE": "Fjern bilde",
     "PICTURE_UPDATE": "Oppdater bilde",
+    "PREFERENCES_EDITION": "",
     "PRIVACY-POLICY_EDITION": "Personvernspraksis",
+    "PROFILE_EDITION": "",
+    "PROFILE_IN_USERS_DIRECTORY": {
+      "DISPLAYED": "",
+      "HIDDEN": "",
+      "LABEL": ""
+    },
     "REGISTRATION_DATE": "Registreringsdato",
+    "REPORTS_FROM_OTHER_USERS": "",
+    "SANCTIONS": {
+      "comment_suspension": "",
+      "user_suspension": "",
+      "user_warning": "",
+      "workout_suspension": ""
+    },
+    "SANCTIONS_RECEIVED": "",
+    "SANCTION_APPEAL": {
+      "APPROVED": "",
+      "IN_PROGRESS": "",
+      "REJECTED": ""
+    },
+    "SEGMENTS_CREATION_EVENT": {
+      "LABEL": "",
+      "all": "",
+      "none": "",
+      "only_manual": ""
+    },
     "SPORT": {
       "ACTION": "handling",
       "COLOR": "farge",
+      "CONFIRM_SPORT_RESET": "",
+      "CONFIRM_SPORT_RESET_WITH_EQUIPMENTS": "",
+      "DEFAULT_EQUIPMENTS": "",
       "DISABLED_BY_ADMIN": "avskrudd av administrator",
       "IS_ACTIVE": "aktiv",
-      "LABEL": "etikett"
+      "LABEL": "etikett",
+      "PACE_SPEED_DISPLAY": {
+        "LABEL": "",
+        "pace": "",
+        "pace_and_speed": "",
+        "speed": ""
+      },
+      "STOPPED_SPEED_THRESHOLD": ""
     },
+    "SPORTS_EDITION": "",
+    "SUCCESSFUL_EMAIL_UPDATE": "",
     "SUCCESSFUL_REGISTRATION": "Konto opprettet.",
+    "SUCCESSFUL_REGISTRATION_WITH_EMAIL": "",
+    "SUCCESSFUL_UPDATE": "",
     "SUNDAY": "Søndag",
     "TABS": {
       "ACCOUNT": "konto",
       "APPS": "programmer",
+      "ARCHIVE-UPLOADS": "",
+      "BLOCKED-USERS": "",
+      "EQUIPMENTS": "",
+      "FOLLOW-REQUESTS": "",
+      "MESSAGES": "",
+      "MODERATION": "",
+      "NOTIFICATIONS": "",
       "PICTURE": "bilde",
       "PREFERENCES": "innstillinger",
       "PRIVACY-POLICY": "personvernspraksis",
       "PROFILE": "profil",
       "SPORTS": "sport"
     },
+    "THEME_MODE": {
+      "LABEL": "",
+      "VALUES": {
+        "DARK": "",
+        "DEFAULT": "",
+        "LIGHT": ""
+      }
+    },
     "TIMEZONE": "Tidssone",
     "UNITS": {
-      "LABEL": "Lengdeenhet"
+      "IMPERIAL": "",
+      "LABEL": "Lengdeenhet",
+      "METRIC": ""
     },
+    "USER_RECEIVED_SANCTIONS": "",
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Filtrert",
+      "HELP": "",
       "LABEL": "Maks hastighet strategi",
       "RAW_SPEED": "Rå"
+    },
+    "WORKOUT_CHARTS_DISPLAY": {
+      "LABEL": "",
+      "MULTIPLE": "",
+      "ONE": ""
     }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "Jeg har lest og samtykker til {0}.",
   "REGISTER": "Registrering",
   "REGISTER_DISABLED": "Registrering er avskrudd.",
+  "RELATIONSHIPS": {
+    "BLOCKED": "",
+    "FOLLOWER": "",
+    "FOLLOWING": "",
+    "FOLLOWS_YOU": "",
+    "NO_FOLLOWERS": "",
+    "NO_FOLLOWING": "",
+    "NO_FOLLOW_REQUESTS": ""
+  },
+  "REPORT": "",
   "RESENT_ACCOUNT_CONFIRMATION": "Send kontobekreftelse per e-post igjen",
   "RESET_PASSWORD": "Tilbakestill passordet ditt",
+  "REVIEW": "",
+  "ROLE": "",
   "ROLES": {
-    "admin": "Administrator"
+    "admin": "Administrator",
+    "moderator": "",
+    "owner": "",
+    "user": ""
   },
   "SHOW_PASSWORD": "vis passord",
+  "SUSPENDED": "",
+  "SUSPENDED_ACCOUNT": "",
+  "SUSPENSION_REASON": "",
   "TASKS": {
     "STATUS": {
-      "in_progress": "underveis"
+      "LABEL": "",
+      "aborted": "",
+      "errored": "",
+      "in_progress": "underveis",
+      "queued": "",
+      "successful": ""
     }
   },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Denne brukerkontoen er inaktiv.",
+  "TOGGLE_THEME": "",
+  "USER": "",
   "USERNAME": "Brukernavn",
   "USERNAME_INFO": "3 til 30 tegn kreves. Kun alfanumeriske tegn og understrek «_» tillates.",
   "USER_PICTURE": "brukerbilde",
+  "USER_PROFILE": "",
+  "WARNING_REASON": "",
+  "YOU": "",
+  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "",
+  "YOU_CAN_APPEAL_ONCE": "",
   "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Du har samtykket til {0}."
 }
