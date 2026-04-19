@@ -17,3 +17,7 @@ class TaskException(Exception):
 
 class EmailConfigException(Exception):
     pass
+
+
+class FileException(Exception):
+    pass

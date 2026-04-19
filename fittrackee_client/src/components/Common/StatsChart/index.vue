@@ -179,6 +179,7 @@
     hideChartIfNoData?: boolean
     isDisabled?: boolean
     selectedTimeFrame?: TStatisticsTimeFrame | null
+    monthStart?: boolean
   }
   const props = withDefaults(defineProps<Props>(), {
     displayedSportIds: () => [],
@@ -186,6 +187,7 @@
     hideChartIfNoData: false,
     isDisabled: false,
     selectedTimeFrame: null,
+    monthStart: false,
   })
   const {
     sports,
@@ -195,6 +197,7 @@
     fullStats,
     hideChartIfNoData,
     isDisabled,
+    monthStart,
   } = toRefs(props)
 
   const store = useStore()
@@ -232,7 +235,8 @@
       displayedSportIds.value,
       statistics.value,
       user.value.imperial_units,
-      user.value.date_format
+      user.value.date_format,
+      monthStart.value
     )
   )
   const datasets: ComputedRef<IChartDataset[]> = computed(

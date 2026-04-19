@@ -12,7 +12,7 @@ from flask import current_app
 from fittrackee import appLog, db
 from fittrackee.equipments.exceptions import InvalidEquipmentsException
 from fittrackee.equipments.models import Equipment
-from fittrackee.files import get_absolute_file_path
+from fittrackee.files import check_mime_type, get_absolute_file_path
 from fittrackee.users.models import Notification, User, UserTask
 from fittrackee.visibility_levels import get_calculated_visibility
 from fittrackee.workouts.models import (
@@ -20,6 +20,10 @@ from fittrackee.workouts.models import (
     NOTES_MAX_CHARACTERS,
 )
 
+from ..constants import (
+    WORKOUT_ALLOWED_EXTENSIONS,
+    WORKOUT_FILE_DETECTED_MIMETYPES,
+)
 from ..exceptions import (
     WorkoutExceedingValueException,
     WorkoutException,
@@ -304,9 +308,17 @@ class AbstractWorkoutsCreationService(BaseWorkoutService, WorkoutFileMixin):
         with zipfile.ZipFile(archive_content, "r") as zip_ref:
             for index, file in enumerate(files_to_process, start=1):
                 appLog.debug(f"  - file {index}/{total_files}")
+                extension = self._get_file_extension(file)
+                if extension not in WORKOUT_ALLOWED_EXTENSIONS:
+                    appLog.info("invalid file extension, skipping file")
+                    continue
                 try:
-                    extension = self._get_extension(file)
                     file_content = zip_ref.open(file)
+                    check_mime_type(
+                        extension,
+                        file_content,
+                        WORKOUT_FILE_DETECTED_MIMETYPES,
+                    )
                     new_workout = self.create_workout_from_file(
                         extension, equipments, file_content, get_weather
                     )
@@ -476,7 +488,7 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
         if self.file.filename is None:
             raise WorkoutFileException("error", "workout file has no filename")
 
-        extension = self._get_extension(self.file.filename)
+        extension = self._get_file_extension(self.file.filename)
         if extension not in current_app.config["WORKOUT_ALLOWED_EXTENSIONS"]:
             raise WorkoutFileException(
                 "error", "workout file invalid extension"

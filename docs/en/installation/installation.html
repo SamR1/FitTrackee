@@ -7,7 +7,7 @@
         <link rel="prefetch" href="../_static/ft-logo.png" as="image">
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2025.12.19 -->
-        <title>Installation - FitTrackee 1.2.1 documentation</title>
+        <title>Installation - FitTrackee 1.2.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">FitTrackee 1.2.1
+      <a href="../index.html"><div class="brand">FitTrackee 1.2.2
  documentation</div></a>
     </div>
     <div class="header-right">
@@ -190,7 +190,7 @@
     <img class="sidebar-logo" src="../_static/ft-logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">FitTrackee 1.2.1
+  <span class="sidebar-brand-text">FitTrackee 1.2.2
  documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
@@ -238,6 +238,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/equipment_types.html">Equipment Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/follow_requests.html">Follow requests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/geocode.html">Geocoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/health_check.html">Health Checks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/oauth2.html">OAuth2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/notifications.html">Notifications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../api/queued_tasks.html">Queued Tasks</a></li>
@@ -329,7 +330,11 @@
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Depending on the operating system and the version of Python installed, additional dependencies may be required, such as <strong>gcc</strong> or <strong>libgdal-dev</strong>.</p>
+<p>Depending on the operating system and the version of Python installed, additional dependencies may be required, such as <strong>gcc</strong> or <strong>libgdal-dev</strong> for numpy.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Errors can occurred when installing pandas with Python 3.14, see workaround in <a class="reference external" href="../troubleshooting/administrator.html#error-when-installing-pandas-using-python-3-14">troubleshooting</a>.</p>
 </div>
 <section id="from-pypi">
 <h2>From PyPI<a class="headerlink" href="#from-pypi" title="Link to this heading">¶</a></h2>
@@ -443,11 +448,11 @@ $<span class="w"> </span><span class="nb">source</span><span class="w"> </span>.
 </div>
 </div>
 <ul class="simple">
-<li><p>Download the last release (for now, it is the release v1.2.0):</p></li>
+<li><p>Download the last release (for now, it is the release v1.2.2):</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/1.2.0.tar.gz
-$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.2.0.tar.gz
-$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-1.2.0<span class="w"> </span>FitTrackee
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/SamR1/FitTrackee/archive/1.2.2.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xzf<span class="w"> </span>v1.2.2.tar.gz
+$<span class="w"> </span>mv<span class="w"> </span>FitTrackee-1.2.2<span class="w"> </span>FitTrackee
 $<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>FitTrackee
 </pre></div>
 </div>
@@ -834,7 +839,7 @@ ensure <code class="docutils literal notranslate"><span class="pre">.devcontaine
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=ca842793"></script>
+</div><script src="../_static/documentation_options.js?v=fd7cadf9"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

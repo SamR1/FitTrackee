@@ -16,7 +16,6 @@ from jsonschema.exceptions import ValidationError
 from sqlalchemy import exc, func
 from sqlalchemy.dialects.postgresql import insert
 from werkzeug.exceptions import RequestEntityTooLarge
-from werkzeug.utils import secure_filename
 
 from fittrackee import appLog, db
 from fittrackee.dates import get_datetime_in_utc, get_readable_duration
@@ -26,7 +25,13 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentsException,
 )
 from fittrackee.equipments.utils import handle_pieces_of_equipment
-from fittrackee.files import get_absolute_file_path
+from fittrackee.exceptions import FileException
+from fittrackee.files import (
+    check_file,
+    generate_filename,
+    get_absolute_file_path,
+    get_image_without_exif,
+)
 from fittrackee.oauth2.server import require_auth
 from fittrackee.reports.models import ReportAction, ReportActionAppeal
 from fittrackee.responses import (
@@ -51,7 +56,7 @@ from fittrackee.visibility_levels import (
 )
 from fittrackee.workouts.models import Sport
 
-from ..constants import PaceSpeedDisplay
+from ..constants import IMAGE_MIMETYPES, PaceSpeedDisplay
 from ..workouts.constants import PACE_SPORTS
 from .exceptions import UserControlsException, UserCreationException
 from .models import (
@@ -1817,7 +1822,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
         "status": "success"
       }
 
-    :form file: image file (allowed extensions: .jpg, .png, .gif)
+    :form file: image file (allowed extensions: .jpeg, .jpg, .png, .gif)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1827,6 +1832,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
         - ``no file part``
         - ``no selected file``
         - ``file extension not allowed``
+        - ``invalid file``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -1849,7 +1855,12 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
         return response_object
 
     file = request.files["file"]
-    filename = secure_filename(file.filename)  # type: ignore
+    try:
+        extension = check_file(file, IMAGE_MIMETYPES)
+    except FileException as e:
+        return InvalidPayloadErrorResponse(str(e))
+    filename = generate_filename(extension)
+    image = get_image_without_exif(file)
     dirpath = os.path.join(
         current_app.config["UPLOAD_FOLDER"], "pictures", str(auth_user.id)
     )
@@ -1865,7 +1876,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
             old_picture_path = get_absolute_file_path(auth_user.picture)
             if os.path.isfile(get_absolute_file_path(old_picture_path)):
                 os.remove(old_picture_path)
-        file.save(absolute_picture_path)
+        image.save(absolute_picture_path)
         auth_user.picture = relative_picture_path
         db.session.commit()
         return {

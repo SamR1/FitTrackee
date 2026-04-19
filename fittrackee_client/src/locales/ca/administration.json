@@ -1,1 +1,16 @@
-{}
+{
+  "ABOUT": {
+    "DESCRIPTION": "Qualsevol informació addicional que pugui ser útil per als seus usuaris. Es pot utilitzar la sintaxi Markdown.",
+    "TEXT": "Informació detallada de la instància"
+  },
+  "ACTION": "Acció | Accions",
+  "ACTIVATE_USER_ACCOUNT": "Activar compte",
+  "ACTIVE": "Actiu",
+  "ADMIN": "Admin",
+  "ADMINISTRATION": "Administració",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Afegeix/elimina els drets d'administrador, suprimeix el compte d'usuari.",
+  "APP_CONFIG": {
+    "MAX_USERS_HELP": "Si 0, cap límit en registres.",
+    "MAX_USERS_LABEL": "Màxim nombre d'arxius actius"
+  }
+}

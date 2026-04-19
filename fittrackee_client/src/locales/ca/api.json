@@ -1,1 +1,14 @@
-{}
+{
+  "ERROR": {
+    "<time> is missing in gpx file": "Falta l'element <time> al fitxer .gpx.",
+    "Error when updating elevation data source": "Error en actualitzar la font de dades d'elevació",
+    "Network Error": "Error de xarxa.",
+    "UNKNOWN": "Error. Per favor torna a provar o contacta l'administrador.",
+    "a maximum of 5 pieces of Misc equipment can be added": "Es poden afegir un màxim de 5 peces d'equip 'Misc'.",
+    "a report already exists": "Ja has enviat un informe.",
+    "at least one file in zip archive exceeds size limit, please check the archive": "Almenys un fitxer zip excedeix el límit de mida, si us plau, comproveu l'arxiu.",
+    "comment already reactivated": "El comentari ja s'ha reactivat. Actualitzeu aquesta pàgina.",
+    "error during gpx processing": "Ha hagut un error en processar el fitxer .gpx.",
+    "error on getting configuration": "S'ha produït un error en obtenir la configuració."
+  }
+}

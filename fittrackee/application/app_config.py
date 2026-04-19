@@ -64,7 +64,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "privacy_policy": null,
           "privacy_policy_date": null,
           "stats_workouts_limit": 10000,
-          "version": "1.2.1",
+          "version": "1.2.2",
           "weather_provider": null
         },
         "status": "success"
@@ -127,7 +127,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
           "privacy_policy": null,
           "privacy_policy_date": null,
           "stats_workouts_limit": 10000,
-          "version": "1.2.1",
+          "version": "1.2.2",
           "weather_provider": null
         },
         "status": "success"
@@ -253,31 +253,3 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         return handle_error_and_return_response(
             e, message="error when updating configuration"
         )
-
-
-@config_blueprint.route("/ping", methods=["GET"])
-def health_check() -> Union[Dict, HttpResponse]:
-    """health check endpoint
-
-    **Example request**:
-
-    .. sourcecode:: http
-
-      GET /api/ping HTTP/1.1
-      Content-Type: application/json
-
-    **Example response**:
-
-    .. sourcecode:: http
-
-      HTTP/1.1 200 OK
-      Content-Type: application/json
-
-      {
-        "message": "pong!",
-        "status": "success"
-      }
-
-    :statuscode 200: ``success``
-    """
-    return {"status": "success", "message": "pong!"}

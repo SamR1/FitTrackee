@@ -1916,6 +1916,220 @@ describe('formatStats (duration)', () => {
     ).toStrictEqual(expected)
   })
 
+  it("returns datasets when duration is 'week' and monthStart is true", () => {
+    const inputStats: TStatisticsFromApi = {
+      '2021-09-26': {
+        1: {
+          average_ascent: 120,
+          average_descent: 110,
+          average_distance: 12,
+          average_duration: 3600,
+          average_pace: null,
+          average_speed: 12,
+          total_workouts: 1,
+          total_distance: 12,
+          total_duration: 3600,
+          total_ascent: 120,
+          total_descent: 110,
+          total_calories: null,
+        },
+      },
+      '2021-10-03': {
+        1: {
+          average_ascent: 150,
+          average_descent: 100,
+          average_distance: 10,
+          average_duration: 3000,
+          average_pace: null,
+          average_speed: 12,
+          total_workouts: 1,
+          total_distance: 10,
+          total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 100,
+          total_calories: null,
+        },
+      },
+      '2021-10-10': {
+        1: {
+          average_ascent: 250,
+          average_descent: 150,
+          average_distance: 15,
+          average_duration: 3500,
+          average_pace: null,
+          average_speed: 18,
+          total_workouts: 1,
+          total_distance: 15,
+          total_duration: 3500,
+          total_ascent: 250,
+          total_descent: 150,
+          total_calories: 1309,
+        },
+        2: {
+          average_ascent: 75,
+          average_descent: 100,
+          average_distance: 10,
+          average_duration: 1500,
+          average_pace: null,
+          average_speed: 24,
+          total_workouts: 2,
+          total_distance: 20,
+          total_duration: 3000,
+          total_ascent: 150,
+          total_descent: 200,
+          total_calories: 1200,
+        },
+      },
+      '2021-10-17': {
+        3: {
+          average_distance: 10,
+          average_duration: 1500,
+          average_ascent: 50,
+          average_descent: 50,
+          average_pace: 850,
+          average_speed: 8.64,
+          total_workouts: 2,
+          total_distance: 20,
+          total_duration: 3000,
+          total_ascent: 100,
+          total_descent: 100,
+          total_calories: 1300,
+        },
+      },
+    }
+    const inputParams = {
+      duration: 'week',
+      start: new Date('October 01, 2021 00:00:00'),
+      end: new Date('October 23, 2021 23:59:59.999'),
+    }
+    const expected: IStatisticsChartData = {
+      labels: ['10/01/2021', '10/03/2021', '10/10/2021', '10/17/2021'],
+      datasets: {
+        average_ascent: [
+          {
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [120, 150, 250, null],
+            label: 'Cycling (Sport)',
+            spanGaps: true,
+            type: 'line',
+          },
+        ],
+        average_descent: [
+          {
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [110, 100, 150, null],
+            label: 'Cycling (Sport)',
+            spanGaps: true,
+            type: 'line',
+          },
+        ],
+        average_distance: [
+          {
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [12, 10, 15, null],
+            label: 'Cycling (Sport)',
+            spanGaps: true,
+            type: 'line',
+          },
+        ],
+        average_duration: [
+          {
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [3600, 3000, 3500, null],
+            label: 'Cycling (Sport)',
+            spanGaps: true,
+            type: 'line',
+          },
+        ],
+        average_pace: [
+          {
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [null, null, null, null],
+            label: 'Cycling (Sport)',
+            spanGaps: true,
+            type: 'line',
+          },
+        ],
+        average_speed: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [12, 12, 18, null],
+            type: 'line',
+            spanGaps: true,
+          },
+        ],
+        average_workouts: [],
+        total_workouts: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [1, 1, 1, 0],
+            type: 'bar',
+          },
+        ],
+        total_distance: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [12, 10, 15, 0],
+            type: 'bar',
+          },
+        ],
+        total_duration: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [3600, 3000, 3500, 0],
+            type: 'bar',
+          },
+        ],
+        total_ascent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [120, 150, 250, 0],
+            type: 'bar',
+          },
+        ],
+        total_descent: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [110, 100, 150, 0],
+            type: 'bar',
+          },
+        ],
+        total_calories: [
+          {
+            label: 'Cycling (Sport)',
+            backgroundColor: ['#4c9792'],
+            data: [0, 0, 1309, 0],
+            type: 'bar',
+          },
+        ],
+      },
+    }
+    expect(
+      formatStats(
+        inputParams,
+        false,
+        sports,
+        [1],
+        inputStats,
+        false,
+        'MM/dd/yyyy',
+        true
+      )
+    ).toStrictEqual(expected)
+  })
+
   it("returns datasets when duration is 'week' and date format 'dd/MM/yyyy'", () => {
     const inputStats: TStatisticsFromApi = {
       '2021-10-03': {

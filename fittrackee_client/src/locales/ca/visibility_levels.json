@@ -1,10 +1,12 @@
 {
   "ANALYSIS_VISIBILITY": "Visibilitat d'anàlisi",
+  "CALORIES_VISIBILITY": "Visibilitat de calories",
   "COMMENT_LEVELS": {
     "followers_only": "Només seguidors",
     "private": "Privat (només els usuaris esmentats)",
     "public": "Públic (tothom)"
   },
+  "HR_VISIBILITY": "Visibilitat de pulsacions",
   "LEVELS": {
     "followers_only": "Només seguidors",
     "private": "Privat (només jo)",

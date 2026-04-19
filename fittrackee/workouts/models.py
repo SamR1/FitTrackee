@@ -21,7 +21,7 @@ from fittrackee.constants import ElevationDataSource, PaceSpeedDisplay
 from fittrackee.database import PSQL_INTEGER_LIMIT, TZDateTime
 from fittrackee.dates import aware_utc_now
 from fittrackee.equipments.models import WorkoutEquipment
-from fittrackee.files import get_absolute_file_path
+from fittrackee.files import get_absolute_file_path, get_file_extension
 from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import (
     VisibilityLevel,
@@ -39,7 +39,6 @@ from .utils.convert import (
     convert_in_duration,
     convert_value_to_integer,
 )
-from .utils.gpx import get_file_extension
 from .utils.sports import (
     get_cadence,
     get_elevation_data,
