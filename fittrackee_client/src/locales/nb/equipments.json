@@ -8,6 +8,12 @@
   "EQUIPMENT_TYPE": "utstyrstype|utstyrstyper",
   "ERRORS": {
     "inactive": "Utstyret '{equipmentLabel}' er inaktivt.",
-    "invalid": "Utstyret «{equipmentLabel}» er ugyldig for denne sporten."
-  }
+    "invalid": "Utstyret «{equipmentLabel}» er ugyldig for denne sporten.",
+    "limit_exceeded": "",
+    "not_found": ""
+  },
+  "NEW_EQUIPMENT": "",
+  "NO_EQUIPMENT": "",
+  "NO_EQUIPMENTS": "",
+  "WITHOUT_EQUIPMENTS": ""
 }
