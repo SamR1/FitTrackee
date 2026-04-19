@@ -2,7 +2,16 @@
   "ACCOUNT_CONFIRMATION": "Confirmação da conta",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Você não recebeu instruções?",
   "ACCOUNT_CONFIRMATION_SENT": "Verifique o e-mail. Um novo e-mail de confirmação foi enviado para o endereço fornecido.",
+  "ACCOUNT_SUSPENDED_AT": "",
+  "ACTIVE_ACCOUNT": "",
+  "ACTIVE_USER": "",
+  "ADMIN_WILL_REVIEW_AND_ACTIVATE_ACCOUNT": "",
   "ALREADY_HAVE_ACCOUNT": "Você já tem uma conta?",
+  "APPEAL": "",
+  "APPEAL_APPROVED": "",
+  "APPEAL_IN_PROGRESS": "",
+  "APPEAL_REJECTED": "",
+  "APPEAL_SUBMITTED": "",
   "CONFIRM_ACCOUNT_DELETION": "Tem certeza de que deseja excluir sua conta? Todos os dados serão apagados, a decisão não é reversível.",
   "CURRENT_PASSWORD": "Senha atual",
   "EMAIL": "Correio eletrônico",
@@ -29,6 +38,8 @@
   "NEW_PASSWORD": "Nova senha",
   "NO_SPORT_FOUND": "Nenhum desporto encontrado.",
   "NO_USERS_FOUND": "Não há usuários.",
+  "NO_WARNING_FOUND": "",
+  "ONLY_USERS_FROM_THIS_INSTANCE_ARE_DISPLAYED": "",
   "PASSWORD": "Senha",
   "PASSWORD_FORGOTTEN": "Você esqueceu a senha?",
   "PASSWORD_INFO": "É necessário um mínimo de 8 caracteres.",
@@ -58,14 +69,32 @@
     "WEAK": "fraco"
   },
   "PASSWORD_UPDATED": "Sua senha foi atualizada. Pressione {0} para fazer login.",
+  "PRIVACY_POLICY_TO_VALIDATE": "",
   "PROFILE": {
     "ACCOUNT_EDITION": "Edição de conta",
+    "ARCHIVE_UPLOADS": {
+      "ARCHIVE": "",
+      "CONFIRM_TASK_ABORT": "",
+      "CONFIRM_TASK_DELETION": "",
+      "CREATED_WORKOUTS": "",
+      "ERRORED_FILES": "",
+      "FILES_COUNT": "",
+      "NOT_FOUND": "",
+      "PROGRESS": ""
+    },
     "ASCENT_DATA": "Dados de data (registros, total)",
     "BACK_TO_PROFILE": "Voltar ao perfil",
     "BIO": "Biografia",
     "BIRTH_DATE": "Data de nascimento",
+    "CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI": "",
+    "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "",
+    "CHANGES_ONLY_TO_NEW_WORKOUTS": "",
+    "CREATED_REPORTS": "",
     "DATE_FORMAT": "Formato de data",
     "EDIT": "Editar Perfil",
+    "EDIT_ACCOUNT": "",
+    "EDIT_MESSAGE_PREFERENCES": "",
+    "EDIT_NOTIFICATION_PREFERENCES": "",
     "EDIT_PREFERENCES": "Edite preferencias",
     "EDIT_SPORTS_PREFERENCES": "Editar preferências desporto",
     "ELEVATION_CHART_START": {
@@ -87,11 +116,38 @@
     "ERRORED_EMAIL_UPDATE": "Por favor {0} para alterar seu endereço de e-mail novamente ou entre em contato com o administrador",
     "FIRST_DAY_OF_WEEK": "O primeiro dia da semana",
     "FIRST_NAME": "Nome",
+    "FOLLOW_REQUESTS_APPROVAL": {
+      "AUTOMATICALLY": "",
+      "LABEL": "",
+      "MANUALLY": ""
+    },
     "INTERFACE": "Interface",
     "LANGUAGE": "Linguagem",
     "LAST_NAME": "Apelido",
+    "LATEST_SANCTIONS_RECEIVED": "",
     "LOCATION": "Localização",
+    "MESSAGES": {
+      "warning_about_large_number_of_workouts_on_map": ""
+    },
+    "MESSAGES_EDITION": "",
+    "MESSAGES_PREFERENCES": "",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "",
     "MONDAY": "Segunda-feira",
+    "NOTIFICATIONS": {
+      "account_creation": "",
+      "comment_like": "",
+      "follow": "",
+      "follow_request": "",
+      "follow_request_approved": "",
+      "mention": "",
+      "workout_comment": "",
+      "workout_like": ""
+    },
+    "NOTIFICATIONS_EDITION": "",
+    "NOTIFICATION_PREFERENCES": "",
+    "NO_ARCHIVE_UPLOADS": "",
+    "NO_ELEVATION_SERVICE_AVAILABLE": "",
+    "NO_SANCTIONS": "",
     "PICTURE": "Fotografia",
     "PICTURE_EDITION": "Edite a foto",
     "PICTURE_REMOVE": "Exclua a foto",
@@ -99,7 +155,31 @@
     "PREFERENCES_EDITION": "Edite preferencias",
     "PRIVACY-POLICY_EDITION": "Política de privacidade",
     "PROFILE_EDITION": "Editar Perfil",
+    "PROFILE_IN_USERS_DIRECTORY": {
+      "DISPLAYED": "",
+      "HIDDEN": "",
+      "LABEL": ""
+    },
     "REGISTRATION_DATE": "Data de registro",
+    "REPORTS_FROM_OTHER_USERS": "",
+    "SANCTIONS": {
+      "comment_suspension": "",
+      "user_suspension": "",
+      "user_warning": "",
+      "workout_suspension": ""
+    },
+    "SANCTIONS_RECEIVED": "",
+    "SANCTION_APPEAL": {
+      "APPROVED": "",
+      "IN_PROGRESS": "",
+      "REJECTED": ""
+    },
+    "SEGMENTS_CREATION_EVENT": {
+      "LABEL": "",
+      "all": "",
+      "none": "",
+      "only_manual": ""
+    },
     "SPORT": {
       "ACTION": "Ação",
       "COLOR": "cor",
@@ -109,6 +189,12 @@
       "DISABLED_BY_ADMIN": "desativado pelo administrador",
       "IS_ACTIVE": "ativo",
       "LABEL": "rótulo",
+      "PACE_SPEED_DISPLAY": {
+        "LABEL": "",
+        "pace": "",
+        "pace_and_speed": "",
+        "speed": ""
+      },
       "STOPPED_SPEED_THRESHOLD": "limite para detectar paragem"
     },
     "SPORTS_EDITION": "Editar preferências desporto",
@@ -120,7 +206,13 @@
     "TABS": {
       "ACCOUNT": "conta",
       "APPS": "aplicações",
+      "ARCHIVE-UPLOADS": "",
+      "BLOCKED-USERS": "",
       "EQUIPMENTS": "equipamento",
+      "FOLLOW-REQUESTS": "",
+      "MESSAGES": "",
+      "MODERATION": "",
+      "NOTIFICATIONS": "",
       "PICTURE": "fotografia",
       "PREFERENCES": "preferências",
       "PRIVACY-POLICY": "política de privacidade",
@@ -141,33 +233,66 @@
       "LABEL": "Unidades de distância",
       "METRIC": "Sistema Métrico (m, km, m/s, ºC)"
     },
+    "USER_RECEIVED_SANCTIONS": "",
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Filtrado",
       "HELP": "Se filtrado, exclui valores extremos (que podem ser erros de GPS) no cálculo da velocidade máxima.",
       "LABEL": "GPS velocidade máxima",
       "RAW_SPEED": "Em bruto"
+    },
+    "WORKOUT_CHARTS_DISPLAY": {
+      "LABEL": "",
+      "MULTIPLE": "",
+      "ONE": ""
     }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "Li e aceito o {0}.",
   "REGISTER": "Criar uma conta",
   "REGISTER_DISABLED": "Desculpe, novas contas estão desativas.",
+  "RELATIONSHIPS": {
+    "BLOCKED": "",
+    "FOLLOWER": "",
+    "FOLLOWING": "",
+    "FOLLOWS_YOU": "",
+    "NO_FOLLOWERS": "",
+    "NO_FOLLOWING": "",
+    "NO_FOLLOW_REQUESTS": ""
+  },
+  "REPORT": "",
   "RESENT_ACCOUNT_CONFIRMATION": "Re-enviar e-mail de confirmação da conta",
   "RESET_PASSWORD": "Restaurar senha",
   "REVIEW": "análise",
+  "ROLE": "",
   "ROLES": {
-    "admin": "Administrador"
+    "admin": "Administrador",
+    "moderator": "",
+    "owner": "",
+    "user": ""
   },
   "SHOW_PASSWORD": "mostrar senha",
+  "SUSPENDED": "",
+  "SUSPENDED_ACCOUNT": "",
+  "SUSPENSION_REASON": "",
   "TASKS": {
     "STATUS": {
+      "LABEL": "",
+      "aborted": "",
       "errored": "falhou",
-      "in_progress": "em progresso"
+      "in_progress": "em progresso",
+      "queued": "",
+      "successful": ""
     }
   },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Esta conta de usuário não está ativa.",
   "TOGGLE_THEME": "Alternar tema (modo claro ou escuro)",
+  "USER": "",
   "USERNAME": "Nome de utilizador",
   "USERNAME_INFO": "São necessários entre 3 e 30 caracteres, apenas caracteres alfanuméricos e sublinhados \"_\" são permitidos.",
   "USER_PICTURE": "foto de utilizador",
+  "USER_PROFILE": "",
+  "WARNING_REASON": "",
+  "YOU": "",
+  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "",
+  "YOU_CAN_APPEAL_ONCE": "",
   "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Você aceitou {0}."
 }
