@@ -5,6 +5,7 @@
   "ACCOUNT_SUSPENDED_AT": "Účet byl pozastaven v {0}.",
   "ACTIVE_ACCOUNT": "Účet je aktivní",
   "ACTIVE_USER": "aktivní uživatel | aktivní uživatelé",
+  "ADMIN_WILL_REVIEW_AND_ACTIVATE_ACCOUNT": "",
   "ALREADY_HAVE_ACCOUNT": "Máte již účet?",
   "APPEAL": "Odvolání",
   "APPEAL_APPROVED": "Odvolání schváleno.",
@@ -75,14 +76,29 @@
       "ARCHIVE": "Zip archiv",
       "CONFIRM_TASK_ABORT": "Opravdu chcete ukončit úkon nahrávání archivu?",
       "CONFIRM_TASK_DELETION": "Opravdu chcete odstranit úkon nahrávání archivu?",
+      "CREATED_WORKOUTS": "",
+      "ERRORED_FILES": "",
       "FILES_COUNT": "{count} souborů",
+      "NOT_FOUND": "",
       "PROGRESS": "Postup"
     },
+    "ASCENT_DATA": "",
     "BACK_TO_PROFILE": "Zpět na profil",
+    "BIO": "",
     "BIRTH_DATE": "Datum narození",
+    "CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI": "",
+    "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "",
+    "CHANGES_ONLY_TO_NEW_WORKOUTS": "",
+    "CREATED_REPORTS": "",
     "DATE_FORMAT": "Formát zobrazení datumu",
     "EDIT": "Upravit profil",
+    "EDIT_ACCOUNT": "",
+    "EDIT_MESSAGE_PREFERENCES": "",
+    "EDIT_NOTIFICATION_PREFERENCES": "",
+    "EDIT_PREFERENCES": "",
+    "EDIT_SPORTS_PREFERENCES": "",
     "ELEVATION_CHART_START": {
+      "LABEL": "",
       "MIN_ALT": "Minimální nadmořská výška",
       "ZERO": "Nula"
     },
@@ -96,6 +112,7 @@
       "LABEL": "označení",
       "YOUR_EQUIPMENTS": "Vaše vybavení"
     },
+    "EQUIPMENTS_EDITION": "",
     "ERRORED_EMAIL_UPDATE": "Prosím {0} změňte znovu svou e-mailovou adresu nebo kontaktujte administrátora",
     "FIRST_DAY_OF_WEEK": "První den týdne",
     "FIRST_NAME": "Křestní jméno",
@@ -107,23 +124,175 @@
     "INTERFACE": "Rozhraní",
     "LANGUAGE": "Jazyk",
     "LAST_NAME": "Příjmení",
+    "LATEST_SANCTIONS_RECEIVED": "",
     "LOCATION": "Místo",
+    "MESSAGES": {
+      "warning_about_large_number_of_workouts_on_map": ""
+    },
+    "MESSAGES_EDITION": "",
+    "MESSAGES_PREFERENCES": "",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "",
     "MONDAY": "Pondělí",
     "NOTIFICATIONS": {
-      "follow_request_approved": "Vaše žádost o sledování byla schválena"
+      "account_creation": "",
+      "comment_like": "",
+      "follow": "",
+      "follow_request": "",
+      "follow_request_approved": "Vaše žádost o sledování byla schválena",
+      "mention": "",
+      "workout_comment": "",
+      "workout_like": ""
     },
+    "NOTIFICATIONS_EDITION": "",
+    "NOTIFICATION_PREFERENCES": "",
+    "NO_ARCHIVE_UPLOADS": "",
+    "NO_ELEVATION_SERVICE_AVAILABLE": "",
+    "NO_SANCTIONS": "",
     "PICTURE": "Profilová fotka",
     "PICTURE_EDITION": "Upravit profilovou fotku",
     "PICTURE_REMOVE": "Smazat profilovou fotku",
-    "PICTURE_UPDATE": "Aktualizovat profilovou fotku"
+    "PICTURE_UPDATE": "Aktualizovat profilovou fotku",
+    "PREFERENCES_EDITION": "",
+    "PRIVACY-POLICY_EDITION": "",
+    "PROFILE_EDITION": "",
+    "PROFILE_IN_USERS_DIRECTORY": {
+      "DISPLAYED": "",
+      "HIDDEN": "",
+      "LABEL": ""
+    },
+    "REGISTRATION_DATE": "",
+    "REPORTS_FROM_OTHER_USERS": "",
+    "SANCTIONS": {
+      "comment_suspension": "",
+      "user_suspension": "",
+      "user_warning": "",
+      "workout_suspension": ""
+    },
+    "SANCTIONS_RECEIVED": "",
+    "SANCTION_APPEAL": {
+      "APPROVED": "",
+      "IN_PROGRESS": "",
+      "REJECTED": ""
+    },
+    "SEGMENTS_CREATION_EVENT": {
+      "LABEL": "",
+      "all": "",
+      "none": "",
+      "only_manual": ""
+    },
+    "SPORT": {
+      "ACTION": "",
+      "COLOR": "",
+      "CONFIRM_SPORT_RESET": "",
+      "CONFIRM_SPORT_RESET_WITH_EQUIPMENTS": "",
+      "DEFAULT_EQUIPMENTS": "",
+      "DISABLED_BY_ADMIN": "",
+      "IS_ACTIVE": "",
+      "LABEL": "",
+      "PACE_SPEED_DISPLAY": {
+        "LABEL": "",
+        "pace": "",
+        "pace_and_speed": "",
+        "speed": ""
+      },
+      "STOPPED_SPEED_THRESHOLD": ""
+    },
+    "SPORTS_EDITION": "",
+    "SUCCESSFUL_EMAIL_UPDATE": "",
+    "SUCCESSFUL_REGISTRATION": "",
+    "SUCCESSFUL_REGISTRATION_WITH_EMAIL": "",
+    "SUCCESSFUL_UPDATE": "",
+    "SUNDAY": "",
+    "TABS": {
+      "ACCOUNT": "",
+      "APPS": "",
+      "ARCHIVE-UPLOADS": "",
+      "BLOCKED-USERS": "",
+      "EQUIPMENTS": "",
+      "FOLLOW-REQUESTS": "",
+      "MESSAGES": "",
+      "MODERATION": "",
+      "NOTIFICATIONS": "",
+      "PICTURE": "",
+      "PREFERENCES": "",
+      "PRIVACY-POLICY": "",
+      "PROFILE": "",
+      "SPORTS": ""
+    },
+    "THEME_MODE": {
+      "LABEL": "",
+      "VALUES": {
+        "DARK": "",
+        "DEFAULT": "",
+        "LIGHT": ""
+      }
+    },
+    "TIMEZONE": "",
+    "UNITS": {
+      "IMPERIAL": "",
+      "LABEL": "",
+      "METRIC": ""
+    },
+    "USER_RECEIVED_SANCTIONS": "",
+    "USE_RAW_GPX_SPEED": {
+      "FILTERED_SPEED": "",
+      "HELP": "",
+      "LABEL": "",
+      "RAW_SPEED": ""
+    },
+    "WORKOUT_CHARTS_DISPLAY": {
+      "LABEL": "",
+      "MULTIPLE": "",
+      "ONE": ""
+    }
   },
+  "READ_AND_ACCEPT_PRIVACY_POLICY": "",
+  "REGISTER": "",
+  "REGISTER_DISABLED": "",
+  "RELATIONSHIPS": {
+    "BLOCKED": "",
+    "FOLLOWER": "",
+    "FOLLOWING": "",
+    "FOLLOWS_YOU": "",
+    "NO_FOLLOWERS": "",
+    "NO_FOLLOWING": "",
+    "NO_FOLLOW_REQUESTS": ""
+  },
+  "REPORT": "",
+  "RESENT_ACCOUNT_CONFIRMATION": "",
+  "RESET_PASSWORD": "",
+  "REVIEW": "",
+  "ROLE": "",
   "ROLES": {
-    "admin": "Správce"
+    "admin": "Správce",
+    "moderator": "",
+    "owner": "",
+    "user": ""
   },
+  "SHOW_PASSWORD": "",
+  "SUSPENDED": "",
+  "SUSPENDED_ACCOUNT": "",
+  "SUSPENSION_REASON": "",
   "TASKS": {
     "STATUS": {
+      "LABEL": "",
+      "aborted": "",
       "errored": "selhalo",
-      "in_progress": "probíhá"
+      "in_progress": "probíhá",
+      "queued": "",
+      "successful": ""
     }
-  }
+  },
+  "THIS_USER_ACCOUNT_IS_INACTIVE": "",
+  "TOGGLE_THEME": "",
+  "USER": "",
+  "USERNAME": "",
+  "USERNAME_INFO": "",
+  "USER_PICTURE": "",
+  "USER_PROFILE": "",
+  "WARNING_REASON": "",
+  "YOU": "",
+  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "",
+  "YOU_CAN_APPEAL_ONCE": "",
+  "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": ""
 }
