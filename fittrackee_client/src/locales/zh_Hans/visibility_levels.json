@@ -1,5 +1,6 @@
 {
   "ANALYSIS_VISIBILITY": "分析可见性",
+  "CALORIES_VISIBILITY": "",
   "COMMENT_LEVELS": {
     "followers_only": "仅关注者",
     "private": "私密（仅提到的用户）",
