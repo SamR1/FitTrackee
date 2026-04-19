@@ -5,11 +5,13 @@
   "CONFIRMATION": "Confirmación",
   "CONTACT": "contacto",
   "CREATION_DATE": "Fecha de creación",
+  "DATA_IS_LOADING": "",
   "DAY": "día | días",
   "DESCRIPTION": "Descripción",
   "DISABLED": "deshabilitado",
   "DISPLAYED": "Mostrado",
   "DOCUMENTATION": "documentación",
+  "DO_NOT_SHOW_THIS_MESSAGE_AGAIN": "",
   "EDITED": "editado",
   "ENABLED": "habilitado",
   "FILES": "Archivos",
@@ -49,5 +51,6 @@
   },
   "TOTAL": "Total",
   "TOTAL_DURATION_WITH_PAUSES": "duración total con pausas",
+  "TYPE": "",
   "YES": "Si"
 }
