@@ -1,5 +1,6 @@
 {
   "ANALYSIS_VISIBILITY": "Analyse synlighet",
+  "CALORIES_VISIBILITY": "",
   "COMMENT_LEVELS": {
     "followers_only": "Kun følgere",
     "private": "Privat (kun nevnte brukere)",
@@ -11,5 +12,8 @@
     "private": "Privat (bare meg)",
     "public": "Offentlig (alle)"
   },
-  "MAP_VISIBILITY": "Kartsynlighet"
+  "MAP_VISIBILITY": "Kartsynlighet",
+  "VISIBILITY": "",
+  "WORKOUTS_VISIBILITY": "",
+  "WORKOUT_VISIBILITY": ""
 }
