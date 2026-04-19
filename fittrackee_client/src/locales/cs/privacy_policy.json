@@ -7,6 +7,31 @@
     "CHANGES_TO_OUR_PRIVACY_POLICY": {
       "CONTENT": "Pokud se rozhodneme změnit naše zásady ochrany osobních údajů, zveřejníme tyto změny na této stránce.\nTento dokument je licencován pod licencí [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/). Původně přizpůsobeno ze zásad ochrany osobních údajů [Discourse](https://github.com/discourse/discourse).",
       "TITLE": "Změny zásad ochrany osobních údajů"
+    },
+    "DATA_COLLECTED": {
+      "CONTENT": "",
+      "TITLE": ""
+    },
+    "INFORMATION_DISCLOSURE": {
+      "CONTENT": "",
+      "TITLE": ""
+    },
+    "INFORMATION_PROTECTION": {
+      "CONTENT": "",
+      "TITLE": ""
+    },
+    "INFORMATION_USAGE": {
+      "CONTENT": "",
+      "TITLE": ""
+    },
+    "SITE_USAGE_BY_CHILDREN": {
+      "CONTENT": "",
+      "TITLE": ""
+    },
+    "YOUR_CONSENT": {
+      "CONTENT": "",
+      "TITLE": ""
     }
-  }
+  },
+  "TITLE": ""
 }
