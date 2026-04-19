@@ -1,1 +1,56 @@
-{}
+{
+  "ABOUT": "",
+  "ACTION": "",
+  "ACTIVE": "",
+  "CONFIRMATION": "",
+  "CONTACT": "",
+  "CREATION_DATE": "",
+  "DATA_IS_LOADING": "",
+  "DAY": "",
+  "DESCRIPTION": "",
+  "DISABLED": "",
+  "DISPLAYED": "",
+  "DOCUMENTATION": "",
+  "DO_NOT_SHOW_THIS_MESSAGE_AGAIN": "",
+  "EDITED": "",
+  "ENABLED": "",
+  "FILES": "",
+  "HERE": "",
+  "HIDDEN": "",
+  "HIDE": "",
+  "HOME": "",
+  "HOURS": "",
+  "INACTIVE": "",
+  "LABEL": "",
+  "LAST_UPDATE": "",
+  "LAST_UPDATED_ON": "",
+  "MINUTES": "",
+  "NEXT": "",
+  "NO": "",
+  "NO_DESCRIPTION": "",
+  "NO_NOTES": "",
+  "PREVIOUS": "",
+  "REPORT_PLACEHOLDER": "",
+  "REPORT_SUBMITTED": "",
+  "SCROLL_DOWN": "",
+  "SCROLL_UP": "",
+  "SECONDS": "",
+  "SEE_REPORT": "",
+  "SELECTS": {
+    "ORDER": {
+      "ASC": "",
+      "DESC": "",
+      "LABEL": ""
+    },
+    "ORDER_BY": {
+      "LABEL": ""
+    },
+    "PER_PAGE": {
+      "LABEL": ""
+    }
+  },
+  "TOTAL": "",
+  "TOTAL_DURATION_WITH_PAUSES": "",
+  "TYPE": "",
+  "YES": ""
+}
