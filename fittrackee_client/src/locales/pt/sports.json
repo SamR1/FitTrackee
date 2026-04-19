@@ -1,4 +1,10 @@
 {
+  "Canoeing": {
+    "LABEL": ""
+  },
+  "Canoeing (Whitewater)": {
+    "LABEL": ""
+  },
   "Cycling (Sport)": {
     "LABEL": "Ciclismo (Desporto)"
   },
@@ -11,8 +17,23 @@
   "Cycling (Virtual)": {
     "LABEL": "Ciclismo (virtual)"
   },
+  "Halfbike": {
+    "LABEL": ""
+  },
   "Hiking": {
     "LABEL": "Caminhada"
+  },
+  "Ice Skating": {
+    "LABEL": ""
+  },
+  "Inline Skating": {
+    "LABEL": ""
+  },
+  "Kayaking": {
+    "LABEL": ""
+  },
+  "Kayaking (Whitewater)": {
+    "LABEL": ""
   },
   "Mountain Biking": {
     "LABEL": "Bicicleta de montanha"
@@ -25,6 +46,9 @@
   },
   "Open Water Swimming": {
     "LABEL": "Natação em águas abertas"
+  },
+  "Padel (Outdoor)": {
+    "LABEL": ""
   },
   "Paragliding": {
     "LABEL": "Parapente"
@@ -44,10 +68,22 @@
   "Snowshoes": {
     "LABEL": "Snowshoes"
   },
+  "Standup Paddleboarding": {
+    "LABEL": ""
+  },
+  "Swimrun": {
+    "LABEL": ""
+  },
+  "Tennis (Outdoor)": {
+    "LABEL": ""
+  },
   "Trail": {
     "LABEL": "Trail"
   },
   "Walking": {
     "LABEL": "Andar"
+  },
+  "Windsurfing": {
+    "LABEL": ""
   }
 }
