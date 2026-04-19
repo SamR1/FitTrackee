@@ -14,6 +14,7 @@
       "equipments:write_DESCRIPTION": "授予对 <code>equipments</code> 端点的写入权限。",
       "follow:read_DESCRIPTION": "授予对关注请求和关注者相关端点的读取权限。",
       "follow:write_DESCRIPTION": "授予对关注请求和关注者相关端点的写入权限。",
+      "geocode:read_DESCRIPTION": "",
       "notifications:read_DESCRIPTION": "授予对 <code>notifications</code> 端点的读取权限。",
       "notifications:write_DESCRIPTION": "授予对 <code>notifications</code> 端点的写入权限。",
       "profile:read_DESCRIPTION": "授予对 <code>auth</code> 端点的读取权限。",
