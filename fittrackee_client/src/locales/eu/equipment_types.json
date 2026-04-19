@@ -11,8 +11,20 @@
   "Kayak_Boat": {
     "LABEL": "Kayak/Txalupa"
   },
+  "Misc": {
+    "LABEL": ""
+  },
+  "Paddle": {
+    "LABEL": ""
+  },
+  "Racket": {
+    "LABEL": ""
+  },
   "Shoes": {
     "LABEL": "Oinetakoak"
+  },
+  "Skates": {
+    "LABEL": ""
   },
   "Skis": {
     "LABEL": "Eskiak"
