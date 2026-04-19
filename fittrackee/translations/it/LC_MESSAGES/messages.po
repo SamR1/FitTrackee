@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2026-03-04 23:57+0100\n"
-"PO-Revision-Date: 2026-03-11 09:09+0000\n"
-"Last-Translator: Davide Gualano <ildave@gmail.com>\n"
+"PO-Revision-Date: 2026-04-19 09:31+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/fittrackee/"
 "fittrackee-api-emails/it/>\n"
 "Language: it\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 5.17.1-dev\n"
 "Generated-By: Babel 2.18.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
@@ -96,8 +96,8 @@ msgid ""
 "If you're having trouble with the button above, copy and paste the URL "
 "below into your web browser."
 msgstr ""
-"Se stai avendo problemi con il bottone qui sopra, copia ed incolla l'URL "
-"qui sotto nel tuo web browser."
+"Se stai avendo problemi con il bottone qui sopra, copia ed incolla l'URL qui "
+"sotto nel tuo web browser."
 
 #: fittrackee/emails/templates/account_confirmation/body.txt:2
 msgid "Use the link below to confirm your address email."
@@ -297,8 +297,8 @@ msgid ""
 "You recently requested to change your email address for your FitTrackee "
 "account."
 msgstr ""
-"Hai richiesto di recente di cambiare l'indirizzo email associato con il "
-"tuo account FitTrackee."
+"Hai richiesto di recente di cambiare l'indirizzo email associato con il tuo "
+"account FitTrackee."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:4
 msgid "Use the button below to confirm this address."
@@ -308,8 +308,8 @@ msgstr "Usa il bottone qui sotto per confermare questo indirizzo."
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:7
 msgid "If this email change wasn't initiated by you, please ignore this email."
 msgstr ""
-"Se il cambio d'email non è stato iniziato da te, per favore ignora questa"
-" mail."
+"Se il cambio d'email non è stato iniziato da te, per favore ignora questa "
+"mail."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:2
 msgid "Use the link below to confirm this address."
@@ -336,9 +336,9 @@ msgid ""
 "password immediately or contact your administrator if your account is "
 "locked."
 msgstr ""
-"Se questo cambio di password non è stato iniziato da te, per favore "
-"cambia immediatamente la tua password e contatta un amministratore se il "
-"tuo account è bloccato."
+"Se questo cambio di password non è stato iniziato da te, per favore cambia "
+"immediatamente la tua password e contatta un amministratore se il tuo "
+"account è bloccato."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:2
 #: fittrackee/emails/templates/password_reset_request/subject.txt:1
@@ -351,8 +351,8 @@ msgid ""
 "Use this link to reset your password. The link is only valid for "
 "%(expiration_delay)s."
 msgstr ""
-"Usa questo link per resettare la password. Il link è valido solo per "
-"%(expiration_delay)s."
+"Usa questo link per resettare la password. Il link è valido solo per %"
+"(expiration_delay)s."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:4
 #: fittrackee/emails/templates/password_reset_request/body.txt:1
@@ -380,8 +380,7 @@ msgstr "Resetta password"
 #: fittrackee/emails/templates/password_reset_request/body.txt:7
 msgid "If you did not request a password reset, please ignore this email."
 msgstr ""
-"Se non hai richiesto un reset della password, per favore ignora "
-"quest'email."
+"Se non hai richiesto un reset della password, per favore ignora quest'email."
 
 #: fittrackee/emails/templates/password_reset_request/body.txt:1
 msgid "Use the link below to reset it."
