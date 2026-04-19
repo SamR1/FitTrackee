@@ -1,1 +1,35 @@
-{}
+{
+  "Bike": {
+    "LABEL": ""
+  },
+  "Bike Trainer": {
+    "LABEL": ""
+  },
+  "Board": {
+    "LABEL": ""
+  },
+  "Kayak_Boat": {
+    "LABEL": ""
+  },
+  "Misc": {
+    "LABEL": ""
+  },
+  "Paddle": {
+    "LABEL": ""
+  },
+  "Racket": {
+    "LABEL": ""
+  },
+  "Shoes": {
+    "LABEL": ""
+  },
+  "Skates": {
+    "LABEL": ""
+  },
+  "Skis": {
+    "LABEL": ""
+  },
+  "Snowshoes": {
+    "LABEL": ""
+  }
+}
