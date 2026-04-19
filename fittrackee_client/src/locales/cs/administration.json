@@ -12,19 +12,96 @@
   "APPLICATION": "Aplikace",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Kontaktní e-mail správce",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "",
     "MAX_FILES_IN_ZIP_LABEL": "Max. počet souborů v zip archivu",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "",
     "MAX_USERS_HELP": "Pokud zadáte 0, tak nebudou registrace omezeny.",
     "MAX_USERS_LABEL": "Max. počet aktivních uživatelů",
     "NO_CONTACT_EMAIL": "žádný kontaktní e-mail",
     "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Max. velikost nahrávaných souborů (v MB)",
     "STATS_WORKOUTS_LIMIT_HELP": "Nula znamená bez omezení počtu cvičení.",
+    "STATS_WORKOUTS_LIMIT_LABEL": "",
     "TITLE": "Nastavení aplikace",
     "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. velikost zip archivu (v MB)"
   },
+  "APP_MODERATION": {
+    "ACTIONS": {
+      "ADD_COMMENT": "",
+      "MARK_AS_RESOLVED": "",
+      "MARK_AS_UNRESOLVED": "",
+      "SEND_WARNING_EMAIL": "",
+      "SUSPEND_ACCOUNT": "",
+      "SUSPEND_CONTENT": "",
+      "UNSUSPEND_ACCOUNT": "",
+      "UNSUSPEND_CONTENT": ""
+    },
+    "APPEAL": {
+      "APPROVED": "",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "",
+      "HIDE": "",
+      "REASON_IS": "",
+      "REJECTED": "",
+      "SEE": ""
+    },
+    "DESCRIPTION": "",
+    "NOTES_AND_ACTIONS": "",
+    "NO_REPORTS_FOUND": "",
+    "ORDER_BY": {
+      "CREATED_AT": "",
+      "UPDATED_AT": ""
+    },
+    "REASON": "",
+    "REPORT": "",
+    "REPORTED_BY": "",
+    "REPORTED_CONTENT": "",
+    "REPORTED_USER": "",
+    "REPORTER": "",
+    "REPORT_ACTIONS": {
+      "comment_suspension": "",
+      "comment_unsuspension": "",
+      "report_reopening": "",
+      "report_resolution": "",
+      "user_suspension": "",
+      "user_unsuspension": "",
+      "user_warning": "",
+      "user_warning_lifting": "",
+      "workout_suspension": "",
+      "workout_unsuspension": ""
+    },
+    "REPORT_NOTE": "",
+    "RESOLVED": {
+      "FALSE": "",
+      "TRUE": ""
+    },
+    "RESOLVED_AT": "",
+    "RESOLVED_BY": "",
+    "STATUS": "",
+    "TEXTAREA_PLACEHOLDER": {
+      "ADD_COMMENT": "",
+      "INFORMATION_VISIBLE_TO_USER": "",
+      "MARK_AS_RESOLVED": "",
+      "MARK_AS_UNRESOLVED": "",
+      "SEND_WARNING_EMAIL": "",
+      "SUSPEND": "",
+      "UNSUSPEND": "",
+      "UPDATE_APPEAL": ""
+    },
+    "TITLE": "",
+    "UNRESOLVED_REPORTS_EXIST": "",
+    "USERS_QUEUED_TASKS_EXIST": "",
+    "VIEW_REPORT": ""
+  },
   "BACK_TO_ADMIN": "Zpět na správu",
+  "CONFIRM_SUSPEND_ACCOUNT": "",
+  "CONFIRM_SUSPEND_CONTENT": "",
   "CONFIRM_USER_ACCOUNT_DELETION": "Jste si jistý, že chcete smazat účet {0}? Všechna data budou smazána, toto nelze vrátit.",
   "CONFIRM_USER_PASSWORD_RESET": "Jste si jistý, že chcete resetovat {0} heslo?",
   "CURRENT_EMAIL": "Současný email",
+  "DELETED_COMMENT": "",
+  "DELETED_USER": "",
+  "DELETED_WORKOUT": "",
   "DELETE_USER": "Smazat uživatele",
   "EMAIL_SENDING_DISABLED": "Odesílání emailů je zakázáno.",
   "ENABLE_DISABLE_EQUIPMENT_TYPES": "Povolit/zakázat typy vybavení.",
@@ -41,12 +118,14 @@
   "NEW_EMAIL": "Nový email",
   "NO_TEXT_ENTERED": "Nebyl zadaný text",
   "PASSWORD_RESET_SUCCESSFUL": "Heslo bylo obnoveno.",
+  "PRIVACY_POLICY_DESCRIPTION": "",
   "REGISTRATION_DISABLED": "Registrace je momentálně zakázaná.",
   "REGISTRATION_ENABLED": "Registrace je momentálně povolná.",
   "RESET_USER_PASSWORD": "Obnova hesla",
   "SPORTS": {
     "TABLE": {
       "ACTIVE": "Aktivní",
+      "HAS_WORKOUTS": "",
       "IMAGE": "Obrázek",
       "LABEL": "Popisek"
     },
@@ -60,9 +139,30 @@
       "ORDER_BY": {
         "CREATED_AT": "datum registrace",
         "IS_ACTIVE": "stav účtu",
-        "USERNAME": "uživatelské jméno"
+        "ROLE": "",
+        "USERNAME": "uživatelské jméno",
+        "WORKOUTS_COUNT": ""
       }
-    }
+    },
+    "TABLE": {
+      "CHANGE_ROLE": "",
+      "CHANGE_TO_ADMIN": "",
+      "CHANGE_TO_MODERATOR": "",
+      "CHANGE_TO_USER": ""
+    },
+    "TITLE": ""
+  },
+  "USERS_QUEUED_TASKS": {
+    "DESCRIPTION": "",
+    "LABEL": "",
+    "LIST_DESCRIPTION": "",
+    "NO_USERS_QUEUED_TASKS": "",
+    "TASK_TYPES": {
+      "LABEL": "",
+      "user_data_export": "",
+      "workouts_archive_upload": ""
+    },
+    "VIEW_OTHER_TASKS": ""
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "E-mailová adresa byla upravena."
 }
