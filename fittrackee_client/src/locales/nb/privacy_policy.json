@@ -20,7 +20,16 @@
       "CONTENT": "Vi implementerer en rekke sikkerhetstiltak for å opprettholde sikkerheten til dine personopplysninger når du legger inn, sender inn eller får tilgang til dine personopplysninger.",
       "TITLE": "Hvordan beskyttes din info?"
     },
+    "INFORMATION_USAGE": {
+      "CONTENT": "",
+      "TITLE": ""
+    },
+    "SITE_USAGE_BY_CHILDREN": {
+      "CONTENT": "",
+      "TITLE": ""
+    },
     "YOUR_CONSENT": {
+      "CONTENT": "",
       "TITLE": "Ditt samtykke"
     }
   },
