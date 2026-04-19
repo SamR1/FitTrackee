@@ -9,6 +9,7 @@
   "ERRORS": {
     "inactive": "'{equipmentLabel}' ekipamendu inaktibo.",
     "invalid": "'{equipmentLabel}' ekipamendua ez da baliozkoa kirol honetarako.",
+    "limit_exceeded": "",
     "not_found": "Ekipamendua ez da aurkitu."
   },
   "NEW_EQUIPMENT": "Ekipamendu berria",
