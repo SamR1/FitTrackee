@@ -14,6 +14,7 @@
       "equipments:write_DESCRIPTION": "concede permiso de lectura a los puntos de acceso <code>equipments</code>.",
       "follow:read_DESCRIPTION": "concede acceso de lectura a los endpoints relacionados con las solicitudes de seguimiento y los seguidores.",
       "follow:write_DESCRIPTION": "concede acceso de escritura a los endpoints relacionados con las solicitudes de seguimiento y los seguidores.",
+      "geocode:read_DESCRIPTION": "",
       "notifications:read_DESCRIPTION": "concede acceso de lectura a los endpoints de <code>notifications</code>.",
       "notifications:write_DESCRIPTION": "concede acceso de escritura a los endpoints de <code>notifications</code>.",
       "profile:read_DESCRIPTION": "concede permiso de lectura a puntos de acceso <code>auth</code>.",
