@@ -9,6 +9,7 @@
   "ERRORS": {
     "inactive": "Оборудване '{equipmentLabel}' е неактивно.",
     "invalid": "Оборнудване '{equipmentLabel}' е несъвместимо с този спорт.",
+    "limit_exceeded": "",
     "not_found": "Оборудването не е намерено."
   },
   "NEW_EQUIPMENT": "Ново оборудване",
