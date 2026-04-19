@@ -10,9 +10,16 @@
   },
   "STATISTICS_ON_ALL_WORKOUTS": "Statistikk over alle treningsøkter:",
   "STATISTICS_ON_LAST_WORKOUTS": "Statistikk over de siste {count} treningsøktene:",
+  "STATISTICS_TYPE": "",
+  "STATISTICS_TYPES": {
+    "by_sport": "",
+    "by_time": ""
+  },
   "TIME_FRAMES": {
+    "day": "",
     "month": "måned",
     "week": "uke",
     "year": "år"
-  }
+  },
+  "WORKOUTS_AVERAGE": ""
 }
