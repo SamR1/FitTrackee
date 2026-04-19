@@ -1,1 +1,19 @@
-{}
+{
+  "ANALYSIS_VISIBILITY": "",
+  "CALORIES_VISIBILITY": "",
+  "COMMENT_LEVELS": {
+    "followers_only": "",
+    "private": "",
+    "public": ""
+  },
+  "HR_VISIBILITY": "",
+  "LEVELS": {
+    "followers_only": "",
+    "private": "",
+    "public": ""
+  },
+  "MAP_VISIBILITY": "",
+  "VISIBILITY": "",
+  "WORKOUTS_VISIBILITY": "",
+  "WORKOUT_VISIBILITY": ""
+}
