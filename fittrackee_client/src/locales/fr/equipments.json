@@ -9,8 +9,8 @@
   "ERRORS": {
     "inactive": "Équipement {equipmentLabel} inactif.",
     "invalid": "Équipement {equipmentLabel} invalide pour ce sport.",
-    "not_found": "Équipement introuvable.",
-    "limit_exceeded": "Cet équipement dépasse le maximum de 5 équipements pour le sport {sportLabels}. | Cet équipement dépasse le maximum de 5 équipements pour les sports suivants : {sportLabels}."
+    "limit_exceeded": "Cet équipement dépasse le maximum de 5 équipements pour le sport {sportLabels}. | Cet équipement dépasse le maximum de 5 équipements pour les sports suivants : {sportLabels}.",
+    "not_found": "Équipement introuvable."
   },
   "NEW_EQUIPMENT": "Nouvel équipement",
   "NO_EQUIPMENT": "Pas d'équipement correspondant.",
