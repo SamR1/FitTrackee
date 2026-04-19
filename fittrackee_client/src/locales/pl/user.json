@@ -5,6 +5,7 @@
   "ACCOUNT_SUSPENDED_AT": "Konto zawieszone {0}.",
   "ACTIVE_ACCOUNT": "Konto aktywne",
   "ACTIVE_USER": "aktywny użytkownik | aktywni użytkownicy",
+  "ADMIN_WILL_REVIEW_AND_ACTIVATE_ACCOUNT": "",
   "ALREADY_HAVE_ACCOUNT": "Masz już konto?",
   "APPEAL": "Odwołanie",
   "APPEAL_APPROVED": "Odwołanie zatwierdzone.",
@@ -85,6 +86,9 @@
     "BACK_TO_PROFILE": "Wróć do profilu",
     "BIO": "O sobie",
     "BIRTH_DATE": "Data urodzenia",
+    "CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI": "",
+    "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "",
+    "CHANGES_ONLY_TO_NEW_WORKOUTS": "",
     "CREATED_REPORTS": "Stworzone zgłoszenia",
     "DATE_FORMAT": "Format wyświetlanych dat",
     "EDIT": "Edytuj profil",
@@ -122,8 +126,12 @@
     "LAST_NAME": "Nazwisko",
     "LATEST_SANCTIONS_RECEIVED": "Ostatnio otrzymane ostrzeżenia",
     "LOCATION": "Miejsce",
+    "MESSAGES": {
+      "warning_about_large_number_of_workouts_on_map": ""
+    },
     "MESSAGES_EDITION": "Edycja ustawień wiadomości",
     "MESSAGES_PREFERENCES": "Ustawienia wiadomości",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "",
     "MONDAY": "Poniedziałek",
     "NOTIFICATIONS": {
       "account_creation": "Nowa rejestracja",
@@ -138,6 +146,7 @@
     "NOTIFICATIONS_EDITION": "Zmiana ustawień powiadomień",
     "NOTIFICATION_PREFERENCES": "Ustawienia powiadomień",
     "NO_ARCHIVE_UPLOADS": "Brak przesłanych archiwów",
+    "NO_ELEVATION_SERVICE_AVAILABLE": "",
     "NO_SANCTIONS": "Brak blokad",
     "PICTURE": "Zdjęcie",
     "PICTURE_EDITION": "Zmiana zdjęcia",
@@ -180,6 +189,12 @@
       "DISABLED_BY_ADMIN": "wyłączone przez administratora",
       "IS_ACTIVE": "aktywny",
       "LABEL": "etykieta",
+      "PACE_SPEED_DISPLAY": {
+        "LABEL": "",
+        "pace": "",
+        "pace_and_speed": "",
+        "speed": ""
+      },
       "STOPPED_SPEED_THRESHOLD": "próg prędkości zatrzymanej"
     },
     "SPORTS_EDITION": "Edycja ustawień sportu",
