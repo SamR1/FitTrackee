@@ -1,6 +1,7 @@
 {
   "ADD_A_NEW_APP": "",
   "APP": {
+    "CLIENT_ID": "",
     "CLIENT_SECRET": "",
     "DESCRIPTION": "",
     "ISSUE_AT": "",
