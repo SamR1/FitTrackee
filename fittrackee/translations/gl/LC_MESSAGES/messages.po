@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2026-03-04 23:57+0100\n"
-"PO-Revision-Date: 2026-03-10 06:09+0000\n"
-"Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
+"PO-Revision-Date: 2026-04-19 09:41+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/fittrackee/"
 "fittrackee-api-emails/gl/>\n"
 "Language: gl\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 5.17.1-dev\n"
 "Generated-By: Babel 2.18.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
@@ -37,8 +37,8 @@ msgid ""
 "For security, this request was received from a %(operating_system)s "
 "device using %(browser_name)s."
 msgstr ""
-"Por seguridade, recibiuse a solicitude desde un dispositivo "
-"%(operating_system)s usando %(browser_name)s."
+"Por seguridade, recibiuse a solicitude desde un dispositivo %"
+"(operating_system)s usando %(browser_name)s."
 
 #: fittrackee/emails/templates/layout.html:238
 #: fittrackee/emails/templates/layout.txt:5
@@ -80,7 +80,8 @@ msgstr "Verifica o enderezo de correo"
 msgid ""
 "If this account creation wasn't initiated by you, please ignore this "
 "email."
-msgstr "Se non iniciaches ti a creación da conta, ignora este correo electrónico."
+msgstr ""
+"Se non iniciaches ti a creación da conta, ignora este correo electrónico."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:22
 #: fittrackee/emails/templates/comment_suspension/body.html:37
@@ -353,7 +354,8 @@ msgstr ""
 #: fittrackee/emails/templates/password_reset_request/body.html:4
 #: fittrackee/emails/templates/password_reset_request/body.txt:1
 msgid "You recently requested to reset your password for your FitTrackee account."
-msgstr "Recentemente solicitaches cambiar o contrasinal da túa conta FitTrackee."
+msgstr ""
+"Recentemente solicitaches cambiar o contrasinal da túa conta FitTrackee."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:4
 msgid "Use the button below to reset it."
@@ -364,8 +366,8 @@ msgstr "Usa o botón inferior para restablecela."
 #, python-format
 msgid "This password reset link is only valid for %(expiration_delay)s."
 msgstr ""
-"A ligazón para restablecer o contrasinal será válido durante "
-"%(expiration_delay)s."
+"A ligazón para restablecer o contrasinal será válido durante %"
+"(expiration_delay)s."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:13
 #: fittrackee/emails/templates/password_reset_request/body.txt:4
@@ -403,8 +405,8 @@ msgid ""
 "You can still log in to request an export of your data or delete your "
 "account"
 msgstr ""
-"Podes seguir inciando sesión e pedir exportar os teus datos ou eliminar a"
-" conta"
+"Podes seguir inciando sesión e pedir exportar os teus datos ou eliminar a "
+"conta"
 
 #: fittrackee/emails/templates/user_unsuspension/body.html:2
 #: fittrackee/emails/templates/user_unsuspension/body.html:3
