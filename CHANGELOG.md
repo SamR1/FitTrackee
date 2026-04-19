@@ -18,7 +18,7 @@ Additionally, if you encounter errors when installing pandas with Python 3.14, a
 * [PR#1092](https://github.com/SamR1/FitTrackee/pull/1092) - Display 1st day of month instead of 1st of week in 'This month' chart
 * [#1094](https://github.com/SamR1/FitTrackee/issues/1094) - [bug] Suunto fit file import
 * [PR#1096](https://github.com/SamR1/FitTrackee/pull/1096) - Get product name from .fit file if exists + fix on pause events
-* [PR#1099](https://github.com/SamR1/FitTrackee/pull/1099) - After a database restart, the first database transaction fails
+* [#1099](https://github.com/SamR1/FitTrackee/issues/1099) - After a database restart, the first database transaction fails
 
 ### Translations
 
@@ -28,6 +28,7 @@ Additionally, if you encounter errors when installing pandas with Python 3.14, a
 * [PR#1093](https://github.com/SamR1/FitTrackee/pull/1093) - Translations update from Hosted Weblate (German)
 * [PR#1098](https://github.com/SamR1/FitTrackee/pull/1098) - Translations update from Hosted Weblate (Portuguese)
 * [PR#1101](https://github.com/SamR1/FitTrackee/pull/1101) - Translations update from Hosted Weblate (Czech)
+* [PR#1109](https://github.com/SamR1/FitTrackee/pull/1109) - Translations update from Hosted Weblate (Galician)
 
 Translation status for languages available on the interface:
 - Basque: 98%
@@ -52,13 +53,14 @@ Translation status for languages available on the interface:
 
 ### Misc
 
-* [PR#1108](https://github.com/SamR1/FitTrackee/pull/1108) - fix pandas installation using Python 3.14 on CI
+* [#1106](https://github.com/SamR1/FitTrackee/issues/1106) - pandas installation fails on CI with python 3.14
 
 Thanks to the contributors:
 - @ArnyminerZ
 - @hyp1989
 - @iggydev
 - @PeterAuer
+- @xmgz
 - Guilherme Wilson
 - Radek Smid
 
