@@ -12,16 +12,113 @@
   "APPLICATION": "Applikasjon",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "E-post til administrator i kontaktøyemed",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "",
     "MAX_FILES_IN_ZIP_LABEL": "Maks. filer i ZIP-arkiv",
-    "MAX_USERS_LABEL": "Maks. antall aktive brukere"
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "",
+    "MAX_USERS_HELP": "",
+    "MAX_USERS_LABEL": "Maks. antall aktive brukere",
+    "NO_CONTACT_EMAIL": "",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "",
+    "STATS_WORKOUTS_LIMIT_HELP": "",
+    "STATS_WORKOUTS_LIMIT_LABEL": "",
+    "TITLE": "",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": ""
+  },
+  "APP_MODERATION": {
+    "ACTIONS": {
+      "ADD_COMMENT": "",
+      "MARK_AS_RESOLVED": "",
+      "MARK_AS_UNRESOLVED": "",
+      "SEND_WARNING_EMAIL": "",
+      "SUSPEND_ACCOUNT": "",
+      "SUSPEND_CONTENT": "",
+      "UNSUSPEND_ACCOUNT": "",
+      "UNSUSPEND_CONTENT": ""
+    },
+    "APPEAL": {
+      "APPROVED": "",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "",
+      "HIDE": "",
+      "REASON_IS": "",
+      "REJECTED": "",
+      "SEE": ""
+    },
+    "DESCRIPTION": "",
+    "NOTES_AND_ACTIONS": "",
+    "NO_REPORTS_FOUND": "",
+    "ORDER_BY": {
+      "CREATED_AT": "",
+      "UPDATED_AT": ""
+    },
+    "REASON": "",
+    "REPORT": "",
+    "REPORTED_BY": "",
+    "REPORTED_CONTENT": "",
+    "REPORTED_USER": "",
+    "REPORTER": "",
+    "REPORT_ACTIONS": {
+      "comment_suspension": "",
+      "comment_unsuspension": "",
+      "report_reopening": "",
+      "report_resolution": "",
+      "user_suspension": "",
+      "user_unsuspension": "",
+      "user_warning": "",
+      "user_warning_lifting": "",
+      "workout_suspension": "",
+      "workout_unsuspension": ""
+    },
+    "REPORT_NOTE": "",
+    "RESOLVED": {
+      "FALSE": "",
+      "TRUE": ""
+    },
+    "RESOLVED_AT": "",
+    "RESOLVED_BY": "",
+    "STATUS": "",
+    "TEXTAREA_PLACEHOLDER": {
+      "ADD_COMMENT": "",
+      "INFORMATION_VISIBLE_TO_USER": "",
+      "MARK_AS_RESOLVED": "",
+      "MARK_AS_UNRESOLVED": "",
+      "SEND_WARNING_EMAIL": "",
+      "SUSPEND": "",
+      "UNSUSPEND": "",
+      "UPDATE_APPEAL": ""
+    },
+    "TITLE": "",
+    "UNRESOLVED_REPORTS_EXIST": "",
+    "USERS_QUEUED_TASKS_EXIST": "",
+    "VIEW_REPORT": ""
   },
   "BACK_TO_ADMIN": "Tilbake til administrasjon",
+  "CONFIRM_SUSPEND_ACCOUNT": "",
+  "CONFIRM_SUSPEND_CONTENT": "",
+  "CONFIRM_USER_ACCOUNT_DELETION": "",
   "CONFIRM_USER_PASSWORD_RESET": "Vil du tilbakestille {0} passord?",
   "CURRENT_EMAIL": "Nåværende e-postadresse",
+  "DELETED_COMMENT": "",
+  "DELETED_USER": "",
+  "DELETED_WORKOUT": "",
   "DELETE_USER": "Slett bruker",
+  "EMAIL_SENDING_DISABLED": "",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "",
+  "ENABLE_DISABLE_SPORTS": "",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "ACTIVE": "",
+      "HAS_EQUIPMENTS": "",
+      "IMAGE": "",
+      "LABEL": ""
+    },
+    "TITLE": ""
+  },
   "NEW_EMAIL": "Ny e-post",
   "NO_TEXT_ENTERED": "Ingen tekst innskrevet",
   "PASSWORD_RESET_SUCCESSFUL": "Passordet har blitt tilbakestilt.",
+  "PRIVACY_POLICY_DESCRIPTION": "",
   "REGISTRATION_DISABLED": "Registrering er avskrudd.",
   "REGISTRATION_ENABLED": "Registrering er påslått.",
   "RESET_USER_PASSWORD": "Tilbakestill passord",
@@ -42,11 +139,30 @@
       "ORDER_BY": {
         "CREATED_AT": "registreringsdato",
         "IS_ACTIVE": "kontostatus",
+        "ROLE": "",
         "USERNAME": "brukernavn",
         "WORKOUTS_COUNT": "arbeidsøktantall"
       }
     },
+    "TABLE": {
+      "CHANGE_ROLE": "",
+      "CHANGE_TO_ADMIN": "",
+      "CHANGE_TO_MODERATOR": "",
+      "CHANGE_TO_USER": ""
+    },
     "TITLE": "Administrasjon — brukere"
+  },
+  "USERS_QUEUED_TASKS": {
+    "DESCRIPTION": "",
+    "LABEL": "",
+    "LIST_DESCRIPTION": "",
+    "NO_USERS_QUEUED_TASKS": "",
+    "TASK_TYPES": {
+      "LABEL": "",
+      "user_data_export": "",
+      "workouts_archive_upload": ""
+    },
+    "VIEW_OTHER_TASKS": ""
   },
   "USER_EMAIL_UPDATE_SUCCESSFUL": "E-postadresse oppdatert."
 }
