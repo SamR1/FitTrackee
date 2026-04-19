@@ -52,7 +52,8 @@
     "file": "",
     "none": "",
     "open_elevation": "",
-    "open_elevation_smooth": ""
+    "open_elevation_smooth": "",
+    "valhalla": ""
   },
   "END": "koniec",
   "EXIT_FULLSCREEN": "Wyłącz pełny ekran",
