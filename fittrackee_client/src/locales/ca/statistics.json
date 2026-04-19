@@ -8,7 +8,17 @@
     "week": "Estadístiques mensuals",
     "year": "Estadístiques anuals"
   },
+  "STATISTICS_ON_ALL_WORKOUTS": "",
+  "STATISTICS_ON_LAST_WORKOUTS": "",
+  "STATISTICS_TYPE": "",
+  "STATISTICS_TYPES": {
+    "by_sport": "",
+    "by_time": ""
+  },
   "TIME_FRAMES": {
+    "day": "",
+    "month": "",
+    "week": "",
     "year": "any"
   },
   "WORKOUTS_AVERAGE": "nombre mitjà d'entrenaments"
