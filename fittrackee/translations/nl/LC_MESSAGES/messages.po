@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2026-03-04 23:57+0100\n"
-"PO-Revision-Date: 2026-03-10 06:09+0000\n"
-"Last-Translator: wetenschaap <weblate@swnkls.nl>\n"
+"PO-Revision-Date: 2026-04-19 09:28+0000\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/fittrackee/"
 "fittrackee-api-emails/nl/>\n"
 "Language: nl\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 5.17.1-dev\n"
 "Generated-By: Babel 2.18.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
@@ -37,8 +37,8 @@ msgid ""
 "For security, this request was received from a %(operating_system)s "
 "device using %(browser_name)s."
 msgstr ""
-"Voor beveiliging, werd deze aanvraag ontvangen van een "
-"%(operating_system)s apparaat via %(browser_name)s."
+"Voor beveiliging, werd deze aanvraag ontvangen van een %(operating_system)s "
+"apparaat via %(browser_name)s."
 
 #: fittrackee/emails/templates/layout.html:238
 #: fittrackee/emails/templates/layout.txt:5
@@ -80,7 +80,8 @@ msgstr "Verifieer uw email"
 msgid ""
 "If this account creation wasn't initiated by you, please ignore this "
 "email."
-msgstr "Indien u deze account niet hebt aangemaakt, gelieve deze email te negeren."
+msgstr ""
+"Indien u deze account niet hebt aangemaakt, gelieve deze email te negeren."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:22
 #: fittrackee/emails/templates/comment_suspension/body.html:37
@@ -94,8 +95,8 @@ msgid ""
 "If you're having trouble with the button above, copy and paste the URL "
 "below into your web browser."
 msgstr ""
-"Als u problemen hebt met bovenstaande knop, kopieer en plak de "
-"onderstaande URL in uw web browser."
+"Als u problemen hebt met bovenstaande knop, kopieer en plak de onderstaande "
+"URL in uw web browser."
 
 #: fittrackee/emails/templates/account_confirmation/body.txt:2
 msgid "Use the link below to confirm your address email."
@@ -115,7 +116,8 @@ msgstr "Uw beroep is niet onontvankelijk verklaard"
 #: fittrackee/emails/templates/appeal_rejected/body.html:4
 #: fittrackee/emails/templates/appeal_rejected/body.txt:1
 msgid "Your appeal on your account suspension has been rejected"
-msgstr "Uw beroep tegen het verwijderen van uw account is onontvankelijk verklaard"
+msgstr ""
+"Uw beroep tegen het verwijderen van uw account is onontvankelijk verklaard"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:4
 #: fittrackee/emails/templates/appeal_rejected/body.txt:1
@@ -251,9 +253,9 @@ msgid ""
 "If you did not request the export, please change your password "
 "immediately or contact your administrator if your account is locked."
 msgstr ""
-"Als u deze export niet hebt aangevraagd, gelieve uw wachtwoord "
-"onmiddelijk te veranderen of neem contact op met uw administrator als uw "
-"account is vergrendeld."
+"Als u deze export niet hebt aangevraagd, gelieve uw wachtwoord onmiddelijk "
+"te veranderen of neem contact op met uw administrator als uw account is "
+"vergrendeld."
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_current_email/subject.txt:1
@@ -270,8 +272,8 @@ msgid ""
 "You recently requested to change your email address for your FitTrackee "
 "account to:"
 msgstr ""
-"U hebt een aanvraag ingediend om uw email adres voor uw FitTrackee "
-"account te veranderen naar:"
+"U hebt een aanvraag ingediend om uw email adres voor uw FitTrackee account "
+"te veranderen naar:"
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:18
 #: fittrackee/emails/templates/email_update_to_current_email/body.txt:4
@@ -279,9 +281,9 @@ msgid ""
 "If this email change wasn't initiated by you, please change your password"
 " immediately or contact your administrator if your account is locked."
 msgstr ""
-"Indien deze verandering niet door u werd aangevraagd, gelieve uw "
-"wachtwoord dan onmiddellijk te veranderen of contacteer uw administrator "
-"als uw account is vergrendeld."
+"Indien deze verandering niet door u werd aangevraagd, gelieve uw wachtwoord "
+"dan onmiddellijk te veranderen of contacteer uw administrator als uw account "
+"is vergrendeld."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_new_email/subject.txt:1
@@ -309,8 +311,8 @@ msgstr "Gebruik de onderstaande knop om dit adres te bevestigen."
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:7
 msgid "If this email change wasn't initiated by you, please ignore this email."
 msgstr ""
-"Indien u deze email aanpassing niet hebt aangevraagd, gelieve deze email "
-"te negeren."
+"Indien u deze email aanpassing niet hebt aangevraagd, gelieve deze email te "
+"negeren."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:2
 msgid "Use the link below to confirm this address."
@@ -337,9 +339,9 @@ msgid ""
 "password immediately or contact your administrator if your account is "
 "locked."
 msgstr ""
-"Indien de aanpassing van uw wachtwoord niet door u werd aangevraagd, "
-"gelieve uw wachtwoord dan onmiddellijk te veranderen of contacteer uw "
-"administrator als uw account is vergrendeld."
+"Indien de aanpassing van uw wachtwoord niet door u werd aangevraagd, gelieve "
+"uw wachtwoord dan onmiddellijk te veranderen of contacteer uw administrator "
+"als uw account is vergrendeld."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:2
 #: fittrackee/emails/templates/password_reset_request/subject.txt:1
@@ -352,8 +354,8 @@ msgid ""
 "Use this link to reset your password. The link is only valid for "
 "%(expiration_delay)s."
 msgstr ""
-"Gebruik deze link om uw wachtwoord te resetten. De link is enkel geldig "
-"voor %(expiration_delay)s."
+"Gebruik deze link om uw wachtwoord te resetten. De link is enkel geldig voor "
+"%(expiration_delay)s."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:4
 #: fittrackee/emails/templates/password_reset_request/body.txt:1
@@ -371,8 +373,8 @@ msgstr "Gebruik de onderstaande knop om het te resetten."
 #, python-format
 msgid "This password reset link is only valid for %(expiration_delay)s."
 msgstr ""
-"Deze link om uw wachtwoord te resetten is enkel geldig voor "
-"%(expiration_delay)s."
+"Deze link om uw wachtwoord te resetten is enkel geldig voor %"
+"(expiration_delay)s."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:13
 #: fittrackee/emails/templates/password_reset_request/body.txt:4
@@ -383,8 +385,8 @@ msgstr "Reset uw wachtwoord"
 #: fittrackee/emails/templates/password_reset_request/body.txt:7
 msgid "If you did not request a password reset, please ignore this email."
 msgstr ""
-"Als u geen aanvraag hebt ingediend om uw wachtwoord aan te passen, "
-"gelieve dan deze mail te negeren."
+"Als u geen aanvraag hebt ingediend om uw wachtwoord aan te passen, gelieve "
+"dan deze mail te negeren."
 
 #: fittrackee/emails/templates/password_reset_request/body.txt:1
 msgid "Use the link below to reset it."
