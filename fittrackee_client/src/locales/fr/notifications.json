@@ -13,15 +13,15 @@
   "NOTIFICATIONS": "notification | notifications",
   "NO_NOTIFICATIONS": "Pas de notifications.",
   "REPLIED_YOUR_COMMENT": "a répondu à votre commentaire",
-  "REPORTED_USER_USER": "a signalé le compte de :",
   "REPORTED_USER_COMMENT": "a signalé ce commentaire :",
+  "REPORTED_USER_USER": "a signalé le compte de :",
   "REPORTED_USER_WORKOUT": "a signalé cette séance :",
   "SEND_FOLLOW_REQUEST_TO_YOU": "souhaite s'abonner",
   "SIGN_UP": "s'est inscrit.e",
   "STATUS": "Status",
   "TYPES": {
-    "LABEL": "Type",
     "ALL": "toutes",
+    "LABEL": "Type",
     "comment_like": "likes sur un commentaire",
     "comment_suspension": "commentaires suspendus",
     "comment_unsuspension": "commentaires ré-activés",
@@ -35,20 +35,20 @@
     "user_warning": "avertissements",
     "user_warning_appeal": "appels des avertissements",
     "user_warning_lifting": "levées des avertissements",
-    "workouts_archive_upload": "chargement d'archive de séances",
     "workout_comment": "commentaires sur une séance",
     "workout_like": "likes sur une séance",
     "workout_suspension": "séances suspendues",
-    "workout_unsuspension": "séances ré-activées"
+    "workout_unsuspension": "séances ré-activées",
+    "workouts_archive_upload": "chargement d'archive de séances"
   },
   "UNREAD": "Non lues",
-  "YOU_RECEIVED_A_WARNING": "Vous avez reçu un avertissement",
   "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "Votre compte a été suspendu",
   "YOUR_ARCHIVE_HAS_BEEN_PROCESSED": "Votre archive de séances a été traitée",
   "YOUR_COMMENT_HAS_BEEN_SUSPENDED": "Votre commentaire a été suspendu",
   "YOUR_COMMENT_HAS_BEEN_UNSUSPENDED": "La suspension de votre commentaire a été levée",
   "YOUR_DATA_EXPORT_IS_READY": "L'export de vos données est prêt",
+  "YOUR_WARNING_HAS_BEEN_LIFTED": "Votre avertissement a été levé.",
   "YOUR_WORKOUT_HAS_BEEN_SUSPENDED": "Votre séance a été suspendue",
   "YOUR_WORKOUT_HAS_BEEN_UNSUSPENDED": "La suspension de votre séance a été levée",
-  "YOUR_WARNING_HAS_BEEN_LIFTED": "Votre avertissement a été levé."
+  "YOU_RECEIVED_A_WARNING": "Vous avez reçu un avertissement"
 }
