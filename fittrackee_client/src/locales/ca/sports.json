@@ -23,8 +23,17 @@
   "Hiking": {
     "LABEL": "Excursió"
   },
+  "Ice Skating": {
+    "LABEL": ""
+  },
+  "Inline Skating": {
+    "LABEL": ""
+  },
   "Kayaking": {
     "LABEL": "Kaiak"
+  },
+  "Kayaking (Whitewater)": {
+    "LABEL": ""
   },
   "Mountain Biking": {
     "LABEL": "Bicicleta de Muntanya"
@@ -37,6 +46,9 @@
   },
   "Open Water Swimming": {
     "LABEL": "Natació en Aigües Obertes"
+  },
+  "Padel (Outdoor)": {
+    "LABEL": ""
   },
   "Paragliding": {
     "LABEL": "Parapent"
@@ -56,8 +68,14 @@
   "Snowshoes": {
     "LABEL": "Raquetes"
   },
+  "Standup Paddleboarding": {
+    "LABEL": ""
+  },
   "Swimrun": {
     "LABEL": "Duatló (Natació-Carrera)"
+  },
+  "Tennis (Outdoor)": {
+    "LABEL": ""
   },
   "Trail": {
     "LABEL": "Trail"
