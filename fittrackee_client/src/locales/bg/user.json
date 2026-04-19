@@ -2,7 +2,16 @@
   "ACCOUNT_CONFIRMATION": "Потвърждение на акаунта",
   "ACCOUNT_CONFIRMATION_NOT_RECEIVED": "Не получихте инструкции?",
   "ACCOUNT_CONFIRMATION_SENT": "Проверете имейла си. Изпратен е нов имейл за потвърждение на посочения адрес.",
+  "ACCOUNT_SUSPENDED_AT": "",
+  "ACTIVE_ACCOUNT": "",
+  "ACTIVE_USER": "",
+  "ADMIN_WILL_REVIEW_AND_ACTIVATE_ACCOUNT": "",
   "ALREADY_HAVE_ACCOUNT": "Вече имате акаунт?",
+  "APPEAL": "",
+  "APPEAL_APPROVED": "",
+  "APPEAL_IN_PROGRESS": "",
+  "APPEAL_REJECTED": "",
+  "APPEAL_SUBMITTED": "",
   "CONFIRM_ACCOUNT_DELETION": "Сигурни ли сте, че искате да изтриете акаунта си? Всички данни ще бъдат изтрити, това не може да бъде отменено.",
   "CURRENT_PASSWORD": "Текуща парола",
   "EMAIL": "Имейл",
@@ -29,6 +38,8 @@
   "NEW_PASSWORD": "Нова парола",
   "NO_SPORT_FOUND": "Няма намерен спорт.",
   "NO_USERS_FOUND": "Няма намерени потребители.",
+  "NO_WARNING_FOUND": "",
+  "ONLY_USERS_FROM_THIS_INSTANCE_ARE_DISPLAYED": "",
   "PASSWORD": "Парола",
   "PASSWORD_FORGOTTEN": "Забравена парола?",
   "PASSWORD_INFO": "Необходими са поне 8 знака.",
@@ -58,14 +69,32 @@
     "WEAK": "слаба"
   },
   "PASSWORD_UPDATED": "Вашата парола е актуализирана. Кликнете върху {0}, за да влезете.",
+  "PRIVACY_POLICY_TO_VALIDATE": "",
   "PROFILE": {
     "ACCOUNT_EDITION": "Редактиране на акаунта",
+    "ARCHIVE_UPLOADS": {
+      "ARCHIVE": "",
+      "CONFIRM_TASK_ABORT": "",
+      "CONFIRM_TASK_DELETION": "",
+      "CREATED_WORKOUTS": "",
+      "ERRORED_FILES": "",
+      "FILES_COUNT": "",
+      "NOT_FOUND": "",
+      "PROGRESS": ""
+    },
     "ASCENT_DATA": "Данни, свързани с изкачване (записи, общо)",
     "BACK_TO_PROFILE": "Назад към профила",
     "BIO": "Биография",
     "BIRTH_DATE": "Дата на раждане",
+    "CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI": "",
+    "CHANGES_ONLY_TO_NEW_OR_REFRESHED_WORKOUTS": "",
+    "CHANGES_ONLY_TO_NEW_WORKOUTS": "",
+    "CREATED_REPORTS": "",
     "DATE_FORMAT": "Формат на датата",
     "EDIT": "Редактиране на профил",
+    "EDIT_ACCOUNT": "",
+    "EDIT_MESSAGE_PREFERENCES": "",
+    "EDIT_NOTIFICATION_PREFERENCES": "",
     "EDIT_PREFERENCES": "Редактиране на предпочитанията",
     "EDIT_SPORTS_PREFERENCES": "Редактиране на спортните предпочитания",
     "ELEVATION_CHART_START": {
@@ -87,11 +116,38 @@
     "ERRORED_EMAIL_UPDATE": "Моля, {0}, за да промените имейл адреса си отново или се свържете с администратор",
     "FIRST_DAY_OF_WEEK": "Първи ден от седмицата",
     "FIRST_NAME": "Първо име",
+    "FOLLOW_REQUESTS_APPROVAL": {
+      "AUTOMATICALLY": "",
+      "LABEL": "",
+      "MANUALLY": ""
+    },
     "INTERFACE": "Интерфейс",
     "LANGUAGE": "Език",
     "LAST_NAME": "Фамилия",
+    "LATEST_SANCTIONS_RECEIVED": "",
     "LOCATION": "Местоположение",
+    "MESSAGES": {
+      "warning_about_large_number_of_workouts_on_map": ""
+    },
+    "MESSAGES_EDITION": "",
+    "MESSAGES_PREFERENCES": "",
+    "MISSING_ELEVATIONS_PROCESSING_LABEL": "",
     "MONDAY": "Понеделник",
+    "NOTIFICATIONS": {
+      "account_creation": "",
+      "comment_like": "",
+      "follow": "",
+      "follow_request": "",
+      "follow_request_approved": "",
+      "mention": "",
+      "workout_comment": "",
+      "workout_like": ""
+    },
+    "NOTIFICATIONS_EDITION": "",
+    "NOTIFICATION_PREFERENCES": "",
+    "NO_ARCHIVE_UPLOADS": "",
+    "NO_ELEVATION_SERVICE_AVAILABLE": "",
+    "NO_SANCTIONS": "",
     "PICTURE": "Снимка",
     "PICTURE_EDITION": "Редактиране на снимката",
     "PICTURE_REMOVE": "Премахване на снимката",
@@ -99,7 +155,31 @@
     "PREFERENCES_EDITION": "Редактиране на предпочитанията",
     "PRIVACY-POLICY_EDITION": "Политика за поверителност",
     "PROFILE_EDITION": "Редактиране на профила",
+    "PROFILE_IN_USERS_DIRECTORY": {
+      "DISPLAYED": "",
+      "HIDDEN": "",
+      "LABEL": ""
+    },
     "REGISTRATION_DATE": "Дата на регистрация",
+    "REPORTS_FROM_OTHER_USERS": "",
+    "SANCTIONS": {
+      "comment_suspension": "",
+      "user_suspension": "",
+      "user_warning": "",
+      "workout_suspension": ""
+    },
+    "SANCTIONS_RECEIVED": "",
+    "SANCTION_APPEAL": {
+      "APPROVED": "",
+      "IN_PROGRESS": "",
+      "REJECTED": ""
+    },
+    "SEGMENTS_CREATION_EVENT": {
+      "LABEL": "",
+      "all": "",
+      "none": "",
+      "only_manual": ""
+    },
     "SPORT": {
       "ACTION": "действие",
       "COLOR": "цвят",
@@ -109,6 +189,12 @@
       "DISABLED_BY_ADMIN": "забранено от администратора",
       "IS_ACTIVE": "активно",
       "LABEL": "етикет",
+      "PACE_SPEED_DISPLAY": {
+        "LABEL": "",
+        "pace": "",
+        "pace_and_speed": "",
+        "speed": ""
+      },
       "STOPPED_SPEED_THRESHOLD": "праг на спряна скорост"
     },
     "SPORTS_EDITION": "Редактиране на предпочитанията за спорт",
@@ -120,7 +206,13 @@
     "TABS": {
       "ACCOUNT": "акаунт",
       "APPS": "приложения",
+      "ARCHIVE-UPLOADS": "",
+      "BLOCKED-USERS": "",
       "EQUIPMENTS": "оборудване",
+      "FOLLOW-REQUESTS": "",
+      "MESSAGES": "",
+      "MODERATION": "",
+      "NOTIFICATIONS": "",
       "PICTURE": "снимка",
       "PREFERENCES": "предпочитания",
       "PRIVACY-POLICY": "политика за поверителност",
@@ -141,33 +233,66 @@
       "LABEL": "Единици за разстояние",
       "METRIC": "Метрична система (m, km, m/s, °C)"
     },
+    "USER_RECEIVED_SANCTIONS": "",
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Филтриран",
       "HELP": "Ако се филтрира ще се изключват екстремни стойности (които може да са GPS грешки) при изчисляване на максималната скорост.",
       "LABEL": "GPX стратегия за максимална скорост",
       "RAW_SPEED": "Сурова"
+    },
+    "WORKOUT_CHARTS_DISPLAY": {
+      "LABEL": "",
+      "MULTIPLE": "",
+      "ONE": ""
     }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "Прочетох и съм съгласен с {0}.",
   "REGISTER": "Регистрация",
   "REGISTER_DISABLED": "За съжаление регистрацията е деактивирана.",
+  "RELATIONSHIPS": {
+    "BLOCKED": "",
+    "FOLLOWER": "",
+    "FOLLOWING": "",
+    "FOLLOWS_YOU": "",
+    "NO_FOLLOWERS": "",
+    "NO_FOLLOWING": "",
+    "NO_FOLLOW_REQUESTS": ""
+  },
+  "REPORT": "",
   "RESENT_ACCOUNT_CONFIRMATION": "Повторно изпращане на имейл за потвърждение на акаунта",
   "RESET_PASSWORD": "Нулирайте паролата си",
   "REVIEW": "преглед",
+  "ROLE": "",
   "ROLES": {
-    "admin": "Админ"
+    "admin": "Админ",
+    "moderator": "",
+    "owner": "",
+    "user": ""
   },
   "SHOW_PASSWORD": "покажи паролата",
+  "SUSPENDED": "",
+  "SUSPENDED_ACCOUNT": "",
+  "SUSPENSION_REASON": "",
   "TASKS": {
     "STATUS": {
+      "LABEL": "",
+      "aborted": "",
       "errored": "грешка",
-      "in_progress": "в ход"
+      "in_progress": "в ход",
+      "queued": "",
+      "successful": ""
     }
   },
   "THIS_USER_ACCOUNT_IS_INACTIVE": "Този потребителски акаунт е неактивен.",
   "TOGGLE_THEME": "Превключване на темата (светъл или тъмен режим)",
+  "USER": "",
   "USERNAME": "Потребителско име",
   "USERNAME_INFO": "Необходими са 3 до 30 знака, разрешени са само буквено-цифрови знаци и долната черта \"_\".",
   "USER_PICTURE": "потребителска снимка",
+  "USER_PROFILE": "",
+  "WARNING_REASON": "",
+  "YOU": "",
+  "YOUR_ACCOUNT_HAS_BEEN_SUSPENDED": "",
+  "YOU_CAN_APPEAL_ONCE": "",
   "YOU_HAVE_ACCEPTED_PRIVACY_POLICY": "Вие приехте {0}."
 }
