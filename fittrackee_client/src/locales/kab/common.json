@@ -4,12 +4,53 @@
   "ACTIVE": "d urmid",
   "CONFIRMATION": "Asentem",
   "CONTACT": "anermis",
+  "CREATION_DATE": "",
+  "DATA_IS_LOADING": "",
   "DAY": "n wass | n wussan",
   "DESCRIPTION": "Aglam",
+  "DISABLED": "",
+  "DISPLAYED": "",
   "DOCUMENTATION": "tasemlit",
+  "DO_NOT_SHOW_THIS_MESSAGE_AGAIN": "",
+  "EDITED": "",
+  "ENABLED": "",
   "FILES": "Ifuyla",
   "HERE": "da",
   "HIDDEN": "Yettwaffer",
   "HIDE": "Seggelmes",
-  "HOME": "Tazwara"
+  "HOME": "Tazwara",
+  "HOURS": "",
+  "INACTIVE": "",
+  "LABEL": "",
+  "LAST_UPDATE": "",
+  "LAST_UPDATED_ON": "",
+  "MINUTES": "",
+  "NEXT": "",
+  "NO": "",
+  "NO_DESCRIPTION": "",
+  "NO_NOTES": "",
+  "PREVIOUS": "",
+  "REPORT_PLACEHOLDER": "",
+  "REPORT_SUBMITTED": "",
+  "SCROLL_DOWN": "",
+  "SCROLL_UP": "",
+  "SECONDS": "",
+  "SEE_REPORT": "",
+  "SELECTS": {
+    "ORDER": {
+      "ASC": "",
+      "DESC": "",
+      "LABEL": ""
+    },
+    "ORDER_BY": {
+      "LABEL": ""
+    },
+    "PER_PAGE": {
+      "LABEL": ""
+    }
+  },
+  "TOTAL": "",
+  "TOTAL_DURATION_WITH_PAUSES": "",
+  "TYPE": "",
+  "YES": ""
 }
