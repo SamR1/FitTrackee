@@ -14,6 +14,7 @@
       "equipments:write_DESCRIPTION": "nadaje dostęp do zapisu na adresach <code>equipments</code>.",
       "follow:read_DESCRIPTION": "daje dostęp do odczytu związanego z obserwowaniami użytkowników.",
       "follow:write_DESCRIPTION": "daje dostęp związany z zapisem, akceptowaniem, usuwaniem osób obserwowanych.",
+      "geocode:read_DESCRIPTION": "",
       "notifications:read_DESCRIPTION": "daje dostęp do odczytu <code>powiadomień</code>.",
       "notifications:write_DESCRIPTION": "daje dostęp do zapisu <code>powiadomień</code>.",
       "profile:read_DESCRIPTION": "nadaje dostęp do odczytu z adresów <code>auth</code>.",
