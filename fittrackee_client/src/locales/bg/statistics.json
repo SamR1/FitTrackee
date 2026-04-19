@@ -3,17 +3,20 @@
   "DATES": "Дати",
   "STATISTICS": "Статистики",
   "STATISTICS_CHARTS": {
+    "day": "",
     "month": "Месечни статистики",
     "week": "Седмични статистики",
     "year": "Годишни статистики"
   },
   "STATISTICS_ON_ALL_WORKOUTS": "Статистики върху всички тренировки:",
   "STATISTICS_ON_LAST_WORKOUTS": "Статистики върху последните {count} тренировки:",
+  "STATISTICS_TYPE": "",
   "STATISTICS_TYPES": {
     "by_sport": "по спорт",
     "by_time": "по време"
   },
   "TIME_FRAMES": {
+    "day": "",
     "month": "месец",
     "week": "седмица",
     "year": "година"
