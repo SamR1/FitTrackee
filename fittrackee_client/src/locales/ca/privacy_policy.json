@@ -16,7 +16,20 @@
       "CONTENT": "No venem, comercialitzem ni transferim de cap altra manera a tercers la seva informació d'identificació personal.\nAixò no inclou tercers de confiança que ens ajudin a operar el nostre lloc i a servir-vos, sempre que aquestes parts acceptin mantenir aquesta informació confidencial.\nTambé podem publicar la vostra informació quan creiem que l'alliberament és adequat per complir amb la llei, fer complir les polítiques del nostre lloc, o protegir els nostres drets, la propietat o la seguretat.\nQuan autoritzeu una aplicació de tercers a utilitzar el vostre compte, depenent de l'abast dels permisos que aproveu, pot accedir a la informació del vostre perfil o als vostres entrenaments. Les aplicacions no poden accedir mai a la contrasenya.",
       "TITLE": "Divulguem informació a tercers?"
     },
+    "INFORMATION_PROTECTION": {
+      "CONTENT": "",
+      "TITLE": ""
+    },
+    "INFORMATION_USAGE": {
+      "CONTENT": "",
+      "TITLE": ""
+    },
+    "SITE_USAGE_BY_CHILDREN": {
+      "CONTENT": "",
+      "TITLE": ""
+    },
     "YOUR_CONSENT": {
+      "CONTENT": "",
       "TITLE": "El teu Consentiment"
     }
   },
