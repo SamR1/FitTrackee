@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FitTrackee 0.7.18\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-04-19 13:46+0200\n"
+"POT-Creation-Date: 2026-04-22 15:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -15899,6 +15899,10 @@ msgstr ""
 
 #: ../source/troubleshooting/administrator.rst:103
 msgid "Error when installing pandas using Python 3.14"
+msgstr ""
+
+#: ../source/troubleshooting/administrator.rst:106
+msgid "Since the release of meson 1.11.1, this error should no longer occur."
 msgstr ""
 
 #: ../source/troubleshooting/administrator.rst
