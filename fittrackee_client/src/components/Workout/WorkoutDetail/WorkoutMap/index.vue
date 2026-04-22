@@ -16,7 +16,7 @@
             :zoomAnimation="false"
             ref="workoutMap"
             @ready="fitBounds(bounds)"
-            :use-global-leaflet="false"
+            :use-global-leaflet="true"
             class="map"
             :aria-label="$t('workouts.WORKOUT_MAP')"
           >
