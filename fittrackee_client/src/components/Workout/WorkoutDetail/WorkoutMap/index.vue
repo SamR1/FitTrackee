@@ -211,7 +211,9 @@
   )
 
   function setDisplayedMediaIndex(mediaId: string) {
-    const mediaIndex = workoutMedia.value.findIndex((m) => m.id === mediaId)
+    const mediaIndex = workoutData.value.workout.media_attachments.findIndex(
+      (m) => m.id === mediaId
+    )
     store.commit(
       WORKOUTS_STORE.MUTATIONS.SET_DISPLAYED_MEDIA_INDEX,
       mediaIndex === -1 ? undefined : mediaIndex
