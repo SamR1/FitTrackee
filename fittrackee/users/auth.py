@@ -214,6 +214,9 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
                 )
                 db.session.add(notification)
             db.session.commit()
+            # create actor even if federation is disabled
+            new_user.create_actor()
+
             send_account_confirmation_email(new_user)
 
         return {"status": "success"}, 200
@@ -347,6 +350,7 @@ def get_authenticated_user_profile(
           "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
+          "is_remote": false,
           "language": "en",
           "last_name": null,
           "location": null,
@@ -492,6 +496,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
+          "is_remote": false,
           "language": "en",
           "last_name": null,
           "location": null,
@@ -944,6 +949,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "hide_profile_in_users_directory": true,
           "imperial_units": false,
           "is_active": true,
+          "is_remote": false,
           "language": "en",
           "last_name": null,
           "location": null,
@@ -1127,6 +1133,12 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "missing_elevations_processing"
     )
     calories_visibility = post_data.get("calories_visibility")
+
+    if not current_app.config["FEDERATION_ENABLED"] and (
+        map_visibility == VisibilityLevel.FOLLOWERS_AND_REMOTE.value
+        or workouts_visibility == VisibilityLevel.FOLLOWERS_AND_REMOTE.value
+    ):
+        return InvalidPayloadErrorResponse()
 
     try:
         auth_user.date_format = date_format

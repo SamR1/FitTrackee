@@ -2,13 +2,17 @@
   "ANALYSIS_VISIBILITY": "Visibilité de l'analyse",
   "CALORIES_VISIBILITY": "Visibilité des calories",
   "COMMENT_LEVELS": {
-    "followers_only": "Abonnés uniquement",
+    "followers_and_remote_only": "Abonnées locaux et distants uniquement",
+    "followers_only": "Abonnées uniquement",
+    "local_followers_only": "Abonnées locaux uniquement",
     "private": "Privé (seulement les utilisateurs mentionnés)",
     "public": "Public (tout le monde)"
   },
   "HR_VISIBILITY": "Visibilité de la fréquence cardiaque",
   "LEVELS": {
-    "followers_only": "Abonnés uniquement",
+    "followers_and_remote_only": "Abonnées locaux et distants uniquement",
+    "followers_only": "Abonnées uniquement",
+    "local_followers_only": "Abonnées locaux uniquement",
     "private": "Privé (seulement moi)",
     "public": "Public (tout le monde)"
   },

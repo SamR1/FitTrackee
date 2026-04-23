@@ -21,3 +21,7 @@ class EmailConfigException(Exception):
 
 class FileException(Exception):
     pass
+
+
+class InvalidVisibilityException(Exception):
+    pass

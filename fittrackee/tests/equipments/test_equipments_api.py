@@ -1033,7 +1033,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
         assert equipment["default_for_sport_ids"] == [sport_2_running.id]
         equipment = Equipment.query.filter_by(
             uuid=decode_short_id(equipment["id"])
-        ).first()
+        ).one()
         assert user_1_sport_2_preference.default_equipments.all() == [
             equipment
         ]
