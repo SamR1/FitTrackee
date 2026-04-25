@@ -5,7 +5,6 @@ from flask import Blueprint, current_app, request, send_from_directory
 from werkzeug.exceptions import RequestEntityTooLarge
 
 from fittrackee import appLog, db, limiter
-from fittrackee.constants import IMAGE_MAX_FILE_SIZE
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     ForbiddenErrorResponse,
@@ -139,7 +138,7 @@ def post_media(auth_user: "User") -> Union[Tuple[Dict, int], "HttpResponse"]:
         return PayloadTooLargeErrorResponse(
             file_type="picture",
             file_size=request.content_length,
-            max_size=IMAGE_MAX_FILE_SIZE,
+            max_size=current_app.config["max_image_size"],
         )
     if response_object:
         return response_object

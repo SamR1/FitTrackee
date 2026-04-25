@@ -16,6 +16,7 @@
     "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "Cette valeur ne peut pas excéder 50000 session.",
     "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Nombre max. de séances affichées sur la carte globale",
     "MAX_FILES_IN_ZIP_LABEL": "Nombre max. de fichiers dans une archive zip ",
+    "MAX_IMAGE_SIZE_LABEL": "Taille max. des images (en Mo) ",
     "MAX_SYNC_FILES_IN_ZIP_LABEL": "Nombre max. de fichiers pour le traitement synchrone",
     "MAX_USERS_HELP": "Si égal à 0, pas limite d'inscription",
     "MAX_USERS_LABEL": "Nombre maximum d'utilisateurs actifs ",

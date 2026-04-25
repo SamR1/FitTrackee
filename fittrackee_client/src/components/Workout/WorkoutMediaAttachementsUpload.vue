@@ -19,7 +19,7 @@
     <i class="fa fa-info-circle" aria-hidden="true" />
     <div>
       {{ $t('workouts.MAX_SIZE') }}:
-      {{ getReadableFileSizeAsText(5 * 1024 * 1024) }},
+      {{ getReadableFileSizeAsText(maxImageSize) }},
       {{ $t('workouts.SUPPORTED_FILE_EXTENSIONS') }}: gif, .jpeg, .jpg, .png,
       .webp.
     </div>
@@ -96,6 +96,7 @@
   import { computed, onBeforeMount, onUnmounted, ref, toRefs, watch } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
 
+  import useApp from '@/composables/useApp.ts'
   import { WORKOUTS_STORE } from '@/store/constants.ts'
   import type { ICustomTextareaData } from '@/types/forms.ts'
   import type { IMediaAttachment } from '@/types/workouts'
@@ -110,6 +111,8 @@
   const props = defineProps<Props>()
   const { isArchive, loading, workoutMediaAttachments } = toRefs(props)
 
+  const { appConfig } = useApp()
+
   const store = useStore()
 
   const mediaLoading: ComputedRef<string> = computed(
@@ -120,6 +123,9 @@
   )
   const mediaDescriptions: Ref<Record<string, string>> = ref({})
   const mediaAttachmentFile: Ref<HTMLInputElement | undefined> = ref(undefined)
+  const maxImageSize: ComputedRef<number> = computed(
+    () => appConfig.value.max_image_size
+  )
 
   async function uploadMediaAttachment(event: Event) {
     const files = (event.target as HTMLInputElement).files || []

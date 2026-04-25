@@ -57,6 +57,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "global_map_workouts_limit": 10000,
           "is_email_sending_enabled": true,
           "is_registration_enabled": false,
+          "max_image_size": 5242880,
           "max_single_file_size": 1048576,
           "max_users": 0,
           "max_zip_file_size": 10485760,
@@ -120,6 +121,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
           "global_map_workouts_limit": 10000,
           "is_email_sending_enabled": true,
           "is_registration_enabled": false,
+          "max_image_size": 5242880,
           "max_single_file_size": 1048576,
           "max_users": 10,
           "max_zip_file_size": 10485760,
@@ -142,6 +144,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json integer global_map_workouts_limit: max number of workouts displayed
                    on global map
     :<json boolean is_registration_enabled: is registration enabled?
+    :<json integer max_image_size: max size of an image
     :<json integer max_single_file_size: max size of a single file
     :<json integer max_users: max users allowed to register on instance
     :<json integer max_zip_file_size: max size of a zip archive
@@ -165,6 +168,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         - ``valid email must be provided for admin contact``
         - ``'file_sync_limit_import' must be less than 2147483647``
         - ``'file_limit_import' must be less than 2147483647``
+        - ``'max_image_size' must be less than 2147483647``
         - ``'max_single_file_size' must be less than 2147483647``
         - ``'max_zip_file_size' must be less than 2147483647``
         - ``'max_users' must be less than 2147483647``
@@ -196,6 +200,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         for param in [
             "file_sync_limit_import",
             "file_limit_import",
+            "max_image_size",
             "max_single_file_size",
             "max_zip_file_size",
             "max_users",

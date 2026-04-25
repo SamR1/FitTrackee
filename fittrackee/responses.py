@@ -7,8 +7,6 @@ from flask_sqlalchemy import SQLAlchemy
 from fittrackee import appLog
 from fittrackee.files import display_readable_file_size
 
-from .constants import IMAGE_MAX_FILE_SIZE
-
 
 def get_empty_data_for_datatype(data_type: str) -> Union[str, List, None]:
     if data_type in ["chart_data"]:
@@ -233,7 +231,7 @@ def get_error_response_if_file_is_invalid(
             else current_app.config["max_single_file_size"]
         )
     else:
-        max_file_size = IMAGE_MAX_FILE_SIZE
+        max_file_size = current_app.config["max_image_size"]
 
     if not (
         file_extension

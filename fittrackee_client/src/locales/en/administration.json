@@ -16,6 +16,7 @@
     "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "This value cannot exceed 50,000 workouts.",
     "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Max. workouts displayed on global map",
     "MAX_FILES_IN_ZIP_LABEL": "Max. files of zip archive",
+    "MAX_IMAGE_SIZE_LABEL": "Max. size of images (in Mb)",
     "MAX_SYNC_FILES_IN_ZIP_LABEL": "Max. files for synchronous processing",
     "MAX_USERS_HELP": "If 0, no limitation on registration.",
     "MAX_USERS_LABEL": "Max. number of active users",

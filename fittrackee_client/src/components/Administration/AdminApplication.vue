@@ -134,6 +134,18 @@
               {{ $t('admin.APP_CONFIG.GLOBAL_MAP_WORKOUTS_LIMIT_HELP') }}
             </span>
           </div>
+          <label for="max_image_size">
+            {{ $t('admin.APP_CONFIG.MAX_IMAGE_SIZE_LABEL') }}:
+            <input
+              id="max_image_size"
+              name="max_image_size"
+              type="number"
+              min="0"
+              max="2147483647"
+              v-model="appData.max_image_size"
+              :disabled="!edition"
+            />
+          </label>
           <label class="about-label" for="about">
             {{ $t('admin.ABOUT.TEXT') }}:
           </label>
@@ -232,6 +244,7 @@
   const appData: Reactive<TAppConfigForm> = reactive({
     admin_contact: '',
     max_users: 0,
+    max_image_size: 0,
     max_single_file_size: 0,
     max_zip_file_size: 0,
     file_limit_import: 0,
@@ -244,14 +257,20 @@
 
   function updateForm(appConfig: TAppConfig) {
     Object.keys(appData).forEach((key) => {
-      if (['max_single_file_size', 'max_zip_file_size'].includes(key)) {
+      if (
+        [
+          'max_image_size',
+          'max_single_file_size',
+          'max_zip_file_size',
+        ].includes(key)
+      ) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         appData[key] = getFileSizeInMB(appConfig[key])
       } else if (['about', 'privacy_policy'].includes(key)) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        appData[key] = appConfig[key] !== null ? appConfig[key] : ''
+        appData[key] = appConfig[key] === null ? '' : appConfig[key]
       } else {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -266,6 +285,7 @@
   }
   function onSubmit() {
     const formData: TAppConfigForm = { ...appData }
+    formData.max_image_size *= 1048576
     formData.max_single_file_size *= 1048576
     formData.max_zip_file_size *= 1048576
     store.dispatch(ROOT_STORE.ACTIONS.UPDATE_APPLICATION_CONFIG, formData)

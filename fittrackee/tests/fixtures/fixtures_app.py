@@ -30,6 +30,7 @@ def default_weather_service(
 def get_app_config(
     max_sync_workouts: Optional[int] = None,
     max_workouts: Optional[int] = None,
+    max_image_size: Optional[Union[int, float]] = None,
     max_single_file_size: Optional[Union[int, float]] = None,
     max_zip_file_size: Optional[Union[int, float]] = None,
     max_users: Optional[int] = None,
@@ -44,6 +45,9 @@ def get_app_config(
         10 if max_sync_workouts is None else max_sync_workouts
     )
     config.file_limit_import = 100 if max_workouts is None else max_workouts
+    config.max_image_size = (
+        (5 if max_image_size is None else max_image_size) * 1024 * 1024
+    )
     config.max_single_file_size = (
         (1 if max_single_file_size is None else max_single_file_size)
         * 1024
@@ -64,6 +68,7 @@ def get_app(
     with_config: Optional[bool] = False,
     max_sync_workouts: Optional[int] = None,
     max_workouts: Optional[int] = None,
+    max_image_size: Optional[Union[int, float]] = None,
     max_single_file_size: Optional[Union[int, float]] = None,
     max_zip_file_size: Optional[Union[int, float]] = None,
     max_users: Optional[int] = None,
@@ -80,6 +85,7 @@ def get_app(
                 app_db_config = get_app_config(
                     max_sync_workouts,
                     max_workouts,
+                    max_image_size,
                     max_single_file_size,
                     max_zip_file_size,
                     max_users,
@@ -160,6 +166,14 @@ def app_with_max_file_size(monkeypatch: pytest.MonkeyPatch) -> Generator:
 def app_with_max_zip_file_size(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv("EMAIL_URL", "smtp://none:none@0.0.0.0:1025")
     yield from get_app(with_config=True, max_zip_file_size=0.001)
+
+
+@pytest.fixture
+def app_with_max_image_size(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Generator:
+    monkeypatch.setenv("EMAIL_URL", "smtp://none:none@0.0.0.0:1025")
+    yield from get_app(with_config=True, max_image_size=0.001)
 
 
 @pytest.fixture

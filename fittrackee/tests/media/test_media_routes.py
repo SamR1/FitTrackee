@@ -130,16 +130,16 @@ class TestMediaApiPost(ApiTestCaseMixin):
 
         self.assert_400(response, "file extension not allowed", "fail")
 
-    @patch("fittrackee.responses.IMAGE_MAX_FILE_SIZE", 1_024)
     def test_it_returns_413_if_image_size_exceeds_file_limit(
-        self, app: "Flask", user_1: "User"
+        self, app_with_max_image_size: "Flask", user_1: "User"
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app_with_max_image_size, user_1.email
         )
 
         file_path = os.path.join(
-            app.root_path, "tests/files/image_with_gps_exif.jpg"
+            app_with_max_image_size.root_path,
+            "tests/files/image_with_gps_exif.jpg",
         )
         with open(file_path, "rb") as image_file:
             response = client.post(
