@@ -14,7 +14,7 @@
           v-if="isWorkoutOwner && !isEditing"
           class="transparent"
           id="delete-button"
-          @click="emit('deleteMedia', mediaAttachment.id)"
+          @click="isDeleting = true"
         >
           <i class="fa fa-trash" aria-hidden="true" />
         </button>
@@ -30,34 +30,58 @@
         :alt="mediaAttachment.description || ''"
         :src="mediaAttachment.url"
       />
-      <div v-if="isEditing" class="description-edition">
-        <CustomTextArea
-          name="media-description"
-          :input="mediaAttachment.description || ''"
-          :charLimit="1500"
-          :rows="2"
-          @updateValue="(e: ICustomTextareaData) => updateMediaDescription(e)"
-        />
-        <div class="buttons">
-          <button class="cancel" @click="cancelEdition()">
-            {{ $t('buttons.CANCEL') }}
-          </button>
-          <button
-            class="confirm"
-            :disabled="
-              mediaLoading !== '' ||
-              mediaAttachment.description === mediaDescription
-            "
-            @click="
-              emit('updateDescriptionMedia', {
-                id: mediaAttachment.id,
-                description: mediaDescription,
-              })
-            "
-          >
-            {{ $t('buttons.SAVE') }}
-          </button>
-        </div>
+      <div v-if="isEditing || isDeleting" class="description-edition">
+        <template v-if="isEditing">
+          <CustomTextArea
+            name="media-description"
+            :input="mediaAttachment.description || ''"
+            :charLimit="1500"
+            :rows="2"
+            @updateValue="(e: ICustomTextareaData) => updateMediaDescription(e)"
+          />
+          <div class="buttons">
+            <button class="cancel" @click="cancelEdition()">
+              {{ $t('buttons.CANCEL') }}
+            </button>
+            <button
+              class="confirm"
+              :disabled="
+                mediaLoading !== '' ||
+                mediaAttachment.description === mediaDescription
+              "
+              @click="
+                emit('updateDescriptionMedia', {
+                  id: mediaAttachment.id,
+                  description: mediaDescription,
+                })
+              "
+            >
+              {{ $t('buttons.SAVE') }}
+            </button>
+          </div>
+        </template>
+        <template v-if="isDeleting">
+          <div class="deletion-confirmation">
+            {{ $t('workouts.PICTURE_DELETION_CONFIRMATION') }}
+          </div>
+          <div class="buttons">
+            <button
+              class="confirm danger"
+              id="confirm-button"
+              @click="emit('deleteMedia', mediaAttachment.id)"
+            >
+              {{ $t('common.YES') }}
+            </button>
+            <button
+              tabindex="0"
+              id="cancel-button"
+              class="cancel"
+              @click="isDeleting = false"
+            >
+              {{ $t('common.NO') }}
+            </button>
+          </div>
+        </template>
       </div>
       <div v-else class="navigation-bar">
         <button
@@ -125,6 +149,7 @@
   let previousFocusedElement: HTMLInputElement | null = null
 
   const isEditing = ref(false)
+  const isDeleting = ref(false)
   const mediaDescription = ref('')
 
   const mediaAttachment: ComputedRef<IMediaAttachment | undefined> = computed(
@@ -258,6 +283,10 @@
           gap: $default-padding;
           justify-content: flex-end;
         }
+      }
+
+      .deletion-confirmation {
+        font-weight: bold;
       }
 
       .navigation-bar {

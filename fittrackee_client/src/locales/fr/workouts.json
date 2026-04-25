@@ -46,6 +46,15 @@
   "DURATION": "durée",
   "EDIT_WORKOUT": "Modifier la séance",
   "ELEVATION": "altitude",
+  "ELEVATION_DATA_SOURCE": {
+    "CHANGE_SOURCE": "Changer la source des données d'altitude",
+    "LABEL": "Altitudes mises à jour à partir de",
+    "file": "A partir du fichier",
+    "none": "Aucun (données d'altitude à partir du fichier)",
+    "open_elevation": "OpenElevation (données brutes)",
+    "open_elevation_smooth": "OpenElevation (données lissées)",
+    "valhalla": "Valhalla"
+  },
   "END": "fin",
   "EXIT_FULLSCREEN": "Sortir du plein-écran",
   "EXIT_HEATMAP": "Quitter la carte de thermique (heatmap)",
@@ -79,15 +88,6 @@
   "MAX_SYNC_FILES_IN_ZIP": "nombre max. de fichiers pour un chargement synchrone ",
   "MEDIA_INFORMATION": "les photos ne peuvent pas être ajoutées si le fichier de la séance est une archive zip",
   "MIN_ALTITUDE": "altitude min.",
-  "ELEVATION_DATA_SOURCE": {
-    "LABEL": "Altitudes mises à jour à partir de",
-    "CHANGE_SOURCE": "Changer la source des données d'altitude",
-    "none": "Aucun (données d'altitude à partir du fichier)",
-    "file": "A partir du fichier",
-    "open_elevation": "OpenElevation (données brutes)",
-    "open_elevation_smooth": "OpenElevation (données lissées)",
-    "valhalla": "Valhalla"
-  },
   "MULTISELECT": {
     "deselectLabel": "Appuyer sur Entrée pour supprimer",
     "selectLabel": "Appuyer sur Entrée pour sélectionner",
@@ -129,6 +129,7 @@
   "ON_MAP": "sur la carte",
   "PACE": "allure",
   "PAUSES": "pauses",
+  "PICTURE_DELETION_CONFIRMATION": "Êtes-vous sûr de vouloir supprimer cette photo ?",
   "POWER": "puissance",
   "PREVIOUS_SEGMENT": "Segment précédent",
   "PREVIOUS_WORKOUT": "Séance précédente",
