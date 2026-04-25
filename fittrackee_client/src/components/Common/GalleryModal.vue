@@ -1,10 +1,20 @@
 <template>
   <div id="modal" role="dialog" @click.self="emit('closeModal')">
+    <div class="navigation-button navigation-button-prev">
+      <button
+        class="transparent rounded-btn"
+        id="prev-button"
+        :disabled="displayedMediaIndex === 0"
+        @click="navigate('displayPreviousMedia')"
+      >
+        <i class="fa fa-chevron-left" aria-hidden="true" />
+      </button>
+    </div>
     <div class="custom-gallery-modal" v-if="mediaAttachment?.id">
       <div class="top-bar">
         <button
           v-if="isWorkoutOwner && !isEditing"
-          class="transparent"
+          class="transparent rounded-btn"
           id="edit-button"
           @click="isEditing = true"
         >
@@ -12,14 +22,14 @@
         </button>
         <button
           v-if="isWorkoutOwner && !isEditing"
-          class="transparent"
+          class="transparent rounded-btn"
           id="delete-button"
           @click="isDeleting = true"
         >
           <i class="fa fa-trash" aria-hidden="true" />
         </button>
         <button
-          class="transparent"
+          class="transparent rounded-btn"
           id="close-button"
           @click="emit('closeModal')"
         >
@@ -27,10 +37,21 @@
         </button>
       </div>
       <img
+        :class="{
+          'bottom-border':
+            !mediaAttachment.description && !isDeleting && !isEditing,
+        }"
         :alt="mediaAttachment.description || ''"
         :src="mediaAttachment.url"
       />
-      <div v-if="isEditing || isDeleting" class="description-edition">
+      <div
+        v-if="isEditing || isDeleting"
+        class="description-edition"
+        :class="{
+          'bottom-border':
+            mediaAttachment.description || isDeleting || isEditing,
+        }"
+      >
         <template v-if="isEditing">
           <CustomTextArea
             name="media-description"
@@ -83,30 +104,24 @@
           </div>
         </template>
       </div>
-      <div v-else class="navigation-bar">
-        <button
-          class="transparent"
-          id="prev-button"
-          :disabled="displayedMediaIndex === 0"
-          @click="navigate('displayPreviousMedia')"
-        >
-          <i class="fa fa-chevron-left" aria-hidden="true" />
-        </button>
-        <div class="media-description-container">
+      <div v-else class="description">
+        <div class="media-description-container bottom-border">
           <div class="media-description" v-if="mediaAttachment.description">
             {{ mediaAttachment.description }}
           </div>
           <ErrorMessage :message="errorMessages" v-if="errorMessages" />
         </div>
-        <button
-          class="transparent"
-          id="next-button"
-          :disabled="displayedMediaIndex === mediaAttachments.length - 1"
-          @click="navigate('displayNextMedia')"
-        >
-          <i class="fa fa-chevron-right" aria-hidden="true" />
-        </button>
       </div>
+    </div>
+    <div class="navigation-button navigation-button-next">
+      <button
+        class="transparent rounded-btn"
+        id="next-button"
+        :disabled="displayedMediaIndex === mediaAttachments.length - 1"
+        @click="navigate('displayNextMedia')"
+      >
+        <i class="fa fa-chevron-right" aria-hidden="true" />
+      </button>
     </div>
   </div>
 </template>
@@ -216,6 +231,7 @@
     () => mediaAttachment.value,
     () => {
       mediaDescription.value = ''
+      isDeleting.value = false
     }
   )
   watch(
@@ -242,24 +258,32 @@
   @use '~@/scss/vars.scss' as *;
   #modal {
     position: fixed;
+    padding: 0;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
     background-color: var(--modal-background-color);
-    padding: $default-padding;
     z-index: 1240;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow-y: scroll;
 
+    @media screen and (max-width: $small-limit) {
+      padding: 0;
+    }
+
+    .bottom-border {
+      border-bottom-left-radius: $border-radius;
+      border-bottom-right-radius: $border-radius;
+    }
+
     .custom-gallery-modal {
       display: flex;
       flex-direction: column;
-      background-color: var(--app-background-color);
+      justify-content: flex-start;
       border-radius: $border-radius;
-      max-width: 90%;
       z-index: 1250;
 
       @media screen and (max-width: $medium-limit) {
@@ -272,11 +296,19 @@
       }
 
       img {
+        border-top-left-radius: $border-radius;
+        border-top-right-radius: $border-radius;
         max-height: calc(100vh - 160px);
+        object-fit: contain;
+
+        &.bottom-border {
+          max-height: calc(100vh - 50px);
+        }
       }
 
       .description-edition {
-        margin: $default-margin;
+        padding: $default-padding;
+        background-color: var(--app-background-color);
 
         .buttons {
           display: flex;
@@ -289,11 +321,12 @@
         font-weight: bold;
       }
 
-      .navigation-bar {
+      .description {
         display: flex;
         align-items: center;
 
         .media-description-container {
+          background-color: var(--app-background-color);
           display: flex;
           flex-direction: column;
           flex-grow: 1;
@@ -308,6 +341,28 @@
             width: 100%;
           }
         }
+      }
+    }
+
+    .navigation-button {
+      display: flex;
+      flex-grow: 1;
+
+      &.navigation-button-next {
+        justify-content: flex-end;
+      }
+    }
+
+    .rounded-btn {
+      color: var(--button-picture-navigation-color);
+      border-radius: 50%;
+
+      &:disabled {
+        color: var(--button-picture-navigation-disabled-color);
+      }
+
+      &:not([disabled]):hover {
+        background: var(--button-picture-navigation-hover-color);
       }
     }
   }
