@@ -1,7 +1,8 @@
 <template>
   <div class="form-item">
     <label for="mediaAttachmentFile">
-      {{ $t('common.PHOTOS') }} (<span> {{ mediaAttachments.length }}/20</span
+      {{ $t('common.PHOTOS') }} (<span>
+        {{ mediaAttachments.length }}/{{ maxAttachmentsCount }}</span
       >):
     </label>
     <input
@@ -9,9 +10,9 @@
       id="mediaAttachmentFile"
       name="mediaAttachmentFile"
       type="file"
-      :multiple="false"
+      multiple
       accept=".jpeg, .jpg, .gif, .png, .webp"
-      :disabled="loading || mediaAttachments.length === 20"
+      :disabled="loading || mediaAttachments.length === maxAttachmentsCount"
       @change="uploadMediaAttachment"
     />
   </div>
@@ -97,7 +98,7 @@
   import type { ComputedRef, Ref } from 'vue'
 
   import useApp from '@/composables/useApp.ts'
-  import { WORKOUTS_STORE } from '@/store/constants.ts'
+  import { ROOT_STORE, WORKOUTS_STORE } from '@/store/constants.ts'
   import type { ICustomTextareaData } from '@/types/forms.ts'
   import type { IMediaAttachment } from '@/types/workouts'
   import { useStore } from '@/use/useStore.ts'
@@ -115,6 +116,8 @@
 
   const store = useStore()
 
+  const maxAttachmentsCount = 20
+
   const mediaLoading: ComputedRef<string> = computed(
     () => store.getters['WORKOUT_MEDIA_LOADING']
   )
@@ -129,12 +132,22 @@
 
   async function uploadMediaAttachment(event: Event) {
     const files = (event.target as HTMLInputElement).files || []
-    if (files.length > 0) {
-      for (const file of files) {
-        store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_MEDIA_ATTACHMENT, {
-          file,
-        })
-      }
+
+    if (files.length + mediaAttachments.value.length > maxAttachmentsCount) {
+      store.commit(
+        ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
+        'workouts.PHOTOS_COUNT_EXCEEDED'
+      )
+      return
+    }
+
+    let index = 0
+    for (const file of files) {
+      store.dispatch(WORKOUTS_STORE.ACTIONS.ADD_WORKOUT_MEDIA_ATTACHMENT, {
+        file,
+        index,
+      })
+      index += 1
     }
   }
   function updateMediaDescription(

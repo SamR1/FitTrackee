@@ -129,6 +129,7 @@
   "ON_MAP": "on map",
   "PACE": "pace",
   "PAUSES": "pauses",
+  "PHOTOS_COUNT_EXCEEDED": "No more than 20 photos files can be added to a workout.",
   "PICTURE_DELETION_CONFIRMATION": "Are you sure you want to delete this picture?",
   "POWER": "power",
   "PREVIOUS_SEGMENT": "Previous segment",

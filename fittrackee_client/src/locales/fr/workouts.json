@@ -129,6 +129,7 @@
   "ON_MAP": "sur la carte",
   "PACE": "allure",
   "PAUSES": "pauses",
+  "PHOTOS_COUNT_EXCEEDED": "Il n'est pas possible d'ajouter plus de 20 photos à une séance.",
   "PICTURE_DELETION_CONFIRMATION": "Êtes-vous sûr de vouloir supprimer cette photo ?",
   "POWER": "puissance",
   "PREVIOUS_SEGMENT": "Segment précédent",

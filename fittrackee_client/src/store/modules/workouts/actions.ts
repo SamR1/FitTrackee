@@ -795,7 +795,9 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     const form = new FormData()
     form.append('file', payload.file)
     authApi
-      .post('media', form, {
+      // index is used to prevent request from being aborted by the
+      // AbortController
+      .post(`media?index=${payload.index}`, form, {
         headers: {
           'content-type': 'multipart/form-data',
         },

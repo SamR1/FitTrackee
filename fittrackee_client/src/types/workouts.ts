@@ -403,6 +403,7 @@ export interface IMediaAttachment {
 
 export interface IMediaCreatePayload {
   file: Blob
+  index: number
 }
 export interface IMediaUpdatePayload {
   id: string
