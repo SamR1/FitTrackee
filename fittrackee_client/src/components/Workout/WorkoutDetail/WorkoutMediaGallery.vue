@@ -22,7 +22,7 @@
             :key="media.id"
             class="media-attachment"
             @click="setDisplayedMediaIndex(index)"
-            @keydown.enter="setDisplayedMediaIndex(index)"
+            @keydown.enter.prevent="setDisplayedMediaIndex(index)"
             role="button"
             tabindex="0"
             :title="media.description"

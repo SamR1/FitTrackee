@@ -16,7 +16,7 @@
           v-if="isWorkoutOwner && !isEditing"
           class="transparent rounded-btn"
           id="edit-button"
-          @click="isEditing = true"
+          @click="enableEdition()"
         >
           <i class="fa fa-edit" aria-hidden="true" />
         </button>
@@ -24,7 +24,7 @@
           v-if="isWorkoutOwner && !isEditing"
           class="transparent rounded-btn"
           id="delete-button"
-          @click="isDeleting = true"
+          @click="enableDeletion()"
         >
           <i class="fa fa-trash" aria-hidden="true" />
         </button>
@@ -54,28 +54,24 @@
       >
         <template v-if="isEditing">
           <CustomTextArea
-            name="media-description"
+            name="media-description-textarea"
             :input="mediaAttachment.description || ''"
             :charLimit="1500"
             :rows="2"
             @updateValue="(e: ICustomTextareaData) => updateMediaDescription(e)"
           />
           <div class="buttons">
-            <button class="cancel" @click="cancelEdition()">
+            <button id="cancel-edition" class="cancel" @click="cancelEdition()">
               {{ $t('buttons.CANCEL') }}
             </button>
             <button
+              id="validate-edition"
               class="confirm"
               :disabled="
                 mediaLoading !== '' ||
                 mediaAttachment.description === mediaDescription
               "
-              @click="
-                emit('updateDescriptionMedia', {
-                  id: mediaAttachment.id,
-                  description: mediaDescription,
-                })
-              "
+              @click="validateEdition(mediaAttachment.id, mediaDescription)"
             >
               {{ $t('buttons.SAVE') }}
             </button>
@@ -87,26 +83,30 @@
           </div>
           <div class="buttons">
             <button
-              class="confirm danger"
-              id="confirm-button"
-              @click="emit('deleteMedia', mediaAttachment.id)"
-            >
-              {{ $t('common.YES') }}
-            </button>
-            <button
-              tabindex="0"
-              id="cancel-button"
+              id="cancel-deletion"
               class="cancel"
               @click="isDeleting = false"
             >
               {{ $t('common.NO') }}
+            </button>
+            <button
+              id="validate-deletion"
+              class="confirm danger"
+              @click="emit('deleteMedia', mediaAttachment.id)"
+            >
+              {{ $t('common.YES') }}
             </button>
           </div>
         </template>
       </div>
       <div v-else class="description">
         <div class="media-description-container bottom-border">
-          <div class="media-description" v-if="mediaAttachment.description">
+          <div
+            id="media-description"
+            class="media-description"
+            v-if="mediaAttachment.description"
+            tabindex="0"
+          >
             {{ mediaAttachment.description }}
           </div>
           <ErrorMessage :message="errorMessages" v-if="errorMessages" />
@@ -127,8 +127,16 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onUnmounted, onMounted, ref, toRefs, watch } from 'vue'
-  import type { ComputedRef } from 'vue'
+  import {
+    computed,
+    nextTick,
+    onUnmounted,
+    onMounted,
+    ref,
+    toRefs,
+    watch,
+  } from 'vue'
+  import type { ComputedRef, Ref } from 'vue'
 
   import useApp from '@/composables/useApp.ts'
   import type { ICustomTextareaData } from '@/types/forms.ts'
@@ -166,6 +174,7 @@
   const isEditing = ref(false)
   const isDeleting = ref(false)
   const mediaDescription = ref('')
+  const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
 
   const mediaAttachment: ComputedRef<IMediaAttachment | undefined> = computed(
     () => mediaAttachments.value[displayedMediaIndex.value]
@@ -173,16 +182,30 @@
   const mediaLoading: ComputedRef<string> = computed(
     () => store.getters['WORKOUT_MEDIA_LOADING']
   )
-  const focusableElements: ComputedRef<string[]> = computed(() => [
-    ...(isWorkoutOwner.value ? ['edit-button', 'delete-button'] : []),
-    'close-button',
-    'prev-button',
-    'next-button',
-  ])
+  const focusableElements: ComputedRef<string[]> = computed(() =>
+    getFocusableElements()
+  )
 
   function cancelEdition() {
     isEditing.value = false
     mediaDescription.value = ''
+    nextTick(() => {
+      document.getElementById('edit-button')?.focus()
+    })
+  }
+  function validateEdition(
+    mediaAttachementId: string,
+    mediaDescription: string
+  ) {
+    emit('updateDescriptionMedia', {
+      id: mediaAttachementId,
+      description: mediaDescription,
+    })
+    nextTick(() => {
+      timer.value = setTimeout(() => {
+        document.getElementById('edit-button')?.focus()
+      }, 200)
+    })
   }
   function updateMediaDescription(textareaData: ICustomTextareaData) {
     mediaDescription.value = textareaData.value
@@ -193,19 +216,56 @@
     // @ts-ignore
     emit(event)
   }
+  function getFocusableElements() {
+    const focusableElements = []
+    if (isWorkoutOwner.value && !isEditing.value && !isDeleting.value) {
+      focusableElements.push('edit-button', 'delete-button')
+    }
+    focusableElements.push('close-button')
+    if (displayedMediaIndex.value !== 0) {
+      focusableElements.push('prev-button')
+    }
+    if (displayedMediaIndex.value !== mediaAttachments.value.length - 1) {
+      focusableElements.push('next-button')
+    }
+    if (mediaAttachment.value?.description && !isEditing.value) {
+      focusableElements.push('media-description')
+    }
+    if (isEditing.value) {
+      focusableElements.push(
+        'media-description-textarea',
+        'cancel-edition',
+        'validate-edition'
+      )
+    }
+    if (isDeleting.value) {
+      focusableElements.push('cancel-deletion', 'validate-deletion')
+    }
+    return focusableElements
+  }
   function focusTrap(e: KeyboardEvent) {
     if (e.key === 'Escape' || e.keyCode === 27) {
       emit('closeModal')
       return
     }
-    if (!document.activeElement?.id) {
+
+    if (e.key === 'ArrowLeft' || e.keyCode === 37) {
+      document.getElementById('prev-button')?.click()
       return
+    }
+
+    if (e.key === 'ArrowRight' || e.keyCode === 39) {
+      document.getElementById('next-button')?.click()
+      return
+    }
+
+    let elementId = document.activeElement?.id
+    if (!elementId) {
+      elementId = focusableElements.value[0]
     }
     if (e.key === 'Tab' || e.keyCode === 9) {
       e.preventDefault()
-      const elementIndex = focusableElements.value.indexOf(
-        document.activeElement?.id
-      )
+      const elementIndex = focusableElements.value.indexOf(elementId)
       if (elementIndex === -1) {
         return
       }
@@ -225,6 +285,18 @@
         .getElementById(focusableElements.value[elementToFocusId])
         ?.focus()
     }
+  }
+  function enableEdition() {
+    isEditing.value = true
+    nextTick(() => {
+      document.getElementById('media-description-textarea')?.focus()
+    })
+  }
+  function enableDeletion() {
+    isDeleting.value = true
+    nextTick(() => {
+      document.getElementById('cancel-deletion')?.focus()
+    })
   }
 
   watch(
@@ -249,6 +321,9 @@
     document.addEventListener('keydown', focusTrap)
   })
   onUnmounted(() => {
+    if (timer.value) {
+      clearTimeout(timer.value)
+    }
     document.removeEventListener('keydown', focusTrap)
     previousFocusedElement?.focus()
   })
