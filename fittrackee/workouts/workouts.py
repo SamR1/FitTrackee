@@ -821,6 +821,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                         params=params,
                         with_equipments=with_equipments,
                         force_display_speed=force_display_speed,
+                        with_media_attachments=False,
                     )
                     for workout in workouts
                 ],

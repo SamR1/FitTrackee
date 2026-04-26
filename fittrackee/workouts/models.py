@@ -743,12 +743,16 @@ class Workout(BaseModel):
         light: bool = True,  # for workouts list and timeline
         with_equipments: bool = False,  # for workouts list
         force_display_speed: bool = False,  # for workouts list
+        with_media_attachments: bool = True,  # for workout cards
     ) -> Dict:
         """
         If 'light' is False, 'with_equipments' and 'force_display_speed' are
         ignored.
 
         'force_display_speed' allows to override sport preferences
+
+        'with_media_attachments' allow to return 3 first media attachments
+        when 'light' is true
         """
 
         for_report = (
@@ -823,7 +827,16 @@ class Workout(BaseModel):
             workout["next_workout"] = None
             workout["previous_workout"] = None
             workout["bounds"] = []
-            workout["media_attachments"] = []
+            workout["media_attachments"] = (
+                [
+                    media.serialize(can_see_map_data)
+                    for media in self.get_media_attachments(
+                        can_see_media_attachments
+                    )[:3]
+                ]
+                if with_media_attachments
+                else []
+            )
             return workout
 
         if is_owner:

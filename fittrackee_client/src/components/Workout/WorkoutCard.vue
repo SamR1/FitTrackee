@@ -39,24 +39,52 @@
           </div>
         </div>
       </div>
-      <div class="workout-map">
-        <StaticMap
-          v-if="workout.with_file"
-          :workout="workout"
-          @workoutLinkClicked="$emit('workoutLinkClicked')"
-        />
-        <router-link
-          v-else-if="workout.id"
-          :to="{
-            name: 'Workout',
-            params: { workoutId: workout.id },
-          }"
-          @click="$emit('workoutLinkClicked')"
+      <div
+        class="workout-map"
+        :class="{ 'with-media': workout.media_attachments?.length > 0 }"
+      >
+        <div class="map">
+          <StaticMap
+            v-if="workout.with_file"
+            :workout="workout"
+            @workoutLinkClicked="$emit('workoutLinkClicked')"
+          />
+          <router-link
+            v-else-if="workout.id"
+            :to="{
+              name: 'Workout',
+              params: { workoutId: workout.id },
+            }"
+            @click="$emit('workoutLinkClicked')"
+          >
+            <div class="no-map">
+              {{ $t('workouts.NO_MAP') }}
+            </div>
+          </router-link>
+        </div>
+        <div
+          v-if="workout.media_attachments?.length > 0"
+          class="media-attachments"
         >
-          <div class="no-map">
-            {{ $t('workouts.NO_MAP') }}
-          </div>
-        </router-link>
+          <router-link
+            v-for="media in workout.media_attachments.slice(0, 3)"
+            :key="media.id"
+            class="media-attachment"
+            :title="media.description"
+            :to="{
+              name: 'Workout',
+              params: { workoutId: workout.id },
+            }"
+            @click="$emit('workoutLinkClicked')"
+          >
+            <div
+              class="media-img"
+              :style="{
+                backgroundImage: `url(${media.meta.thumbnail_url})`,
+              }"
+            />
+          </router-link>
+        </div>
       </div>
       <div
         class="workout-data"
@@ -255,6 +283,39 @@
           background-color: var(--workout-static-map-bg-color);
           .bg-map-image {
             height: 150px;
+          }
+        }
+
+        &.with-media {
+          display: flex;
+          .map {
+            flex-grow: 1;
+          }
+          .media-attachments {
+            display: flex;
+            gap: 2px;
+            padding-left: 2px;
+
+            .media-attachment {
+              .media-img {
+                background-size: cover;
+                border-radius: 3px;
+                height: 150px;
+                width: 150px;
+              }
+
+              @media screen and (max-width: $small-limit) {
+                &:nth-child(3) {
+                  display: none;
+                }
+              }
+
+              @media screen and (max-width: $x-small-limit) {
+                &:nth-child(2) {
+                  display: none;
+                }
+              }
+            }
           }
         }
       }

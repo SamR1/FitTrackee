@@ -1473,7 +1473,29 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             == ElevationDataSource.FILE
         )
 
-    def test_it_does_not_return_media_attachments_when_light_is_true(
+    @pytest.mark.parametrize(
+        "input_args", [{}, {"with_media_attachments": True}]
+    )
+    def test_it_returns_media_attachments_when_light_is_true(
+        self,
+        app: Flask,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        input_args: Dict,
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.media_visibility = VisibilityLevel.PUBLIC
+        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_1, light=True, **input_args
+        )
+
+        assert serialized_workout["media_attachments"] == [
+            media.serialize(can_see_map_data=True)
+        ]
+
+    def test_it_does_not_return_media_attachments_when_light_is_true_and_with_media_attachments_is_false(  # noqa
         self, app: Flask, user_1: User, workout_cycling_user_1: Workout
     ) -> None:
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
@@ -1481,7 +1503,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         self.create_media(user_1, workout_id=workout_cycling_user_1.id)
 
         serialized_workout = workout_cycling_user_1.serialize(
-            user=user_1, light=True
+            user=user_1,
+            light=True,
+            with_media_attachments=False,
         )
 
         assert serialized_workout["media_attachments"] == []
