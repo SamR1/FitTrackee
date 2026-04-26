@@ -193,7 +193,9 @@ skip = [
     '.venv',
     '.mypy_cache',
     '.pytest_cache',
-    'node_modules']
+    'node_modules',
+    'package-lock.json'
+]
 check-hidden = true
 ignore-regex = '\b(Gard|Nome)\b'
 # Unfortunate choices for words which are not correct but too many by now

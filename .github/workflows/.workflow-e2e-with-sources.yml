@@ -63,15 +63,13 @@ jobs:
         with:
           node-version: ${{ inputs.node-version}}
 
-      - name: Install yarn and dependencies
+      - name: Install dependencies
         working-directory: fittrackee_client
-        run: |
-          npm install --global yarn
-          yarn install --frozen-lockfile --ignore-scripts
+        run: npm ci --ignore-scripts
 
       - name: Build dist files
         working-directory: fittrackee_client
-        run: yarn build
+        run: npm run build
 
       - name: Run migrations
         run: flask db upgrade --directory fittrackee/migrations

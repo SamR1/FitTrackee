@@ -6,7 +6,7 @@ on:
       'pyproject.toml',
       'poetry.lock',
       'fittrackee_client/package.json',
-      'fittrackee_client/yarn.lock',
+      'fittrackee_client/package-lock.json',
       'Dockerfile',
       'docker-entrypoint.sh',
       '.github/workflows/.tests-docker.yml'

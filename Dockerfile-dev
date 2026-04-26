@@ -1,25 +1,35 @@
 FROM python:3.13-slim
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends gdal-bin libmagic1 && \
+    apt-get install -y --no-install-recommends curl gdal-bin libmagic1 make && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # set working directory
-RUN mkdir -p /usr/src/app/data/uploads /usr/src/app/data/logs
+RUN mkdir -p /usr/src/app/data/uploads /usr/src/app/data/logs /usr/src/app/fittrackee/dist
 WORKDIR /usr/src/app
 
 # copy source files
 COPY . /usr/src/app
 
-# install requirements
+# install python requirements
 ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-RUN pip install --upgrade pip wheel
-RUN pip install poetry
+RUN pip install --upgrade pip wheel && pip install poetry
 RUN . $VIRTUAL_ENV/bin/activate && poetry install --no-interaction --quiet
+
+# install javascript requirements
+RUN mkdir -p /usr/local/nvm
+ENV NVM_DIR=/usr/local/nvm
+ENV NODE_VERSION=24.15.0
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash && \
+    . "$NVM_DIR/nvm.sh" && \
+    nvm install v${NODE_VERSION} && \
+    nvm use v${NODE_VERSION} && \
+    nvm alias default v${NODE_VERSION}
+ENV PATH="${NVM_DIR}/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 
 # run fittrackee server and workers
 COPY ./docker-entrypoint-dev.sh /docker-entrypoint.sh

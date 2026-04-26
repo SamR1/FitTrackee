@@ -19,7 +19,7 @@ babel-update:
 	$(PYBABEL) update -i messages.pot -d fittrackee/translations
 
 build-client: lint-client
-	cd fittrackee_client && $(NPM) build
+	cd fittrackee_client && $(NPM) run build
 
 check-all: lint-all type-check-all test-all
 
@@ -55,6 +55,9 @@ docker-build-all: docker-build docker-build-client
 docker-build-client:
 	docker compose -f docker-compose-dev.yml build fittrackee_client
 
+docker-build-dist:
+	docker compose -f docker-compose-dev.yml exec fittrackee make build-client
+
 docker-check-all: docker-run docker-lint-all docker-type-check docker-test-client docker-test-python
 
 docker-downgrade-db:
@@ -64,8 +67,8 @@ docker-lint-all: docker-run docker-lint-client docker-lint-python
 
 docker-lint-client:
 	docker compose -f docker-compose-dev.yml up -d fittrackee_client
-	docker compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) lint
-	docker compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) type-check
+	docker compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) run lint
+	docker compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) run type-check
 
 docker-lint-python: docker-run
 	docker compose -f docker-compose-dev.yml exec fittrackee mypy fittrackee
@@ -91,7 +94,7 @@ docker-run:
 
 docker-serve-client:
 	docker compose -f docker-compose-dev.yml up -d fittrackee_client
-	docker compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) dev
+	docker compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) run dev
 
 docker-set-role:
 	docker compose -f docker-compose-dev.yml exec fittrackee ftcli users update $(USERNAME) --set-role $(ROLE)
@@ -104,11 +107,11 @@ docker-stop:
 
 docker-test-client:
 	docker compose -f docker-compose-dev.yml up -d fittrackee_client
-	docker compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) test:unit run
+	docker compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) run test:unit run
 
 docker-test-client-watch:
 	docker compose -f docker-compose-dev.yml up -d fittrackee_client
-	docker compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) test:unit watch
+	docker compose -f docker-compose-dev.yml exec fittrackee_client $(NPM) run test:unit watch
 
 # needs a running application
 docker-test-e2e: docker-run
@@ -172,12 +175,10 @@ init-db:
 install: install-client install-python
 
 install-client:
-	# NPM_ARGS="--ignore-engines", if errors with Node latest version
-	cd fittrackee_client && $(NPM) install --frozen-lockfile --ignore-scripts --prod $(NPM_ARGS)
+	cd fittrackee_client && $(NPM) ci --ignore-scripts --omit=dev $(NPM_ARGS)
 
 install-client-dev:
-	# NPM_ARGS="--ignore-engines", if errors with Node latest version
-	cd fittrackee_client && $(NPM) install --frozen-lockfile --ignore-scripts $(NPM_ARGS)
+	cd fittrackee_client && $(NPM) ci --ignore-scripts $(NPM_ARGS)
 
 install-dev: install-client-dev install-python-dev
 
@@ -192,10 +193,10 @@ lint-all: lint-python lint-client
 lint-all-fix: lint-python-fix lint-client-fix
 
 lint-client:
-	cd fittrackee_client && $(NPM) lint-check && $(NPM) format-check
+	cd fittrackee_client && $(NPM) run lint-check && $(NPM) run format-check
 
 lint-client-fix:
-	cd fittrackee_client && $(NPM) lint && $(NPM) format
+	cd fittrackee_client && $(NPM) run lint && $(NPM) run format
 
 lint-python:
 	$(RUFF) check fittrackee e2e
@@ -234,7 +235,7 @@ serve-dev:
 
 serve-client:
     # for dev environments
-	cd fittrackee_client && PORT=3000 $(NPM) dev
+	cd fittrackee_client && PORT=3000 $(NPM) run dev
 
 serve-python:
     # for dev environments
@@ -265,10 +266,10 @@ test-python-cov:
 	$(PYTEST) fittrackee --cov-config .coveragerc --cov=fittrackee --cov-report term-missing $(PYTEST_ARGS)
 
 test-client:
-	cd fittrackee_client && $(NPM) test:unit run
+	cd fittrackee_client && $(NPM) run test:unit run
 
 test-client-watch:
-	cd fittrackee_client && $(NPM) test:unit watch
+	cd fittrackee_client && $(NPM) run test:unit watch
 
 MYPY_ARGS=fittrackee
 type-check:
@@ -278,7 +279,7 @@ type-check:
 type-check-all: type-check-client type-check
 
 type-check-client:
-	cd fittrackee_client && $(NPM) type-check
+	cd fittrackee_client && $(NPM) run type-check
 
 upgrade-db:
 	$(FTCLI) db upgrade
