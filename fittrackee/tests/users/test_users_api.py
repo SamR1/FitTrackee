@@ -23,7 +23,7 @@ from fittrackee.users.roles import UserRole
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import ApiTestCaseMixin, EquipmentMixin, ReportMixin
+from ..mixins import ApiTestCaseMixin, EquipmentMixin, MediaMixin, ReportMixin
 from ..utils import jsonify_dict
 
 
@@ -2340,7 +2340,9 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         )
 
 
-class TestDeleteUser(ApiTestCaseMixin, ReportMixin, EquipmentMixin):
+class TestDeleteUser(
+    ApiTestCaseMixin, ReportMixin, EquipmentMixin, MediaMixin
+):
     def test_user_can_delete_its_own_account(
         self, app: Flask, user_1: User
     ) -> None:
@@ -2471,6 +2473,22 @@ class TestDeleteUser(ApiTestCaseMixin, ReportMixin, EquipmentMixin):
                 content_type="multipart/form-data",
                 Authorization=f"Bearer {auth_token}",
             ),
+        )
+
+        response = client.delete(
+            f"/api/users/{user_1.username}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 204
+        assert User.query.first() is None
+
+    def test_user_with_media_attachments_can_delete_its_own_account(
+        self, app: Flask, user_1: User
+    ) -> None:
+        self.create_and_store_media(app, user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
         )
 
         response = client.delete(

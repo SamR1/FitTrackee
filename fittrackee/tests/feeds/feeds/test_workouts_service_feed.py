@@ -3,6 +3,7 @@ from email.utils import format_datetime
 from typing import TYPE_CHECKING
 
 import feedgenerator
+import pytest
 from flask import Flask
 from time_machine import travel
 
@@ -12,7 +13,7 @@ from fittrackee.feeds.feeds.workouts_feed_service import (
 )
 from fittrackee.visibility_levels import VisibilityLevel
 
-from ...mixins import WorkoutMixin
+from ...mixins import MediaMixin, WorkoutMixin
 from ..template_results.workouts import (
     expected_en_empty_feed,
     expected_en_feed_workout_cycling_user_1,
@@ -84,7 +85,9 @@ class TestUserWorkoutsFeedServiceInstantiation:
         assert isinstance(service.feed_template, FeedItemTemplate)
 
 
-class TestUserWorkoutsFeedServiceGenerateUserWorkoutsFeed(WorkoutMixin):
+class TestUserWorkoutsFeedServiceGenerateUserWorkoutsFeed(
+    WorkoutMixin, MediaMixin
+):
     def test_it_returns_feed_for_en_language(
         self,
         app: Flask,
@@ -231,6 +234,61 @@ https://example.com"""
                 workout_title=WORKOUT_TITLE,
             )
         )
+
+    def test_it_returns_feed_with_media_attachments_when_visibility_is_public(
+        self,
+        app: Flask,
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        workout_cycling_user_1.title = WORKOUT_TITLE
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.media_visibility = VisibilityLevel.PUBLIC
+        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+        service = UserWorkoutsFeedService(
+            user=user_1,
+            workouts=[workout_cycling_user_1],
+            with_description=True,
+        )
+
+        feed = service.generate_user_workouts_feed()
+
+        assert (
+            f'<enclosure length="{media.file_size}" '
+            f'type="{media.file_content_type}" '
+            f'url="{app.config["UI_URL"]}/media/{media.file_name}"/>'
+        ) in feed
+
+    @pytest.mark.parametrize(
+        "input_media_visibility",
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.FOLLOWERS],
+    )
+    def test_it_returns_feed_without_media_attachments_when_not_visible(
+        self,
+        app: Flask,
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        input_media_visibility: "VisibilityLevel",
+    ) -> None:
+        workout_cycling_user_1.title = WORKOUT_TITLE
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.media_visibility = input_media_visibility
+        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+        service = UserWorkoutsFeedService(
+            user=user_1,
+            workouts=[workout_cycling_user_1],
+            with_description=True,
+        )
+
+        feed = service.generate_user_workouts_feed()
+
+        assert (
+            f'<enclosure length="{media.file_size}" '
+            f'type="{media.file_content_type}" '
+            f'url="{app.config["UI_URL"]}/media/{media.file_name}"/>'
+        ) not in feed
 
     def test_it_returns_feed_in_imperial_unit(
         self,

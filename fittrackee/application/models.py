@@ -45,6 +45,9 @@ class AppConfig(BaseModel):
     global_map_workouts_limit: Mapped[int] = mapped_column(
         server_default="10000", nullable=False
     )
+    max_image_size: Mapped[int] = mapped_column(
+        server_default="5242880", nullable=False
+    )
 
     @property
     def is_registration_enabled(self) -> bool:
@@ -76,6 +79,7 @@ class AppConfig(BaseModel):
             "is_email_sending_enabled": current_app.config["CAN_SEND_EMAILS"],
             "is_registration_enabled": self.is_registration_enabled,
             "global_map_workouts_limit": self.global_map_workouts_limit,
+            "max_image_size": self.max_image_size,
             "max_single_file_size": self.max_single_file_size,
             "max_zip_file_size": self.max_zip_file_size,
             "max_users": self.max_users,

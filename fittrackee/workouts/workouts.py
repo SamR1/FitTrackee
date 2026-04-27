@@ -126,6 +126,7 @@ NO_STATISTICS = {
 }
 DEFAULT_TASKS_PER_PAGE = 5
 ERROR_MESSAGE_ON_REFRESH = "Error when refreshing workout"
+MAX_MEDIA_ATTACHMENTS = 20
 
 
 def get_rounded_float_value(row_value: Optional[Decimal]) -> Optional[float]:
@@ -138,6 +139,24 @@ def get_string_duration_value(row_value: Optional[timedelta]) -> Optional[str]:
     if row_value is None:
         return None
     return str(row_value).split(".")[0]
+
+
+def check_media_attachments(
+    workout_data: dict, is_zip_archive: bool = False
+) -> Optional["InvalidPayloadErrorResponse"]:
+    media_count = len(workout_data.get("media_attachment_ids", []))
+
+    if media_count > 0 and is_zip_archive:
+        return InvalidPayloadErrorResponse(
+            "media attachments can not be associated with a .zip archive"
+        )
+
+    if media_count > MAX_MEDIA_ATTACHMENTS:
+        return InvalidPayloadErrorResponse(
+            f"up to {MAX_MEDIA_ATTACHMENTS} media attachments can be "
+            f"associated with a workout"
+        )
+    return None
 
 
 def get_statistics(
@@ -496,6 +515,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "max_hr": null,
                 "max_power": null,
                 "max_speed": 18.0,
+                "media_attachments": [],
+                "media_visibility": "private",
                 "min_alt": null,
                 "modification_date": null,
                 "moving": "1:00:00",
@@ -800,6 +821,7 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                         params=params,
                         with_equipments=with_equipments,
                         force_display_speed=force_display_speed,
+                        with_media_attachments=False,
                     )
                     for workout in workouts
                 ],
@@ -1388,6 +1410,8 @@ def get_workout(
                 "max_hr": null,
                 "max_power": null,
                 "max_speed": 16,
+                "media_attachments": [],
+                "media_visibility": "private",
                 "min_alt": null,
                 "modification_date": "Sun, 14 Jul 2019 18:57:22 GMT",
                 "moving": "0:45:00",
@@ -2062,6 +2086,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     """
     Post a workout with a file.
 
+    **Notes**: Media attachments are ignored when provided with an archive.
+
     **Scope**: ``workouts:write``
 
     **Example request**:
@@ -2116,6 +2142,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                 "max_hr": null,
                 "max_power": null,
                 "max_speed": 25.59,
+                "media_attachments": [],
+                "media_visibility": "private",
                 "min_alt": 55.03,
                 "modification_date": null,
                 "moving": "1:47:11",
@@ -2237,11 +2265,12 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     :form file: workout file or archive (allowed extensions: .gpx, .kml, .kmz,
        .fit, .tcx, .zip)
     :form data: sport id, equipment id, description, title, notes, visibility
-       for workout, analysis and map
+       for workout, analysis and map, media attachments ids
        for example:
        ``{"sport_id": 1, "notes": "", "title": "", "description": "",
        "analysis_visibility": "private", "map_visibility": "private",
-       "workout_visibility": "private", "equipment_ids": []}``.
+       "workout_visibility": "private", "equipment_ids": [],
+       "media_visibility": "private", "media_attachment_ids": []}``.
        Double quotes in notes, description and title must be escaped.
 
        The maximum length is 500 characters for notes, 10000 characters for
@@ -2257,8 +2286,10 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
        If not provided and default equipment exists for sport,
        default equipment will be associated.
 
-       Notes, description, title, equipment ids and visibility
-       for workout, analysis and map are not mandatory.
+       Up to 20 media items can be associated.
+
+       Notes, description, title, equipment ids, media attachment ids and
+       visibility for workout, analysis, map and media are not mandatory.
        Visibility levels default to user preferences.
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
@@ -2294,6 +2325,8 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``
         - ``one or more values, entered or calculated, exceed the limits``
+        - ``up to 20 media attachments can be associated with a workout``
+        - ``media attachments can not be associated with a .zip archive``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -2313,7 +2346,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         return PayloadTooLargeErrorResponse(
             file_type="workout",
             file_size=request.content_length,
-            max_size=current_app.config["MAX_CONTENT_LENGTH"],
+            max_size=current_app.config["max_zip_file_size"],
         )
     if error_response:
         return error_response
@@ -2325,7 +2358,16 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     if not workout_data or workout_data.get("sport_id") is None:
         return InvalidPayloadErrorResponse()
+
     workout_file = request.files["file"]
+    is_zip_archive = (
+        workout_file is not None
+        and workout_file.filename is not None
+        and workout_file.filename.endswith(".zip")
+    )
+    error_response = check_media_attachments(workout_data, is_zip_archive)
+    if error_response:
+        return error_response
 
     try:
         check_file(workout_file, WORKOUT_FILE_DETECTED_MIMETYPES)
@@ -2430,6 +2472,8 @@ def post_workout_no_gpx(
                 "max_hr": null,
                 "max_power": null,
                 "max_speed": 10.0,
+                "media_attachments": [],
+                "media_visibility": "private",
                 "min_alt": null,
                 "modification_date": null,
                 "moving": "0:17:04",
@@ -2518,6 +2562,11 @@ def post_workout_no_gpx(
         pieces of equipment can be added.
         If not provided and default equipment exists for sport,
         default equipment will be associated.
+    :<json array of strings media_attachment_ids: the id of uploaded media
+        attachments. Up to 20 media items can be associated.
+    :<json string media_visibility: media visibility (``private``,
+        ``followers_only`` or ``public``). Not mandatory,
+        defaults to user preferences.
     :<json string notes: notes (not mandatory, max length: 500
         characters, otherwise they will be truncated)
     :<json integer sport_id: workout sport id
@@ -2541,6 +2590,7 @@ def post_workout_no_gpx(
         - ``invalid equipment id <equipment_id> for sport``
         - ``equipment with id <equipment_id> is inactive``
         - ``one or more values, entered or calculated, exceed the limits``
+        - ``up to 20 media attachments can be associated with a workout``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -2559,6 +2609,10 @@ def post_workout_no_gpx(
         or not workout_data.get("workout_date")
     ):
         return InvalidPayloadErrorResponse()
+
+    error_response = check_media_attachments(workout_data)
+    if error_response:
+        return error_response
 
     try:
         service = WorkoutCreationService(auth_user, workout_data)
@@ -2658,6 +2712,8 @@ def update_workout(
                 "max_hr": null,
                 "max_power": null,
                 "max_speed": 10.0,
+                "media_attachments": [],
+                "media_visibility": "private",
                 "min_alt": null,
                 "modification_date": null,
                 "moving": "0:17:04",
@@ -2758,6 +2814,10 @@ def update_workout(
         If an empty array, equipment for this workout will be removed.
     :<json string map_visibility: map visibility
         (``private``, ``followers_only`` or ``public``)
+    :<json array of strings media_attachment_ids: the id of uploaded media
+        attachments. Up to 20 media items can be associated.
+    :<json string media_visibility: media visibility (``private``,
+        ``followers_only`` or ``public``)
     :<json string notes: notes (max length: 500 characters, otherwise they
         will be truncated)
     :<json integer sport_id: workout sport id
@@ -2783,6 +2843,7 @@ def update_workout(
         - ``one or more values, entered or calculated, exceed the limits``
         - ``'elevation_data_source' can not be provided for workout without file``
         - ``'<ELEVATION_DATA_SOURCE>' as elevation data source is not valid``
+        - ``up to 20 media attachments can be associated with a workout``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -2801,6 +2862,11 @@ def update_workout(
             "'elevation_data_source' can not be provided "
             "for workout without file"
         )
+
+    error_response = check_media_attachments(workout_data)
+    if error_response:
+        return error_response
+
     try:
         old_sport_id = workout.sport_id
         new_sport_id = workout_data.get("sport_id")
@@ -2985,6 +3051,8 @@ def like_workout(
                 "max_hr": null,
                 "max_power": null,
                 "max_speed": 25.59,
+                "media_attachments": [],
+                "media_visibility": "private",
                 "min_alt": 19.0,
                 "modification_date": "Wed, 04 Dec 2024 16:45:14 GMT",
                 "moving": "1:47:04",
@@ -3103,6 +3171,8 @@ def undo_workout_like(
                 "max_hr": null,
                 "max_power": null,
                 "max_speed": 25.59,
+                "media_attachments": [],
+                "media_visibility": "private",
                 "min_alt": 19.0,
                 "modification_date": "Wed, 04 Dec 2024 16:45:14 GMT",
                 "moving": "1:47:04",
@@ -3705,6 +3775,8 @@ def refresh_workout(
                 "max_hr": null,
                 "max_power": null,
                 "max_speed": 25.59,
+                "media_attachments": [],
+                "media_visibility": "private",
                 "min_alt": 55.03,
                 "elevation_data_source": "file",
                 "modification_date": null,

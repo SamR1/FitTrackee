@@ -30,7 +30,7 @@ from fittrackee.files import (
     check_file,
     generate_filename,
     get_absolute_file_path,
-    get_image_without_exif,
+    get_image_from_file_storage_without_exif,
 )
 from fittrackee.oauth2.server import require_auth
 from fittrackee.reports.models import ReportAction, ReportActionAppeal
@@ -352,6 +352,7 @@ def get_authenticated_user_profile(
           "location": null,
           "manually_approves_followers": false,
           "map_visibility": "private",
+          "media_visibility": "private",
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
@@ -497,6 +498,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "location": null,
           "manually_approves_followers": false,
           "map_visibility": "private",
+          "media_visibility": "private",
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
@@ -690,6 +692,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "location": null,
           "manually_approves_followers": false,
           "map_visibility": "followers_only",
+          "media_visibility": "private",
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
@@ -949,6 +952,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "location": null,
           "manually_approves_followers": false,
           "map_visibility": "followers_only",
+          "media_visibility": "followers_only",
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
@@ -1049,6 +1053,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
                   are automatically approved
     :<json string map_visibility: workout map visibility
                   (``public``, ``followers_only``, ``private``)
+    :<json string media_visibility: workout media visibility
+                  (``public``, ``followers_only``, ``private``)
     :<json string missing_elevations_processing: source and method for missing
                   elevations, depending on application configuration
                   (``file`` (missing elevation are not processed),
@@ -1091,6 +1097,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "language",
         "manually_approves_followers",
         "map_visibility",
+        "media_visibility",
         "missing_elevations_processing",
         "segments_creation_event",
         "split_workout_charts",
@@ -1127,6 +1134,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "missing_elevations_processing"
     )
     calories_visibility = post_data.get("calories_visibility")
+    media_visibility = post_data.get("media_visibility")
 
     try:
         auth_user.date_format = date_format
@@ -1156,6 +1164,10 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.split_workout_charts = split_workout_charts
         auth_user.missing_elevations_processing = missing_elevations_processing
         auth_user.calories_visibility = VisibilityLevel(calories_visibility)
+        auth_user.media_visibility = get_calculated_visibility(
+            visibility=VisibilityLevel(media_visibility),
+            parent_visibility=auth_user.workouts_visibility,
+        )
         db.session.commit()
 
         return {
@@ -1434,6 +1446,7 @@ def edit_user_notifications_preferences(
           "location": null,
           "manually_approves_followers": false,
           "map_visibility": "private",
+          "media_visibility": "private",
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
@@ -1615,6 +1628,7 @@ def edit_user_messages_preferences(
           "location": null,
           "manually_approves_followers": false,
           "map_visibility": "private",
+          "media_visibility": "private",
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
@@ -1822,7 +1836,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
         "status": "success"
       }
 
-    :form file: image file (allowed extensions: .jpeg, .jpg, .png, .gif)
+    :form file: image file (allowed extensions: .jpeg, .jpg, .png, .gif, .webp)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1849,7 +1863,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
         return PayloadTooLargeErrorResponse(
             file_type="picture",
             file_size=request.content_length,
-            max_size=current_app.config["MAX_CONTENT_LENGTH"],
+            max_size=current_app.config["max_image_size"],
         )
     if response_object:
         return response_object
@@ -1860,7 +1874,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
     except FileException as e:
         return InvalidPayloadErrorResponse(str(e))
     filename = generate_filename(extension)
-    image = get_image_without_exif(file)
+    image = get_image_from_file_storage_without_exif(file)
     dirpath = os.path.join(
         current_app.config["UPLOAD_FOLDER"], "pictures", str(auth_user.id)
     )

@@ -21,6 +21,7 @@ export type TAppConfig = {
   is_email_sending_enabled: boolean
   is_registration_enabled: boolean
   map_attribution: string
+  max_image_size: number
   max_single_file_size: number
   max_users: number
   max_zip_file_size: number
@@ -49,6 +50,7 @@ export type TAppConfigForm = {
   admin_contact: string
   file_limit_import: number
   file_sync_limit_import: number
+  max_image_size: number
   max_single_file_size: number
   max_users: number
   max_zip_file_size: number

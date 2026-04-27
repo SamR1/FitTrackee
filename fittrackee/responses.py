@@ -1,5 +1,5 @@
 from json import dumps
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Literal, Optional, Union
 
 from flask import Request, Response, current_app
 from flask_sqlalchemy import SQLAlchemy
@@ -204,7 +204,7 @@ def handle_error_and_return_response(
 
 
 def get_error_response_if_file_is_invalid(
-    file_type: str, req: Request
+    file_type: Literal["workout", "picture"], req: "Request"
 ) -> Optional[HttpResponse]:
     if "file" not in req.files:
         return InvalidPayloadErrorResponse("no file part", "fail")
@@ -216,7 +216,7 @@ def get_error_response_if_file_is_invalid(
     allowed_extensions = (
         "WORKOUT_ALLOWED_EXTENSIONS"
         if file_type == "workout"
-        else "PICTURE_ALLOWED_EXTENSIONS"
+        else "PICTURE_ALLOWED_EXTENSIONS"  # user picture or workouts media
     )
 
     file_extension = (
@@ -224,7 +224,14 @@ def get_error_response_if_file_is_invalid(
         if "." in file.filename
         else None
     )
-    max_file_size = current_app.config["max_single_file_size"]
+    if file_type == "workout":
+        max_file_size = (
+            current_app.config["max_zip_file_size"]
+            if file_extension == "zip"
+            else current_app.config["max_single_file_size"]
+        )
+    else:
+        max_file_size = current_app.config["max_image_size"]
 
     if not (
         file_extension
@@ -234,11 +241,7 @@ def get_error_response_if_file_is_invalid(
             "file extension not allowed", "fail"
         )
 
-    if (
-        file_extension != "zip"
-        and req.content_length is not None
-        and req.content_length > max_file_size
-    ):
+    if req.content_length is not None and req.content_length > max_file_size:
         return PayloadTooLargeErrorResponse(
             file_type=file_type,
             file_size=req.content_length,

@@ -70,6 +70,7 @@ export interface IAuthUserProfile extends IUserProfile {
   language: TLanguage | null
   manually_approves_followers: boolean
   map_visibility: TVisibilityLevels
+  media_visibility: TVisibilityLevels
   messages_preferences: TMessagePreferences
   missing_elevations_processing: TElevationDataSource
   nb_sports: number
@@ -136,6 +137,7 @@ export interface IUserPreferencesPayload {
   language: TLanguage
   manually_approves_followers: boolean
   map_visibility: TVisibilityLevels
+  media_visibility: TVisibilityLevels
   missing_elevations_processing: TElevationDataSource
   segments_creation_event: TSegmentsCreationEvent
   split_workout_charts: boolean

@@ -1,6 +1,11 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
+from sqlalchemy import bindparam, update
+
+from fittrackee import db
 from fittrackee.files import get_file_extension
+from fittrackee.media.models import Media
+from fittrackee.utils import decode_short_id
 
 from ..constants import WORKOUT_ALLOWED_EXTENSIONS
 from ..exceptions import WorkoutExceedingValueException
@@ -29,6 +34,35 @@ class CheckWorkoutMixin:
                 raise WorkoutExceedingValueException(
                     f"'{key}' exceeds max value ({max_value})"
                 )
+
+
+class WorkoutMediaAttachmentsMixin:
+    @staticmethod
+    def update_media_attachments_if_provided(
+        auth_user_id: int,
+        media_attachment_ids: Union[list[str], None],
+        workout_id: int,
+    ) -> None:
+        if not media_attachment_ids:
+            return
+
+        update_data = []
+        for media_short_id in media_attachment_ids:
+            update_data.append(
+                {
+                    "m_uuid": decode_short_id(media_short_id),
+                    "workout_id": workout_id,
+                }
+            )
+
+        if update_data:
+            db.session.connection().execute(
+                update(Media).where(
+                    Media.uuid == bindparam("m_uuid"),
+                    Media.user_id == auth_user_id,
+                ),
+                update_data,
+            )
 
 
 class WorkoutFileMixin:

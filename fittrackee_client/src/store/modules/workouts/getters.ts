@@ -53,4 +53,15 @@ export const getters: GetterTree<IWorkoutsState, IRootState> &
   [WORKOUTS_STORE.GETTERS.WORKOUT_GEOJSON]: (state: IWorkoutsState) => {
     return state.workoutData.geojson
   },
+  [WORKOUTS_STORE.GETTERS.WORKOUT_MEDIA_LOADING]: (state: IWorkoutsState) => {
+    return state.workoutData.mediaLoading
+  },
+  [WORKOUTS_STORE.GETTERS.WORKOUT_MEDIA_ATTACHMENTS]: (
+    state: IWorkoutsState
+  ) => {
+    return state.workoutData.mediaAttachments
+  },
+  [WORKOUTS_STORE.GETTERS.DISPLAYED_MEDIA_INDEX]: (state: IWorkoutsState) => {
+    return state.workoutData.displayedMediaIndex
+  },
 }

@@ -114,6 +114,10 @@
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.workouts_visibility}`) }}
       </dd>
+      <dt>{{ $t('visibility_levels.MEDIA_VISIBILITY') }}<sup>3</sup>:</dt>
+      <dd>
+        {{ $t(`visibility_levels.LEVELS.${user.media_visibility}`) }}
+      </dd>
       <dt>{{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>3</sup>:</dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.analysis_visibility}`) }}

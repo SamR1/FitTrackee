@@ -24,6 +24,7 @@ from werkzeug.test import TestResponse
 from fittrackee import db
 from fittrackee.comments.models import Comment
 from fittrackee.files import get_absolute_file_path
+from fittrackee.media.models import Media
 from fittrackee.oauth2.client import create_oauth2_client
 from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
 from fittrackee.oauth2.server import CustomResourceProtector
@@ -710,3 +711,59 @@ class ResponseMockMixin:
         response_mock.json = Mock()
         response_mock.json.return_value = response
         return response_mock
+
+
+class MediaMixin:
+    @staticmethod
+    def create_media(
+        user: "User",
+        *,
+        file_name: Optional[str] = None,
+        file_size: int = 1000,
+        workout_id: Optional[int] = None,
+        description: str = "",
+        with_coordinates: bool = False,
+    ) -> "Media":
+        if not file_name:
+            image_name = uuid4().hex
+            file_name = f"{image_name}.jpg"
+            thumbnail = f"{image_name}.thumbnail.jpg"
+        else:
+            image_name, extension = file_name.split()
+            thumbnail = f"{image_name}.thumbnail.{extension}"
+        media = Media(
+            user_id=user.id,
+            file_name=file_name,
+            file_size=file_size,
+            file_content_type="image/jpeg",
+        )
+        db.session.add(media)
+        media.workout_id = workout_id
+        media.description = description
+        media.meta = {
+            "coordinates": {
+                "latitude": 45.755833333333335,
+                "longitude": 4.8308333333333335,
+            }
+            if with_coordinates
+            else None,
+            "thumbnail": {"file_name": thumbnail, "file_size": 10},
+        }
+        db.session.commit()
+        return media
+
+    def create_and_store_media(
+        self, app: "Flask", user: "User", workout_id: Optional[int] = None
+    ) -> Tuple["Media", str, str]:
+        media = self.create_media(user, workout_id=workout_id)
+        os.makedirs(
+            os.path.join(app.config["UPLOAD_FOLDER"], "media", str(user.id)),
+            exist_ok=True,
+        )
+        expected_paths = []
+        for path in [media.file_path, media.thumbnail_file_path]:
+            expected_path = os.path.join(app.config["UPLOAD_FOLDER"], path)
+            with open(expected_path, "w") as f:
+                f.write("image_content")
+            expected_paths.append(expected_path)
+        return media, expected_paths[0], expected_paths[1]

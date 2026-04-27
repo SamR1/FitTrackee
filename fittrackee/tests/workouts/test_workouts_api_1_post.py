@@ -11,7 +11,6 @@ from time_machine import travel
 
 from fittrackee import db
 from fittrackee.database import PSQL_INTEGER_LIMIT
-from fittrackee.equipments.models import Equipment
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.users.models import User, UserTask
 from fittrackee.visibility_levels import VisibilityLevel
@@ -23,7 +22,7 @@ from fittrackee.workouts.services.workout_from_file import (
     WorkoutGpxService,
 )
 
-from ..mixins import ReportMixin, UserTaskMixin
+from ..mixins import MediaMixin, ReportMixin, UserTaskMixin
 from ..utils import jsonify_dict
 from .mixins import (
     WorkoutApiTestCaseMixin,
@@ -272,7 +271,9 @@ def assert_files_are_deleted(
     )
 
 
-class TestPostWorkoutWithGpx(WorkoutGpxInfoMixin, WorkoutApiTestCaseMixin):
+class TestPostWorkoutWithGpx(
+    WorkoutGpxInfoMixin, WorkoutApiTestCaseMixin, MediaMixin
+):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: "Flask", sport_1_cycling: "Sport", gpx_file: str
     ) -> None:
@@ -636,6 +637,88 @@ class TestPostWorkoutWithGpx(WorkoutGpxInfoMixin, WorkoutApiTestCaseMixin):
         )
         assert "data" not in data
 
+    def test_it_adds_a_workout_with_media_attachments(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
+    ) -> None:
+        media = self.create_media(user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/workouts",
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
+                data=(
+                    json.dumps(
+                        {
+                            "sport_id": 1,
+                            "media_attachment_ids": [media.short_id],
+                        }
+                    )
+                ),
+            ),
+            headers=dict(
+                content_type="multipart/form-data",
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert "created" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["media_attachments"] == [
+            media.serialize()
+        ]
+
+    @patch("fittrackee.workouts.workouts.MAX_MEDIA_ATTACHMENTS", 2)
+    def test_it_returns_400_when_number_of_media_exceeds_limit(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
+    ) -> None:
+        media_1 = self.create_media(user_1)
+        media_2 = self.create_media(user_1)
+        media_3 = self.create_media(user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/workouts",
+            data=dict(
+                file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
+                data=(
+                    json.dumps(
+                        {
+                            "sport_id": 1,
+                            "media_attachment_ids": [
+                                media_1.short_id,
+                                media_2.short_id,
+                                media_3.short_id,
+                            ],
+                        }
+                    )
+                ),
+            ),
+            headers=dict(
+                content_type="multipart/form-data",
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+
+        self.assert_400(
+            response,
+            "up to 2 media attachments can be associated with a workout",
+        )
+
     def test_expected_scope_is_workouts_write(
         self, app: "Flask", user_1: "User"
     ) -> None:
@@ -880,7 +963,7 @@ class TestPostWorkoutWithFit(WorkoutApiTestCaseMixin, WorkoutFileMixin):
         assert data["data"]["workouts"][0]["calories"] == 32
 
 
-class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin):
+class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
     def test_it_returns_error_if_user_is_not_authenticated(
         self, app: "Flask", sport_1_cycling: "Sport", gpx_file: str
     ) -> None:
@@ -1477,6 +1560,86 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin):
         assert len(data["data"]["workouts"]) == 1
         assert data["data"]["workouts"][0]["calories"] == input_calories
 
+    def test_it_adds_a_workout_with_media_attachments(
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
+    ) -> None:
+        media = self.create_media(user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/workouts/no_gpx",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date="2018-05-15 14:05",
+                    distance=10,
+                    media_attachment_ids=[media.short_id],
+                    media_visibility=VisibilityLevel.FOLLOWERS,
+                    workout_visibility=VisibilityLevel.PUBLIC,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 201
+        assert "created" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["media_attachments"] == [
+            media.serialize()
+        ]
+        assert (
+            data["data"]["workouts"][0]["media_visibility"]
+            == VisibilityLevel.FOLLOWERS
+        )
+        assert (
+            data["data"]["workouts"][0]["workout_visibility"]
+            == VisibilityLevel.PUBLIC
+        )
+
+    @patch("fittrackee.workouts.workouts.MAX_MEDIA_ATTACHMENTS", 2)
+    def test_it_returns_400_when_number_of_media_exceeds_limit(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
+    ) -> None:
+        media_1 = self.create_media(user_1)
+        media_2 = self.create_media(user_1)
+        media_3 = self.create_media(user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/workouts/no_gpx",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    sport_id=1,
+                    duration=3600,
+                    workout_date="2018-05-15 14:05",
+                    distance=10,
+                    media_attachment_ids=[
+                        media_1.short_id,
+                        media_2.short_id,
+                        media_3.short_id,
+                    ],
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            "up to 2 media attachments can be associated with a workout",
+        )
+
     def test_expected_scope_is_workouts_write(
         self, app: "Flask", user_1: "User"
     ) -> None:
@@ -1490,7 +1653,9 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin):
         )
 
 
-class TestPostWorkoutWithZipArchive(UserTaskMixin, WorkoutApiTestCaseMixin):
+class TestPostWorkoutWithZipArchive(
+    UserTaskMixin, WorkoutApiTestCaseMixin, MediaMixin
+):
     def test_it_adds_workouts_synchronously_with_zip_archive(
         self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
@@ -1888,6 +2053,44 @@ class TestPostWorkoutWithZipArchive(UserTaskMixin, WorkoutApiTestCaseMixin):
         assert "created" in data["status"]
         assert len(data["data"]["workouts"]) == 3
         assert Workout.query.count() == 3
+
+    def test_it_returns_400_when_media_attachments_are_provided(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
+    ) -> None:
+        media = self.create_media(user_1)
+        file_path = os.path.join(app.root_path, "tests/files/gpx_test.zip")
+        with open(file_path, "rb") as zip_file:
+            client, auth_token = self.get_test_client_and_auth_token(
+                app, user_1.email
+            )
+
+            response = client.post(
+                "/api/workouts",
+                data=dict(
+                    file=(zip_file, "gpx_test.zip"),
+                    data=(
+                        json.dumps(
+                            {
+                                "sport_id": 1,
+                                "media_attachment_ids": [media.short_id],
+                            }
+                        )
+                    ),
+                ),
+                headers=dict(
+                    content_type="multipart/form-data",
+                    Authorization=f"Bearer {auth_token}",
+                ),
+            )
+
+        self.assert_400(
+            response,
+            "media attachments can not be associated with a .zip archive",
+        )
 
 
 class TestPostAndGetWorkoutWithFile(WorkoutApiTestCaseMixin):

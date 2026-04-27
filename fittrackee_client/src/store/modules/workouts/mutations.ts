@@ -11,6 +11,7 @@ import type { IWorkoutsFeatureCollection } from '@/types/geojson.ts'
 import type {
   IComment,
   ICurrentCommentEdition,
+  IMediaAttachment,
   IWorkout,
   IWorkoutApiChartData,
   IWorkoutContentType,
@@ -142,6 +143,9 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
       currentReporting: false,
       refreshLoading: false,
       elevationLoading: false,
+      mediaAttachments: [],
+      mediaLoading: '',
+      displayedMediaIndex: undefined,
     }
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_COMMENTS](
@@ -197,5 +201,56 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     elevationLoading: boolean
   ) {
     state.workoutData.elevationLoading = elevationLoading
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_MEDIA_LOADING](
+    state: IWorkoutsState,
+    mediaLoading: string
+  ) {
+    state.workoutData.mediaLoading = mediaLoading
+  },
+  [WORKOUTS_STORE.MUTATIONS.ADD_WORKOUT_MEDIA_ATTACHMENT](
+    state: IWorkoutsState,
+    mediaAttachments: IMediaAttachment
+  ) {
+    state.workoutData.mediaAttachments.push(mediaAttachments)
+  },
+  [WORKOUTS_STORE.MUTATIONS.UPDATE_WORKOUT_MEDIA_ATTACHMENT](
+    state: IWorkoutsState,
+    mediaAttachment: IMediaAttachment
+  ) {
+    state.workoutData.mediaAttachments = state.workoutData.mediaAttachments.map(
+      (media) => {
+        if (media.id === mediaAttachment.id) {
+          return { ...mediaAttachment }
+        }
+        return media
+      }
+    )
+  },
+  [WORKOUTS_STORE.MUTATIONS.REMOVE_WORKOUT_MEDIA_ATTACHMENT](
+    state: IWorkoutsState,
+    mediaAttachmentId: string
+  ) {
+    state.workoutData.mediaAttachments =
+      state.workoutData.mediaAttachments.filter(
+        (media) => media.id !== mediaAttachmentId
+      )
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_MEDIA_ATTACHMENTS](
+    state: IWorkoutsState,
+    mediaAttachments: IMediaAttachment[]
+  ) {
+    state.workoutData.mediaAttachments = mediaAttachments
+  },
+  [WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT_MEDIA_ATTACHMENTS](
+    state: IWorkoutsState
+  ) {
+    state.workoutData.mediaAttachments = []
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_DISPLAYED_MEDIA_INDEX](
+    state: IWorkoutsState,
+    index: number | undefined
+  ) {
+    state.workoutData.displayedMediaIndex = index
   },
 }

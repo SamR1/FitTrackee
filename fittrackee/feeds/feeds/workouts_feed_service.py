@@ -139,10 +139,32 @@ class UserWorkoutsFeedService:
                 if self.with_description and workout.description
                 else ""
             )
+            media_attachments = workout.get_media_attachments(
+                can_view(
+                    workout,
+                    "calculated_media_visibility",
+                )
+            )
+
+            # feedgenerator does not allow more than one enclosure.
+            # see W3C RSS validator:
+            # https://validator.w3.org/feed/docs/warning/DuplicateEnclosure.html
+            enclosures = []
+            if media_attachments:
+                attachment = media_attachments[0]
+                enclosures = [
+                    feedgenerator.Enclosure(
+                        f"{current_app.config['UI_URL']}/media/{attachment.file_name}",
+                        str(attachment.file_size),
+                        attachment.file_content_type,
+                    )
+                ]
+
             self.feed.add_item(
                 title=item_data["title.txt"],
                 link=f"{self.fittrackee_url}/workouts/{workout.short_id}",
                 pubdate=workout.workout_date,
                 description=item_data["body.html"] + workout_description,
+                enclosures=enclosures,
             )
         return self.feed.writeString("UTF-8")

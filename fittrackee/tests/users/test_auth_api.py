@@ -350,6 +350,7 @@ class TestUserRegistration(ApiTestCaseMixin):
             new_user.missing_elevations_processing == ElevationDataSource.FILE
         )
         assert new_user.calories_visibility == VisibilityLevel.PRIVATE
+        assert new_user.media_visibility == VisibilityLevel.PRIVATE
 
     @pytest.mark.parametrize(
         "input_timezone,expected_timezone",
@@ -1551,6 +1552,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     split_workout_charts=True,
                     missing_elevations_processing="open_elevation",
                     calories_visibility="followers_only",
+                    media_visibility="followers_only",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1578,9 +1580,12 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
             data["data"]["missing_elevations_processing"] == "open_elevation"
         )
         assert data["data"]["calories_visibility"] == VisibilityLevel.FOLLOWERS
+        assert data["data"]["media_visibility"] == VisibilityLevel.FOLLOWERS
 
     @pytest.mark.parametrize(
-        "input_map_visibility,input_analysis_visibility,input_workout_visibility,expected_map_visibility,expected_analysis_visibility",
+        "input_map_visibility,input_analysis_visibility,"
+        "input_workout_visibility,"
+        "expected_map_visibility,expected_analysis_visibility",
         [
             (
                 VisibilityLevel.FOLLOWERS,
@@ -1650,6 +1655,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     split_workout_charts=False,
                     missing_elevations_processing="file",
                     calories_visibility=VisibilityLevel.PRIVATE,
+                    media_visibility=VisibilityLevel.PRIVATE,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1665,6 +1671,84 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert (
             data["data"]["workouts_visibility"]
             == input_workout_visibility.value
+        )
+
+    @pytest.mark.parametrize(
+        "input_workout_visibility, input_media_visibility,"
+        "expected_media_visibility",
+        [
+            (
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.PUBLIC,
+            ),
+            (
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.FOLLOWERS,
+            ),
+            (
+                VisibilityLevel.PRIVATE,
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PRIVATE,
+            ),
+            (
+                VisibilityLevel.FOLLOWERS,
+                VisibilityLevel.PUBLIC,
+                VisibilityLevel.FOLLOWERS,
+            ),
+        ],
+    )
+    def test_it_updates_user_preferences_with_valid_media_visibility(
+        self,
+        app: Flask,
+        user_1: User,
+        input_workout_visibility: VisibilityLevel,
+        input_media_visibility: VisibilityLevel,
+        expected_media_visibility: VisibilityLevel,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/auth/profile/edit/preferences",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    timezone="America/New_York",
+                    weekm=True,
+                    language="fr",
+                    imperial_units=True,
+                    display_ascent=True,
+                    date_format="MM/dd/yyyy",
+                    start_elevation_at_zero=False,
+                    use_raw_gpx_speed=False,
+                    manually_approves_followers=True,
+                    hide_profile_in_users_directory=True,
+                    use_dark_mode=None,
+                    map_visibility=VisibilityLevel.PRIVATE,
+                    analysis_visibility=VisibilityLevel.PRIVATE,
+                    workouts_visibility=input_workout_visibility.value,
+                    hr_visibility=VisibilityLevel.PRIVATE,
+                    segments_creation_event="none",
+                    split_workout_charts=False,
+                    missing_elevations_processing="file",
+                    calories_visibility=VisibilityLevel.PRIVATE,
+                    media_visibility=input_media_visibility.value,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert (
+            data["data"]["workouts_visibility"]
+            == input_workout_visibility.value
+        )
+        assert (
+            data["data"]["media_visibility"] == expected_media_visibility.value
         )
 
     def test_it_updates_user_preferences_when_user_is_suspended(
@@ -1700,6 +1784,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     split_workout_charts=False,
                     missing_elevations_processing="file",
                     calories_visibility=VisibilityLevel.PRIVATE.value,
+                    media_visibility=VisibilityLevel.PRIVATE.value,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -2510,41 +2595,13 @@ class TestUserPicture(ApiTestCaseMixin, ImageMixin):
 
     def test_it_returns_error_if_image_size_exceeds_file_limit(
         self,
-        app_with_max_file_size: Flask,
+        app_with_max_image_size: Flask,
         user_1: User,
         sport_1_cycling: Sport,
         gpx_file: str,
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_max_file_size, user_1.email
-        )
-
-        response = client.post(
-            "/api/auth/picture",
-            data=dict(
-                file=(BytesIO(b"test_file_for_avatar" * 50), "avatar.jpg")
-            ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
-        )
-
-        data = self.assert_413(
-            response,
-            "Error during picture upload, file size (1.2KB) exceeds 1.0KB.",
-        )
-        assert "data" not in data
-
-    def test_it_returns_error_if_image_size_exceeds_archive_limit(
-        self,
-        app_with_max_zip_file_size: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        gpx_file: str,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app_with_max_zip_file_size, user_1.email
+            app_with_max_image_size, user_1.email
         )
 
         response = client.post(

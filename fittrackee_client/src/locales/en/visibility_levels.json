@@ -13,6 +13,7 @@
     "public": "Public (everyone)"
   },
   "MAP_VISIBILITY": "Map visibility",
+  "MEDIA_VISIBILITY": "Media visibility",
   "VISIBILITY": "visibility",
   "WORKOUTS_VISIBILITY": "Workouts related data visibility",
   "WORKOUT_VISIBILITY": "Workout visibility"

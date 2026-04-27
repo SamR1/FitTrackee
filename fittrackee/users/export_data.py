@@ -2,17 +2,18 @@ import json
 import os
 import secrets
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, Iterable, List, Optional, Tuple, Union
 from zipfile import ZipFile
 
 from flask import current_app
+from sqlalchemy.sql import text as sql_text
 
 from fittrackee import appLog, db
 from fittrackee.emails.tasks import send_email
 from fittrackee.files import get_absolute_file_path
-from fittrackee.utils import decode_short_id
-from fittrackee.workouts.constants import WORKOUT_ALLOWED_EXTENSIONS
+from fittrackee.utils import decode_short_id, encode_uuid
 
+from ..workouts.constants import WORKOUT_ALLOWED_EXTENSIONS
 from .exceptions import UserTaskException
 from .models import Notification, User, UserTask
 from .utils.language import get_language
@@ -22,9 +23,11 @@ class UserDataExporter:
     """
     generates a zip archive with:
     - user info from database (json file)
-    - data from database for all workouts if exist (json file)
+    - data from database for workouts, equipment, comments and media
+      attachments if exist (json file)
     - profile picture file if exists
-    - gpx files if exist
+    - workouts files if exist
+    - media attachments if exist
     """
 
     def __init__(self, user: User) -> None:
@@ -35,6 +38,9 @@ class UserDataExporter:
         os.makedirs(self.export_directory, exist_ok=True)
         self.workouts_directory = get_absolute_file_path(
             os.path.join("workouts", str(self.user.id))
+        )
+        self.media_attachments_directory = get_absolute_file_path(
+            os.path.join("media", str(self.user.id))
         )
 
     def get_user_info(self) -> Dict:
@@ -80,6 +86,35 @@ class UserDataExporter:
             for equipment in self.user.equipments
         ]
 
+    def get_user_media_attachments_data(self) -> List[Dict]:
+        sql = """
+            SELECT media.*, workouts.uuid as workout_uuid
+            FROM media
+            LEFT OUTER JOIN workouts ON media.workout_id = workouts.id
+            WHERE media.user_id = :user_id
+        """
+        media_attachments = (
+            db.session.execute(sql_text(sql), {"user_id": self.user.id})
+            .mappings()
+            .all()
+        )
+        return [
+            {
+                "created_at": media["created_at"].replace(tzinfo=timezone.utc),
+                "id": encode_uuid(media["uuid"]),
+                "description": media["description"],
+                "file_name": media["file_name"],
+                "file_size": media["file_size"],
+                "meta": media["meta"],
+                "workout_id": (
+                    encode_uuid(media["workout_uuid"])
+                    if media["workout_uuid"]
+                    else None
+                ),
+            }
+            for media in media_attachments
+        ]
+
     def export_data(self, data: Union[Dict, List], name: str) -> str:
         """export data in existing user upload directory"""
         json_object = json.dumps(data, indent=4, default=str)
@@ -87,6 +122,24 @@ class UserDataExporter:
         with open(file_path, "w") as export_file:
             export_file.write(json_object)
         return file_path
+
+    @staticmethod
+    def _export_files_if_exist(
+        zip_object: "ZipFile",
+        user_directory: str,
+        export_directory: str,
+        allowed_extensions: Iterable[str],
+    ) -> None:
+        if os.path.exists(user_directory):
+            for file in os.listdir(user_directory):
+                extension = file.split(".")[-1]
+                if extension in allowed_extensions and os.path.isfile(
+                    os.path.join(user_directory, file)
+                ):
+                    zip_object.write(
+                        os.path.join(user_directory, file),
+                        f"{export_directory}/{file}",
+                    )
 
     def generate_archive(self) -> Tuple[Optional[str], Optional[str]]:
         try:
@@ -102,6 +155,10 @@ class UserDataExporter:
             comments_data_file_name = self.export_data(
                 self.get_user_comments_data(), "comments_data"
             )
+            media_attachments_data_file_name = self.export_data(
+                self.get_user_media_attachments_data(),
+                "media_attachments_data",
+            )
             zip_file = f"archive_{secrets.token_urlsafe(15)}.zip"
             zip_path = os.path.join(self.export_directory, zip_file)
             with ZipFile(zip_path, "w") as zip_object:
@@ -115,31 +172,35 @@ class UserDataExporter:
                 zip_object.write(
                     comments_data_file_name, "user_comments_data.json"
                 )
+                zip_object.write(
+                    media_attachments_data_file_name,
+                    "user_media_attachments_data.json",
+                )
                 if self.user.picture:
                     picture_path = get_absolute_file_path(self.user.picture)
                     if os.path.isfile(picture_path):
                         zip_object.write(
                             picture_path, self.user.picture.split("/")[-1]
                         )
-                if os.path.exists(self.workouts_directory):
-                    for file in os.listdir(self.workouts_directory):
-                        extension = file.split(".")[-1]
-                        if (
-                            extension in WORKOUT_ALLOWED_EXTENSIONS
-                            and os.path.isfile(
-                                os.path.join(self.workouts_directory, file)
-                            )
-                        ):
-                            zip_object.write(
-                                os.path.join(self.workouts_directory, file),
-                                f"workout_files/{file}",
-                            )
+                self._export_files_if_exist(
+                    zip_object,
+                    self.workouts_directory,
+                    "workout_files",
+                    WORKOUT_ALLOWED_EXTENSIONS,
+                )
+                self._export_files_if_exist(
+                    zip_object,
+                    self.media_attachments_directory,
+                    "media_attachments",
+                    current_app.config["PICTURE_ALLOWED_EXTENSIONS"],
+                )
 
             file_exists = os.path.exists(zip_path)
             os.remove(user_data_file_name)
             os.remove(workout_data_file_name)
             os.remove(equipments_data_file_name)
             os.remove(comments_data_file_name)
+            os.remove(media_attachments_data_file_name)
             return (zip_path, zip_file) if file_exists else (None, None)
         except Exception as e:
             appLog.error(f"Error when generating user data archive: {e!s}")

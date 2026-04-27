@@ -2,29 +2,15 @@ import os
 from typing import IO, TYPE_CHECKING, Dict, Union
 from uuid import uuid4
 
+import magic
 from flask import current_app
 from PIL import Image
 from werkzeug.utils import secure_filename
-
-from fittrackee import appLog
 
 from .exceptions import FileException
 
 if TYPE_CHECKING:
     from werkzeug.datastructures import FileStorage
-
-
-# mime type check is disabled if libmagic is not present
-try:
-    import magic
-
-    mimetype_check_available = True
-except ImportError:
-    mimetype_check_available = False
-    appLog.warning(
-        "failed to find libmagic, mime type check on file upload is disabled."
-    )
-
 
 INVALID_FILE_ERROR_MESSAGE = "invalid file"
 
@@ -71,9 +57,6 @@ def check_mime_type(
     file: Union[IO[bytes], "FileStorage"],
     valid_content_types: Dict,
 ) -> None:
-    if not mimetype_check_available:
-        return
-
     buffer = file.read(2048)
 
     # python-magic can raise error when detecting mime type on .fit file
@@ -119,8 +102,14 @@ def generate_filename(extension: str) -> str:
     return f"{uuid4().hex}.{extension}"
 
 
-def get_image_without_exif(file: "FileStorage") -> "Image.Image":
-    image = Image.open(file.stream)
+def get_image_without_exif(image: "Image.Image") -> "Image.Image":
     image_without_exif = Image.new(image.mode, image.size)
     image_without_exif.putdata(image.get_flattened_data())
     return image_without_exif
+
+
+def get_image_from_file_storage_without_exif(
+    file: "FileStorage",
+) -> "Image.Image":
+    image = Image.open(file.stream)
+    return get_image_without_exif(image)

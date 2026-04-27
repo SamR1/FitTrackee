@@ -43,6 +43,7 @@ class TestConfigModel:
             serialized_app_config["max_single_file_size"]
             == config.max_single_file_size
         )
+        assert serialized_app_config["max_image_size"] == config.max_image_size
         assert (
             serialized_app_config["max_zip_file_size"]
             == config.max_zip_file_size

@@ -23,7 +23,7 @@ from fittrackee.users.models import User, UserTask
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
-from ..mixins import RandomMixin, UserTaskMixin
+from ..mixins import MediaMixin, RandomMixin, UserTaskMixin
 from ..workouts.utils import create_a_workout_with_file
 
 
@@ -111,6 +111,9 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "ave_pace": None,
                 "best_pace": None,
                 "calories": None,
+                "media_visibility": (
+                    workout_cycling_user_1.calculated_media_visibility.value
+                ),
             }
         ]
 
@@ -181,6 +184,9 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "ave_pace": None,
                 "best_pace": None,
                 "calories": None,
+                "media_visibility": (
+                    workout.calculated_media_visibility.value
+                ),
             }
         ]
 
@@ -255,6 +261,9 @@ class TestUserDataExporterGetUserWorkoutsData:
                 "ave_pace": str(workout.ave_pace),
                 "best_pace": str(workout.best_pace),
                 "calories": None,
+                "media_visibility": (
+                    workout.calculated_media_visibility.value
+                ),
             }
         ]
 
@@ -373,6 +382,52 @@ class TestUserDataExporterGetUserCommentsData(CommentMixin):
         ]
 
 
+class TestUserDataExporterGetUserMediaAttachmentsData(MediaMixin, RandomMixin):
+    def test_it_returns_empty_list_when_user_has_no_media_attachments(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        self.create_media(user_2)
+        exporter = UserDataExporter(user_1)
+
+        media_data = exporter.get_user_media_attachments_data()
+
+        assert media_data == []
+
+    def test_it_returns_user_media_attachments(
+        self, app: Flask, user_1: User, workout_cycling_user_1: Workout
+    ) -> None:
+        media_1 = self.create_media(user_1)
+        media_2 = self.create_media(
+            user_1,
+            description=self.random_string(),
+            workout_id=workout_cycling_user_1.id,
+        )
+        exporter = UserDataExporter(user_1)
+
+        media_data = exporter.get_user_media_attachments_data()
+
+        assert media_data == [
+            {
+                "created_at": media_1.created_at,
+                "description": media_1.description,
+                "id": media_1.short_id,
+                "file_name": media_1.file_name,
+                "file_size": media_1.file_size,
+                "meta": media_1.meta,
+                "workout_id": None,
+            },
+            {
+                "created_at": media_2.created_at,
+                "description": media_2.description,
+                "id": media_2.short_id,
+                "file_name": media_2.file_name,
+                "file_size": media_2.file_size,
+                "meta": media_2.meta,
+                "workout_id": workout_cycling_user_1.short_id,
+            },
+        ]
+
+
 class TestUserDataExporterExportData(RandomMixin):
     def test_export_data_generates_json_file_in_user_directory(
         self,
@@ -411,7 +466,7 @@ class TestUserDataExporterExportData(RandomMixin):
         assert file_path == os.path.join(user_directory, f"{file_name}.json")
 
 
-class TestUserDataExporterGenerateArchive(RandomMixin):
+class TestUserDataExporterGenerateArchive(RandomMixin, MediaMixin):
     @patch.object(secrets, "token_urlsafe", return_value="AOqFRRet8p4")
     @patch.object(UserDataExporter, "export_data")
     @patch("fittrackee.users.export_data.ZipFile")
@@ -483,6 +538,7 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
             call("workouts_data"),
             call("equipments_data"),
             call("comments_data"),
+            call("media_attachments_data"),
         ]
 
         exporter.generate_archive()
@@ -495,6 +551,9 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
                     call(call('workouts_data'), 'user_workouts_data.json'),
                     call(call('equipments_data'), 'user_equipments_data.json'),
                     call(call('comments_data'), 'user_comments_data.json'),
+                    call(
+                        call('media_attachments_data'),
+                        'user_media_attachments_data.json'),
                 ]
             )
         # fmt: on
@@ -629,6 +688,65 @@ class TestUserDataExporterGenerateArchive(RandomMixin):
         # fmt: off
         assert (
             call(expected_path, user_1.picture.split('/')[-1])
+            not in zipfile_mock.return_value.__enter__.
+            return_value.write.call_args_list
+        )
+        # fmt: on
+
+    @patch.object(secrets, "token_urlsafe", return_value="AOqFRRet8p4")
+    @patch.object(UserDataExporter, "export_data")
+    @patch("fittrackee.users.export_data.ZipFile")
+    def test_it_calls_zipfile_for_media_attachments(
+        self,
+        zipfile_mock: Mock,
+        export_data: Mock,
+        secrets_mock: Mock,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        media, expected_path, expected_thumbnail_path = (
+            self.create_and_store_media(app, user_1)
+        )
+        exporter = UserDataExporter(user_1)
+
+        exporter.generate_archive()
+
+        zipfile_mock.return_value.__enter__.return_value.write.assert_has_calls(
+            [
+                call(expected_path, f"media_attachments/{media.file_name}"),
+                call(
+                    expected_thumbnail_path,
+                    f"media_attachments/{media.thumbnail}",
+                ),
+            ],
+            any_order=True,
+        )
+
+    @patch.object(secrets, "token_urlsafe")
+    @patch.object(UserDataExporter, "export_data")
+    @patch("fittrackee.users.export_data.ZipFile")
+    def test_it_does_not_call_zipfile_for_another_user_media_attachments(
+        self,
+        zipfile_mock: Mock,
+        export_data: Mock,
+        secrets_mock: Mock,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+    ) -> None:
+        media, expected_path, _ = self.create_and_store_media(app, user_1)
+        exporter = UserDataExporter(user_2)
+
+        exporter.generate_archive()
+
+        # fmt: off
+        assert (
+            call(
+                expected_path,
+                f"media_attachments/{media.file_name}"
+            )
             not in zipfile_mock.return_value.__enter__.
             return_value.write.call_args_list
         )

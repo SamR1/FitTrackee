@@ -7,7 +7,7 @@ from time_machine import travel
 
 from fittrackee.visibility_levels import VisibilityLevel
 
-from ..mixins import ApiTestCaseMixin
+from ..mixins import ApiTestCaseMixin, MediaMixin
 from .template_results.workouts import (
     expected_en_empty_feed,
     expected_en_feed_user_1_workouts,
@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from fittrackee.workouts.models import Sport, Workout
 
 
-class TestGetUserPublicWorkoutsFeed(ApiTestCaseMixin):
+class TestGetUserPublicWorkoutsFeed(ApiTestCaseMixin, MediaMixin):
     route = "/users/{username}/workouts.rss"
 
     def test_it_returns_error_when_user_does_not_exist(
@@ -220,3 +220,45 @@ class TestGetUserPublicWorkoutsFeed(ApiTestCaseMixin):
                 workout_title=workout_cycling_user_1.title,
             )
         )
+
+    def test_it_returns_feed_with_first_attachment_when_media_visibility_is_public(  # noqa
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.media_visibility = VisibilityLevel.PUBLIC
+        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+        self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+        expected_path = f"{app.config['UI_URL']}/media/{media.file_name}"
+        client = app.test_client()
+
+        response = client.get(
+            f"{self.route.format(username=user_1.username)}?description=true"
+        )
+
+        assert (
+            f'<enclosure length="{media.file_size}" '
+            f'type="{media.file_content_type}" '
+            f'url="{expected_path}"/></item></channel></rss>'
+        ) in response.data.decode()
+
+    def test_it_does_not_return_feed_with_attachment_when_media_visibility_is_not_public(  # noqa
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.media_visibility = VisibilityLevel.FOLLOWERS
+        self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+        client = app.test_client()
+
+        response = client.get(
+            f"{self.route.format(username=user_1.username)}?description=true"
+        )
+
+        assert "enclosure" not in response.data.decode()

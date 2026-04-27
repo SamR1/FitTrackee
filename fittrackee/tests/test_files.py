@@ -11,6 +11,7 @@ from fittrackee.exceptions import FileException
 from fittrackee.files import (
     check_file,
     get_file_extension,
+    get_image_from_file_storage_without_exif,
     get_image_without_exif,
 )
 from fittrackee.tests.workouts.mixins import WorkoutFileMixin
@@ -163,7 +164,9 @@ class TestGetImageWithoutExif(ImageMixin):
         self, app: "Flask"
     ) -> None:
         image_file_name = "image_with_gps_exif.jpg"
-        image = self.get_image_file_storage(app, image_file_name)
+        image = Image.open(
+            os.path.join(app.root_path, "tests/files", image_file_name)
+        )
 
         new_image = get_image_without_exif(image)
 
@@ -176,3 +179,15 @@ class TestGetImageWithoutExif(ImageMixin):
             ),
             new_image,
         ).getbbox()
+
+
+class TestGetImageFromFileStorageWithoutExif(ImageMixin):
+    def test_it_creates_new_image_without_exif_data(
+        self, app: "Flask"
+    ) -> None:
+        image = self.get_image_file_storage(app, "image_with_gps_exif.jpg")
+
+        new_image = get_image_from_file_storage_without_exif(image)
+
+        # exif data is removed
+        assert dict(new_image.getexif()) == {}
