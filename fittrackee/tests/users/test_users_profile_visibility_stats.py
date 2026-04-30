@@ -7,10 +7,14 @@ These tests verify that:
 3. Public workouts are visible to everyone
 4. nb_workouts, nb_sports, total_distance, total_duration, total_ascent
    should all respect visibility levels
+5. Both manually created workouts and file-imported workouts (GPX/FIT/TCX)
+   should have the same visibility filtering behavior
 """
 import json
 from datetime import datetime, timedelta, timezone
+from io import BytesIO
 from typing import List
+from unittest.mock import patch
 
 import pytest
 from flask import Flask
@@ -20,6 +24,7 @@ from fittrackee.tests.fixtures.fixtures_workouts import update_workout
 from fittrackee.users.models import User
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
+from fittrackee.workouts.services import WorkoutGpxService
 
 from ..mixins import ApiTestCaseMixin
 
@@ -459,4 +464,280 @@ class TestLatestWorkoutsVisibility(ApiTestCaseMixin):
 
         assert len(data["data"]["workouts"]) == 1, (
             "Public workout should appear in latest_workouts for other users"
+        )
+
+
+GPX_FILE_SIMPLE = """<?xml version='1.0' encoding='UTF-8'?>
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
+  <metadata/>
+  <trk>
+    <name>imported workout</name>
+    <trkseg>
+      <trkpt lat="44.68095" lon="6.07367">
+        <ele>998.0</ele>
+        <time>2018-03-13T12:44:45Z</time>
+      </trkpt>
+      <trkpt lat="44.6808" lon="6.07364">
+        <ele>994.0</ele>
+        <time>2018-03-13T12:45:00Z</time>
+      </trkpt>
+      <trkpt lat="44.67858" lon="6.07425">
+        <ele>980.0</ele>
+        <time>2018-03-13T12:47:10Z</time>
+      </trkpt>
+      <trkpt lat="44.67837" lon="6.07435">
+        <ele>979.0</ele>
+        <time>2018-03-13T12:47:20Z</time>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
+"""
+
+
+class TestFileImportWorkoutVisibilityStats(ApiTestCaseMixin):
+    """
+    Tests for user profile statistics visibility filtering for
+    file-imported workouts (GPX/FIT/TCX).
+
+    These tests verify that visibility filtering works the same way
+    for file-imported workouts as it does for manually created workouts.
+    """
+
+    def create_workout_from_gpx(
+        self,
+        user: User,
+        sport: Sport,
+        gpx_content: str,
+        visibility: VisibilityLevel,
+    ) -> Workout:
+        """Helper to create a workout from GPX file with specific visibility."""
+        with patch.object(
+            WorkoutGpxService, "get_weather_data", return_value=None
+        ):
+            service = WorkoutGpxService(
+                user,
+                BytesIO(str.encode(gpx_content)),
+                sport,
+                sport.stopped_speed_threshold,
+                get_weather=False,
+            )
+            service.process_workout()
+            db.session.commit()
+
+            workout = Workout.query.filter_by(user_id=user.id).first()
+            if workout:
+                workout.workout_visibility = visibility
+                db.session.commit()
+            return workout
+
+    def test_gpx_import_public_workout_included_in_owner_stats(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        """
+        Test that owner can see their own GPX-imported public workout
+        in statistics.
+        """
+        self.create_workout_from_gpx(
+            user_1,
+            sport_1_cycling,
+            GPX_FILE_SIMPLE,
+            VisibilityLevel.PUBLIC,
+        )
+
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/users/{user_1.username}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        user_data = data["data"]["users"][0]
+
+        assert user_data["nb_workouts"] == 1
+
+    def test_gpx_import_private_workout_excluded_from_other_user_stats(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+    ) -> None:
+        """
+        Test that GPX-imported private workouts are EXCLUDED from
+        statistics when viewed by other users.
+
+        This verifies that visibility filtering works correctly for
+        file-imported workouts.
+        """
+        self.create_workout_from_gpx(
+            user_2,
+            sport_1_cycling,
+            GPX_FILE_SIMPLE,
+            VisibilityLevel.PRIVATE,
+        )
+
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/users/{user_2.username}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        user_data = data["data"]["users"][0]
+
+        assert user_data["nb_workouts"] == 0, (
+            "GPX-imported private workout should NOT be counted "
+            "when viewed by other users"
+        )
+
+    def test_gpx_import_mixed_visibility_workouts_stats_for_other_user(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+    ) -> None:
+        """
+        Test that when a user has mixed visibility workouts imported from GPX:
+        - Public workouts ARE included in statistics for other users
+        - Private workouts are NOT included
+
+        This verifies that visibility filtering works correctly for
+        file-imported workouts with different visibility levels.
+        """
+        from fittrackee.workouts.services import WorkoutGpxService
+        from io import BytesIO
+
+        with patch.object(
+            WorkoutGpxService, "get_weather_data", return_value=None
+        ):
+            service1 = WorkoutGpxService(
+                user_2,
+                BytesIO(str.encode(GPX_FILE_SIMPLE)),
+                sport_1_cycling,
+                sport_1_cycling.stopped_speed_threshold,
+                get_weather=False,
+            )
+            service1.process_workout()
+            db.session.commit()
+            workout1 = Workout.query.filter_by(user_id=user_2.id).first()
+            if workout1:
+                workout1.workout_visibility = VisibilityLevel.PUBLIC
+                db.session.commit()
+
+            service2 = WorkoutGpxService(
+                user_2,
+                BytesIO(str.encode(GPX_FILE_SIMPLE)),
+                sport_2_running,
+                sport_2_running.stopped_speed_threshold,
+                get_weather=False,
+            )
+            service2.process_workout()
+            db.session.commit()
+            workouts = Workout.query.filter_by(user_id=user_2.id).all()
+            for workout in workouts:
+                if workout.sport_id == sport_2_running.id:
+                    workout.workout_visibility = VisibilityLevel.PRIVATE
+                    db.session.commit()
+
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/users/{user_2.username}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        user_data = data["data"]["users"][0]
+
+        assert user_data["nb_workouts"] == 1, (
+            "Only public GPX-imported workout should be counted "
+            "for other users"
+        )
+
+    def test_owner_sees_all_gpx_imported_workouts_in_stats(
+        self,
+        app: Flask,
+        user_2: User,
+        sport_1_cycling: Sport,
+        sport_2_running: Sport,
+    ) -> None:
+        """
+        Test that owner sees ALL their GPX-imported workouts in statistics,
+        regardless of visibility level.
+        """
+        from fittrackee.workouts.services import WorkoutGpxService
+        from io import BytesIO
+
+        with patch.object(
+            WorkoutGpxService, "get_weather_data", return_value=None
+        ):
+            service1 = WorkoutGpxService(
+                user_2,
+                BytesIO(str.encode(GPX_FILE_SIMPLE)),
+                sport_1_cycling,
+                sport_1_cycling.stopped_speed_threshold,
+                get_weather=False,
+            )
+            service1.process_workout()
+            db.session.commit()
+            workout1 = Workout.query.filter_by(user_id=user_2.id).first()
+            if workout1:
+                workout1.workout_visibility = VisibilityLevel.PUBLIC
+                db.session.commit()
+
+            service2 = WorkoutGpxService(
+                user_2,
+                BytesIO(str.encode(GPX_FILE_SIMPLE)),
+                sport_2_running,
+                sport_2_running.stopped_speed_threshold,
+                get_weather=False,
+            )
+            service2.process_workout()
+            db.session.commit()
+            workouts = Workout.query.filter_by(user_id=user_2.id).all()
+            for workout in workouts:
+                if workout.sport_id == sport_2_running.id:
+                    workout.workout_visibility = VisibilityLevel.PRIVATE
+                    db.session.commit()
+
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            f"/api/users/{user_2.username}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        user_data = data["data"]["users"][0]
+
+        assert user_data["nb_workouts"] == 2, (
+            "Owner should see all 2 GPX-imported workouts"
+        )
+        assert user_data.get("nb_sports") == 2, (
+            "Owner should see both sports"
         )

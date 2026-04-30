@@ -6,15 +6,8 @@ from werkzeug.test import TestResponse
 
 os.environ["FLASK_ENV"] = "testing"
 os.environ["APP_SETTINGS"] = "fittrackee.config.TestingConfig"
-os.environ["UI_URL"] = "https://example.com"
-os.environ["SENDER_EMAIL"] = "fittrackee@example.com"
-os.environ["DATABASE_TEST_URL"] = os.environ.get(
-    "DATABASE_TEST_URL",
-    "postgresql://postgres:postgres@localhost:5432/fittrackee_test"
-)
 # to avoid resetting dev database during tests
-if "DATABASE_TEST_URL" in os.environ:
-    os.environ["DATABASE_URL"] = os.environ["DATABASE_TEST_URL"]
+os.environ["DATABASE_URL"] = os.environ["DATABASE_TEST_URL"]
 TEMP_FOLDER = os.path.join(tempfile.gettempdir(), "FitTrackee")
 os.makedirs(TEMP_FOLDER, exist_ok=True)
 os.environ["UPLOAD_FOLDER"] = TEMP_FOLDER

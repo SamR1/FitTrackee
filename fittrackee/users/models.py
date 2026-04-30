@@ -800,10 +800,46 @@ class User(BaseModel):
             return True
         return self.notification_preferences.get(notification_type, True)
 
-    def _get_records(self) -> List[Dict]:
+    def _get_visible_workouts_filter(
+        self,
+        current_user: Optional["User"] = None,
+    ) -> Any:
+        from fittrackee.workouts.models import Workout
+        from fittrackee.visibility_levels import VisibilityLevel
+
+        if current_user and current_user.id == self.id:
+            return Workout.workout_visibility.isnot(None)
+
+        if current_user and current_user.id in self.get_followers_user_ids():
+            return Workout.workout_visibility.in_(
+                [VisibilityLevel.PUBLIC, VisibilityLevel.FOLLOWERS]
+            )
+
+        return Workout.workout_visibility == VisibilityLevel.PUBLIC
+
+    def _get_records(
+        self,
+        current_user: Optional["User"] = None,
+    ) -> List[Dict]:
+        from fittrackee.workouts.models import Workout, Record
+        from fittrackee.visibility_levels import VisibilityLevel
+
+        visible_workouts_filter = self._get_visible_workouts_filter(current_user)
+
+        records_query = (
+            db.session.query(Record)
+            .filter(
+                Record.user_id == self.id,
+                Record.workout_id == Workout.id,
+                visible_workouts_filter,
+            )
+            .order_by(Record.sport_id, Record.record_type)
+            .all()
+        )
+
         records = []
         sports_displayed_data = {}
-        for record in self.records:
+        for record in records_query:
             if record.sport.id not in sports_displayed_data:
                 sports_displayed_data[record.sport.id] = (
                     get_sport_displayed_data(record.sport, self)
@@ -856,6 +892,8 @@ class User(BaseModel):
         current_user: Optional["User"] = None,
         light: bool = True,
     ) -> Dict:
+        from fittrackee.workouts.models import Workout
+
         if current_user is None:
             role = None
         else:
@@ -865,11 +903,20 @@ class User(BaseModel):
                 else UserRole(current_user.role)
             )
 
+        visible_workouts_filter = self._get_visible_workouts_filter(current_user)
+
+        visible_workouts_count = (
+            db.session.query(func.count(Workout.id))
+            .filter(Workout.user_id == self.id, visible_workouts_filter)
+            .scalar()
+            or 0
+        )
+
         serialized_user: Dict = {
             "created_at": self.created_at,
             "followers": self.followers.count(),
             "following": self.following.count(),
-            "nb_workouts": self.workouts_count,
+            "nb_workouts": visible_workouts_count,
             "picture": self.picture is not None,
             "role": UserRole(self.role).name.lower(),
             "suspended_at": self.suspended_at,
@@ -898,10 +945,10 @@ class User(BaseModel):
             return serialized_user
 
         sports = []
-        if self.workouts_count > 0:  # type: ignore
+        if visible_workouts_count > 0:
             sports = (
                 db.session.query(Workout.sport_id)
-                .filter(Workout.user_id == self.id)
+                .filter(Workout.user_id == self.id, visible_workouts_filter)
                 .group_by(Workout.sport_id)
                 .order_by(Workout.sport_id)
                 .all()
@@ -918,26 +965,26 @@ class User(BaseModel):
 
         if role is not None:
             total = (0, "0:00:00", 0)
-            if self.workouts_count > 0:  # type: ignore
+            if visible_workouts_count > 0:
                 total = tuple(
                     db.session.query(
                         func.sum(Workout.distance),
                         func.sum(Workout.moving),
                         func.sum(Workout.ascent),
                     )
-                    .filter(Workout.user_id == self.id)
+                    .filter(Workout.user_id == self.id, visible_workouts_filter)
                     .one()
                 )
 
             serialized_user["nb_sports"] = len(sports)
-            serialized_user["records"] = self._get_records()
+            serialized_user["records"] = self._get_records(current_user)
             serialized_user["sports_list"] = [
                 sport for sportslist in sports for sport in sportslist
             ]
             serialized_user["total_ascent"] = (
                 float(total[2]) if total[2] else 0.0
             )
-            serialized_user["total_distance"] = float(total[0])
+            serialized_user["total_distance"] = float(total[0]) if total[0] else 0.0
             serialized_user["total_duration"] = str(total[1])
 
         if is_auth_user(role) or has_admin_rights(role):
