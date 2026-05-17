@@ -9,6 +9,7 @@
   "CANCEL": "Cancel",
   "CANCEL_FOLLOW_REQUEST": "Cancel follow request",
   "CLEAR_FILTER": "Clear filters",
+  "CLOSE": "Close",
   "DELETE": "Delete",
   "DELETE_MY_ACCOUNT": "Delete my account",
   "DISABLE": "Disable",
@@ -18,6 +19,7 @@
   "FOLLOW": "Follow",
   "HIDE": "Hide",
   "LOGIN": "Log in",
+  "PREVIEW": "Preview",
   "READ_MORE": "Read more",
   "REFRESH": "Refresh",
   "REFRESH_TOTALS": "Refresh totals",
@@ -25,9 +27,11 @@
   "REJECT": "Reject",
   "REQUEST_DATA_EXPORT": "Request data export",
   "RESET": "Reset",
+  "SAVE": "Save",
   "SEARCH": "Search",
   "SEE_DETAIL": "See detail",
   "SUBMIT": "Submit",
   "UNBLOCK": "Unblock",
-  "UNFOLLOW": "Unfollow"
+  "UNFOLLOW": "Unfollow",
+  "WRITE": "Write"
 }

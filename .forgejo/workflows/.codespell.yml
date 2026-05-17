@@ -1,0 +1,32 @@
+name: Codespell
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - release-v*
+      - v*
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  codespell:
+    name: Check for spelling errors
+    runs-on: codeberg-medium-lazy
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Annotate locations with typos
+        uses: https://github.com/codespell-project/codespell-problem-matcher@9ba2c57125d4908eade4308f32c4ff814c184633 # v1.2.0
+
+      - name: Codespell
+        uses: https://github.com/codespell-project/actions-codespell@8f01853be192eb0f849a5c7d721450e7a467c579  # v2.2.0

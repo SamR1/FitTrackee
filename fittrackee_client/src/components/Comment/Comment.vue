@@ -50,7 +50,7 @@
       <template v-if="comment.text_html">
         <span
           v-if="!isCommentEdited()"
-          class="comment-text"
+          class="comment-text white-space-pre-wrap"
           :class="{ highlight: highlighted }"
           v-html="linkifyAndClean(comment.text_html)"
         />
@@ -479,7 +479,6 @@
 
       .comment-text {
         padding: $default-padding;
-        white-space: pre-wrap;
         &.highlight {
           border-radius: 5px;
           background-image: var(--comment-background-highlight);

@@ -16,6 +16,7 @@ from fittrackee.responses import (
 from fittrackee.users.models import User
 from fittrackee.users.roles import UserRole
 from fittrackee.users.utils.controls import is_valid_email
+from fittrackee.utils import clean_input
 
 from .models import AppConfig
 from .utils import update_app_config_from_database, verify_app_config
@@ -58,6 +59,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "global_map_workouts_limit": 10000,
           "is_email_sending_enabled": true,
           "is_registration_enabled": false,
+          "max_image_size": 5242880,
           "max_single_file_size": 1048576,
           "max_users": 0,
           "max_zip_file_size": 10485760,
@@ -65,7 +67,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "privacy_policy": null,
           "privacy_policy_date": null,
           "stats_workouts_limit": 10000,
-          "version": "1.2.2",
+          "version": "1.3.0",
           "weather_provider": null
         },
         "status": "success"
@@ -122,6 +124,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
           "global_map_workouts_limit": 10000,
           "is_email_sending_enabled": true,
           "is_registration_enabled": false,
+          "max_image_size": 5242880,
           "max_single_file_size": 1048576,
           "max_users": 10,
           "max_zip_file_size": 10485760,
@@ -129,7 +132,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
           "privacy_policy": null,
           "privacy_policy_date": null,
           "stats_workouts_limit": 10000,
-          "version": "1.2.2",
+          "version": "1.3.0",
           "weather_provider": null
         },
         "status": "success"
@@ -144,6 +147,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json integer global_map_workouts_limit: max number of workouts displayed
                    on global map
     :<json boolean is_registration_enabled: is registration enabled?
+    :<json integer max_image_size: max size of an image
     :<json integer max_single_file_size: max size of a single file
     :<json integer max_users: max users allowed to register on instance
     :<json integer max_zip_file_size: max size of a zip archive
@@ -167,6 +171,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         - ``valid email must be provided for admin contact``
         - ``'file_sync_limit_import' must be less than 2147483647``
         - ``'file_limit_import' must be less than 2147483647``
+        - ``'max_image_size' must be less than 2147483647``
         - ``'max_single_file_size' must be less than 2147483647``
         - ``'max_zip_file_size' must be less than 2147483647``
         - ``'max_users' must be less than 2147483647``
@@ -198,6 +203,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
         for param in [
             "file_sync_limit_import",
             "file_limit_import",
+            "max_image_size",
             "max_single_file_size",
             "max_zip_file_size",
             "max_users",
@@ -216,11 +222,15 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
             config.admin_contact = admin_contact if admin_contact else None
         if "about" in config_data:
             config.about = (
-                config_data.get("about") if config_data.get("about") else None
+                clean_input(config_data["about"])
+                if config_data.get("about")
+                else None
             )
         if "privacy_policy" in config_data:
             privacy_policy = config_data.get("privacy_policy")
-            config.privacy_policy = privacy_policy if privacy_policy else None
+            config.privacy_policy = (
+                clean_input(privacy_policy) if privacy_policy else None
+            )
             config.privacy_policy_date = (
                 datetime.now(timezone.utc) if privacy_policy else None
             )

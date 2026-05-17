@@ -133,7 +133,7 @@
   "PREVIOUS_WORKOUT": "上一个锻炼",
   "PRIVATE_NOTES": "私人备注",
   "PRIVATE_NOTES_FIELD_HELP": "这些备注仅对您可见。",
-  "PUBLIC_WORKOUTS_RSS_FEED": "公开锻炼 RSS 订阅",
+  "PUBLIC_WORKOUTS_ATOM_FEED": "公开锻炼 Atom 订阅",
   "RADIUS": "半径",
   "RECORD": "记录",
   "RECORD_AP": "平均配速",

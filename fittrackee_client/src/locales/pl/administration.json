@@ -1,6 +1,6 @@
 {
   "ABOUT": {
-    "DESCRIPTION": "Ewentualne dodatkowe informacje, które mogą być użyteczne użytkownikom. Można używać składni Markdown.",
+    "DESCRIPTION": "Ewentualne dodatkowe informacje, które mogą być użyteczne użytkownikom.",
     "TEXT": "Szczegółowe informacje o instancji"
   },
   "ACTION": "Akcja | Akcje",
@@ -116,7 +116,7 @@
   "NEW_EMAIL": "Nowy e-mail",
   "NO_TEXT_ENTERED": "Nie podano tekstu",
   "PASSWORD_RESET_SUCCESSFUL": "Hasło zostało zresetowane.",
-  "PRIVACY_POLICY_DESCRIPTION": "Dodaj swoją politykę prywatności lub zostaw puste aby użyć domyślnej. Można używać składni Markdown.",
+  "PRIVACY_POLICY_DESCRIPTION": "Dodaj swoją politykę prywatności lub zostaw puste aby użyć domyślnej.",
   "REGISTRATION_DISABLED": "Zakładanie kont jest wyłączone.",
   "REGISTRATION_ENABLED": "Zakładanie kont jest włączone.",
   "RESET_USER_PASSWORD": "Zresetuj hasło",

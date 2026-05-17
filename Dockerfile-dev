@@ -1,3 +1,18 @@
+FROM node:24-alpine AS node-builder
+
+RUN mkdir -p /usr/src/app/fittrackee_client /usr/src/app/fittrackee
+WORKDIR /usr/src/app/fittrackee_client
+
+ENV PATH=/usr/src/app/fittrackee_client/node_modules/.bin:$PATH
+COPY fittrackee_client/package.json /usr/src/app/fittrackee_client/package.json
+COPY fittrackee_client/package-lock.json /usr/src/app/fittrackee_client/package-lock.json
+RUN apk add --no-cache git
+RUN npm ci --ignore-scripts --silent --network-timeout 300000 && \
+	npm cache clean --force
+
+COPY fittrackee_client/. /usr/src/app/fittrackee_client
+RUN npm run build
+
 FROM python:3.13-slim
 
 RUN apt-get update && \
@@ -7,21 +22,21 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # set working directory
-RUN mkdir -p /usr/src/app/data/uploads /usr/src/app/data/logs
+RUN mkdir -p /usr/src/app/data/uploads /usr/src/app/data/logs /usr/src/app/fittrackee/dist
 WORKDIR /usr/src/app
 
 # copy source files
 COPY . /usr/src/app
 
-# install requirements
+# install python requirements
 ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
-RUN pip install --upgrade pip wheel
-RUN pip install poetry
+RUN pip install --upgrade pip wheel && pip install poetry
 RUN . $VIRTUAL_ENV/bin/activate && poetry install --no-interaction --quiet
 
 # run fittrackee server and workers
+COPY --from=node-builder /usr/src/app/fittrackee/dist /usr/src/app/fittrackee/dist
 COPY ./docker-entrypoint-dev.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 ENTRYPOINT [ "/docker-entrypoint.sh" ]

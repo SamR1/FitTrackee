@@ -1,5 +1,162 @@
 # Change log
 
+## Version 1.3.0 (2026/05/17)
+
+FitTrackee now allows you to add photos to workouts 🖼️.  
+The character limit for equipment description and bio has been increased, and Markdown syntax is now supported.  
+In addition, all fields that support Markdown syntax can be previewed before submission.  
+An Atom feed is also available in addition to the RSS feed on the User profile.
+
+**Warning**:
+- **Python 3.10** is no longer supported.
+- **libmagic** is now required.
+- Installation from source code on production now requires Node (see instructions in [documentation](https://docs.fittrackee.org/en/installation/installation.html#from-sources)).
+- This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html)). 
+  
+**Note**: This release note includes the changes from the beta versions.
+
+### Features and enhancements
+
+* [#60](https://codeberg.org/FitTrackee/FitTrackee/issues/60) - Display photos related to workouts
+* [#1117](https://codeberg.org/FitTrackee/FitTrackee/issues/1117) - allow for longer equipment description
+* [#1120](https://codeberg.org/FitTrackee/FitTrackee/issues/1120) - Add Atom feed to user profile
+* [#1132](https://codeberg.org/FitTrackee/FitTrackee/issues/1132) - Add Markdown syntax to Bio
+* [#1139](https://codeberg.org/FitTrackee/FitTrackee/issues/1139) - add preview when Markdown syntax is enabled
+* [PR#1140](https://codeberg.org/FitTrackee/FitTrackee/pulls/1140) - add Open Graph tags to improve link sharing
+
+### Translations
+
+* [PR#1115](https://codeberg.org/FitTrackee/FitTrackee/pulls/1115) - Translations update from Hosted Weblate (German)
+* [PR#1147](https://codeberg.org/FitTrackee/FitTrackee/pulls/1147) - Translations update from Hosted Weblate (French)
+* [PR#1148](https://codeberg.org/FitTrackee/FitTrackee/pulls/1148) - Translations update from Hosted Weblate (French and Russian) 
+
+Translation status for languages available on the interface:
+- Basque: 97%
+- Bulgarian: 50%
+- Catalan: 33%
+- Chinese (Simplified): 95%
+- Croatian: 99%
+- Czech: 49%
+- Dutch: 98%
+- English: 100%
+- French: 100%
+- Galician: 98%
+- German: 98%
+- Italian: 97%
+- Kabyle: 5%
+- Norwegian Bokmål: 42%
+- Polish: 92%
+- Portuguese: 50%
+- Russian: 93%
+- Spanish: 67%
+- Turkish: 1%
+
+### Misc
+
+* [#1107](https://codeberg.org/FitTrackee/FitTrackee/issues/1107) - Drop support for Python 3.10
+* [PR#1119](https://codeberg.org/FitTrackee/FitTrackee/pulls/1119) - Remove dist directory from repository
+* [PR#1122](https://codeberg.org/FitTrackee/FitTrackee/pulls/1122) - Remove documentation directory
+* [PR#1127](https://codeberg.org/FitTrackee/FitTrackee/pulls/1127) - update repository URLs and documentation
+* [PR#1135](https://codeberg.org/FitTrackee/FitTrackee/pulls/1135) - Update repository logo in About page
+* [PR#1142](https://codeberg.org/FitTrackee/FitTrackee/pulls/1142) - CI - move lightweight workflows to Forgejo Actions
+* [PR#1145](https://codeberg.org/FitTrackee/FitTrackee/pulls/1145) - CI - move publishing of packages and images into a dedicated workflow
+
+Thanks to the contributors:
+- [@PeterAuer](https://github.com/PeterAuer)
+
+And thanks to the beta-testers for feedback.
+
+
+## Version 1.3.0b4 (2026/05/14)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+### Features and enhancements
+
+* [#1139](https://codeberg.org/FitTrackee/FitTrackee/issues/1139) - add preview when Markdown syntax is enabled
+* [PR#1140](https://codeberg.org/FitTrackee/FitTrackee/pulls/1140) - add Open Graph tags to improve link sharing
+
+### Bugs Fixed
+
+* [PR#1141](https://codeberg.org/FitTrackee/FitTrackee/pulls/1141) - fix photos link in workout card when it is displayed in the User Profile
+
+### Misc
+
+* [PR#1142](https://codeberg.org/FitTrackee/FitTrackee/pulls/1142) - CI - move lightweight workflows to Forgejo Actions
+* [PR#1145](https://codeberg.org/FitTrackee/FitTrackee/pulls/1145) - CI - move publishing of packages and images into a dedicated workflow
+
+
+## Version 1.3.0b3 (2026/05/08)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+**Warning**:
+- This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html)). 
+
+### Features and enhancements
+
+* [#1132](https://codeberg.org/FitTrackee/FitTrackee/issues/1132) - Add Markdown syntax to Bio
+
+### Bugs Fixed
+
+* [#1133](https://codeberg.org/FitTrackee/FitTrackee/issues/1133) - image description is not displayed when updating a workout
+* [PR#1138](https://codeberg.org/FitTrackee/FitTrackee/pulls/1138) - fix keyboard navigation in gallery modal when photo has description
+
+### Misc
+
+* [PR#1135](https://codeberg.org/FitTrackee/FitTrackee/pulls/1135) - Update repository logo in About page
+
+
+## Version 1.3.0b2 (2026/05/05)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+### Bugs Fixed
+
+* [#1129](https://codeberg.org/FitTrackee/FitTrackee/issues/1129) - js assets are missing in wheel
+
+
+## Version 1.3.0b1 (2026/05/04)
+
+**Warning**:
+- The Python package has been yanked due to an incomplete Wheel package. A new version will be released.
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+FitTrackee now allows to add photos to workouts 🖼️ and longer descriptions to equipment.
+An Atom feed is also available in addition to the RSS feed on User profile.
+
+**Warning**:
+- **Python 3.10** is no longer supported.
+- **libmagic** is now required.
+- Installation from source code on production now requires Node (see instructions in [documentation](https://docs.fittrackee.org/en/installation/installation.html#from-sources)).
+- This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html)). 
+
+### Features and enhancements
+
+* [#60](https://codeberg.org/FitTrackee/FitTrackee/issues/60) - Display photos related to workouts
+* [#1117](https://codeberg.org/FitTrackee/FitTrackee/issues/1117) - allow for longer equipment description
+* [#1120](https://codeberg.org/FitTrackee/FitTrackee/issues/1120) - Add Atom feed to user profile
+
+### Translations
+
+* [PR#1115](https://codeberg.org/FitTrackee/FitTrackee/pulls/1115) - Translations update from Hosted Weblate (German)
+
+### Misc
+
+* [#1107](https://codeberg.org/FitTrackee/FitTrackee/issues/1107) - Drop support for Python 3.10
+* [PR#1119](https://codeberg.org/FitTrackee/FitTrackee/pulls/1119) - Remove dist directory from repository
+* [PR#1122](https://codeberg.org/FitTrackee/FitTrackee/pulls/1122) - Remove documentation directory
+* [PR#1127](https://codeberg.org/FitTrackee/FitTrackee/pulls/1127) - update repository URLs and documentation
+
+Thanks to the contributors:
+- [@PeterAuer](https://github.com/PeterAuer)
+
+
 ## Version 1.2.2 (2026/04/19)
 
 Adding MIME type checking requires the libmagic C library. If not present, a warning will appear in the application logs and files will be uploaded without mime type verification.  
@@ -10,24 +167,25 @@ Additionally, if you encounter errors when installing pandas with Python 3.14, a
 
 ### Improvements
 
-* [PR#1105](https://github.com/SamR1/FitTrackee/pull/1105) - Update message displayed after registration when email sending is disabled
-* [PR#1110](https://github.com/SamR1/FitTrackee/pull/1110) - Improve file upload
+* [PR#1105](https://codeberg.org/FitTrackee/FitTrackee/pulls/1105) - Update message displayed after registration when email sending is disabled
+* [PR#1110](https://codeberg.org/FitTrackee/FitTrackee/pulls/1110) - Improve file upload
 
 ### Bugs Fixed
 
-* [PR#1092](https://github.com/SamR1/FitTrackee/pull/1092) - Display 1st day of month instead of 1st of week in 'This month' chart
-* [#1094](https://github.com/SamR1/FitTrackee/issues/1094) - [bug] Suunto fit file import
-* [PR#1096](https://github.com/SamR1/FitTrackee/pull/1096) - Get product name from .fit file if exists + fix on pause events
-* [PR#1099](https://github.com/SamR1/FitTrackee/pull/1099) - After a database restart, the first database transaction fails
+* [PR#1092](https://codeberg.org/FitTrackee/FitTrackee/pulls/1092) - Display 1st day of month instead of 1st of week in 'This month' chart
+* [#1094](https://codeberg.org/FitTrackee/FitTrackee/issues/1094) - [bug] Suunto fit file import
+* [PR#1096](https://codeberg.org/FitTrackee/FitTrackee/pulls/1096) - Get product name from .fit file if exists + fix on pause events
+* [#1099](https://codeberg.org/FitTrackee/FitTrackee/issues/1099) - After a database restart, the first database transaction fails
 
 ### Translations
 
-* [PR#1087](https://github.com/SamR1/FitTrackee/pull/1087) - Translations update from Hosted Weblate (Catalan)
-* [PR#1089](https://github.com/SamR1/FitTrackee/pull/1089) - Translations update from Hosted Weblate (German)
-* [PR#1091](https://github.com/SamR1/FitTrackee/pull/1091) - Translations update from Hosted Weblate (Croatian)
-* [PR#1093](https://github.com/SamR1/FitTrackee/pull/1093) - Translations update from Hosted Weblate (German)
-* [PR#1098](https://github.com/SamR1/FitTrackee/pull/1098) - Translations update from Hosted Weblate (Portuguese)
-* [PR#1101](https://github.com/SamR1/FitTrackee/pull/1101) - Translations update from Hosted Weblate (Czech)
+* [PR#1087](https://codeberg.org/FitTrackee/FitTrackee/pulls/1087) - Translations update from Hosted Weblate (Catalan)
+* [PR#1089](https://codeberg.org/FitTrackee/FitTrackee/pulls/1089) - Translations update from Hosted Weblate (German)
+* [PR#1091](https://codeberg.org/FitTrackee/FitTrackee/pulls/1091) - Translations update from Hosted Weblate (Croatian)
+* [PR#1093](https://codeberg.org/FitTrackee/FitTrackee/pulls/1093) - Translations update from Hosted Weblate (German)
+* [PR#1098](https://codeberg.org/FitTrackee/FitTrackee/pulls/1098) - Translations update from Hosted Weblate (Portuguese)
+* [PR#1101](https://codeberg.org/FitTrackee/FitTrackee/pulls/1101) - Translations update from Hosted Weblate (Czech)
+* [PR#1109](https://codeberg.org/FitTrackee/FitTrackee/pulls/1109) - Translations update from Hosted Weblate (Galician)
 
 Translation status for languages available on the interface:
 - Basque: 98%
@@ -52,13 +210,14 @@ Translation status for languages available on the interface:
 
 ### Misc
 
-* [PR#1108](https://github.com/SamR1/FitTrackee/pull/1108) - fix pandas installation using Python 3.14 on CI
+* [#1106](https://codeberg.org/FitTrackee/FitTrackee/issues/1106) - pandas installation fails on CI with python 3.14
 
 Thanks to the contributors:
-- @ArnyminerZ
-- @hyp1989
-- @iggydev
-- @PeterAuer
+- [@ArnyminerZ](https://github.com/ArnyminerZ)
+- [@hyp1989](https://github.com/hyp1989)
+- [@iggydev](https://github.com/iggydev)
+- [@PeterAuer](https://github.com/PeterAuer)
+- [@xmgz](https://github.com/xmgz)
 - Guilherme Wilson
 - Radek Smid
 
@@ -67,14 +226,14 @@ Thanks to the contributors:
 
 ### Bugs Fixed
 
-* [PR#1083](https://github.com/SamR1/FitTrackee/pull/1083) - fix misc equipment creation/update when a default item exists + documentation
-* [PR#1085](https://github.com/SamR1/FitTrackee/pull/1085) - fix equipment update + other fixes and improvements
+* [PR#1083](https://codeberg.org/FitTrackee/FitTrackee/pulls/1083) - fix misc equipment creation/update when a default item exists + documentation
+* [PR#1085](https://codeberg.org/FitTrackee/FitTrackee/pulls/1085) - fix equipment update + other fixes and improvements
 
 ### Translations
 
-* [PR#1082](https://github.com/SamR1/FitTrackee/pull/1082) - Translations update from Hosted Weblate (Croatian)
-* [PR#1084](https://github.com/SamR1/FitTrackee/pull/1084) - Translations update from Hosted Weblate (Galician)
-* [PR#1086](https://github.com/SamR1/FitTrackee/pull/1086) - Translations update from Hosted Weblate (Kabyle)
+* [PR#1082](https://codeberg.org/FitTrackee/FitTrackee/pulls/1082) - Translations update from Hosted Weblate (Croatian)
+* [PR#1084](https://codeberg.org/FitTrackee/FitTrackee/pulls/1084) - Translations update from Hosted Weblate (Galician)
+* [PR#1086](https://codeberg.org/FitTrackee/FitTrackee/pulls/1086) - Translations update from Hosted Weblate (Kabyle)
 
 Translation status for languages available on the interface:
 - Basque: 98%
@@ -98,8 +257,8 @@ Translation status for languages available on the interface:
 - Turkish: 1%
 
 Thanks to the contributors:
-- @iggydev
-- @xmgz
+- [@iggydev](https://github.com/iggydev)
+- [@xmgz](https://github.com/xmgz)
 - ButterflyOfFire
 
 
@@ -118,25 +277,25 @@ To prevent errors when sending emails in case Redis is not available, a check on
 
 ### Features and enhancements
 
-* [#871](https://github.com/SamR1/FitTrackee/issues/871) - [FR] multiple equipments
-* [#974](https://github.com/SamR1/FitTrackee/issues/974) - Add racket as equipment type
-* [PR#1059](https://github.com/SamR1/FitTrackee/pull/1059) - add ability to zoom in on workout charts
-* [#1066](https://github.com/SamR1/FitTrackee/issues/1066) - New Sport: (Ice) skating
+* [#871](https://codeberg.org/FitTrackee/FitTrackee/issues/871) - [FR] multiple equipments
+* [#974](https://codeberg.org/FitTrackee/FitTrackee/issues/974) - Add racket as equipment type
+* [PR#1059](https://codeberg.org/FitTrackee/FitTrackee/pulls/1059) - add ability to zoom in on workout charts
+* [#1066](https://codeberg.org/FitTrackee/FitTrackee/issues/1066) - New Sport: (Ice) skating
 
 ### Bugs Fixed
 
-* [PR#1072](https://github.com/SamR1/FitTrackee/pull/1072) - Fix gpx file generation
-* [1076](https://github.com/SamR1/FitTrackee/issues/1076) - Gunicorn log to stdout 
-* [PR#1079](https://github.com/SamR1/FitTrackee/pull/1079) - Fix and improve tasks processing
+* [PR#1072](https://codeberg.org/FitTrackee/FitTrackee/pulls/1072) - Fix gpx file generation
+* [1076](https://codeberg.org/FitTrackee/FitTrackee/issues/1076) - Gunicorn log to stdout 
+* [PR#1079](https://codeberg.org/FitTrackee/FitTrackee/pulls/1079) - Fix and improve tasks processing
 
 ### Translations
 
-* [PR#1057](https://github.com/SamR1/FitTrackee/pull/1057) - Translations update from Hosted Weblate (German)
-* [PR#1062](https://github.com/SamR1/FitTrackee/pull/1062) - Translations update from Hosted Weblate (Basque and Chinese (Simplified))
-* [PR#1068](https://github.com/SamR1/FitTrackee/pull/1068) - Translations update from Hosted Weblate (Dutch)
-* [PR#1071](https://github.com/SamR1/FitTrackee/pull/1071) - Translations update from Hosted Weblate (Galician and Italian)
-* [PR#1074](https://github.com/SamR1/FitTrackee/pull/1074) - Translations update from Hosted Weblate (Dutch, Galician and Italian)
-* [PR#1077](https://github.com/SamR1/FitTrackee/pull/1077) - Translations update from Hosted Weblate (Galician)
+* [PR#1057](https://codeberg.org/FitTrackee/FitTrackee/pulls/1057) - Translations update from Hosted Weblate (German)
+* [PR#1062](https://codeberg.org/FitTrackee/FitTrackee/pulls/1062) - Translations update from Hosted Weblate (Basque and Chinese (Simplified))
+* [PR#1068](https://codeberg.org/FitTrackee/FitTrackee/pulls/1068) - Translations update from Hosted Weblate (Dutch)
+* [PR#1071](https://codeberg.org/FitTrackee/FitTrackee/pulls/1071) - Translations update from Hosted Weblate (Galician and Italian)
+* [PR#1074](https://codeberg.org/FitTrackee/FitTrackee/pulls/1074) - Translations update from Hosted Weblate (Dutch, Galician and Italian)
+* [PR#1077](https://codeberg.org/FitTrackee/FitTrackee/pulls/1077) - Translations update from Hosted Weblate (Galician)
 
 Translation status for languages available on the interface:
 - Basque: 99%
@@ -161,17 +320,17 @@ Translation status for languages available on the interface:
 
 ### Misc
 
-* [PR#1078](https://github.com/SamR1/FitTrackee/pull/1078) - Remove Flask-dramatiq dependency and update Dramatiq to 2.1.0
-* [eedff73](https://github.com/SamR1/FitTrackee/commit/eedff73bfb528b1d009b68446abaf2eafb55257f) - Docker - update node version to 24
-* [ed32c86](https://github.com/SamR1/FitTrackee/commit/ed32c867f21842da983d02cf878a3f7c04f1d601) - update staticmap3 to 0.2.0
+* [PR#1078](https://codeberg.org/FitTrackee/FitTrackee/pulls/1078) - Remove Flask-dramatiq dependency and update Dramatiq to 2.1.0
+* [eedff73](https://codeberg.org/FitTrackee/FitTrackee/commit/eedff73bfb528b1d009b68446abaf2eafb55257f) - Docker - update node version to 24
+* [ed32c86](https://codeberg.org/FitTrackee/FitTrackee/commit/ed32c867f21842da983d02cf878a3f7c04f1d601) - update staticmap3 to 0.2.0
 
 
 Thanks to the contributors:
-- @erral
-- @femoto
-- @ildave
-- @wetenschaap
-- @xmgz
+- [@erral](https://github.com/erral)
+- [@femoto](https://github.com/femoto)
+- [@ildave](https://github.com/ildave)
+- [@wetenschaap](https://github.com/wetenschaap)
+- [@xmgz](https://github.com/xmgz)
 - Poesty Li
 
 
@@ -179,16 +338,16 @@ Thanks to the contributors:
 
 ### Features and enhancements
 
-* [#1053](https://github.com/SamR1/FitTrackee/issues/1053) - Add calories to workouts without a file
+* [#1053](https://codeberg.org/FitTrackee/FitTrackee/issues/1053) - Add calories to workouts without a file
 
 ### Bugs Fixed
 
-* [PR#1055](https://github.com/SamR1/FitTrackee/pull/1055) - Display speed in chart for sports with pace, when no pace data is available yet
-* [70a9095](https://github.com/SamR1/FitTrackee/commit/70a909587869ff0bbc0b467bf4bba1832c8f9575) - disable ascent/descent inputs for sports without elevation
+* [PR#1055](https://codeberg.org/FitTrackee/FitTrackee/pulls/1055) - Display speed in chart for sports with pace, when no pace data is available yet
+* [70a9095](https://codeberg.org/FitTrackee/FitTrackee/commit/70a909587869ff0bbc0b467bf4bba1832c8f9575) - disable ascent/descent inputs for sports without elevation
 
 ### Translations
 
-* [PR#1051](https://github.com/SamR1/FitTrackee/pull/1051) - Translations update from Hosted Weblate (Croatian and Galician)
+* [PR#1051](https://codeberg.org/FitTrackee/FitTrackee/pulls/1051) - Translations update from Hosted Weblate (Croatian and Galician)
 
 Translation status for languages available on the interface:
 - Basque: 96%
@@ -212,8 +371,8 @@ Translation status for languages available on the interface:
 - Turkish: 1%
 
 Thanks to the contributors:
-- @iggydev
-- @xmgz
+- [@iggydev](https://github.com/iggydev)
+- [@xmgz](https://github.com/xmgz)
 
 
 ## Version 1.1.1 (2026/02/01)
@@ -222,15 +381,15 @@ The CLI now allows to refresh workouts without file in order to calculate pace v
 
 ### Bugs Fixed
 
-* [PR#1048](https://github.com/SamR1/FitTrackee/pull/1048) - fix the update and refresh of workouts without file 
+* [PR#1048](https://codeberg.org/FitTrackee/FitTrackee/pulls/1048) - fix the update and refresh of workouts without file 
 
 from v1.0.7
-* [PR#1046](https://github.com/SamR1/FitTrackee/pull/1046) - CLI - add an option to handle workouts for which files are not available 
+* [PR#1046](https://codeberg.org/FitTrackee/FitTrackee/pulls/1046) - CLI - add an option to handle workouts for which files are not available 
 
 ### Translations
 
-* [PR#1043](https://github.com/SamR1/FitTrackee/pull/1043) - Translations update from Hosted Weblate (Galician)
-* [PR#1050](https://github.com/SamR1/FitTrackee/pull/1050) - Translations update from Hosted Weblate (Croatian)
+* [PR#1043](https://codeberg.org/FitTrackee/FitTrackee/pulls/1043) - Translations update from Hosted Weblate (Galician)
+* [PR#1050](https://codeberg.org/FitTrackee/FitTrackee/pulls/1050) - Translations update from Hosted Weblate (Croatian)
 
 Translation status for languages available on the interface:
 - Basque: 96%
@@ -254,8 +413,8 @@ Translation status for languages available on the interface:
 - Turkish: 1%
 
 Thanks to the contributors:
-- @iggydev
-- @xmgz
+- [@iggydev](https://github.com/iggydev)
+- [@xmgz](https://github.com/xmgz)
 
 
 ## Version 1.0.7 (2026/02/01)
@@ -264,7 +423,7 @@ If you encountered issues refreshing workouts before installing v1.1.0, due to m
 
 ### Bugs Fixed
 
-* [PR#1046](https://github.com/SamR1/FitTrackee/pull/1046) - CLI - add an option to handle workouts for which files are not available 
+* [PR#1046](https://codeberg.org/FitTrackee/FitTrackee/pulls/1046) - CLI - add an option to handle workouts for which files are not available 
 
 
 ## Version 1.1.0 (2026/01/25)
@@ -301,37 +460,37 @@ And the `POST` method for the endpoint that allows to modify the sports configur
 
 ### Features and enhancements
 
-* [#302](https://github.com/SamR1/FitTrackee/issues/302) - Display pace
-* [#701](https://github.com/SamR1/FitTrackee/issues/701) - Add altitude correction
-* [PR#910](https://github.com/SamR1/FitTrackee/pull/910) - Get elevation from a remote service when missing in the import
-* [#976](https://github.com/SamR1/FitTrackee/issues/976) - Extract and display the total calories stored in file
-* [#1025](https://github.com/SamR1/FitTrackee/issues/1025) - Add Whitewater sports \
-  **Notes**: For these sports, elevation is displayed, unlike their equivalents on flatwater (see [PR#1018](https://github.com/SamR1/FitTrackee/pull/1018))
-* [5ec828e](https://github.com/SamR1/FitTrackee/commit/5ec828e21c34fe21371b1d38b4db9f1d477d8818) - refresh workout (with file) on sport change
-* [5fa9b6a](https://github.com/SamR1/FitTrackee/commit/5fa9b6a9a64b8eb64a11490c435b145a9a68bf5f) - CLI - add option to change sport when refreshing workouts
-* [PR#1035](https://github.com/SamR1/FitTrackee/pull/1035) - Minor changes
+* [#302](https://codeberg.org/FitTrackee/FitTrackee/issues/302) - Display pace
+* [#701](https://codeberg.org/FitTrackee/FitTrackee/issues/701) - Add altitude correction
+* [PR#910](https://codeberg.org/FitTrackee/FitTrackee/pulls/910) - Get elevation from a remote service when missing in the import
+* [#976](https://codeberg.org/FitTrackee/FitTrackee/issues/976) - Extract and display the total calories stored in file
+* [#1025](https://codeberg.org/FitTrackee/FitTrackee/issues/1025) - Add Whitewater sports \
+  **Notes**: For these sports, elevation is displayed, unlike their equivalents on flatwater (see [PR#1018](https://codeberg.org/FitTrackee/FitTrackee/pulls/1018))
+* [5ec828e](https://codeberg.org/FitTrackee/FitTrackee/commit/5ec828e21c34fe21371b1d38b4db9f1d477d8818) - refresh workout (with file) on sport change
+* [5fa9b6a](https://codeberg.org/FitTrackee/FitTrackee/commit/5fa9b6a9a64b8eb64a11490c435b145a9a68bf5f) - CLI - add option to change sport when refreshing workouts
+* [PR#1035](https://codeberg.org/FitTrackee/FitTrackee/pulls/1035) - Minor changes
     * updated the order of the Administration menu
     * updated the translation of the maximum speed calculation strategy in user preferences
-* [PR#1040](https://github.com/SamR1/FitTrackee/pull/1040) - Change the default value for chart display preferences
+* [PR#1040](https://codeberg.org/FitTrackee/FitTrackee/pulls/1040) - Change the default value for chart display preferences
 
 ### Bugs Fixed
 
-* [30a71bd](https://github.com/SamR1/FitTrackee/commit/30a71bd77963c45c43bceeaf92f71c5af5c13ada) - added missing error message in translations
-* [0fe6a8d](https://github.com/SamR1/FitTrackee/commit/0fe6a8d09fd075b5a0fbb7bb7f4676d64a6647be) handling of .fit files when the manufacturer value is not a string
-* [PR#1031](https://github.com/SamR1/FitTrackee/pull/1031) - minor fixes:
+* [30a71bd](https://codeberg.org/FitTrackee/FitTrackee/commit/30a71bd77963c45c43bceeaf92f71c5af5c13ada) - added missing error message in translations
+* [0fe6a8d](https://codeberg.org/FitTrackee/FitTrackee/commit/0fe6a8d09fd075b5a0fbb7bb7f4676d64a6647be) handling of .fit files when the manufacturer value is not a string
+* [PR#1031](https://codeberg.org/FitTrackee/FitTrackee/pulls/1031) - minor fixes:
   * fix modal display on error
   * fix stopped speed threshold update when value is invalid
   * fix getting weather when last segment has only one point
 
 Fix on v1.1.0beta3:
-* [PR#1042](https://github.com/SamR1/FitTrackee/pull/1042) - Fix statistics display on menu change
+* [PR#1042](https://codeberg.org/FitTrackee/FitTrackee/pulls/1042) - Fix statistics display on menu change
 
 ### Translations
 
-* [PR#1003](https://github.com/SamR1/FitTrackee/pull/1003) - Translations update from Hosted Weblate (German)
-* [PR#1034](https://github.com/SamR1/FitTrackee/pull/1034) - Translations update from Hosted Weblate (Kabyle and Russian)
-* [PR#1039](https://github.com/SamR1/FitTrackee/pull/1039) - Init Danish and Swedish translations files
-* [PR#1041](https://github.com/SamR1/FitTrackee/pull/1041) - Translations update from Hosted Weblate (Galician)
+* [PR#1003](https://codeberg.org/FitTrackee/FitTrackee/pulls/1003) - Translations update from Hosted Weblate (German)
+* [PR#1034](https://codeberg.org/FitTrackee/FitTrackee/pulls/1034) - Translations update from Hosted Weblate (Kabyle and Russian)
+* [PR#1039](https://codeberg.org/FitTrackee/FitTrackee/pulls/1039) - Init Danish and Swedish translations files
+* [PR#1041](https://codeberg.org/FitTrackee/FitTrackee/pulls/1041) - Translations update from Hosted Weblate (Galician)
 
 Translation status for languages available on the interface:
 - Basque: 96%
@@ -356,19 +515,19 @@ Translation status for languages available on the interface:
 
 ### Misc
 
-* [#952](https://github.com/SamR1/FitTrackee/issues/952) - Remove unnecessary methods following workouts update in v1.0.0
-* [#995](https://github.com/SamR1/FitTrackee/issues/995) - Drop PostgreSQL13 support
+* [#952](https://codeberg.org/FitTrackee/FitTrackee/issues/952) - Remove unnecessary methods following workouts update in v1.0.0
+* [#995](https://codeberg.org/FitTrackee/FitTrackee/issues/995) - Drop PostgreSQL13 support
 
 ### Documentation
 
-* [PR#1032](https://github.com/SamR1/FitTrackee/pull/1032) - fix(docs): send StandardOutput and StandardError to journal
-* [6385ff4](https://github.com/SamR1/FitTrackee/commit/6385ff41e2a945e9ab4ed105c39ccc51f0395545) - reorganize and complete the documentation
+* [PR#1032](https://codeberg.org/FitTrackee/FitTrackee/pulls/1032) - fix(docs): send StandardOutput and StandardError to journal
+* [6385ff4](https://codeberg.org/FitTrackee/FitTrackee/commit/6385ff41e2a945e9ab4ed105c39ccc51f0395545) - reorganize and complete the documentation
 
 Thanks to the contributors:
-- @kmorinCL
-- @slackline
-- @WBT112
-- @xmgz
+- [@kmorinCL](https://github.com/kmorinCL)
+- [@slackline](https://github.com/slackline)
+- [@WBT112](https://github.com/WBT112)
+- [@xmgz](https://github.com/xmgz)
 - ButterflyOfFire
 - Eduard
 
@@ -384,18 +543,18 @@ If you find bugs, please report them.
 
 ### Features and enhancements
 
-* [PR#1035](https://github.com/SamR1/FitTrackee/pull/1035) - Minor changes
+* [PR#1035](https://codeberg.org/FitTrackee/FitTrackee/pulls/1035) - Minor changes
     * updated the order of the Administration menu
     * updated the translation of the maximum speed calculation strategy in user preferences
-* [PR#1040](https://github.com/SamR1/FitTrackee/pull/1040) - Change the default value for chart display preferences
+* [PR#1040](https://codeberg.org/FitTrackee/FitTrackee/pulls/1040) - Change the default value for chart display preferences
 
 ### Bugs Fixed
 
-* [PR#1033](https://github.com/SamR1/FitTrackee/pull/1033) - fix pace/speed display update for sport preferences
+* [PR#1033](https://codeberg.org/FitTrackee/FitTrackee/pulls/1033) - fix pace/speed display update for sport preferences
 
 ### Misc
 
-* [6385ff4](https://github.com/SamR1/FitTrackee/commit/6385ff41e2a945e9ab4ed105c39ccc51f0395545) - reorganize and complete the documentation
+* [6385ff4](https://codeberg.org/FitTrackee/FitTrackee/commit/6385ff41e2a945e9ab4ed105c39ccc51f0395545) - reorganize and complete the documentation
 
 Thanks to the beta-testers for feedback.
 
@@ -406,20 +565,20 @@ If you find bugs, please report them.
 
 ### Features and enhancements
 
-* [#1025](https://github.com/SamR1/FitTrackee/issues/1025) - Add Whitewater sports \
-  **Notes**: For these sports, elevation is displayed, unlike their equivalents on flatwater (see [PR#1018](https://github.com/SamR1/FitTrackee/pull/1018))
-* [5ec828e](https://github.com/SamR1/FitTrackee/commit/5ec828e21c34fe21371b1d38b4db9f1d477d8818) - refresh workout (with file) on sport change
-* [5fa9b6a](https://github.com/SamR1/FitTrackee/commit/5fa9b6a9a64b8eb64a11490c435b145a9a68bf5f) - CLI - add option to change sport when refreshing workouts
+* [#1025](https://codeberg.org/FitTrackee/FitTrackee/issues/1025) - Add Whitewater sports \
+  **Notes**: For these sports, elevation is displayed, unlike their equivalents on flatwater (see [PR#1018](https://codeberg.org/FitTrackee/FitTrackee/pulls/1018))
+* [5ec828e](https://codeberg.org/FitTrackee/FitTrackee/commit/5ec828e21c34fe21371b1d38b4db9f1d477d8818) - refresh workout (with file) on sport change
+* [5fa9b6a](https://codeberg.org/FitTrackee/FitTrackee/commit/5fa9b6a9a64b8eb64a11490c435b145a9a68bf5f) - CLI - add option to change sport when refreshing workouts
 
 ### Bugs Fixed
 
-* [PR#1026](https://github.com/SamR1/FitTrackee/pull/1026) - fix elevation service status when URLs are empty strings
-* [PR#1027](https://github.com/SamR1/FitTrackee/pull/1027) - fix file upload + add missing translations
+* [PR#1026](https://codeberg.org/FitTrackee/FitTrackee/pulls/1026) - fix elevation service status when URLs are empty strings
+* [PR#1027](https://codeberg.org/FitTrackee/FitTrackee/pulls/1027) - fix file upload + add missing translations
   * handling of files containing calories in float format
   * added missing error message in translations
   * handling of .fit files when the manufacturer value is not a string
-* [PR#1030](https://github.com/SamR1/FitTrackee/pull/1030) - fix getting elevation with OpenElevation for large files
-* [PR#1031](https://github.com/SamR1/FitTrackee/pull/1031) - minor fixes:
+* [PR#1030](https://codeberg.org/FitTrackee/FitTrackee/pulls/1030) - fix getting elevation with OpenElevation for large files
+* [PR#1031](https://codeberg.org/FitTrackee/FitTrackee/pulls/1031) - minor fixes:
   * fix modal display on error
   * fix stopped speed threshold update when value is invalid
   * fix getting weather when last segment has only one point
@@ -459,18 +618,18 @@ Starting with this version, [`ENABLE_GEOSPATIAL_FEATURES`](https://docs.fittrack
 
 ### Features and enhancements
 
-* [#302](https://github.com/SamR1/FitTrackee/issues/302) - Display pace
-* [#701](https://github.com/SamR1/FitTrackee/issues/701) - Add altitude correction
-* [PR#910](https://github.com/SamR1/FitTrackee/pull/910) - Get elevation from a remote service when missing in the import
-* [#976](https://github.com/SamR1/FitTrackee/issues/976) - Extract and display the total calories stored in file
+* [#302](https://codeberg.org/FitTrackee/FitTrackee/issues/302) - Display pace
+* [#701](https://codeberg.org/FitTrackee/FitTrackee/issues/701) - Add altitude correction
+* [PR#910](https://codeberg.org/FitTrackee/FitTrackee/pulls/910) - Get elevation from a remote service when missing in the import
+* [#976](https://codeberg.org/FitTrackee/FitTrackee/issues/976) - Extract and display the total calories stored in file
 
 ### Misc
 
-* [#952](https://github.com/SamR1/FitTrackee/issues/952) - Remove unnecessary methods following workouts update in v1.0.0
-* [#995](https://github.com/SamR1/FitTrackee/issues/995) - Drop PostgreSQL13 support
+* [#952](https://codeberg.org/FitTrackee/FitTrackee/issues/952) - Remove unnecessary methods following workouts update in v1.0.0
+* [#995](https://codeberg.org/FitTrackee/FitTrackee/issues/995) - Drop PostgreSQL13 support
 
 Thanks to the contributors:
-- @kmorinCL
+- [@kmorinCL](https://github.com/kmorinCL)
 
 
 ## Version 1.0.6 (2026/01/04)
@@ -480,14 +639,14 @@ Thanks to the contributors:
 
 ### Bugs Fixed
 
-* [#1015](https://github.com/SamR1/FitTrackee/issues/1015) - Invalid elevation data prevents the file from being uploaded
-* [PR#1018](https://github.com/SamR1/FitTrackee/pull/1018) - Do not display elevation for water sports
+* [#1015](https://codeberg.org/FitTrackee/FitTrackee/issues/1015) - Invalid elevation data prevents the file from being uploaded
+* [PR#1018](https://codeberg.org/FitTrackee/FitTrackee/pulls/1018) - Do not display elevation for water sports
 
 ### Translations
 
-* [#1003](https://github.com/SamR1/FitTrackee/issues/1003) - [translations request] Kabyle
-* [PR#1020](https://github.com/SamR1/FitTrackee/pull/1020) - Translations update from Hosted Weblate (Kabyle)
-* [PR#1022](https://github.com/SamR1/FitTrackee/pull/1022) - Translations update from Hosted Weblate (Polish)
+* [#1003](https://codeberg.org/FitTrackee/FitTrackee/issues/1003) - [translations request] Kabyle
+* [PR#1020](https://codeberg.org/FitTrackee/FitTrackee/pulls/1020) - Translations update from Hosted Weblate (Kabyle)
+* [PR#1022](https://codeberg.org/FitTrackee/FitTrackee/pulls/1022) - Translations update from Hosted Weblate (Polish)
 
 Translation status for languages available on the interface:
 - Basque: 100%
@@ -511,7 +670,7 @@ Translation status for languages available on the interface:
 - Turkish: 1%
 
 Thanks to the contributors:
-- @easytigrrr
+- [@easytigrrr](https://github.com/easytigrrr)
 - ButterflyOfFire
 
 
@@ -522,16 +681,16 @@ Thanks to the contributors:
 
 ### Bugs Fixed
 
-* [PR#1002](https://github.com/SamR1/FitTrackee/pull/1002) - improve logging + minor fixes
-* [32a0ca1](https://github.com/SamR1/FitTrackee/commit/32a0ca157827e657e82f7fa2e3d0fce955d61de3) - fix buttons when the map is displayed in workouts list
-* [97c55d2](https://github.com/SamR1/FitTrackee/commit/97c55d2c1124ed1d7303d906a93952a4770581b7) - fix with_geometry value depending on map visibility
-* [1663f64](https://github.com/SamR1/FitTrackee/commit/1663f6477f61a20abc980ae0c1e45ca19064dd53) - fix language dropdown when map is displayed
+* [PR#1002](https://codeberg.org/FitTrackee/FitTrackee/pulls/1002) - improve logging + minor fixes
+* [32a0ca1](https://codeberg.org/FitTrackee/FitTrackee/commit/32a0ca157827e657e82f7fa2e3d0fce955d61de3) - fix buttons when the map is displayed in workouts list
+* [97c55d2](https://codeberg.org/FitTrackee/FitTrackee/commit/97c55d2c1124ed1d7303d906a93952a4770581b7) - fix with_geometry value depending on map visibility
+* [1663f64](https://codeberg.org/FitTrackee/FitTrackee/commit/1663f6477f61a20abc980ae0c1e45ca19064dd53) - fix language dropdown when map is displayed
 
 ### Translations
 
-* [PR#1004](https://github.com/SamR1/FitTrackee/pull/1004) - Init Kabyle translations files
-* [PR#1007](https://github.com/SamR1/FitTrackee/pull/1007) - Init Finnish translations files
-* [PR#1009](https://github.com/SamR1/FitTrackee/pull/1009) - Init Slovenian translations files
+* [PR#1004](https://codeberg.org/FitTrackee/FitTrackee/pulls/1004) - Init Kabyle translations files
+* [PR#1007](https://codeberg.org/FitTrackee/FitTrackee/pulls/1007) - Init Finnish translations files
+* [PR#1009](https://codeberg.org/FitTrackee/FitTrackee/pulls/1009) - Init Slovenian translations files
 
 Translation status for languages available on the interface:
 - Basque: 100%
@@ -555,10 +714,10 @@ Translation status for languages available on the interface:
 
 ### Misc
 
-* [PR#1001](https://github.com/SamR1/FitTrackee/pull/1001) add codespell support (config, workflow to detect/not fix) and make it fix some typos
+* [PR#1001](https://codeberg.org/FitTrackee/FitTrackee/pulls/1001) add codespell support (config, workflow to detect/not fix) and make it fix some typos
 
 Thanks to the contributors:
-- @yarikoptic
+- [@yarikoptic](https://github.com/yarikoptic)
 
 
 ## Version 1.0.4 (2025/12/14)
@@ -578,20 +737,20 @@ For more information on installation see [documentation](https://docs.fittrackee
 
 ### Features and enhancements
 
-* [PR#994](https://github.com/SamR1/FitTrackee/pull/994) - log_level can be set to gunicorn
-* [PR#996](https://github.com/SamR1/FitTrackee/pull/996) - update logging config to display log on the console
+* [PR#994](https://codeberg.org/FitTrackee/FitTrackee/pulls/994) - log_level can be set to gunicorn
+* [PR#996](https://codeberg.org/FitTrackee/FitTrackee/pulls/996) - update logging config to display log on the console
 
 ### Bugs Fixed
 
-* [#954](https://github.com/SamR1/FitTrackee/issues/954) - it should be possible to disable only the API Rate Limit
-* [PR#985](https://github.com/SamR1/FitTrackee/pull/985) - fix speeds calculation
-* [PR#992](https://github.com/SamR1/FitTrackee/pull/992) - fix application configuration initialization in database
-* [PR#998](https://github.com/SamR1/FitTrackee/pull/998) - fix elevation in the Workout chart tooltip
+* [#954](https://codeberg.org/FitTrackee/FitTrackee/issues/954) - it should be possible to disable only the API Rate Limit
+* [PR#985](https://codeberg.org/FitTrackee/FitTrackee/pulls/985) - fix speeds calculation
+* [PR#992](https://codeberg.org/FitTrackee/FitTrackee/pulls/992) - fix application configuration initialization in database
+* [PR#998](https://codeberg.org/FitTrackee/FitTrackee/pulls/998) - fix elevation in the Workout chart tooltip
 
 ### Translations
 
-* [PR#991](https://github.com/SamR1/FitTrackee/pull/991) - Translations update from Hosted Weblate (German)
-* [PR#993](https://github.com/SamR1/FitTrackee/pull/993) - Translations update from Hosted Weblate (Russian)
+* [PR#991](https://codeberg.org/FitTrackee/FitTrackee/pulls/991) - Translations update from Hosted Weblate (German)
+* [PR#993](https://codeberg.org/FitTrackee/FitTrackee/pulls/993) - Translations update from Hosted Weblate (Russian)
 
 Translation status:
 - Basque: 100%
@@ -615,14 +774,14 @@ Translation status:
 
 ### Misc
 
-* [PR#984](https://github.com/SamR1/FitTrackee/pull/984) - Add devcontainer support
-* [73ffa44](https://github.com/SamR1/FitTrackee/commit/73ffa44b18727f8afb00c7058da81ca8d08c4df7) - workflows refactoring on CI
+* [PR#984](https://codeberg.org/FitTrackee/FitTrackee/pulls/984) - Add devcontainer support
+* [73ffa44](https://codeberg.org/FitTrackee/FitTrackee/commit/73ffa44b18727f8afb00c7058da81ca8d08c4df7) - workflows refactoring on CI
 
 Thanks to the contributors:
-- @galshi
-- @hantangantan
-- @sikmir
-- @s0rau
+- [@galshi](https://github.com/galshi)
+- [@hantangantan](https://github.com/hantangantan)
+- [@sikmir](https://github.com/sikmir)
+- [@s0rau](https://github.com/s0rau)
 
 
 ## Version 1.0.3 (2025/11/05)
@@ -632,13 +791,13 @@ Thanks to the contributors:
 
 ### Bugs Fixed
 
-* [PR#982](https://github.com/SamR1/FitTrackee/pull/982) - downgrade pandas to 2.3.2 to fix install on RHEL7+
+* [PR#982](https://codeberg.org/FitTrackee/FitTrackee/pulls/982) - downgrade pandas to 2.3.2 to fix install on RHEL7+
 
 ### Translations
 
-* [PR#980](https://github.com/SamR1/FitTrackee/pull/980) - Translations update from Hosted Weblate (German and Croatian)
-* [PR#981](https://github.com/SamR1/FitTrackee/pull/981) - Translations update from Hosted Weblate (Basque)
-* [PR#983](https://github.com/SamR1/FitTrackee/pull/983) - Translations update from Hosted Weblate (Galician)
+* [PR#980](https://codeberg.org/FitTrackee/FitTrackee/pulls/980) - Translations update from Hosted Weblate (German and Croatian)
+* [PR#981](https://codeberg.org/FitTrackee/FitTrackee/pulls/981) - Translations update from Hosted Weblate (Basque)
+* [PR#983](https://codeberg.org/FitTrackee/FitTrackee/pulls/983) - Translations update from Hosted Weblate (Galician)
 
 Translation status:
 - Basque: 100%
@@ -661,10 +820,10 @@ Translation status:
 - Turkish: 1%
 
 Thanks to the contributors:
-- @bhopmann
-- @erral
-- @iggydev
-- @xmgz
+- [@bhopmann](https://github.com/bhopmann)
+- [@erral](https://github.com/erral)
+- [@iggydev](https://github.com/iggydev)
+- [@xmgz](https://github.com/xmgz)
 
 
 ## Version 1.0.2 (2025/11/01)
@@ -674,15 +833,15 @@ Thanks to the contributors:
 
 ### Bugs Fixed
 
-* [PR#969](https://github.com/SamR1/FitTrackee/pull/969) - fix workout creation when the first segment does not contain any points
-* [PR#971](https://github.com/SamR1/FitTrackee/pull/971) - fix workout link display on workout segment detail
-* [#975](https://github.com/SamR1/FitTrackee/issues/975) - fix "Request data export" button display
-* [#977](https://github.com/SamR1/FitTrackee/issues/977) - error refreshing workouts with KMZ file
+* [PR#969](https://codeberg.org/FitTrackee/FitTrackee/pulls/969) - fix workout creation when the first segment does not contain any points
+* [PR#971](https://codeberg.org/FitTrackee/FitTrackee/pulls/971) - fix workout link display on workout segment detail
+* [#975](https://codeberg.org/FitTrackee/FitTrackee/issues/975) - fix "Request data export" button display
+* [#977](https://codeberg.org/FitTrackee/FitTrackee/issues/977) - error refreshing workouts with KMZ file
 
 ### Translations
 
-* [PR#970](https://github.com/SamR1/FitTrackee/pull/970) - Translations update from Hosted Weblate (Italian)
-* [PR#972](https://github.com/SamR1/FitTrackee/pull/972) - Translations update from Hosted Weblate (Galician and Italian)
+* [PR#970](https://codeberg.org/FitTrackee/FitTrackee/pulls/970) - Translations update from Hosted Weblate (Italian)
+* [PR#972](https://codeberg.org/FitTrackee/FitTrackee/pulls/972) - Translations update from Hosted Weblate (Galician and Italian)
 
 Translation status:
 - Basque: 99%
@@ -706,13 +865,13 @@ Translation status:
 
 ### Misc
 
-- [0786a57](https://github.com/SamR1/FitTrackee/commit/0786a575043c7f7b59a371e3043cb4dce3831126) - remove test code specific to a Python version no longer supported
-- [5248e79](https://github.com/SamR1/FitTrackee/commit/5248e797894f59ae60e4ba31af879e58904d7111) - update docker jobs on CI
+- [0786a57](https://codeberg.org/FitTrackee/FitTrackee/commit/0786a575043c7f7b59a371e3043cb4dce3831126) - remove test code specific to a Python version no longer supported
+- [5248e79](https://codeberg.org/FitTrackee/FitTrackee/commit/5248e797894f59ae60e4ba31af879e58904d7111) - update docker jobs on CI
 
 
 Thanks to the contributors:
-- @ildave
-- @xmgz
+- [@ildave](https://github.com/ildave)
+- [@xmgz](https://github.com/xmgz)
 
 
 ## Version 1.0.1 (2025/10/22)
@@ -724,14 +883,14 @@ Thanks to the contributors:
 
 ### Bugs Fixed
 
-* [PR#963](https://github.com/SamR1/FitTrackee/pull/963) - Add missing KMZ file download
+* [PR#963](https://codeberg.org/FitTrackee/FitTrackee/pulls/963) - Add missing KMZ file download
 
 ### Translations
 
-* [PR#958](https://github.com/SamR1/FitTrackee/pull/958) - Translations update from Hosted Weblate (Chinese (Simplified Han script))
-* [PR#961](https://github.com/SamR1/FitTrackee/pull/961) - Translations update from Hosted Weblate (Basque, Croatian and Norwegian Bokmål)
-* [PR#967](https://github.com/SamR1/FitTrackee/pull/967) - Translations update from Hosted Weblate (French, Galician and Italian)
-* [PR#968](https://github.com/SamR1/FitTrackee/pull/968) - Translations update from Hosted Weblate (Italian) 
+* [PR#958](https://codeberg.org/FitTrackee/FitTrackee/pulls/958) - Translations update from Hosted Weblate (Chinese (Simplified Han script))
+* [PR#961](https://codeberg.org/FitTrackee/FitTrackee/pulls/961) - Translations update from Hosted Weblate (Basque, Croatian and Norwegian Bokmål)
+* [PR#967](https://codeberg.org/FitTrackee/FitTrackee/pulls/967) - Translations update from Hosted Weblate (French, Galician and Italian)
+* [PR#968](https://codeberg.org/FitTrackee/FitTrackee/pulls/968) - Translations update from Hosted Weblate (Italian) 
 
 Translation status:
 - Basque: 100%
@@ -755,14 +914,14 @@ Translation status:
 
 ### Misc
 
-* [#956](https://github.com/SamR1/FitTrackee/issues/956) - Add support for Python 3.14
+* [#956](https://codeberg.org/FitTrackee/FitTrackee/issues/956) - Add support for Python 3.14
 
 
 Thanks to the contributors:
-- @erral
-- @Hawolex
-- @iggydev
-- @ildave
+- [@erral](https://github.com/erral)
+- [@Hawolex](https://github.com/Hawolex)
+- [@iggydev](https://github.com/iggydev)
+- [@ildave](https://github.com/ildave)
 - Poesty Li
 
 
@@ -784,23 +943,23 @@ Among other changes and improvements, this version also brings a new sport (Outd
 
 ### Features and enhancements
 
-* [#810](https://github.com/SamR1/FitTrackee/issues/810) - Store file data in database
-* [#812](https://github.com/SamR1/FitTrackee/issues/812) - Remove segments with zero distance
-* [#918](https://github.com/SamR1/FitTrackee/issues/918) - Add filters on location in Workouts List
-* [PR#924](https://github.com/SamR1/FitTrackee/pull/924) - Display filtered workouts on map
-* [#931](https://github.com/SamR1/FitTrackee/issues/931) - New sport: Padel (Outdoor)
-* [PR#937](https://github.com/SamR1/FitTrackee/pull/937) - Display workouts on a global map
+* [#810](https://codeberg.org/FitTrackee/FitTrackee/issues/810) - Store file data in database
+* [#812](https://codeberg.org/FitTrackee/FitTrackee/issues/812) - Remove segments with zero distance
+* [#918](https://codeberg.org/FitTrackee/FitTrackee/issues/918) - Add filters on location in Workouts List
+* [PR#924](https://codeberg.org/FitTrackee/FitTrackee/pulls/924) - Display filtered workouts on map
+* [#931](https://codeberg.org/FitTrackee/FitTrackee/issues/931) - New sport: Padel (Outdoor)
+* [PR#937](https://codeberg.org/FitTrackee/FitTrackee/pulls/937) - Display workouts on a global map
 
 ### Bugs Fixed
 
-* [PR#950](https://github.com/SamR1/FitTrackee/pull/950) - Fix async upload task creation when equipment is provided
+* [PR#950](https://codeberg.org/FitTrackee/FitTrackee/pulls/950) - Fix async upload task creation when equipment is provided
 
 ### Translations
 
-* [PR#936](https://github.com/SamR1/FitTrackee/pull/936) - Translations update from Hosted Weblate (Czech)
-* [PR#944](https://github.com/SamR1/FitTrackee/pull/944) - Translations update from Hosted Weblate (Basque and Russian)
-* [PR#947](https://github.com/SamR1/FitTrackee/pull/947) - Translations update from Hosted Weblate (French)
-* [PR#948](https://github.com/SamR1/FitTrackee/pull/948) - Translations update from Hosted Weblate (Dutch, Galician and German)
+* [PR#936](https://codeberg.org/FitTrackee/FitTrackee/pulls/936) - Translations update from Hosted Weblate (Czech)
+* [PR#944](https://codeberg.org/FitTrackee/FitTrackee/pulls/944) - Translations update from Hosted Weblate (Basque and Russian)
+* [PR#947](https://codeberg.org/FitTrackee/FitTrackee/pulls/947) - Translations update from Hosted Weblate (French)
+* [PR#948](https://codeberg.org/FitTrackee/FitTrackee/pulls/948) - Translations update from Hosted Weblate (Dutch, Galician and German)
 
 Translation status:
 - Basque: 96%
@@ -824,19 +983,19 @@ Translation status:
 
 ### Misc
 
-* [#881](https://github.com/SamR1/FitTrackee/issues/881) - Drop support for Python 3.9
-* [#911](https://github.com/SamR1/FitTrackee/issues/911) - Drop PostgreSQL12 support
-* [#929](https://github.com/SamR1/FitTrackee/issues/929) - Remove deprecated option --set-admin (Users CLI)
-* [PR#934](https://github.com/SamR1/FitTrackee/pull/934) - Client - update type annotations
-* [PR#943](https://github.com/SamR1/FitTrackee/pull/943) - update Authlib + test refactoring
-* [PR#949](https://github.com/SamR1/FitTrackee/pull/949) - add support for PostgreSQL 18 
+* [#881](https://codeberg.org/FitTrackee/FitTrackee/issues/881) - Drop support for Python 3.9
+* [#911](https://codeberg.org/FitTrackee/FitTrackee/issues/911) - Drop PostgreSQL12 support
+* [#929](https://codeberg.org/FitTrackee/FitTrackee/issues/929) - Remove deprecated option --set-admin (Users CLI)
+* [PR#934](https://codeberg.org/FitTrackee/FitTrackee/pulls/934) - Client - update type annotations
+* [PR#943](https://codeberg.org/FitTrackee/FitTrackee/pulls/943) - update Authlib + test refactoring
+* [PR#949](https://codeberg.org/FitTrackee/FitTrackee/pulls/949) - add support for PostgreSQL 18 
 
 
 Thanks to the contributors:
-- @erral
-- @Fuchs-David
-- @Stephan-P
-- @xmgz
+- [@erral](https://github.com/erral)
+- [@Fuchs-David](https://github.com/Fuchs-David)
+- [@Stephan-P](https://github.com/Stephan-P)
+- [@xmgz](https://github.com/xmgz)
 - Leo
 - Rene Sato
 
@@ -851,17 +1010,17 @@ If you find bugs, please report them.
 
 ### Features and enhancements
 
-* [#931](https://github.com/SamR1/FitTrackee/issues/931) - New sport: Padel (Outdoor)
-* [PR#939](https://github.com/SamR1/FitTrackee/pull/939) - Display location results in the user interface language
+* [#931](https://codeberg.org/FitTrackee/FitTrackee/issues/931) - New sport: Padel (Outdoor)
+* [PR#939](https://codeberg.org/FitTrackee/FitTrackee/pulls/939) - Display location results in the user interface language
 
 ### Bugs Fixed
 
-* [PR#938](https://github.com/SamR1/FitTrackee/pull/938) - Fix location selection when clicking on the dropdown
+* [PR#938](https://codeberg.org/FitTrackee/FitTrackee/pulls/938) - Fix location selection when clicking on the dropdown
 
 ### Misc
 
-* [#929](https://github.com/SamR1/FitTrackee/issues/929) - Remove deprecated option --set-admin (Users CLI)
-* [PR#943](https://github.com/SamR1/FitTrackee/pull/943) - update Authlib + test refactoring
+* [#929](https://codeberg.org/FitTrackee/FitTrackee/issues/929) - Remove deprecated option --set-admin (Users CLI)
+* [PR#943](https://codeberg.org/FitTrackee/FitTrackee/pulls/943) - update Authlib + test refactoring
 
 
 ## Version 1.0.0b2 (2025/09/21)
@@ -875,14 +1034,14 @@ If you find bugs, please report them.
 
 ### Features and enhancements
 
-* [PR#930](https://github.com/SamR1/FitTrackee/pull/930) - Client - Add message on location filter
-* [PR#932](https://github.com/SamR1/FitTrackee/pull/932) - API - add cache on Nominatim API calls
-* [PR#937](https://github.com/SamR1/FitTrackee/pull/937) - Display workouts on a global map
+* [PR#930](https://codeberg.org/FitTrackee/FitTrackee/pulls/930) - Client - Add message on location filter
+* [PR#932](https://codeberg.org/FitTrackee/FitTrackee/pulls/932) - API - add cache on Nominatim API calls
+* [PR#937](https://codeberg.org/FitTrackee/FitTrackee/pulls/937) - Display workouts on a global map
 
 ### Misc
 
-* [PR#933](https://github.com/SamR1/FitTrackee/pull/933) - API - `/api/workouts/collection` endpoint improvement
-* [PR#934](https://github.com/SamR1/FitTrackee/pull/934) - Client - update type annotations
+* [PR#933](https://codeberg.org/FitTrackee/FitTrackee/pulls/933) - API - `/api/workouts/collection` endpoint improvement
+* [PR#934](https://codeberg.org/FitTrackee/FitTrackee/pulls/934) - Client - update type annotations
 
 
 ## Version 1.0.0b1 (2025/09/10)
@@ -901,27 +1060,27 @@ This version introduces major changes:
  
 ### Features and enhancements
 
-* [#810](https://github.com/SamR1/FitTrackee/issues/810) - Store file data in database
-* [#812](https://github.com/SamR1/FitTrackee/issues/812) - Remove segments with zero distance
-* [#918](https://github.com/SamR1/FitTrackee/issues/918) - Add filters on location in Workouts List
-* [PR#924](https://github.com/SamR1/FitTrackee/pull/924) - Display filtered workouts on map
+* [#810](https://codeberg.org/FitTrackee/FitTrackee/issues/810) - Store file data in database
+* [#812](https://codeberg.org/FitTrackee/FitTrackee/issues/812) - Remove segments with zero distance
+* [#918](https://codeberg.org/FitTrackee/FitTrackee/issues/918) - Add filters on location in Workouts List
+* [PR#924](https://codeberg.org/FitTrackee/FitTrackee/pulls/924) - Display filtered workouts on map
 
 ### Misc
 
-* [#881](https://github.com/SamR1/FitTrackee/issues/881) - Drop support for Python 3.9
-* [#911](https://github.com/SamR1/FitTrackee/issues/911) - Drop PostgreSQL12 support
+* [#881](https://codeberg.org/FitTrackee/FitTrackee/issues/881) - Drop support for Python 3.9
+* [#911](https://codeberg.org/FitTrackee/FitTrackee/issues/911) - Drop PostgreSQL12 support
 
 
 ## Version 0.12.2 (2025/09/07)
 
 ### Bugs Fixed
 
-* [#920](https://github.com/SamR1/FitTrackee/issues/920) - workout with gaps in heart rate data is not displayed correctly
+* [#920](https://codeberg.org/FitTrackee/FitTrackee/issues/920) - workout with gaps in heart rate data is not displayed correctly
 
 ### Translations
 
-* [PR#916](https://github.com/SamR1/FitTrackee/pull/916) - Translations update from Hosted Weblate (Basque)
-* [PR#919](https://github.com/SamR1/FitTrackee/pull/919) - Translations update from Hosted Weblate (Galician)
+* [PR#916](https://codeberg.org/FitTrackee/FitTrackee/pulls/916) - Translations update from Hosted Weblate (Basque)
+* [PR#919](https://codeberg.org/FitTrackee/FitTrackee/pulls/919) - Translations update from Hosted Weblate (Galician)
 
 Translation status:
 - Basque: 94%
@@ -945,19 +1104,19 @@ Translation status:
 
 
 Thanks to the contributors:
-- @erral
-- @xmgz
+- [@erral](https://github.com/erral)
+- [@xmgz](https://github.com/xmgz)
 
 
 ## Version 0.12.1 (2025/09/03)
 
 ### Features and enhancements
 
-* [PR#915](https://github.com/SamR1/FitTrackee/pull/915) - add description to public workouts RSS feed
+* [PR#915](https://codeberg.org/FitTrackee/FitTrackee/pulls/915) - add description to public workouts RSS feed
 
 ### Translations
 
-* [PR#914](https://github.com/SamR1/FitTrackee/pull/914) - Translations update from Hosted Weblate (Croatian and Polish)
+* [PR#914](https://codeberg.org/FitTrackee/FitTrackee/pulls/914) - Translations update from Hosted Weblate (Croatian and Polish)
 
 Translation status:
 - Basque: 89%
@@ -981,8 +1140,8 @@ Translation status:
 
 
 Thanks to the contributors:
-- @easytigrrr
-- @iggydev
+- [@easytigrrr](https://github.com/easytigrrr)
+- [@iggydev](https://github.com/iggydev)
 
 
 ## Version 0.12.0 (2025/08/31)
@@ -994,20 +1153,20 @@ This version provides workout data refresh, original file download and a RSS fee
 
 ### Features and enhancements
 
-* [#818](https://github.com/SamR1/FitTrackee/issues/818) - Being able to download the original track alongside the gpx one
-* [#835](https://github.com/SamR1/FitTrackee/issues/835) - RSS feed for public workouts
-* [PR#900](https://github.com/SamR1/FitTrackee/pull/900) - Refresh workout data
+* [#818](https://codeberg.org/FitTrackee/FitTrackee/issues/818) - Being able to download the original track alongside the gpx one
+* [#835](https://codeberg.org/FitTrackee/FitTrackee/issues/835) - RSS feed for public workouts
+* [PR#900](https://codeberg.org/FitTrackee/FitTrackee/pulls/900) - Refresh workout data
 
 ### Bugs Fixed
 
-- [e8e7d1f](https://github.com/SamR1/FitTrackee/commit/e8e7d1f267301e110bd03f84e21bb14bca59576e) - fix logging on workout creation error
+- [e8e7d1f](https://codeberg.org/FitTrackee/FitTrackee/commit/e8e7d1f267301e110bd03f84e21bb14bca59576e) - fix logging on workout creation error
 
 ### Translations
 
-* [PR#901](https://github.com/SamR1/FitTrackee/pull/901) - Translations update from Hosted Weblate (Dutch and Galician)
-* [PR#903](https://github.com/SamR1/FitTrackee/pull/903) - Translations update from Hosted Weblate (Dutch)
-* [PR#904](https://github.com/SamR1/FitTrackee/pull/904) - Translations update from Hosted Weblate (Chinese (Simplified Han script) and Galician)
-* [PR#908](https://github.com/SamR1/FitTrackee/pull/908) - Translations update from Hosted Weblate (Dutch and Galician)
+* [PR#901](https://codeberg.org/FitTrackee/FitTrackee/pulls/901) - Translations update from Hosted Weblate (Dutch and Galician)
+* [PR#903](https://codeberg.org/FitTrackee/FitTrackee/pulls/903) - Translations update from Hosted Weblate (Dutch)
+* [PR#904](https://codeberg.org/FitTrackee/FitTrackee/pulls/904) - Translations update from Hosted Weblate (Chinese (Simplified Han script) and Galician)
+* [PR#908](https://codeberg.org/FitTrackee/FitTrackee/pulls/908) - Translations update from Hosted Weblate (Dutch and Galician)
 
 Translation status:
 - Basque: 89%
@@ -1031,11 +1190,11 @@ Translation status:
 
 ### Misc
 
-- [0c5e44b](https://github.com/SamR1/FitTrackee/commit/0c5e44bc785566e2d5ca92e2bfa18d32576ccb98) - update fitdecode to 0.11.0
+- [0c5e44b](https://codeberg.org/FitTrackee/FitTrackee/commit/0c5e44bc785566e2d5ca92e2bfa18d32576ccb98) - update fitdecode to 0.11.0
 
 Thanks to the contributors:
-- @Stephan-P
-- @xmgz
+- [@Stephan-P](https://github.com/Stephan-P)
+- [@xmgz](https://github.com/xmgz)
 - Poesty Li
 
 
@@ -1051,12 +1210,12 @@ More information in the [documentation](https://docs.fittrackee.org/en/installat
 
 ### Bugs Fixed
 
-* [PR#894](https://github.com/SamR1/FitTrackee/pull/894) - fix margin on left Y-axis to display high elevations
-* [PR#897](https://github.com/SamR1/FitTrackee/pull/897) - docker compose - fix directory for StaticMap 3 cache + rename variables
+* [PR#894](https://codeberg.org/FitTrackee/FitTrackee/pulls/894) - fix margin on left Y-axis to display high elevations
+* [PR#897](https://codeberg.org/FitTrackee/FitTrackee/pulls/897) - docker compose - fix directory for StaticMap 3 cache + rename variables
 
 ### Translations
 
-* [PR#893](https://github.com/SamR1/FitTrackee/pull/893) - Translations update from Hosted Weblate (Galician)
+* [PR#893](https://codeberg.org/FitTrackee/FitTrackee/pulls/893) - Translations update from Hosted Weblate (Galician)
 
 Translation status:
 - Basque: 90%
@@ -1080,25 +1239,25 @@ Translation status:
 
 
 Thanks to the contributors:
-- @xmgz
+- [@xmgz](https://github.com/xmgz)
 
 
 ## Version 0.11.1 (2025/07/30)
 
 ### Bugs Fixed
 
-* [#882](https://github.com/SamR1/FitTrackee/issues/882) - 'record' icon no longer appears in the calendar
-* [#885](https://github.com/SamR1/FitTrackee/issues/885) - Data discrepancy between file formats
+* [#882](https://codeberg.org/FitTrackee/FitTrackee/issues/882) - 'record' icon no longer appears in the calendar
+* [#885](https://codeberg.org/FitTrackee/FitTrackee/issues/885) - Data discrepancy between file formats
   * **Note**: The fix only applies to next .fit file uploads
-* [PR#888](https://github.com/SamR1/FitTrackee/pull/888) - fix heart rate label display in French
-* [38ef7a2](https://github.com/SamR1/FitTrackee/commit/dd7c8c207fb1089a3973e89c69fd48b0f426f31a) - minor UI fixes
+* [PR#888](https://codeberg.org/FitTrackee/FitTrackee/pulls/888) - fix heart rate label display in French
+* [38ef7a2](https://codeberg.org/FitTrackee/FitTrackee/commit/dd7c8c207fb1089a3973e89c69fd48b0f426f31a) - minor UI fixes
   * add title to buttons on workout detail
   * fix vertical hoverline display when no point
 
 ### Translations
 
-* [PR#886](https://github.com/SamR1/FitTrackee/pull/886) - Translations update from Hosted Weblate (Chinese (Simplified Han script) and Dutch)
-* [PR#887](https://github.com/SamR1/FitTrackee/pull/887) - Translations update from Hosted Weblate (Croatian)
+* [PR#886](https://codeberg.org/FitTrackee/FitTrackee/pulls/886) - Translations update from Hosted Weblate (Chinese (Simplified Han script) and Dutch)
+* [PR#887](https://codeberg.org/FitTrackee/FitTrackee/pulls/887) - Translations update from Hosted Weblate (Croatian)
 
 
 Translation status:
@@ -1123,8 +1282,8 @@ Translation status:
 
 
 Thanks to the contributors:
-- @iggydev
-- @Stephan-P
+- [@iggydev](https://github.com/iggydev)
+- [@Stephan-P](https://github.com/Stephan-P)
 - Poesty Li
 
 
@@ -1138,39 +1297,39 @@ This release brings a new sport (Outdoor Tennis), power support for bike-related
 
 ### Features and enhancements
 
-* [#792](https://github.com/SamR1/FitTrackee/issues/792) - add support for power
-* [#859](https://github.com/SamR1/FitTrackee/issues/859) - New sport: Tennis (Outdoor) Tennis activity 
-* [PR#861](https://github.com/SamR1/FitTrackee/pull/861) - Add Garmin Edge Explore 2 device
-* [PR#872](https://github.com/SamR1/FitTrackee/pull/872) - Update Garmin products mapping
-* [PR#874](https://github.com/SamR1/FitTrackee/pull/874) - Add ability to display multiple charts in workout detail
+* [#792](https://codeberg.org/FitTrackee/FitTrackee/issues/792) - add support for power
+* [#859](https://codeberg.org/FitTrackee/FitTrackee/issues/859) - New sport: Tennis (Outdoor) Tennis activity 
+* [PR#861](https://codeberg.org/FitTrackee/FitTrackee/pulls/861) - Add Garmin Edge Explore 2 device
+* [PR#872](https://codeberg.org/FitTrackee/FitTrackee/pulls/872) - Update Garmin products mapping
+* [PR#874](https://codeberg.org/FitTrackee/FitTrackee/pulls/874) - Add ability to display multiple charts in workout detail
 
 
 ### Bugs Fixed
 
-* [#853](https://github.com/SamR1/FitTrackee/issues/853) - docker-compose-dev doesn't work in MacOS because of port issue 
-* [#856](https://github.com/SamR1/FitTrackee/issues/856) - URL link malformed in comments section 
-* [PR#857](https://github.com/SamR1/FitTrackee/pull/857) - fix app config init to prevent multiple rows creation
-* [#864](https://github.com/SamR1/FitTrackee/issues/864) - Improve handling of out-of-order frames in .fit file (and stop_all bugfix)
-* [#868](https://github.com/SamR1/FitTrackee/issues/868) - No tiles displayed at max zoom
-* [PR#876](https://github.com/SamR1/FitTrackee/pull/876) - Fix statistics chart for ascent/descent when last sport's value is null
-* [7cc3606](https://github.com/SamR1/FitTrackee/commit/7cc3606213833f4595b57757c1660f0c46b190aa) - get product name only when manufacturer is Garmin
-* [fbdad3f](https://github.com/SamR1/FitTrackee/commit/fbdad3f51b4af37c4a7dc4d2c19e7f65b8c5bff6) - fix y-axis when workout has no elevation
-* [1d6f48c](https://github.com/SamR1/FitTrackee/commit/1d6f48cfa1673f69abd7e4dcad6726d9f0f7e38c) - fix heart rate label on chart
-* [7f7a225](https://github.com/SamR1/FitTrackee/commit/7f7a225fcc280f7e1b5c7c6929347f4ea1e04b1e) - fix a11y issues on map control buttons
+* [#853](https://codeberg.org/FitTrackee/FitTrackee/issues/853) - docker-compose-dev doesn't work in MacOS because of port issue 
+* [#856](https://codeberg.org/FitTrackee/FitTrackee/issues/856) - URL link malformed in comments section 
+* [PR#857](https://codeberg.org/FitTrackee/FitTrackee/pulls/857) - fix app config init to prevent multiple rows creation
+* [#864](https://codeberg.org/FitTrackee/FitTrackee/issues/864) - Improve handling of out-of-order frames in .fit file (and stop_all bugfix)
+* [#868](https://codeberg.org/FitTrackee/FitTrackee/issues/868) - No tiles displayed at max zoom
+* [PR#876](https://codeberg.org/FitTrackee/FitTrackee/pulls/876) - Fix statistics chart for ascent/descent when last sport's value is null
+* [7cc3606](https://codeberg.org/FitTrackee/FitTrackee/commit/7cc3606213833f4595b57757c1660f0c46b190aa) - get product name only when manufacturer is Garmin
+* [fbdad3f](https://codeberg.org/FitTrackee/FitTrackee/commit/fbdad3f51b4af37c4a7dc4d2c19e7f65b8c5bff6) - fix y-axis when workout has no elevation
+* [1d6f48c](https://codeberg.org/FitTrackee/FitTrackee/commit/1d6f48cfa1673f69abd7e4dcad6726d9f0f7e38c) - fix heart rate label on chart
+* [7f7a225](https://codeberg.org/FitTrackee/FitTrackee/commit/7f7a225fcc280f7e1b5c7c6929347f4ea1e04b1e) - fix a11y issues on map control buttons
 
 
 ### Translations
 
-* [PR#845](https://github.com/SamR1/FitTrackee/pull/845) - Translations update from Hosted Weblate (Galician)
-* [PR#849](https://github.com/SamR1/FitTrackee/pull/849) - Translations update from Hosted Weblate (French)
-* [PR#851](https://github.com/SamR1/FitTrackee/pull/851) - Translations update from Hosted Weblate (German)
-* [PR#858](https://github.com/SamR1/FitTrackee/pull/858) - Translations update from Hosted Weblate (German and Turkish)
-* [PR#862](https://github.com/SamR1/FitTrackee/pull/862) - Translations update from Hosted Weblate (Spanish)
-* [PR#865](https://github.com/SamR1/FitTrackee/pull/865) - Translations update from Hosted Weblate (Galician)
-* [PR#866](https://github.com/SamR1/FitTrackee/pull/866) - Translations update from Hosted Weblate (Spanish)
-* [PR#870](https://github.com/SamR1/FitTrackee/pull/870) - Translations update from Hosted Weblate (Russian)
-* [PR#873](https://github.com/SamR1/FitTrackee/pull/873) - Translations update from Hosted Weblate (Galician and Russian)
-* [PR#878](https://github.com/SamR1/FitTrackee/pull/878) - Translations update from Hosted Weblate (Galician)
+* [PR#845](https://codeberg.org/FitTrackee/FitTrackee/pulls/845) - Translations update from Hosted Weblate (Galician)
+* [PR#849](https://codeberg.org/FitTrackee/FitTrackee/pulls/849) - Translations update from Hosted Weblate (French)
+* [PR#851](https://codeberg.org/FitTrackee/FitTrackee/pulls/851) - Translations update from Hosted Weblate (German)
+* [PR#858](https://codeberg.org/FitTrackee/FitTrackee/pulls/858) - Translations update from Hosted Weblate (German and Turkish)
+* [PR#862](https://codeberg.org/FitTrackee/FitTrackee/pulls/862) - Translations update from Hosted Weblate (Spanish)
+* [PR#865](https://codeberg.org/FitTrackee/FitTrackee/pulls/865) - Translations update from Hosted Weblate (Galician)
+* [PR#866](https://codeberg.org/FitTrackee/FitTrackee/pulls/866) - Translations update from Hosted Weblate (Spanish)
+* [PR#870](https://codeberg.org/FitTrackee/FitTrackee/pulls/870) - Translations update from Hosted Weblate (Russian)
+* [PR#873](https://codeberg.org/FitTrackee/FitTrackee/pulls/873) - Translations update from Hosted Weblate (Galician and Russian)
+* [PR#878](https://codeberg.org/FitTrackee/FitTrackee/pulls/878) - Translations update from Hosted Weblate (Galician)
 
 
 Translation status:
@@ -1196,19 +1355,19 @@ Translation status:
 
 ### Misc
 
-* [PR#863](https://github.com/SamR1/FitTrackee/pull/863) - Update docker-compose-dev.yml
-* [ff38d0c](https://github.com/SamR1/FitTrackee/commit/ff38d0c4ae70cada709dd05939eba75f7c1253a0) - CI - update node version to 20.x
-* [d81afd5](https://github.com/SamR1/FitTrackee/commit/d81afd585f8a77cc24eb45a463fd941bd7aa6ba2) - CI - add workflow to check docker images build
+* [PR#863](https://codeberg.org/FitTrackee/FitTrackee/pulls/863) - Update docker-compose-dev.yml
+* [ff38d0c](https://codeberg.org/FitTrackee/FitTrackee/commit/ff38d0c4ae70cada709dd05939eba75f7c1253a0) - CI - update node version to 20.x
+* [d81afd5](https://codeberg.org/FitTrackee/FitTrackee/commit/d81afd585f8a77cc24eb45a463fd941bd7aa6ba2) - CI - add workflow to check docker images build
 
 
 Thanks to the contributors:
-- @BorATICI
-- @juanro49
-- @leafcompost
-- @Thovi98
-- @Unargent
-- @Vertux
-- @xmgz
+- [@BorATICI](https://github.com/BorATICI)
+- [@juanro49](https://github.com/juanro49)
+- [@leafcompost](https://github.com/leafcompost)
+- [@Thovi98](https://github.com/Thovi98)
+- [@Unargent](https://github.com/Unargent)
+- [@Vertux](https://github.com/Vertux)
+- [@xmgz](https://github.com/xmgz)
 - mrab
 - Nikita Epifanov
 
@@ -1218,19 +1377,19 @@ Thanks to the contributors:
 
 ### Features and enhancements
 
-* [PR#837](https://github.com/SamR1/FitTrackee/pull/837) - Update Garmin products mapping
-* [#838](https://github.com/SamR1/FitTrackee/issues/838) - New sport: Standup paddleboarding 
-* [#839](https://github.com/SamR1/FitTrackee/issues/839) - Segments creation depending on pause events
+* [PR#837](https://codeberg.org/FitTrackee/FitTrackee/pulls/837) - Update Garmin products mapping
+* [#838](https://codeberg.org/FitTrackee/FitTrackee/issues/838) - New sport: Standup paddleboarding 
+* [#839](https://codeberg.org/FitTrackee/FitTrackee/issues/839) - Segments creation depending on pause events
 
 
 ### Translations
 
-* [PR#828](https://github.com/SamR1/FitTrackee/pull/828) - Translations update from Hosted Weblate (Croatian)
-* [PR#831](https://github.com/SamR1/FitTrackee/pull/831) - Translations update from Hosted Weblate (Czech)
-* [PR#832](https://github.com/SamR1/FitTrackee/pull/832) - Translations update from Hosted Weblate (Russian)
-* [#833](https://github.com/SamR1/FitTrackee/issues/833) - [translations request] Turkish 
-* [PR#836](https://github.com/SamR1/FitTrackee/pull/836) - Translations update from Hosted Weblate (Galician and Turkish)
-* [PR#842](https://github.com/SamR1/FitTrackee/pull/842) - Translations update from Hosted Weblate (Croatian and Galician)
+* [PR#828](https://codeberg.org/FitTrackee/FitTrackee/pulls/828) - Translations update from Hosted Weblate (Croatian)
+* [PR#831](https://codeberg.org/FitTrackee/FitTrackee/pulls/831) - Translations update from Hosted Weblate (Czech)
+* [PR#832](https://codeberg.org/FitTrackee/FitTrackee/pulls/832) - Translations update from Hosted Weblate (Russian)
+* [#833](https://codeberg.org/FitTrackee/FitTrackee/issues/833) - [translations request] Turkish 
+* [PR#836](https://codeberg.org/FitTrackee/FitTrackee/pulls/836) - Translations update from Hosted Weblate (Galician and Turkish)
+* [PR#842](https://codeberg.org/FitTrackee/FitTrackee/pulls/842) - Translations update from Hosted Weblate (Croatian and Galician)
 
 
 Translation status:
@@ -1254,11 +1413,11 @@ Translation status:
 - Turkish: 1%
 
 Thanks to the contributors:
-- @BorATICI
-- @iggydev
-- @jmlich
-- @sikmir
-- @xmgz
+- [@BorATICI](https://github.com/BorATICI)
+- [@iggydev](https://github.com/iggydev)
+- [@jmlich](https://github.com/jmlich)
+- [@sikmir](https://github.com/sikmir)
+- [@xmgz](https://github.com/xmgz)
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
 
@@ -1267,14 +1426,14 @@ Thanks to the contributors:
 
 ### Bugs Fixed
 
-* [#823](https://github.com/SamR1/FitTrackee/issues/823) - Unable to upload GPX files when cadence value is a float
-* [PR#827](https://github.com/SamR1/FitTrackee/pull/827) - Fix hr and cadence values when gpx points contain multiple values in extensions
+* [#823](https://codeberg.org/FitTrackee/FitTrackee/issues/823) - Unable to upload GPX files when cadence value is a float
+* [PR#827](https://codeberg.org/FitTrackee/FitTrackee/pulls/827) - Fix hr and cadence values when gpx points contain multiple values in extensions
 
 ### Translations
 
-* [PR#822](https://github.com/SamR1/FitTrackee/pull/822) - Translations update from Hosted Weblate (Croatian and Czech)
-* [PR#824](https://github.com/SamR1/FitTrackee/pull/824) - Translations update from Hosted Weblate (Galician)
-* [PR#826](https://github.com/SamR1/FitTrackee/pull/826) - Translations update from Hosted Weblate (Chinese (Simplified Han script))
+* [PR#822](https://codeberg.org/FitTrackee/FitTrackee/pulls/822) - Translations update from Hosted Weblate (Croatian and Czech)
+* [PR#824](https://codeberg.org/FitTrackee/FitTrackee/pulls/824) - Translations update from Hosted Weblate (Galician)
+* [PR#826](https://codeberg.org/FitTrackee/FitTrackee/pulls/826) - Translations update from Hosted Weblate (Chinese (Simplified Han script))
 
 Translation status:
 - Basque: 92%
@@ -1296,9 +1455,9 @@ Translation status:
 - Spanish: 59%
 
 Thanks to the contributors:
-- @iggydev
-- @jmlich
-- @xmgz
+- [@iggydev](https://github.com/iggydev)
+- [@jmlich](https://github.com/jmlich)
+- [@xmgz](https://github.com/xmgz)
 - Poesty Li
 
 
@@ -1306,12 +1465,12 @@ Thanks to the contributors:
 
 ### Bugs Fixed
 
-* [#819](https://github.com/SamR1/FitTrackee/issues/819) - Cadence is displayed in rpm instead of spm
+* [#819](https://codeberg.org/FitTrackee/FitTrackee/issues/819) - Cadence is displayed in rpm instead of spm
 
 ### Translations
 
-* [PR#815](https://github.com/SamR1/FitTrackee/pull/815) - Translations update from Hosted Weblate (French)
-* [PR#821](https://github.com/SamR1/FitTrackee/pull/821) - Translations update from Hosted Weblate (Dutch)
+* [PR#815](https://codeberg.org/FitTrackee/FitTrackee/pulls/815) - Translations update from Hosted Weblate (French)
+* [PR#821](https://codeberg.org/FitTrackee/FitTrackee/pulls/821) - Translations update from Hosted Weblate (Dutch)
 
 Translation status:
 - Basque: 92%
@@ -1333,7 +1492,7 @@ Translation status:
 - Spanish: 59%
 
 Thanks to the contributors:
-- @JeroenED
+- [@JeroenED](https://github.com/JeroenED)
 
 
 ## Version 0.10.0 (2025/05/29)
@@ -1346,28 +1505,28 @@ In addition to a new language and translation updates, this version brings async
 
 ### Features and enhancements
 
-* [#87](https://github.com/SamR1/FitTrackee/issues/87) - Prevent gpx parse error with zip import
-* [#89](https://github.com/SamR1/FitTrackee/issues/89) - Asynchronous archives upload
-* [#122](https://github.com/SamR1/FitTrackee/issues/122) - Allow to upload Fit file
-* [#143](https://github.com/SamR1/FitTrackee/issues/143) - KML/KMZ support
-* [#194](https://github.com/SamR1/FitTrackee/issues/194) - Rewrite workout file processing [1st part]
-* [#529](https://github.com/SamR1/FitTrackee/issues/529) - Support import TCX file
-* [#642](https://github.com/SamR1/FitTrackee/issues/642) - Support Heartrate and cadence
-* [PR#801](https://github.com/SamR1/FitTrackee/pull/801) - Display file source in workout data
+* [#87](https://codeberg.org/FitTrackee/FitTrackee/issues/87) - Prevent gpx parse error with zip import
+* [#89](https://codeberg.org/FitTrackee/FitTrackee/issues/89) - Asynchronous archives upload
+* [#122](https://codeberg.org/FitTrackee/FitTrackee/issues/122) - Allow to upload Fit file
+* [#143](https://codeberg.org/FitTrackee/FitTrackee/issues/143) - KML/KMZ support
+* [#194](https://codeberg.org/FitTrackee/FitTrackee/issues/194) - Rewrite workout file processing [1st part]
+* [#529](https://codeberg.org/FitTrackee/FitTrackee/issues/529) - Support import TCX file
+* [#642](https://codeberg.org/FitTrackee/FitTrackee/issues/642) - Support Heartrate and cadence
+* [PR#801](https://codeberg.org/FitTrackee/FitTrackee/pulls/801) - Display file source in workout data
 
 ### Bugs Fixed
 
 Fix on v0.10.0beta2:
-* [9f05417](https://github.com/SamR1/FitTrackee/commit/9f0541751ae15d6c106e7ba3c7892d9747488fa9) - fix radio label on workout form
-* [d46ba03](https://github.com/SamR1/FitTrackee/commit/d46ba03803fa8b77606f365830a8429143843481) - store archive in upload directory
-* [3827067](https://github.com/SamR1/FitTrackee/commit/382706751cbc444b74232f4f405408d729c4c9f7) - fix original file storage
+* [9f05417](https://codeberg.org/FitTrackee/FitTrackee/commit/9f0541751ae15d6c106e7ba3c7892d9747488fa9) - fix radio label on workout form
+* [d46ba03](https://codeberg.org/FitTrackee/FitTrackee/commit/d46ba03803fa8b77606f365830a8429143843481) - store archive in upload directory
+* [3827067](https://codeberg.org/FitTrackee/FitTrackee/commit/382706751cbc444b74232f4f405408d729c4c9f7) - fix original file storage
 
 ### Translations
 
-* [PR#804](https://github.com/SamR1/FitTrackee/pull/804) - Translations update (Russian)
-* [#805](https://github.com/SamR1/FitTrackee/issues/805) - [translations request] Catalan
-* [PR#808](https://github.com/SamR1/FitTrackee/pull/808) - Translations update (Catalan, Russian)
-* [PR#813](https://github.com/SamR1/FitTrackee/pull/813) - Translations update (Translation files cleanup)
+* [PR#804](https://codeberg.org/FitTrackee/FitTrackee/pulls/804) - Translations update (Russian)
+* [#805](https://codeberg.org/FitTrackee/FitTrackee/issues/805) - [translations request] Catalan
+* [PR#808](https://codeberg.org/FitTrackee/FitTrackee/pulls/808) - Translations update (Catalan, Russian)
+* [PR#813](https://codeberg.org/FitTrackee/FitTrackee/pulls/813) - Translations update (Translation files cleanup)
 
 Translation status:
 - Basque: 92%
@@ -1390,8 +1549,8 @@ Translation status:
 
 
 Thanks to the contributors:
-- @ArnyminerZ
-- @Lemetist
+- [@ArnyminerZ](https://github.com/ArnyminerZ)
+- [@Lemetist](https://github.com/Lemetist)
 
 
 **Note:** If you upgrade from the v0.9.x, there are migrations to apply (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
@@ -1404,7 +1563,7 @@ If you find bugs, please report them.
 
 ### Bugs Fixed
 
-* [PR#809](https://github.com/SamR1/FitTrackee/pull/809) - fix python package
+* [PR#809](https://codeberg.org/FitTrackee/FitTrackee/pulls/809) - fix python package
 
 
 ## Version 0.10.0b1 (2025/05/24)
@@ -1416,14 +1575,14 @@ If you find bugs, please report them.
 
 ### Features and enhancements
 
-* [#87](https://github.com/SamR1/FitTrackee/issues/87) - Prevent gpx parse error with zip import
-* [#89](https://github.com/SamR1/FitTrackee/issues/89) - Asynchronous archives upload
-* [#122](https://github.com/SamR1/FitTrackee/issues/122) - Allow to upload Fit file
-* [#143](https://github.com/SamR1/FitTrackee/issues/143) - KML/KMZ support
-* [#194](https://github.com/SamR1/FitTrackee/issues/194) - Rewrite workout file processing [1st part]
-* [#529](https://github.com/SamR1/FitTrackee/issues/529) - Support import TCX file
-* [#642](https://github.com/SamR1/FitTrackee/issues/642) - Support Heartrate and cadence
-* [PR#801](https://github.com/SamR1/FitTrackee/pull/801) - Display file source in workout data
+* [#87](https://codeberg.org/FitTrackee/FitTrackee/issues/87) - Prevent gpx parse error with zip import
+* [#89](https://codeberg.org/FitTrackee/FitTrackee/issues/89) - Asynchronous archives upload
+* [#122](https://codeberg.org/FitTrackee/FitTrackee/issues/122) - Allow to upload Fit file
+* [#143](https://codeberg.org/FitTrackee/FitTrackee/issues/143) - KML/KMZ support
+* [#194](https://codeberg.org/FitTrackee/FitTrackee/issues/194) - Rewrite workout file processing [1st part]
+* [#529](https://codeberg.org/FitTrackee/FitTrackee/issues/529) - Support import TCX file
+* [#642](https://codeberg.org/FitTrackee/FitTrackee/issues/642) - Support Heartrate and cadence
+* [PR#801](https://codeberg.org/FitTrackee/FitTrackee/pulls/801) - Display file source in workout data
 
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
@@ -1433,9 +1592,9 @@ If you find bugs, please report them.
 
 ### Translations
 
-* [PR#800](https://github.com/SamR1/FitTrackee/pull/800) - Translations update (Basque, Croatian and Galician)
-* [PR#802](https://github.com/SamR1/FitTrackee/pull/802) - Translations update (Dutch and Russian)
-* [PR#803](https://github.com/SamR1/FitTrackee/pull/803) - Translations update (Russian)
+* [PR#800](https://codeberg.org/FitTrackee/FitTrackee/pulls/800) - Translations update (Basque, Croatian and Galician)
+* [PR#802](https://codeberg.org/FitTrackee/FitTrackee/pulls/802) - Translations update (Dutch and Russian)
+* [PR#803](https://codeberg.org/FitTrackee/FitTrackee/pulls/803) - Translations update (Russian)
 
 
 Translation status:
@@ -1458,27 +1617,27 @@ Translation status:
 
 
 Thanks to the contributors:
-- @erral
-- @iggydev
-- @JeroenED
-- @Lemetist
-- @xmgz
+- [@erral](https://github.com/erral)
+- [@iggydev](https://github.com/iggydev)
+- [@JeroenED](https://github.com/JeroenED)
+- [@Lemetist](https://github.com/Lemetist)
+- [@xmgz](https://github.com/xmgz)
 
 
 ## Version 0.9.10 (2025/05/11)
 
 ### Features and enhancements
 
-* [#795](https://github.com/SamR1/FitTrackee/issues/795) - New sport: Windsurfing
+* [#795](https://codeberg.org/FitTrackee/FitTrackee/issues/795) - New sport: Windsurfing
 
 ### Bugs Fixed
 
-* [#793](https://github.com/SamR1/FitTrackee/issues/793) - Number-template for duration fields in new workout
+* [#793](https://codeberg.org/FitTrackee/FitTrackee/issues/793) - Number-template for duration fields in new workout
 
 ### Translations
 
-* [PR#787](https://github.com/SamR1/FitTrackee/pull/787) - Translations update (Galician, Polish)
-* [PR#789](https://github.com/SamR1/FitTrackee/pull/789) - Translations update (Dutch)
+* [PR#787](https://codeberg.org/FitTrackee/FitTrackee/pulls/787) - Translations update (Galician, Polish)
+* [PR#789](https://codeberg.org/FitTrackee/FitTrackee/pulls/789) - Translations update (Dutch)
 
 Translation status:
 - Basque: 99%
@@ -1500,8 +1659,8 @@ Translation status:
 
 
 Thanks to the contributors:
-- @JcMinarro
-- @xmgz
+- [@JcMinarro](https://github.com/JcMinarro)
+- [@xmgz](https://github.com/xmgz)
 - Wiktor Jędrzejczak
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
@@ -1511,13 +1670,13 @@ Thanks to the contributors:
 
 ### Bugs Fixed
 
-* [#780](https://github.com/SamR1/FitTrackee/issues/780) - y-Axis in monthly statistics on Dashboard not shown properly
+* [#780](https://codeberg.org/FitTrackee/FitTrackee/issues/780) - y-Axis in monthly statistics on Dashboard not shown properly
 
 
 ### Translations
 
-* [PR#781](https://github.com/SamR1/FitTrackee/pull/781) - Translations update (Croatian)
-* [PR#783](https://github.com/SamR1/FitTrackee/pull/783) - Translations update (Dutch)
+* [PR#781](https://codeberg.org/FitTrackee/FitTrackee/pulls/781) - Translations update (Croatian)
+* [PR#783](https://codeberg.org/FitTrackee/FitTrackee/pulls/783) - Translations update (Dutch)
 
 Translation status:
 - Basque: 100%
@@ -1539,23 +1698,23 @@ Translation status:
 
 
 Thanks to the contributors:
-- @iggydev
-- @JeroenED
+- [@iggydev](https://github.com/iggydev)
+- [@JeroenED](https://github.com/JeroenED)
 
 
 ## Version 0.9.8 (2025/04/27)
 
 ### Bugs Fixed
 
-* [PR#779](https://github.com/SamR1/FitTrackee/pull/779) - Fix segments navigation when user is not workout owner
+* [PR#779](https://codeberg.org/FitTrackee/FitTrackee/pulls/779) - Fix segments navigation when user is not workout owner
 
 
 ### Translations
 
-* [PR#769](https://github.com/SamR1/FitTrackee/pull/769) - Translations update (Chinese (Simplified Han script))
-* [PR#770](https://github.com/SamR1/FitTrackee/pull/770) - Translations update (Galician)
-* [#773](https://github.com/SamR1/FitTrackee/issues/773) - [translations request] Croatian
-* [PR#774](https://github.com/SamR1/FitTrackee/pull/774) - Translations update (Basque)
+* [PR#769](https://codeberg.org/FitTrackee/FitTrackee/pulls/769) - Translations update (Chinese (Simplified Han script))
+* [PR#770](https://codeberg.org/FitTrackee/FitTrackee/pulls/770) - Translations update (Galician)
+* [#773](https://codeberg.org/FitTrackee/FitTrackee/issues/773) - [translations request] Croatian
+* [PR#774](https://codeberg.org/FitTrackee/FitTrackee/pulls/774) - Translations update (Basque)
 
 Translation status:
 - Basque: 100%
@@ -1577,9 +1736,9 @@ Translation status:
 
 
 Thanks to the contributors:
-- @erral
-- @iggydev
-- @xmgz
+- [@erral](https://github.com/erral)
+- [@iggydev](https://github.com/iggydev)
+- [@xmgz](https://github.com/xmgz)
 - Poesty Li
 
 
@@ -1587,14 +1746,14 @@ Thanks to the contributors:
 
 ### Features and enhancements
 
-* [PR#764](https://github.com/SamR1/FitTrackee/pull/764) - New sport: Halfbike
-  * [PR#768](https://github.com/SamR1/FitTrackee/pull/768) - add equipment (bike) to Halfbike workouts
-* [PR#767](https://github.com/SamR1/FitTrackee/pull/767) - Add averages in workouts list
+* [PR#764](https://codeberg.org/FitTrackee/FitTrackee/pulls/764) - New sport: Halfbike
+  * [PR#768](https://codeberg.org/FitTrackee/FitTrackee/pulls/768) - add equipment (bike) to Halfbike workouts
+* [PR#767](https://codeberg.org/FitTrackee/FitTrackee/pulls/767) - Add averages in workouts list
 
 
 ### Translations
 
-* [PR#765](https://github.com/SamR1/FitTrackee/pull/765) - Translations update (Dutch)
+* [PR#765](https://codeberg.org/FitTrackee/FitTrackee/pulls/765) - Translations update (Dutch)
 
 Translation status:
 - Basque: 81%
@@ -1615,8 +1774,8 @@ Translation status:
 
 
 Thanks to the contributors:
-- @astridx
-- @JeroenED
+- [@astridx](https://github.com/astridx)
+- [@JeroenED](https://github.com/JeroenED)
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
 
@@ -1625,8 +1784,8 @@ Thanks to the contributors:
 
 ### Translations
 
-* [PR#762](https://github.com/SamR1/FitTrackee/pull/762) - Init Bengali translations files
-* [PR#763](https://github.com/SamR1/FitTrackee/pull/763) - Translations update (German)
+* [PR#762](https://codeberg.org/FitTrackee/FitTrackee/pulls/762) - Init Bengali translations files
+* [PR#763](https://codeberg.org/FitTrackee/FitTrackee/pulls/763) - Translations update (German)
 
 Translation status:
 - Basque: 82%
@@ -1647,33 +1806,33 @@ Translation status:
 
 ### Misc
 
-* [2bc97bd](https://github.com/SamR1/FitTrackee/commit/2bc97bda644197dce5ccac9048889321209f84ac) - CI - run coverage only on one test job
+* [2bc97bd](https://codeberg.org/FitTrackee/FitTrackee/commit/2bc97bda644197dce5ccac9048889321209f84ac) - CI - run coverage only on one test job
 
 
 Thanks to the contributors:
-- @astridx
-- @frankzimper
+- [@astridx](https://github.com/astridx)
+- [@frankzimper](https://github.com/frankzimper)
 
 
 ## Version 0.9.5 (2025/04/06)
 
 ### Bugs Fixed
 
-* [#751](https://github.com/SamR1/FitTrackee/issues/751) - Time in Analysis is not correct in overlay modal
-* [#753](https://github.com/SamR1/FitTrackee/issues/753) - the checkbox "start elevation axis at zero" has no effect
-* [PR#757](https://github.com/SamR1/FitTrackee/pull/757) - Fix tasks queue running on Python 3.13  
+* [#751](https://codeberg.org/FitTrackee/FitTrackee/issues/751) - Time in Analysis is not correct in overlay modal
+* [#753](https://codeberg.org/FitTrackee/FitTrackee/issues/753) - the checkbox "start elevation axis at zero" has no effect
+* [PR#757](https://codeberg.org/FitTrackee/FitTrackee/pulls/757) - Fix tasks queue running on Python 3.13  
   **Note**: It is now possible to use Dramatiq CLI directly to run task queue workers, see [documentation](https://docs.fittrackee.org/en/installation/index.html).
   A new environment (`DRAMATIQ_LOG`) variable has also been added.
-* [PR#760](https://github.com/SamR1/FitTrackee/pull/760) - Fix docker files
-* [1f8ca78](https://github.com/SamR1/FitTrackee/commit/1f8ca78b82e3b0d91c176a3628bcffeae99e306b) - delete all temporary files when exporting user data export
+* [PR#760](https://codeberg.org/FitTrackee/FitTrackee/pulls/760) - Fix docker files
+* [1f8ca78](https://codeberg.org/FitTrackee/FitTrackee/commit/1f8ca78b82e3b0d91c176a3628bcffeae99e306b) - delete all temporary files when exporting user data export
 
 ### Translations
 
-* [PR#745](https://github.com/SamR1/FitTrackee/pull/745) - Translations update (Galician)
-* [PR#749](https://github.com/SamR1/FitTrackee/pull/749) - Translations update (Chinese (Simplified Han script))
-* [PR#750](https://github.com/SamR1/FitTrackee/pull/750) - Translations update (German)
-* [PR#752](https://github.com/SamR1/FitTrackee/pull/752) - Translations update (Galician)
-* [PR#756](https://github.com/SamR1/FitTrackee/pull/756) - Translations update (Galician)
+* [PR#745](https://codeberg.org/FitTrackee/FitTrackee/pulls/745) - Translations update (Galician)
+* [PR#749](https://codeberg.org/FitTrackee/FitTrackee/pulls/749) - Translations update (Chinese (Simplified Han script))
+* [PR#750](https://codeberg.org/FitTrackee/FitTrackee/pulls/750) - Translations update (German)
+* [PR#752](https://codeberg.org/FitTrackee/FitTrackee/pulls/752) - Translations update (Galician)
+* [PR#756](https://codeberg.org/FitTrackee/FitTrackee/pulls/756) - Translations update (Galician)
 
 Translation status:
 - Basque: 82%
@@ -1694,12 +1853,12 @@ Translation status:
 
 ### Misc
 
-* [PR#746](https://github.com/SamR1/FitTrackee/pull/746) - email tasks refactoring
+* [PR#746](https://codeberg.org/FitTrackee/FitTrackee/pulls/746) - email tasks refactoring
 
 
 Thanks to the contributors:
-- @glggr
-- @xmgz
+- [@glggr](https://github.com/glggr)
+- [@xmgz](https://github.com/xmgz)
 - Poesty Li
 
 
@@ -1707,22 +1866,22 @@ Thanks to the contributors:
 
 ### Features and enhancements
 
-* [#117](https://github.com/SamR1/FitTrackee/issues/117) - Total data of filtered workouts
-* [PR#736](https://github.com/SamR1/FitTrackee/pull/736) - Display date with browser settings when user is unlogged
-* [PR#737](https://github.com/SamR1/FitTrackee/pull/737) - Register user with time zone detected from browser
+* [#117](https://codeberg.org/FitTrackee/FitTrackee/issues/117) - Total data of filtered workouts
+* [PR#736](https://codeberg.org/FitTrackee/FitTrackee/pulls/736) - Display date with browser settings when user is unlogged
+* [PR#737](https://codeberg.org/FitTrackee/FitTrackee/pulls/737) - Register user with time zone detected from browser
 
 ### Bugs Fixed
 
-* [#731](https://github.com/SamR1/FitTrackee/issues/731) - date format inconsistency in statistics
-* [#739](https://github.com/SamR1/FitTrackee/issues/739) - total duration displayed on the dashboard is incorrect
+* [#731](https://codeberg.org/FitTrackee/FitTrackee/issues/731) - date format inconsistency in statistics
+* [#739](https://codeberg.org/FitTrackee/FitTrackee/issues/739) - total duration displayed on the dashboard is incorrect
 
 ### Translations
 
-* [PR#732](https://github.com/SamR1/FitTrackee/pull/732) - Translations update (Basque, Galician)
-* [PR#734](https://github.com/SamR1/FitTrackee/pull/734) - Translations update (Basque)
-* [PR#735](https://github.com/SamR1/FitTrackee/pull/735) - Translations update (Chinese (Simplified Han script))
-* [PR#738](https://github.com/SamR1/FitTrackee/pull/738) - Translations update (Galician, German)
-* [PR#740](https://github.com/SamR1/FitTrackee/pull/740) - Translations update (Basque)
+* [PR#732](https://codeberg.org/FitTrackee/FitTrackee/pulls/732) - Translations update (Basque, Galician)
+* [PR#734](https://codeberg.org/FitTrackee/FitTrackee/pulls/734) - Translations update (Basque)
+* [PR#735](https://codeberg.org/FitTrackee/FitTrackee/pulls/735) - Translations update (Chinese (Simplified Han script))
+* [PR#738](https://codeberg.org/FitTrackee/FitTrackee/pulls/738) - Translations update (Galician, German)
+* [PR#740](https://codeberg.org/FitTrackee/FitTrackee/pulls/740) - Translations update (Basque)
 
 Translation status:
 - Basque: 82%
@@ -1742,9 +1901,9 @@ Translation status:
 - Spanish: 63%
 
 Thanks to the contributors:
-- @erral
-- @Medformatik
-- @xmgz
+- [@erral](https://github.com/erral)
+- [@Medformatik](https://github.com/Medformatik)
+- [@xmgz](https://github.com/xmgz)
 - Poesty Li
 
 
@@ -1752,23 +1911,23 @@ Thanks to the contributors:
 
 ### Features and enhancements
 
-* [#714](https://github.com/SamR1/FitTrackee/issues/714) - New sports: Kayaking and Canoeing
-* [PR#719](https://github.com/SamR1/FitTrackee/pull/719) - Filter workouts according to visibility in workout list
-* [#722](https://github.com/SamR1/FitTrackee/issues/722) - Statistics per day
+* [#714](https://codeberg.org/FitTrackee/FitTrackee/issues/714) - New sports: Kayaking and Canoeing
+* [PR#719](https://codeberg.org/FitTrackee/FitTrackee/pulls/719) - Filter workouts according to visibility in workout list
+* [#722](https://codeberg.org/FitTrackee/FitTrackee/issues/722) - Statistics per day
 
 ### Bugs Fixed
 
-* [PR#725](https://github.com/SamR1/FitTrackee/pull/725) - Workout files upload fixes, including:
-  * [#716](https://github.com/SamR1/FitTrackee/issues/716) - Trouble importing tracks
-  * [#720](https://github.com/SamR1/FitTrackee/issues/720) - Increase WORKER TIMEOUT
-* [PR#728](https://github.com/SamR1/FitTrackee/pull/728) - fixed docker-compose.yml
+* [PR#725](https://codeberg.org/FitTrackee/FitTrackee/pulls/725) - Workout files upload fixes, including:
+  * [#716](https://codeberg.org/FitTrackee/FitTrackee/issues/716) - Trouble importing tracks
+  * [#720](https://codeberg.org/FitTrackee/FitTrackee/issues/720) - Increase WORKER TIMEOUT
+* [PR#728](https://codeberg.org/FitTrackee/FitTrackee/pulls/728) - fixed docker-compose.yml
 
 ### Translations
 
-* [PR#713](https://github.com/SamR1/FitTrackee/pull/713) - Translations update (Basque, German)
-* [PR#721](https://github.com/SamR1/FitTrackee/pull/721) - Translations update (Chinese (Simplified Han script), Galicien, German)
-* [PR#726](https://github.com/SamR1/FitTrackee/pull/726) - Translations update (German)
-* [PR#729](https://github.com/SamR1/FitTrackee/pull/729) - Translations update (Galician)
+* [PR#713](https://codeberg.org/FitTrackee/FitTrackee/pulls/713) - Translations update (Basque, German)
+* [PR#721](https://codeberg.org/FitTrackee/FitTrackee/pulls/721) - Translations update (Chinese (Simplified Han script), Galicien, German)
+* [PR#726](https://codeberg.org/FitTrackee/FitTrackee/pulls/726) - Translations update (German)
+* [PR#729](https://codeberg.org/FitTrackee/FitTrackee/pulls/729) - Translations update (Galician)
 
 Translation status:
 - Basque: 81%
@@ -1789,16 +1948,16 @@ Translation status:
 
 ### Misc
 
-* [PR#717](https://github.com/SamR1/FitTrackee/pull/717) - Adds YAML bug report template
+* [PR#717](https://codeberg.org/FitTrackee/FitTrackee/pulls/717) - Adds YAML bug report template
 
 Thanks to the contributors:
-- @erral
-- @LordSexy
-- @mbw83
-- @OliverPifferi
-- @slackline
-- @Von-Birne
-- @xmgz
+- [@erral](https://github.com/erral)
+- [@LordSexy](https://github.com/LordSexy)
+- [@mbw83](https://github.com/mbw83)
+- [@oliver-pifferi](https://github.com/oliver-pifferi)
+- [@slackline](https://github.com/slackline)
+- [@Von-Birne](https://github.com/Von-Birne)
+- [@xmgz](https://github.com/xmgz)
 - Poesty Li
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
@@ -1808,8 +1967,8 @@ Thanks to the contributors:
 
 ### Translations
 
-* [PR#711](https://github.com/SamR1/FitTrackee/pull/711) - Translations update (Chinese (Simplified Han script))
-* [PR#712](https://github.com/SamR1/FitTrackee/pull/712) - Translations update (Polish, Basque)
+* [PR#711](https://codeberg.org/FitTrackee/FitTrackee/pulls/711) - Translations update (Chinese (Simplified Han script))
+* [PR#712](https://codeberg.org/FitTrackee/FitTrackee/pulls/712) - Translations update (Polish, Basque)
 
 Translation status:
 - Basque: 73%
@@ -1830,10 +1989,10 @@ Translation status:
 
 ### Misc
 
-* [2612cd9](https://github.com/SamR1/FitTrackee/commit/2612cd9e4aa747036b79ed4a8492d0f7fea60c80) - fix Dockerfile used for development
+* [2612cd9](https://codeberg.org/FitTrackee/FitTrackee/commit/2612cd9e4aa747036b79ed4a8492d0f7fea60c80) - fix Dockerfile used for development
 
 Thanks to the contributors:
-- @erral
+- [@erral](https://github.com/erral)
 - Poesty Li
 - Wiktor Jędrzejczak
 
@@ -1844,18 +2003,18 @@ Thanks to the contributors:
 
 ### Features and enhancements
 
-* [PR#709](https://github.com/SamR1/FitTrackee/pull/709) - Display equipment in workout detail for other users depending on visibility
+* [PR#709](https://codeberg.org/FitTrackee/FitTrackee/pulls/709) - Display equipment in workout detail for other users depending on visibility
 
 ### Bugs Fixed
 
-* [#708](https://github.com/SamR1/FitTrackee/issues/708) - Cannot add/update equipment description 
-* [PR#707](https://github.com/SamR1/FitTrackee/pull/707) - Display user workouts only on user profile
+* [#708](https://codeberg.org/FitTrackee/FitTrackee/issues/708) - Cannot add/update equipment description 
+* [PR#707](https://codeberg.org/FitTrackee/FitTrackee/pulls/707) - Display user workouts only on user profile
 
 ### Translations
 
-* [PR#700](https://github.com/SamR1/FitTrackee/pull/700) - Translations update (Chinese (Simplified Han script))
-* [PR#702](https://github.com/SamR1/FitTrackee/pull/702) - Translations update (German, Chinese (Simplified Han script))
-* [PR#705](https://github.com/SamR1/FitTrackee/pull/705) - Translations update (Polish)
+* [PR#700](https://codeberg.org/FitTrackee/FitTrackee/pulls/700) - Translations update (Chinese (Simplified Han script))
+* [PR#702](https://codeberg.org/FitTrackee/FitTrackee/pulls/702) - Translations update (German, Chinese (Simplified Han script))
+* [PR#705](https://codeberg.org/FitTrackee/FitTrackee/pulls/705) - Translations update (Polish)
 
 Translation status:
 - Basque: 72%
@@ -1876,12 +2035,12 @@ Translation status:
 
 ### Misc
 
-* [#355](https://github.com/SamR1/FitTrackee/issues/355) - Update SQLAlchemy to 2.x
-* [#685](https://github.com/SamR1/FitTrackee/issues/599) - replace deprecated datetime.utcnow()
-* [b224e17](https://github.com/SamR1/FitTrackee/commit/b224e171c750dcfc3ca9c03068f91e21dd7eb189) - tools - update ruff config
+* [#355](https://codeberg.org/FitTrackee/FitTrackee/issues/355) - Update SQLAlchemy to 2.x
+* [#685](https://codeberg.org/FitTrackee/FitTrackee/issues/599) - replace deprecated datetime.utcnow()
+* [b224e17](https://codeberg.org/FitTrackee/FitTrackee/commit/b224e171c750dcfc3ca9c03068f91e21dd7eb189) - tools - update ruff config
 
 Thanks to the contributors:
-- @OliverPifferi
+- [@oliver-pifferi](https://github.com/oliver-pifferi)
 - Poesty Li
 - Wiktor Jędrzejczak
 
@@ -1898,33 +2057,33 @@ The default privacy policy has been updated, as well as the link to the document
 
 ### Features and enhancements
 
-* [#16](https://github.com/SamR1/FitTrackee/issues/16) - Add social features [1st part]
-  * [#125](https://github.com/SamR1/FitTrackee/issues/125) - Add followers/following and visibility levels
-  * [#296](https://github.com/SamR1/FitTrackee/issues/296) - Add comments
-  * [#298](https://github.com/SamR1/FitTrackee/issues/298) - Add likes
-  * [#299](https://github.com/SamR1/FitTrackee/issues/299) - UI notifications
-  * [#381](https://github.com/SamR1/FitTrackee/issues/381) - Block a user to hide unwanted content
-  * [#382](https://github.com/SamR1/FitTrackee/issues/382) - Moderation tools
-  * [#655](https://github.com/SamR1/FitTrackee/issues/655) - Add moderator and owner roles
-  * [PR#666](https://github.com/SamR1/FitTrackee/pull/666) - Display last 5 workouts in user profile
-* [PR#675](https://github.com/SamR1/FitTrackee/pull/675) - CLI - create user with provided role
-* [#691](https://github.com/SamR1/FitTrackee/issues/691) Support Markdown syntax in description and notes 
+* [#16](https://codeberg.org/FitTrackee/FitTrackee/issues/16) - Add social features [1st part]
+  * [#125](https://codeberg.org/FitTrackee/FitTrackee/issues/125) - Add followers/following and visibility levels
+  * [#296](https://codeberg.org/FitTrackee/FitTrackee/issues/296) - Add comments
+  * [#298](https://codeberg.org/FitTrackee/FitTrackee/issues/298) - Add likes
+  * [#299](https://codeberg.org/FitTrackee/FitTrackee/issues/299) - UI notifications
+  * [#381](https://codeberg.org/FitTrackee/FitTrackee/issues/381) - Block a user to hide unwanted content
+  * [#382](https://codeberg.org/FitTrackee/FitTrackee/issues/382) - Moderation tools
+  * [#655](https://codeberg.org/FitTrackee/FitTrackee/issues/655) - Add moderator and owner roles
+  * [PR#666](https://codeberg.org/FitTrackee/FitTrackee/pulls/666) - Display last 5 workouts in user profile
+* [PR#675](https://codeberg.org/FitTrackee/FitTrackee/pulls/675) - CLI - create user with provided role
+* [#691](https://codeberg.org/FitTrackee/FitTrackee/issues/691) Support Markdown syntax in description and notes 
 
 ### Bugs Fixed
 
-* [#664](https://github.com/SamR1/FitTrackee/issues/664) - privacy policy validation is not displayed
-* [#682](https://github.com/SamR1/FitTrackee/issues/682) - Monthly statistics are incorrect
-* [#683](https://github.com/SamR1/FitTrackee/issues/683) - User time zone is not taken into account in statistics
-* [#680](https://github.com/SamR1/FitTrackee/issues/680) - accessibility and style fixes
+* [#664](https://codeberg.org/FitTrackee/FitTrackee/issues/664) - privacy policy validation is not displayed
+* [#682](https://codeberg.org/FitTrackee/FitTrackee/issues/682) - Monthly statistics are incorrect
+* [#683](https://codeberg.org/FitTrackee/FitTrackee/issues/683) - User time zone is not taken into account in statistics
+* [#680](https://codeberg.org/FitTrackee/FitTrackee/issues/680) - accessibility and style fixes
 
 ### Translations
 
-* [PR#688](https://github.com/SamR1/FitTrackee/pull/688) - Translations update (Basque, Galician)
-* [PR#690](https://github.com/SamR1/FitTrackee/pull/690) - Translations update (English, French, Basque, Galician)
-* [PR#692](https://github.com/SamR1/FitTrackee/pull/692) - Translations update (French)
-* [PR#695](https://github.com/SamR1/FitTrackee/pull/695) - Translations update (Chinese)
-* [PR#696](https://github.com/SamR1/FitTrackee/pull/696) - Translations update (Galician)
-* [#697](https://github.com/SamR1/FitTrackee/issues/697) - [translations request] Chinese (Simplified Han script) (zh_Hans) 
+* [PR#688](https://codeberg.org/FitTrackee/FitTrackee/pulls/688) - Translations update (Basque, Galician)
+* [PR#690](https://codeberg.org/FitTrackee/FitTrackee/pulls/690) - Translations update (English, French, Basque, Galician)
+* [PR#692](https://codeberg.org/FitTrackee/FitTrackee/pulls/692) - Translations update (French)
+* [PR#695](https://codeberg.org/FitTrackee/FitTrackee/pulls/695) - Translations update (Chinese)
+* [PR#696](https://codeberg.org/FitTrackee/FitTrackee/pulls/696) - Translations update (Galician)
+* [#697](https://codeberg.org/FitTrackee/FitTrackee/issues/697) - [translations request] Chinese (Simplified Han script) (zh_Hans) 
 
 Translation status:
 - Basque: 72%
@@ -1945,11 +2104,11 @@ Translation status:
 
 ### Misc
 
-* [PR#685](https://github.com/SamR1/FitTrackee/pull/685) - Update link to documentation
+* [PR#685](https://codeberg.org/FitTrackee/FitTrackee/pulls/685) - Update link to documentation
 
 Thanks to the contributors:
-- @erral
-- @xmgz
+- [@erral](https://github.com/erral)
+- [@xmgz](https://github.com/xmgz)
 - Poesty Li
 
 **Note:** If you upgrade from the v0.8.x, there are migrations to apply (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
@@ -1963,12 +2122,12 @@ If you find bugs, please report them.
 
 ### Features and enhancements
 
-* [PR#677](https://github.com/SamR1/FitTrackee/pull/677) - Add notification preferences
-* [PR#678](https://github.com/SamR1/FitTrackee/pull/678) - Display users who like comment/workout
+* [PR#677](https://codeberg.org/FitTrackee/FitTrackee/pulls/677) - Add notification preferences
+* [PR#678](https://codeberg.org/FitTrackee/FitTrackee/pulls/678) - Display users who like comment/workout
 
 ### Bugs Fixed
 
-* [d743abf](https://github.com/SamR1/FitTrackee/commit/d743abf0e59a3c7cc1e11adbd9c8d0214d0c7da7) - display missing errors in user profile
+* [d743abf](https://codeberg.org/FitTrackee/FitTrackee/commit/d743abf0e59a3c7cc1e11adbd9c8d0214d0c7da7) - display missing errors in user profile
 
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
@@ -1982,25 +2141,25 @@ If you find bugs, please report them.
 
 ### Features and enhancements
 
-* [PR#675](https://github.com/SamR1/FitTrackee/pull/675) - CLI - create user with provided role
+* [PR#675](https://codeberg.org/FitTrackee/FitTrackee/pulls/675) - CLI - create user with provided role
 
 ### Bugs Fixed
 
-* [PR#671](https://github.com/SamR1/FitTrackee/pull/671) - Fix sport icon when unauthenticated user displays user profile
-* [PR#674](https://github.com/SamR1/FitTrackee/pull/674) - Fix display of privacy policy message with privacy extension
-* [2e9f9d](https://github.com/SamR1/FitTrackee/commit/2e9f9d69eb38d5f310236944d45b4b60d8faff20) - fix translations
-* [edc677](https://github.com/SamR1/FitTrackee/commit/edc6776c922925746762f7ac76c267feda7cde2f) - Fix notification icons
+* [PR#671](https://codeberg.org/FitTrackee/FitTrackee/pulls/671) - Fix sport icon when unauthenticated user displays user profile
+* [PR#674](https://codeberg.org/FitTrackee/FitTrackee/pulls/674) - Fix display of privacy policy message with privacy extension
+* [2e9f9d](https://codeberg.org/FitTrackee/FitTrackee/commit/2e9f9d69eb38d5f310236944d45b4b60d8faff20) - fix translations
+* [edc677](https://codeberg.org/FitTrackee/FitTrackee/commit/edc6776c922925746762f7ac76c267feda7cde2f) - Fix notification icons
 
 ### Misc
 
-* [174240](https://github.com/SamR1/FitTrackee/commit/174240f1d9dc702d4346c85e6add4022af2a88c6) - add tags input to docker image build job
+* [174240](https://codeberg.org/FitTrackee/FitTrackee/commit/174240f1d9dc702d4346c85e6add4022af2a88c6) - add tags input to docker image build job
 
 
 ## Version 0.8.13 (2024/12/29)
 
 ### Translations
 
-* [PR#667](https://github.com/SamR1/FitTrackee/pull/667) - Translations update (Galician)
+* [PR#667](https://codeberg.org/FitTrackee/FitTrackee/pulls/667) - Translations update (Galician)
 
 Translation status:
 - Basque: 100%
@@ -2020,13 +2179,13 @@ Translation status:
 
 ### Misc
 
-* [#126](https://github.com/SamR1/FitTrackee/issues/126) - Docker's Container on docker hub
-* [PR#673](https://github.com/SamR1/FitTrackee/pull/673) - Publish package on PyPI using GitHub Actions workflow
+* [#126](https://codeberg.org/FitTrackee/FitTrackee/issues/126) - Docker's Container on docker hub
+* [PR#673](https://codeberg.org/FitTrackee/FitTrackee/pulls/673) - Publish package on PyPI using GitHub Actions workflow
 
 
 Thanks to the contributors:
-- @DavidHenryThoreau
-- @xmgz
+- [@DavidHenryThoreau](https://github.com/DavidHenryThoreau)
+- [@xmgz](https://github.com/xmgz)
 
 
 ## Version 0.9.0b4 (2024/12/23)
@@ -2036,20 +2195,20 @@ If you find bugs, please report them.
 
 ### Features and enhancements
 
-* [PR#666](https://github.com/SamR1/FitTrackee/pull/666) - Display last 5 workouts in user detail
-* [#668](https://github.com/SamR1/FitTrackee/issues/668) - add analysis visibility
-* [PR#67](https://github.com/SamR1/FitTrackee/pull/670) - create notification when follow request is approved
+* [PR#666](https://codeberg.org/FitTrackee/FitTrackee/pulls/666) - Display last 5 workouts in user detail
+* [#668](https://codeberg.org/FitTrackee/FitTrackee/issues/668) - add analysis visibility
+* [PR#67](https://codeberg.org/FitTrackee/FitTrackee/pulls/670) - create notification when follow request is approved
 
 ### Bugs Fixed
 
-* [#664](https://github.com/SamR1/FitTrackee/issues/664) - privacy policy validation is not displayed
+* [#664](https://codeberg.org/FitTrackee/FitTrackee/issues/664) - privacy policy validation is not displayed
 
 ### Translations
 
-* [PR#667](https://github.com/SamR1/FitTrackee/pull/667) - Translations update (Galician)
+* [PR#667](https://codeberg.org/FitTrackee/FitTrackee/pulls/667) - Translations update (Galician)
 
 Thanks to the contributors:
-- @xmgz
+- [@xmgz](https://github.com/xmgz)
 
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
@@ -2062,16 +2221,16 @@ If you find bugs, please report them.
 
 ### Features and enhancements
 
-* [#660](https://github.com/SamR1/FitTrackee/issues/660) - mark notification as read on click on workout/comment/...
+* [#660](https://codeberg.org/FitTrackee/FitTrackee/issues/660) - mark notification as read on click on workout/comment/...
 
 ### Bugs Fixed
 
-* [PR#659](https://github.com/SamR1/FitTrackee/pull/659) - API - get workouts list with equipment
-* [PR#662](https://github.com/SamR1/FitTrackee/pull/662) - Minor fixes and improvements
+* [PR#659](https://codeberg.org/FitTrackee/FitTrackee/pulls/659) - API - get workouts list with equipment
+* [PR#662](https://codeberg.org/FitTrackee/FitTrackee/pulls/662) - Minor fixes and improvements
 
 ### Misc
 
-* [189071](https://github.com/SamR1/FitTrackee/commit/189071a949ef7cb0c01e8dedcb267af742daefa4) - use uuid instead of id for notifications
+* [189071](https://codeberg.org/FitTrackee/FitTrackee/commit/189071a949ef7cb0c01e8dedcb267af742daefa4) - use uuid instead of id for notifications
 
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
@@ -2084,7 +2243,7 @@ If you find bugs, please report them.
 
 ### Bugs Fixed
 
-* [#657](https://github.com/SamR1/FitTrackee/issues/657) - can not display next workouts in timeline
+* [#657](https://codeberg.org/FitTrackee/FitTrackee/issues/657) - can not display next workouts in timeline
 
 
 ## Version 0.9.0b1 (2024/12/14)
@@ -2094,14 +2253,14 @@ If you find bugs, please report them.
 
 ### Features and enhancements
 
-* [#16](https://github.com/SamR1/FitTrackee/issues/16) - Add social features [1st part]
-  * [#125](https://github.com/SamR1/FitTrackee/issues/125) - Add followers/following and visibility levels
-  * [#296](https://github.com/SamR1/FitTrackee/issues/296) - Add comments
-  * [#298](https://github.com/SamR1/FitTrackee/issues/298) - Add likes
-  * [#299](https://github.com/SamR1/FitTrackee/issues/299) - UI notifications
-  * [#381](https://github.com/SamR1/FitTrackee/issues/381) - Block a user to hide unwanted content
-  * [#382](https://github.com/SamR1/FitTrackee/issues/382) - Moderation tools
-  * [#655](https://github.com/SamR1/FitTrackee/issues/655) - Add moderator and owner roles
+* [#16](https://codeberg.org/FitTrackee/FitTrackee/issues/16) - Add social features [1st part]
+  * [#125](https://codeberg.org/FitTrackee/FitTrackee/issues/125) - Add followers/following and visibility levels
+  * [#296](https://codeberg.org/FitTrackee/FitTrackee/issues/296) - Add comments
+  * [#298](https://codeberg.org/FitTrackee/FitTrackee/issues/298) - Add likes
+  * [#299](https://codeberg.org/FitTrackee/FitTrackee/issues/299) - UI notifications
+  * [#381](https://codeberg.org/FitTrackee/FitTrackee/issues/381) - Block a user to hide unwanted content
+  * [#382](https://codeberg.org/FitTrackee/FitTrackee/issues/382) - Moderation tools
+  * [#655](https://codeberg.org/FitTrackee/FitTrackee/issues/655) - Add moderator and owner roles
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
 
@@ -2109,11 +2268,11 @@ If you find bugs, please report them.
 
 ### Bugs Fixed
 
-* [#652](https://github.com/SamR1/FitTrackee/issues/652) - User can not login on new installation
+* [#652](https://codeberg.org/FitTrackee/FitTrackee/issues/652) - User can not login on new installation
 
 ### Misc
 
-* [PR#651](https://github.com/SamR1/FitTrackee/pull/651) - Tests - add databases to parallelize more tests
+* [PR#651](https://codeberg.org/FitTrackee/FitTrackee/pulls/651) - Tests - add databases to parallelize more tests
 
 
 
@@ -2124,8 +2283,8 @@ Python 3.8 is no longer supported, the minimum version is now Python 3.9.
 
 ### Translations
 
-* [PR#640](https://github.com/SamR1/FitTrackee/pull/640) - Translations update (Basque)
-* [PR#645](https://github.com/SamR1/FitTrackee/pull/645) - Translations update (Russian, Polish)
+* [PR#640](https://codeberg.org/FitTrackee/FitTrackee/pulls/640) - Translations update (Basque)
+* [PR#645](https://codeberg.org/FitTrackee/FitTrackee/pulls/645) - Translations update (Russian, Polish)
 
 Translation status:
 - Basque: 100%
@@ -2145,13 +2304,13 @@ Translation status:
 
 ### Misc
 
-* [#455](https://github.com/SamR1/FitTrackee/issues/455) - Drop support for Python 3.8
-* [#639](https://github.com/SamR1/FitTrackee/issues/639) - Add support for Python 3.13
+* [#455](https://codeberg.org/FitTrackee/FitTrackee/issues/455) - Drop support for Python 3.8
+* [#639](https://codeberg.org/FitTrackee/FitTrackee/issues/639) - Add support for Python 3.13
 
 
 Thanks to the contributors:
-- @erral
-- @sikmir
+- [@erral](https://github.com/erral)
+- [@sikmir](https://github.com/sikmir)
 - Mariuz
 
 
@@ -2159,14 +2318,14 @@ Thanks to the contributors:
 
 ### Features and enhancements
 
-* [PR#635](https://github.com/SamR1/FitTrackee/pull/635) - Add ability to replace gpx title when adding a workout
-* [PR#636](https://github.com/SamR1/FitTrackee/pull/636) - Get description from gpx file if present 
+* [PR#635](https://codeberg.org/FitTrackee/FitTrackee/pulls/635) - Add ability to replace gpx title when adding a workout
+* [PR#636](https://codeberg.org/FitTrackee/FitTrackee/pulls/636) - Get description from gpx file if present 
 
 ### Translations
 
-* [#629](https://github.com/SamR1/FitTrackee/issues/629) - [Translation Request] Russian
-* [PR#633](https://github.com/SamR1/FitTrackee/pull/633) - Translations update (Russian, Dutch, Italian, Galician)
-* [PR#637](https://github.com/SamR1/FitTrackee/pull/637) - Translations update (Spanish, Russian, German and Galician)
+* [#629](https://codeberg.org/FitTrackee/FitTrackee/issues/629) - [Translation Request] Russian
+* [PR#633](https://codeberg.org/FitTrackee/FitTrackee/pulls/633) - Translations update (Russian, Dutch, Italian, Galician)
+* [PR#637](https://codeberg.org/FitTrackee/FitTrackee/pulls/637) - Translations update (Spanish, Russian, German and Galician)
 
 Translation status:
 - Basque: 99%
@@ -2186,42 +2345,42 @@ Translation status:
 
 ### Misc
 
-* [PR#634](https://github.com/SamR1/FitTrackee/pull/634) - CI - add PostgreSQL 17
+* [PR#634](https://codeberg.org/FitTrackee/FitTrackee/pulls/634) - CI - add PostgreSQL 17
 
 
 Thanks to the contributors:
-- @boosterl
-- @gallegonovato
-- @qwerty287
-- @Shura0
-- @sikmir
-- @xmgz
+- [@boosterl](https://github.com/boosterl)
+- [@gallegonovato](https://github.com/gallegonovato)
+- [@qwerty287](https://github.com/qwerty287)
+- [@Shura0](https://github.com/Shura0)
+- [@sikmir](https://github.com/sikmir)
+- [@xmgz](https://github.com/xmgz)
 
 
 ## Version 0.8.9 (2024/09/21)
 
 This release introduces a new field: the workout description.  
-This field is longer than the "Notes" field and will have the same visibility as the workout in a next version (see [#125](https://github.com/SamR1/FitTrackee/issues/125)). The "Notes" field will remain private.
+This field is longer than the "Notes" field and will have the same visibility as the workout in a next version (see [#125](https://codeberg.org/FitTrackee/FitTrackee/issues/125)). The "Notes" field will remain private.
 
 ### Features and enhancements
 
-* [#610](https://github.com/SamR1/FitTrackee/issues/610) - Add a description field to workout
+* [#610](https://codeberg.org/FitTrackee/FitTrackee/issues/610) - Add a description field to workout
 
 ### Bugs Fixed
 
-* [#621](https://github.com/SamR1/FitTrackee/issues/621) - email username may contain special characters
-* [#622](https://github.com/SamR1/FitTrackee/issues/622) - Fix email sending by adding 'Message-ID'
+* [#621](https://codeberg.org/FitTrackee/FitTrackee/issues/621) - email username may contain special characters
+* [#622](https://codeberg.org/FitTrackee/FitTrackee/issues/622) - Fix email sending by adding 'Message-ID'
 
 ### Translations
 
-* [PR#616](https://github.com/SamR1/FitTrackee/pull/616) - Translations update (Dutch)
-* [PR#617](https://github.com/SamR1/FitTrackee/pull/617) - Translations update (Italian)
-* [PR#618](https://github.com/SamR1/FitTrackee/pull/618) - Translations update (Polish)
-* [PR#620](https://github.com/SamR1/FitTrackee/pull/620) - Translations update (Polish)
-* [PR#624](https://github.com/SamR1/FitTrackee/pull/624) - Translations update (Spanish)
-* [PR#625](https://github.com/SamR1/FitTrackee/pull/625) - Translations update (Galician and Basque)
-* [PR#626](https://github.com/SamR1/FitTrackee/pull/626) - Translations update (German)
-* [PR#631](https://github.com/SamR1/FitTrackee/pull/631) - Translations update (Basque)
+* [PR#616](https://codeberg.org/FitTrackee/FitTrackee/pulls/616) - Translations update (Dutch)
+* [PR#617](https://codeberg.org/FitTrackee/FitTrackee/pulls/617) - Translations update (Italian)
+* [PR#618](https://codeberg.org/FitTrackee/FitTrackee/pulls/618) - Translations update (Polish)
+* [PR#620](https://codeberg.org/FitTrackee/FitTrackee/pulls/620) - Translations update (Polish)
+* [PR#624](https://codeberg.org/FitTrackee/FitTrackee/pulls/624) - Translations update (Spanish)
+* [PR#625](https://codeberg.org/FitTrackee/FitTrackee/pulls/625) - Translations update (Galician and Basque)
+* [PR#626](https://codeberg.org/FitTrackee/FitTrackee/pulls/626) - Translations update (German)
+* [PR#631](https://codeberg.org/FitTrackee/FitTrackee/pulls/631) - Translations update (Basque)
 
 Translation status:
 - Basque: 100%
@@ -2240,17 +2399,17 @@ Translation status:
 
 ### Misc
 
-* [PR#628](https://github.com/SamR1/FitTrackee/pull/628) - Replace markdown library
+* [PR#628](https://codeberg.org/FitTrackee/FitTrackee/pulls/628) - Replace markdown library
 
 
 Thanks to the contributors:
-- @boosterl
-- @byakurau
-- @dotlambda
-- @erral
-- @gallegonovato
-- @qwerty287
-- @xmgz
+- [@boosterl](https://github.com/boosterl)
+- [@byakurau](https://github.com/byakurau)
+- [@dotlambda](https://github.com/dotlambda)
+- [@erral](https://github.com/erral)
+- [@gallegonovato](https://github.com/gallegonovato)
+- [@qwerty287](https://github.com/qwerty287)
+- [@xmgz](https://github.com/xmgz)
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
 
@@ -2261,14 +2420,14 @@ Thanks to the contributors:
 
 ### Bugs Fixed
 
-* [#614](https://github.com/SamR1/FitTrackee/issues/614) - Labels are not translated on workouts average chart
+* [#614](https://codeberg.org/FitTrackee/FitTrackee/issues/614) - Labels are not translated on workouts average chart
 
 ### Translations
 
-* [PR#607](https://github.com/SamR1/FitTrackee/pull/607) - Translations update (German)
-* [#608](https://github.com/SamR1/FitTrackee/issues/608) - [translations request] Bulgarian
-* [PR#609](https://github.com/SamR1/FitTrackee/pull/609) - Translations update (Galician and Spanish)
-* [PR#612](https://github.com/SamR1/FitTrackee/pull/612) - Translations update (Bulgarian and Czech)
+* [PR#607](https://codeberg.org/FitTrackee/FitTrackee/pulls/607) - Translations update (German)
+* [#608](https://codeberg.org/FitTrackee/FitTrackee/issues/608) - [translations request] Bulgarian
+* [PR#609](https://codeberg.org/FitTrackee/FitTrackee/pulls/609) - Translations update (Galician and Spanish)
+* [PR#612](https://codeberg.org/FitTrackee/FitTrackee/pulls/612) - Translations update (Bulgarian and Czech)
 
  
 Translation status:
@@ -2288,27 +2447,27 @@ Translation status:
 
 
 Thanks to the contributors:
-- @gallegonovato
-- @jmlich
-- @mara21
-- @qwerty287
-- @xmgz
+- [@gallegonovato](https://github.com/gallegonovato)
+- [@jmlich](https://github.com/jmlich)
+- [@mara21](https://github.com/mara21)
+- [@qwerty287](https://github.com/qwerty287)
+- [@xmgz](https://github.com/xmgz)
 
 
 ## Version 0.8.7 (2024/08/25)
 
 ### Features and enhancements
 
-* [#604](https://github.com/SamR1/FitTrackee/issues/604) - New sport: Swimrun
+* [#604](https://codeberg.org/FitTrackee/FitTrackee/issues/604) - New sport: Swimrun
 
 ### Bugs Fixed
 
-* [PR#598](https://github.com/SamR1/FitTrackee/pull/598) - CLI - fix limit for user data export cleanup
+* [PR#598](https://codeberg.org/FitTrackee/FitTrackee/pulls/598) - CLI - fix limit for user data export cleanup
 
 ### Translations
 
-* [PR#600](https://github.com/SamR1/FitTrackee/pull/600) - Translations update (Galician)
-* [PR#603](https://github.com/SamR1/FitTrackee/pull/603) - Translations update (Basque)
+* [PR#600](https://codeberg.org/FitTrackee/FitTrackee/pulls/600) - Translations update (Galician)
+* [PR#603](https://codeberg.org/FitTrackee/FitTrackee/pulls/603) - Translations update (Basque)
 
  
 Translation status:
@@ -2327,8 +2486,8 @@ Translation status:
 
 
 Thanks to the contributors:
-- @erral
-- @xmgz
+- [@erral](https://github.com/erral)
+- [@xmgz](https://github.com/xmgz)
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
 
@@ -2337,11 +2496,11 @@ Thanks to the contributors:
 
 ### Translations
 
-* [PR#590](https://github.com/SamR1/FitTrackee/pull/590) - Translations update (Italian)
-* [PR#591](https://github.com/SamR1/FitTrackee/pull/591) - Translations update (Galician)
-* [PR#592](https://github.com/SamR1/FitTrackee/pull/592) - Translations update (German, Dutch)
-* [PR#593](https://github.com/SamR1/FitTrackee/pull/593) - Translations update (German)
-* [fb10602](https://github.com/SamR1/FitTrackee/commit/fb10602c47c426c432f528a1ecaf0b2dd4759e93) - update and fix translations
+* [PR#590](https://codeberg.org/FitTrackee/FitTrackee/pulls/590) - Translations update (Italian)
+* [PR#591](https://codeberg.org/FitTrackee/FitTrackee/pulls/591) - Translations update (Galician)
+* [PR#592](https://codeberg.org/FitTrackee/FitTrackee/pulls/592) - Translations update (German, Dutch)
+* [PR#593](https://codeberg.org/FitTrackee/FitTrackee/pulls/593) - Translations update (German)
+* [fb10602](https://codeberg.org/FitTrackee/FitTrackee/commit/fb10602c47c426c432f528a1ecaf0b2dd4759e93) - update and fix translations
  
 Translation status:
 - Basque: 98%
@@ -2359,35 +2518,35 @@ Translation status:
 
 ### Misc
 
-* [PR#595](https://github.com/SamR1/FitTrackee/pull/595) - CI - speed up tests
+* [PR#595](https://codeberg.org/FitTrackee/FitTrackee/pulls/595) - CI - speed up tests
 
 
 Thanks to the contributors:
-- @ConfusedAlex
-- @lukasitaly
-- @simontb
-- @slothje
-- @xmgz
+- [@ConfusedAlex](https://github.com/ConfusedAlex)
+- [@lukasitaly](https://github.com/lukasitaly)
+- [@simontb](https://github.com/simontb)
+- [@slothje](https://github.com/slothje)
+- [@xmgz](https://github.com/xmgz)
 
 
 ## Version 0.8.5 (2024/06/29)
 
 ### Features and enhancements
 
-* [#566](https://github.com/SamR1/FitTrackee/issues/566) - [Feature] Improved statistics section with average calculation
-* [PR#575](https://github.com/SamR1/FitTrackee/pull/575) - Add page to display sport statistics
-* [PR#587](https://github.com/SamR1/FitTrackee/pull/587) - Improve user forms
+* [#566](https://codeberg.org/FitTrackee/FitTrackee/issues/566) - [Feature] Improved statistics section with average calculation
+* [PR#575](https://codeberg.org/FitTrackee/FitTrackee/pulls/575) - Add page to display sport statistics
+* [PR#587](https://codeberg.org/FitTrackee/FitTrackee/pulls/587) - Improve user forms
 
 ### Bugs Fixed
 
-* [PR#588](https://github.com/SamR1/FitTrackee/pull/588) - Fix click on workout chart checkbox labels
+* [PR#588](https://codeberg.org/FitTrackee/FitTrackee/pulls/588) - Fix click on workout chart checkbox labels
 
 ### Translations
 
-* [PR#564](https://github.com/SamR1/FitTrackee/pull/564) - Translations update (Dutch)
-* [PR#565](https://github.com/SamR1/FitTrackee/pull/565) - Translations update (Polish)
-* [PR#571](https://github.com/SamR1/FitTrackee/pull/571) - Translations update (Galician, Spanish)
-* [PR#582](https://github.com/SamR1/FitTrackee/pull/582) - Translations update (Galician, Spanish)
+* [PR#564](https://codeberg.org/FitTrackee/FitTrackee/pulls/564) - Translations update (Dutch)
+* [PR#565](https://codeberg.org/FitTrackee/FitTrackee/pulls/565) - Translations update (Polish)
+* [PR#571](https://codeberg.org/FitTrackee/FitTrackee/pulls/571) - Translations update (Galician, Spanish)
+* [PR#582](https://codeberg.org/FitTrackee/FitTrackee/pulls/582) - Translations update (Galician, Spanish)
  
 Translation status:
 - Basque: 98%
@@ -2405,15 +2564,15 @@ Translation status:
 
 ### Misc
 
-* [PR#583](https://github.com/SamR1/FitTrackee/pull/583) - Simplify docker deployment
+* [PR#583](https://codeberg.org/FitTrackee/FitTrackee/pulls/583) - Simplify docker deployment
 
 
 Thanks to the contributors:
-- @byakurau
-- @gallegonovato
-- @jderuiter
-- @pluja
-- @xmgz
+- [@byakurau](https://github.com/byakurau)
+- [@gallegonovato](https://github.com/gallegonovato)
+- [@jderuiter](https://github.com/jderuiter)
+- [@pluja](https://github.com/pluja)
+- [@xmgz](https://github.com/xmgz)
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
 
@@ -2424,15 +2583,15 @@ Thanks to the contributors:
 
 ### Features and enhancements
 
-* [f2aec30](https://github.com/SamR1/FitTrackee/commit/f2aec301e18bdf0ae506db6eb013f76d5c99eff1) - add password strength estimation for Czech
-* [#563](https://github.com/SamR1/FitTrackee/issues/563) - CLI - init language preference on user creation
+* [f2aec30](https://codeberg.org/FitTrackee/FitTrackee/commit/f2aec301e18bdf0ae506db6eb013f76d5c99eff1) - add password strength estimation for Czech
+* [#563](https://codeberg.org/FitTrackee/FitTrackee/issues/563) - CLI - init language preference on user creation
 
 ### Translations
 
-* [#550](https://github.com/SamR1/FitTrackee/issues/550) - Typo: par page instead of per page
-* [PR#551](https://github.com/SamR1/FitTrackee/pull/551) - Translations update (Czech)
-* [PR#555](https://github.com/SamR1/FitTrackee/pull/555) - Translations update (Czech)
-* [#558](https://github.com/SamR1/FitTrackee/issues/558) - [translations request] Portuguese
+* [#550](https://codeberg.org/FitTrackee/FitTrackee/issues/550) - Typo: par page instead of per page
+* [PR#551](https://codeberg.org/FitTrackee/FitTrackee/pulls/551) - Translations update (Czech)
+* [PR#555](https://codeberg.org/FitTrackee/FitTrackee/pulls/555) - Translations update (Czech)
+* [#558](https://codeberg.org/FitTrackee/FitTrackee/issues/558) - [translations request] Portuguese
  
 Translation status:
 - Basque: 100%
@@ -2450,23 +2609,23 @@ Translation status:
 
 ### Misc
 
-* [PR#556](https://github.com/SamR1/FitTrackee/pull/556) - API - minor refacto
-* [PR#557](https://github.com/SamR1/FitTrackee/pull/557) - API - prepare SQLAlchemy migration
+* [PR#556](https://codeberg.org/FitTrackee/FitTrackee/pulls/556) - API - minor refacto
+* [PR#557](https://codeberg.org/FitTrackee/FitTrackee/pulls/557) - API - prepare SQLAlchemy migration
 
 Thanks to the contributors:
-- @jmlich
-- @voodoopt
+- [@jmlich](https://github.com/jmlich)
+- [@voodoopt](https://github.com/voodoopt)
 
 
 ## Version 0.8.3 (2024/05/09)
 
 ### Bugs Fixed
 
-* [#546](https://github.com/SamR1/FitTrackee/issues/546) - workout data are not refreshed after displaying segment
+* [#546](https://codeberg.org/FitTrackee/FitTrackee/issues/546) - workout data are not refreshed after displaying segment
 
 ### Translations
 
-* [PR#545](https://github.com/SamR1/FitTrackee/pull/545) - Translations update (Basque, Czech)
+* [PR#545](https://codeberg.org/FitTrackee/FitTrackee/pulls/545) - Translations update (Basque, Czech)
 
 Translation status:
 - Basque: 100%
@@ -2483,17 +2642,17 @@ Translation status:
 
 
 Thanks to the contributors:
-- @jmlich
-- @urtzai
+- [@jmlich](https://github.com/jmlich)
+- [@urtzai](https://github.com/urtzai)
 
 
 ## Version 0.8.2 (2024/05/08)
 
 ### Translations
 
-* [PR#540](https://github.com/SamR1/FitTrackee/pull/540) - Translations update (German)
-* [PR#542](https://github.com/SamR1/FitTrackee/pull/542) - Translations update (Czech)
-* [PR#544](https://github.com/SamR1/FitTrackee/pull/544) - Translations update (German, Czech)
+* [PR#540](https://codeberg.org/FitTrackee/FitTrackee/pulls/540) - Translations update (German)
+* [PR#542](https://codeberg.org/FitTrackee/FitTrackee/pulls/542) - Translations update (Czech)
+* [PR#544](https://codeberg.org/FitTrackee/FitTrackee/pulls/544) - Translations update (German, Czech)
 
 Translation status:
 - Basque: 88%
@@ -2510,34 +2669,34 @@ Translation status:
 
 ### Misc
 
-* [PR#543](https://github.com/SamR1/FitTrackee/pull/543) - tools - replace black, flake8 and isort with ruff
+* [PR#543](https://codeberg.org/FitTrackee/FitTrackee/pulls/543) - tools - replace black, flake8 and isort with ruff
 
 
 Thanks to the contributors:
-- @jmlich
-- @OndrejZivny
-- @qwerty287
+- [@jmlich](https://github.com/jmlich)
+- [@OndrejZivny](https://github.com/OndrejZivny)
+- [@qwerty287](https://github.com/qwerty287)
 
 
 ## Version 0.8.1 (2024/05/01)
 
 ### Features and enhancements
 
-* [PR#527](https://github.com/SamR1/FitTrackee/pull/527) - improve Sports endpoints response time
+* [PR#527](https://codeberg.org/FitTrackee/FitTrackee/pulls/527) - improve Sports endpoints response time
 
 ### Bugs Fixed
 
-* [PR#531](https://github.com/SamR1/FitTrackee/pull/531) - Minor navigation fixes on mobile
-* [PR#532](https://github.com/SamR1/FitTrackee/pull/532) - Fix footer color on dark mode
-* [PR#536](https://github.com/SamR1/FitTrackee/pull/536) - Accessibility fixes
+* [PR#531](https://codeberg.org/FitTrackee/FitTrackee/pulls/531) - Minor navigation fixes on mobile
+* [PR#532](https://codeberg.org/FitTrackee/FitTrackee/pulls/532) - Fix footer color on dark mode
+* [PR#536](https://codeberg.org/FitTrackee/FitTrackee/pulls/536) - Accessibility fixes
 
 ### Translations
 
-* [PR#526](https://github.com/SamR1/FitTrackee/pull/526) - Translations update (Dutch, Galician, Norwegian Bokmål)
-* [PR#533](https://github.com/SamR1/FitTrackee/pull/533) - Translations update (Czech)
-* [#534](https://github.com/SamR1/FitTrackee/issues/534) - [translations request] Czech
-* [PR#537](https://github.com/SamR1/FitTrackee/pull/537) - Translations update (Spanish)
-* [PR#538](https://github.com/SamR1/FitTrackee/pull/538) - Translations update (Galician)
+* [PR#526](https://codeberg.org/FitTrackee/FitTrackee/pulls/526) - Translations update (Dutch, Galician, Norwegian Bokmål)
+* [PR#533](https://codeberg.org/FitTrackee/FitTrackee/pulls/533) - Translations update (Czech)
+* [#534](https://codeberg.org/FitTrackee/FitTrackee/issues/534) - [translations request] Czech
+* [PR#537](https://codeberg.org/FitTrackee/FitTrackee/pulls/537) - Translations update (Spanish)
+* [PR#538](https://codeberg.org/FitTrackee/FitTrackee/pulls/538) - Translations update (Galician)
 
 Translation status:
 - Basque: 88%
@@ -2554,16 +2713,16 @@ Translation status:
 
 ### Misc
 
-* [PR#528](https://github.com/SamR1/FitTrackee/pull/528) - README reworked
-* [PR#530](https://github.com/SamR1/FitTrackee/pull/530) - specify AGPLv3 license
+* [PR#528](https://codeberg.org/FitTrackee/FitTrackee/pulls/528) - README reworked
+* [PR#530](https://codeberg.org/FitTrackee/FitTrackee/pulls/530) - specify AGPLv3 license
 
 
 Thanks to the contributors:
-- @comradekingu
-- @gallegonovato
-- @jderuiter
-- @jmlich
-- @xmgz
+- [@comradekingu](https://github.com/comradekingu)
+- [@gallegonovato](https://github.com/gallegonovato)
+- [@jderuiter](https://github.com/jderuiter)
+- [@jmlich](https://github.com/jmlich)
+- [@xmgz](https://github.com/xmgz)
 
 
 ## Version 0.8.0 (2024/04/21)
@@ -2572,22 +2731,22 @@ Thanks to the contributors:
 
 ### Features and enhancements
 
-* [#259](https://github.com/SamR1/FitTrackee/issues/259) - Feature request: "Equipment" that can be associated with workouts
-* [#512](https://github.com/SamR1/FitTrackee/issues/512) - Add ability to filter on notes in Workouts List
+* [#259](https://codeberg.org/FitTrackee/FitTrackee/issues/259) - Feature request: "Equipment" that can be associated with workouts
+* [#512](https://codeberg.org/FitTrackee/FitTrackee/issues/512) - Add ability to filter on notes in Workouts List
 
 ### Bugs Fixed
 
-* [#508](https://github.com/SamR1/FitTrackee/issues/508) - Stopped speed threshold unit is missing on sports list
-* [3b6fa25](https://github.com/SamR1/FitTrackee/commit/3b6fa25e72375b5790a10761cdf7772ebfc02fbb) - fix workouts table display on small resolutions
-* [51758b4](https://github.com/SamR1/FitTrackee/commit/51758b45cd9e343b07409a55618879e4a8c534eb) - fix on filters hiding on small resolutions
+* [#508](https://codeberg.org/FitTrackee/FitTrackee/issues/508) - Stopped speed threshold unit is missing on sports list
+* [3b6fa25](https://codeberg.org/FitTrackee/FitTrackee/commit/3b6fa25e72375b5790a10761cdf7772ebfc02fbb) - fix workouts table display on small resolutions
+* [51758b4](https://codeberg.org/FitTrackee/FitTrackee/commit/51758b45cd9e343b07409a55618879e4a8c534eb) - fix on filters hiding on small resolutions
 
 ### Translations
 
-* [PR#507](https://github.com/SamR1/FitTrackee/pull/507) Translations update (Galician)
-* [PR#510](https://github.com/SamR1/FitTrackee/pull/510) Translations update (Spanish)
-* [PR#511](https://github.com/SamR1/FitTrackee/pull/511) Translations update (Galician)
-* [PR#521](https://github.com/SamR1/FitTrackee/pull/521) Translations update (Spanish)
-* [PR#524](https://github.com/SamR1/FitTrackee/pull/524) Translations update (Spanish)
+* [PR#507](https://codeberg.org/FitTrackee/FitTrackee/pulls/507) Translations update (Galician)
+* [PR#510](https://codeberg.org/FitTrackee/FitTrackee/pulls/510) Translations update (Spanish)
+* [PR#511](https://codeberg.org/FitTrackee/FitTrackee/pulls/511) Translations update (Galician)
+* [PR#521](https://codeberg.org/FitTrackee/FitTrackee/pulls/521) Translations update (Spanish)
+* [PR#524](https://codeberg.org/FitTrackee/FitTrackee/pulls/524) Translations update (Spanish)
 
 Translation status:
 - Basque: 89%
@@ -2603,14 +2762,14 @@ Translation status:
 
 ### Misc
 
-* [#502](https://github.com/SamR1/FitTrackee/issues/502) - Remove deprecated commands
-* [PR#506](https://github.com/SamR1/FitTrackee/pull/506) - CLI - update database commands
+* [#502](https://codeberg.org/FitTrackee/FitTrackee/issues/502) - Remove deprecated commands
+* [PR#506](https://codeberg.org/FitTrackee/FitTrackee/pulls/506) - CLI - update database commands
 
 
 Thanks to the contributors:
-- @jat255
-- @gallegonovato
-- @xmgz
+- [@jat255](https://github.com/jat255)
+- [@gallegonovato](https://github.com/gallegonovato)
+- [@xmgz](https://github.com/xmgz)
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
 
@@ -2619,12 +2778,12 @@ Thanks to the contributors:
 
 ### Bugs Fixed
 
-* [#504](https://github.com/SamR1/FitTrackee/issues/504) - Database migrations fail
+* [#504](https://codeberg.org/FitTrackee/FitTrackee/issues/504) - Database migrations fail
 
 ### Translations
 
-* [#496](https://github.com/SamR1/FitTrackee/issues/496) Translations update (Dutch)
-* [#499](https://github.com/SamR1/FitTrackee/issues/499) Translations update (Polish)
+* [#496](https://codeberg.org/FitTrackee/FitTrackee/issues/496) Translations update (Dutch)
+* [#499](https://codeberg.org/FitTrackee/FitTrackee/issues/499) Translations update (Polish)
 
 Translation status:
 - Basque: 100%
@@ -2640,7 +2799,7 @@ Translation status:
 
 
 Thanks to the contributors:
-- @bjornclauw
+- [@bjornclauw](https://github.com/bjornclauw)
 - Mariuz
 
 
@@ -2650,11 +2809,11 @@ Basque is now available in FitTrackee interface.
 
 ### Bugs Fixed
 
-* [PR#495](https://github.com/SamR1/FitTrackee/pull/495) - fix menu display when clicking on application name
+* [PR#495](https://codeberg.org/FitTrackee/FitTrackee/pulls/495) - fix menu display when clicking on application name
 
 ### Translations
 
-* [#490](https://github.com/SamR1/FitTrackee/issues/490) [Translation Request] EU - Basque 
+* [#490](https://codeberg.org/FitTrackee/FitTrackee/issues/490) [Translation Request] EU - Basque 
 
 Translation status:
 - Basque: 100%
@@ -2670,30 +2829,30 @@ Translation status:
 
 ### Misc
 
-* [PR#494](https://github.com/SamR1/FitTrackee/pull/494) - Update install-python command
+* [PR#494](https://codeberg.org/FitTrackee/FitTrackee/pulls/494) - Update install-python command
 
 
 Thanks to the contributors:
-- @erral
+- [@erral](https://github.com/erral)
 
 
 ## Version 0.7.30 (2024/02/04)
 
 ### Features and enhancements
 
-* [b748459](https://github.com/SamR1/FitTrackee/commit/b7484598258b4891b5699e8e8512deee7977d517) - Update alert message colors on dark mode 
+* [b748459](https://codeberg.org/FitTrackee/FitTrackee/commit/b7484598258b4891b5699e8e8512deee7977d517) - Update alert message colors on dark mode 
 
 ### Bugs Fixed
 
-* [PR#481](https://github.com/SamR1/FitTrackee/pull/481) - Handle keyboard navigation on dropdowns
-* [3821e37](https://github.com/SamR1/FitTrackee/commit/3821e370228cf14cc73a9c3f17d47178e17e8842) - Make calendar arrows accessible to keyboard navigation 
-* [PR#488](https://github.com/SamR1/FitTrackee/pull/488) - CLI - fix user creation when user already exists with same email
-* [PR#489](https://github.com/SamR1/FitTrackee/pull/489) - Handle keyboard navigation on calendar
+* [PR#481](https://codeberg.org/FitTrackee/FitTrackee/pulls/481) - Handle keyboard navigation on dropdowns
+* [3821e37](https://codeberg.org/FitTrackee/FitTrackee/commit/3821e370228cf14cc73a9c3f17d47178e17e8842) - Make calendar arrows accessible to keyboard navigation 
+* [PR#488](https://codeberg.org/FitTrackee/FitTrackee/pulls/488) - CLI - fix user creation when user already exists with same email
+* [PR#489](https://codeberg.org/FitTrackee/FitTrackee/pulls/489) - Handle keyboard navigation on calendar
 
 ### Translations
 
-* [PR#482](https://github.com/SamR1/FitTrackee/pull/482) - Translations update (Galician and Spanish)
-* [PR#484](https://github.com/SamR1/FitTrackee/pull/484) - Translations update (German)
+* [PR#482](https://codeberg.org/FitTrackee/FitTrackee/pulls/482) - Translations update (Galician and Spanish)
+* [PR#484](https://codeberg.org/FitTrackee/FitTrackee/pulls/484) - Translations update (German)
 
 Translation status:
 - Dutch: 99%
@@ -2708,30 +2867,30 @@ Translation status:
 
 ### Misc
 
-* [aff4d68](https://github.com/SamR1/FitTrackee/commit/aff4d68a913b9aee5a620c4fb7f6049410ad7724) - CI - update actions version 
+* [aff4d68](https://codeberg.org/FitTrackee/FitTrackee/commit/aff4d68a913b9aee5a620c4fb7f6049410ad7724) - CI - update actions version 
 
 
 Thanks to the contributors:
-- @gallegonovato
-- @qwerty287
-- @xmgz
+- [@gallegonovato](https://github.com/gallegonovato)
+- [@qwerty287](https://github.com/qwerty287)
+- [@xmgz](https://github.com/xmgz)
 
 
 ## Version 0.7.29 (2024/01/06)
 
 ### Features and enhancements
 
-* [8aa4cff](https://github.com/SamR1/FitTrackee/commit/8aa4cff2bb21c877e382c7498442ccef35935d5f) - Update loader color on dark theme 
-* [#478](https://github.com/SamR1/FitTrackee/issues/478) - Make application name clickable to access dashboard
+* [8aa4cff](https://codeberg.org/FitTrackee/FitTrackee/commit/8aa4cff2bb21c877e382c7498442ccef35935d5f) - Update loader color on dark theme 
+* [#478](https://codeberg.org/FitTrackee/FitTrackee/issues/478) - Make application name clickable to access dashboard
 
 ### Bugs Fixed
 
-* [PR#479](https://github.com/SamR1/FitTrackee/pull/479) - Minor fixes on UI
+* [PR#479](https://codeberg.org/FitTrackee/FitTrackee/pulls/479) - Minor fixes on UI
 
 ### Translations
 
-* [PR#476](https://github.com/SamR1/FitTrackee/pull/476) - Translations update (Polish)
-* [PR#477](https://github.com/SamR1/FitTrackee/pull/477) - Translations update (Dutch)
+* [PR#476](https://codeberg.org/FitTrackee/FitTrackee/pulls/476) - Translations update (Polish)
+* [PR#477](https://codeberg.org/FitTrackee/FitTrackee/pulls/477) - Translations update (Dutch)
 
 Translation status:
 - Dutch: 100%
@@ -2746,11 +2905,11 @@ Translation status:
 
 ### Misc
 
-* [PR#475](https://github.com/SamR1/FitTrackee/pull/475) - Build - use poetry-core instead of poetry
+* [PR#475](https://codeberg.org/FitTrackee/FitTrackee/pulls/475) - Build - use poetry-core instead of poetry
 
 
 Thanks to the contributors:
-- @traxys
+- [@traxys](https://github.com/traxys)
 - Mariuz
 - Koen
 
@@ -2759,15 +2918,15 @@ Thanks to the contributors:
 
 ### Features and enhancements
 
-* [PR#474](https://github.com/SamR1/FitTrackee/pull/474) - Improve links display
+* [PR#474](https://codeberg.org/FitTrackee/FitTrackee/pulls/474) - Improve links display
 
 ### Bugs Fixed
 
-* [6e215aa](https://github.com/SamR1/FitTrackee/commit/6e215aa52eba28b14f74f3484b23197f5f0ddd4d) - fix background color on dark theme when modal is displayed 
+* [6e215aa](https://codeberg.org/FitTrackee/FitTrackee/commit/6e215aa52eba28b14f74f3484b23197f5f0ddd4d) - fix background color on dark theme when modal is displayed 
 
 ### Translations
 
-* [PR#473](https://github.com/SamR1/FitTrackee/pull/473) - Translations update (Galician, Spanish and German)
+* [PR#473](https://codeberg.org/FitTrackee/FitTrackee/pulls/473) - Translations update (Galician, Spanish and German)
 
 
 Translation status:
@@ -2782,31 +2941,31 @@ Translation status:
 - Spanish: 100%
 
 Thanks to the contributors:
-- @gallegonovato
-- @qwerty287
-- @xmgz
+- [@gallegonovato](https://github.com/gallegonovato)
+- [@qwerty287](https://github.com/qwerty287)
+- [@xmgz](https://github.com/xmgz)
 
 
 ## Version 0.7.27 (2023/12/20)
 
 ### Features and enhancements
 
-* [#113](https://github.com/SamR1/FitTrackee/issues/113) - add a dark mode
-* [PR#464](https://github.com/SamR1/FitTrackee/pull/464) - Update user preferences display 
-* [PR#471](https://github.com/SamR1/FitTrackee/pull/471) - add new sport: "Cycling (Trekking)"
+* [#113](https://codeberg.org/FitTrackee/FitTrackee/issues/113) - add a dark mode
+* [PR#464](https://codeberg.org/FitTrackee/FitTrackee/pulls/464) - Update user preferences display 
+* [PR#471](https://codeberg.org/FitTrackee/FitTrackee/pulls/471) - add new sport: "Cycling (Trekking)"
 
 ### Bugs Fixed
 
-* [PR#469](https://github.com/SamR1/FitTrackee/pull/469) - change UI display only on login ou user preferences update 
-* [PR#472](https://github.com/SamR1/FitTrackee/pull/472) - fix redirection when resetting password
+* [PR#469](https://codeberg.org/FitTrackee/FitTrackee/pulls/469) - change UI display only on login ou user preferences update 
+* [PR#472](https://codeberg.org/FitTrackee/FitTrackee/pulls/472) - fix redirection when resetting password
 
 ### Translations
 
-* [PR#468](https://github.com/SamR1/FitTrackee/pull/468) - Translations update (Galician & Spanish)
+* [PR#468](https://codeberg.org/FitTrackee/FitTrackee/pulls/468) - Translations update (Galician & Spanish)
 
 ### Misc
 
-* [#456](https://github.com/SamR1/FitTrackee/issues/456) - Drop PostgreSQL 11 support
+* [#456](https://codeberg.org/FitTrackee/FitTrackee/issues/456) - Drop PostgreSQL 11 support
 
 
 Translation status:
@@ -2821,9 +2980,9 @@ Translation status:
 - Spanish: 99%
 
 Thanks to the contributors:
-- @DavidHenryThoreau
-- @gallegonovato
-- @xmgz
+- [@DavidHenryThoreau](https://github.com/DavidHenryThoreau)
+- [@gallegonovato](https://github.com/gallegonovato)
+- [@xmgz](https://github.com/xmgz)
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
 
@@ -2832,20 +2991,20 @@ Thanks to the contributors:
 
 ### Bugs Fixed
 
-* [#224](https://github.com/SamR1/FitTrackee/issues/224) - Missing elevation results in incorrect ascent/descent total
+* [#224](https://codeberg.org/FitTrackee/FitTrackee/issues/224) - Missing elevation results in incorrect ascent/descent total
 
 
 ### Translations
 
-* [PR#444](https://github.com/SamR1/FitTrackee/pull/444) - Translations update (Norwegian Bokmål)
+* [PR#444](https://codeberg.org/FitTrackee/FitTrackee/pulls/444) - Translations update (Norwegian Bokmål)
 
 
 ### Misc
 
 In addition to dependencies update:
 
-* [PR#449](https://github.com/SamR1/FitTrackee/pull/449) - Update vue, tooling and chart library
-* [PR#450](https://github.com/SamR1/FitTrackee/pull/450) - Update gpxpy to 1.6.1
+* [PR#449](https://codeberg.org/FitTrackee/FitTrackee/pulls/449) - Update vue, tooling and chart library
+* [PR#450](https://codeberg.org/FitTrackee/FitTrackee/pulls/450) - Update gpxpy to 1.6.1
 
 
 Translation status:
@@ -2860,33 +3019,33 @@ Translation status:
 - Spanish: 100%
 
 Thanks to the contributors:
-- @comradekingu
+- [@comradekingu](https://github.com/comradekingu)
 
 
 ## Version 0.7.25 (2023/10/08)
 
 ### Bugs Fixed
 
-* [#441](https://github.com/SamR1/FitTrackee/issues/441) - Errors after upgrade to 0.7.24
+* [#441](https://codeberg.org/FitTrackee/FitTrackee/issues/441) - Errors after upgrade to 0.7.24
 
 
 ## Version 0.7.24 (2023/10/04)
 
 ### Bugs Fixed
 
-* [PR#433](https://github.com/SamR1/FitTrackee/pull/433) - Handle encoded password in EMAIL_URL
+* [PR#433](https://codeberg.org/FitTrackee/FitTrackee/pulls/433) - Handle encoded password in EMAIL_URL
 
 ### Translations
 
-* [PR#427](https://github.com/SamR1/FitTrackee/pull/427) - fix typos and translations + refacto
-* [PR#431](https://github.com/SamR1/FitTrackee/pull/431) - Translations update (Galician)
+* [PR#427](https://codeberg.org/FitTrackee/FitTrackee/pulls/427) - fix typos and translations + refacto
+* [PR#431](https://codeberg.org/FitTrackee/FitTrackee/pulls/431) - Translations update (Galician)
 
 ### Misc
 
-* [PR#428](https://github.com/SamR1/FitTrackee/pull/428) - CI - Add PostgreSQL 16
-* [2bcff2e](https://github.com/SamR1/FitTrackee/commit/2bcff2edc7308f8ec4a59b30dd482025bf7396e7) - API - update Flask to 3.0+ 
-* [PR#436](https://github.com/SamR1/FitTrackee/pull/436) - CI - Add Python 3.12
-* [PR#438](https://github.com/SamR1/FitTrackee/pull/438) - CI - update workflows
+* [PR#428](https://codeberg.org/FitTrackee/FitTrackee/pulls/428) - CI - Add PostgreSQL 16
+* [2bcff2e](https://codeberg.org/FitTrackee/FitTrackee/commit/2bcff2edc7308f8ec4a59b30dd482025bf7396e7) - API - update Flask to 3.0+ 
+* [PR#436](https://codeberg.org/FitTrackee/FitTrackee/pulls/436) - CI - Add Python 3.12
+* [PR#438](https://codeberg.org/FitTrackee/FitTrackee/pulls/438) - CI - update workflows
 
 
 Translation status:
@@ -2901,35 +3060,35 @@ Translation status:
 - Spanish: 100%
 
 Thanks to the contributors:
-- @xmgz
+- [@xmgz](https://github.com/xmgz)
 
 
 ## Version 0.7.23 (2023/09/14)
 
 ### Bugs Fixed
 
-* [PR#421](https://github.com/SamR1/FitTrackee/pull/421) - remove darksky from available weather providers in .env
-* [PR#426](https://github.com/SamR1/FitTrackee/pull/426) - Update default tile server (thanks to @astridx)
+* [PR#421](https://codeberg.org/FitTrackee/FitTrackee/pulls/421) - remove darksky from available weather providers in .env
+* [PR#426](https://codeberg.org/FitTrackee/FitTrackee/pulls/426) - Update default tile server (thanks to [@astridx](https://github.com/astridx))
 
 ### Misc
 
-* [PR#422](https://github.com/SamR1/FitTrackee/pull/422) - CI - fix e2e tests with packaged version
+* [PR#422](https://codeberg.org/FitTrackee/FitTrackee/pulls/422) - CI - fix e2e tests with packaged version
 
 
 ## Version 0.7.22 (2023/08/23)
 
 ### Bugs Fixed
 
-* [PR#411](https://github.com/SamR1/FitTrackee/pull/411) - Fix various typos
-* [PR#416](https://github.com/SamR1/FitTrackee/pull/416) - fix modal navigation and closing
+* [PR#411](https://codeberg.org/FitTrackee/FitTrackee/pulls/411) - Fix various typos
+* [PR#416](https://codeberg.org/FitTrackee/FitTrackee/pulls/416) - fix modal navigation and closing
 
 
 ### Translations
 
-* [PR#410](https://github.com/SamR1/FitTrackee/pull/410) - Translations update (German)
-* [PR#415](https://github.com/SamR1/FitTrackee/pull/415) - Translations update (Polish)
-* [PR#417](https://github.com/SamR1/FitTrackee/pull/417) - Translations update (Polish)
-* [PR#418](https://github.com/SamR1/FitTrackee/pull/418) - Translations update (Dutch)
+* [PR#410](https://codeberg.org/FitTrackee/FitTrackee/pulls/410) - Translations update (German)
+* [PR#415](https://codeberg.org/FitTrackee/FitTrackee/pulls/415) - Translations update (Polish)
+* [PR#417](https://codeberg.org/FitTrackee/FitTrackee/pulls/417) - Translations update (Polish)
+* [PR#418](https://codeberg.org/FitTrackee/FitTrackee/pulls/418) - Translations update (Dutch)
 
 Translation status:
 - Dutch: 100%
@@ -2943,8 +3102,8 @@ Translation status:
 - Spanish: 100%
 
 Thanks to the contributors:
-- @bjornclauw
-- @qwerty287
+- [@bjornclauw](https://github.com/bjornclauw)
+- [@qwerty287](https://github.com/qwerty287)
 - Mariusz
 
 
@@ -2952,32 +3111,32 @@ Thanks to the contributors:
 
 ### Bugs Fixed
 
-* [#407](https://github.com/SamR1/FitTrackee/issues/407) - Workout display error when speeds are zero
+* [#407](https://codeberg.org/FitTrackee/FitTrackee/issues/407) - Workout display error when speeds are zero
 
 
 ### Misc
 
-* [PR#409](https://github.com/SamR1/FitTrackee/pull/409) - CI - update actions version
+* [PR#409](https://codeberg.org/FitTrackee/FitTrackee/pulls/409) - CI - update actions version
 
 
 ## Version 0.7.20 (2023/07/22)
 
 ### Features and enhancements
 
-* [#400](https://github.com/SamR1/FitTrackee/issues/400) - Add new sport: open water swimming
+* [#400](https://codeberg.org/FitTrackee/FitTrackee/issues/400) - Add new sport: open water swimming
 
 
 ### Bugs Fixed
 
-* [PR#398](https://github.com/SamR1/FitTrackee/pull/398) - Fix language dropdown label
-* [#402](https://github.com/SamR1/FitTrackee/issues/402) - handle gpx file without elevation
+* [PR#398](https://codeberg.org/FitTrackee/FitTrackee/pulls/398) - Fix language dropdown label
+* [#402](https://codeberg.org/FitTrackee/FitTrackee/issues/402) - handle gpx file without elevation
 
 
 ### Translations
 
-* [PR#399](https://github.com/SamR1/FitTrackee/pull/399) - Translations update (Galician)
-* [PR#401](https://github.com/SamR1/FitTrackee/pull/401) - Translations update (Galician and Polish)
-* [PR#406](https://github.com/SamR1/FitTrackee/pull/406) - Translations update (Galician and Spanish)
+* [PR#399](https://codeberg.org/FitTrackee/FitTrackee/pulls/399) - Translations update (Galician)
+* [PR#401](https://codeberg.org/FitTrackee/FitTrackee/pulls/401) - Translations update (Galician and Polish)
+* [PR#406](https://codeberg.org/FitTrackee/FitTrackee/pulls/406) - Translations update (Galician and Spanish)
 
 
 Translation status:
@@ -2992,8 +3151,8 @@ Translation status:
 - Spanish: 100%
 
 Thanks to the contributors:
-- @gallegonovato
-- @xmgz
+- [@gallegonovato](https://github.com/gallegonovato)
+- [@xmgz](https://github.com/xmgz)
 - Mariusz
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
@@ -3003,33 +3162,33 @@ Thanks to the contributors:
 
 ### Features and enhancements
 
-* [PR#380](https://github.com/SamR1/FitTrackee/pull/380) - Update documentation link
-* [#390](https://github.com/SamR1/FitTrackee/issues/390) - Improve UI
-* [#391](https://github.com/SamR1/FitTrackee/issues/391) - Add new sport: paragliding
+* [PR#380](https://codeberg.org/FitTrackee/FitTrackee/pulls/380) - Update documentation link
+* [#390](https://codeberg.org/FitTrackee/FitTrackee/issues/390) - Improve UI
+* [#391](https://codeberg.org/FitTrackee/FitTrackee/issues/391) - Add new sport: paragliding
 
 
 ### Bugs Fixed
 
-* [#384](https://github.com/SamR1/FitTrackee/issues/384) - Inconsistent page with between workout with and without GPS data
-* [#393](https://github.com/SamR1/FitTrackee/issues/393) - PIL.Image module has no attribute ANTIALIAS
+* [#384](https://codeberg.org/FitTrackee/FitTrackee/issues/384) - Inconsistent page with between workout with and without GPS data
+* [#393](https://codeberg.org/FitTrackee/FitTrackee/issues/393) - PIL.Image module has no attribute ANTIALIAS
 
 
 ### Translations
 
-* [PR#394](https://github.com/SamR1/FitTrackee/pull/394) - Translations update (Galician)
-* [PR#397](https://github.com/SamR1/FitTrackee/pull/397) - Translations update (Spanish)
+* [PR#394](https://codeberg.org/FitTrackee/FitTrackee/pulls/394) - Translations update (Galician)
+* [PR#397](https://codeberg.org/FitTrackee/FitTrackee/pulls/397) - Translations update (Spanish)
 
 
 ### Documentation
 
-* [PR#386](https://github.com/SamR1/FitTrackee/pull/386) - Minor fix in CONTRIBUTING.md
-* [PR#388](https://github.com/SamR1/FitTrackee/pull/388) - Minor typo in CONTRIBUTING.md
+* [PR#386](https://codeberg.org/FitTrackee/FitTrackee/pulls/386) - Minor fix in CONTRIBUTING.md
+* [PR#388](https://codeberg.org/FitTrackee/FitTrackee/pulls/388) - Minor typo in CONTRIBUTING.md
 
 
 ### Misc
 
-* [#395](https://github.com/SamR1/FitTrackee/issues/395) - CI - test a packaged version of FitTrackee
-* [cc3fe1c](https://github.com/SamR1/FitTrackee/commit/cc3fe1c82e6fb9f4d5ba94f0b8a9763540bbcab4) CI - update python and postgresql default versions
+* [#395](https://codeberg.org/FitTrackee/FitTrackee/issues/395) - CI - test a packaged version of FitTrackee
+* [cc3fe1c](https://codeberg.org/FitTrackee/FitTrackee/commit/cc3fe1c82e6fb9f4d5ba94f0b8a9763540bbcab4) CI - update python and postgresql default versions
 
 
 Translation status:
@@ -3044,9 +3203,9 @@ Translation status:
 - Spanish: 100%
 
 Thanks to the contributors:
-- @dkm
-- @gallegonovato
-- @xmgz
+- [@dkm](https://github.com/dkm)
+- [@gallegonovato](https://github.com/gallegonovato)
+- [@xmgz](https://github.com/xmgz)
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
 
@@ -3060,23 +3219,23 @@ Documentation is now translated in French (**note**: documentation translations 
 
 ### Translations
 
-* [#351](https://github.com/SamR1/FitTrackee/issues/351) - [Translation Request] Polish
-* [PR#370](https://github.com/SamR1/FitTrackee/pull/370) - Translations update (Dutch, thanks to @bjornclauw)
-* [PR#371](https://github.com/SamR1/FitTrackee/pull/371) - Translations update (Polish, thanks to Mariusz on Weblate)
-* [PR#375](https://github.com/SamR1/FitTrackee/pull/375) - Translations update (French, thanks to @Thovi98)
-* [PR#376](https://github.com/SamR1/FitTrackee/pull/376) - Translations update (German, thanks to @qwerty287)
+* [#351](https://codeberg.org/FitTrackee/FitTrackee/issues/351) - [Translation Request] Polish
+* [PR#370](https://codeberg.org/FitTrackee/FitTrackee/pulls/370) - Translations update (Dutch, thanks to [@bjornclauw](https://github.com/bjornclauw))
+* [PR#371](https://codeberg.org/FitTrackee/FitTrackee/pulls/371) - Translations update (Polish, thanks to Mariusz on Weblate)
+* [PR#375](https://codeberg.org/FitTrackee/FitTrackee/pulls/375) - Translations update (French, thanks to [@Thovi98](Https://Github.Com/Thovi98))
+* [PR#376](https://codeberg.org/FitTrackee/FitTrackee/pulls/376) - Translations update (German, thanks to [@qwerty287](https://github.com/qwerty287))
 
 
 ### Documentation
 
-* [1375986](https://github.com/SamR1/FitTrackee/commit/1375986837321fa356decadcff89bfc2144c345e) - Change documentation theme for Furo
-* [#377](https://github.com/SamR1/FitTrackee/issues/377) - Init documentation translation
+* [1375986](https://codeberg.org/FitTrackee/FitTrackee/commit/1375986837321fa356decadcff89bfc2144c345e) - Change documentation theme for Furo
+* [#377](https://codeberg.org/FitTrackee/FitTrackee/issues/377) - Init documentation translation
 
 
 ### Misc
 
-* [#354](https://github.com/SamR1/FitTrackee/issues/354) - Drop support for Python 3.7
-* [PR#374](https://github.com/SamR1/FitTrackee/pull/374) - Docker - install fittrackee in a virtualenv 
+* [#354](https://codeberg.org/FitTrackee/FitTrackee/issues/354) - Drop support for Python 3.7
+* [PR#374](https://codeberg.org/FitTrackee/FitTrackee/pulls/374) - Docker - install fittrackee in a virtualenv 
 
 
 Translation status:
@@ -3097,8 +3256,8 @@ Thanks to all contributors.
 
 ### Translations
 
-* [PR#366](https://github.com/SamR1/FitTrackee/pull/366), [PR#369](https://github.com/SamR1/FitTrackee/pull/369) - Translations update from Hosted Weblate (Galician, thanks to @xmgz)
-* [PR#367](https://github.com/SamR1/FitTrackee/pull/367) - Translations update (Spanish, French)
+* [PR#366](https://codeberg.org/FitTrackee/FitTrackee/pulls/366), [PR#369](https://codeberg.org/FitTrackee/FitTrackee/pulls/369) - Translations update from Hosted Weblate (Galician, thanks to [@xmgz](https://github.com/xmgz))
+* [PR#367](https://codeberg.org/FitTrackee/FitTrackee/pulls/367) - Translations update (Spanish, French)
 
 Translation status:
 - Dutch: 99%
@@ -3116,21 +3275,21 @@ Translation status:
 
 ### Features and enhancements
 
-* [PR#358](https://github.com/SamR1/FitTrackee/pull/358) - Add user preference for filtering of GPX speed data
+* [PR#358](https://codeberg.org/FitTrackee/FitTrackee/pulls/358) - Add user preference for filtering of GPX speed data
 
 
 ### Bugs Fixed
 
-* [#359](https://github.com/SamR1/FitTrackee/issues/359) - Footer overlaps content on user preferences page
+* [#359](https://codeberg.org/FitTrackee/FitTrackee/issues/359) - Footer overlaps content on user preferences page
 
 
 ### Translations
 
-* [PR#350](https://github.com/SamR1/FitTrackee/pull/350) - Translations update from Hosted Weblate (Galician)
-* [PR#352](https://github.com/SamR1/FitTrackee/pull/352) - Translations update from Hosted Weblate (Dutch)
-* [PR#356](https://github.com/SamR1/FitTrackee/pull/356) - Init Polish translation files
-* [PR#357](https://github.com/SamR1/FitTrackee/pull/357) - Translations update from Hosted Weblate (Polish)
-* [PR#365](https://github.com/SamR1/FitTrackee/pull/365) - Translations update from Hosted Weblate (Spanish)
+* [PR#350](https://codeberg.org/FitTrackee/FitTrackee/pulls/350) - Translations update from Hosted Weblate (Galician)
+* [PR#352](https://codeberg.org/FitTrackee/FitTrackee/pulls/352) - Translations update from Hosted Weblate (Dutch)
+* [PR#356](https://codeberg.org/FitTrackee/FitTrackee/pulls/356) - Init Polish translation files
+* [PR#357](https://codeberg.org/FitTrackee/FitTrackee/pulls/357) - Translations update from Hosted Weblate (Polish)
+* [PR#365](https://codeberg.org/FitTrackee/FitTrackee/pulls/365) - Translations update from Hosted Weblate (Spanish)
 
 Translation status:
 - Dutch: 99%
@@ -3146,11 +3305,11 @@ Translation status:
 **Note:** Polish is not yet available in FitTrackee interface.
 
 Thanks to the contributors:
-- @bjornclauw
-- @gallegonovato
-- @gnu-ewm
-- @jat255
-- @xmgz
+- [@bjornclauw](https://github.com/bjornclauw)
+- [@gallegonovato](https://github.com/gallegonovato)
+- [@gnu-ewm](https://github.com/gnu-ewm)
+- [@jat255](https://github.com/jat255)
+- [@xmgz](https://github.com/xmgz)
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
 
@@ -3164,25 +3323,25 @@ Among enhancements and fixes, **FitTrackee** is now available in Galician, Spani
 
 ### Features and enhancements
 
-* [#319](https://github.com/SamR1/FitTrackee/issues/319) - Add cli to create users
-* [#329](https://github.com/SamR1/FitTrackee/issues/329) - Make "start elevation axis at zero" sticky
-* [#333](https://github.com/SamR1/FitTrackee/issues/333) - Feature request: filter workouts by title
-* [#338](https://github.com/SamR1/FitTrackee/issues/338) - Display relevant error message when <time> is missing in GPX file
+* [#319](https://codeberg.org/FitTrackee/FitTrackee/issues/319) - Add cli to create users
+* [#329](https://codeberg.org/FitTrackee/FitTrackee/issues/329) - Make "start elevation axis at zero" sticky
+* [#333](https://codeberg.org/FitTrackee/FitTrackee/issues/333) - Feature request: filter workouts by title
+* [#338](https://codeberg.org/FitTrackee/FitTrackee/issues/338) - Display relevant error message when <time> is missing in GPX file
 
 ### Bugs Fixed
 
-* [#328](https://github.com/SamR1/FitTrackee/issues/328) - GPX speed and altitude track has incorrect units on x-axis when imperial
-* [b29ed7a](https://github.com/SamR1/FitTrackee/commit/b29ed7a31daaf40b149ed33cdb1ddc0144f56161) - fix privacy policy message display on dashboard
+* [#328](https://codeberg.org/FitTrackee/FitTrackee/issues/328) - GPX speed and altitude track has incorrect units on x-axis when imperial
+* [b29ed7a](https://codeberg.org/FitTrackee/FitTrackee/commit/b29ed7a31daaf40b149ed33cdb1ddc0144f56161) - fix privacy policy message display on dashboard
 
 ### Translations
 
-* [#250](https://github.com/SamR1/FitTrackee/issues/250) - [Translation Request] Norwegian Bokmål
-* [#320](https://github.com/SamR1/FitTrackee/issues/320) - [Translation Request] Spanish
-* [#323](https://github.com/SamR1/FitTrackee/issues/323) - [Translation Request] Galician
-* [06ba975](https://github.com/SamR1/FitTrackee/commit/06ba975302af222089392c424edf95e91d645437), [bcc568e](https://github.com/SamR1/FitTrackee/commit/bcc568ef59ab99f3c164c6231ab3759fc8a30038), [ea0ac99](https://github.com/SamR1/FitTrackee/commit/ea0ac99bdf1dbe645ada7ddd35b4b94815eca775) - Translations update (German)
-* [a458f5f](https://github.com/SamR1/FitTrackee/commit/a458f5f275f51b2f9311de0ed51b0a9b537db94e) - Translations update (Dutch)
-* [075aeb9](https://github.com/SamR1/FitTrackee/commit/075aeb95e620c06f3ac324d2534d9c9f6660b596) - Translations update (French)
-* [60e164d](https://github.com/SamR1/FitTrackee/commit/60e164d7201fc520cd051f2858860a83783443a7) - Translations update (Italian)
+* [#250](https://codeberg.org/FitTrackee/FitTrackee/issues/250) - [Translation Request] Norwegian Bokmål
+* [#320](https://codeberg.org/FitTrackee/FitTrackee/issues/320) - [Translation Request] Spanish
+* [#323](https://codeberg.org/FitTrackee/FitTrackee/issues/323) - [Translation Request] Galician
+* [06ba975](https://codeberg.org/FitTrackee/FitTrackee/commit/06ba975302af222089392c424edf95e91d645437), [bcc568e](https://codeberg.org/FitTrackee/FitTrackee/commit/bcc568ef59ab99f3c164c6231ab3759fc8a30038), [ea0ac99](https://codeberg.org/FitTrackee/FitTrackee/commit/ea0ac99bdf1dbe645ada7ddd35b4b94815eca775) - Translations update (German)
+* [a458f5f](https://codeberg.org/FitTrackee/FitTrackee/commit/a458f5f275f51b2f9311de0ed51b0a9b537db94e) - Translations update (Dutch)
+* [075aeb9](https://codeberg.org/FitTrackee/FitTrackee/commit/075aeb95e620c06f3ac324d2534d9c9f6660b596) - Translations update (French)
+* [60e164d](https://codeberg.org/FitTrackee/FitTrackee/commit/60e164d7201fc520cd051f2858860a83783443a7) - Translations update (Italian)
 
 Translation status:
 - Dutch: 98%
@@ -3196,16 +3355,16 @@ Translation status:
 
 ### Misc
 
-* [#318](https://github.com/SamR1/FitTrackee/issues/318) - Remove DarkSky Weather provider
+* [#318](https://codeberg.org/FitTrackee/FitTrackee/issues/318) - Remove DarkSky Weather provider
 
 
 Thanks to the contributors:
-- @bjornclauw
-- @comradekingu
-- @jat255
-- @gallegonovato 
-- @qwerty287
-- @xmgz
+- [@bjornclauw](https://github.com/bjornclauw)
+- [@comradekingu](https://github.com/comradekingu)
+- [@jat255](https://github.com/jat255)
+- [@gallegonovato ](https://github.com/gallegonovato )
+- [@qwerty287](https://github.com/qwerty287)
+- [@xmgz](https://github.com/xmgz)
 - J. Lavoie from Weblate
 - mondstern from Weblate
 
@@ -3217,11 +3376,11 @@ Thanks to the contributors:
 
 ### Bugs Fixed
 
-* [#314](https://github.com/SamR1/FitTrackee/issues/314) - GPX file is not deleted when the process fails
+* [#314](https://codeberg.org/FitTrackee/FitTrackee/issues/314) - GPX file is not deleted when the process fails
 
 ### Translations
 
-* [PR#315](https://github.com/SamR1/FitTrackee/pull/315) - Translations update from Hosted Weblate (Dutch, thanks to @bjornclauw)
+* [PR#315](https://codeberg.org/FitTrackee/FitTrackee/pulls/315) - Translations update from Hosted Weblate (Dutch, thanks to [@bjornclauw](https://github.com/bjornclauw))
 
 
 ## Version 0.7.13 (2023/03/05)
@@ -3237,26 +3396,26 @@ Lastly, additional information that may be useful to users can be displayed in *
 
 ### Features and enhancements
 
-* [#301](https://github.com/SamR1/FitTrackee/issues/301) - add privacy policy
-* [#304](https://github.com/SamR1/FitTrackee/issues/304) - add user data export
-* [#305](https://github.com/SamR1/FitTrackee/issues/305) - add additional information in About page
+* [#301](https://codeberg.org/FitTrackee/FitTrackee/issues/301) - add privacy policy
+* [#304](https://codeberg.org/FitTrackee/FitTrackee/issues/304) - add user data export
+* [#305](https://codeberg.org/FitTrackee/FitTrackee/issues/305) - add additional information in About page
 
 ### Bugs Fixed
 
-* [PR#307](https://github.com/SamR1/FitTrackee/pull/307) - Minor fixes
+* [PR#307](https://codeberg.org/FitTrackee/FitTrackee/pulls/307) - Minor fixes
   * update workout and map files name
   * fix error message when api is not running
   * fix modal position
 
 ### Translations
 
-* [PR#297](https://github.com/SamR1/FitTrackee/pull/297) - Translations update from Hosted Weblate (Dutch)
-* [PR#308](https://github.com/SamR1/FitTrackee/pull/308) - Translations update from Hosted Weblate (Dutch)
-* [PR#310](https://github.com/SamR1/FitTrackee/pull/310) - Translations update from Hosted Weblate (Dutch and German)
+* [PR#297](https://codeberg.org/FitTrackee/FitTrackee/pulls/297) - Translations update from Hosted Weblate (Dutch)
+* [PR#308](https://codeberg.org/FitTrackee/FitTrackee/pulls/308) - Translations update from Hosted Weblate (Dutch)
+* [PR#310](https://codeberg.org/FitTrackee/FitTrackee/pulls/310) - Translations update from Hosted Weblate (Dutch and German)
 
 Thanks to the contributors:
-- @bjornclauw
-- @qwerty287
+- [@bjornclauw](https://github.com/bjornclauw)
+- [@qwerty287](https://github.com/qwerty287)
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
 
@@ -3265,11 +3424,11 @@ Thanks to the contributors:
 
 ### Translations
 
-* [PR#290](https://github.com/SamR1/FitTrackee/pull/290) - Translations update from Hosted Weblate (German, thanks to @qwerty287)
+* [PR#290](https://codeberg.org/FitTrackee/FitTrackee/pulls/290) - Translations update from Hosted Weblate (German, thanks to [@qwerty287](https://github.com/qwerty287))
 
 ### Misc
 
-* [#294](https://github.com/SamR1/FitTrackee/issues/294) - drop PostgreSQL10 support
+* [#294](https://codeberg.org/FitTrackee/FitTrackee/issues/294) - drop PostgreSQL10 support
 * dependencies update
 
 
@@ -3277,34 +3436,34 @@ Thanks to the contributors:
 
 ### Features and enhancements
 
-* [PR#265](https://github.com/SamR1/FitTrackee/pull/265) - Implementing alternative weather API (VisualCrossing.com)  
+* [PR#265](https://codeberg.org/FitTrackee/FitTrackee/pulls/265) - Implementing alternative weather API (VisualCrossing.com)  
   **Note**: A new environment variable must be to set to configure the weather data provider: `WEATHER_API_PROVIDER` (see [documentation](https://docs.fittrackee.org/en/installation/index.html#weather-data))
 
 ### Translations
 
-* [PR#287](https://github.com/SamR1/FitTrackee/pull/287) - Translations update from Hosted Weblate (Dutch)
-* [PR#289](https://github.com/SamR1/FitTrackee/pull/289) - Translations update from Hosted Weblate (German)
+* [PR#287](https://codeberg.org/FitTrackee/FitTrackee/pulls/287) - Translations update from Hosted Weblate (Dutch)
+* [PR#289](https://codeberg.org/FitTrackee/FitTrackee/pulls/289) - Translations update from Hosted Weblate (German)
 
 
 Thanks to the contributors:
-- @bjornclauw
-- @jat255 
-- @qwerty287
+- [@bjornclauw](https://github.com/bjornclauw)
+- [@jat255 ](https://github.com/jat255 )
+- [@qwerty287](https://github.com/qwerty287)
 
 
 ## Version 0.7.10 (2022/12/21)
 
-FitTrackee is now available in Italian (thanks to @dperruso).
+FitTrackee is now available in Italian (thanks to [@dperruso](https://github.com/dperruso)).
 
 ### Features and enhancements
 
-* [#92](https://github.com/SamR1/FitTrackee/issues/92) - Add ascent and descent parameters in workout import without GPX file
+* [#92](https://codeberg.org/FitTrackee/FitTrackee/issues/92) - Add ascent and descent parameters in workout import without GPX file
 
 ### Translations
 
-* [#279](https://github.com/SamR1/FitTrackee/issues/279) - [Translation Request] - Italian (thanks to @dperruso)
-* [c88a515](https://github.com/SamR1/FitTrackee/commit/c88a5158fea5f9e2fa8c41ecc2c100f6d9319371) - Translations update from Hosted Weblate (Dutch, thanks to @bjornclauw)
-* [f96dcef](https://github.com/SamR1/FitTrackee/commit/f96dcef0dc69d00f65a036fa2e33c22612004cb1) - Translations update (German)
+* [#279](https://codeberg.org/FitTrackee/FitTrackee/issues/279) - [Translation Request] - Italian (thanks to [@dperruso](https://github.com/dperruso))
+* [c88a515](https://codeberg.org/FitTrackee/FitTrackee/commit/c88a5158fea5f9e2fa8c41ecc2c100f6d9319371) - Translations update from Hosted Weblate (Dutch, thanks to [@bjornclauw](https://github.com/bjornclauw))
+* [f96dcef](https://codeberg.org/FitTrackee/FitTrackee/commit/f96dcef0dc69d00f65a036fa2e33c22612004cb1) - Translations update (German)
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
 
@@ -3313,44 +3472,44 @@ FitTrackee is now available in Italian (thanks to @dperruso).
 
 ### Features and enhancements
 
-* [#280](https://github.com/SamR1/FitTrackee/issues/280) - New sport: Mountaineering
+* [#280](https://codeberg.org/FitTrackee/FitTrackee/issues/280) - New sport: Mountaineering
 
 ### Translations
 
-* [PR#278](https://github.com/SamR1/FitTrackee/pull/278) - Translations update from Hosted Weblate (German, thanks to @qwerty287)
-* [PR#282](https://github.com/SamR1/FitTrackee/pull/282) - Init italian translation files
+* [PR#278](https://codeberg.org/FitTrackee/FitTrackee/pulls/278) - Translations update from Hosted Weblate (German, thanks to [@qwerty287](https://github.com/qwerty287))
+* [PR#282](https://codeberg.org/FitTrackee/FitTrackee/pulls/282) - Init italian translation files
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
 
 
 ## Version 0.7.8 (2022/11/30)
 
-FitTrackee is now available in Dutch (thanks to @bjornclauw).
+FitTrackee is now available in Dutch (thanks to [@bjornclauw](https://github.com/bjornclauw)).
 
 
 ### Translations
 
-* [#270](https://github.com/SamR1/FitTrackee/issues/270) - [translations request] Dutch (Nederlands)
+* [#270](https://codeberg.org/FitTrackee/FitTrackee/issues/270) - [translations request] Dutch (Nederlands)
 
 
 ## Version 0.7.7 (2022/11/27)
 
 ### Features and enhancements
 
-* [#258](https://github.com/SamR1/FitTrackee/issues/258) - Request: parse links in notes area (thanks to @jat255)
+* [#258](https://codeberg.org/FitTrackee/FitTrackee/issues/258) - Request: parse links in notes area (thanks to [@jat255](https://github.com/jat255))
 
 ### Bugs Fixed
 
-* [PR#271](https://github.com/SamR1/FitTrackee/pull/271) - Fix workouts creation
+* [PR#271](https://codeberg.org/FitTrackee/FitTrackee/pulls/271) - Fix workouts creation
 
 ### Translations
 
-* [PR#273](https://github.com/SamR1/FitTrackee/pull/273) - Init Dutch translations files
+* [PR#273](https://codeberg.org/FitTrackee/FitTrackee/pulls/273) - Init Dutch translations files
 
 ### Misc
 
-* [PR#274](https://github.com/SamR1/FitTrackee/pull/274) - Tests parallelization
-* [PR#275](https://github.com/SamR1/FitTrackee/pull/275) - Disable worker entry point
+* [PR#274](https://codeberg.org/FitTrackee/FitTrackee/pulls/274) - Tests parallelization
+* [PR#275](https://codeberg.org/FitTrackee/FitTrackee/pulls/275) - Disable worker entry point
 
 **Note:** `fittrackee_worker` command is disabled, please use existing flask-dramatiq CLI (see [documentation](https://docs.fittrackee.org/en/installation/index.html#from-pypi))
 
@@ -3358,7 +3517,7 @@ FitTrackee is now available in Dutch (thanks to @bjornclauw).
 
 ### Translations
 
-* [3c8d9c2](https://github.com/SamR1/FitTrackee/commit/3c8d9c262358958346125dd286f09ed9881fda4b) - fix api locale file (remove trailing comma) 
+* [3c8d9c2](https://codeberg.org/FitTrackee/FitTrackee/commit/3c8d9c262358958346125dd286f09ed9881fda4b) - fix api locale file (remove trailing comma) 
 
 ### Misc
 
@@ -3369,50 +3528,50 @@ FitTrackee is now available in Dutch (thanks to @bjornclauw).
 
 ### Bugs Fixed
 
-* [#264](https://github.com/SamR1/FitTrackee/issues/264) - UI has white and gray background
+* [#264](https://codeberg.org/FitTrackee/FitTrackee/issues/264) - UI has white and gray background
 
 ### Translations
 
-* [#266](https://github.com/SamR1/FitTrackee/issues/266) - Translations update from Hosted Weblate (German, thanks to @qwerty287)
+* [#266](https://codeberg.org/FitTrackee/FitTrackee/issues/266) - Translations update from Hosted Weblate (German, thanks to [@qwerty287](https://github.com/qwerty287))
 
 
 ## Version 0.7.4 (2022/11/05)
 
 ### Bugs Fixed
 
-* [#260](https://github.com/SamR1/FitTrackee/issues/260) - Files size is not checked in zip archive
-* [#261](https://github.com/SamR1/FitTrackee/issues/261) - The API should return an error when the number of files in an archive exceeds the limit
+* [#260](https://codeberg.org/FitTrackee/FitTrackee/issues/260) - Files size is not checked in zip archive
+* [#261](https://codeberg.org/FitTrackee/FitTrackee/issues/261) - The API should return an error when the number of files in an archive exceeds the limit
 
-Note: archive import still needs some improvements (see [#89](https://github.com/SamR1/FitTrackee/issues/89))
+Note: archive import still needs some improvements (see [#89](https://codeberg.org/FitTrackee/FitTrackee/issues/89))
 
 ### Translations
 
-* [b1536fc](https://github.com/SamR1/FitTrackee/pull/262/commits/b1536fc637649c4c32a88af6d96c131f05bc1742) - fix french translations in administration 
+* [b1536fc](https://codeberg.org/FitTrackee/FitTrackee/pulls/262/commits/b1536fc637649c4c32a88af6d96c131f05bc1742) - fix french translations in administration 
 
 ### Documentation
 
-* [#257](https://github.com/SamR1/FitTrackee/issues/257) - Add client_max_body_size note to example nginx config 
+* [#257](https://codeberg.org/FitTrackee/FitTrackee/issues/257) - Add client_max_body_size note to example nginx config 
 
-Thanks to @jat255 
+Thanks to [@jat255](https://github.com/jat255) 
 
 
 ## Version 0.7.3 (2022/11/01)
 
 ### Features and enhancements
 
-* [#112](https://github.com/SamR1/FitTrackee/issues/112) - allow user to change date format
-* [#244](https://github.com/SamR1/FitTrackee/issues/244) - New sport type: "Virtual Ride"
+* [#112](https://codeberg.org/FitTrackee/FitTrackee/issues/112) - allow user to change date format
+* [#244](https://codeberg.org/FitTrackee/FitTrackee/issues/244) - New sport type: "Virtual Ride"
 
-Thanks to @jat255 
+Thanks to [@jat255](https://github.com/jat255) 
 
 ### Bugs Fixed
 
-* [#246](https://github.com/SamR1/FitTrackee/issues/246) - Add support to PostgreSQL 15
-* [#247](https://github.com/SamR1/FitTrackee/issues/247) - Segments duration is displayed with microseconds
+* [#246](https://codeberg.org/FitTrackee/FitTrackee/issues/246) - Add support to PostgreSQL 15
+* [#247](https://codeberg.org/FitTrackee/FitTrackee/issues/247) - Segments duration is displayed with microseconds
 
 ### Translations
 
-* [PR#252](https://github.com/SamR1/FitTrackee/issues/252) - init Norwegian Bokmål translations files
+* [PR#252](https://codeberg.org/FitTrackee/FitTrackee/issues/252) - init Norwegian Bokmål translations files
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
 
@@ -3421,37 +3580,37 @@ Thanks to @jat255
 
 ### Translations
 
-* [PR#242](https://github.com/SamR1/FitTrackee/issues/242) - Translations update from Weblate (German, thanks to @qwerty287)
+* [PR#242](https://codeberg.org/FitTrackee/FitTrackee/issues/242) - Translations update from Weblate (German, thanks to [@qwerty287](https://github.com/qwerty287))
 
 
 ## Version 0.7.1 (2022/09/21)
 
 ### Bugs Fixed
 
-* [PR#241](https://github.com/SamR1/FitTrackee/issues/241) - Add missing password strength estimation package (german)
+* [PR#241](https://codeberg.org/FitTrackee/FitTrackee/issues/241) - Add missing password strength estimation package (german)
 
 ### Translations
 
-* [PR#239](https://github.com/SamR1/FitTrackee/issues/239) - Translations update from Weblate (German, thanks to @qwerty287)
-* [cb9d02f](https://github.com/SamR1/FitTrackee/commit/cb9d02ff1d047e9abd80a87121796f94376b54d3) - Update OAuth 2.0 translations (English & French)
+* [PR#239](https://codeberg.org/FitTrackee/FitTrackee/issues/239) - Translations update from Weblate (German, thanks to [@qwerty287](https://github.com/qwerty287))
+* [cb9d02f](https://codeberg.org/FitTrackee/FitTrackee/commit/cb9d02ff1d047e9abd80a87121796f94376b54d3) - Update OAuth 2.0 translations (English & French)
 
 
 ## Version 0.7.0 (2022/09/19)
 
 ### Features and enhancements
 
-* [#88](https://github.com/SamR1/FitTrackee/issues/88) - OAuth 2.0 access token for api access
-* [#231](https://github.com/SamR1/FitTrackee/issues/231) - Invalidate token on logout
-* [PR#236](https://github.com/SamR1/FitTrackee/issues/236) - Add API rate limits
+* [#88](https://codeberg.org/FitTrackee/FitTrackee/issues/88) - OAuth 2.0 access token for api access
+* [#231](https://codeberg.org/FitTrackee/FitTrackee/issues/231) - Invalidate token on logout
+* [PR#236](https://codeberg.org/FitTrackee/FitTrackee/issues/236) - Add API rate limits
 
 ### Bugs Fixed
 
-* [#232](https://github.com/SamR1/FitTrackee/issues/232) - Speed chart can not be hidden
-* [#237](https://github.com/SamR1/FitTrackee/issues/237) - Can not edit a workout when notes value is null
+* [#232](https://codeberg.org/FitTrackee/FitTrackee/issues/232) - Speed chart can not be hidden
+* [#237](https://codeberg.org/FitTrackee/FitTrackee/issues/237) - Can not edit a workout when notes value is null
 
 ### Translations
 
-* [PR#212](https://github.com/SamR1/FitTrackee/issues/212) - Translations update from Hosted Weblate (thanks to J. Lavoie)
+* [PR#212](https://codeberg.org/FitTrackee/FitTrackee/issues/212) - Translations update from Hosted Weblate (thanks to J. Lavoie)
 
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
 
@@ -3462,15 +3621,15 @@ Thanks to @jat255
 
 #### Bugs Fixed
 
-* [#230](https://github.com/SamR1/FitTrackee/issues/230) - Database problem after upgrade to 0.6.11
+* [#230](https://codeberg.org/FitTrackee/FitTrackee/issues/230) - Database problem after upgrade to 0.6.11
 
 ### Pull Requests
 
 #### Misc
 
-* [#225](https://github.com/SamR1/FitTrackee/pull/225) - Fix grammar issue
+* [#225](https://codeberg.org/FitTrackee/FitTrackee/pulls/225) - Fix grammar issue
 
-Thanks to @Skylan0916
+Thanks to [@Skylan0916](Https://Github.Com/Skylan0916)
 
 In this release 1 issue was closed.  
 **Note:** This release contains a fix on the last database migration that will be executed only on versions lower than v0.6.11 (no data differences with v0.6.11, the fix allows to execute the migration on Postgres<12)  
@@ -3483,17 +3642,17 @@ In this release 1 issue was closed.
 
 #### Bugs Fixed
 
-* [#213](https://github.com/SamR1/FitTrackee/issues/213) - Statistics - When using imperial measurements, ascent/descent should be in ft not mi
+* [#213](https://codeberg.org/FitTrackee/FitTrackee/issues/213) - Statistics - When using imperial measurements, ascent/descent should be in ft not mi
 
 ### Pull Requests
 
 #### Features
 
-* [#223](https://github.com/SamR1/FitTrackee/pull/223) - Display ascent record icon
-* [#167](https://github.com/SamR1/FitTrackee/pull/167) - Added ascent record to Dashboard 
-* [#162](https://github.com/SamR1/FitTrackee/pull/162) - Added total elevation to dashboard 
+* [#223](https://codeberg.org/FitTrackee/FitTrackee/pulls/223) - Display ascent record icon
+* [#167](https://codeberg.org/FitTrackee/FitTrackee/pulls/167) - Added ascent record to Dashboard 
+* [#162](https://codeberg.org/FitTrackee/FitTrackee/pulls/162) - Added total elevation to dashboard 
 
-Thanks to @Fmstrat
+Thanks to [@Fmstrat](https://github.com/Fmstrat)
 
 In this release 1 issue was closed.  
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
@@ -3505,46 +3664,46 @@ In this release 1 issue was closed.
 
 #### Bugs Fixed
 
-* [#210](https://github.com/SamR1/FitTrackee/issues/210) - ERROR - could not download 6 tiles  
+* [#210](https://codeberg.org/FitTrackee/FitTrackee/issues/210) - ERROR - could not download 6 tiles  
   **Note**: for tile server requiring subdomains, see the new environment variable [`STATICMAP_SUBDOMAINS`](https://docs.fittrackee.org/en/installation/environments_variables.html#envvar-STATICMAP_SUBDOMAINS)
 
 ### Pull Requests
 
 #### Bugs Fixed
 
-* [#209](https://github.com/SamR1/FitTrackee/pull/209) - Incorrect duration with track containing multiple segments
+* [#209](https://codeberg.org/FitTrackee/FitTrackee/pulls/209) - Incorrect duration with track containing multiple segments
 
-Thanks to @gorgobacka
+Thanks to [@gorgobacka](https://github.com/gorgobacka)
 
 In this release 1 issue was closed.  
 
 
 ## Version 0.6.9 (2022/07/03)
 
-FitTrackee is now available in German (thanks to @gorgobacka).  
+FitTrackee is now available in German (thanks to [@gorgobacka](https://github.com/gorgobacka)).  
 And translations can be updated on Weblate.
 
 ### Issues Closed
 
 #### Features
 
-* [#200](https://github.com/SamR1/FitTrackee/issues/200) - Detect browser language to use matching translation if available
+* [#200](https://codeberg.org/FitTrackee/FitTrackee/issues/200) - Detect browser language to use matching translation if available
 
 #### Bugs Fixed
 
-* [PR#208](https://github.com/SamR1/FitTrackee/pull/208) - fix order on records cards
-* [#201](https://github.com/SamR1/FitTrackee/issues/201) - html lang attribute is not updated when changing language
+* [PR#208](https://codeberg.org/FitTrackee/FitTrackee/pulls/208) - fix order on records cards
+* [#201](https://codeberg.org/FitTrackee/FitTrackee/issues/201) - html lang attribute is not updated when changing language
 
 #### Translations
 
-* [PR#197](https://github.com/SamR1/FitTrackee/pull/197) - Translations update from Weblate (French)
-* [#196](https://github.com/SamR1/FitTrackee/issues/196) - Use translation management tool
-* [#190](https://github.com/SamR1/FitTrackee/issues/190) - Add German translation
+* [PR#197](https://codeberg.org/FitTrackee/FitTrackee/pulls/197) - Translations update from Weblate (French)
+* [#196](https://codeberg.org/FitTrackee/FitTrackee/issues/196) - Use translation management tool
+* [#190](https://codeberg.org/FitTrackee/FitTrackee/issues/190) - Add German translation
 
 In this release 4 issues were closed.  
 
 Thanks to the contributors:
-- @gorgobacka
+- [@gorgobacka](https://github.com/gorgobacka)
 - J. Lavoie (from Weblate)
 
 
@@ -3554,15 +3713,15 @@ Thanks to the contributors:
 
 #### Bugs Fixed
 
-* [#193](https://github.com/SamR1/FitTrackee/issues/193) - Allow deleting a workout when files are missing
-* [#192](https://github.com/SamR1/FitTrackee/issues/192) - Returns 404 instead of 500 when map file not found
-* [#191](https://github.com/SamR1/FitTrackee/issues/191) - Layout issue on Workouts page
+* [#193](https://codeberg.org/FitTrackee/FitTrackee/issues/193) - Allow deleting a workout when files are missing
+* [#192](https://codeberg.org/FitTrackee/FitTrackee/issues/192) - Returns 404 instead of 500 when map file not found
+* [#191](https://codeberg.org/FitTrackee/FitTrackee/issues/191) - Layout issue on Workouts page
 
 ### Misc
 
-* change gpx and map file naming (included in [PR#195](https://github.com/SamR1/FitTrackee/pull/195))  
+* change gpx and map file naming (included in [PR#195](https://codeberg.org/FitTrackee/FitTrackee/pulls/195))  
   Note: it does not affect previously imported files
-* [cc4287e](https://github.com/SamR1/FitTrackee/commit/cc4287ed327faaba268a0c689841d16a7aecc3fb) - Fix docker env file
+* [cc4287e](https://codeberg.org/FitTrackee/FitTrackee/commit/cc4287ed327faaba268a0c689841d16a7aecc3fb) - Fix docker env file
 
 In this release 3 issues were closed.  
 
@@ -3572,7 +3731,7 @@ In this release 3 issues were closed.
 
 #### Bugs Fixed
 
-* [#156](https://github.com/SamR1/FitTrackee/issues/156) - Process gpx file with offset
+* [#156](https://codeberg.org/FitTrackee/FitTrackee/issues/156) - Process gpx file with offset
 
 In this release 1 issue was closed.  
 
@@ -3596,7 +3755,7 @@ To manage users, a new [CLI](https://docs.fittrackee.org/en/cli.html) is availab
 
 #### Features
 
-* [#180](https://github.com/SamR1/FitTrackee/issues/180) - allow using FitTrackee without SMTP server
+* [#180](https://codeberg.org/FitTrackee/FitTrackee/issues/180) - allow using FitTrackee without SMTP server
 
 In this release 1 issue was closed.  
 
@@ -3607,7 +3766,7 @@ In this release 1 issue was closed.
 
 #### Bugs Fixed
 
-* [#178](https://github.com/SamR1/FitTrackee/issues/178) - cannot send email with TLS
+* [#178](https://codeberg.org/FitTrackee/FitTrackee/issues/178) - cannot send email with TLS
 
 In this release 1 issue was closed.  
 
@@ -3618,7 +3777,7 @@ In this release 1 issue was closed.
 
 #### Bugs Fixed
 
-* [#177](https://github.com/SamR1/FitTrackee/pull/177) - Minor fixes 
+* [#177](https://codeberg.org/FitTrackee/FitTrackee/pulls/177) - Minor fixes 
   * add missing translation 
   * fix 'Add Workout' card position on small screens
 
@@ -3629,8 +3788,8 @@ In this release 1 issue was closed.
 
 #### Bugs Fixed
 
-* [#175](https://github.com/SamR1/FitTrackee/issues/175) - Distance card on dashboard is not refreshed
-* [#173](https://github.com/SamR1/FitTrackee/issues/173) - link to user profile in workout card is incorrect
+* [#175](https://codeberg.org/FitTrackee/FitTrackee/issues/175) - Distance card on dashboard is not refreshed
+* [#173](https://codeberg.org/FitTrackee/FitTrackee/issues/173) - link to user profile in workout card is incorrect
 
 In this release 2 issues were closed.  
 
@@ -3641,14 +3800,14 @@ In this release 2 issues were closed.
 
 #### Bugs Fixed
 
-* [#171](https://github.com/SamR1/FitTrackee/issues/171) - Stats chart is not updated correctly 
+* [#171](https://codeberg.org/FitTrackee/FitTrackee/issues/171) - Stats chart is not updated correctly 
 
 In this release 1 issue was closed.  
 
 
 ## Version 0.6.0 (2022/03/27)
 
-This version introduces some changes on [user registration](https://next.docs.fittrackee.org/en/features/account_and_preferences.html).  
+This version introduces some changes on [user registration](https://docs.fittrackee.org/en/features/account_and_preferences.html).  
 From now on, a user needs to confirm his account after registration (an email with confirmation instructions is sent after registration).
 
 
@@ -3656,21 +3815,21 @@ From now on, a user needs to confirm his account after registration (an email wi
 
 #### Features
 
-* [#155](https://github.com/SamR1/FitTrackee/issues/155) -  Improve user registration
-* [#106](https://github.com/SamR1/FitTrackee/issues/106) -  Allow user to update email
+* [#155](https://codeberg.org/FitTrackee/FitTrackee/issues/155) -  Improve user registration
+* [#106](https://codeberg.org/FitTrackee/FitTrackee/issues/106) -  Allow user to update email
 
 #### Bugs Fixed
 
-* [#169](https://github.com/SamR1/FitTrackee/issues/169) -  user picture is not refreshed after update
+* [#169](https://codeberg.org/FitTrackee/FitTrackee/issues/169) -  user picture is not refreshed after update
 
 ### Pull Requests
 
 #### Bugs Fixed
 
-* [#161](https://github.com/SamR1/FitTrackee/pull/161) - Minor translation issue on 'Farthest'
-* [#160](https://github.com/SamR1/FitTrackee/pull/160) - Minor translation issue on APP_ERROR
+* [#161](https://codeberg.org/FitTrackee/FitTrackee/pulls/161) - Minor translation issue on 'Farthest'
+* [#160](https://codeberg.org/FitTrackee/FitTrackee/pulls/160) - Minor translation issue on APP_ERROR
 
-Thanks to @Fmstrat
+Thanks to [@Fmstrat](https://github.com/Fmstrat)
 
 In this release 3 issues were closed.  
 **Note:** This release contains database migration (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html))
@@ -3679,7 +3838,7 @@ In this release 3 issues were closed.
 ## Version 0.5.7 (2022/02/13)
 
 This release contains several fixes including security fixes.  
-Thanks to @DanielSiersleben for the report.
+Thanks to [@DanielSiersleben](https://github.com/DanielSiersleben) for the report.
 
 And from now on, admin account is not created on application initialization.  
 A new command is added to set administration rights on the account created after registration 
@@ -3689,23 +3848,23 @@ A new command is added to set administration rights on the account created after
 
 #### Misc
 
-* [#149](https://github.com/SamR1/FitTrackee/issues/149) - improve database initialisation
+* [#149](https://codeberg.org/FitTrackee/FitTrackee/issues/149) - improve database initialisation
 
 ### Pull Requests
 
 #### Security
 
-* [#152](https://github.com/SamR1/FitTrackee/pull/152) - Fixes and improvements:
+* [#152](https://codeberg.org/FitTrackee/FitTrackee/pulls/152) - Fixes and improvements:
   - set autoescape on jinja templates
 
-* [#151](https://github.com/SamR1/FitTrackee/pull/151) - fix security issues:
+* [#151](https://codeberg.org/FitTrackee/FitTrackee/pulls/151) - fix security issues:
   - sanitize input when serving images
   - sanitize inputs when serving map tiles
   - allow only alphanumeric characters and '_' in username
 
 #### Misc
 
-* [#152](https://github.com/SamR1/FitTrackee/pull/152) - Fixes and improvements:
+* [#152](https://codeberg.org/FitTrackee/FitTrackee/pulls/152) - Fixes and improvements:
   - fix dramatiq warning when launching workers w/ script entrypoint
   - check app config before dropping database, to avoid deleting data on production
   - remove dotenv warning
@@ -3719,11 +3878,11 @@ In this release 1 issue was closed.
 
 #### Bugs Fixed
 
-* [#146](https://github.com/SamR1/FitTrackee/issues/146) - incorrect label on workouts filters
+* [#146](https://codeberg.org/FitTrackee/FitTrackee/issues/146) - incorrect label on workouts filters
 
 ### Pull Requests
 
-* [#145](https://github.com/SamR1/FitTrackee/pull/145) - fix on database models 
+* [#145](https://codeberg.org/FitTrackee/FitTrackee/pulls/145) - fix on database models 
 
 
 In this release 1 issue was closed.  
@@ -3736,14 +3895,14 @@ In this release 1 issue was closed.
 
 #### New Features
 
-* [#140](https://github.com/SamR1/FitTrackee/issues/140) - Add a fullscreen control to workout map
-* [#138](https://github.com/SamR1/FitTrackee/issues/138) - Add control to reset map to initial position
-* [#135](https://github.com/SamR1/FitTrackee/issues/135) - Start and finish markers
-* [#134](https://github.com/SamR1/FitTrackee/issues/134) - Wind direction
+* [#140](https://codeberg.org/FitTrackee/FitTrackee/issues/140) - Add a fullscreen control to workout map
+* [#138](https://codeberg.org/FitTrackee/FitTrackee/issues/138) - Add control to reset map to initial position
+* [#135](https://codeberg.org/FitTrackee/FitTrackee/issues/135) - Start and finish markers
+* [#134](https://codeberg.org/FitTrackee/FitTrackee/issues/134) - Wind direction
 
 #### Bugs Fixed
 
-* [877fa0f](https://github.com/SamR1/FitTrackee/commit/877fa0faaabc0130402638905fe04f84563eb278) - fix sport icon color (when changed) on calendar on small resolutions
+* [877fa0f](https://codeberg.org/FitTrackee/FitTrackee/commit/877fa0faaabc0130402638905fe04f84563eb278) - fix sport icon color (when changed) on calendar on small resolutions
 
 In this release 4 issues were closed.
 
@@ -3754,7 +3913,7 @@ In this release 4 issues were closed.
 
 #### Bugs Fixed
 
-* [#131](https://github.com/SamR1/FitTrackee/issues/131) - No workouts displayed on calendar
+* [#131](https://codeberg.org/FitTrackee/FitTrackee/issues/131) - No workouts displayed on calendar
 
 In this release 1 issue was closed.
 
@@ -3765,8 +3924,8 @@ In this release 1 issue was closed.
 
 #### Bugs Fixed
 
-* [#129](https://github.com/SamR1/FitTrackee/issues/129) - Display only active sports when editing a workout
-* [#127](https://github.com/SamR1/FitTrackee/issues/127) - parse_email_url() can't validate a legitimate EMAIL_URI such as "smtp://localhost:25"
+* [#129](https://codeberg.org/FitTrackee/FitTrackee/issues/129) - Display only active sports when editing a workout
+* [#127](https://codeberg.org/FitTrackee/FitTrackee/issues/127) - parse_email_url() can't validate a legitimate EMAIL_URI such as "smtp://localhost:25"
 
 In this release 2 issues were closed.
 
@@ -3777,8 +3936,8 @@ In this release 2 issues were closed.
 
 #### New Features
 
-* [#123](https://github.com/SamR1/FitTrackee/issues/123) - Allow user to reset preferences for a sport
-* [#121](https://github.com/SamR1/FitTrackee/issues/121) - Add activity : snowshoes
+* [#123](https://codeberg.org/FitTrackee/FitTrackee/issues/123) - Allow user to reset preferences for a sport
+* [#121](https://codeberg.org/FitTrackee/FitTrackee/issues/121) - Add activity : snowshoes
 
 In this release 2 issues were closed.  
 **Note:** This release contains database migration.
@@ -3790,9 +3949,9 @@ In this release 2 issues were closed.
 
 #### New Features
 
-* [#116](https://github.com/SamR1/FitTrackee/issues/116) - Better UI for Speed and Elevation buttons in the graph of the Workout screen
-* [#115](https://github.com/SamR1/FitTrackee/issues/115) - Add option to download the GPX file of a Workout
-* [#5](https://github.com/SamR1/FitTrackee/issues/5) - Display a chart with average speed
+* [#116](https://codeberg.org/FitTrackee/FitTrackee/issues/116) - Better UI for Speed and Elevation buttons in the graph of the Workout screen
+* [#115](https://codeberg.org/FitTrackee/FitTrackee/issues/115) - Add option to download the GPX file of a Workout
+* [#5](https://codeberg.org/FitTrackee/FitTrackee/issues/5) - Display a chart with average speed
 
 In this release 3 issues were closed.  
 
@@ -3803,32 +3962,32 @@ In this release 3 issues were closed.
 
 #### New Features
 
-* [#99](https://github.com/SamR1/FitTrackee/issues/99) - Display workout with imperial units 
-* [#91](https://github.com/SamR1/FitTrackee/issues/91) - Display elevation chart with min and max altitude of workout
-* [#90](https://github.com/SamR1/FitTrackee/issues/90) - Add user sports preferences
-* [#18](https://github.com/SamR1/FitTrackee/issues/18) - Better UI
+* [#99](https://codeberg.org/FitTrackee/FitTrackee/issues/99) - Display workout with imperial units 
+* [#91](https://codeberg.org/FitTrackee/FitTrackee/issues/91) - Display elevation chart with min and max altitude of workout
+* [#90](https://codeberg.org/FitTrackee/FitTrackee/issues/90) - Add user sports preferences
+* [#18](https://codeberg.org/FitTrackee/FitTrackee/issues/18) - Better UI
 
 #### Bugs Fixed
 
-* [#95](https://github.com/SamR1/FitTrackee/issues/95) - Some workouts seem to be missing on statistics chart
+* [#95](https://codeberg.org/FitTrackee/FitTrackee/issues/95) - Some workouts seem to be missing on statistics chart
 
 #### Misc
 
-* [#104](https://github.com/SamR1/FitTrackee/issues/104) - Switch to AGPLv3 license
+* [#104](https://codeberg.org/FitTrackee/FitTrackee/issues/104) - Switch to AGPLv3 license
 
 ### Pull Requests
 
-* [#101](https://github.com/SamR1/FitTrackee/pull/101) - Docker updates for full files 
-* [#100](https://github.com/SamR1/FitTrackee/pull/100) - Add client application in docker for development
-* [#98/#109](https://github.com/SamR1/FitTrackee/pull/109) - Added stopped_speed_threshold to support slow movement
-* [#84/#93](https://github.com/SamR1/FitTrackee/pull/93) - Add elevation data and new sports
+* [#101](https://codeberg.org/FitTrackee/FitTrackee/pulls/101) - Docker updates for full files 
+* [#100](https://codeberg.org/FitTrackee/FitTrackee/pulls/100) - Add client application in docker for development
+* [#98/#109](https://codeberg.org/FitTrackee/FitTrackee/pulls/109) - Added stopped_speed_threshold to support slow movement
+* [#84/#93](https://codeberg.org/FitTrackee/FitTrackee/pulls/93) - Add elevation data and new sports
 
 In this release 6 issues were closed.  
 **Note:** This release contains database migrations.
 
 Thanks to the contributors:
-- @Fmstrat
-- @paf38
+- [@Fmstrat](https://github.com/Fmstrat)
+- [@paf38](https://github.com/paf38)
 
 
 ## Version 0.4.9 (2021/07/16)
@@ -3837,14 +3996,14 @@ Thanks to the contributors:
 
 #### New Features
 
-* [#83](https://github.com/SamR1/Fittrackee/issues/83) - allow using configured tile server to generate static maps  
+* [#83](https://codeberg.org/FitTrackee/FitTrackee/issues/83) - allow using configured tile server to generate static maps  
   **Note**: to keep using the default tile server, set environment variable `DEFAULT_STATICMAP` to `True`
-* [#81](https://github.com/SamR1/Fittrackee/issues/81) - display remaining characters in textarea
+* [#81](https://codeberg.org/FitTrackee/FitTrackee/issues/81) - display remaining characters in textarea
 
 #### Bugs Fixed
 
-* [#82](https://github.com/SamR1/Fittrackee/issues/82) - a user can not modify his birth day
-* [#80](https://github.com/SamR1/Fittrackee/issues/80) - can not save notes with control characters
+* [#82](https://codeberg.org/FitTrackee/FitTrackee/issues/82) - a user can not modify his birth day
+* [#80](https://codeberg.org/FitTrackee/FitTrackee/issues/80) - can not save notes with control characters
 
 In this release 4 issues were closed.
 
@@ -3855,7 +4014,7 @@ In this release 4 issues were closed.
 
 #### Bugs Fixed
 
-* [#79](https://github.com/SamR1/Fittrackee/issues/79) - Fails to start after make rebuild
+* [#79](https://codeberg.org/FitTrackee/FitTrackee/issues/79) - Fails to start after make rebuild
 
 In this release 1 issue was closed.
 
@@ -3866,7 +4025,7 @@ In this release 1 issue was closed.
 
 #### Bugs Fixed
 
-* [#75](https://github.com/SamR1/Fittrackee/issues/75) - Workouts on the same day are not displayed in right order
+* [#75](https://codeberg.org/FitTrackee/FitTrackee/issues/75) - Workouts on the same day are not displayed in right order
 
 ### Misc
 
@@ -3882,9 +4041,9 @@ In this release 1 issue was closed.
 
 #### Bugs Fixed
 
-* [#72](https://github.com/SamR1/Fittrackee/issues/72) - Error message when file exceeding size is incorrect
-* [#71](https://github.com/SamR1/Fittrackee/issues/71) - max size or max number of files must be greater than 0
-* [#70](https://github.com/SamR1/Fittrackee/issues/70) - max size for an archive must not be less than uploaded files max size
+* [#72](https://codeberg.org/FitTrackee/FitTrackee/issues/72) - Error message when file exceeding size is incorrect
+* [#71](https://codeberg.org/FitTrackee/FitTrackee/issues/71) - max size or max number of files must be greater than 0
+* [#70](https://codeberg.org/FitTrackee/FitTrackee/issues/70) - max size for an archive must not be less than uploaded files max size
 
 In this release 3 issues were closed.
 
@@ -3895,8 +4054,8 @@ In this release 3 issues were closed.
 
 #### Bugs Fixed
 
-* [#66](https://github.com/SamR1/Fittrackee/issues/66) - invalid gpx limit used when importing zip archive
-* [#64](https://github.com/SamR1/Fittrackee/issues/64) - Only 50 workouts per month shown in calendar
+* [#66](https://codeberg.org/FitTrackee/FitTrackee/issues/66) - invalid gpx limit used when importing zip archive
+* [#64](https://codeberg.org/FitTrackee/FitTrackee/issues/64) - Only 50 workouts per month shown in calendar
 
 In this release 2 issues were closed.
 
@@ -3907,7 +4066,7 @@ In this release 2 issues were closed.
 
 #### Bugs Fixed
 
-* [#62](https://github.com/SamR1/Fittrackee/issues/62) - Error when sending reset password email
+* [#62](https://codeberg.org/FitTrackee/FitTrackee/issues/62) - Error when sending reset password email
 
 ### Misc
 
@@ -3923,12 +4082,12 @@ In this release 1 issue was closed.
 
 #### New Features
 
-* [#58](https://github.com/SamR1/Fittrackee/issues/58) - Standardize terms used for workouts  
+* [#58](https://codeberg.org/FitTrackee/FitTrackee/issues/58) - Standardize terms used for workouts  
 **Note:** Database model, upload directory for workouts and API endpoints are also updated.
 
 #### Bugs Fixed
 
-* [#59](https://github.com/SamR1/Fittrackee/issues/59) - No message displayed on uploading image error
+* [#59](https://codeberg.org/FitTrackee/FitTrackee/issues/59) - No message displayed on uploading image error
 
 In this release 2 issues were closed.
 
@@ -3947,7 +4106,7 @@ new features.
 
 #### New Features
 
-* [#57](https://github.com/SamR1/Fittrackee/issues/57) - Use uuid for activities
+* [#57](https://codeberg.org/FitTrackee/FitTrackee/issues/57) - Use uuid for activities
 
 In this release 1 issue was closed.
 
@@ -3964,8 +4123,8 @@ see [Map tile server in documentation](https://docs.fittrackee.org/en/installati
 
 #### New Features
 
-* [#54](https://github.com/SamR1/Fittrackee/issues/54) - Tile server can be changed
-* [#53](https://github.com/SamR1/Fittrackee/issues/53) - Simplify FitTrackee installation
+* [#54](https://codeberg.org/FitTrackee/FitTrackee/issues/54) - Tile server can be changed
+* [#53](https://codeberg.org/FitTrackee/FitTrackee/issues/53) - Simplify FitTrackee installation
 
 In this release 2 issues were closed.
 
@@ -3981,9 +4140,9 @@ This version introduces some major changes:
 
 #### New Features
 
-* [#50](https://github.com/SamR1/Fittrackee/issues/50) - A user can reset his password
-* [#17](https://github.com/SamR1/Fittrackee/issues/17) - A user can delete his account
-* [#15](https://github.com/SamR1/Fittrackee/issues/15) - Complete the administration
+* [#50](https://codeberg.org/FitTrackee/FitTrackee/issues/50) - A user can reset his password
+* [#17](https://codeberg.org/FitTrackee/FitTrackee/issues/17) - A user can delete his account
+* [#15](https://codeberg.org/FitTrackee/FitTrackee/issues/15) - Complete the administration
 
 In this release 3 issues were closed.
 
@@ -3993,10 +4152,10 @@ In this release 3 issues were closed.
 ### Misc
 
 This version contains minor fix and improvements on client side:
-* [4c3fc34](https://github.com/SamR1/FitTrackee/commit/4c3fc343d51b9c27d3ebab71df648bcf7d7bae59) - empty user data on logout
-* [34614d5](https://github.com/SamR1/FitTrackee/commit/34614d5a6c29f4911d92db33d36fe95721b39f33) - add spinner on loading activities
-* [b862a77](https://github.com/SamR1/FitTrackee/commit/b862a77344abbb07d98fe3ce8b157b5cef0e8d1c), 
-[2e1ee2c](https://github.com/SamR1/FitTrackee/commit/2e1ee2c7a1456eb2fe0c0255959c695cc7908975) -
+* [4c3fc34](https://codeberg.org/FitTrackee/FitTrackee/commit/4c3fc343d51b9c27d3ebab71df648bcf7d7bae59) - empty user data on logout
+* [34614d5](https://codeberg.org/FitTrackee/FitTrackee/commit/34614d5a6c29f4911d92db33d36fe95721b39f33) - add spinner on loading activities
+* [b862a77](https://codeberg.org/FitTrackee/FitTrackee/commit/b862a77344abbb07d98fe3ce8b157b5cef0e8d1c), 
+[2e1ee2c](https://codeberg.org/FitTrackee/FitTrackee/commit/2e1ee2c7a1456eb2fe0c0255959c695cc7908975) -
 add URL interceptors to simplify routes definition
 
 
@@ -4006,8 +4165,8 @@ add URL interceptors to simplify routes definition
 
 #### Bugs Fixed
 
-* [#47](https://github.com/SamR1/Fittrackee/issues/47) - timezone drop-down is not displayed correctly
-* [#46](https://github.com/SamR1/Fittrackee/issues/46) - calendar cannot display more than 5 or 6 activities on the same day
+* [#47](https://codeberg.org/FitTrackee/FitTrackee/issues/47) - timezone drop-down is not displayed correctly
+* [#46](https://codeberg.org/FitTrackee/FitTrackee/issues/46) - calendar cannot display more than 5 or 6 activities on the same day
 
 In this release 2 issues were closed.
 
@@ -4018,12 +4177,12 @@ In this release 2 issues were closed.
 
 #### New Features
 
-* [#43](https://github.com/SamR1/Fittrackee/issues/43) - Display weekend days with a different background color on calendar
-* [#40](https://github.com/SamR1/Fittrackee/issues/40) - Localize FitTrackee (i18n)
+* [#43](https://codeberg.org/FitTrackee/FitTrackee/issues/43) - Display weekend days with a different background color on calendar
+* [#40](https://codeberg.org/FitTrackee/FitTrackee/issues/40) - Localize FitTrackee (i18n)
 
 #### Bugs Fixed
 
-* [#44](https://github.com/SamR1/Fittrackee/issues/44) - Cannot edit an activity that does not have a gpx file
+* [#44](https://codeberg.org/FitTrackee/FitTrackee/issues/44) - Cannot edit an activity that does not have a gpx file
 
 In this release 3 issues were closed.
 
@@ -4034,7 +4193,7 @@ In this release 3 issues were closed.
 
 #### Bugs Fixed
 
-* [#41](https://github.com/SamR1/Fittrackee/issues/41) - User statistics are incorrect
+* [#41](https://codeberg.org/FitTrackee/FitTrackee/issues/41) - User statistics are incorrect
 
 In this release 1 issue was closed.
 
@@ -4044,17 +4203,17 @@ In this release 1 issue was closed.
 
 #### New Features
 
-* [#4](https://github.com/SamR1/Fittrackee/issues/4) - Show points on the map when mouse over the chart
-* [#14](https://github.com/SamR1/Fittrackee/issues/14) - Display segments informations
-* [#21](https://github.com/SamR1/Fittrackee/issues/21) - Document the API
-* [#23](https://github.com/SamR1/Fittrackee/issues/23) - The user can choose the first day of the week
-* [#36](https://github.com/SamR1/Fittrackee/issues/36) - Disable user registration
-* [#33](https://github.com/SamR1/Fittrackee/issues/33) - Add file size limit on file upload
-* [#37](https://github.com/SamR1/Fittrackee/issues/37) - Display map on activities list
+* [#4](https://codeberg.org/FitTrackee/FitTrackee/issues/4) - Show points on the map when mouse over the chart
+* [#14](https://codeberg.org/FitTrackee/FitTrackee/issues/14) - Display segments informations
+* [#21](https://codeberg.org/FitTrackee/FitTrackee/issues/21) - Document the API
+* [#23](https://codeberg.org/FitTrackee/FitTrackee/issues/23) - The user can choose the first day of the week
+* [#36](https://codeberg.org/FitTrackee/FitTrackee/issues/36) - Disable user registration
+* [#33](https://codeberg.org/FitTrackee/FitTrackee/issues/33) - Add file size limit on file upload
+* [#37](https://codeberg.org/FitTrackee/FitTrackee/issues/37) - Display map on activities list
 
 #### Bugs Fixed
 
-* [#34](https://github.com/SamR1/Fittrackee/issues/34) - Weather is not displayed anymore 
+* [#34](https://codeberg.org/FitTrackee/FitTrackee/issues/34) - Weather is not displayed anymore 
 
 ### Misc
 
@@ -4069,7 +4228,7 @@ In this release 8 issues were closed.
 
 #### New Features
 
-* [#13](https://github.com/SamR1/Fittrackee/issues/13) - Detailed statistics
+* [#13](https://codeberg.org/FitTrackee/FitTrackee/issues/13) - Detailed statistics
 
 ### Misc
 
@@ -4084,16 +4243,16 @@ In this release 1 issue was closed.
 
 #### New Features
 
-* [#25](https://github.com/SamR1/FitTrackee/issues/25) - Display records on calendar
-* [#22](https://github.com/SamR1/FitTrackee/issues/22) - Add a total on current month statistics
+* [#25](https://codeberg.org/FitTrackee/FitTrackee/issues/25) - Display records on calendar
+* [#22](https://codeberg.org/FitTrackee/FitTrackee/issues/22) - Add a total on current month statistics
 
 #### Bugs Fixed
 
-* [#31](https://github.com/SamR1/FitTrackee/issues/31) - Use moving duration for stats
-* [#29](https://github.com/SamR1/FitTrackee/issues/29) - Pause duration calculation with segments
-* [#28](https://github.com/SamR1/FitTrackee/issues/28) - Error on uploading gpx file
-* [#26](https://github.com/SamR1/FitTrackee/issues/26) - Total is incorrect in tooltip when duration is displayed
-* [#24](https://github.com/SamR1/FitTrackee/issues/24) - Some distances are not displayed correctly on current month statistics
+* [#31](https://codeberg.org/FitTrackee/FitTrackee/issues/31) - Use moving duration for stats
+* [#29](https://codeberg.org/FitTrackee/FitTrackee/issues/29) - Pause duration calculation with segments
+* [#28](https://codeberg.org/FitTrackee/FitTrackee/issues/28) - Error on uploading gpx file
+* [#26](https://codeberg.org/FitTrackee/FitTrackee/issues/26) - Total is incorrect in tooltip when duration is displayed
+* [#24](https://codeberg.org/FitTrackee/FitTrackee/issues/24) - Some distances are not displayed correctly on current month statistics
 
 In this release 7 issues were closed.
 
@@ -4127,18 +4286,18 @@ In this release 7 issues were closed.
 - only activity owner can see his activity
 - no administration for now
 
-➡️ more informations: see [documentation](https://docs.fittrackee.org/) and [current issues](https://github.com/SamR1/FitTrackee/issues)
+➡️ more informations: see [documentation](https://docs.fittrackee.org/) and [current issues](https://codeberg.org/FitTrackee/FitTrackee/issues)
 
 
 ### Issues Closed
 
 #### New Features
 
-* [#11](https://github.com/SamR1/FitTrackee/issues/11) - Timezone support
-* [#10](https://github.com/SamR1/FitTrackee/issues/10) - Add a note to an activity
-* [#9](https://github.com/SamR1/FitTrackee/issues/9) - User statistics on dashboard
-* [#8](https://github.com/SamR1/FitTrackee/issues/8) - Add weather to activities
-* [#3](https://github.com/SamR1/FitTrackee/issues/3) - Search filter for activities
-* [#2](https://github.com/SamR1/FitTrackee/issues/2) - Calendar to view activities
+* [#11](https://codeberg.org/FitTrackee/FitTrackee/issues/11) - Timezone support
+* [#10](https://codeberg.org/FitTrackee/FitTrackee/issues/10) - Add a note to an activity
+* [#9](https://codeberg.org/FitTrackee/FitTrackee/issues/9) - User statistics on dashboard
+* [#8](https://codeberg.org/FitTrackee/FitTrackee/issues/8) - Add weather to activities
+* [#3](https://codeberg.org/FitTrackee/FitTrackee/issues/3) - Search filter for activities
+* [#2](https://codeberg.org/FitTrackee/FitTrackee/issues/2) - Calendar to view activities
 
 In this release 6 issues were closed.

@@ -133,7 +133,7 @@
   "PREVIOUS_WORKOUT": "Aurreko ekintza",
   "PRIVATE_NOTES": "Ohar pribatuak",
   "PRIVATE_NOTES_FIELD_HELP": "ohar hauek zuk bakarrik ikusi ditzakezu.",
-  "PUBLIC_WORKOUTS_RSS_FEED": "Ekintza pulikoen RSS jarioa",
+  "PUBLIC_WORKOUTS_ATOM_FEED": "Ekintza pulikoen Atom jarioa",
   "RADIUS": "erradioa",
   "RECORD": "errekor | errekor",
   "RECORD_AP": "Btb. erritmoa",

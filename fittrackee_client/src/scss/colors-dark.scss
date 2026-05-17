@@ -22,6 +22,9 @@
   --button-danger-color: #dc3545;
   --button-danger-hover-bg-color: #dc3545;
   --button-danger-hover-color: var(--dark-blue);
+  --button-picture-navigation-color: #c4c4c4;
+  --button-picture-navigation-disabled-color: #6b6b6b;
+  --button-picture-navigation-hover-color: #6b6b6b;
 
   --card-border-color: #494f52;
   --input-border-color: #494f52;
@@ -69,7 +72,7 @@
   --calendar-workouts-box-shadow-0: rgba(0, 0, 0, 0.2);
   --calendar-workouts-box-shadow-1: rgba(0, 0, 0, 0.19);
 
-  --modal-background-color: rgba(68, 68, 68, 0.3);
+  --modal-background-color: rgba(68, 68, 68, 0.7);
 
   --nav-bar-background-color: var(--dark-blue);
   --nav-bar-link-active: #ffffff;

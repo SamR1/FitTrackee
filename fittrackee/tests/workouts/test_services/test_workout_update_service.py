@@ -9,7 +9,8 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
 )
-from fittrackee.tests.mixins import RandomMixin
+from fittrackee.media.models import Media
+from fittrackee.tests.mixins import MediaMixin, RandomMixin
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.exceptions import WorkoutException
 from fittrackee.workouts.models import (
@@ -574,7 +575,7 @@ class TestWorkoutUpdateServiceUpdate(RandomMixin):
 
 
 @pytest.mark.disable_autouse_update_records_patch
-class TestWorkoutUpdateServiceUpdateForWorkout(RandomMixin):
+class TestWorkoutUpdateServiceUpdateForWorkout(RandomMixin, MediaMixin):
     def test_it_updates_elevation_data(
         self,
         app: "Flask",
@@ -888,6 +889,71 @@ class TestWorkoutUpdateServiceUpdateForWorkout(RandomMixin):
         assert workout_cycling_user_1.equipments == [
             equipment_shoes_user_1,
         ]
+
+    def test_it_adds_media_attachments(
+        self, app: "Flask", user_1: "User", workout_cycling_user_1: "Workout"
+    ) -> None:
+        media = self.create_media(user_1)
+        service = WorkoutUpdateService(
+            user_1,
+            workout_cycling_user_1,
+            {"media_attachment_ids": [media.short_id]},
+        )
+
+        service.update()
+        db.session.commit()
+
+        db.session.refresh(workout_cycling_user_1)
+        assert workout_cycling_user_1.get_media_attachments(True) == [media]
+        assert media.workout_id == workout_cycling_user_1.id
+
+    def test_it_ignores_media_belonging_to_another_user(
+        self,
+        app: "Flask",
+        user_1: "User",
+        user_2: "User",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        media = self.create_media(user_2)
+        service = WorkoutUpdateService(
+            user_1,
+            workout_cycling_user_1,
+            {"media_attachment_ids": [media.short_id]},
+        )
+
+        service.update()
+        db.session.commit()
+
+        db.session.refresh(workout_cycling_user_1)
+        assert workout_cycling_user_1.get_media_attachments(True) == []
+        assert media.workout_id is None
+
+    def test_it_removes_media_attachments(
+        self,
+        app: "Flask",
+        user_1: "User",
+        user_2: "User",
+        workout_cycling_user_1: "Workout",
+        workout_running_user_1: "Workout",
+    ) -> None:
+        self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+        another_workout_media = self.create_media(
+            user_1, workout_id=workout_running_user_1.id
+        )
+        another_user_media = self.create_media(user_2)
+        service = WorkoutUpdateService(
+            user_1, workout_cycling_user_1, {"media_attachment_ids": []}
+        )
+
+        service.update()
+        db.session.commit()
+
+        db.session.refresh(workout_cycling_user_1)
+        assert workout_cycling_user_1.get_media_attachments(True) == []
+        assert set(Media.query.all()) == {
+            another_user_media,
+            another_workout_media,
+        }
 
 
 class TestWorkoutUpdateServiceUpdateForWorkoutWithFile(RandomMixin):

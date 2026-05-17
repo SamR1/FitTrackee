@@ -140,6 +140,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                     file_limit_import=200,
                     file_sync_limit_import=20,
                     global_map_workouts_limit=7000,
+                    max_image_size=20000,
                     max_single_file_size=10000,
                     max_zip_file_size=25000,
                     max_users=50,
@@ -161,6 +162,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         assert data["data"]["file_sync_limit_import"] == 20
         assert data["data"]["global_map_workouts_limit"] == 7000
         assert data["data"]["is_registration_enabled"] is True
+        assert data["data"]["max_image_size"] == 20000
         assert data["data"]["max_single_file_size"] == 10000
         assert data["data"]["max_zip_file_size"] == 25000
         assert data["data"]["max_users"] == 50
@@ -266,6 +268,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
         [
             "file_sync_limit_import",
             "file_limit_import",
+            "max_image_size",
             "max_zip_file_size",
             "max_users",
             "stats_workouts_limit",
@@ -454,6 +457,26 @@ class TestUpdateConfig(ApiTestCaseMixin):
             "max files in a zip archive must be equal or greater than "
             "max files in a zip archive processed synchronously",
         )
+
+    def test_it_raises_error_if_max_image_size_equals_0(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            "/api/config",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    max_image_size=0,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "max size of images must be greater than 0")
 
     def test_it_raises_error_when_max_users_below_0(
         self, app: Flask, user_1_admin: User

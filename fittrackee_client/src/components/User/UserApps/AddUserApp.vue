@@ -20,6 +20,7 @@
             <CustomTextArea
               name="app-description"
               :charLimit="200"
+              :rows="2"
               :input="appForm.description"
               @updateValue="updateDescription"
             />

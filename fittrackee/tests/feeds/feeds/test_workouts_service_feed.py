@@ -3,6 +3,7 @@ from email.utils import format_datetime
 from typing import TYPE_CHECKING
 
 import feedgenerator
+import pytest
 from flask import Flask
 from time_machine import travel
 
@@ -12,8 +13,9 @@ from fittrackee.feeds.feeds.workouts_feed_service import (
 )
 from fittrackee.visibility_levels import VisibilityLevel
 
-from ...mixins import WorkoutMixin
+from ...mixins import MediaMixin, WorkoutMixin
 from ..template_results.workouts import (
+    expected_en_atom_feed_workout_cycling_user_1,
     expected_en_empty_feed,
     expected_en_feed_workout_cycling_user_1,
     expected_en_feed_workout_cycling_user_1_with_elevation,
@@ -48,6 +50,7 @@ class TestUserWorkoutsFeedServiceInstantiation:
         assert service.distance_unit == "km"
         assert service.elevation_multiplier == 1
         assert service.elevation_unit == "m"
+        assert service.feed_format == "rss"
         assert service.fittrackee_url == app.config["UI_URL"]
         assert service.lang == "en"
         assert service.user == user_1
@@ -67,6 +70,7 @@ class TestUserWorkoutsFeedServiceInstantiation:
             user=user_1,
             workouts=[workout_cycling_user_1],
             lang="fr",
+            feed_format="atom",
             use_imperial_units=True,
             with_description=True,
         )
@@ -77,14 +81,17 @@ class TestUserWorkoutsFeedServiceInstantiation:
         assert service.elevation_unit == "ft"
         assert service.fittrackee_url == app.config["UI_URL"]
         assert service.lang == "fr"
+        assert service.feed_format == "atom"
         assert service.user == user_1
         assert service.workouts == [workout_cycling_user_1]
         assert service.with_description is True
-        assert isinstance(service.feed, feedgenerator.Rss201rev2Feed)
+        assert isinstance(service.feed, feedgenerator.Atom1Feed)
         assert isinstance(service.feed_template, FeedItemTemplate)
 
 
-class TestUserWorkoutsFeedServiceGenerateUserWorkoutsFeed(WorkoutMixin):
+class TestUserWorkoutsFeedServiceGenerateUserWorkoutsFeed(
+    WorkoutMixin, MediaMixin
+):
     def test_it_returns_feed_for_en_language(
         self,
         app: Flask,
@@ -232,6 +239,87 @@ https://example.com"""
             )
         )
 
+    def test_it_returns_rss_feed_with_media_attachments_when_visibility_is_public(  # noqa
+        self,
+        app: Flask,
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        workout_cycling_user_1.title = WORKOUT_TITLE
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.media_visibility = VisibilityLevel.PUBLIC
+        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+        service = UserWorkoutsFeedService(
+            user=user_1,
+            workouts=[workout_cycling_user_1],
+            with_description=True,
+        )
+
+        feed = service.generate_user_workouts_feed()
+
+        assert (
+            f'<enclosure length="{media.file_size}" '
+            f'type="{media.file_content_type}" '
+            f'url="{app.config["UI_URL"]}/media/{media.file_name}"/>'
+        ) in feed
+
+    def test_it_returns_atom_feed_with_media_attachments_when_visibility_is_public(  # noqa
+        self,
+        app: Flask,
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        workout_cycling_user_1.title = WORKOUT_TITLE
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.media_visibility = VisibilityLevel.PUBLIC
+        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+        service = UserWorkoutsFeedService(
+            user=user_1,
+            workouts=[workout_cycling_user_1],
+            with_description=True,
+            feed_format="atom",
+        )
+
+        feed = service.generate_user_workouts_feed()
+
+        assert (
+            f'<link href="{app.config["UI_URL"]}/media/{media.file_name}" '
+            f'length="{media.file_size}"'
+            f' rel="enclosure" type="{media.file_content_type}"/>'
+        ) in feed
+
+    @pytest.mark.parametrize(
+        "input_media_visibility",
+        [VisibilityLevel.FOLLOWERS, VisibilityLevel.FOLLOWERS],
+    )
+    def test_it_returns_feed_without_media_attachments_when_not_visible(
+        self,
+        app: Flask,
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        input_media_visibility: "VisibilityLevel",
+    ) -> None:
+        workout_cycling_user_1.title = WORKOUT_TITLE
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.media_visibility = input_media_visibility
+        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+        service = UserWorkoutsFeedService(
+            user=user_1,
+            workouts=[workout_cycling_user_1],
+            with_description=True,
+        )
+
+        feed = service.generate_user_workouts_feed()
+
+        assert (
+            f'<enclosure length="{media.file_size}" '
+            f'type="{media.file_content_type}" '
+            f'url="{app.config["UI_URL"]}/media/{media.file_name}"/>'
+        ) not in feed
+
     def test_it_returns_feed_in_imperial_unit(
         self,
         app: Flask,
@@ -315,4 +403,23 @@ https://example.com"""
 
         assert feed == expected_en_empty_feed.format(
             username=user_1.username, last_date=format_datetime(now)
+        )
+
+    def test_it_returns_atom_feed(
+        self,
+        app: Flask,
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        workout_cycling_user_1.title = WORKOUT_TITLE
+        service = UserWorkoutsFeedService(
+            user=user_1, workouts=[workout_cycling_user_1], feed_format="atom"
+        )
+
+        feed = service.generate_user_workouts_feed()
+
+        assert feed == expected_en_atom_feed_workout_cycling_user_1.format(
+            workout_short_id=workout_cycling_user_1.short_id,
+            workout_title=WORKOUT_TITLE,
         )

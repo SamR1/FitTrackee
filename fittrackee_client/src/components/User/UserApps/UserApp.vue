@@ -63,7 +63,12 @@
         <dt>{{ $t('oauth2.APP.NAME') }}:</dt>
         <dd>{{ client.name }}</dd>
         <dt>{{ $t('oauth2.APP.DESCRIPTION') }}:</dt>
-        <dd :class="{ 'no-description': !client.client_description }">
+        <dd
+          :class="{
+            'no-description': !client.client_description,
+            'white-space-pre-wrap': client.client_description,
+          }"
+        >
           {{
             client.client_description
               ? client.client_description

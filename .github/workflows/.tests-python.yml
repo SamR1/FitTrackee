@@ -1,0 +1,129 @@
+name: Python CI
+
+on:
+  push:
+    paths: [
+      'fittrackee/**',
+      'e2e/**',
+      'pyproject.toml',
+      'poetry.lock',
+      'VERSION',
+      '.github/workflows/.tests-python.yml',
+    ]
+  pull_request:
+    paths: [
+      'fittrackee/**',
+      'e2e/**',
+      'pyproject.toml',
+      'poetry.lock',
+      'VERSION',
+      '.github/workflows/.tests-python.yml',
+    ]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
+    name: python ${{ matrix.python-version }} (postgis 17-3.5)
+    uses: ./.github/workflows/.workflow-python.yml
+    strategy:
+      matrix:
+        python-version:  [ "3.11", "3.12", "3.13", "3.14" ]
+    with:
+      ubuntu-version: "ubuntu-latest"
+      python-version: ${{ matrix.python-version }}
+      postgis-version: "17-3.5"
+      with-additional-check: true
+      with-coverage: true
+
+  postgis:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
+    name: postgis ${{ matrix.postgis-version }} (python 3.13)
+    uses: ./.github/workflows/.workflow-python.yml
+    strategy:
+      matrix:
+        postgis-version:  [ "14-3.5", "15-3.5", "16-3.5", "17-3.4", "17-3.6", "18-3.6" ]
+    with:
+      ubuntu-version: "ubuntu-latest"
+      python-version: "3.13"
+      postgis-version: ${{ matrix.postgis-version }}
+      with-additional-check: false
+      with-coverage: false
+
+  arm:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
+    name: postgis 17-3.5 on arm platform (python 3.13)
+    uses: ./.github/workflows/.workflow-python.yml
+    with:
+      ubuntu-version: "ubuntu-24.04-arm"
+      python-version: "3.13"
+      postgis-version: "17-3.5"
+      with-additional-check: false
+      with-coverage: false
+
+  end2end_with_sources:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
+    name: e2e tests with sources (Node 20)
+    needs: ["python"]
+    uses: ./.github/workflows/.workflow-e2e-with-sources.yml
+
+  build_package:
+    needs: ["python"]
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        persist-credentials: false
+
+    - name: Use Node.js 24.x
+      uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+      with:
+        node-version: 24.x
+
+    - name: Install dependencies
+      working-directory: fittrackee_client
+      run: npm ci --ignore-scripts
+
+    - name: Build dist files
+      working-directory: fittrackee_client
+      run: npm run build
+
+    - name: Set up Python 3.13
+      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+      with:
+        python-version: 3.13
+
+    - name: Install poetry
+      run: >-
+        python3 -m
+        pip install
+        poetry
+        --user
+
+    - name: Build a binary wheel and a source tarball
+      run: poetry build
+
+    - name: Store the distribution packages
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: python-package-distributions
+        path: dist/
+        retention-days: 5
+
+  end2end_package:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
+    name: e2e tests with package
+    needs: ["build_package"]
+    uses: ./.github/workflows/.workflow-e2e.yml
+
+  end2end_package_update:
+    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
+    name: e2e tests after FitTrackee update
+    needs: ["build_package"]
+    uses: ./.github/workflows/.workflow-e2e.yml
+    with:
+      previous-version: true

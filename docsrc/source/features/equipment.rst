@@ -11,6 +11,7 @@ Equipment
 .. versionchanged:: 1.0.0 added Padel (Outdoor) to Shoes
 .. versionchanged:: 1.1.0 added Canoeing (Whitewater) and Kayaking (Whitewater) to Boat
 .. versionchanged:: 1.2.0 added Skates, Misc, Paddle and Racket
+.. versionchanged:: 1.3.0 increase the character limit for equipment descriptions to 2,000 and add Markdown syntax
 
 Users can create equipment that can be associated with workouts.
 

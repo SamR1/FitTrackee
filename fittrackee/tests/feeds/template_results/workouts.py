@@ -65,3 +65,9 @@ expected_en_feed_user_1_workouts = """<?xml version="1.0" encoding="UTF-8"?>
 &lt;strong&gt;Distance&lt;/strong&gt;: 10.0 km&lt;br /&gt;</description><pubDate>Wed, 09 May 2018 00:00:00 +0000</pubDate></item><item><title>Cycling (Sport) - Workout 5 of 7</title><link>https://example.com/workouts/{workout_2_short_id}</link><description>&lt;p&gt;
 &lt;strong&gt;Duration&lt;/strong&gt;: 0:16:40&lt;br /&gt;
 &lt;strong&gt;Distance&lt;/strong&gt;: 10.0 km&lt;br /&gt;&lt;strong&gt;Ascent&lt;/strong&gt;: 100.0 m&lt;strong&gt;&lt;br /&gt;Descent&lt;/strong&gt;: 200.0 m&lt;br /&gt;</description><pubDate>Fri, 23 Feb 2018 00:00:00 +0000</pubDate></item></channel></rss>"""
+
+
+expected_en_atom_feed_workout_cycling_user_1 = """<?xml version="1.0" encoding="UTF-8"?>
+<feed xml:lang="en" xmlns="http://www.w3.org/2005/Atom"><title>test's workouts feed</title><link href="https://example.com/users/test" rel="alternate"/><link href="https://example.com/users/test/workouts.rss" rel="self"/><id>https://example.com/users/test</id><updated>2018-01-01T00:00:00+00:00</updated><subtitle>Latest public workouts on FitTrackee from test</subtitle><entry><title>Cycling (Sport) - {workout_title}</title><link href="https://example.com/workouts/{workout_short_id}" rel="alternate"/><published>2018-01-01T00:00:00+00:00</published><updated>2018-01-01T00:00:00+00:00</updated><id>tag:example.com,2018-01-01:/workouts/{workout_short_id}</id><summary type="html">&lt;p&gt;
+&lt;strong&gt;Duration&lt;/strong&gt;: 1:00:00&lt;br /&gt;
+&lt;strong&gt;Distance&lt;/strong&gt;: 10.0 km&lt;br /&gt;</summary></entry></feed>"""

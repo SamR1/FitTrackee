@@ -13,12 +13,11 @@
             :input="commentText"
             :required="true"
             :placeholder="$t('workouts.COMMENTS.ADD')"
+            :rows="2"
+            :charLimit="500"
+            with-markdown
             @updateValue="updateText"
           />
-          <div class="markdown-hints info-box">
-            <i class="fa fa-info-circle" aria-hidden="true" />
-            {{ $t('workouts.MARKDOWN_SYNTAX') }}
-          </div>
           <ul class="users-suggestions" v-if="matchingUsers.length > 0">
             <li
               v-for="user in matchingUsers"

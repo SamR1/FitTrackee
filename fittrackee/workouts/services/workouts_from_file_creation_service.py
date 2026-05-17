@@ -53,6 +53,8 @@ class WorkoutsData:
     notes: Optional[str] = None
     title: Optional[str] = None
     workout_visibility: Optional["VisibilityLevel"] = None
+    media_visibility: Optional["VisibilityLevel"] = None
+    media_attachment_ids: Optional[List[str]] = None
 
 
 class AbstractWorkoutsCreationService(BaseWorkoutService, WorkoutFileMixin):
@@ -175,6 +177,7 @@ class AbstractWorkoutsCreationService(BaseWorkoutService, WorkoutFileMixin):
         equipments: Union[List["Equipment"], None],
         workout_file: Optional["IO[bytes]"] = None,
         get_weather: bool = True,
+        is_single_workout: bool = False,
     ) -> "Workout":
         """
         Return map absolute file path in order to delete file on error
@@ -254,6 +257,14 @@ class AbstractWorkoutsCreationService(BaseWorkoutService, WorkoutFileMixin):
             ),
             parent_visibility=new_workout.analysis_visibility,
         )
+        new_workout.media_visibility = get_calculated_visibility(
+            visibility=(
+                self.workouts_data.media_visibility
+                if self.workouts_data.media_visibility
+                else self.auth_user.media_visibility
+            ),
+            parent_visibility=new_workout.workout_visibility,
+        )
 
         # store original workout file
         absolute_workout_filepath = self._store_file(
@@ -285,6 +296,15 @@ class AbstractWorkoutsCreationService(BaseWorkoutService, WorkoutFileMixin):
             raise WorkoutException(
                 "error", "error when generating map image"
             ) from e
+
+        # no media attachments added when file is an archive
+        if is_single_workout:
+            self.update_media_attachments_if_provided(
+                self.auth_user.id,
+                self.workouts_data.media_attachment_ids,
+                new_workout.id,
+            )
+
         db.session.commit()
         return new_workout
 
@@ -503,7 +523,7 @@ class WorkoutsFromFileCreationService(AbstractWorkoutsCreationService):
                 return new_workouts, processing_output
             else:
                 new_workout = self.create_workout_from_file(
-                    extension, equipments
+                    extension, equipments, is_single_workout=True
                 )
                 return [new_workout], {
                     "task_short_id": None,

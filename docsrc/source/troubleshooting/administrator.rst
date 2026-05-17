@@ -102,6 +102,10 @@ Workouts created with a file are not displayed on the workouts map
 Error when installing pandas using Python 3.14
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. note::
+    Since the release of meson 1.11.1, this error should no longer occur.
+
+
 - | The following error can occur during **pandas** installation (version 2.3.2) using Python 3.14:
 
   .. code-block::

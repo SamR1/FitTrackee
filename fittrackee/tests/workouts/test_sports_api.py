@@ -16,7 +16,7 @@ from ..utils import jsonify_dict
 
 
 class TestGetSports(ApiTestCaseMixin, EquipmentMixin):
-    def test_test_it_gets_all_sports_when_not_authenticated(
+    def test_it_gets_all_sports_when_not_authenticated(
         self,
         app: Flask,
         sport_1_cycling: Sport,

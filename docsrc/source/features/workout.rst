@@ -17,6 +17,7 @@ File upload
 
 .. versionchanged:: 0.10.0  support for .fit, .kml/.kmz and .tcx files, asynchronous uploads for larger files
 .. versionchanged:: 0.10.3  pause events triggering segment creation (.fit files only)
+.. versionchanged:: 1.3.0  added possibility to add photos and a preview button for markdown
 
 Supported files extensions are:
 
@@ -26,7 +27,7 @@ Supported files extensions are:
 
   - versions supported: 2.2.0 and 2.3.0
   - only files with ``Placemark``/``MultiTrack``/``Tracks`` are supported.
-  - files with folders or multiple ``Placemark`` are not supported for now.
+  - files with folders, multiple ``Placemark`` or photos in kmz archives are not supported for now.
 
 - .tcx
 - .zip archive containing files with one of the supported extensions
@@ -72,6 +73,7 @@ Data entry
 
 .. versionchanged:: 0.7.10 add ascent and descent
 .. versionchanged:: 1.1.2 added total calories to workout without file, elevation related inputs disabled for workout for sports without elevation
+.. versionchanged:: 1.3.0  added possibility to add photos and a preview button for markdown
 
 Users can create a workout without file by entering date, time, duration, distance, ascent, descent and calories.
 
@@ -290,6 +292,24 @@ It is possible to configure sport in user preferences (see `Account & preference
 - Default equipment
 - Pace/Speed display
 
+Photos
+======
+
+.. versionadded:: 1.3.0
+
+| Up to 20 photos can be added to workouts.
+| The supported extensions are ``.gif``, ``.jpeg``, ``.jpg``, ``.png`` and ``.webp``.
+| By default, the maximum limit is 5 MB (5,242,880 bytes).
+
+.. note::
+
+    The maximum limit can changed in the Application administration.
+
+A description can be added to each photo (also used as alternative text (``alt`` attribute)):
+
+.. figure:: ../_images/workout-media-form.png
+   :alt: Form for a photo
+
 Data entered and extracted
 ==========================
 
@@ -336,6 +356,7 @@ Visibility levels
 .. versionadded:: 0.9.0
 .. versionchanged:: 0.10.0 added visibility levels for heart rate
 .. versionchanged:: 1.1.0 added visibility levels for total calories
+.. versionchanged:: 1.3.0 added visibility levels for photos
 
 Visibility level can be set separately for workout data, analysis and map:
 
@@ -344,8 +365,9 @@ Visibility level can be set separately for workout data, analysis and map:
 - public: anyone can see data even unauthenticated users.
 
 | Workout visibility applies to title, description, records and workout data except elevation.
+| Media visibility applies to photos displayed in workout cards (timeline, user profile) and workout details.
 | Analysis visibility applies to chart data, elevation and segments, if workout is associated with a file.
-| Map visibility applies to the map, if workout is associated with a file.
+| Map visibility applies to the map and photos coordinates, if workout is associated with a file.
 
 .. note::
   | Default visibility is private. All workouts created before **FitTrackee** 0.9.0 are private.
@@ -524,10 +546,17 @@ Map
 
 .. versionchanged:: 0.5.0 added full screen and reset control
 .. versionchanged:: 0.11.0 added heatmap for racket sports
+.. versionchanged:: 1.3.0 photos with coordinates are displayed on map
 
 | A map is displayed for workout with a file with the tile server set by the administrators (OpenStreetMap's standard tile layer by default).
 | Controls allow full screen view and position reset.
 | If the sport is Outdoor Tennis or Padel, a heat map is also available.
+
+If workout is associated to photos and those photos have GPS coordinates, they are displayed on the map.
+
+.. figure:: ../_images/map-with-photos.png
+   :alt: Map with photos
+
 
 Chart
 =====
@@ -566,6 +595,21 @@ Speed/pace, elevation, heart rate, cadence and power can be displayed on one cha
 
 The preferred display can be stored in a `user preference <account_and_preferences.html#preferences>`__.
 
+Photos gallery
+==============
+
+.. versionadded:: 1.3.0
+
+The photos, if present and visible according to the media visibility, are displayed between Analysis and Description.
+
+.. figure:: ../_images/photos-gallery.png
+   :alt: Photos gallery in Workout details
+
+.. figure:: ../_images/photo-modal.png
+   :alt: Photo displayed in Gallery modal
+
+The workout owner can edit or delete image in modal.
+
 Workout menu
 ============
 
@@ -602,6 +646,7 @@ Edition and deletion
 
 .. versionchanged:: 0.12.0 added workout refresh
 .. versionchanged:: 1.1.0 added the ability to change the altitude data source, recalculating values when changing sports.
+.. versionchanged:: 1.2.0 added the ability to add, update and remove photos.
 
 Workout can be edited:
 
@@ -617,6 +662,7 @@ Workout can be edited:
 - duration (only workouts without gpx)
 - distance (only workouts without gpx)
 - ascent and descent (only workouts without gpx)
+- photos
 
 | Some values are only calculated when creating a workout or changing sports.
 | The previously uploaded workouts are not updated in the following cases:

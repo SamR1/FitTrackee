@@ -9,6 +9,8 @@
           <CustomTextArea
             class="report-textarea"
             name="report"
+            :charLimit="500"
+            :rows="2"
             :required="true"
             :placeholder="$t('common.REPORT_PLACEHOLDER')"
             @updateValue="updateText"

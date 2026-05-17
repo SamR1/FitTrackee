@@ -1,6 +1,6 @@
 {
   "ABOUT": {
-    "DESCRIPTION": "Dodatne informacije koje bi mogle biti korisne korisnicima. Može se koristiti markdown sintaksa.",
+    "DESCRIPTION": "Dodatne informacije koje bi mogle biti korisne korisnicima.",
     "TEXT": "Detaljne informacije o instanci"
   },
   "ACTION": "Radnja | Radnje",
@@ -118,7 +118,7 @@
   "NEW_EMAIL": "Nova e-pošta",
   "NO_TEXT_ENTERED": "Nema unesenog teksta",
   "PASSWORD_RESET_SUCCESSFUL": "Lozinka je poništena.",
-  "PRIVACY_POLICY_DESCRIPTION": "Dodaj vlastita pravila o privatnosti ili ostavi prazno za korištenje zadanih. Može se koristiti markdown sintaksa.",
+  "PRIVACY_POLICY_DESCRIPTION": "Dodaj vlastita pravila o privatnosti ili ostavi prazno za korištenje zadanih.",
   "REGISTRATION_DISABLED": "Registracija je trenutno onemogućena.",
   "REGISTRATION_ENABLED": "Registracija je trenutno omogućena.",
   "RESET_USER_PASSWORD": "Resetiraj lozinku",

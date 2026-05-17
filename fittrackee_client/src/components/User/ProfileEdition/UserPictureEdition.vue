@@ -57,7 +57,7 @@
 
   const fileSizeLimit: ComputedRef<string> = computed(() =>
     appConfig.value.max_single_file_size
-      ? getReadableFileSizeAsText(appConfig.value.max_single_file_size)
+      ? getReadableFileSizeAsText(appConfig.value.max_image_size)
       : ''
   )
 

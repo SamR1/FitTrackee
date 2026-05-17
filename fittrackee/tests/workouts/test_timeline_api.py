@@ -11,11 +11,12 @@ from fittrackee.users.models import FollowRequest, User
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
+from ..mixins import MediaMixin
 from ..utils import jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin
 
 
-class GetUserTimelineTestCase(WorkoutApiTestCaseMixin):
+class GetUserTimelineTestCase(WorkoutApiTestCaseMixin, MediaMixin):
     @staticmethod
     def assert_no_workout_returned(response: TestResponse) -> None:
         assert response.status_code == 200
@@ -159,6 +160,28 @@ class TestGetUserTimelineForAuthUserWorkouts(GetUserTimelineTestCase):
         )
 
         self.assert_workout_returned(response, workout_cycling_user_1)
+
+    def test_it_returns_workout_with_media_attachments(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data["data"]["workouts"][0]["media_attachments"] == [
+            media.serialize(can_see_map_data=True)
+        ]
 
 
 class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
@@ -391,6 +414,58 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
 
         data = json.loads(response.data.decode())
         assert data["data"]["workouts"][0]["map"] == map_id
+
+    def test_it_returns_workout_with_media_attachments_if_user_can_see_media(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
+        workout_cycling_user_2.media_visibility = VisibilityLevel.FOLLOWERS
+        media = self.create_media(user_2, workout_id=workout_cycling_user_2.id)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data["data"]["workouts"][0]["media_attachments"] == [
+            media.serialize(can_see_map_data=True)
+        ]
+
+    def test_it_does_not_return_media_attachments_if_user_can_not_see_media(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+        follow_request_from_user_1_to_user_2: FollowRequest,
+    ) -> None:
+        user_2.approves_follow_request_from(user_1)
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.FOLLOWERS
+        workout_cycling_user_2.media_visibility = VisibilityLevel.PRIVATE
+        self.create_media(user_2, workout_id=workout_cycling_user_2.id)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/timeline",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert data["data"]["workouts"][0]["media_attachments"] == []
 
 
 class TestGetUserTimelineForNotFollowedUserWorkouts(GetUserTimelineTestCase):

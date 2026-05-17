@@ -1,6 +1,6 @@
 {
   "ABOUT": {
-    "DESCRIPTION": "Ogni informazione in più che può essere utile per i tuoi utenti. Si può usare la sintassi Markdown.",
+    "DESCRIPTION": "Ogni informazione in più che può essere utile per i tuoi utenti.",
     "TEXT": "Informazioni dettagliate sull'istanza"
   },
   "ACTION": "Azione | Azioni",
@@ -118,7 +118,7 @@
   "NEW_EMAIL": "Nuova email",
   "NO_TEXT_ENTERED": "Nessun testo inserito",
   "PASSWORD_RESET_SUCCESSFUL": "La password è stata reimpostata.",
-  "PRIVACY_POLICY_DESCRIPTION": "Aggiungi la tua privacy policy o lascia vuoto per usare quella di default. Puoi usare la sintassi Markdown.",
+  "PRIVACY_POLICY_DESCRIPTION": "Aggiungi la tua privacy policy o lascia vuoto per usare quella di default.",
   "REGISTRATION_DISABLED": "La registrazione è al momento disabilitata.",
   "REGISTRATION_ENABLED": "La registrazione è al momento abilitata.",
   "RESET_USER_PASSWORD": "Reset password",

@@ -18,12 +18,13 @@ Configuration
 .. versionchanged:: 0.7.4 maximum size of workout file and maximum number of files in the zip archive updated
 .. versionchanged:: 0.8.5 added maximum number of workouts for sport statistics
 .. versionchanged:: 0.10.0 added maximum number of files for synchronous processing and maximum number of workouts displayed on global map
+.. versionchanged:: 1.3.0 maximum size of images (workout photos and user picture)
 
 The following parameters can be set:
 
 - active users limit (default: 0). If 0, registration is enabled (no limit defined).
-- maximum size of workout file (individually uploaded or in a zip archive, default: 1Mb)
-- maximum size of zip archive (default: 10Mb)
+- maximum size of workout file (individually uploaded or in a zip archive, default: 1MB (1,048,576 bytes))
+- maximum size of zip archive (default: 10MB (10,485,760 bytes))
 - maximum number of files in the zip archive (default: 10)
 - maximum number of files for synchronous processing (default: 10). If the maximum number of files in the zip archive equals the maximum number of files for synchronous processing, asynchronous upload is disabled.
 
@@ -37,6 +38,7 @@ The following parameters can be set:
   | The maximum number of workouts for statistics or the global map must be defined according to the server capabilities.
   | In the case of the global map, this value also has an impact on the rendering performance on the client side (depending on the browser and the capabilities of the device displaying the map).
 
+- maximum size of images (default: 5 MB (5,242,880 bytes))
 - administrator email for contact
 
 .. warning::

@@ -14,9 +14,13 @@
         </a>
       </p>
       <p>
-        <i class="fa fa-github fa-padding" aria-hidden="true"></i>
+        <img
+          class="codeberg-logo"
+          :src="'/img/codeberg.svg'"
+          alt="Codeberg Logo"
+        />
         <a
-          href="https://github.com/SamR1/FitTrackee"
+          href="https://codeberg.org/FitTrackee/FitTrackee"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -103,7 +107,8 @@
       margin-right: 0;
       padding-bottom: 0;
     }
-    .fa-padding {
+    .fa-padding,
+    .codeberg-logo {
       padding-right: $default-padding;
     }
     .about-instance {

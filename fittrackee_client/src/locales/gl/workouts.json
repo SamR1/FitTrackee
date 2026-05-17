@@ -133,7 +133,7 @@
   "PREVIOUS_WORKOUT": "Actividade anterior",
   "PRIVATE_NOTES": "Notas privadas",
   "PRIVATE_NOTES_FIELD_HELP": "estas notas só as podes ver ti.",
-  "PUBLIC_WORKOUTS_RSS_FEED": "Canle RSS das actividades públicas",
+  "PUBLIC_WORKOUTS_ATOM_FEED": "Canle Atom das actividades públicas",
   "RADIUS": "radio",
   "RECORD": "récord | récords",
   "RECORD_AP": "Ritmo prom.",

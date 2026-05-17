@@ -5,6 +5,7 @@
   "ACCOUNT_SUSPENDED_AT": "Konto um {0} gesperrt.",
   "ACTIVE_ACCOUNT": "Das Konto ist aktiv",
   "ACTIVE_USER": "aktiver Benutzer | aktive Benutzer",
+  "ADMIN_WILL_REVIEW_AND_ACTIVATE_ACCOUNT": "Dein Konto wird von einem Administrator geprüft und bei Eignung aktiviert.",
   "ALREADY_HAVE_ACCOUNT": "Hast du bereits ein Konto?",
   "APPEAL": "Einspruch",
   "APPEAL_APPROVED": "Einspruch bewilligt.",

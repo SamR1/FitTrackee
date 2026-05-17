@@ -27,6 +27,7 @@ Scopes
 .. versionchanged:: 0.8.0 added ``equipments`` scopes
 .. versionchanged:: 0.9.0 added ``follow``, ``notifications``, ``reports`` scopes and added comments to ``workouts`` scopes
 .. versionchanged:: 1.0.0 added ``geocode`` scope
+.. versionchanged:: 1.3.0 added ``media`` scope
 
 The following scopes are available:
 
@@ -36,6 +37,7 @@ The following scopes are available:
 - ``follow:read``: grants read access to follow requests and followers endpoints,
 - ``follow:write``: grants write access to requests and followers endpoints,
 - ``geocode:read``: grants read access to geocoding endpoints,
+- ``media:write``: grants read access to media endpoints,
 - ``notifications:read``: grants read access to notifications endpoints,
 - ``notifications:write``: grants write access to notifications endpoints,
 - ``profile:read``: grants read access to auth endpoints,

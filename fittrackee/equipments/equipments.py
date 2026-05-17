@@ -18,7 +18,7 @@ from fittrackee.users.models import (
     User,
     UserSportPreferenceEquipment,
 )
-from fittrackee.utils import decode_short_id
+from fittrackee.utils import clean_input, decode_short_id
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
@@ -26,7 +26,13 @@ from .exceptions import (
     InvalidEquipmentsException,
     MiscEquipmentLimitExceededException,
 )
-from .models import Equipment, EquipmentType, WorkoutEquipment
+from .models import (
+    DESCRIPTION_MAX_LENGTH,
+    LABEL_MAX_LENGTH,
+    Equipment,
+    EquipmentType,
+    WorkoutEquipment,
+)
 from .utils import (
     SPORT_EQUIPMENT_TYPES,
     handle_default_sports,
@@ -311,7 +317,7 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     :<json integer equipment_type: the ID for an equipment type (it must be
         active)
     :<json string description: a (perhaps longer) description of the
-        equipment (limited to 200 characters, optional)
+        equipment (limited to 2000 characters, optional)
     :<json boolean is_active: whether or not this equipment is currently
         active (default: ``true``)
     :<json array of integers default_for_sport_ids: the default sport ids
@@ -330,6 +336,7 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         - ``the 'label' and 'equipment_type_id' parameters must be provided``
         - ``equipment already exists with the same label``
         - ``label exceeds 50 characters``
+        - ``description exceeds 2000 characters``
         - ``invalid equipment type id``
         - ``equipment type is inactive``
         - ``sport (id <sport_id>) does not exist``
@@ -357,8 +364,17 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         )
 
     label = equipment_data["label"]
-    if len(label) > 50:
-        return InvalidPayloadErrorResponse("label exceeds 50 characters")
+    if len(label) > LABEL_MAX_LENGTH:
+        return InvalidPayloadErrorResponse(
+            f"label exceeds {LABEL_MAX_LENGTH} characters"
+        )
+
+    description = equipment_data.get("description")
+    if description and len(description) > DESCRIPTION_MAX_LENGTH:
+        return InvalidPayloadErrorResponse(
+            f"description exceeds {DESCRIPTION_MAX_LENGTH} characters"
+        )
+
     equipment_type_id = equipment_data["equipment_type_id"]
 
     if (
@@ -395,10 +411,10 @@ def post_equipment(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     try:
         new_equipment = Equipment(
             user_id=auth_user.id,
-            label=label,
+            label=clean_input(label),
             equipment_type_id=equipment_type_id,
             is_active=True,
-            description=equipment_data.get("description"),
+            description=clean_input(description) if description else "",
         )
         db.session.add(new_equipment)
         db.session.flush()
@@ -551,6 +567,7 @@ def update_equipment(
         - ``no valid parameters supplied``
         - ``equipment already exists with the same label``
         - ``label exceeds 50 characters``
+        - ``description exceeds 2000 characters``
         - ``invalid equipment type id``
         - ``equipment type is inactive``
         - ``sport (id <sport_id>) does not exist``
@@ -609,9 +626,9 @@ def update_equipment(
             equipment.is_active = equipment_data.get("is_active")
         if "label" in equipment_data:
             label = equipment_data.get("label")
-            if len(label) > 50:
+            if len(label) > LABEL_MAX_LENGTH:
                 return InvalidPayloadErrorResponse(
-                    "label exceeds 50 characters"
+                    f"label exceeds {LABEL_MAX_LENGTH} characters"
                 )
             if (
                 Equipment.query.filter(
@@ -626,7 +643,12 @@ def update_equipment(
                 )
             equipment.label = label
         if "description" in equipment_data:
-            equipment.description = equipment_data.get("description")
+            description = equipment_data.get("description")
+            if len(description) > DESCRIPTION_MAX_LENGTH:
+                return InvalidPayloadErrorResponse(
+                    f"description exceeds {DESCRIPTION_MAX_LENGTH} characters"
+                )
+            equipment.description = clean_input(description)
         if "visibility" in equipment_data:
             visibility = equipment_data["visibility"]
             try:

@@ -69,7 +69,9 @@
         <span class="notification-reason">
           {{ $t('admin.APP_MODERATION.REASON') }}:
         </span>
-        {{ notification.report_action.reason }}
+        <span class="white-space-pre-wrap">
+          {{ notification.report_action.reason }}
+        </span>
       </div>
       <template v-if="displayCommentNotification()">
         <CommentForUser

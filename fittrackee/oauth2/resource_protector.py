@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import Any, Callable, List, Union
+from typing import TYPE_CHECKING, Any, Callable, List, Union
 
 from authlib.integrations.flask_oauth2 import ResourceProtector
 from authlib.oauth2 import OAuth2Error
@@ -13,7 +13,21 @@ from fittrackee.responses import (
     UnauthorizedErrorResponse,
 )
 from fittrackee.users.models import User
-from fittrackee.users.roles import UserRole
+
+if TYPE_CHECKING:
+    from flask import Request
+
+    from fittrackee.users.roles import UserRole
+
+
+def get_file_type(req: "Request") -> str:
+    if req.endpoint == "auth.edit_picture":
+        return "picture"
+    if req.endpoint == "workouts.post_workout":
+        return "workout"
+    if req.endpoint == "media.post_media":
+        return "media"
+    return ""
 
 
 class CustomResourceProtector(ResourceProtector):
@@ -22,7 +36,7 @@ class CustomResourceProtector(ResourceProtector):
         scopes: Union[str, List, None] = None,
         optional: bool = False,
         *,
-        role: Union[UserRole, None] = None,
+        role: Union["UserRole", None] = None,
         optional_auth_user: bool = False,
         allow_suspended_user: bool = False,
     ) -> Callable:
@@ -55,18 +69,8 @@ class CustomResourceProtector(ResourceProtector):
                         ) as error:
                             self.raise_error_response(error)
                         except RequestEntityTooLarge:
-                            file_type = ""
-                            if request.endpoint in [
-                                "auth.edit_picture",
-                                "workouts.post_workout",
-                            ]:
-                                file_type = (
-                                    "picture"
-                                    if request.endpoint == "auth.edit_picture"
-                                    else "workout"
-                                )
                             return PayloadTooLargeErrorResponse(
-                                file_type=file_type,
+                                file_type=get_file_type(request),
                                 file_size=request.content_length,
                                 max_size=current_app.config[
                                     "MAX_CONTENT_LENGTH"

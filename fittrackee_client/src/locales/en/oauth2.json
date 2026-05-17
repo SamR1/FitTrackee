@@ -15,6 +15,7 @@
       "follow:read_DESCRIPTION": "grants read access to endpoints related to follow requests and followers.",
       "follow:write_DESCRIPTION": "grants write access to endpoints related to follow requests and followers.",
       "geocode:read_DESCRIPTION": "grants read access to endpoints related to geocoding.",
+      "media:write_DESCRIPTION": "grants write access to <code>media</code> endpoints.",
       "notifications:read_DESCRIPTION": "grants read access to <code>notifications</code> endpoints.",
       "notifications:write_DESCRIPTION": "grants write access to <code>notifications</code> endpoints.",
       "profile:read_DESCRIPTION": "grants read access to <code>auth</code> endpoints.",

@@ -114,7 +114,7 @@
   "PREVIOUS_WORKOUT": "Poprzedni trening",
   "PRIVATE_NOTES": "Prywatne notatki",
   "PRIVATE_NOTES_FIELD_HELP": "te notatki są widoczne tylko dla Ciebie.",
-  "PUBLIC_WORKOUTS_RSS_FEED": "Kanał RSS z publicznymi treningami",
+  "PUBLIC_WORKOUTS_ATOM_FEED": "Kanał Atom z publicznymi treningami",
   "RADIUS": "promień",
   "RECORD": "rekord | rekordy",
   "RECORD_AS": "Śr. prędkość",

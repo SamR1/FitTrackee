@@ -133,7 +133,7 @@
   "PREVIOUS_WORKOUT": "Vorige training",
   "PRIVATE_NOTES": "Privé notities",
   "PRIVATE_NOTES_FIELD_HELP": "deze notities zijn enkel zichbaar voor jou.",
-  "PUBLIC_WORKOUTS_RSS_FEED": "Openbare trainingen RSS Feed",
+  "PUBLIC_WORKOUTS_ATOM_FEED": "Openbare trainingen Atom Feed",
   "RADIUS": "straal",
   "RECORD": "record | records",
   "RECORD_AP": "Gem. tempo",

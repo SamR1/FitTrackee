@@ -13,12 +13,20 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, watch, onBeforeMount } from 'vue'
+  import {
+    computed,
+    nextTick,
+    onBeforeMount,
+    onMounted,
+    onUnmounted,
+    watch,
+  } from 'vue'
   import type { ComputedRef } from 'vue'
   import { useRoute } from 'vue-router'
 
   import WorkoutEdition from '@/components/Workout/WorkoutEdition.vue'
   import useAuthUser from '@/composables/useAuthUser'
+  import useScroll from '@/composables/useScroll.ts'
   import useSports from '@/composables/useSports'
   import { WORKOUTS_STORE } from '@/store/constants'
   import type { IWorkoutData } from '@/types/workouts'
@@ -29,6 +37,7 @@
 
   const { authUser } = useAuthUser()
   const { sports } = useSports()
+  const { resetTimeout, scrollTo } = useScroll()
 
   const workoutData: ComputedRef<IWorkoutData> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.WORKOUT_DATA]
@@ -47,5 +56,16 @@
     store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, {
       workoutId: route.params.workoutId,
     })
+  })
+  onMounted(() => {
+    nextTick(() => {
+      if (route.hash) {
+        scrollTo(route.hash.replace('#', ''), 100)
+      }
+    })
+  })
+  onUnmounted(() => {
+    resetTimeout()
+    store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
   })
 </script>

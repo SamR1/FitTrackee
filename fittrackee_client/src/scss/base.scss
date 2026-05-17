@@ -34,6 +34,10 @@ body {
   }
 }
 
+body:has(div#modal) {
+  overflow: hidden;
+}
+
 #app {
   font-family: 'PT Sans', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -148,7 +152,8 @@ button {
   }
 
   &:disabled,
-  &.confirm:disabled {
+  &.confirm:disabled,
+  &.cancel:disabled {
     background: var(--disabled-background-color);
     color: var(--disabled-color);
     cursor: default;
@@ -248,12 +253,14 @@ button {
   color: var(--workout-trophy-color);
 }
 
+.codeberg-logo,
 .mountains,
 .cadence,
 .chronometer {
   height: 16px;
   filter: var(--icon-svg-filter);
 }
+.codeberg-logo,
 .mountains,
 .cadence {
   margin-bottom: -3px;
@@ -611,4 +618,8 @@ button {
   font-size: 0.8em;
   font-style: normal;
   margin: $default-margin * 0.5 0 $default-margin;
+}
+
+.white-space-pre-wrap {
+  white-space: pre-wrap;
 }

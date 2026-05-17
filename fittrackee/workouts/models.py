@@ -26,6 +26,7 @@ from fittrackee.federation.objects.like import LikeObject
 from fittrackee.federation.objects.tombstone import TombstoneObject
 from fittrackee.federation.objects.workout import WorkoutObject
 from fittrackee.files import get_absolute_file_path, get_file_extension
+from fittrackee.media.models import Media
 from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import (
     VisibilityLevel,
@@ -71,7 +72,9 @@ EMPTY_MINIMAL_WORKOUT_VALUES: Dict = {
     "max_alt": None,
     "descent": None,
     "ascent": None,
+    "analysis_visibility": None,
     "map_visibility": None,
+    "media_visibility": None,
 }
 EMPTY_WORKOUT_VALUES: Dict = {
     "creation_date": None,
@@ -388,6 +391,11 @@ class Workout(BaseModel):
         nullable=False,
     )
     calories: Mapped[Optional[int]] = mapped_column(nullable=True)  # kcal
+    media_visibility: Mapped[VisibilityLevel] = mapped_column(
+        Enum(VisibilityLevel, name="visibility_levels"),
+        server_default="PRIVATE",
+        nullable=False,
+    )
     ap_id: Mapped[Optional[str]] = mapped_column(db.Text(), nullable=True)
     remote_url: Mapped[Optional[str]] = mapped_column(db.Text(), nullable=True)
 
@@ -475,6 +483,13 @@ class Workout(BaseModel):
             parent_visibility=self.analysis_visibility,
         )
 
+    @property
+    def calculated_media_visibility(self) -> VisibilityLevel:
+        return get_calculated_visibility(
+            visibility=self.media_visibility,
+            parent_visibility=self.workout_visibility,
+        )
+
     def liked_by(self, user: "User") -> bool:
         return user in self.likes.all()
 
@@ -529,12 +544,24 @@ class Workout(BaseModel):
 
         return Report.query.filter_by(reported_workout_id=self.id).all()
 
+    def get_media_attachments(
+        self, can_see_media_attachments: bool
+    ) -> List["Media"]:
+        if can_see_media_attachments:
+            return (
+                Media.query.filter_by(workout_id=self.id)
+                .order_by(Media.created_at.asc())
+                .all()
+            )
+        return []
+
     def get_workout_data(
         self,
         user: Optional["User"],
         *,
         can_see_analysis_data: Optional[bool] = None,
         can_see_map_data: Optional[bool] = None,
+        can_see_media_attachments: Optional[bool] = None,
         for_report: bool = False,
         additional_data: bool = False,
         light: bool = True,
@@ -547,6 +574,7 @@ class Workout(BaseModel):
 
         - can_see_analysis_data: if user can see charts
         - can_see_map_data: if user can see map
+        - can_see_media_attachments: if user can see media attachments
         - for_report: privacy levels are overridden on report
         - additional_data is False when:
           - workout is not suspended
@@ -575,6 +603,13 @@ class Workout(BaseModel):
             can_see_map_data = can_view(
                 self,
                 "calculated_map_visibility",
+                user=user,
+                for_report=for_report,
+            )
+        if can_see_media_attachments is None:
+            can_see_media_attachments = can_view(
+                self,
+                "calculated_media_visibility",
                 user=user,
                 for_report=for_report,
             )
@@ -656,6 +691,11 @@ class Workout(BaseModel):
             "ave_pace": get_pace(self.ave_pace, sport_data_visibility),
             "best_pace": get_pace(self.best_pace, sport_data_visibility),
             "calories": self.calories if can_see_calories else None,
+            "media_visibility": (
+                self.calculated_media_visibility.value
+                if can_see_media_attachments
+                else VisibilityLevel.PRIVATE
+            ),
         }
 
         if not light or with_equipments:
@@ -717,12 +757,16 @@ class Workout(BaseModel):
         light: bool = True,  # for workouts list and timeline
         with_equipments: bool = False,  # for workouts list
         force_display_speed: bool = False,  # for workouts list
+        with_media_attachments: bool = True,  # for workout cards
     ) -> Dict:
         """
         If 'light' is False, 'with_equipments' and 'force_display_speed' are
         ignored.
 
         'force_display_speed' allows to override sport preferences
+
+        'with_media_attachments' allow to return 3 first media attachments
+        when 'light' is true
         """
 
         for_report = (
@@ -741,6 +785,12 @@ class Workout(BaseModel):
         can_see_map_data = can_view(
             self, "calculated_map_visibility", user=user, for_report=for_report
         )
+        can_see_media_attachments = can_view(
+            self,
+            "calculated_media_visibility",
+            user=user,
+            for_report=for_report,
+        )
         is_owner = user is not None and user.id == self.user_id
         is_workout_suspended = self.suspended_at is not None
         additional_data = not is_workout_suspended or for_report or is_owner
@@ -752,6 +802,7 @@ class Workout(BaseModel):
             user,
             can_see_analysis_data=can_see_analysis_data,
             can_see_map_data=can_see_map_data,
+            can_see_media_attachments=can_see_media_attachments,
             for_report=for_report,
             additional_data=additional_data,
             light=light,
@@ -790,6 +841,16 @@ class Workout(BaseModel):
             workout["next_workout"] = None
             workout["previous_workout"] = None
             workout["bounds"] = []
+            workout["media_attachments"] = (
+                [
+                    media.serialize(can_see_map_data)
+                    for media in self.get_media_attachments(
+                        can_see_media_attachments
+                    )[:3]
+                ]
+                if with_media_attachments
+                else []
+            )
             return workout
 
         if is_owner:
@@ -878,6 +939,10 @@ class Workout(BaseModel):
             if self.bounds and can_see_map_data and additional_data
             else []
         )
+        workout["media_attachments"] = [
+            media.serialize(can_see_map_data)
+            for media in self.get_media_attachments(can_see_media_attachments)
+        ]
         if self.user.is_remote:
             workout["remote_url"] = self.remote_url
         return workout

@@ -30,7 +30,7 @@ from fittrackee.files import (
     check_file,
     generate_filename,
     get_absolute_file_path,
-    get_image_without_exif,
+    get_image_from_file_storage_without_exif,
 )
 from fittrackee.oauth2.server import require_auth
 from fittrackee.reports.models import ReportAction, ReportActionAppeal
@@ -47,9 +47,7 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.users_service import UserManagerService
-from fittrackee.utils import (
-    decode_short_id,
-)
+from fittrackee.utils import clean_input, decode_short_id
 from fittrackee.visibility_levels import (
     VisibilityLevel,
     get_calculated_visibility,
@@ -60,6 +58,8 @@ from ..constants import IMAGE_MIMETYPES, PaceSpeedDisplay
 from ..workouts.constants import PACE_SPORTS
 from .exceptions import UserControlsException, UserCreationException
 from .models import (
+    MAX_BIO_LIMIT,
+    MAX_USER_INPUT,
     BlacklistedToken,
     BlockedUser,
     Notification,
@@ -356,6 +356,7 @@ def get_authenticated_user_profile(
           "location": null,
           "manually_approves_followers": false,
           "map_visibility": "private",
+          "media_visibility": "private",
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
@@ -502,6 +503,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "location": null,
           "manually_approves_followers": false,
           "map_visibility": "private",
+          "media_visibility": "private",
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
@@ -597,7 +599,12 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: ``user profile updated``
-    :statuscode 400: ``invalid payload``
+    :statuscode 400:
+        - ``invalid payload``
+        - ``first_name exceeds 80 characters``
+        - ``last_name exceeds 80 characters``
+        - ``bio exceeds 500 characters``
+        - ``location exceeds 80 characters``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -617,16 +624,32 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
         return InvalidPayloadErrorResponse()
 
     first_name = post_data.get("first_name")
+    if first_name and len(first_name) > MAX_USER_INPUT:
+        return InvalidPayloadErrorResponse(
+            f"first_name exceeds {MAX_USER_INPUT} characters"
+        )
     last_name = post_data.get("last_name")
+    if last_name and len(last_name) > MAX_USER_INPUT:
+        return InvalidPayloadErrorResponse(
+            f"last_name exceeds {MAX_USER_INPUT} characters"
+        )
     bio = post_data.get("bio")
+    if bio and len(bio) > MAX_BIO_LIMIT:
+        return InvalidPayloadErrorResponse(
+            f"bio exceeds {MAX_BIO_LIMIT} characters"
+        )
     birth_date = post_data.get("birth_date")
     location = post_data.get("location")
+    if location and len(location) > MAX_USER_INPUT:
+        return InvalidPayloadErrorResponse(
+            f"location exceeds {MAX_USER_INPUT} characters"
+        )
 
     try:
-        auth_user.first_name = first_name
-        auth_user.last_name = last_name
-        auth_user.bio = bio
-        auth_user.location = location
+        auth_user.first_name = clean_input(first_name) if first_name else None
+        auth_user.last_name = clean_input(last_name) if last_name else None
+        auth_user.bio = clean_input(bio) if bio else None
+        auth_user.location = clean_input(location) if bio else None
         auth_user.birth_date = (
             get_datetime_in_utc(birth_date) if birth_date else None
         )
@@ -695,6 +718,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "location": null,
           "manually_approves_followers": false,
           "map_visibility": "followers_only",
+          "media_visibility": "private",
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
@@ -955,6 +979,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "location": null,
           "manually_approves_followers": false,
           "map_visibility": "followers_only",
+          "media_visibility": "followers_only",
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
@@ -1055,6 +1080,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
                   are automatically approved
     :<json string map_visibility: workout map visibility
                   (``public``, ``followers_only``, ``private``)
+    :<json string media_visibility: workout media visibility
+                  (``public``, ``followers_only``, ``private``)
     :<json string missing_elevations_processing: source and method for missing
                   elevations, depending on application configuration
                   (``file`` (missing elevation are not processed),
@@ -1097,6 +1124,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "language",
         "manually_approves_followers",
         "map_visibility",
+        "media_visibility",
         "missing_elevations_processing",
         "segments_creation_event",
         "split_workout_charts",
@@ -1133,6 +1161,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "missing_elevations_processing"
     )
     calories_visibility = post_data.get("calories_visibility")
+    media_visibility = post_data.get("media_visibility")
 
     if not current_app.config["FEDERATION_ENABLED"] and (
         map_visibility == VisibilityLevel.FOLLOWERS_AND_REMOTE.value
@@ -1168,6 +1197,10 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.split_workout_charts = split_workout_charts
         auth_user.missing_elevations_processing = missing_elevations_processing
         auth_user.calories_visibility = VisibilityLevel(calories_visibility)
+        auth_user.media_visibility = get_calculated_visibility(
+            visibility=VisibilityLevel(media_visibility),
+            parent_visibility=auth_user.workouts_visibility,
+        )
         db.session.commit()
 
         return {
@@ -1446,6 +1479,7 @@ def edit_user_notifications_preferences(
           "location": null,
           "manually_approves_followers": false,
           "map_visibility": "private",
+          "media_visibility": "private",
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
@@ -1627,6 +1661,7 @@ def edit_user_messages_preferences(
           "location": null,
           "manually_approves_followers": false,
           "map_visibility": "private",
+          "media_visibility": "private",
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
@@ -1834,7 +1869,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
         "status": "success"
       }
 
-    :form file: image file (allowed extensions: .jpeg, .jpg, .png, .gif)
+    :form file: image file (allowed extensions: .jpeg, .jpg, .png, .gif, .webp)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1861,7 +1896,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
         return PayloadTooLargeErrorResponse(
             file_type="picture",
             file_size=request.content_length,
-            max_size=current_app.config["MAX_CONTENT_LENGTH"],
+            max_size=current_app.config["max_image_size"],
         )
     if response_object:
         return response_object
@@ -1872,7 +1907,7 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
     except FileException as e:
         return InvalidPayloadErrorResponse(str(e))
     filename = generate_filename(extension)
-    image = get_image_without_exif(file)
+    image = get_image_from_file_storage_without_exif(file)
     dirpath = os.path.join(
         current_app.config["UPLOAD_FOLDER"], "pictures", str(auth_user.id)
     )

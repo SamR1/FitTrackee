@@ -13,6 +13,15 @@ if TYPE_CHECKING:
     from fittrackee.users.models import User
 
 
+TEST_INPUTS = [
+    'just a text\nfor "test"',
+    "link: http://www.example.com",
+    'link: <a href="http://www.example.com" '
+    'rel="noopener noreferrer">example</a>',
+    "<p>just a<br><span>test</span></p>",
+]
+
+
 class TestDisplayReadableFileSize:
     @pytest.mark.parametrize(
         "size, expected_readable_size",
@@ -75,16 +84,7 @@ class TestParseUserAgent:
 
 
 class TestSanitizeInput:
-    @pytest.mark.parametrize(
-        "input_comment",
-        [
-            'just a text\nfor "test"',
-            "link: http://www.example.com",
-            'link: <a href="http://www.example.com" '
-            'rel="noopener noreferrer">example</a>',
-            "<p>just a<br><span>test</span></p>",
-        ],
-    )
+    @pytest.mark.parametrize("input_comment", TEST_INPUTS)
     def test_clean_input_remains_unchanged(
         self, app: Flask, input_comment: str
     ) -> None:
@@ -94,6 +94,15 @@ class TestSanitizeInput:
         "input_comment, expected_comment",
         [
             ("<script>alert('evil!')</script>", ""),
+            (
+                "<pre><script>alert('evil!')</script></pre>",
+                "",
+            ),
+            ("<p><script>alert('evil!')</script></p>", "<p></p>"),
+            (
+                '<img src="img.jpg" alt="some text" onerror=alert(\'evil!\')>',
+                "",
+            ),
             ("<div><b>test</b></div>", "test"),
             ("<div>test", "test"),
             ("just a<br />test", "just a<br>test"),
@@ -122,6 +131,50 @@ class TestSanitizeInput:
         self, app: Flask, input_comment: str, expected_comment: str
     ) -> None:
         assert clean_input(input_comment) == expected_comment
+
+    @pytest.mark.parametrize(
+        "input_comment",
+        [
+            *TEST_INPUTS,
+            '<img src="image.jpg" alt="some text">',
+            "<em>some text</em>",
+            "<strong>some text</strong>",
+        ],
+    )
+    def test_clean_input_remains_unchanged_when_for_markdown_renderer_is_true(
+        self, app: Flask, input_comment: str
+    ) -> None:
+        assert (
+            clean_input(input_comment, for_markdown_renderer=True)
+            == input_comment
+        )
+
+    @pytest.mark.parametrize(
+        "input_comment, expected_comment",
+        [
+            ("<script>alert('evil!')</script>", ""),
+            (
+                "<pre><script>alert('evil!')</script></pre>",
+                "",
+            ),
+            ("<em><script>alert('evil!')</script></em>", "<em></em>"),
+            (
+                "<strong><script>alert('evil!')</script></strong>",
+                "<strong></strong>",
+            ),
+            (
+                '<img src="image.jpg" alt="some text" onerror=alert("evil!")>',
+                '<img src="image.jpg" alt="some text">',
+            ),
+        ],
+    )
+    def test_it_removes_disallowed_tags_when_for_markdown_renderer_is_true(
+        self, app: Flask, input_comment: str, expected_comment: str
+    ) -> None:
+        assert (
+            clean_input(input_comment, for_markdown_renderer=True)
+            == expected_comment
+        )
 
 
 class TestGetDateStringForUser:

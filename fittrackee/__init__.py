@@ -30,7 +30,7 @@ from fittrackee.emails.emails import EmailService
 from fittrackee.exceptions import EmailConfigException
 from fittrackee.request import CustomRequest
 
-VERSION = __version__ = "1.2.2"
+VERSION = __version__ = "1.3.0"
 DEFAULT_PRIVACY_POLICY_DATA = "2024-12-23 19:00:00"
 REDIS_URL = os.getenv("REDIS_URL", "redis://")
 API_RATE_LIMITS = os.environ.get("API_RATE_LIMITS")
@@ -198,6 +198,7 @@ def create_app(init_email: bool = True) -> Flask:
     from .equipments.equipments import equipments_blueprint
     from .feeds.routes import feeds_blueprint
     from .geocode.routes import geocode_blueprint
+    from .media.routes import api_media_blueprint, media_blueprint
     from .oauth2.routes import oauth2_blueprint
     from .reports.reports import reports_blueprint
     from .users.auth import auth_blueprint
@@ -230,6 +231,8 @@ def create_app(init_email: bool = True) -> Flask:
     app.register_blueprint(reports_blueprint, url_prefix="/api")
     app.register_blueprint(feeds_blueprint, url_prefix="")
     app.register_blueprint(geocode_blueprint, url_prefix="/api")
+    app.register_blueprint(api_media_blueprint, url_prefix="/api")
+    app.register_blueprint(media_blueprint, url_prefix="/")
 
     # ActivityPub federation
     from .federation.federation import ap_federation_blueprint

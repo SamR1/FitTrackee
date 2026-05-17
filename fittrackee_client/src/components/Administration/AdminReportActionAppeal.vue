@@ -1,6 +1,6 @@
 <template>
   <div class="appeal box" :id="`appeal-${appeal.id}`">
-    <div class="appeal-text">{{ appeal.text }}</div>
+    <div class="appeal-text white-space-pre-wrap">{{ appeal.text }}</div>
     <span
       class="appeal-date"
       :title="
@@ -29,6 +29,8 @@
           :placeholder="
             $t('admin.APP_MODERATION.TEXTAREA_PLACEHOLDER.UPDATE_APPEAL')
           "
+          :rows="2"
+          :charLimit="500"
           @updateValue="updateReason"
         />
         <ErrorMessage
@@ -79,7 +81,7 @@
       </i18n-t>
       <dl>
         <dt>{{ $t('admin.APP_MODERATION.APPEAL.REASON_IS') }}</dt>
-        <dd>{{ appeal.reason }}</dd>
+        <dd class="white-space-pre-wrap">{{ appeal.reason }}</dd>
       </dl>
     </div>
   </div>

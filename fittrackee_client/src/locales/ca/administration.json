@@ -1,6 +1,6 @@
 {
   "ABOUT": {
-    "DESCRIPTION": "Qualsevol informació addicional que pugui ser útil per als seus usuaris. Es pot utilitzar la sintaxi Markdown.",
+    "DESCRIPTION": "Qualsevol informació addicional que pugui ser útil per als seus usuaris.",
     "TEXT": "Informació detallada de la instància"
   },
   "ACTION": "Acció | Accions",

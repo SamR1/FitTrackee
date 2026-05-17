@@ -133,7 +133,7 @@
   "PREVIOUS_WORKOUT": "Workout precedente",
   "PRIVATE_NOTES": "Note private",
   "PRIVATE_NOTES_FIELD_HELP": "questo note sono visibili solo a te.",
-  "PUBLIC_WORKOUTS_RSS_FEED": "Feed RSS dei workout pubblici",
+  "PUBLIC_WORKOUTS_ATOM_FEED": "Feed Atom dei workout pubblici",
   "RADIUS": "raggio",
   "RECORD": "record | record",
   "RECORD_AP": "Ritmo medio",

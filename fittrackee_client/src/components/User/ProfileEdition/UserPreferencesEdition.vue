@@ -293,7 +293,7 @@
             id="workouts_visibility"
             v-model="userForm.workouts_visibility"
             :disabled="authUserLoading"
-            @change="updateAnalysisAndMapVisibility"
+            @change="updateAnalysisMapAndMediaVisibility"
           >
             <option
               v-for="level in visibilityLevels"
@@ -308,6 +308,25 @@
                   )}`
                 )
               }}
+            </option>
+          </select>
+        </label>
+        <label class="form-items">
+          <span>
+            {{ $t('visibility_levels.MEDIA_VISIBILITY') }}<sup>3</sup>
+          </span>
+          <select
+            id="media_visibility"
+            v-model="userForm.media_visibility"
+            :disabled="authUserLoading"
+            @change="updateMediaVisibility"
+          >
+            <option
+              v-for="level in mediaVisibilityLevels"
+              :value="level"
+              :key="level"
+            >
+              {{ $t(`visibility_levels.LEVELS.${level}`) }}
             </option>
           </select>
         </label>
@@ -580,6 +599,7 @@
     language: 'en',
     manually_approves_followers: true,
     map_visibility: 'private',
+    media_visibility: 'private',
     missing_elevations_processing: 'file',
     split_workout_charts: false,
     segments_creation_event: 'only_manual',
@@ -608,7 +628,9 @@
   const mapVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
     getVisibilityLevels(userForm.analysis_visibility)
   )
-
+  const mediaVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
+    getVisibilityLevels(userForm.workouts_visibility)
+  )
   function updateUserForm(user: IAuthUserProfile) {
     userForm.analysis_visibility = user.analysis_visibility ?? 'private'
     userForm.display_ascent = user.display_ascent
@@ -643,17 +665,24 @@
     // @ts-ignore
     userForm[key] = value
   }
-  function updateAnalysisAndMapVisibility() {
+  function updateAnalysisMapAndMediaVisibility() {
     userForm.analysis_visibility = getUpdatedVisibility(
       userForm.analysis_visibility,
       userForm.workouts_visibility
     )
     updateMapVisibility()
+    updateMediaVisibility()
   }
   function updateMapVisibility() {
     userForm.map_visibility = getUpdatedVisibility(
       userForm.map_visibility,
       userForm.analysis_visibility
+    )
+  }
+  function updateMediaVisibility() {
+    userForm.media_visibility = getUpdatedVisibility(
+      userForm.media_visibility,
+      userForm.workouts_visibility
     )
   }
 
@@ -707,6 +736,7 @@
     #workouts_visibility,
     #hr_visibility,
     #calories_visibility,
+    #media_visibility,
     #segments_creation_event,
     #missing_elevations_processing {
       padding: $default-padding * 0.5;

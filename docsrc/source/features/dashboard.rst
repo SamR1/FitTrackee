@@ -9,7 +9,8 @@ A dashboard displays:
 - a chart with monthly statistics
 - a monthly calendar displaying workouts and record. The week can start on Sunday or Monday (which can be changed in the `user preference <account_and_preferences.html#preferences>`__). The calendar displays up to 100 workouts.
 - user records by sports
-- a timeline with the workouts visible to the authenticated user (their own workouts and those of users they follow)
+- | a timeline with the workouts visible to the authenticated user (their own workouts and those of users they follow).
+  | If the workout is associated to photos, up to 3 photos are also visible. The number of photos displayed depends on the screen width, for instance on mobile devices, only one photo is displayed.
 
 .. figure:: ../_images/dashboard.png
    :alt: FitTrackee Dashboard

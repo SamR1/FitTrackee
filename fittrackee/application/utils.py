@@ -52,8 +52,13 @@ def update_app_config_from_database(
         {
             "file_limit_import": db_config.file_limit_import,
             "file_sync_limit_import": db_config.file_sync_limit_import,
+            "max_image_size": db_config.max_image_size,
             "max_single_file_size": db_config.max_single_file_size,
-            "MAX_CONTENT_LENGTH": db_config.max_zip_file_size,
+            "max_zip_file_size": db_config.max_zip_file_size,
+            "MAX_CONTENT_LENGTH": max(
+                db_config.max_zip_file_size,
+                db_config.max_image_size,
+            ),
             "max_users": db_config.max_users,
             "is_registration_enabled": db_config.is_registration_enabled,
             "privacy_policy_date": (
@@ -84,6 +89,7 @@ def verify_app_config(config_data: Dict) -> List:
             "max files in a zip archive processed synchronously",
         ),
         ("file_limit_import", "max files in a zip archive"),
+        ("max_image_size", "max size of images"),
         ("max_single_file_size", "max size of uploaded files"),
         ("max_zip_file_size", "max size of zip archive"),
         (

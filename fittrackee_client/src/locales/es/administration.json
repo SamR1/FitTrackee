@@ -1,6 +1,6 @@
 {
   "ABOUT": {
-    "DESCRIPTION": "Cualquier tipo de información adicional que pueda ser útil para tus usuarios. Puedes usar Markdown.",
+    "DESCRIPTION": "Cualquier tipo de información adicional que pueda ser útil para tus usuarios.",
     "TEXT": "Información detallada sobre la instancia"
   },
   "ACTION": "Acción | Acciones",
@@ -63,7 +63,7 @@
   "NEW_EMAIL": "Nuevo email",
   "NO_TEXT_ENTERED": "No hay texto",
   "PASSWORD_RESET_SUCCESSFUL": "Se ha restablecido la contraseña.",
-  "PRIVACY_POLICY_DESCRIPTION": "Añade tu propia política de privacidad o déjalo en blanco para usar una por defecto. Puedes usar Markdown.",
+  "PRIVACY_POLICY_DESCRIPTION": "Añade tu propia política de privacidad o déjalo en blanco para usar una por defecto.",
   "REGISTRATION_DISABLED": "Actualmente está desactivada la creación de cuentas.",
   "REGISTRATION_ENABLED": "Actualmente está abierta la creación de cuentas.",
   "RESET_USER_PASSWORD": "Restablecer contraseña",

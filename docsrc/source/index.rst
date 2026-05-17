@@ -25,7 +25,7 @@ FitTrackee
 | It is also possible to add a workout without a file.
 
 | **Still under heavy development (some features may be unstable).**
-| (see `issues <https://github.com/SamR1/FitTrackee/issues>`__ for more information)
+| (see `issues <https://codeberg.org/FitTrackee/FitTrackee/issues>`__ for more information)
 
 .. figure:: _images/dashboard.png
    :alt: FitTrackee Dashboard

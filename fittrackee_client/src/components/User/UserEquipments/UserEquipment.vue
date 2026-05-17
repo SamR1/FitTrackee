@@ -34,9 +34,11 @@
       </dd>
       <dt>{{ $t('common.DESCRIPTION') }}</dt>
       <dd>
-        <span class="equipment-description" v-if="equipment.description">
-          {{ equipment.description }}
-        </span>
+        <span
+          class="white-space-pre-wrap"
+          v-if="equipment.description"
+          v-html="linkifyAndClean(equipment.description)"
+        />
         <span v-else class="no-description">
           {{ $t('common.NO_DESCRIPTION') }}
         </span>
@@ -158,6 +160,7 @@
   import type { ITranslatedSport } from '@/types/sports'
   import type { IAuthUserProfile } from '@/types/user'
   import { useStore } from '@/use/useStore'
+  import { linkifyAndClean } from '@/utils/inputs'
   import { translateSports } from '@/utils/sports'
 
   interface Props {
@@ -221,9 +224,6 @@
     }
     .no-description {
       font-style: italic;
-    }
-    .equipment-description {
-      white-space: pre-wrap;
     }
     .equipment-type {
       display: flex;

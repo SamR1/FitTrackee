@@ -31,10 +31,10 @@
       </div>
       <div class="rss-feed" v-if="route.name === 'User'">
         <a
-          :href="userWorkoutRSSFeedURL"
+          :href="userWorkoutAtomFeedURL"
           target="_blank"
           rel="noopener noreferrer"
-          :title="$t('workouts.PUBLIC_WORKOUTS_RSS_FEED')"
+          :title="$t('workouts.PUBLIC_WORKOUTS_ATOM_FEED')"
         >
           <i class="fa fa-rss" aria-hidden="true"></i>
         </a>
@@ -112,13 +112,13 @@
   const role: ComputedRef<string> = computed(() =>
     user.value.role !== 'user' ? `user.ROLES.${user.value.role}` : ''
   )
-  const userWorkoutRSSFeedURL: ComputedRef<string> = computed(() =>
-    getUserWorkoutRSSFeedURL()
+  const userWorkoutAtomFeedURL: ComputedRef<string> = computed(() =>
+    getuserWorkoutAtomFeedURL()
   )
 
-  function getUserWorkoutRSSFeedURL() {
+  function getuserWorkoutAtomFeedURL() {
     const apiUrl = getApiUrl().replace('/api/', '')
-    const feedUrl = `${apiUrl}/users/${user.value.username}/workouts.rss`
+    const feedUrl = `${apiUrl}/users/${user.value.username}/workouts.atom`
     const lang = appLanguage.value === 'en' ? '' : `?lang=${appLanguage.value}`
     const imperialUnits = displayOptions.value.useImperialUnits
       ? `${lang ? '&' : '?'}imperial_units=true`

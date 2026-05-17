@@ -1,6 +1,6 @@
 {
   "ABOUT": {
-    "DESCRIPTION": "Zure erabiltzaileentzat erabilgarri izan daitekeen edozein informazioa. Markdown sintaxia erabili dezakezu.",
+    "DESCRIPTION": "Zure erabiltzaileentzat erabilgarri izan daitekeen edozein informazioa.",
     "TEXT": "Instantziaren informazio xehetua"
   },
   "ACTION": "Ekintza | Ekintzak",
@@ -118,7 +118,7 @@
   "NEW_EMAIL": "Eposta berria",
   "NO_TEXT_ENTERED": "Ez duzu testurik idatzi",
   "PASSWORD_RESET_SUCCESSFUL": "Pasahitza berrezarri egin da.",
-  "PRIVACY_POLICY_DESCRIPTION": "Gehitu zure pribatutasun politika edo utzi hutsik defektuzkoa erabiltzeko. Markdown sintaxia erabili dezakezu.",
+  "PRIVACY_POLICY_DESCRIPTION": "Gehitu zure pribatutasun politika edo utzi hutsik defektuzkoa erabiltzeko.",
   "REGISTRATION_DISABLED": "Izen-ematea desaktibatuta dago.",
   "REGISTRATION_ENABLED": "Izen-ematea aktibatuta dago.",
   "RESET_USER_PASSWORD": "Berrezarri pasahitza",

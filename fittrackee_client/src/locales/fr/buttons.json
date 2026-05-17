@@ -9,6 +9,7 @@
   "CANCEL": "Annuler",
   "CANCEL_FOLLOW_REQUEST": "Annuler la demande",
   "CLEAR_FILTER": "Réinitialiser",
+  "CLOSE": "Fermer",
   "DELETE": "Supprimer",
   "DELETE_MY_ACCOUNT": "Supprimer mon compte",
   "DISABLE": "Désactiver",
@@ -18,6 +19,7 @@
   "FOLLOW": "s'abonner",
   "HIDE": "Masquer",
   "LOGIN": "Se connecter",
+  "PREVIEW": "Prévisualiser",
   "READ_MORE": "Lire la suite",
   "REFRESH": "Rafraîchir la page",
   "REFRESH_TOTALS": "Recalculer les totaux",
@@ -25,9 +27,11 @@
   "REJECT": "Rejeter",
   "REQUEST_DATA_EXPORT": "Demander un export de données",
   "RESET": "Réinit.",
+  "SAVE": "Mettre à jour",
   "SEARCH": "Rechercher",
   "SEE_DETAIL": "Voir le détail",
   "SUBMIT": "Valider",
   "UNBLOCK": "débloquer",
-  "UNFOLLOW": "se désabonner"
+  "UNFOLLOW": "se désabonner",
+  "WRITE": "Écrire"
 }

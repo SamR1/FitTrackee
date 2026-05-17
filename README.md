@@ -11,8 +11,7 @@
 [![Typescript Version](https://img.shields.io/npm/types/typescript)](https://www.typescriptlang.org/)  
 [![PostgreSQL version](https://img.shields.io/badge/PostgreSQL-14_|_15_|_16_|_17_|_18-336791)](https://www.postgresql.org/) [![PostgreSQL version](https://img.shields.io/badge/PostGIS-3.4_|_3.5_|_3.6-5b7b9f)](https://postgis.net/)  
 [![PyPI version](https://img.shields.io/pypi/v/fittrackee?logo=pypi)](https://pypi.org/project/fittrackee/) [![docker image version](https://img.shields.io/docker/v/fittrackee/fittrackee?logo=docker)](https://hub.docker.com/r/fittrackee/fittrackee)  
-[![Coverage Status](https://coveralls.io/repos/github/SamR1/FitTrackee/badge.svg?branch=main)](https://coveralls.io/github/SamR1/FitTrackee?branch=main)<sup><sup>1</sup></sup> [![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-and-publish-python.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-and-publish-python.yml)
-[![pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-javascript.yml)  
+[![Coverage Status](https://coveralls.io/repos/github/SamR1/FitTrackee/badge.svg?branch=main)](https://coveralls.io/github/SamR1/FitTrackee?branch=main)<sup><sup>1</sup></sup> [![python pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-python.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-python.yml)  [![javascript pipeline status](https://codeberg.org/FitTrackee/FitTrackee/badges/workflows/.javascript-checks-and-tests.yml/badge.svg?branch=main)](https://codeberg.org/FitTrackee/FitTrackee/actions?workflow=.javascript-checks-and-tests.yml)  
 [![translation status](https://hosted.weblate.org/widgets/fittrackee/-/svg-badge.svg)](https://hosted.weblate.org/engage/fittrackee/)
 [![translation languages](https://hosted.weblate.org/widget/fittrackee/language-badge.svg)](https://hosted.weblate.org/engage/fittrackee/)   
 [![Matrix](https://img.shields.io/matrix/fittrackee%3Amatrix.org?logo=matrix)](https://matrix.to/#/#fittrackee:matrix.org)
@@ -36,6 +35,11 @@ It is also possible to add a workout without a file.
 
 Map data from [OpenStreetMap](https://www.openstreetmap.org).  
 
+## Repositories
+
+The main repository is hosted on [Codeberg.org](https://codeberg.org/FitTrackee/FitTrackee).  
+The [Github repository](https://github.com/SamR1/FitTrackee) is a mirror (except for issues and PRs). For now, it is used to run tests, as well as to build and publish Python packages and Docker images using GitHub Actions (see [issue](https://codeberg.org/FitTrackee/FitTrackee/issues/1121)).
+
 ## Documentation
 
 - [Features](https://docs.fittrackee.org/en/features/index.html)
@@ -47,7 +51,7 @@ Map data from [OpenStreetMap](https://www.openstreetmap.org).
 - [Contributing](https://docs.fittrackee.org/en/contributing.html)
 
 **Under heavy development (some features may be unstable).**  
-(see [provisional roadmap](https://github.com/SamR1/FitTrackee/issues/1010), [issues](https://github.com/SamR1/FitTrackee/issues) and [documentation](https://docs.fittrackee.org) for more information)  
+(see [provisional roadmap](https://codeberg.org/FitTrackee/FitTrackee/issues/1010), [issues](https://codeberg.org/FitTrackee/FitTrackee/issues) and [documentation](https://docs.fittrackee.org) for more information)  
 
 ![FitTrackee Dashboard Screenshot](https://docs.fittrackee.org/en/_images/dashboard.png)
 

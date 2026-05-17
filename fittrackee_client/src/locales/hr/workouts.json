@@ -133,7 +133,7 @@
   "PREVIOUS_WORKOUT": "Prethodna aktivnost",
   "PRIVATE_NOTES": "Privatne zabilješke",
   "PRIVATE_NOTES_FIELD_HELP": "Ove su zabilješke vidljive samo vama.",
-  "PUBLIC_WORKOUTS_RSS_FEED": "RSS kanal javnih aktivnosti",
+  "PUBLIC_WORKOUTS_ATOM_FEED": "Atom kanal javnih aktivnosti",
   "RADIUS": "promjer",
   "RECORD": "rekord | rekordi",
   "RECORD_AP": "Prosj. tempo",

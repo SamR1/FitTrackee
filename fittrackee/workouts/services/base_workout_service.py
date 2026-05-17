@@ -10,6 +10,7 @@ from fittrackee.workouts.models import Sport
 
 from ..exceptions import WorkoutException
 from ..models import TITLE_MAX_CHARACTERS
+from .mixins import WorkoutMediaAttachmentsMixin
 
 if TYPE_CHECKING:
     from fittrackee.equipments.models import Equipment
@@ -17,7 +18,7 @@ if TYPE_CHECKING:
     from fittrackee.workouts.models import Workout
 
 
-class BaseWorkoutService(ABC):
+class BaseWorkoutService(ABC, WorkoutMediaAttachmentsMixin):
     def __init__(
         self,
         auth_user: "User",

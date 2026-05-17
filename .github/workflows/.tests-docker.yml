@@ -6,7 +6,7 @@ on:
       'pyproject.toml',
       'poetry.lock',
       'fittrackee_client/package.json',
-      'fittrackee_client/yarn.lock',
+      'fittrackee_client/package-lock.json',
       'Dockerfile',
       'docker-entrypoint.sh',
       '.github/workflows/.tests-docker.yml'
@@ -15,6 +15,8 @@ on:
     paths: [
       'pyproject.toml',
       'poetry.lock',
+      'fittrackee_client/package.json',
+      'fittrackee_client/package-lock.json',
       'Dockerfile',
       'docker-entrypoint.sh',
       '.github/workflows/.tests-docker.yml'
@@ -36,19 +38,19 @@ jobs:
         platforms: [ "linux/amd64", "linux/arm64" ]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
 
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
+        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
 
       - name: Build Docker images
         id: push
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         with:
           context: .
           platforms: ${{ matrix.platforms }}

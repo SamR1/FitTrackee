@@ -133,7 +133,7 @@
   "PREVIOUS_WORKOUT": "Vorheriges Training",
   "PRIVATE_NOTES": "Private Anmerkung",
   "PRIVATE_NOTES_FIELD_HELP": "diese Anmerkungen sind nur für dich sichtbar.",
-  "PUBLIC_WORKOUTS_RSS_FEED": "Öffentlicher Trainings-RSS-Feed",
+  "PUBLIC_WORKOUTS_ATOM_FEED": "Öffentlicher Trainings-Atom-Feed",
   "RADIUS": "Radius",
   "RECORD": "Aufzeichnung | Aufzeichnungen",
   "RECORD_AP": "Durchschn. Pace",

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Literal, Optional, Union
 
 import feedgenerator
 import mistune
@@ -24,6 +24,8 @@ class UserWorkoutsFeedService:
         self,
         user: "User",
         workouts: List["Workout"],
+        *,
+        feed_format: Literal["rss", "atom"] = "rss",
         lang: str = "en",
         use_imperial_units: bool = False,
         with_description: bool = False,
@@ -32,6 +34,7 @@ class UserWorkoutsFeedService:
         self.user = user
         self.workouts = workouts
         self.lang = lang if lang in current_app.config["LANGUAGES"] else "en"
+        self.feed_format = feed_format
         self.with_description = with_description
 
         # to display distance and speed
@@ -52,10 +55,17 @@ class UserWorkoutsFeedService:
             current_app.config["LANGUAGES"],
         )
 
-    def init_feed(self) -> "feedgenerator.Rss201rev2Feed":
+    def init_feed(
+        self,
+    ) -> Union["feedgenerator.Rss201rev2Feed", "feedgenerator.Atom1Feed"]:
         user_ui_url = f"{self.fittrackee_url}/users/{self.user.username}"
+        feed_format_class = (
+            feedgenerator.Atom1Feed
+            if self.feed_format == "atom"
+            else feedgenerator.Rss201rev2Feed
+        )
         with force_locale(self.lang):
-            feed = feedgenerator.Rss201rev2Feed(
+            feed = feed_format_class(
                 description=(
                     lazy_gettext(
                         "Latest public workouts on FitTrackee from %(username)s",  # noqa
@@ -139,10 +149,36 @@ class UserWorkoutsFeedService:
                 if self.with_description and workout.description
                 else ""
             )
+            media_attachments = workout.get_media_attachments(
+                can_view(
+                    workout,
+                    "calculated_media_visibility",
+                )
+            )
+
+            # feedgenerator does not allow more than one enclosure in RSS Feed.
+            # see W3C RSS validator:
+            # https://validator.w3.org/feed/docs/warning/DuplicateEnclosure.html
+            attachments = []
+            if media_attachments:
+                attachments = (
+                    media_attachments
+                    if self.feed_format == "atom"
+                    else [media_attachments[0]]
+                )
+
             self.feed.add_item(
                 title=item_data["title.txt"],
                 link=f"{self.fittrackee_url}/workouts/{workout.short_id}",
                 pubdate=workout.workout_date,
                 description=item_data["body.html"] + workout_description,
+                enclosures=[
+                    feedgenerator.Enclosure(
+                        f"{current_app.config['UI_URL']}/media/{attachment.file_name}",
+                        str(attachment.file_size),
+                        attachment.file_content_type,
+                    )
+                    for attachment in attachments
+                ],
             )
         return self.feed.writeString("UTF-8")

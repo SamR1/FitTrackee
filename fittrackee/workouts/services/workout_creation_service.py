@@ -5,8 +5,12 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Tuple
 import pytz
 
 from fittrackee import db
-from fittrackee.visibility_levels import VisibilityLevel
+from fittrackee.visibility_levels import (
+    VisibilityLevel,
+    get_calculated_visibility,
+)
 
+from ...utils import clean_input
 from ..constants import WORKOUT_DATE_FORMAT
 from ..exceptions import WorkoutException
 from ..models import (
@@ -36,6 +40,8 @@ class WorkoutData:
     title: Optional[str] = None
     workout_visibility: Optional[VisibilityLevel] = None
     calories: Optional[int] = None
+    media_visibility: Optional[VisibilityLevel] = None
+    media_attachment_ids: Optional[List[str]] = None
     # TODO: to refacto
     # remote content
     id: Optional[str] = None
@@ -136,14 +142,16 @@ class WorkoutCreationService(CheckWorkoutMixin, BaseWorkoutService):
         self._check_workout(new_workout)
         new_workout.title = self._get_workout_title(workout_date)
         new_workout.description = (
-            self.workout_data.description[:DESCRIPTION_MAX_CHARACTERS]
+            clean_input(self.workout_data.description)[
+                :DESCRIPTION_MAX_CHARACTERS
+            ]
             if self.workout_data.description
             else None
         )
         new_workout.notes = (
             None
             if self.workout_data.notes is None
-            else self.workout_data.notes[:NOTES_MAX_CHARACTERS]
+            else clean_input(self.workout_data.notes)[:NOTES_MAX_CHARACTERS]
         )
 
         equipments = self.get_equipments()
@@ -155,10 +163,25 @@ class WorkoutCreationService(CheckWorkoutMixin, BaseWorkoutService):
             if self.workout_data.workout_visibility
             else self.auth_user.workouts_visibility
         )
+        new_workout.media_visibility = get_calculated_visibility(
+            visibility=(
+                self.workout_data.media_visibility
+                if self.workout_data.media_visibility
+                else self.auth_user.media_visibility
+            ),
+            parent_visibility=new_workout.workout_visibility,
+        )
 
         # for remote workout
         new_workout.ap_id = self.workout_data.id
         new_workout.remote_url = self.workout_data.url
 
         db.session.flush()
+
+        self.update_media_attachments_if_provided(
+            self.auth_user.id,
+            self.workout_data.media_attachment_ids,
+            new_workout.id,
+        )
+
         return [new_workout], {}

@@ -1,6 +1,6 @@
 {
   "ABOUT": {
-    "DESCRIPTION": "任何对您的用户可能有用的其它信息。可以使用 Markdown 语法。",
+    "DESCRIPTION": "任何对您的用户可能有用的其它信息。",
     "TEXT": "详细实例信息"
   },
   "ACTION": "操作",
@@ -116,7 +116,7 @@
   "NEW_EMAIL": "新邮箱",
   "NO_TEXT_ENTERED": "未输入文本",
   "PASSWORD_RESET_SUCCESSFUL": "密码已重置。",
-  "PRIVACY_POLICY_DESCRIPTION": "添加您自己的隐私政策，或留空以使用默认隐私政策。可以使用 Markdown 语法。",
+  "PRIVACY_POLICY_DESCRIPTION": "添加您自己的隐私政策，或留空以使用默认隐私政策。",
   "REGISTRATION_DISABLED": "当前注册已禁用。",
   "REGISTRATION_ENABLED": "当前注册已启用。",
   "RESET_USER_PASSWORD": "重置密码",

@@ -14,10 +14,11 @@ A command line interface (CLI) is available to manage database, OAuth2 tokens, u
       --help  Show this message and exit.
 
     Commands:
-      db        Manage database.
-      oauth2    Manage OAuth2 tokens.
-      users     Manage users.
-      workouts  Manage workouts.
+      db                 Manage database.
+      media_attachments  Manage media attachments.
+      oauth2             Manage OAuth2 tokens.
+      users              Manage users.
+      workouts           Manage workouts.
 
 
 Database
@@ -36,6 +37,25 @@ Empty database and delete uploaded files, only on development environments.
 
 Apply migrations.
 
+
+Media attachments
+~~~~~~~~~~~~~~~~~
+.. versionadded:: 1.3.0
+
+``ftcli media clean_orphans``
+"""""""""""""""""""""""""""""
+
+Clean media attachments without workout and created for more than provided number of days.
+
+.. cssclass:: table-bordered
+.. list-table::
+   :widths: 25 50
+   :header-rows: 1
+
+   * - Options
+     - Description
+   * - ``--days INTEGER``
+     - Number of days.
 
 OAuth2
 ~~~~~~

@@ -7,7 +7,12 @@ import pytest
 from flask import Flask
 
 from fittrackee import db
-from fittrackee.equipments.models import Equipment, EquipmentType
+from fittrackee.equipments.models import (
+    DESCRIPTION_MAX_LENGTH,
+    LABEL_MAX_LENGTH,
+    Equipment,
+    EquipmentType,
+)
 from fittrackee.users.models import (
     User,
     UserSportPreference,
@@ -356,7 +361,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
         assert len(data["data"]["equipments"]) == 1
         equipment = data["data"]["equipments"][0]
         assert "Test shoes" == equipment["label"]
-        assert equipment["description"] is None
+        assert equipment["description"] == ""
         assert equipment["is_active"] is True
         assert equipment_type_1_shoe.serialize() == equipment["equipment_type"]
 
@@ -408,7 +413,8 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
         user_1: User,
         equipment_type_1_shoe: EquipmentType,
     ) -> None:
-        description = self.random_short_id()
+        description = self.random_string(length=DESCRIPTION_MAX_LENGTH)
+        label = self.random_string(length=LABEL_MAX_LENGTH)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -418,7 +424,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
             json={
                 "description": description,
                 "equipment_type_id": equipment_type_1_shoe.id,
-                "label": "Test shoes",
+                "label": label,
             },
             headers={"Authorization": f"Bearer {auth_token}"},
         )
@@ -428,7 +434,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
         assert "created" in data["status"]
         assert len(data["data"]["equipments"]) == 1
         equipment = data["data"]["equipments"][0]
-        assert "Test shoes" == equipment["label"]
+        assert equipment["label"] == label
         assert equipment["description"] == description
 
     def test_it_raises_error_when_label_exceeds_50_characters(
@@ -437,7 +443,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
         user_1: User,
         equipment_type_1_shoe: EquipmentType,
     ) -> None:
-        label = self.random_string(100)
+        label = self.random_string(LABEL_MAX_LENGTH + 1)
         description = self.random_string()
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -454,6 +460,29 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
         )
 
         self.assert_400(response, "label exceeds 50 characters")
+
+    def test_it_raises_error_when_description_exceeds_max_length(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+    ) -> None:
+        description = self.random_string(length=DESCRIPTION_MAX_LENGTH + 1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/equipments",
+            json={
+                "description": description,
+                "equipment_type_id": equipment_type_1_shoe.id,
+                "label": self.random_string(),
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        self.assert_400(response, "description exceeds 2000 characters")
 
     @pytest.mark.parametrize("missing_arg", ["label", "equipment_type_id"])
     def test_it_returns_400_when_payload_is_invalid(
@@ -1412,7 +1441,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         equipment_type_1_shoe: EquipmentType,
         equipment_shoes_user_1: Equipment,
     ) -> None:
-        label = self.random_string(100)
+        label = self.random_string(LABEL_MAX_LENGTH + 1)
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1426,6 +1455,27 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         )
 
         self.assert_400(response, "label exceeds 50 characters")
+
+    def test_it_returns_400_when_descrption_exceeds_max_length(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_type_1_shoe: EquipmentType,
+        equipment_shoes_user_1: Equipment,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/equipments/{equipment_shoes_user_1.short_id}",
+            json={
+                "description": self.random_string(DESCRIPTION_MAX_LENGTH + 1),
+            },
+            headers={"Authorization": f"Bearer {auth_token}"},
+        )
+
+        self.assert_400(response, "description exceeds 2000 characters")
 
     def test_it_returns_400_on_editing_label_when_same_equipment_exists(
         self,

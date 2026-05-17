@@ -38,6 +38,7 @@ Preferences
 .. versionchanged:: 0.10.3 event for segments creation
 .. versionchanged:: 0.11.0 preferred displayed for charts
 .. versionchanged:: 1.1.0 missing elevation processing
+.. versionchanged:: 1.3.0 added media visibility
 
 .. figure:: ../_images/user-preferences.png
    :alt: User Preferences on FitTrackee
@@ -74,7 +75,7 @@ For workouts, it is possible to choose:
   - OpenElevation (smoothed data)
   - Valhalla
 
-- default visibility for workout data, analysis, map and heart rate.
+- default visibility for workout data, media (photos), analysis, map and heart rate.
 
 The type of events that generate segment when uploading .fit files can also be set:
 

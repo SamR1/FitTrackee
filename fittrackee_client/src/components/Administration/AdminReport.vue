@@ -133,7 +133,7 @@
                   </span>
                 </template>
                 <template #content>
-                  {{ report.note }}
+                  <span class="white-space-pre-wrap">{{ report.note }}</span>
                 </template>
               </Card>
             </div>
@@ -225,7 +225,9 @@
                       }}
                     </div>
                   </div>
-                  <div class="report-comment-comment">{{ item.comment }}</div>
+                  <div class="report-comment-comment white-space-pre-wrap">
+                    {{ item.comment }}
+                  </div>
                 </div>
                 <div class="report-action" v-if="'action_type' in item">
                   <div>
@@ -277,8 +279,10 @@
                     </button>
                   </div>
                   <div v-if="item.reason" class="report-action-note">
-                    <span>{{ $t('admin.APP_MODERATION.REASON') }}:</span>
-                    {{ item.reason }}
+                    <span class="label">
+                      {{ $t('admin.APP_MODERATION.REASON') }}:
+                    </span>
+                    <span class="white-space-pre-wrap">{{ item.reason }}</span>
                   </div>
                   <ReportActionAppeal
                     v-if="
@@ -309,6 +313,8 @@
                   <CustomTextArea
                     class="report-comment-textarea"
                     name="report-comment"
+                    :charLimit="500"
+                    :rows="2"
                     :required="isNoteMandatory"
                     :placeholder="getTextAreaPlaceholder()"
                     :disabled="reportUpdateLoading"
@@ -833,7 +839,7 @@
         .report-action-note {
           margin: 0 0 0 $default-margin;
           font-size: 0.95em;
-          span {
+          .label {
             font-weight: bold;
           }
         }

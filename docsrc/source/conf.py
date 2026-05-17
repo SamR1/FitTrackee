@@ -66,10 +66,9 @@ html_logo = "_static/ft-logo.png"
 html_theme_options = {
     "footer_icons": [
         {
-            "name": "GitHub",
-            "url": "https://github.com/SamR1/FitTrackee",
-            "html": "",
-            "class": "fa fa-github fa-lg",
+            "name": "Codeberg",
+            "url": "https://codeberg.org/FitTrackee/FitTrackee",
+            "html": Path("codeberg.svg").read_text(),
         },
         {
             "name": "Mastodon",

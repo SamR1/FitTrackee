@@ -7,9 +7,7 @@ import pytest
 
 from fittrackee import db
 from fittrackee.constants import ElevationDataSource
-from fittrackee.equipments.models import Equipment
 from fittrackee.tests.fixtures.fixtures_workouts import VALHALLA_VALUES
-from fittrackee.users.models import FollowRequest, User
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import WorkoutSegment
 from fittrackee.workouts.services.elevation.elevation_service import (
@@ -22,6 +20,7 @@ from fittrackee.workouts.services.workouts_from_file_refresh_service import (
     WorkoutFromFileRefreshService,
 )
 
+from ..mixins import MediaMixin
 from ..utils import jsonify_dict
 from .mixins import WorkoutApiTestCaseMixin
 from .utils import MAX_WORKOUT_VALUES, create_a_workout_with_file
@@ -34,7 +33,7 @@ if TYPE_CHECKING:
     from fittrackee.workouts.models import Sport, Workout
 
 
-class TestEditWorkout(WorkoutApiTestCaseMixin):
+class TestEditWorkout(WorkoutApiTestCaseMixin, MediaMixin):
     def test_it_returns_401_when_no_authenticated(
         self,
         app: "Flask",
@@ -372,6 +371,70 @@ class TestEditWorkout(WorkoutApiTestCaseMixin):
         self.assert_400(
             response,
             "equipment_ids must be an array of strings",
+        )
+
+    def test_it_updates_media_attachments(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
+    ) -> None:
+        media = self.create_media(user_1)
+        workout = create_a_workout_with_file(user_1, gpx_file)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/workouts/{workout.short_id}",
+            content_type="application/json",
+            data=json.dumps(dict(media_attachment_ids=[media.short_id])),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["media_attachments"] == [
+            media.serialize()
+        ]
+
+    @patch("fittrackee.workouts.workouts.MAX_MEDIA_ATTACHMENTS", 2)
+    def test_it_returns_400_when_number_of_media_exceeds_limit(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
+    ) -> None:
+        workout = create_a_workout_with_file(user_1, gpx_file)
+        media_1 = self.create_media(user_1, workout_id=workout.id)
+        media_2 = self.create_media(user_1)
+        media_3 = self.create_media(user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/workouts/{workout.short_id}",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    media_attachment_ids=[
+                        media_1.short_id,
+                        media_2.short_id,
+                        media_3.short_id,
+                    ],
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            "up to 2 media attachments can be associated with a workout",
         )
 
     def test_expected_scope_is_workouts_write(

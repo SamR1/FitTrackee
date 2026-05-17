@@ -20,6 +20,9 @@ if TYPE_CHECKING:
 
 from .exceptions import EquipmentForbiddenException
 
+LABEL_MAX_LENGTH = 50
+DESCRIPTION_MAX_LENGTH = 2000
+
 WorkoutEquipment = db.Table(
     "workout_equipments",
     db.Column(
@@ -60,10 +63,10 @@ class Equipment(BaseModel):
         db.ForeignKey("users.id"), index=True, nullable=False
     )
     label: Mapped[str] = mapped_column(
-        db.String(50), unique=False, nullable=False
+        db.String(LABEL_MAX_LENGTH), unique=False, nullable=False
     )
     description: Mapped[Optional[str]] = mapped_column(
-        db.String(200), default=None, nullable=True
+        db.String(DESCRIPTION_MAX_LENGTH), default=None, nullable=True
     )
     equipment_type_id: Mapped[int] = mapped_column(
         db.ForeignKey("equipment_types.id")

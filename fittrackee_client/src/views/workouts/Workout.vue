@@ -32,6 +32,13 @@
             :isWorkoutOwner="isWorkoutOwner"
             @getCoordinates="updateCoordinates"
           />
+          <WorkoutMediaGallery
+            v-if="workoutData.workout.media_attachments.length > 0"
+            :media-attachments="workoutData.workout.media_attachments"
+            :media-visibility="workoutData.workout.media_visibility"
+            :is-workout-owner="isWorkoutOwner"
+            :workout-id="workoutData.workout.id"
+          />
           <WorkoutContent
             v-if="!displaySegment"
             :workout-id="workoutData.workout.id"
@@ -74,7 +81,16 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, toRefs, watch, onBeforeMount, onUnmounted } from 'vue'
+  import {
+    computed,
+    nextTick,
+    onBeforeMount,
+    onUnmounted,
+    onMounted,
+    ref,
+    toRefs,
+    watch,
+  } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useRoute } from 'vue-router'
 
@@ -83,10 +99,12 @@
   import WorkoutDetail from '@/components/Workout/WorkoutDetail/index.vue'
   import WorkoutChart from '@/components/Workout/WorkoutDetail/WorkoutChart/index.vue'
   import WorkoutContent from '@/components/Workout/WorkoutDetail/WorkoutContent.vue'
+  import WorkoutMediaGallery from '@/components/Workout/WorkoutDetail/WorkoutMediaGallery.vue'
   import WorkoutSegments from '@/components/Workout/WorkoutDetail/WorkoutSegments.vue'
   import WorkoutUser from '@/components/Workout/WorkoutDetail/WorkoutUser.vue'
   import useApp from '@/composables/useApp.ts'
   import useAuthUser from '@/composables/useAuthUser'
+  import useScroll from '@/composables/useScroll.ts'
   import useSports from '@/composables/useSports'
   import { SPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { TCoordinates } from '@/types/map'
@@ -108,6 +126,7 @@
   const { authUser } = useAuthUser()
   const { displayOptions } = useApp()
   const { getWorkoutSport, sports } = useSports()
+  const { resetTimeout, scrollTo } = useScroll()
 
   const markerCoordinates: Ref<TCoordinates> = ref({
     latitude: null,
@@ -174,7 +193,15 @@
       store.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
     }
   })
+  onMounted(() => {
+    nextTick(() => {
+      if (route.hash) {
+        scrollTo(route.hash.replace('#', ''), 300)
+      }
+    })
+  })
   onUnmounted(() => {
+    resetTimeout()
     store.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
   })
 </script>

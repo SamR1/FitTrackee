@@ -36,7 +36,7 @@ def clean_input(input_text: str, for_markdown_renderer: bool = False) -> str:
     # HTML sanitization
     tags = {"a", "br", "p", "span"}
     attributes = {"a": {"href", "target"}}
-    if for_markdown_renderer:
+    if for_markdown_renderer:  # for Atom and RSS feeds
         tags.update({"img", "strong", "em"})
         attributes["img"] = {"src", "alt"}
     return nh3.clean(

@@ -37,13 +37,15 @@
             :disabled="authUserLoading"
           />
         </label>
-        <label class="form-items">
+        <label class="form-items" for="bio">
           {{ $t('user.PROFILE.BIO') }}
           <CustomTextArea
             name="bio"
-            :charLimit="200"
+            charLimit="500"
+            rows="3"
             :input="userForm.bio"
             :disabled="authUserLoading"
+            with-markdown
             @updateValue="updateBio"
           />
         </label>
@@ -143,7 +145,6 @@
         }
       }
     }
-
     .form-buttons {
       flex-direction: row;
       @media screen and (max-width: $x-small-limit) {

@@ -1,0 +1,56 @@
+name: Python - lint and type hints check
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - release-v*
+      - v*
+    paths: [
+      'fittrackee/**',
+      'e2e/**',
+      '.forgejo/workflows/.python-checks.yml',
+    ]
+  pull_request:
+    paths: [
+      'fittrackee/**',
+      'e2e/**',
+      '.forgejo/workflows/.python-checks.yml',
+    ]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: codeberg-medium-lazy
+
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: 3.13
+
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install Poetry
+        run: |
+          pip install --root-user-action=ignore --quiet poetry
+          echo "/root/.local/bin" >> $GITHUB_PATH
+
+      - name: Install Dependencies
+        run: poetry install --quiet --no-interaction
+
+      - name: Lint
+        run: |
+          poetry run ruff format --check fittrackee e2e
+          poetry run ruff check fittrackee e2e
+
+      - name: Mypy
+        run: poetry run mypy fittrackee
