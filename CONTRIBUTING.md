@@ -35,7 +35,7 @@ The **Codeberg** repository contains:
 - documentation (source and translations).
 
 The repository is mirrored on **GitHub**.  
-Continuous integration workflows run on **Github Actions** platform (on **push**) for the moment (see [issue](https://codeberg.org/FitTrackee/FitTrackee/issues/1121)).
+Continuous integration workflows run on **Forgejo Actions** (Cobeberg) and **Github Actions** platforms (see [issue](https://codeberg.org/FitTrackee/FitTrackee/issues/1121)).
 
 For now, releases do not follow [semantic versioning](https://semver.org). Any version may contain backward-incompatible changes.
 

@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - release-v*
       - v*
     paths: [
       'fittrackee/**',
@@ -24,7 +25,7 @@ permissions:
 
 jobs:
   checks:
-    runs-on: codeberg-small-lazy
+    runs-on: codeberg-medium-lazy
 
     steps:
       - name: Setup Python

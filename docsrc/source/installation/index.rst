@@ -64,17 +64,13 @@ Prerequisites
     - `PostgreSQL <https://www.postgresql.org/>`__ 14+
     - `PostGIS <https://postgis.net/>`__ 3.4+
     - `GDAL <https://gdal.org/en/stable/>`__ on the server running the application, if different from the server running the database (GDAL is installed with PostGIS)
+    - libmagic C library to check mime type on file upload with `python-magic <https://github.com/ahupp/python-magic?tab=readme-ov-file#installation>`_. This library may not be installed by default on some operating systems.
 
   - installation with Docker:
 
     - `Docker <https://docs.docker.com/get-started/>`__ and `Docker Compose <https://docs.docker.com/compose/>`__ v2.30+
 
 - optional
-
-  - (recommended) libmagic C library to check mime type on file upload with `python-magic <https://github.com/ahupp/python-magic?tab=readme-ov-file#installation>`_. This library may not be installed by default on some operating systems. If not present, a warning will appear in the application logs and files will be uploaded without mime type verification.
-
-    .. warning::
-       This library will be mandatory in version 1.3.0. **Note**: Docker images already include libmagic.
 
   - `Redis <https://redis.io/>`__ for `task queue <tasks_processing.html>`__ (for `email <emails.html>`__ sending if enabled, for data export requests, and asynchronous archive uploads if enabled) and `API rate limits <api_rate_limits.html>`__ (for installation from sources or package)
   - SMTP provider (if `email <emails.html>`__ sending is enabled)

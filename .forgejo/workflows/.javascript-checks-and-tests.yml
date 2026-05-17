@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - release-v*
       - v*
     paths: [
       'fittrackee_client/**',

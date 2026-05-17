@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - dev
+      - release-v*
       - v*
   pull_request:
     types: [opened, synchronize, reopened]
@@ -15,7 +16,7 @@ permissions:
 jobs:
   codespell:
     name: Check for spelling errors
-    runs-on: codeberg-tiny-lazy
+    runs-on: codeberg-medium-lazy
 
     steps:
       - name: Checkout
