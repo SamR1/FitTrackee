@@ -62,6 +62,7 @@
   "FROM": "Von",
   "GLOBAL_MAP": "Weltkarte",
   "HEART_RATE": "Puls",
+  "HIDE_DESCRIPTION": "Beschreibung ausblenden",
   "HIDE_FILTERS": "verberge Filter",
   "HIDE_MAP": "Karte ausblenden",
   "HIDE_WORKOUTS": "Workouts ausblenden",
@@ -93,6 +94,7 @@
     "selectedLabel": "Ausgewählt"
   },
   "MY_WORKOUTS": "Meine Trainings",
+  "NEXT_PHOTO": "Nächstes Foto",
   "NEXT_SEGMENT": "Nächstes Segment",
   "NEXT_WORKOUT": "Nächstes Training",
   "NOMINATIM_ADDRESS_TYPE": {
@@ -129,6 +131,7 @@
   "PACE": "Pace",
   "PAUSES": "Pausen",
   "POWER": "Leistung",
+  "PREVIOUS_PHOTO": "Vorheriges Foto",
   "PREVIOUS_SEGMENT": "Vorheriges Segment",
   "PREVIOUS_WORKOUT": "Vorheriges Training",
   "PRIVATE_NOTES": "Private Anmerkung",
