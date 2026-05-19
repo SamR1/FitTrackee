@@ -13,6 +13,7 @@
     "public": "Öffentlich (jeder)"
   },
   "MAP_VISIBILITY": "Karten-Sichtbarkeit",
+  "MEDIA_VISIBILITY": "Sichtbarkeit von Medien",
   "VISIBILITY": "Sichtbarkeit",
   "WORKOUTS_VISIBILITY": "Sichtbarkeit von Trainingsdaten",
   "WORKOUT_VISIBILITY": "Sichtbarkeit des Workouts"
