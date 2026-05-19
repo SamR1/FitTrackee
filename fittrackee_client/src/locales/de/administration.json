@@ -142,7 +142,7 @@
         "IS_ACTIVE": "Kontostatus",
         "ROLE": "Rolle",
         "USERNAME": "Nutzername",
-        "WORKOUTS_COUNT": "Trainingsanzahl"
+        "WORKOUTS_COUNT": "Workoutanzahl"
       }
     },
     "TABLE": {
