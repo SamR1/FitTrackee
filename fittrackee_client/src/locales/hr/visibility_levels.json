@@ -13,6 +13,7 @@
     "public": "Javno (svi)"
   },
   "MAP_VISIBILITY": "Vidljivost karte",
+  "MEDIA_VISIBILITY": "Vidljivost medija",
   "VISIBILITY": "vidljivost",
   "WORKOUTS_VISIBILITY": "Vidljivost podataka povezanih s aktivnostima",
   "WORKOUT_VISIBILITY": "Vidljivost aktivnosti"

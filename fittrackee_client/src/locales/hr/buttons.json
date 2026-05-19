@@ -9,6 +9,7 @@
   "CANCEL": "Odustani",
   "CANCEL_FOLLOW_REQUEST": "Otkaži zahtjev za praćenje",
   "CLEAR_FILTER": "Očisti filtre",
+  "CLOSE": "Zatvori",
   "DELETE": "Obriši",
   "DELETE_MY_ACCOUNT": "Obriši moj račun",
   "DISABLE": "Onemogući",
@@ -18,6 +19,7 @@
   "FOLLOW": "Prati",
   "HIDE": "Sakrij",
   "LOGIN": "Prijavi se",
+  "PREVIEW": "Pregled",
   "READ_MORE": "Pročitaj više",
   "REFRESH": "Osvježi",
   "REFRESH_TOTALS": "Osvježi ukupne rezultate",
@@ -25,9 +27,11 @@
   "REJECT": "Odbij",
   "REQUEST_DATA_EXPORT": "Zatraži izvoz podataka",
   "RESET": "Poništi",
+  "SAVE": "Spremi",
   "SEARCH": "Traži",
   "SEE_DETAIL": "Pogledaj detalje",
   "SUBMIT": "Pošalji",
   "UNBLOCK": "Deblokiraj",
-  "UNFOLLOW": "Prestani pratiti"
+  "UNFOLLOW": "Prestani pratiti",
+  "WRITE": "Zapiši"
 }
