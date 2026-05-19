@@ -250,7 +250,7 @@
     "limited": "Statistiken für {count} Workouts"
   },
   "WORKOUT_CHART": "Geschwindigkeit und -Höhen-Diagramm des Workouts",
-  "WORKOUT_DATE": "Trainingsdatum",
+  "WORKOUT_DATE": "Workoutdatum",
   "WORKOUT_DELETION_CONFIRMATION": "Bist du sicher, dass du dieses Training löschen möchtest?",
   "WORKOUT_FILE": "Workout Datei",
   "WORKOUT_MAP": "Workout-Karte",
