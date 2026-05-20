@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from typing import List, Tuple
@@ -11,6 +12,7 @@ from fittrackee import db
 from fittrackee.dates import get_readable_duration
 from fittrackee.equipments.models import Equipment
 from fittrackee.federation.models import Actor
+from fittrackee.media.models import Media
 from fittrackee.reports.models import Report, ReportAction
 from fittrackee.tests.comments.mixins import CommentMixin
 from fittrackee.users.models import (
@@ -2508,7 +2510,9 @@ class TestDeleteUser(
     def test_user_with_media_attachments_can_delete_its_own_account(
         self, app: Flask, user_1: User
     ) -> None:
-        self.create_and_store_media(app, user_1)
+        _, media_file_path, thumbnail_file_path = self.create_and_store_media(
+            app, user_1
+        )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -2520,6 +2524,9 @@ class TestDeleteUser(
 
         assert response.status_code == 204
         assert User.query.first() is None
+        assert Media.query.count() == 0
+        assert os.path.isfile(media_file_path) is False
+        assert os.path.isfile(thumbnail_file_path) is False
 
     def test_user_with_export_request_can_delete_its_own_account(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str

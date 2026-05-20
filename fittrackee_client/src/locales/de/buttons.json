@@ -9,6 +9,7 @@
   "CANCEL": "Abbrechen",
   "CANCEL_FOLLOW_REQUEST": "Follow-Anfrage abbrechen",
   "CLEAR_FILTER": "Filter löschen",
+  "CLOSE": "Schließen",
   "DELETE": "Löschen",
   "DELETE_MY_ACCOUNT": "Mein Konto löschen",
   "DISABLE": "Deaktivieren",
@@ -18,6 +19,7 @@
   "FOLLOW": "Folgen",
   "HIDE": "Verstecken",
   "LOGIN": "Anmelden",
+  "PREVIEW": "Vorschau",
   "READ_MORE": "Mehr lesen",
   "REFRESH": "Aktualisieren",
   "REFRESH_TOTALS": "Gesamtbeträge aktualisieren",
@@ -25,9 +27,11 @@
   "REJECT": "Ablehnen",
   "REQUEST_DATA_EXPORT": "Daten-Export anfragen",
   "RESET": "Zurücksetzen",
+  "SAVE": "Speichern",
   "SEARCH": "Suchen",
   "SEE_DETAIL": "Details anzeigen",
   "SUBMIT": "Speichern",
   "UNBLOCK": "Blockierung aufheben",
-  "UNFOLLOW": "Entfolgen"
+  "UNFOLLOW": "Entfolgen",
+  "WRITE": "Schreiben"
 }

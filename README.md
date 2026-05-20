@@ -11,15 +11,14 @@
 [![Typescript Version](https://img.shields.io/npm/types/typescript)](https://www.typescriptlang.org/)  
 [![PostgreSQL version](https://img.shields.io/badge/PostgreSQL-14_|_15_|_16_|_17_|_18-336791)](https://www.postgresql.org/) [![PostgreSQL version](https://img.shields.io/badge/PostGIS-3.4_|_3.5_|_3.6-5b7b9f)](https://postgis.net/)  
 [![PyPI version](https://img.shields.io/pypi/v/fittrackee?logo=pypi)](https://pypi.org/project/fittrackee/) [![docker image version](https://img.shields.io/docker/v/fittrackee/fittrackee?logo=docker)](https://hub.docker.com/r/fittrackee/fittrackee)  
-[![Coverage Status](https://coveralls.io/repos/github/SamR1/FitTrackee/badge.svg?branch=main)](https://coveralls.io/github/SamR1/FitTrackee?branch=main)<sup><sup>1</sup></sup> [![python pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-python.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-python.yml)  [![javascript pipeline status](https://codeberg.org/FitTrackee/FitTrackee/badges/workflows/.javascript-checks-and-tests.yml/badge.svg?branch=main)](https://codeberg.org/FitTrackee/FitTrackee/actions?workflow=.javascript-checks-and-tests.yml)  
+[![Coverage Status](https://coveralls.io/repos/github/SamR1/FitTrackee/badge.svg?branch=main)](https://coveralls.io/github/SamR1/FitTrackee?branch=main)<sup><sup>1</sup></sup> [![python pipeline status](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-python.yml/badge.svg)](https://github.com/SamR1/FitTrackee/actions/workflows/.tests-python.yml)  [![python pipeline status](https://codeberg.org/FitTrackee/FitTrackee/badges/workflows/.python-checks.yml/badge.svg?branch=main)](https://codeberg.org/FitTrackee/FitTrackee/actions?workflow=.python-checks.yml) [![javascript pipeline status](https://codeberg.org/FitTrackee/FitTrackee/badges/workflows/.javascript-checks-and-tests.yml/badge.svg?branch=main)](https://codeberg.org/FitTrackee/FitTrackee/actions?workflow=.javascript-checks-and-tests.yml)  
 [![translation status](https://hosted.weblate.org/widgets/fittrackee/-/svg-badge.svg)](https://hosted.weblate.org/engage/fittrackee/)
 [![translation languages](https://hosted.weblate.org/widget/fittrackee/language-badge.svg)](https://hosted.weblate.org/engage/fittrackee/)   
-[![Matrix](https://img.shields.io/matrix/fittrackee%3Amatrix.org?logo=matrix)](https://matrix.to/#/#fittrackee:matrix.org)
-[![Mastodon Follow](https://img.shields.io/mastodon/follow/109270806934115805?domain=fosstodon.org)](https://fosstodon.org/@FitTrackee)  
+[![Matrix](https://img.shields.io/badge/chat-%23fittrackee%3Amatrix.org-4cb70e?logo=matrix)](https://matrix.to/#/#fittrackee:matrix.org)
+[![Mastodon Follow](https://img.shields.io/badge/follow%20%40FitTrackee-fff?logo=mastodon)](https://fosstodon.org/@FitTrackee)  
 ---
 
-Web application allowing tracking of outdoor activities (workouts) from files, \
-with data on your own server.  
+Web application allowing tracking of outdoor activities (workouts) from files, with data on your own server.  
 
 Several mobile apps or devices can store workouts data locally and export them into a file.  
 Examples for Android (non-exhaustive list):  

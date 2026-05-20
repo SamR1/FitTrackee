@@ -15,6 +15,7 @@
       "follow:read_DESCRIPTION": "odobrava prava čitanja na endpoints zahtjeva za praćenje i pratitelja.",
       "follow:write_DESCRIPTION": "odobrava prava za pisanje na endpoints zahtjeva za praćenje i pratitelja.",
       "geocode:read_DESCRIPTION": "odobrava prava čitanja na enpoints povezanim sa geokodiranjem.",
+      "media:write_DESCRIPTION": "odobrava pristup za pisanje krajnjim točkama <code>media</code>.",
       "notifications:read_DESCRIPTION": "odobrava prava za čitanje na <code>notifications</code> endpoints.",
       "notifications:write_DESCRIPTION": "odobrava prava za pisanje na <code>notifications</code> endpoints.",
       "profile:read_DESCRIPTION": "odobrava prava za čitanje na <code>auth</code> endpoints.",

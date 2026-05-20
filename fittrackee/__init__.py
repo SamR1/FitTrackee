@@ -30,7 +30,7 @@ from fittrackee.emails.emails import EmailService
 from fittrackee.exceptions import EmailConfigException
 from fittrackee.request import CustomRequest
 
-VERSION = __version__ = "1.3.0"
+VERSION = __version__ = "1.3.1"
 DEFAULT_PRIVACY_POLICY_DATA = "2024-12-23 19:00:00"
 REDIS_URL = os.getenv("REDIS_URL", "redis://")
 API_RATE_LIMITS = os.environ.get("API_RATE_LIMITS")
@@ -160,6 +160,11 @@ def create_app(init_email: bool = True) -> Flask:
                 raise EmailConfigException(
                     "EMAIL_URL is set, but Redis is not available. Please "
                     "check application configuration or Redis status."
+                )
+            if not app.config["SENDER_EMAIL"]:
+                raise EmailConfigException(
+                    "EMAIL_URL is set, but not SENDER_EMAIL. Please "
+                    "check application configuration."
                 )
             email_service.init_email(app)
             app.config["CAN_SEND_EMAILS"] = True

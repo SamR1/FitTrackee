@@ -19,6 +19,7 @@ on:
       '.forgejo/workflows/.python-checks.yml',
     ]
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 permissions:
   contents: read

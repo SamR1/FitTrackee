@@ -30,6 +30,7 @@ from fittrackee.exceptions import FileException
 from fittrackee.federation.tasks.inbox import send_to_remote_inbox
 from fittrackee.federation.utils import sending_activities_allowed
 from fittrackee.files import check_file
+from fittrackee.media.models import Media
 from fittrackee.oauth2.server import require_auth
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.responses import (
@@ -3063,6 +3064,8 @@ def delete_workout(
         workout.equipments = []
         db.session.flush()
 
+        for media in Media.query.filter_by(workout_id=workout.id).all():
+            db.session.delete(media)  # to delete media files
         db.session.delete(workout)
         db.session.commit()
         return {"status": "no content"}, 204
