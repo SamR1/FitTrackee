@@ -8,7 +8,7 @@ Emails
 .. versionchanged:: 0.7.24  Handle special characters in password
 .. versionchanged:: 0.9.0  An email is sent after moderation action
 
-To send emails, a valid ``EMAIL_URL`` must be provided:
+To send emails, a valid ``EMAIL_URL`` and ``EMAIL_SENDER`` must be provided. For ``EMAIL_URL`` some example formats are:
 
 - with an unencrypted SMTP server: ``smtp://username:password@smtp.example.com:25``
 - with SSL: ``smtp://username:password@smtp.example.com:465/?ssl=True``
