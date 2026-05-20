@@ -19,7 +19,7 @@ services:
     # Warning: there is no official image for PostGIS on ARM platforms yet, see:
     # https://github.com/postgis/docker-postgis/issues/216
     # The workaround is to build PostGIS image locally.
-    image: postgis/postgis:17-3.5-alpine
+    image: postgis/postgis:18-3.6-alpine
     env_file:
       - .env
     volumes:
