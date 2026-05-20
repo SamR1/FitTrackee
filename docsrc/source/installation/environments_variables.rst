@@ -213,9 +213,15 @@ deployment method.
 .. envvar:: SENDER_EMAIL
 
     .. versionadded:: 0.3.0
+    .. versionchanged:: 1.3.1  Add check on ``SENDER_EMAIL`` at startup
 
     **FitTrackee** sender email address.
 
+    .. warning::
+        If ``EMAIL_URL`` is set but ``SENDER_EMAIL`` is not, the application will not start.
+
+    .. note::
+        | Some SMTP providers (like GMail) may ignore the sender email and use the email address associated with the SMTP account instead. For Gmail, the workaround is to create an alias.
 
 .. envvar:: STATICMAP_CACHE_DIR
 
