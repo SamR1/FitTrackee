@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta, timezone
 
 import pytest
@@ -5,11 +6,14 @@ from flask import Flask
 
 from fittrackee import db
 from fittrackee.equipments.models import Equipment
+from fittrackee.files import get_absolute_file_path
+from fittrackee.media.models import Media
 from fittrackee.users.models import FollowRequest, User
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..comments.mixins import CommentMixin
+from ..mixins import MediaMixin
 from .mixins import WorkoutApiTestCaseMixin
 from .utils import create_a_workout_with_file
 
@@ -19,7 +23,9 @@ def get_gpx_filepath(workout_id: int) -> str:
     return workout.gpx
 
 
-class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
+class TestDeleteWorkoutWithGpx(
+    CommentMixin, WorkoutApiTestCaseMixin, MediaMixin
+):
     def test_it_deletes_a_workout_with_gpx(
         self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
     ) -> None:
@@ -322,8 +328,40 @@ class TestDeleteWorkoutWithGpx(CommentMixin, WorkoutApiTestCaseMixin):
             expected_endpoint_scope="workouts:write",
         )
 
+    def test_it_deletes_a_workout_with_media(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport, gpx_file: str
+    ) -> None:
+        os.makedirs(
+            os.path.join(app.config["UPLOAD_FOLDER"], "media", str(user_1.id)),
+            exist_ok=True,
+        )
+        workout = create_a_workout_with_file(user_1, gpx_file)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        media = self.create_media(user_1, workout_id=workout.id)
+        absolute_path = get_absolute_file_path(media.file_path)
+        open(absolute_path, "x")
+        thumbnail_absolute_path = get_absolute_file_path(
+            media.thumbnail_file_path
+        )
+        open(thumbnail_absolute_path, "x")
 
-class TestDeleteWorkoutWithoutGpx(CommentMixin, WorkoutApiTestCaseMixin):
+        response = client.delete(
+            f"/api/workouts/{workout.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 204
+        assert Workout.query.count() == 0
+        assert Media.query.count() == 0
+        assert os.path.isfile(absolute_path) is False
+        assert os.path.isfile(thumbnail_absolute_path) is False
+
+
+class TestDeleteWorkoutWithoutGpx(
+    CommentMixin, WorkoutApiTestCaseMixin, MediaMixin
+):
     def test_it_deletes_a_workout_wo_gpx(
         self,
         app: Flask,
@@ -531,3 +569,43 @@ class TestDeleteWorkoutWithoutGpx(CommentMixin, WorkoutApiTestCaseMixin):
         )
 
         self.assert_403(response)
+
+    def test_it_deletes_a_workout_with_media(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        os.makedirs(
+            os.path.join(app.config["UPLOAD_FOLDER"], "media", str(user_1.id)),
+            exist_ok=True,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+        absolute_path = get_absolute_file_path(media.file_path)
+        open(absolute_path, "x")
+        thumbnail_absolute_path = get_absolute_file_path(
+            media.thumbnail_file_path
+        )
+        open(thumbnail_absolute_path, "x")
+        self.create_media(user_2, workout_id=workout_cycling_user_2.id)
+
+        response = client.delete(
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 204
+        # User 1
+        assert Workout.query.filter_by(user_id=user_1.id).count() == 0
+        assert Media.query.filter_by(user_id=user_1.id).count() == 0
+        assert os.path.isfile(absolute_path) is False
+        assert os.path.isfile(thumbnail_absolute_path) is False
+        # User 2
+        assert Workout.query.filter_by(user_id=user_2.id).count() == 1
+        assert Media.query.filter_by(user_id=user_2.id).count() == 1
