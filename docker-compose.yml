@@ -23,7 +23,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ${HOST_DATABASE_DIR:-./data/db}:/var/lib/postgresql/data
+      - ${HOST_DATABASE_DIR:-./data/db}:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
