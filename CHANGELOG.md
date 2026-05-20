@@ -1,5 +1,55 @@
 # Change log
 
+## Version 1.3.1 (2026/05/20)
+
+### Bugs Fixed
+
+* [#1151](https://codeberg.org/FitTrackee/FitTrackee/issues/1151) - Error on image upload
+* [PR#1158](https://codeberg.org/FitTrackee/FitTrackee/pulls/1158) - check if SENDER_EMAIL is set when EMAIL_URL is set
+* [PR#1161](https://codeberg.org/FitTrackee/FitTrackee/pulls/1161) - Images are not deleted when the workout is deleted
+
+### Translations
+
+* [PR#1153](https://codeberg.org/FitTrackee/FitTrackee/pulls/1153) - Translations update from Hosted Weblate (Croatian, Galician and German)
+* [PR#1156](https://codeberg.org/FitTrackee/FitTrackee/pulls/1156) - Translations update from Hosted Weblate (French and German)
+
+Translation status for languages available on the interface:
+- Basque: 97%
+- Bulgarian: 50%
+- Catalan: 33%
+- Chinese (Simplified): 95%
+- Croatian: 100%
+- Czech: 49%
+- Dutch: 98%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 97%
+- Kabyle: 5%
+- Norwegian Bokmål: 42%
+- Polish: 92%
+- Portuguese: 50%
+- Russian: 93%
+- Spanish: 67%
+- Turkish: 1%
+
+### Documentation
+
+* [PR#1154](https://codeberg.org/FitTrackee/FitTrackee/pulls/1154) - add EMAIL_SENDER as another required variable to be set
+
+### Misc
+
+* [PR#1159](https://codeberg.org/FitTrackee/FitTrackee/pulls/1159) - update PostgreSQL and PostGIS version
+* [9108042](https://codeberg.org/FitTrackee/FitTrackee/commit/91080424f9f48b7c071cf7faca26b0603c75bf87) - CI - update Forgejo actions to allow manual triggering
+
+Thanks to the contributors:
+- [@djschny](https://codeberg.org/djschny)
+- [@ghose](https://codeberg.org/ghose)
+- [@iggydev](https://github.com/iggydev)
+- [@PeterAuer](https://codeberg.org/PeterAuer)
+
+
 ## Version 1.3.0 (2026/05/17)
 
 FitTrackee now allows you to add photos to workouts 🖼️.  
