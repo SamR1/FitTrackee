@@ -27,7 +27,7 @@ permissions:
 jobs:
   python:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
-    name: python ${{ matrix.python-version }} (postgis 17-3.5)
+    name: python ${{ matrix.python-version }} (postgis 18-3.6)
     uses: ./.github/workflows/.workflow-python.yml
     strategy:
       matrix:
@@ -35,7 +35,7 @@ jobs:
     with:
       ubuntu-version: "ubuntu-latest"
       python-version: ${{ matrix.python-version }}
-      postgis-version: "17-3.5"
+      postgis-version: "18-3.6"
       with-additional-check: true
       with-coverage: true
 
@@ -45,7 +45,7 @@ jobs:
     uses: ./.github/workflows/.workflow-python.yml
     strategy:
       matrix:
-        postgis-version:  [ "14-3.5", "15-3.5", "16-3.5", "17-3.4", "17-3.6", "18-3.6" ]
+        postgis-version:  [ "14-3.5", "15-3.5", "16-3.5", "17-3.4", "17-3.5", "17-3.6" ]
     with:
       ubuntu-version: "ubuntu-latest"
       python-version: "3.13"
@@ -55,12 +55,12 @@ jobs:
 
   arm:
     if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
-    name: postgis 17-3.5 on arm platform (python 3.13)
+    name: postgis 18-3.6 on arm platform (python 3.13)
     uses: ./.github/workflows/.workflow-python.yml
     with:
       ubuntu-version: "ubuntu-24.04-arm"
       python-version: "3.13"
-      postgis-version: "17-3.5"
+      postgis-version: "18-3.6"
       with-additional-check: false
       with-coverage: false
 
