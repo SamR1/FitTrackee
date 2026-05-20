@@ -6,10 +6,10 @@ on:
         default: 3.13
       postgres-version:
         type: string
-        default: 17
+        default: 18
       postgis-version:
         type: string
-        default: 3.5
+        default: 3.6
       previous-version:
         type: boolean
         default: false
