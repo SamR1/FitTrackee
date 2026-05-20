@@ -44,7 +44,7 @@
   "PASSWORD_FORGOTTEN": "Mot de passe oublié ?",
   "PASSWORD_INFO": "8 caractères minimum.",
   "PASSWORD_RESET": "Réinitialisation du mot de passe",
-  "PASSWORD_SENT_EMAIL_TEXT": "Vérifiez vos courriels. Si vote adresse est dans notre base de données, vous recevrez un courriel avec un lien pour réinitialiser votre mot de passe.",
+  "PASSWORD_SENT_EMAIL_TEXT": "Vérifiez vos courriels. Si votre adresse est dans notre base de données, vous recevrez un courriel avec un lien pour réinitialiser votre mot de passe.",
   "PASSWORD_STRENGTH": {
     "AVERAGE": "moyenne",
     "GOOD": "bonne",

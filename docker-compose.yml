@@ -15,15 +15,17 @@ services:
     #
     # Please refer to the PostgreSQL and PostGIS documentation before upgrading
     # image version.
+    # Warning: Starting with version 18, PGDATA has changed, see:
+    # https://hub.docker.com/_/postgres#pgdata
     #
     # Warning: there is no official image for PostGIS on ARM platforms yet, see:
     # https://github.com/postgis/docker-postgis/issues/216
     # The workaround is to build PostGIS image locally.
-    image: postgis/postgis:17-3.5-alpine
+    image: postgis/postgis:18-3.6-alpine
     env_file:
       - .env
     volumes:
-      - ${HOST_DATABASE_DIR:-./data/db}:/var/lib/postgresql/data
+      - ${HOST_DATABASE_DIR:-./data/db}:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
@@ -38,7 +40,7 @@ services:
     env_file:
       - .env
 # Image from Docker Hub
-    image: fittrackee/fittrackee:v1.3.0
+    image: fittrackee/fittrackee:v1.3.1
 # Uncomment following line to build image instead of using pre-built image
 #    build: .
     volumes:
@@ -75,7 +77,7 @@ services:
 #    env_file:
 #      - .env
 ## Image from Docker Hub
-#    image: fittrackee/fittrackee:v1.3.0
+#    image: fittrackee/fittrackee:v1.3.1
 ## Uncomment following line to build image instead of using pre-built image
 ##    build: .
 #    volumes:
