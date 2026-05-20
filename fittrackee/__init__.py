@@ -161,6 +161,11 @@ def create_app(init_email: bool = True) -> Flask:
                     "EMAIL_URL is set, but Redis is not available. Please "
                     "check application configuration or Redis status."
                 )
+            if not app.config["SENDER_EMAIL"]:
+                raise EmailConfigException(
+                    "EMAIL_URL is set, but not SENDER_EMAIL. Please "
+                    "check application configuration."
+                )
             email_service.init_email(app)
             app.config["CAN_SEND_EMAILS"] = True
         else:
