@@ -9,8 +9,18 @@
   "ADMIN": "Admin",
   "ADMINISTRATION": "Administració",
   "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Afegeix/elimina els drets d'administrador, suprimeix el compte d'usuari.",
+  "APPLICATION": "Aplicació",
   "APP_CONFIG": {
+    "ADMIN_CONTACT": "Correu electrònic d'administrador per a contactar",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "La càrrega asíncrona d'arxius zip està deshabilitada.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "Aquest valor no pot excedir 50.000 entrenaments.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Núm. entrenaments màxim mostrats al mapa global",
+    "MAX_FILES_IN_ZIP_LABEL": "Núm màxim d'arxius al zip",
+    "MAX_IMAGE_SIZE_LABEL": "Tamany màxim d'image (en Mb)",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Núm màxim de fitxers per al processament síncron",
     "MAX_USERS_HELP": "Si 0, cap límit en registres.",
-    "MAX_USERS_LABEL": "Màxim nombre d'arxius actius"
+    "MAX_USERS_LABEL": "Màxim nombre d'arxius actius",
+    "NO_CONTACT_EMAIL": "cap correu de contacte",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Tamany màxim dels arxius carregats (en Mb)"
   }
 }
