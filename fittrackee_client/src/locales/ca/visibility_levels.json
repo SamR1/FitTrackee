@@ -13,6 +13,7 @@
     "public": "Públic (tothom)"
   },
   "MAP_VISIBILITY": "Visibilitat del mapa",
+  "MEDIA_VISIBILITY": "Visibilitat dels mitjans",
   "VISIBILITY": "visibilitat",
   "WORKOUTS_VISIBILITY": "Entrenaments relacionats amb la visibilitat de les dades",
   "WORKOUT_VISIBILITY": "Visibilitat dels entrenaments"
