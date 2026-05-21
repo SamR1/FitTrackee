@@ -13,6 +13,7 @@
     "public": "Publiek (iedereen)"
   },
   "MAP_VISIBILITY": "Zichtbaarheid kaart",
+  "MEDIA_VISIBILITY": "Zichtbaarheid van media",
   "VISIBILITY": "Zichtbaarheid",
   "WORKOUTS_VISIBILITY": "Zichtbaarheid traininggerelateerde data",
   "WORKOUT_VISIBILITY": "Zichtbaarheid training"
