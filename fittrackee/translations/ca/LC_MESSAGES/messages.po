@@ -460,7 +460,7 @@ msgstr "Canoa"
 
 #: fittrackee/feeds/feeds/constants.py:6
 msgid "Canoeing (Whitewater)"
-msgstr ""
+msgstr "Canoa (Aiguablava)"
 
 #: fittrackee/feeds/feeds/constants.py:7
 msgid "Cycling (Sport)"
@@ -492,15 +492,15 @@ msgstr "Kaiak"
 
 #: fittrackee/feeds/feeds/constants.py:14
 msgid "Ice Skating"
-msgstr ""
+msgstr "Patinatge sobre Gel"
 
 #: fittrackee/feeds/feeds/constants.py:15
 msgid "Inline Skating"
-msgstr ""
+msgstr "Patinatge en Línia"
 
 #: fittrackee/feeds/feeds/constants.py:16
 msgid "Kayaking (Whitewater)"
-msgstr ""
+msgstr "Caiac (aigües braves)"
 
 #: fittrackee/feeds/feeds/constants.py:17
 msgid "Mountain Biking"
@@ -520,7 +520,7 @@ msgstr "Natació en Aigües Obertes"
 
 #: fittrackee/feeds/feeds/constants.py:21
 msgid "Padel (Outdoor)"
-msgstr ""
+msgstr "Pàdel (Exterior)"
 
 #: fittrackee/feeds/feeds/constants.py:22
 msgid "Paragliding"
@@ -548,7 +548,7 @@ msgstr "Raquetes"
 
 #: fittrackee/feeds/feeds/constants.py:28
 msgid "Standup Paddleboarding"
-msgstr ""
+msgstr "Paddle surf dret"
 
 #: fittrackee/feeds/feeds/constants.py:29
 msgid "Swimrun"
@@ -556,7 +556,7 @@ msgstr "Duatló (Natació-Carrera)"
 
 #: fittrackee/feeds/feeds/constants.py:30
 msgid "Tennis (Outdoor)"
-msgstr ""
+msgstr "Tennis (Exterior)"
 
 #: fittrackee/feeds/feeds/constants.py:31
 msgid "Trail"
