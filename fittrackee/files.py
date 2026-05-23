@@ -72,6 +72,16 @@ def check_mime_type(
     except Exception as e:
         raise FileException(INVALID_FILE_ERROR_MESSAGE) from e
 
+    # gpx generated with OSMAnd are detected as plain text
+    if (
+        extension == "gpx"
+        and mime_type == "text/plain"
+        and magic.from_buffer(buffer).startswith(
+            "OpenStreetMap XML data, ASCII text"
+        )
+    ):
+        mime_type = "text/xml"
+
     # python-magic return default mime type ('application/octet-stream') for
     # archives, check magic numbers instead
     if extension in ["zip", "kmz"]:
