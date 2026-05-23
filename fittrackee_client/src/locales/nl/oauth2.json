@@ -15,6 +15,7 @@
       "follow:read_DESCRIPTION": "geeft leestoegang aan eindpunten die te maken hebben met volgers en volgverzoeken.",
       "follow:write_DESCRIPTION": "geeft schrijftoegang aan eindpunten die te maken hebben met volgers en volgverzoeken.",
       "geocode:read_DESCRIPTION": "verleent leestoegang tot eindpunten met betrekking tot geocodering.",
+      "media:write_DESCRIPTION": "Geeft schrijftoegang tot <code>media</code> eindpunten.",
       "notifications:read_DESCRIPTION": "geef leestoegnag tot <code>notifications</code> eindpunten.",
       "notifications:write_DESCRIPTION": "geef schrijftoegnag tot <code>notifications</code> eindpunten.",
       "profile:read_DESCRIPTION": "staat leestoegang toe aan <code>auth</code> eindpunten.",

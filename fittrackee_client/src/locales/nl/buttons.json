@@ -9,6 +9,7 @@
   "CANCEL": "Annuleren",
   "CANCEL_FOLLOW_REQUEST": "Annuleer volg aanvraag",
   "CLEAR_FILTER": "Verwijder filters",
+  "CLOSE": "Sluiten",
   "DELETE": "Verwijderen",
   "DELETE_MY_ACCOUNT": "Verwijder mijn account",
   "DISABLE": "Uitzetten",
@@ -18,6 +19,7 @@
   "FOLLOW": "Volg",
   "HIDE": "Verbergen",
   "LOGIN": "Inloggen",
+  "PREVIEW": "Voorbeeld",
   "READ_MORE": "Lees meer",
   "REFRESH": "Vernieuwen",
   "REFRESH_TOTALS": "Ververs totalen",
@@ -25,9 +27,11 @@
   "REJECT": "Wijger",
   "REQUEST_DATA_EXPORT": "Data export aanvragen",
   "RESET": "Reset",
+  "SAVE": "Opslaan",
   "SEARCH": "Zoeken",
   "SEE_DETAIL": "Bekijk details",
   "SUBMIT": "Opslaan",
   "UNBLOCK": "Deblokkeer",
-  "UNFOLLOW": "Ontvolg"
+  "UNFOLLOW": "Ontvolg",
+  "WRITE": "Schrijven"
 }

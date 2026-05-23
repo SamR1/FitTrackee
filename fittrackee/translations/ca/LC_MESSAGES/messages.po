@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2026-03-04 23:57+0100\n"
-"PO-Revision-Date: 2026-03-21 17:09+0000\n"
+"PO-Revision-Date: 2026-05-21 08:11+0000\n"
 "Last-Translator: Arnau Mora <arnyminer.z@gmail.com>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/fittrackee/"
 "fittrackee-api-emails/ca/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17-dev\n"
+"X-Generator: Weblate 2026.6.dev0\n"
 "Generated-By: Babel 2.18.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
@@ -132,6 +132,7 @@ msgstr "La reclamació sobre la teua alerta ha sigut denegada"
 #: fittrackee/emails/templates/appeal_rejected/body.txt:1
 msgid "Your appeal on the following content suspension has been rejected"
 msgstr ""
+"La teva apel·lació a la suspensió del contingut següent ha sigut denegada"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:6
 #: fittrackee/emails/templates/appeal_rejected/body.txt:3
@@ -459,7 +460,7 @@ msgstr "Canoa"
 
 #: fittrackee/feeds/feeds/constants.py:6
 msgid "Canoeing (Whitewater)"
-msgstr ""
+msgstr "Canoa (Aiguablava)"
 
 #: fittrackee/feeds/feeds/constants.py:7
 msgid "Cycling (Sport)"
@@ -491,15 +492,15 @@ msgstr "Kaiak"
 
 #: fittrackee/feeds/feeds/constants.py:14
 msgid "Ice Skating"
-msgstr ""
+msgstr "Patinatge sobre Gel"
 
 #: fittrackee/feeds/feeds/constants.py:15
 msgid "Inline Skating"
-msgstr ""
+msgstr "Patinatge en Línia"
 
 #: fittrackee/feeds/feeds/constants.py:16
 msgid "Kayaking (Whitewater)"
-msgstr ""
+msgstr "Caiac (aigües braves)"
 
 #: fittrackee/feeds/feeds/constants.py:17
 msgid "Mountain Biking"
@@ -519,7 +520,7 @@ msgstr "Natació en Aigües Obertes"
 
 #: fittrackee/feeds/feeds/constants.py:21
 msgid "Padel (Outdoor)"
-msgstr ""
+msgstr "Pàdel (Exterior)"
 
 #: fittrackee/feeds/feeds/constants.py:22
 msgid "Paragliding"
@@ -547,7 +548,7 @@ msgstr "Raquetes"
 
 #: fittrackee/feeds/feeds/constants.py:28
 msgid "Standup Paddleboarding"
-msgstr ""
+msgstr "Paddle surf dret"
 
 #: fittrackee/feeds/feeds/constants.py:29
 msgid "Swimrun"
@@ -555,7 +556,7 @@ msgstr "Duatló (Natació-Carrera)"
 
 #: fittrackee/feeds/feeds/constants.py:30
 msgid "Tennis (Outdoor)"
-msgstr ""
+msgstr "Tennis (Exterior)"
 
 #: fittrackee/feeds/feeds/constants.py:31
 msgid "Trail"

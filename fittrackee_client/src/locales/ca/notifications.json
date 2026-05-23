@@ -6,6 +6,17 @@
   "COMMENTED_YOUR_WORKOUT": "ha comentat al teu entrenament",
   "LIKED_YOUR_COMMENT": "li ha agradat el teu comentari",
   "LIKED_YOUR_WORKOUT": "li ha agradat el teu entrenament",
+  "MARK_ALL_AS_READ": "Marca tots com a llegits",
+  "MARK_AS_READ": "marcar com a llegit",
+  "MARK_AS_UNREAD": "marca com a no llegit",
+  "MENTIONED_YOU": "t'ha esmenat",
+  "NOTIFICATIONS": "notificació | notificacions",
+  "NO_NOTIFICATIONS": "Cap notificació.",
+  "REPLIED_YOUR_COMMENT": "ha respost al teu comentari",
   "REPORTED_USER_COMMENT": "s'ha reportat aquest comentari:",
-  "REPORTED_USER_WORKOUT": "reportat aquest entrenament:"
+  "REPORTED_USER_USER": "ha reportat:",
+  "REPORTED_USER_WORKOUT": "reportat aquest entrenament:",
+  "SEND_FOLLOW_REQUEST_TO_YOU": "enviar una petició de seguiment",
+  "SIGN_UP": "registrat",
+  "STATUS": "Estat"
 }

@@ -4,11 +4,23 @@
     "CLIENT_ID": "Id",
     "CLIENT_SECRET": "Secret",
     "DESCRIPTION": "Descripció de l'aplicació",
+    "ISSUE_AT": "Edició en",
     "NAME": "Nom de l'aplicació",
     "REDIRECT_URL": "URL de redirecció",
     "SCOPE": {
+      "LABEL": "Àmbit",
+      "application:write_DESCRIPTION": "garanteix l'accés d'escriptura a l'aplicació configurada.",
+      "equipments:read_DESCRIPTION": "garanteix l'accés de lectura als endpoints <code>equipments</code>.",
+      "equipments:write_DESCRIPTION": "garanteix l'accés d'escriptura als endpoints <code>equipments</code>.",
+      "follow:read_DESCRIPTION": "garanteix l'accés de lectura als endpoints relacionats amb peticions de seguiment, i seguidors.",
+      "follow:write_DESCRIPTION": "garanteix l'accés d'escriptura als endpoints relacionats amb les sol·licituds de seguiment i seguidors.",
+      "geocode:read_DESCRIPTION": "dona accés de lectura als endpoints relacionats a la geocodificació.",
+      "media:write_DESCRIPTION": "garanteix l'accés d'escriptura als endpoints <code>media</code>.",
+      "notifications:read_DESCRIPTION": "garanteix l'accés de lectura als endpoints <code>notifications</code>.",
       "notifications:write_DESCRIPTION": "concedeix accés d'escriptura als endpoints <code>notifications</code>.",
-      "profile:read_DESCRIPTION": "dona accés de lectura als endpoints <code>auth</code>."
+      "profile:read_DESCRIPTION": "dona accés de lectura als endpoints <code>auth</code>.",
+      "profile:write_DESCRIPTION": "garanteix l'accés d'escriptura als endpoints <code>auth</code>.",
+      "reports:read_DESCRIPTION": "garanteix l'accés de lectura als endpoints <code>reports</code>."
     }
   }
 }
