@@ -87,6 +87,15 @@ class TestCheckFile(ImageMixin, WorkoutFileMixin):
 
         assert extension == "gpx"
 
+    def test_it_returns_extension_when_gpx_file_is_generated_with_osmand(
+        self, app: "Flask", osmand_gpx_file: str
+    ) -> None:
+        file = self.get_text_file_storage(content=osmand_gpx_file)
+
+        extension = check_file(file, WORKOUT_FILE_DETECTED_MIMETYPES)
+
+        assert extension == "gpx"
+
     def test_it_returns_extension_when_tcx_file_is_valid(
         self, app: "Flask", tcx_with_one_lap_and_one_track: str
     ) -> None:

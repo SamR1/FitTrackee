@@ -16,7 +16,20 @@
       "CONTENT": "No venem, comercialitzem ni transferim de cap altra manera a tercers la seva informació d'identificació personal.\nAixò no inclou tercers de confiança que ens ajudin a operar el nostre lloc i a servir-vos, sempre que aquestes parts acceptin mantenir aquesta informació confidencial.\nTambé podem publicar la vostra informació quan creiem que l'alliberament és adequat per complir amb la llei, fer complir les polítiques del nostre lloc, o protegir els nostres drets, la propietat o la seguretat.\nQuan autoritzeu una aplicació de tercers a utilitzar el vostre compte, depenent de l'abast dels permisos que aproveu, pot accedir a la informació del vostre perfil o als vostres entrenaments. Les aplicacions no poden accedir mai a la contrasenya.",
       "TITLE": "Divulguem informació a tercers?"
     },
+    "INFORMATION_PROTECTION": {
+      "CONTENT": "Implementem una varietat de mesures de seguretat per a mantenir la integritat de les teves dades personals quan entres, envies, o accedeixes a les teves dades personals.",
+      "TITLE": "Com protegim la teva informació?"
+    },
+    "INFORMATION_USAGE": {
+      "CONTENT": "Qualsevol de la informació que recollim de tu és per oferir la funcionalitat bàsica de **FitTrackee**:\n- Els fitxers GPX s'utilitzen per crear entrenaments, mostrar rutes al mapa (amb [OpenStreetMap](https://www.openstreetmap.org) i el servidor de mapes configurat) i gràfiques, generar miniatures de mapa, calcular registres i obtenir dades meteorològiques (si s'ha configurat un proveïdor de meteorologia).\n- Segons el nivell de visibilitat establert per a les sessions d'entrenament i els comentaris (públic, només per a seguidors, privat i usuaris esmentats), altres usuaris els poden veure i interactuar-hi. **Tingueu en compte que l'equip d'administració del servidor o l'equip de moderació poden veure contingut amb visibilitat restringida.**\nPodeu seguir altres persones per veure les seves activitats al vostre fil de notícies. Per interactuar, l'usuari ha d'iniciar la sessió.\n- No es mostra públicament tota la informació del perfil, excepte el nom d'usuari, el rol, la data de registre, el nombre de seguidors i de comptes seguits, la suspensió (si s'ha establert) i el nombre d'entrenaments.\n- L'adreça de correu electrònic que proporcioneu es pot utilitzar per enviar-vos informació i notificacions o per confirmar les modificacions del vostre compte.",
+      "TITLE": "Per a què fem servir la teva informació?"
+    },
+    "SITE_USAGE_BY_CHILDREN": {
+      "CONTENT": "Si aquest servidor es troba a la UE o a l'EEE: El nostre lloc web i els nostres serveis s'adrecen a persones de 16 anys o més. Si teniu menys de 16 anys, d'acord amb els requisits del [RGPD](https://ca.wikipedia.org/wiki/Reglament_general_de_protecci%C3%B3_de_dades) (Reglament general de protecció de dades), no utilitzeu aquest lloc web.\nSi aquest servidor es troba als EUA: el nostre lloc web, productes i serveis van dirigits a persones de com a mínim 13 anys. Si teniu menys de 13 anys, d'acord amb els requisits de la [COPPA](https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Children's Online Privacy Protection Act), no utilitzeu aquest lloc web.\nEls requisits legals poden ser diferents si aquest servidor es troba en una altra jurisdicció.",
+      "TITLE": "Ús d'aquesta web per menors"
+    },
     "YOUR_CONSENT": {
+      "CONTENT": "Fent servir el nostre lloc web, acceptes la política de privacitat de la nostra web.",
       "TITLE": "El teu Consentiment"
     }
   },

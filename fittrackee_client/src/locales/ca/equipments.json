@@ -9,6 +9,7 @@
   "ERRORS": {
     "inactive": "Equipament '{equipmentLabel}' inactiu.",
     "invalid": "Equipament '{equipmentLabel}' invàlid per a aquest esport.",
+    "limit_exceeded": "Aquesta peça d'equipament excedeix el límit màxim de 5 elements per a l'esport {sportLabels}. | Aquesta peça d'equipament excedeix el límit màxim de 5 elements per als esports {sportLabels}.",
     "not_found": "No s'ha trobat l'equipament."
   },
   "NEW_EQUIPMENT": "Nou equipament",

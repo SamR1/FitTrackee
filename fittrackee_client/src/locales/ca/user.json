@@ -5,7 +5,26 @@
   "ACCOUNT_SUSPENDED_AT": "Compte suspès el {0}.",
   "ACTIVE_ACCOUNT": "El compte està actiu",
   "ACTIVE_USER": "usuari actiu | usuaris actius",
+  "ADMIN_WILL_REVIEW_AND_ACTIVATE_ACCOUNT": "Un administrador revisarà i activarà el teu compte si correspon.",
   "ALREADY_HAVE_ACCOUNT": "Ja tens un compte?",
+  "APPEAL": "Apel·lació",
+  "APPEAL_APPROVED": "Apel·lació aprovada.",
+  "APPEAL_IN_PROGRESS": "L'apel·lació està sent processada.",
+  "APPEAL_REJECTED": "Apel·lació denegada.",
+  "APPEAL_SUBMITTED": "Apel·lació enviada.",
+  "CONFIRM_ACCOUNT_DELETION": "Segur que vols eliminar el teu compte? Totes les dades seran eliminades, aquest procés no és reversible.",
+  "CURRENT_PASSWORD": "Contrasenya actual",
+  "EMAIL": "Correu electrònic",
   "EMAIL_INFO": "Introdueix una adreça de correu electrònic vàlida.",
-  "EMAIL_UPDATE": "Actualitzar correu electrònic"
+  "EMAIL_UPDATE": "Actualitzar correu electrònic",
+  "ENTER_PASSWORD": "Introdueix una contrasenya",
+  "EXPORT_REQUEST": {
+    "DATA_EXPORT": "Exportar dades",
+    "DOWNLOAD_ARCHIVE": "Descarregar arxiu",
+    "GENERATING_LINK": "generant enllaç…",
+    "ONLY_ONE_EXPORT_PER_DAY": "Pots sol·licitar un arxiu en 24 hores",
+    "REQUEST_ANOTHER_EXPORT": "per favor sol·licita una altra exportació"
+  },
+  "FILTER_ON_USERNAME": "Filtra amb el nom d'usuari",
+  "HIDE_PASSWORD": "amagar contrasenya"
 }
