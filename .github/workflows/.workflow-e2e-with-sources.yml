@@ -12,7 +12,7 @@ on:
         default: 3.6
       node-version:
         type: string
-        default: 20.x
+        default: 22.x
 
 jobs:
   end2end_with_sources:
