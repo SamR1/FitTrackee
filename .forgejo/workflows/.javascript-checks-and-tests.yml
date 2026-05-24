@@ -6,15 +6,12 @@ on:
       - main
       - dev
       - release-v*
-      - v*
     paths: [
-      'fittrackee_client/**',
-      '.forgejo/workflows/.javascript-checks-and-tests.yml'
+      'fittrackee_client/**'
     ]
   pull_request:
     paths: [
-      'fittrackee_client/**',
-      '.forgejo/workflows/.javascript-checks-and-tests.yml'
+      'fittrackee_client/**'
     ]
     types: [opened, synchronize, reopened]
   workflow_dispatch:

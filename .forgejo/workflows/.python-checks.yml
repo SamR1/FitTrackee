@@ -6,17 +6,14 @@ on:
       - main
       - dev
       - release-v*
-      - v*
     paths: [
       'fittrackee/**',
       'e2e/**',
-      '.forgejo/workflows/.python-checks.yml',
     ]
   pull_request:
     paths: [
       'fittrackee/**',
       'e2e/**',
-      '.forgejo/workflows/.python-checks.yml',
     ]
     types: [opened, synchronize, reopened]
   workflow_dispatch:

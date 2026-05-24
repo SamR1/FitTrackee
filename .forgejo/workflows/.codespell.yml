@@ -6,7 +6,6 @@ on:
       - main
       - dev
       - release-v*
-      - v*
   pull_request:
     types: [opened, synchronize, reopened]
 
