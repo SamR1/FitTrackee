@@ -1642,6 +1642,53 @@ def gpx_file() -> str:
 
 
 @pytest.fixture()
+def osmand_gpx_file() -> str:
+    return (
+        """<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<gpx 
+  version="1.1"
+  creator="OsmAnd+ 5.2.13"
+  xmlns="http://www.topografix.com/GPX/1/1"
+  xmlns:osmand="https://osmand.net/docs/technical/osmand-file-formats/osmand-gpx"
+  xmlns:gpxtpx="https://www8.garmin.com/xmlschemas/TrackPointExtensionv1.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.topografix.com/GPX/1/1 https://www.topografix.com/GPX/1/1/gpx.xsd"
+>
+  <metadata>
+    <name>2018-03-13_13-12_Tue</name>
+    <time>2018-03-13T12:44:45Z</time>
+    <extensions>
+      <osmand:activity>hiking</osmand:activity>
+    </extensions>
+  </metadata>
+  <trk>
+    <name>just a workout</name>
+    <trkseg>
+"""
+        + track_points_part_1
+        + track_points_part_2
+        + """
+    </trkseg>
+  </trk>
+  <extensions>
+    <osmand:show_arrows>false</osmand:show_arrows>
+    <osmand:show_start_finish>true</osmand:show_start_finish>
+    <osmand:split_interval>0.0</osmand:split_interval>
+    <osmand:split_type>no_split</osmand:split_type>
+    <osmand:line_3d_visualization_by_type>none</osmand:line_3d_visualization_by_type>
+    <osmand:line_3d_visualization_wall_color_type>none</osmand:line_3d_visualization_wall_color_type>
+    <osmand:line_3d_visualization_position_type>top</osmand:line_3d_visualization_position_type>
+    <osmand:vertical_exaggeration_scale>1.0</osmand:vertical_exaggeration_scale>
+    <osmand:elevation_meters>1000.0</osmand:elevation_meters>
+    <osmand:width></osmand:width>
+    <osmand:coloring_type>solid</osmand:coloring_type>
+  </extensions>
+</gpx>
+"""
+    )
+
+
+@pytest.fixture()
 def gpx_file_with_calories() -> str:
     return (
         """<?xml version='1.0' encoding='UTF-8'?>

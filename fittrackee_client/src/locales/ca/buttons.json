@@ -9,6 +9,7 @@
   "CANCEL": "Cancel·la",
   "CANCEL_FOLLOW_REQUEST": "Cancel·la la petició de seguiment",
   "CLEAR_FILTER": "Buida els filtres",
+  "CLOSE": "Tanca",
   "DELETE": "Elimina",
   "DELETE_MY_ACCOUNT": "Elimina el meu compte",
   "DISABLE": "Deshabilita",
@@ -18,14 +19,19 @@
   "FOLLOW": "Segueix",
   "HIDE": "Amaga",
   "LOGIN": "Inicia Sessió",
+  "PREVIEW": "Previsualitzar",
   "READ_MORE": "Llegir més",
+  "REFRESH": "Refrescar",
   "REFRESH_TOTALS": "Refresca els totals",
   "REGISTER": "Registrar-se",
   "REJECT": "Denega",
   "REQUEST_DATA_EXPORT": "Sol·licita la exportació de dades",
   "RESET": "Reinicia",
+  "SAVE": "Desar",
   "SEARCH": "Cerca",
+  "SEE_DETAIL": "Veure detalls",
   "SUBMIT": "Envia",
   "UNBLOCK": "Desbloqueja",
-  "UNFOLLOW": "Deixa de seguir"
+  "UNFOLLOW": "Deixa de seguir",
+  "WRITE": "Escriu"
 }

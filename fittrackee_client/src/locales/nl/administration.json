@@ -16,6 +16,7 @@
     "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "Deze waarde mag niet groter zijn dan 50.000.",
     "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Max. aantal trainingen op wereldkaart",
     "MAX_FILES_IN_ZIP_LABEL": "Max. aantal bestanden in zip archief",
+    "MAX_IMAGE_SIZE_LABEL": "Max grootte van afbeeldingen (in Mb)",
     "MAX_SYNC_FILES_IN_ZIP_LABEL": "Max aantal bestanden voor synchrone upload",
     "MAX_USERS_HELP": "Bij 0, geen limiet op registratie.",
     "MAX_USERS_LABEL": "Max. aantal actieve gebruikers",

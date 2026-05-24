@@ -1,0 +1,80 @@
+name: Python - end-to-end tests
+
+on:
+  workflow_dispatch:  # manual trigger only
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ft-ubuntu-amd64-latest
+    services:
+      postgres:
+        image: postgis/postgis:18-3.6-alpine
+        env:
+          POSTGRES_DB: fittrackee_test
+          POSTGRES_USER: fittrackee
+          POSTGRES_PASSWORD: fittrackee
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      selenium:
+        image: selenium/standalone-firefox
+      mailhog:
+        image: mailhog/mailhog:latest
+      redis:
+        image: redis:latest
+    env:
+      APP_SETTINGS: fittrackee.config.End2EndTestingConfig
+      DATABASE_TEST_URL: "postgresql://fittrackee:fittrackee@postgres:5432/fittrackee_test"
+      EMAIL_URL: "smtp://mailhog:1025"
+      REDIS_URL: "redis://redis:6379"
+      FLASK_APP: fittrackee/__main__.py
+      SENDER_EMAIL: fittrackee@example.com
+      UI_URL: https://0.0.0.0:5000
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: 3.13
+
+      - name: Install Poetry and Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --root-user-action=ignore --quiet poetry
+          poetry config virtualenvs.create false
+          poetry install --no-interaction --quiet
+
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 24.x
+
+      - name: Install dependencies
+        working-directory: fittrackee_client
+        run: npm ci --ignore-scripts
+
+      - name: Build dist files
+        working-directory: fittrackee_client
+        run: npm run build
+
+      - name: Run migrations
+        run: flask db upgrade --directory fittrackee/migrations
+
+      - name: Start application and run tests with Selenium
+        run: |
+          setsid nohup flask run --with-threads -h 0.0.0.0 -p 5000 >> nohup.out 2>&1 &
+          export TEST_APP_URL=http://$(hostname --ip-address):5000
+          sleep 5
+          nohup dramatiq fittrackee.tasks:broker --processes=1 >> nohup.out 2>&1 &
+          pytest e2e --driver Remote --capability browserName firefox --selenium-host selenium --selenium-port 4444 --maxfail=1 -s
