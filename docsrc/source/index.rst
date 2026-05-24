@@ -14,6 +14,7 @@ FitTrackee
 | Examples for Android applications (non-exhaustive list):
 | \- `FitoTrack <https://codeberg.org/jannis/FitoTrack>`_ (GPL v3)
 | \- `OpenTracks <https://codeberg.org/OpenTracksApp/OpenTracks>`_ (Apache License)
+| \- `OSMAnd <https://github.com/osmandapp/OsmAnd>`_ (GPL v3)
 | \- `Runner Up <https://github.com/jonasoreland/runnerup>`_ (GPL v3)
 
 | To get workouts from devices like smartwatches:

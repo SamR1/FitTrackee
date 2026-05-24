@@ -1,12 +1,52 @@
 # Change log
 
+## Version 1.3.2 (2026/05/24)
+
+### Bugs Fixed
+
+* [#1164](https://codeberg.org/FitTrackee/FitTrackee/issues/1164) - Can no longer use GPX-Tracks recorded by OSMAnd 
+
+### Translations
+
+* [PR#1165](https://codeberg.org/FitTrackee/FitTrackee/pulls/1165) - Translations update from Hosted Weblate (Catalan and Dutch)
+
+Translation status for languages available on the interface:
+- Basque: 97%
+- Bulgarian: 50%
+- Catalan: 58%
+- Chinese (Simplified): 95%
+- Croatian: 100%
+- Czech: 49%
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 97%
+- Kabyle: 5%
+- Norwegian Bokmål: 42%
+- Polish: 92%
+- Portuguese: 50%
+- Russian: 93%
+- Spanish: 67%
+- Turkish: 1%
+
+### Misc
+
+* [PR#1171](https://codeberg.org/FitTrackee/FitTrackee/pulls/1171) - update CI workflows
+
+Thanks to the contributors:
+- [@ArnyminerZ](https://github.com/ArnyminerZ)
+- [@wetenschaap](https://github.com/wetenschaap)
+
+
 ## Version 1.3.1 (2026/05/20)
 
 ### Bugs Fixed
 
 * [#1151](https://codeberg.org/FitTrackee/FitTrackee/issues/1151) - Error on image upload
 * [PR#1158](https://codeberg.org/FitTrackee/FitTrackee/pulls/1158) - check if SENDER_EMAIL is set when EMAIL_URL is set
-* [PR#1161](https://codeberg.org/FitTrackee/FitTrackee/pulls/1161) - Images are not deleted when the workout is deleted
+* [#1161](https://codeberg.org/FitTrackee/FitTrackee/issues/1161) - Images are not deleted when the workout is deleted
 
 ### Translations
 
