@@ -24,6 +24,7 @@ Several mobile apps or devices can store workouts data locally and export them i
 Examples for Android (non-exhaustive list):  
 * [FitoTrack](https://codeberg.org/jannis/FitoTrack) (GPLv3)  
 * [OpenTracks](https://codeberg.org/OpenTracksApp/OpenTracks) (Apache License)  
+* [OSMAnd](https://github.com/osmandapp/OsmAnd) (GPLv3)  
 * [Runner Up](https://github.com/jonasoreland/runnerup) (GPLv3)  
 
 To get workouts from devices like smartwatches:

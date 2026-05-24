@@ -2,8 +2,6 @@ name: Python CI
 
 on:
   push:
-    tags-ignore:
-      - v*
     paths: [
       'fittrackee/**',
       'e2e/**',
@@ -17,7 +15,6 @@ permissions:
 
 jobs:
   python:
-    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     name: python ${{ matrix.python-version }} (postgis 18-3.6)
     uses: ./.github/workflows/.workflow-python.yml
     strategy:
@@ -31,7 +28,6 @@ jobs:
       with-coverage: true
 
   postgis:
-    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     name: postgis ${{ matrix.postgis-version }} (python 3.13)
     uses: ./.github/workflows/.workflow-python.yml
     strategy:
@@ -45,7 +41,6 @@ jobs:
       with-coverage: false
 
   arm:
-    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     name: postgis 18-3.6 on arm platform (python 3.13)
     uses: ./.github/workflows/.workflow-python.yml
     with:
@@ -56,7 +51,6 @@ jobs:
       with-coverage: false
 
   end2end_with_sources:
-    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     name: e2e tests with sources (Node 20)
     needs: ["python"]
     uses: ./.github/workflows/.workflow-e2e-with-sources.yml
@@ -106,13 +100,11 @@ jobs:
         retention-days: 5
 
   end2end_package:
-    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     name: e2e tests with package
     needs: ["build_package"]
     uses: ./.github/workflows/.workflow-e2e.yml
 
   end2end_package_update:
-    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     name: e2e tests after FitTrackee update
     needs: ["build_package"]
     uses: ./.github/workflows/.workflow-e2e.yml
