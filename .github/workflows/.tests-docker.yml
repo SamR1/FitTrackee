@@ -16,7 +16,6 @@ on:
 
 jobs:
   build_image:
-    if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.fork }}
     name: Build docker images (for check only)
     runs-on: ubuntu-latest
     permissions:
