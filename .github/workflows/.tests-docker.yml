@@ -2,8 +2,6 @@ name: Docker CI
 
 on:
   push:
-    tags-ignore:
-      - v*
     paths: [
       'pyproject.toml',
       'poetry.lock',
