@@ -24,7 +24,7 @@ permissions:
 
 jobs:
   checks:
-    runs-on: codeberg-medium-lazy
+    runs-on: codeberg-medium
     env:
       working-directory: fittrackee_client
 
