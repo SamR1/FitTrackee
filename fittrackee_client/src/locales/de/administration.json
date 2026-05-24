@@ -105,16 +105,16 @@
   "DELETED_WORKOUT": "Workout gelöscht",
   "DELETE_USER": "Lösche Nutzer",
   "EMAIL_SENDING_DISABLED": "E-Mail-Versand ist deaktiviert.",
-  "ENABLE_DISABLE_EQUIPMENT_TYPES": "Equipment-Typen aktivieren/deaktivieren.",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "Ausrüstungstypen aktivieren/deaktivieren.",
   "ENABLE_DISABLE_SPORTS": "Aktivieren/Deaktivieren von Sportarten.",
   "EQUIPMENT_TYPES": {
     "TABLE": {
       "ACTIVE": "Aktiv",
-      "HAS_EQUIPMENTS": "Equipment existiert",
+      "HAS_EQUIPMENTS": "Ausrüstung existiert",
       "IMAGE": "Bild",
       "LABEL": "Bezeichnung"
     },
-    "TITLE": "Equipment-Verwaltung"
+    "TITLE": "Ausrüstungsverwaltung"
   },
   "NEW_EMAIL": "Neue E-Mail",
   "NO_TEXT_ENTERED": "Kein Text eingegeben",
