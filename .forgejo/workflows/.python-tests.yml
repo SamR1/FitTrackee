@@ -1,0 +1,54 @@
+name: Python - unit tests
+
+on:
+  workflow_dispatch:  # manual trigger only
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ft-ubuntu-amd64-latest
+    services:
+      postgres:
+        image: postgis/postgis:18-3.6-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      APP_SETTINGS: fittrackee.config.TestingConfig
+      DATABASE_TEST_URL: "postgresql://fittrackee:fittrackee@postgres:5432/fittrackee_test"
+      EMAIL_URL: "smtp://none:none@0.0.0.0:1025"
+      FLASK_APP: fittrackee/__main__.py
+      SENDER_EMAIL: fittrackee@example.com
+      UI_URL: https://0.0.0.0:5000
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: 3.13
+
+      - name: Install Poetry
+        run: |
+          pip install --root-user-action=ignore --quiet poetry
+          echo "/root/.local/bin" >> $GITHUB_PATH
+
+      - name: Install Dependencies
+        run: poetry install --quiet --no-interaction
+
+      - name: Create test databases
+        run: poetry run python db/create_ci_test_db.py
+
+      - name: Pytest
+        run: poetry run pytest fittrackee -n auto --maxprocesses=8 -p no:warnings --maxfail=1

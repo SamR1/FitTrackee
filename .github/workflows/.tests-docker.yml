@@ -2,6 +2,8 @@ name: Docker CI
 
 on:
   push:
+    tags-ignore:
+      - v*
     paths: [
       'pyproject.toml',
       'poetry.lock',
@@ -9,19 +11,8 @@ on:
       'fittrackee_client/package-lock.json',
       'Dockerfile',
       'docker-entrypoint.sh',
-      '.github/workflows/.tests-docker.yml'
     ]
-  pull_request:
-    paths: [
-      'pyproject.toml',
-      'poetry.lock',
-      'fittrackee_client/package.json',
-      'fittrackee_client/package-lock.json',
-      'Dockerfile',
-      'docker-entrypoint.sh',
-      '.github/workflows/.tests-docker.yml'
-    ]
-    types: [opened, synchronize, reopened]
+  workflow_dispatch:  # manual trigger only
 
 jobs:
   build_image:

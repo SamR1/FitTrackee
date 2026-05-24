@@ -19,9 +19,27 @@ with conn.cursor() as cur:
     cur.execute(sql.SQL("""
         CREATE DATABASE fittrackee_test_gw1 OWNER fittrackee;
     """))
+    cur.execute(sql.SQL("""
+        CREATE DATABASE fittrackee_test_gw2 OWNER fittrackee;
+    """))
+    cur.execute(sql.SQL("""
+        CREATE DATABASE fittrackee_test_gw3 OWNER fittrackee;
+    """))
+    cur.execute(sql.SQL("""
+        CREATE DATABASE fittrackee_test_gw4 OWNER fittrackee;
+    """))
+    cur.execute(sql.SQL("""
+        CREATE DATABASE fittrackee_test_gw5 OWNER fittrackee;
+    """))
+    cur.execute(sql.SQL("""
+        CREATE DATABASE fittrackee_test_gw6 OWNER fittrackee;
+    """))
+    cur.execute(sql.SQL("""
+        CREATE DATABASE fittrackee_test_gw7 OWNER fittrackee;
+    """))
 conn.close()
 
-for index in range(2):
+for index in range(8):
     conn = psycopg2.connect(
         host="postgres",
         dbname=f"fittrackee_test_gw{index}",

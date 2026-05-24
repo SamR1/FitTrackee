@@ -2,24 +2,15 @@ name: Python CI
 
 on:
   push:
+    tags-ignore:
+      - v*
     paths: [
       'fittrackee/**',
       'e2e/**',
       'pyproject.toml',
       'poetry.lock',
-      'VERSION',
-      '.github/workflows/.tests-python.yml',
     ]
-  pull_request:
-    paths: [
-      'fittrackee/**',
-      'e2e/**',
-      'pyproject.toml',
-      'poetry.lock',
-      'VERSION',
-      '.github/workflows/.tests-python.yml',
-    ]
-    types: [opened, synchronize, reopened]
+  workflow_dispatch:  # manual trigger only
 
 permissions:
   contents: read
