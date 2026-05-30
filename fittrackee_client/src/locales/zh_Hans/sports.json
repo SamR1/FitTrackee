@@ -2,6 +2,9 @@
   "Canoeing": {
     "LABEL": "划艇"
   },
+  "Canoeing (Whitewater)": {
+    "LABEL": "激流划艇"
+  },
   "Cycling (Sport)": {
     "LABEL": "骑行（运动）"
   },
@@ -20,8 +23,17 @@
   "Hiking": {
     "LABEL": "徒步"
   },
+  "Ice Skating": {
+    "LABEL": "滑冰"
+  },
+  "Inline Skating": {
+    "LABEL": "轮滑"
+  },
   "Kayaking": {
     "LABEL": "皮艇"
+  },
+  "Kayaking (Whitewater)": {
+    "LABEL": "激流皮艇"
   },
   "Mountain Biking": {
     "LABEL": "山地自行车"
@@ -34,6 +46,9 @@
   },
   "Open Water Swimming": {
     "LABEL": "开放水域游泳"
+  },
+  "Padel (Outdoor)": {
+    "LABEL": "室外板式网球"
   },
   "Paragliding": {
     "LABEL": "滑翔伞"
