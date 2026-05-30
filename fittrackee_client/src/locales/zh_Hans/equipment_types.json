@@ -5,11 +5,26 @@
   "Bike Trainer": {
     "LABEL": "骑行台"
   },
+  "Board": {
+    "LABEL": "滑板"
+  },
   "Kayak_Boat": {
     "LABEL": "皮划艇/船"
   },
+  "Misc": {
+    "LABEL": "杂项"
+  },
+  "Paddle": {
+    "LABEL": "乒乓球拍"
+  },
+  "Racket": {
+    "LABEL": "球拍"
+  },
   "Shoes": {
     "LABEL": "鞋"
+  },
+  "Skates": {
+    "LABEL": "溜冰鞋"
   },
   "Skis": {
     "LABEL": "滑雪板"
