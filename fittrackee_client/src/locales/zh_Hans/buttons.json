@@ -9,6 +9,7 @@
   "CANCEL": "取消",
   "CANCEL_FOLLOW_REQUEST": "取消关注请求",
   "CLEAR_FILTER": "清除筛选条件",
+  "CLOSE": "关闭",
   "DELETE": "删除",
   "DELETE_MY_ACCOUNT": "删除我的账号",
   "DISABLE": "禁用",
@@ -18,6 +19,7 @@
   "FOLLOW": "关注",
   "HIDE": "隐藏",
   "LOGIN": "登录",
+  "PREVIEW": "预览",
   "READ_MORE": "查看更多",
   "REFRESH": "刷新",
   "REFRESH_TOTALS": "刷新总计",
@@ -25,9 +27,11 @@
   "REJECT": "拒绝",
   "REQUEST_DATA_EXPORT": "请求数据导出",
   "RESET": "重置",
+  "SAVE": "保存",
   "SEARCH": "搜索",
   "SEE_DETAIL": "查看详情",
   "SUBMIT": "提交",
   "UNBLOCK": "取消屏蔽",
-  "UNFOLLOW": "取消关注"
+  "UNFOLLOW": "取消关注",
+  "WRITE": "写入"
 }
