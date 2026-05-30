@@ -9,6 +9,7 @@
   "ERRORS": {
     "inactive": "装备\"{equipmentLabel}\"未激活。",
     "invalid": "装备\"{equipmentLabel}\"对此运动无效。",
+    "limit_exceeded": "此设备超出了{sportLabels}运动器材最多5件的上限。",
     "not_found": "未找到装备。"
   },
   "NEW_EQUIPMENT": "新装备",
