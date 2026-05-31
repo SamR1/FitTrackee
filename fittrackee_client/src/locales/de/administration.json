@@ -15,7 +15,7 @@
     "ASYNCHRONOUS_UPLOAD_DISABLED": "Das asynchrone Hochladen von ZIP-Archiven ist ausgeschaltet.",
     "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "Dieser Wert darf 50.000 Workouts nicht überschreiten.",
     "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Max. angezeigte Workouts auf der Weltkarte",
-    "MAX_FILES_IN_ZIP_LABEL": "Max. Dateianzahl im zip Archiv",
+    "MAX_FILES_IN_ZIP_LABEL": "Max. Dateianzahl in einem ZIP-Archiv",
     "MAX_IMAGE_SIZE_LABEL": "Max. Bildgröße (in Mb)",
     "MAX_SYNC_FILES_IN_ZIP_LABEL": "Max. Dateianzahl für synchrone Verarbeitung",
     "MAX_USERS_HELP": "Wenn 0, gibt es keine Registrierungslimitierung..",
@@ -25,7 +25,7 @@
     "STATS_WORKOUTS_LIMIT_HELP": "Wenn 0, keine Limitierung der Workout-Anzahl.",
     "STATS_WORKOUTS_LIMIT_LABEL": "Maximale Workouts für Statistiken",
     "TITLE": "Anwendungskonfiguration",
-    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. Größe des zip Archives (in Mb)"
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Max. Größe von ZIP-Archiven (in Mb)"
   },
   "APP_MODERATION": {
     "ACTIONS": {
