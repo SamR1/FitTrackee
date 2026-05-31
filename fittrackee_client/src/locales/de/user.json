@@ -69,7 +69,7 @@
     "WEAK": "schwach"
   },
   "PASSWORD_UPDATED": "Dein Passwort wurde aktualisiert. Klicke {0} um dich anzumelden.",
-  "PRIVACY_POLICY_TO_VALIDATE": "Bitte {0} die Datenschutzrichtlinie vor dem Fortfahren.",
+  "PRIVACY_POLICY_TO_VALIDATE": "Bitte {0} die Datenschutzrichtlinie, um fortzufahren.",
   "PROFILE": {
     "ACCOUNT_EDITION": "Kontobearbeitung",
     "ARCHIVE_UPLOADS": {
@@ -261,7 +261,7 @@
   "REPORT": "Meldung",
   "RESENT_ACCOUNT_CONFIRMATION": "E-Mail zur Kontobestätigung erneut senden",
   "RESET_PASSWORD": "Passwort zurücksetzen",
-  "REVIEW": "überprüfen",
+  "REVIEW": "akzeptiere",
   "ROLE": "Rolle",
   "ROLES": {
     "admin": "Admin",
