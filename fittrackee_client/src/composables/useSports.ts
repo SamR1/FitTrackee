@@ -39,6 +39,10 @@ export default function useSports() {
     stopped_speed_threshold: 1,
     pace_speed_display: 'speed',
     fromSport: false,
+    analysis_visibility: 'private',
+    map_visibility: 'private',
+    media_visibility: 'private',
+    workouts_visibility: 'private',
   })
 
   function updateIsActive(event: Event) {

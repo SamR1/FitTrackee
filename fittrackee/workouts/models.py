@@ -272,6 +272,27 @@ class Sport(BaseModel):
             else sport_preferences["default_equipments"]
         )
 
+        serialized_sport["workouts_visibility"] = (
+            None
+            if sport_preferences is None
+            else sport_preferences["workouts_visibility"]
+        )
+        serialized_sport["media_visibility"] = (
+            None
+            if sport_preferences is None
+            else sport_preferences["media_visibility"]
+        )
+        serialized_sport["analysis_visibility"] = (
+            None
+            if sport_preferences is None
+            else sport_preferences["analysis_visibility"]
+        )
+        serialized_sport["map_visibility"] = (
+            None
+            if sport_preferences is None
+            else sport_preferences["map_visibility"]
+        )
+
         return serialized_sport
 
 

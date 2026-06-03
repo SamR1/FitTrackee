@@ -33,6 +33,7 @@ from fittrackee.users.models import (
     UserTask,
 )
 from fittrackee.users.roles import UserRole
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import (
@@ -970,6 +971,11 @@ class TestUserSportPreferenceModel(EquipmentMixin):
         sport_1_cycling: Sport,
         user_1_sport_1_preference: UserSportPreference,
     ) -> None:
+        user_1_sport_1_preference.workouts_visibility = VisibilityLevel.PUBLIC
+        user_1_sport_1_preference.analysis_visibility = (
+            VisibilityLevel.FOLLOWERS
+        )
+        user_1_sport_1_preference.map_visibility = VisibilityLevel.PRIVATE
         serialized_user_sport = user_1_sport_1_preference.serialize()
 
         assert serialized_user_sport == {
@@ -982,6 +988,16 @@ class TestUserSportPreferenceModel(EquipmentMixin):
                 user_1_sport_1_preference.stopped_speed_threshold
             ),
             "default_equipments": [],
+            "workouts_visibility": (
+                user_1_sport_1_preference.workouts_visibility.value
+            ),
+            "media_visibility": (
+                user_1_sport_1_preference.media_visibility.value
+            ),
+            "analysis_visibility": (
+                user_1_sport_1_preference.analysis_visibility.value
+            ),
+            "map_visibility": user_1_sport_1_preference.map_visibility.value,
         }
 
     def test_it_serializes_user_sport_preferences_with_default_equipments(

@@ -55,55 +55,79 @@ def get_sports(auth_user: User) -> Dict:
         "data": {
           "sports": [
             {
+              "analysis_visibility": null,
               "color": null,
               "id": 1,
               "is_active": true,
               "is_active_for_user": true,
               "label": "Cycling (Sport)",
-              "stopped_speed_threshold": 1
+              "map_visibility": null,
+              "media_visibility": null,
+              "stopped_speed_threshold": 1,
+              "workouts_visibility": null
             },
             {
+              "analysis_visibility": null,
               "color": null,
               "id": 2,
               "is_active": true,
               "is_active_for_user": true,
               "label": "Cycling (Transport)",
-              "stopped_speed_threshold": 1
+              "map_visibility": null,
+              "media_visibility": null,
+              "stopped_speed_threshold": 1,
+              "workouts_visibility": null
             },
             {
+              "analysis_visibility": null,
               "color": null,
               "id": 3,
               "is_active": true,
               "is_active_for_user": true,
               "label": "Hiking",
+              "map_visibility": null,
+              "media_visibility": null,
               "pace_speed_display": "pace",
-              "stopped_speed_threshold": 0.1
+              "stopped_speed_threshold": 0.1,
+              "workouts_visibility": null
             },
             {
+              "analysis_visibility": "followers_only",
               "color": null,
               "id": 4,
               "is_active": true,
               "is_active_for_user": true,
               "label": "Mountain Biking",
-              "stopped_speed_threshold": 1
+              "map_visibility": "followers_only",
+              "media_visibility": "followers_only",
+              "stopped_speed_threshold": 1,
+              "workouts_visibility": "followers_only"
             },
             {
+              "analysis_visibility": null,
               "color": null,
               "id": 5,
               "is_active": true,
               "is_active_for_user": true,
               "label": "Running",
+              "map_visibility": null,
+              "media_visibility": null,
               "pace_speed_display": "pace",
-              "stopped_speed_threshold": 0.1
+              "stopped_speed_threshold": 0.1,
+              "workouts_visibility": null
             },
             {
+              "analysis_visibility": null,
               "color": null,
               "id": 6,
               "is_active": true,
               "is_active_for_user": true,
               "label": "Walking",
+              "map_visibility": null,
+              "media_visibility": null,
               "pace_speed_display": "pace",
-              "stopped_speed_threshold": 0.1
+              "stopped_speed_threshold": 0.1,
+              "workouts_visibility": null
             }
           ]
         },
@@ -121,61 +145,85 @@ def get_sports(auth_user: User) -> Dict:
         "data": {
           "sports": [
             {
+              "analysis_visibility": null,
               "color": null,
               "has_workouts": true,
               "id": 1,
               "is_active": true,
               "is_active_for_user": true,
               "label": "Cycling (Sport)",
-              "stopped_speed_threshold": 1
+              "map_visibility": null,
+              "media_visibility": null,
+              "stopped_speed_threshold": 1,
+              "workouts_visibility": null
             },
             {
+              "analysis_visibility": null,
               "color": null,
               "has_workouts": false,
               "id": 2,
               "is_active": true,
               "is_active_for_user": true,
               "label": "Cycling (Transport)",
-              "stopped_speed_threshold": 1
+              "map_visibility": null,
+              "media_visibility": null,
+              "stopped_speed_threshold": 1,
+              "workouts_visibility": null
             },
             {
+              "analysis_visibility": null,
               "color": null,
               "has_workouts": false,
               "id": 3,
               "is_active": true,
               "is_active_for_user": true,
               "label": "Hiking",
+              "map_visibility": null,
+              "media_visibility": null,
               "pace_speed_display": "pace",
-              "stopped_speed_threshold": 0.1
+              "stopped_speed_threshold": 0.1,
+              "workouts_visibility": null
             },
             {
+              "analysis_visibility": "followers_only",
               "color": null,
               "has_workouts": false,
               "id": 4,
               "is_active": true,
               "is_active_for_user": true,
               "label": "Mountain Biking",
-              "stopped_speed_threshold": 1
+              "map_visibility": "followers_only",
+              "media_visibility": "followers_only",
+              "stopped_speed_threshold": 1,
+              "workouts_visibility": "followers_only"
             },
             {
+              "analysis_visibility": null,
               "color": null,
               "has_workouts": false,
               "id": 5,
               "is_active": true,
               "is_active_for_user": true,
               "label": "Running",
+              "map_visibility": null,
+              "media_visibility": null,
               "pace_speed_display": "pace",
-              "stopped_speed_threshold": 0.1
+              "stopped_speed_threshold": 0.1,
+              "workouts_visibility": null
             },
             {
+              "analysis_visibility": null,
               "color": null,
               "has_workouts": false,
               "id": 6,
               "is_active": true,
               "is_active_for_user": true,
               "label": "Walking",
+              "map_visibility": null,
+              "media_visibility": null,
               "pace_speed_display": "pace",
-              "stopped_speed_threshold": 0.1
+              "stopped_speed_threshold": 0.1,
+              "workouts_visibility": null
             }
           ]
         },
@@ -257,12 +305,16 @@ def get_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
         "data": {
           "sports": [
             {
+              "analysis_visibility": null,
               "color": null,
               "id": 1,
               "is_active": true,
               "is_active_for_user": true,
               "label": "Cycling (Sport)",
-              "stopped_speed_threshold": 1
+              "map_visibility": null,
+              "media_visibility": null,
+              "stopped_speed_threshold": 1,
+              "workouts_visibility": null
             }
           ]
         },
@@ -353,13 +405,17 @@ def update_sport(auth_user: User, sport_id: int) -> Union[Dict, HttpResponse]:
         "data": {
           "sports": [
             {
+              "analysis_visibility": null,
               "color": null,
               "has_workouts": false,
               "id": 1,
               "is_active": false,
               "is_active_for_user": false,
+              "map_visibility": null,
+              "media_visibility": null,
               "label": "Cycling (Sport)",
-              "stopped_speed_threshold": 1
+              "stopped_speed_threshold": 1,
+              "workouts_visibility": null
             }
           ]
         },

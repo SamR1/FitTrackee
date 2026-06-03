@@ -79,6 +79,81 @@
             :disabled="authUserLoading"
           />
         </div>
+        <label class="form-items">
+          <span>
+            {{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}
+          </span>
+          <select
+            id="workouts_visibility"
+            v-model="sportPayload.workouts_visibility"
+            :disabled="authUserLoading"
+            @change="updateAnalysisMapAndMediaVisibility"
+          >
+            <option
+              v-for="level in visibilityLevels"
+              :value="level"
+              :key="level"
+            >
+              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+            </option>
+          </select>
+        </label>
+        <label class="form-items">
+          <span>
+            {{ $t('visibility_levels.MEDIA_VISIBILITY') }}
+          </span>
+          <select
+            id="media_visibility"
+            v-model="sportPayload.media_visibility"
+            :disabled="authUserLoading"
+            @change="updateMediaVisibility"
+          >
+            <option
+              v-for="level in mediaVisibilityLevels"
+              :value="level"
+              :key="level"
+            >
+              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+            </option>
+          </select>
+        </label>
+        <label class="form-items">
+          <span>
+            {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}
+          </span>
+          <select
+            id="analysis_visibility"
+            v-model="sportPayload.analysis_visibility"
+            :disabled="authUserLoading"
+            @change="updateMapVisibility"
+          >
+            <option
+              v-for="level in analysisVisibilityLevels"
+              :value="level"
+              :key="level"
+            >
+              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+            </option>
+          </select>
+        </label>
+        <label class="form-items">
+          <span>
+            {{ $t('visibility_levels.MAP_VISIBILITY') }}
+          </span>
+          <select
+            id="map_visibility"
+            v-model="sportPayload.map_visibility"
+            :disabled="authUserLoading"
+          >
+            <option
+              v-for="level in mapVisibilityLevels"
+              :value="level"
+              :key="level"
+            >
+              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+            </option>
+          </select>
+        </label>
         <div class="form-item">
           <label for="sport-default-equipment">
             {{ $t('user.PROFILE.SPORT.DEFAULT_EQUIPMENTS', 1) }}
@@ -133,11 +208,16 @@
     ITranslatedSport,
     TPaceSpeedDisplay,
   } from '@/types/sports'
-  import type { IAuthUserProfile } from '@/types/user'
+  import type { IAuthUserProfile, TVisibilityLevels } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { getEquipments } from '@/utils/equipments'
   import { sportsWithPace } from '@/utils/sports.ts'
   import { convertDistance } from '@/utils/units'
+  import {
+    getAllVisibilityLevels,
+    getUpdatedVisibility,
+    getVisibilityLevels,
+  } from '@/utils/visibility_levels.ts'
 
   interface Props {
     authUser: IAuthUserProfile
@@ -187,6 +267,18 @@
           )
         : []
     )
+  const visibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
+    getAllVisibilityLevels()
+  )
+  const analysisVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(
+    () => getVisibilityLevels(sportPayload.workouts_visibility)
+  )
+  const mapVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
+    getVisibilityLevels(sportPayload.analysis_visibility)
+  )
+  const mediaVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
+    getVisibilityLevels(sportPayload.workouts_visibility)
+  )
 
   function getSport(sportsList: ITranslatedSport[]) {
     if (!route.params.id) {
@@ -217,6 +309,14 @@
       sportPayload.pace_speed_display = sport.pace_speed_display
       sportPayload.fromSport = true
       defaultEquipmentList.value = sport.default_equipments
+      sportPayload.workouts_visibility =
+        sport.workouts_visibility || authUser.value.workouts_visibility
+      sportPayload.media_visibility =
+        sport.media_visibility || authUser.value.media_visibility
+      sportPayload.analysis_visibility =
+        sport.analysis_visibility || authUser.value.analysis_visibility
+      sportPayload.map_visibility =
+        sport.map_visibility || authUser.value.map_visibility
     }
   }
   function updateSelectedEquipmentPieces(selectedIds: string[]) {
@@ -227,6 +327,26 @@
   }
   function invalidateForm() {
     formErrors.value = true
+  }
+  function updateAnalysisMapAndMediaVisibility() {
+    sportPayload.analysis_visibility = getUpdatedVisibility(
+      sportPayload.analysis_visibility,
+      sportPayload.workouts_visibility
+    )
+    updateMapVisibility()
+    updateMediaVisibility()
+  }
+  function updateMapVisibility() {
+    sportPayload.map_visibility = getUpdatedVisibility(
+      sportPayload.map_visibility,
+      sportPayload.analysis_visibility
+    )
+  }
+  function updateMediaVisibility() {
+    sportPayload.media_visibility = getUpdatedVisibility(
+      sportPayload.media_visibility,
+      sportPayload.workouts_visibility
+    )
   }
 
   watch(
