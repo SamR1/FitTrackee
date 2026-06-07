@@ -240,6 +240,7 @@
       "LABEL": "Max. speed calculation strategy",
       "RAW_SPEED": "Raw"
     },
+    "VISIBILITY_LEVELS_CAN_BE_OVERRIDEN_BY_SPORT_PREFERENCES": "Visibility levels may be overridden by those defined in the sports preferences.",
     "WORKOUT_CHARTS_DISPLAY": {
       "LABEL": "Workout analysis chart display",
       "MULTIPLE": "Each data displayed on a different chart",

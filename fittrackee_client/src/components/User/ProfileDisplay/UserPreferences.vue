@@ -152,7 +152,14 @@
       <div>
         2. {{ $t('user.PROFILE.CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI') }}
       </div>
-      <div>3. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_WORKOUTS') }}</div>
+      <div>
+        3. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_WORKOUTS') }}{{ ' ' }}
+        {{
+          $t(
+            'user.PROFILE.VISIBILITY_LEVELS_CAN_BE_OVERRIDEN_BY_SPORT_PREFERENCES'
+          )
+        }}
+      </div>
     </div>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">
