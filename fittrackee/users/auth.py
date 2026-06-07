@@ -1127,6 +1127,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "use_dark_mode",
         "use_raw_gpx_speed",
         "weekm",
+        "workout_stats_from_file",
         "workouts_visibility",
     }
     if not post_data or not post_data.keys() >= user_mandatory_data:
@@ -1139,7 +1140,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     start_elevation_at_zero = post_data.get("start_elevation_at_zero")
     use_raw_gpx_speed = post_data.get("use_raw_gpx_speed")
     use_dark_mode = post_data.get("use_dark_mode")
-    timezone = post_data.get("timezone")
+    tz = post_data.get("timezone")
     weekm = post_data.get("weekm")
     map_visibility = post_data.get("map_visibility")
     analysis_visibility = post_data.get("analysis_visibility")
@@ -1156,6 +1157,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     )
     calories_visibility = post_data.get("calories_visibility")
     media_visibility = post_data.get("media_visibility")
+    workout_stats_from_file = post_data.get("workout_stats_from_file")
 
     try:
         auth_user.date_format = date_format
@@ -1163,7 +1165,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.imperial_units = imperial_units
         auth_user.language = language
         auth_user.start_elevation_at_zero = start_elevation_at_zero
-        auth_user.timezone = timezone
+        auth_user.timezone = tz
         auth_user.use_dark_mode = use_dark_mode
         auth_user.use_raw_gpx_speed = use_raw_gpx_speed
         auth_user.weekm = weekm
@@ -1189,6 +1191,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
             visibility=VisibilityLevel(media_visibility),
             parent_visibility=auth_user.workouts_visibility,
         )
+        auth_user.workout_stats_from_file = workout_stats_from_file
         db.session.commit()
 
         return {

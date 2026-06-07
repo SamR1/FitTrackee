@@ -285,6 +285,32 @@
             {{ $t('user.PROFILE.NO_ELEVATION_SERVICE_AVAILABLE') }}
           </span>
         </div>
+        <div class="form-items form-checkboxes">
+          <span class="checkboxes-label">
+            {{ $t('user.PROFILE.WORKOUT_STATS_FROM_FILE.LABEL') }}<sup>1</sup>
+          </span>
+          <div class="checkboxes">
+            <label v-for="status in workoutStatsFromFile" :key="status.label">
+              <input
+                type="radio"
+                :id="status.label"
+                :name="status.label"
+                :checked="status.value === userForm.workout_stats_from_file"
+                :disabled="authUserLoading"
+                @input="updateValue('workout_stats_from_file', status.value)"
+              />
+              <span class="checkbox-label">
+                {{ $t(`user.PROFILE.WORKOUT_STATS_FROM_FILE.${status.label}`) }}
+              </span>
+            </label>
+          </div>
+          <div class="info-box raw-speed-help">
+            <span>
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.HELP') }}
+            </span>
+          </div>
+        </div>
         <label class="form-items">
           <span>
             {{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}<sup>3</sup>
@@ -569,6 +595,17 @@
   ]
   const segmentsCreationEvents = ['all', 'only_manual', 'none']
 
+  const workoutStatsFromFile = [
+    {
+      label: 'CALCULATED',
+      value: false,
+    },
+    {
+      label: 'FROM_FILE',
+      value: true,
+    },
+  ]
+
   const userForm: Reactive<IUserPreferencesPayload> = reactive({
     analysis_visibility: 'private',
     calories_visibility: 'private',
@@ -589,6 +626,7 @@
     use_dark_mode: false,
     use_raw_gpx_speed: false,
     weekm: false,
+    workout_stats_from_file: false,
     workouts_visibility: 'private',
   })
 
@@ -637,6 +675,8 @@
       user.segments_creation_event ?? 'only_manual'
     userForm.split_workout_charts = user.split_workout_charts
     userForm.missing_elevations_processing = user.missing_elevations_processing
+    userForm.media_visibility = user.media_visibility ?? 'private'
+    userForm.workout_stats_from_file = user.workout_stats_from_file
   }
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES, userForm)

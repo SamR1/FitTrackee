@@ -1591,6 +1591,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     missing_elevations_processing="open_elevation",
                     calories_visibility="followers_only",
                     media_visibility="followers_only",
+                    workout_stats_from_file=True,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1619,6 +1620,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         )
         assert data["data"]["calories_visibility"] == VisibilityLevel.FOLLOWERS
         assert data["data"]["media_visibility"] == VisibilityLevel.FOLLOWERS
+        assert data["data"]["workout_stats_from_file"] is True
 
     @pytest.mark.parametrize(
         "input_map_visibility,input_analysis_visibility,"
@@ -1694,6 +1696,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     missing_elevations_processing="file",
                     calories_visibility=VisibilityLevel.PRIVATE,
                     media_visibility=VisibilityLevel.PRIVATE,
+                    workout_stats_from_file=False,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1774,6 +1777,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     missing_elevations_processing="file",
                     calories_visibility=VisibilityLevel.PRIVATE,
                     media_visibility=input_media_visibility.value,
+                    workout_stats_from_file=False,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1823,6 +1827,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     missing_elevations_processing="file",
                     calories_visibility=VisibilityLevel.PRIVATE.value,
                     media_visibility=VisibilityLevel.PRIVATE.value,
+                    workout_stats_from_file=False,
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),

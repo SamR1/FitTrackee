@@ -110,6 +110,12 @@
           {{ $t('user.PROFILE.NO_ELEVATION_SERVICE_AVAILABLE') }}
         </span>
       </div>
+      <dt>
+        {{ $t('user.PROFILE.WORKOUT_STATS_FROM_FILE.LABEL') }}<sup>1</sup>:
+      </dt>
+      <dd>
+        {{ $t(`user.PROFILE.WORKOUT_STATS_FROM_FILE.${workoutStatsFromFile}`) }}
+      </dd>
       <dt>{{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}<sup>3</sup>:</dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.workouts_visibility}`) }}
@@ -203,6 +209,9 @@
       : user.value.use_dark_mode === false
         ? 'LIGHT'
         : 'DEFAULT'
+  )
+  const workoutStatsFromFile = computed(() =>
+    user.value.workout_stats_from_file ? 'FROM_FILE' : 'CALCULATED'
   )
 </script>
 

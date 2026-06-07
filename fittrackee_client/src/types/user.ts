@@ -86,6 +86,7 @@ export interface IAuthUserProfile extends IUserProfile {
   use_dark_mode: boolean | null
   use_raw_gpx_speed: boolean
   weekm: boolean
+  workout_stats_from_file: boolean
   workouts_visibility: TVisibilityLevels
 }
 
@@ -146,6 +147,7 @@ export interface IUserPreferencesPayload {
   use_raw_gpx_speed: boolean
   weekm: boolean
   use_dark_mode: boolean | null
+  workout_stats_from_file: boolean
   workouts_visibility: TVisibilityLevels
 }
 
