@@ -60,6 +60,7 @@ export const dateFormats: Record<string, Record<string, string>> = {
 
 export const datasetKeys: TStatisticsDatasetKeys[] = [
   'average_ascent',
+  'average_cadence',
   'average_descent',
   'average_distance',
   'average_duration',
@@ -111,6 +112,7 @@ const getStatisticsChartDataset = (
 export const getDatasets = (displayedSports: ISport[]): TStatisticsDatasets => {
   const datasets: TStatisticsDatasets = {
     average_ascent: [],
+    average_cadence: [],
     average_descent: [],
     average_distance: [],
     average_duration: [],
@@ -127,6 +129,9 @@ export const getDatasets = (displayedSports: ISport[]): TStatisticsDatasets => {
   displayedSports.forEach((sport) => {
     const color = sport.color ? sport.color : sportColors[sport.label]
     datasets.average_ascent.push(
+      getStatisticsChartDataset(sport.label, color, true)
+    )
+    datasets.average_cadence.push(
       getStatisticsChartDataset(sport.label, color, true)
     )
     datasets.average_descent.push(
@@ -180,6 +185,7 @@ export const convertStatsValue = (
     case 'total_calories':
       return value ?? 0
     case 'average_pace':
+    case 'average_cadence':
     case 'total_workouts':
     case 'total_duration':
     case 'average_duration':

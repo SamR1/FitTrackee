@@ -71,6 +71,17 @@
           />
           {{ $t('workouts.PACE') }}
         </label>
+        <label v-if="fullStats && statsType === 'average'">
+          <input
+            type="radio"
+            name="value_type"
+            value="average_cadence"
+            :checked="displayedData === 'average_cadence'"
+            :disabled="isDisabled"
+            @click="updateDisplayData"
+          />
+          {{ $t('workouts.CADENCE') }}
+        </label>
         <label v-if="fullStats">
           <input
             type="radio"

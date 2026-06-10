@@ -12,10 +12,11 @@
   import { useI18n } from 'vue-i18n'
 
   import useApp from '@/composables/useApp'
+  import useSports from '@/composables/useSports.ts'
   import type { IChartDataset } from '@/types/chart'
   import type { TStatisticsDatasetKeys } from '@/types/statistics'
   import { formatTooltipValue } from '@/utils/tooltip'
-  import { chartsColors } from '@/utils/workouts'
+  import { chartsColors, getCadenceUnit } from '@/utils/workouts'
 
   interface Props {
     datasets: IChartDataset[]
@@ -39,6 +40,7 @@
   const { t } = useI18n()
 
   const { darkTheme } = useApp()
+  const { sports } = useSports()
 
   const lineColors: ComputedRef<{ color: string }> = computed(() => ({
     color: darkTheme.value
@@ -60,6 +62,11 @@
     // workaround to avoid dataset modification
     datasets: JSON.parse(JSON.stringify(datasets.value)),
   }))
+  const displayedSport = computed(() =>
+    displayedSportIds.value.length === 1
+      ? sports.value.find((sport) => sport.id === displayedSportIds.value[0])
+      : undefined
+  )
   const options: ComputedRef<ChartOptions<'bar'>> = computed(() => ({
     responsive: true,
     maintainAspectRatio: false,
@@ -104,7 +111,7 @@
               +value,
               useImperialUnits.value,
               false,
-              getUnit(displayedData.value)
+              getUnit(displayedData.value, displayedSport.value?.label)
             )
           },
           ...textColors.value,
@@ -145,7 +152,8 @@
               displayedData.value,
               value,
               useImperialUnits.value,
-              false
+              false,
+              getUnit(displayedData.value, displayedSport.value?.label)
             )
           } else {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -160,7 +168,7 @@
                   total,
                   useImperialUnits.value,
                   false,
-                  getUnit(displayedData.value)
+                  getUnit(displayedData.value, displayedSport.value?.label)
                 )
               : null
           }
@@ -193,7 +201,7 @@
                 context.parsed.y,
                 useImperialUnits.value,
                 true,
-                getUnit(displayedData.value)
+                getUnit(displayedData.value, context.dataset.label)
               )
             }
             return label
@@ -230,9 +238,19 @@
   function getSum(total: any, value: any): number {
     return getNumber(total) + getNumber(value)
   }
-  function getUnit(displayedData: string) {
+  function getUnit(
+    displayedData: string,
+    sportLabel: string | undefined = undefined
+  ) {
     if (displayedData === 'total_calories') {
       return t(`workouts.UNITS.kcal.UNIT`)
+    }
+    if (displayedData === 'average_cadence') {
+      if (sportLabel) {
+        const cadenceUnit = getCadenceUnit(sportLabel)
+        return t(`workouts.UNITS.${cadenceUnit}.UNIT`)
+      }
+      return ''
     }
     // returns meters for ascent and descent
     return displayedData.includes('scent') ? 'm' : 'km'
