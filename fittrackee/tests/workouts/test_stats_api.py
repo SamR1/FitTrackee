@@ -1777,6 +1777,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017": {
                 "1": {
                     "average_ascent": 110.0,
+                    "average_cadence": None,
                     "average_descent": 140.0,
                     "average_distance": 7.5,
                     "average_duration": 2240,
@@ -1787,6 +1788,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018": {
                 "1": {
                     "average_ascent": 85.0,
+                    "average_cadence": None,
                     "average_descent": 125.0,
                     "average_distance": 7.8,
                     "average_duration": 2324,
@@ -1795,6 +1797,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 "2": {
                     "average_ascent": None,
+                    "average_cadence": None,
                     "average_descent": None,
                     "average_distance": 12.0,
                     "average_duration": 6000,
@@ -1831,6 +1834,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017": {
                 "1": {
                     "average_ascent": 110.0,
+                    "average_cadence": None,
                     "average_descent": 140.0,
                     "average_distance": 7.5,
                     "average_duration": 2240,
@@ -1841,6 +1845,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018": {
                 "1": {
                     "average_ascent": 85.0,
+                    "average_cadence": None,
                     "average_descent": 125.0,
                     "average_distance": 7.8,
                     "average_duration": 2324,
@@ -1849,6 +1854,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 "2": {
                     "average_ascent": None,
+                    "average_cadence": None,
                     "average_descent": None,
                     "average_distance": 12.0,
                     "average_duration": 6000,
@@ -1887,6 +1893,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017": {
                 "1": {
                     "average_ascent": 110.0,
+                    "average_cadence": None,
                     "average_descent": 140.0,
                     "average_distance": 7.5,
                     "average_duration": 2240,
@@ -1897,6 +1904,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018": {
                 "1": {
                     "average_ascent": 85.0,
+                    "average_cadence": None,
                     "average_descent": 125.0,
                     "average_distance": 7.8,
                     "average_duration": 2324,
@@ -1905,6 +1913,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 "2": {
                     "average_ascent": None,
+                    "average_cadence": None,
                     "average_descent": None,
                     "average_distance": 12.0,
                     "average_duration": 6000,
@@ -1940,6 +1949,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2017": {
                 "1": {
                     "average_ascent": 110.0,
+                    "average_cadence": None,
                     "average_descent": 140.0,
                     "average_distance": 7.5,
                     "average_duration": 2240,
@@ -1950,6 +1960,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
             "2018": {
                 "1": {
                     "average_ascent": 85.0,
+                    "average_cadence": None,
                     "average_descent": 125.0,
                     "average_distance": 7.8,
                     "average_duration": 2324,
@@ -1958,10 +1969,79 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 },
                 "2": {
                     "average_ascent": None,
+                    "average_cadence": None,
                     "average_descent": None,
                     "average_distance": 12.0,
                     "average_duration": 6000,
                     "average_pace": 500,
+                    "total_workouts": 1,
+                },
+            },
+        }
+
+    def test_it_returns_average_cadence_depending_on_sport(
+        self,
+        app: Flask,
+        user_1: User,
+        seven_workouts_user_1: List[Workout],
+        workout_running_user_1: Workout,
+        workout_outdoor_tennis_user_1: Workout,
+    ) -> None:
+        workout_running_user_1.ave_cadence = 100
+        seven_workouts_user_1[0].ave_cadence = 100
+        seven_workouts_user_1[1].ave_cadence = 80
+        seven_workouts_user_1[3].ave_cadence = 110
+        workout_outdoor_tennis_user_1.ave_cadence = 100
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"/api/stats/{user_1.username}/by_time?time=year&type=average",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert data["data"]["statistics"] == {
+            "2017": {
+                "1": {
+                    "average_ascent": 110.0,
+                    "average_cadence": 90.0,
+                    "average_descent": 140.0,
+                    "average_distance": 7.5,
+                    "average_duration": 2240,
+                    "average_speed": 14.0,
+                    "total_workouts": 2,
+                }
+            },
+            "2018": {
+                "1": {
+                    "average_ascent": 85.0,
+                    "average_cadence": 110.0,
+                    "average_descent": 125.0,
+                    "average_distance": 7.8,
+                    "average_duration": 2324,
+                    "average_speed": 18.79,
+                    "total_workouts": 5,
+                },
+                "2": {
+                    "average_ascent": None,
+                    "average_cadence": 200.0,
+                    "average_descent": None,
+                    "average_distance": 12.0,
+                    "average_duration": 6000,
+                    "average_pace": 500,
+                    "total_workouts": 1,
+                },
+                "3": {
+                    "average_ascent": None,
+                    "average_cadence": None,
+                    "average_descent": None,
+                    "average_distance": 2.5,
+                    "average_duration": 3600,
+                    "average_speed": 2.5,
                     "total_workouts": 1,
                 },
             },
@@ -2031,6 +2111,9 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         workout_running_user_1: Workout,
         workout_cycling_user_2: Workout,
     ) -> None:
+        workout_running_user_1.ave_cadence = 100
+        seven_workouts_user_1[1].ave_cadence = 100
+        seven_workouts_user_1[3].ave_cadence = 80
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -2046,6 +2129,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert data["data"]["statistics"] == {
             "1": {  # sport_1_cycling
                 "average_ascent": 93.33,
+                "average_cadence": 90,
                 "average_descent": 130.0,
                 "average_distance": 7.71,
                 "average_duration": "0:38:20",
@@ -2060,6 +2144,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
             },
             "2": {  # sport_2_running
                 "average_ascent": None,
+                "average_cadence": 200,
                 "average_descent": None,
                 "average_distance": 12.0,
                 "average_duration": "1:40:00",
@@ -2103,6 +2188,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert data["data"]["statistics"] == {
             "1": {
                 "average_ascent": 93.33,
+                "average_cadence": None,
                 "average_descent": 130.0,
                 "average_distance": 7.71,
                 "average_duration": "0:38:20",
@@ -2117,6 +2203,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
             },
             "2": {
                 "average_ascent": None,
+                "average_cadence": None,
                 "average_descent": None,
                 "average_distance": 12.0,
                 "average_duration": "1:40:00",
@@ -2160,6 +2247,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert data["data"]["statistics"] == {
             "1": {
                 "average_ascent": 93.33,
+                "average_cadence": None,
                 "average_descent": 130.0,
                 "average_distance": 7.71,
                 "average_duration": "0:38:20",
@@ -2174,6 +2262,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
             },
             "2": {
                 "average_ascent": None,
+                "average_cadence": None,
                 "average_descent": None,
                 "average_distance": 12.0,
                 "average_duration": "1:40:00",
@@ -2219,6 +2308,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert data["data"]["statistics"] == {
             "1": {
                 "average_ascent": 93.33,
+                "average_cadence": None,
                 "average_descent": 130.0,
                 "average_distance": 7.71,
                 "average_duration": "0:38:20",
@@ -2233,6 +2323,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
             },
             "2": {
                 "average_ascent": None,
+                "average_cadence": None,
                 "average_descent": None,
                 "average_distance": 12.0,
                 "average_duration": "1:40:00",
@@ -2273,6 +2364,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert data["data"]["statistics"] == {
             "1": {
                 "average_ascent": seven_workouts_user_1[6].ascent,
+                "average_cadence": None,
                 "average_descent": seven_workouts_user_1[6].descent,
                 "average_distance": float(seven_workouts_user_1[6].distance),  # type: ignore
                 "average_duration": str(seven_workouts_user_1[6].moving),
@@ -2287,6 +2379,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
             },
             "2": {
                 "average_ascent": workout_running_user_1.ascent,
+                "average_cadence": None,
                 "average_descent": workout_running_user_1.descent,
                 "average_distance": float(workout_running_user_1.distance),  # type: ignore
                 "average_duration": str(workout_running_user_1.moving),
@@ -2329,6 +2422,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert data["data"]["statistics"] == {
             "1": {
                 "average_ascent": 93.33,
+                "average_cadence": None,
                 "average_descent": 130.0,
                 "average_distance": 7.71,
                 "average_duration": "0:38:20",
@@ -2343,6 +2437,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
             },
             "2": {
                 "average_ascent": None,
+                "average_cadence": None,
                 "average_descent": None,
                 "average_distance": 12.0,
                 "average_duration": "1:40:00",
@@ -2403,6 +2498,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert data["data"]["statistics"] == {
             "1": {
                 "average_ascent": 93.33,
+                "average_cadence": None,
                 "average_descent": 130.0,
                 "average_distance": 7.71,
                 "average_duration": "0:38:20",
@@ -2443,6 +2539,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert data["data"]["statistics"] == {
             "1": {
                 "average_ascent": 40.0,
+                "average_cadence": None,
                 "average_descent": 20.0,
                 "average_distance": 9.0,
                 "average_duration": "1:15:00",
@@ -2480,6 +2577,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
         assert data["data"]["statistics"] == {
             f"{sport_5_outdoor_tennis.id}": {
                 "average_ascent": None,
+                "average_cadence": None,
                 "average_descent": None,
                 "average_distance": 2.5,
                 "average_duration": "1:00:00",

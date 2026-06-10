@@ -60,8 +60,10 @@ def get_sports_displayed_data(
         sports_data_visibility[sport.id] = SportDisplayedData(
             display_elevation=sport.label not in SPORTS_WITHOUT_ELEVATION_DATA,
             display_pace=pace_speed_display != PaceSpeedDisplay.SPEED,
-            display_speed=force_display_speed
-            or pace_speed_display != PaceSpeedDisplay.PACE,
+            display_speed=(
+                force_display_speed
+                or pace_speed_display != PaceSpeedDisplay.PACE
+            ),
             display_power=sport.label in POWER_SPORTS,
             display_cadence=sport.label in CADENCE_SPORTS,
             display_spm_cadence=sport.label in SPM_CADENCE_SPORTS,
