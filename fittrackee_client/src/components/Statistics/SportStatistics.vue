@@ -155,6 +155,16 @@
             :label="$t('workouts.AVERAGE_PACE')"
           />
           <SportStatCard
+            v-if="sportStatistics?.average_cadence"
+            icon="cadence"
+            :loading="loading"
+            :total-value="Math.round(sportStatistics.average_cadence)"
+            :text="
+              t(`workouts.UNITS.${getCadenceUnit(selectedSport.label)}.UNIT`)
+            "
+            :label="$t('workouts.AVERAGE_CADENCE')"
+          />
+          <SportStatCard
             v-if="sportStatistics?.total_calories"
             icon="fire"
             :loading="loading"
@@ -214,6 +224,7 @@
   import { getRecordsBySports, sortRecords } from '@/utils/records'
   import { translateSports } from '@/utils/sports'
   import { convertDistance, getPace, units } from '@/utils/units'
+  import { getCadenceUnit } from '@/utils/workouts.ts'
   interface Props {
     sports: ISport[]
     authUser: IAuthUserProfile

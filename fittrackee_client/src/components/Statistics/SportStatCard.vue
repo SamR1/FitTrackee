@@ -8,6 +8,12 @@
           src="/img/workouts/chronometer.svg"
           :alt="$t('workouts.PACE')"
         />
+        <img
+          v-else-if="icon === 'cadence'"
+          class="cadence"
+          src="/img/workouts/cadence.svg"
+          :alt="$t('workouts.CADENCE')"
+        />
         <i v-else class="fa" :class="`fa-${icon}`" />
       </div>
       <div class="stat-details">
@@ -72,6 +78,7 @@
             font-size: 1.5em;
           }
         }
+        .cadence,
         .chronometer {
           height: 28px;
           @media screen and (max-width: $medium-limit) {
